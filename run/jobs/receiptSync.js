@@ -88,17 +88,27 @@ module.exports = async job => {
         try {
             receipt = await providerConnector.fetchTransactionReceipt(transaction.hash);
         } catch(error) {
+            const priority = job.opts.priority || (data.source == 'cli-light' ? 1 : 10);
             if (error.message == 'Rate limited') {
-                const priority = job.opts.priority || (data.source == 'cli-light' ? 1 : 10);
-                await enqueue('receiptSync', `receiptSync-${workspace.id}-${transaction.hash}-${Date.now()}`, {
+                return enqueue('receiptSync', `receiptSync-${workspace.id}-${transaction.hash}-${Date.now()}`, {
                     transactionId: transaction.id,
                     transactionHash: transaction.hash,
                     workspaceId: workspace.id,
                     source: data.source,
-                    rateLimited: data.rateLimited
-                }, priority, null, workspace.rateLimitInterval, data.rateLimited);
-                return `Re-enqueuing: ${error.message}`
+                    rateLimited: !!data.rateLimited
+                }, priority, null, workspace.rateLimitInterval, !!data.rateLimited);
             }
+            else if (error.message.startsWith('Timed out after')) {
+                return enqueue('receiptSync', `receiptSync-${workspace.id}-${transaction.hash}-${Date.now()}`, {
+                    transactionId: transaction.id,
+                    transactionHash: transaction.hash,
+                    workspaceId: workspace.id,
+                    source: data.source,
+                    rateLimited: !!data.rateLimited
+                }, priority, null, workspace.rateLimitInterval || 5000, !!data.rateLimited);
+            }
+            else
+                throw error;
         }
 
         if (!receipt)

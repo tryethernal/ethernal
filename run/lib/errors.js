@@ -28,8 +28,8 @@ const unmanagedError = (error, req, next) => {
 };
 
 const managedWorkerError = (error, jobName, jobData, worker) => {
-    Sentry.setContext('Job Data', jobData);
     logger.error(error.message, error, { jobName, worker, jobData });
+    Sentry.setContext('Job Data', jobData);
     return Sentry.captureException(error, { tags: { job: jobName, worker }});
 };
 
