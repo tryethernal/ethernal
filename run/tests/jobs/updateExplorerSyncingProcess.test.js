@@ -10,6 +10,21 @@ beforeEach(() => jest.clearAllMocks());
 const hasReachedTransactionQuota = jest.fn().mockResolvedValue(false);
 
 describe('updateExplorerSyncingProcess', () => {
+    it('Should exit gracefully if timeout', (done) => {
+        const reset = jest.fn();
+        PM2.mockImplementationOnce(() => ({
+            reset,
+            find: jest.fn().mockRejectedValueOnce(new Error('Timed out after 10000ms.'))
+        }));
+        jest.spyOn(Explorer, 'findOne').mockResolvedValue({ slug: 'slug', workspaceId: 1 });
+
+        updateExplorerSyncingProcess({ data: { explorerSlug: 'explorer' }})
+            .then(res => {
+                expect(res).toEqual('Timed out');
+                done();
+            });
+    });
+
     it('Should reset if flag is passed', (done) => {
         const reset = jest.fn();
         PM2.mockImplementationOnce(() => ({
