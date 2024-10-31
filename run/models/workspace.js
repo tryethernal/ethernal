@@ -1188,7 +1188,7 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    safeCreateOrUpdateContract(contract, transaction) {
+    async safeCreateOrUpdateContract(contract, transaction) {
         const newContract = sanitize({
             hashedBytecode: contract.hashedBytecode,
             abi: contract.abi,
@@ -1213,10 +1213,10 @@ module.exports = (sequelize, DataTypes) => {
             workspaceId: this.id
         });
 
-        return sequelize.models.Contract.upsert(newContract, {
+        return (await sequelize.models.Contract.upsert(newContract, {
             conflictFields: ['workspaceId', 'address'],
             transaction
-        });
+        }))[0];
     }
 
     async safeCreateOrUpdateAccount(account) {

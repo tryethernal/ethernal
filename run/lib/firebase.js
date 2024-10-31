@@ -2003,7 +2003,7 @@ const storeContractData = async (userId, workspace, address, data, transaction) 
 
     const user = await User.findByAuthIdWithWorkspace(userId, workspace);
     const contract = await user.workspaces[0].safeCreateOrUpdateContract({ address: address, ...data }, transaction);
-    return contract[0] ? contract[0].toJSON() : null;
+    return contract ? contract.toJSON() : null;
 };
 
 const getContract = async (userId, workspaceId, address) => {
