@@ -57,6 +57,38 @@ describe('receiptSync', () => {
             });
     });
 
+    it('Should re-enqueue if timed out', (done) => {
+        jest.spyOn(Date, 'now').mockImplementation(() => 1609459200000);
+        jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({
+            id: 1,
+            hash: '0x123',
+            workspace: {
+                id: 1,
+                public: true,
+                rpcServer: 'rpc',
+                explorer: {
+                    stripeSubscription: { status: 'active' },
+                    shouldSync: true
+                }
+            },
+        });
+        ProviderConnector.mockImplementationOnce(() => ({
+            fetchTransactionReceipt: jest.fn().mockRejectedValueOnce({ message: 'Timed out after 10000ms' })
+        }));
+
+        receiptSync({ opts: { priority: 1 }, data : { transactionId: 1, transactionHash: '0x123', workspaceId: 1, source: 'cli-light' }})
+            .then(res => {
+                expect(enqueue).toHaveBeenCalledWith('receiptSync', 'receiptSync-1-0x123-1609459200000', {
+                    transactionHash: '0x123',
+                    transactionId: 1,
+                    workspaceId: 1,
+                    source: 'cli-light',
+                    rateLimited: false
+                }, 1, null, 5000, false);
+                done();
+            });
+    });
+
     it('Should re-enqueue if rate limited', (done) => {
         jest.spyOn(Date, 'now').mockImplementation(() => 1609459200000);
         jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({
@@ -86,7 +118,6 @@ describe('receiptSync', () => {
                     source: 'cli-light',
                     rateLimited: true
                 }, 1, null, 5000, true);
-                expect(res).toEqual('Re-enqueuing: Rate limited');
                 done();
             });
     });

@@ -48,6 +48,39 @@ describe('blockSync', () => {
             });
     });
 
+    it('Should re-enqueue if timed out', (done) => {
+        jest.spyOn(Date, 'now').mockImplementation(() => 1609459200000);
+        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+            id: 1,
+            name: 'ws',
+            user: { firebaseUserId: 'abc' },
+            rpcServer: 'http://localhost:8545',
+            rpcHealthCheck: {
+                isReachable: true
+            },
+            explorer: {
+                hasReachedTransactionQuota,
+                stripeSubscription: {},
+                shouldSync: true
+            },
+        });
+        ProviderConnector.mockImplementationOnce(() => ({
+            fetchRawBlockWithTransactions: jest.fn().mockRejectedValueOnce({ message: 'Timed out after 10000ms' })
+        }));
+
+        blockSync({ opts: { priority: 1 }, data : { source: 'cli-light', userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
+            .then(res => {
+                expect(enqueue).toHaveBeenCalledWith('blockSync', 'blockSync-1-1-1609459200000', {
+                    userId: 'abc',
+                    workspace: 'ws',
+                    blockNumber: 1,
+                    source: 'cli-light',
+                    rateLimited: false
+                }, 1, null, 5000, false);
+                done();
+            });
+    });
+
     it('Should re-enqueue if rate limited', (done) => {
         jest.spyOn(Date, 'now').mockImplementation(() => 1609459200000);
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
@@ -79,7 +112,6 @@ describe('blockSync', () => {
                     source: 'cli-light',
                     rateLimited: true
                 }, 1, null, 5000, true);
-                expect(res).toEqual('Re-enqueuing: Rate limited');
                 done();
             });
     });

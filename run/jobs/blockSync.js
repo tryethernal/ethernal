@@ -76,16 +76,24 @@ module.exports = async job => {
         try {
             block = await providerConnector.fetchRawBlockWithTransactions(data.blockNumber);
         } catch(error) {
+            const priority = job.opts.priority || (data.source == 'cli-light' ? 1 : 10);
             if (error.message == 'Rate limited') {
-                const priority = job.opts.priority || (data.source == 'cli-light' ? 1 : 10);
-                await enqueue('blockSync', `blockSync-${workspace.id}-${data.blockNumber}-${Date.now()}`, {
+                return enqueue('blockSync', `blockSync-${workspace.id}-${data.blockNumber}-${Date.now()}`, {
                     userId: workspace.user.firebaseUserId,
                     workspace: workspace.name,
                     blockNumber: data.blockNumber,
                     source: data.source,
-                    rateLimited: data.rateLimited
-                }, priority, null, workspace.rateLimitInterval, data.rateLimited);
-                return `Re-enqueuing: ${error.message}`
+                    rateLimited: !!data.rateLimited
+                }, priority, null, workspace.rateLimitInterval, !!data.rateLimited);
+            }
+            else if (error.message.startsWith('Timed out after')) {
+                return enqueue('blockSync', `blockSync-${workspace.id}-${data.blockNumber}-${Date.now()}`, {
+                    userId: workspace.user.firebaseUserId,
+                    workspace: workspace.name,
+                    blockNumber: data.blockNumber,
+                    source: data.source,
+                    rateLimited: !!data.rateLimited
+                }, priority, null, workspace.rateLimitInterval || 5000, !!data.rateLimited);
             }
             else
                 throw error;
