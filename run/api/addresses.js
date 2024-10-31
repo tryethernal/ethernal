@@ -45,7 +45,7 @@ router.get('/:address/nativeTokenBalance', workspaceAuthMiddleware, async (req, 
         try {
             balance = await provider.getBalance(req.params.address);
         } catch(error) {
-            managedError(error, req, res, 400, false);
+            return managedError(error, req, res, 400, false);
         }
 
         res.status(200).json({ balance: balance ? balance.toString() : null });
