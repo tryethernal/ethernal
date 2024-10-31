@@ -1189,6 +1189,9 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async safeCreateOrUpdateContract(contract, transaction) {
+        const contracts = await this.getContracts({ where: { address: contract.address.toLowerCase() }});
+        const existingContract = contracts[0];
+
         const newContract = sanitize({
             hashedBytecode: contract.hashedBytecode,
             abi: contract.abi,
@@ -1208,15 +1211,29 @@ module.exports = (sequelize, DataTypes) => {
             has721Enumerable: contract.has721Enumerable,
             ast: contract.ast,
             bytecode: contract.bytecode,
-            asm: contract.asm,
-            transactionId: contract.transactionId,
-            workspaceId: this.id
+            asm: contract.asm
         });
 
-        return (await sequelize.models.Contract.upsert(newContract, {
-            conflictFields: ['workspaceId', 'address'],
-            transaction
-        }))[0];
+        if (existingContract)
+            return existingContract.update(newContract, { transaction })
+        else {
+            const [_contract] = await sequelize.models.Contract.bulkCreate(
+                [
+                    {
+                        ...newContract,
+                        workspaceId: this.id,
+                        transactionId: contract.transactionId
+                    },
+                ],
+                {
+                    ignoreDuplicates: true,
+                    individualHooks: true,
+                    returning: true,
+                    transaction
+                }
+            );
+            return _contract;
+        }
     }
 
     async safeCreateOrUpdateAccount(account) {
