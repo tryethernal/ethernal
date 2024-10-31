@@ -109,7 +109,7 @@ router.post('/', [authMiddleware, browserSyncMiddleware], async (req, res, next)
         else {
             const canUserSyncBlock = await db.canUserSyncBlock(data.user.id);
             if (!canUserSyncBlock)
-                return managedError(new Error(`You are on a free plan with more than one workspace. Please upgrade your plan, or delete your extra workspaces here: https://app.${getAppDomain()}/settings.`), req, res, false);
+                return managedError(new Error(`You are on a free plan with more than one workspace. Please upgrade your plan, or delete your extra workspaces here: https://app.${getAppDomain()}/settings.`), req, res, 400, false);
 
             const syncedBlock = stringifyBns(sanitize(block));
             await db.storeBlock(data.uid, data.workspace, syncedBlock);
