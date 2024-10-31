@@ -620,7 +620,7 @@ router.post('/', authMiddleware, async (req, res, next) => {
                 rpcServer: data.rpcServer,
                 chain: data.chain,
                 networkId,
-                tracing: data.tracing || 'other',
+                tracing: data.tracing
             };
 
         if (data.faucet && data.faucet.amount && data.faucet.interval)
@@ -638,30 +638,30 @@ router.post('/', authMiddleware, async (req, res, next) => {
         const usingDefaultPlan = !data.plan && (!isStripeEnabled() || user.canUseDemoPlan);
         const planSlug = usingDefaultPlan ? getDefaultPlanSlug() : data.plan;
 
-        if (!planSlug)
-            return managedError(new Error('Missing plan parameter.'), req, res);
+        let stripePlan;
+        if (planSlug) {
+            stripePlan = await db.getStripePlan(planSlug);
+            if (!stripePlan)
+                return managedError(new Error(`Can't find plan.`), req, res);
 
-        const stripePlan = await db.getStripePlan(planSlug);
-        if (!stripePlan)
-            return managedError(new Error(`Can't find plan.`), req, res);
-
-        if (usingDefaultPlan || stripePlan.capabilities.skipBilling) {
-            options['subscription'] = {
-                stripePlanId: stripePlan.id,
-                stripeId: null,
-                cycleEndsAt: new Date(0),
-                status: 'active'
+            if (usingDefaultPlan || stripePlan.capabilities.skipBilling) {
+                options['subscription'] = {
+                    stripePlanId: stripePlan.id,
+                    stripeId: null,
+                    cycleEndsAt: new Date(0),
+                    status: 'active'
+                }
             }
-        }
 
-        if (stripePlan.capabilities.customStartingBlock)
-            options['integrityCheckStartBlockNumber'] = data.fromBlock;
+            if (stripePlan.capabilities.customStartingBlock)
+                options['integrityCheckStartBlockNumber'] = data.fromBlock;
+        }
 
         const explorer = await db.createExplorerFromOptions(user.id, sanitize(options));
         if (!explorer)
             return managedError(new Error('Could not create explorer.'), req, res);
 
-        if (!usingDefaultPlan && req.query.startSubscription) {
+        if (!usingDefaultPlan && stripePlan && req.query.startSubscription) {
             let stripeParams = {
                 customer: user.stripeCustomerId,
                 items: [
