@@ -967,9 +967,8 @@ const storeContractVerificationData = async (workspaceId, address, verificationD
     if (!workspaceId || !address || !verificationData) throw new Error('Missing parameter');
 
     const workspace = await Workspace.findByPk(workspaceId);
-
-    if (!workspace.public)
-        throw new Error('This is a private workspace');
+    if (!workspace)
+        throw new Error('Cannot find workspace');
 
     const contract = await workspace.getContractByAddress(address);
 
