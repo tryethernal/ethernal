@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Bug in native balance endpoint
 
+### Changed
+- Do not handled errors to Sentry
+
+## [3.45.18] - 2024-10-31
+### Fixed
+- Bug in native balance endpoint
+
 ## [3.45.17] - 2024-10-31
 ### Fixed
 - Tests
