@@ -2411,6 +2411,7 @@ describe('storeTransactionTokenTransfers', () => {
 
 describe('storeContractData', () => {
     it('Should return contract', (done) => {
+        jest.spyOn(workspace, 'safeCreateOrUpdateContract').mockResolvedValueOnce({ toJSON: () => ({ id: 10, address: '0x123' })});
         db.storeContractData('123', 'My Workspace', '0x123', [{ address: '0xabc', name: 'My Contract' }])
             .then(contract => {
                 expect(contract).toEqual({ id: 10, address: '0x123' });
