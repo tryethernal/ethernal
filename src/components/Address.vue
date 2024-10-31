@@ -64,6 +64,7 @@
                             <v-card outlined>
                                 <v-card-subtitle>Balance</v-card-subtitle>
                                 <v-skeleton-loader v-if="loadingStats" type="list-item"></v-skeleton-loader>
+                                <v-card-text v-else-if="!balance" class="text-h4" align="center">-</v-card-text>
                                 <v-card-text v-else class="text-h4" align="center">
                                     {{ balance | fromWei('ether', chain.token) }}
                                 </v-card-text>
