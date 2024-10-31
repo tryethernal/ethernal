@@ -476,20 +476,6 @@ module.exports = (sequelize, DataTypes) => {
 
         return this.destroy({ transaction });
     }
-
-    async afterCreateFn(contract) {
-        return enqueue(`processContract`, `processContract-${contract.id}`, { contractId: contract.id });
-    }
-
-    afterSaveFn(contract) {
-        trigger(`private-contracts;workspace=${contract.workspaceId}`, 'new', null);
-        trigger(`private-transactions;workspace=${contract.workspaceId};address=${contract.address}`, 'new', null);
-
-        if (contract.patterns.indexOf('erc20') > -1)
-            trigger(`private-tokens;workspace=${contract.workspaceId}`, 'new', null);
-        else if (contract.patterns.indexOf('erc721') > -1)
-            trigger(`private-nft;workspace=${contract.workspaceId}`, 'new', null);
-    }
   }
   Contract.init({
     isToken: {
@@ -553,25 +539,23 @@ module.exports = (sequelize, DataTypes) => {
             trigger(`private-contracts;workspace=${contract.workspaceId}`, 'destroyed', null);
         },
 
-        afterUpsert([contract], options) {
-            const afterUpsertFn = () => {
-                // We don't have a way of knowing if the upsert did an insert or an update, so we assume that if there is no bytecode, it's a new contract and needs to be processed
-                return !contract.bytecode ? contract.afterCreateFn(contract) : contract.afterSaveFn(contract);
-            };
-
-            return options.transaction ?
-                options.transaction.afterCommit(afterUpsertFn) :
-                afterUpsertFn();
-        },
-
         afterCreate(contract, options) {
+            const afterCreateFn = () => {
+                return enqueue(`processContract`, `processContract-${contract.id}`, { contractId: contract.id });
+            }
             return options.transaction ?
-                options.transaction.afterCommit(contract.afterCreateFn) :
-                contract.afterCreateFn(contract);
+                options.transaction.afterCommit(afterCreateFn) :
+                afterCreateFn();
         },
 
         afterSave(contract) {
-            return contract.afterSaveFn();
+            trigger(`private-contracts;workspace=${contract.workspaceId}`, 'new', null);
+            trigger(`private-transactions;workspace=${contract.workspaceId};address=${contract.address}`, 'new', null);
+
+            if (contract.patterns.indexOf('erc20') > -1)
+                trigger(`private-tokens;workspace=${contract.workspaceId}`, 'new', null);
+            else if (contract.patterns.indexOf('erc721') > -1)
+                trigger(`private-nft;workspace=${contract.workspaceId}`, 'new', null);
         }
     },
     sequelize,
