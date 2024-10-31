@@ -40,7 +40,13 @@ router.get('/:address/nativeTokenBalance', workspaceAuthMiddleware, async (req, 
 
     try {
         const provider = new ProviderConnector(data.workspace.rpcServer);
-        const balance = await provider.getBalance(req.params.address);
+
+        let balance;
+        try {
+            balance = await provider.getBalance(req.params.address);
+        } catch(error) {
+            managedError(error, req, res, 400, false);
+        }
 
         res.status(200).json({ balance: balance.toString() });
     } catch(error) {
