@@ -24,13 +24,13 @@ export default {
         loading: true,
         transfers: [],
         transferCount: 0,
-        currentOptions: { page: 1, itemsPerPage: 10, orderBy: 'from', order: 'desc' },
+        currentOptions: { page: 1, itemsPerPage: 10, orderBy: 'src', order: 'desc' },
         headers: [
-            { text: 'Type', value: 'type' },
-            { text: 'From', value: 'src' },
-            { text: 'To', value: 'dst' },
-            { text: 'Token', value: 'token' },
-            { text: 'Amount', value: 'amount' }
+            { title: 'Type', key: 'type' },
+            { title: 'From', key: 'src' },
+            { title: 'To', key: 'dst' },
+            { title: 'Token', key: 'token' },
+            { title: 'Amount', key: 'amount' }
         ]
     }),
     methods: {
@@ -43,7 +43,7 @@ export default {
             if (!page || !itemsPerPage || !sortBy || !sortBy.length)
                 return this.loading = false;
 
-            if (this.currentOptions.page == page && this.currentOptions.itemsPerPage == itemsPerPage && this.currentOptions.orderBy == sortBy[0].key && this.currentOptions.order == sortBy[0].order)
+            if (this.transfers.length && this.currentOptions.page == page && this.currentOptions.itemsPerPage == itemsPerPage && this.currentOptions.orderBy == sortBy[0].key && this.currentOptions.order == sortBy[0].order)
                 return this.loading = false;
 
             this.currentOptions = {
