@@ -3,6 +3,29 @@ const ethers = require('ethers');
 const web3 = require('web3');
 const web3Quorum = require('web3js-quorum');
 
+const contractFn = (code, contract, metadata) => {
+    const vm = new NodeVM({
+        sandbox: {},
+        eval: false,
+        wasm: false,
+    });
+    const fn = vm.run(`
+        module.exports = async function(code, contract, metadata) {
+            try {
+                ${code}
+            } catch(error) {
+                console.log(error)
+                return {
+                    success: false,
+                    error: error
+                };
+            }
+        };
+    `);
+
+    return fn(code, contract, metadata);
+}
+
 const transactionFn = (code, transaction, rpcServer) => {
     const vm = new NodeVM({
         sandbox: {},
@@ -44,5 +67,5 @@ const transactionFn = (code, transaction, rpcServer) => {
 };
 
 module.exports = {
-    transactionFn: transactionFn
+    transactionFn, contractFn
 };

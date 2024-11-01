@@ -2,8 +2,10 @@ const axios = require('axios');
 const ethers = require('ethers');
 const { sanitize, withTimeout } = require('../lib/utils');
 const yasold = require('../lib/yasold');
+const { contractFn } = require('../lib/codeRunner');
 const db = require('../lib/firebase');
 const { ContractConnector, ERC721Connector } = require('../lib/rpc');
+const { Workspace, Contract, CustomField } = require('../models');
 const { getScannerKey } = require('../lib/env');
 const logger = require('../lib/logger');
 const { trigger } = require('../lib/pusher');
@@ -127,17 +129,27 @@ module.exports = async job => {
     if (!data.contractId)
         return 'Missing parameter';
 
-    const contract = await db.getContractById(data.contractId);
+    const contract = await Contract.findByPk(data.contractId, {
+        include: {
+            model: Workspace,
+            as: 'workspace',
+            include: [
+                'explorer', 'user',
+                {
+                    model: CustomField,
+                    as: 'customFields',
+                    where: { location: 'contract' },
+                    required: false
+                }
+            ]
+        }
+    });
+
     if (!contract)
         return 'Cannot find contract';
 
-    const workspace = await db.getWorkspaceById(contract.workspaceId);
-    if (!workspace)
-        return 'Cannot find workspace';
-
-    const user = await db.getUserById(workspace.userId);
-    if (!user)
-        return 'Cannot find user';
+    const workspace = contract.workspace;
+    const user = workspace.user;
 
     let asm, bytecode, hashedBytecode;
 
@@ -182,6 +194,14 @@ module.exports = async job => {
 
     if (scannerMetadata.verificationData)
         await db.storeContractVerificationData(workspace.id, contract.address, scannerMetadata.verificationData);
+
+    if (workspace.customFields.length > 0) {
+        for (const customField of workspace.customFields) {
+            const extraFields = await contractFn(customField.function, contract, metadata);
+            if (extraFields && typeof extraFields === 'object')
+                metadata = sanitize({ ...metadata, ...extraFields });
+        }
+    }
 
     await db.storeContractData(user.firebaseUserId, workspace.name, contract.address, metadata);
 
