@@ -195,7 +195,7 @@ module.exports = async job => {
     if (scannerMetadata.verificationData)
         await db.storeContractVerificationData(workspace.id, contract.address, scannerMetadata.verificationData);
 
-    if (workspace.customFields.length > 0) {
+    if (workspace.customFields && workspace.customFields.length > 0) {
         for (const customField of workspace.customFields) {
             const extraFields = await contractFn(customField.function, contract, metadata);
             if (extraFields && typeof extraFields === 'object')
