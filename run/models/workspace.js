@@ -32,6 +32,7 @@ module.exports = (sequelize, DataTypes) => {
       Workspace.hasMany(models.Account, { foreignKey: 'workspaceId', as: 'accounts' });
       Workspace.hasMany(models.TokenBalanceChange, { foreignKey: 'workspaceId', as: 'tokenBalanceChanges' });
       Workspace.hasMany(models.TokenTransfer, { foreignKey: 'workspaceId', as: 'tokenTransfers' });
+      Workspace.hasMany(models.CustomField, { foreignKey: 'workspaceId', as: 'customFields' });
     }
 
     static findPublicWorkspaceById(id) {

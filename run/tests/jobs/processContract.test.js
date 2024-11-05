@@ -13,7 +13,11 @@ jest.mock('axios', () => ({
         }
     })
 }));
-require('../mocks/models');
+const mockContractFn = jest.fn();
+jest.mock('../../lib/codeRunner', () => ({
+    contractFn: mockContractFn
+}))
+const { Contract } = require('../mocks/models');
 require('../mocks/lib/ethers');
 require('../mocks/lib/utils');
 require('../mocks/lib/firebase');
@@ -43,9 +47,15 @@ describe('processContract', () => {
     });
 
     it('Should verify the contract if scanner returns source data with multiple files', (done) => {
-        jest.spyOn(db, 'getWorkspaceById').mockResolvedValueOnce({ id: 1, name: 'My Workspace', public: true });
-        jest.spyOn(db, 'getUserById').mockResolvedValueOnce({ id: 1, firebaseUserId: '123' });
-        jest.spyOn(db, 'getContractById').mockResolvedValueOnce({ workspaceId: 1, address: '0x123' });
+        jest.spyOn(Contract, 'findByPk').mockResolvedValueOnce({
+            address: '0x123',
+            workspace: {
+                id: 1,
+                name: 'My Workspace',
+                public: true,
+                user: { id: 1, firebaseUserId: '123' }
+            },
+        });
         jest.spyOn(db, 'getContractByHashedBytecode').mockResolvedValueOnce(null);
         ContractConnector.mockImplementation(() => ({
             isErc20: jest.fn().mockResolvedValue(false),
@@ -98,9 +108,15 @@ describe('processContract', () => {
     });
 
     it('Should verify the contract if scanner returns source data with one file', (done) => {
-        jest.spyOn(db, 'getWorkspaceById').mockResolvedValueOnce({ id: 1, name: 'My Workspace', public: true });
-        jest.spyOn(db, 'getUserById').mockResolvedValueOnce({ id: 1, firebaseUserId: '123' });
-        jest.spyOn(db, 'getContractById').mockResolvedValueOnce({ workspaceId: 1, address: '0x123' });
+        jest.spyOn(Contract, 'findByPk').mockResolvedValueOnce({
+            address: '0x123',
+            workspace: {
+                id: 1,
+                name: 'My Workspace',
+                public: true,
+                user: { id: 1, firebaseUserId: '123' }
+            },
+        });
         jest.spyOn(db, 'getContractByHashedBytecode').mockResolvedValueOnce(null);
         ContractConnector.mockImplementation(() => ({
             isErc20: jest.fn().mockResolvedValue(false),
@@ -153,9 +169,15 @@ describe('processContract', () => {
     });
 
     it('Should try to find metadata from scanner if it cannot find everything locally', (done) => {
-        jest.spyOn(db, 'getWorkspaceById').mockResolvedValueOnce({ id: 1, name: 'My Workspace', public: true });
-        jest.spyOn(db, 'getUserById').mockResolvedValueOnce({ id: 1, firebaseUserId: '123' });
-        jest.spyOn(db, 'getContractById').mockResolvedValueOnce({ workspaceId: 1, address: '0x123' });
+        jest.spyOn(Contract, 'findByPk').mockResolvedValueOnce({
+            address: '0x123',
+            workspace: {
+                id: 1,
+                name: 'My Workspace',
+                public: true,
+                user: { id: 1, firebaseUserId: '123' }
+            },
+        });
         jest.spyOn(db, 'getContractByHashedBytecode').mockResolvedValueOnce(null);
         ContractConnector.mockImplementation(() => ({
             isErc20: jest.fn().mockResolvedValue(false),
@@ -171,9 +193,15 @@ describe('processContract', () => {
     });
 
     it('Should get proxy contract if applicable', (done) => {
-        jest.spyOn(db, 'getWorkspaceById').mockResolvedValueOnce({ id: 1, name: 'My Workspace', public: true });
-        jest.spyOn(db, 'getUserById').mockResolvedValueOnce({ id: 1, firebaseUserId: '123' });
-        jest.spyOn(db, 'getContractById').mockResolvedValueOnce({ workspaceId: 1, address: '0x123' });
+        jest.spyOn(Contract, 'findByPk').mockResolvedValueOnce({
+            address: '0x123',
+            workspace: {
+                id: 1,
+                name: 'My Workspace',
+                public: true,
+                user: { id: 1, firebaseUserId: '123' }
+            },
+        });
         jest.spyOn(db, 'getContractByHashedBytecode').mockResolvedValueOnce(null);
         ContractConnector.mockImplementation(() => ({
             isErc20: jest.fn().mockResolvedValue(false),
@@ -216,9 +244,15 @@ describe('processContract', () => {
                 Proxy: '0'
             }
         });
-        jest.spyOn(db, 'getUserById').mockResolvedValueOnce({ id: 1, firebaseUserId: '123' });
-        jest.spyOn(db, 'getWorkspaceById').mockResolvedValueOnce({ id: 1, name: 'My Workspace', public: true, rpcServer: 'http://rpc.ethernal.com' });
-        jest.spyOn(db, 'getContractById').mockResolvedValue({ workspaceId: 1, address: '0x123' });
+        jest.spyOn(Contract, 'findByPk').mockResolvedValueOnce({
+            address: '0x123',
+            workspace: {
+                id: 1,
+                name: 'My Workspace',
+                public: true,
+                user: { id: 1, firebaseUserId: '123' }
+            },
+        });
         ContractConnector.mockImplementation(() => ({
             isErc20: jest.fn().mockResolvedValue(false),
             isErc721: jest.fn().mockResolvedValue(true),
@@ -256,10 +290,42 @@ describe('processContract', () => {
         });
     });
 
+    it('Should add custom fields to contract data', (done) => {
+        mockContractFn.mockResolvedValueOnce({ extra: 'fields' });
+        jest.spyOn(Contract, 'findByPk').mockResolvedValueOnce({
+            address: '0x123',
+            workspace: {
+                id: 1,
+                name: 'My Workspace',
+                public: true,
+                user: { id: 1, firebaseUserId: '123' },
+                customFields: [{ function: 'fn' }]
+            }
+        });
+
+        ContractConnector.mockImplementation(() => ({
+            isErc20: jest.fn().mockResolvedValue(false),
+            isErc721: jest.fn().mockResolvedValue(false),
+            isErc1155: jest.fn().mockResolvedValue(false),
+            getBytecode: jest.fn().mockResolvedValue('0x1234')
+        }));
+        processContract({ data: { contractId: 2 }})
+            .then(() => {
+                expect(db.storeContractData).toHaveBeenCalledWith('123', 'My Workspace', '0x123', { patterns: [], asm: 'asm', bytecode: '0x1234', hashedBytecode: '0x56570de287d73cd1cb6092bb8fdee6173974955fdef345ae579ee9f475ea7432', extra: 'fields', name: 'Contract', abi: [{ my: 'function' }]});
+                done();
+            });
+    });
+
     it('Should fetch & store contract info as proxy if the workspace is public', (done) => {
-        jest.spyOn(db, 'getWorkspaceById').mockResolvedValueOnce({ id: 1, name: 'My Workspace', public: true, rpcServer: 'http://rpc.ethernal.com' });
-        jest.spyOn(db, 'getContractById').mockResolvedValue({ workspaceId: 1, address: '0x123', abi: [{ my: 'function' }]});
-        jest.spyOn(db, 'getUserById').mockResolvedValueOnce({ id: 1, firebaseUserId: '123' });
+        jest.spyOn(Contract, 'findByPk').mockResolvedValueOnce({
+            address: '0x123',
+            workspace: {
+                id: 1,
+                name: 'My Workspace',
+                public: true,
+                user: { id: 1, firebaseUserId: '123' }
+            },
+        });
         ContractConnector.mockImplementation(() => ({
             isErc20: jest.fn().mockResolvedValue(true),
             isErc721: jest.fn().mockResolvedValue(false),
