@@ -15,10 +15,7 @@ const contractFn = (code, contract, metadata) => {
                 ${code}
             } catch(error) {
                 console.log(error)
-                return {
-                    success: false,
-                    error: error
-                };
+                return null;
             }
         };
     `);
