@@ -184,6 +184,13 @@ module.exports = (sequelize, DataTypes) => {
                             address: tokenTransfer.token
                         }
                     });
+                    if (!contract) {
+                        const workspace = await this.getWorkspace();
+                        await workspace.safeCreateOrUpdateContract({
+                            address: tokenTransfer.token,
+                            timestamp: moment(this.timestamp).unix()
+                        }, transaction);
+                    }
 
                     events.push({
                         workspaceId: this.workspaceId,
