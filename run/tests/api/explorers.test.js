@@ -864,6 +864,27 @@ describe(`POST ${BASE_URL}/1/cryptoSubscription`, () => {
 });
 
 describe(`DELETE ${BASE_URL}/:id`, () => {
+    it('Should update the subscription for volume pricing', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, stripeSubscription: { stripeId: 'subscriptionId', stripePlan: { slug: 'slug', capabilities: { volumeSubscription: true } }}});
+        mockSubscriptionRetrieve.mockResolvedValueOnce({
+            id: 'subscriptionId',
+            items: {
+                data: [
+                    { id: 'itemId', quantity: 2 }
+                ]
+            }
+        });
+
+        request.delete(`${BASE_URL}/1?cancelSubscription=true`)
+            .expect(200)
+            .then(() => {
+                expect(mockSubscriptionItemUpdate).toHaveBeenCalledWith('itemId', { quantity: 1, proration_behavior: 'always_invoice' });
+                expect(db.deleteExplorerSubscription).toHaveBeenCalledWith(1, 1);
+                expect(db.deleteExplorer).toHaveBeenCalledWith(1, 1);
+                done();
+            });
+    });
+
     it('Should return 200 if it only needs to delete the explorer', (done) => {
         jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, stripeSubscription: null });
 
