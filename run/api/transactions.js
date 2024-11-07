@@ -189,7 +189,7 @@ router.get('/:hash', workspaceAuthMiddleware, async (req, res, next) => {
         const transaction = await db.getWorkspaceTransaction(data.workspace.id, req.params.hash);
         const customTransactionFunction = await db.getCustomTransactionFunction(data.workspace.id);
         const customFields = customTransactionFunction ?
-            await transactionFn(customTransactionFunction, transaction.raw, data.workspace.rpcServer) :
+            await transactionFn(customTransactionFunction, transaction, data.workspace.rpcServer) :
             { overrides: {}, extraFields: [] };
 
         res.status(200).json({ ...transaction, ...customFields.overrides, extraFields: customFields.extraFields });
