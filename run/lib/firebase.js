@@ -21,6 +21,27 @@ const ExplorerFaucet = models.ExplorerFaucet;
 const ExplorerV2Dex = models.ExplorerV2Dex;
 const V2DexPair = models.V2DexPair;
 
+const createUserStripeSubscription = (userId, stripeSubscription, stripePlan) => {
+    if (!userId || !stripeSubscription || !stripePlan)
+        throw new Error('Missing parameter');
+
+    return StripeSubscription.create({
+        userId,
+        stripeId: stripeSubscription.id,
+        stripePlanId: stripePlan.id,
+        status: stripeSubscription.status
+    });
+}
+
+const getUserStripeSubscription = (userId) => {
+    if (!userId)
+        throw new Error('Missing parameter');
+
+    return StripeSubscription.findOne({
+        where: { userId }
+    });
+};
+
 const getV2DexPairCount = async (userId, v2DexId) => {
     if (!userId || !v2DexId)
         throw new Error('Missing parameter');
@@ -2478,5 +2499,7 @@ module.exports = {
     deactivateV2Dex: deactivateV2Dex,
     activateV2Dex: activateV2Dex,
     deleteV2Dex: deleteV2Dex,
-    getV2DexPairCount: getV2DexPairCount
+    getV2DexPairCount: getV2DexPairCount,
+    getUserStripeSubscription: getUserStripeSubscription,
+    createUserStripeSubscription: createUserStripeSubscription
 };
