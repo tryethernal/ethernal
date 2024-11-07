@@ -166,13 +166,6 @@ module.exports = (sequelize, DataTypes) => {
                     );
                 });
 
-                const contract = await tokenTransfer.getContract();
-                if (!contract)
-                    await transaction.workspace.safeCreateOrUpdateContract({
-                        address: tokenTransfer.token,
-                        timestamp: moment(transaction.timestamp).unix()
-                    }, options.transaction);
-
                 if (tokenTransfer.tokenId)
                     await enqueue('reloadErc721Token',
                         `reloadErc721Token-${tokenTransfer.workspaceId}-${tokenTransfer.token}-${tokenTransfer.tokenId}`, {
