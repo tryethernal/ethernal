@@ -467,7 +467,17 @@ router.delete('/:id', authMiddleware, async (req, res, next) => {
             return managedError(new Error(`Could not delete explorer.`), req, res);
 
         if (data.cancelSubscription && explorer.stripeSubscription) {
-            if (explorer.stripeSubscription.stripeId) {
+            if (explorer.stripeSubscription.stripePlan.capabilities.volumeSubscription) {
+                const subscription = await stripe.subscriptions.retrieve(explorer.stripeSubscription.stripeId);
+                const item = subscription.items.data[0];
+                await stripe.subscriptionItems.update(item.id, {
+                    quantity: item.quantity - 1,
+                    proration_behavior: 'always_invoice'
+                });
+                await db.deleteExplorerSubscription(data.user.id, explorer.id);
+
+            }
+            else if (explorer.stripeSubscription.stripeId) {
                 const subscription = await stripe.subscriptions.retrieve(explorer.stripeSubscription.stripeId);
                 await stripe.subscriptions.update(subscription.id, {
                     cancel_at_period_end: true
@@ -655,13 +665,45 @@ router.post('/', authMiddleware, async (req, res, next) => {
 
             if (stripePlan.capabilities.customStartingBlock)
                 options['integrityCheckStartBlockNumber'] = data.fromBlock;
+
+            if (stripePlan.capabilities.volumeSubscription) {
+                const stripeSubscription = await db.getUserStripeSubscription(user.id);
+                let subscription;
+                if (stripeSubscription) {
+                    subscription = await stripe.subscriptions.retrieve(stripeSubscription.stripeId);
+                    const item = subscription.items.data[0];
+                    await stripe.subscriptionItems.update(item.id, {
+                        quantity: item.quantity + 1,
+                        proration_behavior: 'always_invoice'
+                    });
+                }
+                else {
+                    subscription = await stripe.subscriptions.create({
+                        customer: user.stripeCustomerId,
+                        items: [
+                            { price: stripePlan.stripePriceId, quantity: 1 }
+                        ]
+                    });
+                    await db.createUserStripeSubscription(user.id, subscription, stripePlan);
+                }
+
+                if (subscription)
+                    options['subscription'] = {
+                        stripePlanId: stripePlan.id,
+                        stripeId: subscription.id,
+                        cycleEndsAt: new Date(subscription.current_period_end * 1000),
+                        status: subscription.status
+                    };
+                else
+                    return managedError(new Error(`Couldn't create subscription.`), req, res);
+            }
         }
 
         const explorer = await db.createExplorerFromOptions(user.id, sanitize(options));
         if (!explorer)
             return managedError(new Error('Could not create explorer.'), req, res);
 
-        if (!usingDefaultPlan && stripePlan && req.query.startSubscription) {
+        if (!usingDefaultPlan && stripePlan && req.query.startSubscription && !options['subscription']) {
             let stripeParams = {
                 customer: user.stripeCustomerId,
                 items: [
