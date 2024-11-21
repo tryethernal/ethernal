@@ -35,6 +35,9 @@ exports.parseTrace = async (from, trace, provider) => {
             case 'CALLCODE': {
                 let input = '', out = '';
 
+                if (!log.memory)
+                    break;
+
                 const inputSize = parseInt(log.stack[log.stack.length - 5], 16) * 2;
                 if (inputSize > 0 && log.memory) {
                     const inputStart = parseInt(log.stack[log.stack.length - 4], 16) * 2;
@@ -77,6 +80,9 @@ exports.parseTrace = async (from, trace, provider) => {
             case 'DELEGATECALL':
             case 'STATICCALL': {
                 let input = '', out = '';
+
+                if (!log.memory)
+                    break;
 
                 const inputSize = parseInt(log.stack[log.stack.length - 4], 16) * 2;
                 if (inputSize > 0 && log.memory) {
@@ -122,6 +128,9 @@ exports.parseTrace = async (from, trace, provider) => {
                 const p = parseInt(stackCopy.pop().valueOf(), 16) * 2;
                 const n = parseInt(stackCopy.pop().valueOf(), 16) * 2;
                 const s = `0x${stackCopy.pop()}`;
+
+                if (!log.memory)
+                    break;
 
                 const creationBytecode = `0x${log.memory.join('').slice(p, p + n)}`;
                 const hashedCreationBytecode = ethers.utils.keccak256(creationBytecode);
