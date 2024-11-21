@@ -84,7 +84,7 @@ module.exports = (sequelize, DataTypes) => {
             // Here is the stuff that we only want to do once everything has been created (typically notifications & jobs queuing)
             const afterCommitFn = async () => {
                 if (receipt.status == 0) {
-                    await enqueue('processTransactionError', `processTransactionError-${receipt.workspaceId}-${receipt.transactionhash}`, { transactionId: receipt.transactionId }, 1);
+                    await enqueue('processTransactionError', `processTransactionError-${receipt.workspaceId}-${receipt.transactionHash}`, { transactionId: receipt.transactionId }, 1);
                     trigger(`private-failedTransactions;workspace=${receipt.workspaceId}`, 'new', receipt.toJSON());
                 }
 
