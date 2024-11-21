@@ -216,6 +216,23 @@ class Tracer {
         this.db = db;
         this.type = type;
         this.parsedTrace = [];
+        this.error = null;
+    }
+
+    #handleError(error) {
+        if (error.status >= 400)
+            return this.error = {
+                message: `Http status code ${error.status}`,
+                error:  error
+            };
+
+        if (error.error && this.#ERRORS_TO_IGNORE.includes(error.error.code))
+            return this.error = {
+                message: `Error code "${error.error.code}".`,
+                error: error
+            };
+
+        throw error;
     }
 
     process(transaction) {
@@ -251,9 +268,7 @@ class Tracer {
             for (let call of rawTrace.calls)
                 this.recursiveTraceParser(call);
         } catch(error) {
-            if (!error.error || !this.#ERRORS_TO_IGNORE.includes(error.error.code)) {
-                throw error;
-            }
+            this.#handleError(error);
         }
     }
 
@@ -265,9 +280,7 @@ class Tracer {
                 return null;
             this.parsedTrace = await parseTrace(transaction.from, rawTrace, this.provider);
         } catch(error) {
-            if (!error.error || !this.#ERRORS_TO_IGNORE.includes(error.error.code)) {
-                throw error;
-            }
+            this.#handleError(error);
         }
     }
 
@@ -275,6 +288,11 @@ class Tracer {
         try {
             if (Array.isArray(this.parsedTrace))
                 await processTrace(userId, workspace, this.transaction.hash, this.parsedTrace, this.db);
+            else
+                return this.error = {
+                    message: 'Invalid trace',
+                    trace: this.parsedTrace
+                };
         } catch(error) {
             throw error;
         }

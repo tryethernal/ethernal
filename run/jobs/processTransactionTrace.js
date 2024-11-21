@@ -29,7 +29,9 @@ module.exports = async job => {
 
     const tracer = new Tracer(transaction.workspace.rpcServer, db, transaction.workspace.tracing);
     await tracer.process(transaction);
-    await tracer.saveTrace(transaction.workspace.user.firebaseUserId, transaction.workspace.name);
 
-    return true;
+    if (tracer.error)
+        return tracer.error;
+
+    return tracer.saveTrace(transaction.workspace.user.firebaseUserId, transaction.workspace.name);
 };
