@@ -1,5 +1,6 @@
 const GhostAdminAPI = require('@tryghost/admin-api');
 const Analytics = require('../lib/analytics');
+const { managedWorkerError } = require('../lib/errors');
 const db = require('../lib/firebase');
 const { getGhostApiKey, getGhostEndpoint } = require('../lib/env');
 const { isMarketingEnabled } = require('../lib/flags');
@@ -27,7 +28,11 @@ module.exports = async job => {
                 key: process.env.GHOST_API_KEY,
                 version: 'v5.0'
             });
-            await api.members.add({ email: user.email });
+            try {
+                await api.members.add({ email: user.email });
+            } catch (error) {
+                managedWorkerError(error, 'processUser', data, 'lowPriority');
+            }
         }
 
         const analytics = new Analytics();
