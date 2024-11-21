@@ -14,6 +14,9 @@ module.exports = async job => {
     if (!transaction)
         return 'Cannot find transaction';
 
+    if (!transaction.receipt)
+        return 'Cannot find receipt';
+
     if (!transaction.workspace.public)
         return 'Not allowed on private workspaces';
 
