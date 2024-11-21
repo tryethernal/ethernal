@@ -160,6 +160,9 @@ module.exports = async job => {
     else
         bytecode = contract.bytecode;
 
+    if (bytecode == '0x')
+        return contract.safeDestroy();
+
     if (bytecode) {
         try {
             hashedBytecode = ethers.utils.keccak256(bytecode);
