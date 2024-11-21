@@ -1,5 +1,6 @@
 const db = require('../lib/firebase');
-let { Tracer } = require('../lib/rpc');
+const { Transaction, Workspace, User, Explorer, RpcHealthCheck } = require('../models');
+const { Tracer } = require('../lib/rpc');
 
 module.exports = async job => {
     const data = job.data;
@@ -7,7 +8,34 @@ module.exports = async job => {
     if (!data.transactionId)
         return 'Missing parameter';
 
-    const transaction = await db.getTransactionForProcessing(data.transactionId);
+    const transaction = await Transaction.findByPk(data.transactionId, {
+        attributes: ['id', 'hash', 'workspaceId'],
+        include: [
+            {
+                model: Workspace,
+                as: 'workspace',
+                attributes: ['public', 'rpcHealthCheckEnabled', 'rpcServer', 'tracing', 'name'],
+                include: [
+                    {
+                        model: User,
+                        as: 'user',
+                        attributes: ['firebaseUserId'],
+                    },
+                    {
+                        model: Explorer,
+                        as: 'explorer',
+                        attributes: ['shouldSync'],
+                        include: 'stripeSubscription'
+                    },
+                    {
+                        model: RpcHealthCheck,
+                        as: 'rpcHealthCheck',
+                        attributes: ['isReachable'],
+                    }
+                ]
+            }
+        ]
+    });
 
     if (!transaction)
         return 'Cannot find transaction';
@@ -33,5 +61,6 @@ module.exports = async job => {
     if (tracer.error)
         return tracer.error;
 
-    return tracer.saveTrace(transaction.workspace.user.firebaseUserId, transaction.workspace.name);
+    return transaction.safeCreateTransactionTrace(tracer.parsedTrace);
 };
+
