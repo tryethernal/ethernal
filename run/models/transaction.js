@@ -302,26 +302,28 @@ module.exports = (sequelize, DataTypes) => {
 
     safeCreateTransactionTrace(steps) {
         return sequelize.transaction(async transaction => {
-            const promises = [];
-            const existingSteps = await this.getTraceSteps();
 
-            for (let i = 0; i < existingSteps.length; i++)
-                promises.push(existingSteps[i].destroy({ transaction }));
+            const augmentedSteps = steps.map(step => ({
+                ...step,
+                workspaceId: this.workspaceId,
+                timestamp: this.timestamp,
+                transactionId: this.id
+            }));
 
-            for (let i = 0; i < steps.length; i++) {
-                const step = steps[i];
-                promises.push(this.createTraceStep({
-                    value: step.value,
-                    address: step.address,
-                    contractHashedBytecode: step.contractHashedBytecode,
-                    depth: step.depth,
-                    input: step.input,
-                    op: step.op,
-                    returnData: step.returnData,
-                    workspaceId: this.workspaceId
-                }, { transaction }));
-            }
-            return Promise.all(promises);
+            const contracts = steps
+                .filter(step => step.contractHashedBytecode)
+                .map(step => ({ address: step.address, workspaceId: this.workspaceId }));
+
+            await sequelize.models.Contract.bulkCreate(contracts, {
+                ignoreDuplicates: true,
+                transaction
+            });
+
+            return sequelize.models.TransactionTraceStep.bulkCreate(augmentedSteps, {
+                ignoreDuplicates: true,
+                returning: true,
+                transaction
+            });
         });
     }
   }

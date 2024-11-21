@@ -8,7 +8,7 @@ const {
 const Op = Sequelize.Op;
 const { sanitize } = require('../lib/utils');
 const { trigger } = require('../lib/pusher');
-const { enqueue } = require('../lib/queue');
+const { enqueue, bulkEnqueue } = require('../lib/queue');
 const moment = require('moment');
 
 module.exports = (sequelize, DataTypes) => {
@@ -535,6 +535,18 @@ module.exports = (sequelize, DataTypes) => {
     transactionId: DataTypes.INTEGER
   }, {
     hooks: {
+        afterBulkCreate(contracts, options) {
+            const afterBulkCreateFn = () => {
+                const jobs = contracts.map(contract => ({
+                    name: `processContract-${contract.id}`,
+                    data: { contractId: contract.id }
+                }));
+                return bulkEnqueue('processContract', jobs);
+            }
+            return options.transaction ?
+                options.transaction.afterCommit(afterBulkCreateFn) :
+                afterBulkCreateFn();
+        },
         afterDestroy(contract) {
             trigger(`private-contracts;workspace=${contract.workspaceId}`, 'destroyed', null);
         },

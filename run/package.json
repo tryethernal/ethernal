@@ -48,7 +48,7 @@
     "random-word-slugs": "^0.1.7",
     "redis-semaphore": "^5.6.0",
     "rolling-rate-limiter": "^0.4.2",
-    "sequelize": "^6.19.0",
+    "sequelize": "^6.37.5",
     "solc": "^0.8.13",
     "stripe": "^15.4.0",
     "uuid-apikey": "^1.5.3",

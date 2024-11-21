@@ -1,27 +1,6 @@
 const ethers = require('ethers');
 const { sanitize, withTimeout } = require('./utils');
 
-exports.processTrace = async (userId, workspace, transactionHash, steps, db) => {
-    const trace = [];
-    for (const step of steps) {
-        if (['CALL', 'CALLCODE', 'DELEGATECALL', 'STATICCALL', 'CREATE', 'CREATE2'].indexOf(step.op.toUpperCase()) > -1) {
-            const canSync = await db.canUserSyncContract(userId, workspace);
-
-            if (canSync) {
-                const contractData = sanitize({
-                    address: step.address.toLowerCase(),
-                    hashedBytecode: step.contractHashedBytecode
-                });
-
-                await db.storeContractData(userId, workspace, step.address, contractData);
-            }
-
-            trace.push(sanitize(step));
-        }
-    }
-    await db.storeTrace(userId, workspace, transactionHash, trace);
-};
-
 exports.parseTrace = async (from, trace, provider) => {
     const opCodes = ['CALL', 'CALLCODE', 'DELEGATECALL', 'STATICCALL', 'CREATE', 'CREATE2'];
     if (!trace.structLogs)
@@ -66,15 +45,15 @@ exports.parseTrace = async (from, trace, provider) => {
                 } catch(error) {
                     bytecode = '0x'
                 }
-                parsedOps.push({
+                parsedOps.push(sanitize({
                     value,
                     op: log.op,
                     address: address,
                     input: input == '0x' ? '' : input,
                     returnData: out == '0x' ? '' : out,
                     depth: log.depth,
-                    contractHashedBytecode: bytecode != '0x' ? ethers.utils.keccak256(bytecode) : ''
-                })
+                    contractHashedBytecode: bytecode != '0x' ? ethers.utils.keccak256(bytecode) : null
+                }))
                 break;
             }
             case 'DELEGATECALL':
@@ -110,15 +89,15 @@ exports.parseTrace = async (from, trace, provider) => {
                 } catch(error) {
                     bytecode = '0x'
                 }
-                parsedOps.push({
+                parsedOps.push(sanitize({
                     op: log.op,
                     value: null,
                     address: address,
                     input: input == '0x' ? '' : input,
                     returnData: out == '0x' ? '' : out,
                     depth: log.depth,
-                    contractHashedBytecode: ethers.utils.keccak256(bytecode)
-                })
+                    contractHashedBytecode: bytecode != '0x' ? ethers.utils.keccak256(bytecode) : null
+                }));
                 break;
             }
             case 'CREATE':
@@ -143,14 +122,13 @@ exports.parseTrace = async (from, trace, provider) => {
                 } catch(error) {
                     bytecode = '0x'
                 }
-                const contractHashedBytecode = ethers.utils.keccak256(bytecode);
 
-                parsedOps.push({
+                parsedOps.push(sanitize({
                     op: log.op,
                     address: address,
                     depth: log.depth,
-                    contractHashedBytecode: contractHashedBytecode
-                });
+                    contractHashedBytecode: bytecode != '0x' ? ethers.utils.keccak256(bytecode) : null
+                }));
                 break;
             }
             default:

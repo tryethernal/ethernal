@@ -209,6 +209,7 @@ class ProviderConnector {
 class Tracer {
 
     #ERRORS_TO_IGNORE = ['-32601', '-32000'];
+    #bytecodes = {};
 
     constructor(server, db, type = 'other') {
         if (!server) throw '[Tracer] Missing parameter';
@@ -242,7 +243,9 @@ class Tracer {
         return this.processOther(transaction);
     }
 
-    recursiveTraceParser(step, depth = 1) {
+    async recursiveTraceParser(step, depth = 1) {
+        const bytecode = this.#bytecodes[step.to] || await withTimeout(this.provider.getCode(step.to));
+        this.#bytecodes[step.to] = bytecode;
         this.parsedTrace.push(sanitize({
             value: step.value,
             op: step.type,
@@ -250,11 +253,11 @@ class Tracer {
             input: step.input,
             returnData: step.output,
             depth: depth,
-            contractHashedBytecode: '0x'
+            contractHashedBytecode: bytecode != '0x' ? ethers.utils.keccak256(bytecode) : null
         }))
         if (step.calls) {
             for (const call of step.calls) {
-                this.recursiveTraceParser(call, depth + 1);
+                await this.recursiveTraceParser(call, depth + 1);
             }
         }
     }
@@ -266,7 +269,7 @@ class Tracer {
             if (!rawTrace.calls)
                 return;
             for (let call of rawTrace.calls)
-                this.recursiveTraceParser(call);
+                await this.recursiveTraceParser(call);
         } catch(error) {
             this.#handleError(error);
         }
