@@ -81,12 +81,22 @@ const fetchEtherscanData = async (address, workspace) => {
         return null;
 
     const endpoint = `https://${scannerHost}?module=contract&action=getsourcecode&address=${address}&apikey=${apiKey}`;
-    const response = await withTimeout(axios.get(endpoint, { headers }));
-    return response ? response.data : null;
+    try {
+        const response = await withTimeout(axios.get(endpoint, { headers }));
+        return response ? response.data : null;
+    } catch (error) {
+        if (error.response.status >= 400)
+            return error.response;
+
+        throw error;
+    }
 };
 
 const findScannerMetadata = async (workspace, contract) => {
     const scannerData = await fetchEtherscanData(contract.address, workspace);
+
+    if (scannerData && scannerData.status >= 400)
+        return scannerData;
 
     if (scannerData && scannerData.message != 'NOTOK' && scannerData.result[0].ContractName != '') {
         const abi = JSON.parse(scannerData.result[0].ABI || '[]');
@@ -180,7 +190,10 @@ module.exports = async job => {
         });
     }
 
-    const scannerMetadata = await findScannerMetadata(workspace, contract);
+    let scannerMetadata = await findScannerMetadata(workspace, contract);
+
+    if (scannerMetadata && scannerMetadata.status >= 400)
+        scannerMetadata = {};
 
     const abi = contract.abi || scannerMetadata.abi;
     const tokenData = workspace.public ? await findPatterns(workspace.rpcServer, contract.address, abi) : {};
