@@ -208,7 +208,7 @@ class ProviderConnector {
 
 class Tracer {
 
-    #ERRORS_TO_IGNORE = ['-32601', '-32000'];
+    #ERRORS_TO_IGNORE = [-32601];
     #bytecodes = {};
 
     constructor(server, db, type = 'other') {
