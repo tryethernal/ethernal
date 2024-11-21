@@ -69,7 +69,7 @@ const fetchEtherscanData = async (address, workspace) => {
             apiKey = getScannerKey('SNOWTRACE');
             break;
         case 'buildbear':
-            scannerHost = `api.buildbear.io/v1/explorer/${workspace.name}`;
+            scannerHost = `api.buildbear.io/v1/explorer/slimy-jugsgernaut-ea0852a40`;
             apiKey = getScannerKey('BUILDBEAR');
             headers['Authorization'] = `Bearer ${apiKey}`;
             break;
@@ -85,7 +85,7 @@ const fetchEtherscanData = async (address, workspace) => {
         const response = await withTimeout(axios.get(endpoint, { headers }));
         return response ? response.data : null;
     } catch (error) {
-        if (error.response.status >= 400)
+        if (error.response && error.response.status >= 400)
             return error.response;
 
         throw error;
@@ -104,13 +104,17 @@ const findScannerMetadata = async (workspace, contract) => {
         const sources = scannerData.result[0].SourceCode;
         let parsedSources;
         if (sources.startsWith('{{'))
-            parsedSources = JSON.parse(sources.substring(1, sources.length - 1)).sources;
+            try {
+                parsedSources = JSON.parse(sources.substring(1, sources.length - 1)).sources;
+            } catch (error) {
+                parsedSources = null;
+            }
         else
             parsedSources = {
                 [`${scannerData.result[0].ContractName.split('.sol')[0]}.sol`]: { content: sources }
             };
 
-        const verificationData = scannerData.result[0].ABI == 'Contract source code not verified' ?
+        const verificationData = !parsedSources || scannerData.result[0].ABI == 'Contract source code not verified' ?
         null :
         {
             compilerVersion: scannerData.result[0].CompilerVersion,
