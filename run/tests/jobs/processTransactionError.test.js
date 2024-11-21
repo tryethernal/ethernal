@@ -135,7 +135,7 @@ describe('processTransactionError', () => {
     });
 
     it('Should not process the error for private workspaces', async () => {
-        jest.spyOn(db, 'getTransactionForProcessing').mockResolvedValueOnce({ ...Transaction, workspace });
+        jest.spyOn(db, 'getTransactionForProcessing').mockResolvedValueOnce({ ...Transaction, receipt: {}, workspace });
 
         const res = await processTransactionError({ data: { transactionId: 1 }});
 
