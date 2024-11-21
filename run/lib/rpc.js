@@ -207,6 +207,9 @@ class ProviderConnector {
 }
 
 class Tracer {
+
+    #ERRORS_TO_IGNORE = ['-32601', '-32000'];
+
     constructor(server, db, type = 'other') {
         if (!server) throw '[Tracer] Missing parameter';
         this.provider = getProvider(server);
@@ -248,7 +251,7 @@ class Tracer {
             for (let call of rawTrace.calls)
                 this.recursiveTraceParser(call);
         } catch(error) {
-            if (!error.error || error.error.code != '-32601') {
+            if (!error.error || !this.#ERRORS_TO_IGNORE.includes(error.error.code)) {
                 throw error;
             }
         }
@@ -262,7 +265,7 @@ class Tracer {
                 return null;
             this.parsedTrace = await parseTrace(transaction.from, rawTrace, this.provider);
         } catch(error) {
-            if (!error.error || error.error.code != '-32601') {
+            if (!error.error || !this.#ERRORS_TO_IGNORE.includes(error.error.code)) {
                 throw error;
             }
         }
