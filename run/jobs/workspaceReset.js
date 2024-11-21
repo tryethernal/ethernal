@@ -10,6 +10,9 @@ module.exports = async (job) => {
     if (!data.workspaceId || !data.from || !data.to)
         throw new Error('Missing parameter');
 
+    if (new Date(data.from).getTime() < 0 || new Date(data.to).getTime() < 0 || new Date(data.from) > new Date(data.to))
+        return 'Invalid date range';
+
     const where = { createdAt: { [Op.between]: [data.from, data.to] }};
 
     const workspace = await Workspace.findByPk(data.workspaceId);
