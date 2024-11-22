@@ -53,6 +53,11 @@ module.exports = (sequelize, DataTypes) => {
         const event = await this.getEvent();
         if (event)
             await event.destroy({ transaction });
+
+        const contract = await sequelize.models.Contract.findOne({ where: { transactionId: this.id }});
+        if (contract)
+            await contract.update({ transactionId: null }, { transaction });
+
         return this.destroy({ transaction });
     }
 
