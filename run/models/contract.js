@@ -466,9 +466,9 @@ module.exports = (sequelize, DataTypes) => {
         for (let i = 0; i < sources.length; i++)
             await sources[i].destroy({ transaction });
 
-        const verification = await this.getVerification();
-        if (verification)
-            await verification.destroy({ transaction });
+        const verifications = await sequelize.models.ContractVerification.findAll({ where: { contractId: this.id }});
+        for (let i = 0; i < verifications.length; i++)
+            await verifications[i].destroy({ transaction });
 
         const tokens = await sequelize.models.Erc721Token.findAll({ where: { contractId: this.id }});
         for (let i = 0; i < tokens.length; i++)
