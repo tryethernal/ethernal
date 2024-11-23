@@ -13,7 +13,8 @@ jest.mock('../../../models/index.js', () => ({
     TransactionLog: require('./TransactionLog').TransactionLog,
     TransactionReceipt: require('./TransactionReceipt').TransactionReceipt,
     V2DexPoolReserve: require('./V2DexPoolReserve').V2DexPoolReserve,
-    Contract: require('./Contract').Contract
+    Contract: require('./Contract').Contract,
+    TokenTransfer: require('./TokenTransfer').TokenTransfer
 }));
 
 const { User, user } = require('./User');
@@ -31,6 +32,7 @@ const { TransactionLog } = require('./TransactionLog');
 const { TransactionReceipt } = require('./TransactionReceipt');
 const { V2DexPoolReserve } = require('./V2DexPoolReserve');
 const { Contract } = require('./Contract');
+const { TokenTransfer } = require('./TokenTransfer');
 
 module.exports = {
     Transaction,
@@ -50,5 +52,6 @@ module.exports = {
     TransactionLog,
     V2DexPoolReserve,
     TransactionReceipt,
-    Contract
+    Contract,
+    TokenTransfer
 };
