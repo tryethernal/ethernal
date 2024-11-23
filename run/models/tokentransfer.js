@@ -75,31 +75,24 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async safeCreateBalanceChange(balanceChange) {
-        const existingChangeCount = await sequelize.models.TokenBalanceChange.count({
-            where: {
-                transactionId: this.transactionId,
-                token: this.token,
-                address: balanceChange.address
-            }
-        });
-
-        if (existingChangeCount > 0) {
-            await this.update({ processed: true });
-            return;
-        }
-
         return sequelize.transaction(async (transaction) => {
-            const tokenBalanceChange = await this.createTokenBalanceChange(sanitize({
-                transactionId: this.transactionId,
-                workspaceId: this.workspaceId,
-                token: this.token,
-                address: balanceChange.address,
-                currentBalance: balanceChange.currentBalance,
-                previousBalance: balanceChange.previousBalance,
-                diff: balanceChange.diff
-            }), { transaction });
+            const [tokenBalanceChange] = await sequelize.models.TokenBalanceChange.bulkCreate([
+                sanitize({
+                    transactionId: this.transactionId,
+                    workspaceId: this.workspaceId,
+                    tokenTransferId: this.id,
+                    token: this.token,
+                    address: balanceChange.address,
+                    currentBalance: balanceChange.currentBalance,
+                    previousBalance: balanceChange.previousBalance,
+                    diff: balanceChange.diff
+                })
+            ], {
+                ignoreDuplicates: true,
+                returning: true,
+                transaction
+            });
             await tokenBalanceChange.insertAnalyticEvent(transaction);
-            await this.update({ processed: true }, { transaction });
         });
     }
   }

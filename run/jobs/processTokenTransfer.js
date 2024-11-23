@@ -1,4 +1,4 @@
-const db = require('../lib/firebase');
+const { TokenTransfer, Workspace, Transaction } = require('../models');
 const { getBalanceChange } = require('../lib/rpc');
 const logger = require('../lib/logger');
 
@@ -8,17 +8,33 @@ module.exports = async job => {
     if (!data.tokenTransferId)
         return 'Missing parameter.';
 
-    const tokenTransfer = await db.getTokenTransferForProcessing(data.tokenTransferId);
+    const tokenTransfer = await TokenTransfer.findByPk(data.tokenTransferId, {
+        attributes: ['id', 'src', 'dst', 'token', 'transactionId', 'workspaceId'],
+        include: [
+            {
+                model: Workspace,
+                as: 'workspace',
+                attributes: ['id', 'name', 'public', 'rpcServer']
+            },
+            {
+                model: Transaction,
+                as: 'transaction',
+                attributes: ['id', 'blockNumber']
+            }
+        ]
+    });
 
     if (!tokenTransfer)
         return 'Cannot find token transfer';
 
-    const workspace = tokenTransfer.workspace;
-    const user = tokenTransfer.workspace.user;
-    const transaction = tokenTransfer.transaction;
-
-    if (!workspace.public)
+    if (!tokenTransfer.workspace.public)
         return 'Not processing private workspaces';
+
+    if (!tokenTransfer.transaction)
+        return 'Could not find transaction';
+
+    const workspace = tokenTransfer.workspace;
+    const transaction = tokenTransfer.transaction;
 
     const changes = [];
 
@@ -48,8 +64,8 @@ module.exports = async job => {
         }
     }
 
-    if (changes.length > 0)
-        await db.storeTokenBalanceChanges(user.firebaseUserId, workspace.name, tokenTransfer.id, changes);
+    for (let i = 0; i < changes.length; i++)
+        await tokenTransfer.safeCreateBalanceChange(changes[i]);
 
     return true;
 };
