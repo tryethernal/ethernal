@@ -92,7 +92,8 @@ module.exports = (sequelize, DataTypes) => {
                 returning: true,
                 transaction
             });
-            await tokenBalanceChange.insertAnalyticEvent(transaction);
+            if (tokenBalanceChange && tokenBalanceChange.id)
+                await tokenBalanceChange.insertAnalyticEvent(transaction);
         });
     }
   }
