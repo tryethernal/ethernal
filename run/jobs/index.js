@@ -10,6 +10,7 @@ module.exports = {
     receiptSync: require('./receiptSync'),
     removeStalledBlock: require('./removeStalledBlock'),
     increaseStripeBillingQuota: require('./increaseStripeBillingQuota'),
+    deleteDuplicateBalanceChangeForWorkspace: require('./deleteDuplicateBalanceChangeForWorkspace'),
 
     // Medium Priority
     processContract: require('./processContract'),
