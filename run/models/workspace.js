@@ -57,6 +57,18 @@ module.exports = (sequelize, DataTypes) => {
         return new ProviderConnector(this.rpcServer);
     }
 
+    getTransactionsWithDuplicateTokenBalanceChanges() {
+        return sequelize.query(`
+            SELECT"transactionId"
+            FROM token_balance_changes
+            WHERE "workspaceId" = :workspaceId
+            GROUP BY "transactionId", "address", "token"
+            HAVING count(*) > 1
+        `, {
+            replacements: { workspaceId: this.id }
+        });
+    }
+
     async safeDelete() {
         const blocks = await this.getBlocks({ limit: getMaxBlockForSyncReset() });
         if (blocks.length == getMaxBlockForSyncReset())
