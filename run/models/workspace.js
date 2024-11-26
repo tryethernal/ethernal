@@ -956,7 +956,6 @@ module.exports = (sequelize, DataTypes) => {
                     ],
                     {
                         ignoreDuplicates: true,
-                        individualHooks: true,
                         returning: true,
                         transaction: sequelizeTransaction
                     }
@@ -972,7 +971,6 @@ module.exports = (sequelize, DataTypes) => {
                 const storedTransactions = await sequelize.models.Transaction.bulkCreate(transactionsToInsert, {
                     ignoreDuplicates: true,
                     returning: true,
-                    individualHooks: true,
                     transaction: sequelizeTransaction
                 });
 

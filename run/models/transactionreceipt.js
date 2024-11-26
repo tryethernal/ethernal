@@ -46,6 +46,35 @@ module.exports = (sequelize, DataTypes) => {
         }
         return this.destroy({ transaction });
     }
+
+    async afterCreate(options) {
+        const transaction = await sequelize.models.Transaction.findByPk(this.transactionId, { include: 'workspace' });
+
+        // Here is the stuff that we only want to do once everything has been created (typically notifications & jobs queuing)
+        const afterCommitFn = async () => {
+            if (this.status == 0) {
+                await enqueue('processTransactionError', `processTransactionError-${this.workspaceId}-${this.transactionHash}`, { transactionId: this.transactionId }, 1);
+                trigger(`private-failedTransactions;workspace=${this.workspaceId}`, 'new', this.toJSON());
+            }
+
+            return transaction.triggerEvents();
+        }
+
+        // We finish creating stuff here to make sure we can put it in the transaction if applicable
+        if (this.contractAddress) {
+            const canCreateContract = await transaction.workspace.canCreateContract();
+            if (canCreateContract)
+                await transaction.workspace.safeCreateOrUpdateContract({
+                    address: this.contractAddress,
+                    transactionId: this.transactionId
+                }, options.transaction);
+        }
+
+        if (options.transaction) {
+            return options.transaction.afterCommit(afterCommitFn);
+        } else
+            return afterCommitFn();
+    }
   }
   TransactionReceipt.init({
     blockHash: DataTypes.STRING,
@@ -78,33 +107,11 @@ module.exports = (sequelize, DataTypes) => {
     raw: DataTypes.JSON
   }, {
     hooks: {
-        async afterCreate(receipt, options) {
-            const transaction = await sequelize.models.Transaction.findByPk(receipt.transactionId, { include: 'workspace' });
-
-            // Here is the stuff that we only want to do once everything has been created (typically notifications & jobs queuing)
-            const afterCommitFn = async () => {
-                if (receipt.status == 0) {
-                    await enqueue('processTransactionError', `processTransactionError-${receipt.workspaceId}-${receipt.transactionHash}`, { transactionId: receipt.transactionId }, 1);
-                    trigger(`private-failedTransactions;workspace=${receipt.workspaceId}`, 'new', receipt.toJSON());
-                }
-
-                return transaction.triggerEvents();
-            }
-
-            // We finish creating stuff here to make sure we can put it in the transaction if applicable
-            if (receipt.contractAddress) {
-                const canCreateContract = await transaction.workspace.canCreateContract();
-                if (canCreateContract)
-                    await transaction.workspace.safeCreateOrUpdateContract({
-                        address: receipt.contractAddress,
-                        transactionId: receipt.transactionId
-                    }, options.transaction);
-            }
-
-            if (options.transaction) {
-                return options.transaction.afterCommit(afterCommitFn);
-            } else
-                return afterCommitFn();
+        afterBulkCreate(receipts, options) {
+            return Promise.all(receipts.map(r => r.afterCreate(options)));
+        },
+        afterCreate(receipt, options) {
+            return receipt.afterCreate(options);
         }
     },
     sequelize,

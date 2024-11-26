@@ -96,6 +96,51 @@ module.exports = (sequelize, DataTypes) => {
                 await tokenBalanceChange.insertAnalyticEvent(transaction);
         });
     }
+
+    async afterCreate(options) {
+        const transaction = await this.getTransaction({
+            attributes: ['blockNumber', 'hash'],
+            include: [
+                {
+                    model: sequelize.models.TokenTransfer,
+                    attributes: ['id', 'src', 'dst', 'token'],
+                    as: 'tokenTransfers',
+                },
+                {
+                    model: sequelize.models.Workspace,
+                    attributes: ['id', 'public', 'rpcServer', 'name'],
+                    as: 'workspace',
+                    include: {
+                        model: sequelize.models.User,
+                        attributes: ['firebaseUserId'],
+                        as: 'user'
+                    }
+                }
+            ]
+        });
+
+        if (transaction.workspace.public) {
+            options.transaction.afterCommit(() => {
+                return enqueue('processTokenTransfer',
+                    `processTokenTransfer-${this.workspaceId}-${this.token}-${this.id}`, {
+                        tokenTransferId: this.id
+                    }
+                );
+            });
+
+            if (this.tokenId)
+                await enqueue('reloadErc721Token',
+                    `reloadErc721Token-${this.workspaceId}-${this.token}-${this.tokenId}`, {
+                        workspaceId: this.workspaceId,
+                        address: this.token,
+                        tokenId: this.tokenId
+                    }
+                );
+        }
+
+        if (!transaction.workspace.public)
+            trigger(`private-processableTransactions;workspace=${transaction.workspace.id}`, 'new', transaction.toJSON());
+    }
   }
   TokenTransfer.init({
     amount: DataTypes.STRING,
@@ -129,49 +174,11 @@ module.exports = (sequelize, DataTypes) => {
     processed: DataTypes.BOOLEAN
   }, {
     hooks: {
-        async afterCreate(tokenTransfer, options) {
-            const transaction = await tokenTransfer.getTransaction({
-                attributes: ['blockNumber', 'hash'],
-                include: [
-                    {
-                        model: sequelize.models.TokenTransfer,
-                        attributes: ['id', 'src', 'dst', 'token'],
-                        as: 'tokenTransfers',
-                    },
-                    {
-                        model: sequelize.models.Workspace,
-                        attributes: ['id', 'public', 'rpcServer', 'name'],
-                        as: 'workspace',
-                        include: {
-                            model: sequelize.models.User,
-                            attributes: ['firebaseUserId'],
-                            as: 'user'
-                        }
-                    }
-                ]
-            });
-
-            if (transaction.workspace.public) {
-                options.transaction.afterCommit(() => {
-                    return enqueue('processTokenTransfer',
-                        `processTokenTransfer-${tokenTransfer.workspaceId}-${tokenTransfer.token}-${tokenTransfer.id}`, {
-                            tokenTransferId: tokenTransfer.id
-                        }
-                    );
-                });
-
-                if (tokenTransfer.tokenId)
-                    await enqueue('reloadErc721Token',
-                        `reloadErc721Token-${tokenTransfer.workspaceId}-${tokenTransfer.token}-${tokenTransfer.tokenId}`, {
-                            workspaceId: tokenTransfer.workspaceId,
-                            address: tokenTransfer.token,
-                            tokenId: tokenTransfer.tokenId
-                        }
-                    );
-            }
-
-            if (!transaction.workspace.public)
-                trigger(`private-processableTransactions;workspace=${transaction.workspace.id}`, 'new', transaction.toJSON());
+        afterBulkCreate(tokenTransfers, options) {
+            return Promise.all(tokenTransfers.map(t => t.afterCreate(options)));
+        },
+        afterCreate(tokenTransfer, options) {
+            return tokenTransfer.afterCreate(options);
         }
     },
     sequelize,

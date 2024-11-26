@@ -91,7 +91,6 @@ module.exports = (sequelize, DataTypes) => {
                 ],
                 {
                     ignoreDuplicates: true,
-                    individualHooks: true,
                     returning: true,
                     transaction
                 }
@@ -174,7 +173,6 @@ module.exports = (sequelize, DataTypes) => {
                 const storedTokenTransfers = await sequelize.models.TokenTransfer.bulkCreate(tokenTransfers, {
                     ignoreDuplicates: true,
                     returning: true,
-                    individualHooks: true,
                     transaction
                 });
                 for (let i = 0; i < storedTokenTransfers.length; i++)
@@ -331,6 +329,17 @@ module.exports = (sequelize, DataTypes) => {
             });
         });
     }
+
+    async afterCreate(options) {
+        const afterCommitFn = () => {
+            return this.triggerEvents();
+        };
+
+        if (options.transaction)
+            return options.transaction.afterCommit(afterCommitFn);
+        else
+            return afterCommitFn();
+    }
   }
   Transaction.init({
     blockHash: DataTypes.STRING,
@@ -424,25 +433,14 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     hooks: {
-        async afterCreate(transaction, options) {
-            const afterCommitFn = () => {
-                return transaction.triggerEvents();
-            };
-
-            if (options.transaction)
-                return options.transaction.afterCommit(afterCommitFn);
-            else
-                return afterCommitFn();
+        afterBulkCreate(transactions, options) {
+            return Promise.all(transactions.map(t => t.afterCreate(options)));
         },
-        async afterSave(transaction, options) {
-            const afterCommitFn = () => {
-                return transaction.triggerEvents();
-            };
-
-            if (options.transaction)
-                return options.transaction.afterCommit(afterCommitFn);
-            else
-                return afterCommitFn();
+        afterCreate(transaction, options) {
+            return transaction.afterCreate(options);
+        },
+        afterSave(transaction, options) {
+            return transaction.afterCreate(options);
         }
     },
     sequelize,
