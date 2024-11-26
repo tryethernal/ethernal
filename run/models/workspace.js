@@ -961,6 +961,9 @@ module.exports = (sequelize, DataTypes) => {
                     }
                 );
 
+                if (!createdBlock.id)
+                    return null;
+
                 const transactionsToInsert = transactions.map(t => {
                     return {
                         ...t,
