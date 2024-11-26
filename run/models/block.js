@@ -38,6 +38,14 @@ module.exports = (sequelize, DataTypes) => {
           async transaction => this.safeDestroy(transaction)
         );
     }
+
+    async afterCreate(options) {
+      const afterCreateFn = () => enqueue('processBlock', `processBlock-${this.id}`, { blockId: this.id });
+      if (options.transaction)
+        return options.transaction.afterCommit(afterCreateFn);
+      else
+        return afterCreateFn();
+    }
   }
   Block.init({
     baseFeePerGas: DataTypes.STRING,
@@ -72,12 +80,11 @@ module.exports = (sequelize, DataTypes) => {
     },
   }, {
     hooks: {
-        async afterCreate(block, options) {
-          const afterCreateFn = () => enqueue('processBlock', `processBlock-${block.id}`, { blockId: block.id });
-          if (options.transaction)
-            return options.transaction.afterCommit(afterCreateFn);
-          else
-            return afterCreateFn();
+        afterBulkCreate(blocks, options) {
+          return Promise.all(blocks.map(b => b.afterCreate(options)));
+        },
+        afterCreate(block, options) {
+          return block.afterCreate(options);
         },
         async afterSave(block, options) {
             const afterSaveFn = async () => {
