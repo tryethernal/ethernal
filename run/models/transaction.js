@@ -91,7 +91,6 @@ module.exports = (sequelize, DataTypes) => {
                 ],
                 {
                     ignoreDuplicates: true,
-                    individualHooks: true,
                     returning: true,
                     transaction
                 }
@@ -174,7 +173,6 @@ module.exports = (sequelize, DataTypes) => {
                 const storedTokenTransfers = await sequelize.models.TokenTransfer.bulkCreate(tokenTransfers, {
                     ignoreDuplicates: true,
                     returning: true,
-                    individualHooks: true,
                     transaction
                 });
                 for (let i = 0; i < storedTokenTransfers.length; i++)
@@ -424,6 +422,16 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     hooks: {
+        afterBulkCreate(transactions, options) {
+            if (options.transaction)
+              return options.transaction.afterCommit(() => {
+                for (const transaction of transactions)
+                  transaction.triggerEvents();
+              });
+            else
+              for (const transaction of transactions)
+                transaction.triggerEvents();
+        },
         async afterCreate(transaction, options) {
             const afterCommitFn = () => {
                 return transaction.triggerEvents();

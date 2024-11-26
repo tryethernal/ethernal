@@ -72,6 +72,16 @@ module.exports = (sequelize, DataTypes) => {
     },
   }, {
     hooks: {
+        async afterBulkCreate(blocks, options) {
+          if (options.transaction)
+            return options.transaction.afterCommit(async () => {
+              for (const block of blocks)
+                await enqueue('processBlock', `processBlock-${block.id}`, { blockId: block.id });
+              });
+          else
+            for (const block of blocks)
+              await enqueue('processBlock', `processBlock-${block.id}`, { blockId: block.id });
+        },
         async afterCreate(block, options) {
           const afterCreateFn = () => enqueue('processBlock', `processBlock-${block.id}`, { blockId: block.id });
           if (options.transaction)
