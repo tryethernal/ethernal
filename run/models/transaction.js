@@ -160,7 +160,7 @@ module.exports = (sequelize, DataTypes) => {
             for (let i = 0; i < storedLogs.length; i++) {
                 const log = storedLogs[i];
                 const tokenTransfer = getTokenTransfer(log);
-                if (tokenTransfer)
+                if (tokenTransfer && log.id)
                     tokenTransfers.push(sanitize({
                         transactionId: this.id,
                         transactionLogId: log.id,
@@ -181,6 +181,9 @@ module.exports = (sequelize, DataTypes) => {
                 const events = [];
                 for (let i = 0; i < storedTokenTransfers.length; i++) {
                     const tokenTransfer = storedTokenTransfers[i];
+                    if (!tokenTransfer.id)
+                        continue;
+
                     const contract = await sequelize.models.Contract.findOne({
                         where: {
                             workspaceId: this.workspaceId,
@@ -211,7 +214,6 @@ module.exports = (sequelize, DataTypes) => {
                 if (events.length > 0)
                     await sequelize.models.TokenTransferEvent.bulkCreate(events, {
                         ignoreDuplicates: true,
-                        returning: true,
                         transaction
                     });
             }
