@@ -329,6 +329,17 @@ module.exports = (sequelize, DataTypes) => {
             });
         });
     }
+
+    async afterCreate(options) {
+        const afterCommitFn = () => {
+            return this.triggerEvents();
+        };
+
+        if (options.transaction)
+            return options.transaction.afterCommit(afterCommitFn);
+        else
+            return afterCommitFn();
+    }
   }
   Transaction.init({
     blockHash: DataTypes.STRING,
@@ -423,34 +434,13 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     hooks: {
         afterBulkCreate(transactions, options) {
-            if (options.transaction)
-              return options.transaction.afterCommit(() => {
-                for (const transaction of transactions)
-                  transaction.triggerEvents();
-              });
-            else
-              for (const transaction of transactions)
-                transaction.triggerEvents();
+            return Promise.all(transactions.map(t => t.afterCreate(options)));
         },
-        async afterCreate(transaction, options) {
-            const afterCommitFn = () => {
-                return transaction.triggerEvents();
-            };
-
-            if (options.transaction)
-                return options.transaction.afterCommit(afterCommitFn);
-            else
-                return afterCommitFn();
+        afterCreate(transaction, options) {
+            return transaction.afterCreate(options);
         },
-        async afterSave(transaction, options) {
-            const afterCommitFn = () => {
-                return transaction.triggerEvents();
-            };
-
-            if (options.transaction)
-                return options.transaction.afterCommit(afterCommitFn);
-            else
-                return afterCommitFn();
+        afterSave(transaction, options) {
+            return transaction.afterCreate(options);
         }
     },
     sequelize,

@@ -80,7 +80,7 @@ module.exports = (sequelize, DataTypes) => {
     },
   }, {
     hooks: {
-        async afterBulkCreate(blocks, options) {
+        afterBulkCreate(blocks, options) {
           return Promise.all(blocks.map(b => b.afterCreate(options)));
         },
         afterCreate(block, options) {
