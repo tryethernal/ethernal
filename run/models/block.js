@@ -40,7 +40,12 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async afterCreate(options) {
-      const afterCreateFn = () => enqueue('processBlock', `processBlock-${this.id}`, { blockId: this.id });
+      const afterCreateFn = () => {
+        if (Date.now() / 1000 - this.timestamp < 60 * 10)
+          trigger(`private-blocks;workspace=${this.workspaceId}`, 'new', { number: this.number, withTransactions: this.transactionsCount > 0 });
+        return enqueue('processBlock', `processBlock-${this.id}`, { blockId: this.id });
+      };
+
       if (options.transaction)
         return options.transaction.afterCommit(afterCreateFn);
       else
