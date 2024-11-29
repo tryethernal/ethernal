@@ -38,6 +38,7 @@
     "jsonwebtoken": "^8.5.1",
     "mixpanel": "^0.16.0",
     "momentjs": "^2.0.0",
+    "opsgenie-sdk": "^0.5.1",
     "passport": "^0.6.0",
     "passport-custom": "^1.1.1",
     "passport-local": "^1.0.0",
