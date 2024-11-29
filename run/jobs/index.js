@@ -37,5 +37,6 @@ module.exports = {
     batchContractDelete: require('./batchContractDelete'),
     cancelDemoExplorers: require('./cancelDemoExplorers'),
     deleteWorkspace: require('./deleteWorkspace'),
-    tokenTransferCleanup: require('./tokenTransferCleanup')
+    tokenTransferCleanup: require('./tokenTransferCleanup'),
+    queueMonitoring: require('./queueMonitoring')
 };

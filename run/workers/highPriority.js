@@ -2,7 +2,7 @@ require('../instrument');
 const Sentry = require('@sentry/node');
 const { initializeApp } = require('firebase-admin/app');
 initializeApp();
-const { Worker } = require('bullmq');
+const { Worker, MetricsTime } = require('bullmq');
 const connection = require('../lib/redis');
 const jobs = require('../jobs');
 const logger = require('../lib/logger');
@@ -19,7 +19,13 @@ priorities['high'].forEach(jobName => {
                 }
             )
         },
-        { concurrency: 50, connection },
+        {
+            concurrency: 50,
+            connection,
+            metrics: {
+                maxDataPoints: MetricsTime.ONE_WEEK * 2,
+            }
+        }
     );
     worker.on('failed', (job, error) => managedWorkerError(error, jobName, job.data, 'highPriority'));
 

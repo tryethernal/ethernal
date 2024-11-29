@@ -3,6 +3,7 @@ const { enqueue } = require('./lib/queue');
 const INTEGRITY_CHECK_INTERVAL = 5 * 60 * 1000;
 const RPC_HEALTH_CHECK_INTERVAL = 5 * 60 * 1000;
 const SUBSCRIPTION_CHECK_INTERVAL = 5 * 60 * 1000;
+const QUEUE_MONITORING_INTERVAL = 10 * 1000;
 const CANCEL_DEMO_INTERVAL = 60 * 60 * 1000;
 
 (async () => {
@@ -44,5 +45,13 @@ const CANCEL_DEMO_INTERVAL = 60 * 60 * 1000;
         {},
         10,
         { every: SUBSCRIPTION_CHECK_INTERVAL }
+    );
+
+    await enqueue(
+        'queueMonitoring',
+        'queueMonitoring',
+        {},
+        10,
+        { every: QUEUE_MONITORING_INTERVAL }
     );
 })();

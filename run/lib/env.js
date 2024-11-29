@@ -35,4 +35,9 @@ module.exports = {
     getVersion: () => process.env.VERSION,
     getRedisUrl: () => process.env.REDIS_URL,
     getRedisFamily: () => process.env.REDIS_FAMILY,
+    queueMonitoringMaxProcessingTime: () => parseInt(process.env.QUEUE_MONITORING_MAX_PROCESSING_TIME) || 60,
+    queueMonitoringHighProcessingTimeThreshold: () => parseInt(process.env.QUEUE_MONITORING_HIGH_PROCESSING_TIME_THRESHOLD) || 20,
+    queueMonitoringHighWaitingJobCountThreshold: () => parseInt(process.env.QUEUE_MONITORING_HIGH_WAITING_JOB_COUNT_THRESHOLD) || 50,
+    queueMonitoringMaxWaitingJobCount: () => parseInt(process.env.QUEUE_MONITORING_MAX_WAITING_JOB_COUNT) || 100,
+    getOpsgenieApiKey: () => process.env.OPSGENIE_API_KEY,
 };
