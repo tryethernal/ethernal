@@ -36,6 +36,7 @@
         "cancelDemoExplorers",
         "deleteWorkspace",
         "tokenTransferCleanup",
-        "removeStalledBlock"
+        "removeStalledBlock",
+        "queueMonitoring"
     ]
 }
