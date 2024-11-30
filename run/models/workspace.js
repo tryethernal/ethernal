@@ -57,6 +57,26 @@ module.exports = (sequelize, DataTypes) => {
         return new ProviderConnector(this.rpcServer);
     }
 
+    async getLatestReadyBlock() {
+        const [latestReadyBlock] = await sequelize.query(`
+            SELECT number, timestamp
+            FROM blocks b
+            WHERE ("transactionsCount") IN (
+                SELECT count(*) as "transactionsCount" FROM transactions t
+                WHERE t."blockNumber" = b.number
+                AND t."workspaceId" = :workspaceId
+                AND t.state = 'ready'
+            )
+            AND b."workspaceId" = :workspaceId
+            ORDER BY number DESC LIMIT 1
+        `, {
+            replacements: { workspaceId: this.id },
+            type: QueryTypes.SELECT
+        });
+
+        return latestReadyBlock;
+    }
+
     getTransactionsWithDuplicateTokenBalanceChanges() {
         return sequelize.query(`
             SELECT"transactionId"
@@ -105,6 +125,46 @@ module.exports = (sequelize, DataTypes) => {
         });
 
         return contracts[0];
+    }
+
+    findBlockGapsV2(lowerBound, upperBound) {
+        if (lowerBound === undefined || lowerBound === null || upperBound === undefined || upperBound === null)
+            throw new Error('Missing parameter');
+
+        return sequelize.query(`
+            WITH ordered_blocks AS (
+                SELECT
+                    "number",
+                    "number" - row_number() OVER (ORDER BY "number") AS group_id
+                FROM blocks
+                WHERE "workspaceId" = :workspaceId
+                AND "number" >= :lowerBound
+                AND "number" <= :upperBound
+            ),
+            grouped_blocks AS (
+                SELECT
+                    MIN("number") AS group_start,
+                    MAX("number") AS group_end,
+                    group_id
+                FROM ordered_blocks
+                GROUP BY group_id
+            ),
+            lagged_blocks AS (
+                SELECT
+                    group_start,
+                    group_end,
+                    LAG(group_end) OVER (ORDER BY group_id) AS previous_group_end
+                FROM grouped_blocks
+            )
+            SELECT
+                previous_group_end + 1 AS "blockStart",
+                group_start - 1 AS "blockEnd"
+            FROM lagged_blocks
+            WHERE previous_group_end + 1 <= group_start - 1;
+        `, {
+            replacements: { workspaceId: this.id, lowerBound, upperBound },
+            type: QueryTypes.SELECT
+        });
     }
 
     findBlockGaps(lowerBound, upperBound) {
