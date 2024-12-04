@@ -24,7 +24,7 @@ module.exports = async () => {
         const waitingJobCount = await queue.getWaitingCount();
         const delayedJobCount = await queue.getDelayedCount();
 
-        logger.info('Queue monitoring', { queueName, completedJobs, averageProcessingTime, waitingJobCount, delayedJobCount });
+        logger.info('Queue monitoring', { queueName, averageProcessingTime, waitingJobCount, delayedJobCount });
 
         if (
             averageProcessingTime > queueMonitoringMaxProcessingTime() ||
