@@ -54,10 +54,23 @@ module.exports = (sequelize, DataTypes) => {
             throw new Error('Missing parameter');
 
         return sequelize.transaction(async transaction => {
-            const contractVerification = await this.createVerification({
-                workspaceId: this.workspaceId,
-                compilerVersion, evmVersion, runs, constructorArguments, libraries, contractName
-            }, { transaction });
+            const [contractVerification] = await sequelize.models.ContractVerification.bulkCreate(
+                [
+                    {
+                        workspaceId: this.workspaceId,
+                        contractId: this.id,
+                        compilerVersion, evmVersion, runs, constructorArguments, libraries, contractName
+                    }
+                ],
+                {
+                    transaction,
+                    ignoreDuplicates: true,
+                    returning: true
+                }
+            );
+
+            if (!contractVerification.id)
+                return contractVerification;
 
             const keys = Object.keys(sources);
             for (let i = 0; i < keys.length; i++) {
