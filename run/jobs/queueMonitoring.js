@@ -18,11 +18,13 @@ module.exports = async () => {
         const completedJobs = await queue.getCompleted();
 
         const averageProcessingTime = completedJobs.reduce((a, b) => {
-            return a + (b.finishedOn - b.processedOn) / 1000;
+            return b.finishedOn ? a + (b.finishedOn - b.processedOn) / 1000 : a;
         }, 0) / completedJobs.length;
 
         const waitingJobCount = await queue.getWaitingCount();
         const delayedJobCount = await queue.getDelayedCount();
+
+        logger.info('Queue monitoring', { queueName, completedJobs, averageProcessingTime, waitingJobCount, delayedJobCount });
 
         if (
             averageProcessingTime > queueMonitoringMaxProcessingTime() ||
