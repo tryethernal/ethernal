@@ -1,5 +1,5 @@
 /*
-    This middleware check that the secret is present in the query
+    This middleware checks that the secret is present in the query
 */
 
 const logger = require('../lib/logger');

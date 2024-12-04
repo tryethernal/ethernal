@@ -5,7 +5,8 @@ const { enqueue } = require('../lib/queue');
 module.exports = async job => {
     const workspaces = await models.Workspace.findAll({
         where: {
-            integrityCheckStartBlockNumber: { [Sequelize.Op.not]: null }
+            integrityCheckStartBlockNumber: { [Sequelize.Op.not]: null },
+            skipIntegrityCheck: false
         }
     });
 

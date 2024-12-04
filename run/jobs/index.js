@@ -2,6 +2,7 @@
 module.exports = {
     // High priority
     blockSync: require('./blockSync'),
+    processBlock: require('./processBlock'),
     batchBlockSync: require('./batchBlockSync'),
     sendResetPasswordEmail: require('./sendResetPasswordEmail'),
     updateExplorerSyncingProcess: require('./updateExplorerSyncingProcess'),
@@ -9,6 +10,7 @@ module.exports = {
     receiptSync: require('./receiptSync'),
     removeStalledBlock: require('./removeStalledBlock'),
     increaseStripeBillingQuota: require('./increaseStripeBillingQuota'),
+    deleteDuplicateBalanceChangeForWorkspace: require('./deleteDuplicateBalanceChangeForWorkspace'),
 
     // Medium Priority
     processContract: require('./processContract'),
@@ -35,5 +37,6 @@ module.exports = {
     batchContractDelete: require('./batchContractDelete'),
     cancelDemoExplorers: require('./cancelDemoExplorers'),
     deleteWorkspace: require('./deleteWorkspace'),
-    tokenTransferCleanup: require('./tokenTransferCleanup')
+    tokenTransferCleanup: require('./tokenTransferCleanup'),
+    queueMonitoring: require('./queueMonitoring')
 };

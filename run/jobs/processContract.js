@@ -2,8 +2,10 @@ const axios = require('axios');
 const ethers = require('ethers');
 const { sanitize, withTimeout } = require('../lib/utils');
 const yasold = require('../lib/yasold');
+const { contractFn } = require('../lib/codeRunner');
 const db = require('../lib/firebase');
 const { ContractConnector, ERC721Connector } = require('../lib/rpc');
+const { Workspace, Contract, CustomField } = require('../models');
 const { getScannerKey } = require('../lib/env');
 const logger = require('../lib/logger');
 const { trigger } = require('../lib/pusher');
@@ -44,25 +46,32 @@ const findPatterns = async (rpcServer, contractAddress, abi) => {
     return tokenData;
 };
 
-const fetchEtherscanData = async (address, chain) => {
-    let scannerHost = 'etherscan.io';
+const fetchEtherscanData = async (address, workspace) => {
+    let scannerHost = 'api.etherscan.io/api';
     let apiKey = getScannerKey('ETHERSCAN');
-    switch (chain) {
+    let headers = {};
+
+    switch (workspace.chain) {
         case 'arbitrum':
-            scannerHost = 'arbiscan.io';
+            scannerHost = 'api.arbiscan.io/api';
             apiKey = getScannerKey('ARBISCAN');
             break;
         case 'bsc':
-            scannerHost = 'bscscan.com';
+            scannerHost = 'api.bscscan.com/api';
             apiKey = getScannerKey('BSSCAN');
             break;
         case 'matic':
-            scannerHost = 'polygonscan.com';
+            scannerHost = 'api.polygonscan.com/api';
             apiKey = getScannerKey('POLYGONSCAN');
             break;
         case 'avax':
-            scannerHost = 'snowtrace.io';
+            scannerHost = 'api.snowtrace.io/api';
             apiKey = getScannerKey('SNOWTRACE');
+            break;
+        case 'buildbear':
+            scannerHost = `api.buildbear.io/v1/explorer/slimy-jugsgernaut-ea0852a40`;
+            apiKey = getScannerKey('BUILDBEAR');
+            headers['Authorization'] = `Bearer ${apiKey}`;
             break;
         default:
         break;
@@ -71,20 +80,55 @@ const fetchEtherscanData = async (address, chain) => {
     if (!apiKey)
         return null;
 
-    const endpoint = `https://api.${scannerHost}/api?module=contract&action=getsourcecode&address=${address}&apikey=${apiKey}`;
-    const response = await withTimeout(axios.get(endpoint));
+    const endpoint = `https://${scannerHost}?module=contract&action=getsourcecode&address=${address}&apikey=${apiKey}`;
+    try {
+        const response = await withTimeout(axios.get(endpoint, { headers }));
+        return response ? response.data : null;
+    } catch (error) {
+        if (error.response && error.response.status >= 400)
+            return error.response;
 
-    return response ? response.data : null;
+        throw error;
+    }
 };
 
 const findScannerMetadata = async (workspace, contract) => {
-    const scannerData = await fetchEtherscanData(contract.address, workspace.chain);
+    const scannerData = await fetchEtherscanData(contract.address, workspace);
+
+    if (scannerData && scannerData.status >= 400)
+        return scannerData;
 
     if (scannerData && scannerData.message != 'NOTOK' && scannerData.result[0].ContractName != '') {
-        const abi = JSON.parse(scannerData.result[0].ABI || '[]')
+        const abi = JSON.parse(scannerData.result[0].ABI || '[]');
+
+        const sources = scannerData.result[0].SourceCode;
+        let parsedSources;
+        if (sources.startsWith('{{'))
+            try {
+                parsedSources = JSON.parse(sources.substring(1, sources.length - 1)).sources;
+            } catch (error) {
+                parsedSources = null;
+            }
+        else
+            parsedSources = {
+                [`${scannerData.result[0].ContractName.split('.sol')[0]}.sol`]: { content: sources }
+            };
+
+        const verificationData = !parsedSources || scannerData.result[0].ABI == 'Contract source code not verified' ?
+        null :
+        {
+            compilerVersion: scannerData.result[0].CompilerVersion,
+            constructorArguments: scannerData.result[0].ConstructorArguments,
+            runs: scannerData.result[0].Runs,
+            contractName: scannerData.result[0].ContractName.split('.sol')[0],
+            evmVersion: scannerData.result[0].EvmVersion,
+            sources: parsedSources,
+            libraries: scannerData.result[0].Library,
+        };
 
         return {
-            name: scannerData.result[0].ContractName,
+            name: scannerData.result[0].ContractName.split('.sol')[0],
+            verificationData,
             abi: abi,
             proxy: scannerData.result[0].Proxy == '1' ? scannerData.result[0].Implementation : null
         };
@@ -99,17 +143,27 @@ module.exports = async job => {
     if (!data.contractId)
         return 'Missing parameter';
 
-    const contract = await db.getContractById(data.contractId);
+    const contract = await Contract.findByPk(data.contractId, {
+        include: {
+            model: Workspace,
+            as: 'workspace',
+            include: [
+                'explorer', 'user',
+                {
+                    model: CustomField,
+                    as: 'customFields',
+                    where: { location: 'contract' },
+                    required: false
+                }
+            ]
+        }
+    });
+
     if (!contract)
         return 'Cannot find contract';
 
-    const workspace = await db.getWorkspaceById(contract.workspaceId);
-    if (!workspace)
-        return 'Cannot find workspace';
-
-    const user = await db.getUserById(workspace.userId);
-    if (!user)
-        return 'Cannot find user';
+    const workspace = contract.workspace;
+    const user = workspace.user;
 
     let asm, bytecode, hashedBytecode;
 
@@ -119,6 +173,9 @@ module.exports = async job => {
     }
     else
         bytecode = contract.bytecode;
+
+    if (bytecode == '0x')
+        return contract.safeDestroy();
 
     if (bytecode) {
         try {
@@ -137,7 +194,10 @@ module.exports = async job => {
         });
     }
 
-    const scannerMetadata = await findScannerMetadata(workspace, contract);
+    let scannerMetadata = await findScannerMetadata(workspace, contract);
+
+    if (scannerMetadata && scannerMetadata.status >= 400)
+        scannerMetadata = {};
 
     const abi = contract.abi || scannerMetadata.abi;
     const tokenData = workspace.public ? await findPatterns(workspace.rpcServer, contract.address, abi) : {};
@@ -151,6 +211,17 @@ module.exports = async job => {
 
     if (metadata.proxy)
         await db.storeContractData(user.firebaseUserId, workspace.name, metadata.proxy, { address: metadata.proxy });
+
+    if (scannerMetadata.verificationData)
+        await db.storeContractVerificationData(workspace.id, contract.address, scannerMetadata.verificationData);
+
+    if (workspace.customFields && workspace.customFields.length > 0) {
+        for (const customField of workspace.customFields) {
+            const extraFields = await contractFn(customField.function, contract, metadata);
+            if (extraFields && typeof extraFields === 'object')
+                metadata = sanitize({ ...metadata, ...extraFields });
+        }
+    }
 
     await db.storeContractData(user.firebaseUserId, workspace.name, contract.address, metadata);
 

@@ -3,6 +3,7 @@ const router = express.Router();
 const logger = require('../lib/logger');
 const Lock = require('../lib/lock');
 const db = require('../lib/firebase');
+const { getAppDomain } = require('../lib/env');
 const { sanitize, sleep } = require('../lib/utils');
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const authMiddleware = require('../middlewares/auth');
@@ -14,6 +15,53 @@ router.get('/:address/holderHistory', workspaceAuthMiddleware, holderHistory);
 router.get('/:address/circulatingSupply', workspaceAuthMiddleware, circulatingSupply);
 router.get('/:address/holders', workspaceAuthMiddleware, holders);
 router.get('/:address/transfers', workspaceAuthMiddleware, transfers);
+
+router.get('/getabi', async (req, res) => {
+    const data = req.query;
+
+    try {
+        if (!data.address)
+            throw new Error('Missing parameters.')
+
+        const contractAddress = data.address.toLowerCase();
+
+        let explorer;
+        if (req.headers['apx-incoming-host']) {
+            explorer = await db.getPublicExplorerParamsByDomain(req.headers['apx-incoming-host'])
+        }
+        else if (req.headers['ethernal-host'] && req.headers['ethernal-host'].endsWith(getAppDomain())) {
+            const host = req.headers['ethernal-host'].split(`.${getAppDomain()}`)[0];
+            explorer = await db.getPublicExplorerParamsBySlug(host);
+        }
+        else if (data['apikey']) {
+            explorer = await db.getPublicExplorerParamsBySlug(data['apikey']);
+        }
+
+        if (!explorer)
+            throw new Error('Could not find explorer. If you are using the apiKey param, make sure it is correct.');
+
+        let contract = await db.getContractByWorkspaceId(explorer.workspaceId, contractAddress);
+        if (!contract || !contract.verification || !contract.verification.sources.length)
+            return res.status(200).json({
+                status: "0",
+                message: "NOTOK",
+                result: "Contract source code not verified"
+            });
+
+        return res.status(200).json({
+            status: "1",
+            message: "OK",
+            result: JSON.stringify(contract.abi)
+        });
+    } catch(error) {
+        logger.error(error.message, { location: 'get.api.contracts.getabi', error, queryParams: req.query, headers: req.headers });
+        res.status(200).json({
+            status: "0",
+            message: "OK",
+            result: `Request failed: ${error.message}`
+        });
+    }
+});
 
 router.get('/sourceCode', async (req, res) => {
     const data = req.query;
@@ -40,7 +88,7 @@ router.get('/sourceCode', async (req, res) => {
             for (let i = 0; i < 3; i++) {
                 await sleep(2000);
                 contract = await db.getContractByWorkspaceId(explorer.workspaceId, contractAddress);
-                if (contract)
+                if (contract) 
                     break;
             }
         }
@@ -79,11 +127,11 @@ router.get('/sourceCode', async (req, res) => {
 });
 
 router.post('/verify', async (req, res) => {
-    const data = req.body;
+    const data = { ...req.body, ...req.query };
     let lock, isLockAcquired;
 
     try {
-        if (!data.sourceCode || !data.contractaddress || !data.compilerversion || !data.contractname || data.constructorArguements === undefined)
+        if (!data.sourceCode || !data.contractaddress || !data.compilerversion || !data.contractname)
             throw new Error('Missing parameters.')
 
         const contractAddress = data.contractaddress.toLowerCase();
@@ -273,8 +321,11 @@ router.post('/:address/tokenProperties', authMiddleware, async (req, res, next) 
         if (!data.uid || !data.workspace)
             return managedError(new Error(`Missing parameters`), req, res);
 
-        const contract = await db.getWorkspaceContract(data.workspace.id, req.params.address);
-        
+        const workspace = await db.getWorkspaceByName(data.user.firebaseUserId, data.workspace);
+        if (!workspace)
+            return managedError(new Error('Could not find workspace.'), req, res);
+
+        const contract = await db.getWorkspaceContract(workspace.id, req.params.address);
         if (!contract)
             return managedError(new Error('Could not find contract at this address.'), req, res);
 

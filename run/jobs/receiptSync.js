@@ -1,7 +1,6 @@
 const { ProviderConnector } = require('../lib/rpc');
 const { Workspace, Explorer, StripeSubscription, Transaction, TransactionReceipt, RpcHealthCheck } = require('../models');
 const { processRawRpcObject } = require('../lib/utils');
-const db = require('../lib/firebase');
 const { enqueue } = require('../lib/queue');
 const RateLimiter = require('../lib/rateLimiter');
 const logger = require('../lib/logger');
@@ -12,37 +11,45 @@ module.exports = async job => {
     if (!data.transactionHash || !data.workspaceId)
         return 'Missing parameter'
 
-    const transaction = await Transaction.findOne({
-        where: {
-            hash: data.transactionHash,
-            workspaceId: data.workspaceId
-        },
-        include: [
-            {
-                model: Workspace,
-                as: 'workspace',
-                attributes: ['id', 'rpcServer', 'rateLimitInterval', 'rateLimitMaxInInterval', 'public'],
-                include: [
-                    {
-                        model: Explorer,
-                        as: 'explorer',
-                        include: {
-                            model: StripeSubscription,
-                            as: 'stripeSubscription',
-                        }
-                    },
-                    {
-                        model: RpcHealthCheck,
-                        as: 'rpcHealthCheck'
+    const include = [
+        {
+            model: Workspace,
+            as: 'workspace',
+            attributes: ['id', 'rpcServer', 'rateLimitInterval', 'rateLimitMaxInInterval', 'public', 'rpcHealthCheckEnabled'],
+            include: [
+                {
+                    model: Explorer,
+                    as: 'explorer',
+                    attributes: ['id', 'shouldSync'],
+                    include: {
+                        model: StripeSubscription,
+                        as: 'stripeSubscription',
+                        attributes: ['id']
                     }
-                ]
+                },
+                {
+                    model: RpcHealthCheck,
+                    as: 'rpcHealthCheck',
+                    attributes: ['isReachable']
+                }
+            ]
+        },
+        {
+            model: TransactionReceipt,
+            as: 'receipt',
+            attributes: ['id']
+        }
+    ];
+
+    const transaction = data.transactionId ?
+        await Transaction.findByPk(data.transactionId, { include }) :
+        await Transaction.findOne({
+            where: {
+                hash: data.transactionHash,
+                workspaceId: data.workspaceId
             },
-            {
-                model: TransactionReceipt,
-                as: 'receipt'
-            }
-        ]
-    });
+            include
+        });
 
     if (!transaction)
         return 'Missing transaction';
@@ -81,16 +88,27 @@ module.exports = async job => {
         try {
             receipt = await providerConnector.fetchTransactionReceipt(transaction.hash);
         } catch(error) {
+            const priority = job.opts.priority || (data.source == 'cli-light' ? 1 : 10);
             if (error.message == 'Rate limited') {
-                const priority = job.opts.priority || (data.source == 'cli-light' ? 1 : 10);
-                await enqueue('receiptSync', `receiptSync-${workspace.id}-${transaction.hash}`, {
+                return enqueue('receiptSync', `receiptSync-${workspace.id}-${transaction.hash}-${Date.now()}`, {
+                    transactionId: transaction.id,
                     transactionHash: transaction.hash,
                     workspaceId: workspace.id,
                     source: data.source,
-                    rateLimited: data.rateLimited
-                }, priority, null, workspace.rateLimitInterval, data.rateLimited);
-                return `Re-enqueuing: ${error.message}`
+                    rateLimited: !!data.rateLimited
+                }, priority, null, workspace.rateLimitInterval, !!data.rateLimited);
             }
+            else if (error.message.startsWith('Timed out after')) {
+                return enqueue('receiptSync', `receiptSync-${workspace.id}-${transaction.hash}-${Date.now()}`, {
+                    transactionId: transaction.id,
+                    transactionHash: transaction.hash,
+                    workspaceId: workspace.id,
+                    source: data.source,
+                    rateLimited: !!data.rateLimited
+                }, priority, null, workspace.rateLimitInterval || 5000, !!data.rateLimited);
+            }
+            else
+                throw error;
         }
 
         if (!receipt)
@@ -101,7 +119,7 @@ module.exports = async job => {
             Object.keys(TransactionReceipt.rawAttributes).concat(['logs']),
         );
 
-        return db.storeTransactionReceipt(transaction.id, processedReceipt);
+        return transaction.safeCreateReceipt(processedReceipt);
     } catch(error) {
         logger.error(error.message, { location: 'jobs.receiptSync', error, data });
         // await db.incrementFailedAttempts(transaction.workspace.id);

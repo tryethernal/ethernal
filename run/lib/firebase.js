@@ -21,6 +21,27 @@ const ExplorerFaucet = models.ExplorerFaucet;
 const ExplorerV2Dex = models.ExplorerV2Dex;
 const V2DexPair = models.V2DexPair;
 
+const createUserStripeSubscription = (userId, stripeSubscription, stripePlan) => {
+    if (!userId || !stripeSubscription || !stripePlan)
+        throw new Error('Missing parameter');
+
+    return StripeSubscription.create({
+        userId,
+        stripeId: stripeSubscription.id,
+        stripePlanId: stripePlan.id,
+        status: stripeSubscription.status
+    });
+}
+
+const getUserStripeSubscription = (userId) => {
+    if (!userId)
+        throw new Error('Missing parameter');
+
+    return StripeSubscription.findOne({
+        where: { userId }
+    });
+};
+
 const getV2DexPairCount = async (userId, v2DexId) => {
     if (!userId || !v2DexId)
         throw new Error('Missing parameter');
@@ -967,9 +988,8 @@ const storeContractVerificationData = async (workspaceId, address, verificationD
     if (!workspaceId || !address || !verificationData) throw new Error('Missing parameter');
 
     const workspace = await Workspace.findByPk(workspaceId);
-
-    if (!workspace.public)
-        throw new Error('This is a private workspace');
+    if (!workspace)
+        throw new Error('Cannot find workspace');
 
     const contract = await workspace.getContractByAddress(address);
 
@@ -1165,7 +1185,7 @@ const getTransactionForProcessing = transactionId => {
             {
                 model: Workspace,
                 as: 'workspace',
-                attributes: ['id', 'name', 'public', 'rpcServer'],
+                attributes: ['id', 'name', 'public', 'rpcServer', 'tracing'],
                 include: [
                     {
                         model: User,
@@ -2003,7 +2023,7 @@ const storeContractData = async (userId, workspace, address, data, transaction) 
 
     const user = await User.findByAuthIdWithWorkspace(userId, workspace);
     const contract = await user.workspaces[0].safeCreateOrUpdateContract({ address: address, ...data }, transaction);
-    return contract.toJSON();
+    return contract ? contract.toJSON() : null;
 };
 
 const getContract = async (userId, workspaceId, address) => {
@@ -2479,5 +2499,7 @@ module.exports = {
     deactivateV2Dex: deactivateV2Dex,
     activateV2Dex: activateV2Dex,
     deleteV2Dex: deleteV2Dex,
-    getV2DexPairCount: getV2DexPairCount
+    getV2DexPairCount: getV2DexPairCount,
+    getUserStripeSubscription: getUserStripeSubscription,
+    createUserStripeSubscription: createUserStripeSubscription
 };

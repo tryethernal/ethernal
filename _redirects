@@ -7,6 +7,7 @@
 
 /api module=contract action=checkverifystatus apikey=:apikey https://api.tryethernal.com/api/contracts/verificationStatus 200!
 /api module=contract action=getsourcecode apikey=:apikey https://api.tryethernal.com/api/contracts/sourceCode 200!
+/api module=contract action=getabi apikey=:apikey https://api.tryethernal.com/api/contracts/getabi 200!
 /api https://api.tryethernal.com/api/contracts/verify 200!
 
 /api/* https://api.tryethernal.com/api/:splat 200!

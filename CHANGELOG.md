@@ -4,6 +4,368 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.49.4] - 2024-12-04
+### Changed
+- Less verbose queue monitoring logs
+
+## [3.49.3] - 2024-12-04
+### Fixed
+- Contract verification duplication bug
+- Queue monitoring
+
+## [3.49.2] - 2024-11-30
+### Changed
+- Upgraded integrity check mechanism
+
+## [3.49.1] - 2024-11-28
+### Changed
+- Queue monitoring interval
+
+## [3.49.0] - 2024-11-28
+### Added
+- Queue monitoring
+
+## [3.48.14] - 2024-11-27
+### Changed
+- Changed stalled block job priority
+
+## [3.48.13] - 2024-11-26
+### Fixed
+- Real time block UI update
+
+## [3.48.12] - 2024-11-26
+### Fixed
+- Bug when trying to inserting duplicate row
+
+## [3.48.11] - 2024-11-26
+### Changed
+- Stopped using individual hooks for batch inserts (otherwise sequelize doesn't use generate the correct sql statements + better performances)
+
+## [3.48.10] - 2024-11-24
+### Changed
+- More efficient token balance change deduplication
+- Fix bug when inserting duplicate token balance changes
+
+## [3.48.9] - 2024-11-24
+### Added
+- Add unique constraint on token balance changes
+- Token balance change deduplication job
+
+## [3.48.8] - 2024-11-23
+### Changed
+- Improve token transfer processing performances
+
+## [3.48.7] - 2024-11-22
+### Fixed
+- Bug prevening contract deletion with multiple verifications
+
+## [3.48.6] - 2024-11-22
+### Fixed
+- Bug when trying to delete the transaction that deployed a contract
+
+## [3.48.5] - 2024-11-21
+### Fixed
+- Bug with workspace reset parameters
+- Handle issues with Ghost API
+
+## [3.48.4] - 2024-11-21
+### Fixed
+- Tests
+
+## [3.48.3] - 2024-11-21
+### Fixed
+- Typo
+- Transaction error processing when receipt is missing
+
+## [3.48.2] - 2024-11-21
+### Fixed
+- Issue when contract metadata endpoint is not available
+
+## [3.48.1] - 2024-11-21
+### Fixed
+- Issue when contract metadata endpoint is not available
+
+## [3.48.0] - 2024-11-21
+### Changed
+- Improve performances of transaction trace processing
+
+## [3.47.6] - 2024-11-21
+### Fixed
+- Better trace error handling
+
+## [3.47.5] - 2024-11-21
+### Fixed
+- Failed transaction tracing doesn't throw error if there is an issue with the rpc
+
+## [3.47.4] - 2024-11-20
+### Added
+- Integrity check skipping
+
+## [3.47.3] - 2024-11-13
+### Fixed
+- Chain ids list
+
+## [3.47.2] - 2024-11-07
+### Changed
+- More fields available in custom transaction fields
+
+## [3.47.1] - 2024-11-07
+### Fixed
+- Contract processing bug
+
+## [3.47.0] - 2024-11-07
+### Added
+- Explorer volume pricing
+
+## [3.46.0] - 2024-11-05
+### Added
+- Contract post-processing
+
+## [3.45.22] - 2024-11-01
+### Fixed
+- Contract processing
+
+## [3.45.21] - 2024-10-31
+### Fixed
+- Possible Big Number overflow
+
+## [3.45.20] - 2024-10-31
+### Fixed
+- Bug when accessing explorer through a custom domain
+
+## [3.45.19] - 2024-10-31
+### Fixed
+- Bug in native balance endpoint
+
+### Changed
+- Do not handled errors to Sentry
+
+## [3.45.18] - 2024-10-31
+### Fixed
+- Bug in native balance endpoint
+
+## [3.45.17] - 2024-10-31
+### Fixed
+- Tests
+
+## [3.45.16] - 2024-10-31
+### Fixed
+- Bug when address balance is not fetched
+
+### Changed
+- Upsert contracts for better performance
+
+## [3.45.15] - 2024-10-31
+### Changed
+- Handle timeout in background job
+
+## [3.45.14] - 2024-10-31
+### Changed
+- Handle timeout when fetching balance
+
+## [3.45.13] - 2024-10-31
+### Changed
+- Bette timeout handling
+
+## [3.45.12] - 2024-10-31
+### Fixed
+- Missing extra parameter
+
+## [3.45.11] - 2024-10-31
+### Changed
+- Limit tracked Sentry errors
+
+## [3.45.10] - 2024-10-31
+### Fixed
+- Bug preventing explorer creation without a plan
+
+## [3.45.9] - 2024-10-29
+### Added
+- Logs to debug BB integration
+
+## [3.45.8] - 2024-10-29
+### Fixed
+- Log headers when using Etherscan API mode
+
+## [3.45.7] - 2024-10-29
+### Fixed
+- Explorer params from ethernal-host header
+
+## [3.45.6] - 2024-10-29
+### Removed
+- Sentry releases during deploy as it's causing issues
+
+## [3.45.5] - 2024-10-29
+### Fixed
+- Explorer params from ethernal-host header
+
+## [3.45.4] - 2024-10-29
+### Added
+- Get explorer params from ethernal-host header
+
+## [3.45.3] - 2024-10-29
+### Fixed
+- Logger level
+
+## [3.45.2] - 2024-10-29
+### Added
+- Headers logging
+
+## [3.45.1] - 2024-10-29
+### Added
+- Netlify redirects
+
+### Fixed
+- Bug when trying to get abi from a contract through Etherscan's API
+
+## [3.45.0] - 2024-10-29
+### Added
+- Etherscan endpoint API to support forge contract verification
+
+## [3.44.0] - 2024-10-24
+### Added
+- Scanner contract verification now pulls up source code, compilation info, etc... and marks the contract as verified
+- Buildbear scanner
+
+## [3.43.1] - 2024-10-23
+### Changed
+- Add message when trace is not available in embedded component
+
+### Fixed
+- Bug preventing message from being displayed when transaction does not exist
+
+## [3.43.0] - 2024-10-23
+### Added
+- Better tracing option for geth-based chains
+
+### Fixed
+- Issue with trace step display
+
+## [3.42.31] - 2024-10-20
+### Fixed
+- Make sure jobs reenqueued because of rate limiting have unique ids
+
+## [3.42.30] - 2024-10-16
+### Fixed
+- Bug when explorer are created from a workspace
+
+## [3.42.29] - 2024-10-16
+### Fixed
+- Add not null constraint on transactions("blockId")
+- Do not delete contracts when deployment transaction is deleted
+
+## [3.42.28] - 2024-10-14
+### Fixed
+- Transaction safe deletion
+
+## [3.42.27] - 2024-10-14
+### Fixed
+- Receipt create hooks were not triggered
+- Migration to defer some fk checks at the end of the transaction
+
+## [3.42.26] - 2024-10-14
+### Fixed
+- Transaction typo
+
+## [3.42.25] - 2024-10-14
+### Fixed
+- Delete deployed contract when transaction is deleted
+
+## [3.42.24] - 2024-10-14
+### Fixed
+- Defer foreign key constraints on delete
+
+## [3.42.23] - 2024-10-10
+### Added
+- Fly deployment files
+
+### Fixed
+- Race condition when adding domains during explorer creations through the API
+
+## [3.42.22] - 2024-10-07
+### Fixed
+- Allow non public plan subscription
+
+## [3.42.21] - 2024-10-04
+### Fixed
+- Allow non public plan setup
+
+## [3.42.20] - 2024-10-04
+### Fixed
+- 24h tx count
+
+## [3.42.19] - 2024-10-04
+### Fixed
+- 24h tx count
+
+## [3.42.18] - 2024-10-04
+### Fixed
+- 24h tx count
+
+## [3.42.17] - 2024-10-04
+### Fixed
+- Integrity check start block number
+
+## [3.42.16] - 2024-10-03
+### Changed
+- HP worker settings
+
+## [3.42.15] - 2024-10-03
+### Changed
+- HP worker settings
+
+## [3.42.14] - 2024-10-03
+### Removed
+- Debugging log
+
+## [3.42.13] - 2024-10-03
+### Changed
+- Debuug redis
+
+## [3.42.12] - 2024-10-03
+### Changed
+- Worker lock duration
+
+## [3.42.11] - 2024-10-03
+### Fixed
+- Better receipt processing
+
+## [3.42.10] - 2024-10-03
+### Added
+- Block processing job
+
+## [3.42.9] - 2024-10-02
+### Changed
+- Run individual hooks on block/transaction creation
+
+## [3.42.8] - 2024-10-02
+### Changed
+- Better raw log storing
+
+## [3.42.7] - 2024-10-02
+### Changed
+- Faster receipt sync
+
+## [3.42.6] - 2024-10-02
+### Changed
+- Faster block sync
+
+## [3.42.5] - 2024-10-02
+### Changed
+- Adjust lock duration for high priority workers
+
+## [3.42.4] - 2024-10-02
+### Changed
+- Increase lock duration for high priority workers
+
+## [3.42.3] - 2024-10-02
+### Fixed
+- Client side contract processing
+
+## [3.42.2] - 2024-10-01
+### Added
+- Redis connection family option
+
 ## [3.42.1] - 2024-09-26
 ### Fixed
 - Bug in env lib

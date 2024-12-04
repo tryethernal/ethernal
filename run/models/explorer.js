@@ -138,6 +138,9 @@ module.exports = (sequelize, DataTypes) => {
                 }
             ]
         });
+        if (!explorerDomain)
+            return null;
+
         const explorer = explorerDomain.explorer;
 
         if (explorer)

@@ -2,9 +2,10 @@
     <v-main>
         <v-container fluid>
             <v-skeleton-loader v-if="loading" type="list-item-three-line"></v-skeleton-loader>
-            <template v-else>
+            <template v-else-if="traceSteps.length">
                 <Trace-Step v-for="step in traceSteps" :step="step" :key="step.id" />
             </template>
+            <template v-else>Trace not available.</template>
         </v-container>
     </v-main>
 </template>
@@ -39,7 +40,7 @@ export default {
                     // Replace with DI
                     // this.explorerStore.setEmbedded(true);
                     this.$server.getTransaction(hash)
-                        .then(({ data: { traceSteps }}) => this.traceSteps = traceSteps)
+                        .then(({ data: { traceSteps }}) => this.traceSteps = traceSteps || [])
                         .catch(console.log)
                         .finally(() => this.loading = false);
                 })

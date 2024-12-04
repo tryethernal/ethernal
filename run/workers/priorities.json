@@ -1,12 +1,13 @@
 {
     "high": [
+        "deleteDuplicateBalanceChangeForWorkspace",
         "blockSync",
+        "processBlock",
         "batchBlockSync",
         "sendResetPasswordEmail",
         "updateExplorerSyncingProcess",
         "updateApproximatedRecord",
         "receiptSync",
-        "removeStalledBlock",
         "increaseStripeBillingQuota"
     ],
     "medium": [
@@ -34,6 +35,8 @@
         "batchContractDelete",
         "cancelDemoExplorers",
         "deleteWorkspace",
-        "tokenTransferCleanup"
+        "tokenTransferCleanup",
+        "removeStalledBlock",
+        "queueMonitoring"
     ]
 }

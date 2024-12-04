@@ -8,7 +8,7 @@ const {
 const Op = Sequelize.Op;
 const { sanitize } = require('../lib/utils');
 const { trigger } = require('../lib/pusher');
-const { enqueue } = require('../lib/queue');
+const { enqueue, bulkEnqueue } = require('../lib/queue');
 const moment = require('moment');
 
 module.exports = (sequelize, DataTypes) => {
@@ -48,16 +48,29 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     safeCreateVerification(verificationData) {
-        const { compilerVersion, evmVersion, runs, sources, libraries, constructorArguments, contractName } = verificationData;
+        const { compilerVersion, evmVersion = 'Default', runs, sources, libraries, constructorArguments, contractName } = verificationData;
 
-        if (!compilerVersion || !evmVersion || !sources)
+        if (!compilerVersion || !sources)
             throw new Error('Missing parameter');
 
         return sequelize.transaction(async transaction => {
-            const contractVerification = await this.createVerification({
-                workspaceId: this.workspaceId,
-                compilerVersion, evmVersion, runs, constructorArguments, libraries, contractName
-            }, { transaction });
+            const [contractVerification] = await sequelize.models.ContractVerification.bulkCreate(
+                [
+                    {
+                        workspaceId: this.workspaceId,
+                        contractId: this.id,
+                        compilerVersion, evmVersion, runs, constructorArguments, libraries, contractName
+                    }
+                ],
+                {
+                    transaction,
+                    ignoreDuplicates: true,
+                    returning: true
+                }
+            );
+
+            if (!contractVerification.id)
+                return contractVerification;
 
             const keys = Object.keys(sources);
             for (let i = 0; i < keys.length; i++) {
@@ -466,9 +479,9 @@ module.exports = (sequelize, DataTypes) => {
         for (let i = 0; i < sources.length; i++)
             await sources[i].destroy({ transaction });
 
-        const verification = await this.getVerification();
-        if (verification)
-            await verification.destroy({ transaction });
+        const verifications = await sequelize.models.ContractVerification.findAll({ where: { contractId: this.id }});
+        for (let i = 0; i < verifications.length; i++)
+            await verifications[i].destroy({ transaction });
 
         const tokens = await sequelize.models.Erc721Token.findAll({ where: { contractId: this.id }});
         for (let i = 0; i < tokens.length; i++)
@@ -535,20 +548,32 @@ module.exports = (sequelize, DataTypes) => {
     transactionId: DataTypes.INTEGER
   }, {
     hooks: {
+        afterBulkCreate(contracts, options) {
+            const afterBulkCreateFn = () => {
+                const jobs = contracts.map(contract => ({
+                    name: `processContract-${contract.id}`,
+                    data: { contractId: contract.id }
+                }));
+                return bulkEnqueue('processContract', jobs);
+            }
+            return options.transaction ?
+                options.transaction.afterCommit(afterBulkCreateFn) :
+                afterBulkCreateFn();
+        },
         afterDestroy(contract) {
             trigger(`private-contracts;workspace=${contract.workspaceId}`, 'destroyed', null);
         },
-        async afterCreate(contract, options) {
+
+        afterCreate(contract, options) {
             const afterCreateFn = () => {
                 return enqueue(`processContract`, `processContract-${contract.id}`, { contractId: contract.id });
-            };
-
-            if (options.transaction)
-                options.transaction.afterCommit(afterCreateFn);
-            else
+            }
+            return options.transaction ?
+                options.transaction.afterCommit(afterCreateFn) :
                 afterCreateFn();
         },
-        async afterSave(contract) {
+
+        afterSave(contract) {
             trigger(`private-contracts;workspace=${contract.workspaceId}`, 'new', null);
             trigger(`private-transactions;workspace=${contract.workspaceId};address=${contract.address}`, 'new', null);
 
