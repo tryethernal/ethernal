@@ -18,7 +18,7 @@ module.exports = async () => {
         const completedJobs = await queue.getCompleted();
 
         const averageProcessingTime = completedJobs.reduce((a, b) => {
-            return b.finishedOn ? a + (b.finishedOn - b.processedOn) / 1000 : a;
+            return b && b.finishedOn ? a + (b.finishedOn - b.processedOn) / 1000 : a;
         }, 0) / completedJobs.length;
 
         const waitingJobCount = await queue.getWaitingCount();
