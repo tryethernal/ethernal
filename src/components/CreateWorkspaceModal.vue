@@ -1,10 +1,9 @@
 <template>
 <v-dialog v-model="dialog" max-width="700">
     <v-card>
-        <v-card-title class="text-h5">
-            New Workspace
-            <v-spacer></v-spacer>
-            <v-btn icon @click="close(false)"><v-icon>mdi-close</v-icon></v-btn>
+        <v-card-title class="d-flex justify-space-between align-center">
+            <h4>Create Workspace</h4>
+            <v-btn color="grey" variant="text" icon="mdi-close" @click="close(false)"></v-btn>
         </v-card-title>
         <Create-Workspace @workspaceCreated="onWorkspaceCreated" @goToBilling="goToBilling" />
     </v-card>

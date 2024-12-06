@@ -65,7 +65,7 @@
                 </v-row>
                 <v-row>
                     <v-col>
-                        <v-skeleton-loader max-height="40vh" type="table"></v-skeleton-loader>
+                        <v-skeleton-loader type="table"></v-skeleton-loader>
                     </v-col>
                 </v-row>
             </v-card-text>

@@ -1,5 +1,5 @@
 <template>
-    <v-card elevation="0">
+    <v-card flat>
         <v-card-text v-if="(!userStore.plan || userStore.plan == 'free') && userStore.onboarded && !isPublic">
             <v-alert density="compact" text type="error">Free plan users are limited to one workspace. <a href="#" @click.stop="goToBilling()">Upgrade</a> to our Premium plan to create more.</v-alert>
         </v-card-text>
@@ -18,7 +18,7 @@
                         </template>
                         This will send a RPC request asking for a network ID to 127.0.0.1 on http and ws protocols on commonly used ports (7545, 8545 and 9545).<br>The address will be displayed below if the request is successful.
                     </v-tooltip>
-                    <ul v-show="detectedNetworks.length">
+                    <ul v-show="detectedNetworks.length" class="mx-4 mt-2">
                         <li v-for="(address, idx) in detectedNetworks" :key="idx">
                             {{ address }}&nbsp;<a href="#" :id="`serverDetected-${idx}`" @click.prevent="rpcServer = address">Use</a>
                         </li>
@@ -38,7 +38,7 @@
                         v => !!v || 'RPC server is required'
                     ]"
                     variant="outlined" v-model="rpcServer" id="workspaceServer" label="RPC Server*" placeholder="ws://localhost:8545" hide-details="auto" class="mb-2" required></v-text-field>
-                <v-select v-if="!isPublic" variant="outlined" required label="Chain" v-model="chain" :items="availableChains" hide-details="auto"></v-select>
+                <v-select v-if="!isPublic" id="chain" item-title="name" item-value="slug" variant="outlined" required label="Chain" v-model="chain" :items="availableChains" hide-details="auto"></v-select>
 
                 <v-card-actions>
                     <v-spacer></v-spacer>
@@ -71,7 +71,10 @@ export default {
         valid: false
     }),
     mounted() {
-        this.availableChains = Object.values(this.envStore.chains).map((chain) => ({ text: chain.name, value: chain.slug }));
+        this.availableChains = Object.values(this.envStore.chains).map((chain) => ({
+            name: chain.name,
+            slug: chain.slug
+        }));
     },
     methods: {
         async createWorkspace(name, rpcServer) {
