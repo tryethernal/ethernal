@@ -8,8 +8,6 @@ const createIncident = (message, description, priority = 'P1') => {
         return logger.info({ message, description, priority });
     }
 
-    console.log('Creating OpsGenie incident', { message, description, priority });
-
     return axios({
         method: 'POST',
         url: 'https://api.opsgenie.com/v2/alerts',
