@@ -10,7 +10,8 @@ const monitoredQueues = [
 
 module.exports = async () => {
     if (!queueMonitoringMaxProcessingTime() || !queueMonitoringHighProcessingTimeThreshold() || !queueMonitoringHighWaitingJobCountThreshold() || !queueMonitoringMaxWaitingJobCount()) {
-        return logger.info('Queue monitoring is not enabled');
+        logger.info('Queue monitoring is not enabled');
+        return;
     }
 
     for (const queueName of monitoredQueues) {
@@ -28,8 +29,8 @@ module.exports = async () => {
 
         if (
             averageProcessingTime > queueMonitoringMaxProcessingTime() ||
-            (averageProcessingTime > queueMonitoringHighProcessingTimeThreshold() && waitingJobCount >= queueMonitoringHighWaitingJobCountThreshold()) ||
-            waitingJobCount >= queueMonitoringMaxWaitingJobCount()
+            waitingJobCount >= queueMonitoringMaxWaitingJobCount() ||
+            (averageProcessingTime >= queueMonitoringHighProcessingTimeThreshold() && waitingJobCount >= queueMonitoringHighWaitingJobCountThreshold())
         ) {
             await createIncident(`${queueName} Queue monitoring`,
                 `Waiting job count: ${waitingJobCount} - Delayed job count: ${delayedJobCount} - Average processing time: ${averageProcessingTime}s`
