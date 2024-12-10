@@ -38,5 +38,6 @@ module.exports = {
     cancelDemoExplorers: require('./cancelDemoExplorers'),
     deleteWorkspace: require('./deleteWorkspace'),
     tokenTransferCleanup: require('./tokenTransferCleanup'),
-    queueMonitoring: require('./queueMonitoring')
+    queueMonitoring: require('./queueMonitoring'),
+    blockSyncMonitoring: require('./blockSyncMonitoring')
 };

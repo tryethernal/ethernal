@@ -40,5 +40,6 @@ module.exports = {
     queueMonitoringHighWaitingJobCountThreshold: () => parseInt(process.env.QUEUE_MONITORING_HIGH_WAITING_JOB_COUNT_THRESHOLD) || 50,
     queueMonitoringMaxWaitingJobCount: () => parseInt(process.env.QUEUE_MONITORING_MAX_WAITING_JOB_COUNT) || 100,
     maxTimeWithoutEnqueuedJob: () => parseInt(process.env.MAX_TIME_WITHOUT_ENQUEUED_JOB) || 60,
+    maxBlockNumberDiff: () => parseInt(process.env.MAX_BLOCK_NUMBER_DIFF) || 10,
     getOpsgenieApiKey: () => process.env.OPSGENIE_API_KEY,
 };
