@@ -33,6 +33,9 @@ module.exports = async () => {
         if (explorer.workspace.rpcHealthCheck && !explorer.workspace.rpcHealthCheck.isReachable)
             continue;
 
+        if (await explorer.hasReachedTransactionQuota())
+            continue;
+
         const [latestLocalBlock] = await explorer.workspace.getBlocks({
             order: [['number', 'DESC']],
             limit: 1

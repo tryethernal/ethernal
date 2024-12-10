@@ -25,8 +25,18 @@ describe('blockSyncMonitoring', () => {
         expect(createIncident).not.toHaveBeenCalled();
     });
 
+    it('Should skip if transaction quota is reached', async () => {
+        jest.spyOn(Explorer, 'findAll').mockResolvedValueOnce([{
+            hasReachedTransactionQuota: jest.fn().mockResolvedValue(true),
+            workspace: {}
+        }]);
+        await blockSyncMonitoring();
+        expect(createIncident).not.toHaveBeenCalled();
+    });
+
     it('Should skip if there is no block', async () => {
         jest.spyOn(Explorer, 'findAll').mockResolvedValueOnce([{
+            hasReachedTransactionQuota: jest.fn().mockResolvedValue(false),
             workspace: {
                 getBlocks: jest.fn().mockResolvedValue([])
             }
@@ -37,6 +47,7 @@ describe('blockSyncMonitoring', () => {
 
     it('Should skip if rpc is not reachable', async () => {
         jest.spyOn(Explorer, 'findAll').mockResolvedValueOnce([{
+            hasReachedTransactionQuota: jest.fn().mockResolvedValue(false),
             workspace: {
                 getBlocks: jest.fn().mockResolvedValue([{ number: 1 }]),
                 getProvider: () => ({ fetchLatestBlock: jest.fn().mockRejectedValue(new Error('Network error')) })
@@ -50,6 +61,7 @@ describe('blockSyncMonitoring', () => {
         jest.spyOn(Explorer, 'findAll').mockResolvedValueOnce([{
             id: 1,
             name: 'Explorer',
+            hasReachedTransactionQuota: jest.fn().mockResolvedValue(false),
             workspace: {
                 getBlocks: jest.fn().mockResolvedValue([{ number: 1 }]),
                 getProvider: () => ({ fetchLatestBlock: jest.fn().mockResolvedValue({ number: 2 }) })
@@ -64,6 +76,7 @@ describe('blockSyncMonitoring', () => {
         jest.spyOn(Explorer, 'findAll').mockResolvedValueOnce([{
             id: 1,
             name: 'Explorer',
+            hasReachedTransactionQuota: jest.fn().mockResolvedValue(false),
             workspace: {
                 getBlocks: jest.fn().mockResolvedValue([{ number: 1 }]),
                 getProvider: () => ({ fetchLatestBlock: jest.fn().mockResolvedValue({ number: 100 }) })
