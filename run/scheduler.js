@@ -9,8 +9,8 @@ const BLOCK_SYNC_MONITORING_INTERVAL = 60 * 1000;
 
 (async () => {
     await enqueue(
-        'cancelDemoExplorers',
-        'cancelDemoExplorers',
+        'removeExpiredExplorers',
+        'removeExpiredExplorers',
         {},
         10,
         { every: CANCEL_DEMO_INTERVAL }

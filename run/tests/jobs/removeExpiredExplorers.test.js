@@ -2,7 +2,7 @@ require('../mocks/lib/queue');
 const { Explorer } = require('../mocks/models');
 const { enqueue } = require('../../lib/queue');
 
-const cancelDemoExplorers = require('../../jobs/cancelDemoExplorers');
+const removeExpiredExplorers = require('../../jobs/removeExpiredExplorers');
 
 beforeEach(() => jest.clearAllMocks());
 
@@ -10,7 +10,7 @@ const safeDeleteSubscription = jest.fn();
 const safeDelete = jest.fn();
 const update = jest.fn();
 
-describe('cancelDemoExplorers', () => {
+describe('removeExpiredExplorers', () => {
     it('Should delete subscription, explorer, update workspace & enqueue ws reset & deletion', (done) => {
         jest.useFakeTimers()
             .setSystemTime(new Date('2023-12-26'));
@@ -19,17 +19,35 @@ describe('cancelDemoExplorers', () => {
             {
                 workspaceId: 1,
                 slug: 'slug',
-                stripeSubscription: { stripeId: '123' },
+                stripeSubscription: { stripeId: '123', stripePlan: { capabilities: { expiresAfter: 7 }}},
+                createdAt: new Date('2023-11-26'),
+                safeDeleteSubscription,
+                safeDelete,
+                workspace: { update }
+            },
+            {
+                workspaceId: 1,
+                slug: 'slug',
+                stripeSubscription: { stripeId: '123', stripePlan: { capabilities: { expiresAfter: 7 }}},
+                createdAt: new Date('2023-12-25'),
+                safeDeleteSubscription,
+                safeDelete,
+                workspace: { update }
+            },
+            {
+                workspaceId: 1,
+                slug: 'slug',
+                stripeSubscription: { stripeId: '123', stripePlan: { capabilities: {} }},
                 safeDeleteSubscription,
                 safeDelete,
                 workspace: { update }
             }
         ]);
 
-        cancelDemoExplorers()
+        removeExpiredExplorers()
             .then(res => {
-                expect(safeDeleteSubscription).toHaveBeenCalledWith();
-                expect(safeDelete).toHaveBeenCalled();
+                expect(safeDeleteSubscription).toHaveBeenCalled();
+                expect(safeDelete).toHaveBeenCalledTimes(1)
                 expect(update).toHaveBeenCalledWith({ pendingDeletion: true, public: false });
                 expect(enqueue).toHaveBeenCalledWith('workspaceReset', 'workspaceReset-1', {
                     workspaceId: 1,
