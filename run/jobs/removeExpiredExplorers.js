@@ -33,8 +33,8 @@ module.exports = async () => {
         const expiresAfterDays = explorer.stripeSubscription.stripePlan.capabilities.expiresAfter;
         const expirationDate = new Date(explorer.createdAt);
         expirationDate.setDate(expirationDate.getDate() + expiresAfterDays);
-        
-        const daysDiff = Math.floor((expirationDate - new Date()) / (1000 * 60 * 60 * 24));
+
+        const daysDiff = (expirationDate - new Date()) / (1000 * 60 * 60 * 24);
 
         if (daysDiff <= 0) {
             await explorer.workspace.update({ pendingDeletion: true, public: false });
