@@ -46,9 +46,8 @@ describe('removeExpiredExplorers', () => {
 
         removeExpiredExplorers()
             .then(res => {
-                expect(safeDeleteSubscription).toHaveBeenCalled();
-                expect(safeDelete).toHaveBeenCalledTimes(1)
                 expect(update).toHaveBeenCalledWith({ pendingDeletion: true, public: false });
+                expect(safeDelete).toHaveBeenNthCalledWith(1, { deleteSubscription: true });
                 expect(enqueue).toHaveBeenCalledWith('workspaceReset', 'workspaceReset-1', {
                     workspaceId: 1,
                     from: new Date(0),
