@@ -33,7 +33,7 @@
         "workspaceReset",
         "batchBlockDelete",
         "batchContractDelete",
-        "cancelDemoExplorers",
+        "removeExpiredExplorers",
         "deleteWorkspace",
         "tokenTransferCleanup",
         "removeStalledBlock",
