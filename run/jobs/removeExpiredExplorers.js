@@ -1,24 +1,30 @@
 const { Op } = require('sequelize');
-const { Explorer, StripeSubscription, StripePlan } = require('../models');
+const { Explorer, StripeSubscription, StripePlan, Workspace } = require('../models');
 const { enqueue } = require('../lib/queue');
 
 module.exports = async () => {
     const explorers = (await Explorer.findAll({
-        include: {
-            model: StripeSubscription,
-            as: 'stripeSubscription',
-            include: {
-                model: StripePlan,
-                as: 'stripePlan',
-                where: {
-                    capabilities: {
-                        expiresAfter: {
-                            [Op.not]: null
+        include: [
+            {
+                model: StripeSubscription,
+                as: 'stripeSubscription',
+                include: {
+                    model: StripePlan,
+                    as: 'stripePlan',
+                    where: {
+                        capabilities: {
+                            expiresAfter: {
+                                [Op.not]: null
+                            }
                         }
                     }
                 }
+            },
+            {
+                model: Workspace,
+                as: 'workspace'
             }
-        }
+        ]
     })).filter(e => !!e.stripeSubscription);
     
     const deleted = [];
@@ -31,9 +37,8 @@ module.exports = async () => {
         const daysDiff = Math.floor((expirationDate - new Date()) / (1000 * 60 * 60 * 24));
 
         if (daysDiff <= 0) {
-            await explorer.safeDeleteSubscription();
-            await explorer.safeDelete();
             await explorer.workspace.update({ pendingDeletion: true, public: false });
+            await explorer.safeDelete({ deleteSubscription: true });
             await enqueue('workspaceReset', `workspaceReset-${explorer.workspaceId}`, {
                 workspaceId: explorer.workspaceId,
                 from: new Date(0),
