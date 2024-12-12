@@ -10,7 +10,7 @@ beforeEach(() => jest.clearAllMocks());
 
 jest.spyOn(env, 'getMaxBlockForSyncReset').mockReturnValue(2);
 
-describe('cancelDemoExplorers', () => {
+describe('deleteWorkspace', () => {
     it('Should return if cannot find workspace', (done) => {
         jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce(null);
 
