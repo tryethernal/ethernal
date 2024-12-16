@@ -73,7 +73,12 @@ const getBalanceChange = async (address, token, blockNumber, rpcServer) => {
     };
 }
 
+let providers = {};
+
 const getProvider = function(url) {
+    if (providers[url])
+        return providers[url];
+
     const rpcServer = new URL(url);
 
     let provider;
@@ -92,7 +97,8 @@ const getProvider = function(url) {
             password: rpcServer.password
         };
 
-    return new provider(authenticatedUrl);
+    providers[url] = new provider(authenticatedUrl);
+    return providers[url];
 };
 
 class DexFactoryConnector {
