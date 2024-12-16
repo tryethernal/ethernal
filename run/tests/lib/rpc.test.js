@@ -87,7 +87,7 @@ describe('Tracer', () => {
             }
         });
 
-        const tracer = new Tracer('http://localhost:8545');
+        const tracer = new Tracer('http://localhost:8543');
 
         return expect(tracer.process({ hash: '0x123' }))
             .rejects
@@ -95,12 +95,12 @@ describe('Tracer', () => {
     });
 
     it('Should persist the trace in the db', async () => {
-        const tracer = new Tracer('http://localhost:8545', {});
-        
+        const tracer = new Tracer('http://localhost:8546', {});
+
         await tracer.process({ hash: '0x123' });
         await tracer.saveTrace('123', 'hardhat');
 
-        expect(processTrace).toHaveBeenCalledWith('123', 'hardhat', '0x123', [{ op: 'CALL' }, { op: 'CALLSTATIC' }], {});
+        expect(processTrace).toHaveBeenCalledWith('123', 'hardhat', '0x123', [{ op: 'CALL' }, { op: 'CALLSTATIC' }], {});
     });
 
     it('Should not persist the trace in the db if it is invalid', async () => {
