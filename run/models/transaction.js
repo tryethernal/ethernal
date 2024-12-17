@@ -48,7 +48,7 @@ module.exports = (sequelize, DataTypes) => {
 
         const traceSteps = await this.getTraceSteps();
         for (let i = 0; i < traceSteps.length; i++)
-            await traceSteps[i].destroy(transaction);
+            await traceSteps[i].destroy({ transaction });
 
         const event = await this.getEvent();
         if (event)
