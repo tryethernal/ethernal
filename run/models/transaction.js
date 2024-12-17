@@ -34,6 +34,7 @@ module.exports = (sequelize, DataTypes) => {
             },
           constraints: false
       });
+      Transaction.hasOne(models.Contract, { foreignKey: 'transactionId', as: 'createdContract' });
       Transaction.hasOne(models.TransactionReceipt, { foreignKey: 'transactionId', as: 'receipt' });
       Transaction.hasOne(models.TransactionEvent, { foreignKey: 'transactionId', as: 'event' });
       Transaction.hasMany(models.TokenTransfer, { foreignKey: 'transactionId', as: 'tokenTransfers' });
