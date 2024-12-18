@@ -1638,7 +1638,7 @@ module.exports = (sequelize, DataTypes) => {
                 entities.contracts = entities.transactions.flatMap(transaction => transaction.createdContract).filter(contract => !!contract);
                 entities.transaction_receipts = entities.transactions.flatMap(transaction => transaction.receipt).filter(receipt => !!receipt && !!receipt.logs);
                 entities.transaction_logs = entities.transaction_receipts.flatMap(receipt => receipt.logs).filter(log => !!log);
-                entities.token_transfers = entities.transaction_logs.flatMap(log => log.tokenTransfers).filter(tokenTransfer => !!tokenTransfer);
+                entities.token_transfers = entities.transaction_logs.flatMap(log => log.tokenTransfer).filter(tokenTransfer => !!tokenTransfer);
                 entities.token_balance_changes = entities.token_transfers.flatMap(tokenTransfer => tokenTransfer.tokenBalanceChanges).filter(tokenBalanceChange => !!tokenBalanceChange);
 
                 for (const contract of entities.contracts)
