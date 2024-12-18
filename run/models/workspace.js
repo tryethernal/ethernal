@@ -1664,7 +1664,7 @@ module.exports = (sequelize, DataTypes) => {
                 }
 
                 if (entities.token_balance_changes.length) {
-                    await sequelize.query(`DELETE FROM token_balance_changes WHERE "tokenBalanceChangeId" IN (:ids) AND "workspaceId" = :workspaceId`, {
+                    await sequelize.query(`DELETE FROM token_balance_changes WHERE id IN (:ids) AND "workspaceId" = :workspaceId`, {
                         replacements: { ids: entities.token_balance_changes.map(row => row.id), workspaceId: this.id },
                         transaction
                     });
