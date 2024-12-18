@@ -1622,7 +1622,12 @@ module.exports = (sequelize, DataTypes) => {
                                     include: {
                                         model: sequelize.models.TokenTransfer,
                                         attributes: ['id'],
-                                        as: 'tokenTransfer'
+                                        as: 'tokenTransfer',
+                                        include: {
+                                            model: sequelize.models.TokenBalanceChange,
+                                            attributes: ['id'],
+                                            as: 'tokenBalanceChanges'
+                                        }
                                     }
                                 }
                             },
