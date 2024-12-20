@@ -61,6 +61,9 @@ module.exports = async job => {
     if (tracer.error)
         return tracer.error;
 
+    if (!tracer.parsedTrace)
+        return 'No trace';
+
     return transaction.safeCreateTransactionTrace(tracer.parsedTrace);
 };
 

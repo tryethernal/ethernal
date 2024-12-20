@@ -214,7 +214,7 @@ class ProviderConnector {
 
 class Tracer {
 
-    #ERRORS_TO_IGNORE = [-32601];
+    #ERRORS_TO_IGNORE = [-32601, -32000];
     #bytecodes = {};
 
     constructor(server, db, type = 'other') {
@@ -235,7 +235,8 @@ class Tracer {
 
         if (error.error && this.#ERRORS_TO_IGNORE.includes(error.error.code))
             return this.error = {
-                message: `Error code "${error.error.code}".`,
+                code: `Error code "${error.error.code}".`,
+                message: error.error.message,
                 error: error
             };
 
