@@ -23,10 +23,8 @@
             </v-list-item>
             <v-list-item v-if="currentWorkspaceStore.browserSyncEnabled">
                 <v-alert text :icon="false" type="warning">
-                    <v-progress-circular size="16" width="2" indeterminate color="warning"></v-progress-circular>
-                    <a class="text-warning pl-2" @click.stop="openBrowserSyncExplainerModal()">
-                        <span style="text-decoration: underline;">Browser Sync</span>
-                    </a>
+                    <v-progress-circular bg-color="warning" color="white" size="16" width="2" indeterminate></v-progress-circular>
+                    <a href="#" class="text-white pl-2" @click.prevent="openBrowserSyncExplainerModal()">Browser Sync</a>
                 </v-alert>
             </v-list-item>
 
@@ -90,7 +88,6 @@
 </template>
 
 <script>
-import { useTheme } from 'vuetify';
 import { defineComponent, shallowRef } from 'vue';
 import { Icon } from '@iconify/vue';
 import { mapStores } from 'pinia';
@@ -302,6 +299,7 @@ export default {
         initWorkspace(workspace) {
             this.currentWorkspaceStore.updateCurrentWorkspace(workspace);
             this.userStore.updateUser({ onboarded: true });
+            this.$pusher.init();
             this.isOverlayActive = false;
             this.appBarComponent = 'rpc-connector';
             this.routerComponent = 'router-view';
@@ -335,7 +333,7 @@ export default {
 </script>
 <style>
 a:not(.v-list-item) {
-    color: rgb(var(--v-theme-primary)) !important;
+    color: rgb(var(--v-theme-primary));
 }
 .v-system-bar a {
     color: rgb(var(--v-theme-base)) !important;

@@ -6,17 +6,17 @@
                 <v-alert v-if="successMessage" density="compact" text type="success">{{ successMessage }}</v-alert>
                 <v-alert v-if="errorMessage" density="compact" text type="error">{{ errorMessage }}</v-alert>
                 <v-row>
-                    <v-col v-if="themes.light" cols="6">
-                        <div v-for="(key, idx) in Object.keys(themes.light)" :key="idx">
+                    <v-col v-if="themes.light && themes.light.colors" cols="6">
+                        <div v-for="(key, idx) in Object.keys(themes.light.colors)" :key="idx">
                             <v-text-field
                                 @focus="selectedColorPicker = key"
                                 @blur="selectedColorPicker = null"
                                 variant="outlined"
                                 density="compact"
-                                v-model="themes.light[key]"
+                                v-model="themes.light.colors[key]"
                                 :label="key.charAt(0).toUpperCase() + key.slice(1) + ' Color'">
                                 <template v-slot:prepend>
-                                    <v-icon @click="selectedColorPicker = selectedColorPicker ? null : key" :color="themes.light[key]">mdi-square</v-icon>
+                                    <v-icon @click="selectedColorPicker = selectedColorPicker ? null : key" :color="themes.light.colors[key]">mdi-square</v-icon>
                                 </template>
                             </v-text-field>
                             <v-color-picker
@@ -69,7 +69,7 @@
                 </v-row>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn :loading="loading" color="primary" :disabled="!valid" type="submit">Update</v-btn>
+                    <v-btn :loading="loading" color="primary" variant="flat" :disabled="!valid" type="submit">Update</v-btn>
                 </v-card-actions>
             </v-card-text>
         </v-form>
@@ -78,6 +78,8 @@
 
 <script>
 import NewExplorerLink from './NewExplorerLink.vue';
+
+const whitelistedColors = ['primary', 'secondary', 'accent', 'error', 'info', 'success', 'warning', 'background'];
 
 export default {
     name: 'ExplorerBranding',
@@ -102,6 +104,11 @@ export default {
     mounted() {
         this.themes = { ...this.explorer.themes, ...this.themes };
         this.themes.light = { ...this.$vuetify.theme.themes.light, ...this.explorer.themes.light };
+        const filteredColors = {};
+        for (const color of whitelistedColors) {
+            filteredColors[color] = this.themes.light.colors[color];
+        }
+        this.themes.light.colors = filteredColors;
 
         if (this.themes.font)
             this.fonts.push(this.themes.font);

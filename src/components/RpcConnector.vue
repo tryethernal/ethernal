@@ -114,6 +114,8 @@ export default {
             this.$pusher.onNewContract(this.processContracts, this);
             this.$pusher.onNewProcessableTransactions((transaction) => this.$server.processTransaction(this.currentWorkspace, transaction), this);
             this.$pusher.onNewFailedTransactions((transaction) => this.$server.processFailedTransactions([transaction], this.currentWorkspaceStore.rpcServer), this);
+            if (this.currentWorkspaceStore.browserSyncEnabled == true)
+                this.currentWorkspaceStore.startBrowserSync();
         }
         this.$pusher.onNewBlock(block => {
             if (block.number > this.currentWorkspaceStore.currentBlock.number)

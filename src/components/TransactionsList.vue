@@ -3,7 +3,7 @@
         :dense="dense"
         :loading="loading"
         :items="transactions"
-        :sort-by="[{ key: currentOptions.orderBy, order: currentOptions.order }]"
+        :sort-by="currentOptions.sortBy"
         :must-sort="true"
         :items-length="transactionCount"
         :headers="headers"
@@ -100,7 +100,7 @@ export default {
     },
     data: () => ({
         headers: [],
-        currentOptions: { page: 1, itemsPerPage: 10, orderBy: 'timestamp', order: 'desc' },
+        currentOptions: { page: 1, itemsPerPage: 10, sortBy: [{ key: 'timestamp', order: 'desc' }] },
         transactions: [],
         transactionCount: 0,
         loading: false,
@@ -176,8 +176,7 @@ export default {
                 this.debounced = true;
                 return setTimeout(() => {
                     this.lastUpdatedAt = Date.now();
-                    const { page, itemsPerPage } = this.currentOptions;
-                    const sortBy = [{ key: this.currentOptions.orderBy, order: this.currentOptions.order }];
+                    const { page, itemsPerPage, sortBy } = this.currentOptions;
                     this.getTransactions({ page, itemsPerPage, sortBy });
                     this.debounced = false;
                 }, DEBOUNCING_DELAY);
@@ -186,21 +185,17 @@ export default {
             if (!page || !itemsPerPage || !sortBy || !sortBy.length)
                 return this.loading = false;
 
-            if (this.transactions.length && this.currentOptions.page == page && this.currentOptions.itemsPerPage == itemsPerPage && this.currentOptions.orderBy == sortBy[0].key && this.currentOptions.order == sortBy[0].order)
-                return this.loading = false;
-
             this.currentOptions = {
                 page,
                 itemsPerPage,
-                orderBy: sortBy[0].key,
-                order: sortBy[0].order
+                sortBy
             };
 
             const query = this.blockNumber ?
-                this.$server.getBlockTransactions(this.blockNumber, this.currentOptions, !this.dense && !!this.withCount) :
+                this.$server.getBlockTransactions(this.blockNumber, { page, itemsPerPage, orderBy: sortBy[0].key, order: sortBy[0].order }, !this.dense && !!this.withCount) :
                     this.address ?
-                        this.$server.getAddressTransactions(this.address, this.currentOptions, !this.dense && !!this.withCount) :
-                        this.$server.getTransactions(this.currentOptions, !this.dense && !!this.withCount);
+                        this.$server.getAddressTransactions(this.address, { page, itemsPerPage, orderBy: sortBy[0].key, order: sortBy[0].order }, !this.dense && !!this.withCount) :
+                        this.$server.getTransactions({ page, itemsPerPage, orderBy: sortBy[0].key, order: sortBy[0].order }, !this.dense && !!this.withCount);
 
             query.then(({ data }) => {
                 this.transactions = data.items;

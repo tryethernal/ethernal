@@ -196,7 +196,7 @@ export default {
         receivedErc20TokenTransferCount: null
     }),
     mounted() {
-        this.$server.getNativeTokenBalance(this.address).then(({ data: { balance }}) => this.balance = balance);
+        this.$server.getNativeTokenBalance(this.address).then(({ data: { balance }}) => this.balance = balance || 0);
     },
     methods: {
         formatContractPattern

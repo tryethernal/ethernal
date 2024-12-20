@@ -4,40 +4,41 @@ import { useEnvStore } from '../stores/env';
 import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
 import { useUserStore } from '../stores/user';
 import { sanitize } from '../lib/utils';
-const DEBUG_PUSHER = false;
-Pusher.logToConsole = import.meta.env.NODE_ENV == 'development' && DEBUG_PUSHER;
+Pusher.logToConsole = import.meta.env.NODE_ENV == 'development' && true;
 
 export default {
     install(app) {
-        const envStore = useEnvStore();
-        const currentWorkspaceStore = useCurrentWorkspaceStore();
-        const userStore = useUserStore();
-        const apiToken = localStorage.getItem('apiToken');
-
-        const { pusherKey, soketiHost, soketiPort, soketiForceTLS } = storeToRefs(envStore);
-
-        const pusher = pusherKey ?
-            new Pusher(pusherKey, {
-                wsHost: soketiHost,
-                wsPort: soketiPort,
-                forceTLS: soketiForceTLS,
-                enabledTransports: ['ws', 'wss'],
-                userAuthentication: {
-                    headersProvider: () => apiToken ? { 'Authorization': `Bearer ${apiToken}` } : {}
-                },
-                channelAuthorization: {
-                    endpoint: `${envStore.apiRoot}/api/pusher/authorization`,
-                    headersProvider: () => apiToken ? { 'Authorization': `Bearer ${apiToken}` } : {},
-                    params: sanitize({
-                        firebaseUserId: storeToRefs(userStore).firebaseUserId,
-                        workspace: storeToRefs(currentWorkspaceStore).name
-                    })
-                }
-            }) : {
-                subscribe: () => ({ bind: () => {}, unbind: () => {} }),
-            }
+        let envStore, currentWorkspaceStore, userStore, apiToken, pusher;
 
         const $pusher = {
+            init() {
+                envStore = useEnvStore();
+                currentWorkspaceStore = useCurrentWorkspaceStore();
+                userStore = useUserStore();
+                apiToken = localStorage.getItem('apiToken');
+
+                pusher = envStore.pusherKey ?
+                    new Pusher(envStore.pusherKey, {
+                        wsHost: envStore.soketiHost,
+                        wsPort: envStore.soketiPort,
+                        forceTLS: envStore.soketiForceTLS,
+                        enabledTransports: ['ws', 'wss'],
+                        userAuthentication: {
+                            headersProvider: () => apiToken ? { 'Authorization': `Bearer ${apiToken}` } : {}
+                        },
+                        channelAuthorization: {
+                            endpoint: `${envStore.apiRoot}/api/pusher/authorization`,
+                            headersProvider: () => apiToken ? { 'Authorization': `Bearer ${apiToken}` } : {},
+                            params: sanitize({
+                                    firebaseUserId: storeToRefs(userStore).firebaseUserId.value,
+                                    workspace: storeToRefs(currentWorkspaceStore).name.value
+                            })
+                        }
+                    }) : {
+                        subscribe: () => ({ bind: () => {}, unbind: () => {} }),
+                    }
+            },
+
             onNewContractLog(handler, address, context) {
                 const workspaceId = currentWorkspaceStore.id;
                 const channelString = `private-contractLog;workspace=${workspaceId};contract=${address}`;

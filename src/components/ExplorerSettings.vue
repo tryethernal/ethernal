@@ -14,24 +14,26 @@
                             item-title="name"
                             :items="workspaces"
                             return-object>
-                            <template v-slot:item="{ item }">
-                                {{ item.name }}<small class="ml-2">({{ shortRpcUrl(item.rpcServer) }} | {{  item.networkId }})</small>
+                            <template v-slot:item="{ props, item }">
+                                <v-list-item v-bind="props">
+                                    <small class="ml-2">{{ shortRpcUrl(item.raw.rpcServer) }} | {{ item.raw.networkId }}</small>
+                                </v-list-item>
                             </template>
                             <template v-slot:selection="{ item }">
-                                {{ item.name }}<small class="ml-2">({{ shortRpcUrl(item.rpcServer) }} | {{  item.networkId }})</small>
+                                {{ item.raw.name }}<small class="ml-2">({{ shortRpcUrl(item.raw.rpcServer) }} | {{ item.raw.networkId }})</small>
                             </template>
                         </v-select>
                         <v-text-field
                             density="compact"
                             variant="outlined"
-                            v-model="explorer.name"
+                            v-model="currentExplorer.name"
                             label="Name"></v-text-field>
                         <v-text-field
                             class="mb-2"
                             density="compact"
                             variant="outlined"
-                            v-model="explorer.slug"
-                            :suffix="`.${mainDomain}`"
+                            v-model="currentExplorer.slug"
+                            :suffix="`.${envStore.mainDomain}`"
                             hint="Your explorer will always be reachable at this address"
                             persistent-hint
                             label="Ethernal Domain"></v-text-field>
@@ -41,7 +43,7 @@
                             variant="outlined"
                             :disabled="!capabilities.nativeToken"
                             :hint="capabilities.nativeToken ? '' : 'Upgrade your plan to customize your native token symbol.'"
-                            v-model="explorer.token"
+                            v-model="currentExplorer.token"
                             persistent-hint
                             label="Native Token Symbol"></v-text-field>
                         <v-text-field
@@ -53,7 +55,7 @@
                             :hint="capabilities.totalSupply ? `In ether: ${formatTotalSupply()}` : 'Upgrade your plan to display a total supply.'"
                             persistent-hint
                             hide-details="auto"
-                            v-model="explorer.totalSupply"
+                            v-model="currentExplorer.totalSupply"
                             label="Total Supply (in wei)"></v-text-field>
                         <v-text-field
                             density="compact"
@@ -61,14 +63,14 @@
                             :rules="[v => !v || this.isUrlValid(v) || 'Invalid URL']"
                             persistent-hint
                             placeholder="https://etherscan.io"
-                            v-model="explorer.l1Explorer"
-                            :hint="explorer.l1Explorer ? `L1 links will look like this: ${explorer.l1Explorer}/block/1234` : `If the L1BlockNumber key is on the block object, this setting will be used to display a link to the L1 explorer.${capabilities.l1Explorer ? '' : ' Upgrade your plan to use it.'}`"
+                            v-model="currentExplorer.l1Explorer"
+                            :hint="currentExplorer.l1Explorer ? `L1 links will look like this: ${currentExplorer.l1Explorer}/block/1234` : `If the L1BlockNumber key is on the block object, this setting will be used to display a link to the L1 explorer.${capabilities.l1Explorer ? '' : ' Upgrade your plan to use it.'}`"
                             label="L1 Explorer Base URL"></v-text-field>
                     </v-col>
                 </v-row>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn :loading="loading" color="primary" :disabled="!valid" type="submit">Update</v-btn>
+                    <v-btn :loading="loading" color="primary" :disabled="!valid" variant="flat" type="submit">Update</v-btn>
                 </v-card-actions>
             </v-form>
         </v-card-text>
@@ -76,7 +78,10 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapStores } from 'pinia';
+
+import { useEnvStore } from '../stores/env';
+
 import { formatNumber, shortRpcUrl, isUrlValid } from '../lib/utils';
 
 export default {
@@ -86,19 +91,21 @@ export default {
         successMessage: null,
         errorMessage: null,
         currentWorkspace: null,
+        currentExplorer: null,
         valid: false,
         loading: false,
         capabilities: {}
     }),
     mounted() {
+        this.currentExplorer = this.explorer;
         if (this.explorer.stripeSubscription)
             this.capabilities = this.explorer.stripeSubscription.stripePlan.capabilities;
     },
     methods: {
         shortRpcUrl, isUrlValid,
         formatTotalSupply() {
-            if (!this.explorer.totalSupply) return 'N/A';
-            return formatNumber(this.explorer.totalSupply)
+            if (!this.currentExplorer.totalSupply) return 'N/A';
+            return formatNumber(this.currentExplorer.totalSupply)
         },
         updateExplorerSettings() {
             this.loading = true;
@@ -106,21 +113,21 @@ export default {
             this.errorMessage = null;
             const settings = {
                 workspace: this.currentWorkspace.name,
-                name: this.explorer.name,
-                slug: this.explorer.slug,
-                l1Explorer: this.explorer.l1Explorer
+                name: this.currentExplorer.name,
+                slug: this.currentExplorer.slug,
+                l1Explorer: this.currentExplorer.l1Explorer
             };
 
             if (this.capabilities.nativeToken)
-                settings['token'] = this.explorer.token;
+                settings['token'] = this.currentExplorer.token;
 
             if (this.capabilities.totalSupply)
-                settings['totalSupply'] = this.explorer.totalSupply;
+                settings['totalSupply'] = this.currentExplorer.totalSupply;
 
             if (this.capabilities.l1Explorer)
-                settings['l1Explorer'] = this.explorer.l1Explorer;
+                settings['l1Explorer'] = this.currentExplorer.l1Explorer;
 
-            this.$server.updateExplorerSettings(this.explorer.id, settings)
+            this.$server.updateExplorerSettings(this.currentExplorer.id, settings)
                 .then(() => {
                     this.successMessage = 'Settings updated.';
                     this.$emit('updated');
@@ -132,9 +139,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-            'mainDomain'
-        ]),
+        ...mapStores(useEnvStore),
     },
     watch: {
         workspaces: {

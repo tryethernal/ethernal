@@ -3,8 +3,8 @@
         <v-card border flat>
             <v-card-text>
                 <template v-if="userStore.isAdmin">
-                    <v-alert v-if="removedContract" density="compact" text type="success">Contract at address <b>{{ removedContract }}</b> has been successfully removed.</v-alert>
-                    <v-alert density="compact" text v-show="!canImport" type="warning">Free plan users are limited to 10 synced contracts. Remove some contracts or <Upgrade-Link @goToBilling="goToBilling" :emit="true">upgrade</Upgrade-Link> to the Premium plan for more.</v-alert>
+                    <v-alert class="mb-4" v-if="removedContract" density="compact" text type="success">Contract at address <b>{{ removedContract }}</b> has been successfully removed.</v-alert>
+                    <v-alert class="mb-4" density="compact" text v-show="!canImport" type="warning">Free plan users are limited to 10 synced contracts. Remove some contracts or <Upgrade-Link @goToBilling="goToBilling" :emit="true"><span class="text-white text-decoration-underline font-weight-bold">upgrade</span></Upgrade-Link> to the Premium plan for more.</v-alert>
                     <Import-Contract-Modal ref="importContractModal" />
                     <Remove-Contract-Confirmation-Modal @refresh="getContracts" ref="removeContractConfirmationModal" />
                 </template>
@@ -12,7 +12,7 @@
                     :loading="loading"
                     :items="contracts"
                     :headers="headers"
-                    :sort-by="[{ key: currentOptions.orderBy, order: currentOptions.order }]"
+                    :sort-by="currentOptions.sortBy"
                     :must-sort="true"
                     :sort-desc="true"
                     :items-length="contractCount"
@@ -106,7 +106,7 @@ export default {
                 sortable: false
             }
         ],
-        currentOptions: { page: 1, itemsPerPage: 10, orderBy: 'timestamp', order: 'desc' },
+        currentOptions: { page: 1, itemsPerPage: 10, sortBy: [{ key: 'timestamp', order: 'desc' }] },
         newContractPusherHandler: null,
         destroyedContractPusherHandler: null
     }),
@@ -129,17 +129,13 @@ export default {
             if (!page || !itemsPerPage || !sortBy || !sortBy.length)
                 return this.loading = false;
 
-            if (this.currentOptions.page == page && this.currentOptions.itemsPerPage == itemsPerPage && this.currentOptions.sortBy == sortBy[0].key && this.currentOptions.sort == sortBy[0].order)
-                return this.loading = false;
-
-            const options = {
+            this.currentOptions = {
                 page,
                 itemsPerPage,
-                orderBy: sortBy[0].key,
-                order: sortBy[0].order
+                sortBy
             };
 
-            this.$server.getContracts(options)
+            this.$server.getContracts({ page, itemsPerPage, orderBy: sortBy[0].key, order: sortBy[0].order })
                 .then(({ data }) => {
                     this.contracts = data.items;
                     this.contractCount = data.total;
@@ -153,9 +149,11 @@ export default {
                 .open({ address: address, workspace: this.currentWorkspaceStore.name });
         },
         openImportContractModal: function() {
-            this.$refs.importContractModal.open({ contractsCount: this.contracts.length });
+            this.$refs.importContractModal
+                .open({ contractsCount: this.contracts.length })
+                .then(() => this.getContracts(this.currentOptions));
         },
-        goToBilling: function() {
+        goToBilling() {
             this.$router.push({ path: '/settings', query: { tab: 'billing' }});
         },
     },

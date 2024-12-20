@@ -13,7 +13,7 @@
             <div>
                 Monthly Transaction Quota:
                 <template v-if="explorer.stripeSubscription.cycleEndsAt">
-                    <b>{{ explorer.stripeSubscription.transactionQuota.toLocaleString() }} / {{ transactionQuota > 0 ? transactionQuota.toLocaleString() : '&#8734;' }}</b> (Resetting {{ moment(explorer.stripeSubscription.cycleEndsAt) | moment('MMM. Do') }})<template v-if="activeSubscription"> | <a href="#" @click="openExplorerQuotaManagementModal()">Manage Quota</a></template>
+                    <b>{{ explorer.stripeSubscription.transactionQuota.toLocaleString() }} / {{ transactionQuota > 0 ? transactionQuota.toLocaleString() : '&#8734;' }}</b> <template v-if="explorer.stripeSubscription.cycleEndsAt > 0">(Resetting {{ $dt.format(explorer.stripeSubscription.cycleEndsAt, 'MMM. d') }})</template><template v-if="activeSubscription"> | <a href="#" @click="openExplorerQuotaManagementModal()">Manage Quota</a></template>
                 </template>
                 <template v-else><b>Unlimited</b></template>
             </div>
@@ -27,8 +27,9 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
-const moment = require('moment');
+import { mapStores } from 'pinia';
+import { useEnvStore } from '../stores/env';
+
 import UpdateExplorerPlanModal from './UpdateExplorerPlanModal.vue';
 import ExplorerQuotaManagementModal from './ExplorerQuotaManagementModal.vue';
 
@@ -43,10 +44,9 @@ export default {
         stripePortalLoading: false
     }),
     methods: {
-        moment,
         openStripePortal() {
             this.stripePortalLoading = true;
-            this.$server.createStripePortalSession(`http://app.${this.mainDomain}/explorers/${this.explorer.id}`)
+            this.$server.createStripePortalSession(`http://app.${this.envStore.mainDomain}/explorers/${this.explorer.id}`)
                 .then(({ data }) => document.location.href = data.url)
                 .catch(() => this.stripePortalLoading = false );
         },
@@ -69,9 +69,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-            'mainDomain'
-        ]),
+        ...mapStores(useEnvStore),
         transactionQuota() {
             if (!this.explorer || !this.explorer.stripeSubscription)
                 return 0;

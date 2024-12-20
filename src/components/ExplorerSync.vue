@@ -26,8 +26,8 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
-const moment = require('moment');
+import { mapStores } from 'pinia';
+import { useEnvStore } from '../stores/env';
 
 export default {
     name: 'ExplorerSync',
@@ -40,17 +40,12 @@ export default {
     }),
     mounted() {
         this.getSyncStatus();
-        this.$root.$on('waitForOnlineSync', () => {
-            this.loading = true;
-            this.waitForStatus('online');
-        });
     },
     destroyed() {
         if (this.timeout)
             clearTimeout(this.timeout);
     },
     methods: {
-        moment,
         getSyncStatus() {
             this.loading = true;
             this.$server.getExplorerSyncStatus(this.explorer.id)
@@ -105,9 +100,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-            'mainDomain'
-        ]),
+        ...mapStores(useEnvStore),
         isSyncActive() { return this.syncStatus == 'online' },
         isSyncStarting() { return this.syncStatus == 'launching' },
         isSyncStopping() { return this.syncStatus == 'stopping' },

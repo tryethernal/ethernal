@@ -16,7 +16,7 @@ export const useCurrentWorkspaceStore = defineStore('currentWorkspace', {
         currentBlock: {
             number: 0
         },
-        browserSyncStatus: null,
+        browserSyncEnabled: null,
         defaultAccount: null,
         gasLimit: null,
         gasPrice: null,
@@ -27,8 +27,22 @@ export const useCurrentWorkspaceStore = defineStore('currentWorkspace', {
     }),
 
     actions: {
+        startBrowserSync() {
+            const userStore = useUserStore();
+            const envStore = useEnvStore();
+
+            const rpcListenerWorker = new Worker(new URL('../workers/blockSyncer.worker.js', import.meta.url), { type: 'module' });
+            rpcListenerWorker.onmessage = () => this.updateBrowserSyncStatus(false);
+            rpcListenerWorker.postMessage({
+                apiRoot: envStore.apiRoot,
+                rpcServer: this.rpcServer,
+                apiToken: userStore.apiToken,
+                workspace: this.name
+            });
+        },
+
         updateBrowserSyncStatus(status) {
-            this.browserSyncStatus = status;
+            this.browserSyncEnabled = status;
         },
 
         updateCurrentBlock(block) {

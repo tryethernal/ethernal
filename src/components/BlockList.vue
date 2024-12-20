@@ -2,7 +2,7 @@
     <v-data-table-server
         :loading="loading"
         :items="blocks"
-        :sort-by="[{ key: currentOptions.orderBy, order: currentOptions.order }]"
+        :sort-by="currentOptions.sortBy"
         :must-sort="true"
         :items-length="blockCount"
         :hide-default-footer="dense"
@@ -53,7 +53,7 @@ export default {
         blockCount: 0,
         headers: [],
         loading: true,
-        currentOptions: { page: 1, itemsPerPage: 10, orderBy: 'number', order: 'desc' },
+        currentOptions: { page: 1, itemsPerPage: 10, sortBy: [{ key: 'number', order: 'desc' }] },
         pusherChannelHandler: null
     }),
     mounted() {
@@ -82,17 +82,13 @@ export default {
             if (!page || !itemsPerPage || !sortBy || !sortBy.length)
                 return this.loading = false;
 
-            if (this.currentOptions.page == page && this.currentOptions.itemsPerPage == itemsPerPage && this.currentOptions.sortBy == sortBy[0].key && this.currentOptions.sort == sortBy[0].order)
-                return this.loading = false;
-
             this.currentOptions = {
                 page,
                 itemsPerPage,
-                orderBy: sortBy[0].key,
-                order: sortBy[0].order
+                sortBy
             };
 
-            this.$server.getBlocks(this.currentOptions, !this.dense && !!this.withCount)
+            this.$server.getBlocks({ page, itemsPerPage, orderBy: sortBy[0].key, order: sortBy[0].order }, !this.dense && !!this.withCount)
                 .then(({ data }) => {
                     this.blocks = data.items;
                     this.blockCount = data.items.length == this.currentOptions.itemsPerPage ?
