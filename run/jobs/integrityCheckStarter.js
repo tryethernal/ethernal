@@ -3,17 +3,22 @@ const models = require('../models');
 const { enqueue } = require('../lib/queue');
 
 module.exports = async job => {
-    const workspaces = await models.Workspace.findAll({
+    const explorers = await models.Explorer.findAll({
         where: {
-            integrityCheckStartBlockNumber: { [Sequelize.Op.not]: null },
-            skipIntegrityCheck: false
-        }
+            shouldSync: true,
+            '$stripeSubscription.status$': 'active',
+            '$stripeSubscription.stripePlan.slug$': { [Sequelize.Op.not]: 'demo' },
+            '$workspace.integrityCheckStartBlockNumber$': { [Sequelize.Op.not]: null },
+            '$workspace.skipIntegrityCheck$': false
+        },
+        include: [
+            { model: models.StripeSubscription, as: 'stripeSubscription', include: { model: models.StripePlan, as: 'stripePlan' } },
+            { model: models.Workspace, as: 'workspace', include: 'rpcHealthCheck' }
+        ]
     });
 
-    for (let i = 0; i < workspaces.length; i++) {
-        const workspace = workspaces[i];
-        await enqueue('integrityCheck', `integrityCheck-${workspace.id}`, { workspaceId: workspace.id });
-    }
+    for (const explorer of explorers)
+        await enqueue('integrityCheck', `integrityCheck-${explorer.workspaceId}`, { workspaceId: explorer.workspaceId });
 
     return true;
 };

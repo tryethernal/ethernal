@@ -35,8 +35,9 @@ module.exports = {
     workspaceReset: require('./workspaceReset'),
     batchBlockDelete: require('./batchBlockDelete'),
     batchContractDelete: require('./batchContractDelete'),
-    cancelDemoExplorers: require('./cancelDemoExplorers'),
+    removeExpiredExplorers: require('./removeExpiredExplorers'),
     deleteWorkspace: require('./deleteWorkspace'),
     tokenTransferCleanup: require('./tokenTransferCleanup'),
-    queueMonitoring: require('./queueMonitoring')
+    queueMonitoring: require('./queueMonitoring'),
+    blockSyncMonitoring: require('./blockSyncMonitoring')
 };

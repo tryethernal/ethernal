@@ -34,6 +34,7 @@ module.exports = (sequelize, DataTypes) => {
             },
           constraints: false
       });
+      Transaction.hasOne(models.Contract, { foreignKey: 'transactionId', as: 'createdContract' });
       Transaction.hasOne(models.TransactionReceipt, { foreignKey: 'transactionId', as: 'receipt' });
       Transaction.hasOne(models.TransactionEvent, { foreignKey: 'transactionId', as: 'event' });
       Transaction.hasMany(models.TokenTransfer, { foreignKey: 'transactionId', as: 'tokenTransfers' });
@@ -48,7 +49,7 @@ module.exports = (sequelize, DataTypes) => {
 
         const traceSteps = await this.getTraceSteps();
         for (let i = 0; i < traceSteps.length; i++)
-            await traceSteps[i].destroy(transaction);
+            await traceSteps[i].destroy({ transaction });
 
         const event = await this.getEvent();
         if (event)

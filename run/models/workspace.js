@@ -1590,9 +1590,95 @@ module.exports = (sequelize, DataTypes) => {
         return sequelize.transaction(
             { deferrable: Sequelize.Deferrable.SET_DEFERRED },
             async transaction => {
-                const blocks = await this.getBlocks({ where: { id: ids }});
-                for (let i = 0; i < blocks.length; i++)
-                    await blocks[i].safeDestroy(transaction);
+                const blocks = await this.getBlocks({
+                    where: { id: ids },
+                    attributes: ['id'],
+                    include: {
+                        model: sequelize.models.Transaction,
+                        attributes: ['id'],
+                        as: 'transactions',
+                        include: [
+                            {
+                                model: sequelize.models.TransactionEvent,
+                                as: 'event'
+                            },
+                            {
+                                model: sequelize.models.TransactionTraceStep,
+                                attributes: ['id'],
+                                as: 'traceSteps',
+                            },
+                            {
+                                model: sequelize.models.Contract,
+                                as: 'createdContract',
+                            },
+                            {
+                                model: sequelize.models.TransactionReceipt,
+                                attributes: ['id'],
+                                as: 'receipt',
+                                include: {
+                                    model: sequelize.models.TransactionLog,
+                                    attributes: ['id'],
+                                    as: 'logs',
+                                    include: {
+                                        model: sequelize.models.TokenTransfer,
+                                        attributes: ['id'],
+                                        as: 'tokenTransfer',
+                                        include: {
+                                            model: sequelize.models.TokenBalanceChange,
+                                            attributes: ['id'],
+                                            as: 'tokenBalanceChanges'
+                                        }
+                                    }
+                                }
+                            },
+                        ]
+                    }
+                });
+
+                const entities = {};
+
+                entities.blocks = blocks;
+                entities.transactions = blocks.flatMap(block => block.transactions);
+                entities.transaction_trace_steps = entities.transactions.flatMap(transaction => transaction.traceSteps).filter(traceStep => !!traceStep);
+                entities.contracts = entities.transactions.flatMap(transaction => transaction.createdContract).filter(contract => !!contract);
+                entities.transaction_receipts = entities.transactions.flatMap(transaction => transaction.receipt).filter(receipt => !!receipt && !!receipt.logs);
+                entities.transaction_logs = entities.transaction_receipts.flatMap(receipt => receipt.logs).filter(log => !!log);
+                entities.token_transfers = entities.transaction_logs.flatMap(log => log.tokenTransfer).filter(tokenTransfer => !!tokenTransfer);
+                entities.token_balance_changes = entities.token_transfers.flatMap(tokenTransfer => tokenTransfer.tokenBalanceChanges).filter(tokenBalanceChange => !!tokenBalanceChange);
+
+                for (const contract of entities.contracts)
+                    await contract.update({ transactionId: null }, { transaction });
+
+                if (entities.transactions.length) {
+                    await sequelize.query(`DELETE FROM transaction_events WHERE "transactionId" IN (:ids) AND "workspaceId" = :workspaceId`, {
+                        replacements: { ids: entities.transactions.map(row => row.id), workspaceId: this.id },
+                        transaction
+                    });
+                }
+
+                if (entities.token_transfers.length) {
+                    await sequelize.query(`DELETE FROM token_transfer_events WHERE "tokenTransferId" IN (:ids) AND "workspaceId" = :workspaceId`, {
+                        replacements: { ids: entities.token_transfers.map(row => row.id), workspaceId: this.id },
+                        transaction
+                    });
+                }
+
+                if (entities.token_balance_changes.length) {
+                    await sequelize.query(`DELETE FROM token_balance_change_events WHERE "tokenBalanceChangeId" IN (:ids) AND "workspaceId" = :workspaceId`, {
+                        replacements: { ids: entities.token_balance_changes.map(row => row.id), workspaceId: this.id },
+                        transaction
+                    });
+                }
+
+                for (const table of ['token_balance_changes', 'token_transfers', 'transaction_logs', 'transaction_receipts', 'transaction_trace_steps', 'transactions', 'blocks']) {
+                    if (entities[table].length) {
+                        await sequelize.query(`DELETE FROM ${table} WHERE "id" IN (:ids) AND "workspaceId" = :workspaceId`, {
+                            replacements: { ids: entities[table].map(row => row.id), workspaceId: this.id },
+                            transaction
+                        });
+                    }
+                }
+
                 return;
             }
         );

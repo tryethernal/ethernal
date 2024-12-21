@@ -4,6 +4,82 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.51.5] - 2024-12-20
+### Fixed
+- Trace processing error handling
+
+## [3.51.4] - 2024-12-18
+### Fixed
+- Bug preventing block deletion when including token balance changes
+
+## [3.51.3] - 2024-12-18
+### Fixed
+- Bug prenveting block deletion when including token balance changes
+
+## [3.51.2] - 2024-12-18
+### Fixed
+- Bug prenveting block deletion when including token balance changes
+
+## [3.51.1] - 2024-12-18
+### Fixed
+- Bug prenveting block deletion when including token transfers
+
+## [3.51.0] - 2024-12-17
+### Changed
+- Deletion mechanism
+
+## [3.50.4] - 2024-12-17
+### Fixed
+- Transaction deletion bug
+
+## [3.50.3] - 2024-12-16
+### Fixed
+- Tests
+
+## [3.50.2] - 2024-12-16
+### Changed
+- Cache provider instances
+
+## [3.50.1] - 2024-12-12
+### Changed
+- More accurate expiration date calculation
+
+## [3.50.0] - 2024-12-12
+### Added
+- Auto removal of explorers based on plan property
+
+## [3.49.12] - 2024-12-10
+### Fixed
+- Tests
+
+## [3.49.11] - 2024-12-10
+### Changed
+- Monitor queues for processes that are within quota
+
+## [3.49.10] - 2024-12-10
+### Changed
+- Stricter integrity check starter
+
+## [3.49.9] - 2024-12-10
+### Fixed
+- Previous release
+
+## [3.49.8] - 2024-12-10
+### Added
+- Monitoring on block sync lag
+
+## [3.49.7] - 2024-12-10
+### Added
+- Queue monitoring if blocks stop being enqueued
+
+## [3.49.6] - 2024-12-09
+### Fixed
+- OpsGenie integration
+
+## [3.49.5] - 2024-12-04
+### Fixed
+- Queue monitoring issue
+
 ## [3.49.4] - 2024-12-04
 ### Changed
 - Less verbose queue monitoring logs

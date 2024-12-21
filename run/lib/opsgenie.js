@@ -10,7 +10,7 @@ const createIncident = (message, description, priority = 'P1') => {
 
     return axios({
         method: 'POST',
-        url: 'https://api.opsgenie.com/v1/incidents/create',
+        url: 'https://api.opsgenie.com/v2/alerts',
         headers: {
             'Authorization': `GenieKey ${getOpsgenieApiKey()}`,
         },
