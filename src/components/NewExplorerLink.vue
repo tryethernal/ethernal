@@ -28,14 +28,15 @@
                     :items="icons"
                     :loading="loading"
                     :search.sync="queryIcon"
+                    @update:search="search"
                     item-title="name"
                     :item-value="getItemValue"
                     auto-select-first
                     persistent-hint
                     hide-no-data
                     no-filter>
-                    <template v-slot:item="data">
-                        {{ data.item.name }}
+                    <template v-slot:item="{ item }">
+                        {{ item.raw.name }}
                     </template>
                     <template v-slot:append-outer>
                         <v-btn icon size="small"  @click="remove()">
@@ -48,14 +49,15 @@
     </div>
 </template>
 <script>
+import { ref, watch } from 'vue';
+
 export default {
     name: 'NewExplorerLink',
     props: ['name', 'url', 'icon', 'index', 'uid'],
     data: () => ({
         link: { url: null, name: null, icon: null, uid: null },
         icons: [],
-        queryIcon: null,
-        loading: false
+        loading: false,
     }),
     mounted() {
         this.link = {
@@ -67,25 +69,40 @@ export default {
         if (this.icon)
             this.icons.push({ name: this.icon.split('mdi-')[1] });
     },
+    setup() {
+        const queryIcon = ref(null);
+        console.log('ok')
+        watch(queryIcon, (newValue) => {
+            this.search(newValue)
+        });
+
+        return { queryIcon };
+    },
     methods: {
         remove() {
             this.$emit('removed', this.uid);
         },
         getItemValue: data => `mdi-${data.name}`,
-    },
-    watch: {
-        'link.url': function() { this.$emit('updated', { link: this.link, index: this.index }) },
-        'link.name': function() { this.$emit('updated', { link: this.link, index: this.index }) },
-        'link.icon': function() { this.$emit('updated', { link: this.link, index: this.index }) },
-        queryIcon(query) {
-            if (!query) return;
+        search(query) {
+            if (!query) return this.icons = [];
 
             this.loading = true;
             this.$server.searchIcon(query)
                 .then(({ data }) => this.icons = data)
-                .catch(console.log)
+                .catch(console.error)
                 .finally(() => this.loading = false);
         }
+    },
+    watch: {
+        'link.url'() {
+            this.$emit('updated', { link: this.link, index: this.index });
+        },
+        'link.name'() {
+            this.$emit('updated', { link: this.link, index: this.index })
+        },
+        'link.icon'() {
+            this.$emit('updated', { link: this.link, index: this.index })
+        },
     }
 }
 </script>

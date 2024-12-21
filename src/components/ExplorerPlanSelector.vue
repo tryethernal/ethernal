@@ -18,7 +18,7 @@
                     :current="currentPlanSlug == plan.slug"
                     :pendingCancelation="pendingCancelation && plan.slug == currentPlanSlug"
                     :bestValue="!currentPlanSlug && bestValueSlug == plan.slug && !selectedPlanSlug"
-                    :trial="user.canTrial"
+                    :trial="userStore.canTrial"
                     :plan="plan"
                     :loading="selectedPlanSlug && selectedPlanSlug == plan.slug"
                     :disabled="selectedPlanSlug && selectedPlanSlug != plan.slug"
@@ -28,7 +28,10 @@
     </div>
 </template>
 <script>
-import { mapGetters } from 'vuex';
+import { mapStores } from 'pinia';
+import { useEnvStore } from '../stores/env';
+import { useUserStore } from '../stores/user';
+
 import ExplorerPlanCard from './ExplorerPlanCard.vue';
 
 export default {
@@ -86,7 +89,7 @@ export default {
             }
             else if (this.user.canTrial) {
                 this.$server.startTrial(this.explorerId, slug)
-                    .then(() => window.location.assign(`//app.${this.mainDomain}/explorers/${this.explorerId}`))
+                    .then(() => window.location.assign(`//app.${this.envStore.mainDomain}/explorers/${this.explorerId}`))
                     .catch(error => {
                         console.log(error);
                         this.errorMessage = error.response && error.response.data || 'Error while subscribing to the selected plan. Please retry.';
@@ -94,8 +97,8 @@ export default {
                     });
             }
             else {
-                const successUrl = this.stripeSuccessUrl || `http://app.${this.mainDomain}/explorers/${this.explorerId}?justCreated=true`;
-                const cancelUrl = this.stripeCancelUrl || `http://app.${this.mainDomain}/explorers/${this.explorerId}`;
+                const successUrl = this.stripeSuccessUrl || `http://app.${this.envStore.mainDomain}/explorers/${this.explorerId}?justCreated=true`;
+                const cancelUrl = this.stripeCancelUrl || `http://app.${this.envStore.mainDomain}/explorers/${this.explorerId}`;
                 this.$server.createStripeExplorerCheckoutSession(this.explorerId, this.selectedPlanSlug, successUrl, cancelUrl)
                     .then(({ data }) => window.location.assign(data.url))
                     .catch(error => {
@@ -177,10 +180,7 @@ Are you sure you want to cancel?`;
         }
     },
     computed: {
-        ...mapGetters([
-            'user',
-            'mainDomain'
-        ])
+        ...mapStores(useEnvStore, useUserStore)
     }
 }
 </script>

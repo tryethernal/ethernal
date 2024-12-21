@@ -84,7 +84,7 @@
                         </v-card-title>
                         <v-divider></v-divider>
                         <v-list density="compact">
-                            <v-list-item prepend-icon="mdi-check" v-for="(feature, idx) in plans.premium" :key="idx">
+                            <v-list-item v-for="(feature, idx) in plans.premium" :key="idx">
                                 <template v-slot:prepend>
                                     <v-icon v-if="feature" class="mx-0 mr-1" color="success">mdi-check</v-icon>
                                 </template>

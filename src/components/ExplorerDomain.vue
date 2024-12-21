@@ -1,22 +1,22 @@
 <template>
     <v-list-item :disabled="loading" class="pl-0">
         <Explorer-Domain-DNS-Info-Modal ref="explorerDomainDnsInfo" />
-        <v-btn style="width: inherit; height: inherit;" @click.stop="deleteDomain()" icon><v-icon size="small" :color="loading ? 'grey' : 'error'">mdi-delete</v-icon></v-btn>
-        <v-btn style="width: inherit; height: inherit;" class="mr-2" @click.stop="loadDnsStatus()" icon><v-icon size="small" :color="loading ? 'grey' : 'primary'">mdi-refresh</v-icon></v-btn>
-        <div clas="my-0">
-            <v-list-item-subtitle>
-                <a :href="`//${domain.domain}`" target="_blank">{{  domain.domain }}</a>&nbsp;|&nbsp;
-                <span v-if="loading && !deleting">Fetching DNS status...</span>
-                <template v-else-if="dnsStatus.status_message">
-                    <v-icon size="small" :color="status ? 'success' : 'error'">{{ status ? 'mdi-check' : 'mdi-close' }}</v-icon>
-                    <a style="text-decoration: underline;" @click.stop="showDnsInfo()">
-                        <template v-if="status">{{ dnsStatus.status_message }}</template>
-                        <template v-else>Incomplete DNS setup</template>
-                    </a>
-                </template>
-                <span v-else>DNS status not available yet.</span>
-            </v-list-item-subtitle>
-        </div>
+        <template v-slot:prepend>
+            <v-btn density="compact" variant="text" @click.stop="deleteDomain()" icon="mdi-delete" :color="loading ? 'grey' : 'error'" size="small"></v-btn>
+            <v-btn density="compact" variant="text" @click.stop="loadDnsStatus()" icon="mdi-refresh" :color="loading ? 'grey' : 'primary'" size="small"></v-btn>
+        </template>
+        <template v-slot:subtitle>
+            <a class="ml-2" :href="`//${domain.domain}`" target="_blank">{{  domain.domain }}</a>&nbsp;|&nbsp;
+            <span v-if="loading && !deleting">Fetching DNS status...</span>
+            <template v-else-if="dnsStatus.status_message">
+                <v-icon size="small" :color="status ? 'success' : 'error'">{{ status ? 'mdi-check' : 'mdi-close' }}</v-icon>
+                <a style="text-decoration: underline;" @click.stop="showDnsInfo()">
+                    <template v-if="status">{{ dnsStatus.status_message }}</template>
+                    <template v-else>Incomplete DNS setup</template>
+                </a>
+            </template>
+            <span v-else>DNS status not available yet.</span>
+        </template>
     </v-list-item>
 </template>
 

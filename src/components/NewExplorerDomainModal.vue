@@ -1,10 +1,9 @@
 <template>
     <v-dialog v-model="dialog" max-width="600">
         <v-card border flat>
-            <v-card-title>
-                <template>Add Domain Alias</template>
-                <v-spacer></v-spacer>
-                <v-btn icon @click="close()"><v-icon>mdi-close</v-icon></v-btn>
+            <v-card-title class="d-flex justify-space-between align-center">
+                <h4>Add Domain Alias</h4>
+                <v-btn color="grey" variant="text" icon="mdi-close" @click="close()"></v-btn>
             </v-card-title>
             <v-card-text>
                 <v-alert text type="error" v-if="errorMessage">{{ errorMessage }}</v-alert>
@@ -32,7 +31,8 @@
     </v-dialog>
 </template>
 <script>
-import { mapGetters } from 'vuex';
+import { mapStores } from 'pinia';
+import { useUserStore } from '@/stores/user';
 
 export default {
     name: 'NewExplorerDomainModal',
@@ -80,9 +80,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-            'user'
-        ]),
+        ...mapStores(useUserStore),
         domainOrigin() {
             try {
                 if (this.domain.startsWith('http://') || this.domain.startsWith('https://'))
