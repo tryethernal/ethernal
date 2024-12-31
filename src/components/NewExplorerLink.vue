@@ -22,12 +22,11 @@
                 </v-text-field>
             </v-col>
             <v-col cols="4" :class="{ 'pb-1': index == 0, 'py-0': index > 0 }">
-                <v-autocomplete small variant="outlined" density="compact" :append-icon="link.icon ? `${link.icon}` : ''"
+                <v-autocomplete small variant="outlined" density="compact"
                     label="Icon"
                     v-model="link.icon"
                     :items="icons"
                     :loading="loading"
-                    :search.sync="queryIcon"
                     @update:search="search"
                     item-title="name"
                     :item-value="getItemValue"
@@ -35,13 +34,16 @@
                     persistent-hint
                     hide-no-data
                     no-filter>
-                    <template v-slot:item="{ item }">
-                        {{ item.raw.name }}
+                    <template v-slot:selection="{ props, item }">
+                        <v-icon class="mr-2 my-1" :icon="`mdi-${item.raw.name || item.raw.split('mdi-')[1]}`"></v-icon>{{ iconName }}
                     </template>
-                    <template v-slot:append-outer>
-                        <v-btn icon size="small"  @click="remove()">
-                            <v-icon color="error">mdi-delete</v-icon>
-                        </v-btn>
+                    <template v-slot:item="{ props, item }">
+                        <v-list-item v-bind="props"
+                            :prepend-icon="`mdi-${item.raw.name || item.raw.split('mdi-')[1]}`"
+                            :title="item.raw.name"></v-list-item>
+                    </template>
+                    <template v-slot:append>
+                        <v-btn density="compact" variant="text" icon="mdi-delete" size="small" color="error" @click="remove()"></v-btn>
                     </template>
                 </v-autocomplete>
             </v-col>
@@ -49,7 +51,6 @@
     </div>
 </template>
 <script>
-import { ref, watch } from 'vue';
 
 export default {
     name: 'NewExplorerLink',
@@ -69,15 +70,6 @@ export default {
         if (this.icon)
             this.icons.push({ name: this.icon.split('mdi-')[1] });
     },
-    setup() {
-        const queryIcon = ref(null);
-        console.log('ok')
-        watch(queryIcon, (newValue) => {
-            this.search(newValue)
-        });
-
-        return { queryIcon };
-    },
     methods: {
         remove() {
             this.$emit('removed', this.uid);
@@ -93,6 +85,14 @@ export default {
                 .finally(() => this.loading = false);
         }
     },
+    computed: {
+        iconName() {
+            const name = this.link.icon.split('mdi-')[1];
+            if (name.length > 4)
+                return name.slice(0, 4) + '...';
+            return name;
+        }
+    },
     watch: {
         'link.url'() {
             this.$emit('updated', { link: this.link, index: this.index });
@@ -102,7 +102,7 @@ export default {
         },
         'link.icon'() {
             this.$emit('updated', { link: this.link, index: this.index })
-        },
+        }
     }
 }
 </script>

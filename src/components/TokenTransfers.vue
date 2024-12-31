@@ -2,16 +2,17 @@
     <v-data-table-server
         :loading="loading"
         :headers="headers"
+        :density="density"
         :sort-by="sortBy"
         :must-sort="true"
         :items-length="count"
-        :hide-default-header="dense"
+        :hide-default-header="isCompact"
         item-key="id"
         :items="transfers"
         @update:options="onPagination">
-        <template v-slot:top v-if="!dense">
+        <template v-slot:top v-if="!isCompact">
             <div class="d-flex justify-end">
-                <v-switch v-model="unformatted" label="Unformatted Amounts"></v-switch>
+                <v-switch hide-details="auto" v-model="unformatted" label="Unformatted Amounts"></v-switch>
             </div>
         </template>
         <template v-slot:item.transactionHash="{ item }">
@@ -34,11 +35,11 @@
         </template>
         <template v-slot:item.src="{ item }">
             <v-chip size="x-small" class="mr-2" v-if="item.src === address">self</v-chip>
-            <Hash-Link :type="'address'" :hash="item.src" :fullHash="!dense" :withName="true" :withTokenName="true" />
+            <Hash-Link :type="'address'" :hash="item.src" :fullHash="!isCompact" :withName="true" :withTokenName="true" />
         </template>
         <template v-slot:item.dst="{ item }">
             <v-chip size="x-small" class="mr-2" v-if="item.dst === address">self</v-chip>
-            <Hash-Link :type="'address'" :hash="item.dst" :fullHash="!dense" :withName="true" :withTokenName="true" />
+            <Hash-Link :type="'address'" :hash="item.dst" :fullHash="!isCompact" :withName="true" :withTokenName="true" />
         </template>
         <template v-slot:item.token="{ item }">
             <Hash-Link :type="'address'" :hash="item.token" :withName="true" :withTokenName="true" :tokenId="item.tokenId" :contract="item.contract" />
@@ -54,7 +55,7 @@ import { formatContractPattern } from '@/lib/utils';
 
 export default {
     name: 'TokenTransfers',
-    props: ['transfers', 'headers', 'dense', 'loading', 'sortBy', 'count', 'address'],
+    props: ['transfers', 'headers', 'loading', 'sortBy', 'count', 'address', 'density'],
     components: {
         HashLink
     },
@@ -88,6 +89,11 @@ export default {
                 if (contract.patterns.indexOf('erc721') > -1)
                     this.type[this.transfers[i].token] = 'erc721';
             }
+        }
+    },
+    computed: {
+        isCompact() {
+            return this.density === 'compact';
         }
     },
     watch: {

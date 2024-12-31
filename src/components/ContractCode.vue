@@ -1,5 +1,5 @@
 <template>
-    <v-container fluid>
+    <div>
         <v-alert v-if="contractVerified" text type="success">Contract has been verified successfully!</v-alert>
         <v-card border flat v-if="loading">
             <v-card-text>
@@ -15,11 +15,9 @@
             <v-card border flat class="mb-6">
                 <v-card-title>Bytecode</v-card-title>
                 <v-card-text v-if="contract.bytecode">
-                    <v-textarea density="compact" variant="outlined" disabled :model-value="contract.bytecode">
-                        <template v-slot:append>
-                            <v-btn icon @click="copyBytecode()">
-                                <v-icon size="small">mdi-content-copy</v-icon>
-                            </v-btn>
+                    <v-textarea class="text-medium-emphasis" density="compact" variant="outlined" readonly :model-value="contract.bytecode">
+                        <template v-slot:append-inner>
+                            <v-btn variant="text" density="compact" icon="mdi-content-copy" @click="copyBytecode()"></v-btn>
                         </template>
                     </v-textarea>
                     <input type="hidden" id="copyBytecode" :value="contract.bytecode">
@@ -37,7 +35,7 @@
                 </v-card-text>
             </v-card>
         </template>
-    </v-container>
+    </div>
 </template>
 
 <script>

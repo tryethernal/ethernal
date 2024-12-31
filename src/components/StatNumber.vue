@@ -1,5 +1,5 @@
 <template>
-    <v-card border flat :loading="loading">
+    <v-card :loading="loading">
         <template v-slot:subtitle>
             <div :class="{ absolute: infoTooltip }">{{ title }}</div>
             <div class="text-right" v-if="infoTooltip">

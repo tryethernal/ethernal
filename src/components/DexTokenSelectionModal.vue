@@ -17,26 +17,18 @@
                         <div class="py-6"></div>
                     </template>
                 </v-text-field>
-                <v-divider class="my-6 mx-1"></v-divider>
+                <v-divider class="mt-6 mb-3 mx-1"></v-divider>
                 <template v-if="orderedTokens.length">
-                    <div class="d-flex justify-space-between px-6">
-                        <span>Token Name</span>
-                    </div>
-                    <v-list-item :class="{ 'oppositeToken': oppositeTokenAddress == token.address }" @click="close(token)" class="px-6" link v-for="(token, idx) in orderedTokens" :key="idx">
-                        <v-list-item-icon class="mr-3">
-                            <v-icon>mdi-alpha-t-circle</v-icon>
-                        </v-list-item-icon>
-
-                            <v-list-item-title>
-                                {{ token.tokenSymbol }}
-                                <span class="float-right">
-                                    {{ BNtoSignificantDigits(balances[token.address]) }}
-                                </span>
-                            </v-list-item-title>
-                            <v-list-item-subtitle v-if="token.address != nativeTokenAddress">
-                                <Hash-Link :contract="{ tokenName: token.tokenName, tokenSymbol: token.tokenSymbol }" :type="'address'" :hash="token.address" :notCopiable="true" :unlink="true" />
-                            </v-list-item-subtitle>
-
+                    <v-list-item prepend-icon="mdi-alpha-t-circle" :class="{ 'oppositeToken': oppositeTokenAddress == token.address }" @click="close(token)" class="px-6 pb-4" link v-for="(token, idx) in orderedTokens" :key="idx">
+                        <template v-slot:title>
+                            {{ token.tokenSymbol }}
+                            <span class="float-right">
+                                {{ BNtoSignificantDigits(balances[token.address]) }}
+                            </span>
+                        </template>
+                        <template v-slot:subtitle>
+                            <Hash-Link :contract="{ tokenName: token.tokenName, tokenSymbol: token.tokenSymbol }" :type="'address'" :hash="token.address" :notCopiable="true" :unlink="true" />
+                        </template>
                     </v-list-item>
                 </template>
                 <div class="text-center" v-else>
@@ -48,7 +40,8 @@
 </template>
 <script>
 const ethers = require('ethers');
-import { mapGetters } from 'vuex';
+import { useEnvStore } from '@/stores/env';
+
 const { BNtoSignificantDigits } = require('@/lib/utils');
 import HashLink from './HashLink.vue';
 
@@ -68,6 +61,10 @@ export default {
         refreshOrder: 0,
         oppositeTokenAddress: null,
     }),
+    setup() {
+        const { nativeTokenAddress} = useEnvStore();
+        return { nativeTokenAddress };
+    },
     methods: {
         BNtoSignificantDigits,
         open(options) {
@@ -96,10 +93,6 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-            'user',
-            'nativeTokenAddress'
-        ]),
         filteredTokens() {
             if (!this.filter)
                 return this.tokens;

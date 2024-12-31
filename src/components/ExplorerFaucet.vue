@@ -1,6 +1,6 @@
 <template>
     <v-container fluid>
-        <template v-if="publicExplorer.faucet">
+        <template v-if="faucet">
             <v-row>
                 <v-col align="center">
                     <v-icon style="opacity: 0.25;" size="150" color="primary-lighten-1">mdi-faucet</v-icon>
@@ -8,8 +8,8 @@
             </v-row>
             <v-row justify="center" align="center" class="mb-10 my-0">
                 <v-col md="6" sm="12">
-                    <v-card border flat class="rounded-card rounded-xl pa-12" v-if="publicExplorer.faucet">
-                        <v-card-title class="text-primary d-flex justify-center align-center">{{ publicExplorer.name }} Faucet - Get {{ tokenSymbol }} Tokens</v-card-title>
+                    <v-card border flat class="rounded-card rounded-xl pa-12" v-if="faucet">
+                        <v-card-title class="text-primary d-flex justify-center align-center">{{ explorerStore.name }} Faucet - Get {{ tokenSymbol }} Tokens</v-card-title>
                         <v-card-text class="pb-0">
                             <v-alert text type="error" v-if="errorMessage" v-html="errorMessage"></v-alert>
                             <v-alert text type="success" v-if="transactionHash">Tokens sent successfully! <Hash-Link :type="'transaction'" :hash="transactionHash" :customLabel="'See transaction'" /></v-alert>.
@@ -29,7 +29,7 @@
                                     v-model="address"
                                     label="Wallet Address"></v-text-field>
                                 <v-card-actions class="mb-5 justify-center">
-                                    <v-btn :loading="loading" color="primary" :disabled="!valid" type="submit">Request Tokens</v-btn>
+                                    <v-btn variant="flat" :loading="loading" :disabled="!valid" type="submit">Request Tokens</v-btn>
                                 </v-card-actions>
                             </v-form>
                             <template v-if="orderedRequests.length">
@@ -51,8 +51,8 @@
                             </template>
                             <small>
                                 Max Frequency: {{ formattedAmount }} {{ tokenSymbol }} per address {{ formattedFrequency }}.<br>
-                                Faucet Balance: <template v-if="balance">{{ balance | fromWei('ether', tokenSymbol) }}</template><i v-else>Fetching...</i><br>
-                                Faucet Address: <Hash-Link :withName="false" :type="'address'" :hash="publicExplorer.faucet.address" :fullHash="true" />
+                                Faucet Balance: <template v-if="balance">{{ $fromWei(balance, 'ether', tokenSymbol) }}</template><i v-else>Fetching...</i><br>
+                                Faucet Address: <Hash-Link :withName="false" :type="'address'" :hash="faucet.address" :fullHash="true" />
                             </small>
                         </v-card-text>
                     </v-card>
@@ -61,13 +61,13 @@
             <v-row>
                 <v-col>
                     <h4>Analytics</h4>
-                    <Explorer-Faucet-Analytics :id="publicExplorer.faucet.id" />
+                    <Explorer-Faucet-Analytics :id="faucet.id" />
                 </v-col>
             </v-row>
             <v-row>
                 <v-col>
                     <h4>History</h4>
-                    <Explorer-Faucet-Transaction-History :id="publicExplorer.faucet.id" />
+                    <Explorer-Faucet-Transaction-History :id="faucet.id" />
                 </v-col>
             </v-row>
         </template>
@@ -97,7 +97,9 @@
 <script>
 const ethers = require('ethers');
 const moment = require('moment');
-import { mapGetters } from 'vuex';
+import { mapStores, storeToRefs } from 'pinia';
+import { useExplorerStore } from '../stores/explorer';
+
 import ExplorerFaucetAnalytics from './ExplorerFaucetAnalytics';
 import ExplorerFaucetTransactionHistory from './ExplorerFaucetTransactionHistory';
 import HashLink from './HashLink';
@@ -124,13 +126,18 @@ export default{
         requests: [],
         showAllRequests: false
     }),
+    setup() {
+        const explorerStore = useExplorerStore();
+        const { faucet } = storeToRefs(explorerStore);
+        return { faucet };
+    },
     mounted() {
-        if (!this.publicExplorer.faucet)
+        if (!this.faucet)
             return;
 
         this.refreshFaucetBalance();
         this.pusherUnsubscribe = this.$pusher.onNewTransaction(data => {
-            if (data.from == this.publicExplorer.faucet.address || data.to == this.publicExplorer.faucet.address)
+            if (data.from == this.faucet.address || data.to == this.faucet.address)
                 this.refreshFaucetBalance();
         }, this);
         this.initializeRequests();
@@ -147,7 +154,7 @@ export default{
             this.requestTokens();
         },
         refreshFaucetBalance() {
-            this.$server.getFaucetBalance(this.publicExplorer.faucet.id)
+            this.$server.getFaucetBalance(this.faucet.id)
                 .then(({ data }) => this.balance = data.balance)
                 .catch(console.log);
         },
@@ -155,7 +162,7 @@ export default{
             this.loading = true;
             this.transactionHash = null;
             this.errorMessage = false;
-            this.$server.requestFaucetToken(this.publicExplorer.faucet.id, address || this.address)
+            this.$server.requestFaucetToken(this.faucet.id, address || this.address)
                 .then(({ data }) => {
                     this.transactionHash = data.hash;
                     this.updateRequests({ address: this.address.toLowerCase(), availableAt: moment().add(data.cooldown, 'minutes').toDate() });
@@ -198,9 +205,7 @@ export default{
         }
     },
     computed: {
-        ...mapGetters([
-            'publicExplorer'
-        ]),
+        ...mapStores(useExplorerStore),
         slicedRequests() {
             return this.showAllRequests ? this.orderedRequests : this.orderedRequests.slice(0, 5);
         },
@@ -209,13 +214,13 @@ export default{
             return copy.sort((a, b) => a.cooldown - b.cooldown);
         },
         tokenSymbol() {
-            return this.publicExplorer.token || 'ETH';
+            return this.explorerStore.token || 'ETH';
         },
         formattedAmount() {
-            return ethers.utils.formatUnits(this.publicExplorer.faucet.amount);
+            return ethers.utils.formatUnits(this.faucet.amount);
         },
         formattedFrequency() {
-            const roundedMinutes = Math.round(this.publicExplorer.faucet.interval);
+            const roundedMinutes = Math.round(this.faucet.interval);
             const totalHours = roundedMinutes / 60;
             const totalDays = totalHours / 24;
 

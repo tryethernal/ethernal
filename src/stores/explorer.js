@@ -5,10 +5,15 @@ export const useExplorerStore = defineStore('explorer', {
         id: null,
         name: null,
         rpcServer: null,
-        token: null,
+        token: 'ETH',
         l1Explorer: null,
         domain: null,
-        domains: []
+        domains: [],
+        themes: {},
+        admin: {},
+        workspace: {},
+        faucet: {},
+        v2Dex: {}
     }),
 
     actions: {

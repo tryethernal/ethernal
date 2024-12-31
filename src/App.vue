@@ -15,7 +15,7 @@
             </div>
             <v-list-item v-else>
                 <template v-slot:title>
-                    <span class="text-accent">{{ explorerStore ? explorerStore.name : 'Ethernal' }}</span>
+                    <span class="logo text-accent">{{ explorerStore ? explorerStore.name : 'Ethernal' }}</span>
                 </template>
                 <template v-slot:subtitle>
                     v{{ envStore.version }}
@@ -30,15 +30,15 @@
 
             <v-list density="compact" nav class="side--text">
                 <v-list-item prepend-icon="mdi-chart-box" title="Overview" link :to="'/overview'"></v-list-item>
-                <v-list-item prepend-icon="mdi-account-multiple" title="Accounts" link :to="'/accounts'" v-if="!explorerStore || currentWorkspaceStore.accounts || isUserAdmin"></v-list-item>
+                <v-list-item prepend-icon="mdi-account-multiple" title="Accounts" link :to="'/accounts'" v-if="!currentWorkspaceStore.public || currentWorkspaceStore.accounts.length || isUserAdmin"></v-list-item>
                 <v-list-item prepend-icon="mdi-view-dashboard" title="Blocks" link :to="'/blocks'"></v-list-item>
                 <v-list-item prepend-icon="mdi-arrow-left-right" title="Transactions" link :to="'/transactions'"></v-list-item>
                 <v-list-item prepend-icon="mdi-file" title="Contracts" link :to="'/contracts'"></v-list-item>
                 <v-list-item prepend-icon="mdi-alpha-c-circle" title="ERC-20 Tokens" link :to="'/tokens'"></v-list-item>
                 <v-list-item prepend-icon="mdi-palette-advanced" title="ERC-721 Tokens" link :to="'/nfts'"></v-list-item>
-                <v-list-item prepend-icon="mdi-chart-box" title="Analytics" link :to="'/analytics'" v-if="explorerStore"></v-list-item>
-                <v-list-item prepend-icon="mdi-faucet" title="Faucet" link :to="'/faucet'" v-if="explorerStore && explorerStore.faucet"></v-list-item>
-                <v-list-item prepend-icon="mdi-swap-horizontal" title="Dex" link :to="'/dex'" v-if="explorerStore && explorerStore.v2Dex"></v-list-item>
+                <v-list-item prepend-icon="mdi-chart-box" title="Analytics" link :to="'/analytics'" v-if="currentWorkspaceStore.public"></v-list-item>
+                <v-list-item prepend-icon="mdi-faucet" title="Faucet" link :to="'/faucet'" v-if="explorerStore.faucet"></v-list-item>
+                <v-list-item prepend-icon="mdi-swap-horizontal" title="Dex" link :to="'/dex'" v-if="explorerStore.v2Dex"></v-list-item>
                 <v-list-item prepend-icon="mdi-heart-circle" title="Status" link :to="'/status'" v-if="(isUserAdmin && currentWorkspaceStore.public) || currentWorkspaceStore.statusPageEnabled"></v-list-item>
                 <template v-if="isUserAdmin">
                     <v-divider v-if="isUserAdmin" class="my-4"></v-divider>
@@ -49,7 +49,7 @@
 
             <template v-slot:append>
                 <v-list density="compact" nav>
-                    <v-list-item title="Add To Metamask" link v-if="explorerStore && ethereum && hasNetworkInfo" @click="addNetworkToMetamask()">
+                    <v-list-item title="Add To Metamask" link v-if="ethereum && hasNetworkInfo" @click="addNetworkToMetamask()">
                         <template v-slot:prepend>
                             <Icon icon="arcticons:metamask" width="24" height="24" />
                         </template>
@@ -89,6 +89,7 @@
 
 <script>
 import { defineComponent, shallowRef } from 'vue';
+import { useTheme } from 'vuetify';
 import { Icon } from '@iconify/vue';
 import { mapStores } from 'pinia';
 import WebFont from 'webfontloader';
@@ -128,6 +129,10 @@ export default {
         ethereum: null,
         drawer: null
     }),
+    setup() {
+        const theme = useTheme();
+        return { theme };
+    },
     mounted() {
         detectEthereumProvider().then(provider => {
             if (!provider || provider !== window.ethereum) return;
@@ -139,14 +144,15 @@ export default {
 
         this.$server.searchExplorer(window.location.host)
             .then(({ data }) => {
-                if (data.explorer) {
-                    this.explorerStore.updateExplorer(data.explorer);
-                    this.setupPublicExplorer();
-                }
+                if (data.explorer)
+                    this.setupPublicExplorer(data.explorer);
                 else
                     this.setupPrivateExplorer();
             })
-            .catch(() => document.location.href = `//app.${this.envStore.mainDomain}`);
+            .catch(error => {
+                console.log(error)
+                document.location.href = `//app.${this.envStore.mainDomain}`;
+            });
     },
     methods: {
         setupPrivateExplorer() {
@@ -244,31 +250,36 @@ export default {
                 return this.$router.push({ path: this.$route.query.next || '/overview', query: queryParams});
             }
         },
-        setupPublicExplorer() {
-            const data = this.explorerStore;
+        setupPublicExplorer(explorer) {
+            this.explorerStore.updateExplorer(explorer);
+            if (explorer.themes) {
+                const lightTheme = explorer.themes.light || {};
+                const font = explorer.themes.font;
 
-            if (data.themes) {
-                const lightTheme = data.themes.light || {};
-                const font = data.themes.font;
+                if (explorer.themes.logo)
+                    this.logo = explorer.themes.logo;
 
-                if (data.themes.logo)
-                    this.logo = data.themes.logo;
+                this.updateTabInfo(explorer.themes.favicon, explorer.name);
 
-                this.updateTabInfo(data.themes.favicon, data.name);
+                if (explorer.themes.links)
+                    this.links = explorer.themes.links;
 
-                if (data.themes.links)
-                    this.links = data.themes.links;
+                if (explorer.themes.banner)
+                    this.banner = explorer.themes.banner;
 
-                if (data.themes.banner)
-                    this.banner = data.themes.banner;
-
-                Object.keys(lightTheme).forEach((key) => {
-                    switch (key) {
-                        case 'background':
-                            this.$set(this.styles, 'background', lightTheme[key]);
-                            break;
-                    }
-                });
+                const customThemeKeys = Object.keys(lightTheme);
+                if (customThemeKeys.length) {
+                    customThemeKeys.forEach((key) => {
+                        switch (key) {
+                            case 'background':
+                                this.styles[key] = lightTheme[key];
+                                break;
+                            default:
+                                this.$vuetify.theme.themes.light.colors[key] = lightTheme[key];
+                        }
+                    });
+                    this.theme.global.name.value = 'light';
+                }
 
                 if (font)
                     WebFont.load({
@@ -282,23 +293,23 @@ export default {
             }
 
             this.initWorkspace({
-                firebaseUserId: data.admin.firebaseUserId,
-                public: data.workspace.public,
-                name: data.workspace.name,
-                networkId: data.chainId,
-                rpcServer: data.rpcServer,
-                storageEnabled: data.workspace.storageEnabled,
-                erc721LoadingEnabled: data.workspace.erc721LoadingEnabled,
-                statusPageEnabled: data.workspace.statusPageEnabled,
-                id: data.workspace.id,
-                defaultAccount: data.workspace.defaultAccount,
-                gasPrice: data.workspace.gasPrice,
-                gasLimit: data.workspace.gasLimit
+                firebaseUserId: explorer.admin.firebaseUserId,
+                public: explorer.workspace.public,
+                name: explorer.workspace.name,
+                networkId: explorer.chainId,
+                rpcServer: explorer.rpcServer,
+                storageEnabled: explorer.workspace.storageEnabled,
+                erc721LoadingEnabled: explorer.workspace.erc721LoadingEnabled,
+                statusPageEnabled: explorer.workspace.statusPageEnabled,
+                id: explorer.workspace.id,
+                defaultAccount: explorer.workspace.defaultAccount,
+                gasPrice: explorer.workspace.gasPrice,
+                gasLimit: explorer.workspace.gasLimit
             });
         },
         initWorkspace(workspace) {
             this.currentWorkspaceStore.updateCurrentWorkspace(workspace);
-            this.userStore.updateUser({ onboarded: true });
+            this.userStore.updateUser({ onboarded: true, firebaseUserId: workspace.firebaseUserId });
             this.$pusher.init();
             this.isOverlayActive = false;
             this.appBarComponent = 'rpc-connector';
@@ -319,13 +330,13 @@ export default {
         ),
         isUserAdmin() { return this.userStore.isAdmin },
         hasNetworkInfo() {
-            return !!(this.explorerStore && this.explorerStore.name && this.explorerStore.domain && this.explorerStore.token && this.explorerStore.rpcServer);
+            return !!(this.explorerStore.name && this.explorerStore.domain && this.explorerStore.token && this.explorerStore.rpcServer);
         },
         formattedExpectedChainId() {
             return `0x${parseInt(this.currentWorkspace.networkId).toString(16)}`;
         },
         isAuthPage() { return this.$route.path.indexOf('/auth') > -1 },
-        canDisplaySides() { return (this.userStore.loggedIn || this.explorerStore) && !this.isAuthPage },
+        canDisplaySides() { return (this.userStore.loggedIn || this.explorerStore.id) && !this.isAuthPage },
         explorerToken() { return this.$route.query.explorerToken },
         justMigrated() { return !!this.$route.query.justMigrated }
     }

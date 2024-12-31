@@ -21,8 +21,8 @@
         <v-alert text v-if="metadataReloaded" type="success">A metadata reload for this token has been queued for processing. It will be updated soon.</v-alert>
         <v-row class="mb-3">
             <v-col v-if="token.attributes.image_data && !loading" cols="12" sm="6" lg="4">
-                <v-card :color="token.attributes.background_color ? `#${token.attributes.background_color}` : ''" rounded="xl" border class="mb-1">
-                    <div class="fill" v-html="token.attributes.image_data"></div>
+                <v-card flat :color="token.attributes.background_color ? `#${token.attributes.background_color}` : ''" rounded="xl" class="mb-1">
+                    <div class="fill ma-1" v-html="token.attributes.image_data"></div>
                 </v-card>
             </v-col>
             <v-col v-else-if="loading" cols="12" sm="6" lg="3">
@@ -30,36 +30,32 @@
             </v-col>
 
             <v-col cols="12" sm="6">
-                <v-card border flat>
+                <v-card>
                     <template v-if="!loading">
-                        <v-card-subtitle class="pb-0">
-                            <Router-Link :to="`/nft/${hash}`" class="text-h6 text-decoration-none">{{ contract.tokenName }}</Router-Link>
-                            <div style="position: relative; float: right">
+                        <v-card-subtitle class="pb-0 d-flex justify-space-between align-center">
+                            <Router-Link align="middle" :to="`/nft/${hash}`" class="text-h6 text-decoration-none">{{ contract.tokenName }}</Router-Link>
+                            <span>
                                 <v-tooltip v-if="token.attributes.external_url" location="top">
                                     <template v-slot:activator="{ props }">
-                                        <a  v-bind="props" class="text-decoration-none" :href="token.attributes.external_url" v-if="token.attributes.external_url">
+                                        <a target="_blank" v-bind="props" class="text-decoration-none" :href="token.attributes.external_url" v-if="token.attributes.external_url">
                                             <v-icon color="primary" class="mr-2">mdi-open-in-new</v-icon>
                                         </a>
                                     </template>
                                     See on {{ hostOf(token.attributes.external_url) }}
                                 </v-tooltip>
-                                <v-tooltip location="top" v-if="isPublicExplorer">
+                                <v-tooltip location="top" v-if="currentWorkspaceStore.public">
                                     <template v-slot:activator="{ props }">
-                                        <a @click="reloadMetadata" v-bind="props" class="text-decoration-none">
-                                            <v-icon color="primary" class="mr-2">mdi-refresh</v-icon>
-                                        </a>
+                                        <v-btn @click="reloadMetadata" v-bind="props" variant="text" icon="mdi-refresh" size="small"></v-btn>
                                     </template>
                                     Reload metadata
                                 </v-tooltip>
                                 <v-tooltip location="top">
                                     <template v-slot:activator="{ props }">
-                                        <a @click="openErc721TokenTransferModal()" v-bind="props" class="text-decoration-none">
-                                            <v-icon color="primary">mdi-send</v-icon>
-                                        </a>
+                                        <v-btn @click="openErc721TokenTransferModal()" v-bind="props" variant="text" icon="mdi-send" size="small"></v-btn>
                                     </template>
                                     Transfer Token
                                 </v-tooltip>
-                            </div>
+                            </span>
                         </v-card-subtitle>
                         <v-card-title class="text-h4 font-weight-bold">{{ token.attributes.name }}</v-card-title>
                         <v-card-subtitle>Owned by <Hash-Link :type="'address'" :hash="token.owner" /></v-card-subtitle>
@@ -73,7 +69,7 @@
 
             <v-col cols="12">
                 <h3 class="mb-2">Transfers</h3>
-                <v-card border flat>
+                <v-card>
                     <v-card-text>
                         <ERC-721-Token-Transfers :address="hash" :tokenId="tokenId" />
                     </v-card-text>
@@ -85,7 +81,7 @@
             <h3>Properties</h3>
             <v-row class="mb-3">
                 <v-col cols="6" sm="3" md="2" v-for="(property, idx) in token.attributes.properties" :key="idx">
-                    <v-card border flat style="border-color: var(--v-primary-base);">
+                    <v-card>
                         <v-card-text class="text-center" style="opacity: 1;">
                             <div class="text-caption text-primary">{{ property.trait_type }}</div>
                             <div class="text-h6 font-weight-bold text-primary text-truncate">
@@ -108,7 +104,7 @@
             <h3>Levels</h3>
             <v-row class="mb-3">
                 <v-col cols="6" sm="3" md="2" v-for="(level, idx) in token.attributes.levels" :key="idx">
-                    <v-card border flat style="border-color: var(--v-primary-base);">
+                    <v-card>
                         <v-card-text class="text-center" style="opacity: 1;">
                             <div class="text-caption text-primary">{{ level.trait_type }}</div>
                             <div class="text-h6 font-weight-bold text-primary">{{ level.value }}</div>
@@ -134,7 +130,7 @@
             <h3>Stats</h3>
             <v-row class="mb-3">
                 <v-col cols="6" sm="3" md="2" v-for="(stat, idx) in token.attributes.stats" :key="idx">
-                    <v-card border flat style="border-color: var(--v-primary-base);">
+                    <v-card>
                         <v-card-text class="text-center" style="opacity: 1;">
                             <div class="text-caption text-primary">{{ stat.trait_type }}</div>
                             <div class="text-h6 font-weight-bold text-primary">{{ stat.value }}</div>
@@ -148,7 +144,7 @@
             <h3>Dates</h3>
             <v-row class="mb-3">
                 <v-col cols="6" sm="3" md="2" v-for="(date, idx) in token.attributes.dates" :key="idx">
-                    <v-card border flat style="border-color: var(--v-primary-base);">
+                    <v-card>
                         <v-card-text class="text-center" style="opacity: 1;">
                             <div class="text-caption text-primary">{{ date.trait_type }}</div>
                             <div class="text-h6 font-weight-bold text-primary">{{ moment(new Date(date.value * 1000)).format('dddd, MMMM Do, YYYY') }}</div>
@@ -158,7 +154,7 @@
             </v-row>
         </template>
 
-        <v-expansion-panels variant="accordion">
+        <v-expansion-panels variant="accordion" flat>
             <v-expansion-panel>
                 <v-expansion-panel-title><h3>Raw Metadata</h3></v-expansion-panel-title>
                 <v-expansion-panel-text>
@@ -173,7 +169,8 @@
 
 <script>
 const moment = require('moment');
-import { mapGetters } from 'vuex';
+import { mapStores } from 'pinia';
+import { useCurrentWorkspaceStore } from '@/stores/currentWorkspace';
 
 import ERC721TokenTransfers from './ERC721TokenTransfers';
 import ERC721TokenTransferModal from './ERC721TokenTransferModal';
@@ -251,10 +248,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-            'isPublicExplorer',
-            'currentWorkspace'
-        ])
+        ...mapStores(useCurrentWorkspaceStore)
     }
 }
 </script>

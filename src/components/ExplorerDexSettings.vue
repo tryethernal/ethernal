@@ -5,19 +5,19 @@
                 <v-col cols="6">
                     <v-card border flat class="my-6">
                         <v-card-text>
-                            <v-switch @click.prevent="toggleDex()" :loading="loading || active === null" class="mt-1" v-model="active" inset :label="`${v2Dex.active ? 'Active' : 'Inactive'}`"></v-switch>
+                            <v-switch @click.prevent="toggleDex()" :loading="loading || !v2Dex || v2Dex.active === null" class="mt-1" v-model="v2Dex.active" inset :label="`${v2Dex.active ? 'Active' : 'Inactive'}`"></v-switch>
                             <strong>URL:</strong> <a :href="`//${mainExplorerDomain}/dex`" target="_blank">https://{{ mainExplorerDomain }}/dex</a><br>
                             <strong>Router:</strong> <Hash-Link :type="'address'" :hash="explorer.v2Dex.routerAddress" :fullHash="true" :withName="false" /><br>
                             <strong>Factory:</strong> <Hash-Link :type="'address'" :hash="explorer.v2Dex.factoryAddress" :fullHash="true" :withName="false" /><br>
                             <strong>Wrapped Native Token:</strong> <Hash-Link :contract="explorer.v2Dex.wrappedNativeTokenContract" :type="'address'" :hash="explorer.v2Dex.wrappedNativeTokenContract.address" :withTokenName="true" :withName="true" /><br>
                             <v-divider class="my-4"></v-divider>
                             <strong>Pairs synchronization status:</strong>
-                            <v-progress-linear v-if="pairSyncProgress != null" :query="pairSyncProgress == null" :model-value="pairSyncProgress" rounded height="15">
+                            <v-progress-linear buffer-color="grey" buffer-value="100" buffer-opacity="1" v-if="pairSyncProgress != null" :query="pairSyncProgress == null" :model-value="pairSyncProgress" rounded height="20">
                                 <template v-slot:default="{ value }">
                                     <small class="text-white">{{ value.toFixed(2) }}% ({{ pairCount }} / {{ totalPairs }})</small>
                                 </template>
                             </v-progress-linear>
-                            <v-progress-linear v-else indeterminate rounded height="15"></v-progress-linear>
+                            <v-progress-linear v-else indeterminate rounded height="20"></v-progress-linear>
                             <template v-if="!explorer.stripeSubscription">Start a subscription to sync pairs.</template>
                             <template v-else-if="maxPairs">You can only sync up to {{ maxPairs }} pairs during your trial. Contact support to remove this limit.</template>
                         </v-card-text>
@@ -51,7 +51,7 @@
                 </v-card-text>
                 <v-card-actions class="mb-4">
                     <v-spacer></v-spacer>
-                    <v-btn :loading="loading" color="primary" @click="openCreateExplorerDexModal">Setup your Dex</v-btn>
+                    <v-btn variant="flat" :loading="loading" color="primary" @click="openCreateExplorerDexModal">Setup your Dex</v-btn>
                     <v-spacer></v-spacer>
                 </v-card-actions>
             </v-card>
@@ -85,7 +85,6 @@ export default {
         loading: false,
         explorer: null,
         v2Dex: null,
-        active: null,
         pairCount: null,
         totalPairs: null,
         statusLoadingInterval: null
@@ -108,10 +107,8 @@ export default {
             this.$server.getExplorer(this.explorerId)
                 .then(({ data }) => {
                     this.v2Dex = data.v2Dex;
-                    if (this.v2Dex) {
-                        this.active = this.v2Dex.active;
+                    if (this.v2Dex)
                         this.loadStatus();
-                    }
                     this.explorer = data;
                 })
                 .catch(console.log)

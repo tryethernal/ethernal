@@ -22,10 +22,13 @@ import ExplorerFaucet from '../components/ExplorerFaucet.vue';
 import ExplorerDex from '../components/ExplorerDex.vue';
 
 import { useUserStore } from '../stores/user';
+import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
 
 const redirectIfLoggedIn = function (to, from, next) {
     const userStore = useUserStore();
-    if (userStore.loggedIn)
+    const currentWorkspaceStore = useCurrentWorkspaceStore();
+
+    if (userStore.loggedIn || currentWorkspaceStore.public)
         next(to || { path: '/transactions' });
     else
         next();

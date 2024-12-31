@@ -1,3 +1,4 @@
+import '@/styles/main.scss';
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
@@ -47,6 +48,7 @@ export default createVuetify({
         VCombobox: { color: 'primary', variant: 'outlined' },
         VFileInput: { color: 'primary', variant: 'outlined' },
         VSlider: { color: 'primary', variant: 'outlined' },
+        VCard: { border: 'primary thin', flat: true },
 
         VProgressLinear: { color: 'primary' },
 

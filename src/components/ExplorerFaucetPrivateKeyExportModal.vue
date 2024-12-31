@@ -1,10 +1,9 @@
 <template>
     <v-dialog v-model="dialog" max-width="600">
         <v-card>
-            <v-card-title class="text-h5">
-                Faucet Private Key
-                <v-spacer></v-spacer>
-                <v-btn icon @click="close(false)"><v-icon>mdi-close</v-icon></v-btn>
+            <v-card-title class="d-flex justify-space-between align-center">
+                <h4>Faucet Private Key</h4>
+                <v-btn color="grey" variant="text" icon="mdi-close" @click="close(false)"></v-btn>
             </v-card-title>
             <v-card-text v-if="loading">
                 <v-progress-circular size="16" width="2" indeterminate color="primary" class="mr-2"></v-progress-circular> Fetching private key...

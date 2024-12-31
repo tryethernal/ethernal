@@ -37,7 +37,7 @@
         <template v-slot:item.method="{ item }">
             <v-tooltip v-if="item.methodDetails && Object.keys(item.methodDetails).length" location="top" :open-delay="150" color="grey-darken-1" content-class="tooltip">
                 <template v-slot:activator="{ props }">
-                    <v-chip color="primary" label v-bind="props" size="small" variant="flat">
+                    <v-chip color="primary-lighten-1" label v-bind="props" size="small" variant="flat">
                         <span class="color--text methodName">{{ getMethodName(item) }}</span>
                     </v-chip>
                 </template>

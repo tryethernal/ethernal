@@ -7,47 +7,47 @@
                 <v-col cols="12">
                     <v-autocomplete hide-details="auto" density="compact" class="ml-2" append-icon=""
                         v-model="searchSelectedItem"
+                        @update:search="search"
                         :items="orderedItems"
                         :loading="isSearchLoading"
-                        :search.sync="search"
-                        :item-title="getItemText"
-                        item-value="data.id"
+                        return-object
                         hide-no-data
                         no-filter
-                        autofocus
-                        return-object
-                        :key="autocompleteKey"
-                        @blur="showSearchBar=false"
-                        @update:model-value="clearSearchBar()">
-                        <template v-slot:item="data">
-                            <div v-if="data.item.type == 'address'">
-                                <v-list-item-subtitle>{{ data.item.data.address }}</v-list-item-subtitle>
-                            </div>
+                        autofocus>
+                        <template v-slot:selection></template>
+                        <template v-slot:item="{ props, item }">
+                            <template v-if="item.raw.header">
+                                <v-list-item v-bind="props" title="" disabled :subtitle="item.raw.header"></v-list-item>
+                            </template>
 
-                            <div v-if="data.item.type == 'transaction'">
-                                <v-list-item-subtitle>{{ data.item.data.hash }}</v-list-item-subtitle>
-                            </div>
+                            <template v-if="item.raw.divider">
+                                <v-divider v-bind="props"></v-divider>
+                            </template>
 
-                            <div v-if="data.item.type == 'block'">
-                                <v-list-item-subtitle>#{{ data.item.data.number }}</v-list-item-subtitle>
-                                <v-list-item-subtitle>Hash: {{ data.item.data.hash }}</v-list-item-subtitle>
-                                <v-list-item-subtitle>Transactions count: {{ data.item.data.transactionsCount }}</v-list-item-subtitle>
-                            </div>
+                            <template v-if="item.raw.type == 'address'">
+                                <v-list-item v-bind="props" :title="item.raw.data.address" class="mb-2 ml-2"></v-list-item>
+                            </template>
 
-                            <div v-if="data.item.type == 'contract'">
-                                <v-list-item-subtitle v-if="data.item.data.name">{{ data.item.data.name }}</v-list-item-subtitle>
-                                <v-list-item-subtitle v-else>{{ data.item.data.address }}</v-list-item-subtitle>
-                                <br>
+                            <template v-if="item.raw.type == 'transaction'">
+                                <v-list-item v-bind="props" :title="item.raw.data.hash" class="mb-2 ml-2"></v-list-item>
+                            </template>
 
-                                <v-list-item-subtitle v-if="data.item.data.name">Address: <b>{{ data.item.data.address }}</b></v-list-item-subtitle>
-                                <v-list-item-subtitle v-if="data.item.data.tokenSymbol">Token Symbol: <b>{{ data.item.data.tokenSymbol }}</b></v-list-item-subtitle>
-                                <v-list-item-subtitle v-if="data.item.data.tokenName">Token Name: <b>{{ data.item.data.tokenName }}</b></v-list-item-subtitle>
-                                <v-list-item-subtitle v-if="data.item.data.patterns.length">
-                                    <v-chip v-for="(pattern, idx) in data.item.data.patterns" :key="idx" size="x-small" class="bg-success mr-2">
-                                        {{ formatContractPattern(pattern) }}
-                                    </v-chip>
-                                </v-list-item-subtitle>
-                            </div>
+                            <template v-if="item.raw.type == 'block'">
+                                <v-list-item v-bind="props" :title="`#${item.raw.data.number}`" :subtitle="`${item.raw.data.transactionsCount} transactions`" class="mb-2 ml-2"></v-list-item>
+                            </template>
+
+                            <template v-if="item.raw.type == 'contract'">
+                                <v-list-item v-bind="props" :title="item.raw.data.name || item.raw.data.address" class="mb-2 ml-2">
+                                    <small v-if="item.raw.data.name">Address: <b>{{ item.raw.data.address }}</b><br></small>
+                                    <small v-if="item.raw.data.tokenSymbol">Token Symbol: <b>{{ item.raw.data.tokenSymbol }}</b><br></small>
+                                    <small v-if="item.raw.data.tokenName">Token Name: <b>{{ item.raw.data.tokenName }}</b><br></small>
+                                    <div v-if="item.raw.data.patterns.length">
+                                        <v-chip v-for="(pattern, idx) in item.raw.data.patterns" :key="idx" size="x-small" class="bg-success mr-2">
+                                            {{ formatContractPattern(pattern) }}
+                                        </v-chip>
+                                    </div>
+                                </v-list-item>
+                            </template>
                         </template>
                     </v-autocomplete>
                 </v-col>
@@ -91,12 +91,10 @@ export default {
         searchSelectedItem: null,
         searchItems: [],
         isSearchLoading: false,
-        search: null,
         searchType: null,
         showSearchBar: false,
         processingContracts: false,
-        page: null,
-        autocompleteKey: 0
+        page: null
     }),
     created() {
         this.page = this.$route.path;
@@ -132,11 +130,9 @@ export default {
             this.$emit('toggleMenu');
         },
         clearSearchBar() {
-            this.search = null;
+            this.searchType = null;
             this.showSearchBar = false;
-        },
-        getItemText() {
-            return this.search;
+            this.searchSelectedItem = null;
         },
         processContracts() {
             this.processingContracts = true;
@@ -157,32 +153,9 @@ export default {
         getAccounts() {
             this.$server.getAccounts({ page: -1 })
                 .then(({ data: { items } }) => this.currentWorkspaceStore.updateAccounts(items));
-        }
-    },
-    watch: {
-        searchSelectedItem(item) {
-            if (!item)
-                return;
-            this.autocompleteKey++;
-            switch(item.type) {
-                case 'address':
-                case 'contract':
-                    this.$router.push(`/address/${item.data.address}`);
-                    break;
-                case 'transaction':
-                    this.$router.push(`/transaction/${item.data.hash}`);
-                    break;
-                case 'block':
-                    this.$router.push(`/block/${item.data.number}`);
-                    break;
-            }
-            this.searchSelectedItem = null;
-            this.clearSearchBar();
-
         },
         search(val) {
             if (!val) {
-                this.search = null;
                 return this.searchItems = [];
             }
             if (val === this.model || typeof val == 'object') return;
@@ -201,7 +174,9 @@ export default {
                 this.searchType = 'number';
             }
 
-            if (this.searchType == 'text' && val.length < 3) return;
+            if (this.searchType == 'text' && val.length < 3)
+                return;
+
             this.$server.search(this.searchType, val)
                 .then(({ data }) => {
                     this.searchItems = data;
@@ -210,6 +185,26 @@ export default {
                 })
                 .catch(console.log)
                 .finally(() => this.isSearchLoading = false);
+        }
+    },
+    watch: {
+        searchSelectedItem(item) {
+            if (!item)
+                return;
+
+            switch(item.type) {
+                case 'address':
+                case 'contract':
+                    this.$router.push({ path: `/address/${item.data.address}`, query: { tab: 'transactions' } });
+                    break;
+                case 'transaction':
+                    this.$router.push({ path: `/transaction/${item.data.hash}` });
+                    break;
+                case 'block':
+                    this.$router.push({ path: `/block/${item.data.number}` });
+                    break;
+            }
+            this.clearSearchBar();
         }
     },
     computed: {

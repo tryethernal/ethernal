@@ -17,6 +17,7 @@ export const useEnvStore = defineStore('env', {
         isMarketingEnabled: !!import.meta.env.VITE_ENABLE_MARKETING,
         apiRoot: import.meta.env.VITE_API_ROOT,
         maxV2DexPairsForTrial: 20,
+        nativeTokenAddress: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
         chains: {
             ethereum: {
                 slug: 'ethereum',

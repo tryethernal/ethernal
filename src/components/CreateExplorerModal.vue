@@ -32,7 +32,7 @@
                             </template>
                             <v-card-actions v-else>
                                 <v-spacer></v-spacer>
-                                <v-btn id="selectWorkspace" :loading="loading" @click="selectWorkspace()">Continue</v-btn>
+                                <v-btn variant="flat" id="selectWorkspace" :loading="loading" @click="selectWorkspace()">Continue</v-btn>
                             </v-card-actions>
                         </v-col>
                     </v-row>

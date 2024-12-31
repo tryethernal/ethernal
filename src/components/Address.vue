@@ -130,11 +130,15 @@
                 </v-tabs-window-item>
 
                 <v-tabs-window-item value="erc20Balances">
-                    <Token-Balances :address="address" :patterns="['erc20']" :key="address" />
+                    <div class="mt-3">
+                        <Token-Balances :address="address" :patterns="['erc20']" :key="address" />
+                    </div>
                 </v-tabs-window-item>
 
                 <v-tabs-window-item value="erc721Balances">
-                    <Token-Balances :address="address" :patterns="['erc721']" :dense="true" :key="address" />
+                    <div class="mt-3">
+                        <Token-Balances :address="address" :patterns="['erc721']" :dense="true" :key="address" />
+                    </div>
                 </v-tabs-window-item>
 
                 <template v-if="contract">
@@ -143,7 +147,9 @@
                     </v-tabs-window-item>
 
                     <v-tabs-window-item value="code">
-                        <Contract-Code v-if="contract" :contract="contract" :key="address" />
+                        <div class="mt-3">
+                            <Contract-Code v-if="contract" :contract="contract" :key="address" />
+                        </div>
                     </v-tabs-window-item>
 
                     <v-tabs-window-item value="logs">
@@ -251,5 +257,9 @@ export default {
 <style scoped>
 .v-window {
     overflow: visible;
+}
+
+.v-card-subtitle {
+    opacity: 1;
 }
 </style>

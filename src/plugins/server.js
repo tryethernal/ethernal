@@ -1150,6 +1150,7 @@ export default {
                     firebaseUserId: firebaseUserId.value
                 };
                 const resource = `${envStore.apiRoot}/api/workspaces`;
+                // return new Promise((r) => r({ a: 1 }));
                 return axios.post(resource, { data });
             },
 

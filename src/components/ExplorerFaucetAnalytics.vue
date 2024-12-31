@@ -12,7 +12,7 @@
                     <Line-Chart :title="'Request Volume'" :xLabels="charts['requestVolume'].xLabels" :data="charts['requestVolume'].data" :tooltipUnit="'request'" :index="0" />
                 </v-col>
                 <v-col>
-                    <Line-Chart :title="'Token Volume'" :xLabels="charts['tokenVolume'].xLabels" :data="charts['tokenVolume'].data" :tooltipUnit="publicExplorer.token || 'ETH'" :floating="true" :index="1" />
+                    <Line-Chart :title="'Token Volume'" :xLabels="charts['tokenVolume'].xLabels" :data="charts['tokenVolume'].data" :tooltipUnit="explorerStore.token || 'ETH'" :floating="true" :index="1" />
                 </v-col>
             </v-row>
         </v-card-text>
@@ -22,7 +22,9 @@
 <script>
 const moment = require('moment');
 const ethers = require('ethers');
-import { mapGetters } from 'vuex';
+import { mapStores } from 'pinia';
+import { useExplorerStore } from '../stores/explorer';
+
 import LineChart from './LineChart';
 
 export default {
@@ -74,9 +76,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-            'publicExplorer'
-        ]),
+        ...mapStores(useExplorerStore),
         from() {
             return this.selectedTimeRange > 0 ? new Date(new Date() - this.selectedTimeRange * 24 * 3600 * 1000) : new Date(0);
         },

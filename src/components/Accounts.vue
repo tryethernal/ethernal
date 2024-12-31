@@ -17,7 +17,7 @@
                     :headers="headers"
                     @update:options="getAccounts">
                     <template v-slot:no-data>
-                        No Accounts Available
+                        No accounts founds
                     </template>
                     <template v-slot:item.address="{ item }">
                         <v-tooltip location="top">

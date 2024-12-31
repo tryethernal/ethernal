@@ -21,8 +21,10 @@
                     <div style="max-width: 60ch; text-overflow: ellipsis; overflow: hidden;">{{ shortRpcUrl(item.rpcServer) }}</div>
                 </template>
                 <template v-slot:item.actions="{ item }">
-                    <v-btn :disabled="disabled || item.id == currentWorkspaceStore.id" class="text-medium-emphasis" icon="mdi-swap-horizontal" variant="text" @click="switchWorkspace(item.name)" size="small"></v-btn>
-                    <v-btn :disabled="disabled" icon="mdi-delete" variant="text" @click="deleteWorkspace(item)" color="error" size="small"></v-btn>
+                    <template class="d-flex  justify-space-around align-center">
+                        <v-btn density="compact" :disabled="disabled || item.id == currentWorkspaceStore.id" class="text-medium-emphasis" icon="mdi-swap-horizontal" variant="text" @click="switchWorkspace(item.name)" size="small"></v-btn>
+                        <v-btn density="compact" :disabled="disabled" icon="mdi-delete" variant="text" @click="deleteWorkspace(item)" color="error" size="small"></v-btn>
+                    </template>
                 </template>
             </v-data-table>
         </v-card-text>

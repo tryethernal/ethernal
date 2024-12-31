@@ -5,6 +5,12 @@ import { useExplorerStore } from './explorer';
 import { useUserStore } from './user';
 import { useEnvStore } from './env';
 
+const usePrivateCurrentWorkspaceStore = defineStore('privateCurrentWorkspace', {
+    state: () => ({
+        rpcListenerWorker: null
+    })
+});
+
 export const useCurrentWorkspaceStore = defineStore('currentWorkspace', {
     state: () => ({
         id: null,
@@ -30,6 +36,7 @@ export const useCurrentWorkspaceStore = defineStore('currentWorkspace', {
         startBrowserSync() {
             const userStore = useUserStore();
             const envStore = useEnvStore();
+            const privateCurrentWorkspaceStore = usePrivateCurrentWorkspaceStore();
 
             const rpcListenerWorker = new Worker(new URL('../workers/blockSyncer.worker.js', import.meta.url), { type: 'module' });
             rpcListenerWorker.onmessage = () => this.updateBrowserSyncStatus(false);
@@ -39,6 +46,16 @@ export const useCurrentWorkspaceStore = defineStore('currentWorkspace', {
                 apiToken: userStore.apiToken,
                 workspace: this.name
             });
+
+            privateCurrentWorkspaceStore.rpcListenerWorker = rpcListenerWorker;
+            this.browserSyncEnabled = true;
+        },
+
+        stopBrowserSync() {
+            const privateCurrentWorkspaceStore = usePrivateCurrentWorkspaceStore();
+            privateCurrentWorkspaceStore.rpcListenerWorker.terminate();
+            privateCurrentWorkspaceStore.rpcListenerWorker = null;
+            this.browserSyncEnabled = false;
         },
 
         updateBrowserSyncStatus(status) {
@@ -62,7 +79,7 @@ export const useCurrentWorkspaceStore = defineStore('currentWorkspace', {
                 useExplorerStore().updateExplorer(workspace.explorer);
 
             const userStore = useUserStore();
-            if (this.userId === userStore.id)
+            if (this.userId && this.userId === userStore.id)
                 userStore.isAdmin = true;
             else
                 userStore.isAdmin = false;

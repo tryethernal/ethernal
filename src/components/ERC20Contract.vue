@@ -119,55 +119,55 @@
 
                 <div v-if="!loadingContract">
                     <v-tabs v-model="tab">
-                        <v-tab id="transactionsTab" href="#transactions">Transactions</v-tab>
-                        <v-tab id="transfersTab" href="#transfers">Transfers</v-tab>
-                        <v-tab id="holdersTab" href="#holders">Holders</v-tab>
-                        <v-tab id="interactionsTab" href="#interactions">Read / Write</v-tab>
-                        <v-tab id="codeTab" href="#code">Code</v-tab>
-                        <v-tab id="analyticsTab" href="#analytics">Analytics</v-tab>
+                        <v-tab id="transactionsTab" value="transactions">Transactions</v-tab>
+                        <v-tab id="transfersTab" value="transfers">Transfers</v-tab>
+                        <v-tab id="holdersTab" value="holders">Holders</v-tab>
+                        <v-tab id="interactionsTab" value="interactions">Read / Write</v-tab>
+                        <v-tab id="codeTab" value="code">Code</v-tab>
+                        <v-tab id="analyticsTab" value="analytics">Analytics</v-tab>
                     </v-tabs>
 
-                    <v-tabs-items :value="tab">
-                        <v-tab-item value="transactions">
+                    <v-tabs-window v-model="tab">
+                        <v-tabs-window-item value="transactions">
                             <v-card border flat class="mt-3">
                                 <v-card-text>
                                     <Address-Transactions-List :address="address" />
                                 </v-card-text>
                             </v-card>
-                        </v-tab-item>
+                        </v-tabs-window-item>
 
-                        <v-tab-item value="transfers">
+                        <v-tabs-window-item value="transfers">
                             <v-card border flat class="mt-3">
                                 <v-card-text>
                                     <ERC-20-Token-Transfers :address="address" :tokenDecimals="contract.tokenDecimals" :tokenSymbol="contract.tokenSymbol" />
                                 </v-card-text>
                             </v-card>
-                        </v-tab-item>
+                        </v-tabs-window-item>
 
-                        <v-tab-item value="holders">
+                        <v-tabs-window-item value="holders">
                             <v-card border flat class="mt-3">
                                 <v-card-text>
                                     <ERC-20-Token-Holders :address="address" :tokenDecimals="contract.tokenDecimals" :tokenSymbol="contract.tokenSymbol" />
                                 </v-card-text>
                             </v-card>
-                        </v-tab-item>
+                        </v-tabs-window-item>
 
-                        <v-tab-item value="interactions">
+                        <v-tabs-window-item value="interactions">
                             <Contract-Interaction :address="address" />
-                        </v-tab-item>
+                        </v-tabs-window-item>
 
-                        <v-tab-item value="code">
+                        <v-tabs-window-item value="code">
                             <Contract-Code v-if="contract" :contract="contract" />
-                        </v-tab-item>
+                        </v-tabs-window-item>
 
-                        <v-tab-item value="analytics">
+                        <v-tabs-window-item value="analytics">
                             <v-card border flat class="mt-3">
                                 <v-card-text>
                                     <ERC-20-Contract-Analytics :address="address" :tokenDecimals="contract.tokenDecimals" :tokenSymbol="contract.tokenSymbol" :tokenType="tokenType" :key="contract.id" />
                                 </v-card-text>
                             </v-card>
-                        </v-tab-item>
-                    </v-tabs-items>
+                        </v-tabs-window-item>
+                    </v-tabs-window>
                 </div>
             </template>
         </template>
@@ -175,8 +175,8 @@
 </template>
 
 <script>
-const moment = require('moment');
-import { mapGetters } from 'vuex';
+import { mapStores } from 'pinia';
+import { useCurrentWorkspaceStore } from '@/stores/currentWorkspace';
 
 const { formatNumber, formatContractPattern } = require('../lib/utils');
 const ERC20_ABI = require('../abis/erc20.json');
@@ -218,9 +218,8 @@ export default {
     mounted() {
     },
     methods: {
-        moment: moment,
-        formatNumber: formatNumber,
-        formatContractPattern: formatContractPattern,
+        formatNumber,
+        formatContractPattern,
         onRpcConnectionStatusChanged(data) {
             this.metamaskData = data;
             if (data.account && data.isReady) {
@@ -230,7 +229,7 @@ export default {
                     'balanceOf(address)',
                     { from: null },
                     { 0: data.account },
-                    this.rpcServer,
+                    this.currentWorkspaceStore.rpcServer,
                     window.ethereum
                 )
                 .then(([balance]) => this.connectedAccountBalance = balance)
@@ -260,9 +259,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-            'rpcServer'
-        ]),
+        ...mapStores(useCurrentWorkspaceStore),
         tokenType() {
             if (this.contract && this.contract.patterns)
                 return this.contract.patterns[0];

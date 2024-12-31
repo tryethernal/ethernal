@@ -8,7 +8,7 @@
                 <template v-slot:top>
                     <div style="height: 48px; font-size: 16px" class="d-flex justify-space-between">
                         <Hash-Link class="align-self-center" :type="'address'" :hash="token" :withTokenName="true" :withName="true" :loadContract="true" />
-                        <v-switch class="align-self-center" v-model="unformatted" label="Unformatted Amounts"></v-switch>
+                        <v-switch hide-details="auto" class="align-self-center" v-model="unformatted" label="Unformatted Amounts"></v-switch>
                     </div>
                 </template>
                 <template v-slot:item.address="{ item }">

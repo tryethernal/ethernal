@@ -181,7 +181,8 @@
 
 <script>
 const { sanitize } = require('../lib/utils');
-import { mapGetters } from 'vuex';
+import { mapStores } from 'pinia';
+import { useExplorerStore } from '../stores/explorer';
 
 export default {
     name: 'ContractVerification',
@@ -234,7 +235,7 @@ export default {
     },
     mounted() {
         this.parameters.address = this.address;
-        this.parameters.slug = this.publicExplorer.slug;
+        this.parameters.slug = this.explorerStore.slug;
         this.$server.getCompilerVersions()
             .then(({ data }) => {
                 for (let i = 0; i < data.builds.length; i++) {
@@ -307,9 +308,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-            'publicExplorer'
-        ])
+        ...mapStores(useExplorerStore)
     }
 }
 </script>

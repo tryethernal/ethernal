@@ -1,0 +1,55 @@
+.logo {
+    font-family: "Exo";
+    font-weight: 600;
+    color: rgb(var(--v-theme-primary));
+}
+
+.logo-white {
+    font-family: "Exo";
+    font-weight: 600;
+    color: white;
+}
+
+div {
+    > .v-divider--vertical {
+        display: inline;
+        vertical-align: middle;
+    }
+}
+
+.v-icon.align-with-text {
+    vertical-align: text-bottom !important;
+}
+
+#feedbackfin__container {
+    font-family: 'Roboto';
+}
+
+a.underlined {
+    text-decoration: underline !important;
+}
+
+.roundedModal {
+    border-radius: 1.5rem;
+}
+
+.v-data-table {
+    overflow-x: auto;
+}
+
+.v-data-table__wrapper {
+    overflow-x: auto !important;
+}
+
+.v-data-table table {
+    min-width: 100%;
+    white-space: nowrap;
+}
+
+.raw-input {
+    max-width: 71ch;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    list-style-type: none;
+}

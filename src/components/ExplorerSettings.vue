@@ -3,7 +3,7 @@
         <v-card-text>
             <v-alert v-if="successMessage" density="compact" text type="success">{{ successMessage }}</v-alert>
             <v-alert v-if="errorMessage" density="compact" text type="error">{{ errorMessage }}</v-alert>
-            <v-form @submit.prevent="updateExplorerSettings()" v-model="valid">
+            <v-form class="mt-4" @submit.prevent="updateExplorerSettings()" v-model="valid">
                 <v-row>
                     <v-col>
                         <v-select

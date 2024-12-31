@@ -1,10 +1,9 @@
 <template>
     <v-dialog v-model="dialog" max-width="400">
         <v-card>
-            <v-card-title class="text-h5">
-                Create Faucet
-                <v-spacer></v-spacer>
-                <v-btn icon @click="close(false)"><v-icon>mdi-close</v-icon></v-btn>
+            <v-card-title class="d-flex justify-space-between align-center">
+                <h4>Create Faucet</h4>
+                <v-btn color="grey" variant="text" icon="mdi-close" @click="close(false)"></v-btn>
             </v-card-title>
             <v-card-text>
                 <v-alert text type="error" v-if="errorMessage">{{ errorMessage }}</v-alert>
@@ -42,7 +41,7 @@
                     </v-row>
                     <v-card-actions class="pr-0 pb-0">
                         <v-spacer></v-spacer>
-                        <v-btn :loading="loading" color="primary" :disabled="!valid" type="submit">Create</v-btn>
+                        <v-btn variant="flat" :loading="loading" color="primary" :disabled="!valid" type="submit">Create</v-btn>
                     </v-card-actions>
                 </v-form>
             </v-card-text>

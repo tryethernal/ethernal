@@ -1,13 +1,12 @@
 <template>
     <v-dialog v-model="dialog" max-width="600">
         <v-card>
-            <v-card-title class="text-h5">
-                Create Dex
-                <v-spacer></v-spacer>
-                <v-btn icon @click="close(false)"><v-icon>mdi-close</v-icon></v-btn>
+            <v-card-title class="d-flex justify-space-between align-center">
+                <h4>Create Dex</h4>
+                <v-btn color="grey" variant="text" icon="mdi-close" @click="close(false)"></v-btn>
             </v-card-title>
             <v-card-text>
-                <v-alert text type="error" v-if="errorMessage">{{ errorMessage }}</v-alert>
+                <v-alert text density="compact" type="error" v-if="errorMessage">{{ errorMessage }}</v-alert>
                 Enter your router address. From there, we'll be able to fetch the factory, and all created token pairs, in order to generate your dex UI.
                 <v-form class="mt-3" @submit.prevent="create" v-model="valid">
                     <v-row>
@@ -40,12 +39,12 @@
                                 v-model="wrappedNativeTokenAddress"
                                 persistent-hint
                                 hint="We need this address to be able to route native token swaps"
-                                :label="`Wrapped ${this.nativeTokenSymbol} Address`"></v-text-field>
+                                :label="`Wrapped ${this.explorerStore.nativeTokenSymbol} Address`"></v-text-field>
                         </v-col>
                     </v-row>
                     <v-card-actions class="pr-0 pb-0">
                         <v-spacer></v-spacer>
-                        <v-btn :loading="loading" color="primary" :disabled="!valid" type="submit">Create</v-btn>
+                        <v-btn variant="flat" :loading="loading" color="primary" :disabled="!valid" type="submit">Create</v-btn>
                     </v-card-actions>
                 </v-form>
             </v-card-text>
@@ -53,7 +52,8 @@
     </v-dialog>
     </template>
 <script>
-import { mapGetters } from 'vuex';
+import { mapStores } from 'pinia';
+import { useExplorerStore } from '../stores/explorer';
 
 export default {
     name: 'CreateExplorerDexModal',
@@ -102,9 +102,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-            'nativeTokenSymbol'
-        ])
+        ...mapStores(useExplorerStore)
     }
 }
 </script>

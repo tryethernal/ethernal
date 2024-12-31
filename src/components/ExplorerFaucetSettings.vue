@@ -3,16 +3,16 @@
         <template v-if="explorer && explorer.faucet">
             <v-row>
                 <v-col cols="6">
-                    <v-card border flat class="my-6">
+                    <v-card border flat class="mb-6">
                         <v-card-text>
-                            <v-alert text type="error" v-if="errorMessage">{{ errorMessage }}</v-alert>
-                            <v-alert text type="success" v-if="successMessage">{{ successMessage }}</v-alert>
+                            <v-alert text density="compact" type="error" v-if="errorMessage">{{ errorMessage }}</v-alert>
+                            <v-alert text density="compact" type="success" v-if="successMessage">{{ successMessage }}</v-alert>
 
-                            <v-switch @click.prevent="toggleFaucet()" :loading="switchLoading || active === null" class="mt-1" v-model="active" inset :label="`${faucet.active ? 'Active' : 'Inactive'}`"></v-switch>
+                            <v-switch @click.prevent="toggleFaucet()" :loading="switchLoading || !faucet || faucet.active === null" class="mt-1" v-model="faucet.active" inset :label="`${faucet.active ? 'Active' : 'Inactive'}`"></v-switch>
                             <strong>URL:</strong> <a :href="`//${mainExplorerDomain}/faucet`" target="_blank">https://{{ mainExplorerDomain }}/faucet</a><br>
                             <strong>Address:</strong> <Hash-Link :type="'address'" :hash="faucet.address" :fullHash="true" :withName="false" /><br>
                             <strong>Balance:</strong>&nbsp;
-                            <template v-if="balance">{{ balance | fromWei('ether', explorer.token) }}</template>
+                            <template v-if="balance">{{ $fromWei(balance, 'ether', explorer.token) }}</template>
                             <template v-else><i>Fetching...</i></template>
 
                             <v-divider class="mt-4 mb-6"></v-divider>
@@ -33,7 +33,7 @@
                                     :suffix="`${explorer.token || 'ETH'}`"
                                     label="Drip Amount"></v-text-field>
                                 <v-text-field
-                                    class="mt-2"
+                                    class="mt-4"
                                     density="compact"
                                     variant="outlined"
                                     required
@@ -49,7 +49,7 @@
                                     label="Interval Between Drips"></v-text-field>
                                 <v-card-actions class="pr-0 pb-0">
                                     <v-spacer></v-spacer>
-                                    <v-btn :loading="loading" color="primary" :disabled="!valid || !faucet.active || switchLoading" type="submit">Update</v-btn>
+                                    <v-btn variant="flat" :loading="loading" color="primary" :disabled="!valid || !faucet.active || switchLoading" type="submit">Update</v-btn>
                                 </v-card-actions>
                             </v-form>
                         </v-card-text>
@@ -85,7 +85,7 @@
                 </v-card-text>
                 <v-card-actions class="mb-4">
                     <v-spacer></v-spacer>
-                    <v-btn :loading="loading" color="primary" @click="openCreateExplorerFaucetModal">Setup your Faucet</v-btn>
+                    <v-btn variant="flat" :loading="loading" color="primary" @click="openCreateExplorerFaucetModal">Setup your Faucet</v-btn>
                     <v-spacer></v-spacer>
                 </v-card-actions>
             </v-card>
@@ -121,7 +121,6 @@ export default {
     data: () => ({
         loading: false,
         switchLoading: false,
-        active: null,
         successMessage: null,
         errorMessage: null,
         valid: false,
@@ -144,9 +143,9 @@ export default {
     methods: {
         toggleFaucet() {
             this.switchLoading = true;
-            const fn = this.active ? 'activateFaucet' : 'deactivateFaucet';
-            this.server[fn](this.faucet.id)
-                .then(() => this.faucet.active = this.active)
+            const fn = this.faucet.active ? 'deactivateFaucet' : 'activateFaucet';
+            this.$server[fn](this.faucet.id)
+                .then(() => this.faucet.active = !this.faucet.active)
                 .catch(error => this.errorMessage = error.response && error.response.data || 'Error while updating faucet. Please retry.')
                 .finally(() => this.switchLoading = false);
         },
@@ -170,10 +169,8 @@ export default {
                 .then(({ data }) => {
                     this.explorer = data;
                     this.faucet = data.faucet;
-                    if (this.faucet) {
-                        this.active = data.faucet.active;
+                    if (this.faucet)
                         this.refreshFaucetBalance();
-                    }
                 })
                 .catch(console.log);
         },
@@ -220,7 +217,7 @@ export default {
     },
     watch: {
         faucet() {
-            if (this.explorer && this.explorer.workspaceId == this.currentWorkspaceStore.id)
+            if (this.explorerStore && this.explorerStore.workspaceId == this.currentWorkspaceStore.id)
                 this.explorerStore.updateExplorer({ faucet: this.faucet });
         }
     },

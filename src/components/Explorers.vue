@@ -12,7 +12,7 @@
                         be easily accessible, without needing a login, to anyone that needs it.<br><br>
 
                         You will get the following:
-                        <ul>
+                        <ul class="ml-2 mt-2">
                             <li>A public explorer showing blocks, transactions, contracts, tokens, etc...</li>
                             <li>A custom url like http://explorer.myprotocol.com to access it</li>
                             <li>A Metamask integration so your users can easily interact with contracts</li>

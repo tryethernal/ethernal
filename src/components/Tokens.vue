@@ -14,6 +14,9 @@
                     }"
                     item-key="address"
                     @update:options="getTokens">
+                    <template v-slot:no-data>
+                        No tokens founds
+                    </template>
                     <template v-slot:item.address="{ item }">
                         <Hash-Link :type="'token'" :hash="item.address" :contract="item" />
                     </template>

@@ -4,7 +4,7 @@
         <v-alert v-if="!isPremium && justUpgraded" density="compact" text type="success">You've been successfully upgraded to the Premium plan. It is currently being activated, and should be ready in about a minute. Thank you!</v-alert>
         <v-alert v-if="isPremium && justUpgraded" density="compact" text type="success">Your Premium plan is now ready!</v-alert>
         <v-alert v-show="errorMessage" density="compact" text type="error">{{ errorMessage }}</v-alert>
-        <v-card border flat class="mb-4">
+        <v-card border flat class="my-4">
             <v-card-title>Public Explorer Plans</v-card-title>
             <v-card-text v-if="loading">
                 <v-skeleton-loader type="list-item-three-line"></v-skeleton-loader>
@@ -59,9 +59,8 @@
             <v-row class="ml-1 mb-1">
                 <v-col cols="4">
                     <v-card style="height: 100%" border flat>
-                        <v-card-title>
+                        <v-card-title class="d-flex justify-space-between align-center">
                             Free
-                            <v-spacer></v-spacer>
                             <v-chip class="ml-2" color="primary" size="small" v-if="!isPremium">Current</v-chip>
                         </v-card-title>
                         <v-divider></v-divider>
@@ -77,9 +76,8 @@
                 </v-col>
                 <v-col cols="4">
                     <v-card style="height: 100%" border flat>
-                        <v-card-title>
+                        <v-card-title class="d-flex justify-space-between align-center">
                             Premium - $20/month
-                            <v-spacer></v-spacer>
                             <v-chip class="ml-2" color="primary" size="small" v-if="isPremium">Current Plan</v-chip>
                         </v-card-title>
                         <v-divider></v-divider>
@@ -156,7 +154,7 @@ export default {
         loading: false
     }),
     mounted() {
-        if (this.justUpgraded && this.user.plan != 'premium') {
+        if (this.justUpgraded && this.userStore.plan != 'premium') {
             this.subscriptionButtonLoading = true;
             this.pusherUnsubscribe = this.$pusher.onUserUpdated((user) => {
                 if (user.plan == 'premium') {
@@ -185,7 +183,7 @@ export default {
         },
         openStripePortal() {
             this.subscriptionButtonLoading = true;
-            this.$server.createStripePortalSession(`http://app.${this.mainDomain}/settings?tab=billing`)
+            this.$server.createStripePortalSession(`http://app.${this.envStore.mainDomain}/settings?tab=billing`)
                 .then(({ data }) => {
                     document.location.href = data.url
                 })

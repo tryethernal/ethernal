@@ -31,8 +31,8 @@
                                 v-model="password" name="password" label="Password" type="password"></v-text-field>
                             <v-card-actions class="px-0">
                                 <div style="float: left;">
-                                    <small><a @click="switchMode('signup')">Sign Up</a></small><br>
-                                    <small><a @click="switchMode('forgottenPwd')">Forgot My Password</a></small>
+                                    <small><a href="#" @click.prevent="switchMode('signup')">Sign Up</a></small><br>
+                                    <small><a href="#" @click.prevent="switchMode('forgottenPwd')">Forgot My Password</a></small>
                                 </div>
                                 <v-spacer></v-spacer>
                                 <v-btn variant="flat" :disabled="!valid" :loading="loading" color="primary" type="submit">Sign In</v-btn>
@@ -60,8 +60,8 @@
 
                             <v-card-actions class="px-0">
                                 <div style="float: left;">
-                                    <small><a @click="switchMode('signin')">Sign In</a></small><br>
-                                    <small><a @click="switchMode('forgottenPwd')">Forgot My Password</a></small>
+                                    <small><a href="#" @click.prevent="switchMode('signin')">Sign In</a></small><br>
+                                    <small><a href="#" @click.prevent="switchMode('forgottenPwd')">Forgot My Password</a></small>
                                 </div>
                                 <v-spacer></v-spacer>
                                 <v-btn variant="flat" :disabled="!valid" :loading="loading" color="primary" type="submit">Sign Up</v-btn>
@@ -85,8 +85,8 @@
 
                             <v-card-actions class="px-0">
                                 <div style="float: left;">
-                                    <small><a @click="switchMode('signin')">Sign In</a></small><br>
-                                    <small><a @click="switchMode('signup')">Sign Up</a></small>
+                                    <small><a href="#" @click.prevent="switchMode('signin')">Sign In</a></small><br>
+                                    <small><a href="#" @click.prevent="switchMode('signup')">Sign Up</a></small>
                                 </div>
                                 <v-spacer></v-spacer>
                                 <v-btn variant="flat" :disabled="!valid" :loading="loading" color="primary" type="submit">Submit</v-btn>
@@ -207,6 +207,9 @@ export default {
 }
 </script>
 <style scoped>
+a {
+    text-decoration: none;
+}
 a:hover {
     text-decoration: underline;
 }
