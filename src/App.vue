@@ -1,6 +1,6 @@
 <template>
     <v-app :style="styles">
-        <v-overlay :model-value="isOverlayActive" absolute :z-index="1000" scrim="primary" :opacity="0.2">
+        <v-overlay persistent class="d-flex justify-center align-center" :model-value="isOverlayActive" scrim="primary" :opacity="0.2">
             <v-progress-circular
                 indeterminate
                 size="64"
@@ -86,7 +86,6 @@
 <script>
 import { defineComponent, shallowRef } from 'vue';
 import { useTheme } from 'vuetify';
-import { Icon } from '@iconify/vue';
 import { mapStores } from 'pinia';
 import WebFont from 'webfontloader';
 import detectEthereumProvider from '@metamask/detect-provider';
@@ -105,15 +104,14 @@ export default {
         RpcConnector,
         OnboardingModal,
         BrowserSyncExplainerModal,
-        MigrateExplorerModal,
-        Icon
+        MigrateExplorerModal
     },
     data: () => ({
         routerComponent: shallowRef(defineComponent({
-            template: '<v-container fluid>Loading...</v-container>'
+            template: '<v-container fluid></v-container>'
         })),
         appBarComponent: shallowRef(defineComponent({
-            template: '<v-container fluid>Loading...</v-container>'
+            template: '<v-container fluid></v-container>'
         })),
         prAuthToken: null,
         styles: {},
@@ -332,7 +330,7 @@ export default {
             return `0x${parseInt(this.currentWorkspace.networkId).toString(16)}`;
         },
         isAuthPage() { return this.$route.path.indexOf('/auth') > -1 },
-        canDisplaySides() { return (this.userStore.loggedIn || this.explorerStore.id) && !this.isAuthPage },
+        canDisplaySides() { return (this.userStore.loggedIn || this.explorerStore.id) && !this.isAuthPage && !this.isOverlayActive },
         explorerToken() { return this.$route.query.explorerToken },
         justMigrated() { return !!this.$route.query.justMigrated }
     }
