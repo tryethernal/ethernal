@@ -1,6 +1,6 @@
 <template>
     <v-container fluid>
-        <v-card border flat>
+        <v-card>
             <v-card-text>
                 <template v-if="userStore.isAdmin">
                     <v-alert class="mb-4" v-if="removedContract" density="compact" text type="success">Contract at address <b>{{ removedContract }}</b> has been successfully removed.</v-alert>

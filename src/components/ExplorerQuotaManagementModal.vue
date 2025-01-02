@@ -1,6 +1,6 @@
 <template>
     <v-dialog v-model="dialog" max-width="1200" :persistent="true">
-        <v-card border flat>
+        <v-card>
             <v-card-title class="d-flex justify-space-between align-center">
                 <h4>Transaction Quota Management</h4>
                 <v-btn color="grey" variant="text" icon="mdi-close" @click="close()"></v-btn>

@@ -1,5 +1,5 @@
 <template>
-    <v-card border flat class="flex-grow-1">
+    <v-card class="flex-grow-1">
         <v-card-text v-if="syncStatus">
             <v-alert v-if="errorMessage" density="compact" text type="error">{{ errorMessage }}</v-alert>
             <div v-if="explorer.stripeSubscription">

@@ -1,6 +1,6 @@
 <template>
     <v-container fluid>
-        <v-card border flat class="pa-4">
+        <v-card class="pa-4">
             <template v-if="isExplorerSectionAvailable">
                 <h2>Explorer Status</h2>
                 <v-row class="mt-2">

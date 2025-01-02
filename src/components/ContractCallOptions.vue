@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-card border flat class="mb-4" :loading="loading">
+        <v-card class="mb-4" :loading="loading">
             <v-card-text>
                 <v-alert density="compact" type="info" text class="mb-3" v-if="!accounts.length && userStore.isAdmin">
                     To call contracts with loaded accounts, go to the "Accounts" tab and sync them from your chain, or add them using a private key or the impersonification feature.

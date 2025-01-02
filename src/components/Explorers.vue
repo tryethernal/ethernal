@@ -1,6 +1,6 @@
 <template>
     <v-container fluid>
-        <v-card border flat>
+        <v-card>
             <v-card-text>
                 <Create-Explorer-Modal ref="createExplorerModalRef" @explorerCreated="getExplorers" />
                 <v-card v-if="!explorers.length && !loading" flat border>

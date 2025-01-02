@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-card border flat class="mb-4">
+        <v-card class="mb-4">
             <v-card-text>
                 <v-row>
                     <v-col cols="6"><b>Contract Name:</b> {{ contract.verification.contractName }}</v-col>

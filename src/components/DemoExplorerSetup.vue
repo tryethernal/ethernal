@@ -34,7 +34,7 @@
                     </ul>
                 </v-col>
                 <v-col cols="12" lg="6">
-                    <v-card border flat class="bg-primary pa-md-10">
+                    <v-card class="bg-primary pa-md-10">
                         <v-card-title class="text-white"><h2>Get Started</h2></v-card-title>
                         <v-card-text>
                             <v-alert v-if="errorMessage" density="compact" text class="bg-white" type="error">{{ errorMessage }}</v-alert>
@@ -51,7 +51,7 @@
                                 <v-text-field variant="outlined" v-model="nativeToken" label="Native Token Symbol (optional)" placeholder="ETH" class="my-2" required></v-text-field>
                                 <v-btn size="large" width="100%" :loading="loading" color="primary" :disabled="!valid" type="submit">Generate Explorer</v-btn>
                             </v-form>
-                            <v-card border flat class="mt-4" v-if="domain">
+                            <v-card class="mt-4" v-if="domain">
                                 <v-card-title class="text-success">
                                     <v-icon class="text-success mr-2">mdi-check-circle</v-icon>
                                     Your demo explorer is ready!

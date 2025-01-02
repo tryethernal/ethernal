@@ -8,7 +8,7 @@
             </v-row>
             <v-row justify="center" align="center" class="mb-10 my-0">
                 <v-col md="6" sm="12">
-                    <v-card border flat class="rounded-card rounded-xl pa-12" v-if="faucet">
+                    <v-card class="rounded-card rounded-xl pa-12" v-if="faucet">
                         <v-card-title class="text-primary d-flex justify-center align-center">{{ explorerStore.name }} Faucet - Get {{ tokenSymbol }} Tokens</v-card-title>
                         <v-card-text class="pb-0">
                             <v-alert text type="error" v-if="errorMessage" v-html="errorMessage"></v-alert>
@@ -72,7 +72,7 @@
             </v-row>
         </template>
         <template v-else>
-            <v-card border flat>
+            <v-card>
                 <v-card-text>
                     <v-row>
                         <v-col align="center">

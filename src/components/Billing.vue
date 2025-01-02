@@ -4,7 +4,7 @@
         <v-alert v-if="!isPremium && justUpgraded" density="compact" text type="success">You've been successfully upgraded to the Premium plan. It is currently being activated, and should be ready in about a minute. Thank you!</v-alert>
         <v-alert v-if="isPremium && justUpgraded" density="compact" text type="success">Your Premium plan is now ready!</v-alert>
         <v-alert v-show="errorMessage" density="compact" text type="error">{{ errorMessage }}</v-alert>
-        <v-card border flat class="my-4">
+        <v-card class="my-4">
             <v-card-title>Public Explorer Plans</v-card-title>
             <v-card-text v-if="loading">
                 <v-skeleton-loader type="list-item-three-line"></v-skeleton-loader>
@@ -54,7 +54,7 @@
                 </v-row>
             </v-card-text>
         </v-card>
-        <v-card border flat class="mb-4">
+        <v-card class="mb-4">
             <v-card-title>Private Explorer Plan</v-card-title>
             <v-row class="ml-1 mb-1">
                 <v-col cols="4">
@@ -99,7 +99,7 @@
         </v-card>
         <v-row>
             <v-col>
-                <v-card border flat>
+                <v-card>
                     <v-card-text>
                         <strong>What's the difference between "Public Explorer" & "Private Explorer"?</strong>
                         <p>

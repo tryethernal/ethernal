@@ -3,7 +3,7 @@
         <template v-if="explorer && explorer.v2Dex">
             <v-row>
                 <v-col cols="6">
-                    <v-card border flat class="my-6">
+                    <v-card class="my-6">
                         <v-card-text>
                             <v-switch @click.prevent="toggleDex()" :loading="loading || !v2Dex || v2Dex.active === null" class="mt-1" v-model="v2Dex.active" inset :label="`${v2Dex.active ? 'Active' : 'Inactive'}`"></v-switch>
                             <strong>URL:</strong> <a :href="`//${mainExplorerDomain}/dex`" target="_blank">https://{{ mainExplorerDomain }}/dex</a><br>
@@ -28,7 +28,7 @@
             </v-row>
         </template>
         <template v-else-if="explorer">
-            <v-card border flat>
+            <v-card>
                 <Create-Explorer-Dex-Modal ref="createExplorerDexModal" />
                 <v-card-text>
                     <v-row>
@@ -57,7 +57,7 @@
             </v-card>
         </template>
         <template v-else>
-            <v-card border flat>
+            <v-card>
                 <v-skeleton-loader type="list-item-three-line"></v-skeleton-loader>
             </v-card>
         </template>

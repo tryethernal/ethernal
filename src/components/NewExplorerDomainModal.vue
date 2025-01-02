@@ -1,6 +1,6 @@
 <template>
     <v-dialog v-model="dialog" max-width="600">
-        <v-card border flat>
+        <v-card>
             <v-card-title class="d-flex justify-space-between align-center">
                 <h4>Add Domain Alias</h4>
                 <v-btn color="grey" variant="text" icon="mdi-close" @click="close()"></v-btn>

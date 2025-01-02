@@ -1,5 +1,5 @@
 <template>
-    <v-card border flat class="my-2">
+    <v-card class="my-2">
         <v-card-text>
             <v-data-table
                 :hide-default-footer="balanceChanges.length <= 10"

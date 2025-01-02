@@ -1,6 +1,6 @@
 <template>
     <v-dialog v-model="dialog" max-width="400" content-class="roundedModal">
-        <v-card border flat>
+        <v-card>
             <v-card-title class="mb-4">
                 Select a token
             </v-card-title>

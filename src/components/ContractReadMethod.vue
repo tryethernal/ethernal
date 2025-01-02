@@ -15,7 +15,7 @@
         </v-text-field>
         <div>=> {{ outputSignature }}</div>
         <div id="call" v-show="results.length">
-            <v-card border flat v-for="(val, idx) in results" :key="idx" class="my-1">
+            <v-card v-for="(val, idx) in results" :key="idx" class="my-1">
                 <v-card-text class="py-2 ma-0 px-1">
                     <div style="white-space: pre;">
                         <Formatted-Sol-Var :input="val.input" :value="val.value" />

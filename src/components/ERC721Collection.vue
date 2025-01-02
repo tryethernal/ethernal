@@ -32,7 +32,7 @@
             <template v-else>
                 <v-row class="mb-1">
                     <v-col cols="12" lg="5">
-                        <v-card border flat style="height: 100%">
+                        <v-card style="height: 100%">
                             <v-card-title>
                                 <v-tooltip location="top" v-if="contract.verification">
                                     <template v-slot:activator="{props}">
@@ -90,7 +90,7 @@
                             </v-col>
 
                             <v-col cols="12" sm="6" lg="6">
-                                <v-card border flat style="height: 100%">
+                                <v-card style="height: 100%">
                                     <v-card-subtitle v-if="metamaskData.account && metamaskData.isReady">
                                         <div style="position: absolute;">Your Balance</div>
                                         <div class="text-right" v-if="metamaskData.account">
@@ -124,7 +124,7 @@
 
                 <v-tabs-window v-model="tab">
                     <v-tabs-window-item value="transactions">
-                        <v-card border flat class="mt-3">
+                        <v-card class="mt-3">
                             <v-card-text>
                                 <Address-Transactions-List :address="address" />
                             </v-card-text>
@@ -132,7 +132,7 @@
                     </v-tabs-window-item>
 
                     <v-tabs-window-item value="transfers">
-                        <v-card border flat class="mt-3">
+                        <v-card class="mt-3">
                             <v-card-text>
                                 <ERC-721-Token-Transfers :address="address" />
                             </v-card-text>
@@ -140,7 +140,7 @@
                     </v-tabs-window-item>
 
                     <v-tabs-window-item value="holders">
-                        <v-card border flat class="mt-3">
+                        <v-card class="mt-3">
                             <v-card-text>
                                 <ERC-20-Token-Holders :address="address" :tokenDecimals="contract.tokenDecimals" :tokenSymbol="contract.tokenSymbol" />
                             </v-card-text>
@@ -160,7 +160,7 @@
                     </v-tabs-window-item>
 
                     <v-tabs-window-item value="analytics">
-                        <v-card border flat class="mt-3">
+                        <v-card class="mt-3">
                             <v-card-text>
                                 <ERC-20-Contract-Analytics :address="address" :tokenDecimals="contract.tokenDecimals" :tokenSymbol="contract.tokenSymbol" />
                             </v-card-text>

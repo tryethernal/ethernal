@@ -17,7 +17,7 @@
         <template v-else>
             <v-row class="mb-1">
                 <v-col cols="12" lg="5" v-if="contract">
-                    <v-card border flat style="height: 100%">
+                    <v-card style="height: 100%">
                         <v-card-title v-if="contract.name">{{ contract.name }}</v-card-title>
                         <v-card-subtitle v-if="contract.patterns.length > 0" class="mt-2">
                             <v-chip v-for="(pattern, idx) in contract.patterns" :key="idx" size="x-small" class="bg-success mr-2">
@@ -61,7 +61,7 @@
                 <v-col cols="12" lg="7">
                     <v-row>
                         <v-col cols="12">
-                            <v-card border flat :loading="loadingStats">
+                            <v-card :loading="loadingStats">
                                 <template v-slot:subtitle>
                                     Balance
                                 </template>
@@ -74,7 +74,7 @@
 
                     <v-row>
                         <v-col cols="12" lg="6">
-                            <v-card border flat style="height: 100%;" :loading="loadingStats">
+                            <v-card style="height: 100%;" :loading="loadingStats">
                                 <template v-slot:subtitle>
                                     Transactions
                                 </template>
@@ -89,7 +89,7 @@
                         </v-col>
 
                         <v-col cols="12" lg="6">
-                            <v-card border flat style="height: 100%;" :loading="loadingStats">
+                            <v-card style="height: 100%;" :loading="loadingStats">
                                 <template v-slot:subtitle>
                                     ERC-20 Transfers
                                 </template>
@@ -114,7 +114,7 @@
 
             <v-tabs-window v-model="tab">
                 <v-tabs-window-item value="transactions">
-                    <v-card border flat class="mt-3">
+                    <v-card class="mt-3">
                         <v-card-text>
                             <Address-Transactions-List :address="address" :key="address" />
                         </v-card-text>
@@ -122,7 +122,7 @@
                 </v-tabs-window-item>
 
                 <v-tabs-window-item value="transfers">
-                    <v-card border flat class="mt-3">
+                    <v-card class="mt-3">
                         <v-card-text>
                             <Address-Token-Transfers :address="address" :key="address" />
                         </v-card-text>
@@ -153,7 +153,7 @@
                     </v-tabs-window-item>
 
                     <v-tabs-window-item value="logs">
-                        <v-card border flat class="mt-3">
+                        <v-card class="mt-3">
                             <v-card-text>
                                 <Contract-Logs :address="address" :key="address" />
                             </v-card-text>

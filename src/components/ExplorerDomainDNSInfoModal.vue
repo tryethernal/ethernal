@@ -1,6 +1,6 @@
 <template>
     <v-dialog v-model="dialog" max-width="600">
-        <v-card border flat>
+        <v-card>
             <v-card-title>
                 <template>DNS Setup Info</template>
                 <v-spacer></v-spacer>

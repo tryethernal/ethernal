@@ -1,5 +1,5 @@
 <template>
-    <v-card border flat>
+    <v-card>
         <v-card-text>
             <v-row>
                 <v-col cols="3" class="pb-0">

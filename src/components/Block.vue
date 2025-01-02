@@ -34,12 +34,12 @@
                 </template>
             </v-row>
             <h4>Transactions</h4>
-            <v-card border flat>
+            <v-card>
                 <Transactions-List @listUpdated="listUpdated(number)" :blockNumber="number" :withCount="true" />
             </v-card>
         </template>
         <template v-else>
-            <v-card border flat>
+            <v-card>
                 <v-card-text>
                     <v-row>
                         <v-col align="center">
@@ -56,7 +56,7 @@
         </template>
     </v-container>
     <v-container fluid v-else>
-        <v-card border flat>
+        <v-card>
             <v-card-text>
                 <v-row>
                     <v-col cols="2"><v-skeleton-loader type="list-item-three-line"></v-skeleton-loader></v-col>

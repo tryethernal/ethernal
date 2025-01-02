@@ -1,6 +1,6 @@
 <template>
     <v-dialog v-model="dialog" max-width="350">
-        <v-card border flat>
+        <v-card>
             <v-card-title class="d-flex justify-space-between">
                 Transaction Settings
                 <v-btn color="grey" variant="text" icon="mdi-close" @click="close()" size="small"></v-btn>

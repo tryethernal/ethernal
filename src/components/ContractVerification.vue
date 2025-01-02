@@ -1,11 +1,11 @@
 <template>
-    <v-card border flat class="mb-6">
+    <v-card class="mb-6">
         <v-card-title>Contract Verification</v-card-title>
         <v-card-text>
             <v-alert v-if="verificationErrorMessage" text type="error">{{ verificationErrorMessage }}</v-alert>
             <v-form ref="form" v-model="canSubmit">
                 <h4>Compiler Settings</h4>
-                <v-card border flat class="mb-2">
+                <v-card class="mb-2">
                     <v-card-text>
                         <v-row>
                             <v-col cols="4">
@@ -81,7 +81,7 @@
                 </v-card>
 
                 <h4>Contract</h4>
-                <v-card border flat class="mb-2">
+                <v-card class="mb-2">
                     <v-card-text>
                         <v-row>
                             <v-col cols="4" class="pb-0">
@@ -120,7 +120,7 @@
                 </v-card>
 
                 <h4>Libraries Linking</h4>
-                <v-card border flat class="mb-2">
+                <v-card class="mb-2">
                     <v-card-text>
                         <v-row v-for="(library, index) in rawLibraries" :key="index" align="center">
                             <v-col cols="3" :class="{ 'pb-1': index == 0, 'py-0': index > 0 }">
@@ -160,7 +160,7 @@
                 </v-card>
 
                 <h4>Constructor Arguments</h4>
-                <v-card border flat class="mb-2">
+                <v-card class="mb-2">
                     <v-card-text>
                         <v-textarea
                             rows="3"

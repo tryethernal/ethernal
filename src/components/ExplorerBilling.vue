@@ -1,5 +1,5 @@
 <template>
-    <v-card border flat class="flex-grow-1">
+    <v-card class="flex-grow-1">
         <Update-Explorer-Plan-Modal ref="updateExplorerPlanModal" />
         <Explorer-Quota-Management-Modal ref="explorerQuotaManagementModal" />
         <v-card-text v-if="explorer.stripeSubscription">

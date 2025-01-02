@@ -3,7 +3,7 @@
         <template v-if="!totalSupply || totalSupply > 0">
             <v-row>
                 <v-col v-if="loading">
-                    <v-card border flat>
+                    <v-card>
                         <v-skeleton-loader type="list-item"></v-skeleton-loader>
                     </v-card>
                 </v-col>
@@ -27,7 +27,7 @@
         <template v-if="totalSupply === '0'">
             <v-row>
                 <v-col>
-                    <v-card border flat>
+                    <v-card>
                         <v-card-text>There are no tokens in this collection, or the contract is missing the totalSupply() method.</v-card-text>
                     </v-card>
                 </v-col>

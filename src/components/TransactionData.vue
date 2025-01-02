@@ -11,7 +11,7 @@
         </div>
         <template v-if="transaction.storage && Object.keys(transaction.storage).length > 0">
             <h4>Storage</h4>
-            <v-card border flat>
+            <v-card>
                 <v-card-text>
                     <pre>{{ transaction.storage }}</pre>
                 </v-card-text>
@@ -33,13 +33,13 @@
             <v-col>
                 <h3 class="mb-2">Emitted Events</h3>
                 <template v-if="!transactionLogLoading">
-                    <v-card border flat class="my-2" v-for="log in logs" :key="log.id">
+                    <v-card class="my-2" v-for="log in logs" :key="log.id">
                         <v-card-text>
                             <Transaction-Event :log="log" />
                         </v-card-text>
                     </v-card>
                 </template>
-                <v-card border flat v-else>
+                <v-card v-else>
                     <v-card-text>
                         <v-skeleton-loader type="list-item-three-line"></v-skeleton-loader>
                     </v-card-text>

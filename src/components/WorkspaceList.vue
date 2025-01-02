@@ -1,5 +1,5 @@
 <template>
-    <v-card border flat class="mb-4">
+    <v-card class="mb-4">
         <Create-Workspace-Modal ref="createWorkspaceModal" />
         <v-card-text>
             <v-alert v-if="errorMessage" density="compact" text type="error" v-html="errorMessage"></v-alert>

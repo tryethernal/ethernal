@@ -34,7 +34,7 @@
 
         <v-row>
             <v-col cols="12" md="6">
-                <v-card border flat>
+                <v-card>
                     <template v-slot:subtitle>
                         <div class="pt-2">Latest Blocks</div>
                     </template>
@@ -43,7 +43,7 @@
             </v-col>
 
             <v-col cols="12" md="6">
-                <v-card border flat>
+                <v-card>
                     <template v-slot:subtitle>
                         <div class="pt-2">Latest Transactions</div>
                     </template>

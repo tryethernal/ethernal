@@ -1,5 +1,5 @@
 <template>
-    <v-card border flat v-if="currentExplorer">
+    <v-card v-if="currentExplorer">
         <v-card-text>
             <v-alert v-if="successMessage" density="compact" text type="success">{{ successMessage }}</v-alert>
             <v-alert v-if="errorMessage" density="compact" text type="error">{{ errorMessage }}</v-alert>

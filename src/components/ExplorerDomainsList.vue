@@ -1,5 +1,5 @@
 <template>
-    <v-card border flat :disabled="disabled">
+    <v-card :disabled="disabled">
         <New-Explorer-Domain-Modal ref="newExplorerDomainModal" />
         <v-card-text>
             <v-alert v-if="disabled" text type="warning">Upgrade your plan to activate domain aliases.</v-alert>

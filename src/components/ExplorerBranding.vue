@@ -1,5 +1,5 @@
 <template>
-    <v-card border flat :disabled="disabled">
+    <v-card :disabled="disabled">
         <v-form @submit.prevent="update()" v-model="valid">
             <v-card-text>
                 <v-alert v-if="disabled" density="compact" text type="warning">Upgrade your plan to activate branding customization.</v-alert>

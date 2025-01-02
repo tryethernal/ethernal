@@ -1,6 +1,7 @@
+
 <template>
     <v-container fluid>
-        <v-card border flat class="pa-4">
+        <v-card class="pa-4">
             <v-tabs v-model="tab" class="mb-2">
                 <v-tab class="text-medium-emphasis" color="primary" value="workspace">Workspace</v-tab>
                 <v-tab v-if="envStore.isBillingEnabled" class="text-medium-emphasis" color="primary" value="billing">Billing</v-tab>
@@ -14,7 +15,7 @@
                             <v-alert v-show="updateSuccess" density="compact" text type="success">Settings updated</v-alert>
                             <v-alert v-show="updateError || errorMessage" density="compact" text type="error">{{ errorMessage  || 'Error while updating settings' }}</v-alert>
                             <h4>General</h4>
-                            <v-card border flat class="mb-4">
+                            <v-card class="mb-4">
                                 <v-card-text>
                                     <v-text-field
                                         variant="outlined"
@@ -41,7 +42,7 @@
                             </v-card>
 
                             <h4>Default Contracts Call Options</h4>
-                            <v-card border flat class="mb-4">
+                            <v-card class="mb-4">
                                 <v-skeleton-loader type="list-item-three-line" v-if="optionsLoader"></v-skeleton-loader>
                                 <v-card-text v-else>
                                 <v-select
@@ -89,7 +90,7 @@
                             <Workspace-List />
 
                             <h4>Advanced Options</h4>
-                            <v-card border flat class="mb-4">
+                            <v-card class="mb-4">
                                 <v-skeleton-loader type="list-item-three-line" v-if="advancedOptionsLoading"></v-skeleton-loader>
                                 <v-card-text v-else>
                                     <v-row>

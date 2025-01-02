@@ -1,6 +1,6 @@
 <template>
     <v-container fluid>
-        <v-card border flat>
+        <v-card>
             <v-card-text>
                 <Add-Account-Modal ref="addAccountModalRef" v-if="userStore.isAdmin" />
                 <Unlock-Account-Modal ref="openUnlockAccountModalRef" v-if="userStore.isAdmin" />

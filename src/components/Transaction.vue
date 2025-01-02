@@ -75,7 +75,7 @@
             <v-row class="mt-2" v-if="transaction.parsedError || transaction.rawError">
                 <v-col>
                     <div class="text-overline">Error Message</div>
-                    <v-card border flat>
+                    <v-card>
                         <v-card-text style="white-space: pre-wrap;" v-if="transaction.parsedError">
                             {{ transaction.parsedError }}
                         </v-card-text>
@@ -160,7 +160,7 @@
             <v-row class="my-2" v-if="transaction.tokenTransferCount > 0">
                 <v-col>
                     <h3 class="mb-2">Token Transfers</h3>
-                    <v-card border flat>
+                    <v-card>
                         <v-card-text>
                             <Transaction-Token-Transfers :hash="transaction.hash" :withTokenData="true" />
                         </v-card-text>
@@ -184,7 +184,7 @@
             <v-row class="my-2" v-if="transaction.traceSteps.length">
                 <v-col>
                     <h3 class="mb-2">Trace</h3>
-                    <v-card border flat class="pb-2">
+                    <v-card class="pb-2">
                         <v-card-text class="pt-2">
                             <Trace-Step v-for="step in transaction.traceSteps" :step="step" :key="step.id" />
                         </v-card-text>

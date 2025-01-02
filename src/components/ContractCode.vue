@@ -1,7 +1,7 @@
 <template>
     <div>
         <v-alert v-if="contractVerified" text type="success">Contract has been verified successfully!</v-alert>
-        <v-card border flat v-if="loading">
+        <v-card v-if="loading">
             <v-card-text>
                 <v-skeleton-loader class="col-4" type="list-item-three-line"></v-skeleton-loader>
             </v-card-text>
@@ -12,7 +12,7 @@
                 <Contract-Verification @contractVerified="contractVerified = true" v-else :address="contract.address" />
             </template>
 
-            <v-card border flat class="mb-6">
+            <v-card class="mb-6">
                 <v-card-title>Bytecode</v-card-title>
                 <v-card-text v-if="contract.bytecode">
                     <v-textarea class="text-medium-emphasis" density="compact" variant="outlined" readonly :model-value="contract.bytecode">
@@ -27,7 +27,7 @@
                 </v-card-text>
             </v-card>
 
-            <v-card border flat>
+            <v-card>
                 <v-card-title>Assembly</v-card-title>
                 <v-card-text>
                     <div v-if="highlightedAsm" class="hljs" v-html="highlightedAsm"></div>

@@ -1,5 +1,5 @@
 <template>
-    <v-card border flat>
+    <v-card>
         <v-card-text>
             <v-data-table-server
                 :loading="loading"

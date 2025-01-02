@@ -1,5 +1,5 @@
 <template>
-    <v-card border flat class="px-1" v-if="data">
+    <v-card class="px-1" v-if="data">
         <template v-slot:subtitle>
             <v-row>
                 <v-col cols="10">{{ title }}</v-col>

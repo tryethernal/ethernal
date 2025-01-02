@@ -1,5 +1,5 @@
 <template>
-    <v-card border flat :class="{ 'current-plan-card': current, 'best-value': bestValue }">
+    <v-card :class="{ 'current-plan-card': current, 'best-value': bestValue }">
         <v-card-title class="d-flex justify-space-between align-center">
             {{ plan.name }}
             <v-chip class="ml-2" color="primary" size="small" v-if="current">Current</v-chip>

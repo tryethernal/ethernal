@@ -10,7 +10,7 @@
             </v-row>
             <v-row justify="center" align="center" class="mb-10 my-0">
                 <v-col md="6" sm="12">
-                    <v-card border flat class="rounded-card rounded-xl">
+                    <v-card class="rounded-card rounded-xl">
                         <div class="mb-5 mt-1 mx-5 d-flex justify-space-between align-center">
                             <template v-if="connectedAccount">
                                 <small>Connected Account: <Hash-Link :withName="false" :type="'address'" :hash="connectedAccount" /></small>
@@ -147,7 +147,7 @@
             </v-row>
         </template>
         <template v-else>
-            <v-card border flat>
+            <v-card>
                 <v-card-text>
                     <v-row>
                         <v-col align="center">

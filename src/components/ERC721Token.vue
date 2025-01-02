@@ -1,6 +1,6 @@
 <template>
     <v-container v-if="notAToken && !loading" fluid>
-        <v-card border flat>
+        <v-card>
             <v-card-text>
                 <v-row>
                     <v-col align="center">

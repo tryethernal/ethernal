@@ -4,13 +4,13 @@
         <v-row justify="center">
             <template v-if="loading">
                 <v-col  cols="3">
-                    <v-card border flat><v-skeleton-loader type="article, actions"></v-skeleton-loader></v-card>
+                    <v-card><v-skeleton-loader type="article, actions"></v-skeleton-loader></v-card>
                 </v-col>
                 <v-col  cols="3">
-                    <v-card border flat><v-skeleton-loader type="article, actions"></v-skeleton-loader></v-card>
+                    <v-card><v-skeleton-loader type="article, actions"></v-skeleton-loader></v-card>
                 </v-col>
                 <v-col  cols="3">
-                    <v-card border flat><v-skeleton-loader type="article, actions"></v-skeleton-loader></v-card>
+                    <v-card><v-skeleton-loader type="article, actions"></v-skeleton-loader></v-card>
                 </v-col>
             </template>
             <v-col v-else cols="3" v-for="(plan, idx) in plans" :key="idx">

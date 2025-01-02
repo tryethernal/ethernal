@@ -1,7 +1,7 @@
 <template>
     <v-container fluid>
         <h4>ABI</h4>
-        <v-card border flat class="mb-4" :loading="loading">
+        <v-card class="mb-4" :loading="loading">
             <Import-Artifact-Modal ref="importArtifactModal" v-if="isUserAdmin" />
             <v-card-text v-if="isContractVerified" class="pb-0 text-success">
                 <v-icon class="text-success mr-1" size="small">mdi-check-circle</v-icon>Verified contract.
@@ -31,7 +31,7 @@
             @rpcConnectionStatusChanged="onRpcConnectionStatusChanged" />
 
         <h4>Read Methods</h4>
-        <v-card border flat class="mb-4">
+        <v-card class="mb-4">
             <v-skeleton-loader v-if="loading" class="col-4" type="list-item-three-line"></v-skeleton-loader>
             <div v-else>
                 <v-card-text v-if="contract.abi">
@@ -48,7 +48,7 @@
         </v-card>
 
         <h4>Write Methods</h4>
-        <v-card border flat class="mb-4">
+        <v-card class="mb-4">
             <v-skeleton-loader v-if="loading" class="col-4" type="list-item-three-line"></v-skeleton-loader>
             <div v-else>
                 <v-card-text v-if="contract.abi">

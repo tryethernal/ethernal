@@ -1,7 +1,7 @@
 <template>
     <v-container fluid>
         <template v-if="justCreated">
-            <v-card border flat>
+            <v-card>
                 <v-card-text>
                     <v-progress-circular
                         class="mr-2"

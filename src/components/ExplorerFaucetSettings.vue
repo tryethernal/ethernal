@@ -3,7 +3,7 @@
         <template v-if="explorer && explorer.faucet">
             <v-row>
                 <v-col cols="6">
-                    <v-card border flat class="mb-6">
+                    <v-card class="mb-6">
                         <v-card-text>
                             <v-alert text density="compact" type="error" v-if="errorMessage">{{ errorMessage }}</v-alert>
                             <v-alert text density="compact" type="success" v-if="successMessage">{{ successMessage }}</v-alert>
@@ -60,7 +60,7 @@
             </v-row>
         </template>
         <template v-else-if="explorer">
-            <v-card border flat>
+            <v-card>
                 <Create-Explorer-Faucet-Modal ref="createExplorerFaucetModal" />
                 <v-card-text>
                     <v-row>
@@ -91,7 +91,7 @@
             </v-card>
         </template>
         <template v-else>
-            <v-card border flat>
+            <v-card>
                 <v-skeleton-loader type="list-item-three-line"></v-skeleton-loader>
             </v-card>
         </template>

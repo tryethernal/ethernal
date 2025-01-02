@@ -1,6 +1,6 @@
 <template>
     <v-container fluid>
-        <v-card border flat style="height: 100%">
+        <v-card style="height: 100%">
             <v-card-text>
                 <v-row>
                     <v-col cols="3" class="pb-0">
