@@ -3,6 +3,7 @@ import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import { VStepperVertical, VStepperVerticalItem } from 'vuetify/labs/VStepperVertical'
+import { iconify } from './iconify';
 
 const ethernal = {
     dark: false,
@@ -23,6 +24,11 @@ export default createVuetify({
         ...components,
         VStepperVertical,
         VStepperVerticalItem
+    },
+    icons: {
+        sets: {
+            arcticons: iconify('arcticons')
+        }
     },
     directives,
     theme: {

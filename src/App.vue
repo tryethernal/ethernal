@@ -49,11 +49,7 @@
 
             <template v-slot:append>
                 <v-list density="compact" nav>
-                    <v-list-item title="Add To Metamask" link v-if="ethereum && hasNetworkInfo" @click="addNetworkToMetamask()">
-                        <template v-slot:prepend>
-                            <Icon icon="arcticons:metamask" width="24" height="24" />
-                        </template>
-                    </v-list-item>
+                    <v-list-item prepend-icon="arcticons:metamask" title="Add To Metamask" link v-if="ethereum && hasNetworkInfo" @click="addNetworkToMetamask()"></v-list-item>
 
                     <v-list-item v-for="(link, idx) in links" :prepend-icon="link.icon || 'mdi-open-in-new'" title="link.name" target="_blank" :href="link.url" :key="idx"></v-list-item>
                     <v-list-item prepend-icon="mdi-text-box-multiple" title="Documentation" target="_blank" :href="`https://doc.tryethernal.com`" v-if="!explorerStore"></v-list-item>
