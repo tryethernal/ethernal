@@ -1,7 +1,7 @@
 <template>
-    <v-dialog v-model="dialog" :max-width="user.canTrial || justMigrated ? 600 : 1800" :persistent="true">
-        <v-card border flat v-if="explorerId" :class="{'pa-4': !user.canTrial && !justMigrated }">
-            <v-card-title v-if="!user.canTrial && !justMigrated">Setup up your explorer</v-card-title>
+    <v-dialog v-model="dialog" :max-width="canTrial || justMigrated ? 600 : 1800" :persistent="true">
+        <v-card v-if="explorerId" :class="{'pa-4': !canTrial && !justMigrated }">
+            <v-card-title v-if="!canTrial && !justMigrated">Setup up your explorer</v-card-title>
             <v-card-title v-else>
                 <template v-if="!finalized">
                     <v-progress-circular
@@ -16,7 +16,7 @@
                     <v-icon class="text-success mr-2">mdi-check-circle-outline</v-icon>Your explorer is ready!
                 </span>
             </v-card-title>
-            <template v-if="user.canTrial || justMigrated">
+            <template v-if="canTrial || justMigrated">
                 <v-card-text>
                     <template v-if="finalized">You can now:</template>
                     <template v-else>Your explorer is almost ready. You'll soon be able to:</template>
@@ -34,7 +34,7 @@
             <template v-else>
                 <v-card-text>
                     You've already used your free trial, please choose a plan below to finalize your explorer.
-                    <div v-if="!user.cryptoPaymentEnabled">To setup crypto payment (Explorer 150 or above), reach out to contact@tryethernal.com.</div>
+                    <div v-if="!cryptoPaymentEnabled">To setup crypto payment (Team plan or above), reach out to contact@tryethernal.com.</div>
                 </v-card-text>
                 <Explorer-Plan-Selector
                     :explorerId="explorerId"
@@ -46,7 +46,10 @@
     </v-dialog>
 </template>
 <script>
-import { mapGetters } from 'vuex';
+import { storeToRefs } from 'pinia';
+import { useUserStore } from '@/stores/user';
+import { useEnvStore } from '@/stores/env';
+
 import ExplorerPlanSelector from './ExplorerPlanSelector.vue';
 
 export default {
@@ -65,6 +68,12 @@ export default {
         finalized: null,
         justMigrated: true
     }),
+    setup() {
+        const { id: userId, canTrial, cryptoPaymentEnabled } = storeToRefs(useUserStore());
+        const { mainDomain, isBillingEnabled } = storeToRefs(useEnvStore());
+
+        return { userId, canTrial, cryptoPaymentEnabled, mainDomain, isBillingEnabled };
+    },
     methods: {
         open(options) {
             this.dialog = true;
@@ -74,7 +83,7 @@ export default {
             this.explorerToken = options.explorerToken;
             this.justMigrated = !!options.justMigrated;
 
-            if (this.user.canTrial)
+            if (this.canTrial)
                 this.$server.migrateDemoExplorer(this.explorerToken)
                     .then(this.waitForMigration)
                     .catch(console.log);
@@ -89,7 +98,7 @@ export default {
         waitForMigration() {
             this.$server.getExplorer(this.explorerId)
                 .then(({ data }) => {
-                    if (data.isDemo || data.userId != this.user.id)
+                    if (data.isDemo || data.userId != this.userId)
                         return setTimeout(this.waitForMigration, 3000);
                     else
                         this.finalized = true;
@@ -114,13 +123,6 @@ export default {
             this.reject = null;
             this.dialog = false;
         }
-    },
-    computed: {
-        ...mapGetters([
-            'user',
-            'isBillingEnabled',
-            'mainDomain'
-        ])
     }
 }
 </script>

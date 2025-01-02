@@ -2,7 +2,7 @@
     <v-card border flat :disabled="disabled">
         <v-form @submit.prevent="update()" v-model="valid">
             <v-card-text>
-                <v-alert v-if="disabled" text type="warning">Upgrade your plan to activate branding customization.</v-alert>
+                <v-alert v-if="disabled" density="compact" text type="warning">Upgrade your plan to activate branding customization.</v-alert>
                 <v-alert v-if="successMessage" density="compact" text type="success">{{ successMessage }}</v-alert>
                 <v-alert v-if="errorMessage" density="compact" text type="error">{{ errorMessage }}</v-alert>
                 <v-row class="mt-3">

@@ -55,8 +55,7 @@ const createVueApp = (rootComponent, options) => {
     app.config.globalProperties.$fromWei = FromWei;
     return app;
 }
-
-if (import.meta.env.VITE_DEMO_ENABLED && window.location.pathname.startsWith('/demo'))
+if (import.meta.env.VITE_ENABLE_DEMO && window.location.pathname.startsWith('/demo'))
     createVueApp(Demo, { router: demoRouter }).mount('#app');
 else if (window.location.pathname.startsWith('/embedded'))
     createVueApp(Embedded, { router: embeddedRouter, provided: { embedded: true } }).mount('#app');

@@ -35,7 +35,6 @@
 </template>
 <script>
 const ethers = require('ethers');
-import { mapGetters } from 'vuex';
 import HashLink from './HashLink';
 import FromWei from '../filters/FromWei';
 
@@ -98,10 +97,6 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-            'currentWorkspace',
-            'isPublicExplorer'
-        ]),
         previousBlockNumber: function() {
             return Math.max(0, parseInt(this.blockNumber) - 1);
         }

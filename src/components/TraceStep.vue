@@ -13,7 +13,7 @@
                     </span>
                     <v-chip size="small" class="bg-primary mr-2">{{ step.op }}</v-chip>
                     <v-chip v-if="step.contract && step.contract.proxyContract" size="small" class="bg-primary mr-2">PROXY</v-chip>
-                    <template v-if="step.value && step.value != '' && step.value != '0'">[{{ step.value | fromWei('ether', chain.token) }}] </template>
+                    <template v-if="step.value && step.value != '' && step.value != '0'">[{{ $fromWei(step.value, 'ether', token) }}] </template>
                     <Hash-Link :type="'address'" :hash="step.address" :notCopiable="true" :fullHash="true" :withName="true" :contract="step.contract"/><span v-if="transactionDescription">.{{ transactionDescription.functionFragment.name }}(</span>
                     <template v-if="transactionDescription">
                         <div v-for="(input, index) in transactionDescription.functionFragment.inputs" :key="`in-${index}`">
@@ -56,20 +56,18 @@
 </template>
 <script>
 import { ethers } from 'ethers';
-import { mapGetters } from 'vuex';
+import { storeToRefs } from 'pinia';
+
+import { useExplorerStore } from '../stores/explorer';
 
 import HashLink from './HashLink';
 import FormattedSolVar from './FormattedSolVar';
-import FromWei from '../filters/FromWei';
 
 export default {
     name: 'TraceStep',
     components: {
         HashLink,
         FormattedSolVar
-    },
-    filters: {
-        FromWei
     },
     props: ['step'],
     data: () => ({
@@ -81,6 +79,10 @@ export default {
         expandInput: false,
         expandOutput: false
     }),
+    setup() {
+        const { token } = storeToRefs(useExplorerStore());
+        return { token };
+    },
     methods: {
         zeroXify: function(input) { return input.startsWith('0x') ? input : `0x${input}` },
         decodeOutput: function(index) {
@@ -104,13 +106,7 @@ export default {
                 }
             }
         }
-    },
-    computed: {
-        ...mapGetters([
-            'chain'
-        ])
     }
-
 };
 </script>
 <style scoped>

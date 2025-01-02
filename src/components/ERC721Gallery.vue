@@ -37,7 +37,6 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
 import ERC721TokenCard from './ERC721TokenCard';
 
 export default {
@@ -75,9 +74,6 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-            'currentWorkspace'
-        ]),
         length() {
             return this.totalSupply ? Math.ceil(this.totalSupply / this.currentOptions.itemsPerPage) : 0;
         }

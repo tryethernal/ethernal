@@ -18,10 +18,10 @@
     <v-container v-else fluid>
         <ERC721-Token-Transfer-Modal ref="erc721TokenTransferModal" :address="hash" :token="token" />
 
-        <v-alert text v-if="metadataReloaded" type="success">A metadata reload for this token has been queued for processing. It will be updated soon.</v-alert>
+        <v-alert class="mb-3" density="compact" text v-if="metadataReloaded" type="success">A metadata reload for this token has been queued for processing. It will be updated soon.</v-alert>
         <v-row class="mb-3">
             <v-col v-if="token.attributes.image_data && !loading" cols="12" sm="6" lg="4">
-                <v-card flat :color="token.attributes.background_color ? `#${token.attributes.background_color}` : ''" rounded="xl" class="mb-1">
+                <v-card flat :color="token.attributes.background_color ? `#${token.attributes.background_color}` : ''" rounded="lg" class="mb-1">
                     <div class="fill ma-1" v-html="token.attributes.image_data"></div>
                 </v-card>
             </v-col>
@@ -30,40 +30,42 @@
             </v-col>
 
             <v-col cols="12" sm="6">
-                <v-card>
-                    <template v-if="!loading">
-                        <v-card-subtitle class="pb-0 d-flex justify-space-between align-center">
+                <v-card v-if="!loading">
+                    <template v-slot:subtitle>
+                        <div class="pb-0 d-flex justify-space-between align-center">
                             <Router-Link align="middle" :to="`/nft/${hash}`" class="text-h6 text-decoration-none">{{ contract.tokenName }}</Router-Link>
                             <span>
-                                <v-tooltip v-if="token.attributes.external_url" location="top">
-                                    <template v-slot:activator="{ props }">
-                                        <a target="_blank" v-bind="props" class="text-decoration-none" :href="token.attributes.external_url" v-if="token.attributes.external_url">
-                                            <v-icon color="primary" class="mr-2">mdi-open-in-new</v-icon>
-                                        </a>
-                                    </template>
-                                    See on {{ hostOf(token.attributes.external_url) }}
-                                </v-tooltip>
-                                <v-tooltip location="top" v-if="currentWorkspaceStore.public">
-                                    <template v-slot:activator="{ props }">
-                                        <v-btn @click="reloadMetadata" v-bind="props" variant="text" icon="mdi-refresh" size="small"></v-btn>
-                                    </template>
-                                    Reload metadata
-                                </v-tooltip>
-                                <v-tooltip location="top">
-                                    <template v-slot:activator="{ props }">
-                                        <v-btn @click="openErc721TokenTransferModal()" v-bind="props" variant="text" icon="mdi-send" size="small"></v-btn>
-                                    </template>
-                                    Transfer Token
-                                </v-tooltip>
+                            <v-tooltip v-if="token.attributes.external_url" location="top">
+                                <template v-slot:activator="{ props }">
+                                    <a target="_blank" v-bind="props" class="text-decoration-none" :href="token.attributes.external_url" v-if="token.attributes.external_url">
+                                        <v-icon color="primary" class="mr-2">mdi-open-in-new</v-icon>
+                                    </a>
+                                </template>
+                                See on {{ hostOf(token.attributes.external_url) }}
+                            </v-tooltip>
+                            <v-tooltip location="top" v-if="currentWorkspaceStore.public">
+                                <template v-slot:activator="{ props }">
+                                    <v-btn @click="reloadMetadata" v-bind="props" variant="text" icon="mdi-refresh" size="small"></v-btn>
+                                </template>
+                                Reload metadata
+                            </v-tooltip>
+                            <v-tooltip location="top">
+                                <template v-slot:activator="{ props }">
+                                    <v-btn @click="openErc721TokenTransferModal()" v-bind="props" variant="text" icon="mdi-send" size="small"></v-btn>
+                                </template>
+                                Transfer Token
+                            </v-tooltip>
                             </span>
-                        </v-card-subtitle>
-                        <v-card-title class="text-h4 font-weight-bold">{{ token.attributes.name }}</v-card-title>
-                        <v-card-subtitle>Owned by <Hash-Link :type="'address'" :hash="token.owner" /></v-card-subtitle>
-                        <v-card-text v-if="token.attributes.description">{{ token.attributes.description }}</v-card-text>
+                        </div>
                     </template>
-                    <v-card-subtitle v-else>
+                    <v-card-title class="text-h4 font-weight-bold">{{ token.attributes.name }}</v-card-title>
+                    <v-card-subtitle>Owned by <Hash-Link :type="'address'" :hash="token.owner" /></v-card-subtitle>
+                    <v-card-text v-if="token.attributes.description">{{ token.attributes.description }}</v-card-text>
+                </v-card>
+                <v-card v-else>
+                    <template v-slot:subtitle>
                         <v-skeleton-loader type="paragraph"></v-skeleton-loader>
-                    </v-card-subtitle>
+                    </template>
                 </v-card>
             </v-col>
 
@@ -263,5 +265,8 @@ export default {
     flex-shrink: 0;
     min-width: 100%;
     min-height: 100%
+}
+.v-card-subtitle {
+    opacity: var(--v-card-subtitle-opacity, var(--v-high-emphasis-opacity));
 }
 </style>

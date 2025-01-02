@@ -21,28 +21,34 @@ import ExplorerAnalytics from '../components/ExplorerAnalytics.vue';
 import ExplorerFaucet from '../components/ExplorerFaucet.vue';
 import ExplorerDex from '../components/ExplorerDex.vue';
 
-import { useUserStore } from '../stores/user';
-import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
+import { useEnvStore } from '../stores/env';
+
+const isLoggedIn = () => {
+    return localStorage.getItem('apiToken') !== null;
+};
+
+const isPublic = () => {
+    const envStore = useEnvStore();
+    return window.location.host != `app.${envStore.mainDomain}`;
+};
 
 const redirectIfLoggedIn = function (to, from, next) {
-    const userStore = useUserStore();
-    const currentWorkspaceStore = useCurrentWorkspaceStore();
-
-    if (userStore.loggedIn || currentWorkspaceStore.public)
-        next(to || { path: '/transactions' });
-    else
+    if (isLoggedIn() || isPublic()) {
+        if (to.path == '/auth')
+            next({ path: '/transactions', query: to.query });
+        else
+            next(to || { path: '/transactions', query: to.query });
+    } else
         next();
 };
 
 const redirectIfLoggedOut = function (to, from, next) {
     if (to.hash && to.hash.startsWith('#'))
         to.query.tab = to.hash.split('#')[1];
-
-    const userStore = useUserStore();
-    if (userStore.loggedIn)
+    if (isLoggedIn() || isPublic())
         next();
     else
-        next({ path: '/auth' });
+        next({ path: '/auth', query: to.query });
 };
 
 const routes = [
@@ -70,7 +76,7 @@ const routes = [
     { path: '/status', component: ExplorerStatus, beforeEnter: redirectIfLoggedOut },
     { path: '/faucet', component: ExplorerFaucet, beforeEnter: redirectIfLoggedOut },
     { path: '/dex', component: ExplorerDex, beforeEnter: redirectIfLoggedOut },
-    { path: '/:pathMatch(.*)*', name: 'not-found', component: Overview }
+    { path: '/:pathMatch(.*)*', name: 'not-found', component: Overview, beforeEnter: redirectIfLoggedOut }
 ];
 
 const router = createRouter({

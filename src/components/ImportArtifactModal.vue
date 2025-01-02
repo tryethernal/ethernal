@@ -29,7 +29,6 @@
 </template>
 <script>
 const ethers = require('ethers');
-import { mapGetters } from 'vuex';
 
 export default {
     name: 'ImportArtifactModal',
@@ -123,11 +122,6 @@ export default {
             this.successMessage = null;
             this.errorMessage = null;
         }
-    },
-    computed: {
-        ...mapGetters([
-            'currentWorkspace'
-        ])
     }
 }
 </script>

@@ -76,7 +76,7 @@ export default {
                 this.cancelPlan();
         },
         createPlan(slug) {
-            if (this.user.cryptoPaymentEnabled) {
+            if (this.userStore.cryptoPaymentEnabled) {
                 this.$server.startCryptoSubscription(slug, this.explorerId)
                     .then(() => {
                         this.$emit('planCreated', slug);
@@ -87,7 +87,7 @@ export default {
                     })
                     .finally(() => this.selectedPlanSlug = null);
             }
-            else if (this.user.canTrial) {
+            else if (this.userStore.canTrial) {
                 this.$server.startTrial(this.explorerId, slug)
                     .then(() => window.location.assign(`//app.${this.envStore.mainDomain}/explorers/${this.explorerId}`))
                     .catch(error => {

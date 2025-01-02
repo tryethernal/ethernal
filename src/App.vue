@@ -7,7 +7,7 @@
                 color="primary"
             ></v-progress-circular>
         </v-overlay>
-        <v-system-bar height="40" v-html="banner" v-if="explorerStore && banner" class="bg-primary color--text text-center font-weight-bold" color="primary"></v-system-bar>
+        <v-system-bar height="40" v-html="banner" v-if="banner" class="d-flex justify-start font-weight-bold" color="primary"></v-system-bar>
 
         <v-navigation-drawer v-model="drawer" :style="styles" v-if="canDisplaySides">
             <div class="custom-logo-wrapper" v-if="logo">
@@ -348,9 +348,6 @@ a:not(.v-list-item) {
 }
 .v-system-bar a {
     color: rgb(var(--v-theme-base)) !important;
-}
-.v-toolbar__content {
-    padding: 0;
 }
 .custom-logo-wrapper {
     text-align: center;

@@ -35,15 +35,15 @@
 
             <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="primary" variant="text" @click.stop="close()">Close</v-btn>
-                <v-btn id="transferToken" color="primary" :disabled="!validForm || isPublicExplorer && !metamaskData.isReady || invalidOwner" :loading="loading" variant="text" @click.stop="transferToken()">Transfer Token</v-btn>
+                <v-btn @click.stop="close()">Close</v-btn>
+                <v-btn id="transferToken" variant="flat" :disabled="!validForm || isPublicExplorer && !metamaskData.isReady || invalidOwner" :loading="loading" @click.stop="transferToken()">Transfer Token</v-btn>
             </v-card-actions>
         </v-form>
     </v-card>
 </v-dialog>
 </template>
 <script>
-import { mapGetters } from 'vuex';
+import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
 import ERC721_ABI from '../abis/erc721.json';
 import { sendTransaction } from '../lib/metamask';
 import HashLink from './HashLink';
@@ -74,6 +74,10 @@ export default {
         invalidOwner: false,
         didTransfer: false
     }),
+    setup() {
+        const { rpcServer, public: isPublicExplorer } = useCurrentWorkspaceStore();
+        return { rpcServer, isPublicExplorer };
+    },
     methods: {
         transferWithMetamask() {
             sendTransaction({
@@ -164,13 +168,6 @@ export default {
             this.resolve = null;
             this.reject = null;
         }
-    },
-    computed: {
-        ...mapGetters([
-            'rpcServer',
-            'currentWorkspace',
-            'isPublicExplorer'
-        ])
     }
 }
 </script>

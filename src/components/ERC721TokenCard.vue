@@ -27,7 +27,6 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
 import HashLink from './HashLink';
 
 export default {
@@ -64,11 +63,6 @@ export default {
                     this.backgroundColor = data.metadata.background_color;
                 }
             })
-    },
-    computed: {
-        ...mapGetters([
-            'currentWorkspace'
-        ]),
     }
 }
 </script>
