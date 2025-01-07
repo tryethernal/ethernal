@@ -85,7 +85,7 @@
 <script>
 const moment = require('moment');
 const ethers = require('ethers');
-const { getGasPriceFromTransaction } = require('../lib/utils');
+import { getGasPriceFromTransaction } from '../lib/utils';
 import { mapStores } from 'pinia';
 import HashLink from './HashLink.vue';
 import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';

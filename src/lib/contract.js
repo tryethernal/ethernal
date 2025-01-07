@@ -6,8 +6,8 @@ const ERC721_ABI = require('../abis/erc721.json');
 const ERC721_METADATA_ABI = require('../abis/erc721Metadata.json');
 const ERC721_ENUMERABLE_ABI = require('../abis/erc721Enumerable.json');
 
-const { ContractConnector, ERC721Connector, getProvider } = require('./rpc');
-const { sanitize } = require('./utils');
+import { ContractConnector, ERC721Connector, getProvider } from './rpc';
+import { sanitize } from './utils';
 
 const formatErc721Metadata = (token) => {
     if (!token)

@@ -27,7 +27,7 @@
 
 <script>
 const ethers = require('ethers');
-const { formatNumber } = require('../lib/utils');
+import { formatNumber } from '@/lib/utils';
 
 export default {
     name: 'StatNumber',

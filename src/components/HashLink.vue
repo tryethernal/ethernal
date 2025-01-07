@@ -24,9 +24,8 @@
 </template>
 <script>
 import { mapStores } from 'pinia';
-import { inject } from 'vue';
 import { useExplorerStore } from '../stores/explorer';
-const { sanitize } = require('../lib/utils');
+import { sanitize } from '../lib/utils';
 
 export default {
     name: 'HashLink',

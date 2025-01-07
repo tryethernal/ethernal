@@ -5,7 +5,6 @@ import { useUserStore } from '../stores/user';
 import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
 import { useExplorerStore } from '../stores/explorer';
 const Web3 = require('web3');
-const Decoder = require('@truffle/decoder');
 const Axios = require('axios');
 let setupCache;
 const DEBUG_AXIOS_CACHE_INTERCEPTOR = false;
@@ -20,10 +19,10 @@ const axios = setupCache(Axios, {
 });
 const CACHE_TTL = 2000;
 
-const { sanitize } = require('../lib/utils');
-const { parseTrace } = require('../lib/trace');
-const { findPatterns, formatErc721Metadata } = require('../lib/contract');
-const { ERC721Connector } = require('../lib/rpc');
+import { sanitize } from '../lib/utils';
+import { parseTrace } from '../lib/trace';
+import { findPatterns, formatErc721Metadata } from '../lib/contract';
+import { ERC721Connector } from '../lib/rpc';
 
 const serverFunctions = {
     // Private

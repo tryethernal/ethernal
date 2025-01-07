@@ -80,7 +80,7 @@ import { mapStores } from 'pinia';
 import { useExplorerStore } from '../stores/explorer';
 import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
 
-import TransactionsList from './TransactionsList';
+import TransactionsList from './TransactionsList.vue';
 
 export default {
     name: 'Block',

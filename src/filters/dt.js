@@ -10,6 +10,7 @@ export default {
 
     fromNow(timestamp) {
         if (!timestamp) return '';
+
         const relative = DateTime
             .fromISO(timestamp)
             .toRelative({ round: true });

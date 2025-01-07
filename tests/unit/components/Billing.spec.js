@@ -1,16 +1,9 @@
 import flushPromises from 'flush-promises';
-import MockHelper from '../MockHelper';
 import Billing from '@/components/Billing.vue';
 
 describe('Billing.vue', () => {
-    let helper;
-
-    beforeEach(async () => {
-        helper = new MockHelper();
-    });
-
     it('Should display active explorers list', async () => {
-        jest.spyOn(helper.mocks.server, 'getExplorerBilling').mockResolvedValue({
+        vi.spyOn(server, 'getExplorerBilling').mockResolvedValue({
             data: {
                 activeExplorers: [
                     { id: 1, name: 'Test', planName: 'Team', subscriptionStatus: 'Active' }
@@ -19,12 +12,14 @@ describe('Billing.vue', () => {
             }
         });
 
-        const wrapper = helper.mountFn(Billing, {
-            stubs: ['Create-Explorer-Modal'],
-            getters: {
-                user: jest.fn().mockReturnValue({
-                    plan: 'premium'
-                })
+        const wrapper = mount(Billing, {
+            global: {
+                stubs: ['Create-Explorer-Modal'],
+                mocks: {
+                    $route: {
+                        query: {}
+                    }
+                }
             }
         });
         await flushPromises();
@@ -33,19 +28,22 @@ describe('Billing.vue', () => {
     });
 
     it('Should display the button to manage the subscription when the user has an active premium plan', async () => {
-        jest.spyOn(helper.mocks.server, 'getExplorerBilling').mockResolvedValue({
+        vi.spyOn(server, 'getExplorerBilling').mockResolvedValue({
             data: {
                 activeExplorers: [],
                 totalCost: 0
             }
         });
 
-        const wrapper = helper.mountFn(Billing, {
-            stubs: ['Create-Explorer-Modal'],
-            getters: {
-                user: jest.fn().mockReturnValue({
-                    plan: 'premium'
-                })
+        const wrapper = mount(Billing, {
+            global: {
+                stubs: ['Create-Explorer-Modal'],
+                plugins: [createTestingPinia({ initialState: { user: { plan: 'premium' } } })],
+                mocks: {
+                    $route: {
+                        query: {}
+                    }
+                }
             }
         });
         await flushPromises();
@@ -54,19 +52,21 @@ describe('Billing.vue', () => {
     });
 
     it('Should display the button to start the subscription when the user is on a free plan', async () => {
-        jest.spyOn(helper.mocks.server, 'getExplorerBilling').mockResolvedValue({
+        vi.spyOn(server, 'getExplorerBilling').mockResolvedValue({
             data: {
                 activeExplorers: [],
                 totalCost: 0
             }
         });
 
-        const wrapper = helper.mountFn(Billing, {
-            stubs: ['Create-Explorer-Modal'],
-            getters: {
-                user: jest.fn().mockReturnValue({
-                    plan: 'free'
-                })
+        const wrapper = mount(Billing, {
+            global: {
+                stubs: ['Create-Explorer-Modal'],
+                mocks: {
+                    $route: {
+                        query: {}
+                    }
+                }
             }
         });
         await flushPromises();

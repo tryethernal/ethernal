@@ -68,16 +68,16 @@
 
 <script>
 const ethers = require('ethers');
-const { sanitize } = require('../lib/utils');
+import { sanitize } from '../lib/utils';
 
 import { mapStores } from 'pinia';
 import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
 import { useUserStore } from '../stores/user';
 
-import ContractCallOptions from './ContractCallOptions';
-import ContractReadMethod from './ContractReadMethod';
-import ContractWriteMethod from './ContractWriteMethod';
-import ImportArtifactModal from './ImportArtifactModal';
+import ContractCallOptions from './ContractCallOptions.vue';
+import ContractReadMethod from './ContractReadMethod.vue';
+import ContractWriteMethod from './ContractWriteMethod.vue';
+import ImportArtifactModal from './ImportArtifactModal.vue';
 
 export default {
     name: 'ContractInteraction',

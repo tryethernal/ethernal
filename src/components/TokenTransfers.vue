@@ -50,7 +50,7 @@
     </v-data-table-server>
 </template>
 <script>
-import HashLink from './HashLink';
+import HashLink from './HashLink.vue';
 import { formatContractPattern } from '@/lib/utils';
 
 export default {

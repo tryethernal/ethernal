@@ -78,7 +78,7 @@ import langSolidityUrl from 'ace-mode-solidity/build/remix-ide/mode-solidity.js?
 ace.config.setModuleUrl('ace/theme/chrome', themeChromeUrl);
 ace.config.setModuleUrl('ace/mode/solidity', langSolidityUrl);
 import { VAceEditor } from 'vue3-ace-editor';
-import FormattedSolVar from './FormattedSolVar';
+import FormattedSolVar from './FormattedSolVar.vue';
 
 export default {
     name: 'ContractVerificationInfo',

@@ -67,9 +67,9 @@ import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
 import { useUserStore } from '../stores/user';
 import { useExplorerStore } from '../stores/explorer';
 
-import AddAccountModal from './AddAccountModal';
-import UnlockAccountModal from './UnlockAccountModal';
-import HashLink from './HashLink';
+import AddAccountModal from './AddAccountModal.vue';
+import UnlockAccountModal from './UnlockAccountModal.vue';
+import HashLink from './HashLink.vue';
 
 export default {
     name: 'Accounts',

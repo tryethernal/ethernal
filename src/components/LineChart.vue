@@ -55,7 +55,7 @@ ChartJS.register(
     zoomPlugin
 );
 
-const { hex2rgba } = require('@/lib/utils');
+import { hex2rgba } from '@/lib/utils';
 
 const DATE_FORMAT = 'MM/DD';
 

@@ -40,11 +40,11 @@
 
 <script>
 import 'highlight.js/styles/vs2015.css';
-const hljs = require('highlight.js');
+import hljs from 'highlight.js';
 import { mapStores } from 'pinia';
 import { useExplorerStore } from '../stores/explorer';
-import ContractVerification from './ContractVerification';
-import ContractVerificationInfo from './ContractVerificationInfo';
+import ContractVerification from './ContractVerification.vue';
+import ContractVerificationInfo from './ContractVerificationInfo.vue';
 
 export default {
     name: 'ContractCode',

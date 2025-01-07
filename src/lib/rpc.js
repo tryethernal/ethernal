@@ -1,6 +1,6 @@
 const ethers = require('ethers');
 const axios = require('axios');
-const { sanitize } = require('./utils');
+import { sanitize } from './utils';
 
 const ERC20_ABI = require('../abis/erc20.json');
 const ERC721_ABI = require('../abis/erc721.json');

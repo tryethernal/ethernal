@@ -180,7 +180,7 @@
 </template>
 
 <script>
-const { sanitize } = require('../lib/utils');
+import { sanitize } from '../lib/utils';
 import { mapStores } from 'pinia';
 import { useExplorerStore } from '../stores/explorer';
 

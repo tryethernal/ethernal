@@ -55,7 +55,7 @@ import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
 import { useUserStore } from '../stores/user';
 import { useExplorerStore } from '../stores/explorer';
 
-import Metamask from './Metamask';
+import Metamask from './Metamask.vue';
 
 export default {
     name: 'ContractCallOptions',

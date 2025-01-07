@@ -24,11 +24,11 @@
 
         <v-row>
             <v-col cols="12" md="6">
-                <Line-Chart :title="'Transaction Volume'" :xLabels="charts['transactionVolume'].xLabels" :data="charts['transactionVolume'].data" :tooltipUnit="'transaction'" :index="0" />
+                <LineChart :title="'Transaction Volume'" :xLabels="charts['transactionVolume'].xLabels" :data="charts['transactionVolume'].data" :tooltipUnit="'transaction'" :index="0" />
             </v-col>
 
             <v-col cols="12" md="6">
-                <Line-Chart :title="'Active Wallets Count'" :xLabels="charts['uniqueWalletCount'].xLabels" :data="charts['uniqueWalletCount'].data" :tooltipUnit="'wallet'" :index="4" />
+                <LineChart :title="'Active Wallets Count'" :xLabels="charts['uniqueWalletCount'].xLabels" :data="charts['uniqueWalletCount'].data" :tooltipUnit="'wallet'" :index="4" />
             </v-col>
         </v-row>
 
@@ -58,16 +58,15 @@
 const ethers = require('ethers');
 const formatUnits = ethers.utils.formatUnits;
 const BigNumber = ethers.BigNumber;
-const moment = require('moment');
 import { mapStores } from 'pinia';
 
 import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
 import { useExplorerStore } from '../stores/explorer';
 
-import TransactionsList from './TransactionsList';
-import BlockList from './BlockList';
-import LineChart from './LineChart';
-import StatNumber from './StatNumber';
+import TransactionsList from './TransactionsList.vue';
+import BlockList from './BlockList.vue';
+import LineChart from './LineChart.vue';
+import StatNumber from './StatNumber.vue';
 
 export default {
     name: 'Overview',
@@ -102,7 +101,6 @@ export default {
         this.chart = this.$refs.chart;
     },
     methods: {
-        moment: moment,
         getActiveWalletCount() {
             this.activeWalletCountLoading = true;
             this.$server.getActiveWalletCount()

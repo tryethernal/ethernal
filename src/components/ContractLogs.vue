@@ -33,8 +33,8 @@
 </template>
 
 <script>
-import HashLink from './HashLink';
-import TransactionEvent from './TransactionEvent';
+import HashLink from './HashLink.vue';
+import TransactionEvent from './TransactionEvent.vue';
 
 export default {
     name: 'ContractLogs',

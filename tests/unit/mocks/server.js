@@ -1,156 +1,150 @@
-jest.mock('@/plugins/server', () => ({
-    serverPlugin: {
-        install(Vue) {
-            Vue.prototype.server = {
-                processFailedTransactions: jest.fn,
-                getRpcAccounts: jest.fn(),
-                getAccounts: jest.fn().mockResolvedValue({ data: { items: [] }}),
-                getAccountBalance: jest.fn().mockResolvedValue('10000'),
-                getContract: jest.fn().mockResolvedValue({ data: {} }),
-                storeAccountPrivateKey: jest.fn().mockResolvedValue(),
-                impersonateAccount: jest.fn(),
-                getAddressTransactions: jest.fn().mockResolvedValue({ data: { items: [] }}),
-                getBlock: jest.fn(),
-                getBlocks: jest.fn(),
-                callContractReadMethod: jest.fn(),
-                getContracts: jest.fn(),
-                createWorkspace: jest.fn(),
-                initRpcServer: jest.fn().mockResolvedValue(),
-                removeContract: jest.fn(),
-                decodeData: jest.fn(),
-                getStructure: jest.fn(),
-                processContracts: jest.fn(),
-                getProcessableTransactions: jest.fn().mockResolvedValue({ data: [] }),
-                getFailedProcessableTransactions: jest.fn().mockResolvedValue({ data: [] }),
-                processTransactions: jest.fn().mockResolvedValue(),
-                processFailedTransactions: jest.fn().mockResolvedValue(),
-                getWorkspaces: jest.fn().mockResolvedValue({ data: [] }),
-                updateWorkspaceSettings: jest.fn().mockResolvedValue(),
-                getTransaction: jest.fn().mockResolvedValue(),
-                getTransactions: jest.fn(),
-                getTokenBalances: jest.fn(),
-                getTransactions: jest.fn(),
-                getTransactionVolume: jest.fn(),
-                getErc721Tokens: jest.fn(),
-                getErc721TokenTransfers: jest.fn(),
-                getErc721Token: jest.fn(),
-                reloadErc721Token: jest.fn(),
-                transferErc721Token: jest.fn(),
-                getApiToken: jest.fn(),
-                setCurrentWorkspace: jest.fn().mockResolvedValue(null),
-                getAddressStats: jest.fn(),
-                getContractStats: jest.fn(),
-                getTokenTransferVolume: jest.fn(),
-                getTokenHolderHistory: jest.fn(),
-                signIn: jest.fn(),
-                signUp: jest.fn(),
-                sendResetPasswordEmail: jest.fn(),
-                resetPassword: jest.fn(),
-                getExplorerStatus: jest.fn(),
-                getCompilerVersions: jest.fn(),
-                getExplorer: jest.fn(),
-                getExplorerPlans: jest.fn(),
-                createExplorer: jest.fn(),
-                startCryptoSubscription: jest.fn(),
-                createStripeExplorerCheckoutSession: jest.fn(),
-                createStripeExplorerCheckoutSession: jest.fn(),
-                getExplorerDomainStatus: jest.fn(),
-                updateExplorerSettings: jest.fn(),
-                getExplorers: jest.fn(),
-                searchIcon: jest.fn(),
-                updateExplorerSubscription: jest.fn(),
-                cancelExplorerSubscription: jest.fn(),
-                getExplorerSyncStatus: jest.fn(),
-                stopExplorerSync: jest.fn(),
-                startExplorerSync: jest.fn(),
-                migrateDemoExplorer: jest.fn(),
-                startTrial: jest.fn(),
-                getCurrentUser: jest.fn(),
-                getTokenCirculatingSupply: jest.fn(),
-                getAverageGasPrice: jest.fn(),
-                getAverageTransactionFee: jest.fn(),
-                getUniqueWalletCount: jest.fn(),
-                getCumulativeWalletCount: jest.fn(),
-                getDeployedContractCount: jest.fn(),
-                getCumulativeDeployedContractCount: jest.fn(),
-                getTransactionLogs: jest.fn(),
-                getQuotaExtensionPlan: jest.fn(),
-                cancelQuotaExtension: jest.fn(),
-                updateQuotaExtension: jest.fn(),
-                getErc721TotalSupply: jest.fn(),
-                getErc721TokenById: jest.fn(),
-                getErc721TokenByIndex: jest.fn(),
-                getExplorerBilling: jest.fn(),
-                getFaucetBalance: jest.fn(),
-                getFaucetRequestVolume: jest.fn(),
-                getFaucetTokenVolume: jest.fn(),
-                getFaucetPrivateKey: jest.fn(),
-                getFaucetTransactionHistory: jest.fn(),
-                getV2DexTokens: jest.fn(),
-                getNativeTokenBalance: jest.fn(),
-                getV2DexQuote: jest.fn(),
-                getV2DexStatus: jest.fn(),
-                getActiveWalletCount: jest.fn(),
-                getTxCountTotal: jest.fn(),
-                getTxCount24h: jest.fn(),
+export default {
+    processFailedTransactions: vi.fn,
+    getRpcAccounts: vi.fn(),
+    getAccounts: vi.fn().mockResolvedValue({ data: { items: [] }}),
+    getAccountBalance: vi.fn().mockResolvedValue('10000'),
+    getContract: vi.fn().mockResolvedValue({ data: {} }),
+    storeAccountPrivateKey: vi.fn().mockResolvedValue(),
+    impersonateAccount: vi.fn(),
+    getAddressTransactions: vi.fn().mockResolvedValue({ data: { items: [] }}),
+    getBlock: vi.fn(),
+    getBlocks: vi.fn(),
+    callContractReadMethod: vi.fn(),
+    getContracts: vi.fn(),
+    createWorkspace: vi.fn(),
+    initRpcServer: vi.fn().mockResolvedValue(),
+    removeContract: vi.fn(),
+    decodeData: vi.fn(),
+    getStructure: vi.fn(),
+    processContracts: vi.fn(),
+    getProcessableTransactions: vi.fn().mockResolvedValue({ data: [] }),
+    getFailedProcessableTransactions: vi.fn().mockResolvedValue({ data: [] }),
+    processTransactions: vi.fn().mockResolvedValue(),
+    processFailedTransactions: vi.fn().mockResolvedValue(),
+    getWorkspaces: vi.fn().mockResolvedValue({ data: [] }),
+    updateWorkspaceSettings: vi.fn().mockResolvedValue(),
+    getTransaction: vi.fn().mockResolvedValue(),
+    getTransactions: vi.fn(),
+    getTokenBalances: vi.fn(),
+    getTransactions: vi.fn(),
+    getTransactionVolume: vi.fn(),
+    getErc721Tokens: vi.fn(),
+    getErc721TokenTransfers: vi.fn(),
+    getErc721Token: vi.fn(),
+    reloadErc721Token: vi.fn(),
+    transferErc721Token: vi.fn(),
+    getApiToken: vi.fn(),
+    setCurrentWorkspace: vi.fn().mockResolvedValue(null),
+    getAddressStats: vi.fn(),
+    getContractStats: vi.fn(),
+    getTokenTransferVolume: vi.fn(),
+    getTokenHolderHistory: vi.fn(),
+    signIn: vi.fn(),
+    signUp: vi.fn(),
+    sendResetPasswordEmail: vi.fn(),
+    resetPassword: vi.fn(),
+    getExplorerStatus: vi.fn(),
+    getCompilerVersions: vi.fn(),
+    getExplorer: vi.fn(),
+    getExplorerPlans: vi.fn(),
+    createExplorer: vi.fn(),
+    startCryptoSubscription: vi.fn(),
+    createStripeExplorerCheckoutSession: vi.fn(),
+    createStripeExplorerCheckoutSession: vi.fn(),
+    getExplorerDomainStatus: vi.fn(),
+    updateExplorerSettings: vi.fn(),
+    getExplorers: vi.fn(),
+    searchIcon: vi.fn(),
+    updateExplorerSubscription: vi.fn(),
+    cancelExplorerSubscription: vi.fn(),
+    getExplorerSyncStatus: vi.fn(),
+    stopExplorerSync: vi.fn(),
+    startExplorerSync: vi.fn(),
+    migrateDemoExplorer: vi.fn(),
+    startTrial: vi.fn(),
+    getCurrentUser: vi.fn(),
+    getTokenCirculatingSupply: vi.fn(),
+    getAverageGasPrice: vi.fn(),
+    getAverageTransactionFee: vi.fn(),
+    getUniqueWalletCount: vi.fn(),
+    getCumulativeWalletCount: vi.fn(),
+    getDeployedContractCount: vi.fn(),
+    getCumulativeDeployedContractCount: vi.fn(),
+    getTransactionLogs: vi.fn(),
+    getQuotaExtensionPlan: vi.fn(),
+    cancelQuotaExtension: vi.fn(),
+    updateQuotaExtension: vi.fn(),
+    getErc721TotalSupply: vi.fn(),
+    getErc721TokenById: vi.fn(),
+    getErc721TokenByIndex: vi.fn(),
+    getExplorerBilling: vi.fn(),
+    getFaucetBalance: vi.fn(),
+    getFaucetRequestVolume: vi.fn(),
+    getFaucetTokenVolume: vi.fn(),
+    getFaucetPrivateKey: vi.fn(),
+    getFaucetTransactionHistory: vi.fn(),
+    getV2DexTokens: vi.fn(),
+    getNativeTokenBalance: vi.fn(),
+    getV2DexQuote: vi.fn(),
+    getV2DexStatus: vi.fn(),
+    getActiveWalletCount: vi.fn(),
+    getTxCountTotal: vi.fn(),
+    getTxCount24h: vi.fn(),
 
-                syncTransactionData: function() {
-                    return new Promise((resolve) => resolve(true))
-                },
+    syncTransactionData: function() {
+        return new Promise((resolve) => resolve(true))
+    },
 
-                resetWorkspace: function() {
-                    return new Promise((resolve) => resolve(true));
-                },
+    resetWorkspace: function() {
+        return new Promise((resolve) => resolve(true));
+    },
 
-                importContract: function() {
-                    return new Promise((resolve) => resolve({ data: { success: true, contractIsVerified: true }}));
-                },
+    importContract: function() {
+        return new Promise((resolve) => resolve({ data: { success: true, contractIsVerified: true }}));
+    },
 
-                syncContractData: () => {
-                    return new Promise((resolve) => resolve(true));
-                },
+    syncContractData: () => {
+        return new Promise((resolve) => resolve(true));
+    },
 
-                searchForLocalChains: () => {
-                    return new Promise((resolve) => resolve(['http://127.0.0.1:8545']));
-                },
+    searchForLocalChains: () => {
+        return new Promise((resolve) => resolve(['http://127.0.0.1:8545']));
+    },
 
-                getAccount: () => {
-                    return new Promise((resolve) => resolve({ data: { address: '0x1234', privateKey: null }}));
-                },
+    getAccount: () => {
+        return new Promise((resolve) => resolve({ data: { address: '0x1234', privateKey: null }}));
+    },
 
-                callContractWriteMethod: jest.fn(() => {
-                    const pendingTx = {
-                        hash: '0xabcd',
-                        wait: () => new Promise((resolve) => resolve({ status: true }))
-                    }
-
-                    return new Promise((resolve) => resolve(pendingTx));
-                }),
-
-                enableWorkspaceApi: () => {
-                    return new Promise((resolve) => resolve({ data: { token: '123456abcdef' }}));
-                },
-
-                disableWorkspaceApi: () => {
-                    return new Promise((resolve) => resolve({ success: true }));
-                },
-
-                getWorkspaceApiToken: () => {
-                    return new Promise((resolve) => resolve({ data: { token: '123456abcdef' }}));
-                },
-
-                enableAlchemyWebhook: () => {
-                    return new Promise((resolve) => resolve({ data: { token: '123456abcdef' }}));
-                },
-
-                disableAlchemyWebhook: () => {
-                    return new Promise((resolve) => resolve({ success: true }));
-                },
-
-                syncBalance: () => {
-                    return new Promise((resolve) => resolve({ success: true }));
-                }
-            }
+    callContractWriteMethod: vi.fn(() => {
+        const pendingTx = {
+            hash: '0xabcd',
+            wait: () => new Promise((resolve) => resolve({ status: true }))
         }
+
+        return new Promise((resolve) => resolve(pendingTx));
+    }),
+
+    enableWorkspaceApi: () => {
+        return new Promise((resolve) => resolve({ data: { token: '123456abcdef' }}));
+    },
+
+    disableWorkspaceApi: () => {
+        return new Promise((resolve) => resolve({ success: true }));
+    },
+
+    getWorkspaceApiToken: () => {
+        return new Promise((resolve) => resolve({ data: { token: '123456abcdef' }}));
+    },
+
+    enableAlchemyWebhook: () => {
+        return new Promise((resolve) => resolve({ data: { token: '123456abcdef' }}));
+    },
+
+    disableAlchemyWebhook: () => {
+        return new Promise((resolve) => resolve({ success: true }));
+    },
+
+    syncBalance: () => {
+        return new Promise((resolve) => resolve({ success: true }));
     }
-}));
+};

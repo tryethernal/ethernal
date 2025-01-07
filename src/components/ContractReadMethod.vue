@@ -33,7 +33,7 @@
 import { mapStores } from 'pinia';
 import { useCurrentWorkspaceStore } from '@/stores/currentWorkspace';
 import { processMethodCallParam } from '@/lib/utils';
-import FormattedSolVar from './FormattedSolVar';
+import FormattedSolVar from './FormattedSolVar.vue';
 
 export default {
     name: 'ContractReadMethod',

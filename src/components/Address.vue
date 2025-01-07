@@ -166,18 +166,18 @@
 </template>
 
 <script>
-const { formatContractPattern } = require('../lib/utils');
+import { formatContractPattern } from '../lib/utils';
 
 import { mapStores } from 'pinia';
 import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
 
-import AddressTransactionsList from './AddressTransactionsList';
-import AddressTokenTransfers from './AddressTokenTransfers';
-import TokenBalances from './TokenBalances';
-import ContractInteraction from './ContractInteraction';
-import ContractCode from './ContractCode';
-import ContractLogs from './ContractLogs';
-import HashLink from './HashLink';
+import AddressTransactionsList from './AddressTransactionsList.vue';
+import AddressTokenTransfers from './AddressTokenTransfers.vue';
+import TokenBalances from './TokenBalances.vue';
+import ContractInteraction from './ContractInteraction.vue';
+import ContractCode from './ContractCode.vue';
+import ContractLogs from './ContractLogs.vue';
+import HashLink from './HashLink.vue';
 
 export default {
     name: 'Address',

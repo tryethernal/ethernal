@@ -52,8 +52,8 @@
 </template>
 <script>
 import { findAbiForEvent, decodeLog } from '@/lib/abi';
-import FormattedSolVar from './FormattedSolVar';
-import HashLink from './HashLink';
+import FormattedSolVar from './FormattedSolVar.vue';
+import HashLink from './HashLink.vue';
 
 export default {
     name: 'TransactionEvent',
