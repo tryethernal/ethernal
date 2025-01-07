@@ -25,7 +25,7 @@ module.exports = async (job) => {
     const blockDeleteJobs = [];
     for (let i = 0; i < blockIds.length; i += getMaxBlockForSyncReset())
         blockDeleteJobs.push({
-            name: `batchBlockDelete-${data.workspaceId}-${i}-${i + getMaxBlockForSyncReset()}`,
+            name: `batchBlockDelete-${data.workspaceId}-${i}-${i + getMaxBlockForSyncReset()}-${new Date(data.from).getTime()}-${new Date(data.to).getTime()}`,
             data: {
                 workspaceId: data.workspaceId,
                 ids: blockIds.slice(i, i + getMaxBlockForSyncReset())
