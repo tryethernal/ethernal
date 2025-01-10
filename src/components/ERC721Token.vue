@@ -174,9 +174,9 @@ const moment = require('moment');
 import { mapStores } from 'pinia';
 import { useCurrentWorkspaceStore } from '@/stores/currentWorkspace';
 
-import ERC721TokenTransfers from './ERC721TokenTransfers';
-import ERC721TokenTransferModal from './ERC721TokenTransferModal';
-import HashLink from './HashLink';
+import ERC721TokenTransfers from './ERC721TokenTransfers.vue';
+import ERC721TokenTransferModal from './ERC721TokenTransferModal.vue';
+import HashLink from './HashLink.vue';
 
 export default {
     name: 'ERC721Token',

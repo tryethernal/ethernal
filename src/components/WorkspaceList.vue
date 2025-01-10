@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import CreateWorkspaceModal from './CreateWorkspaceModal';
+import CreateWorkspaceModal from './CreateWorkspaceModal.vue';
 import { mapStores } from 'pinia';
 import { useCurrentWorkspaceStore } from '@/stores/currentWorkspace';
 import { shortRpcUrl } from '@/lib/utils';
@@ -48,9 +48,9 @@ export default {
         errorMessage: null,
         workspaces: [],
         headers: [
-            { text: '', value: 'actions', width: '20%', align: 'center' },
-            { text: 'Name', value: 'name', width: '30%' },
-            { text: 'RPC Server', value: 'rpcServer' },
+            { title: '', key: 'actions', width: '20%', align: 'center' },
+            { title: 'Name', key: 'name', width: '30%' },
+            { title: 'RPC Server', key: 'rpcServer' },
         ]
     }),
     mounted() {

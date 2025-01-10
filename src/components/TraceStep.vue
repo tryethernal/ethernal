@@ -60,8 +60,8 @@ import { storeToRefs } from 'pinia';
 
 import { useExplorerStore } from '../stores/explorer';
 
-import HashLink from './HashLink';
-import FormattedSolVar from './FormattedSolVar';
+import HashLink from './HashLink.vue';
+import FormattedSolVar from './FormattedSolVar.vue';
 
 export default {
     name: 'TraceStep',
@@ -72,7 +72,6 @@ export default {
     props: ['step'],
     data: () => ({
         transactionDescription: null,
-        jsonInterface: null,
         outputs: null,
         calledContract: null,
         proxyContract: null,
@@ -84,10 +83,16 @@ export default {
         return { token };
     },
     methods: {
-        zeroXify: function(input) { return input.startsWith('0x') ? input : `0x${input}` },
-        decodeOutput: function(index) {
+        zeroXify(input) { return input.startsWith('0x') ? input : `0x${input}` },
+        decodeOutput(index) {
             if (!this.step.returnData) return '';
             return this.jsonInterface.decodeFunctionResult(this.transactionDescription.functionFragment, this.zeroXify(this.step.returnData))[index];
+        }
+    },
+    computed: {
+        jsonInterface() {
+            const contract = this.step.contract.proxyContract ? this.step.contract.proxyContract : this.step.contract;
+            return new ethers.utils.Interface(contract.abi);
         }
     },
     watch: {
@@ -97,9 +102,7 @@ export default {
                 if (!this.step.contract) return;
                 if (this.step.input && this.step.contract.abi) {
                     try {
-                        const contract = this.step.contract.proxyContract ? this.step.contract.proxyContract : this.step.contract;
-                        this.jsonInterface = new ethers.utils.Interface(contract.abi);
-                        this.transactionDescription = this.jsonInterface.parseTransaction({ data: this.zeroXify(this.step.input) });
+                        this.jsonInterface.parseTransaction({ data: this.zeroXify(this.step.input) });
                     } catch(_error) {
                         console.log(_error)
                     }

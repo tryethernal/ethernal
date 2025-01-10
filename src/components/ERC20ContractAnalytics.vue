@@ -25,7 +25,7 @@
 <script>
 const moment = require('moment');
 const ethers = require('ethers');
-import LineChart from './LineChart';
+import LineChart from './LineChart.vue';
 
 export default {
     name: 'ERC20ContractAnalytics',

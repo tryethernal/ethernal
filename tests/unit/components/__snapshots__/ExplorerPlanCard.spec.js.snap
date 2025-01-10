@@ -1,557 +1,968 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ExplorerPlanCard.vue Should display card with trial button 1`] = `
-<div class="v-card v-sheet v-sheet--outlined theme--light">
-  <div class="v-card__title">
-    Explorer
-    <div class="spacer"></div>
-    <!---->
-    <!---->
-  </div>
-  <div class="v-card__subtitle pb-0">$1,000 / month</div>
-  <div class="v-card__text">
-    <div class="mt-3 two-lines">
-      This is a plan
-    </div>
-    <div role="list" class="v-list v-sheet theme--light v-list--dense">
-      <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-        <div class="v-list-item__content py-0">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            1,000 txs / month
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
+exports[`ExplorerPlanCard.vue > Should display card with trial button 1`] = `
+"<div data-v-f986fcf1="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
         </div>
-      </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            7 days Data Retention
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
-        </div>
-      </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Custom Domains
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
-        </div>
-      </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Native Token Symbol
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
-        </div>
-      </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Total Supply
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
-        </div>
-      </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Status Page
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
-        </div>
-      </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Whitelabeling
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
-        </div>
-      </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Custom Fields
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
-        </div>
-      </div>
+      </transition-stub>
+      <!---->
     </div>
   </div>
-  <div class="v-card__actions justify-center"><button type="button" class="primary v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Start 7 day Trial</span></button></div>
-</div>
+  <!---->
+  <!---->
+  <div data-v-f986fcf1="" class="v-card-title d-flex justify-space-between align-center">Explorer
+    <!--v-if-->
+    <!--v-if-->
+  </div>
+  <div data-v-f986fcf1="" class="v-card-subtitle pb-0">$1,000 / month</div>
+  <div data-v-f986fcf1="" class="v-card-text">
+    <div data-v-f986fcf1="" class="mt-3 two-lines">This is a plan</div>
+    <div data-v-f986fcf1="" class="v-list v-theme--light v-list--density-compact v-list--one-line" tabindex="0" role="listbox">
+      <hr data-v-f986fcf1="" class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator">
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text mr-2" icon="">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success font-weight-bold" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title">1,000 txs / month <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-1"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
+      </div>
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text mr-2" icon="">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success font-weight-bold" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title">7 days Data Retention <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-3"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
+      </div>
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text mr-2" icon="">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title"> Custom Domains <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-5"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
+      </div>
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-close mdi v-icon notranslate v-theme--light v-icon--size-default text-error" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title"> Native Token Symbol <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-7"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
+      </div>
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-close mdi v-icon notranslate v-theme--light v-icon--size-default text-error" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title"> Total Supply <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-9"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
+      </div>
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-close mdi v-icon notranslate v-theme--light v-icon--size-default text-error" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title"> Status Page <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-11"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
+      </div>
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title"> Whitelabeling <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-13"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
+      </div>
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-close mdi v-icon notranslate v-theme--light v-icon--size-default text-error" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title"> Custom Fields <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-15"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
+      </div>
+    </div>
+  </div>
+  <div data-v-f986fcf1="" class="v-card-actions justify-center"><button data-v-f986fcf1="" type="button" class="v-btn v-btn--slim v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat bg-primary"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+      <!----><span class="v-btn__content" data-no-activator="">Start 7 day Trial</span>
+      <!---->
+      <!---->
+    </button></div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
 `;
 
-exports[`ExplorerPlanCard.vue Should display current plan card 1`] = `
-<div class="v-card v-sheet v-sheet--outlined theme--light current-plan-card">
-  <div class="v-card__title">
-    Explorer
-    <div class="spacer"></div> <span class="ml-2 v-chip theme--light v-size--small primary"><span class="v-chip__content">Current</span></span>
+exports[`ExplorerPlanCard.vue > Should display current plan card 1`] = `
+"<div data-v-f986fcf1="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated current-plan-card">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
+        </div>
+      </transition-stub>
+      <!---->
+    </div>
+  </div>
+  <!---->
+  <!---->
+  <div data-v-f986fcf1="" class="v-card-title d-flex justify-space-between align-center">Explorer <span data-v-f986fcf1="" class="v-chip v-theme--light text-primary v-chip--density-default v-chip--size-small v-chip--variant-tonal ml-2" draggable="false"><!----><span class="v-chip__underlay"></span>
     <!---->
+    <!---->
+    <div class="v-chip__content" data-no-activator="">Current</div>
+    <!---->
+    <!----></span>
+    <!--v-if-->
   </div>
-  <div class="v-card__subtitle pb-0">$1,000 / month</div>
-  <div class="v-card__text">
-    <div class="mt-3 two-lines">
-      This is a plan
-    </div>
-    <div role="list" class="v-list v-sheet theme--light v-list--dense">
-      <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-        <div class="v-list-item__content py-0">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            1,000 txs / month
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
+  <div data-v-f986fcf1="" class="v-card-subtitle pb-0">$1,000 / month</div>
+  <div data-v-f986fcf1="" class="v-card-text">
+    <div data-v-f986fcf1="" class="mt-3 two-lines">This is a plan</div>
+    <div data-v-f986fcf1="" class="v-list v-theme--light v-list--density-compact v-list--one-line" tabindex="0" role="listbox">
+      <hr data-v-f986fcf1="" class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator">
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text mr-2" icon="">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success font-weight-bold" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
         </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title">1,000 txs / month <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-2"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
       </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            7 days Data Retention
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text mr-2" icon="">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success font-weight-bold" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
         </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title">7 days Data Retention <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-4"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
       </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Custom Domains
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text mr-2" icon="">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
         </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title"> Custom Domains <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-6"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
       </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Native Token Symbol
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-close mdi v-icon notranslate v-theme--light v-icon--size-default text-error" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
         </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title"> Native Token Symbol <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-8"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
       </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Total Supply
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-close mdi v-icon notranslate v-theme--light v-icon--size-default text-error" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
         </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title"> Total Supply <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-10"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
       </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Status Page
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-close mdi v-icon notranslate v-theme--light v-icon--size-default text-error" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
         </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title"> Status Page <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-12"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
       </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Whitelabeling
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
         </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title"> Whitelabeling <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-14"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
       </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Custom Fields
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-close mdi v-icon notranslate v-theme--light v-icon--size-default text-error" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
         </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title"> Custom Fields <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-16"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
       </div>
     </div>
   </div>
-  <div class="v-card__actions justify-center"><button type="button" class="error v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Cancel Plan</span></button></div>
-</div>
+  <div data-v-f986fcf1="" class="v-card-actions justify-center"><button data-v-f986fcf1="" type="button" class="v-btn v-btn--slim v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat bg-error"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+      <!----><span class="v-btn__content" data-no-activator="">Cancel Plan</span>
+      <!---->
+      <!---->
+    </button></div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
 `;
 
-exports[`ExplorerPlanCard.vue Should display disabled plan card 1`] = `
-<div class="v-card v-sheet v-sheet--outlined theme--light">
-  <div class="v-card__title">
-    Explorer
-    <div class="spacer"></div>
-    <!---->
-    <!---->
-  </div>
-  <div class="v-card__subtitle pb-0">$1,000 / month</div>
-  <div class="v-card__text">
-    <div class="mt-3 two-lines">
-      This is a plan
-    </div>
-    <div role="list" class="v-list v-sheet theme--light v-list--dense">
-      <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-        <div class="v-list-item__content py-0">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            1,000 txs / month
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
+exports[`ExplorerPlanCard.vue > Should display disabled plan card 1`] = `
+"<div data-v-f986fcf1="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
         </div>
-      </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            7 days Data Retention
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
-        </div>
-      </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Custom Domains
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
-        </div>
-      </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Native Token Symbol
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
-        </div>
-      </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Total Supply
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
-        </div>
-      </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Status Page
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
-        </div>
-      </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Whitelabeling
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
-        </div>
-      </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Custom Fields
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
-        </div>
-      </div>
+      </transition-stub>
+      <!---->
     </div>
   </div>
-  <div class="v-card__actions justify-center"><button type="button" disabled="disabled" class="primary v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Choose Plan</span></button></div>
-</div>
+  <!---->
+  <!---->
+  <div data-v-f986fcf1="" class="v-card-title d-flex justify-space-between align-center">Explorer
+    <!--v-if-->
+    <!--v-if-->
+  </div>
+  <div data-v-f986fcf1="" class="v-card-subtitle pb-0">$1,000 / month</div>
+  <div data-v-f986fcf1="" class="v-card-text">
+    <div data-v-f986fcf1="" class="mt-3 two-lines">This is a plan</div>
+    <div data-v-f986fcf1="" class="v-list v-theme--light v-list--density-compact v-list--one-line" tabindex="0" role="listbox">
+      <hr data-v-f986fcf1="" class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator">
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text mr-2" icon="">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success font-weight-bold" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title">1,000 txs / month <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-1"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
+      </div>
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text mr-2" icon="">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success font-weight-bold" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title">7 days Data Retention <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-3"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
+      </div>
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text mr-2" icon="">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title"> Custom Domains <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-5"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
+      </div>
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-close mdi v-icon notranslate v-theme--light v-icon--size-default text-error" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title"> Native Token Symbol <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-7"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
+      </div>
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-close mdi v-icon notranslate v-theme--light v-icon--size-default text-error" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title"> Total Supply <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-9"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
+      </div>
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-close mdi v-icon notranslate v-theme--light v-icon--size-default text-error" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title"> Status Page <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-11"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
+      </div>
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title"> Whitelabeling <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-13"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
+      </div>
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-close mdi v-icon notranslate v-theme--light v-icon--size-default text-error" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title"> Custom Fields <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-15"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
+      </div>
+    </div>
+  </div>
+  <div data-v-f986fcf1="" class="v-card-actions justify-center"><button data-v-f986fcf1="" type="button" class="v-btn v-btn--disabled v-btn--slim v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat bg-primary" disabled=""><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+      <!----><span class="v-btn__content" data-no-activator="">Choose Plan</span>
+      <!---->
+      <!---->
+    </button></div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
 `;
 
-exports[`ExplorerPlanCard.vue Should display loading plan card 1`] = `
-<div class="v-card v-sheet v-sheet--outlined theme--light">
-  <div class="v-card__title">
-    Explorer
-    <div class="spacer"></div>
-    <!---->
-    <!---->
-  </div>
-  <div class="v-card__subtitle pb-0">$1,000 / month</div>
-  <div class="v-card__text">
-    <div class="mt-3 two-lines">
-      This is a plan
-    </div>
-    <div role="list" class="v-list v-sheet theme--light v-list--dense">
-      <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-        <div class="v-list-item__content py-0">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            1,000 txs / month
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
+exports[`ExplorerPlanCard.vue > Should display loading plan card 1`] = `
+"<div data-v-f986fcf1="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
         </div>
-      </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            7 days Data Retention
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
-        </div>
-      </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Custom Domains
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
-        </div>
-      </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Native Token Symbol
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
-        </div>
-      </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Total Supply
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
-        </div>
-      </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Status Page
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
-        </div>
-      </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Whitelabeling
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
-        </div>
-      </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Custom Fields
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
-        </div>
-      </div>
+      </transition-stub>
+      <!---->
     </div>
   </div>
-  <div class="v-card__actions justify-center"><button type="button" class="primary v-btn v-btn--is-elevated v-btn--has-bg v-btn--loading theme--light v-size--default"><span class="v-btn__content">Choose Plan</span><span class="v-btn__loader"><div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular v-progress-circular--visible v-progress-circular--indeterminate" style="height: 23px; width: 23px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="21.904761904761905 21.904761904761905 43.80952380952381 43.80952380952381" style="transform: rotate(0deg);"><circle fill="transparent" cx="43.80952380952381" cy="43.80952380952381" r="20" stroke-width="3.8095238095238093" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle></svg><div class="v-progress-circular__info"></div></div></span></button></div>
-</div>
+  <!---->
+  <!---->
+  <div data-v-f986fcf1="" class="v-card-title d-flex justify-space-between align-center">Explorer
+    <!--v-if-->
+    <!--v-if-->
+  </div>
+  <div data-v-f986fcf1="" class="v-card-subtitle pb-0">$1,000 / month</div>
+  <div data-v-f986fcf1="" class="v-card-text">
+    <div data-v-f986fcf1="" class="mt-3 two-lines">This is a plan</div>
+    <div data-v-f986fcf1="" class="v-list v-theme--light v-list--density-compact v-list--one-line" tabindex="0" role="listbox">
+      <hr data-v-f986fcf1="" class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator">
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text mr-2" icon="">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success font-weight-bold" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title">1,000 txs / month <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-1"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
+      </div>
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text mr-2" icon="">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success font-weight-bold" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title">7 days Data Retention <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-3"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
+      </div>
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text mr-2" icon="">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title"> Custom Domains <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-5"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
+      </div>
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-close mdi v-icon notranslate v-theme--light v-icon--size-default text-error" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title"> Native Token Symbol <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-7"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
+      </div>
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-close mdi v-icon notranslate v-theme--light v-icon--size-default text-error" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title"> Total Supply <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-9"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
+      </div>
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-close mdi v-icon notranslate v-theme--light v-icon--size-default text-error" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title"> Status Page <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-11"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
+      </div>
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title"> Whitelabeling <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-13"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
+      </div>
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-close mdi v-icon notranslate v-theme--light v-icon--size-default text-error" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title"> Custom Fields <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-15"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
+      </div>
+    </div>
+  </div>
+  <div data-v-f986fcf1="" class="v-card-actions justify-center"><button data-v-f986fcf1="" type="button" class="v-btn v-btn--loading v-btn--slim v-theme--light v-btn--density-default v-btn--loading v-btn--size-default v-btn--variant-flat bg-primary" aria-busy="true" tabindex="-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+      <!----><span class="v-btn__content" data-no-activator="">Choose Plan</span>
+      <!----><span class="v-btn__loader"><div class="v-progress-circular v-progress-circular--indeterminate v-theme--light v-progress-circular--size-default" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 42.666666666666664 42.666666666666664"><circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="2.6666666666666665" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle><circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="2.6666666666666665" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle></svg><!----></div></span>
+    </button></div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
 `;
 
-exports[`ExplorerPlanCard.vue Should display pending cancelation plan card 1`] = `
-<div class="v-card v-sheet v-sheet--outlined theme--light current-plan-card">
-  <div class="v-card__title">
-    Explorer
-    <div class="spacer"></div> <span class="ml-2 v-chip theme--light v-size--small primary"><span class="v-chip__content">Current</span></span>
+exports[`ExplorerPlanCard.vue > Should display pending cancelation plan card 1`] = `
+"<div data-v-f986fcf1="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated current-plan-card">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
+        </div>
+      </transition-stub>
+      <!---->
+    </div>
+  </div>
+  <!---->
+  <!---->
+  <div data-v-f986fcf1="" class="v-card-title d-flex justify-space-between align-center">Explorer <span data-v-f986fcf1="" class="v-chip v-theme--light text-primary v-chip--density-default v-chip--size-small v-chip--variant-tonal ml-2" draggable="false"><!----><span class="v-chip__underlay"></span>
     <!---->
+    <!---->
+    <div class="v-chip__content" data-no-activator="">Current</div>
+    <!---->
+    <!----></span>
+    <!--v-if-->
   </div>
-  <div class="v-card__subtitle pb-0">$1,000 / month</div>
-  <div class="v-card__text">
-    <div class="mt-3 two-lines">
-      This is a plan
-    </div>
-    <div role="list" class="v-list v-sheet theme--light v-list--dense">
-      <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-        <div class="v-list-item__content py-0">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            1,000 txs / month
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
+  <div data-v-f986fcf1="" class="v-card-subtitle pb-0">$1,000 / month</div>
+  <div data-v-f986fcf1="" class="v-card-text">
+    <div data-v-f986fcf1="" class="mt-3 two-lines">This is a plan</div>
+    <div data-v-f986fcf1="" class="v-list v-theme--light v-list--density-compact v-list--one-line" tabindex="0" role="listbox">
+      <hr data-v-f986fcf1="" class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator">
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text mr-2" icon="">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success font-weight-bold" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
         </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title">1,000 txs / month <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-2"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
       </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            7 days Data Retention
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text mr-2" icon="">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success font-weight-bold" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
         </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title">7 days Data Retention <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-4"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
       </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Custom Domains
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text mr-2" icon="">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
         </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title"> Custom Domains <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-6"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
       </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Native Token Symbol
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-close mdi v-icon notranslate v-theme--light v-icon--size-default text-error" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
         </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title"> Native Token Symbol <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-8"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
       </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Total Supply
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-close mdi v-icon notranslate v-theme--light v-icon--size-default text-error" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
         </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title"> Total Supply <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-10"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
       </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Status Page
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-close mdi v-icon notranslate v-theme--light v-icon--size-default text-error" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
         </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title"> Status Page <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-12"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
       </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Whitelabeling
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
         </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title"> Whitelabeling <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-14"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
       </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Custom Fields
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-close mdi v-icon notranslate v-theme--light v-icon--size-default text-error" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
         </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title"> Custom Fields <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-16"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
       </div>
     </div>
   </div>
-  <div class="v-card__actions justify-center"><button type="button" class="primary v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Revert Cancelation</span></button></div>
-</div>
+  <div data-v-f986fcf1="" class="v-card-actions justify-center"><button data-v-f986fcf1="" type="button" class="v-btn v-btn--slim v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat bg-primary"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+      <!----><span class="v-btn__content" data-no-activator="">Revert Cancelation</span>
+      <!---->
+      <!---->
+    </button></div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
 `;
 
-exports[`ExplorerPlanCard.vue Should display regular plan card 1`] = `
-<div class="v-card v-sheet v-sheet--outlined theme--light">
-  <div class="v-card__title">
-    Explorer
-    <div class="spacer"></div>
-    <!---->
-    <!---->
-  </div>
-  <div class="v-card__subtitle pb-0">$1,000 / month</div>
-  <div class="v-card__text">
-    <div class="mt-3 two-lines">
-      This is a plan
-    </div>
-    <div role="list" class="v-list v-sheet theme--light v-list--dense">
-      <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-        <div class="v-list-item__content py-0">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            1,000 txs / month
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
+exports[`ExplorerPlanCard.vue > Should display regular plan card 1`] = `
+"<div data-v-f986fcf1="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
         </div>
-      </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            7 days Data Retention
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
-        </div>
-      </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Custom Domains
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
-        </div>
-      </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Native Token Symbol
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
-        </div>
-      </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Total Supply
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
-        </div>
-      </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Status Page
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
-        </div>
-      </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Whitelabeling
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
-        </div>
-      </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Custom Fields
-            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
-          </div>
-        </div>
-      </div>
+      </transition-stub>
+      <!---->
     </div>
   </div>
-  <div class="v-card__actions justify-center"><button type="button" class="primary v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Choose Plan</span></button></div>
-</div>
+  <!---->
+  <!---->
+  <div data-v-f986fcf1="" class="v-card-title d-flex justify-space-between align-center">Explorer
+    <!--v-if-->
+    <!--v-if-->
+  </div>
+  <div data-v-f986fcf1="" class="v-card-subtitle pb-0">$1,000 / month</div>
+  <div data-v-f986fcf1="" class="v-card-text">
+    <div data-v-f986fcf1="" class="mt-3 two-lines">This is a plan</div>
+    <div data-v-f986fcf1="" class="v-list v-theme--light v-list--density-compact v-list--one-line" tabindex="0" role="listbox">
+      <hr data-v-f986fcf1="" class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator">
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text mr-2" icon="">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success font-weight-bold" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title">1,000 txs / month <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-1"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
+      </div>
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text mr-2" icon="">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success font-weight-bold" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title">7 days Data Retention <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-3"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
+      </div>
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text mr-2" icon="">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title"> Custom Domains <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-5"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
+      </div>
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-close mdi v-icon notranslate v-theme--light v-icon--size-default text-error" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title"> Native Token Symbol <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-7"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
+      </div>
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-close mdi v-icon notranslate v-theme--light v-icon--size-default text-error" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title"> Total Supply <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-9"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
+      </div>
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-close mdi v-icon notranslate v-theme--light v-icon--size-default text-error" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title"> Status Page <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-11"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
+      </div>
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title"> Whitelabeling <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-13"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
+      </div>
+      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-close mdi v-icon notranslate v-theme--light v-icon--size-default text-error" aria-hidden="true"></i>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <div class="v-list-item-title"> Custom Fields <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-15"></i>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
+      </div>
+    </div>
+  </div>
+  <div data-v-f986fcf1="" class="v-card-actions justify-center"><button data-v-f986fcf1="" type="button" class="v-btn v-btn--slim v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat bg-primary"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+      <!----><span class="v-btn__content" data-no-activator="">Choose Plan</span>
+      <!---->
+      <!---->
+    </button></div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
 `;

@@ -37,7 +37,7 @@
     </v-dialog>
 </template>
 <script>
-import CreateWorkspace from './CreateWorkspace';
+import CreateWorkspace from './CreateWorkspace.vue';
 import { mapStores } from 'pinia';
 import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
 

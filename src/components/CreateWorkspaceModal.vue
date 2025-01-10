@@ -10,7 +10,7 @@
 </v-dialog>
 </template>
 <script>
-import CreateWorkspace from './CreateWorkspace';
+import CreateWorkspace from './CreateWorkspace.vue';
 
 export default {
     name: 'CreateWorkspaceModal',

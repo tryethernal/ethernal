@@ -170,16 +170,16 @@
 </template>
 
 <script>
-const ethers = require('ethers');
+import * as ethers from 'ethers';
 import { storeToRefs } from 'pinia';
 import { useExplorerStore } from '@/stores/explorer';
 import { useEnvStore } from '@/stores/env';
-import Metamask from './Metamask';
+import Metamask from './Metamask.vue';
 import HashLink from './HashLink.vue';
-import DexTokenSelectionModal from './DexTokenSelectionModal';
-import ExplorerDexParametersModal from './ExplorerDexParametersModal';
-const { BNtoSignificantDigits, debounce } = require('@/lib/utils');
-const { ERC20Connector, V2DexRouterConnector } = require('@/lib/rpc');
+import DexTokenSelectionModal from './DexTokenSelectionModal.vue';
+import ExplorerDexParametersModal from './ExplorerDexParametersModal.vue';
+import { BNtoSignificantDigits, debounce } from '@/lib/utils';
+import { ERC20Connector, V2DexRouterConnector } from '@/lib/rpc';
 
 const DEFAULT_DEX_PARAMETERS = {
     transactionTimeout: 60 * 20,

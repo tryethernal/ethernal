@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import ERC721TokenCard from './ERC721TokenCard';
+import ERC721TokenCard from './ERC721TokenCard.vue';
 
 export default {
     name: 'ERC721Gallery',

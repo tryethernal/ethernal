@@ -1,13 +1,6 @@
 import flushPromises from 'flush-promises';
-import MockHelper from '../MockHelper';
 
 import ExplorerPlanCard from '@/components/ExplorerPlanCard.vue';
-
-let helper;
-beforeEach(() => {
-    jest.clearAllMocks()
-    helper = new MockHelper();
-});
 
 const plan = {
     name: 'Explorer',
@@ -28,9 +21,11 @@ const plan = {
 
 describe('ExplorerPlanCard.vue', () => {
     it('Should display card with trial button', async () => {
-        const wrapper = helper.mountFn(ExplorerPlanCard, {
-            stubs: ['Explorer-Plan-Card'],
-            propsData: {
+        const wrapper = mount(ExplorerPlanCard, {
+            global: {
+                stubs: ['Explorer-Plan-Card'],
+            },
+            props: {
                 plan,
                 trial: true
             }
@@ -41,9 +36,11 @@ describe('ExplorerPlanCard.vue', () => {
     });
 
     it('Should display regular plan card', async () => {
-        const wrapper = helper.mountFn(ExplorerPlanCard, {
-            stubs: ['Explorer-Plan-Card'],
-            propsData: {
+        const wrapper = mount(ExplorerPlanCard, {
+            global: {
+                stubs: ['Explorer-Plan-Card'],
+            },
+            props: {
                 plan,
             }
         });
@@ -53,9 +50,11 @@ describe('ExplorerPlanCard.vue', () => {
     });
 
     it('Should display current plan card', async () => {
-        const wrapper = helper.mountFn(ExplorerPlanCard, {
-            stubs: ['Explorer-Plan-Card'],
-            propsData: {
+        const wrapper = mount(ExplorerPlanCard, {
+            global: {
+                stubs: ['Explorer-Plan-Card'],
+            },
+            props: {
                 plan,
                 current: true
             }
@@ -66,9 +65,11 @@ describe('ExplorerPlanCard.vue', () => {
     });
 
     it('Should display loading plan card', async () => {
-        const wrapper = helper.mountFn(ExplorerPlanCard, {
-            stubs: ['Explorer-Plan-Card'],
-            propsData: {
+        const wrapper = mount(ExplorerPlanCard, {
+            global: {
+                stubs: ['Explorer-Plan-Card'],
+            },
+            props: {
                 plan,
                 loading: true
             }
@@ -79,9 +80,11 @@ describe('ExplorerPlanCard.vue', () => {
     });
 
     it('Should display disabled plan card', async () => {
-        const wrapper = helper.mountFn(ExplorerPlanCard, {
-            stubs: ['Explorer-Plan-Card'],
-            propsData: {
+        const wrapper = mount(ExplorerPlanCard, {
+            global: {
+                stubs: ['Explorer-Plan-Card'],
+            },
+            props: {
                 plan,
                 disabled: true
             }
@@ -92,9 +95,11 @@ describe('ExplorerPlanCard.vue', () => {
     });
 
     it('Should display pending cancelation plan card', async () => {
-        const wrapper = helper.mountFn(ExplorerPlanCard, {
-            stubs: ['Explorer-Plan-Card'],
-            propsData: {
+        const wrapper = mount(ExplorerPlanCard, {
+            global: {
+                stubs: ['Explorer-Plan-Card'],
+            },
+            props: {
                 plan,
                 current: true,
                 pendingCancelation: true

@@ -178,18 +178,18 @@
 import { mapStores } from 'pinia';
 import { useCurrentWorkspaceStore } from '@/stores/currentWorkspace';
 
-const { formatNumber, formatContractPattern } = require('../lib/utils');
+import { formatNumber, formatContractPattern } from '@/lib/utils';
 const ERC20_ABI = require('../abis/erc20.json');
 
-import AddressTransactionsList from './AddressTransactionsList';
-import ContractInteraction from './ContractInteraction';
-import ERC20TokenHolders from './ERC20TokenHolders';
-import ERC20ContractAnalytics from './ERC20ContractAnalytics';
-import ERC20TokenTransfers from './ERC20TokenTransfers';
-import ContractCode from './ContractCode';
-import StatNumber from './StatNumber';
-import HashLink from './HashLink';
-import Metamask from './Metamask';
+import AddressTransactionsList from './AddressTransactionsList.vue';
+import ContractInteraction from './ContractInteraction.vue';
+import ERC20TokenHolders from './ERC20TokenHolders.vue';
+import ERC20ContractAnalytics from './ERC20ContractAnalytics.vue';
+import ERC20TokenTransfers from './ERC20TokenTransfers.vue';
+import ContractCode from './ContractCode.vue';
+import StatNumber from './StatNumber.vue';
+import HashLink from './HashLink.vue';
+import Metamask from './Metamask.vue';
 
 export default {
     name: 'ERC20Contract',

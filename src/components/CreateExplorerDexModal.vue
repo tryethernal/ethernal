@@ -39,7 +39,7 @@
                                 v-model="wrappedNativeTokenAddress"
                                 persistent-hint
                                 hint="We need this address to be able to route native token swaps"
-                                :label="`Wrapped ${this.explorerStore.nativeTokenSymbol} Address`"></v-text-field>
+                                :label="`Wrapped ${this.explorerStore.token} Address`"></v-text-field>
                         </v-col>
                     </v-row>
                     <v-card-actions class="pr-0 pb-0">

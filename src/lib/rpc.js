@@ -290,10 +290,10 @@ class ERC721Connector {
     }
 }
 
-module.exports = {
-    ContractConnector: ContractConnector,
-    ERC721Connector: ERC721Connector,
-    ERC20Connector: ERC20Connector,
-    V2DexRouterConnector: V2DexRouterConnector,
-    getProvider: getProvider
+export {
+    ContractConnector,
+    ERC721Connector,
+    ERC20Connector,
+    V2DexRouterConnector,
+    getProvider
 };

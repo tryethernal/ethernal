@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import ExplorerDomainDNSInfoModal from './ExplorerDomainDNSInfoModal';
+import ExplorerDomainDNSInfoModal from './ExplorerDomainDNSInfoModal.vue';
 
 export default {
     name: 'ExplorerDomain',

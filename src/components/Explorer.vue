@@ -23,9 +23,9 @@
 </template>
 
 <script>
-import ExplorerGeneral from './ExplorerGeneral';
-import ExplorerFaucetSettings from './ExplorerFaucetSettings';
-import ExplorerDexSettings from './ExplorerDexSettings';
+import ExplorerGeneral from './ExplorerGeneral.vue';
+import ExplorerFaucetSettings from './ExplorerFaucetSettings.vue';
+import ExplorerDexSettings from './ExplorerDexSettings.vue';
 
 export default {
     name: 'Explorer',

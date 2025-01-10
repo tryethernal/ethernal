@@ -151,9 +151,9 @@ import { mapStores } from 'pinia';
 import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
 import { useEnvStore } from '../stores/env';
 
-import WorkspaceList from './WorkspaceList';
-import Billing from './Billing';
-import Account from './Account';
+import WorkspaceList from './WorkspaceList.vue';
+import Billing from './Billing.vue';
+import Account from './Account.vue';
 
 export default {
     name: 'Settings',

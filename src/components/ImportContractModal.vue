@@ -32,7 +32,7 @@ import { mapStores } from 'pinia';
 import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
 import { useUserStore } from '../stores/user';
 import { useEnvStore } from '../stores/env';
-import UpgradeLink from './UpgradeLink';
+import UpgradeLink from './UpgradeLink.vue';
 
 export default {
     name: 'ImportContractModal',

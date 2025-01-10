@@ -47,7 +47,7 @@ const moment = require('moment');
 const ethers = require('ethers');
 import { mapStores } from 'pinia';
 import { useCurrentWorkspaceStore } from '@/stores/currentWorkspace';
-import LineChart from './LineChart';
+import LineChart from './LineChart.vue';
 
 export default {
     name: 'ExplorerAnalytics',

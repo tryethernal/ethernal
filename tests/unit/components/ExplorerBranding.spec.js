@@ -1,19 +1,14 @@
 import flushPromises from 'flush-promises';
-import MockHelper from '../MockHelper';
 
 import ExplorerBranding from '@/components/ExplorerBranding.vue';
 
-let helper;
-beforeEach(() => {
-    jest.clearAllMocks()
-    helper = new MockHelper();
-});
-
 describe('ExplorerBranding.vue', () => {
     it('Should display branding options', async () => {
-        const wrapper = helper.mountFn(ExplorerBranding, {
-            stubs: ['New-Explorer-Link', 'v-color-picker'],
-            propsData: {
+        const wrapper = mount(ExplorerBranding, {
+            global: {
+                stubs: ['New-Explorer-Link', 'v-color-picker'],
+            },
+            props: {
                 disabled: false,
                 explorer: {
                     id: 1,
@@ -32,9 +27,11 @@ describe('ExplorerBranding.vue', () => {
     });
 
     it('Should display upgrade message', async () => {
-        const wrapper = helper.mountFn(ExplorerBranding, {
-            stubs: ['New-Explorer-Link', 'v-color-picker'],
-            propsData: {
+        const wrapper = mount(ExplorerBranding, {
+            global: {
+                stubs: ['New-Explorer-Link', 'v-color-picker'],
+            },
+            props: {
                 disabled: true,
                 explorer: {
                     id: 1,

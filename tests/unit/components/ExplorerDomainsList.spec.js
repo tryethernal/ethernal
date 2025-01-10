@@ -1,18 +1,13 @@
 import flushPromises from 'flush-promises';
-import MockHelper from '../MockHelper';
 
 import ExplorerDomainsList from '@/components/ExplorerDomainsList.vue';
 
-let helper;
-beforeEach(() => {
-    jest.clearAllMocks()
-    helper = new MockHelper();
-});
-
 describe('ExplorerDomainsList.vue', () => {
     it('Should display domains list', async () => {
-        const wrapper = helper.mountFn(ExplorerDomainsList, {
-            stubs: ['Explorer-Domain', 'New-Explorer-Domain-Modal'],
+        const wrapper = mount(ExplorerDomainsList, {
+            global: {
+                stubs: ['Explorer-Domain', 'New-Explorer-Domain-Modal'],
+            },
             propsData: {
                 disabled: false,
                 explorer: {
@@ -26,9 +21,11 @@ describe('ExplorerDomainsList.vue', () => {
     });
 
     it('Should be disabled', async () => {
-        const wrapper = helper.mountFn(ExplorerDomainsList, {
-            stubs: ['Explorer-Domain', 'New-Explorer-Domain-Modal'],
-            propsData: {
+        const wrapper = mount(ExplorerDomainsList, {
+            global: {
+                stubs: ['Explorer-Domain', 'New-Explorer-Domain-Modal'],
+            },
+            props: {
                 disabled: true,
                 explorer: {
                     domains: [{ id: 1 }, { id: 2 }]

@@ -102,10 +102,9 @@
 const ethers = require('ethers');
 import { mapStores } from 'pinia';
 import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
-import CreateExplorerFaucetModal from './CreateExplorerFaucetModal';
-import ExplorerFaucetSettingsDangerZone from './ExplorerFaucetSettingsDangerZone';
-import HashLink from './HashLink';
-import FromWei from '../filters/FromWei.js';
+import CreateExplorerFaucetModal from './CreateExplorerFaucetModal.vue';
+import ExplorerFaucetSettingsDangerZone from './ExplorerFaucetSettingsDangerZone.vue';
+import HashLink from './HashLink.vue';
 
 export default {
     name: 'ExplorerFaucetSettings',
@@ -114,9 +113,6 @@ export default {
         CreateExplorerFaucetModal,
         ExplorerFaucetSettingsDangerZone,
         HashLink
-    },
-    filters: {
-        FromWei
     },
     data: () => ({
         loading: false,

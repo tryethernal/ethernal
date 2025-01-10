@@ -42,7 +42,7 @@
 const ethers = require('ethers');
 import { useEnvStore } from '@/stores/env';
 
-const { BNtoSignificantDigits } = require('@/lib/utils');
+import { BNtoSignificantDigits } from '@/lib/utils';
 import HashLink from './HashLink.vue';
 
 export default {
@@ -105,7 +105,7 @@ export default {
         },
         orderedTokens() {
             this.refreshOrder;
-            return this.filteredTokens.toSorted((a, b) => {
+            return [...this.filteredTokens].sort((a, b) => {
                 const balanceA = ethers.BigNumber.from(this.balances[a.address] || '0');
                 const balanceB = ethers.BigNumber.from(this.balances[b.address] || '0');
 

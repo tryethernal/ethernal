@@ -1,101 +1,159 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ExplorerFaucet.vue Should display an active faucet 1`] = `
-<div class="container container--fluid">
-  <div class="row">
-    <div align="center" class="col"><i aria-hidden="true" class="v-icon notranslate mdi mdi-faucet theme--light primary--text text--lighten-1" style="font-size: 150px; opacity: 0.25;"></i></div>
+exports[`ExplorerFaucet.vue > Should display an active faucet 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <div class="v-row">
+    <div class="v-col" align="center"><i class="mdi-faucet mdi v-icon notranslate v-theme--light text-primary-lighten-1" style="font-size: 150px; height: 150px; width: 150px; opacity: 0.25;" aria-hidden="true"></i></div>
   </div>
-  <div class="row mb-10 my-0 align-center justify-center">
-    <div class="col-sm-12 col-md-6 col">
-      <div class="rounded-card rounded-xl pa-12 v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__title primary--text d-flex justify-center align-center"> Faucet - Get ETL Tokens</div>
-        <div class="v-card__text pb-0">
-          <!---->
-          <!---->.
-          <form novalidate="novalidate" class="v-form">
-            <div class="v-input mt-1 v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+  <div class="v-row align-center justify-center mb-10 my-0">
+    <div class="v-col-sm-12 v-col-md-6 v-col">
+      <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated rounded-card rounded-xl pa-12">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!---->
+        <div class="v-card-title text-primary d-flex justify-center align-center"> Faucet - Get ETL Tokens</div>
+        <div class="v-card-text pb-0">
+          <!--v-if-->
+          <!--v-if-->. <form class="v-form" novalidate="">
+            <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field mt-1">
+              <!---->
               <div class="v-input__control">
-                <div class="v-input__slot">
-                  <div class="v-input__prepend-inner">
-                    <div class="v-input__icon v-input__icon--prepend-inner"><i aria-hidden="true" class="v-icon notranslate mdi mdi-wallet-outline theme--light"></i></div>
+                <div class="v-field v-field--active v-field--center-affix v-field--dirty v-field--prepended v-field--variant-outlined v-theme--light v-locale--is-ltr">
+                  <div class="v-field__overlay"></div>
+                  <div class="v-field__loader">
+                    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                      <!---->
+                      <div class="v-progress-linear__background"></div>
+                      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                        <div class="v-progress-linear__indeterminate">
+                          <div class="v-progress-linear__indeterminate long"></div>
+                          <div class="v-progress-linear__indeterminate short"></div>
+                        </div>
+                      </transition-stub>
+                      <!---->
+                    </div>
                   </div>
-                  <fieldset aria-hidden="true">
-                    <legend style="width: -24px;"><span class="notranslate">​</span></legend>
-                  </fieldset>
-                  <div class="v-text-field__slot"><label for="input-13" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Wallet Address</label><input name="address" required="required" id="input-13" type="text"></div>
-                </div>
-                <div class="v-text-field__details">
-                  <div class="v-messages theme--light">
-                    <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                  <div class="v-field__prepend-inner"><i class="mdi-wallet-outline mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i>
+                    <!---->
+                  </div>
+                  <div class="v-field__field" data-no-activator="">
+                    <!----><label class="v-label v-field-label" for="input-0">
+                      <!---->Wallet Address
+                    </label>
+                    <!----><input name="address" size="1" type="text" id="input-0" aria-describedby="input-0-messages" required="" class="v-field__input" value="0x4150e51980114468aa8309bb72f027d8bff41353">
+                    <!---->
+                  </div>
+                  <!---->
+                  <!---->
+                  <div class="v-field__outline">
+                    <div class="v-field__outline__start"></div>
+                    <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
+                        <!---->Wallet Address
+                      </label></div>
+                    <div class="v-field__outline__end"></div>
+                    <!---->
                   </div>
                 </div>
               </div>
+              <!---->
+              <div class="v-input__details">
+                <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="input-0-messages">
+                  <!---->
+                </transition-group-stub>
+                <!---->
+              </div>
             </div>
-            <div class="v-card__actions mb-5 justify-center"><button type="submit" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Request Tokens</span></button></div>
-          </form>
-          Your Addresses:
-          <ul>
+            <div class="v-card-actions mb-5 justify-center"><button type="submit" class="v-btn v-btn--slim v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator="">Request Tokens</span>
+                <!---->
+                <!---->
+              </button></div>
+          </form> Your Addresses: <ul>
             <li>
-              <hash-link-stub hash="0x4150e51980114468aa8309bb72f027d8bff41353" type="address"></hash-link-stub> -
-              <span class="success--text"><a class="underlined">Request now</a></span>
+              <hash-link-stub withname="false" type="address" hash="0x4150e51980114468aa8309bb72f027d8bff41353"></hash-link-stub> - <span>Request in 2 years</span>
             </li>
             <li>
-              <hash-link-stub hash="0x4150e51980114468aa8309bb72f027d8bff41353" type="address"></hash-link-stub> -
-              <span class="success--text"><a class="underlined">Request now</a></span>
+              <hash-link-stub withname="false" type="address" hash="0x4150e51980114468aa8309bb72f027d8bff41353"></hash-link-stub> - <span>Request in 2 years</span>
             </li>
             <li>
-              <hash-link-stub hash="0x4150e51980114468aa8309bb72f027d8bff41353" type="address"></hash-link-stub> -
-              <span class="success--text"><a class="underlined">Request now</a></span>
+              <hash-link-stub withname="false" type="address" hash="0x4150e51980114468aa8309bb72f027d8bff41353"></hash-link-stub> - <span>Request in 2 years</span>
             </li>
             <li>
-              <hash-link-stub hash="0x4150e51980114468aa8309bb72f027d8bff41353" type="address"></hash-link-stub> -
-              <span>Request in a day</span>
+              <hash-link-stub withname="false" type="address" hash="0x4150e51980114468aa8309bb72f027d8bff41353"></hash-link-stub> - <span>Request in 2 years</span>
             </li>
             <li>
-              <hash-link-stub hash="0x4150e51980114468aa8309bb72f027d8bff41353" type="address"></hash-link-stub> -
-              <span>Request in a day</span>
+              <hash-link-stub withname="false" type="address" hash="0x4150e51980114468aa8309bb72f027d8bff41353"></hash-link-stub> - <span>Request in 2 years</span>
             </li>
-          </ul> <small><a>[+] See More</a></small>
-          <hr role="separator" aria-orientation="horizontal" class="my-4 v-divider theme--light"> <small>
-            Max Frequency: 1.0 ETL per address every day.<br>
-            Faucet Balance: 2 ETL<br>
-            Faucet Address: <hash-link-stub fullhash="true" hash="0x4150e51980114468aa8309bb72f027d8bff41353" type="address"></hash-link-stub></small>
+          </ul><small><a>[+] See More</a></small>
+          <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator"><small> Max Frequency: 1.0 ETL per address every day.<br> Faucet Balance: 2 ETL<br> Faucet Address: <hash-link-stub withname="false" type="address" hash="0x4150e51980114468aa8309bb72f027d8bff41353" fullhash="true"></hash-link-stub></small>
         </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
       </div>
     </div>
   </div>
-  <div class="row">
-    <div class="col">
+  <div class="v-row">
+    <div class="v-col">
       <h4>Analytics</h4>
       <explorer-faucet-analytics-stub id="1"></explorer-faucet-analytics-stub>
     </div>
   </div>
-  <div class="row">
-    <div class="col">
+  <div class="v-row">
+    <div class="v-col">
       <h4>History</h4>
       <explorer-faucet-transaction-history-stub id="1"></explorer-faucet-transaction-history-stub>
     </div>
   </div>
-</div>
+</div>"
 `;
 
-exports[`ExplorerFaucet.vue Should display faucet intro 1`] = `
-<div class="container container--fluid">
-  <div class="v-card v-sheet v-sheet--outlined theme--light">
-    <div class="v-card__text">
-      <div class="row">
-        <div align="center" class="col"><i aria-hidden="true" class="v-icon notranslate mdi mdi-faucet theme--light primary--text text--lighten-1" style="font-size: 200px; opacity: 0.25;"></i></div>
-      </div>
-      <div class="row">
-        <div class="spacer"></div>
-        <div class="text-body-1 col col-6">
-          No faucet has been setup here, but it's possible to!<br>
-          Reach out to the organization or individual that gave you access to this
-          explorer and ask them to setup the faucet on Ethernal.
-        </div>
-        <div class="spacer"></div>
+exports[`ExplorerFaucet.vue > Should display faucet intro 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
       </div>
     </div>
+    <!---->
+    <!---->
+    <div class="v-card-text">
+      <div class="v-row">
+        <div class="v-col" align="center"><i class="mdi-faucet mdi v-icon notranslate v-theme--light text-primary-lighten-1" style="font-size: 200px; height: 200px; width: 200px; opacity: 0.25;" aria-hidden="true"></i></div>
+      </div>
+      <div class="v-row">
+        <div class="v-spacer"></div>
+        <div class="v-col v-col-6 text-body-1"> No faucet has been setup here, but it's possible to!<br> Reach out to the organization or individual that gave you access to this explorer and ask them to setup the faucet on Ethernal. </div>
+        <div class="v-spacer"></div>
+      </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-</div>
+</div>"
 `;

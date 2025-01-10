@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import ExplorerFaucetPrivateKeyExportModal from './ExplorerFaucetPrivateKeyExportModal';
+import ExplorerFaucetPrivateKeyExportModal from './ExplorerFaucetPrivateKeyExportModal.vue';
 
 export default {
     name: 'ExplorerFaucetSettingsDangerZone',

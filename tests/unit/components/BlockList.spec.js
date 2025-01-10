@@ -1,15 +1,6 @@
-import MockHelper from '../MockHelper';
-
 import BlockList from '@/components/BlockList.vue';
 
 describe('BlockList.vue', () => {
-    let helper;
-
-    beforeEach(() => {
-        helper = new MockHelper();
-        jest.spyOn(Date, 'now').mockImplementation(() => new Date('2022-08-07T12:33:37.000Z'));
-    });
-
     it('Should display pending blocks', async () => {
         const blocks = [
             {
@@ -37,11 +28,11 @@ describe('BlockList.vue', () => {
             }
         ];
 
-        jest.spyOn(helper.mocks.server, 'getBlocks')
+        vi.spyOn(server, 'getBlocks')
             .mockResolvedValue({ data: { items: blocks, blockCount: 2 }});
 
-        const wrapper = helper.mountFn(BlockList, {
-            propsData: {
+        const wrapper = mount(BlockList, {
+            props: {
                 withCount: true
             }
         });
@@ -77,10 +68,10 @@ describe('BlockList.vue', () => {
             }
         ];
 
-        jest.spyOn(helper.mocks.server, 'getBlocks')
+        vi.spyOn(server, 'getBlocks')
             .mockResolvedValue({ data: { items: blocks, blockCount: 2 }});
 
-        const wrapper = helper.mountFn(BlockList);
+        const wrapper = mount(BlockList);
         await new Promise(process.nextTick);
 
         expect(wrapper.vm.blocks).toEqual(blocks);
@@ -113,11 +104,11 @@ describe('BlockList.vue', () => {
             }
         ];
 
-        jest.spyOn(helper.mocks.server, 'getBlocks')
+        vi.spyOn(server, 'getBlocks')
             .mockResolvedValue({ data: { items: blocks, blockCount: 2 }});
 
-        const wrapper = helper.mountFn(BlockList, {
-            propsData: {
+        const wrapper = mount(BlockList, {
+            props: {
                 withCount: true
             }
         });
@@ -128,11 +119,11 @@ describe('BlockList.vue', () => {
     });
 
     it('should show the loading message when empty blocks list', async () => {
-        jest.spyOn(helper.mocks.server, 'getBlocks')
+        vi.spyOn(server, 'getBlocks')
             .mockResolvedValue({ data: { items: [], blockCount: 0 }});
 
-        const wrapper = helper.mountFn(BlockList, {
-            propsData: {
+        const wrapper = mount(BlockList, {
+            props: {
                 withCount: true
             }
         });

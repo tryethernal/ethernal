@@ -1,102 +1,331 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ExplorerSync.vue Should display no subscription status 1`] = `
-<div class="flex-grow-1 v-card v-sheet v-sheet--outlined theme--light">
-  <div class="v-card__text">
-    <!---->
-    <div><b class="error--text">Synchronization will become available once a subscription has been started.</b></div> <button type="button" disabled="disabled" class="mt-2 v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Start Sync</span></button>
+exports[`ExplorerSync.vue > Should display no subscription status 1`] = `
+"<div class="v-card v-theme--light v-card--density-default v-card--variant-elevated flex-grow-1">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
+        </div>
+      </transition-stub>
+      <!---->
+    </div>
   </div>
-</div>
+  <!---->
+  <!---->
+  <div class="v-card-text">
+    <!--v-if-->
+    <div><b class="text-error">Synchronization will become available once a subscription has been started.</b></div><button type="button" class="v-btn v-btn--disabled v-theme--light bg-primary v-btn--density-default v-btn--size-default v-btn--variant-elevated mt-2" disabled=""><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+      <!----><span class="v-btn__content" data-no-activator="">Start Sync</span>
+      <!---->
+      <!---->
+    </button>
+  </div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
 `;
 
-exports[`ExplorerSync.vue Should display quota reached status 1`] = `
-<div class="flex-grow-1 v-card v-sheet v-sheet--outlined theme--light">
-  <div class="v-card__text">
-    <!---->
-    <div><b class="error--text">
-        Your explorer is not synchronizing blocks.
-        <!----> <span> Transaction quota reached, upgrade your plan to resume sync.</span></b></div> <button type="button" class="mt-2 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Start Sync</span></button>
+exports[`ExplorerSync.vue > Should display quota reached status 1`] = `
+"<div class="v-card v-theme--light v-card--density-default v-card--variant-elevated flex-grow-1">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
+        </div>
+      </transition-stub>
+      <!---->
+    </div>
   </div>
-</div>
+  <!---->
+  <!---->
+  <div class="v-card-text">
+    <!--v-if-->
+    <div><b class="text-error"> Your explorer is not synchronizing blocks.
+        <!--v-if--><span> Transaction quota reached, upgrade your plan to resume sync.</span>
+      </b></div><button type="button" class="v-btn v-btn--elevated v-theme--light bg-primary v-btn--density-default v-btn--size-default v-btn--variant-elevated mt-2"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+      <!----><span class="v-btn__content" data-no-activator="">Start Sync</span>
+      <!---->
+      <!---->
+    </button>
+  </div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
 `;
 
-exports[`ExplorerSync.vue Should display that sync is active 1`] = `
-<div class="flex-grow-1 v-card v-sheet v-sheet--outlined theme--light">
-  <div class="v-card__text">
-    <!---->
-    <div><b class="success--text">Your explorer is synchronizing blocks.</b></div> <button type="button" class="mt-2 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Stop Sync</span></button>
+exports[`ExplorerSync.vue > Should display that sync is active 1`] = `
+"<div class="v-card v-theme--light v-card--density-default v-card--variant-elevated flex-grow-1">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
+        </div>
+      </transition-stub>
+      <!---->
+    </div>
   </div>
-</div>
+  <!---->
+  <!---->
+  <div class="v-card-text">
+    <!--v-if-->
+    <div><b class="text-success">Your explorer is synchronizing blocks.</b></div><button type="button" class="v-btn v-btn--elevated v-theme--light bg-primary v-btn--density-default v-btn--size-default v-btn--variant-elevated mt-2"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+      <!----><span class="v-btn__content" data-no-activator="">Stop Sync</span>
+      <!---->
+      <!---->
+    </button>
+  </div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
 `;
 
-exports[`ExplorerSync.vue Should display that sync is inactive 1`] = `
-<div class="flex-grow-1 v-card v-sheet v-sheet--outlined theme--light">
-  <div class="v-card__text">
-    <!---->
-    <div><b class="error--text">
-        Your explorer is not synchronizing blocks.
-        <!---->
-        <!----></b></div> <button type="button" class="mt-2 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Start Sync</span></button>
+exports[`ExplorerSync.vue > Should display that sync is inactive 1`] = `
+"<div class="v-card v-theme--light v-card--density-default v-card--variant-elevated flex-grow-1">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
+        </div>
+      </transition-stub>
+      <!---->
+    </div>
   </div>
-</div>
+  <!---->
+  <!---->
+  <div class="v-card-text">
+    <!--v-if-->
+    <div><b class="text-error"> Your explorer is not synchronizing blocks.
+        <!--v-if-->
+        <!--v-if-->
+      </b></div><button type="button" class="v-btn v-btn--elevated v-theme--light bg-primary v-btn--density-default v-btn--size-default v-btn--variant-elevated mt-2"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+      <!----><span class="v-btn__content" data-no-activator="">Start Sync</span>
+      <!---->
+      <!---->
+    </button>
+  </div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
 `;
 
-exports[`ExplorerSync.vue Should display that sync is starting 1`] = `
-<div class="flex-grow-1 v-card v-sheet v-sheet--outlined theme--light">
-  <div class="v-card__text">
-    <!---->
-    <div><b class="warning--text">Starting synchronization...</b></div> <button type="button" class="mt-2 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Start Sync</span></button>
+exports[`ExplorerSync.vue > Should display that sync is starting 1`] = `
+"<div class="v-card v-theme--light v-card--density-default v-card--variant-elevated flex-grow-1">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
+        </div>
+      </transition-stub>
+      <!---->
+    </div>
   </div>
-</div>
+  <!---->
+  <!---->
+  <div class="v-card-text">
+    <!--v-if-->
+    <div><b class="text-warning">Starting synchronization...</b></div><button type="button" class="v-btn v-btn--elevated v-theme--light bg-primary v-btn--density-default v-btn--size-default v-btn--variant-elevated mt-2"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+      <!----><span class="v-btn__content" data-no-activator="">Start Sync</span>
+      <!---->
+      <!---->
+    </button>
+  </div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
 `;
 
-exports[`ExplorerSync.vue Should display that sync is stopping 1`] = `
-<div class="flex-grow-1 v-card v-sheet v-sheet--outlined theme--light">
-  <div class="v-card__text">
-    <!---->
-    <div><b class="warning--text">Stopping synchronization...</b></div> <button type="button" class="mt-2 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Start Sync</span></button>
+exports[`ExplorerSync.vue > Should display that sync is stopping 1`] = `
+"<div class="v-card v-theme--light v-card--density-default v-card--variant-elevated flex-grow-1">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
+        </div>
+      </transition-stub>
+      <!---->
+    </div>
   </div>
-</div>
+  <!---->
+  <!---->
+  <div class="v-card-text">
+    <!--v-if-->
+    <div><b class="text-warning">Stopping synchronization...</b></div><button type="button" class="v-btn v-btn--elevated v-theme--light bg-primary v-btn--density-default v-btn--size-default v-btn--variant-elevated mt-2"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+      <!----><span class="v-btn__content" data-no-activator="">Start Sync</span>
+      <!---->
+      <!---->
+    </button>
+  </div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
 `;
 
-exports[`ExplorerSync.vue Should display unknown status 1`] = `
-<div class="flex-grow-1 v-card v-sheet v-sheet--outlined theme--light">
-  <div class="v-card__text">
-    <!---->
-    <div><b class="error--text">Unknown synchronization status (unknown).</b></div> <button type="button" class="mt-2 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Start Sync</span></button>
+exports[`ExplorerSync.vue > Should display unknown status 1`] = `
+"<div class="v-card v-theme--light v-card--density-default v-card--variant-elevated flex-grow-1">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
+        </div>
+      </transition-stub>
+      <!---->
+    </div>
   </div>
-</div>
+  <!---->
+  <!---->
+  <div class="v-card-text">
+    <!--v-if-->
+    <div><b class="text-error">Unknown synchronization status (unknown).</b></div><button type="button" class="v-btn v-btn--elevated v-theme--light bg-primary v-btn--density-default v-btn--size-default v-btn--variant-elevated mt-2"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+      <!----><span class="v-btn__content" data-no-activator="">Start Sync</span>
+      <!---->
+      <!---->
+    </button>
+  </div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
 `;
 
-exports[`ExplorerSync.vue Should display unreachable status 1`] = `
-<div class="flex-grow-1 v-card v-sheet v-sheet--outlined theme--light">
-  <div class="v-card__text">
-    <!---->
-    <div><b class="error--text">
-        Your explorer is not synchronizing blocks.
-        <span> RPC is unreachable.</span>
-        <!----></b></div> <button type="button" class="mt-2 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Start Sync</span></button>
+exports[`ExplorerSync.vue > Should display unreachable status 1`] = `
+"<div class="v-card v-theme--light v-card--density-default v-card--variant-elevated flex-grow-1">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
+        </div>
+      </transition-stub>
+      <!---->
+    </div>
   </div>
-</div>
+  <!---->
+  <!---->
+  <div class="v-card-text">
+    <!--v-if-->
+    <div><b class="text-error"> Your explorer is not synchronizing blocks. <span> RPC is unreachable.</span>
+        <!--v-if-->
+      </b></div><button type="button" class="v-btn v-btn--elevated v-theme--light bg-primary v-btn--density-default v-btn--size-default v-btn--variant-elevated mt-2"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+      <!----><span class="v-btn__content" data-no-activator="">Start Sync</span>
+      <!---->
+      <!---->
+    </button>
+  </div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
 `;
 
-exports[`ExplorerSync.vue Should start sync 1`] = `
-<div class="flex-grow-1 v-card v-sheet v-sheet--outlined theme--light">
-  <div class="v-card__text">
-    <!---->
-    <div><b class="success--text">Your explorer is synchronizing blocks.</b></div> <button type="button" class="mt-2 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Stop Sync</span></button>
+exports[`ExplorerSync.vue > Should start sync 1`] = `
+"<div class="v-card v-theme--light v-card--density-default v-card--variant-elevated flex-grow-1">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
+        </div>
+      </transition-stub>
+      <!---->
+    </div>
   </div>
-</div>
+  <!---->
+  <!---->
+  <div class="v-card-text">
+    <!--v-if-->
+    <div><b class="text-success">Your explorer is synchronizing blocks.</b></div><button type="button" class="v-btn v-btn--elevated v-theme--light bg-primary v-btn--density-default v-btn--size-default v-btn--variant-elevated mt-2"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+      <!----><span class="v-btn__content" data-no-activator="">Stop Sync</span>
+      <!---->
+      <!---->
+    </button>
+  </div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
 `;
 
-exports[`ExplorerSync.vue Should stop sync 1`] = `
-<div class="flex-grow-1 v-card v-sheet v-sheet--outlined theme--light">
-  <div class="v-card__text">
-    <!---->
-    <div><b class="error--text">
-        Your explorer is not synchronizing blocks.
-        <!---->
-        <!----></b></div> <button type="button" class="mt-2 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Start Sync</span></button>
+exports[`ExplorerSync.vue > Should stop sync 1`] = `
+"<div class="v-card v-theme--light v-card--density-default v-card--variant-elevated flex-grow-1">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
+        </div>
+      </transition-stub>
+      <!---->
+    </div>
   </div>
-</div>
+  <!---->
+  <!---->
+  <div class="v-card-text">
+    <!--v-if-->
+    <div><b class="text-error"> Your explorer is not synchronizing blocks.
+        <!--v-if-->
+        <!--v-if-->
+      </b></div><button type="button" class="v-btn v-btn--elevated v-theme--light bg-primary v-btn--density-default v-btn--size-default v-btn--variant-elevated mt-2"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+      <!----><span class="v-btn__content" data-no-activator="">Start Sync</span>
+      <!---->
+      <!---->
+    </button>
+  </div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
 `;

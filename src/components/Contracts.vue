@@ -60,14 +60,13 @@
     </v-container>
 </template>
 <script>
-const moment = require('moment');
 import { mapStores } from 'pinia';
 import { useCurrentWorkspaceStore } from '@/stores/currentWorkspace';
 import { useUserStore } from '@/stores/user';
-import ImportContractModal from './ImportContractModal';
-import HashLink from './HashLink';
-import UpgradeLink from './UpgradeLink';
-import RemoveContractConfirmationModal from './RemoveContractConfirmationModal';
+import ImportContractModal from './ImportContractModal.vue';
+import HashLink from './HashLink.vue';
+import UpgradeLink from './UpgradeLink.vue';
+import RemoveContractConfirmationModal from './RemoveContractConfirmationModal.vue';
 import { formatContractPattern } from '@/lib/utils';
 
 export default {
@@ -110,7 +109,7 @@ export default {
         newContractPusherHandler: null,
         destroyedContractPusherHandler: null
     }),
-    mounted: function() {
+    mounted() {
         if (this.userStore.isAdmin)
             this.headers.push({ text: '', value: 'remove' });
 
@@ -122,8 +121,7 @@ export default {
         this.destroyedContractPusherHandler.unbind(null, null, this);
     },
     methods: {
-        moment: moment,
-        getContracts: function({ page, itemsPerPage, sortBy }) {
+        getContracts({ page, itemsPerPage, sortBy }) {
             this.loading = true;
 
             if (!page || !itemsPerPage || !sortBy || !sortBy.length)
@@ -144,11 +142,11 @@ export default {
                 .finally(() => this.loading = false);
         },
         formatContractPattern,
-        openRemoveContractConfirmationModal: function(address) {
+        openRemoveContractConfirmationModal(address) {
             this.$refs.removeContractConfirmationModal
                 .open({ address: address, workspace: this.currentWorkspaceStore.name });
         },
-        openImportContractModal: function() {
+        openImportContractModal() {
             this.$refs.importContractModal
                 .open({ contractsCount: this.contracts.length })
                 .then(() => this.getContracts(this.currentOptions));
@@ -162,10 +160,10 @@ export default {
             useCurrentWorkspaceStore,
             useUserStore
         ),
-        canImport: function() {
-            return this.currentWorkspaceStore.public || this.contracts.length < 10 || this.user.plan != 'free';
+        canImport() {
+            return this.currentWorkspaceStore.public || this.contracts.length < 10 || this.userStore.plan != 'free';
         },
-        removedContract: function() {
+        removedContract() {
             return this.$route.query.removedContract ? this.$route.query.removedContract : null;
         }
     }

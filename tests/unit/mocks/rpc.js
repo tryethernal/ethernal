@@ -1,27 +1,27 @@
-jest.mock('`../../../src/lib/rpc', () => {
+vi.mock('@/lib/rpc', async () => {
     const ethers = require('ethers');
-    const actual = jest.requireActual('../../../src/lib/rpc');
+    const actual = await vi.importActual('@/lib/rpc');
     return {
-        getProvider: jest.fn(),    
-        ContractConnector: jest.fn(function() {
+        getProvider: vi.fn(),
+        ContractConnector: vi.fn(function() {
             return {
-                callReadMethod: jest.fn().mockResolvedValue([ethers.BigNumber.from('1')]),
-                has721Interface: jest.fn().mockResolvedValue(false),
-                isErc20: jest.fn(),
-                isErc721: jest.fn(),
-                isErc1155: jest.fn(),
-                isProxy: jest.fn(),
-                decimals: jest.fn(),
-                symbol: jest.fn(),
-                name: jest.fn(),
-                totalSupply: jest.fn(),
-                getBytecode: jest.fn()
+                callReadMethod: vi.fn().mockResolvedValue([ethers.BigNumber.from('1')]),
+                has721Interface: vi.fn().mockResolvedValue(false),
+                isErc20: vi.fn(),
+                isErc721: vi.fn(),
+                isErc1155: vi.fn(),
+                isProxy: vi.fn(),
+                decimals: vi.fn(),
+                symbol: vi.fn(),
+                name: vi.fn(),
+                totalSupply: vi.fn(),
+                getBytecode: vi.fn()
             }
         }),
         Tracer: actual.Tracer,
-        ProviderConnector: jest.fn().mockImplementation(() => ({
-            fetchNetworkId: jest.fn().mockResolvedValue(123),
-            fetchBlockWithTransactions: jest.fn()
+        ProviderConnector: vi.fn().mockImplementation(() => ({
+            fetchNetworkId: vi.fn().mockResolvedValue(123),
+            fetchBlockWithTransactions: vi.fn()
                 .mockResolvedValue({
                     number: 1,
                     transactions: [
@@ -30,16 +30,16 @@ jest.mock('`../../../src/lib/rpc', () => {
                         { hash: '0x789' }
                     ]
                 }),
-            fetchTransactionReceipt: jest.fn().mockResolvedValue({ status: 1 })
+            fetchTransactionReceipt: vi.fn().mockResolvedValue({ status: 1 })
         })),
-        ERC721Connector: jest.fn().mockImplementation(() => ({
-            tokenByIndex: jest.fn().mockResolvedValue('0'),
-            ownerOf: jest.fn().mockResolvedValue('0xabc'),
-            tokenURI: jest.fn().mockResolvedValue('http://metadata')
+        ERC721Connector: vi.fn().mockImplementation(() => ({
+            tokenByIndex: vi.fn().mockResolvedValue('0'),
+            ownerOf: vi.fn().mockResolvedValue('0xabc'),
+            tokenURI: vi.fn().mockResolvedValue('http://metadata')
         })),
-        ERC20Connector: jest.fn().mockImplementation(() => ({
-            allowance: jest.fn().mockResolvedValue(true)
+        ERC20Connector: vi.fn().mockImplementation(() => ({
+            allowance: vi.fn().mockResolvedValue(true)
         })),
-        V2DexRouterConnector: jest.fn()
+        V2DexRouterConnector: vi.fn()
     }
 });

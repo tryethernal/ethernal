@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import ExplorerDomain from './ExplorerDomain';
+import ExplorerDomain from './ExplorerDomain.vue';
 import NewExplorerDomainModal from './NewExplorerDomainModal.vue';
 
 export default {

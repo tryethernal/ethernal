@@ -1,13 +1,6 @@
 import flushPromises from 'flush-promises';
-import MockHelper from '../MockHelper';
 
 import ExplorerQuotaManagementModal from '@/components/ExplorerQuotaManagementModal.vue';
-
-let helper;
-beforeEach(() => {
-    jest.clearAllMocks()
-    helper = new MockHelper();
-});
 
 const stripePlanData = {
     slug: 'transaction-quota',
@@ -16,8 +9,8 @@ const stripePlanData = {
 
 describe('ExplorerQuotaManagementModal.vue', () => {
     it('Should display current quota info', async () => {
-        const wrapper = helper.mountFn(ExplorerQuotaManagementModal);
-        jest.spyOn(helper.mocks.server, 'getQuotaExtensionPlan').mockResolvedValueOnce({ data: stripePlanData });
+        const wrapper = mount(ExplorerQuotaManagementModal);
+        vi.spyOn(server, 'getQuotaExtensionPlan').mockResolvedValueOnce({ data: stripePlanData });
 
         wrapper.vm.open({
             subscription: {
@@ -36,8 +29,8 @@ describe('ExplorerQuotaManagementModal.vue', () => {
     });
 
     it('Should display base cost simulation', async () => {
-        const wrapper = helper.mountFn(ExplorerQuotaManagementModal);
-        jest.spyOn(helper.mocks.server, 'getQuotaExtensionPlan').mockResolvedValueOnce({ data: stripePlanData });
+        const wrapper = mount(ExplorerQuotaManagementModal);
+        vi.spyOn(server, 'getQuotaExtensionPlan').mockResolvedValueOnce({ data: stripePlanData });
 
         wrapper.vm.open({
             subscription: {

@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import HashLink from './HashLink';
+import HashLink from './HashLink.vue';
 
 export default {
     name: 'ERC721TokenCard',

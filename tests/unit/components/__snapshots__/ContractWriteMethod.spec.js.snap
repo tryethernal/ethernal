@@ -1,565 +1,1192 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ContractWriteMethod.vue Should accept false as an input for bool type 1`] = `
-<div>
+exports[`ContractWriteMethod.vue > Should accept false as an input for bool type 1`] = `
+"<div>
   <div class="font-weight-bold">boolFun</div>
-  <div class="v-input py-1 v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+  <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field py-1">
+    <!---->
     <div class="v-input__control">
-      <div class="v-input__slot">
-        <fieldset aria-hidden="true">
-          <legend style="width: -24px;"><span class="notranslate">​</span></legend>
-        </fieldset>
-        <div class="v-text-field__slot"><label for="input-48" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">bool boolInp</label><input id="input-48" type="text"></div>
-      </div>
-    </div>
-  </div>
-  <div class="grey lighten-3 pa-2 mt-1" style="">
-    <div style="display: none;"></div>
-    <div style="">
-      Tx: <a href="/transaction/0xabcd" target="_blank">0xabcd</a></div>
-    <div style="display: none;">
-      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
-          <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
-        </svg>
-        <div class="v-progress-circular__info"></div>
-      </div>Waiting for receipt...
-    </div>
-    <div class="mt-1" style="">
-      Status: Succeeded
-      <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-check-circle theme--light success--text text--lighten-1" style="font-size: 16px;"></i> <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-alert-circle theme--light error--text text--lighten-1" style="font-size: 16px; display: none;"></i>
-    </div>
-    <div style="display: none;">
-      Couldn't get receipt.
-    </div>
-  </div>
-  <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
-  <div class="col-4 px-0 py-1">
-    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-      <div class="v-input__control">
-        <div class="v-input__slot">
-          <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-          </fieldset>
-          <div class="v-text-field__slot"><label for="input-53" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-53" type="number"></div>
+      <div class="v-field v-field--active v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr">
+        <div class="v-field__overlay"></div>
+        <div class="v-field__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <div class="v-field__field" data-no-activator="">
+          <!----><label class="v-label v-field-label" for="input-0">
+            <!---->bool boolInp
+          </label>
+          <!----><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" class="v-field__input" value="false">
+          <!---->
+        </div>
+        <!---->
+        <!---->
+        <div class="v-field__outline">
+          <div class="v-field__outline__start"></div>
+          <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
+              <!---->bool boolInp
+            </label></div>
+          <div class="v-field__outline__end"></div>
+          <!---->
         </div>
       </div>
     </div>
-  </div> <button type="button" class="mt-1 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
-</div>
-`;
-
-exports[`ContractWriteMethod.vue Should accept true as an input for bool type 1`] = `
-<div>
-  <div class="font-weight-bold">boolFun</div>
-  <div class="v-input py-1 v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-    <div class="v-input__control">
-      <div class="v-input__slot">
-        <fieldset aria-hidden="true">
-          <legend style="width: -24px;"><span class="notranslate">​</span></legend>
-        </fieldset>
-        <div class="v-text-field__slot"><label for="input-36" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">bool boolInp</label><input id="input-36" type="text"></div>
-      </div>
-    </div>
+    <!---->
+    <!---->
   </div>
-  <div class="grey lighten-3 pa-2 mt-1" style="">
+  <div class="bg-grey-lighten-3 pa-2 mt-1" style="">
     <div style="display: none;"></div>
-    <div style="">
-      Tx: <a href="/transaction/0xabcd" target="_blank">0xabcd</a></div>
+    <div style=""> Tx: <a href="/transaction/0xabcd" target="_blank">0xabcd</a></div>
     <div style="display: none;">
-      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
-          <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
+      <div class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
+          <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
+          <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
         </svg>
-        <div class="v-progress-circular__info"></div>
+        <!---->
       </div>Waiting for receipt...
     </div>
-    <div class="mt-1" style="">
-      Status: Succeeded
-      <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-check-circle theme--light success--text text--lighten-1" style="font-size: 16px;"></i> <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-alert-circle theme--light error--text text--lighten-1" style="font-size: 16px; display: none;"></i>
-    </div>
-    <div style="display: none;">
-      Couldn't get receipt.
-    </div>
+    <div class="mt-1" style=""> Status: Succeeded <i class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success-lighten-1 mr-2 align-with-text" aria-hidden="true" style=""></i><i class="mdi-alert-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-error-lighten-1 mr-2 align-with-text" aria-hidden="true" style="display: none;"></i></div>
+    <div style="display: none;"> Couldn't get receipt. </div>
   </div>
-  <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
+  <hr class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator">
   <div class="col-4 px-0 py-1">
-    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+    <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field">
+      <!---->
       <div class="v-input__control">
-        <div class="v-input__slot">
-          <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-          </fieldset>
-          <div class="v-text-field__slot"><label for="input-41" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-41" type="number"></div>
+        <div class="v-field v-field--active v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr">
+          <div class="v-field__overlay"></div>
+          <div class="v-field__loader">
+            <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+              <!---->
+              <div class="v-progress-linear__background"></div>
+              <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+              <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                <div class="v-progress-linear__indeterminate">
+                  <div class="v-progress-linear__indeterminate long"></div>
+                  <div class="v-progress-linear__indeterminate short"></div>
+                </div>
+              </transition-stub>
+              <!---->
+            </div>
+          </div>
+          <!---->
+          <div class="v-field__field" data-no-activator="">
+            <!----><label class="v-label v-field-label" for="input-2">
+              <!---->Value (in Ether)
+            </label>
+            <!----><input size="1" type="number" id="input-2" aria-describedby="input-2-messages" small="" class="v-field__input" value="0">
+            <!---->
+          </div>
+          <!---->
+          <!---->
+          <div class="v-field__outline">
+            <div class="v-field__outline__start"></div>
+            <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-2">
+                <!---->Value (in Ether)
+              </label></div>
+            <div class="v-field__outline__end"></div>
+            <!---->
+          </div>
+        </div>
+      </div>
+      <!---->
+      <!---->
+    </div>
+  </div><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+    <!----><span class="v-btn__content" data-no-activator="">Query</span>
+    <!---->
+    <!---->
+  </button>
+</div>"
+`;
+
+exports[`ContractWriteMethod.vue > Should accept true as an input for bool type 1`] = `
+"<div>
+  <div class="font-weight-bold">boolFun</div>
+  <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field py-1">
+    <!---->
+    <div class="v-input__control">
+      <div class="v-field v-field--active v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr">
+        <div class="v-field__overlay"></div>
+        <div class="v-field__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <div class="v-field__field" data-no-activator="">
+          <!----><label class="v-label v-field-label" for="input-0">
+            <!---->bool boolInp
+          </label>
+          <!----><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" class="v-field__input" value="true">
+          <!---->
+        </div>
+        <!---->
+        <!---->
+        <div class="v-field__outline">
+          <div class="v-field__outline__start"></div>
+          <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
+              <!---->bool boolInp
+            </label></div>
+          <div class="v-field__outline__end"></div>
+          <!---->
         </div>
       </div>
     </div>
-  </div> <button type="button" class="mt-1 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
-</div>
+    <!---->
+    <!---->
+  </div>
+  <div class="bg-grey-lighten-3 pa-2 mt-1" style="">
+    <div style="display: none;"></div>
+    <div style=""> Tx: <a href="/transaction/0xabcd" target="_blank">0xabcd</a></div>
+    <div style="display: none;">
+      <div class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
+          <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
+          <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
+        </svg>
+        <!---->
+      </div>Waiting for receipt...
+    </div>
+    <div class="mt-1" style=""> Status: Succeeded <i class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success-lighten-1 mr-2 align-with-text" aria-hidden="true" style=""></i><i class="mdi-alert-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-error-lighten-1 mr-2 align-with-text" aria-hidden="true" style="display: none;"></i></div>
+    <div style="display: none;"> Couldn't get receipt. </div>
+  </div>
+  <hr class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator">
+  <div class="col-4 px-0 py-1">
+    <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field">
+      <!---->
+      <div class="v-input__control">
+        <div class="v-field v-field--active v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr">
+          <div class="v-field__overlay"></div>
+          <div class="v-field__loader">
+            <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+              <!---->
+              <div class="v-progress-linear__background"></div>
+              <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+              <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                <div class="v-progress-linear__indeterminate">
+                  <div class="v-progress-linear__indeterminate long"></div>
+                  <div class="v-progress-linear__indeterminate short"></div>
+                </div>
+              </transition-stub>
+              <!---->
+            </div>
+          </div>
+          <!---->
+          <div class="v-field__field" data-no-activator="">
+            <!----><label class="v-label v-field-label" for="input-2">
+              <!---->Value (in Ether)
+            </label>
+            <!----><input size="1" type="number" id="input-2" aria-describedby="input-2-messages" small="" class="v-field__input" value="0">
+            <!---->
+          </div>
+          <!---->
+          <!---->
+          <div class="v-field__outline">
+            <div class="v-field__outline__start"></div>
+            <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-2">
+                <!---->Value (in Ether)
+              </label></div>
+            <div class="v-field__outline__end"></div>
+            <!---->
+          </div>
+        </div>
+      </div>
+      <!---->
+      <!---->
+    </div>
+  </div><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+    <!----><span class="v-btn__content" data-no-activator="">Query</span>
+    <!---->
+    <!---->
+  </button>
+</div>"
 `;
 
-exports[`ContractWriteMethod.vue Should display only the error message if the tx cannot be sent 1`] = `
-<div>
+exports[`ContractWriteMethod.vue > Should display only the error message if the tx cannot be sent 1`] = `
+"<div>
   <div class="font-weight-bold">build</div>
-  <div class="grey lighten-3 pa-2 mt-1" style="">
+  <div class="bg-grey-lighten-3 pa-2 mt-1" style="">
     <div style="">Error: call revert exception</div>
+    <div style="display: none;"> Tx: <a href="/transaction/null" target="_blank"></a></div>
     <div style="display: none;">
-      Tx: <a href="/transaction/null" target="_blank"></a></div>
-    <div style="display: none;">
-      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
-          <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
+      <div class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
+          <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
+          <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
         </svg>
-        <div class="v-progress-circular__info"></div>
+        <!---->
       </div>Waiting for receipt...
     </div>
-    <div class="mt-1" style="display: none;">
-      Status: Failed
-      <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-check-circle theme--light success--text text--lighten-1" style="font-size: 16px; display: none;"></i> <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-alert-circle theme--light error--text text--lighten-1" style="font-size: 16px;"></i>
-    </div>
-    <div style="display: none;">
-      Couldn't get receipt.
-    </div>
+    <div class="mt-1" style="display: none;"> Status: Failed <i class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success-lighten-1 mr-2 align-with-text" aria-hidden="true" style="display: none;"></i><i class="mdi-alert-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-error-lighten-1 mr-2 align-with-text" aria-hidden="true"></i></div>
+    <div style="display: none;"> Couldn't get receipt. </div>
   </div>
-  <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
+  <hr class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator">
   <div class="col-4 px-0 py-1">
-    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+    <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field">
+      <!---->
       <div class="v-input__control">
-        <div class="v-input__slot">
-          <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-          </fieldset>
-          <div class="v-text-field__slot"><label for="input-144" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-144" type="number"></div>
+        <div class="v-field v-field--active v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr">
+          <div class="v-field__overlay"></div>
+          <div class="v-field__loader">
+            <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+              <!---->
+              <div class="v-progress-linear__background"></div>
+              <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+              <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                <div class="v-progress-linear__indeterminate">
+                  <div class="v-progress-linear__indeterminate long"></div>
+                  <div class="v-progress-linear__indeterminate short"></div>
+                </div>
+              </transition-stub>
+              <!---->
+            </div>
+          </div>
+          <!---->
+          <div class="v-field__field" data-no-activator="">
+            <!----><label class="v-label v-field-label" for="input-0">
+              <!---->Value (in Ether)
+            </label>
+            <!----><input size="1" type="number" id="input-0" aria-describedby="input-0-messages" small="" class="v-field__input" value="0">
+            <!---->
+          </div>
+          <!---->
+          <!---->
+          <div class="v-field__outline">
+            <div class="v-field__outline__start"></div>
+            <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
+                <!---->Value (in Ether)
+              </label></div>
+            <div class="v-field__outline__end"></div>
+            <!---->
+          </div>
         </div>
       </div>
+      <!---->
+      <!---->
     </div>
-  </div> <button type="button" class="mt-1 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
-</div>
+  </div><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+    <!----><span class="v-btn__content" data-no-activator="">Query</span>
+    <!---->
+    <!---->
+  </button>
+</div>"
 `;
 
-exports[`ContractWriteMethod.vue Should display only the error message if there is no tx hash 1`] = `
-<div>
+exports[`ContractWriteMethod.vue > Should display only the error message if there is no tx hash 1`] = `
+"<div>
   <div class="font-weight-bold">build</div>
-  <div class="grey lighten-3 pa-2 mt-1" style="">
+  <div class="bg-grey-lighten-3 pa-2 mt-1" style="">
     <div style="">Error: Failed tx</div>
+    <div style="display: none;"> Tx: <a href="/transaction/null" target="_blank"></a></div>
     <div style="display: none;">
-      Tx: <a href="/transaction/null" target="_blank"></a></div>
-    <div style="display: none;">
-      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
-          <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
+      <div class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
+          <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
+          <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
         </svg>
-        <div class="v-progress-circular__info"></div>
+        <!---->
       </div>Waiting for receipt...
     </div>
-    <div class="mt-1" style="display: none;">
-      Status: Failed
-      <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-check-circle theme--light success--text text--lighten-1" style="font-size: 16px; display: none;"></i> <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-alert-circle theme--light error--text text--lighten-1" style="font-size: 16px;"></i>
-    </div>
-    <div style="display: none;">
-      Couldn't get receipt.
-    </div>
+    <div class="mt-1" style="display: none;"> Status: Failed <i class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success-lighten-1 mr-2 align-with-text" aria-hidden="true" style="display: none;"></i><i class="mdi-alert-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-error-lighten-1 mr-2 align-with-text" aria-hidden="true"></i></div>
+    <div style="display: none;"> Couldn't get receipt. </div>
   </div>
-  <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
+  <hr class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator">
   <div class="col-4 px-0 py-1">
-    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+    <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field">
+      <!---->
       <div class="v-input__control">
-        <div class="v-input__slot">
-          <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-          </fieldset>
-          <div class="v-text-field__slot"><label for="input-133" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-133" type="number"></div>
+        <div class="v-field v-field--active v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr">
+          <div class="v-field__overlay"></div>
+          <div class="v-field__loader">
+            <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+              <!---->
+              <div class="v-progress-linear__background"></div>
+              <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+              <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                <div class="v-progress-linear__indeterminate">
+                  <div class="v-progress-linear__indeterminate long"></div>
+                  <div class="v-progress-linear__indeterminate short"></div>
+                </div>
+              </transition-stub>
+              <!---->
+            </div>
+          </div>
+          <!---->
+          <div class="v-field__field" data-no-activator="">
+            <!----><label class="v-label v-field-label" for="input-0">
+              <!---->Value (in Ether)
+            </label>
+            <!----><input size="1" type="number" id="input-0" aria-describedby="input-0-messages" small="" class="v-field__input" value="0">
+            <!---->
+          </div>
+          <!---->
+          <!---->
+          <div class="v-field__outline">
+            <div class="v-field__outline__start"></div>
+            <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
+                <!---->Value (in Ether)
+              </label></div>
+            <div class="v-field__outline__end"></div>
+            <!---->
+          </div>
         </div>
       </div>
+      <!---->
+      <!---->
     </div>
-  </div> <button type="button" class="mt-1 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
-</div>
+  </div><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+    <!----><span class="v-btn__content" data-no-activator="">Query</span>
+    <!---->
+    <!---->
+  </button>
+</div>"
 `;
 
-exports[`ContractWriteMethod.vue Should display only the error message with the failed tx hash 1`] = `
-<div>
+exports[`ContractWriteMethod.vue > Should display only the error message with the failed tx hash 1`] = `
+"<div>
   <div class="font-weight-bold">build</div>
-  <div class="grey lighten-3 pa-2 mt-1" style="">
+  <div class="bg-grey-lighten-3 pa-2 mt-1" style="">
     <div style="">Error: Wrong param.</div>
-    <div style="">
-      Tx: <a href="/transaction/0xabcd" target="_blank">0xabcd</a></div>
+    <div style=""> Tx: <a href="/transaction/0xabcd" target="_blank">0xabcd</a></div>
     <div style="display: none;">
-      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
-          <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
+      <div class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
+          <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
+          <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
         </svg>
-        <div class="v-progress-circular__info"></div>
+        <!---->
       </div>Waiting for receipt...
     </div>
-    <div class="mt-1" style="display: none;">
-      Status: Failed
-      <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-check-circle theme--light success--text text--lighten-1" style="font-size: 16px; display: none;"></i> <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-alert-circle theme--light error--text text--lighten-1" style="font-size: 16px;"></i>
-    </div>
-    <div style="display: none;">
-      Couldn't get receipt.
-    </div>
+    <div class="mt-1" style="display: none;"> Status: Failed <i class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success-lighten-1 mr-2 align-with-text" aria-hidden="true" style="display: none;"></i><i class="mdi-alert-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-error-lighten-1 mr-2 align-with-text" aria-hidden="true"></i></div>
+    <div style="display: none;"> Couldn't get receipt. </div>
   </div>
-  <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
+  <hr class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator">
   <div class="col-4 px-0 py-1">
-    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+    <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field">
+      <!---->
       <div class="v-input__control">
-        <div class="v-input__slot">
-          <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-          </fieldset>
-          <div class="v-text-field__slot"><label for="input-109" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-109" type="number"></div>
+        <div class="v-field v-field--active v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr">
+          <div class="v-field__overlay"></div>
+          <div class="v-field__loader">
+            <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+              <!---->
+              <div class="v-progress-linear__background"></div>
+              <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+              <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                <div class="v-progress-linear__indeterminate">
+                  <div class="v-progress-linear__indeterminate long"></div>
+                  <div class="v-progress-linear__indeterminate short"></div>
+                </div>
+              </transition-stub>
+              <!---->
+            </div>
+          </div>
+          <!---->
+          <div class="v-field__field" data-no-activator="">
+            <!----><label class="v-label v-field-label" for="input-0">
+              <!---->Value (in Ether)
+            </label>
+            <!----><input size="1" type="number" id="input-0" aria-describedby="input-0-messages" small="" class="v-field__input" value="0">
+            <!---->
+          </div>
+          <!---->
+          <!---->
+          <div class="v-field__outline">
+            <div class="v-field__outline__start"></div>
+            <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
+                <!---->Value (in Ether)
+              </label></div>
+            <div class="v-field__outline__end"></div>
+            <!---->
+          </div>
         </div>
       </div>
+      <!---->
+      <!---->
     </div>
-  </div> <button type="button" class="mt-1 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
-</div>
+  </div><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+    <!----><span class="v-btn__content" data-no-activator="">Query</span>
+    <!---->
+    <!---->
+  </button>
+</div>"
 `;
 
-exports[`ContractWriteMethod.vue Should display only the tx hash when it succeeds without a receipt 1`] = `
-<div>
+exports[`ContractWriteMethod.vue > Should display only the tx hash when it succeeds without a receipt 1`] = `
+"<div>
   <div class="font-weight-bold">build</div>
-  <div class="grey lighten-3 pa-2 mt-1" style="">
+  <div class="bg-grey-lighten-3 pa-2 mt-1" style="">
     <div style="display: none;"></div>
-    <div style="">
-      Tx: <a href="/transaction/0xabcd" target="_blank">0xabcd</a></div>
+    <div style=""> Tx: <a href="/transaction/0xabcd" target="_blank">0xabcd</a></div>
     <div style="display: none;">
-      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
-          <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
+      <div class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
+          <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
+          <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
         </svg>
-        <div class="v-progress-circular__info"></div>
+        <!---->
       </div>Waiting for receipt...
     </div>
-    <div class="mt-1" style="display: none;">
-      Status: Failed
-      <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-check-circle theme--light success--text text--lighten-1" style="font-size: 16px; display: none;"></i> <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-alert-circle theme--light error--text text--lighten-1" style="font-size: 16px;"></i>
-    </div>
-    <div style="">
-      Couldn't get receipt.
-    </div>
+    <div class="mt-1" style="display: none;"> Status: Failed <i class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success-lighten-1 mr-2 align-with-text" aria-hidden="true" style="display: none;"></i><i class="mdi-alert-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-error-lighten-1 mr-2 align-with-text" aria-hidden="true"></i></div>
+    <div style=""> Couldn't get receipt. </div>
   </div>
-  <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
+  <hr class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator">
   <div class="col-4 px-0 py-1">
-    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+    <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field">
+      <!---->
       <div class="v-input__control">
-        <div class="v-input__slot">
-          <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-          </fieldset>
-          <div class="v-text-field__slot"><label for="input-98" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-98" type="number"></div>
+        <div class="v-field v-field--active v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr">
+          <div class="v-field__overlay"></div>
+          <div class="v-field__loader">
+            <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+              <!---->
+              <div class="v-progress-linear__background"></div>
+              <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+              <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                <div class="v-progress-linear__indeterminate">
+                  <div class="v-progress-linear__indeterminate long"></div>
+                  <div class="v-progress-linear__indeterminate short"></div>
+                </div>
+              </transition-stub>
+              <!---->
+            </div>
+          </div>
+          <!---->
+          <div class="v-field__field" data-no-activator="">
+            <!----><label class="v-label v-field-label" for="input-0">
+              <!---->Value (in Ether)
+            </label>
+            <!----><input size="1" type="number" id="input-0" aria-describedby="input-0-messages" small="" class="v-field__input" value="0">
+            <!---->
+          </div>
+          <!---->
+          <!---->
+          <div class="v-field__outline">
+            <div class="v-field__outline__start"></div>
+            <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
+                <!---->Value (in Ether)
+              </label></div>
+            <div class="v-field__outline__end"></div>
+            <!---->
+          </div>
         </div>
       </div>
+      <!---->
+      <!---->
     </div>
-  </div> <button type="button" class="mt-1 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
-</div>
+  </div><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+    <!----><span class="v-btn__content" data-no-activator="">Query</span>
+    <!---->
+    <!---->
+  </button>
+</div>"
 `;
 
-exports[`ContractWriteMethod.vue Should display the UI to interact with a method 1`] = `
-<div>
+exports[`ContractWriteMethod.vue > Should display the UI to interact with a method 1`] = `
+"<div>
   <div class="font-weight-bold">build</div>
-  <div class="grey lighten-3 pa-2 mt-1" style="display: none;">
+  <div class="bg-grey-lighten-3 pa-2 mt-1" style="display: none;">
     <div style="display: none;"></div>
+    <div style="display: none;"> Tx: <a href="/transaction/null" target="_blank"></a></div>
     <div style="display: none;">
-      Tx: <a href="/transaction/null" target="_blank"></a></div>
-    <div style="display: none;">
-      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
-          <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
+      <div class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
+          <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
+          <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
         </svg>
-        <div class="v-progress-circular__info"></div>
+        <!---->
       </div>Waiting for receipt...
     </div>
-    <div class="mt-1" style="display: none;">
-      Status: Failed
-      <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-check-circle theme--light success--text text--lighten-1" style="font-size: 16px; display: none;"></i> <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-alert-circle theme--light error--text text--lighten-1" style="font-size: 16px;"></i>
-    </div>
-    <div style="display: none;">
-      Couldn't get receipt.
-    </div>
+    <div class="mt-1" style="display: none;"> Status: Failed <i class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success-lighten-1 mr-2 align-with-text" aria-hidden="true" style="display: none;"></i><i class="mdi-alert-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-error-lighten-1 mr-2 align-with-text" aria-hidden="true"></i></div>
+    <div style="display: none;"> Couldn't get receipt. </div>
   </div>
-  <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
+  <hr class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator">
   <div class="col-4 px-0 py-1">
-    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+    <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field">
+      <!---->
       <div class="v-input__control">
-        <div class="v-input__slot">
-          <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-          </fieldset>
-          <div class="v-text-field__slot"><label for="input-19" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-19" type="number"></div>
+        <div class="v-field v-field--active v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr">
+          <div class="v-field__overlay"></div>
+          <div class="v-field__loader">
+            <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+              <!---->
+              <div class="v-progress-linear__background"></div>
+              <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+              <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                <div class="v-progress-linear__indeterminate">
+                  <div class="v-progress-linear__indeterminate long"></div>
+                  <div class="v-progress-linear__indeterminate short"></div>
+                </div>
+              </transition-stub>
+              <!---->
+            </div>
+          </div>
+          <!---->
+          <div class="v-field__field" data-no-activator="">
+            <!----><label class="v-label v-field-label" for="input-0">
+              <!---->Value (in Ether)
+            </label>
+            <!----><input size="1" type="number" id="input-0" aria-describedby="input-0-messages" small="" class="v-field__input" value="0">
+            <!---->
+          </div>
+          <!---->
+          <!---->
+          <div class="v-field__outline">
+            <div class="v-field__outline__start"></div>
+            <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
+                <!---->Value (in Ether)
+              </label></div>
+            <div class="v-field__outline__end"></div>
+            <!---->
+          </div>
         </div>
       </div>
+      <!---->
+      <!---->
     </div>
-  </div> <button type="button" class="mt-1 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
-</div>
+  </div><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+    <!----><span class="v-btn__content" data-no-activator="">Query</span>
+    <!---->
+    <!---->
+  </button>
+</div>"
 `;
 
-exports[`ContractWriteMethod.vue Should display the formatted error message with the failed tx hash 1`] = `
-<div>
+exports[`ContractWriteMethod.vue > Should display the formatted error message with the failed tx hash 1`] = `
+"<div>
   <div class="font-weight-bold">transfer</div>
-  <div class="v-input py-1 v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+  <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field py-1">
+    <!---->
     <div class="v-input__control">
-      <div class="v-input__slot">
-        <fieldset aria-hidden="true">
-          <legend style="width: -24px;"><span class="notranslate">​</span></legend>
-        </fieldset>
-        <div class="v-text-field__slot"><label for="input-116" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">address to</label><input id="input-116" type="text"></div>
+      <div class="v-field v-field--active v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr">
+        <div class="v-field__overlay"></div>
+        <div class="v-field__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <div class="v-field__field" data-no-activator="">
+          <!----><label class="v-label v-field-label" for="input-0">
+            <!---->address to
+          </label>
+          <!----><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" class="v-field__input" value="0xabcd">
+          <!---->
+        </div>
+        <!---->
+        <!---->
+        <div class="v-field__outline">
+          <div class="v-field__outline__start"></div>
+          <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
+              <!---->address to
+            </label></div>
+          <div class="v-field__outline__end"></div>
+          <!---->
+        </div>
       </div>
     </div>
+    <!---->
+    <!---->
   </div>
-  <div class="v-input py-1 v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+  <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field py-1">
+    <!---->
     <div class="v-input__control">
-      <div class="v-input__slot">
-        <fieldset aria-hidden="true">
-          <legend style="width: -24px;"><span class="notranslate">​</span></legend>
-        </fieldset>
-        <div class="v-text-field__slot"><label for="input-117" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">uint256 amount</label><input id="input-117" type="text"></div>
+      <div class="v-field v-field--active v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr">
+        <div class="v-field__overlay"></div>
+        <div class="v-field__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <div class="v-field__field" data-no-activator="">
+          <!----><label class="v-label v-field-label" for="input-2">
+            <!---->uint256 amount
+          </label>
+          <!----><input size="1" type="text" id="input-2" aria-describedby="input-2-messages" class="v-field__input" value="1234">
+          <!---->
+        </div>
+        <!---->
+        <!---->
+        <div class="v-field__outline">
+          <div class="v-field__outline__start"></div>
+          <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-2">
+              <!---->uint256 amount
+            </label></div>
+          <div class="v-field__outline__end"></div>
+          <!---->
+        </div>
       </div>
     </div>
+    <!---->
+    <!---->
   </div>
-  <div class="grey lighten-3 pa-2 mt-1" style="">
+  <div class="bg-grey-lighten-3 pa-2 mt-1" style="">
     <div style="">Error: InsufficientBalance(uint256 available: 0, uint256 required: 123)</div>
-    <div style="">
-      Tx: <a href="/transaction/0xabcd" target="_blank">0xabcd</a></div>
+    <div style=""> Tx: <a href="/transaction/0xabcd" target="_blank">0xabcd</a></div>
     <div style="display: none;">
-      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
-          <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
+      <div class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
+          <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
+          <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
         </svg>
-        <div class="v-progress-circular__info"></div>
+        <!---->
       </div>Waiting for receipt...
     </div>
-    <div class="mt-1" style="display: none;">
-      Status: Failed
-      <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-check-circle theme--light success--text text--lighten-1" style="font-size: 16px; display: none;"></i> <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-alert-circle theme--light error--text text--lighten-1" style="font-size: 16px;"></i>
-    </div>
-    <div style="display: none;">
-      Couldn't get receipt.
-    </div>
+    <div class="mt-1" style="display: none;"> Status: Failed <i class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success-lighten-1 mr-2 align-with-text" aria-hidden="true" style="display: none;"></i><i class="mdi-alert-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-error-lighten-1 mr-2 align-with-text" aria-hidden="true"></i></div>
+    <div style="display: none;"> Couldn't get receipt. </div>
   </div>
-  <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
+  <hr class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator">
   <div class="col-4 px-0 py-1">
-    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+    <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field">
+      <!---->
       <div class="v-input__control">
-        <div class="v-input__slot">
-          <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-          </fieldset>
-          <div class="v-text-field__slot"><label for="input-122" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-122" type="number"></div>
+        <div class="v-field v-field--active v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr">
+          <div class="v-field__overlay"></div>
+          <div class="v-field__loader">
+            <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+              <!---->
+              <div class="v-progress-linear__background"></div>
+              <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+              <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                <div class="v-progress-linear__indeterminate">
+                  <div class="v-progress-linear__indeterminate long"></div>
+                  <div class="v-progress-linear__indeterminate short"></div>
+                </div>
+              </transition-stub>
+              <!---->
+            </div>
+          </div>
+          <!---->
+          <div class="v-field__field" data-no-activator="">
+            <!----><label class="v-label v-field-label" for="input-4">
+              <!---->Value (in Ether)
+            </label>
+            <!----><input size="1" type="number" id="input-4" aria-describedby="input-4-messages" small="" class="v-field__input" value="0">
+            <!---->
+          </div>
+          <!---->
+          <!---->
+          <div class="v-field__outline">
+            <div class="v-field__outline__start"></div>
+            <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-4">
+                <!---->Value (in Ether)
+              </label></div>
+            <div class="v-field__outline__end"></div>
+            <!---->
+          </div>
         </div>
       </div>
+      <!---->
+      <!---->
     </div>
-  </div> <button type="button" class="mt-1 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
-</div>
+  </div><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+    <!----><span class="v-btn__content" data-no-activator="">Query</span>
+    <!---->
+    <!---->
+  </button>
+</div>"
 `;
 
-exports[`ContractWriteMethod.vue Should display the tx hash and status when it succeeds with a receipt 1`] = `
-<div>
+exports[`ContractWriteMethod.vue > Should display the tx hash and status when it succeeds with a receipt 1`] = `
+"<div>
   <div class="font-weight-bold">build</div>
-  <div class="grey lighten-3 pa-2 mt-1" style="">
+  <div class="bg-grey-lighten-3 pa-2 mt-1" style="">
     <div style="display: none;"></div>
-    <div style="">
-      Tx: <a href="/transaction/0xabcd" target="_blank">0xabcd</a></div>
+    <div style=""> Tx: <a href="/transaction/0xabcd" target="_blank">0xabcd</a></div>
     <div style="display: none;">
-      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
-          <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
+      <div class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
+          <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
+          <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
         </svg>
-        <div class="v-progress-circular__info"></div>
+        <!---->
       </div>Waiting for receipt...
     </div>
-    <div class="mt-1" style="">
-      Status: Succeeded
-      <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-check-circle theme--light success--text text--lighten-1" style="font-size: 16px;"></i> <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-alert-circle theme--light error--text text--lighten-1" style="font-size: 16px; display: none;"></i>
-    </div>
-    <div style="display: none;">
-      Couldn't get receipt.
-    </div>
+    <div class="mt-1" style=""> Status: Succeeded <i class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success-lighten-1 mr-2 align-with-text" aria-hidden="true" style=""></i><i class="mdi-alert-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-error-lighten-1 mr-2 align-with-text" aria-hidden="true" style="display: none;"></i></div>
+    <div style="display: none;"> Couldn't get receipt. </div>
   </div>
-  <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
+  <hr class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator">
   <div class="col-4 px-0 py-1">
-    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+    <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field">
+      <!---->
       <div class="v-input__control">
-        <div class="v-input__slot">
-          <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-          </fieldset>
-          <div class="v-text-field__slot"><label for="input-87" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-87" type="number"></div>
+        <div class="v-field v-field--active v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr">
+          <div class="v-field__overlay"></div>
+          <div class="v-field__loader">
+            <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+              <!---->
+              <div class="v-progress-linear__background"></div>
+              <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+              <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                <div class="v-progress-linear__indeterminate">
+                  <div class="v-progress-linear__indeterminate long"></div>
+                  <div class="v-progress-linear__indeterminate short"></div>
+                </div>
+              </transition-stub>
+              <!---->
+            </div>
+          </div>
+          <!---->
+          <div class="v-field__field" data-no-activator="">
+            <!----><label class="v-label v-field-label" for="input-0">
+              <!---->Value (in Ether)
+            </label>
+            <!----><input size="1" type="number" id="input-0" aria-describedby="input-0-messages" small="" class="v-field__input" value="0">
+            <!---->
+          </div>
+          <!---->
+          <!---->
+          <div class="v-field__outline">
+            <div class="v-field__outline__start"></div>
+            <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
+                <!---->Value (in Ether)
+              </label></div>
+            <div class="v-field__outline__end"></div>
+            <!---->
+          </div>
         </div>
       </div>
+      <!---->
+      <!---->
     </div>
-  </div> <button type="button" class="mt-1 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
-</div>
+  </div><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+    <!----><span class="v-btn__content" data-no-activator="">Query</span>
+    <!---->
+    <!---->
+  </button>
+</div>"
 `;
 
-exports[`ContractWriteMethod.vue Should handle array input properly 1`] = `
-<div>
+exports[`ContractWriteMethod.vue > Should handle array input properly 1`] = `
+"<div>
   <div class="font-weight-bold">reproWriteBug</div>
-  <div class="v-input py-1 v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+  <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field py-1">
+    <!---->
     <div class="v-input__control">
-      <div class="v-input__slot">
-        <fieldset aria-hidden="true">
-          <legend style="width: -24px;"><span class="notranslate">​</span></legend>
-        </fieldset>
-        <div class="v-text-field__slot"><label for="input-71" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">uint256[] values</label><input id="input-71" type="text"></div>
-      </div>
-    </div>
-  </div>
-  <div class="grey lighten-3 pa-2 mt-1" style="">
-    <div style="display: none;"></div>
-    <div style="">
-      Tx: <a href="/transaction/0xabcd" target="_blank">0xabcd</a></div>
-    <div style="display: none;">
-      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
-          <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
-        </svg>
-        <div class="v-progress-circular__info"></div>
-      </div>Waiting for receipt...
-    </div>
-    <div class="mt-1" style="">
-      Status: Succeeded
-      <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-check-circle theme--light success--text text--lighten-1" style="font-size: 16px;"></i> <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-alert-circle theme--light error--text text--lighten-1" style="font-size: 16px; display: none;"></i>
-    </div>
-    <div style="display: none;">
-      Couldn't get receipt.
-    </div>
-  </div>
-  <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
-  <div class="col-4 px-0 py-1">
-    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-      <div class="v-input__control">
-        <div class="v-input__slot">
-          <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-          </fieldset>
-          <div class="v-text-field__slot"><label for="input-76" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-76" type="number"></div>
+      <div class="v-field v-field--active v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr">
+        <div class="v-field__overlay"></div>
+        <div class="v-field__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <div class="v-field__field" data-no-activator="">
+          <!----><label class="v-label v-field-label" for="input-0">
+            <!---->uint256[] values
+          </label>
+          <!----><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" class="v-field__input" value="[1,2]">
+          <!---->
+        </div>
+        <!---->
+        <!---->
+        <div class="v-field__outline">
+          <div class="v-field__outline__start"></div>
+          <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
+              <!---->uint256[] values
+            </label></div>
+          <div class="v-field__outline__end"></div>
+          <!---->
         </div>
       </div>
     </div>
-  </div> <button type="button" class="mt-1 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
-</div>
+    <!---->
+    <!---->
+  </div>
+  <div class="bg-grey-lighten-3 pa-2 mt-1" style="">
+    <div style="display: none;"></div>
+    <div style=""> Tx: <a href="/transaction/0xabcd" target="_blank">0xabcd</a></div>
+    <div style="display: none;">
+      <div class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
+          <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
+          <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
+        </svg>
+        <!---->
+      </div>Waiting for receipt...
+    </div>
+    <div class="mt-1" style=""> Status: Succeeded <i class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success-lighten-1 mr-2 align-with-text" aria-hidden="true" style=""></i><i class="mdi-alert-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-error-lighten-1 mr-2 align-with-text" aria-hidden="true" style="display: none;"></i></div>
+    <div style="display: none;"> Couldn't get receipt. </div>
+  </div>
+  <hr class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator">
+  <div class="col-4 px-0 py-1">
+    <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field">
+      <!---->
+      <div class="v-input__control">
+        <div class="v-field v-field--active v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr">
+          <div class="v-field__overlay"></div>
+          <div class="v-field__loader">
+            <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+              <!---->
+              <div class="v-progress-linear__background"></div>
+              <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+              <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                <div class="v-progress-linear__indeterminate">
+                  <div class="v-progress-linear__indeterminate long"></div>
+                  <div class="v-progress-linear__indeterminate short"></div>
+                </div>
+              </transition-stub>
+              <!---->
+            </div>
+          </div>
+          <!---->
+          <div class="v-field__field" data-no-activator="">
+            <!----><label class="v-label v-field-label" for="input-2">
+              <!---->Value (in Ether)
+            </label>
+            <!----><input size="1" type="number" id="input-2" aria-describedby="input-2-messages" small="" class="v-field__input" value="0">
+            <!---->
+          </div>
+          <!---->
+          <!---->
+          <div class="v-field__outline">
+            <div class="v-field__outline__start"></div>
+            <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-2">
+                <!---->Value (in Ether)
+              </label></div>
+            <div class="v-field__outline__end"></div>
+            <!---->
+          </div>
+        </div>
+      </div>
+      <!---->
+      <!---->
+    </div>
+  </div><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+    <!----><span class="v-btn__content" data-no-activator="">Query</span>
+    <!---->
+    <!---->
+  </button>
+</div>"
 `;
 
-exports[`ContractWriteMethod.vue Should make the UI unavailable if not active flag 1`] = `
-<div>
+exports[`ContractWriteMethod.vue > Should make the UI unavailable if not active flag 1`] = `
+"<div>
   <div class="font-weight-bold">reproWriteBug</div>
-  <div class="v-input py-1 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+  <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--disabled v-text-field py-1">
+    <!---->
     <div class="v-input__control">
-      <div class="v-input__slot">
-        <fieldset aria-hidden="true">
-          <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-        </fieldset>
-        <div class="v-text-field__slot"><label for="input-25" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">uint256[] values</label><input disabled="disabled" id="input-25" type="text"></div>
-      </div>
-    </div>
-  </div>
-  <div class="grey lighten-3 pa-2 mt-1" style="display: none;">
-    <div style="display: none;"></div>
-    <div style="display: none;">
-      Tx: <a href="/transaction/null" target="_blank"></a></div>
-    <div style="display: none;">
-      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
-          <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
-        </svg>
-        <div class="v-progress-circular__info"></div>
-      </div>Waiting for receipt...
-    </div>
-    <div class="mt-1" style="display: none;">
-      Status: Failed
-      <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-check-circle theme--light success--text text--lighten-1" style="font-size: 16px; display: none;"></i> <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-alert-circle theme--light error--text text--lighten-1" style="font-size: 16px;"></i>
-    </div>
-    <div style="display: none;">
-      Couldn't get receipt.
-    </div>
-  </div>
-  <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
-  <div class="col-4 px-0 py-1">
-    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-      <div class="v-input__control">
-        <div class="v-input__slot">
-          <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-          </fieldset>
-          <div class="v-text-field__slot"><label for="input-30" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-30" type="number"></div>
+      <div class="v-field v-field--center-affix v-field--disabled v-field--variant-outlined v-theme--light v-locale--is-ltr">
+        <div class="v-field__overlay"></div>
+        <div class="v-field__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <div class="v-field__field" data-no-activator="">
+          <!----><label class="v-label v-field-label" for="input-0">
+            <!---->uint256[] values
+          </label>
+          <!----><input disabled="" size="1" type="text" id="input-0" aria-describedby="input-0-messages" class="v-field__input">
+          <!---->
+        </div>
+        <!---->
+        <!---->
+        <div class="v-field__outline">
+          <div class="v-field__outline__start"></div>
+          <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
+              <!---->uint256[] values
+            </label></div>
+          <div class="v-field__outline__end"></div>
+          <!---->
         </div>
       </div>
     </div>
-  </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
-</div>
+    <!---->
+    <!---->
+  </div>
+  <div class="bg-grey-lighten-3 pa-2 mt-1" style="display: none;">
+    <div style="display: none;"></div>
+    <div style="display: none;"> Tx: <a href="/transaction/null" target="_blank"></a></div>
+    <div style="display: none;">
+      <div class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
+          <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
+          <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
+        </svg>
+        <!---->
+      </div>Waiting for receipt...
+    </div>
+    <div class="mt-1" style="display: none;"> Status: Failed <i class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success-lighten-1 mr-2 align-with-text" aria-hidden="true" style="display: none;"></i><i class="mdi-alert-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-error-lighten-1 mr-2 align-with-text" aria-hidden="true"></i></div>
+    <div style="display: none;"> Couldn't get receipt. </div>
+  </div>
+  <hr class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator">
+  <div class="col-4 px-0 py-1">
+    <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-input--disabled v-text-field">
+      <!---->
+      <div class="v-input__control">
+        <div class="v-field v-field--active v-field--center-affix v-field--disabled v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr">
+          <div class="v-field__overlay"></div>
+          <div class="v-field__loader">
+            <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+              <!---->
+              <div class="v-progress-linear__background"></div>
+              <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+              <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                <div class="v-progress-linear__indeterminate">
+                  <div class="v-progress-linear__indeterminate long"></div>
+                  <div class="v-progress-linear__indeterminate short"></div>
+                </div>
+              </transition-stub>
+              <!---->
+            </div>
+          </div>
+          <!---->
+          <div class="v-field__field" data-no-activator="">
+            <!----><label class="v-label v-field-label" for="input-2">
+              <!---->Value (in Ether)
+            </label>
+            <!----><input disabled="" size="1" type="number" id="input-2" aria-describedby="input-2-messages" small="" class="v-field__input" value="0">
+            <!---->
+          </div>
+          <!---->
+          <!---->
+          <div class="v-field__outline">
+            <div class="v-field__outline__start"></div>
+            <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-2">
+                <!---->Value (in Ether)
+              </label></div>
+            <div class="v-field__outline__end"></div>
+            <!---->
+          </div>
+        </div>
+      </div>
+      <!---->
+      <!---->
+    </div>
+  </div><button type="button" class="v-btn v-btn--disabled v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat mt-1" disabled=""><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+    <!----><span class="v-btn__content" data-no-activator="">Query</span>
+    <!---->
+    <!---->
+  </button>
+</div>"
 `;
 
-exports[`ContractWriteMethod.vue Should send the transaction with Metamask if senderMode is metamask 1`] = `
-<div>
+exports[`ContractWriteMethod.vue > Should send the transaction with Metamask if senderMode is metamask 1`] = `
+"<div>
   <div class="font-weight-bold">build</div>
-  <div class="grey lighten-3 pa-2 mt-1" style="">
+  <div class="bg-grey-lighten-3 pa-2 mt-1" style="">
     <div style="display: none;"></div>
-    <div style="">
-      Tx: <a href="/transaction/0x1234" target="_blank">0x1234</a></div>
+    <div style=""> Tx: <a href="/transaction/0x1234" target="_blank">0x1234</a></div>
     <div style="display: none;">
-      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
-          <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
+      <div class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
+          <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
+          <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
         </svg>
-        <div class="v-progress-circular__info"></div>
+        <!---->
       </div>Waiting for receipt...
     </div>
-    <div class="mt-1" style="display: none;">
-      Status: Failed
-      <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-check-circle theme--light success--text text--lighten-1" style="font-size: 16px; display: none;"></i> <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-alert-circle theme--light error--text text--lighten-1" style="font-size: 16px;"></i>
-    </div>
-    <div style="display: none;">
-      Couldn't get receipt.
-    </div>
+    <div class="mt-1" style="display: none;"> Status: Failed <i class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success-lighten-1 mr-2 align-with-text" aria-hidden="true" style="display: none;"></i><i class="mdi-alert-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-error-lighten-1 mr-2 align-with-text" aria-hidden="true"></i></div>
+    <div style="display: none;"> Couldn't get receipt. </div>
   </div>
-  <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
+  <hr class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator">
   <div class="col-4 px-0 py-1">
-    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+    <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field">
+      <!---->
       <div class="v-input__control">
-        <div class="v-input__slot">
-          <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-          </fieldset>
-          <div class="v-text-field__slot"><label for="input-8" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-8" type="number"></div>
+        <div class="v-field v-field--active v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr">
+          <div class="v-field__overlay"></div>
+          <div class="v-field__loader">
+            <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+              <!---->
+              <div class="v-progress-linear__background"></div>
+              <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+              <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                <div class="v-progress-linear__indeterminate">
+                  <div class="v-progress-linear__indeterminate long"></div>
+                  <div class="v-progress-linear__indeterminate short"></div>
+                </div>
+              </transition-stub>
+              <!---->
+            </div>
+          </div>
+          <!---->
+          <div class="v-field__field" data-no-activator="">
+            <!----><label class="v-label v-field-label" for="input-0">
+              <!---->Value (in Ether)
+            </label>
+            <!----><input size="1" type="number" id="input-0" aria-describedby="input-0-messages" small="" class="v-field__input" value="0">
+            <!---->
+          </div>
+          <!---->
+          <!---->
+          <div class="v-field__outline">
+            <div class="v-field__outline__start"></div>
+            <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
+                <!---->Value (in Ether)
+              </label></div>
+            <div class="v-field__outline__end"></div>
+            <!---->
+          </div>
         </div>
       </div>
+      <!---->
+      <!---->
     </div>
-  </div> <button type="button" class="mt-1 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
-</div>
+  </div><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+    <!----><span class="v-btn__content" data-no-activator="">Query</span>
+    <!---->
+    <!---->
+  </button>
+</div>"
 `;
 
-exports[`ContractWriteMethod.vue Should throw an error for bool type if input is not true or false 1`] = `
-<div>
+exports[`ContractWriteMethod.vue > Should throw an error for bool type if input is not true or false 1`] = `
+"<div>
   <div class="font-weight-bold">boolFun</div>
-  <div class="v-input py-1 v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+  <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field py-1">
+    <!---->
     <div class="v-input__control">
-      <div class="v-input__slot">
-        <fieldset aria-hidden="true">
-          <legend style="width: -24px;"><span class="notranslate">​</span></legend>
-        </fieldset>
-        <div class="v-text-field__slot"><label for="input-60" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">bool boolInp</label><input id="input-60" type="text"></div>
-      </div>
-    </div>
-  </div>
-  <div class="grey lighten-3 pa-2 mt-1" style="">
-    <div style="">Input needs to be 'true' or 'false'</div>
-    <div style="display: none;">
-      Tx: <a href="/transaction/null" target="_blank"></a></div>
-    <div style="display: none;">
-      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
-          <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
-        </svg>
-        <div class="v-progress-circular__info"></div>
-      </div>Waiting for receipt...
-    </div>
-    <div class="mt-1" style="display: none;">
-      Status: Failed
-      <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-check-circle theme--light success--text text--lighten-1" style="font-size: 16px; display: none;"></i> <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-alert-circle theme--light error--text text--lighten-1" style="font-size: 16px;"></i>
-    </div>
-    <div style="display: none;">
-      Couldn't get receipt.
-    </div>
-  </div>
-  <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
-  <div class="col-4 px-0 py-1">
-    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-      <div class="v-input__control">
-        <div class="v-input__slot">
-          <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-          </fieldset>
-          <div class="v-text-field__slot"><label for="input-65" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-65" type="number"></div>
+      <div class="v-field v-field--active v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr">
+        <div class="v-field__overlay"></div>
+        <div class="v-field__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <div class="v-field__field" data-no-activator="">
+          <!----><label class="v-label v-field-label" for="input-0">
+            <!---->bool boolInp
+          </label>
+          <!----><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" class="v-field__input" value="frbbforbuo">
+          <!---->
+        </div>
+        <!---->
+        <!---->
+        <div class="v-field__outline">
+          <div class="v-field__outline__start"></div>
+          <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
+              <!---->bool boolInp
+            </label></div>
+          <div class="v-field__outline__end"></div>
+          <!---->
         </div>
       </div>
     </div>
-  </div> <button type="button" class="mt-1 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
-</div>
+    <!---->
+    <!---->
+  </div>
+  <div class="bg-grey-lighten-3 pa-2 mt-1" style="">
+    <div style="">Input needs to be 'true' or 'false'</div>
+    <div style="display: none;"> Tx: <a href="/transaction/null" target="_blank"></a></div>
+    <div style="display: none;">
+      <div class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
+          <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
+          <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
+        </svg>
+        <!---->
+      </div>Waiting for receipt...
+    </div>
+    <div class="mt-1" style="display: none;"> Status: Failed <i class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success-lighten-1 mr-2 align-with-text" aria-hidden="true" style="display: none;"></i><i class="mdi-alert-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-error-lighten-1 mr-2 align-with-text" aria-hidden="true"></i></div>
+    <div style="display: none;"> Couldn't get receipt. </div>
+  </div>
+  <hr class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator">
+  <div class="col-4 px-0 py-1">
+    <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field">
+      <!---->
+      <div class="v-input__control">
+        <div class="v-field v-field--active v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr">
+          <div class="v-field__overlay"></div>
+          <div class="v-field__loader">
+            <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+              <!---->
+              <div class="v-progress-linear__background"></div>
+              <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+              <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                <div class="v-progress-linear__indeterminate">
+                  <div class="v-progress-linear__indeterminate long"></div>
+                  <div class="v-progress-linear__indeterminate short"></div>
+                </div>
+              </transition-stub>
+              <!---->
+            </div>
+          </div>
+          <!---->
+          <div class="v-field__field" data-no-activator="">
+            <!----><label class="v-label v-field-label" for="input-2">
+              <!---->Value (in Ether)
+            </label>
+            <!----><input size="1" type="number" id="input-2" aria-describedby="input-2-messages" small="" class="v-field__input" value="0">
+            <!---->
+          </div>
+          <!---->
+          <!---->
+          <div class="v-field__outline">
+            <div class="v-field__outline__start"></div>
+            <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-2">
+                <!---->Value (in Ether)
+              </label></div>
+            <div class="v-field__outline__end"></div>
+            <!---->
+          </div>
+        </div>
+      </div>
+      <!---->
+      <!---->
+    </div>
+  </div><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+    <!----><span class="v-btn__content" data-no-activator="">Query</span>
+    <!---->
+    <!---->
+  </button>
+</div>"
 `;

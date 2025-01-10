@@ -35,17 +35,13 @@
 </template>
 <script>
 const ethers = require('ethers');
-import HashLink from './HashLink';
-import FromWei from '../filters/FromWei';
+import HashLink from './HashLink.vue';
 
 export default {
     name: 'TokensBalanceDiff',
     props: ['token', 'balanceChanges', 'blockNumber'],
     components: {
         HashLink
-    },
-    filters: {
-        FromWei
     },
     data: () => ({
         unformatted: false,

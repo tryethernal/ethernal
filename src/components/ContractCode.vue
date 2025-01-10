@@ -7,7 +7,7 @@
             </v-card-text>
         </v-card>
         <template v-else>
-            <template v-if="explorerStore">
+            <template v-if="explorerStore.id">
                 <Contract-Verification-Info v-if="isVerifiedContract" :contract="contract" />
                 <Contract-Verification @contractVerified="contractVerified = true" v-else :address="contract.address" />
             </template>

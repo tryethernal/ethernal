@@ -69,9 +69,9 @@ import { mapStores } from 'pinia';
 import { useExplorerStore } from '../stores/explorer';
 import { useEnvStore } from '../stores/env';
 import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
-import CreateExplorerDexModal from './CreateExplorerDexModal';
-import ExplorerDexSettingsDangerZone from './ExplorerDexSettingsDangerZone';
-import HashLink from './HashLink';
+import CreateExplorerDexModal from './CreateExplorerDexModal.vue';
+import ExplorerDexSettingsDangerZone from './ExplorerDexSettingsDangerZone.vue';
+import HashLink from './HashLink.vue';
 
 export default {
     name: 'ExplorerDexSettings',

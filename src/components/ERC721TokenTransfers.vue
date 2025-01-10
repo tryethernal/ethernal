@@ -15,7 +15,7 @@
 
 <script>
 const moment = require('moment');
-import TokenTransfers from './TokenTransfers';
+import TokenTransfers from './TokenTransfers.vue';
 
 export default {
     name: 'ERC721TokenTransfers',

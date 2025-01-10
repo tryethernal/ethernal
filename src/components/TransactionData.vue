@@ -58,8 +58,8 @@
     </div>
 </template>
 <script>
-import TransactionFunctionCall from './TransactionFunctionCall';
-import TransactionEvent from './TransactionEvent';
+import TransactionFunctionCall from './TransactionFunctionCall.vue';
+import TransactionEvent from './TransactionEvent.vue';
 
 export default {
     name: 'TransactionData',

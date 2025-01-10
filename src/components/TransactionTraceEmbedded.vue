@@ -37,8 +37,6 @@ export default {
                     this.explorerStore.updateExplorer(explorer);
                     this.currentWorkspaceStore.updateCurrentWorkspace({ ...explorer.workspace, firebaseUserId: explorer.admin.firebaseUserId });
 
-                    // Replace with DI
-                    // this.explorerStore.setEmbedded(true);
                     this.$server.getTransaction(hash)
                         .then(({ data: { traceSteps }}) => this.traceSteps = traceSteps || [])
                         .catch(console.log)

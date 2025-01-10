@@ -126,6 +126,7 @@ export default {
             }
             else {
                 this.workspace = { name, rpcServer, settings: {}};
+                this.createWorkspace();
             }
         },
         createWorkspace() {
@@ -166,7 +167,7 @@ export default {
     computed: {
         ...mapStores(useEnvStore, useUserStore),
         isUsingSafari() {
-            return navigator.vendor.match(/apple/i) && !navigator.userAgent.match(/crios/i) && !navigator.userAgent.match(/fxios/i);
+            return !!window.GestureEvent;
         },
     },
     watch: {

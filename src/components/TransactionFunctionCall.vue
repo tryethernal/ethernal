@@ -20,7 +20,7 @@
 import { ethers } from 'ethers';
 const web3 = require('web3');
 import { findAbiForFunction } from '@/lib/abi';
-import FormattedSolVar from './FormattedSolVar';
+import FormattedSolVar from './FormattedSolVar.vue';
 
 export default {
     name: 'TransactionFunctionCall',

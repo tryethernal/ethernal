@@ -1,4 +1,4 @@
-import ethers from 'ethers';
+const ethers = require('ethers');
 import { eToNumber, getSignificantDigitCount } from '../lib/utils';
 
 const BigNumber = ethers.BigNumber;

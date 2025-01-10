@@ -2,14 +2,14 @@
     <v-container fluid>
         <h4>ABI</h4>
         <v-card class="mb-4" :loading="loading">
-            <Import-Artifact-Modal ref="importArtifactModal" v-if="isUserAdmin" />
+            <Import-Artifact-Modal ref="importArtifactModal" v-if="userStore.isAdmin" />
             <v-card-text v-if="isContractVerified" class="pb-0 text-success">
                 <v-icon class="text-success mr-1" size="small">mdi-check-circle</v-icon>Verified contract.
             </v-card-text>
             <v-card-text v-if="contract.abi">
-                An ABI has been uploaded.<span v-if="currentWorkspaceStore.isUserAdmin"> (<a href="#" @click.stop="openImportArtifactModal()">Edit</a>)</span>
+                An ABI has been uploaded.<span v-if="userStore.isAdmin"> (<a href="#" @click.stop="openImportArtifactModal()">Edit</a>)</span>
             </v-card-text>
-            <v-card-text v-if="!contract.abi && isUserAdmin">
+            <v-card-text v-if="!contract.abi && userStore.isAdmin">
                 Upload an ABI to interact with the contract:
                 <ul class="pl-6">
                     <li>For Hardhat projects, you can use our <a href="https://github.com/tryethernal/hardhat-ethernal" target="_blank">plugin</a>.</li>
@@ -17,7 +17,7 @@
                     <li>Or you can manually edit the contract name & ABI <a href="#" @click.stop="openImportArtifactModal()">here</a>.</li>
                 </ul>
             </v-card-text>
-            <v-card-text v-if="!contract.name && !contract.abi && !isUserAdmin">
+            <v-card-text v-if="!contract.name && !contract.abi && !userStore.isAdmin">
                 This contract hasn't been verified yet.
             </v-card-text>
         </v-card>

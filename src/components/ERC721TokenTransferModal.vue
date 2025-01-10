@@ -46,8 +46,8 @@
 import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
 import ERC721_ABI from '../abis/erc721.json';
 import { sendTransaction } from '../lib/metamask';
-import HashLink from './HashLink';
-import Metamask from './Metamask';
+import HashLink from './HashLink.vue';
+import Metamask from './Metamask.vue';
 
 export default {
     name: 'ERC721TokenTransferModal',

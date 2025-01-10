@@ -23,7 +23,6 @@
 </template>
 <script>
 import HashLink from './HashLink.vue';
-import FromWei from '../filters/FromWei.js';
 
 export default {
     name: 'TokenBalances',
@@ -31,16 +30,13 @@ export default {
     components: {
         HashLink
     },
-    filters: {
-        FromWei
-    },
     data: () => ({
         unformatted: false,
         loading: false,
         balances: [],
         headers: [
-            { text: 'Token', value: 'token' },
-            { text: 'Balance', value: 'currentBalance' }
+            { title: 'Token', key: 'token' },
+            { title: 'Balance', key: 'currentBalance' }
         ]
     }),
     mounted() {

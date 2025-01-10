@@ -25,7 +25,7 @@ const ethers = require('ethers');
 import { mapStores } from 'pinia';
 import { useExplorerStore } from '../stores/explorer';
 
-import LineChart from './LineChart';
+import LineChart from './LineChart.vue';
 
 export default {
     name: 'ExplorerFaucetAnalytics',

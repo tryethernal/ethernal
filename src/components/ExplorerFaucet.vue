@@ -1,6 +1,6 @@
 <template>
     <v-container fluid>
-        <template v-if="faucet">
+        <template v-if="faucet.active">
             <v-row>
                 <v-col align="center">
                     <v-icon style="opacity: 0.25;" size="150" color="primary-lighten-1">mdi-faucet</v-icon>
@@ -95,15 +95,14 @@
 </template>
 
 <script>
-const ethers = require('ethers');
+import * as ethers from 'ethers';
 const moment = require('moment');
 import { mapStores, storeToRefs } from 'pinia';
 import { useExplorerStore } from '../stores/explorer';
 
-import ExplorerFaucetAnalytics from './ExplorerFaucetAnalytics';
-import ExplorerFaucetTransactionHistory from './ExplorerFaucetTransactionHistory';
-import HashLink from './HashLink';
-import FromWei from '../filters/FromWei.js';
+import ExplorerFaucetAnalytics from './ExplorerFaucetAnalytics.vue';
+import ExplorerFaucetTransactionHistory from './ExplorerFaucetTransactionHistory.vue';
+import HashLink from './HashLink.vue';
 
 export default{
     name: 'ExplorerFaucet',
@@ -111,9 +110,6 @@ export default{
         HashLink,
         ExplorerFaucetAnalytics,
         ExplorerFaucetTransactionHistory
-    },
-    filters: {
-        FromWei
     },
     data: () => ({
         loading: false,
@@ -132,7 +128,7 @@ export default{
         return { faucet };
     },
     mounted() {
-        if (!this.faucet)
+        if (!this.faucet.active)
             return;
 
         this.refreshFaucetBalance();

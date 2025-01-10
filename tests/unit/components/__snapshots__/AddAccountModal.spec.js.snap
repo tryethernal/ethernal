@@ -246,7 +246,7 @@ exports[`AddAccountModal.vue > Should be able to add an account from an address 
             </div>
             <!---->
             <div class="v-field__field" data-no-activator="">
-              <!----><label class="v-label v-field-label" for="accountAddress" style="">
+              <!----><label class="v-label v-field-label" for="accountAddress">
                 <!---->Account Address*
               </label>
               <!----><input size="1" type="text" id="accountAddress" aria-describedby="accountAddress-messages" required="" class="v-field__input" value="0xBCd4ab34183d3Ff5d071E967d7832822dAA0d8C3">
@@ -256,7 +256,7 @@ exports[`AddAccountModal.vue > Should be able to add an account from an address 
             <!---->
             <div class="v-field__outline">
               <div class="v-field__outline__start"></div>
-              <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="accountAddress" style="">
+              <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="accountAddress">
                   <!---->Account Address*
                 </label></div>
               <div class="v-field__outline__end"></div>

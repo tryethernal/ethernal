@@ -23,6 +23,7 @@
     </span>
 </template>
 <script>
+import { inject } from 'vue';
 import { mapStores } from 'pinia';
 import { useExplorerStore } from '../stores/explorer';
 import { sanitize } from '../lib/utils';
@@ -35,11 +36,11 @@ export default {
         token: null,
         contractName: null,
         verified: false,
-        embedded: false
     }),
-    // setup() {
-    //     this.embedded = inject('embedded');
-    // },
+    setup() {
+        const isEmbedded = inject('isEmbedded', false);
+        return { embedded: !!isEmbedded };
+    },
     watch: {
         hash: {
             immediate: true,
@@ -100,10 +101,8 @@ export default {
             if (this.withName != false && this.explorerStore && this.explorerStore.faucet && this.hash == this.explorerStore.faucet.address)
                 return `${this.explorerStore.token || 'ETH'} faucet`;
             if (this.withName) {
-                if (this.token && this.withTokenName) {
-                    if (this.token.symbol && !this.withTokenName) return this.token.symbol;
-                    if (this.token.name) return this.token.name;
-                }
+                if (this.token && this.token.symbol && !this.withTokenName) return this.token.symbol;
+                if (this.token && this.token.name && this.withTokenName) return this.token.name;
                 return this.contractName ? this.contractName : this.formattedHash;
             }
             return this.formattedHash;

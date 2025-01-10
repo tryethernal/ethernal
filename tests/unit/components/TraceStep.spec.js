@@ -1,22 +1,22 @@
-import flushPromises from 'flush-promises';
-import MockHelper from '../MockHelper';
-
 import TraceStep from '@/components/TraceStep.vue';
 import TraceStepProp from '../fixtures/TraceStepProp.json';
 
 describe('TraceStep.vue', () => {
-    let helper;
-
-    beforeEach(() => {
-        helper = new MockHelper();
-    });
-
     it('Should display the formatted step', () => {
-        const wrapper = helper.mountFn(TraceStep, {
-            propsData: {
+        const wrapper = mount(TraceStep, {
+            props: {
                 step: TraceStepProp
             },
-            stubs: ['Hash-Link']
+            global: {
+                stubs: ['Hash-Link'],
+                plugins: [createTestingPinia({
+                    initialState: {
+                        explorerStore: {
+                            token: 'ETL'
+                        }
+                    }
+                })]
+            }
         });
 
         expect(wrapper.html()).toMatchSnapshot();

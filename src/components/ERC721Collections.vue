@@ -41,7 +41,7 @@
     </v-container>
 </template>
 <script>
-import HashLink from '@/components/HashLink';
+import HashLink from '@/components/HashLink.vue';
 import { formatContractPattern } from '@/lib/utils';
 
 export default {

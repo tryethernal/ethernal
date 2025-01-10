@@ -59,15 +59,15 @@
 <script>
 import { mapStores } from 'pinia';
 import { useEnvStore } from '../stores/env';
-import ExplorerSettings from './ExplorerSettings';
-import ExplorerSync from './ExplorerSync';
-import ExplorerBilling from './ExplorerBilling';
-import ExplorerDomainsList from './ExplorerDomainsList';
-import ExplorerBranding from './ExplorerBranding';
-import ExplorerDangerZone from './ExplorerDangerZone';
+import ExplorerSettings from './ExplorerSettings.vue';
+import ExplorerSync from './ExplorerSync.vue';
+import ExplorerBilling from './ExplorerBilling.vue';
+import ExplorerDomainsList from './ExplorerDomainsList.vue';
+import ExplorerBranding from './ExplorerBranding.vue';
+import ExplorerDangerZone from './ExplorerDangerZone.vue';
 
 export default {
-    name: 'Explorer',
+    name: 'ExplorerGeneral',
     props: ['id', 'sso'],
     components: {
         ExplorerSettings,

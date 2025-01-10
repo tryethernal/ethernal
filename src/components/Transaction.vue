@@ -206,17 +206,17 @@
 
 <script>
 const moment = require('moment');
-const ethers = require('ethers');
+import * as ethers from 'ethers';
 import { mapStores } from 'pinia';
 import { useExplorerStore } from '../stores/explorer';
 import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
-const { getGasPriceFromTransaction } = require('../lib/utils');
-import HashLink from './HashLink';
-import TransactionData from './TransactionData';
-import TraceStep from './TraceStep';
-import TransactionTokenTransfers from './TransactionTokenTransfers';
-import TokensBalanceDiff from './TokensBalanceDiff';
-import CustomField from './CustomField';
+import { getGasPriceFromTransaction } from '../lib/utils';
+import HashLink from './HashLink.vue';
+import TransactionData from './TransactionData.vue';
+import TraceStep from './TraceStep.vue';
+import TransactionTokenTransfers from './TransactionTokenTransfers.vue';
+import TokensBalanceDiff from './TokensBalanceDiff.vue';
+import CustomField from './CustomField.vue';
 
 export default {
     name: 'Transaction',

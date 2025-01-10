@@ -1,238 +1,440 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ExplorerStatus.vue Should not show explorer section 1`] = `
-<div class="container container--fluid">
-  <!---->
-  <h2>RPC</h2>
-  <div class="row mt-2">
-    <div class="col col-3">
-      <div role="alert" class="v-alert v-sheet theme--light elevation-2 v-alert--border v-alert--border-left success--text">
-        <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-check-circle theme--light success--text"></i>
-          <div class="v-alert__content"><small style="position: absolute;">Status</small>
-            <div class="text-right"><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mdi mdi-information theme--light" style="font-size: 16px;"></i><span class="v-tooltip v-tooltip--left"><!----></span></div>
-            <div class="mt-4 text-h4 text-center" style="text-transform: uppercase;">Reachable</div>
+exports[`ExplorerStatus.vue > Should not show explorer section 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated pa-4">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
           </div>
-          <div class="v-alert__border v-alert__border--left success v-alert__border--has-color"></div>
-        </div>
+        </transition-stub>
+        <!---->
       </div>
     </div>
-    <div class="col col-3">
-      <div role="alert" class="v-alert primary--text v-sheet theme--light elevation-2 v-alert--border v-alert--border-left">
-        <div class="v-alert__wrapper">
-          <div class="v-alert__content"><small>Latest Check</small>
-            <div class="mt-4 text-h4 text-center">
-              10:32:45am<br></div>
+    <!---->
+    <!---->
+    <!--v-if-->
+    <div class="mt-4">
+      <h2>RPC Status</h2>
+      <div class="v-row mt-2">
+        <div class="v-col v-col-3">
+          <div class="v-alert v-alert--border v-alert--border-start v-theme--light bg-success v-alert--density-default v-alert--variant-flat success--text" role="alert">
+            <!----><span class="v-alert__underlay"></span>
+            <div class="v-alert__border"></div>
+            <div class="v-alert__prepend"><i class="mdi-check-circle mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="default"></i></div>
+            <div class="v-alert__content">
+              <!---->
+              <!----><small style="position: absolute;">Status</small>
+              <div class="text-right"><i class="mdi-information mdi v-icon notranslate v-theme--light v-icon--size-small" aria-hidden="true" aria-describedby="v-tooltip-0"></i>
+                <!--teleport start-->
+                <!--teleport end-->
+              </div>
+              <div class="mt-4 text-h4" style="text-transform: uppercase;">REACHABLE</div>
+            </div>
+            <!---->
+            <!---->
           </div>
-          <div class="v-alert__border v-alert__border--left v-alert__border--has-color"></div>
         </div>
-      </div>
-    </div>
-  </div>
-</div>
-`;
-
-exports[`ExplorerStatus.vue Should not show integrity checks 1`] = `
-<div class="container container--fluid">
-  <h2>Explorer</h2>
-  <div class="row mt-2">
-    <div class="col col-3">
-      <div role="alert" class="v-alert v-sheet theme--light elevation-2 v-alert--border v-alert--border-left success--text">
-        <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-check-circle theme--light success--text"></i>
-          <div class="v-alert__content"><small style="position: absolute;">Sync Status</small>
-            <div class="text-right"><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mdi mdi-information theme--light" style="font-size: 16px;"></i><span class="v-tooltip v-tooltip--left"><!----></span></div>
-            <div class="mt-4 text-h4 text-center" style="text-transform: uppercase;">healthy</div>
+        <div class="v-col v-col-3">
+          <div class="v-alert v-alert--border v-alert--border-start v-theme--light v-alert--density-default v-alert--variant-tonal text-primary" role="alert">
+            <!----><span class="v-alert__underlay"></span>
+            <div class="v-alert__border"></div>
+            <!---->
+            <div class="v-alert__content">
+              <!---->
+              <!----><small>Latest Check</small>
+              <div class="mt-4 text-h4 text-center">Invalid DateTime<br></div>
+            </div>
+            <!---->
+            <!---->
           </div>
-          <div class="v-alert__border v-alert__border--left success v-alert__border--has-color"></div>
         </div>
       </div>
     </div>
     <!---->
-    <div class="col col-3">
-      <div role="alert" class="v-alert primary--text v-sheet theme--light elevation-2 v-alert--border v-alert--border-left">
-        <div class="v-alert__wrapper">
-          <div class="v-alert__content"><small>Latest Check</small>
-            <div class="mt-4 text-h4 text-center">
-              10:32am<br></div>
-          </div>
-          <div class="v-alert__border v-alert__border--left v-alert__border--has-color"></div>
-        </div>
-      </div>
-    </div>
+    <!----><span class="v-card__underlay"></span>
   </div>
-  <!---->
-</div>
+</div>"
 `;
 
-exports[`ExplorerStatus.vue Should not show rpc section 1`] = `
-<div class="container container--fluid">
-  <h2>Explorer</h2>
-  <div class="row mt-2">
-    <div class="col col-3">
-      <div role="alert" class="v-alert v-sheet theme--light elevation-2 v-alert--border v-alert--border-left success--text">
-        <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-check-circle theme--light success--text"></i>
-          <div class="v-alert__content"><small style="position: absolute;">Sync Status</small>
-            <div class="text-right"><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mdi mdi-information theme--light" style="font-size: 16px;"></i><span class="v-tooltip v-tooltip--left"><!----></span></div>
-            <div class="mt-4 text-h4 text-center" style="text-transform: uppercase;">healthy</div>
+exports[`ExplorerStatus.vue > Should not show integrity checks 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated pa-4">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
           </div>
-          <div class="v-alert__border v-alert__border--left success v-alert__border--has-color"></div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <h2>Explorer Status</h2>
+    <div class="v-row mt-2">
+      <div class="v-col v-col-2">
+        <div class="v-alert v-alert--border v-alert--border-start v-theme--light bg-success v-alert--density-default v-alert--variant-flat success--text" role="alert">
+          <!----><span class="v-alert__underlay"></span>
+          <div class="v-alert__border"></div>
+          <div class="v-alert__prepend"><i class="mdi-check-circle mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="default"></i></div>
+          <div class="v-alert__content">
+            <!---->
+            <!----><small style="position: absolute;">Sync Status</small>
+            <div class="text-right"><i class="mdi-information mdi v-icon notranslate v-theme--light v-icon--size-small" aria-hidden="true" aria-describedby="v-tooltip-0"></i>
+              <!--teleport start-->
+              <!--teleport end-->
+            </div>
+            <div class="mt-4 text-h4">HEALTHY</div>
+          </div>
+          <!---->
+          <!---->
+        </div>
+      </div>
+      <!--v-if-->
+      <div class="v-col v-col-2">
+        <div class="v-alert v-alert--border v-alert--border-start v-theme--light text-info v-alert--density-default v-alert--variant-tonal" role="alert">
+          <!----><span class="v-alert__underlay"></span>
+          <div class="v-alert__border"></div>
+          <div class="v-alert__prepend"><i class="mdi-information mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="default"></i></div>
+          <div class="v-alert__content">
+            <!---->
+            <!----><small>Latest Check</small>
+            <div class="mt-4 text-h4 text-center">2:33PM<br></div>
+          </div>
+          <!---->
+          <!---->
         </div>
       </div>
     </div>
-    <div class="col col-3">
-      <div role="alert" class="v-alert primary--text v-sheet theme--light elevation-2 v-alert--border v-alert--border-left">
-        <div class="v-alert__wrapper">
-          <div class="v-alert__content"><small style="position: absolute;">Block Integrity</small>
-            <div class="text-right"><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mdi mdi-information theme--light" style="font-size: 16px;"></i><span class="v-tooltip v-tooltip--left"><!----></span></div>
-            <div class="mt-4 text-h4 text-center">0 -&gt; 10</div>
-          </div>
-          <div class="v-alert__border v-alert__border--left v-alert__border--has-color"></div>
-        </div>
-      </div>
-    </div>
-    <div class="col col-3">
-      <div role="alert" class="v-alert primary--text v-sheet theme--light elevation-2 v-alert--border v-alert--border-left">
-        <div class="v-alert__wrapper">
-          <div class="v-alert__content"><small>Latest Check</small>
-            <div class="mt-4 text-h4 text-center">
-              10:32am<br></div>
-          </div>
-          <div class="v-alert__border v-alert__border--left v-alert__border--has-color"></div>
-        </div>
-      </div>
-    </div>
+    <!--v-if-->
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-  <!---->
-</div>
+</div>"
 `;
 
-exports[`ExplorerStatus.vue Should show all statuses 1`] = `
-<div class="container container--fluid">
-  <h2>Explorer</h2>
-  <div class="row mt-2">
-    <div class="col col-3">
-      <div role="alert" class="v-alert v-sheet theme--light elevation-2 v-alert--border v-alert--border-left success--text">
-        <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-check-circle theme--light success--text"></i>
-          <div class="v-alert__content"><small style="position: absolute;">Sync Status</small>
-            <div class="text-right"><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mdi mdi-information theme--light" style="font-size: 16px;"></i><span class="v-tooltip v-tooltip--left"><!----></span></div>
-            <div class="mt-4 text-h4 text-center" style="text-transform: uppercase;">healthy</div>
+exports[`ExplorerStatus.vue > Should not show rpc section 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated pa-4">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
           </div>
-          <div class="v-alert__border v-alert__border--left success v-alert__border--has-color"></div>
-        </div>
+        </transition-stub>
+        <!---->
       </div>
     </div>
-    <div class="col col-3">
-      <div role="alert" class="v-alert primary--text v-sheet theme--light elevation-2 v-alert--border v-alert--border-left">
-        <div class="v-alert__wrapper">
-          <div class="v-alert__content"><small style="position: absolute;">Block Integrity</small>
-            <div class="text-right"><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mdi mdi-information theme--light" style="font-size: 16px;"></i><span class="v-tooltip v-tooltip--left"><!----></span></div>
+    <!---->
+    <!---->
+    <h2>Explorer Status</h2>
+    <div class="v-row mt-2">
+      <div class="v-col v-col-2">
+        <div class="v-alert v-alert--border v-alert--border-start v-theme--light bg-success v-alert--density-default v-alert--variant-flat success--text" role="alert">
+          <!----><span class="v-alert__underlay"></span>
+          <div class="v-alert__border"></div>
+          <div class="v-alert__prepend"><i class="mdi-check-circle mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="default"></i></div>
+          <div class="v-alert__content">
+            <!---->
+            <!----><small style="position: absolute;">Sync Status</small>
+            <div class="text-right"><i class="mdi-information mdi v-icon notranslate v-theme--light v-icon--size-small" aria-hidden="true" aria-describedby="v-tooltip-0"></i>
+              <!--teleport start-->
+              <!--teleport end-->
+            </div>
+            <div class="mt-4 text-h4">HEALTHY</div>
+          </div>
+          <!---->
+          <!---->
+        </div>
+      </div>
+      <div class="v-col v-col-4">
+        <div class="v-alert v-alert--border v-alert--border-start v-theme--light text-info v-alert--density-default v-alert--variant-tonal" role="alert">
+          <!----><span class="v-alert__underlay"></span>
+          <div class="v-alert__border"></div>
+          <div class="v-alert__prepend"><i class="mdi-information mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="default"></i></div>
+          <div class="v-alert__content">
+            <!---->
+            <!----><small style="position: absolute;">Block Integrity</small>
+            <div class="text-right"><i class="mdi-information mdi v-icon notranslate v-theme--light v-icon--size-small" aria-hidden="true" aria-describedby="v-tooltip-1"></i>
+              <!--teleport start-->
+              <!--teleport end-->
+            </div>
             <div class="mt-4 text-h4 text-center">0 -&gt; 10</div>
           </div>
-          <div class="v-alert__border v-alert__border--left v-alert__border--has-color"></div>
+          <!---->
+          <!---->
         </div>
       </div>
-    </div>
-    <div class="col col-3">
-      <div role="alert" class="v-alert primary--text v-sheet theme--light elevation-2 v-alert--border v-alert--border-left">
-        <div class="v-alert__wrapper">
-          <div class="v-alert__content"><small>Latest Check</small>
-            <div class="mt-4 text-h4 text-center">
-              10:32am<br></div>
+      <div class="v-col v-col-2">
+        <div class="v-alert v-alert--border v-alert--border-start v-theme--light text-info v-alert--density-default v-alert--variant-tonal" role="alert">
+          <!----><span class="v-alert__underlay"></span>
+          <div class="v-alert__border"></div>
+          <div class="v-alert__prepend"><i class="mdi-information mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="default"></i></div>
+          <div class="v-alert__content">
+            <!---->
+            <!----><small>Latest Check</small>
+            <div class="mt-4 text-h4 text-center">2:33PM<br></div>
           </div>
-          <div class="v-alert__border v-alert__border--left v-alert__border--has-color"></div>
+          <!---->
+          <!---->
         </div>
       </div>
     </div>
+    <!--v-if-->
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-  <h2>RPC</h2>
-  <div class="row mt-2">
-    <div class="col col-3">
-      <div role="alert" class="v-alert v-sheet theme--light elevation-2 v-alert--border v-alert--border-left success--text">
-        <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-check-circle theme--light success--text"></i>
-          <div class="v-alert__content"><small style="position: absolute;">Status</small>
-            <div class="text-right"><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mdi mdi-information theme--light" style="font-size: 16px;"></i><span class="v-tooltip v-tooltip--left"><!----></span></div>
-            <div class="mt-4 text-h4 text-center" style="text-transform: uppercase;">Reachable</div>
-          </div>
-          <div class="v-alert__border v-alert__border--left success v-alert__border--has-color"></div>
-        </div>
-      </div>
-    </div>
-    <div class="col col-3">
-      <div role="alert" class="v-alert primary--text v-sheet theme--light elevation-2 v-alert--border v-alert--border-left">
-        <div class="v-alert__wrapper">
-          <div class="v-alert__content"><small>Latest Check</small>
-            <div class="mt-4 text-h4 text-center">
-              10:32:45am<br></div>
-          </div>
-          <div class="v-alert__border v-alert__border--left v-alert__border--has-color"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+</div>"
 `;
 
-exports[`ExplorerStatus.vue Should show unhealthy statuses 1`] = `
-<div class="container container--fluid">
-  <h2>Explorer</h2>
-  <div class="row mt-2">
-    <div class="col col-3">
-      <div role="alert" class="v-alert v-sheet theme--light elevation-2 v-alert--border v-alert--border-left warning--text">
-        <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-exclamation theme--light warning--text"></i>
-          <div class="v-alert__content"><small style="position: absolute;">Sync Status</small>
-            <div class="text-right"><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mdi mdi-information theme--light" style="font-size: 16px;"></i><span class="v-tooltip v-tooltip--left"><!----></span></div>
-            <div class="mt-4 text-h4 text-center" style="text-transform: uppercase;">recovering</div>
+exports[`ExplorerStatus.vue > Should show all statuses 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated pa-4">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
           </div>
-          <div class="v-alert__border v-alert__border--left warning v-alert__border--has-color"></div>
-        </div>
+        </transition-stub>
+        <!---->
       </div>
     </div>
-    <div class="col col-3">
-      <div role="alert" class="v-alert primary--text v-sheet theme--light elevation-2 v-alert--border v-alert--border-left">
-        <div class="v-alert__wrapper">
-          <div class="v-alert__content"><small style="position: absolute;">Block Integrity</small>
-            <div class="text-right"><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mdi mdi-information theme--light" style="font-size: 16px;"></i><span class="v-tooltip v-tooltip--left"><!----></span></div>
+    <!---->
+    <!---->
+    <h2>Explorer Status</h2>
+    <div class="v-row mt-2">
+      <div class="v-col v-col-2">
+        <div class="v-alert v-alert--border v-alert--border-start v-theme--light bg-success v-alert--density-default v-alert--variant-flat success--text" role="alert">
+          <!----><span class="v-alert__underlay"></span>
+          <div class="v-alert__border"></div>
+          <div class="v-alert__prepend"><i class="mdi-check-circle mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="default"></i></div>
+          <div class="v-alert__content">
+            <!---->
+            <!----><small style="position: absolute;">Sync Status</small>
+            <div class="text-right"><i class="mdi-information mdi v-icon notranslate v-theme--light v-icon--size-small" aria-hidden="true" aria-describedby="v-tooltip-1"></i>
+              <!--teleport start-->
+              <!--teleport end-->
+            </div>
+            <div class="mt-4 text-h4">HEALTHY</div>
+          </div>
+          <!---->
+          <!---->
+        </div>
+      </div>
+      <div class="v-col v-col-4">
+        <div class="v-alert v-alert--border v-alert--border-start v-theme--light text-info v-alert--density-default v-alert--variant-tonal" role="alert">
+          <!----><span class="v-alert__underlay"></span>
+          <div class="v-alert__border"></div>
+          <div class="v-alert__prepend"><i class="mdi-information mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="default"></i></div>
+          <div class="v-alert__content">
+            <!---->
+            <!----><small style="position: absolute;">Block Integrity</small>
+            <div class="text-right"><i class="mdi-information mdi v-icon notranslate v-theme--light v-icon--size-small" aria-hidden="true" aria-describedby="v-tooltip-2"></i>
+              <!--teleport start-->
+              <!--teleport end-->
+            </div>
             <div class="mt-4 text-h4 text-center">0 -&gt; 10</div>
           </div>
-          <div class="v-alert__border v-alert__border--left v-alert__border--has-color"></div>
+          <!---->
+          <!---->
         </div>
       </div>
-    </div>
-    <div class="col col-3">
-      <div role="alert" class="v-alert primary--text v-sheet theme--light elevation-2 v-alert--border v-alert--border-left">
-        <div class="v-alert__wrapper">
-          <div class="v-alert__content"><small>Latest Check</small>
-            <div class="mt-4 text-h4 text-center">
-              10:32am<br></div>
+      <div class="v-col v-col-2">
+        <div class="v-alert v-alert--border v-alert--border-start v-theme--light text-info v-alert--density-default v-alert--variant-tonal" role="alert">
+          <!----><span class="v-alert__underlay"></span>
+          <div class="v-alert__border"></div>
+          <div class="v-alert__prepend"><i class="mdi-information mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="default"></i></div>
+          <div class="v-alert__content">
+            <!---->
+            <!----><small>Latest Check</small>
+            <div class="mt-4 text-h4 text-center">2:33PM<br></div>
           </div>
-          <div class="v-alert__border v-alert__border--left v-alert__border--has-color"></div>
+          <!---->
+          <!---->
         </div>
       </div>
     </div>
+    <div class="mt-4">
+      <h2>RPC Status</h2>
+      <div class="v-row mt-2">
+        <div class="v-col v-col-3">
+          <div class="v-alert v-alert--border v-alert--border-start v-theme--light bg-success v-alert--density-default v-alert--variant-flat success--text" role="alert">
+            <!----><span class="v-alert__underlay"></span>
+            <div class="v-alert__border"></div>
+            <div class="v-alert__prepend"><i class="mdi-check-circle mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="default"></i></div>
+            <div class="v-alert__content">
+              <!---->
+              <!----><small style="position: absolute;">Status</small>
+              <div class="text-right"><i class="mdi-information mdi v-icon notranslate v-theme--light v-icon--size-small" aria-hidden="true" aria-describedby="v-tooltip-0"></i>
+                <!--teleport start-->
+                <!--teleport end-->
+              </div>
+              <div class="mt-4 text-h4" style="text-transform: uppercase;">REACHABLE</div>
+            </div>
+            <!---->
+            <!---->
+          </div>
+        </div>
+        <div class="v-col v-col-3">
+          <div class="v-alert v-alert--border v-alert--border-start v-theme--light v-alert--density-default v-alert--variant-tonal text-primary" role="alert">
+            <!----><span class="v-alert__underlay"></span>
+            <div class="v-alert__border"></div>
+            <!---->
+            <div class="v-alert__content">
+              <!---->
+              <!----><small>Latest Check</small>
+              <div class="mt-4 text-h4 text-center">2:33:37PM<br></div>
+            </div>
+            <!---->
+            <!---->
+          </div>
+        </div>
+      </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-  <h2>RPC</h2>
-  <div class="row mt-2">
-    <div class="col col-3">
-      <div role="alert" class="v-alert v-sheet theme--light elevation-2 v-alert--border v-alert--border-left error--text">
-        <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-alert theme--light error--text"></i>
-          <div class="v-alert__content"><small style="position: absolute;">Status</small>
-            <div class="text-right"><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mdi mdi-information theme--light" style="font-size: 16px;"></i><span class="v-tooltip v-tooltip--left"><!----></span></div>
-            <div class="mt-4 text-h4 text-center" style="text-transform: uppercase;">Unreachable</div>
+</div>"
+`;
+
+exports[`ExplorerStatus.vue > Should show unhealthy statuses 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated pa-4">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
           </div>
-          <div class="v-alert__border v-alert__border--left error v-alert__border--has-color"></div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <h2>Explorer Status</h2>
+    <div class="v-row mt-2">
+      <div class="v-col v-col-2">
+        <div class="v-alert v-alert--border v-alert--border-start v-theme--light bg-warning v-alert--density-default v-alert--variant-flat warning--text" role="alert">
+          <!----><span class="v-alert__underlay"></span>
+          <div class="v-alert__border"></div>
+          <div class="v-alert__prepend"><i class="mdi-alert-circle mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="default"></i></div>
+          <div class="v-alert__content">
+            <!---->
+            <!----><small style="position: absolute;">Sync Status</small>
+            <div class="text-right"><i class="mdi-information mdi v-icon notranslate v-theme--light v-icon--size-small" aria-hidden="true" aria-describedby="v-tooltip-1"></i>
+              <!--teleport start-->
+              <!--teleport end-->
+            </div>
+            <div class="mt-4 text-h4">RECOVERING</div>
+          </div>
+          <!---->
+          <!---->
+        </div>
+      </div>
+      <div class="v-col v-col-4">
+        <div class="v-alert v-alert--border v-alert--border-start v-theme--light text-info v-alert--density-default v-alert--variant-tonal" role="alert">
+          <!----><span class="v-alert__underlay"></span>
+          <div class="v-alert__border"></div>
+          <div class="v-alert__prepend"><i class="mdi-information mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="default"></i></div>
+          <div class="v-alert__content">
+            <!---->
+            <!----><small style="position: absolute;">Block Integrity</small>
+            <div class="text-right"><i class="mdi-information mdi v-icon notranslate v-theme--light v-icon--size-small" aria-hidden="true" aria-describedby="v-tooltip-2"></i>
+              <!--teleport start-->
+              <!--teleport end-->
+            </div>
+            <div class="mt-4 text-h4 text-center">0 -&gt; 10</div>
+          </div>
+          <!---->
+          <!---->
+        </div>
+      </div>
+      <div class="v-col v-col-2">
+        <div class="v-alert v-alert--border v-alert--border-start v-theme--light text-info v-alert--density-default v-alert--variant-tonal" role="alert">
+          <!----><span class="v-alert__underlay"></span>
+          <div class="v-alert__border"></div>
+          <div class="v-alert__prepend"><i class="mdi-information mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="default"></i></div>
+          <div class="v-alert__content">
+            <!---->
+            <!----><small>Latest Check</small>
+            <div class="mt-4 text-h4 text-center">2:33PM<br></div>
+          </div>
+          <!---->
+          <!---->
         </div>
       </div>
     </div>
-    <div class="col col-3">
-      <div role="alert" class="v-alert primary--text v-sheet theme--light elevation-2 v-alert--border v-alert--border-left">
-        <div class="v-alert__wrapper">
-          <div class="v-alert__content"><small>Latest Check</small>
-            <div class="mt-4 text-h4 text-center">
-              10:32:45am<br></div>
+    <div class="mt-4">
+      <h2>RPC Status</h2>
+      <div class="v-row mt-2">
+        <div class="v-col v-col-3">
+          <div class="v-alert v-alert--border v-alert--border-start v-theme--light bg-error v-alert--density-default v-alert--variant-flat error--text" role="alert">
+            <!----><span class="v-alert__underlay"></span>
+            <div class="v-alert__border"></div>
+            <div class="v-alert__prepend"><i class="mdi-close-circle mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="default"></i></div>
+            <div class="v-alert__content">
+              <!---->
+              <!----><small style="position: absolute;">Status</small>
+              <div class="text-right"><i class="mdi-information mdi v-icon notranslate v-theme--light v-icon--size-small" aria-hidden="true" aria-describedby="v-tooltip-0"></i>
+                <!--teleport start-->
+                <!--teleport end-->
+              </div>
+              <div class="mt-4 text-h4" style="text-transform: uppercase;">UNREACHABLE</div>
+            </div>
+            <!---->
+            <!---->
           </div>
-          <div class="v-alert__border v-alert__border--left v-alert__border--has-color"></div>
+        </div>
+        <div class="v-col v-col-3">
+          <div class="v-alert v-alert--border v-alert--border-start v-theme--light v-alert--density-default v-alert--variant-tonal text-primary" role="alert">
+            <!----><span class="v-alert__underlay"></span>
+            <div class="v-alert__border"></div>
+            <!---->
+            <div class="v-alert__content">
+              <!---->
+              <!----><small>Latest Check</small>
+              <div class="mt-4 text-h4 text-center">2:33:37PM<br></div>
+            </div>
+            <!---->
+            <!---->
+          </div>
         </div>
       </div>
     </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-</div>
+</div>"
 `;

@@ -12,7 +12,7 @@
                     </template>
                     <template v-slot:prev></template>
                     <template v-slot:next></template>
-                    <v-alert text type="error" v-if="errorMessage">{{ errorMessage }}</v-alert>
+                    <v-alert class="mb-2" density="compact" text type="error" v-if="errorMessage">{{ errorMessage }}</v-alert>
                     <v-row>
                         <v-col cols="12">
                             <v-select label="Select Existing Workspace" v-model="workspace"
