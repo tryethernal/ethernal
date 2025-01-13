@@ -5,20 +5,23 @@
                 <Add-Account-Modal ref="addAccountModalRef" v-if="userStore.isAdmin" />
                 <Unlock-Account-Modal ref="openUnlockAccountModalRef" v-if="userStore.isAdmin" />
                 <v-data-table-server
+                    class="hide-table-count"
                     :loading="loading"
-                    no-data-text="No Accounts"
+                    no-data-text="No accounts available"
                     :items="accounts"
+                    :items-length="0"
                     :sort-by="[{ key: currentOptions.orderBy, order: currentOptions.order }]"
                     :must-sort="true"
-                    :items-length="accountCount"
-                    :footer-props="{
-                        itemsPerPageOptions: [10, 25, 100]
-                    }"
+                    items-per-page-text="Rows per page:"
+                    last-icon=""
+                    first-icon=""
+                    :items-per-page-options="[
+                        { value: 10, title: '10' },
+                        { value: 25, title: '25' },
+                        { value: 100, title: '100' }
+                    ]"
                     :headers="headers"
                     @update:options="getAccounts">
-                    <template v-slot:no-data>
-                        No accounts founds
-                    </template>
                     <template v-slot:item.address="{ item }">
                         <v-tooltip location="top">
                             <template v-slot:activator="{ props }">

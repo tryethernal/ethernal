@@ -2,20 +2,24 @@
     <v-card>
         <v-card-text>
             <v-data-table-server
+                class="hide-table-count"
                 :loading="loading"
                 :items="transactions"
+                :items-length="0"
                 :sort-by="currentOptions.sortBy"
                 :must-sort="true"
-                :items-length="transactionCount"
                 :headers="headers"
-                :footer-props="{
-                    itemsPerPageOptions: [10, 25, 100]
-                }"
+                items-per-page-text="Rows per page:"
+                no-data-text="No faucet transactions yet"
+                last-icon=""
+                first-icon=""
+                :items-per-page-options="[
+                    { value: 10, title: '10' },
+                    { value: 25, title: '25' },
+                    { value: 100, title: '100' }
+                ]"
                 item-key="transactionHash"
                 @update:options="getTransactions">
-                <template v-slot:no-data>
-                    No transactions yet
-                </template>
                 <template v-slot:item.transactionHash="{ item }">
                     <Hash-Link :type="'transaction'" :hash="item.transactionHash" />
                 </template>

@@ -1,16 +1,23 @@
 <template>
     <v-container fluid>
         <v-data-table-server
+            class="hide-table-count"
             :loading="loading"
             :items="logs"
+            :items-length="0"
             :sort-by="[{ key: currentOptions.orderBy, order: currentOptions.order }]"
             :must-sort="true"
             :sort-desc="true"
-            :items-length="logCount"
             :headers="headers"
-            :footer-props="{
-                itemsPerPageOptions: [10, 25, 100]
-            }"
+            no-data-text="No logs available"
+            items-per-page-text="Rows per page:"
+            last-icon=""
+            first-icon=""
+            :items-per-page-options="[
+                { value: 10, title: '10' },
+                { value: 25, title: '25' },
+                { value: 100, title: '100' }
+            ]"
             item-key="id"
             @update:options="onPagination">
             <template v-slot:item.log="{ item }">

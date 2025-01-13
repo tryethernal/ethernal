@@ -1,7 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`TransactionsList.vue > Should display a message if no transactions 1`] = `
-"<div data-v-40c8aafa="" class="v-table v-table--has-top v-table--has-bottom v-theme--light v-table--density-default v-data-table" footer-props="[object Object]" item-key="hash">
+"<div data-v-40c8aafa="" class="v-table v-table--has-top v-table--has-bottom v-theme--light v-table--density-default v-data-table hide-table-count" item-key="hash">
   <!---->
   <div class="v-table__wrapper">
     <table>
@@ -57,7 +57,7 @@ exports[`TransactionsList.vue > Should display a message if no transactions 1`] 
       <tbody class="v-data-table__tbody" role="rowgroup">
         <!---->
         <tr class="v-data-table-rows-no-data">
-          <td colspan="8"> No transactions found </td>
+          <td colspan="8">No transactions indexed yet</td>
         </tr>
         <!---->
       </tbody>
@@ -126,7 +126,7 @@ exports[`TransactionsList.vue > Should display a message if no transactions 1`] 
       <nav class="v-pagination v-theme--light" role="navigation" aria-label="Pagination Navigation" data-test="v-pagination-root">
         <ul class="v-pagination__list">
           <li class="v-pagination__first" data-test="v-pagination-first"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="First page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-              <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-page-first mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+              <!----><span class="v-btn__content" data-no-activator=""><!----></span>
               <!---->
               <!---->
             </button></li>
@@ -141,7 +141,7 @@ exports[`TransactionsList.vue > Should display a message if no transactions 1`] 
               <!---->
             </button></li>
           <li class="v-pagination__last" data-test="v-pagination-last"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="Last page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-              <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-page-last mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+              <!----><span class="v-btn__content" data-no-activator=""><!----></span>
               <!---->
               <!---->
             </button></li>
@@ -153,7 +153,7 @@ exports[`TransactionsList.vue > Should display a message if no transactions 1`] 
 `;
 
 exports[`TransactionsList.vue > Should display the list 1`] = `
-"<div data-v-40c8aafa="" class="v-table v-table--has-top v-table--has-bottom v-theme--light v-table--density-default v-data-table" footer-props="[object Object]" item-key="hash" transactions="[object Object],[object Object]">
+"<div data-v-40c8aafa="" class="v-table v-table--has-top v-table--has-bottom v-theme--light v-table--density-default v-data-table hide-table-count" item-key="hash" transactions="[object Object],[object Object]">
   <!---->
   <div class="v-table__wrapper">
     <table>
@@ -341,13 +341,13 @@ exports[`TransactionsList.vue > Should display the list 1`] = `
       </div>
     </div>
     <div class="v-data-table-footer__info">
-      <div>1-2 of 2</div>
+      <div>0-0 of 0</div>
     </div>
     <div class="v-data-table-footer__pagination">
       <nav class="v-pagination v-theme--light" role="navigation" aria-label="Pagination Navigation" data-test="v-pagination-root">
         <ul class="v-pagination__list">
           <li class="v-pagination__first" data-test="v-pagination-first"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="First page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-              <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-page-first mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+              <!----><span class="v-btn__content" data-no-activator=""><!----></span>
               <!---->
               <!---->
             </button></li>
@@ -362,7 +362,7 @@ exports[`TransactionsList.vue > Should display the list 1`] = `
               <!---->
             </button></li>
           <li class="v-pagination__last" data-test="v-pagination-last"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="Last page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-              <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-page-last mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+              <!----><span class="v-btn__content" data-no-activator=""><!----></span>
               <!---->
               <!---->
             </button></li>

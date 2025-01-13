@@ -3,7 +3,7 @@
   "version": "3.51.5",
   "private": true,
   "scripts": {
-    "serve": "vite preview",
+    "serve": "vite",
     "build": "vite build",
     "test": "FORCE_COLOR=true vitest run",
     "test:update": "FORCE_COLOR=true vitest run --update",

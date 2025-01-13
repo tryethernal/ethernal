@@ -1,24 +1,27 @@
 <template>
     <v-data-table-server
+        class="hide-table-count"
         :dense="dense"
         :loading="loading"
         :items="transactions"
+        :items-length="0"
         :sort-by="currentOptions.sortBy"
         :must-sort="true"
-        :items-length="transactionCount"
         :headers="headers"
         :hide-default-footer="dense"
         :hide-default-header="dense"
         :row-props="rowClasses"
-        :footer-props="{
-            itemsPerPageOptions: [10, 25, 100]
-        }"
+        no-data-text="No transactions indexed yet"
+        last-icon=""
+        first-icon=""
+        :items-per-page-options="[
+            { value: 10, title: '10' },
+            { value: 25, title: '25' },
+            { value: 100, title: '100' }
+        ]"
         item-key="hash"
         @update:options="getTransactions">
         <template v-if="!withCount" v-slot:[`footer.page-text`]=""></template>
-        <template v-slot:no-data>
-            No transactions found
-        </template>
         <template v-slot:item.hash="{ item }">
             <v-tooltip location="left">
                 <template v-slot:activator="{ props }">

@@ -9,16 +9,22 @@
                     <Remove-Contract-Confirmation-Modal @refresh="getContracts" ref="removeContractConfirmationModal" />
                 </template>
                 <v-data-table-server
+                    class="hide-table-count"
                     :loading="loading"
                     :items="contracts"
+                    :items-length="0"
                     :headers="headers"
                     :sort-by="currentOptions.sortBy"
                     :must-sort="true"
                     :sort-desc="true"
-                    :items-length="contractCount"
-                    :footer-props="{
-                        itemsPerPageOptions: [10, 25, 100]
-                    }"
+                    items-per-page-text="Rows per page:"
+                    last-icon=""
+                    first-icon=""
+                    :items-per-page-options="[
+                        { value: 10, title: '10' },
+                        { value: 25, title: '25' },
+                        { value: 100, title: '100' }
+                    ]"
                     item-key="address"
                     @update:options="getContracts">
                     <template v-slot:top v-if="userStore.isAdmin">

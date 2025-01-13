@@ -7,6 +7,15 @@
         :must-sort="true"
         :items-length="count"
         :hide-default-header="isCompact"
+        items-per-page-text="Rows per page:"
+        no-data-text="No token transfers found"
+        last-icon=""
+        first-icon=""
+        :items-per-page-options="[
+            { value: 10, title: '10' },
+            { value: 25, title: '25' },
+            { value: 100, title: '100' }
+        ]"
         item-key="id"
         :items="transfers"
         @update:options="onPagination">

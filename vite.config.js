@@ -13,7 +13,7 @@ export default ({ mode }) => {
             vue(),
             commonjs(),
             nodePolyfills(),
-            vuetify({ autoImport: true }), // Ensure autoImport is set to true
+            vuetify({ autoImport: true })
         ],
         resolve: {
             alias: {

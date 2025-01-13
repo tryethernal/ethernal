@@ -3,20 +3,24 @@
         <v-card>
             <v-card-text>
                 <v-data-table-server
+                    class="hide-table-count"
                     :loading="loading"
                     :items="tokens"
+                    :items-length="0"
                     :headers="headers"
                     :sort-by="[{ key: currentOptions.orderBy, order: currentOptions.order }]"
                     :must-sort="true"
-                    :items-length="tokenCount"
-                    :footer-props="{
-                        itemsPerPageOptions: [10, 25, 100]
-                    }"
+                    items-per-page-text="Rows per page:"
+                    no-data-text="No ERC-20 tokens found"
+                    last-icon=""
+                    first-icon=""
+                    :items-per-page-options="[
+                        { value: 10, title: '10' },
+                        { value: 25, title: '25' },
+                        { value: 100, title: '100' }
+                    ]"
                     item-key="address"
                     @update:options="getTokens">
-                    <template v-slot:no-data>
-                        No tokens founds
-                    </template>
                     <template v-slot:item.address="{ item }">
                         <Hash-Link :type="'token'" :hash="item.address" :contract="item" />
                     </template>
@@ -48,7 +52,6 @@ export default {
     data: () => ({
         loading: true,
         tokens: [],
-        tokenCount: 0,
         headers: [
             {
                 title: 'Address',
@@ -99,10 +102,7 @@ export default {
             };
 
             this.$server.getContracts(this.currentOptions)
-                .then(({ data }) => {
-                    this.tokens = data.items;
-                    this.tokenCount = data.total;
-                })
+                .then(({ data }) => this.tokens = data.items)
                 .catch(console.log)
                 .finally(() => this.loading = false);
         },

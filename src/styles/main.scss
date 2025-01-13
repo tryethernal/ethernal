@@ -53,3 +53,7 @@ a.underlined {
     white-space: nowrap;
     list-style-type: none;
 }
+
+.hide-table-count .v-data-table-footer__info {
+    display: none !important;
+}

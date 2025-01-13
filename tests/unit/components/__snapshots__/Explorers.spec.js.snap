@@ -178,7 +178,7 @@ exports[`Explorers.vue > Should display settings with all options 1`] = `
         <hr class="v-divider v-theme--light" aria-orientation="horizontal" role="separator">
         <div class="v-data-table-footer">
           <!---->
-          <div class="v-data-table-footer__items-per-page"><span>Items per page:</span>
+          <div class="v-data-table-footer__items-per-page"><span>Rows per page:</span>
             <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field v-select v-select--single v-select--selected">
               <!---->
               <div class="v-input__control">
@@ -236,7 +236,7 @@ exports[`Explorers.vue > Should display settings with all options 1`] = `
             <nav class="v-pagination v-theme--light" role="navigation" aria-label="Pagination Navigation" data-test="v-pagination-root">
               <ul class="v-pagination__list">
                 <li class="v-pagination__first" data-test="v-pagination-first"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="First page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-                    <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-page-first mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+                    <!----><span class="v-btn__content" data-no-activator=""><!----></span>
                     <!---->
                     <!---->
                   </button></li>
@@ -251,7 +251,7 @@ exports[`Explorers.vue > Should display settings with all options 1`] = `
                     <!---->
                   </button></li>
                 <li class="v-pagination__last" data-test="v-pagination-last"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="Last page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-                    <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-page-last mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+                    <!----><span class="v-btn__content" data-no-activator=""><!----></span>
                     <!---->
                     <!---->
                   </button></li>
