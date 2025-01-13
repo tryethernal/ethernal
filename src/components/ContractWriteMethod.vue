@@ -11,6 +11,18 @@
             :disabled="!active"
             :label="inputSignature(input)">
         </v-text-field>
+        <div class="col-4 px-0 py-1">
+            <v-text-field
+                small
+                variant="outlined"
+                density="compact"
+                v-model="valueInEth"
+                type="number"
+                hide-details="auto"
+                :disabled="!active"
+                :label="`Value (in ${currentWorkspaceStore.chain.token})`">
+            </v-text-field>
+        </div>
         <div class="bg-grey-lighten-3 pa-2 mt-1" v-show="result.txHash || result.message">
             <div v-show="result.message">{{ result.message }}</div>
             <div v-show="result.txHash">
@@ -29,18 +41,6 @@
             </div>
         </div>
         <v-divider class="my-2"></v-divider>
-        <div class="col-4 px-0 py-1">
-            <v-text-field
-                small
-                variant="outlined"
-                density="compact"
-                v-model="valueInEth"
-                type="number"
-                hide-details="auto"
-                :disabled="!active"
-                :label="`Value (in ${currentWorkspaceStore.chain.token})`">
-            </v-text-field>
-        </div>
         <v-btn :disabled="!active" v-if="senderMode == 'metamask'" :loading="loading" variant="flat" class="mt-1" @click="sendWithMetamask()">Query</v-btn>
         <v-btn :disabled="!active" v-else :loading="loading" variant="flat" class="mt-1" @click="sendMethod()">Query</v-btn>
     </div>
@@ -50,7 +50,6 @@ const Web3 = require('web3');
 const ethers = require('ethers');
 import { mapStores } from 'pinia';
 import { useCurrentWorkspaceStore } from '@/stores/currentWorkspace';
-import { useExplorerStore } from '@/stores/explorer';
 import { sanitize, processMethodCallParam } from '../lib/utils';
 import { formatErrorFragment } from '../lib/abi';
 
@@ -229,7 +228,7 @@ export default {
         }
     },
     computed: {
-        ...mapStores(useCurrentWorkspaceStore, useExplorerStore),
+        ...mapStores(useCurrentWorkspaceStore),
         value() {
             return this.web3.utils.toWei(this.valueInEth.toString(), 'ether');
         },

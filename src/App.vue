@@ -15,7 +15,7 @@
             </div>
             <v-list-item v-else>
                 <template v-slot:title>
-                    <span class="logo text-accent">{{ explorerStore ? explorerStore.name : 'Ethernal' }}</span>
+                    <span class="logo text-accent">{{ explorerStore.name || 'Ethernal' }}</span>
                 </template>
                 <template v-slot:subtitle>
                     v{{ envStore.version }}
@@ -30,7 +30,7 @@
 
             <v-list density="compact" nav class="side--text">
                 <v-list-item prepend-icon="mdi-chart-box" title="Overview" link :to="'/overview'"></v-list-item>
-                <v-list-item prepend-icon="mdi-account-multiple" title="Accounts" link :to="'/accounts'" v-if="!currentWorkspaceStore.public || currentWorkspaceStore.accounts.length || isUserAdmin"></v-list-item>
+                <v-list-item prepend-icon="mdi-account-multiple" title="Accounts" link :to="'/accounts'" v-if="envStore.isAdmin"></v-list-item>
                 <v-list-item prepend-icon="mdi-view-dashboard" title="Blocks" link :to="'/blocks'"></v-list-item>
                 <v-list-item prepend-icon="mdi-arrow-left-right" title="Transactions" link :to="'/transactions'"></v-list-item>
                 <v-list-item prepend-icon="mdi-file" title="Contracts" link :to="'/contracts'"></v-list-item>
@@ -40,8 +40,8 @@
                 <v-list-item prepend-icon="mdi-faucet" title="Faucet" link :to="'/faucet'" v-if="explorerStore.faucet"></v-list-item>
                 <v-list-item prepend-icon="mdi-swap-horizontal" title="Dex" link :to="'/dex'" v-if="explorerStore.v2Dex"></v-list-item>
                 <v-list-item prepend-icon="mdi-heart-circle" title="Status" link :to="'/status'" v-if="(isUserAdmin && currentWorkspaceStore.public) || currentWorkspaceStore.statusPageEnabled"></v-list-item>
-                <template v-if="isUserAdmin">
-                    <v-divider v-if="isUserAdmin" class="my-4"></v-divider>
+                <template v-if="envStore.isAdmin">
+                    <v-divider class="my-4"></v-divider>
                     <v-list-item prepend-icon="mdi-earth" title="Public Explorers" link :to="'/explorers'"></v-list-item>
                     <v-list-item prepend-icon="mdi-cog" title="Settings" link :to="'/settings?tab=workspace'"></v-list-item>
                 </template>
@@ -52,8 +52,8 @@
                     <v-list-item prepend-icon="arcticons:metamask" title="Add To Metamask" link v-if="ethereum && hasNetworkInfo" @click="addNetworkToMetamask()"></v-list-item>
 
                     <v-list-item v-for="(link, idx) in links" :prepend-icon="link.icon || 'mdi-open-in-new'" title="link.name" target="_blank" :href="link.url" :key="idx"></v-list-item>
-                    <v-list-item prepend-icon="mdi-text-box-multiple" title="Documentation" target="_blank" :href="`https://doc.tryethernal.com`" v-if="!explorerStore"></v-list-item>
-                    <v-list-item prepend-icon="mdi-forum" title="Discord" target="_blank" :href="`https://discord.gg/jEAprf45jj`" v-if="!explorerStore"></v-list-item>
+                    <v-list-item prepend-icon="mdi-text-box-multiple" title="Documentation" target="_blank" :href="`https://doc.tryethernal.com`" v-if="envStore.isAdmin"></v-list-item>
+                    <v-list-item prepend-icon="mdi-forum" title="Discord" target="_blank" :href="`https://discord.gg/jEAprf45jj`" v-if="envStore.isAdmin"></v-list-item>
                     <v-list-item prepend-icon="mdi-feature-search" title="Feature Requests" v-show="prAuthToken" target="_blank" :href="`https://ethernal.productroad.com/company/auth/?token=${prAuthToken}`"></v-list-item>
 
                     <v-list-item class="text-error-darken-3" title="Log Out" link @click="logOut()" v-if="userStore.loggedIn">
@@ -62,7 +62,7 @@
                         </template>
                     </v-list-item>
 
-                    <div class="text-caption text-center font-italic" v-if="explorerStore">
+                    <div class="text-caption text-center font-italic">
                         Powered By <a href="https://tryethernal.com" target="_blank">Ethernal</a>
                     </div>
                 </v-list>
@@ -164,9 +164,10 @@ export default {
                             this.initWorkspace({ ...data.currentWorkspace, firebaseUserId: data.firebaseUserId }) :
                             this.launchOnboarding();
                 })
-                .catch(() => {
+                .catch((error) => {
                     this.isOverlayActive = false;
                     this.routerComponent = 'router-view';
+                    console.log('error', error);
                     this.authStateChanged(null);
                 })
         },
@@ -235,7 +236,8 @@ export default {
 
             this.userStore.updateUser(user);
 
-            if (currentPath != '/auth' && !user && !this.explorerStore) {
+            if (currentPath != '/auth' && !user && this.envStore.isAdmin) {
+                console.log('redirecting to auth');
                 return this.$router.push('/auth');
             }
             if (currentPath == '/auth' && user) {
@@ -309,7 +311,7 @@ export default {
             this.appBarComponent = 'rpc-connector';
             this.routerComponent = 'router-view';
 
-            if (!this.explorerStore && this.envStore.isMarketingEnabled()) {
+            if (this.envStore.isAdmin && this.envStore.isMarketingEnabled) {
                 this.$server.getProductRoadToken().then(res => this.prAuthToken = res.data.token);
                 this.$server.getMarketingFlags().then(({ data: { isRemote }}) => this.isRemote = !!isRemote);
             }
@@ -322,7 +324,6 @@ export default {
             useExplorerStore,
             useUserStore
         ),
-        isUserAdmin() { return this.userStore.isAdmin },
         hasNetworkInfo() {
             return !!(this.explorerStore.name && this.explorerStore.domain && this.explorerStore.token && this.explorerStore.rpcServer);
         },

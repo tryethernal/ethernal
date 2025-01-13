@@ -68,7 +68,6 @@ import { mapStores } from 'pinia';
 
 import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
 import { useUserStore } from '../stores/user';
-import { useExplorerStore } from '../stores/explorer';
 
 import AddAccountModal from './AddAccountModal.vue';
 import UnlockAccountModal from './UnlockAccountModal.vue';
@@ -157,7 +156,7 @@ export default {
         }
     },
     computed: {
-        ...mapStores(useCurrentWorkspaceStore, useUserStore, useExplorerStore),
+        ...mapStores(useCurrentWorkspaceStore, useUserStore),
     }
 }
 </script>

@@ -25,7 +25,7 @@
                     <v-list-subheader class="text-overline">Hash</v-list-subheader>
                     <span style="overflow-wrap: break-word;">{{ block.hash }}</span>
                 </v-col>
-                <template v-if="explorerStore && explorerStore.l1Explorer && block.l1BlockNumber">
+                <template v-if="explorerStore.l1Explorer && block.l1BlockNumber">
                     <v-divider vertical></v-divider>
                     <v-col lg="2" md="12" sm="12">
                         <v-list-subheader class="text-overline">L1 Block</v-list-subheader>

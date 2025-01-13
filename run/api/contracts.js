@@ -409,7 +409,9 @@ router.post('/:address/verify', async (req, res, next) => {
             return managedError(error, req, res);
         }
 
-        res.sendStatus(200);
+        const verifiedContract = await db.getContract(explorer.userId, explorer.workspaceId, address);
+
+        res.status(200).json(verifiedContract.verification);
     } catch(error) {
         unmanagedError(error, req, next);
     }

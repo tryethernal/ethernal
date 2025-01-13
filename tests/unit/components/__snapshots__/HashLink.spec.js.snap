@@ -64,4 +64,4 @@ exports[`HashLink.vue > Should not be copiable if the notCopiable flag is passed
 
 exports[`HashLink.vue > Should not create links 1`] = `"<span><!--v-if-->My Contract<!--v-if--><!--v-if--><!--v-if--></span>"`;
 
-exports[`HashLink.vue > Should not display anything if no hash provided 1`] = `"<span><!--v-if-->ETH faucet<!--v-if--><!--v-if--><!--v-if--></span>"`;
+exports[`HashLink.vue > Should not display anything if no hash provided 1`] = `"<span><!--v-if--><!--v-if--><!--v-if--><!--v-if--></span>"`;

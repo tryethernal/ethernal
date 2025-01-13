@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-alert v-if="contractVerified" text type="success">Contract has been verified successfully!</v-alert>
+        <v-alert class="mb-2" v-if="justVerified" text density="compact" type="success">Contract has been verified successfully!</v-alert>
         <v-card v-if="loading">
             <v-card-text>
                 <v-skeleton-loader class="col-4" type="list-item-three-line"></v-skeleton-loader>
@@ -8,8 +8,8 @@
         </v-card>
         <template v-else>
             <template v-if="explorerStore.id">
-                <Contract-Verification-Info v-if="isVerifiedContract" :contract="contract" />
-                <Contract-Verification @contractVerified="contractVerified = true" v-else :address="contract.address" />
+                <Contract-Verification-Info v-if="!!verificationData" :contract="{ ...contract, verification: verificationData }" />
+                <Contract-Verification @contractVerified="onContractVerified" v-else :address="contract.address" />
             </template>
 
             <v-card class="mb-6">
@@ -55,9 +55,20 @@ export default {
     },
     data: () => ({
         loading: false,
-        contractVerified: false
+        verificationData: null,
+        justVerified: false
     }),
+    mounted() {
+        this.verificationData = this.contract.verification;
+    },
     methods: {
+        onContractVerified(verificationData) {
+            if (!verificationData)
+                return;
+
+            this.verificationData = verificationData;
+            this.justVerified = true;
+        },
         copyBytecode() {
             const webhookField = document.querySelector('#copyBytecode');
             webhookField.setAttribute('type', 'text');
@@ -77,9 +88,6 @@ export default {
     },
     computed: {
         ...mapStores(useExplorerStore),
-        isVerifiedContract() {
-            return this.contract.verification;
-        },
         highlightedAsm() {
             return this.contract.asm && hljs.highlight(this.contract.asm, { language: 'x86asm' }).value
         }

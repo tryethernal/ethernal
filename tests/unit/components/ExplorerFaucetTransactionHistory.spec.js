@@ -18,10 +18,12 @@ describe('ExplorerFaucetTransactionHistory.vue', () => {
                 stubs,
                 plugins: [createTestingPinia({
                     initialState: {
-                        token: 'ETL',
-                        faucet: {
-                            id: 1,
-                            active: true
+                        explorer: {
+                            token: 'ETL',
+                            faucet: {
+                                id: 1,
+                                active: true
+                            }
                         }
                     }
                 })]

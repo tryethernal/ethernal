@@ -29,7 +29,7 @@ const isLoggedIn = () => {
 
 const isPublic = () => {
     const envStore = useEnvStore();
-    return window.location.host != `app.${envStore.mainDomain}`;
+    return !envStore.isAdmin;
 };
 
 const redirectIfLoggedIn = function (to, from, next) {

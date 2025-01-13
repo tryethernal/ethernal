@@ -52,7 +52,7 @@ export default {
                     if (hash == '0x0000000000000000000000000000000000000000')
                         return this.contractName = 'Black Hole';
 
-                if (this.withName != false && this.explorerStore && this.explorerStore.faucet && this.hash == this.explorerStore.faucet.address)
+                if (this.withName != false && this.explorerStore.faucet && this.hash == this.explorerStore.faucet.address)
                     return this.verified = true;
 
                 if (this.contract) {
@@ -98,7 +98,7 @@ export default {
         name() {
             if (this.customLabel)
                 return this.customLabel;
-            if (this.withName != false && this.explorerStore && this.explorerStore.faucet && this.hash == this.explorerStore.faucet.address)
+            if (this.withName != false && this.explorerStore.faucet && this.hash == this.explorerStore.faucet.address)
                 return `${this.explorerStore.token || 'ETH'} faucet`;
             if (this.withName) {
                 if (this.token && this.token.symbol && !this.withTokenName) return this.token.symbol;

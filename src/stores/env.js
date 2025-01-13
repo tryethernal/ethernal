@@ -16,6 +16,7 @@ export const useEnvStore = defineStore('env', {
         isBillingEnabled: !!import.meta.env.VITE_ENABLE_BILLING,
         isMarketingEnabled: !!import.meta.env.VITE_ENABLE_MARKETING,
         apiRoot: import.meta.env.VITE_API_ROOT,
+        isAdmin: location.host === `app.${import.meta.env.VITE_MAIN_DOMAIN}`,
         maxV2DexPairsForTrial: 20,
         nativeTokenAddress: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
         chains: {

@@ -3,6 +3,7 @@ import { defineStore } from 'pinia';
 export const useExplorerStore = defineStore('explorer', {
     state: () => ({
         id: null,
+        slug: null,
         name: null,
         rpcServer: null,
         token: 'ETH',
@@ -12,8 +13,8 @@ export const useExplorerStore = defineStore('explorer', {
         themes: {},
         admin: {},
         workspace: {},
-        faucet: {},
-        v2Dex: {}
+        faucet: null,
+        v2Dex: null
     }),
 
     actions: {

@@ -1,6 +1,6 @@
 <template>
     <v-container fluid>
-        <template v-if="faucet.active">
+        <template v-if="faucet">
             <v-row>
                 <v-col align="center">
                     <v-icon style="opacity: 0.25;" size="150" color="primary-lighten-1">mdi-faucet</v-icon>
@@ -125,10 +125,11 @@ export default{
     setup() {
         const explorerStore = useExplorerStore();
         const { faucet } = storeToRefs(explorerStore);
+
         return { faucet };
     },
     mounted() {
-        if (!this.faucet.active)
+        if (!this.faucet)
             return;
 
         this.refreshFaucetBalance();

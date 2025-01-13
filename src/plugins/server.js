@@ -810,7 +810,7 @@ export default {
             },
 
             getErc721TotalSupply(contractAddress) {
-                if (!explorerStore) {
+                if (!explorerStore.id) {
                     const erc721Connector = new ERC721Connector(currentWorkspaceStore.rpcServer, contractAddress, { metadata: true, enumerable: true });
                     return new Promise((resolve, reject) => {
                         erc721Connector.totalSupply()
@@ -827,7 +827,7 @@ export default {
             },
 
             getErc721TokenByIndex(contractAddress, tokenIndex) {
-                if (!explorerStore) {
+                if (!explorerStore.id) {
                     const erc721Connector = new ERC721Connector(currentWorkspaceStore.rpcServer, contractAddress, { metadata: true, enumerable: true });
                     return erc721Connector.tokenByIndex(tokenIndex)
                         .then(tokenId => {
@@ -847,7 +847,7 @@ export default {
             },
 
             getErc721TokenById(contractAddress, tokenId) {
-                if (!explorerStore) {
+                if (!explorerStore.id) {
                     const erc721Connector = new ERC721Connector(currentWorkspaceStore.rpcServer, contractAddress, { metadata: true, enumerable: true });
                     return new Promise((resolve, reject) => {
                         erc721Connector.fetchTokenById(tokenId)
@@ -865,7 +865,7 @@ export default {
             getErc721Tokens(contractAddress, options, loadingEnabled) {
                 const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, ...options };
 
-                if (!explorerStore || !loadingEnabled) {
+                if (!explorerStore.id || !loadingEnabled) {
                     return new Promise((resolve, reject) => {
                         const erc721Connector = new ERC721Connector(currentWorkspaceStore.rpcServer, contractAddress, { metadata: true, enumerable: true });
                         const promises = [];

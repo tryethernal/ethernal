@@ -102,6 +102,7 @@
 const ethers = require('ethers');
 import { mapStores } from 'pinia';
 import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
+import { useExplorerStore } from '../stores/explorer';
 import CreateExplorerFaucetModal from './CreateExplorerFaucetModal.vue';
 import ExplorerFaucetSettingsDangerZone from './ExplorerFaucetSettingsDangerZone.vue';
 import HashLink from './HashLink.vue';
@@ -185,7 +186,8 @@ export default {
     },
     computed: {
         ...mapStores(
-            useCurrentWorkspaceStore
+            useCurrentWorkspaceStore,
+            useExplorerStore
         ),
         mainExplorerDomain() {
             if (!this.explorer)
@@ -213,7 +215,7 @@ export default {
     },
     watch: {
         faucet() {
-            if (this.explorerStore && this.explorerStore.workspaceId == this.currentWorkspaceStore.id)
+            if (this.explorerStore.workspaceId == this.currentWorkspaceStore.id)
                 this.explorerStore.updateExplorer({ faucet: this.faucet });
         }
     },

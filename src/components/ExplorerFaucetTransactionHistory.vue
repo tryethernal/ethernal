@@ -73,7 +73,6 @@ export default {
             if (this.faucet.address == transaction.from)
                 this.getTransactions(this.currentOptions);
         }, this, this.address);
-
     },
     destroyed() {
         this.pusherUnsubscribe();

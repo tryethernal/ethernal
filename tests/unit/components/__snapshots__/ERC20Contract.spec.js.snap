@@ -110,9 +110,16 @@ exports[`ERC20Contract.vue > Should display contract info 1`] = `
                 <!---->
               </div>
             </div>
+            <div class="v-card-item">
+              <!---->
+              <div class="v-card-item__content">
+                <!---->
+                <div class="v-card-subtitle">Your Balance</div>
+                <!---->
+              </div>
+              <!---->
+            </div>
             <!---->
-            <!---->
-            <div class="v-card-subtitle">Your Balance</div>
             <div class="v-card-text">
               <metamask-stub class="mt-1"></metamask-stub>
             </div>
@@ -127,27 +134,27 @@ exports[`ERC20Contract.vue > Should display contract info 1`] = `
     <div class="v-slide-group v-slide-group--mobile v-tabs v-tabs--horizontal v-tabs--align-tabs-start v-tabs--density-default" tabindex="0" role="tablist">
       <!---->
       <div class="v-slide-group__container">
-        <div class="v-slide-group__content"><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab" tabindex="-1" role="tab" aria-selected="false" id="transactionsTab" value="transactions"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+        <div class="v-slide-group__content"><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab text-medium-emphasis" tabindex="-1" role="tab" aria-selected="false" id="transactionsTab" value="transactions"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
             <!----><span class="v-btn__content" data-no-activator="">Transactions<div class="v-tab__slider"></div></span>
             <!---->
             <!---->
-          </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab" tabindex="-1" role="tab" aria-selected="false" id="transfersTab" value="transfers"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+          </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab text-medium-emphasis" tabindex="-1" role="tab" aria-selected="false" id="transfersTab" value="transfers"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
             <!----><span class="v-btn__content" data-no-activator="">Transfers<div class="v-tab__slider"></div></span>
             <!---->
             <!---->
-          </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab" tabindex="-1" role="tab" aria-selected="false" id="holdersTab" value="holders"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+          </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab text-medium-emphasis" tabindex="-1" role="tab" aria-selected="false" id="holdersTab" value="holders"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
             <!----><span class="v-btn__content" data-no-activator="">Holders<div class="v-tab__slider"></div></span>
             <!---->
             <!---->
-          </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab" tabindex="-1" role="tab" aria-selected="false" id="interactionsTab" value="interactions"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+          </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab text-medium-emphasis" tabindex="-1" role="tab" aria-selected="false" id="interactionsTab" value="interactions"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
             <!----><span class="v-btn__content" data-no-activator="">Read / Write<div class="v-tab__slider"></div></span>
             <!---->
             <!---->
-          </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab" tabindex="-1" role="tab" aria-selected="false" id="codeTab" value="code"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+          </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab text-medium-emphasis" tabindex="-1" role="tab" aria-selected="false" id="codeTab" value="code"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
             <!----><span class="v-btn__content" data-no-activator="">Code<div class="v-tab__slider"></div></span>
             <!---->
             <!---->
-          </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab" tabindex="-1" role="tab" aria-selected="false" id="analyticsTab" value="analytics"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+          </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab text-medium-emphasis" tabindex="-1" role="tab" aria-selected="false" id="analyticsTab" value="analytics"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
             <!----><span class="v-btn__content" data-no-activator="">Analytics<div class="v-tab__slider"></div></span>
             <!---->
             <!---->
@@ -266,9 +273,16 @@ exports[`ERC20Contract.vue > Should display placeholders 1`] = `
                 <!---->
               </div>
             </div>
+            <div class="v-card-item">
+              <!---->
+              <div class="v-card-item__content">
+                <!---->
+                <div class="v-card-subtitle">Your Balance</div>
+                <!---->
+              </div>
+              <!---->
+            </div>
             <!---->
-            <!---->
-            <div class="v-card-subtitle">Your Balance</div>
             <div class="v-card-text">
               <metamask-stub class="mt-1"></metamask-stub>
             </div>
@@ -283,27 +297,27 @@ exports[`ERC20Contract.vue > Should display placeholders 1`] = `
     <div class="v-slide-group v-slide-group--mobile v-tabs v-tabs--horizontal v-tabs--align-tabs-start v-tabs--density-default" tabindex="0" role="tablist">
       <!---->
       <div class="v-slide-group__container">
-        <div class="v-slide-group__content"><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab" tabindex="-1" role="tab" aria-selected="false" id="transactionsTab" value="transactions"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+        <div class="v-slide-group__content"><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab text-medium-emphasis" tabindex="-1" role="tab" aria-selected="false" id="transactionsTab" value="transactions"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
             <!----><span class="v-btn__content" data-no-activator="">Transactions<div class="v-tab__slider"></div></span>
             <!---->
             <!---->
-          </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab" tabindex="-1" role="tab" aria-selected="false" id="transfersTab" value="transfers"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+          </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab text-medium-emphasis" tabindex="-1" role="tab" aria-selected="false" id="transfersTab" value="transfers"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
             <!----><span class="v-btn__content" data-no-activator="">Transfers<div class="v-tab__slider"></div></span>
             <!---->
             <!---->
-          </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab" tabindex="-1" role="tab" aria-selected="false" id="holdersTab" value="holders"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+          </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab text-medium-emphasis" tabindex="-1" role="tab" aria-selected="false" id="holdersTab" value="holders"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
             <!----><span class="v-btn__content" data-no-activator="">Holders<div class="v-tab__slider"></div></span>
             <!---->
             <!---->
-          </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab" tabindex="-1" role="tab" aria-selected="false" id="interactionsTab" value="interactions"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+          </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab text-medium-emphasis" tabindex="-1" role="tab" aria-selected="false" id="interactionsTab" value="interactions"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
             <!----><span class="v-btn__content" data-no-activator="">Read / Write<div class="v-tab__slider"></div></span>
             <!---->
             <!---->
-          </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab" tabindex="-1" role="tab" aria-selected="false" id="codeTab" value="code"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+          </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab text-medium-emphasis" tabindex="-1" role="tab" aria-selected="false" id="codeTab" value="code"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
             <!----><span class="v-btn__content" data-no-activator="">Code<div class="v-tab__slider"></div></span>
             <!---->
             <!---->
-          </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab" tabindex="-1" role="tab" aria-selected="false" id="analyticsTab" value="analytics"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+          </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab text-medium-emphasis" tabindex="-1" role="tab" aria-selected="false" id="analyticsTab" value="analytics"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
             <!----><span class="v-btn__content" data-no-activator="">Analytics<div class="v-tab__slider"></div></span>
             <!---->
             <!---->

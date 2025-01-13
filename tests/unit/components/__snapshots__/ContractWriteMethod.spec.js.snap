@@ -45,21 +45,6 @@ exports[`ContractWriteMethod.vue > Should accept false as an input for bool type
     <!---->
     <!---->
   </div>
-  <div class="bg-grey-lighten-3 pa-2 mt-1" style="">
-    <div style="display: none;"></div>
-    <div style=""> Tx: <a href="/transaction/0xabcd" target="_blank">0xabcd</a></div>
-    <div style="display: none;">
-      <div class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
-          <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
-          <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
-        </svg>
-        <!---->
-      </div>Waiting for receipt...
-    </div>
-    <div class="mt-1" style=""> Status: Succeeded <i class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success-lighten-1 mr-2 align-with-text" aria-hidden="true" style=""></i><i class="mdi-alert-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-error-lighten-1 mr-2 align-with-text" aria-hidden="true" style="display: none;"></i></div>
-    <div style="display: none;"> Couldn't get receipt. </div>
-  </div>
-  <hr class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator">
   <div class="col-4 px-0 py-1">
     <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field">
       <!---->
@@ -103,7 +88,22 @@ exports[`ContractWriteMethod.vue > Should accept false as an input for bool type
       <!---->
       <!---->
     </div>
-  </div><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+  </div>
+  <div class="bg-grey-lighten-3 pa-2 mt-1" style="">
+    <div style="display: none;"></div>
+    <div style=""> Tx: <a href="/transaction/0xabcd" target="_blank">0xabcd</a></div>
+    <div style="display: none;">
+      <div class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
+          <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
+          <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
+        </svg>
+        <!---->
+      </div>Waiting for receipt...
+    </div>
+    <div class="mt-1" style=""> Status: Succeeded <i class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success-lighten-1 mr-2 align-with-text" aria-hidden="true" style=""></i><i class="mdi-alert-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-error-lighten-1 mr-2 align-with-text" aria-hidden="true" style="display: none;"></i></div>
+    <div style="display: none;"> Couldn't get receipt. </div>
+  </div>
+  <hr class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator"><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
     <!----><span class="v-btn__content" data-no-activator="">Query</span>
     <!---->
     <!---->
@@ -156,21 +156,6 @@ exports[`ContractWriteMethod.vue > Should accept true as an input for bool type 
     <!---->
     <!---->
   </div>
-  <div class="bg-grey-lighten-3 pa-2 mt-1" style="">
-    <div style="display: none;"></div>
-    <div style=""> Tx: <a href="/transaction/0xabcd" target="_blank">0xabcd</a></div>
-    <div style="display: none;">
-      <div class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
-          <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
-          <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
-        </svg>
-        <!---->
-      </div>Waiting for receipt...
-    </div>
-    <div class="mt-1" style=""> Status: Succeeded <i class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success-lighten-1 mr-2 align-with-text" aria-hidden="true" style=""></i><i class="mdi-alert-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-error-lighten-1 mr-2 align-with-text" aria-hidden="true" style="display: none;"></i></div>
-    <div style="display: none;"> Couldn't get receipt. </div>
-  </div>
-  <hr class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator">
   <div class="col-4 px-0 py-1">
     <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field">
       <!---->
@@ -214,7 +199,22 @@ exports[`ContractWriteMethod.vue > Should accept true as an input for bool type 
       <!---->
       <!---->
     </div>
-  </div><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+  </div>
+  <div class="bg-grey-lighten-3 pa-2 mt-1" style="">
+    <div style="display: none;"></div>
+    <div style=""> Tx: <a href="/transaction/0xabcd" target="_blank">0xabcd</a></div>
+    <div style="display: none;">
+      <div class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
+          <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
+          <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
+        </svg>
+        <!---->
+      </div>Waiting for receipt...
+    </div>
+    <div class="mt-1" style=""> Status: Succeeded <i class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success-lighten-1 mr-2 align-with-text" aria-hidden="true" style=""></i><i class="mdi-alert-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-error-lighten-1 mr-2 align-with-text" aria-hidden="true" style="display: none;"></i></div>
+    <div style="display: none;"> Couldn't get receipt. </div>
+  </div>
+  <hr class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator"><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
     <!----><span class="v-btn__content" data-no-activator="">Query</span>
     <!---->
     <!---->
@@ -225,6 +225,50 @@ exports[`ContractWriteMethod.vue > Should accept true as an input for bool type 
 exports[`ContractWriteMethod.vue > Should display only the error message if the tx cannot be sent 1`] = `
 "<div>
   <div class="font-weight-bold">build</div>
+  <div class="col-4 px-0 py-1">
+    <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field">
+      <!---->
+      <div class="v-input__control">
+        <div class="v-field v-field--active v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr">
+          <div class="v-field__overlay"></div>
+          <div class="v-field__loader">
+            <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+              <!---->
+              <div class="v-progress-linear__background"></div>
+              <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+              <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                <div class="v-progress-linear__indeterminate">
+                  <div class="v-progress-linear__indeterminate long"></div>
+                  <div class="v-progress-linear__indeterminate short"></div>
+                </div>
+              </transition-stub>
+              <!---->
+            </div>
+          </div>
+          <!---->
+          <div class="v-field__field" data-no-activator="">
+            <!----><label class="v-label v-field-label" for="input-0">
+              <!---->Value (in Ether)
+            </label>
+            <!----><input size="1" type="number" id="input-0" aria-describedby="input-0-messages" small="" class="v-field__input" value="0">
+            <!---->
+          </div>
+          <!---->
+          <!---->
+          <div class="v-field__outline">
+            <div class="v-field__outline__start"></div>
+            <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
+                <!---->Value (in Ether)
+              </label></div>
+            <div class="v-field__outline__end"></div>
+            <!---->
+          </div>
+        </div>
+      </div>
+      <!---->
+      <!---->
+    </div>
+  </div>
   <div class="bg-grey-lighten-3 pa-2 mt-1" style="">
     <div style="">Error: call revert exception</div>
     <div style="display: none;"> Tx: <a href="/transaction/null" target="_blank"></a></div>
@@ -239,7 +283,17 @@ exports[`ContractWriteMethod.vue > Should display only the error message if the 
     <div class="mt-1" style="display: none;"> Status: Failed <i class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success-lighten-1 mr-2 align-with-text" aria-hidden="true" style="display: none;"></i><i class="mdi-alert-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-error-lighten-1 mr-2 align-with-text" aria-hidden="true"></i></div>
     <div style="display: none;"> Couldn't get receipt. </div>
   </div>
-  <hr class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator">
+  <hr class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator"><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+    <!----><span class="v-btn__content" data-no-activator="">Query</span>
+    <!---->
+    <!---->
+  </button>
+</div>"
+`;
+
+exports[`ContractWriteMethod.vue > Should display only the error message if there is no tx hash 1`] = `
+"<div>
+  <div class="font-weight-bold">build</div>
   <div class="col-4 px-0 py-1">
     <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field">
       <!---->
@@ -283,17 +337,7 @@ exports[`ContractWriteMethod.vue > Should display only the error message if the 
       <!---->
       <!---->
     </div>
-  </div><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-    <!----><span class="v-btn__content" data-no-activator="">Query</span>
-    <!---->
-    <!---->
-  </button>
-</div>"
-`;
-
-exports[`ContractWriteMethod.vue > Should display only the error message if there is no tx hash 1`] = `
-"<div>
-  <div class="font-weight-bold">build</div>
+  </div>
   <div class="bg-grey-lighten-3 pa-2 mt-1" style="">
     <div style="">Error: Failed tx</div>
     <div style="display: none;"> Tx: <a href="/transaction/null" target="_blank"></a></div>
@@ -308,7 +352,17 @@ exports[`ContractWriteMethod.vue > Should display only the error message if ther
     <div class="mt-1" style="display: none;"> Status: Failed <i class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success-lighten-1 mr-2 align-with-text" aria-hidden="true" style="display: none;"></i><i class="mdi-alert-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-error-lighten-1 mr-2 align-with-text" aria-hidden="true"></i></div>
     <div style="display: none;"> Couldn't get receipt. </div>
   </div>
-  <hr class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator">
+  <hr class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator"><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+    <!----><span class="v-btn__content" data-no-activator="">Query</span>
+    <!---->
+    <!---->
+  </button>
+</div>"
+`;
+
+exports[`ContractWriteMethod.vue > Should display only the error message with the failed tx hash 1`] = `
+"<div>
+  <div class="font-weight-bold">build</div>
   <div class="col-4 px-0 py-1">
     <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field">
       <!---->
@@ -352,17 +406,7 @@ exports[`ContractWriteMethod.vue > Should display only the error message if ther
       <!---->
       <!---->
     </div>
-  </div><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-    <!----><span class="v-btn__content" data-no-activator="">Query</span>
-    <!---->
-    <!---->
-  </button>
-</div>"
-`;
-
-exports[`ContractWriteMethod.vue > Should display only the error message with the failed tx hash 1`] = `
-"<div>
-  <div class="font-weight-bold">build</div>
+  </div>
   <div class="bg-grey-lighten-3 pa-2 mt-1" style="">
     <div style="">Error: Wrong param.</div>
     <div style=""> Tx: <a href="/transaction/0xabcd" target="_blank">0xabcd</a></div>
@@ -377,7 +421,17 @@ exports[`ContractWriteMethod.vue > Should display only the error message with th
     <div class="mt-1" style="display: none;"> Status: Failed <i class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success-lighten-1 mr-2 align-with-text" aria-hidden="true" style="display: none;"></i><i class="mdi-alert-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-error-lighten-1 mr-2 align-with-text" aria-hidden="true"></i></div>
     <div style="display: none;"> Couldn't get receipt. </div>
   </div>
-  <hr class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator">
+  <hr class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator"><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+    <!----><span class="v-btn__content" data-no-activator="">Query</span>
+    <!---->
+    <!---->
+  </button>
+</div>"
+`;
+
+exports[`ContractWriteMethod.vue > Should display only the tx hash when it succeeds without a receipt 1`] = `
+"<div>
+  <div class="font-weight-bold">build</div>
   <div class="col-4 px-0 py-1">
     <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field">
       <!---->
@@ -421,17 +475,7 @@ exports[`ContractWriteMethod.vue > Should display only the error message with th
       <!---->
       <!---->
     </div>
-  </div><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-    <!----><span class="v-btn__content" data-no-activator="">Query</span>
-    <!---->
-    <!---->
-  </button>
-</div>"
-`;
-
-exports[`ContractWriteMethod.vue > Should display only the tx hash when it succeeds without a receipt 1`] = `
-"<div>
-  <div class="font-weight-bold">build</div>
+  </div>
   <div class="bg-grey-lighten-3 pa-2 mt-1" style="">
     <div style="display: none;"></div>
     <div style=""> Tx: <a href="/transaction/0xabcd" target="_blank">0xabcd</a></div>
@@ -446,7 +490,17 @@ exports[`ContractWriteMethod.vue > Should display only the tx hash when it succe
     <div class="mt-1" style="display: none;"> Status: Failed <i class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success-lighten-1 mr-2 align-with-text" aria-hidden="true" style="display: none;"></i><i class="mdi-alert-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-error-lighten-1 mr-2 align-with-text" aria-hidden="true"></i></div>
     <div style=""> Couldn't get receipt. </div>
   </div>
-  <hr class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator">
+  <hr class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator"><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+    <!----><span class="v-btn__content" data-no-activator="">Query</span>
+    <!---->
+    <!---->
+  </button>
+</div>"
+`;
+
+exports[`ContractWriteMethod.vue > Should display the UI to interact with a method 1`] = `
+"<div>
+  <div class="font-weight-bold">build</div>
   <div class="col-4 px-0 py-1">
     <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field">
       <!---->
@@ -490,17 +544,7 @@ exports[`ContractWriteMethod.vue > Should display only the tx hash when it succe
       <!---->
       <!---->
     </div>
-  </div><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-    <!----><span class="v-btn__content" data-no-activator="">Query</span>
-    <!---->
-    <!---->
-  </button>
-</div>"
-`;
-
-exports[`ContractWriteMethod.vue > Should display the UI to interact with a method 1`] = `
-"<div>
-  <div class="font-weight-bold">build</div>
+  </div>
   <div class="bg-grey-lighten-3 pa-2 mt-1" style="display: none;">
     <div style="display: none;"></div>
     <div style="display: none;"> Tx: <a href="/transaction/null" target="_blank"></a></div>
@@ -515,51 +559,7 @@ exports[`ContractWriteMethod.vue > Should display the UI to interact with a meth
     <div class="mt-1" style="display: none;"> Status: Failed <i class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success-lighten-1 mr-2 align-with-text" aria-hidden="true" style="display: none;"></i><i class="mdi-alert-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-error-lighten-1 mr-2 align-with-text" aria-hidden="true"></i></div>
     <div style="display: none;"> Couldn't get receipt. </div>
   </div>
-  <hr class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator">
-  <div class="col-4 px-0 py-1">
-    <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field">
-      <!---->
-      <div class="v-input__control">
-        <div class="v-field v-field--active v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr">
-          <div class="v-field__overlay"></div>
-          <div class="v-field__loader">
-            <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
-              <!---->
-              <div class="v-progress-linear__background"></div>
-              <div class="v-progress-linear__buffer" style="width: 0%;"></div>
-              <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
-                <div class="v-progress-linear__indeterminate">
-                  <div class="v-progress-linear__indeterminate long"></div>
-                  <div class="v-progress-linear__indeterminate short"></div>
-                </div>
-              </transition-stub>
-              <!---->
-            </div>
-          </div>
-          <!---->
-          <div class="v-field__field" data-no-activator="">
-            <!----><label class="v-label v-field-label" for="input-0">
-              <!---->Value (in Ether)
-            </label>
-            <!----><input size="1" type="number" id="input-0" aria-describedby="input-0-messages" small="" class="v-field__input" value="0">
-            <!---->
-          </div>
-          <!---->
-          <!---->
-          <div class="v-field__outline">
-            <div class="v-field__outline__start"></div>
-            <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
-                <!---->Value (in Ether)
-              </label></div>
-            <div class="v-field__outline__end"></div>
-            <!---->
-          </div>
-        </div>
-      </div>
-      <!---->
-      <!---->
-    </div>
-  </div><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+  <hr class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator"><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
     <!----><span class="v-btn__content" data-no-activator="">Query</span>
     <!---->
     <!---->
@@ -654,21 +654,6 @@ exports[`ContractWriteMethod.vue > Should display the formatted error message wi
     <!---->
     <!---->
   </div>
-  <div class="bg-grey-lighten-3 pa-2 mt-1" style="">
-    <div style="">Error: InsufficientBalance(uint256 available: 0, uint256 required: 123)</div>
-    <div style=""> Tx: <a href="/transaction/0xabcd" target="_blank">0xabcd</a></div>
-    <div style="display: none;">
-      <div class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
-          <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
-          <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
-        </svg>
-        <!---->
-      </div>Waiting for receipt...
-    </div>
-    <div class="mt-1" style="display: none;"> Status: Failed <i class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success-lighten-1 mr-2 align-with-text" aria-hidden="true" style="display: none;"></i><i class="mdi-alert-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-error-lighten-1 mr-2 align-with-text" aria-hidden="true"></i></div>
-    <div style="display: none;"> Couldn't get receipt. </div>
-  </div>
-  <hr class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator">
   <div class="col-4 px-0 py-1">
     <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field">
       <!---->
@@ -712,7 +697,22 @@ exports[`ContractWriteMethod.vue > Should display the formatted error message wi
       <!---->
       <!---->
     </div>
-  </div><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+  </div>
+  <div class="bg-grey-lighten-3 pa-2 mt-1" style="">
+    <div style="">Error: InsufficientBalance(uint256 available: 0, uint256 required: 123)</div>
+    <div style=""> Tx: <a href="/transaction/0xabcd" target="_blank">0xabcd</a></div>
+    <div style="display: none;">
+      <div class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
+          <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
+          <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
+        </svg>
+        <!---->
+      </div>Waiting for receipt...
+    </div>
+    <div class="mt-1" style="display: none;"> Status: Failed <i class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success-lighten-1 mr-2 align-with-text" aria-hidden="true" style="display: none;"></i><i class="mdi-alert-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-error-lighten-1 mr-2 align-with-text" aria-hidden="true"></i></div>
+    <div style="display: none;"> Couldn't get receipt. </div>
+  </div>
+  <hr class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator"><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
     <!----><span class="v-btn__content" data-no-activator="">Query</span>
     <!---->
     <!---->
@@ -723,21 +723,6 @@ exports[`ContractWriteMethod.vue > Should display the formatted error message wi
 exports[`ContractWriteMethod.vue > Should display the tx hash and status when it succeeds with a receipt 1`] = `
 "<div>
   <div class="font-weight-bold">build</div>
-  <div class="bg-grey-lighten-3 pa-2 mt-1" style="">
-    <div style="display: none;"></div>
-    <div style=""> Tx: <a href="/transaction/0xabcd" target="_blank">0xabcd</a></div>
-    <div style="display: none;">
-      <div class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
-          <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
-          <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
-        </svg>
-        <!---->
-      </div>Waiting for receipt...
-    </div>
-    <div class="mt-1" style=""> Status: Succeeded <i class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success-lighten-1 mr-2 align-with-text" aria-hidden="true" style=""></i><i class="mdi-alert-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-error-lighten-1 mr-2 align-with-text" aria-hidden="true" style="display: none;"></i></div>
-    <div style="display: none;"> Couldn't get receipt. </div>
-  </div>
-  <hr class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator">
   <div class="col-4 px-0 py-1">
     <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field">
       <!---->
@@ -781,7 +766,22 @@ exports[`ContractWriteMethod.vue > Should display the tx hash and status when it
       <!---->
       <!---->
     </div>
-  </div><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+  </div>
+  <div class="bg-grey-lighten-3 pa-2 mt-1" style="">
+    <div style="display: none;"></div>
+    <div style=""> Tx: <a href="/transaction/0xabcd" target="_blank">0xabcd</a></div>
+    <div style="display: none;">
+      <div class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
+          <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
+          <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
+        </svg>
+        <!---->
+      </div>Waiting for receipt...
+    </div>
+    <div class="mt-1" style=""> Status: Succeeded <i class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success-lighten-1 mr-2 align-with-text" aria-hidden="true" style=""></i><i class="mdi-alert-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-error-lighten-1 mr-2 align-with-text" aria-hidden="true" style="display: none;"></i></div>
+    <div style="display: none;"> Couldn't get receipt. </div>
+  </div>
+  <hr class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator"><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
     <!----><span class="v-btn__content" data-no-activator="">Query</span>
     <!---->
     <!---->
@@ -834,21 +834,6 @@ exports[`ContractWriteMethod.vue > Should handle array input properly 1`] = `
     <!---->
     <!---->
   </div>
-  <div class="bg-grey-lighten-3 pa-2 mt-1" style="">
-    <div style="display: none;"></div>
-    <div style=""> Tx: <a href="/transaction/0xabcd" target="_blank">0xabcd</a></div>
-    <div style="display: none;">
-      <div class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
-          <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
-          <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
-        </svg>
-        <!---->
-      </div>Waiting for receipt...
-    </div>
-    <div class="mt-1" style=""> Status: Succeeded <i class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success-lighten-1 mr-2 align-with-text" aria-hidden="true" style=""></i><i class="mdi-alert-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-error-lighten-1 mr-2 align-with-text" aria-hidden="true" style="display: none;"></i></div>
-    <div style="display: none;"> Couldn't get receipt. </div>
-  </div>
-  <hr class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator">
   <div class="col-4 px-0 py-1">
     <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field">
       <!---->
@@ -892,7 +877,22 @@ exports[`ContractWriteMethod.vue > Should handle array input properly 1`] = `
       <!---->
       <!---->
     </div>
-  </div><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+  </div>
+  <div class="bg-grey-lighten-3 pa-2 mt-1" style="">
+    <div style="display: none;"></div>
+    <div style=""> Tx: <a href="/transaction/0xabcd" target="_blank">0xabcd</a></div>
+    <div style="display: none;">
+      <div class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
+          <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
+          <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
+        </svg>
+        <!---->
+      </div>Waiting for receipt...
+    </div>
+    <div class="mt-1" style=""> Status: Succeeded <i class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success-lighten-1 mr-2 align-with-text" aria-hidden="true" style=""></i><i class="mdi-alert-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-error-lighten-1 mr-2 align-with-text" aria-hidden="true" style="display: none;"></i></div>
+    <div style="display: none;"> Couldn't get receipt. </div>
+  </div>
+  <hr class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator"><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
     <!----><span class="v-btn__content" data-no-activator="">Query</span>
     <!---->
     <!---->
@@ -945,21 +945,6 @@ exports[`ContractWriteMethod.vue > Should make the UI unavailable if not active 
     <!---->
     <!---->
   </div>
-  <div class="bg-grey-lighten-3 pa-2 mt-1" style="display: none;">
-    <div style="display: none;"></div>
-    <div style="display: none;"> Tx: <a href="/transaction/null" target="_blank"></a></div>
-    <div style="display: none;">
-      <div class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
-          <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
-          <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
-        </svg>
-        <!---->
-      </div>Waiting for receipt...
-    </div>
-    <div class="mt-1" style="display: none;"> Status: Failed <i class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success-lighten-1 mr-2 align-with-text" aria-hidden="true" style="display: none;"></i><i class="mdi-alert-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-error-lighten-1 mr-2 align-with-text" aria-hidden="true"></i></div>
-    <div style="display: none;"> Couldn't get receipt. </div>
-  </div>
-  <hr class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator">
   <div class="col-4 px-0 py-1">
     <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-input--disabled v-text-field">
       <!---->
@@ -1003,20 +988,10 @@ exports[`ContractWriteMethod.vue > Should make the UI unavailable if not active 
       <!---->
       <!---->
     </div>
-  </div><button type="button" class="v-btn v-btn--disabled v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat mt-1" disabled=""><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-    <!----><span class="v-btn__content" data-no-activator="">Query</span>
-    <!---->
-    <!---->
-  </button>
-</div>"
-`;
-
-exports[`ContractWriteMethod.vue > Should send the transaction with Metamask if senderMode is metamask 1`] = `
-"<div>
-  <div class="font-weight-bold">build</div>
-  <div class="bg-grey-lighten-3 pa-2 mt-1" style="">
+  </div>
+  <div class="bg-grey-lighten-3 pa-2 mt-1" style="display: none;">
     <div style="display: none;"></div>
-    <div style=""> Tx: <a href="/transaction/0x1234" target="_blank">0x1234</a></div>
+    <div style="display: none;"> Tx: <a href="/transaction/null" target="_blank"></a></div>
     <div style="display: none;">
       <div class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
           <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
@@ -1028,7 +1003,17 @@ exports[`ContractWriteMethod.vue > Should send the transaction with Metamask if 
     <div class="mt-1" style="display: none;"> Status: Failed <i class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success-lighten-1 mr-2 align-with-text" aria-hidden="true" style="display: none;"></i><i class="mdi-alert-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-error-lighten-1 mr-2 align-with-text" aria-hidden="true"></i></div>
     <div style="display: none;"> Couldn't get receipt. </div>
   </div>
-  <hr class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator">
+  <hr class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator"><button type="button" class="v-btn v-btn--disabled v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat mt-1" disabled=""><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+    <!----><span class="v-btn__content" data-no-activator="">Query</span>
+    <!---->
+    <!---->
+  </button>
+</div>"
+`;
+
+exports[`ContractWriteMethod.vue > Should send the transaction with Metamask if senderMode is metamask 1`] = `
+"<div>
+  <div class="font-weight-bold">build</div>
   <div class="col-4 px-0 py-1">
     <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field">
       <!---->
@@ -1072,7 +1057,22 @@ exports[`ContractWriteMethod.vue > Should send the transaction with Metamask if 
       <!---->
       <!---->
     </div>
-  </div><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+  </div>
+  <div class="bg-grey-lighten-3 pa-2 mt-1" style="">
+    <div style="display: none;"></div>
+    <div style=""> Tx: <a href="/transaction/0x1234" target="_blank">0x1234</a></div>
+    <div style="display: none;">
+      <div class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
+          <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
+          <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
+        </svg>
+        <!---->
+      </div>Waiting for receipt...
+    </div>
+    <div class="mt-1" style="display: none;"> Status: Failed <i class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success-lighten-1 mr-2 align-with-text" aria-hidden="true" style="display: none;"></i><i class="mdi-alert-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-error-lighten-1 mr-2 align-with-text" aria-hidden="true"></i></div>
+    <div style="display: none;"> Couldn't get receipt. </div>
+  </div>
+  <hr class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator"><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
     <!----><span class="v-btn__content" data-no-activator="">Query</span>
     <!---->
     <!---->
@@ -1125,21 +1125,6 @@ exports[`ContractWriteMethod.vue > Should throw an error for bool type if input 
     <!---->
     <!---->
   </div>
-  <div class="bg-grey-lighten-3 pa-2 mt-1" style="">
-    <div style="">Input needs to be 'true' or 'false'</div>
-    <div style="display: none;"> Tx: <a href="/transaction/null" target="_blank"></a></div>
-    <div style="display: none;">
-      <div class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
-          <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
-          <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
-        </svg>
-        <!---->
-      </div>Waiting for receipt...
-    </div>
-    <div class="mt-1" style="display: none;"> Status: Failed <i class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success-lighten-1 mr-2 align-with-text" aria-hidden="true" style="display: none;"></i><i class="mdi-alert-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-error-lighten-1 mr-2 align-with-text" aria-hidden="true"></i></div>
-    <div style="display: none;"> Couldn't get receipt. </div>
-  </div>
-  <hr class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator">
   <div class="col-4 px-0 py-1">
     <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field">
       <!---->
@@ -1183,7 +1168,22 @@ exports[`ContractWriteMethod.vue > Should throw an error for bool type if input 
       <!---->
       <!---->
     </div>
-  </div><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+  </div>
+  <div class="bg-grey-lighten-3 pa-2 mt-1" style="">
+    <div style="">Input needs to be 'true' or 'false'</div>
+    <div style="display: none;"> Tx: <a href="/transaction/null" target="_blank"></a></div>
+    <div style="display: none;">
+      <div class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
+          <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
+          <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
+        </svg>
+        <!---->
+      </div>Waiting for receipt...
+    </div>
+    <div class="mt-1" style="display: none;"> Status: Failed <i class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success-lighten-1 mr-2 align-with-text" aria-hidden="true" style="display: none;"></i><i class="mdi-alert-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-error-lighten-1 mr-2 align-with-text" aria-hidden="true"></i></div>
+    <div style="display: none;"> Couldn't get receipt. </div>
+  </div>
+  <hr class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator"><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
     <!----><span class="v-btn__content" data-no-activator="">Query</span>
     <!---->
     <!---->

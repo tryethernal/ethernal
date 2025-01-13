@@ -40,7 +40,7 @@
                     </v-alert>
                     <h2 class="text-truncate mb-2">Tx {{ transaction.hash }}</h2>
                 </v-col>
-                <template v-if="!explorerStore">
+                <template v-if="!explorerStore.id">
                     <v-spacer></v-spacer>
                     <v-col align="right">
                         <v-progress-circular v-show="processing" indeterminate class="mr-2" size="16" width="2" color="primary"></v-progress-circular>
@@ -145,7 +145,7 @@
                             <div class="text-overline">Gas Limit</div>
                             {{ parseInt(transaction.gasLimit || transaction.block.gasLimit).toLocaleString() }}
                         </v-col>
-                        <v-col v-if="explorerStore && explorerStore.l1Explorer && transaction.block.l1BlockNumber" lg="3" md="6" sm="12">
+                        <v-col v-if="explorerStore.l1Explorer && transaction.block.l1BlockNumber" lg="3" md="6" sm="12">
                             <div class="text-overline">L1 Block</div>
                             <a :href="`${explorerStore.l1Explorer}/block/${transaction.block.l1BlockNumber}`" target="_blank">{{ commify(transaction.block.l1BlockNumber) }}</a>
                         </v-col>
@@ -285,7 +285,7 @@ export default {
             this.server
                 .reprocessTransaction(this.hash)
                 .then(() => {
-                    if (!this.explorerStore)
+                    if (!this.explorerStore.id)
                         this.$server.processTransaction(this.currentWorkspaceStore, this.transaction)
                             .catch(console.log)
                             .finally(() => this.processing = false);

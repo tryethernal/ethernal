@@ -113,13 +113,13 @@
                 </v-row>
 
                 <v-tabs v-model="tab">
-                    <v-tab id="transactionsTab" value="transactions">Transactions</v-tab>
-                    <v-tab id="transfersTab" value="transfers">Transfers</v-tab>
-                    <v-tab id="holdersTab" value="holders">Holders</v-tab>
-                    <v-tab id="galleryTab" value="gallery">Gallery</v-tab>
-                    <v-tab id="interactionsTab" value="interactions">Read / Write</v-tab>
-                    <v-tab id="codeTab" value="code">Code</v-tab>
-                    <v-tab id="analyticsTab" value="analytics">Analytics</v-tab>
+                    <v-tab class="text-medium-emphasis" id="transactionsTab" value="transactions">Transactions</v-tab>
+                    <v-tab class="text-medium-emphasis" id="transfersTab" value="transfers">Transfers</v-tab>
+                    <v-tab class="text-medium-emphasis" id="holdersTab" value="holders">Holders</v-tab>
+                    <v-tab class="text-medium-emphasis" id="galleryTab" value="gallery">Gallery</v-tab>
+                    <v-tab class="text-medium-emphasis" id="interactionsTab" value="interactions">Read / Write</v-tab>
+                    <v-tab class="text-medium-emphasis" id="codeTab" value="code">Code</v-tab>
+                    <v-tab class="text-medium-emphasis" id="analyticsTab" value="analytics">Analytics</v-tab>
                 </v-tabs>
 
                 <v-tabs-window v-model="tab">

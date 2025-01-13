@@ -2,7 +2,7 @@
     <v-card class="mb-6">
         <v-card-title>Contract Verification</v-card-title>
         <v-card-text>
-            <v-alert v-if="verificationErrorMessage" text type="error">{{ verificationErrorMessage }}</v-alert>
+            <v-alert class="mb-2" v-if="verificationErrorMessage" text density="compact" type="error">{{ verificationErrorMessage }}</v-alert>
             <v-form ref="form" v-model="canSubmit">
                 <h4>Compiler Settings</h4>
                 <v-card class="mb-2">
@@ -112,7 +112,7 @@
                                     label="Contract Files *"
                                     prepend-inner-icon="mdi-paperclip"
                                     prepend-icon=""
-                                    @change="onFilesUploaded">
+                                    @update:modelValue="onFilesUploaded">
                                 </v-file-input>
                             </v-col>
                         </v-row>
@@ -187,8 +187,7 @@ import { useExplorerStore } from '../stores/explorer';
 export default {
     name: 'ContractVerification',
     props: ['address'],
-    components: {
-    },
+    emits: ['contractVerified'],
     data: () => ({
         files: [],
         includeNightlyBuilds: false,
@@ -229,7 +228,7 @@ export default {
         loading: false
     }),
     setup(props, { emit }) {
-        const emitContractVerified = () => emit('contractVerified');
+        const emitContractVerified = (data) => emit('contractVerified', data);
 
         return { emitContractVerified };
     },
@@ -296,9 +295,9 @@ export default {
             });
 
             this.$server.verifyContract(this.address, data)
-                .then(() => {
+                .then(({ data }) => {
                     this.verificationSuccess = true;
-                    this.emitContractVerified();
+                    this.emitContractVerified(data);
                 })
                 .catch(({ response: { data }}) => this.verificationErrorMessage =`Verification failed. ${data}`)
                 .finally(() => {

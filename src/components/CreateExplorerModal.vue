@@ -66,7 +66,6 @@
 <script>
 import { mapStores } from 'pinia';
 import { useUserStore } from '../stores/user';
-import { useExplorerStore } from '../stores/explorer';
 import { useEnvStore } from '../stores/env';
 
 import CreateWorkspace from './CreateWorkspace.vue';
@@ -142,7 +141,7 @@ export default {
         }
     },
     computed: {
-        ...mapStores(useUserStore, useExplorerStore, useEnvStore)
+        ...mapStores(useUserStore, useEnvStore)
     }
 }
 </script>

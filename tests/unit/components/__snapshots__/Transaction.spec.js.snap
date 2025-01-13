@@ -7,7 +7,20 @@ exports[`Transaction.vue > Should display parsed error messages 1`] = `
       <!--v-if-->
       <h2 data-v-a8515013="" class="text-truncate mb-2">Tx 0x05d709954d59bfaa43bcf629b0a415d30e56ab1400d96dc7bd0ed1664a702759</h2>
     </div>
-    <!--v-if-->
+    <div data-v-a8515013="" class="v-spacer"></div>
+    <div data-v-a8515013="" class="v-col" align="right">
+      <div data-v-a8515013="" class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px; display: none;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
+          <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
+          <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
+        </svg>
+        <!---->
+      </div><button data-v-a8515013="" type="button" class="v-btn v-btn--elevated v-btn--icon v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-elevated" aria-haspopup="menu" aria-expanded="false" aria-owns="v-menu-0"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+        <!----><span class="v-btn__content" data-no-activator=""><i data-v-a8515013="" class="mdi-dots-vertical mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+        <!---->
+        <!---->
+      </button>
+      <!---->
+    </div>
   </div><span data-v-a8515013="" class="v-chip v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal bg-success mr-2" draggable="false" style="display: none;"><!----><span class="v-chip__underlay"></span>
   <!---->
   <!---->
@@ -106,7 +119,20 @@ exports[`Transaction.vue > Should display raw error messages 1`] = `
       <!--v-if-->
       <h2 data-v-a8515013="" class="text-truncate mb-2">Tx 0x05d709954d59bfaa43bcf629b0a415d30e56ab1400d96dc7bd0ed1664a702759</h2>
     </div>
-    <!--v-if-->
+    <div data-v-a8515013="" class="v-spacer"></div>
+    <div data-v-a8515013="" class="v-col" align="right">
+      <div data-v-a8515013="" class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px; display: none;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
+          <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
+          <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
+        </svg>
+        <!---->
+      </div><button data-v-a8515013="" type="button" class="v-btn v-btn--elevated v-btn--icon v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-elevated" aria-haspopup="menu" aria-expanded="false" aria-owns="v-menu-0"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+        <!----><span class="v-btn__content" data-no-activator=""><i data-v-a8515013="" class="mdi-dots-vertical mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+        <!---->
+        <!---->
+      </button>
+      <!---->
+    </div>
   </div><span data-v-a8515013="" class="v-chip v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal bg-success mr-2" draggable="false" style="display: none;"><!----><span class="v-chip__underlay"></span>
   <!---->
   <!---->
@@ -216,7 +242,20 @@ exports[`Transaction.vue > Should display the transaction when the receipt is no
       </div>
       <h2 data-v-a8515013="" class="text-truncate mb-2">Tx 0x05d709954d59bfaa43bcf629b0a415d30e56ab1400d96dc7bd0ed1664a702759</h2>
     </div>
-    <!--v-if-->
+    <div data-v-a8515013="" class="v-spacer"></div>
+    <div data-v-a8515013="" class="v-col" align="right">
+      <div data-v-a8515013="" class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px; display: none;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
+          <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
+          <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
+        </svg>
+        <!---->
+      </div><button data-v-a8515013="" type="button" class="v-btn v-btn--elevated v-btn--icon v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-elevated" aria-haspopup="menu" aria-expanded="false" aria-owns="v-menu-0"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+        <!----><span class="v-btn__content" data-no-activator=""><i data-v-a8515013="" class="mdi-dots-vertical mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+        <!---->
+        <!---->
+      </button>
+      <!---->
+    </div>
   </div><span data-v-a8515013="" class="v-chip v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal bg-success mr-2" draggable="false" style="display: none;"><!----><span class="v-chip__underlay"></span>
   <!---->
   <!---->
@@ -299,7 +338,20 @@ exports[`Transaction.vue > Should display the transaction when the receipt is no
       </div>
       <h2 data-v-a8515013="" class="text-truncate mb-2">Tx 0x05d709954d59bfaa43bcf629b0a415d30e56ab1400d96dc7bd0ed1664a702759</h2>
     </div>
-    <!--v-if-->
+    <div data-v-a8515013="" class="v-spacer"></div>
+    <div data-v-a8515013="" class="v-col" align="right">
+      <div data-v-a8515013="" class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px; display: none;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
+          <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
+          <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
+        </svg>
+        <!---->
+      </div><button data-v-a8515013="" type="button" class="v-btn v-btn--elevated v-btn--icon v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-elevated" aria-haspopup="menu" aria-expanded="false" aria-owns="v-menu-0"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+        <!----><span class="v-btn__content" data-no-activator=""><i data-v-a8515013="" class="mdi-dots-vertical mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+        <!---->
+        <!---->
+      </button>
+      <!---->
+    </div>
   </div><span data-v-a8515013="" class="v-chip v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal bg-success mr-2" draggable="false" style="display: none;"><!----><span class="v-chip__underlay"></span>
   <!---->
   <!---->

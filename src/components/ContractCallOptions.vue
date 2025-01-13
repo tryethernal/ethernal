@@ -53,7 +53,6 @@
 import { mapStores } from 'pinia';
 import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
 import { useUserStore } from '../stores/user';
-import { useExplorerStore } from '../stores/explorer';
 
 import Metamask from './Metamask.vue';
 
@@ -120,7 +119,7 @@ export default {
         }
     },
     computed: {
-        ...mapStores(useCurrentWorkspaceStore, useUserStore, useExplorerStore),
+        ...mapStores(useCurrentWorkspaceStore, useUserStore),
         displayMetamask() {
             return this.mode === 'metamask';
         }

@@ -96,13 +96,13 @@
 
                             <v-col cols="12" sm="6" lg="6">
                                 <v-card style="height: 100%">
-                                    <v-card-subtitle v-if="metamaskData.account && metamaskData.isReady">
+                                    <template v-slot:subtitle v-if="metamaskData.account && metamaskData.isReady">
                                         <div style="position: absolute;">Your Balance</div>
                                         <div class="text-right" v-if="metamaskData.account">
                                             <Hash-Link :type="'address'" :hash="metamaskData.account" />
                                         </div>
-                                    </v-card-subtitle>
-                                    <v-card-subtitle v-else>Your Balance</v-card-subtitle>
+                                    </template>
+                                    <template v-slot:subtitle v-else>Your Balance</template>
                                     <v-card-text class="text-h3" align="center" v-if="metamaskData.account && metamaskData.isReady">
                                         <v-skeleton-loader v-if="loadingBalance" type="list-item"></v-skeleton-loader>
                                         <template v-else-if="connectedAccountBalance">{{ formatNumber(connectedAccountBalance, { short: true }) }} {{ contract.tokenSymbol }}</template>
@@ -119,12 +119,12 @@
 
                 <div v-if="!loadingContract">
                     <v-tabs v-model="tab">
-                        <v-tab id="transactionsTab" value="transactions">Transactions</v-tab>
-                        <v-tab id="transfersTab" value="transfers">Transfers</v-tab>
-                        <v-tab id="holdersTab" value="holders">Holders</v-tab>
-                        <v-tab id="interactionsTab" value="interactions">Read / Write</v-tab>
-                        <v-tab id="codeTab" value="code">Code</v-tab>
-                        <v-tab id="analyticsTab" value="analytics">Analytics</v-tab>
+                        <v-tab class="text-medium-emphasis" id="transactionsTab" value="transactions">Transactions</v-tab>
+                        <v-tab class="text-medium-emphasis" id="transfersTab" value="transfers">Transfers</v-tab>
+                        <v-tab class="text-medium-emphasis" id="holdersTab" value="holders">Holders</v-tab>
+                        <v-tab class="text-medium-emphasis" id="interactionsTab" value="interactions">Read / Write</v-tab>
+                        <v-tab class="text-medium-emphasis" id="codeTab" value="code">Code</v-tab>
+                        <v-tab class="text-medium-emphasis" id="analyticsTab" value="analytics">Analytics</v-tab>
                     </v-tabs>
 
                     <v-tabs-window v-model="tab">
