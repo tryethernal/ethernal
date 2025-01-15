@@ -5,13 +5,12 @@
                 <v-row>
                     <v-col>
                         <v-text-field
-                            append-icon="mdi-arrow-right"
                             :rules="[
                                 v => this.isUrlValid(v) || 'RPC needs to be a valid URL',
                                 v => !!v || 'RPC server is required'
                             ]"
                             variant="outlined" v-model="rpcServer" label="RPC URL" placeholder="https://my.rpc.com:8545" required>
-                        <template slot="append-outer">
+                        <template v-slot:append>
                             <v-btn style="height: 56px;" :loading="loading" color="primary" :disabled="!valid" type="submit">Get Started</v-btn>
                         </template>
                         </v-text-field>

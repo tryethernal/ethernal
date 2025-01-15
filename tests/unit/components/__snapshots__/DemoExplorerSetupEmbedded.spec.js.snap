@@ -32,8 +32,7 @@ exports[`DemoExplorerSetupEmbedded.vue > Should display embeddable setup 1`] = `
                       <!----><label class="v-label v-field-label" for="input-0">
                         <!---->RPC URL
                       </label>
-                      <!---->
-                      <div class="v-field__input" data-no-activator=""><template data-v-d31fb907="" slot="append-outer"></template><input placeholder="https://my.rpc.com:8545" size="1" type="text" id="input-0" aria-describedby="input-0-messages" required=""></div>
+                      <!----><input placeholder="https://my.rpc.com:8545" size="1" type="text" id="input-0" aria-describedby="input-0-messages" required="" class="v-field__input">
                       <!---->
                     </div>
                     <!---->
@@ -48,8 +47,12 @@ exports[`DemoExplorerSetupEmbedded.vue > Should display embeddable setup 1`] = `
                     </div>
                   </div>
                 </div>
-                <div class="v-input__append"><i class="mdi-arrow-right mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i>
-                  <!---->
+                <div class="v-input__append">
+                  <!----><button data-v-d31fb907="" type="submit" class="v-btn v-btn--disabled v-theme--light bg-primary v-btn--density-default v-btn--size-default v-btn--variant-elevated" style="height: 56px;" disabled=""><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                    <!----><span class="v-btn__content" data-no-activator="">Get Started</span>
+                    <!---->
+                    <!---->
+                  </button>
                 </div>
                 <div class="v-input__details">
                   <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="input-0-messages">
@@ -99,8 +102,7 @@ exports[`DemoExplorerSetupEmbedded.vue > Should display success message with dom
                       <!----><label class="v-label v-field-label" for="input-0">
                         <!---->RPC URL
                       </label>
-                      <!---->
-                      <div class="v-field__input" data-no-activator=""><template data-v-d31fb907="" slot="append-outer"></template><input placeholder="https://my.rpc.com:8545" size="1" type="text" id="input-0" aria-describedby="input-0-messages" required=""></div>
+                      <!----><input placeholder="https://my.rpc.com:8545" size="1" type="text" id="input-0" aria-describedby="input-0-messages" required="" class="v-field__input">
                       <!---->
                     </div>
                     <!---->
@@ -115,8 +117,12 @@ exports[`DemoExplorerSetupEmbedded.vue > Should display success message with dom
                     </div>
                   </div>
                 </div>
-                <div class="v-input__append"><i class="mdi-arrow-right mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i>
-                  <!---->
+                <div class="v-input__append">
+                  <!----><button data-v-d31fb907="" type="submit" class="v-btn v-btn--disabled v-theme--light bg-primary v-btn--density-default v-btn--size-default v-btn--variant-elevated" style="height: 56px;" disabled=""><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                    <!----><span class="v-btn__content" data-no-activator="">Get Started</span>
+                    <!---->
+                    <!---->
+                  </button>
                 </div>
                 <div class="v-input__details">
                   <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="input-0-messages">
