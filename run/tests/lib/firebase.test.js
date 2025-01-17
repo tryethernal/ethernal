@@ -2233,7 +2233,6 @@ describe('getWorkspaceContracts', () => {
             .then(result => {
                 expect(result).toEqual({
                     items: [{ id: 10, address: '0x123' }, { id: 11, address: '0xabcd' }],
-                    total: 2
                 });
                 done();
             });
