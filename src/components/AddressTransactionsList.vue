@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import TransactionsList from './TransactionsList';
+import TransactionsList from './TransactionsList.vue';
 
 export default {
     name: 'AddressTransactionsList',

@@ -1,89 +1,217 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`NewExplorerLink.vue Should display a new link form 1`] = `
-<div>
-  <div class="row">
-    <div class="col col-4">
-      <div class="v-input v-input--has-state v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined error--text">
+exports[`NewExplorerLink.vue > Should display a new link form 1`] = `
+"<div>
+  <div class="v-row">
+    <div class="v-col v-col-4">
+      <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field">
+        <!---->
         <div class="v-input__control">
-          <div class="v-input__slot">
-            <fieldset aria-hidden="true">
-              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-            </fieldset>
-            <div class="v-text-field__slot"><label for="input-4" class="v-label theme--light error--text" style="left: 0px; position: absolute;">URL *</label><input small="" id="input-4" type="text"></div>
-          </div>
-          <div class="v-text-field__details">
-            <div class="v-messages theme--light error--text" role="alert">
-              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+          <div class="v-field v-field--center-affix v-field--variant-outlined v-theme--light v-locale--is-ltr">
+            <div class="v-field__overlay"></div>
+            <div class="v-field__loader">
+              <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                <!---->
+                <div class="v-progress-linear__background"></div>
+                <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                  <div class="v-progress-linear__indeterminate">
+                    <div class="v-progress-linear__indeterminate long"></div>
+                    <div class="v-progress-linear__indeterminate short"></div>
+                  </div>
+                </transition-stub>
+                <!---->
+              </div>
+            </div>
+            <!---->
+            <div class="v-field__field" data-no-activator="">
+              <!----><label class="v-label v-field-label" for="input-0">
+                <!---->URL *
+              </label>
+              <!----><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" small="" class="v-field__input">
+              <!---->
+            </div>
+            <!---->
+            <!---->
+            <div class="v-field__outline">
+              <div class="v-field__outline__start"></div>
+              <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
+                  <!---->URL *
+                </label></div>
+              <div class="v-field__outline__end"></div>
+              <!---->
             </div>
           </div>
         </div>
-      </div>
-    </div>
-    <div class="col col-4">
-      <div class="v-input v-input--has-state v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined error--text">
-        <div class="v-input__control">
-          <div class="v-input__slot">
-            <fieldset aria-hidden="true">
-              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-            </fieldset>
-            <div class="v-text-field__slot"><label for="input-7" class="v-label theme--light error--text" style="left: 0px; position: absolute;">Name *</label><input small="" id="input-7" type="text"></div>
-          </div>
-          <div class="v-text-field__details">
-            <div class="v-messages theme--light error--text" role="alert">
-              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
-            </div>
-          </div>
+        <!---->
+        <div class="v-input__details">
+          <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="input-0-messages">
+            <!---->
+          </transition-group-stub>
+          <!---->
         </div>
       </div>
     </div>
-    <div class="col col-4">
-      <v-autocomplete-stub errorcount="1" errormessages="" messages="" rules="" successmessages="" appendicon="" backgroundcolor="" dense="true" label="Icon" persistenthint="true" loaderheight="2" clearicon="$clear" outlined="true" type="text" valuecomparator="[Function]" nodatatext="$vuetify.noDataText" items="" itemcolor="primary" itemdisabled="disabled" itemtext="name" itemvalue="[Function]" menuprops="[object Object]" autoselectfirst="true" filter="[Function]" hidenodata="true" nofilter="true" small=""><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light error--text"></i></span></button></v-autocomplete-stub>
+    <div class="v-col v-col-4">
+      <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field">
+        <!---->
+        <div class="v-input__control">
+          <div class="v-field v-field--center-affix v-field--variant-outlined v-theme--light v-locale--is-ltr">
+            <div class="v-field__overlay"></div>
+            <div class="v-field__loader">
+              <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                <!---->
+                <div class="v-progress-linear__background"></div>
+                <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                  <div class="v-progress-linear__indeterminate">
+                    <div class="v-progress-linear__indeterminate long"></div>
+                    <div class="v-progress-linear__indeterminate short"></div>
+                  </div>
+                </transition-stub>
+                <!---->
+              </div>
+            </div>
+            <!---->
+            <div class="v-field__field" data-no-activator="">
+              <!----><label class="v-label v-field-label" for="input-2">
+                <!---->Name *
+              </label>
+              <!----><input size="1" type="text" id="input-2" aria-describedby="input-2-messages" small="" class="v-field__input">
+              <!---->
+            </div>
+            <!---->
+            <!---->
+            <div class="v-field__outline">
+              <div class="v-field__outline__start"></div>
+              <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-2">
+                  <!---->Name *
+                </label></div>
+              <div class="v-field__outline__end"></div>
+              <!---->
+            </div>
+          </div>
+        </div>
+        <!---->
+        <div class="v-input__details">
+          <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="input-2-messages">
+            <!---->
+          </transition-group-stub>
+          <!---->
+        </div>
+      </div>
+    </div>
+    <div class="v-col v-col-4">
+      <v-autocomplete-stub small="" variant="outlined" density="compact" label="Icon" items="" loading="false" item-title="name" item-value="function () { [native code] }" auto-select-first="" persistent-hint="" hide-no-data="" no-filter=""></v-autocomplete-stub>
     </div>
   </div>
-</div>
+</div>"
 `;
 
-exports[`NewExplorerLink.vue Should display an existing link form 1`] = `
-<div>
-  <div class="row">
-    <div class="col col-4">
-      <div class="v-input v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+exports[`NewExplorerLink.vue > Should display an existing link form 1`] = `
+"<div>
+  <div class="v-row">
+    <div class="v-col v-col-4">
+      <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field">
+        <!---->
         <div class="v-input__control">
-          <div class="v-input__slot">
-            <fieldset aria-hidden="true">
-              <legend style="width: -24px;"><span class="notranslate">​</span></legend>
-            </fieldset>
-            <div class="v-text-field__slot"><label for="input-17" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">URL *</label><input small="" id="input-17" type="text"></div>
-          </div>
-          <div class="v-text-field__details">
-            <div class="v-messages theme--light">
-              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+          <div class="v-field v-field--active v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr">
+            <div class="v-field__overlay"></div>
+            <div class="v-field__loader">
+              <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                <!---->
+                <div class="v-progress-linear__background"></div>
+                <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                  <div class="v-progress-linear__indeterminate">
+                    <div class="v-progress-linear__indeterminate long"></div>
+                    <div class="v-progress-linear__indeterminate short"></div>
+                  </div>
+                </transition-stub>
+                <!---->
+              </div>
+            </div>
+            <!---->
+            <div class="v-field__field" data-no-activator="">
+              <!----><label class="v-label v-field-label" for="input-0">
+                <!---->URL *
+              </label>
+              <!----><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" small="" class="v-field__input" value="http://twitter.com">
+              <!---->
+            </div>
+            <!---->
+            <!---->
+            <div class="v-field__outline">
+              <div class="v-field__outline__start"></div>
+              <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
+                  <!---->URL *
+                </label></div>
+              <div class="v-field__outline__end"></div>
+              <!---->
             </div>
           </div>
         </div>
-      </div>
-    </div>
-    <div class="col col-4">
-      <div class="v-input v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
-        <div class="v-input__control">
-          <div class="v-input__slot">
-            <fieldset aria-hidden="true">
-              <legend style="width: -24px;"><span class="notranslate">​</span></legend>
-            </fieldset>
-            <div class="v-text-field__slot"><label for="input-20" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Name *</label><input small="" id="input-20" type="text"></div>
-          </div>
-          <div class="v-text-field__details">
-            <div class="v-messages theme--light">
-              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
-            </div>
-          </div>
+        <!---->
+        <div class="v-input__details">
+          <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="input-0-messages">
+            <!---->
+          </transition-group-stub>
+          <!---->
         </div>
       </div>
     </div>
-    <div class="col col-4">
-      <v-autocomplete-stub errorcount="1" errormessages="" messages="" rules="" successmessages="" appendicon="mdi-twitter" backgroundcolor="" dense="true" label="Icon" persistenthint="true" loaderheight="2" clearicon="$clear" outlined="true" type="text" valuecomparator="[Function]" nodatatext="$vuetify.noDataText" items="[object Object]" itemcolor="primary" itemdisabled="disabled" itemtext="name" itemvalue="[Function]" menuprops="[object Object]" autoselectfirst="true" filter="[Function]" hidenodata="true" nofilter="true" small="" value="mdi-twitter"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light error--text"></i></span></button></v-autocomplete-stub>
+    <div class="v-col v-col-4">
+      <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field">
+        <!---->
+        <div class="v-input__control">
+          <div class="v-field v-field--active v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr">
+            <div class="v-field__overlay"></div>
+            <div class="v-field__loader">
+              <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                <!---->
+                <div class="v-progress-linear__background"></div>
+                <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                  <div class="v-progress-linear__indeterminate">
+                    <div class="v-progress-linear__indeterminate long"></div>
+                    <div class="v-progress-linear__indeterminate short"></div>
+                  </div>
+                </transition-stub>
+                <!---->
+              </div>
+            </div>
+            <!---->
+            <div class="v-field__field" data-no-activator="">
+              <!----><label class="v-label v-field-label" for="input-2">
+                <!---->Name *
+              </label>
+              <!----><input size="1" type="text" id="input-2" aria-describedby="input-2-messages" small="" class="v-field__input" value="twitter">
+              <!---->
+            </div>
+            <!---->
+            <!---->
+            <div class="v-field__outline">
+              <div class="v-field__outline__start"></div>
+              <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-2">
+                  <!---->Name *
+                </label></div>
+              <div class="v-field__outline__end"></div>
+              <!---->
+            </div>
+          </div>
+        </div>
+        <!---->
+        <div class="v-input__details">
+          <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="input-2-messages">
+            <!---->
+          </transition-group-stub>
+          <!---->
+        </div>
+      </div>
+    </div>
+    <div class="v-col v-col-4">
+      <v-autocomplete-stub small="" variant="outlined" density="compact" label="Icon" items="" loading="false" item-title="name" item-value="function () { [native code] }" auto-select-first="" persistent-hint="" hide-no-data="" no-filter="" modelvalue="mdi-twitter"></v-autocomplete-stub>
     </div>
   </div>
-</div>
+</div>"
 `;

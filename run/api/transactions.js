@@ -189,7 +189,7 @@ router.get('/:hash', workspaceAuthMiddleware, async (req, res, next) => {
         const transaction = await db.getWorkspaceTransaction(data.workspace.id, req.params.hash);
         const customTransactionFunction = await db.getCustomTransactionFunction(data.workspace.id);
         const customFields = customTransactionFunction ?
-            await transactionFn(customTransactionFunction, transaction.raw, data.workspace.rpcServer) :
+            await transactionFn(customTransactionFunction, transaction, data.workspace.rpcServer) :
             { overrides: {}, extraFields: [] };
 
         res.status(200).json({ ...transaction, ...customFields.overrides, extraFields: customFields.extraFields });
@@ -205,7 +205,7 @@ router.get('/:hash/tokenTransfers', workspaceAuthMiddleware, async (req, res, ne
         if (!req.params.hash)
             return managedError(new Error('Missing parameter'), req, res);
 
-        const result = await db.getTransactionTokenTransfers(data.workspace.id, req.params.hash, data.page, data.itemsPerPage, data.order);
+        const result = await db.getTransactionTokenTransfers(data.workspace.id, req.params.hash, data.page, data.itemsPerPage, data.order, data.orderBy);
 
         res.status(200).json(result);
     } catch(error) {

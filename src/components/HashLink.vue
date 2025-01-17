@@ -1,27 +1,32 @@
 <template>
     <span>
-        <v-tooltip top v-if="verified">
-            <template v-slot:activator="{on, attrs}">
-                <v-icon v-bind="attrs" v-on="on" class="success--text mr-1" small>mdi-check-circle</v-icon>
+        <v-tooltip location="top" v-if="verified">
+            <template v-slot:activator="{props}">
+                <v-icon v-bind="props" class="text-success mr-1" size="small">mdi-check-circle</v-icon>
             </template>
             Verified contract.
         </v-tooltip>
-        <router-link v-if="hash && !unlink" :to="link()">{{ name }}</router-link>
+        <template v-if="hash && !unlink">
+            <a v-if="embedded" :href="externalLink" target="_blank">{{ name }}</a>
+            <router-link v-else :to="link">{{ name }}</router-link>
+        </template>
         <template v-else>{{ name }}</template>
         <span v-if="tokenId">
             &nbsp;(<router-link :to="`/address/${hash}/${tokenId}`">#{{ tokenId }}</router-link>)
         </span>
         <span v-if="hash && !copied && !notCopiable">
-            &nbsp;<v-icon @click="copyHash()" x-small>mdi-content-copy</v-icon><input type="hidden" :id="`copyElement-${hash}`" :value="hash">
+            &nbsp;<v-icon class="text-medium-emphasis" @click="copyHash()" size="x-small">mdi-content-copy</v-icon><input type="hidden" :id="`copyElement-${hash}`" :value="hash">
         </span>
         <span v-if="copied">
-            &nbsp; <v-icon x-small>mdi-check</v-icon>
+            &nbsp; <v-icon class="text-medium-emphasis" size="x-small">mdi-check</v-icon>
         </span>
     </span>
 </template>
 <script>
-import { mapGetters } from 'vuex';
-const { sanitize } = require('../lib/utils');
+import { inject } from 'vue';
+import { mapStores } from 'pinia';
+import { useExplorerStore } from '../stores/explorer';
+import { sanitize } from '../lib/utils';
 
 export default {
     name: 'HashLink',
@@ -30,8 +35,12 @@ export default {
         copied: false,
         token: null,
         contractName: null,
-        verified: false
+        verified: false,
     }),
+    setup() {
+        const isEmbedded = inject('isEmbedded', false);
+        return { embedded: !!isEmbedded };
+    },
     watch: {
         hash: {
             immediate: true,
@@ -43,7 +52,7 @@ export default {
                     if (hash == '0x0000000000000000000000000000000000000000')
                         return this.contractName = 'Black Hole';
 
-                if (this.withName != false && this.publicExplorer && this.publicExplorer.faucet && this.hash == this.publicExplorer.faucet.address)
+                if (this.withName != false && this.explorerStore.faucet && this.hash == this.explorerStore.faucet.address)
                     return this.verified = true;
 
                 if (this.contract) {
@@ -56,7 +65,7 @@ export default {
                     this.contractName = this.contract.name;
                 }
                 else if (this.loadContract) {
-                    this.server.getContract(hash)
+                    this.$server.getContract(hash)
                         .then(({ data }) => {
                             if (data) {
                                 if (data.tokenName || data.tokenSymbol)
@@ -73,9 +82,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-            'publicExplorer'
-        ]),
+        ...mapStores(useExplorerStore),
         formattedHash() {
             if (!this.hash) return;
             if (this.fullHash) {
@@ -91,20 +98,19 @@ export default {
         name() {
             if (this.customLabel)
                 return this.customLabel;
-            if (this.withName != false && this.publicExplorer && this.publicExplorer.faucet && this.hash == this.publicExplorer.faucet.address)
-                return `${this.publicExplorer.token || 'ETH'} faucet`;
+            if (this.withName != false && this.explorerStore.faucet && this.hash == this.explorerStore.faucet.address)
+                return `${this.explorerStore.token || 'ETH'} faucet`;
             if (this.withName) {
-                if (this.token && this.withTokenName) {
-                    if (this.token.symbol && !this.withTokenName) return this.token.symbol;
-                    if (this.token.name) return this.token.name;
-                }
+                if (this.token && this.token.symbol && !this.withTokenName) return this.token.symbol;
+                if (this.token && this.token.name && this.withTokenName) return this.token.name;
                 return this.contractName ? this.contractName : this.formattedHash;
             }
             return this.formattedHash;
-        }
+        },
+        link() { return `/${[this.type, this.hash].join('/')}`; },
+        externalLink() { return `//${this.explorerStore.domain}/${[this.type, this.hash].join('/')}`; }
     },
     methods: {
-        link() { return `/${[this.type, this.hash].join('/')}`; },
         copyHash() {
             const webhookField = document.querySelector(`#copyElement-${this.hash}`);
             webhookField.setAttribute('type', 'text');

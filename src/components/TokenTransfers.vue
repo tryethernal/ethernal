@@ -1,69 +1,72 @@
 <template>
-    <v-data-table
+    <v-data-table-server
         :loading="loading"
         :headers="headers"
+        :density="density"
         :sort-by="sortBy"
         :must-sort="true"
-        :sort-desc="true"
-        :server-items-length="count"
-        :hide-default-header="dense"
+        :items-length="count"
+        :hide-default-header="isCompact"
+        items-per-page-text="Rows per page:"
+        no-data-text="No token transfers found"
+        last-icon=""
+        first-icon=""
+        :items-per-page-options="[
+            { value: 10, title: '10' },
+            { value: 25, title: '25' },
+            { value: 100, title: '100' }
+        ]"
         item-key="id"
         :items="transfers"
         @update:options="onPagination">
-        <template v-slot:top v-if="!dense">
-            <v-toolbar dense flat>
-                <v-spacer></v-spacer>
-                <v-switch v-model="unformatted" label="Unformatted Amounts"></v-switch>
-            </v-toolbar>
+        <template v-slot:top v-if="!isCompact">
+            <div class="d-flex justify-end">
+                <v-switch hide-details="auto" v-model="unformatted" label="Unformatted Amounts"></v-switch>
+            </div>
         </template>
         <template v-slot:item.transactionHash="{ item }">
             <Hash-Link :type="'transaction'" :hash="item.transaction.hash" />
         </template>
         <template v-slot:item.type="{ item }">
-            <v-chip x-small class="success mr-2" v-if="type[item.token]">
+            <v-chip size="x-small" class="bg-success mr-2" v-if="type[item.token]">
                 {{ formatContractPattern(type[item.token]) }}
             </v-chip>
             <span v-else>N/A</span>
         </template>
         <template v-slot:item.timestamp="{ item }">
             <div class="my-2 text-left">
-                {{ moment(item.transaction.timestamp) | moment('MM/DD h:mm:ss A') }}<br>
-                <small>{{ moment(item.transaction.timestamp).fromNow() }}</small>
+                {{ $dt.shortDate(item.transaction.timestamp) }}<br>
+                <small>{{ $dt.fromNow(item.transaction.timestamp) }}</small>
             </div>
         </template>
         <template v-slot:item.blockNumber="{ item }">
             <router-link :to="'/block/' + item.transaction.blockNumber">{{ item.transaction.blockNumber }}</router-link>
         </template>
         <template v-slot:item.src="{ item }">
-            <v-chip x-small class="mr-2" v-if="item.src === address">self</v-chip>
-            <Hash-Link :type="'address'" :hash="item.src" :fullHash="!dense" :withName="true" :withTokenName="true" />
+            <v-chip size="x-small" class="mr-2" v-if="item.src === address">self</v-chip>
+            <Hash-Link :type="'address'" :hash="item.src" :fullHash="!isCompact" :withName="true" :withTokenName="true" />
         </template>
         <template v-slot:item.dst="{ item }">
-            <v-chip x-small class="mr-2" v-if="item.dst === address">self</v-chip>
-            <Hash-Link :type="'address'" :hash="item.dst" :fullHash="!dense" :withName="true" :withTokenName="true" />
+            <v-chip size="x-small" class="mr-2" v-if="item.dst === address">self</v-chip>
+            <Hash-Link :type="'address'" :hash="item.dst" :fullHash="!isCompact" :withName="true" :withTokenName="true" />
         </template>
         <template v-slot:item.token="{ item }">
             <Hash-Link :type="'address'" :hash="item.token" :withName="true" :withTokenName="true" :tokenId="item.tokenId" :contract="item.contract" />
         </template>
         <template v-slot:item.amount="{ item }">
-            {{ item.amount | fromWei(decimals[item.token], symbols[item.token], unformatted) }}
+            {{ $fromWei(item.amount, decimals[item.token], symbols[item.token], unformatted) }}
         </template>
-    </v-data-table>
+    </v-data-table-server>
 </template>
 <script>
-const moment = require('moment');
-import HashLink from './HashLink';
-import FromWei from '../filters/FromWei';
+import HashLink from './HashLink.vue';
 import { formatContractPattern } from '@/lib/utils';
 
 export default {
     name: 'TokenTransfers',
-    props: ['transfers', 'headers', 'dense', 'loading', 'sortBy', 'count', 'address'],
+    props: ['transfers', 'headers', 'loading', 'sortBy', 'count', 'address', 'density'],
     components: {
         HashLink
-    },
-    filters: {
-        FromWei
     },
     data: () => ({
         unformatted: false,
@@ -75,7 +78,6 @@ export default {
         this.loadContractData();
     },
     methods: {
-        moment: moment,
         formatContractPattern: formatContractPattern,
         onPagination(pagination) {
             this.$emit('pagination', pagination);
@@ -87,20 +89,20 @@ export default {
                 if (!contract)
                     continue;
 
-                contract.tokenDecimals ?
-                    this.$set(this.decimals, this.transfers[i].token, contract.tokenDecimals) :
-                    this.$set(this.decimals, this.transfers[i].token, 0);
-
-                contract.tokenSymbol ?
-                    this.$set(this.symbols, this.transfers[i].token, contract.tokenSymbol) :
-                    this.$set(this.symbols, this.transfers[i].token, '');
+                this.decimals[this.transfers[i].token] = contract.tokenDecimals || 0;
+                this.symbols[this.transfers[i].token] = contract.tokenSymbol || '';
 
                 if (contract.patterns.indexOf('erc20') > -1)
-                    this.$set(this.type, this.transfers[i].token, 'erc20');
+                    this.type[this.transfers[i].token] = 'erc20';
 
                 if (contract.patterns.indexOf('erc721') > -1)
-                    this.$set(this.type, this.transfers[i].token, 'erc721');
+                    this.type[this.transfers[i].token] = 'erc721';
             }
+        }
+    },
+    computed: {
+        isCompact() {
+            return this.density === 'compact';
         }
     },
     watch: {

@@ -1,66 +1,145 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`CreateExplorerDexModal.vue Should show dex creation modal 1`] = `
-<div class="v-dialog__container">
-  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
-    <transition-stub name="dialog-transition" appear="true">
-      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
-        <div class="v-card v-sheet theme--light">
-          <div class="v-card__title headline">
-            Create Dex
-            <div class="spacer"></div> <button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light"></i></span></button>
+exports[`CreateExplorerDexModal.vue > Should show dex creation modal 1`] = `
+"<div class="v-dialog-stub" max-width="600">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
           </div>
-          <div class="v-card__text">
-            <!---->
-            Enter your router address. From there, we'll be able to fetch the factory, and all created token pairs, in order to generate your dex UI.
-            <form novalidate="novalidate" class="v-form mt-3">
-              <div class="row">
-                <div class="col col-12">
-                  <div class="v-input mt-1 v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                    <div class="v-input__control">
-                      <div class="v-input__slot">
-                        <div class="v-input__prepend-inner">
-                          <div class="v-input__icon v-input__icon--prepend-inner"><i aria-hidden="true" class="v-icon notranslate mdi mdi-swap-horizontal theme--light"></i></div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-title d-flex justify-space-between align-center">
+      <h4>Create Dex</h4><button type="button" class="v-btn v-btn--icon v-theme--light text-grey v-btn--density-default v-btn--size-default v-btn--variant-text"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+        <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-close mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+        <!---->
+        <!---->
+      </button>
+    </div>
+    <div class="v-card-text">
+      <!--v-if--> Enter your router address. From there, we'll be able to fetch the factory, and all created token pairs, in order to generate your dex UI. <form class="v-form mt-3" novalidate="">
+        <div class="v-row">
+          <div class="v-col v-col-12">
+            <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field mt-1">
+              <!---->
+              <div class="v-input__control">
+                <div class="v-field v-field--center-affix v-field--prepended v-field--variant-outlined v-theme--light v-locale--is-ltr">
+                  <div class="v-field__overlay"></div>
+                  <div class="v-field__loader">
+                    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                      <!---->
+                      <div class="v-progress-linear__background"></div>
+                      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                        <div class="v-progress-linear__indeterminate">
+                          <div class="v-progress-linear__indeterminate long"></div>
+                          <div class="v-progress-linear__indeterminate short"></div>
                         </div>
-                        <fieldset aria-hidden="true">
-                          <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                        </fieldset>
-                        <div class="v-text-field__slot"><label for="input-12" class="v-label theme--light" style="left: 0px; position: absolute;">Router Address</label><input name="routerAddress" required="required" id="input-12" type="text"></div>
-                      </div>
-                      <div class="v-text-field__details">
-                        <div class="v-messages theme--light">
-                          <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
-                        </div>
-                      </div>
+                      </transition-stub>
+                      <!---->
                     </div>
                   </div>
-                  <div class="v-input mt-1 v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                    <div class="v-input__control">
-                      <div class="v-input__slot">
-                        <fieldset aria-hidden="true">
-                          <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                        </fieldset>
-                        <div class="v-text-field__slot"><label for="input-16" class="v-label theme--light" style="left: 0px; position: absolute;">Wrapped ETH Address</label><input name="wrappedNativeTokenAddress" required="required" id="input-16" type="text"></div>
-                      </div>
-                      <div class="v-text-field__details">
-                        <div class="v-messages theme--light">
-                          <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper">
-                            <div class="v-messages__message">We need this address to be able to route native token swaps</div>
-                          </transition-group-stub>
-                        </div>
-                      </div>
-                    </div>
+                  <div class="v-field__prepend-inner"><i class="mdi-swap-horizontal mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i>
+                    <!---->
+                  </div>
+                  <div class="v-field__field" data-no-activator="">
+                    <!----><label class="v-label v-field-label" for="input-1">
+                      <!---->Router Address
+                    </label>
+                    <!----><input name="routerAddress" size="1" type="text" id="input-1" aria-describedby="input-1-messages" required="" class="v-field__input">
+                    <!---->
+                  </div>
+                  <!---->
+                  <!---->
+                  <div class="v-field__outline">
+                    <div class="v-field__outline__start"></div>
+                    <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-1">
+                        <!---->Router Address
+                      </label></div>
+                    <div class="v-field__outline__end"></div>
+                    <!---->
                   </div>
                 </div>
               </div>
-              <div class="v-card__actions pr-0 pb-0">
-                <div class="spacer"></div> <button type="submit" disabled="disabled" class="v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Create</span></button>
+              <!---->
+              <div class="v-input__details">
+                <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="input-1-messages">
+                  <!---->
+                </transition-group-stub>
+                <!---->
               </div>
-            </form>
+            </div>
+            <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field mt-1">
+              <!---->
+              <div class="v-input__control">
+                <div class="v-field v-field--center-affix v-field--variant-outlined v-theme--light v-locale--is-ltr">
+                  <div class="v-field__overlay"></div>
+                  <div class="v-field__loader">
+                    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                      <!---->
+                      <div class="v-progress-linear__background"></div>
+                      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                        <div class="v-progress-linear__indeterminate">
+                          <div class="v-progress-linear__indeterminate long"></div>
+                          <div class="v-progress-linear__indeterminate short"></div>
+                        </div>
+                      </transition-stub>
+                      <!---->
+                    </div>
+                  </div>
+                  <!---->
+                  <div class="v-field__field" data-no-activator="">
+                    <!----><label class="v-label v-field-label" for="input-3">
+                      <!---->Wrapped ETH Address
+                    </label>
+                    <!----><input name="wrappedNativeTokenAddress" size="1" type="text" id="input-3" aria-describedby="input-3-messages" required="" class="v-field__input">
+                    <!---->
+                  </div>
+                  <!---->
+                  <!---->
+                  <div class="v-field__outline">
+                    <div class="v-field__outline__start"></div>
+                    <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-3">
+                        <!---->Wrapped ETH Address
+                      </label></div>
+                    <div class="v-field__outline__end"></div>
+                    <!---->
+                  </div>
+                </div>
+              </div>
+              <!---->
+              <div class="v-input__details">
+                <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="input-3-messages">
+                  <div class="v-messages__message">We need this address to be able to route native token swaps</div>
+                </transition-group-stub>
+                <!---->
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </transition-stub>
+        <div class="v-card-actions pr-0 pb-0">
+          <div class="v-spacer"></div><button type="submit" class="v-btn v-btn--disabled v-btn--slim v-theme--light bg-primary v-btn--density-default v-btn--size-default v-btn--variant-flat" disabled=""><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+            <!----><span class="v-btn__content" data-no-activator="">Create</span>
+            <!---->
+            <!---->
+          </button>
+        </div>
+      </form>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-</div>
+</div>"
 `;

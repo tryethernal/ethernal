@@ -1,20 +1,20 @@
 <template>
-    <v-card outlined class="flex-grow-1">
+    <v-card class="flex-grow-1">
         <v-card-text v-if="syncStatus">
-            <v-alert v-if="errorMessage" dense text type="error">{{ errorMessage }}</v-alert>
+            <v-alert v-if="errorMessage" density="compact" text type="error">{{ errorMessage }}</v-alert>
             <div v-if="explorer.stripeSubscription">
-                <b class="success--text" v-if="isSyncActive">Your explorer is synchronizing blocks.</b>
-                <b class="error--text" v-else-if="isSyncStopped">
+                <b class="text-success" v-if="isSyncActive">Your explorer is synchronizing blocks.</b>
+                <b class="text-error" v-else-if="isSyncStopped">
                     Your explorer is not synchronizing blocks.
                     <span v-if="isRpcUnreachable"> RPC is unreachable.</span>
                     <span v-if="hasReachedTransactionQuota"> Transaction quota reached, upgrade your plan to resume sync.</span>
                 </b>
-                <b class="warning--text" v-else-if="isSyncStarting">Starting synchronization...</b>
-                <b class="warning--text" v-else-if="isSyncStopping">Stopping synchronization...</b>
-                <b class="error--text" v-else>Unknown synchronization status ({{ syncStatus }}).</b>
+                <b class="text-warning" v-else-if="isSyncStarting">Starting synchronization...</b>
+                <b class="text-warning" v-else-if="isSyncStopping">Stopping synchronization...</b>
+                <b class="text-error" v-else>Unknown synchronization status ({{ syncStatus }}).</b>
             </div>
             <div v-else>
-                <b class="error--text">Synchronization will become available once a subscription has been started.</b>
+                <b class="text-error">Synchronization will become available once a subscription has been started.</b>
             </div>
             <v-btn v-if="isSyncActive && explorer.stripeSubscription" :loading="loading" class="mt-2" color="primary" @click="stopSync()">Stop Sync</v-btn>
             <v-btn v-else :loading="loading" :disabled="!explorer.stripeSubscription" class="mt-2" color="primary" @click="startSync()">Start Sync</v-btn>
@@ -26,8 +26,8 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
-const moment = require('moment');
+import { mapStores } from 'pinia';
+import { useEnvStore } from '../stores/env';
 
 export default {
     name: 'ExplorerSync',
@@ -40,20 +40,15 @@ export default {
     }),
     mounted() {
         this.getSyncStatus();
-        this.$root.$on('waitForOnlineSync', () => {
-            this.loading = true;
-            this.waitForStatus('online');
-        });
     },
     destroyed() {
         if (this.timeout)
             clearTimeout(this.timeout);
     },
     methods: {
-        moment,
         getSyncStatus() {
             this.loading = true;
-            this.server.getExplorerSyncStatus(this.explorer.id)
+            this.$server.getExplorerSyncStatus(this.explorer.id)
                 .then(({ data: { status }}) => this.syncStatus = status)
                 .catch(console.log)
                 .finally(() => this.loading = false);
@@ -61,7 +56,7 @@ export default {
         stopSync() {
             this.loading = true;
             this.errorMessage = null;
-            this.server.stopExplorerSync(this.explorer.id)
+            this.$server.stopExplorerSync(this.explorer.id)
                 .then(() => this.waitForStatus('stopped'))
                 .catch(error => {
                     console.log(error);
@@ -71,7 +66,7 @@ export default {
         startSync() {
             this.loading = true;
             this.errorMessage = null;
-            this.server.startExplorerSync(this.explorer.id)
+            this.$server.startExplorerSync(this.explorer.id)
                 .then(() => this.waitForStatus('online'))
                 .catch(error => {
                     this.errorMessage = error.response && error.response.data || 'Error while starting sync. Please retry.';
@@ -80,7 +75,7 @@ export default {
         },
         waitForStatus(newStatus) {
             // Starting/Stoppping sync will enqueue a process. So we need to fetch the status until we get what we expect
-            this.server.getExplorerSyncStatus(this.explorer.id)
+            this.$server.getExplorerSyncStatus(this.explorer.id)
                 .then(({ data: { status }}) => {
                     this.syncStatus = status;
                     if (this.hasReachedTransactionQuota) {
@@ -105,9 +100,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-            'mainDomain'
-        ]),
+        ...mapStores(useEnvStore),
         isSyncActive() { return this.syncStatus == 'online' },
         isSyncStarting() { return this.syncStatus == 'launching' },
         isSyncStopping() { return this.syncStatus == 'stopping' },

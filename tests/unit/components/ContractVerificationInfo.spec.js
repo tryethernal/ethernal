@@ -1,24 +1,16 @@
 import flushPromises from 'flush-promises';
-import MockHelper from '../MockHelper';
 
-jest.mock('@metamask/detect-provider');
+vi.mock('@metamask/detect-provider');
 import ContractVerificationInfo from '@/components/ContractVerificationInfo.vue';
 
-let helper;
 const stubs = [
     'Formatted-Sol-Var'
 ];
 
 describe('ContractVerificationInfo.vue', () => {
-
-    beforeEach(() => {
-        jest.clearAllMocks();
-        helper = new MockHelper();
-    });
-
     it('Should display code / constructor arguments / libraries', async () => {
-        const wrapper = helper.mountFn(ContractVerificationInfo, {
-            propsData: {
+        const wrapper = mount(ContractVerificationInfo, {
+            props: {
                 contract: {
                     bytecode: '0x60',
                     asm: 'abc',
@@ -37,9 +29,9 @@ describe('ContractVerificationInfo.vue', () => {
                     }
                 }
             },
-            stubs: stubs,
-            getters: {
-                isPublicExplorer: jest.fn(() => true)
+            global: {
+                plugins: [createTestingPinia({ initialState: { explorer: { id: 1, slug: 'ethernal' } } })],
+                stubs: stubs,
             }
         });
 

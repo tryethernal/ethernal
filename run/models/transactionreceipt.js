@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
     async insertAnalyticEvent(sequelizeTransaction) {
         const transaction = await this.getTransaction();
         const gasPrice = this.raw.effectiveGasPrice || this.raw.gasPrice || transaction.gasPrice;
-        const transactionFee = BigNumber.from(this.gasUsed).mul(BigNumber.from(gasPrice));
+        const transactionFee = BigNumber.from(this.gasUsed.toString()).mul(BigNumber.from(gasPrice.toString()));
 
         return sequelize.models.TransactionEvent.create({
             workspaceId: this.workspaceId,
@@ -45,6 +45,35 @@ module.exports = (sequelize, DataTypes) => {
             await logs[i].safeDestroy(transaction);
         }
         return this.destroy({ transaction });
+    }
+
+    async afterCreate(options) {
+        const transaction = await sequelize.models.Transaction.findByPk(this.transactionId, { include: 'workspace' });
+
+        // Here is the stuff that we only want to do once everything has been created (typically notifications & jobs queuing)
+        const afterCommitFn = async () => {
+            if (this.status == 0) {
+                await enqueue('processTransactionError', `processTransactionError-${this.workspaceId}-${this.transactionHash}`, { transactionId: this.transactionId }, 1);
+                trigger(`private-failedTransactions;workspace=${this.workspaceId}`, 'new', this.toJSON());
+            }
+
+            return transaction.triggerEvents();
+        }
+
+        // We finish creating stuff here to make sure we can put it in the transaction if applicable
+        if (this.contractAddress) {
+            const canCreateContract = await transaction.workspace.canCreateContract();
+            if (canCreateContract)
+                await transaction.workspace.safeCreateOrUpdateContract({
+                    address: this.contractAddress,
+                    transactionId: this.transactionId
+                }, options.transaction);
+        }
+
+        if (options.transaction) {
+            return options.transaction.afterCommit(afterCommitFn);
+        } else
+            return afterCommitFn();
     }
   }
   TransactionReceipt.init({
@@ -78,67 +107,11 @@ module.exports = (sequelize, DataTypes) => {
     raw: DataTypes.JSON
   }, {
     hooks: {
-        async afterCreate(receipt, options) {
-            const fullTransaction = await receipt.getTransaction({
-                attributes: ['hash', 'id', 'workspaceId', 'rawError', 'parsedError', 'to', 'data', 'blockNumber', 'from', 'gasLimit', 'gasPrice', 'type', 'value'],
-                include: [
-                    {
-                        model: sequelize.models.Workspace,
-                        as: 'workspace',
-                        attributes: ['id', 'name', 'public', 'userId'],
-                        include: [
-                            {
-                                model: sequelize.models.User,
-                                as: 'user',
-                                attributes: ['firebaseUserId', 'id']
-                            },
-                            {
-                                model: sequelize.models.Explorer,
-                                as: 'explorer',
-                                include: {
-                                    model: sequelize.models.StripeSubscription,
-                                    as: 'stripeSubscription'
-                                }
-                            }
-                        ]
-                    }
-                ]
-            });
-
-            // Here is the stuff that we only want to do once everything has been created (typically notifications & jobs queuing)
-            const afterCommitFn = async () => {
-                const explorer = fullTransaction.workspace.explorer;
-                if (!explorer)
-                    return;
-
-                const isExplorerActive = await explorer.isActive();
-                if (!isExplorerActive)
-                    return;
-
-                if (receipt.status == 0) {
-                    await enqueue('processTransactionError', `processTransactionError-${fullTransaction.workspaceId}-${fullTransaction.hash}`, { transactionId: fullTransaction.id }, 1);
-                    if (!fullTransaction.rawError && !fullTransaction.parsedError)
-                        trigger(`private-failedTransactions;workspace=${fullTransaction.workspaceId}`, 'new', fullTransaction.toJSON());
-                }
-
-                return fullTransaction.triggerEvents();
-            }
-
-            // We finish creating stuff here to make sure we can put it in the transaction if applicable
-            if (!fullTransaction.to && receipt.contractAddress) {
-                const workspace = fullTransaction.workspace;
-                const canCreateContract = await workspace.canCreateContract();
-                if (canCreateContract)
-                    await workspace.safeCreateOrUpdateContract({
-                        address: receipt.contractAddress,
-                        transactionId: fullTransaction.id
-                    }, options.transaction);
-            }
-
-            if (options.transaction) {
-                return options.transaction.afterCommit(afterCommitFn);
-            } else
-                return afterCommitFn();
+        afterBulkCreate(receipts, options) {
+            return Promise.all(receipts.map(r => r.afterCreate(options)));
+        },
+        afterCreate(receipt, options) {
+            return receipt.afterCreate(options);
         }
     },
     sequelize,

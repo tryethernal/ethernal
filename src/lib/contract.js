@@ -1,13 +1,13 @@
-const ethers = require('ethers');
+import * as ethers from 'ethers';
 
-const SELECTORS = require('../abis/selectors.json');
-const ERC20_ABI = require('../abis/erc20.json');
-const ERC721_ABI = require('../abis/erc721.json');
-const ERC721_METADATA_ABI = require('../abis/erc721Metadata.json');
-const ERC721_ENUMERABLE_ABI = require('../abis/erc721Enumerable.json');
+import SELECTORS from '../abis/selectors.json';
+import ERC20_ABI from '../abis/erc20.json';
+import ERC721_ABI from '../abis/erc721.json';
+import ERC721_METADATA_ABI from '../abis/erc721Metadata.json';
+import ERC721_ENUMERABLE_ABI from '../abis/erc721Enumerable.json';
 
-const { ContractConnector, ERC721Connector, getProvider } = require('./rpc');
-const { sanitize } = require('./utils');
+import { ContractConnector, ERC721Connector, getProvider } from './rpc.js';
+import { sanitize } from './utils.js';
 
 const formatErc721Metadata = (token) => {
     if (!token)
@@ -88,6 +88,7 @@ const findPatterns = async (rpcServer, contractAddress, abi) => {
         let decimals, symbol, name, totalSupply, promises = [], patterns = [], tokenData = {}, has721Metadata, has721Enumerable;
 
         const provider = getProvider(rpcServer);
+
         const erc20contract = new ethers.Contract(contractAddress, ERC20_ABI, provider);
 
         promises.push(erc20contract.decimals());
@@ -208,9 +209,9 @@ const isErc721 = (abi) => {
     return findSelectors(abi, SELECTORS.erc721);
 };
 
-module.exports = {
-    isErc20: isErc20,
-    isErc721: isErc721,
-    findPatterns: findPatterns,
-    formatErc721Metadata: formatErc721Metadata
+export {
+    isErc20,
+    isErc721,
+    findPatterns,
+    formatErc721Metadata
 };

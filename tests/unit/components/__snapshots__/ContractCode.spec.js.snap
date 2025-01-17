@@ -1,86 +1,272 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ContractCode.vue Should display contract verification info if public explorer and verified 1`] = `
-<div class="container container--fluid">
-  <!---->
-  <contract-verification-info-stub contract="[object Object]"></contract-verification-info-stub>
-  <div class="mb-6 v-card v-sheet v-sheet--outlined theme--light">
-    <div class="v-card__title">Bytecode</div>
-    <div class="v-card__text">
-      <div class="v-input v-textarea v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-        <div class="v-input__control">
-          <div class="v-input__slot">
-            <fieldset aria-hidden="true">
-              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-            </fieldset>
-            <div class="v-text-field__slot"><textarea disabled="disabled" id="input-6" rows="5"></textarea></div>
-            <div class="v-input__append-inner"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-content-copy theme--light" style="font-size: 16px;"></i></span></button></div>
+exports[`ContractCode.vue > Should display contract verification info if public explorer and verified 1`] = `
+"<div data-v-39109da1="">
+  <!--v-if-->
+  <contract-verification-info-stub data-v-39109da1="" contract="[object Object]"></contract-verification-info-stub>
+  <div data-v-39109da1="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-6">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
           </div>
-          <div class="v-text-field__details">
-            <div class="v-messages theme--light">
-              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-39109da1="" class="v-card-title">Bytecode</div>
+    <div data-v-39109da1="" class="v-card-text">
+      <div data-v-39109da1="" class="v-input v-input--horizontal v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-input--readonly v-textarea v-text-field text-medium-emphasis">
+        <!---->
+        <div class="v-input__control">
+          <div class="v-field v-field--active v-field--appended v-field--dirty v-field--no-label v-field--variant-outlined v-theme--light v-locale--is-ltr">
+            <div class="v-field__overlay"></div>
+            <div class="v-field__loader">
+              <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                <!---->
+                <div class="v-progress-linear__background"></div>
+                <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                  <div class="v-progress-linear__indeterminate">
+                    <div class="v-progress-linear__indeterminate long"></div>
+                    <div class="v-progress-linear__indeterminate short"></div>
+                  </div>
+                </transition-stub>
+                <!---->
+              </div>
+            </div>
+            <!---->
+            <div class="v-field__field" data-no-activator="">
+              <!----><label class="v-label v-field-label" for="input-0">
+                <!---->
+                <!---->
+              </label>
+              <!----><textarea class="v-field__input" readonly="" rows="5" id="input-0" aria-describedby="input-0-messages" value="0x60"></textarea>
+              <!---->
+              <!---->
+            </div>
+            <!---->
+            <div class="v-field__append-inner"><button data-v-39109da1="" type="button" class="v-btn v-btn--icon v-theme--light v-btn--density-compact v-btn--size-default v-btn--variant-text"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-content-copy mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+                <!---->
+                <!---->
+              </button>
+              <!---->
+            </div>
+            <div class="v-field__outline">
+              <div class="v-field__outline__start"></div>
+              <!---->
+              <div class="v-field__outline__end"></div>
+              <!---->
             </div>
           </div>
         </div>
-      </div> <input type="hidden" id="copyBytecode" value="0x60">
+        <!---->
+        <div class="v-input__details">
+          <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="input-0-messages">
+            <!---->
+          </transition-group-stub>
+          <!---->
+        </div>
+      </div><input data-v-39109da1="" type="hidden" id="copyBytecode" value="0x60">
     </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-  <div class="v-card v-sheet v-sheet--outlined theme--light">
-    <div class="v-card__title">Assembly</div>
-    <div class="v-card__text">
-      <div class="hljs">abc</div>
+  <div data-v-39109da1="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
     </div>
+    <!---->
+    <!---->
+    <div data-v-39109da1="" class="v-card-title">Assembly</div>
+    <div data-v-39109da1="" class="v-card-text">
+      <div data-v-39109da1="" class="hljs">abc</div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-</div>
+</div>"
 `;
 
-exports[`ContractCode.vue Should display the contract verification panel for public explorers 1`] = `
-<div class="container container--fluid">
-  <!---->
-  <contract-verification-stub></contract-verification-stub>
-  <div class="mb-6 v-card v-sheet v-sheet--outlined theme--light">
-    <div class="v-card__title">Bytecode</div>
-    <div class="v-card__text">
-      <div class="v-input v-textarea v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
-        <div class="v-input__control">
-          <div class="v-input__slot">
-            <fieldset aria-hidden="true">
-              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-            </fieldset>
-            <div class="v-text-field__slot"><textarea disabled="disabled" id="input-18" rows="5"></textarea></div>
-            <div class="v-input__append-inner"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-content-copy theme--light" style="font-size: 16px;"></i></span></button></div>
+exports[`ContractCode.vue > Should display the contract verification panel for public explorers 1`] = `
+"<div data-v-39109da1="">
+  <!--v-if-->
+  <contract-verification-stub data-v-39109da1=""></contract-verification-stub>
+  <div data-v-39109da1="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-6">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
           </div>
-          <div class="v-text-field__details">
-            <div class="v-messages theme--light">
-              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-39109da1="" class="v-card-title">Bytecode</div>
+    <div data-v-39109da1="" class="v-card-text">
+      <div data-v-39109da1="" class="v-input v-input--horizontal v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-input--readonly v-textarea v-text-field text-medium-emphasis">
+        <!---->
+        <div class="v-input__control">
+          <div class="v-field v-field--active v-field--appended v-field--dirty v-field--no-label v-field--variant-outlined v-theme--light v-locale--is-ltr">
+            <div class="v-field__overlay"></div>
+            <div class="v-field__loader">
+              <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                <!---->
+                <div class="v-progress-linear__background"></div>
+                <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                  <div class="v-progress-linear__indeterminate">
+                    <div class="v-progress-linear__indeterminate long"></div>
+                    <div class="v-progress-linear__indeterminate short"></div>
+                  </div>
+                </transition-stub>
+                <!---->
+              </div>
+            </div>
+            <!---->
+            <div class="v-field__field" data-no-activator="">
+              <!----><label class="v-label v-field-label" for="input-0">
+                <!---->
+                <!---->
+              </label>
+              <!----><textarea class="v-field__input" readonly="" rows="5" id="input-0" aria-describedby="input-0-messages" value="0x60"></textarea>
+              <!---->
+              <!---->
+            </div>
+            <!---->
+            <div class="v-field__append-inner"><button data-v-39109da1="" type="button" class="v-btn v-btn--icon v-theme--light v-btn--density-compact v-btn--size-default v-btn--variant-text"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-content-copy mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+                <!---->
+                <!---->
+              </button>
+              <!---->
+            </div>
+            <div class="v-field__outline">
+              <div class="v-field__outline__start"></div>
+              <!---->
+              <div class="v-field__outline__end"></div>
+              <!---->
             </div>
           </div>
         </div>
-      </div> <input type="hidden" id="copyBytecode" value="0x60">
+        <!---->
+        <div class="v-input__details">
+          <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="input-0-messages">
+            <!---->
+          </transition-group-stub>
+          <!---->
+        </div>
+      </div><input data-v-39109da1="" type="hidden" id="copyBytecode" value="0x60">
     </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-  <div class="v-card v-sheet v-sheet--outlined theme--light">
-    <div class="v-card__title">Assembly</div>
-    <div class="v-card__text">
-      <div class="hljs">abc</div>
+  <div data-v-39109da1="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
     </div>
+    <!---->
+    <!---->
+    <div data-v-39109da1="" class="v-card-title">Assembly</div>
+    <div data-v-39109da1="" class="v-card-text">
+      <div data-v-39109da1="" class="hljs">abc</div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-</div>
+</div>"
 `;
 
-exports[`ContractCode.vue Should not display the contract verification panel if not public explorer 1`] = `
-<div class="container container--fluid">
-  <!---->
-  <!---->
-  <div class="mb-6 v-card v-sheet v-sheet--outlined theme--light">
-    <div class="v-card__title">Bytecode</div>
-    <div class="v-card__text">
-      No bytecode for this contract. Redeploy to upload it.
+exports[`ContractCode.vue > Should not display the contract verification panel if not public explorer 1`] = `
+"<div data-v-39109da1="">
+  <!--v-if-->
+  <!--v-if-->
+  <div data-v-39109da1="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-6">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
     </div>
+    <!---->
+    <!---->
+    <div data-v-39109da1="" class="v-card-title">Bytecode</div>
+    <div data-v-39109da1="" class="v-card-text"> No bytecode for this contract. Redeploy to upload it. </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-  <div class="v-card v-sheet v-sheet--outlined theme--light">
-    <div class="v-card__title">Assembly</div>
-    <div class="v-card__text"><span>No assembly for this contract. Redeploy to upload it.</span></div>
+  <div data-v-39109da1="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-39109da1="" class="v-card-title">Assembly</div>
+    <div data-v-39109da1="" class="v-card-text"><span data-v-39109da1="">No assembly for this contract. Redeploy to upload it.</span></div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-</div>
+</div>"
 `;

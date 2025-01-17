@@ -1,246 +1,525 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ImportArtifactModal.vue Should let the user edit the name and ABI when parameters are valid 1`] = `
-<div class="v-dialog__container">
-  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
-    <transition-stub name="dialog-transition" appear="true">
-      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
-        <div class="v-card v-sheet theme--light">
-          <div class="v-card__title headline">Update Contract Metadata</div>
-          <div class="v-card__text">
-            <div role="alert" class="v-alert v-sheet theme--dark success">Metadata updated</div>
-            <!---->
-            <div class="mb-3">
-              Edit the name and the ABI of this contract to be able to interact with its read/write methods, decode functions calls &amp; events emitted.<br>
-              Only the formatting of the ABI is checked, it's up to you to make sure it is valid for the current address. If it's not, calls will fail.
-            </div>
-            <div>
-              <div class="v-input mb-3 v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                <div class="v-input__control">
-                  <div class="v-input__slot">
-                    <fieldset aria-hidden="true">
-                      <legend style="width: -24px;"><span class="notranslate">​</span></legend>
-                    </fieldset>
-                    <div class="v-text-field__slot"><label for="contractName" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Contract Name</label><input primary="" id="contractName" type="text"></div>
-                  </div>
-                </div>
-              </div>
-              <div class="v-input v-textarea v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                <div class="v-input__control">
-                  <div class="v-input__slot">
-                    <fieldset aria-hidden="true">
-                      <legend style="width: -24px;"><span class="notranslate">​</span></legend>
-                    </fieldset>
-                    <div class="v-text-field__slot"><label for="contractAbi" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">ABI</label><textarea primary="" id="contractAbi" rows="5"></textarea></div>
-                  </div>
-                </div>
-              </div>
-              <hr role="separator" aria-orientation="horizontal" class="my-3 v-divider theme--light">
-              Or upload a json file containing a <b>contractName</b> field and/or an <b>abi</b> field (a Truffle or Hardhat build file for example):<br> <input type="file" id="fileUploader" accept="application/json">
-            </div>
+exports[`ImportArtifactModal.vue > Should let the user edit the name and ABI when parameters are valid 1`] = `
+"<div class="v-dialog-stub" max-width="600">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
           </div>
-          <div class="v-card__actions">
-            <div class="spacer"></div> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text" id="updateContract"><span class="v-btn__content">Update</span></button>
-          </div>
-        </div>
+        </transition-stub>
+        <!---->
       </div>
-    </transition-stub>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-title text-h5">Update Contract Metadata</div>
+    <div class="v-card-text">
+      <div class="v-alert v-theme--light bg-success v-alert--density-default v-alert--variant-flat" role="alert">Metadata updated</div>
+      <!--v-if-->
+      <div class="mb-3"> Edit the name and the ABI of this contract to be able to interact with its read/write methods, decode functions calls &amp; events emitted.<br> Only the formatting of the ABI is checked, it's up to you to make sure it is valid for the current address. If it's not, calls will fail. </div>
+      <div>
+        <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field mb-3">
+          <!---->
+          <div class="v-input__control">
+            <div class="v-field v-field--active v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr">
+              <div class="v-field__overlay"></div>
+              <div class="v-field__loader">
+                <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                  <!---->
+                  <div class="v-progress-linear__background"></div>
+                  <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                  <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                    <div class="v-progress-linear__indeterminate">
+                      <div class="v-progress-linear__indeterminate long"></div>
+                      <div class="v-progress-linear__indeterminate short"></div>
+                    </div>
+                  </transition-stub>
+                  <!---->
+                </div>
+              </div>
+              <!---->
+              <div class="v-field__field" data-no-activator="">
+                <!----><label class="v-label v-field-label" for="contractName">
+                  <!---->Contract Name
+                </label>
+                <!----><input size="1" type="text" id="contractName" aria-describedby="contractName-messages" primary="" class="v-field__input" value="DSProxyFactory">
+                <!---->
+              </div>
+              <!---->
+              <!---->
+              <div class="v-field__outline">
+                <div class="v-field__outline__start"></div>
+                <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="contractName">
+                    <!---->Contract Name
+                  </label></div>
+                <div class="v-field__outline__end"></div>
+                <!---->
+              </div>
+            </div>
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <div class="v-input v-input--horizontal v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-textarea v-text-field">
+          <!---->
+          <div class="v-input__control">
+            <div class="v-field v-field--active v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr">
+              <div class="v-field__overlay"></div>
+              <div class="v-field__loader">
+                <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                  <!---->
+                  <div class="v-progress-linear__background"></div>
+                  <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                  <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                    <div class="v-progress-linear__indeterminate">
+                      <div class="v-progress-linear__indeterminate long"></div>
+                      <div class="v-progress-linear__indeterminate short"></div>
+                    </div>
+                  </transition-stub>
+                  <!---->
+                </div>
+              </div>
+              <!---->
+              <div class="v-field__field" data-no-activator="">
+                <!----><label class="v-label v-field-label" for="contractAbi">
+                  <!---->ABI
+                </label>
+                <!----><textarea class="v-field__input" rows="5" id="contractAbi" aria-describedby="contractAbi-messages" primary="" value="[{&quot;outputs&quot;:[{&quot;type&quot;:&quot;bool&quot;,&quot;name&quot;:&quot;&quot;}],&quot;constant&quot;:true,&quot;inputs&quot;:[{&quot;type&quot;:&quot;address&quot;,&quot;name&quot;:&quot;&quot;}],&quot;stateMutability&quot;:&quot;view&quot;,&quot;type&quot;:&quot;function&quot;,&quot;payable&quot;:false,&quot;name&quot;:&quot;isProxy&quot;},{&quot;outputs&quot;:[{&quot;type&quot;:&quot;address&quot;,&quot;name&quot;:&quot;&quot;}],&quot;constant&quot;:true,&quot;inputs&quot;:[],&quot;stateMutability&quot;:&quot;view&quot;,&quot;type&quot;:&quot;function&quot;,&quot;payable&quot;:false,&quot;name&quot;:&quot;cache&quot;},{&quot;outputs&quot;:[{&quot;type&quot;:&quot;address&quot;,&quot;name&quot;:&quot;proxy&quot;}],&quot;constant&quot;:false,&quot;inputs&quot;:[],&quot;stateMutability&quot;:&quot;nonpayable&quot;,&quot;type&quot;:&quot;function&quot;,&quot;payable&quot;:false,&quot;name&quot;:&quot;build&quot;},{&quot;outputs&quot;:[{&quot;type&quot;:&quot;address&quot;,&quot;name&quot;:&quot;proxy&quot;}],&quot;constant&quot;:false,&quot;inputs&quot;:[{&quot;type&quot;:&quot;address&quot;,&quot;name&quot;:&quot;owner&quot;}],&quot;stateMutability&quot;:&quot;nonpayable&quot;,&quot;type&quot;:&quot;function&quot;,&quot;payable&quot;:false,&quot;name&quot;:&quot;build&quot;},{&quot;inputs&quot;:[{&quot;indexed&quot;:true,&quot;type&quot;:&quot;address&quot;,&quot;name&quot;:&quot;sender&quot;},{&quot;indexed&quot;:true,&quot;type&quot;:&quot;address&quot;,&quot;name&quot;:&quot;owner&quot;},{&quot;indexed&quot;:false,&quot;type&quot;:&quot;address&quot;,&quot;name&quot;:&quot;proxy&quot;},{&quot;indexed&quot;:false,&quot;type&quot;:&quot;address&quot;,&quot;name&quot;:&quot;cache&quot;}],&quot;type&quot;:&quot;event&quot;,&quot;name&quot;:&quot;Created&quot;,&quot;anonymous&quot;:false}]"></textarea>
+                <!---->
+                <!---->
+              </div>
+              <!---->
+              <!---->
+              <div class="v-field__outline">
+                <div class="v-field__outline__start"></div>
+                <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="contractAbi">
+                    <!---->ABI
+                  </label></div>
+                <div class="v-field__outline__end"></div>
+                <!---->
+              </div>
+            </div>
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <hr class="v-divider v-theme--light my-3" aria-orientation="horizontal" role="separator"> Or upload a json file containing a <b>contractName</b> field and/or an <b>abi</b> field (a Truffle or Hardhat build file for example):<br><input type="file" id="fileUploader" accept="application/json">
+      </div>
+    </div>
+    <div class="v-card-actions">
+      <div class="v-spacer"></div><button type="button" class="v-btn v-btn--slim v-theme--light text-primary v-btn--density-default v-btn--size-default v-btn--variant-text"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+        <!----><span class="v-btn__content" data-no-activator="">Close</span>
+        <!---->
+        <!---->
+      </button><button type="button" class="v-btn v-btn--slim v-theme--light text-primary v-btn--density-default v-btn--size-default v-btn--variant-text" id="updateContract"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+        <!----><span class="v-btn__content" data-no-activator="">Update</span>
+        <!---->
+        <!---->
+      </button>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-</div>
+</div>"
 `;
 
-exports[`ImportArtifactModal.vue Should let the user upload a file containing contract metadata 1`] = `
-<div class="v-dialog__container">
-  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
-    <transition-stub name="dialog-transition" appear="true">
-      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
-        <div class="v-card v-sheet theme--light">
-          <div class="v-card__title headline">Update Contract Metadata</div>
-          <div class="v-card__text">
-            <div role="alert" class="v-alert v-sheet theme--dark success">Metadata updated</div>
-            <!---->
-            <div class="mb-3">
-              Edit the name and the ABI of this contract to be able to interact with its read/write methods, decode functions calls &amp; events emitted.<br>
-              Only the formatting of the ABI is checked, it's up to you to make sure it is valid for the current address. If it's not, calls will fail.
-            </div>
-            <div>
-              <div class="v-input mb-3 v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                <div class="v-input__control">
-                  <div class="v-input__slot">
-                    <fieldset aria-hidden="true">
-                      <legend style="width: -24px;"><span class="notranslate">​</span></legend>
-                    </fieldset>
-                    <div class="v-text-field__slot"><label for="contractName" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Contract Name</label><input primary="" id="contractName" type="text"></div>
-                  </div>
-                </div>
-              </div>
-              <div class="v-input v-textarea v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                <div class="v-input__control">
-                  <div class="v-input__slot">
-                    <fieldset aria-hidden="true">
-                      <legend style="width: -24px;"><span class="notranslate">​</span></legend>
-                    </fieldset>
-                    <div class="v-text-field__slot"><label for="contractAbi" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">ABI</label><textarea primary="" id="contractAbi" rows="5"></textarea></div>
-                  </div>
-                </div>
-              </div>
-              <hr role="separator" aria-orientation="horizontal" class="my-3 v-divider theme--light">
-              Or upload a json file containing a <b>contractName</b> field and/or an <b>abi</b> field (a Truffle or Hardhat build file for example):<br> <input type="file" id="fileUploader" accept="application/json">
-            </div>
+exports[`ImportArtifactModal.vue > Should let the user upload a file containing contract metadata 1`] = `
+"<div class="v-dialog-stub" max-width="600">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
           </div>
-          <div class="v-card__actions">
-            <div class="spacer"></div> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text" id="updateContract"><span class="v-btn__content">Update</span></button>
-          </div>
-        </div>
+        </transition-stub>
+        <!---->
       </div>
-    </transition-stub>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-title text-h5">Update Contract Metadata</div>
+    <div class="v-card-text">
+      <div class="v-alert v-theme--light bg-success v-alert--density-default v-alert--variant-flat" role="alert">Metadata updated</div>
+      <!--v-if-->
+      <div class="mb-3"> Edit the name and the ABI of this contract to be able to interact with its read/write methods, decode functions calls &amp; events emitted.<br> Only the formatting of the ABI is checked, it's up to you to make sure it is valid for the current address. If it's not, calls will fail. </div>
+      <div>
+        <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field mb-3">
+          <!---->
+          <div class="v-input__control">
+            <div class="v-field v-field--active v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr">
+              <div class="v-field__overlay"></div>
+              <div class="v-field__loader">
+                <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                  <!---->
+                  <div class="v-progress-linear__background"></div>
+                  <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                  <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                    <div class="v-progress-linear__indeterminate">
+                      <div class="v-progress-linear__indeterminate long"></div>
+                      <div class="v-progress-linear__indeterminate short"></div>
+                    </div>
+                  </transition-stub>
+                  <!---->
+                </div>
+              </div>
+              <!---->
+              <div class="v-field__field" data-no-activator="">
+                <!----><label class="v-label v-field-label" for="contractName">
+                  <!---->Contract Name
+                </label>
+                <!----><input size="1" type="text" id="contractName" aria-describedby="contractName-messages" primary="" class="v-field__input" value="DSProxyFactory">
+                <!---->
+              </div>
+              <!---->
+              <!---->
+              <div class="v-field__outline">
+                <div class="v-field__outline__start"></div>
+                <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="contractName">
+                    <!---->Contract Name
+                  </label></div>
+                <div class="v-field__outline__end"></div>
+                <!---->
+              </div>
+            </div>
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <div class="v-input v-input--horizontal v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-textarea v-text-field">
+          <!---->
+          <div class="v-input__control">
+            <div class="v-field v-field--active v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr">
+              <div class="v-field__overlay"></div>
+              <div class="v-field__loader">
+                <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                  <!---->
+                  <div class="v-progress-linear__background"></div>
+                  <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                  <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                    <div class="v-progress-linear__indeterminate">
+                      <div class="v-progress-linear__indeterminate long"></div>
+                      <div class="v-progress-linear__indeterminate short"></div>
+                    </div>
+                  </transition-stub>
+                  <!---->
+                </div>
+              </div>
+              <!---->
+              <div class="v-field__field" data-no-activator="">
+                <!----><label class="v-label v-field-label" for="contractAbi">
+                  <!---->ABI
+                </label>
+                <!----><textarea class="v-field__input" rows="5" id="contractAbi" aria-describedby="contractAbi-messages" primary="" value="[{&quot;outputs&quot;:[{&quot;type&quot;:&quot;bool&quot;,&quot;name&quot;:&quot;&quot;}],&quot;constant&quot;:true,&quot;inputs&quot;:[{&quot;type&quot;:&quot;address&quot;,&quot;name&quot;:&quot;&quot;}],&quot;stateMutability&quot;:&quot;view&quot;,&quot;type&quot;:&quot;function&quot;,&quot;payable&quot;:false,&quot;name&quot;:&quot;isProxy&quot;},{&quot;outputs&quot;:[{&quot;type&quot;:&quot;address&quot;,&quot;name&quot;:&quot;&quot;}],&quot;constant&quot;:true,&quot;inputs&quot;:[],&quot;stateMutability&quot;:&quot;view&quot;,&quot;type&quot;:&quot;function&quot;,&quot;payable&quot;:false,&quot;name&quot;:&quot;cache&quot;},{&quot;outputs&quot;:[{&quot;type&quot;:&quot;address&quot;,&quot;name&quot;:&quot;proxy&quot;}],&quot;constant&quot;:false,&quot;inputs&quot;:[],&quot;stateMutability&quot;:&quot;nonpayable&quot;,&quot;type&quot;:&quot;function&quot;,&quot;payable&quot;:false,&quot;name&quot;:&quot;build&quot;},{&quot;outputs&quot;:[{&quot;type&quot;:&quot;address&quot;,&quot;name&quot;:&quot;proxy&quot;}],&quot;constant&quot;:false,&quot;inputs&quot;:[{&quot;type&quot;:&quot;address&quot;,&quot;name&quot;:&quot;owner&quot;}],&quot;stateMutability&quot;:&quot;nonpayable&quot;,&quot;type&quot;:&quot;function&quot;,&quot;payable&quot;:false,&quot;name&quot;:&quot;build&quot;},{&quot;inputs&quot;:[{&quot;indexed&quot;:true,&quot;type&quot;:&quot;address&quot;,&quot;name&quot;:&quot;sender&quot;},{&quot;indexed&quot;:true,&quot;type&quot;:&quot;address&quot;,&quot;name&quot;:&quot;owner&quot;},{&quot;indexed&quot;:false,&quot;type&quot;:&quot;address&quot;,&quot;name&quot;:&quot;proxy&quot;},{&quot;indexed&quot;:false,&quot;type&quot;:&quot;address&quot;,&quot;name&quot;:&quot;cache&quot;}],&quot;type&quot;:&quot;event&quot;,&quot;name&quot;:&quot;Created&quot;,&quot;anonymous&quot;:false}]"></textarea>
+                <!---->
+                <!---->
+              </div>
+              <!---->
+              <!---->
+              <div class="v-field__outline">
+                <div class="v-field__outline__start"></div>
+                <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="contractAbi">
+                    <!---->ABI
+                  </label></div>
+                <div class="v-field__outline__end"></div>
+                <!---->
+              </div>
+            </div>
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <hr class="v-divider v-theme--light my-3" aria-orientation="horizontal" role="separator"> Or upload a json file containing a <b>contractName</b> field and/or an <b>abi</b> field (a Truffle or Hardhat build file for example):<br><input type="file" id="fileUploader" accept="application/json">
+      </div>
+    </div>
+    <div class="v-card-actions">
+      <div class="v-spacer"></div><button type="button" class="v-btn v-btn--slim v-theme--light text-primary v-btn--density-default v-btn--size-default v-btn--variant-text"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+        <!----><span class="v-btn__content" data-no-activator="">Close</span>
+        <!---->
+        <!---->
+      </button><button type="button" class="v-btn v-btn--slim v-theme--light text-primary v-btn--density-default v-btn--size-default v-btn--variant-text" id="updateContract"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+        <!----><span class="v-btn__content" data-no-activator="">Update</span>
+        <!---->
+        <!---->
+      </button>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-</div>
+</div>"
 `;
 
-exports[`ImportArtifactModal.vue Should warn the user if the ABI is not valid 1`] = `
-<div class="v-dialog__container">
-  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
-    <transition-stub name="dialog-transition" appear="true">
-      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
-        <div class="v-card v-sheet theme--light">
-          <div class="v-card__title headline">Update Contract Metadata</div>
-          <div class="v-card__text">
-            <!---->
-            <div role="alert" class="v-alert v-sheet theme--dark error">Invalid ABI</div>
-            <div class="mb-3">
-              Edit the name and the ABI of this contract to be able to interact with its read/write methods, decode functions calls &amp; events emitted.<br>
-              Only the formatting of the ABI is checked, it's up to you to make sure it is valid for the current address. If it's not, calls will fail.
-            </div>
-            <div>
-              <div class="v-input mb-3 v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                <div class="v-input__control">
-                  <div class="v-input__slot">
-                    <fieldset aria-hidden="true">
-                      <legend style="width: -24px;"><span class="notranslate">​</span></legend>
-                    </fieldset>
-                    <div class="v-text-field__slot"><label for="contractName" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Contract Name</label><input primary="" id="contractName" type="text"></div>
-                  </div>
-                </div>
-              </div>
-              <div class="v-input v-textarea v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                <div class="v-input__control">
-                  <div class="v-input__slot">
-                    <fieldset aria-hidden="true">
-                      <legend style="width: -24px;"><span class="notranslate">​</span></legend>
-                    </fieldset>
-                    <div class="v-text-field__slot"><label for="contractAbi" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">ABI</label><textarea primary="" id="contractAbi" rows="5"></textarea></div>
-                  </div>
-                </div>
-              </div>
-              <hr role="separator" aria-orientation="horizontal" class="my-3 v-divider theme--light">
-              Or upload a json file containing a <b>contractName</b> field and/or an <b>abi</b> field (a Truffle or Hardhat build file for example):<br> <input type="file" id="fileUploader" accept="application/json">
-            </div>
+exports[`ImportArtifactModal.vue > Should warn the user if the ABI is not valid 1`] = `
+"<div class="v-dialog-stub" max-width="600">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
           </div>
-          <div class="v-card__actions">
-            <div class="spacer"></div> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text" id="updateContract"><span class="v-btn__content">Update</span></button>
-          </div>
-        </div>
+        </transition-stub>
+        <!---->
       </div>
-    </transition-stub>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-title text-h5">Update Contract Metadata</div>
+    <div class="v-card-text">
+      <!--v-if-->
+      <div class="v-alert v-theme--light bg-error v-alert--density-default v-alert--variant-flat" role="alert">Invalid ABI</div>
+      <div class="mb-3"> Edit the name and the ABI of this contract to be able to interact with its read/write methods, decode functions calls &amp; events emitted.<br> Only the formatting of the ABI is checked, it's up to you to make sure it is valid for the current address. If it's not, calls will fail. </div>
+      <div>
+        <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field mb-3">
+          <!---->
+          <div class="v-input__control">
+            <div class="v-field v-field--active v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr">
+              <div class="v-field__overlay"></div>
+              <div class="v-field__loader">
+                <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                  <!---->
+                  <div class="v-progress-linear__background"></div>
+                  <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                  <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                    <div class="v-progress-linear__indeterminate">
+                      <div class="v-progress-linear__indeterminate long"></div>
+                      <div class="v-progress-linear__indeterminate short"></div>
+                    </div>
+                  </transition-stub>
+                  <!---->
+                </div>
+              </div>
+              <!---->
+              <div class="v-field__field" data-no-activator="">
+                <!----><label class="v-label v-field-label" for="contractName">
+                  <!---->Contract Name
+                </label>
+                <!----><input size="1" type="text" id="contractName" aria-describedby="contractName-messages" primary="" class="v-field__input" value="DSProxyFactory">
+                <!---->
+              </div>
+              <!---->
+              <!---->
+              <div class="v-field__outline">
+                <div class="v-field__outline__start"></div>
+                <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="contractName">
+                    <!---->Contract Name
+                  </label></div>
+                <div class="v-field__outline__end"></div>
+                <!---->
+              </div>
+            </div>
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <div class="v-input v-input--horizontal v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-textarea v-text-field">
+          <!---->
+          <div class="v-input__control">
+            <div class="v-field v-field--active v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr">
+              <div class="v-field__overlay"></div>
+              <div class="v-field__loader">
+                <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                  <!---->
+                  <div class="v-progress-linear__background"></div>
+                  <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                  <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                    <div class="v-progress-linear__indeterminate">
+                      <div class="v-progress-linear__indeterminate long"></div>
+                      <div class="v-progress-linear__indeterminate short"></div>
+                    </div>
+                  </transition-stub>
+                  <!---->
+                </div>
+              </div>
+              <!---->
+              <div class="v-field__field" data-no-activator="">
+                <!----><label class="v-label v-field-label" for="contractAbi">
+                  <!---->ABI
+                </label>
+                <!----><textarea class="v-field__input" rows="5" id="contractAbi" aria-describedby="contractAbi-messages" primary="" value="{ &quot;a&quot;: 1 }"></textarea>
+                <!---->
+                <!---->
+              </div>
+              <!---->
+              <!---->
+              <div class="v-field__outline">
+                <div class="v-field__outline__start"></div>
+                <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="contractAbi">
+                    <!---->ABI
+                  </label></div>
+                <div class="v-field__outline__end"></div>
+                <!---->
+              </div>
+            </div>
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <hr class="v-divider v-theme--light my-3" aria-orientation="horizontal" role="separator"> Or upload a json file containing a <b>contractName</b> field and/or an <b>abi</b> field (a Truffle or Hardhat build file for example):<br><input type="file" id="fileUploader" accept="application/json">
+      </div>
+    </div>
+    <div class="v-card-actions">
+      <div class="v-spacer"></div><button type="button" class="v-btn v-btn--slim v-theme--light text-primary v-btn--density-default v-btn--size-default v-btn--variant-text"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+        <!----><span class="v-btn__content" data-no-activator="">Close</span>
+        <!---->
+        <!---->
+      </button><button type="button" class="v-btn v-btn--slim v-theme--light text-primary v-btn--density-default v-btn--size-default v-btn--variant-text" id="updateContract"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+        <!----><span class="v-btn__content" data-no-activator="">Update</span>
+        <!---->
+        <!---->
+      </button>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-</div>
+</div>"
 `;
 
-exports[`ImportArtifactModal.vue Should warn the user if the ABI is not valid json 1`] = `
-<div class="v-dialog__container">
-  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
-    <transition-stub name="dialog-transition" appear="true">
-      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
-        <div class="v-card v-sheet theme--light">
-          <div class="v-card__title headline">Update Contract Metadata</div>
-          <div class="v-card__text">
-            <!---->
-            <div role="alert" class="v-alert v-sheet theme--dark error">Invalid JSON format</div>
-            <div class="mb-3">
-              Edit the name and the ABI of this contract to be able to interact with its read/write methods, decode functions calls &amp; events emitted.<br>
-              Only the formatting of the ABI is checked, it's up to you to make sure it is valid for the current address. If it's not, calls will fail.
-            </div>
-            <div>
-              <div class="v-input mb-3 v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                <div class="v-input__control">
-                  <div class="v-input__slot">
-                    <fieldset aria-hidden="true">
-                      <legend style="width: -24px;"><span class="notranslate">​</span></legend>
-                    </fieldset>
-                    <div class="v-text-field__slot"><label for="contractName" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Contract Name</label><input primary="" id="contractName" type="text"></div>
-                  </div>
-                </div>
-              </div>
-              <div class="v-input v-textarea v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                <div class="v-input__control">
-                  <div class="v-input__slot">
-                    <fieldset aria-hidden="true">
-                      <legend style="width: -24px;"><span class="notranslate">​</span></legend>
-                    </fieldset>
-                    <div class="v-text-field__slot"><label for="contractAbi" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">ABI</label><textarea primary="" id="contractAbi" rows="5"></textarea></div>
-                  </div>
-                </div>
-              </div>
-              <hr role="separator" aria-orientation="horizontal" class="my-3 v-divider theme--light">
-              Or upload a json file containing a <b>contractName</b> field and/or an <b>abi</b> field (a Truffle or Hardhat build file for example):<br> <input type="file" id="fileUploader" accept="application/json">
-            </div>
+exports[`ImportArtifactModal.vue > Should warn the user if the ABI is not valid json 1`] = `
+"<div class="v-dialog-stub" max-width="600">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
           </div>
-          <div class="v-card__actions">
-            <div class="spacer"></div> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text" id="updateContract"><span class="v-btn__content">Update</span></button>
-          </div>
-        </div>
+        </transition-stub>
+        <!---->
       </div>
-    </transition-stub>
-  </div>
-</div>
-`;
-
-exports[`ImportArtifactModal.vue Should warn the user if the file is invalid 1`] = `
-<div class="v-dialog__container">
-  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
-    <transition-stub name="dialog-transition" appear="true">
-      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
-        <div class="v-card v-sheet theme--light">
-          <div class="v-card__title headline">Update Contract Metadata</div>
-          <div class="v-card__text">
-            <div role="alert" class="v-alert v-sheet theme--dark success">Metadata updated</div>
-            <!---->
-            <div class="mb-3">
-              Edit the name and the ABI of this contract to be able to interact with its read/write methods, decode functions calls &amp; events emitted.<br>
-              Only the formatting of the ABI is checked, it's up to you to make sure it is valid for the current address. If it's not, calls will fail.
-            </div>
-            <div>
-              <div class="v-input mb-3 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                <div class="v-input__control">
-                  <div class="v-input__slot">
-                    <fieldset aria-hidden="true">
-                      <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                    </fieldset>
-                    <div class="v-text-field__slot"><label for="contractName" class="v-label theme--light" style="left: 0px; position: absolute;">Contract Name</label><input primary="" id="contractName" type="text"></div>
-                  </div>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-title text-h5">Update Contract Metadata</div>
+    <div class="v-card-text">
+      <!--v-if-->
+      <div class="v-alert v-theme--light bg-error v-alert--density-default v-alert--variant-flat" role="alert">Invalid JSON format</div>
+      <div class="mb-3"> Edit the name and the ABI of this contract to be able to interact with its read/write methods, decode functions calls &amp; events emitted.<br> Only the formatting of the ABI is checked, it's up to you to make sure it is valid for the current address. If it's not, calls will fail. </div>
+      <div>
+        <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field mb-3">
+          <!---->
+          <div class="v-input__control">
+            <div class="v-field v-field--active v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr">
+              <div class="v-field__overlay"></div>
+              <div class="v-field__loader">
+                <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                  <!---->
+                  <div class="v-progress-linear__background"></div>
+                  <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                  <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                    <div class="v-progress-linear__indeterminate">
+                      <div class="v-progress-linear__indeterminate long"></div>
+                      <div class="v-progress-linear__indeterminate short"></div>
+                    </div>
+                  </transition-stub>
+                  <!---->
                 </div>
               </div>
-              <div class="v-input v-textarea v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                <div class="v-input__control">
-                  <div class="v-input__slot">
-                    <fieldset aria-hidden="true">
-                      <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                    </fieldset>
-                    <div class="v-text-field__slot"><label for="contractAbi" class="v-label theme--light" style="left: 0px; position: absolute;">ABI</label><textarea primary="" id="contractAbi" rows="5"></textarea></div>
-                  </div>
-                </div>
+              <!---->
+              <div class="v-field__field" data-no-activator="">
+                <!----><label class="v-label v-field-label" for="contractName">
+                  <!---->Contract Name
+                </label>
+                <!----><input size="1" type="text" id="contractName" aria-describedby="contractName-messages" primary="" class="v-field__input" value="DSProxyFactory">
+                <!---->
               </div>
-              <hr role="separator" aria-orientation="horizontal" class="my-3 v-divider theme--light">
-              Or upload a json file containing a <b>contractName</b> field and/or an <b>abi</b> field (a Truffle or Hardhat build file for example):<br> <input type="file" id="fileUploader" accept="application/json">
+              <!---->
+              <!---->
+              <div class="v-field__outline">
+                <div class="v-field__outline__start"></div>
+                <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="contractName">
+                    <!---->Contract Name
+                  </label></div>
+                <div class="v-field__outline__end"></div>
+                <!---->
+              </div>
             </div>
           </div>
-          <div class="v-card__actions">
-            <div class="spacer"></div> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text" id="updateContract"><span class="v-btn__content">Update</span></button>
-          </div>
+          <!---->
+          <!---->
         </div>
+        <div class="v-input v-input--horizontal v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-textarea v-text-field">
+          <!---->
+          <div class="v-input__control">
+            <div class="v-field v-field--active v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr">
+              <div class="v-field__overlay"></div>
+              <div class="v-field__loader">
+                <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                  <!---->
+                  <div class="v-progress-linear__background"></div>
+                  <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                  <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                    <div class="v-progress-linear__indeterminate">
+                      <div class="v-progress-linear__indeterminate long"></div>
+                      <div class="v-progress-linear__indeterminate short"></div>
+                    </div>
+                  </transition-stub>
+                  <!---->
+                </div>
+              </div>
+              <!---->
+              <div class="v-field__field" data-no-activator="">
+                <!----><label class="v-label v-field-label" for="contractAbi">
+                  <!---->ABI
+                </label>
+                <!----><textarea class="v-field__input" rows="5" id="contractAbi" aria-describedby="contractAbi-messages" primary="" value="{ a: 1 }"></textarea>
+                <!---->
+                <!---->
+              </div>
+              <!---->
+              <!---->
+              <div class="v-field__outline">
+                <div class="v-field__outline__start"></div>
+                <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="contractAbi">
+                    <!---->ABI
+                  </label></div>
+                <div class="v-field__outline__end"></div>
+                <!---->
+              </div>
+            </div>
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <hr class="v-divider v-theme--light my-3" aria-orientation="horizontal" role="separator"> Or upload a json file containing a <b>contractName</b> field and/or an <b>abi</b> field (a Truffle or Hardhat build file for example):<br><input type="file" id="fileUploader" accept="application/json">
       </div>
-    </transition-stub>
+    </div>
+    <div class="v-card-actions">
+      <div class="v-spacer"></div><button type="button" class="v-btn v-btn--slim v-theme--light text-primary v-btn--density-default v-btn--size-default v-btn--variant-text"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+        <!----><span class="v-btn__content" data-no-activator="">Close</span>
+        <!---->
+        <!---->
+      </button><button type="button" class="v-btn v-btn--slim v-theme--light text-primary v-btn--density-default v-btn--size-default v-btn--variant-text" id="updateContract"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+        <!----><span class="v-btn__content" data-no-activator="">Update</span>
+        <!---->
+        <!---->
+      </button>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-</div>
+</div>"
 `;

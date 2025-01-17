@@ -1,175 +1,235 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`TokensBalanceDiff.vue Should display formatted token balances difference 1`] = `
-<div class="my-2 v-card v-sheet v-sheet--outlined theme--light">
-  <div class="v-card__text">
-    <div class="v-data-table v-data-table--has-top theme--light">
-      <header class="v-sheet theme--light v-toolbar v-toolbar--dense v-toolbar--flat" style="height: 48px;">
-        <div class="v-toolbar__content" style="height: 48px;">
-          <div class="v-toolbar__title"><small>
-              <hash-link-stub loadcontract="true" withtokenname="true" withname="true" hash="0xdc64a140aa3e981100a9beca4e685f962f0cf6c9" type="address"></hash-link-stub>
-            </small></div>
-          <div class="spacer"></div>
-          <div class="v-input theme--light v-input--selection-controls v-input--switch">
-            <div class="v-input__control">
-              <div class="v-input__slot">
-                <div class="v-input--selection-controls__input"><input aria-checked="false" id="input-31" role="switch" type="checkbox" aria-disabled="false" value="">
-                  <div class="v-input--selection-controls__ripple"></div>
-                  <div class="v-input--switch__track theme--light"></div>
-                  <div class="v-input--switch__thumb theme--light">
-                    <transition-stub name="fab-transition" mode="out-in"></transition-stub>
-                  </div>
-                </div><label for="input-31" class="v-label theme--light" style="left: 0px; position: relative;">Unformatted Amounts</label>
-              </div>
-              <div class="v-messages theme--light">
-                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
-              </div>
-            </div>
-          </div>
+exports[`TokensBalanceDiff.vue > Should display formatted token balances difference 1`] = `
+"<div class="v-card v-theme--light v-card--density-default v-card--variant-elevated my-2">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
         </div>
-      </header>
-      <div class="v-data-table__wrapper">
-        <table>
-          <colgroup>
-            <col class="">
-            <col class="">
-            <col class="">
-            <col class="">
-          </colgroup>
-          <thead class="v-data-table-header">
-            <tr>
-              <th role="columnheader" scope="col" aria-label="Address: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Address</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-              <th role="columnheader" scope="col" aria-label="Previous Block (#1): Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Previous Block (#1)</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-              <th role="columnheader" scope="col" aria-label="Tx Block (#2): Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Tx Block (#2)</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-              <th role="columnheader" scope="col" aria-label="Change: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Change</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr class="">
-              <td class="text-start">
-                <hash-link-stub hash="0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266" type="address"></hash-link-stub>
-              </td>
-              <td class="text-start">
-                99,999,999,880 ETL
-              </td>
-              <td class="text-start">
-                99,999,999,870 ETL
-              </td>
-              <td class="text-start">
-                <!---->
-                <!----> <span class="error--text">
-                    -10 ETL
-                </span>
-              </td>
-            </tr>
-            <tr class="">
-              <td class="text-start">
-                <hash-link-stub hash="0x2d481eeb2ba97955cd081cf218f453a817259ab1" type="address"></hash-link-stub>
-              </td>
-              <td class="text-start">
-                120 ETL
-              </td>
-              <td class="text-start">
-                130 ETL
-              </td>
-              <td class="text-start"><span class="success--text">
-                    +10 ETL
-                </span>
-                <!---->
-                <!---->
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      </transition-stub>
+      <!---->
     </div>
   </div>
-</div>
+  <!---->
+  <!---->
+  <div class="v-card-text">
+    <div class="v-table v-table--has-top v-table--has-bottom v-theme--light v-table--density-default v-data-table">
+      <div style="height: 48px; font-size: 16px;" class="d-flex justify-space-between">
+        <hash-link-stub type="address" hash="0xdc64a140aa3e981100a9beca4e685f962f0cf6c9" withtokenname="true" withname="true" loadcontract="true" class="align-self-center"></hash-link-stub>
+        <div class="v-input v-input--horizontal v-input--center-affix v-input--density-default v-theme--light v-locale--is-ltr v-input--dirty v-switch align-self-center">
+          <!---->
+          <div class="v-input__control">
+            <div class="v-selection-control v-selection-control--density-default">
+              <div class="v-selection-control__wrapper">
+                <div class="v-switch__track">
+                  <!---->
+                  <!---->
+                </div>
+                <div class="v-selection-control__input"><input id="switch-0" aria-disabled="false" aria-label="Unformatted Amounts" type="checkbox" aria-describedby="switch-0-messages" value="true">
+                  <div class="v-switch__thumb">
+                    <transition-stub name="scale-transition" appear="false" persisted="false" css="true">
+                      <!---->
+                    </transition-stub>
+                  </div>
+                </div>
+              </div><label class="v-label v-label--clickable" for="switch-0">
+                <!---->Unformatted Amounts
+              </label>
+            </div>
+          </div>
+          <!---->
+          <!---->
+        </div>
+      </div>
+      <div class="v-table__wrapper">
+        <table>
+          <!---->
+          <thead>
+            <tr>
+              <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th" colspan="1" rowspan="1">
+                <div class="v-data-table-header__content"><span>Address</span><i class="mdi-arrow-up mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
+                  <!---->
+                </div>
+              </th>
+              <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th" colspan="1" rowspan="1">
+                <div class="v-data-table-header__content"><span>Previous Block (#1)</span><i class="mdi-arrow-up mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
+                  <!---->
+                </div>
+              </th>
+              <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th" colspan="1" rowspan="1">
+                <div class="v-data-table-header__content"><span>Tx Block (#2)</span><i class="mdi-arrow-up mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
+                  <!---->
+                </div>
+              </th>
+              <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th" colspan="1" rowspan="1">
+                <div class="v-data-table-header__content"><span>Change</span><i class="mdi-arrow-up mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
+                  <!---->
+                </div>
+              </th>
+            </tr>
+            <!---->
+          </thead>
+          <!---->
+          <tbody>
+            <!---->
+            <tr class="v-data-table__tr">
+              <td class="v-data-table__td v-data-table-column--align-start">
+                <hash-link-stub type="address" hash="0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266"></hash-link-stub>
+              </td>
+              <td class="v-data-table__td v-data-table-column--align-start">99,999,999,880 ETL</td>
+              <td class="v-data-table__td v-data-table-column--align-start">99,999,999,870 ETL</td>
+              <td class="v-data-table__td v-data-table-column--align-start">
+                <!--v-if-->
+                <!--v-if--><span class="text-error">-10 ETL</span>
+              </td>
+            </tr>
+            <!---->
+            <tr class="v-data-table__tr">
+              <td class="v-data-table__td v-data-table-column--align-start">
+                <hash-link-stub type="address" hash="0x2d481eeb2ba97955cd081cf218f453a817259ab1"></hash-link-stub>
+              </td>
+              <td class="v-data-table__td v-data-table-column--align-start">120 ETL</td>
+              <td class="v-data-table__td v-data-table-column--align-start">130 ETL</td>
+              <td class="v-data-table__td v-data-table-column--align-start"><span class="text-success"> +10 ETL</span>
+                <!--v-if-->
+                <!--v-if-->
+              </td>
+            </tr>
+            <!---->
+            <!---->
+          </tbody>
+          <!---->
+          <!---->
+        </table>
+      </div>
+      <!---->
+    </div>
+  </div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
 `;
 
-exports[`TokensBalanceDiff.vue Should display token balances difference 1`] = `
-<div class="my-2 v-card v-sheet v-sheet--outlined theme--light">
-  <div class="v-card__text">
-    <div class="v-data-table v-data-table--has-top theme--light">
-      <header class="v-sheet theme--light v-toolbar v-toolbar--dense v-toolbar--flat" style="height: 48px;">
-        <div class="v-toolbar__content" style="height: 48px;">
-          <div class="v-toolbar__title"><small>
-              <hash-link-stub loadcontract="true" withtokenname="true" withname="true" hash="0xdc64a140aa3e981100a9beca4e685f962f0cf6c9" type="address"></hash-link-stub>
-            </small></div>
-          <div class="spacer"></div>
-          <div class="v-input theme--light v-input--selection-controls v-input--switch">
-            <div class="v-input__control">
-              <div class="v-input__slot">
-                <div class="v-input--selection-controls__input"><input aria-checked="false" id="input-10" role="switch" type="checkbox" aria-disabled="false" value="">
-                  <div class="v-input--selection-controls__ripple"></div>
-                  <div class="v-input--switch__track theme--light"></div>
-                  <div class="v-input--switch__thumb theme--light">
-                    <transition-stub name="fab-transition" mode="out-in"></transition-stub>
-                  </div>
-                </div><label for="input-10" class="v-label theme--light" style="left: 0px; position: relative;">Unformatted Amounts</label>
-              </div>
-              <div class="v-messages theme--light">
-                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
-              </div>
-            </div>
-          </div>
+exports[`TokensBalanceDiff.vue > Should display token balances difference 1`] = `
+"<div class="v-card v-theme--light v-card--density-default v-card--variant-elevated my-2">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
         </div>
-      </header>
-      <div class="v-data-table__wrapper">
-        <table>
-          <colgroup>
-            <col class="">
-            <col class="">
-            <col class="">
-            <col class="">
-          </colgroup>
-          <thead class="v-data-table-header">
-            <tr>
-              <th role="columnheader" scope="col" aria-label="Address: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Address</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-              <th role="columnheader" scope="col" aria-label="Previous Block (#1): Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Previous Block (#1)</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-              <th role="columnheader" scope="col" aria-label="Tx Block (#2): Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Tx Block (#2)</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-              <th role="columnheader" scope="col" aria-label="Change: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Change</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr class="">
-              <td class="text-start">
-                <hash-link-stub hash="0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266" type="address"></hash-link-stub>
-              </td>
-              <td class="text-start">
-                99999999880000000000000000000
-              </td>
-              <td class="text-start">
-                99999999870000000000000000000
-              </td>
-              <td class="text-start">
-                <!---->
-                <!----> <span class="error--text">
-                    -10000000000000000000
-                </span>
-              </td>
-            </tr>
-            <tr class="">
-              <td class="text-start">
-                <hash-link-stub hash="0x2d481eeb2ba97955cd081cf218f453a817259ab1" type="address"></hash-link-stub>
-              </td>
-              <td class="text-start">
-                120000000000000000000
-              </td>
-              <td class="text-start">
-                130000000000000000000
-              </td>
-              <td class="text-start"><span class="success--text">
-                    +10000000000000000000
-                </span>
-                <!---->
-                <!---->
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      </transition-stub>
+      <!---->
     </div>
   </div>
-</div>
+  <!---->
+  <!---->
+  <div class="v-card-text">
+    <div class="v-table v-table--has-top v-table--has-bottom v-theme--light v-table--density-default v-data-table">
+      <div style="height: 48px; font-size: 16px;" class="d-flex justify-space-between">
+        <hash-link-stub type="address" hash="0xdc64a140aa3e981100a9beca4e685f962f0cf6c9" withtokenname="true" withname="true" loadcontract="true" class="align-self-center"></hash-link-stub>
+        <div class="v-input v-input--horizontal v-input--center-affix v-input--density-default v-theme--light v-locale--is-ltr v-input--dirty v-switch align-self-center">
+          <!---->
+          <div class="v-input__control">
+            <div class="v-selection-control v-selection-control--density-default">
+              <div class="v-selection-control__wrapper">
+                <div class="v-switch__track">
+                  <!---->
+                  <!---->
+                </div>
+                <div class="v-selection-control__input"><input id="switch-0" aria-disabled="false" aria-label="Unformatted Amounts" type="checkbox" aria-describedby="switch-0-messages" value="true">
+                  <div class="v-switch__thumb">
+                    <transition-stub name="scale-transition" appear="false" persisted="false" css="true">
+                      <!---->
+                    </transition-stub>
+                  </div>
+                </div>
+              </div><label class="v-label v-label--clickable" for="switch-0">
+                <!---->Unformatted Amounts
+              </label>
+            </div>
+          </div>
+          <!---->
+          <!---->
+        </div>
+      </div>
+      <div class="v-table__wrapper">
+        <table>
+          <!---->
+          <thead>
+            <tr>
+              <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th" colspan="1" rowspan="1">
+                <div class="v-data-table-header__content"><span>Address</span><i class="mdi-arrow-up mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
+                  <!---->
+                </div>
+              </th>
+              <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th" colspan="1" rowspan="1">
+                <div class="v-data-table-header__content"><span>Previous Block (#1)</span><i class="mdi-arrow-up mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
+                  <!---->
+                </div>
+              </th>
+              <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th" colspan="1" rowspan="1">
+                <div class="v-data-table-header__content"><span>Tx Block (#2)</span><i class="mdi-arrow-up mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
+                  <!---->
+                </div>
+              </th>
+              <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th" colspan="1" rowspan="1">
+                <div class="v-data-table-header__content"><span>Change</span><i class="mdi-arrow-up mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
+                  <!---->
+                </div>
+              </th>
+            </tr>
+            <!---->
+          </thead>
+          <!---->
+          <tbody>
+            <!---->
+            <tr class="v-data-table__tr">
+              <td class="v-data-table__td v-data-table-column--align-start">
+                <hash-link-stub type="address" hash="0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266"></hash-link-stub>
+              </td>
+              <td class="v-data-table__td v-data-table-column--align-start">99999999880000000000000000000</td>
+              <td class="v-data-table__td v-data-table-column--align-start">99999999870000000000000000000</td>
+              <td class="v-data-table__td v-data-table-column--align-start">
+                <!--v-if-->
+                <!--v-if--><span class="text-error">-10000000000000000000</span>
+              </td>
+            </tr>
+            <!---->
+            <tr class="v-data-table__tr">
+              <td class="v-data-table__td v-data-table-column--align-start">
+                <hash-link-stub type="address" hash="0x2d481eeb2ba97955cd081cf218f453a817259ab1"></hash-link-stub>
+              </td>
+              <td class="v-data-table__td v-data-table-column--align-start">120000000000000000000</td>
+              <td class="v-data-table__td v-data-table-column--align-start">130000000000000000000</td>
+              <td class="v-data-table__td v-data-table-column--align-start"><span class="text-success"> +10000000000000000000</span>
+                <!--v-if-->
+                <!--v-if-->
+              </td>
+            </tr>
+            <!---->
+            <!---->
+          </tbody>
+          <!---->
+          <!---->
+        </table>
+      </div>
+      <!---->
+    </div>
+  </div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
 `;

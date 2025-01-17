@@ -1,24 +1,18 @@
 import flushPromises from 'flush-promises';
-import MockHelper from '../MockHelper';
 
 import ExplorerFaucetSettings from '@/components/ExplorerFaucetSettings.vue';
 
-beforeEach(() => jest.clearAllMocks());
-
 describe('ExplorerFaucetSettings.vue', () => {
-    let helper;
     const stubs = ['Create-Explorer-Faucet-Modal', 'Explorer-Faucet-Settings-Danger-Zone', 'Hash-Link'];
 
-    beforeEach(() => {
-        helper = new MockHelper();
-    });
-
     it('Should display faucet intro', async () => {
-        jest.spyOn(helper.mocks.server, 'getExplorer').mockResolvedValueOnce({ data: { faucet: null }});
+        vi.spyOn(server, 'getExplorer').mockResolvedValueOnce({ data: { faucet: null }});
 
-        const wrapper = helper.mountFn(ExplorerFaucetSettings, {
-            stubs,
-            propsData: {
+        const wrapper = mount(ExplorerFaucetSettings, {
+            global: {
+                stubs
+            },
+            props: {
                 explorerId: 1
             }
         });
@@ -28,7 +22,7 @@ describe('ExplorerFaucetSettings.vue', () => {
     });
 
     it('Should display active faucet UI', async () => {
-        jest.spyOn(helper.mocks.server, 'getExplorer').mockResolvedValueOnce({ data: {
+        vi.spyOn(server, 'getExplorer').mockResolvedValueOnce({ data: {
             token: 'ETL',
             domain: 'ethernal.com',
             domains: [],
@@ -40,11 +34,13 @@ describe('ExplorerFaucetSettings.vue', () => {
                 active: true
             }
         }});
-        jest.spyOn(helper.mocks.server, 'getFaucetBalance').mockResolvedValueOnce({ data: { balance: '90000000000000000' }});
+        vi.spyOn(server, 'getFaucetBalance').mockResolvedValueOnce({ data: { balance: '90000000000000000' }});
 
-        const wrapper = helper.mountFn(ExplorerFaucetSettings, {
-            stubs,
-            propsData: {
+        const wrapper = mount(ExplorerFaucetSettings, {
+            global: {
+                stubs
+            },
+            props: {
                 explorerId: 1
             }
         });
@@ -54,7 +50,7 @@ describe('ExplorerFaucetSettings.vue', () => {
     });
 
     it('SHould display inactive faucet UI', async () => {
-        jest.spyOn(helper.mocks.server, 'getExplorer').mockResolvedValueOnce({ data: {
+        vi.spyOn(server, 'getExplorer').mockResolvedValueOnce({ data: {
             token: 'ETL',
             domain: 'ethernal.com',
             domains: [],
@@ -66,11 +62,13 @@ describe('ExplorerFaucetSettings.vue', () => {
                 active: false
             }
         }});
-        jest.spyOn(helper.mocks.server, 'getFaucetBalance').mockResolvedValueOnce({ data: { balance: '90000000000000000' }});
+        vi.spyOn(server, 'getFaucetBalance').mockResolvedValueOnce({ data: { balance: '90000000000000000' }});
 
-        const wrapper = helper.mountFn(ExplorerFaucetSettings, {
-            stubs,
-            propsData: {
+        const wrapper = mount(ExplorerFaucetSettings, {
+            global: {
+                stubs
+            },
+            props: {
                 explorerId: 1
             }
         });

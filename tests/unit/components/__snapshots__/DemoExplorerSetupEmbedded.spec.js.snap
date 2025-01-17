@@ -1,49 +1,141 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`DemoExplorerSetupEmbedded.vue Should display embeddable setup 1`] = `
-<main class="v-main" style="padding: 0px 0px 0px 0px;">
-  <div class="v-main__wrap">
-    <div class="container container--fluid">
-      <form novalidate="novalidate" class="v-form mt-4">
-        <div class="row">
-          <div class="col">
-            <div class="v-input theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
-              <div class="v-input__control">
-                <div class="v-input__slot">
-                  <fieldset aria-hidden="true">
-                    <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                  </fieldset>
-                  <div class="v-text-field__slot"><label for="input-8" class="v-label theme--light" style="left: 0px; position: absolute;">RPC URL</label><input required="required" id="input-8" type="text"></div>
-                </div>
-                <div class="v-text-field__details">
-                  <div class="v-messages theme--light">
-                    <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+exports[`DemoExplorerSetupEmbedded.vue > Should display embeddable setup 1`] = `
+"<div class="v-application v-theme--light v-layout v-layout--full-height v-locale--is-ltr">
+  <div class="v-application__wrap">
+    <main data-v-d31fb907="" class="v-main" style="--v-layout-left: 0px; --v-layout-right: 0px; --v-layout-top: 0px; --v-layout-bottom: 0px; transition: none;">
+      <div data-v-d31fb907="" class="v-container v-container--fluid v-locale--is-ltr">
+        <form data-v-d31fb907="" class="v-form mt-4" novalidate="">
+          <div data-v-d31fb907="" class="v-row">
+            <div data-v-d31fb907="" class="v-col">
+              <div data-v-d31fb907="" class="v-input v-input--horizontal v-input--center-affix v-input--density-default v-theme--light v-locale--is-ltr v-text-field">
+                <!---->
+                <div class="v-input__control">
+                  <div class="v-field v-field--center-affix v-field--variant-outlined v-theme--light v-locale--is-ltr">
+                    <div class="v-field__overlay"></div>
+                    <div class="v-field__loader">
+                      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                        <!---->
+                        <div class="v-progress-linear__background"></div>
+                        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                          <div class="v-progress-linear__indeterminate">
+                            <div class="v-progress-linear__indeterminate long"></div>
+                            <div class="v-progress-linear__indeterminate short"></div>
+                          </div>
+                        </transition-stub>
+                        <!---->
+                      </div>
+                    </div>
+                    <!---->
+                    <div class="v-field__field" data-no-activator="">
+                      <!----><label class="v-label v-field-label" for="input-0">
+                        <!---->RPC URL
+                      </label>
+                      <!----><input placeholder="https://my.rpc.com:8545" size="1" type="text" id="input-0" aria-describedby="input-0-messages" required="" class="v-field__input">
+                      <!---->
+                    </div>
+                    <!---->
+                    <!---->
+                    <div class="v-field__outline">
+                      <div class="v-field__outline__start"></div>
+                      <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
+                          <!---->RPC URL
+                        </label></div>
+                      <div class="v-field__outline__end"></div>
+                      <!---->
+                    </div>
                   </div>
                 </div>
+                <div class="v-input__append">
+                  <!----><button data-v-d31fb907="" type="submit" class="v-btn v-btn--disabled v-theme--light bg-primary v-btn--density-default v-btn--size-default v-btn--variant-elevated" style="height: 56px;" disabled=""><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                    <!----><span class="v-btn__content" data-no-activator="">Get Started</span>
+                    <!---->
+                    <!---->
+                  </button>
+                </div>
+                <div class="v-input__details">
+                  <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="input-0-messages">
+                    <!---->
+                  </transition-group-stub>
+                  <!---->
+                </div>
               </div>
-              <div class="v-input__append-outer"><button type="submit" disabled="disabled" class="v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default" style="height: 56px;"><span class="v-btn__content">Get Started</span></button></div>
             </div>
           </div>
-        </div>
-      </form>
-    </div>
+        </form>
+      </div>
+    </main>
   </div>
-</main>
+</div>"
 `;
 
-exports[`DemoExplorerSetupEmbedded.vue Should display success message with domain 1`] = `
-<main class="v-main" style="padding: 0px 0px 0px 0px;">
-  <div class="v-main__wrap">
-    <div class="container container--fluid pa-0">
-      <div class="v-card v-sheet theme--light elevation-0">
-        <div class="v-card__title success--text"><i aria-hidden="true" class="v-icon notranslate success--text mr-2 mdi mdi-check-circle theme--light"></i>
-          Your explorer is ready!
-        </div>
-        <div class="v-card__text">
-          You can access it here: <a href="//my.explorer.com" target="_blank">https://my.explorer.com</a> (blocks might take a few seconds to start appearing).
-        </div>
+exports[`DemoExplorerSetupEmbedded.vue > Should display success message with domain 1`] = `
+"<div class="v-application v-theme--light v-layout v-layout--full-height v-locale--is-ltr">
+  <div class="v-application__wrap">
+    <main data-v-d31fb907="" class="v-main" style="--v-layout-left: 0px; --v-layout-right: 0px; --v-layout-top: 0px; --v-layout-bottom: 0px; transition: none;" domain="my.explorer.com">
+      <div data-v-d31fb907="" class="v-container v-container--fluid v-locale--is-ltr">
+        <form data-v-d31fb907="" class="v-form mt-4" novalidate="">
+          <div data-v-d31fb907="" class="v-row">
+            <div data-v-d31fb907="" class="v-col">
+              <div data-v-d31fb907="" class="v-input v-input--horizontal v-input--center-affix v-input--density-default v-theme--light v-locale--is-ltr v-text-field">
+                <!---->
+                <div class="v-input__control">
+                  <div class="v-field v-field--center-affix v-field--variant-outlined v-theme--light v-locale--is-ltr">
+                    <div class="v-field__overlay"></div>
+                    <div class="v-field__loader">
+                      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                        <!---->
+                        <div class="v-progress-linear__background"></div>
+                        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                          <div class="v-progress-linear__indeterminate">
+                            <div class="v-progress-linear__indeterminate long"></div>
+                            <div class="v-progress-linear__indeterminate short"></div>
+                          </div>
+                        </transition-stub>
+                        <!---->
+                      </div>
+                    </div>
+                    <!---->
+                    <div class="v-field__field" data-no-activator="">
+                      <!----><label class="v-label v-field-label" for="input-0">
+                        <!---->RPC URL
+                      </label>
+                      <!----><input placeholder="https://my.rpc.com:8545" size="1" type="text" id="input-0" aria-describedby="input-0-messages" required="" class="v-field__input">
+                      <!---->
+                    </div>
+                    <!---->
+                    <!---->
+                    <div class="v-field__outline">
+                      <div class="v-field__outline__start"></div>
+                      <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
+                          <!---->RPC URL
+                        </label></div>
+                      <div class="v-field__outline__end"></div>
+                      <!---->
+                    </div>
+                  </div>
+                </div>
+                <div class="v-input__append">
+                  <!----><button data-v-d31fb907="" type="submit" class="v-btn v-btn--disabled v-theme--light bg-primary v-btn--density-default v-btn--size-default v-btn--variant-elevated" style="height: 56px;" disabled=""><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                    <!----><span class="v-btn__content" data-no-activator="">Get Started</span>
+                    <!---->
+                    <!---->
+                  </button>
+                </div>
+                <div class="v-input__details">
+                  <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="input-0-messages">
+                    <!---->
+                  </transition-group-stub>
+                  <!---->
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
       </div>
-    </div>
+    </main>
   </div>
-</main>
+</div>"
 `;

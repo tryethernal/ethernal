@@ -1,10 +1,10 @@
 <template>
     <v-container fluid>
         <Create-Explorer-Modal ref="createExplorerModalRef" />
-        <v-alert v-if="!isPremium && justUpgraded" dense text type="success">You've been successfully upgraded to the Premium plan. It is currently being activated, and should be ready in about a minute. Thank you!</v-alert>
-        <v-alert v-if="isPremium && justUpgraded" dense text type="success">Your Premium plan is now ready!</v-alert>
-        <v-alert v-show="errorMessage" dense text type="error">{{ errorMessage }}</v-alert>
-        <v-card outlined class="mb-4">
+        <v-alert v-if="!isPremium && justUpgraded" density="compact" text type="success">You've been successfully upgraded to the Premium plan. It is currently being activated, and should be ready in about a minute. Thank you!</v-alert>
+        <v-alert v-if="isPremium && justUpgraded" density="compact" text type="success">Your Premium plan is now ready!</v-alert>
+        <v-alert v-show="errorMessage" density="compact" text type="error">{{ errorMessage }}</v-alert>
+        <v-card class="my-4">
             <v-card-title>Public Explorer Plans</v-card-title>
             <v-card-text v-if="loading">
                 <v-skeleton-loader type="list-item-three-line"></v-skeleton-loader>
@@ -13,7 +13,7 @@
                 You have <strong>{{ activeExplorers.length }}</strong> active public explorer{{ activeExplorers.length != 1 ? `s` : `` }}.
                 <v-row>
                     <v-col cols="6">
-                        <v-simple-table v-if="activeExplorers.length > 0">
+                        <v-table v-if="activeExplorers.length > 0">
                             <template v-slot:default>
                                 <thead>
                                     <tr>
@@ -46,50 +46,52 @@
                                     </tr>
                                 </tfoot>
                             </template>
-                        </v-simple-table>
-                        <v-btn v-else depressed color="primary" class="mt-4" @click="openCreateExplorerModal()">
-                            <v-icon small class="mr-1">mdi-plus</v-icon>Create Explorer
+                        </v-table>
+                        <v-btn v-else variant="flat" color="primary" class="mt-4" @click="openCreateExplorerModal()">
+                            <v-icon size="small" class="mr-1">mdi-plus</v-icon>Create Explorer
                         </v-btn>
                     </v-col>
                 </v-row>
             </v-card-text>
         </v-card>
-        <v-card outlined class="mb-4">
+        <v-card class="mb-4">
             <v-card-title>Private Explorer Plan</v-card-title>
             <v-row class="ml-1 mb-1">
                 <v-col cols="4">
-                    <v-card style="height: 100%" outlined>
-                        <v-card-title>
+                    <v-card style="height: 100%" border flat>
+                        <v-card-title class="d-flex justify-space-between align-center">
                             Free
-                            <v-spacer></v-spacer>
-                            <v-chip class="ml-2" color="primary" small v-if="!isPremium">Current</v-chip>
+                            <v-chip class="ml-2" color="primary" size="small" v-if="!isPremium">Current</v-chip>
                         </v-card-title>
                         <v-divider></v-divider>
-                        <v-list dense>
+                        <v-list density="compact">
                             <v-list-item v-for="(feature, idx) in plans.free" :key="`free-${idx}`">
-                                <v-list-item-icon v-if="feature" class="mx-0 mr-1"><v-icon color="success">mdi-check</v-icon></v-list-item-icon>
+                                <template v-slot:prepend>
+                                    <v-icon v-if="feature" class="mx-0 mr-1" color="success">mdi-check</v-icon>
+                                </template>
                                 {{ feature }}
                             </v-list-item>
                         </v-list>
                     </v-card>
                 </v-col>
                 <v-col cols="4">
-                    <v-card style="height: 100%" outlined>
-                        <v-card-title>
+                    <v-card style="height: 100%" border flat>
+                        <v-card-title class="d-flex justify-space-between align-center">
                             Premium - $20/month
-                            <v-spacer></v-spacer>
-                            <v-chip class="ml-2" color="primary" small v-if="isPremium">Current Plan</v-chip>
+                            <v-chip class="ml-2" color="primary" size="small" v-if="isPremium">Current Plan</v-chip>
                         </v-card-title>
                         <v-divider></v-divider>
-                        <v-list dense>
+                        <v-list density="compact">
                             <v-list-item v-for="(feature, idx) in plans.premium" :key="idx">
-                                <v-list-item-icon v-if="feature" class="mx-0 mr-1"><v-icon color="success">mdi-check</v-icon></v-list-item-icon>
+                                <template v-slot:prepend>
+                                    <v-icon v-if="feature" class="mx-0 mr-1" color="success">mdi-check</v-icon>
+                                </template>
                                 {{ feature }}
                             </v-list-item>
                         </v-list>
                         <v-card-actions class="justify-center d-flex flex-column">
-                            <v-btn :loading="subscriptionButtonLoading" color="primary" v-if="isPremium" @click="openStripePortal()">Manage Subscription</v-btn>
-                            <v-btn :loading="subscriptionButtonLoading" color="primary" v-else @click="subscribeToPlan()">Subscribe</v-btn>
+                            <v-btn :loading="subscriptionButtonLoading" variant="flat" color="primary" v-if="isPremium" @click="openStripePortal()">Manage Subscription</v-btn>
+                            <v-btn :loading="subscriptionButtonLoading" variant="flat" color="primary" v-else @click="subscribeToPlan()">Subscribe</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-col>
@@ -97,7 +99,7 @@
         </v-card>
         <v-row>
             <v-col>
-                <v-card outlined>
+                <v-card>
                     <v-card-text>
                         <strong>What's the difference between "Public Explorer" & "Private Explorer"?</strong>
                         <p>
@@ -118,7 +120,11 @@
     </v-container>
 </template>
 <script>
-import { mapGetters } from 'vuex';
+import { mapStores } from 'pinia';
+
+import { useUserStore } from '../stores/user';
+import { useEnvStore } from '../stores/env';
+
 import CreateExplorerModal from './CreateExplorerModal.vue';
 
 export default {
@@ -148,18 +154,18 @@ export default {
         loading: false
     }),
     mounted() {
-        if (this.justUpgraded && this.user.plan != 'premium') {
+        if (this.justUpgraded && this.userStore.plan != 'premium') {
             this.subscriptionButtonLoading = true;
-            this.pusherUnsubscribe = this.pusher.onUserUpdated((user) => {
+            this.pusherUnsubscribe = this.$pusher.onUserUpdated((user) => {
                 if (user.plan == 'premium') {
-                    this.$store.dispatch('updateUserPlan', { plan: 'premium' });
+                    useUserStore().updateUser({ plan: 'premium' });
                     this.subscriptionButtonLoading = false;
                 }
             }, this);
         }
 
         this.loading = true;
-        this.server.getExplorerBilling()
+        this.$server.getExplorerBilling()
             .then(({ data: { activeExplorers, totalCost }}) => {
                 this.activeExplorers = activeExplorers;
                 this.activeExplorerCost = totalCost;
@@ -177,7 +183,7 @@ export default {
         },
         openStripePortal() {
             this.subscriptionButtonLoading = true;
-            this.server.createStripePortalSession(`http://app.${this.mainDomain}/settings?tab=billing`)
+            this.$server.createStripePortalSession(`http://app.${this.envStore.mainDomain}/settings?tab=billing`)
                 .then(({ data }) => {
                     document.location.href = data.url
                 })
@@ -185,7 +191,7 @@ export default {
         },
         subscribeToPlan() {
             this.subscriptionButtonLoading = true;
-            this.server.createStripeUserCheckoutSession()
+            this.$server.createStripeUserCheckoutSession()
                 .then(({ data }) => {
                     document.location.href = data.url;
                 })
@@ -197,12 +203,9 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-            'user',
-            'mainDomain'
-        ]),
+        ...mapStores(useUserStore, useEnvStore),
         isPremium() {
-            return this.user.plan == 'premium';
+            return this.userStore.plan == 'premium';
         },
         justUpgraded() {
             return this.$route.query.status == 'upgraded';

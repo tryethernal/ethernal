@@ -1,18 +1,24 @@
 <template>
     <v-container fluid>
-        <v-card outlined>
+        <v-card>
             <v-card-text>
-                <v-data-table
+                <v-data-table-server
+                    class="hide-table-count"
                     :loading="loading"
                     :items="tokens"
+                    :items-length="0"
                     :headers="headers"
-                    :sort-by="currentOptions.sortBy[0]"
+                    :sort-by="[{ key: currentOptions.orderBy, order: currentOptions.order }]"
                     :must-sort="true"
-                    :sort-desc="true"
-                    :server-items-length="tokenCount"
-                    :footer-props="{
-                        itemsPerPageOptions: [10, 25, 100]
-                    }"
+                    items-per-page-text="Rows per page:"
+                    no-data-text="No ERC-20 tokens found"
+                    last-icon=""
+                    first-icon=""
+                    :items-per-page-options="[
+                        { value: 10, title: '10' },
+                        { value: 25, title: '25' },
+                        { value: 100, title: '100' }
+                    ]"
                     item-key="address"
                     @update:options="getTokens">
                     <template v-slot:item.address="{ item }">
@@ -25,17 +31,17 @@
                         {{ item.tokenSymbol }}
                     </template>
                     <template v-slot:item.tags="{ item }">
-                        <v-chip v-for="(pattern, idx) in item.patterns" :key="idx" x-small class="success mr-2">
+                        <v-chip v-for="(pattern, idx) in item.patterns" :key="idx" size="x-small" class="bg-success mr-2">
                             {{ formatContractPattern(pattern) }}
                         </v-chip>
                     </template>
-                </v-data-table>
+                </v-data-table-server>
             </v-card-text>
         </v-card>
     </v-container>
 </template>
 <script>
-import HashLink from '@/components/HashLink';
+import HashLink from '@/components/HashLink.vue';
 import { formatContractPattern } from '@/lib/utils';
 
 export default {
@@ -46,58 +52,57 @@ export default {
     data: () => ({
         loading: true,
         tokens: [],
-        tokenCount: 0,
         headers: [
             {
-                text: 'Address',
-                value: 'address'
+                title: 'Address',
+                key: 'address'
             },
             {
-                text: 'Name',
-                value: 'tokenName'
+                title: 'Name',
+                key: 'tokenName'
             },
             {
-                text: 'Symbol',
-                value: 'tokenSymbol'
+                title: 'Symbol',
+                key: 'tokenSymbol'
             },
             {
-                text: '',
-                value: 'tags',
+                title: '',
+                key: 'tags',
                 sortable: false
             }
         ],
-        currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['timestamp'], sortDesc: [true] },
+        currentOptions: { page: 1, itemsPerPage: 10, orderBy: 'timestamp', order: 'desc', pattern: 'erc20' },
         newTokenPusherHandler: null,
         destroyedContractPusherHandler: null
     }),
     mounted: function() {
-        this.newTokenPusherHandler = this.pusher.onNewToken(() => this.getTokens(this.currentOptions), this);
-        this.destroyedContractPusherHandler = this.pusher.onDestroyedContract(() => this.getTokens(this.currentOptions), this);
+        this.newTokenPusherHandler = this.$pusher.onNewToken(() => this.getTokens(this.currentOptions), this);
+        this.destroyedContractPusherHandler = this.$pusher.onDestroyedContract(() => this.getTokens(this.currentOptions), this);
     },
     destroyed() {
         this.newTokenPusherHandler();
         this.destroyedContractPusherHandler.unbind(null, null, this);
     },
     methods: {
-        getTokens: function(newOptions) {
+        getTokens({ page, itemsPerPage, sortBy } = {}) {
             this.loading = true;
 
-            if (newOptions)
-                this.currentOptions = newOptions;
+            if (!page || !itemsPerPage || !sortBy || !sortBy.length)
+                return this.loading = false;
 
-            const options = {
-                page: this.currentOptions.page,
-                itemsPerPage: this.currentOptions.itemsPerPage,
-                orderBy: this.currentOptions.sortBy[0],
-                order: this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc',
+            if (this.currentOptions.page == page && this.currentOptions.itemsPerPage == itemsPerPage && this.currentOptions.sortBy == sortBy[0].key && this.currentOptions.sort == sortBy[0].order)
+                return this.loading = false;
+
+            this.currentOptions = {
+                page,
+                itemsPerPage,
+                orderBy: sortBy[0].key,
+                order: sortBy[0].order,
                 pattern: 'erc20'
             };
 
-            this.server.getContracts(options)
-                .then(({ data }) => {
-                    this.tokens = data.items;
-                    this.tokenCount = data.total;
-                })
+            this.$server.getContracts(this.currentOptions)
+                .then(({ data }) => this.tokens = data.items)
                 .catch(console.log)
                 .finally(() => this.loading = false);
         },

@@ -73,7 +73,12 @@ const getBalanceChange = async (address, token, blockNumber, rpcServer) => {
     };
 }
 
+let providers = {};
+
 const getProvider = function(url) {
+    if (providers[url])
+        return providers[url];
+
     const rpcServer = new URL(url);
 
     let provider;
@@ -92,7 +97,8 @@ const getProvider = function(url) {
             password: rpcServer.password
         };
 
-    return new provider(authenticatedUrl);
+    providers[url] = new provider(authenticatedUrl);
+    return providers[url];
 };
 
 class DexFactoryConnector {
@@ -146,7 +152,7 @@ class WalletConnector {
     }
 
     send(to, value) {
-        return this.wallet.sendTransaction({ to, value });
+        return this.wallet.sendTransaction({ to, value: ethers.BigNumber.from(value) });
     }
 }
 
@@ -207,21 +213,84 @@ class ProviderConnector {
 }
 
 class Tracer {
-    constructor(server, db) {
+
+    #ERRORS_TO_IGNORE = [-32601, -32000];
+    #bytecodes = {};
+
+    constructor(server, db, type = 'other') {
         if (!server) throw '[Tracer] Missing parameter';
         this.provider = getProvider(server);
         this.db = db;
+        this.type = type;
+        this.parsedTrace = [];
+        this.error = null;
     }
 
-    async process(transaction) {
+    #handleError(error) {
+        if (error.status >= 400)
+            return this.error = {
+                message: `Http status code ${error.status}`,
+                error:  error
+            };
+
+        if (error.error && this.#ERRORS_TO_IGNORE.includes(error.error.code))
+            return this.error = {
+                code: `Error code "${error.error.code}".`,
+                message: error.error.message,
+                error: error
+            };
+
+        throw error;
+    }
+
+    process(transaction) {
+        if (this.type == 'geth')
+            return this.processGeth(transaction);
+
+        return this.processOther(transaction);
+    }
+
+    async recursiveTraceParser(step, depth = 1) {
+        const bytecode = this.#bytecodes[step.to] || await withTimeout(this.provider.getCode(step.to));
+        this.#bytecodes[step.to] = bytecode;
+        this.parsedTrace.push(sanitize({
+            value: step.value,
+            op: step.type,
+            address: step.to,
+            input: step.input,
+            returnData: step.output,
+            depth: depth,
+            contractHashedBytecode: bytecode != '0x' ? ethers.utils.keccak256(bytecode) : null
+        }))
+        if (step.calls) {
+            for (const call of step.calls) {
+                await this.recursiveTraceParser(call, depth + 1);
+            }
+        }
+    }
+
+    async processGeth(transaction) {
         try {
             this.transaction = transaction;
-            const rawTrace = await withTimeout(this.provider.send('debug_traceTransaction', [transaction.hash, {}]));
+            const rawTrace = await withTimeout(this.provider.send('debug_traceTransaction', [transaction.hash, { "tracer": "callTracer", "tracerConfig": { "withLog": true }}]));
+            if (!rawTrace.calls)
+                return;
+            for (let call of rawTrace.calls)
+                await this.recursiveTraceParser(call);
+        } catch(error) {
+            this.#handleError(error);
+        }
+    }
+
+    async processOther(transaction) {
+        try {
+            this.transaction = transaction;
+            const rawTrace = await withTimeout(this.provider.send('debug_traceTransaction', [transaction.hash]));
+            if (!rawTrace)
+                return null;
             this.parsedTrace = await parseTrace(transaction.from, rawTrace, this.provider);
         } catch(error) {
-            if (!error.error || error.error.code != '-32601') {
-                throw error;
-            }
+            this.#handleError(error);
         }
     }
 
@@ -229,6 +298,11 @@ class Tracer {
         try {
             if (Array.isArray(this.parsedTrace))
                 await processTrace(userId, workspace, this.transaction.hash, this.parsedTrace, this.db);
+            else
+                return this.error = {
+                    message: 'Invalid trace',
+                    trace: this.parsedTrace
+                };
         } catch(error) {
             throw error;
         }

@@ -1,16 +1,15 @@
 <template>
     <v-dialog v-model="dialog" max-width="600">
         <v-card>
-            <v-card-title class="headline">
-                Faucet Private Key
-                <v-spacer></v-spacer>
-                <v-btn icon @click="close(false)"><v-icon>mdi-close</v-icon></v-btn>
+            <v-card-title class="d-flex justify-space-between align-center">
+                <h4>Faucet Private Key</h4>
+                <v-btn color="grey" variant="text" icon="mdi-close" @click="close(false)"></v-btn>
             </v-card-title>
             <v-card-text v-if="loading">
                 <v-progress-circular size="16" width="2" indeterminate color="primary" class="mr-2"></v-progress-circular> Fetching private key...
             </v-card-text>
             <v-card-text v-else>
-                <v-text-field append-icon="mdi-content-copy" readonly @click:append="copyPrivateKey()" outlined dense hide-details="auto" :value="privateKey"></v-text-field>
+                <v-text-field append-icon="mdi-content-copy" readonly @click:append="copyPrivateKey()" variant="outlined" density="compact" hide-details="auto" :model-value="privateKey"></v-text-field>
                 <input type="hidden" id="copyElement" :value="privateKey">
             </v-card-text>
         </v-card>
@@ -33,7 +32,7 @@ export default {
         open(options) {
             this.dialog = true;
             this.loading = true;
-            this.server.getFaucetPrivateKey(options.faucetId)
+            this.$server.getFaucetPrivateKey(options.faucetId)
                 .then(({ data }) => this.privateKey = data.privateKey)
                 .catch(error => this.errorMessage = error.response && error.response.data || 'Error while deleting explorer. Please retry.')
                 .finally(() => this.loading = false);

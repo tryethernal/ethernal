@@ -74,6 +74,7 @@ module.exports = (sequelize, DataTypes) => {
       const chainId = parseInt(explorer.chainId);
 
       const pairs = [];
+
       for (let i = 0; i < dexPairs.length; i++) {
         const dexPair = dexPairs[i];
         const reserves = await dexPair.getLatestReserves();

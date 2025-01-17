@@ -5,7 +5,7 @@ const {
   QueryTypes,
 } = require('sequelize');
 const moment = require('moment');
-const { sanitize, slugify } = require('../lib/utils');
+const { sanitize, slugify, processRawRpcObject } = require('../lib/utils');
 const { ProviderConnector } = require('../lib/rpc');
 const logger = require('../lib/logger');
 const { getMaxBlockForSyncReset } = require('../lib/env');
@@ -32,6 +32,7 @@ module.exports = (sequelize, DataTypes) => {
       Workspace.hasMany(models.Account, { foreignKey: 'workspaceId', as: 'accounts' });
       Workspace.hasMany(models.TokenBalanceChange, { foreignKey: 'workspaceId', as: 'tokenBalanceChanges' });
       Workspace.hasMany(models.TokenTransfer, { foreignKey: 'workspaceId', as: 'tokenTransfers' });
+      Workspace.hasMany(models.CustomField, { foreignKey: 'workspaceId', as: 'customFields' });
     }
 
     static findPublicWorkspaceById(id) {
@@ -54,6 +55,38 @@ module.exports = (sequelize, DataTypes) => {
 
     getProvider() {
         return new ProviderConnector(this.rpcServer);
+    }
+
+    async getLatestReadyBlock() {
+        const [latestReadyBlock] = await sequelize.query(`
+            SELECT number, timestamp
+            FROM blocks b
+            WHERE ("transactionsCount") IN (
+                SELECT count(*) as "transactionsCount" FROM transactions t
+                WHERE t."blockNumber" = b.number
+                AND t."workspaceId" = :workspaceId
+                AND t.state = 'ready'
+            )
+            AND b."workspaceId" = :workspaceId
+            ORDER BY number DESC LIMIT 1
+        `, {
+            replacements: { workspaceId: this.id },
+            type: QueryTypes.SELECT
+        });
+
+        return latestReadyBlock;
+    }
+
+    getTransactionsWithDuplicateTokenBalanceChanges() {
+        return sequelize.query(`
+            SELECT"transactionId"
+            FROM token_balance_changes
+            WHERE "workspaceId" = :workspaceId
+            GROUP BY "transactionId", "address", "token"
+            HAVING count(*) > 1
+        `, {
+            replacements: { workspaceId: this.id }
+        });
     }
 
     async safeDelete() {
@@ -92,6 +125,46 @@ module.exports = (sequelize, DataTypes) => {
         });
 
         return contracts[0];
+    }
+
+    findBlockGapsV2(lowerBound, upperBound) {
+        if (lowerBound === undefined || lowerBound === null || upperBound === undefined || upperBound === null)
+            throw new Error('Missing parameter');
+
+        return sequelize.query(`
+            WITH ordered_blocks AS (
+                SELECT
+                    "number",
+                    "number" - row_number() OVER (ORDER BY "number") AS group_id
+                FROM blocks
+                WHERE "workspaceId" = :workspaceId
+                AND "number" >= :lowerBound
+                AND "number" <= :upperBound
+            ),
+            grouped_blocks AS (
+                SELECT
+                    MIN("number") AS group_start,
+                    MAX("number") AS group_end,
+                    group_id
+                FROM ordered_blocks
+                GROUP BY group_id
+            ),
+            lagged_blocks AS (
+                SELECT
+                    group_start,
+                    group_end,
+                    LAG(group_end) OVER (ORDER BY group_id) AS previous_group_end
+                FROM grouped_blocks
+            )
+            SELECT
+                previous_group_end + 1 AS "blockStart",
+                group_start - 1 AS "blockEnd"
+            FROM lagged_blocks
+            WHERE previous_group_end + 1 <= group_start - 1;
+        `, {
+            replacements: { workspaceId: this.id, lowerBound, upperBound },
+            type: QueryTypes.SELECT
+        });
     }
 
     findBlockGaps(lowerBound, upperBound) {
@@ -290,10 +363,10 @@ module.exports = (sequelize, DataTypes) => {
 
     async getTransactionCount(since) {
         let query = `
-            SELECT SUM(count) AS count
-            FROM transaction_volume_daily
+            SELECT COUNT(1) AS count
+            FROM transaction_events
             WHERE "workspaceId" = :workspaceId
-                AND timestamp >= DATE_TRUNC('day', timestamp :since)::timestamp
+                AND timestamp >= timestamp :since
         `;
 
         if (!since) {
@@ -885,58 +958,86 @@ module.exports = (sequelize, DataTypes) => {
         return sequelize.transaction(async sequelizeTransaction => {
             try {
                 const transactions = block.transactions.map(transaction => {
+                    const processed = processRawRpcObject(
+                        transaction,
+                        Object.keys(sequelize.models.Transaction.rawAttributes),
+                        ['input', 'index']
+                    );
+
                     return sanitize({
                         workspaceId: this.id,
-                        blockHash: transaction.blockHash,
-                        blockNumber: transaction.blockNumber,
-                        creates: transaction.creates,
+                        blockHash: processed.blockHash,
+                        blockNumber: processed.blockNumber,
+                        creates: processed.creates,
                         data: transaction.data || transaction.input,
-                        parsedError: transaction.parsedError,
-                        rawError: transaction.rawError,
-                        from: transaction.from,
-                        gasLimit: transaction.gasLimit || block.gasLimit,
-                        gasPrice: transaction.gasPrice,
-                        hash: transaction.hash,
-                        methodLabel: transaction.methodLabel,
-                        methodName: transaction.methodName,
-                        methodSignature: transaction.methodSignature,
-                        nonce: transaction.nonce,
-                        r: transaction.r,
-                        s: transaction.s,
+                        parsedError: processed.parsedError,
+                        rawError: processed.rawError,
+                        from: processed.from,
+                        gasLimit: processed.gasLimit || block.gasLimit,
+                        gasPrice: processed.gasPrice,
+                        hash: processed.hash,
+                        methodLabel: processed.methodLabel,
+                        methodName: processed.methodName,
+                        methodSignature: processed.methodSignature,
+                        nonce: processed.nonce,
+                        r: processed.r,
+                        s: processed.s,
                         timestamp: block.timestamp,
-                        to: transaction.to,
+                        to: processed.to,
                         transactionIndex: transaction.transactionIndex !== undefined && transaction.transactionIndex !== null ? transaction.transactionIndex : transaction.index,
-                        type_: transaction.type,
-                        v: transaction.v,
-                        value: transaction.value,
+                        type_: processed.type,
+                        v: processed.v,
+                        value: processed.value,
                         state: 'syncing',
-                        raw: transaction
+                        raw: processed.raw
                     });
                 });
 
-                const createdBlock = await this.createBlock(sanitize({
-                    baseFeePerGas: block.baseFeePerGas,
-                    difficulty: block.difficulty,
-                    extraData: block.extraData,
-                    gasLimit: block.gasLimit,
-                    gasUsed: block.gasUsed,
-                    hash: block.hash,
-                    miner: block.miner,
-                    nonce: block.nonce,
-                    number: block.number,
-                    parentHash: block.parentHash,
-                    timestamp: block.timestamp,
-                    transactionsCount: block.transactions ? block.transactions.length : 0,
-                    state: 'ready',
-                    l1BlockNumber: block.l1BlockNumber,
-                    raw: block.raw,
-                    transactions
-                }), {
-                    include: [ sequelize.models.Block.associations.transactions ],
+                const [createdBlock] = await sequelize.models.Block.bulkCreate(
+                    [
+                        sanitize({
+                            workspaceId: this.id,
+                            baseFeePerGas: block.baseFeePerGas,
+                            difficulty: block.difficulty,
+                            extraData: block.extraData,
+                            gasLimit: block.gasLimit,
+                            gasUsed: block.gasUsed,
+                            hash: block.hash,
+                            miner: block.miner,
+                            nonce: block.nonce,
+                            number: block.number,
+                            parentHash: block.parentHash,
+                            timestamp: block.timestamp,
+                            transactionsCount: block.transactions ? block.transactions.length : 0,
+                            state: 'ready',
+                            l1BlockNumber: block.l1BlockNumber,
+                            raw: block.raw,
+                        })
+                    ],
+                    {
+                        ignoreDuplicates: true,
+                        returning: true,
+                        transaction: sequelizeTransaction
+                    }
+                );
+
+                if (!createdBlock.id)
+                    return null;
+
+                const transactionsToInsert = transactions.map(t => {
+                    return {
+                        ...t,
+                        blockId: createdBlock.id
+                    }
+                });
+
+                const storedTransactions = await sequelize.models.Transaction.bulkCreate(transactionsToInsert, {
+                    ignoreDuplicates: true,
+                    returning: true,
                     transaction: sequelizeTransaction
                 });
 
-                return createdBlock;
+                return { ...createdBlock, transactions: storedTransactions };
             } catch(error) {
                 const blockAlreadyExists = error.errors && error.errors.find(e => e.validatorKey === 'not_unique');
                 if (blockAlreadyExists)
@@ -1184,14 +1285,29 @@ module.exports = (sequelize, DataTypes) => {
             has721Enumerable: contract.has721Enumerable,
             ast: contract.ast,
             bytecode: contract.bytecode,
-            asm: contract.asm,
-            transactionId: contract.transactionId
+            asm: contract.asm
         });
 
         if (existingContract)
             return existingContract.update(newContract, { transaction })
-        else
-            return this.createContract(newContract, { transaction });
+        else {
+            const [_contract] = await sequelize.models.Contract.bulkCreate(
+                [
+                    {
+                        ...newContract,
+                        workspaceId: this.id,
+                        transactionId: contract.transactionId
+                    },
+                ],
+                {
+                    ignoreDuplicates: true,
+                    individualHooks: true,
+                    returning: true,
+                    transaction
+                }
+            );
+            return _contract;
+        }
     }
 
     async safeCreateOrUpdateAccount(account) {
@@ -1335,7 +1451,7 @@ module.exports = (sequelize, DataTypes) => {
                 },
                 {
                     model: sequelize.models.Contract,
-                    attributes: ['abi', 'address', 'name', 'tokenDecimals', 'tokenName', 'tokenSymbol', 'workspaceId'],
+                    attributes: ['abi', 'address', 'name', 'tokenDecimals', 'tokenName', 'tokenSymbol', 'workspaceId', 'patterns'],
                     as: 'contract'
                 }
             ]
@@ -1471,21 +1587,113 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     safeDestroyBlocks(ids) {
-        return sequelize.transaction(async transaction => {
-            const blocks = await this.getBlocks({ where: { id: ids }});
-            for (let i = 0; i < blocks.length; i++)
-                await blocks[i].safeDestroy(transaction);
-            return;
-        });
+        return sequelize.transaction(
+            { deferrable: Sequelize.Deferrable.SET_DEFERRED },
+            async transaction => {
+                const blocks = await this.getBlocks({
+                    where: { id: ids },
+                    attributes: ['id'],
+                    include: {
+                        model: sequelize.models.Transaction,
+                        attributes: ['id'],
+                        as: 'transactions',
+                        include: [
+                            {
+                                model: sequelize.models.TransactionEvent,
+                                as: 'event'
+                            },
+                            {
+                                model: sequelize.models.TransactionTraceStep,
+                                attributes: ['id'],
+                                as: 'traceSteps',
+                            },
+                            {
+                                model: sequelize.models.Contract,
+                                as: 'createdContract',
+                            },
+                            {
+                                model: sequelize.models.TransactionReceipt,
+                                attributes: ['id'],
+                                as: 'receipt',
+                                include: {
+                                    model: sequelize.models.TransactionLog,
+                                    attributes: ['id'],
+                                    as: 'logs',
+                                    include: {
+                                        model: sequelize.models.TokenTransfer,
+                                        attributes: ['id'],
+                                        as: 'tokenTransfer',
+                                        include: {
+                                            model: sequelize.models.TokenBalanceChange,
+                                            attributes: ['id'],
+                                            as: 'tokenBalanceChanges'
+                                        }
+                                    }
+                                }
+                            },
+                        ]
+                    }
+                });
+
+                const entities = {};
+
+                entities.blocks = blocks;
+                entities.transactions = blocks.flatMap(block => block.transactions);
+                entities.transaction_trace_steps = entities.transactions.flatMap(transaction => transaction.traceSteps).filter(traceStep => !!traceStep);
+                entities.contracts = entities.transactions.flatMap(transaction => transaction.createdContract).filter(contract => !!contract);
+                entities.transaction_receipts = entities.transactions.flatMap(transaction => transaction.receipt).filter(receipt => !!receipt && !!receipt.logs);
+                entities.transaction_logs = entities.transaction_receipts.flatMap(receipt => receipt.logs).filter(log => !!log);
+                entities.token_transfers = entities.transaction_logs.flatMap(log => log.tokenTransfer).filter(tokenTransfer => !!tokenTransfer);
+                entities.token_balance_changes = entities.token_transfers.flatMap(tokenTransfer => tokenTransfer.tokenBalanceChanges).filter(tokenBalanceChange => !!tokenBalanceChange);
+
+                for (const contract of entities.contracts)
+                    await contract.update({ transactionId: null }, { transaction });
+
+                if (entities.transactions.length) {
+                    await sequelize.query(`DELETE FROM transaction_events WHERE "transactionId" IN (:ids) AND "workspaceId" = :workspaceId`, {
+                        replacements: { ids: entities.transactions.map(row => row.id), workspaceId: this.id },
+                        transaction
+                    });
+                }
+
+                if (entities.token_transfers.length) {
+                    await sequelize.query(`DELETE FROM token_transfer_events WHERE "tokenTransferId" IN (:ids) AND "workspaceId" = :workspaceId`, {
+                        replacements: { ids: entities.token_transfers.map(row => row.id), workspaceId: this.id },
+                        transaction
+                    });
+                }
+
+                if (entities.token_balance_changes.length) {
+                    await sequelize.query(`DELETE FROM token_balance_change_events WHERE "tokenBalanceChangeId" IN (:ids) AND "workspaceId" = :workspaceId`, {
+                        replacements: { ids: entities.token_balance_changes.map(row => row.id), workspaceId: this.id },
+                        transaction
+                    });
+                }
+
+                for (const table of ['token_balance_changes', 'token_transfers', 'transaction_logs', 'transaction_receipts', 'transaction_trace_steps', 'transactions', 'blocks']) {
+                    if (entities[table].length) {
+                        await sequelize.query(`DELETE FROM ${table} WHERE "id" IN (:ids) AND "workspaceId" = :workspaceId`, {
+                            replacements: { ids: entities[table].map(row => row.id), workspaceId: this.id },
+                            transaction
+                        });
+                    }
+                }
+
+                return;
+            }
+        );
     }
 
     safeDestroyContracts(ids) {
-        return sequelize.transaction(async transaction => {
-            const contracts = await this.getContracts({ where: { id: ids }});
-            for (let i = 0; i < contracts.length; i++)
-                await contracts[i].safeDestroy(transaction);
-            return;
-        });
+        return sequelize.transaction(
+            { deferrable: Sequelize.Deferrable.SET_DEFERRED },
+            async transaction => {
+                const contracts = await this.getContracts({ where: { id: ids }});
+                for (let i = 0; i < contracts.length; i++)
+                    await contracts[i].safeDestroy(transaction);
+                return;
+            }
+        );
     }
 
     async safeDestroyIntegrityCheck(transaction) {

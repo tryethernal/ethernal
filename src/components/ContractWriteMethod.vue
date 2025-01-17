@@ -2,8 +2,8 @@
     <div>
         <div class="font-weight-bold">{{ method.name }}</div>
         <v-text-field
-            outlined
-            dense
+            variant="outlined"
+            density="compact"
             hide-details="auto"
             class="py-1"
             v-model="params[inputIdx]"
@@ -11,7 +11,19 @@
             :disabled="!active"
             :label="inputSignature(input)">
         </v-text-field>
-        <div class="grey lighten-3 pa-2 mt-1" v-show="result.txHash || result.message">
+        <div class="col-4 px-0 py-1">
+            <v-text-field
+                small
+                variant="outlined"
+                density="compact"
+                v-model="valueInEth"
+                type="number"
+                hide-details="auto"
+                :disabled="!active"
+                :label="`Value (in ${currentWorkspaceStore.chain.token})`">
+            </v-text-field>
+        </div>
+        <div class="bg-grey-lighten-3 pa-2 mt-1" v-show="result.txHash || result.message">
             <div v-show="result.message">{{ result.message }}</div>
             <div v-show="result.txHash">
                 Tx: <a :href="`/transaction/${result.txHash}`" target="_blank">{{ result.txHash }}</a>
@@ -21,34 +33,23 @@
             </div>
             <div v-show="receipt.status != undefined" class="mt-1">
                 Status: {{ receipt.status ? 'Succeeded' : 'Failed' }}
-                <v-icon small v-show="receipt.status" color="success lighten-1" class="mr-2 align-with-text">mdi-check-circle</v-icon>
-                <v-icon small v-show="!receipt.status" color="error lighten-1" class="mr-2 align-with-text">mdi-alert-circle</v-icon>
+                <v-icon size="small" v-show="receipt.status" color="success-lighten-1" class="mr-2 align-with-text">mdi-check-circle</v-icon>
+                <v-icon size="small" v-show="!receipt.status" color="error-lighten-1" class="mr-2 align-with-text">mdi-alert-circle</v-icon>
             </div>
             <div v-show="noReceipt && noWaitFunction">
                 Couldn't get receipt.
             </div>
         </div>
         <v-divider class="my-2"></v-divider>
-        <div class="col-4 px-0 py-1">
-            <v-text-field
-                small
-                outlined
-                dense
-                v-model="valueInEth"
-                type="number"
-                hide-details="auto"
-                :disabled="!active"
-                :label="`Value (in ${chain.token})`">
-            </v-text-field>
-        </div>
-        <v-btn :disabled="!active" v-if="senderMode == 'metamask'" :loading="loading" depressed class="mt-1" :color="theme == 'dark' ? '' : 'primary'" @click="sendWithMetamask()">Query</v-btn>
-        <v-btn :disabled="!active" v-else :loading="loading" depressed class="mt-1" :color="theme == 'dark' ? '' : 'primary'" @click="sendMethod()">Query</v-btn>
+        <v-btn :disabled="!active" v-if="senderMode == 'metamask'" :loading="loading" variant="flat" class="mt-1" @click="sendWithMetamask()">Query</v-btn>
+        <v-btn :disabled="!active" v-else :loading="loading" variant="flat" class="mt-1" @click="sendMethod()">Query</v-btn>
     </div>
 </template>
 <script>
 const Web3 = require('web3');
 const ethers = require('ethers');
-import { mapGetters } from 'vuex';
+import { mapStores } from 'pinia';
+import { useCurrentWorkspaceStore } from '@/stores/currentWorkspace';
 import { sanitize, processMethodCallParam } from '../lib/utils';
 import { formatErrorFragment } from '../lib/abi';
 
@@ -69,7 +70,7 @@ export default {
         loading: false
     }),
     methods: {
-        sendWithMetamask: function() {
+        sendWithMetamask() {
             this.loading = true;
             this.result = {
                 txHash: null,
@@ -114,7 +115,7 @@ export default {
                     }
                 });
         },
-        sendMethod: async function() {
+        async sendMethod() {
             try {
                 this.loading = true;
                 this.receipt = {};
@@ -144,7 +145,7 @@ export default {
                     processedParams[i] = processMethodCallParam(this.params[i], this.method.inputs[i].type);
                 }
 
-                this.server.callContractWriteMethod(this.contract, this.signature, options, processedParams, this.rpcServer)
+                this.$server.callContractWriteMethod(this.contract, this.signature, options, processedParams, this.rpcServer)
                     .then((pendingTx) => {
                         this.result.txHash = pendingTx.hash;
 
@@ -218,7 +219,7 @@ export default {
                 this.loading = false;
             }
         },
-        inputSignature: function(input) {
+        inputSignature(input) {
             if (input.type == 'tuple') {
                 return `${input.name ? input.name : 'tuple'}(${input.components.map((cpt) => `${cpt.type}${cpt.name ? ` ${cpt.name}` : ''}`).join(', ')})`;
             }
@@ -227,17 +228,11 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-            'rpcServer',
-            'currentWorkspace',
-            'chain',
-            'isPublicExplorer',
-            'theme'
-        ]),
-        value: function() {
+        ...mapStores(useCurrentWorkspaceStore),
+        value() {
             return this.web3.utils.toWei(this.valueInEth.toString(), 'ether');
         },
-        outputSignature: function() {
+        outputSignature() {
             const res = [];
             const outputs = this.method.outputs;
             for (var i = 0; i < outputs.length; i++) {

@@ -66,7 +66,7 @@ router.post('/migrateExplorer', authMiddleware, async (req, res, next) => {
         const plan = await db.getStripePlan(getDemoTrialSlug());
         if (!plan)
             return managedError(new Error('Could not find plan.'), req, res);
-
+        console.log(plan);
         const subscription = await stripe.subscriptions.create({
             customer: user.stripeCustomerId,
             items: [{ price: plan.stripePriceId }],
@@ -107,7 +107,7 @@ router.post('/explorers', async (req, res, next) => {
             networkId = null;
         }
 
-        const forbiddenChains = (await axios.get('https://raw.githubusercontent.com/DefiLlama/chainlist/main/constants/chainIds.json')).data;
+        const forbiddenChains = (await axios.get('https://raw.githubusercontent.com/DefiLlama/chainlist/e7c619a1955529d874b189c94487fd2326859029/constants/chainIds.json')).data;
         if (forbiddenChains[networkId])
             return managedError(new Error(`You can't create a demo with this network id (${networkId} - ${forbiddenChains[networkId]}). If you'd still like an explorer for this chain. Please reach out to contact@tryethernal.com, and we'll set one up for you.`), req, res);
 
@@ -138,7 +138,16 @@ router.post('/explorers', async (req, res, next) => {
             }
         };
 
-        const explorer = await db.createExplorerFromOptions(user.id, sanitize(options));
+        let explorer;
+        try {
+            explorer = await db.createExplorerFromOptions(user.id, sanitize(options));
+        } catch(error) {
+            const err = new Error(error);
+            if (err.message.includes('workspace with this name'))
+                return managedError(new Error('This explorername is already taken. Please choose a different name.'), req, res);
+            return managedError(new Error(error), req, res);
+        }
+
         if (!explorer)
             return managedError(new Error('Could not create explorer. Please retry.'), req, res);
 

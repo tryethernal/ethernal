@@ -1,25 +1,41 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`UpdateExplorerPlanModal.vue Should display plan selector 1`] = `
-<div class="v-dialog__container">
-  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
-    <transition-stub name="dialog-transition" appear="true">
-      <div tabindex="0" class="v-dialog v-dialog--active v-dialog--persistent" style="transform-origin: center center; max-width: 1800px;">
-        <div class="v-card v-sheet theme--light">
-          <div class="v-card__title">
-            Select A Plan
-            <div class="spacer"></div> <button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light"></i></span></button>
+exports[`UpdateExplorerPlanModal.vue > Should display plan selector 1`] = `
+"<div class="v-dialog-stub" max-width="1800" persistent="true">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
           </div>
-          <div class="v-card__text">
-            <ul class="mb-4 pl-0" style="list-style: none;">
-              <li>To setup crypto payment (Explorer 150 or above), reach out to contact@tryethernal.com.</li>
-              <li>Each plan includes a 7 day free trial - No credit card needed.</li>
-            </ul>
-            <explorer-plan-selector-stub bestvalueslug="explorer-150" currentplanslug="100" stripesuccessurl="http://app.tryethernal.com/explorers/undefined?justCreated=true" stripecancelurl="http://app.tryethernal.com/explorers/undefined"></explorer-plan-selector-stub>
-          </div>
-        </div>
+        </transition-stub>
+        <!---->
       </div>
-    </transition-stub>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-title d-flex justify-space-between align-center">
+      <h4>Select A Plan</h4><button type="button" class="v-btn v-btn--icon v-theme--light text-grey v-btn--density-default v-btn--size-default v-btn--variant-text"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+        <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-close mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+        <!---->
+        <!---->
+      </button>
+    </div>
+    <div class="v-card-text">
+      <ul style="list-style: none;" class="mb-4 pl-0">
+        <li>To setup crypto payment (Explorer 150 or above), reach out to contact@tryethernal.com.</li>
+        <li>Each plan includes a 7 day free trial - No credit card needed.</li>
+      </ul>
+      <explorer-plan-selector-stub currentplanslug="100" stripesuccessurl="http://app.ethernal.local:8080/explorers/undefined?justCreated=true" stripecancelurl="http://app.ethernal.local:8080/explorers/undefined" bestvalueslug="explorer-150" pendingcancelation="false"></explorer-plan-selector-stub>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-</div>
+</div>"
 `;

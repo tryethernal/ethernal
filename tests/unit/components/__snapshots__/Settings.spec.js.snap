@@ -1,384 +1,129 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Settings.vue Should load the settings page 1`] = `
-<div class="container container--fluid">
-  <div class="v-tabs mb-2 theme--light">
-    <div role="tablist" class="v-item-group theme--light v-slide-group v-tabs-bar v-tabs-bar--is-mobile primary--text">
-      <div class="v-slide-group__prev v-slide-group__prev--disabled">
-        <transition-stub name="fade-transition"></transition-stub>
-      </div>
-      <div class="v-slide-group__wrapper">
-        <div class="v-slide-group__content v-tabs-bar__content">
-          <div class="v-tabs-slider-wrapper" style="transition: none;">
-            <div class="v-tabs-slider"></div>
-          </div><a tabindex="0" href="#workspace" aria-selected="true" role="tab" class="v-tab v-tab--active">Workspace</a> <a tabindex="0" href="#billing" aria-selected="false" role="tab" class="v-tab">Billing</a> <a tabindex="0" href="#account" aria-selected="false" role="tab" class="v-tab">Account</a>
-        </div>
-      </div>
-      <div class="v-slide-group__next v-slide-group__next--disabled">
-        <transition-stub name="fade-transition"></transition-stub>
-      </div>
-    </div>
-  </div>
-  <div class="v-window v-item-group theme--light v-tabs-items">
-    <div class="v-window__container">
-      <transition-stub name="">
-        <div class="v-window-item v-window-item--active" id="workspace">
-          <div class="row px-4 py-2">
-            <div class="col-lg-6 col">
-              <div role="alert" class="v-alert v-sheet theme--dark v-alert--dense v-alert--text success--text" style="display: none;">
-                <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-check-circle theme--dark success--text"></i>
-                  <div class="v-alert__content">Settings updated</div>
-                </div>
-              </div>
-              <div role="alert" class="v-alert v-sheet theme--dark v-alert--dense v-alert--text error--text" style="display: none;">
-                <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-alert theme--dark error--text"></i>
-                  <div class="v-alert__content">Error while updating settings</div>
-                </div>
-              </div>
-              <h4>General</h4>
-              <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
-                <div class="v-card__text">
-                  <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                    <div class="v-input__control">
-                      <div class="v-input__slot">
-                        <fieldset aria-hidden="true">
-                          <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                        </fieldset>
-                        <div class="v-text-field__slot"><label for="name" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Workspace Name</label><input id="name" type="text"></div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="v-input mt-3 v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                    <div class="v-input__control">
-                      <div class="v-input__slot">
-                        <fieldset aria-hidden="true">
-                          <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                        </fieldset>
-                        <div class="v-text-field__slot"><label for="rpcServer" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">RPC Server</label><input id="rpcServer" type="text"></div>
-                      </div>
-                    </div>
-                  </div> You will need to restart the CLI or the Hardhat node for a server change to take effect. <div class="v-input mt-3 v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
-                    <div class="v-input__control">
-                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-71" class="v-input__slot">
-                        <fieldset aria-hidden="true">
-                          <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                        </fieldset>
-                        <div class="v-select__slot"><label for="chain" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Chain</label>
-                          <div class="v-select__selections">
-                            <div class="v-select__selection v-select__selection--comma">Ethereum</div><input required="required" id="chain" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
-                          </div>
-                          <div class="v-input__append-inner">
-                            <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
-                          </div><input type="hidden" value="ethereum">
-                        </div>
-                        <div class="v-menu">
-                          <!---->
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row mt-2 pb-1 mr-2">
-                    <div class="spacer"></div> <button type="button" class="mt-1 v-btn v-btn--has-bg theme--light v-size--default primary" id="updateOptions"><span class="v-btn__content">Update</span></button>
-                  </div>
-                </div>
-              </div>
-              <h4>Default Contracts Call Options</h4>
-              <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
-                <div class="v-card__text">
-                  <div class="v-input v-input--hide-details theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
-                    <div class="v-input__control">
-                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-76" class="v-input__slot">
-                        <fieldset aria-hidden="true">
-                          <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                        </fieldset>
-                        <div class="v-select__slot"><label for="defaultAccount" class="v-label theme--light" style="left: 0px; position: absolute;">Default From Account</label>
-                          <div class="v-select__selections"><input id="defaultAccount" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
-                          <div class="v-input__append-inner">
-                            <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
-                          </div><input type="hidden">
-                        </div>
-                        <div class="v-menu">
-                          <!---->
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="v-input mt-4 v-input--hide-details theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                    <div class="v-input__control">
-                      <div class="v-input__slot">
-                        <fieldset aria-hidden="true">
-                          <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                        </fieldset>
-                        <div class="v-text-field__slot"><label for="gasPrice" class="v-label theme--light" style="left: 0px; position: absolute;">Default Gas Price (wei)</label><input id="gasPrice" type="text"></div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="v-input mt-4 v-input--hide-details theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                    <div class="v-input__control">
-                      <div class="v-input__slot">
-                        <fieldset aria-hidden="true">
-                          <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                        </fieldset>
-                        <div class="v-text-field__slot"><label for="gasLimit" class="v-label theme--light" style="left: 0px; position: absolute;">Default Maximum Gas</label><input id="gasLimit" type="text"></div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row mt-2 pb-1 mr-2">
-                    <div class="spacer"></div> <button type="button" class="mt-1 v-btn v-btn--has-bg theme--light v-size--default primary" id="updateCallOptions"><span class="v-btn__content">Update</span></button>
-                  </div>
-                </div>
-              </div>
-              <h4>Workspaces</h4>
-              <workspace-list-stub></workspace-list-stub>
-              <h4>Advanced Options</h4>
-              <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
-                <div class="v-card__text">
-                  <div class="row">
-                    <div class="col align-self-center">
-                      Transactions Tracing <a target="_blank" href="https://doc.tryethernal.com/dashboard-pages/transactions#trace" style="text-decoration: none;"><i aria-hidden="true" class="v-icon notranslate mdi mdi-help-circle-outline theme--light" style="font-size: 16px;"></i></a></div>
-                    <div class="col">
-                      <div class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
-                        <div class="v-input__control">
-                          <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-85" class="v-input__slot">
-                            <fieldset aria-hidden="true">
-                              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                            </fieldset>
-                            <div class="v-select__slot"><label for="input-85" class="v-label theme--light" style="left: 0px; position: absolute;">Status</label>
-                              <div class="v-select__selections"><input id="input-85" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
-                              <div class="v-input__append-inner">
-                                <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
-                              </div><input type="hidden">
-                            </div>
-                            <div class="v-menu">
-                              <!---->
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row mt-2 pb-1 mr-1">
-                    <div class="spacer"></div> <button type="button" class="mt-2 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Update</span></button>
-                  </div>
-                </div>
-              </div>
-              <h4 class="error--text">Danger Zone</h4>
-              <div class="pa-0 error v-sheet v-sheet--outlined theme--light rounded">
-                <div class="elevation-0 v-card v-sheet theme--light">
-                  <div class="v-card__text font-weight-medium error--text">
-                    <div class="row">
-                      Resetting this workspace will remove all accounts/transactions/blocks/contracts from your dashboard.
-                      You will need to resync them.
-                      This cannot be undone.
-                    </div>
-                    <div class="row mt-2 pb-1">
-                      <div class="spacer"></div> <button type="button" class="mt-2 v-btn v-btn--has-bg theme--light v-size--default error" id="resetWorkspace"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-sync theme--light"></i>Reset Workspace</span></button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+exports[`Settings.vue > Should load the settings page 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated pa-4">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
           </div>
-        </div>
-      </transition-stub>
-      <transition-stub name="">
+        </transition-stub>
         <!---->
-      </transition-stub>
-      <transition-stub name="">
-        <!---->
-      </transition-stub>
+      </div>
     </div>
+    <!---->
+    <!---->
+    <div class="v-slide-group v-slide-group--mobile v-tabs v-tabs--horizontal v-tabs--align-tabs-start v-tabs--density-default mb-2" tabindex="0" role="tablist">
+      <!---->
+      <div class="v-slide-group__container">
+        <div class="v-slide-group__content"><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab text-medium-emphasis" tabindex="-1" role="tab" aria-selected="false" value="workspace"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+            <!----><span class="v-btn__content" data-no-activator="">Workspace<div class="v-tab__slider"></div></span>
+            <!---->
+            <!---->
+          </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab text-medium-emphasis" tabindex="-1" role="tab" aria-selected="false" value="billing"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+            <!----><span class="v-btn__content" data-no-activator="">Billing<div class="v-tab__slider"></div></span>
+            <!---->
+            <!---->
+          </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab text-medium-emphasis" tabindex="-1" role="tab" aria-selected="false" value="account"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+            <!----><span class="v-btn__content" data-no-activator="">Account<div class="v-tab__slider"></div></span>
+            <!---->
+            <!---->
+          </button></div>
+      </div>
+      <!---->
+    </div>
+    <!---->
+    <div class="v-window v-theme--light v-tabs-window">
+      <div class="v-window__container">
+        <transition-stub appear="false" persisted="false" css="true" disabled="true">
+          <div class="v-window-item v-tabs-window-item" style="display: none;">
+            <!---->
+          </div>
+        </transition-stub>
+        <transition-stub appear="false" persisted="false" css="true" disabled="true">
+          <div class="v-window-item v-tabs-window-item" style="display: none;">
+            <!---->
+          </div>
+        </transition-stub>
+        <transition-stub appear="false" persisted="false" css="true" disabled="true">
+          <div class="v-window-item v-tabs-window-item" style="display: none;">
+            <!---->
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+      <!---->
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-</div>
+</div>"
 `;
 
-exports[`Settings.vue Should not display the Billing tab if stripe is disabled 1`] = `
-<div class="container container--fluid">
-  <div class="v-tabs mb-2 theme--light">
-    <div role="tablist" class="v-item-group theme--light v-slide-group v-tabs-bar v-tabs-bar--is-mobile primary--text">
-      <div class="v-slide-group__prev v-slide-group__prev--disabled">
-        <transition-stub name="fade-transition"></transition-stub>
-      </div>
-      <div class="v-slide-group__wrapper">
-        <div class="v-slide-group__content v-tabs-bar__content">
-          <div class="v-tabs-slider-wrapper" style="transition: none;">
-            <div class="v-tabs-slider"></div>
-          </div><a tabindex="0" href="#workspace" aria-selected="true" role="tab" class="v-tab v-tab--active">Workspace</a>
-          <!----> <a tabindex="0" href="#account" aria-selected="false" role="tab" class="v-tab">Account</a>
-        </div>
-      </div>
-      <div class="v-slide-group__next v-slide-group__next--disabled">
-        <transition-stub name="fade-transition"></transition-stub>
-      </div>
-    </div>
-  </div>
-  <div class="v-window v-item-group theme--light v-tabs-items">
-    <div class="v-window__container">
-      <transition-stub name="">
-        <div class="v-window-item v-window-item--active" id="workspace">
-          <div class="row px-4 py-2">
-            <div class="col-lg-6 col">
-              <div role="alert" class="v-alert v-sheet theme--dark v-alert--dense v-alert--text success--text" style="display: none;">
-                <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-check-circle theme--dark success--text"></i>
-                  <div class="v-alert__content">Settings updated</div>
-                </div>
-              </div>
-              <div role="alert" class="v-alert v-sheet theme--dark v-alert--dense v-alert--text error--text" style="display: none;">
-                <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-alert theme--dark error--text"></i>
-                  <div class="v-alert__content">Error while updating settings</div>
-                </div>
-              </div>
-              <h4>General</h4>
-              <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
-                <div class="v-card__text">
-                  <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                    <div class="v-input__control">
-                      <div class="v-input__slot">
-                        <fieldset aria-hidden="true">
-                          <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                        </fieldset>
-                        <div class="v-text-field__slot"><label for="name" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Workspace Name</label><input id="name" type="text"></div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="v-input mt-3 v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                    <div class="v-input__control">
-                      <div class="v-input__slot">
-                        <fieldset aria-hidden="true">
-                          <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                        </fieldset>
-                        <div class="v-text-field__slot"><label for="rpcServer" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">RPC Server</label><input id="rpcServer" type="text"></div>
-                      </div>
-                    </div>
-                  </div> You will need to restart the CLI or the Hardhat node for a server change to take effect. <div class="v-input mt-3 v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
-                    <div class="v-input__control">
-                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-23" class="v-input__slot">
-                        <fieldset aria-hidden="true">
-                          <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                        </fieldset>
-                        <div class="v-select__slot"><label for="chain" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Chain</label>
-                          <div class="v-select__selections">
-                            <div class="v-select__selection v-select__selection--comma">Ethereum</div><input required="required" id="chain" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
-                          </div>
-                          <div class="v-input__append-inner">
-                            <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
-                          </div><input type="hidden" value="ethereum">
-                        </div>
-                        <div class="v-menu">
-                          <!---->
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row mt-2 pb-1 mr-2">
-                    <div class="spacer"></div> <button type="button" class="mt-1 v-btn v-btn--has-bg theme--light v-size--default primary" id="updateOptions"><span class="v-btn__content">Update</span></button>
-                  </div>
-                </div>
-              </div>
-              <h4>Default Contracts Call Options</h4>
-              <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
-                <div class="v-card__text">
-                  <div class="v-input v-input--hide-details theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
-                    <div class="v-input__control">
-                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-28" class="v-input__slot">
-                        <fieldset aria-hidden="true">
-                          <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                        </fieldset>
-                        <div class="v-select__slot"><label for="defaultAccount" class="v-label theme--light" style="left: 0px; position: absolute;">Default From Account</label>
-                          <div class="v-select__selections"><input id="defaultAccount" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
-                          <div class="v-input__append-inner">
-                            <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
-                          </div><input type="hidden">
-                        </div>
-                        <div class="v-menu">
-                          <!---->
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="v-input mt-4 v-input--hide-details theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                    <div class="v-input__control">
-                      <div class="v-input__slot">
-                        <fieldset aria-hidden="true">
-                          <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                        </fieldset>
-                        <div class="v-text-field__slot"><label for="gasPrice" class="v-label theme--light" style="left: 0px; position: absolute;">Default Gas Price (wei)</label><input id="gasPrice" type="text"></div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="v-input mt-4 v-input--hide-details theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                    <div class="v-input__control">
-                      <div class="v-input__slot">
-                        <fieldset aria-hidden="true">
-                          <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                        </fieldset>
-                        <div class="v-text-field__slot"><label for="gasLimit" class="v-label theme--light" style="left: 0px; position: absolute;">Default Maximum Gas</label><input id="gasLimit" type="text"></div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row mt-2 pb-1 mr-2">
-                    <div class="spacer"></div> <button type="button" class="mt-1 v-btn v-btn--has-bg theme--light v-size--default primary" id="updateCallOptions"><span class="v-btn__content">Update</span></button>
-                  </div>
-                </div>
-              </div>
-              <h4>Workspaces</h4>
-              <workspace-list-stub></workspace-list-stub>
-              <h4>Advanced Options</h4>
-              <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
-                <div class="v-card__text">
-                  <div class="row">
-                    <div class="col align-self-center">
-                      Transactions Tracing <a target="_blank" href="https://doc.tryethernal.com/dashboard-pages/transactions#trace" style="text-decoration: none;"><i aria-hidden="true" class="v-icon notranslate mdi mdi-help-circle-outline theme--light" style="font-size: 16px;"></i></a></div>
-                    <div class="col">
-                      <div class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
-                        <div class="v-input__control">
-                          <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-37" class="v-input__slot">
-                            <fieldset aria-hidden="true">
-                              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                            </fieldset>
-                            <div class="v-select__slot"><label for="input-37" class="v-label theme--light" style="left: 0px; position: absolute;">Status</label>
-                              <div class="v-select__selections"><input id="input-37" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
-                              <div class="v-input__append-inner">
-                                <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
-                              </div><input type="hidden">
-                            </div>
-                            <div class="v-menu">
-                              <!---->
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row mt-2 pb-1 mr-1">
-                    <div class="spacer"></div> <button type="button" class="mt-2 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Update</span></button>
-                  </div>
-                </div>
-              </div>
-              <h4 class="error--text">Danger Zone</h4>
-              <div class="pa-0 error v-sheet v-sheet--outlined theme--light rounded">
-                <div class="elevation-0 v-card v-sheet theme--light">
-                  <div class="v-card__text font-weight-medium error--text">
-                    <div class="row">
-                      Resetting this workspace will remove all accounts/transactions/blocks/contracts from your dashboard.
-                      You will need to resync them.
-                      This cannot be undone.
-                    </div>
-                    <div class="row mt-2 pb-1">
-                      <div class="spacer"></div> <button type="button" class="mt-2 v-btn v-btn--has-bg theme--light v-size--default error" id="resetWorkspace"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-sync theme--light"></i>Reset Workspace</span></button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </transition-stub>
-      <!---->
-      <transition-stub name="">
+exports[`Settings.vue > Should not display the Billing tab if stripe is disabled 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated pa-4">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
         <!---->
-      </transition-stub>
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
     </div>
+    <!---->
+    <!---->
+    <div class="v-slide-group v-slide-group--mobile v-tabs v-tabs--horizontal v-tabs--align-tabs-start v-tabs--density-default mb-2" tabindex="0" role="tablist">
+      <!---->
+      <div class="v-slide-group__container">
+        <div class="v-slide-group__content"><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab text-medium-emphasis" tabindex="-1" role="tab" aria-selected="false" value="workspace"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+            <!----><span class="v-btn__content" data-no-activator="">Workspace<div class="v-tab__slider"></div></span>
+            <!---->
+            <!---->
+          </button>
+          <!--v-if--><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab text-medium-emphasis" tabindex="-1" role="tab" aria-selected="false" value="account"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+            <!----><span class="v-btn__content" data-no-activator="">Account<div class="v-tab__slider"></div></span>
+            <!---->
+            <!---->
+          </button>
+        </div>
+      </div>
+      <!---->
+    </div>
+    <!---->
+    <div class="v-window v-theme--light v-tabs-window">
+      <div class="v-window__container">
+        <transition-stub appear="false" persisted="false" css="true" disabled="true">
+          <div class="v-window-item v-tabs-window-item" style="display: none;">
+            <!---->
+          </div>
+        </transition-stub>
+        <!--v-if-->
+        <transition-stub appear="false" persisted="false" css="true" disabled="true">
+          <div class="v-window-item v-tabs-window-item" style="display: none;">
+            <!---->
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+      <!---->
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-</div>
+</div>"
 `;

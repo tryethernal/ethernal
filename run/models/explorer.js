@@ -138,6 +138,9 @@ module.exports = (sequelize, DataTypes) => {
                 }
             ]
         });
+        if (!explorerDomain)
+            return null;
+
         const explorer = explorerDomain.explorer;
 
         if (explorer)
@@ -352,11 +355,19 @@ module.exports = (sequelize, DataTypes) => {
         return subscription && subscription.stripePlan.capabilities[capability];
     }
 
-    async safeDelete() {
+    async safeDelete(opts = { deleteSubscription: false }) {
         const stripeSubscription = await this.getStripeSubscription();
-        if (!stripeSubscription || stripeSubscription && stripeSubscription.isPendingCancelation || !isStripeEnabled()) {
+        if (
+            !stripeSubscription ||
+            stripeSubscription && stripeSubscription.isPendingCancelation ||
+            stripeSubscription && opts.deleteSubscription ||
+            !isStripeEnabled()
+        ) {
             const transaction = await sequelize.transaction();
             try {
+                if (stripeSubscription && opts.deleteSubscription)
+                    await stripeSubscription.destroy({ transaction });
+
                 const domains = await this.getDomains();
                 for (let i = 0; i < domains.length; i++)
                     await domains[i].destroy({ transaction });

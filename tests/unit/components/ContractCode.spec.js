@@ -1,25 +1,17 @@
 import flushPromises from 'flush-promises';
-import MockHelper from '../MockHelper';
 
-jest.mock('@metamask/detect-provider');
+vi.mock('@metamask/detect-provider');
 import ContractCode from '@/components/ContractCode.vue';
 
-let helper;
 const stubs = [
     'Contract-Verification',
     'Contract-Verification-Info'
 ];
 
 describe('ContractCode.vue', () => {
-
-    beforeEach(() => {
-        jest.clearAllMocks();
-        helper = new MockHelper();
-    });
-
     it('Should display contract verification info if public explorer and verified', async () => {
-        const wrapper = helper.mountFn(ContractCode, {
-            propsData: {
+        const wrapper = mount(ContractCode, {
+            props: {
                 contract: {
                     bytecode: '0x60',
                     asm: 'abc',
@@ -33,9 +25,9 @@ describe('ContractCode.vue', () => {
                     }
                 }
             },
-            stubs: stubs,
-            getters: {
-                isPublicExplorer: jest.fn(() => true)
+            global: {
+                stubs,
+                plugins: [createTestingPinia({ initialState: { explorer: { id: 1 } } })]
             }
         });
 
@@ -44,16 +36,16 @@ describe('ContractCode.vue', () => {
     });
 
     it('Should display the contract verification panel for public explorers', async () => {
-        const wrapper = helper.mountFn(ContractCode, {
-            propsData: {
+        const wrapper = mount(ContractCode, {
+            props: {
                 contract: {
                     bytecode: '0x60',
                     asm: 'abc'
                 }
             },
-            stubs: stubs,
-            getters: {
-                isPublicExplorer: jest.fn(() => true)
+            global: {
+                stubs,
+                plugins: [createTestingPinia({ initialState: { explorer: { id: 1 } } })]
             }
         });
 
@@ -62,8 +54,8 @@ describe('ContractCode.vue', () => {
     });
 
     it('Should not display the contract verification panel if not public explorer', async () => {
-        const wrapper = helper.mountFn(ContractCode, {
-            propsData: {
+        const wrapper = mount(ContractCode, {
+            props: {
                 contract: {
                     name: 'Contract',
                     patterns: [],
@@ -71,7 +63,9 @@ describe('ContractCode.vue', () => {
                     creationTransaction: '0xabc'
                 }
             },
-            stubs: stubs
+            global: {
+                stubs
+            }
         });
 
         await flushPromises();

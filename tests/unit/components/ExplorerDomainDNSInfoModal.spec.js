@@ -1,21 +1,14 @@
 import flushPromises from 'flush-promises';
-import MockHelper from '../MockHelper';
 
 import ExplorerDomainDNSInfoModal from '@/components/ExplorerDomainDNSInfoModal.vue';
 
-let helper;
-beforeEach(() => {
-    jest.clearAllMocks()
-    helper = new MockHelper();
-});
-
 describe('ExplorerDomainDNSInfoModal.vue', () => {
     it('Should display DNS info', async () => {
-        const wrapper = helper.mountFn(ExplorerDomainDNSInfoModal, {
+        const wrapper = mount(ExplorerDomainDNSInfoModal, {
             data() {
                 return {
                     dialog: true,
-                    resolve: jest.fn().mockResolvedValue(),
+                    resolve: vi.fn().mockResolvedValue(),
                     domain: 'ethernal.com',
                     dnsStatus: {
                         apx_hit: true,

@@ -1,24 +1,24 @@
 <template>
-<v-dialog v-model="dialog" max-width="430">
+<v-dialog v-model="dialog" max-width="500">
     <v-card>
-        <v-card-title class="headline">Add Account</v-card-title>
+        <v-card-title class="text-h5">Add Account</v-card-title>
 
         <v-card-text>
-            <v-alert type="error" v-if="errorMessage" v-html="errorMessage"></v-alert>
-            <v-alert type="success" v-if="successMessage">{{ successMessage }}</v-alert>
+            <v-alert class="mb-2" type="error" v-if="errorMessage" :text="errorMessage"></v-alert>
+            <v-alert class="mb-2" type="success" v-if="successMessage">{{ successMessage }}</v-alert>
             <div>Enter a private key to add the corresponding account.</div>
             <div>
                 Private keys are encrypted server side with AES 256 CBC, and stored encrypted. We strongly recommend to not use accounts with any value.
             </div>
-            <v-text-field id="privateKey" hide-details="auto" outlined class="mt-2" v-model="privateKey" label="Private Key*" required></v-text-field>
+            <v-text-field id="privateKey" hide-details="auto" variant="outlined" class="mt-2" v-model="privateKey" label="Private Key*" required></v-text-field>
             <v-divider class="my-3"></v-divider>
             <div>Or impersonate an account.</div>
-            <v-text-field id="accountAddress" outlined v-model="accountAddress" label="Account Address*" required></v-text-field>
+            <v-text-field id="accountAddress" variant="outlined" v-model="accountAddress" label="Account Address*" required></v-text-field>
         </v-card-text>
 
         <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="primary" text @click="close()">Close</v-btn>
+            <v-btn color="primary" variant="text" @click="close()">Close</v-btn>
             <v-btn id="submitAccount" color="primary" :loading="loading" :disabled="!privateKey && !accountAddress" @click.stop="unlockAccount(privateKey, accountAddress)">Add</v-btn>
         </v-card-actions>
     </v-card>
@@ -26,7 +26,8 @@
 </template>
 <script>
 const ethers = require('ethers');
-import { mapGetters } from 'vuex';
+import { mapStores } from 'pinia';
+import { useCurrentWorkspaceStore } from '@/stores/currentWorkspace';
 
 export default {
     name: 'AddAccountModal',
@@ -63,26 +64,26 @@ export default {
                 if (privateKey) {
                     const wallet = new ethers.Wallet(privateKey);
                     walletAddress = wallet.address.toLowerCase();
-                    promises.push(this.server.storeAccountPrivateKey(wallet.address, privateKey));
+                    promises.push(this.$server.storeAccountPrivateKey(wallet.address, privateKey));
                 }
 
                 if (accountAddress) {
-                    promises.push(this.server.impersonateAccount(this.currentWorkspace.rpcServer, accountAddress));
+                    promises.push(this.$server.impersonateAccount(this.currentWorkspaceStore.rpcServer, accountAddress));
                 }
 
                 Promise.all(promises).then(res => {
                     if (res[0] && walletAddress) {
-                        this.server.syncBalance(walletAddress, '0')
+                        this.$server.syncBalance(walletAddress, '0')
                             .then(() => this.successMessage = 'Account added.')
                             .catch(() => this.errorMessage = 'Error while adding account.');
                     }
                     else if ((res[0] || res[1]) && accountAddress) {
-                        this.server.syncBalance(accountAddress, '0')
+                        this.$server.syncBalance(accountAddress, '0')
                             .then(() => this.successMessage = 'Account added.')
                             .catch(() => this.errorMessage = 'Error while adding account.');
                     }
                     else
-                        this.errorMessage = `Couldn't unlockAccount, make sure either <code>evm_unlockUnknownAccount</code> or <code>hardhat_impersonateAccount</code> is supported by your endpoint.`
+                        this.errorMessage = `Couldn't unlockAccount, make sure either "evm_unlockUnknownAccount" or "hardhat_impersonateAccount" is supported by your endpoint.`
                 })
                 .catch(console.log)
                 .finally(() => this.loading = false);
@@ -107,9 +108,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-            'currentWorkspace'
-        ])
+        ...mapStores(useCurrentWorkspaceStore)
     }
 }
 </script>

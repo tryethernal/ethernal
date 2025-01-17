@@ -3,12 +3,12 @@ const {
   Model,
   Sequelize
 } = require('sequelize');
-
+const ethers = require('ethers');
 const Op = Sequelize.Op
-const { sanitize, stringifyBns } = require('../lib/utils');
+const { sanitize, stringifyBns, processRawRpcObject } = require('../lib/utils');
 const { trigger } = require('../lib/pusher');
 const logger = require('../lib/logger');
-let { getTransactionMethodDetails } = require('../lib/abi');
+let { getTransactionMethodDetails, getTokenTransfer } = require('../lib/abi');
 const moment = require('moment');
 
 module.exports = (sequelize, DataTypes) => {
@@ -34,6 +34,7 @@ module.exports = (sequelize, DataTypes) => {
             },
           constraints: false
       });
+      Transaction.hasOne(models.Contract, { foreignKey: 'transactionId', as: 'createdContract' });
       Transaction.hasOne(models.TransactionReceipt, { foreignKey: 'transactionId', as: 'receipt' });
       Transaction.hasOne(models.TransactionEvent, { foreignKey: 'transactionId', as: 'event' });
       Transaction.hasMany(models.TokenTransfer, { foreignKey: 'transactionId', as: 'tokenTransfers' });
@@ -48,11 +49,16 @@ module.exports = (sequelize, DataTypes) => {
 
         const traceSteps = await this.getTraceSteps();
         for (let i = 0; i < traceSteps.length; i++)
-            await traceSteps[i].destroy(transaction);
+            await traceSteps[i].destroy({ transaction });
 
         const event = await this.getEvent();
         if (event)
             await event.destroy({ transaction });
+
+        const contract = await sequelize.models.Contract.findOne({ where: { transactionId: this.id }});
+        if (contract)
+            await contract.update({ transactionId: null }, { transaction });
+
         return this.destroy({ transaction });
     }
 
@@ -61,48 +67,156 @@ module.exports = (sequelize, DataTypes) => {
 
         return sequelize.transaction(async transaction => {
             await this.update({ state: 'ready' }, { transaction });
-            const storedReceipt = await this.createReceipt(stringifyBns(sanitize({
-                workspaceId: this.workspaceId,
-                blockHash: receipt.blockHash,
-                blockNumber: receipt.blockNumber,
-                byzantium: receipt.byzantium,
-                confirmations: receipt.confirmations,
-                contractAddress: receipt.contractAddress,
-                cumulativeGasUsed: receipt.cumulativeGasUsed,
-                from: receipt.from,
-                gasUsed: receipt.gasUsed,
-                logsBloom: receipt.logsBloom,
-                status: receipt.status,
-                to: receipt.to,
-                transactionHash: receipt.transactionHash !== undefined ? receipt.transactionHash : receipt.hash,
-                transactionIndex: receipt.transactionIndex !== undefined && receipt.transactionIndex !== null ? receipt.transactionIndex : receipt.index,
-                type: receipt.type,
-                raw: receipt
-            })), { transaction });
 
-            for (let i = 0; i < receipt.logs.length; i++) {
-                const log = receipt.logs[i];
-                try {
-                    await storedReceipt.createLog(sanitize({
+            const [storedReceipt] = await this.sequelize.models.TransactionReceipt.bulkCreate(
+                [
+                    stringifyBns(sanitize({
+                        transactionId: this.id,
                         workspaceId: this.workspaceId,
-                        address: log.address,
-                        blockHash: log.blockHash,
-                        blockNumber: log.blockNumber || receipt.blockNumber,
-                        data: log.data,
-                        logIndex: log.logIndex,
-                        topics: log.topics,
-                        transactionHash: log.transactionHash,
-                        transactionIndex: log.transactionIndex,
-                        raw: log
-                    }), { transaction });
-                } catch(error) {
-                    logger.error(error.message, { location: 'models.transaction.safeCreateReceipt', error: error, receipt, transaction: this });
-                    await storedReceipt.createLog(sanitize({
-                        workspaceId: this.workspaceId,
-                        blockNumber: log.blockNumber || receipt.blockNumber,
-                        raw: log
-                    }), { transaction });
+                        blockHash: receipt.blockHash,
+                        blockNumber: receipt.blockNumber,
+                        byzantium: receipt.byzantium,
+                        confirmations: receipt.confirmations,
+                        contractAddress: receipt.contractAddress,
+                        cumulativeGasUsed: receipt.cumulativeGasUsed,
+                        from: receipt.from,
+                        gasUsed: receipt.gasUsed,
+                        logsBloom: receipt.logsBloom,
+                        status: receipt.status,
+                        to: receipt.to,
+                        transactionHash: receipt.transactionHash !== undefined ? receipt.transactionHash : receipt.hash,
+                        transactionIndex: receipt.transactionIndex !== undefined && receipt.transactionIndex !== null ? receipt.transactionIndex : receipt.index,
+                        type: receipt.type,
+                        raw: receipt.raw
+                    }))
+                ],
+                {
+                    ignoreDuplicates: true,
+                    returning: true,
+                    transaction
                 }
+            );
+
+            if (!storedReceipt)
+                throw new Error('Could not create receipt');
+
+            const processedLogs = [];
+            for (let i = 0; i < receipt.logs.length; i++) {
+                const log = processRawRpcObject(
+                    receipt.logs[i],
+                    Object.keys(sequelize.models.TransactionLog.rawAttributes)
+                );
+
+                processedLogs.push(sanitize({
+                    transactionReceiptId: storedReceipt.id,
+                    workspaceId: this.workspaceId,
+                    address: log.address,
+                    blockHash: log.blockHash,
+                    blockNumber: log.blockNumber || receipt.blockNumber,
+                    data: log.data,
+                    logIndex: log.logIndex,
+                    topics: log.topics,
+                    transactionHash: log.transactionHash,
+                    transactionIndex: log.transactionIndex,
+                    raw: log.raw
+                }));
+            }
+
+            let storedLogs;
+            try {
+                storedLogs = await sequelize.models.TransactionLog.bulkCreate(processedLogs,
+                    {
+                        ignoreDuplicates: true,
+                        returning: true,
+                        transaction
+                    }
+                );
+            } catch(error) {
+                logger.error(error.message, { location: 'models.transaction.safeCreateReceipt', error: error, receipt, transaction: this });
+                storedLogs = [];
+                for (let i = 0; i < processedLogs.length; i++) {
+                    const log = processedLogs[i];
+                    storedLogs.push([
+                        await sequelize.models.TransactionLog.bulkCreate(
+                            [
+                                sanitize({
+                                    workspaceId: this.workspaceId,
+                                    transactionReceiptId: storedReceipt.id,
+                                    transactionId: this.id,
+                                    blockNumber: log.blockNumber || receipt.blockNumber,
+                                    raw: log.raw
+                                })
+                            ],
+                            {
+                                ignoreDuplicates: true,
+                                returning: true,
+                                transaction
+                            }
+                        )
+                    ]);
+                }
+            }
+
+            const tokenTransfers = [];
+            for (let i = 0; i < storedLogs.length; i++) {
+                const log = storedLogs[i];
+                const tokenTransfer = getTokenTransfer(log);
+                if (tokenTransfer && log.id)
+                    tokenTransfers.push(sanitize({
+                        transactionId: this.id,
+                        transactionLogId: log.id,
+                        workspaceId: this.workspaceId,
+                        ...tokenTransfer
+                    }));
+            }
+
+            if (tokenTransfers.length > 0) {
+                const storedTokenTransfers = await sequelize.models.TokenTransfer.bulkCreate(tokenTransfers, {
+                    ignoreDuplicates: true,
+                    returning: true,
+                    transaction
+                });
+                for (let i = 0; i < storedTokenTransfers.length; i++)
+                    trigger(`private-contractLog;workspace=${this.workspaceId};contract=${tokenTransfers[i].address}`, 'new', null);
+
+                const events = [];
+                for (let i = 0; i < storedTokenTransfers.length; i++) {
+                    const tokenTransfer = storedTokenTransfers[i];
+                    if (!tokenTransfer.id)
+                        continue;
+
+                    const contract = await sequelize.models.Contract.findOne({
+                        where: {
+                            workspaceId: this.workspaceId,
+                            address: tokenTransfer.token
+                        }
+                    });
+                    if (!contract) {
+                        const workspace = await this.getWorkspace();
+                        await workspace.safeCreateOrUpdateContract({
+                            address: tokenTransfer.token,
+                            timestamp: moment(this.timestamp).unix()
+                        }, transaction);
+                    }
+
+                    events.push({
+                        workspaceId: this.workspaceId,
+                        tokenTransferId: tokenTransfer.id,
+                        blockNumber: receipt.blockNumber,
+                        timestamp: this.timestamp,
+                        amount: ethers.BigNumber.from(tokenTransfer.amount).toString(),
+                        token: tokenTransfer.token,
+                        tokenType: contract ? contract.patterns[0] : null,
+                        src: tokenTransfer.src,
+                        dst: tokenTransfer.dst
+                    });
+                }
+
+                if (events.length > 0)
+                    await sequelize.models.TokenTransferEvent.bulkCreate(events, {
+                        ignoreDuplicates: true,
+                        transaction
+                    });
             }
 
             await storedReceipt.insertAnalyticEvent(transaction);
@@ -194,27 +308,40 @@ module.exports = (sequelize, DataTypes) => {
 
     safeCreateTransactionTrace(steps) {
         return sequelize.transaction(async transaction => {
-            const promises = [];
-            const existingSteps = await this.getTraceSteps();
 
-            for (let i = 0; i < existingSteps.length; i++)
-                promises.push(existingSteps[i].destroy({ transaction }));
+            const augmentedSteps = steps.map(step => ({
+                ...step,
+                workspaceId: this.workspaceId,
+                timestamp: this.timestamp,
+                transactionId: this.id
+            }));
 
-            for (let i = 0; i < steps.length; i++) {
-                const step = steps[i];
-                promises.push(this.createTraceStep({
-                    value: step.value,
-                    address: step.address,
-                    contractHashedBytecode: step.contractHashedBytecode,
-                    depth: step.depth,
-                    input: step.input,
-                    op: step.op,
-                    returnData: step.returnData,
-                    workspaceId: this.workspaceId
-                }, { transaction }));
-            }
-            return Promise.all(promises);
+            const contracts = steps
+                .filter(step => step.contractHashedBytecode)
+                .map(step => ({ address: step.address, workspaceId: this.workspaceId }));
+
+            await sequelize.models.Contract.bulkCreate(contracts, {
+                ignoreDuplicates: true,
+                transaction
+            });
+
+            return sequelize.models.TransactionTraceStep.bulkCreate(augmentedSteps, {
+                ignoreDuplicates: true,
+                returning: true,
+                transaction
+            });
         });
+    }
+
+    async afterCreate(options) {
+        const afterCommitFn = () => {
+            return this.triggerEvents();
+        };
+
+        if (options.transaction)
+            return options.transaction.afterCommit(afterCommitFn);
+        else
+            return afterCommitFn();
     }
   }
   Transaction.init({
@@ -309,25 +436,14 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     hooks: {
-        async afterCreate(transaction, options) {
-            const afterCommitFn = () => {
-                return transaction.triggerEvents();
-            };
-
-            if (options.transaction)
-                return options.transaction.afterCommit(afterCommitFn);
-            else
-                return afterCommitFn();
+        afterBulkCreate(transactions, options) {
+            return Promise.all(transactions.map(t => t.afterCreate(options)));
         },
-        async afterSave(transaction, options) {
-            const afterCommitFn = () => {
-                return transaction.triggerEvents();
-            };
-
-            if (options.transaction)
-                return options.transaction.afterCommit(afterCommitFn);
-            else
-                return afterCommitFn();
+        afterCreate(transaction, options) {
+            return transaction.afterCreate(options);
+        },
+        afterSave(transaction, options) {
+            return transaction.afterCreate(options);
         }
     },
     sequelize,

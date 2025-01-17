@@ -11,32 +11,42 @@
                         |<br>
                         |-->
                     </span>
-                    <v-chip small class="primary mr-2">{{ step.op }}</v-chip>
-                    <v-chip v-if="step.contract && step.contract.proxyContract" small class="primary mr-2">PROXY</v-chip>
-                    <template v-if="step.value && step.value != '' && step.value != '0'">[{{ step.value | fromWei('ether', chain.token) }}] </template>
-                    <Hash-Link :type="'address'" :hash="step.address" :notCopiable="true" :fullHash="true" :withName="true" /><span v-if="transactionDescription">.{{ transactionDescription.functionFragment.name }}(</span>
+                    <v-chip size="small" class="bg-primary mr-2">{{ step.op }}</v-chip>
+                    <v-chip v-if="step.contract && step.contract.proxyContract" size="small" class="bg-primary mr-2">PROXY</v-chip>
+                    <template v-if="step.value && step.value != '' && step.value != '0'">[{{ $fromWei(step.value, 'ether', token) }}] </template>
+                    <Hash-Link :type="'address'" :hash="step.address" :notCopiable="true" :fullHash="true" :withName="true" :contract="step.contract"/><span v-if="transactionDescription">.{{ transactionDescription.functionFragment.name }}(</span>
                     <template v-if="transactionDescription">
                         <div v-for="(input, index) in transactionDescription.functionFragment.inputs" :key="`in-${index}`">
                             <Formatted-Sol-Var :input="input" :value="transactionDescription.args[index]" class="ml-8" />
                         </div><span class="ml-4">)</span>
-                        <template v-if="transactionDescription.functionFragment.outputs.length">
+                        <template v-if="step.returnData && transactionDescription.functionFragment.outputs.length">
                             <template v-if="transactionDescription.functionFragment.outputs.length > 0">
                                 =>
                             </template>
                             <template v-if="transactionDescription.functionFragment.outputs.length > 1 ">
                                 (<div v-for="(output, index) in transactionDescription.functionFragment.outputs" :key="`out-${index}`">
-                                    <Formatted-Sol-Var :input="output" :value="decodeOutput(index)" />
+                                    <Formatted-Sol-Var  :input="output" :value="decodeOutput(index)" />
                                 </div>)
                             </template>
                             <template v-else>
-                                <Formatted-Sol-Var :input="transactionDescription.functionFragment.outputs[0]" :value="decodeOutput(0)" />
+                                <Formatted-Sol-Var :depth="0" :input="transactionDescription.functionFragment.outputs[0]" :value="decodeOutput(0)" />
                             </template>
                         </template>
                     </template>
                     <template v-else-if="step.input || step.returnData">
                         <ul>
-                            <li v-if="step.input"><b>Input:</b> {{ step.input }}</li>
-                            <li v-if="step.returnData"><b>Output:</b> {{ step.returnData }}</li>
+                            <li :class="{'raw-input': !expandInput}" v-if="step.input">
+                                <b class="mr-2">Input:</b>
+                                <a @click="expandInput = true" v-if="!expandInput">[ + ]</a>
+                                <a @click="expandInput = false" v-else>[ - ]</a>
+                                {{ step.input }}
+                            </li>
+                            <li :class="{'raw-input': !expandOutput}" v-if="step.returnData">
+                                <b class="mr-2">Output:</b>
+                                <a @click="expandOutput = true" v-if="!expandOutput">[ + ]</a>
+                                <a @click="expandOutput = false" v-else>[ - ]</a>
+                                {{ step.returnData }}
+                            </li>
                         </ul>
                     </template>
                 </v-card-text>
@@ -46,11 +56,12 @@
 </template>
 <script>
 import { ethers } from 'ethers';
-import { mapGetters } from 'vuex';
+import { storeToRefs } from 'pinia';
 
-import HashLink from './HashLink';
-import FormattedSolVar from './FormattedSolVar';
-import FromWei from '../filters/FromWei';
+import { useExplorerStore } from '../stores/explorer';
+
+import HashLink from './HashLink.vue';
+import FormattedSolVar from './FormattedSolVar.vue';
 
 export default {
     name: 'TraceStep',
@@ -58,22 +69,30 @@ export default {
         HashLink,
         FormattedSolVar
     },
-    filters: {
-        FromWei
-    },
     props: ['step'],
     data: () => ({
         transactionDescription: null,
-        jsonInterface: null,
         outputs: null,
         calledContract: null,
-        proxyContract: null
+        proxyContract: null,
+        expandInput: false,
+        expandOutput: false
     }),
+    setup() {
+        const { token } = storeToRefs(useExplorerStore());
+        return { token };
+    },
     methods: {
-        zeroXify: function(input) { return input.startsWith('0x') ? input : `0x${input}` },
-        decodeOutput: function(index) {
+        zeroXify(input) { return input.startsWith('0x') ? input : `0x${input}` },
+        decodeOutput(index) {
             if (!this.step.returnData) return '';
             return this.jsonInterface.decodeFunctionResult(this.transactionDescription.functionFragment, this.zeroXify(this.step.returnData))[index];
+        }
+    },
+    computed: {
+        jsonInterface() {
+            const contract = this.step.contract.proxyContract ? this.step.contract.proxyContract : this.step.contract;
+            return new ethers.utils.Interface(contract.abi);
         }
     },
     watch: {
@@ -83,21 +102,18 @@ export default {
                 if (!this.step.contract) return;
                 if (this.step.input && this.step.contract.abi) {
                     try {
-                        const contract = this.step.contract.proxyContract ? this.step.contract.proxyContract : this.step.contract;
-                        this.jsonInterface = new ethers.utils.Interface(contract.abi);
-                        this.transactionDescription = this.jsonInterface.parseTransaction({ data: this.zeroXify(this.step.input) });
+                        this.jsonInterface.parseTransaction({ data: this.zeroXify(this.step.input) });
                     } catch(_error) {
                         console.log(_error)
                     }
                 }
             }
         }
-    },
-    computed: {
-        ...mapGetters([
-            'chain'
-        ])
     }
-
 };
 </script>
+<style scoped>
+li {
+    list-style-type: none;
+}
+</style>

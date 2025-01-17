@@ -1,10 +1,9 @@
 <template>
     <v-dialog v-model="dialog" max-width="600">
-        <v-card outlined>
-            <v-card-title>
-                <template>Add Domain Alias</template>
-                <v-spacer></v-spacer>
-                <v-btn icon @click="close()"><v-icon>mdi-close</v-icon></v-btn>
+        <v-card>
+            <v-card-title class="d-flex justify-space-between align-center">
+                <h4>Add Domain Alias</h4>
+                <v-btn color="grey" variant="text" icon="mdi-close" @click="close()"></v-btn>
             </v-card-title>
             <v-card-text>
                 <v-alert text type="error" v-if="errorMessage">{{ errorMessage }}</v-alert>
@@ -13,14 +12,14 @@
                     <v-text-field
                         class="mt-2"
                         :rules="[v => !!this.domainOrigin || 'Invalid format']"
-                        dense
-                        outlined
+                        density="compact"
+                        variant="outlined"
                         v-model="domain"
                         persistent-hint
                         label="Domain Alias"></v-text-field>
                     <template v-if="domainOrigin">
                         <div class="mb-1">Log in to the account you have with your DNS provider, and add the following record:</div>
-                        <div style="border-radius: 5px;" class="mb-1 pa-2 black white--text font-weight-medium">{{ domainOrigin }} A 37.16.1.34</div>
+                        <div style="border-radius: 5px;" class="mb-1 pa-2 bg-black text-white font-weight-medium">{{ domainOrigin }} A 37.16.1.34</div>
                     </template>
                     <v-card-actions>
                         <v-spacer></v-spacer>
@@ -32,7 +31,8 @@
     </v-dialog>
 </template>
 <script>
-import { mapGetters } from 'vuex';
+import { mapStores } from 'pinia';
+import { useUserStore } from '@/stores/user';
 
 export default {
     name: 'NewExplorerDomainModal',
@@ -50,7 +50,7 @@ export default {
         save() {
             this.loading = true;
             this.errorMessage = null;
-            this.server.addExplorerDomain(this.explorer.id, this.domainOrigin)
+            this.$server.addExplorerDomain(this.explorer.id, this.domainOrigin)
                 .then(() => this.close(true))
                 .catch(error => {
                     this.loading = false;
@@ -80,9 +80,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-            'user'
-        ]),
+        ...mapStores(useUserStore),
         domainOrigin() {
             try {
                 if (this.domain.startsWith('http://') || this.domain.startsWith('https://'))

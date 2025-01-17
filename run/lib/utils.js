@@ -17,11 +17,11 @@ const validateBNString = (str) => {
 
 const getEnv = () => process.env.NODE_ENV;
 
-const formatErc721Metadata = (metadata) => {
-    if (!metadata)
+const formatErc721Metadata = (tokenId, metadata) => {
+    if (!metadata || tokenId === null || tokenId === undefined)
         return {};
 
-    const name = metadata.name || `#${metadata.tokenId}`;
+    const name = metadata.name || `#${tokenId}`;
 
     let image_data;
     if (metadata.image_data)
@@ -70,8 +70,8 @@ const formatErc721Metadata = (metadata) => {
     return { background_color: metadata.background_color, name, image_data, external_url: metadata.external_url, description: metadata.description, properties, levels, boosts, stats, dates };
 };
 
-const processRawRpcObject = (obj, storedKeys) => {
-    const rawKeys = Object.keys(obj).filter(k => storedKeys.indexOf(k) == -1);
+const processRawRpcObject = (obj, storedKeys, excludeFromRaw = []) => {
+    const rawKeys = Object.keys(obj).filter(k => storedKeys.indexOf(k) == -1 && excludeFromRaw.indexOf(k) == -1);
     const processedObj = {};
     const raw = {};
     for (let i = 0; i < storedKeys.length; i++)
@@ -129,7 +129,7 @@ const _isJson = function(obj) {
 };
 
 const _sanitize = (obj, numberization = true) => {
-    const numberize = ['number', 'difficulty', 'totalDifficulty', 'size', 'timestamp', 'nonce', 'baseFeePerGas', 'blockNumber', 'cumulativeGasUsed', 'effectiveGasPrice', 'gasUsed', 'logIndex', 'chainId', 'gasLimit', 'gasPrice', 'v', 'value', 'type', 'transactionIndex', 'status', 'l1BlockNumber'];
+    const numberize = ['number', 'difficulty', 'totalDifficulty', 'size', 'timestamp', 'nonce', 'baseFeePerGas', 'blockNumber', 'cumulativeGasUsed', 'effectiveGasPrice', 'gasUsed', 'logIndex', 'chainId', 'gasLimit', 'gasPrice', 'v', 'value', 'type', 'transactionIndex', 'status', 'l1BlockNumber', 'gas', 'maxFeePerGas', 'maxPriorityFeePerGas'];
     return Object.fromEntries(
         Object.entries(obj)
             .filter(([_, v]) => v != null)

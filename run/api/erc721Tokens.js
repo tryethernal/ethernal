@@ -47,14 +47,21 @@ router.get('/:address/tokenIndex/:tokenIndex', workspaceAuthMiddleware, async (r
     try {
         const erc721Connector = new ERC721Connector(data.workspace.rpcServer, req.params.address);
 
-        let metadata, URI;
+        let metadata, URI, owner;
 
         const tokenId = await erc721Connector.tokenByIndex(req.params.tokenIndex);
 
         if (!tokenId)
             return res.status(200).send(null);
 
-        const owner = await erc721Connector.ownerOf(tokenId);
+        try {
+            owner = await erc721Connector.ownerOf(tokenId);
+        } catch(_) {
+            owner = null;
+        }
+
+        if (!owner)
+            return res.status(200).send(null);
 
         try {
             URI = await erc721Connector.tokenURI(tokenId);
@@ -78,7 +85,7 @@ router.get('/:address/tokenIndex/:tokenIndex', workspaceAuthMiddleware, async (r
             tokenId: tokenId,
             owner: owner,
             URI: URI,
-            attributes: formatErc721Metadata(metadata),
+            attributes: formatErc721Metadata(req.params.tokenIndex, metadata),
             metadata
         });
 
@@ -94,9 +101,16 @@ router.get('/:address/:tokenId', workspaceAuthMiddleware, async (req, res, next)
     try {
         const erc721Connector = new ERC721Connector(data.workspace.rpcServer, req.params.address);
 
-        let metadata, URI;
+        let metadata, URI, owner;
 
-        const owner = await erc721Connector.ownerOf(req.params.tokenId);
+        try {
+            owner = await erc721Connector.ownerOf(req.params.tokenId);
+        } catch(_) {
+            owner = null;
+        }
+
+        if (!owner)
+            return res.status(200).send(null);
 
         try {
             URI = await erc721Connector.tokenURI(req.params.tokenId);
@@ -120,7 +134,7 @@ router.get('/:address/:tokenId', workspaceAuthMiddleware, async (req, res, next)
             tokenId: req.params.tokenId,
             owner: owner,
             URI: URI,
-            attributes: formatErc721Metadata(metadata),
+            attributes: formatErc721Metadata(req.params.tokenId, metadata),
             metadata
         });
 

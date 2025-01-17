@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-card outlined class="mb-4">
+        <v-card class="mb-4">
             <v-card-text>
                 <v-row>
                     <v-col cols="6"><b>Contract Name:</b> {{ contract.verification.contractName }}</v-col>
@@ -21,13 +21,13 @@
                 <v-row v-for="(source, idx) in displayedSources" :key="idx">
                     <v-col>
                         <h5>File {{ contract.verification.sources.indexOf(source) + 1}} of {{ contract.verification.sources.length }}: {{ source.fileName }}</h5>
-                        <editor class="editor" :ref="`editor-${idx}`" v-model="source.content" @init="editorInit" lang="solidity" theme="chrome" height="500"></editor>
+                        <v-ace-editor :options="{ useWorker: false }" :max-lines="25" showPrintMargin="false" useWorker="false" readonly :ref="`editor-${idx}`" :value="source.content" lang="solidity" theme="chrome" style="height: 500px"></v-ace-editor>
                     </v-col>
                 </v-row>
             </v-card-text>
         </v-card>
 
-        <v-card v-if="displayConstructorArguments" outlined class="mb-6">
+        <v-card v-if="displayConstructorArguments" border class="mb-6">
             <v-card-title>
                 Constructor Arguments
                 <v-spacer></v-spacer>
@@ -45,7 +45,7 @@
             </v-card-text>
         </v-card>
 
-        <v-card v-if="displayLibraries" outlined class="mb-6">
+        <v-card v-if="displayLibraries" border class="mb-6">
             <v-card-title>Libraries</v-card-title>
             <v-card-text>
                 <div v-for="(libraryName, idx) in Object.keys(contract.verification.libraries)" :key="idx">
@@ -54,13 +54,13 @@
             </v-card-text>
         </v-card>
 
-        <v-card v-if="contract.abi" outlined class="mb-6">
+        <v-card v-if="contract.abi" border class="mb-6">
             <v-card-title>ABI</v-card-title>
             <v-card-text>
-                <v-textarea dense outlined disabled :value="JSON.stringify(contract.abi)">
+                <v-textarea density="compact" variant="outlined" disabled :model-value="JSON.stringify(contract.abi)">
                     <template v-slot:append>
                         <v-btn icon @click="copyAbi()">
-                            <v-icon small>mdi-content-copy</v-icon>
+                            <v-icon size="small">mdi-content-copy</v-icon>
                         </v-btn>
                     </template>
                 </v-textarea>
@@ -72,36 +72,26 @@
 
 <script>
 const ethers = require('ethers');
-const editor = require('vue2-ace-editor');
-import FormattedSolVar from './FormattedSolVar';
+import ace from 'ace-builds';
+import themeChromeUrl from 'ace-builds/src-noconflict/theme-chrome?url';
+import langSolidityUrl from 'ace-mode-solidity/build/remix-ide/mode-solidity.js?url';
+ace.config.setModuleUrl('ace/theme/chrome', themeChromeUrl);
+ace.config.setModuleUrl('ace/mode/solidity', langSolidityUrl);
+import { VAceEditor } from 'vue3-ace-editor';
+import FormattedSolVar from './FormattedSolVar.vue';
 
 export default {
     name: 'ContractVerificationInfo',
     props: ['contract'],
     components: {
-        editor,
+        VAceEditor,
         FormattedSolVar
     },
     data: () => ({
         formattedConstructorArguments: true,
         showOppenzeppelinImports: false
     }),
-    mounted() {
-        for (let i = 0; i < this.contract.verification.sources.length; i++) {
-            const editor = this.$refs[`editor-${i}`][0].editor;
-            editor.setOptions({
-                readOnly: true,
-                showPrintMargin: false,
-                useWorker: false,
-                maxLines: 25
-            });
-        }
-    },
     methods: {
-        editorInit() {
-            require('brace/ext/language_tools')
-            require('brace/theme/chrome')
-        },
         copyAbi() {
             const webhookField = document.querySelector('#copyAbi');
             webhookField.setAttribute('type', 'text');

@@ -3,6 +3,7 @@ const {
   Model
 } = require('sequelize');
 const Analytics = require('../lib/analytics');
+const { enqueue } = require('../lib/queue');
 const analytics = new Analytics();
 
 module.exports = (sequelize, DataTypes) => {
@@ -112,7 +113,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       afterCreate(stripeSubscription, options) {
         const afterCreateFn = async () => {
-          const explorer = await stripeSubscription.getExplorer({ include: 'workspace' });
+          const explorer = await stripeSubscription.getExplorer({ include: ['workspace', 'admin'] });
           if (!explorer || explorer.workspace.qnEndpointId) return;
           const stripePlan = await stripeSubscription.getStripePlan();
           analytics.track(explorer.userId, 'explorer:subscription_create', {
@@ -121,7 +122,14 @@ module.exports = (sequelize, DataTypes) => {
             status: stripeSubscription.status
           });
           analytics.shutdown();
-          return explorer.startSync();
+          await explorer.startSync();
+          if (explorer.workspace.integrityCheckStartBlockNumber)
+            return enqueue('blockSync', `blockSync-${explorer.workspace.id}-${explorer.workspace.integrityCheckStartBlockNumber}`, {
+              userId: explorer.admin.firebaseUserId,
+              workspace: explorer.workspace.name,
+              blockNumber: explorer.workspace.integrityCheckStartBlockNumber,
+              source: 'subscriptionStart'
+            }, 1);
         };
         return options.transaction ? options.transaction.afterCommit(afterCreateFn) : afterCreateFn();
       },

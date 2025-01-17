@@ -1,36 +1,36 @@
 import flushPromises from 'flush-promises';
-import MockHelper from '../MockHelper';
 
 import CreateWorkspace from '@/components/CreateWorkspace.vue';
 
-beforeEach(() => jest.clearAllMocks());
-
 describe('CreateWorkspace.vue', () => {
-    let helper;
-
-    beforeEach(() => {
-        helper = new MockHelper();
-    });
-
     it('Should display a warning message if user has already been onboarded & on a free plan', () => {
-        const wrapper = helper.mountFn(CreateWorkspace, {
-            getters: {
-                user: jest.fn().mockReturnValue({
-                    plan: 'free',
-                    onboarded: true
-                })
+        const wrapper = mount(CreateWorkspace, {
+            global: {
+                plugins: [createTestingPinia({
+                    initialState: {
+                        user: {
+                            plan: 'free',
+                            onboarded: true
+                        }
+                    }
+                })]
             }
         });
+
         expect(wrapper.html()).toMatchSnapshot();
     });
 
     it('Should not display a warning message if user has already been onboarded & on a premium plan', () => {
-        const wrapper = helper.mountFn(CreateWorkspace, {
-            getters: {
-                user: jest.fn().mockReturnValue({
-                    plan: 'premium',
-                    onboard: true
-                })
+        const wrapper = mount(CreateWorkspace, {
+            global: {
+                plugins: [createTestingPinia({
+                    initialState: {
+                        user: {
+                            plan: 'premium',
+                            onboarded: true
+                        }
+                    }
+                })]
             }
         });
         expect(wrapper.html()).toMatchSnapshot();
@@ -40,10 +40,10 @@ describe('CreateWorkspace.vue', () => {
         const name = 'Hardhat';
         const rpcServer = 'http://127.0.0.1:8545';
 
-        jest.spyOn(helper.mocks.server, 'initRpcServer').mockResolvedValue(true);
-        jest.spyOn(helper.mocks.server, 'createWorkspace').mockResolvedValue(true);
+        vi.spyOn(server, 'initRpcServer').mockResolvedValueOnce(true);
+        vi.spyOn(server, 'createWorkspace').mockResolvedValueOnce(true);
 
-        const wrapper = helper.mountFn(CreateWorkspace, {
+        const wrapper = mount(CreateWorkspace, {
             attachTo: document.body
         });
 
@@ -54,16 +54,15 @@ describe('CreateWorkspace.vue', () => {
         await flushPromises();
 
         expect(wrapper.emitted().workspaceCreated).toBeTruthy();
-        wrapper.destroy();
     });
 
     it('Should display an error if it cannot connect to the chain', async () => {
         const name = 'Hardhat';
         const rpcServer = 'http://127.0.0.1';
 
-        jest.spyOn(helper.mocks.server, 'initRpcServer').mockRejectedValue(new Error('Error'));
+        vi.spyOn(server, 'initRpcServer').mockRejectedValueOnce(new Error('Error'));
 
-        const wrapper = helper.mountFn(CreateWorkspace, {
+        const wrapper = mount(CreateWorkspace, {
             attachTo: document.body
         });
 
@@ -75,18 +74,17 @@ describe('CreateWorkspace.vue', () => {
 
         expect(wrapper.emitted().workspaceCreated).toBeFalsy();
         expect(wrapper.html()).toMatchSnapshot();
-        wrapper.destroy();
     });
 
-    it('Should display a warning if browser is Safari', () => {
-        jest.spyOn(navigator, 'vendor', 'get').mockReturnValue('apple');
-        const wrapper = helper.mountFn(CreateWorkspace);
+    it('Should display a warning if browser is Safari', () => {
+        vi.spyOn(navigator, 'vendor', 'get').mockReturnValueOnce('apple');
+        const wrapper = mount(CreateWorkspace);
 
         expect(wrapper.html()).toMatchSnapshot();
     });
 
     it('Should display locally running networks', async () => {
-        const wrapper = helper.mountFn(CreateWorkspace);
+        const wrapper = mount(CreateWorkspace);
         await wrapper.find('#detectServers').trigger('click');
         await wrapper.vm.$nextTick();
         await wrapper.find('#serverDetected-0').trigger('click');

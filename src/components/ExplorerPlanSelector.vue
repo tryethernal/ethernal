@@ -4,13 +4,13 @@
         <v-row justify="center">
             <template v-if="loading">
                 <v-col  cols="3">
-                    <v-card outlined><v-skeleton-loader type="article, actions"></v-skeleton-loader></v-card>
+                    <v-card><v-skeleton-loader type="article, actions"></v-skeleton-loader></v-card>
                 </v-col>
                 <v-col  cols="3">
-                    <v-card outlined><v-skeleton-loader type="article, actions"></v-skeleton-loader></v-card>
+                    <v-card><v-skeleton-loader type="article, actions"></v-skeleton-loader></v-card>
                 </v-col>
                 <v-col  cols="3">
-                    <v-card outlined><v-skeleton-loader type="article, actions"></v-skeleton-loader></v-card>
+                    <v-card><v-skeleton-loader type="article, actions"></v-skeleton-loader></v-card>
                 </v-col>
             </template>
             <v-col v-else cols="3" v-for="(plan, idx) in plans" :key="idx">
@@ -18,7 +18,7 @@
                     :current="currentPlanSlug == plan.slug"
                     :pendingCancelation="pendingCancelation && plan.slug == currentPlanSlug"
                     :bestValue="!currentPlanSlug && bestValueSlug == plan.slug && !selectedPlanSlug"
-                    :trial="user.canTrial"
+                    :trial="userStore.canTrial"
                     :plan="plan"
                     :loading="selectedPlanSlug && selectedPlanSlug == plan.slug"
                     :disabled="selectedPlanSlug && selectedPlanSlug != plan.slug"
@@ -28,7 +28,10 @@
     </div>
 </template>
 <script>
-import { mapGetters } from 'vuex';
+import { mapStores } from 'pinia';
+import { useEnvStore } from '../stores/env';
+import { useUserStore } from '../stores/user';
+
 import ExplorerPlanCard from './ExplorerPlanCard.vue';
 
 export default {
@@ -56,7 +59,7 @@ export default {
     }),
     mounted() {
         this.loading = true;
-        this.server.getExplorerPlans()
+        this.$server.getExplorerPlans()
             .then(({ data }) => this.plans = data.sort((a, b) => a.price - b.price && b.price > 0))
             .catch(console.log)
             .finally(() => this.loading = false);
@@ -73,8 +76,8 @@ export default {
                 this.cancelPlan();
         },
         createPlan(slug) {
-            if (this.user.cryptoPaymentEnabled) {
-                this.server.startCryptoSubscription(slug, this.explorerId)
+            if (this.userStore.cryptoPaymentEnabled) {
+                this.$server.startCryptoSubscription(slug, this.explorerId)
                     .then(() => {
                         this.$emit('planCreated', slug);
                     })
@@ -84,9 +87,9 @@ export default {
                     })
                     .finally(() => this.selectedPlanSlug = null);
             }
-            else if (this.user.canTrial) {
-                this.server.startTrial(this.explorerId, slug)
-                    .then(() => window.location.assign(`//app.${this.mainDomain}/explorers/${this.explorerId}`))
+            else if (this.userStore.canTrial) {
+                this.$server.startTrial(this.explorerId, slug)
+                    .then(() => window.location.assign(`//app.${this.envStore.mainDomain}/explorers/${this.explorerId}`))
                     .catch(error => {
                         console.log(error);
                         this.errorMessage = error.response && error.response.data || 'Error while subscribing to the selected plan. Please retry.';
@@ -94,9 +97,9 @@ export default {
                     });
             }
             else {
-                const successUrl = this.stripeSuccessUrl || `http://app.${this.mainDomain}/explorers/${this.explorerId}?justCreated=true`;
-                const cancelUrl = this.stripeCancelUrl || `http://app.${this.mainDomain}/explorers/${this.explorerId}`;
-                this.server.createStripeExplorerCheckoutSession(this.explorerId, this.selectedPlanSlug, successUrl, cancelUrl)
+                const successUrl = this.stripeSuccessUrl || `http://app.${this.envStore.mainDomain}/explorers/${this.explorerId}?justCreated=true`;
+                const cancelUrl = this.stripeCancelUrl || `http://app.${this.envStore.mainDomain}/explorers/${this.explorerId}`;
+                this.$server.createStripeExplorerCheckoutSession(this.explorerId, this.selectedPlanSlug, successUrl, cancelUrl)
                     .then(({ data }) => window.location.assign(data.url))
                     .catch(error => {
                         console.log(error);
@@ -128,7 +131,7 @@ Are you sure you want to change plan?`;
                     return this.selectedPlanSlug = null;
             }
 
-            this.server.updateExplorerSubscription(this.explorerId, slug)
+            this.$server.updateExplorerSubscription(this.explorerId, slug)
                 .then(() => this.$emit('planUpdated', slug))
                 .catch(error => {
                     console.log(error);
@@ -153,7 +156,7 @@ Are you sure you want to cancel?`;
 
             if (!confirm(confirmationMessage)) return this.selectedPlanSlug = null;
 
-            this.server.cancelExplorerSubscription(this.explorerId)
+            this.$server.cancelExplorerSubscription(this.explorerId)
                 .then(() => {
                     this.$emit('planCanceled');
                 })
@@ -177,10 +180,7 @@ Are you sure you want to cancel?`;
         }
     },
     computed: {
-        ...mapGetters([
-            'user',
-            'mainDomain'
-        ])
+        ...mapStores(useEnvStore, useUserStore)
     }
 }
 </script>
