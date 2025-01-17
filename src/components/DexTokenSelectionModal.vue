@@ -1,42 +1,34 @@
 <template>
     <v-dialog v-model="dialog" max-width="400" content-class="roundedModal">
-        <v-card outlined>
+        <v-card>
             <v-card-title class="mb-4">
                 Select a token
             </v-card-title>
             <v-card-text class="px-0">
                 <v-text-field
-                    dense
+                    density="compact"
                     class="rounded-xl px-6"
                     placeholder="Search name or paste address"
                     hide-details="auto"
                     persistent-placeholder
-                    outlined
+                    variant="outlined"
                     v-model="filter">
                     <template v-slot:append>
                         <div class="py-6"></div>
                     </template>
                 </v-text-field>
-                <v-divider class="my-6 mx-1"></v-divider>
+                <v-divider class="mt-6 mb-3 mx-1"></v-divider>
                 <template v-if="orderedTokens.length">
-                    <div class="d-flex justify-space-between px-6">
-                        <span>Token Name</span>
-                    </div>
-                    <v-list-item :class="{ 'oppositeToken': oppositeTokenAddress == token.address }" @click="close(token)" class="px-6" link v-for="(token, idx) in orderedTokens" :key="idx">
-                        <v-list-item-icon class="mr-3">
-                            <v-icon>mdi-alpha-t-circle</v-icon>
-                        </v-list-item-icon>
-                        <v-list-item-content>
-                            <v-list-item-title>
-                                {{ token.tokenSymbol }}
-                                <span class="float-right">
-                                    {{ BNtoSignificantDigits(balances[token.address]) }}
-                                </span>
-                            </v-list-item-title>
-                            <v-list-item-subtitle v-if="token.address != nativeTokenAddress">
-                                <Hash-Link :contract="{ tokenName: token.tokenName, tokenSymbol: token.tokenSymbol }" :type="'address'" :hash="token.address" :notCopiable="true" :unlink="true" />
-                            </v-list-item-subtitle>
-                        </v-list-item-content>
+                    <v-list-item prepend-icon="mdi-alpha-t-circle" :class="{ 'oppositeToken': oppositeTokenAddress == token.address }" @click="close(token)" class="px-6 pb-4" link v-for="(token, idx) in orderedTokens" :key="idx">
+                        <template v-slot:title>
+                            {{ token.tokenSymbol }}
+                            <span class="float-right">
+                                {{ BNtoSignificantDigits(balances[token.address]) }}
+                            </span>
+                        </template>
+                        <template v-slot:subtitle>
+                            <Hash-Link :contract="{ tokenName: token.tokenName, tokenSymbol: token.tokenSymbol }" :type="'address'" :hash="token.address" :notCopiable="true" :unlink="true" />
+                        </template>
                     </v-list-item>
                 </template>
                 <div class="text-center" v-else>
@@ -48,8 +40,9 @@
 </template>
 <script>
 const ethers = require('ethers');
-import { mapGetters } from 'vuex';
-const { BNtoSignificantDigits } = require('@/lib/utils');
+import { useEnvStore } from '@/stores/env';
+
+import { BNtoSignificantDigits } from '@/lib/utils';
 import HashLink from './HashLink.vue';
 
 export default {
@@ -68,6 +61,10 @@ export default {
         refreshOrder: 0,
         oppositeTokenAddress: null,
     }),
+    setup() {
+        const { nativeTokenAddress} = useEnvStore();
+        return { nativeTokenAddress };
+    },
     methods: {
         BNtoSignificantDigits,
         open(options) {
@@ -96,10 +93,6 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-            'user',
-            'nativeTokenAddress'
-        ]),
         filteredTokens() {
             if (!this.filter)
                 return this.tokens;
@@ -112,7 +105,7 @@ export default {
         },
         orderedTokens() {
             this.refreshOrder;
-            return this.filteredTokens.toSorted((a, b) => {
+            return [...this.filteredTokens].sort((a, b) => {
                 const balanceA = ethers.BigNumber.from(this.balances[a.address] || '0');
                 const balanceB = ethers.BigNumber.from(this.balances[b.address] || '0');
 

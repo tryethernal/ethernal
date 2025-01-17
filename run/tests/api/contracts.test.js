@@ -475,7 +475,9 @@ describe(`POST ${BASE_URL}/:address/remove`, () => {
 describe(`POST ${BASE_URL}/:address/verify`, () => {
     it('Should return 200 status code', (done) => {
         jest.spyOn(db, 'getPublicExplorerParamsBySlug').mockResolvedValueOnce({ userId: 1, workspaceId: 1 });
-        jest.spyOn(db, 'getContract').mockResolvedValueOnce({ address: '0x123' });
+        jest.spyOn(db, 'getContract')
+            .mockResolvedValueOnce({ address: '0x123' })
+            .mockResolvedValueOnce({ address: '0x123' });
         processContractVerification.mockResolvedValueOnce({ verificationSucceded: true });
 
         request.post(`${BASE_URL}/0x123/verify`)

@@ -1,17 +1,15 @@
-import MockHelper from '../MockHelper';
-
+import { h } from "vue";
+import { VApp } from "vuetify/components";
 import DemoExplorerSetup from '@/components/DemoExplorerSetup.vue';
-
-let helper;
-beforeEach(() => {
-    jest.clearAllMocks()
-    helper = new MockHelper();
-});
 
 describe('DemoExplorerSetup.vue', () => {
     it('Should display demo explorer setup page', async () => {
-        jest.spyOn(helper.mocks.server, 'getCurrentUser').mockResolvedValue({ data: { id: 1 }});
-        const wrapper = helper.mountFn(DemoExplorerSetup);
+        vi.spyOn(server, 'getCurrentUser').mockResolvedValue({ data: { id: 1 }});
+        const wrapper = mount(VApp, {
+            slots: {
+                default: h(DemoExplorerSetup)
+            }
+        });
 
         expect(wrapper.html()).toMatchSnapshot();
     });

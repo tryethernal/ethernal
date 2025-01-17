@@ -1,127 +1,123 @@
 <template>
-    <v-toolbar style="border-bottom: thin solid rgba(0, 0, 0, 0.12); white-space: nowrap;" dense flat class="px-3 color--text">
-        <v-app-bar-nav-icon @click.stop="toggleMenu()" v-if="$vuetify.breakpoint.mobile"></v-app-bar-nav-icon>
+    <v-toolbar height="48" style="background-color: white; border-bottom: thin solid rgba(0, 0, 0, 0.12); white-space: nowrap;" dense flat class="px-3 color--text">
+        <v-app-bar-nav-icon @click.stop="toggleMenu()" v-if="$vuetify.display.mobile"></v-app-bar-nav-icon>
         <v-icon @click="showSearchBar = !showSearchBar">mdi-magnify</v-icon>
         <v-slide-x-transition>
             <v-row v-show="showSearchBar">
                 <v-col cols="12">
-                    <v-autocomplete hide-details="auto" dense class="ml-2" append-icon=""
+                    <v-autocomplete hide-details="auto" density="compact" class="ml-2" append-icon=""
                         v-model="searchSelectedItem"
+                        @update:search="search"
                         :items="orderedItems"
                         :loading="isSearchLoading"
-                        :search-input.sync="search"
-                        :item-text="getItemText"
-                        item-value="data.id"
+                        return-object
                         hide-no-data
                         no-filter
-                        autofocus
-                        return-object
-                        :key="autocompleteKey"
-                        @blur="showSearchBar=false"
-                        @change="clearSearchBar()">
-                        <template v-slot:item="data">
-                            <v-list-item-content v-if="data.item.type == 'address'">
-                                <v-list-item-subtitle>{{ data.item.data.address }}</v-list-item-subtitle>
-                            </v-list-item-content>
+                        autofocus>
+                        <template v-slot:selection></template>
+                        <template v-slot:item="{ props, item }">
+                            <template v-if="item.raw.header">
+                                <v-list-item v-bind="props" title="" disabled :subtitle="item.raw.header"></v-list-item>
+                            </template>
 
-                            <v-list-item-content v-if="data.item.type == 'transaction'">
-                                <v-list-item-subtitle>{{ data.item.data.hash }}</v-list-item-subtitle>
-                            </v-list-item-content>
+                            <template v-if="item.raw.divider">
+                                <v-divider v-bind="props"></v-divider>
+                            </template>
 
-                            <v-list-item-content v-if="data.item.type == 'block'">
-                                <v-list-item-subtitle>#{{ data.item.data.number }}</v-list-item-subtitle>
-                                <v-list-item-subtitle>Hash: {{ data.item.data.hash }}</v-list-item-subtitle>
-                                <v-list-item-subtitle>Transactions count: {{ data.item.data.transactionsCount }}</v-list-item-subtitle>
-                            </v-list-item-content>
+                            <template v-if="item.raw.type == 'address'">
+                                <v-list-item v-bind="props" :title="item.raw.data.address" class="mb-2 ml-2"></v-list-item>
+                            </template>
 
-                            <v-list-item-content v-if="data.item.type == 'contract'">
-                                <v-list-item-subtitle v-if="data.item.data.name">{{ data.item.data.name }}</v-list-item-subtitle>
-                                <v-list-item-subtitle v-else>{{ data.item.data.address }}</v-list-item-subtitle>
-                                <br>
+                            <template v-if="item.raw.type == 'transaction'">
+                                <v-list-item v-bind="props" :title="item.raw.data.hash" class="mb-2 ml-2"></v-list-item>
+                            </template>
 
-                                <v-list-item-subtitle v-if="data.item.data.name">Address: <b>{{ data.item.data.address }}</b></v-list-item-subtitle>
-                                <v-list-item-subtitle v-if="data.item.data.tokenSymbol">Token Symbol: <b>{{ data.item.data.tokenSymbol }}</b></v-list-item-subtitle>
-                                <v-list-item-subtitle v-if="data.item.data.tokenName">Token Name: <b>{{ data.item.data.tokenName }}</b></v-list-item-subtitle>
-                                <v-list-item-subtitle v-if="data.item.data.patterns.length">
-                                    <v-chip v-for="(pattern, idx) in data.item.data.patterns" :key="idx" x-small class="success mr-2">
-                                        {{ formatContractPattern(pattern) }}
-                                    </v-chip>
-                                </v-list-item-subtitle>
-                            </v-list-item-content>
+                            <template v-if="item.raw.type == 'block'">
+                                <v-list-item v-bind="props" :title="`#${item.raw.data.number}`" :subtitle="`${item.raw.data.transactionsCount} transactions`" class="mb-2 ml-2"></v-list-item>
+                            </template>
+
+                            <template v-if="item.raw.type == 'contract'">
+                                <v-list-item v-bind="props" :title="item.raw.data.name || item.raw.data.address" class="mb-2 ml-2">
+                                    <small v-if="item.raw.data.name">Address: <b>{{ item.raw.data.address }}</b><br></small>
+                                    <small v-if="item.raw.data.tokenSymbol">Token Symbol: <b>{{ item.raw.data.tokenSymbol }}</b><br></small>
+                                    <small v-if="item.raw.data.tokenName">Token Name: <b>{{ item.raw.data.tokenName }}</b><br></small>
+                                    <div v-if="item.raw.data.patterns.length">
+                                        <v-chip v-for="(pattern, idx) in item.raw.data.patterns" :key="idx" size="x-small" class="bg-success mr-2">
+                                            {{ formatContractPattern(pattern) }}
+                                        </v-chip>
+                                    </div>
+                                </v-list-item>
+                            </template>
                         </template>
                     </v-autocomplete>
                 </v-col>
             </v-row>
         </v-slide-x-transition>
-        <template>
-            <template v-if="isUserAdmin">
-                <v-divider vertical inset class="mx-2"></v-divider>
-                Workspace: {{ currentWorkspace.name }}<template v-if="!isPublicExplorer"> ({{ chain.name }})</template>
-            </template>
-            <template v-if="isUserAdmin">
-                <v-divider vertical inset class="mx-2"></v-divider>
-                <span style="max-width: 50ch; text-overflow: ellipsis; overflow: hidden;">{{ shortRpcUrl(rpcServer) }}</span>
-            </template>
-            <div v-show="currentBlock.number">
-                <v-divider vertical inset class="mx-2"></v-divider>
-                Latest Block: <router-link style="text-decoration: none;" :to="'/block/' + currentBlock.number">{{ currentBlock.number && commify(currentBlock.number) }}</router-link>
-            </div>
-            <div v-show="processingContracts">
-                <v-divider vertical inset class="mx-2"></v-divider>
-                <v-progress-circular indeterminate class="mr-2" size="16" width="2" color="primary"></v-progress-circular>Processing Contracts...
-            </div>
-            <template v-if="isUserAdmin">
-                <v-spacer></v-spacer>
-                <v-btn id="feedbackfin__back" @click="openFeedbackWindow" small color="primary" outlined data-feedbackfin-button>
-                    <v-icon class="mr-1">mdi-chat-processing-outline</v-icon>Feedback
-                </v-btn>
-            </template>
+        <template v-if="isUserAdmin">
+            <v-divider vertical inset class="mx-2"></v-divider>
+            Workspace: {{ currentWorkspaceStore.name }}<template v-if="!currentWorkspaceStore.explorer"> ({{ currentWorkspaceStore.chain.name }})</template>
+        </template>
+        <template v-if="isUserAdmin">
+            <v-divider vertical inset class="mx-2"></v-divider>
+            <span style="max-width: 50ch; text-overflow: ellipsis; overflow: hidden;">{{ shortRpcUrl(currentWorkspaceStore.rpcServer) }}</span>
+        </template>
+        <div v-show="currentWorkspaceStore.currentBlock.number">
+            <v-divider vertical inset class="mx-2"></v-divider>
+            Latest Block: <router-link style="text-decoration: none;" :to="'/block/' + currentWorkspaceStore.currentBlock.number">{{ currentWorkspaceStore.currentBlock.number && commify(currentWorkspaceStore.currentBlock.number) }}</router-link>
+        </div>
+        <div v-show="processingContracts">
+            <v-divider vertical inset class="mx-2"></v-divider>
+            <v-progress-circular indeterminate class="mr-2" size="16" width="2" color="primary"></v-progress-circular>Processing Contracts...
+        </div>
+        <template v-if="isUserAdmin">
+            <v-spacer></v-spacer>
+            <v-btn id="feedbackfin__back" @click="openFeedbackWindow" size="small" color="primary" variant="outlined" data-feedbackfin-button>
+                <v-icon class="mr-1">mdi-chat-processing-outline</v-icon>Feedback
+            </v-btn>
         </template>
     </v-toolbar>
 </template>
 
 <script>
 const ethers = require('ethers');
-import Vue from 'vue';
-import { mapGetters } from 'vuex';
+import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
+import { useUserStore } from '../stores/user';
+import { mapStores } from 'pinia';
 import { formatContractPattern, shortRpcUrl } from '@/lib/utils';
 
-export default Vue.extend({
+export default {
     name: 'RpcConnector',
     data: () => ({
         searchSelectedItem: null,
         searchItems: [],
         isSearchLoading: false,
-        search: null,
         searchType: null,
         showSearchBar: false,
         processingContracts: false,
-        page: null,
-        autocompleteKey: 0
+        page: null
     }),
     created() {
         this.page = this.$route.path;
 
-        this.server.getBlocks({ page: 1, itemsPerPage: 1 }, false).then(({ data: { items }}) => {
-            if (items.length) {
-                this.$store.dispatch('updateCurrentBlock', items[0]);
-            }
+        this.$server.getBlocks({ page: 1, itemsPerPage: 1 }, false).then(({ data: { items }}) => {
+            if (items.length)
+                this.currentWorkspaceStore.updateCurrentBlock(items[0]);
         });
 
-        if (!this.currentWorkspace.public) {
+        if (!this.currentWorkspaceStore.public) {
             this.getAccounts();
             this.processContracts();
             this.processTransactions();
             this.processFailedTransactions();
-            this.pusher.onNewContract(this.processContracts, this);
-            this.pusher.onNewProcessableTransactions((transaction) => this.server.processTransaction(this.currentWorkspace, transaction), this);
-            this.pusher.onNewFailedTransactions((transaction) => this.server.processFailedTransactions([transaction], this.rpcServer), this);
-            if (this.currentWorkspace.browserSyncEnabled)
-                this.$store.dispatch('startBrowserSync');
+            this.$pusher.onNewContract(this.processContracts, this);
+            this.$pusher.onNewProcessableTransactions((transaction) => this.$server.processTransaction(this.currentWorkspace, transaction), this);
+            this.$pusher.onNewFailedTransactions((transaction) => this.$server.processFailedTransactions([transaction], this.currentWorkspaceStore.rpcServer), this);
+            if (this.currentWorkspaceStore.browserSyncEnabled == true)
+                this.currentWorkspaceStore.startBrowserSync();
         }
-        this.pusher.onNewBlock(block => {
-            if (block.number > this.currentBlock.number)
-                this.$store.dispatch('updateCurrentBlock', block);
+        this.$pusher.onNewBlock(block => {
+            if (block.number > this.currentWorkspaceStore.currentBlock.number)
+                this.currentWorkspaceStore.updateCurrentBlock(block);
         }, this);
     },
     methods: {
@@ -134,57 +130,32 @@ export default Vue.extend({
             this.$emit('toggleMenu');
         },
         clearSearchBar() {
-            this.search = null;
+            this.searchType = null;
             this.showSearchBar = false;
-        },
-        getItemText() {
-            return this.search;
+            this.searchSelectedItem = null;
         },
         processContracts() {
             this.processingContracts = true;
-            this.server.processContracts(this.rpcServer)
+            this.$server.processContracts(this.currentWorkspaceStore.rpcServer)
                 .catch(console.log)
                 .finally(() => this.processingContracts = false );
         },
         processTransactions() {
-            this.server.getProcessableTransactions()
-                .then(({ data }) => data.forEach(transaction => this.server.processTransaction(this.currentWorkspace, transaction)))
+            this.$server.getProcessableTransactions()
+                .then(({ data }) => data.forEach(transaction => this.$server.processTransaction(this.currentWorkspace, transaction)))
                 .catch(console.log);
         },
         processFailedTransactions() {
-            this.server.getFailedProcessableTransactions()
-                .then(({ data }) => this.server.processFailedTransactions(data, this.currentWorkspace))
+            this.$server.getFailedProcessableTransactions()
+                .then(({ data }) => this.$server.processFailedTransactions(data, this.currentWorkspace))
                 .catch(console.log);
         },
         getAccounts() {
-            this.server.getAccounts({ page: -1 })
-                .then(({ data: { items } }) => this.$store.dispatch('updateAccounts', items));
-        }
-    },
-    watch: {
-        searchSelectedItem(item) {
-            if (!item)
-                return;
-            this.autocompleteKey++;
-            switch(item.type) {
-                case 'address':
-                case 'contract':
-                    this.$router.push(`/address/${item.data.address}`);
-                    break;
-                case 'transaction':
-                    this.$router.push(`/transaction/${item.data.hash}`);
-                    break;
-                case 'block':
-                    this.$router.push(`/block/${item.data.number}`);
-                    break;
-            }
-            this.searchSelectedItem = null;
-            this.clearSearchBar();
-
+            this.$server.getAccounts({ page: -1 })
+                .then(({ data: { items } }) => this.currentWorkspaceStore.updateAccounts(items));
         },
         search(val) {
             if (!val) {
-                this.search = null;
                 return this.searchItems = [];
             }
             if (val === this.model || typeof val == 'object') return;
@@ -203,8 +174,10 @@ export default Vue.extend({
                 this.searchType = 'number';
             }
 
-            if (this.searchType == 'text' && val.length < 3) return;
-            this.server.search(this.searchType, val)
+            if (this.searchType == 'text' && val.length < 3)
+                return;
+
+            this.$server.search(this.searchType, val)
                 .then(({ data }) => {
                     this.searchItems = data;
                     if (this.searchType == 'address' && !data.length)
@@ -214,16 +187,34 @@ export default Vue.extend({
                 .finally(() => this.isSearchLoading = false);
         }
     },
+    watch: {
+        searchSelectedItem(item) {
+            if (!item)
+                return;
+
+            switch(item.type) {
+                case 'address':
+                case 'contract':
+                    this.$router.push({ path: `/address/${item.data.address}`, query: { tab: 'transactions' } });
+                    break;
+                case 'transaction':
+                    this.$router.push({ path: `/transaction/${item.data.hash}` });
+                    break;
+                case 'block':
+                    this.$router.push({ path: `/block/${item.data.number}` });
+                    break;
+            }
+            this.clearSearchBar();
+        }
+    },
     computed: {
-        ...mapGetters([
-            'rpcServer',
-            'currentWorkspace',
-            'chain',
-            'user',
-            'isPublicExplorer',
-            'currentBlock',
-            'isUserAdmin'
-        ]),
+        ...mapStores(
+            useCurrentWorkspaceStore,
+            useUserStore
+        ),
+        isUserAdmin() {
+            return this.userStore.isAdmin;
+        },
         orderedItems() {
             const items = {
                 'address': [],
@@ -260,5 +251,5 @@ export default Vue.extend({
             return result;
         }
     }
-});
+};
 </script>

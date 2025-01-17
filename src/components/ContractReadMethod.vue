@@ -2,10 +2,11 @@
     <div>
         <div class="pb-1 font-weight-bold">{{ method.name }}</div>
         <v-text-field
-            outlined
-            dense
+            variant="outlined"
+            density="compact"
             hide-details="auto"
             class="py-1 col-3"
+            width="50%"
             v-model="params[inputIdx]"
             v-for="(input, inputIdx) in method.inputs"
             :disabled='!active'
@@ -14,7 +15,7 @@
         </v-text-field>
         <div>=> {{ outputSignature }}</div>
         <div id="call" v-show="results.length">
-            <v-card outlined v-for="(val, idx) in results" :key="idx" class="my-1">
+            <v-card v-for="(val, idx) in results" :key="idx" class="my-1">
                 <v-card-text class="py-2 ma-0 px-1">
                     <div style="white-space: pre;">
                         <Formatted-Sol-Var :input="val.input" :value="val.value" />
@@ -22,16 +23,17 @@
                 </v-card-text>
             </v-card>
         </div>
-        <div id="call" class="grey lighten-3 pa-2" v-show="error">
+        <div id="call" class="bg-grey-lighten-3 pa-2" v-show="error">
             {{ error }}
         </div>
-        <v-btn :disabled="!active" :loading="loading" class="mt-1" depressed :color="theme == 'dark' ? '' : 'primary'" @click="callMethod()">Query</v-btn>
+        <v-btn :disabled="!active" :loading="loading" class="mt-1" @click="callMethod()">Query</v-btn>
     </div>
 </template>
 <script>
-import { mapGetters } from 'vuex';
+import { mapStores } from 'pinia';
+import { useCurrentWorkspaceStore } from '@/stores/currentWorkspace';
 import { processMethodCallParam } from '@/lib/utils';
-import FormattedSolVar from './FormattedSolVar';
+import FormattedSolVar from './FormattedSolVar.vue';
 
 export default {
     name: 'ContractReadMethod',
@@ -46,7 +48,7 @@ export default {
         loading: false
     }),
     methods: {
-        callMethod: function() {
+        callMethod() {
             try {
                 this.loading = true;
                 this.error = null;
@@ -63,7 +65,7 @@ export default {
                     from: this.options.from.address
                 };
 
-                this.server.callContractReadMethod(this.contract, this.signature, options, processedParams, this.rpcServer, provider)
+                this.$server.callContractReadMethod(this.contract, this.signature, options, processedParams, this.currentWorkspaceStore.rpcServer, provider)
                     .then(res => {
                         this.results = Array.isArray(res) ? this.processResult(res) : this.processResult([res]);
                     })
@@ -83,7 +85,7 @@ export default {
                 this.loading = false;
             }
         },
-        processResult: function(result) {
+        processResult(result) {
             const processed = [];
             for (let i = 0; i < result.length; i++) {
                 processed.push({
@@ -93,7 +95,7 @@ export default {
             }
             return processed;
         },
-        inputSignature: function(input) {
+        inputSignature(input) {
             if (input.type == 'tuple') {
                 return `${input.name ? input.name : 'tuple'}(${input.components.map((cpt) => `${cpt.type}${cpt.name ? ` ${cpt.name}` : ''}`).join(', ')})`;
             }
@@ -102,13 +104,8 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-            'rpcServer',
-            'currentWorkspace',
-            'isPublicExplorer',
-            'theme'
-        ]),
-        outputSignature: function() {
+        ...mapStores(useCurrentWorkspaceStore),
+        outputSignature() {
             const res = [];
             const outputs = this.method.outputs;
             for (var i = 0; i < outputs.length; i++) {

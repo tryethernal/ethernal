@@ -1,31 +1,31 @@
 <template>
     <v-container fluid>
         <v-tabs v-model="tab">
-            <v-tab id="generalTab" href="#general">General</v-tab>
-            <v-tab id="faucetTab" href="#faucet">Faucet</v-tab>
-            <v-tab id="dexTab" href="#dex">Dex</v-tab>
+            <v-tab id="generalTab" value="general">General</v-tab>
+            <v-tab id="faucetTab" value="faucet">Faucet</v-tab>
+            <v-tab id="dexTab" value="dex">Dex</v-tab>
         </v-tabs>
 
-        <v-tabs-items :value="tab">
-            <v-tab-item value="general">
+        <v-tabs-window v-model="tab">
+            <v-tabs-window-item value="general">
                 <Explorer-General :id="id" :sso="sso" />
-            </v-tab-item>
+            </v-tabs-window-item>
 
-            <v-tab-item value="faucet">
+            <v-tabs-window-item value="faucet">
                 <Explorer-Faucet-Settings :explorerId="id" :sso="sso" />
-            </v-tab-item>
+            </v-tabs-window-item>
 
-            <v-tab-item value="dex">
+            <v-tabs-window-item value="dex">
                 <Explorer-Dex-Settings :explorerId="id" :sso="sso" />
-            </v-tab-item>
-        </v-tabs-items>
+            </v-tabs-window-item>
+        </v-tabs-window>
     </v-container>
 </template>
 
 <script>
-import ExplorerGeneral from './ExplorerGeneral';
-import ExplorerFaucetSettings from './ExplorerFaucetSettings';
-import ExplorerDexSettings from './ExplorerDexSettings';
+import ExplorerGeneral from './ExplorerGeneral.vue';
+import ExplorerFaucetSettings from './ExplorerFaucetSettings.vue';
+import ExplorerDexSettings from './ExplorerDexSettings.vue';
 
 export default {
     name: 'Explorer',

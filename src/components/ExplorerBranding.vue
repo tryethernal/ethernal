@@ -1,35 +1,42 @@
 <template>
-    <v-card outlined :disabled="disabled">
+    <v-card :disabled="disabled">
         <v-form @submit.prevent="update()" v-model="valid">
             <v-card-text>
-                <v-alert v-if="disabled" text type="warning">Upgrade your plan to activate branding customization.</v-alert>
-                <v-alert v-if="successMessage" dense text type="success">{{ successMessage }}</v-alert>
-                <v-alert v-if="errorMessage" dense text type="error">{{ errorMessage }}</v-alert>
-                <v-row>
-                    <v-col v-if="themes.light" cols="6">
+                <v-alert v-if="disabled" density="compact" text type="warning">Upgrade your plan to activate branding customization.</v-alert>
+                <v-alert v-if="successMessage" density="compact" text type="success">{{ successMessage }}</v-alert>
+                <v-alert v-if="errorMessage" density="compact" text type="error">{{ errorMessage }}</v-alert>
+                <v-row class="mt-3">
+                    <v-col cols="6">
                         <div v-for="(key, idx) in Object.keys(themes.light)" :key="idx">
                             <v-text-field
                                 @focus="selectedColorPicker = key"
                                 @blur="selectedColorPicker = null"
-                                outlined
-                                dense
+                                hide-details="auto"
+                                :class="{
+                                    'mb-2': selectedColorPicker == key,
+                                    'mt-2 mb-5': idx > 0 && selectedColorPicker != key,
+                                    'mb-5': idx == 0 && selectedColorPicker != key
+                                }"
+                                variant="outlined"
+                                density="compact"
                                 v-model="themes.light[key]"
                                 :label="key.charAt(0).toUpperCase() + key.slice(1) + ' Color'">
                                 <template v-slot:prepend>
-                                    <v-icon @click="selectedColorPicker = selectedColorPicker ? null : key" :color="themes.light[key]">mdi-square</v-icon>
+                                    <v-icon style="opacity: 1;" @click="selectedColorPicker = selectedColorPicker == key ? null : key" :color="themes.light[key]">mdi-square</v-icon>
                                 </template>
                             </v-text-field>
                             <v-color-picker
+                                class="mb-4"
                                 v-show="selectedColorPicker == key"
-                                v-model="themes.light[key]"
-                                dot-size="25"
-                                hide-inputs></v-color-picker>
+                                v-model="themes.light[key]"></v-color-picker>
                         </div>
                     </v-col>
                     <v-col cols="6">
                         <v-text-field
-                            dense
-                            outlined
+                            density="compact"
+                            class="mb-5"
+                            variant="outlined"
+                            hide-details="auto"
                             v-model="themes.logo"
                             label="Logo URL">
                             <template v-slot:prepend v-if="themes.logo">
@@ -37,27 +44,32 @@
                             </template>
                         </v-text-field>
                         <v-text-field
-                            dense
-                            outlined
+                            density="compact"
+                            class="mb-5"
+                            variant="outlined"
+                            hide-details="auto"
                             v-model="themes.favicon"
                             label="Favicon URL">
                             <template v-slot:prepend v-if="themes.favicon">
                                 <v-img :src="themes.favicon" class="mb-4"></v-img>
                             </template>
                         </v-text-field>
-                        <v-autocomplete outlined dense append-icon=""
+                        <v-autocomplete variant="outlined" density="compact" append-icon=""
                             label="Font"
-                            :hint="'Font needs to be available on Google Fonts (default is Roboto)'"
+                            class="mb-5"
+                            hint="Font needs to be available on Google Fonts (default is Roboto)"
                             v-model="themes.font"
                             :items="fonts"
                             :loading="fontSearchLoading"
-                            :search-input.sync="queryFont"
+                            :search.sync="queryFont"
                             hide-no-data
                             persistent-hint
                             no-filter></v-autocomplete>
                         <v-text-field
-                            dense
-                            outlined
+                            density="compact"
+                            class="mb-5"
+                            variant="outlined"
+                            hide-details="auto"
                             v-model="themes.banner"
                             label="Banner Text"></v-text-field>
                         <h4 class="mb-2">Links</h4>
@@ -69,7 +81,7 @@
                 </v-row>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn :loading="loading" color="primary" :disabled="!valid" type="submit">Update</v-btn>
+                    <v-btn :loading="loading" color="primary" variant="flat" :disabled="!valid" type="submit">Update</v-btn>
                 </v-card-actions>
             </v-card-text>
         </v-form>
@@ -77,7 +89,11 @@
 </template>
 
 <script>
+import { useTheme } from 'vuetify';
+
 import NewExplorerLink from './NewExplorerLink.vue';
+
+const whitelistedColors = ['primary', 'secondary', 'accent', 'error', 'info', 'success', 'warning', 'background'];
 
 export default {
     name: 'ExplorerBranding',
@@ -96,12 +112,20 @@ export default {
         valid: false,
         loading: false,
         themes: {
-            links: []
+            links: [],
+            light: {}
         }
     }),
+    setup() {
+        const theme = useTheme();
+        return { defaultColors: theme.global.current.value.colors };
+    },
     mounted() {
-        this.themes = { ...this.explorer.themes, ...this.themes };
-        this.themes.light = { ...this.$vuetify.theme.themes.light, ...this.explorer.themes.light };
+        const filteredColors = {};
+        for (const color of whitelistedColors)
+            filteredColors[color] = (this.explorer.themes.light && this.explorer.themes.light[color]) || this.defaultColors[color];
+
+        this.themes.light = filteredColors;
 
         if (this.themes.font)
             this.fonts.push(this.themes.font);
@@ -124,7 +148,7 @@ export default {
             this.loading = true;
             this.successMessage = null;
             this.errorMessage = null;
-            this.server.updateExplorerBranding(this.explorer.id, this.themes)
+            this.$server.updateExplorerBranding(this.explorer.id, this.themes)
                 .then(() => {
                     this.successMessage = 'Branding updated successfully.';
                 })
@@ -141,7 +165,7 @@ export default {
             if (!query || query == this.themes.font) return;
 
             this.fontSearchLoading = true;
-            this.server.searchFont(this.queryFont)
+            this.$server.searchFont(this.queryFont)
                 .then(({ data }) => this.fonts = data)
                 .catch(console.log)
                 .finally(() => this.fontSearchLoading = false);

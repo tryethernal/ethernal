@@ -1,24 +1,45 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`TraceStep.vue Should display the formatted step 1`] = `
-<div class="row">
-  <!---->
-  <div class="pb-0 col" style="overflow-y: auto;">
-    <div class="v-card v-card--flat v-sheet theme--light">
-      <div class="v-card__text pa-0 ma-0"><span class="font-weight-black">
-                    |<br>
-                    |--&gt;
-                </span> <span class="primary mr-2 v-chip v-chip--no-color theme--light v-size--small"><span class="v-chip__content">call</span></span>
-        <!---->
-        <!---->
-        <hash-link-stub contract="[object Object]" notcopiable="true" withname="true" fullhash="true" hash="0xab8e74017a8cc7c15ffccd726603790d26d7deca" type="address"></hash-link-stub><span>.claim(</span>
-        <div><span class="ml-8 ml-4 pl-0"><span>uint256 _poolId: </span> <span><!----> <span class=""><span>
-                2
-            </span></span></span>
-          </span></div><span class="ml-4">)</span>
-        <!---->
+exports[`TraceStep.vue > Should display the formatted step 1`] = `
+"<div data-v-90e41081="" class="v-row">
+  <!--v-if-->
+  <div data-v-90e41081="" class="v-col pb-0" style="overflow-y: auto;">
+    <div data-v-90e41081="" class="v-card v-card--flat v-theme--light v-card--density-default v-card--variant-elevated">
+      <!---->
+      <div class="v-card__loader">
+        <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+          <!---->
+          <div class="v-progress-linear__background"></div>
+          <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+          <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+            <div class="v-progress-linear__indeterminate">
+              <div class="v-progress-linear__indeterminate long"></div>
+              <div class="v-progress-linear__indeterminate short"></div>
+            </div>
+          </transition-stub>
+          <!---->
+        </div>
       </div>
+      <!---->
+      <!---->
+      <div data-v-90e41081="" class="v-card-text pa-0 ma-0"><span data-v-90e41081="" class="font-weight-black"> |<br data-v-90e41081=""> |--&gt; </span><span data-v-90e41081="" class="v-chip v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal bg-primary mr-2" draggable="false"><!----><span class="v-chip__underlay"></span>
+        <!---->
+        <!---->
+        <div class="v-chip__content" data-no-activator="">call</div>
+        <!---->
+        <!----></span>
+        <!--v-if-->
+        <!--v-if-->
+        <hash-link-stub data-v-90e41081="" type="address" hash="0xab8e74017a8cc7c15ffccd726603790d26d7deca" notcopiable="true" fullhash="true" withname="true" contract="[object Object]"></hash-link-stub>
+        <!--v-if-->
+        <ul data-v-90e41081="">
+          <li data-v-90e41081="" class="raw-input"><b data-v-90e41081="" class="mr-2">Input:</b><a data-v-90e41081="">[ + ]</a> 0x379607f50000000000000000000000000000000000000000000000000000000000000002</li>
+          <!--v-if-->
+        </ul>
+      </div>
+      <!---->
+      <!----><span class="v-card__underlay"></span>
     </div>
   </div>
-</div>
+</div>"
 `;

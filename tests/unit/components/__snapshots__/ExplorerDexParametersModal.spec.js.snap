@@ -1,60 +1,144 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ExplorerDexParametersModal.vue Should display dex parameters 1`] = `
-<div class="v-dialog__container">
-  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
-    <transition-stub name="dialog-transition" appear="true">
-      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 350px;">
-        <div class="v-card v-sheet v-sheet--outlined theme--light">
-          <div class="v-card__title">
-            Transaction Settings
-            <div class="spacer"></div> <button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light"></i></span></button>
+exports[`ExplorerDexParametersModal.vue > Should display dex parameters 1`] = `
+"<div data-v-26514292="" class="v-dialog-stub" max-width="350">
+  <div data-v-26514292="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
           </div>
-          <div class="v-card__text">
-            Slippage tolerance
-            <div class="d-flex">
-              <div class="v-item-group theme--light v-slide-group v-chip-group">
-                <div class="v-slide-group__prev v-slide-group__prev--disabled">
-                  <transition-stub name="fade-transition"></transition-stub>
-                </div>
-                <div class="v-slide-group__wrapper">
-                  <div class="v-slide-group__content"><span tabindex="0" class="mr-2 v-chip v-chip--clickable v-chip--no-color theme--light v-size--small"><span class="v-chip__content">0.1%</span></span> <span tabindex="0" class="mr-2 v-chip primary--text text--accent-4 v-chip--active v-chip--clickable v-chip--no-color theme--light v-size--small"><span class="v-chip__content">0.5%</span></span> <span tabindex="0" class="mr-2 v-chip v-chip--clickable v-chip--no-color theme--light v-size--small"><span class="v-chip__content">1%</span></span></div>
-                </div>
-                <div class="v-slide-group__next v-slide-group__next--disabled">
-                  <transition-stub name="fade-transition"></transition-stub>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-26514292="" class="v-card-title d-flex justify-space-between"> Transaction Settings <button data-v-26514292="" type="button" class="v-btn v-btn--icon v-theme--light text-grey v-btn--density-default v-btn--size-small v-btn--variant-text"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+        <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-close mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+        <!---->
+        <!---->
+      </button></div>
+    <div data-v-26514292="" class="v-card-text"> Slippage tolerance <div data-v-26514292="" class="d-flex">
+        <div data-v-26514292="" class="v-slide-group v-slide-group--mobile v-chip-group v-theme--light" tabindex="0">
+          <!---->
+          <div class="v-slide-group__container">
+            <div class="v-slide-group__content"><span data-v-26514292="" class="v-chip v-chip--link v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal" draggable="false" tabindex="0"><span class="v-chip__overlay"></span><span class="v-chip__underlay"></span>
+              <!---->
+              <!---->
+              <div class="v-chip__content" data-no-activator="">0.1%</div>
+              <!---->
+              <!----></span><span data-v-26514292="" class="v-chip v-chip--link v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal primary--text text--accent-4" draggable="false" tabindex="0"><span class="v-chip__overlay"></span><span class="v-chip__underlay"></span>
+              <!---->
+              <!---->
+              <div class="v-chip__content" data-no-activator="">0.5%</div>
+              <!---->
+              <!----></span><span data-v-26514292="" class="v-chip v-chip--link v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal" draggable="false" tabindex="0"><span class="v-chip__overlay"></span><span class="v-chip__underlay"></span>
+              <!---->
+              <!---->
+              <div class="v-chip__content" data-no-activator="">1%</div>
+              <!---->
+              <!----></span>
+            </div>
+          </div>
+          <!---->
+        </div>
+        <div data-v-26514292="" class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field ml-5" style="max-width: 80px;">
+          <!---->
+          <div class="v-input__control">
+            <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--reverse v-field--no-label v-field--variant-outlined v-theme--light rounded-xl v-locale--is-ltr">
+              <div class="v-field__overlay"></div>
+              <div class="v-field__loader">
+                <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                  <!---->
+                  <div class="v-progress-linear__background"></div>
+                  <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                  <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                    <div class="v-progress-linear__indeterminate">
+                      <div class="v-progress-linear__indeterminate long"></div>
+                      <div class="v-progress-linear__indeterminate short"></div>
+                    </div>
+                  </transition-stub>
+                  <!---->
                 </div>
               </div>
-              <div class="v-input rounded-xl ml-5 v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--prefix v-text-field--enclosed v-text-field--reverse v-text-field--outlined">
-                <div class="v-input__control">
-                  <div class="v-input__slot">
-                    <fieldset aria-hidden="true">
-                      <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                    </fieldset>
-                    <div class="v-text-field__slot">
-                      <div class="v-text-field__prefix">%</div><input id="input-16" type="number">
-                    </div>
-                  </div>
-                </div>
+              <!---->
+              <div class="v-field__field" data-no-activator="">
+                <!----><label class="v-label v-field-label" for="input-4">
+                  <!---->
+                  <!---->
+                </label>
+                <!----><input size="1" type="text" id="input-4" aria-describedby="input-4-messages" class="v-field__input" value="0.5">
+                <!---->
+              </div>
+              <!---->
+              <div class="v-field__append-inner"><span data-v-26514292="" class="mr-2 text-grey">%</span>
+                <!---->
+              </div>
+              <div class="v-field__outline">
+                <div class="v-field__outline__start"></div>
+                <!---->
+                <div class="v-field__outline__end"></div>
+                <!---->
               </div>
             </div>
-            <hr role="separator" aria-orientation="horizontal" class="my-3 v-divider theme--light">
-            Transaction deadline
-            <div class="v-input rounded-xl mt-1 v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--prefix v-text-field--enclosed v-text-field--reverse v-text-field--outlined" style="max-width: 140px;">
-              <div class="v-input__control">
-                <div class="v-input__slot">
-                  <fieldset aria-hidden="true">
-                    <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                  </fieldset>
-                  <div class="v-text-field__slot">
-                    <div class="v-text-field__prefix">minutes</div><input id="input-18" type="number">
+          </div>
+          <!---->
+          <!---->
+        </div>
+      </div>
+      <hr data-v-26514292="" class="v-divider v-theme--light my-3" aria-orientation="horizontal" role="separator"> Transaction deadline <div data-v-26514292="" class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field rounded-xl mt-1" style="max-width: 140px;">
+        <!---->
+        <div class="v-input__control">
+          <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--reverse v-field--no-label v-field--variant-outlined v-theme--light v-locale--is-ltr">
+            <div class="v-field__overlay"></div>
+            <div class="v-field__loader">
+              <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                <!---->
+                <div class="v-progress-linear__background"></div>
+                <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                  <div class="v-progress-linear__indeterminate">
+                    <div class="v-progress-linear__indeterminate long"></div>
+                    <div class="v-progress-linear__indeterminate short"></div>
                   </div>
-                </div>
+                </transition-stub>
+                <!---->
               </div>
+            </div>
+            <!---->
+            <div class="v-field__field" data-no-activator="">
+              <!----><label class="v-label v-field-label" for="input-6">
+                <!---->
+                <!---->
+              </label>
+              <!----><input size="1" type="number" id="input-6" aria-describedby="input-6-messages" class="v-field__input" value="1200">
+              <!---->
+            </div>
+            <!---->
+            <div class="v-field__append-inner"><span data-v-26514292="" class="mr-2 text-grey">minutes</span>
+              <!---->
+            </div>
+            <div class="v-field__outline">
+              <div class="v-field__outline__start"></div>
+              <!---->
+              <div class="v-field__outline__end"></div>
+              <!---->
             </div>
           </div>
         </div>
+        <!---->
+        <!---->
       </div>
-    </transition-stub>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-</div>
+</div>"
 `;

@@ -1,8 +1,6 @@
-import MockHelper from '../MockHelper';
 import flushPromises from 'flush-promises'
 import ERC721Collection from '@/components/ERC721Collection.vue';
 
-const helper = new MockHelper();
 const stubs = [
     'Hash-Link',
     'Stat-Number',
@@ -16,24 +14,25 @@ const stubs = [
 ];
 
 describe('ERC721Collection.vue', () => {
-    beforeEach(() => jest.clearAllMocks());
 
     it('Should display a message if the address is not a contract', async () => {
-        jest.spyOn(helper.mocks.server, 'getContract')
+        vi.spyOn(server, 'getContract')
             .mockResolvedValueOnce({ data: null });
 
-        jest.spyOn(helper.mocks.server, 'getContractStats')
+        vi.spyOn(server, 'getContractStats')
             .mockResolvedValueOnce({ data: {
                 tokenHolderCount: null,
                 tokenTransferCount: null,
                 tokenCirculatingSupply: null,
             }});
 
-        const wrapper = helper.mountFn(ERC721Collection, {
-            propsData: {
+        const wrapper = mount(ERC721Collection, {
+            props: {
                 address: '0x123'
             },
-            stubs
+            global: {
+                stubs
+            }
         });
 
         await flushPromises();
@@ -41,7 +40,7 @@ describe('ERC721Collection.vue', () => {
     });
 
     it('Should display contract info', async () => {
-        jest.spyOn(helper.mocks.server, 'getContract')
+        vi.spyOn(server, 'getContract')
             .mockResolvedValueOnce({ data: {
                 tokenName: 'Amalfi',
                 patterns: ['erc721'],
@@ -51,18 +50,20 @@ describe('ERC721Collection.vue', () => {
                 creationTransaction: { hash: '0xabc' }
             }});
 
-        jest.spyOn(helper.mocks.server, 'getContractStats')
+        vi.spyOn(server, 'getContractStats')
             .mockResolvedValueOnce({ data: {
                 tokenHolderCount: 1,
                 tokenTransferCount: 2,
                 tokenCirculatingSupply: '1000000000',
             }});
 
-        const wrapper = helper.mountFn(ERC721Collection, {
-            propsData: {
+        const wrapper = mount(ERC721Collection, {
+            props: {
                 address: '0x123'
             },
-            stubs: stubs
+            global: {
+                stubs
+            }
         });
 
         await flushPromises();
@@ -70,7 +71,7 @@ describe('ERC721Collection.vue', () => {
     });
 
     it('Should display placeholders', async () => {
-        jest.spyOn(helper.mocks.server, 'getContract')
+        vi.spyOn(server, 'getContract')
             .mockResolvedValueOnce({ data: {
                 name: 'Amalfi',
                 tokenName: null,
@@ -78,21 +79,23 @@ describe('ERC721Collection.vue', () => {
                 tokenTotalSupply: null,
                 tokenDecimals: null,
                 address: '0x123',
-                creationTransaction: { hash: '0xabc' }
+                creationTransaction: { hash: '0xabc' }
             }});
 
-        jest.spyOn(helper.mocks.server, 'getContractStats')
+        vi.spyOn(server, 'getContractStats')
             .mockResolvedValueOnce({ data: {
                 tokenHolderCount: 0,
                 tokenTransferCount: 0,
                 tokenCirculatingSupply: 0,
             }});
 
-        const wrapper = helper.mountFn(ERC721Collection, {
-            propsData: {
+        const wrapper = mount(ERC721Collection, {
+            props: {
                 address: '0x123'
             },
-            stubs: stubs
+            global: {
+                stubs
+            }
         });
 
         await flushPromises();

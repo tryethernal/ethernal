@@ -12,6 +12,9 @@
 
 <script>
 import TraceStep from './TraceStep.vue';
+import { mapStores } from 'pinia';
+import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
+import { useExplorerStore } from '../stores/explorer';
 
 export default {
     name: 'TransactionTraceEmbedded',
@@ -29,12 +32,12 @@ export default {
             immediate: true,
             handler(hash) {
                 this.loading = true;
-                this.server.searchExplorer(window.location.host)
+                this.$server.searchExplorer(window.location.host)
                 .then(({ data: { explorer }}) => {
-                    this.$store.dispatch('setPublicExplorerData', explorer);
-                    this.$store.dispatch('updateCurrentWorkspace', { ...explorer.workspace, firebaseUserId: explorer.admin.firebaseUserId });
-                    this.$store.dispatch('setEmbedded', true);
-                    this.server.getTransaction(hash)
+                    this.explorerStore.updateExplorer(explorer);
+                    this.currentWorkspaceStore.updateCurrentWorkspace({ ...explorer.workspace, firebaseUserId: explorer.admin.firebaseUserId });
+
+                    this.$server.getTransaction(hash)
                         .then(({ data: { traceSteps }}) => this.traceSteps = traceSteps || [])
                         .catch(console.log)
                         .finally(() => this.loading = false);
@@ -42,6 +45,9 @@ export default {
                 .catch(console.log);
             }
         }
+    },
+    computed: {
+        ...mapStores(useExplorerStore, useCurrentWorkspaceStore)
     }
 };
 </script>

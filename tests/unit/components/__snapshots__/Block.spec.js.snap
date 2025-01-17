@@ -1,91 +1,161 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Block.vue Should show a message if the block does not exist 1`] = `
-<div class="container container--fluid">
-  <div class="v-card v-sheet v-sheet--outlined theme--light">
-    <div class="v-card__text">
-      <div class="row">
-        <div class="col" align="center"><i aria-hidden="true" class="v-icon notranslate mdi mdi-cube-outline theme--light primary--text text--lighten-1" style="font-size: 200px; opacity: 0.25;"></i></div>
-      </div>
-      <div class="row">
-        <div class="text-body-1 text-center col">
-          This block has not been mined. Current block: <a href="/block/2" class="" style="text-decoration: none;">2</a></div>
+exports[`Block.vue > Should show a message if the block does not exist 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
       </div>
     </div>
+    <!---->
+    <!---->
+    <div class="v-card-text">
+      <div class="v-row">
+        <div class="v-col" align="center"><i class="mdi-cube-outline mdi v-icon notranslate v-theme--light text-primary-lighten-1" style="font-size: 200px; height: 200px; width: 200px; opacity: 0.25;" aria-hidden="true"></i></div>
+      </div>
+      <div class="v-row">
+        <div class="v-col text-body-1 text-center"> This block has not been mined. Current block: <a style="text-decoration: none;">0</a></div>
+      </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-</div>
+</div>"
 `;
 
-exports[`Block.vue Should show a message if the block is syncing 1`] = `
-<div class="container container--fluid">
-  <div class="row">
-    <div class="col col-6">
-      <div role="alert" class="v-alert my-2 v-sheet theme--dark v-alert--dense v-alert--text warning--text">
-        <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-exclamation theme--dark warning--text"></i>
-          <div class="v-alert__content">
-            Some transactions in this block are still being processed (3 / 5).
-          </div>
+exports[`Block.vue > Should show a message if the block is syncing 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <div class="v-row">
+    <div class="v-col v-col-6">
+      <div class="v-alert v-theme--light bg-warning v-alert--density-compact v-alert--variant-flat my-2" role="alert">
+        <!----><span class="v-alert__underlay"></span>
+        <!---->
+        <div class="v-alert__prepend"><i class="mdi-alert-circle mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="compact"></i></div>
+        <div class="v-alert__content">
+          <!----> Some transactions in this block are still being processed (3 / 5).
         </div>
+        <!---->
+        <!---->
       </div>
       <h2>Block 1</h2>
     </div>
   </div>
-  <div class="row mb-4">
-    <div class="col-sm-12 col-md-12 col-lg-2 col">
-      <div class="v-subheader text-overline theme--light">Gas Limit</div>
-      1,000,000,000
+  <div class="v-row mb-4">
+    <div class="v-col-sm-12 v-col-md-12 v-col-lg-2 v-col">
+      <div class="v-list-subheader text-overline">
+        <div class="v-list-subheader__text">Gas Limit</div>
+      </div> 1,000,000,000
     </div>
-    <hr role="separator" aria-orientation="vertical" class="v-divider v-divider--vertical theme--light">
-    <div class="col-sm-12 col-md-12 col-lg-2 col">
-      <div class="v-subheader text-overline theme--light">Mined On</div>
-      10/18 8:28:41 PM<br> <small>in 2 months</small>
+    <hr class="v-divider v-divider--vertical v-theme--light" aria-orientation="vertical" role="separator">
+    <div class="v-col-sm-12 v-col-md-12 v-col-lg-2 v-col">
+      <div class="v-list-subheader text-overline">
+        <div class="v-list-subheader__text">Mined On</div>
+      </div> 10/18 8:28:41 PM<br><small>in 2 months</small>
     </div>
-    <hr role="separator" aria-orientation="vertical" class="v-divider v-divider--vertical theme--light">
-    <div class="col-sm-12 col-md-12 col-lg-4 col">
-      <div class="v-subheader text-overline theme--light">Hash</div> <span style="overflow-wrap: break-word;">0x98c6edb3bb1124680a97661c1f5794d60617abb57bd1e611d81fc5b941f36d30</span>
+    <hr class="v-divider v-divider--vertical v-theme--light" aria-orientation="vertical" role="separator">
+    <div class="v-col-sm-12 v-col-md-12 v-col-lg-4 v-col">
+      <div class="v-list-subheader text-overline">
+        <div class="v-list-subheader__text">Hash</div>
+      </div><span style="overflow-wrap: break-word;">0x98c6edb3bb1124680a97661c1f5794d60617abb57bd1e611d81fc5b941f36d30</span>
     </div>
-    <!---->
+    <!--v-if-->
   </div>
   <h4>Transactions</h4>
-  <div class="v-card v-sheet v-sheet--outlined theme--light">
-    <transactions-list-stub withcount="true" blocknumber="1"></transactions-list-stub>
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <transactions-list-stub blocknumber="1" withcount="true"></transactions-list-stub>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-</div>
+</div>"
 `;
 
-exports[`Block.vue Should show the block component 1`] = `
-<div class="container container--fluid">
-  <div class="row">
-    <div class="col col-6">
-      <div role="alert" class="v-alert my-2 v-sheet theme--dark v-alert--dense v-alert--text warning--text" style="display: none;">
-        <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-exclamation theme--dark warning--text"></i>
-          <div class="v-alert__content">
-            Some transactions in this block are still being processed (5 / 5).
-          </div>
+exports[`Block.vue > Should show the block component 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <div class="v-row">
+    <div class="v-col v-col-6">
+      <div class="v-alert v-theme--light bg-warning v-alert--density-compact v-alert--variant-flat my-2" role="alert" style="display: none;">
+        <!----><span class="v-alert__underlay"></span>
+        <!---->
+        <div class="v-alert__prepend"><i class="mdi-alert-circle mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="compact"></i></div>
+        <div class="v-alert__content">
+          <!----> Some transactions in this block are still being processed (5 / 5).
         </div>
+        <!---->
+        <!---->
       </div>
       <h2>Block 1</h2>
     </div>
   </div>
-  <div class="row mb-4">
-    <div class="col-sm-12 col-md-12 col-lg-2 col">
-      <div class="v-subheader text-overline theme--light">Gas Limit</div>
-      1,000,000,000
+  <div class="v-row mb-4">
+    <div class="v-col-sm-12 v-col-md-12 v-col-lg-2 v-col">
+      <div class="v-list-subheader text-overline">
+        <div class="v-list-subheader__text">Gas Limit</div>
+      </div> 1,000,000,000
     </div>
-    <hr role="separator" aria-orientation="vertical" class="v-divider v-divider--vertical theme--light">
-    <div class="col-sm-12 col-md-12 col-lg-2 col">
-      <div class="v-subheader text-overline theme--light">Mined On</div>
-      10/18 8:28:41 PM<br> <small>in 2 months</small>
+    <hr class="v-divider v-divider--vertical v-theme--light" aria-orientation="vertical" role="separator">
+    <div class="v-col-sm-12 v-col-md-12 v-col-lg-2 v-col">
+      <div class="v-list-subheader text-overline">
+        <div class="v-list-subheader__text">Mined On</div>
+      </div> 10/18 8:28:41 PM<br><small>in 2 months</small>
     </div>
-    <hr role="separator" aria-orientation="vertical" class="v-divider v-divider--vertical theme--light">
-    <div class="col-sm-12 col-md-12 col-lg-4 col">
-      <div class="v-subheader text-overline theme--light">Hash</div> <span style="overflow-wrap: break-word;">0x98c6edb3bb1124680a97661c1f5794d60617abb57bd1e611d81fc5b941f36d30</span>
+    <hr class="v-divider v-divider--vertical v-theme--light" aria-orientation="vertical" role="separator">
+    <div class="v-col-sm-12 v-col-md-12 v-col-lg-4 v-col">
+      <div class="v-list-subheader text-overline">
+        <div class="v-list-subheader__text">Hash</div>
+      </div><span style="overflow-wrap: break-word;">0x98c6edb3bb1124680a97661c1f5794d60617abb57bd1e611d81fc5b941f36d30</span>
     </div>
-    <!---->
+    <!--v-if-->
   </div>
   <h4>Transactions</h4>
-  <div class="v-card v-sheet v-sheet--outlined theme--light">
-    <transactions-list-stub withcount="true" blocknumber="1"></transactions-list-stub>
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <transactions-list-stub blocknumber="1" withcount="true"></transactions-list-stub>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-</div>
+</div>"
 `;

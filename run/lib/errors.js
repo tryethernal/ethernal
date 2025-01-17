@@ -15,6 +15,7 @@ const unmanagedError = (error, req, next) => {
         route: req.baseUrl + req.route.path,
         status_code: 500
     });
+
     next(error);
 };
 

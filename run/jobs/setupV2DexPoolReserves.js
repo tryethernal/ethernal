@@ -48,7 +48,7 @@ module.exports = async job => {
         const log = logs[i];
         if (log.v2DexPoolReserve)
             continue;
-        const reserves = getV2PoolReserves(logs[i].raw);
+        const reserves = getV2PoolReserves(log);
         batch.push({
             v2DexPairId: pair.id,
             transactionLogId: log.id,

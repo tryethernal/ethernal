@@ -1,12 +1,12 @@
 <template>
-    <v-sheet outlined color="error" rounded>
+    <v-sheet border color="error" rounded>
         <v-card class="elevation-0">
             <v-alert text type="error" v-if="errorMessage">{{ errorMessage }}</v-alert>
-            <v-card-text class="font-weight-medium error--text">
+            <v-card-text class="font-weight-medium text-error">
                 <v-row>
                     Deleting this dex is irreversible.
                     <v-spacer></v-spacer>
-                    <v-btn :loading="loading" small depressed color="error" class="mt-2" @click="deleteDex()"><v-icon class="mr-1">mdi-delete</v-icon>Delete Dex</v-btn>
+                    <v-btn :loading="loading" size="small" variant="flat" color="error" class="mt-2" @click="deleteDex()"><v-icon class="mr-1">mdi-delete</v-icon>Delete Dex</v-btn>
                 </v-row>
             </v-card-text>
         </v-card>
@@ -30,7 +30,7 @@ export default {
             if (!confirm(message))
                 return this.loading = false
 
-            this.server.deleteV2Dex(this.v2DexId)
+            this.$server.deleteV2Dex(this.v2DexId)
                 .then(() => this.$emit('delete'))
                 .catch(console.log);
         }

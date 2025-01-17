@@ -1,205 +1,490 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ImportContractModal.vue Should let the user import a non verified mainnet contract 1`] = `
-<div class="v-dialog__container">
-  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
-    <transition-stub name="dialog-transition" appear="true">
-      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
-        <div class="v-card v-sheet theme--light">
-          <div class="v-card__title headline">Import a third-party contract</div>
-          <div class="v-card__text">
-            <!---->
-            <div role="alert" class="v-alert v-sheet theme--dark success">Contract has been imported at address <a class="white--text" href="/address/0x123">0x123</a>. If available, metadata will be automatically imported from Etherscan in a few seconds...</div>
-            <!---->
-            <div>
-              Enter an address of a contract deployed on Ethereum mainnet.<br>
-              If the contract has been verified on Etherscan, its name and ABI will be pulled automatically.<br>
-              If not, the contract will be imported but you'll have to manually add the name and ABI.
-              To be able to use this, your workspace needs to be connected to a mainnet fork.<br>
-              If it is not, the contract will still be imported but calls will fail.<br></div>
-            <div class="v-input v-input--is-label-active v-input--is-dirty theme--light v-text-field">
-              <div class="v-input__control">
-                <div class="v-input__slot">
-                  <div class="v-text-field__slot"><label for="contractAddress" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Address*</label><input required="required" id="contractAddress" type="text"></div>
-                </div>
-                <div class="v-text-field__details">
-                  <div class="v-messages theme--light">
-                    <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+exports[`ImportContractModal.vue > Should let the user import a non verified mainnet contract 1`] = `
+"<div class="v-dialog-stub" max-width="600">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-title text-h5">Import a third-party contract</div>
+    <div class="v-card-text">
+      <!--v-if-->
+      <div class="v-alert v-theme--light bg-success v-alert--density-default v-alert--variant-flat" role="alert">
+        <!----><span class="v-alert__underlay"></span>
+        <!---->
+        <div class="v-alert__prepend"><i class="mdi-check-circle mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="default"></i></div>
+        <div class="v-alert__content">
+          <!---->
+          <!----> Contract has been imported at address <a class="text-white" href="/address/{{ contractAddress }}">0x123</a>. If available, metadata will be automatically imported from Etherscan in a few seconds...
+        </div>
+        <!---->
+        <!---->
+      </div>
+      <!--v-if-->
+      <div> Enter an address of a contract deployed on Ethereum mainnet.<br> If the contract has been verified on Etherscan, its name and ABI will be pulled automatically.<br> If not, the contract will be imported but you'll have to manually add the name and ABI. To be able to use this, your workspace needs to be connected to a mainnet fork.<br> If it is not, the contract will still be imported but calls will fail.<br></div>
+      <div class="v-input v-input--horizontal v-input--center-affix v-input--density-default v-theme--light v-locale--is-ltr v-input--dirty v-text-field mt-4">
+        <!---->
+        <div class="v-input__control">
+          <div class="v-field v-field--active v-field--center-affix v-field--dirty v-field--variant-filled v-theme--light v-locale--is-ltr">
+            <div class="v-field__overlay"></div>
+            <div class="v-field__loader">
+              <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                <!---->
+                <div class="v-progress-linear__background"></div>
+                <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                  <div class="v-progress-linear__indeterminate">
+                    <div class="v-progress-linear__indeterminate long"></div>
+                    <div class="v-progress-linear__indeterminate short"></div>
                   </div>
-                </div>
+                </transition-stub>
+                <!---->
               </div>
             </div>
-          </div>
-          <div class="v-card__actions">
-            <div class="spacer"></div> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text" id="importContract"><span class="v-btn__content">Import</span></button>
+            <!---->
+            <div class="v-field__field" data-no-activator=""><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="contractAddress">
+                <!---->Address*
+              </label><label class="v-label v-field-label" for="contractAddress">
+                <!---->Address*
+              </label>
+              <!----><input size="1" type="text" id="contractAddress" aria-describedby="contractAddress-messages" required="" class="v-field__input" value="0x123">
+              <!---->
+            </div>
+            <!---->
+            <!---->
+            <div class="v-field__outline">
+              <!---->
+              <!---->
+            </div>
           </div>
         </div>
+        <!---->
+        <div class="v-input__details">
+          <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="contractAddress-messages">
+            <!---->
+          </transition-group-stub>
+          <!---->
+        </div>
       </div>
-    </transition-stub>
+    </div>
+    <div class="v-card-actions">
+      <div class="v-spacer"></div><button type="button" class="v-btn v-btn--slim v-theme--light text-primary v-btn--density-default v-btn--size-default v-btn--variant-text"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+        <!----><span class="v-btn__content" data-no-activator="">Close</span>
+        <!---->
+        <!---->
+      </button><button type="button" class="v-btn v-btn--slim v-theme--light text-primary v-btn--density-default v-btn--size-default v-btn--variant-text" id="importContract"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+        <!----><span class="v-btn__content" data-no-activator="">Import</span>
+        <!---->
+        <!---->
+      </button>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-</div>
+</div>"
 `;
 
-exports[`ImportContractModal.vue Should let the user import a verified mainnet contract 1`] = `
-<div class="v-dialog__container">
-  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
-    <transition-stub name="dialog-transition" appear="true">
-      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
-        <div class="v-card v-sheet theme--light">
-          <div class="v-card__title headline">Import a third-party contract</div>
-          <div class="v-card__text">
-            <!---->
-            <div role="alert" class="v-alert v-sheet theme--dark success">Contract has been imported at address <a class="white--text" href="/address/0x123">0x123</a>. If available, metadata will be automatically imported from Etherscan in a few seconds...</div>
-            <!---->
-            <div>
-              Enter an address of a contract deployed on Ethereum mainnet.<br>
-              If the contract has been verified on Etherscan, its name and ABI will be pulled automatically.<br>
-              If not, the contract will be imported but you'll have to manually add the name and ABI.
-              To be able to use this, your workspace needs to be connected to a mainnet fork.<br>
-              If it is not, the contract will still be imported but calls will fail.<br></div>
-            <div class="v-input v-input--is-label-active v-input--is-dirty theme--light v-text-field">
-              <div class="v-input__control">
-                <div class="v-input__slot">
-                  <div class="v-text-field__slot"><label for="contractAddress" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Address*</label><input required="required" id="contractAddress" type="text"></div>
-                </div>
-                <div class="v-text-field__details">
-                  <div class="v-messages theme--light">
-                    <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+exports[`ImportContractModal.vue > Should let the user import a verified mainnet contract 1`] = `
+"<div class="v-dialog-stub" max-width="600">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-title text-h5">Import a third-party contract</div>
+    <div class="v-card-text">
+      <!--v-if-->
+      <div class="v-alert v-theme--light bg-success v-alert--density-default v-alert--variant-flat" role="alert">
+        <!----><span class="v-alert__underlay"></span>
+        <!---->
+        <div class="v-alert__prepend"><i class="mdi-check-circle mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="default"></i></div>
+        <div class="v-alert__content">
+          <!---->
+          <!----> Contract has been imported at address <a class="text-white" href="/address/{{ contractAddress }}">0x123</a>. If available, metadata will be automatically imported from Etherscan in a few seconds...
+        </div>
+        <!---->
+        <!---->
+      </div>
+      <!--v-if-->
+      <div> Enter an address of a contract deployed on Ethereum mainnet.<br> If the contract has been verified on Etherscan, its name and ABI will be pulled automatically.<br> If not, the contract will be imported but you'll have to manually add the name and ABI. To be able to use this, your workspace needs to be connected to a mainnet fork.<br> If it is not, the contract will still be imported but calls will fail.<br></div>
+      <div class="v-input v-input--horizontal v-input--center-affix v-input--density-default v-theme--light v-locale--is-ltr v-input--dirty v-text-field mt-4">
+        <!---->
+        <div class="v-input__control">
+          <div class="v-field v-field--active v-field--center-affix v-field--dirty v-field--variant-filled v-theme--light v-locale--is-ltr">
+            <div class="v-field__overlay"></div>
+            <div class="v-field__loader">
+              <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                <!---->
+                <div class="v-progress-linear__background"></div>
+                <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                  <div class="v-progress-linear__indeterminate">
+                    <div class="v-progress-linear__indeterminate long"></div>
+                    <div class="v-progress-linear__indeterminate short"></div>
                   </div>
-                </div>
+                </transition-stub>
+                <!---->
               </div>
             </div>
-          </div>
-          <div class="v-card__actions">
-            <div class="spacer"></div> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text" id="importContract"><span class="v-btn__content">Import</span></button>
+            <!---->
+            <div class="v-field__field" data-no-activator=""><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="contractAddress">
+                <!---->Address*
+              </label><label class="v-label v-field-label" for="contractAddress">
+                <!---->Address*
+              </label>
+              <!----><input size="1" type="text" id="contractAddress" aria-describedby="contractAddress-messages" required="" class="v-field__input" value="0x123">
+              <!---->
+            </div>
+            <!---->
+            <!---->
+            <div class="v-field__outline">
+              <!---->
+              <!---->
+            </div>
           </div>
         </div>
+        <!---->
+        <div class="v-input__details">
+          <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="contractAddress-messages">
+            <!---->
+          </transition-group-stub>
+          <!---->
+        </div>
       </div>
-    </transition-stub>
+    </div>
+    <div class="v-card-actions">
+      <div class="v-spacer"></div><button type="button" class="v-btn v-btn--slim v-theme--light text-primary v-btn--density-default v-btn--size-default v-btn--variant-text"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+        <!----><span class="v-btn__content" data-no-activator="">Close</span>
+        <!---->
+        <!---->
+      </button><button type="button" class="v-btn v-btn--slim v-theme--light text-primary v-btn--density-default v-btn--size-default v-btn--variant-text" id="importContract"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+        <!----><span class="v-btn__content" data-no-activator="">Import</span>
+        <!---->
+        <!---->
+      </button>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-</div>
+</div>"
 `;
 
-exports[`ImportContractModal.vue Should not warn the user if he is on a premium plan and has already 10 contracts 1`] = `
-<div class="v-dialog__container">
-  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
-    <transition-stub name="dialog-transition" appear="true">
-      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
-        <div class="v-card v-sheet theme--light">
-          <div class="v-card__title headline">Import a third-party contract</div>
-          <div class="v-card__text">
-            <!---->
-            <div role="alert" class="v-alert v-sheet theme--dark success">Contract has been imported at address <a class="white--text" href="/address/0x123">0x123</a>. If available, metadata will be automatically imported from Etherscan in a few seconds...</div>
-            <!---->
-            <div>
-              Enter an address of a contract deployed on Ethereum mainnet.<br>
-              If the contract has been verified on Etherscan, its name and ABI will be pulled automatically.<br>
-              If not, the contract will be imported but you'll have to manually add the name and ABI.
-              To be able to use this, your workspace needs to be connected to a mainnet fork.<br>
-              If it is not, the contract will still be imported but calls will fail.<br></div>
-            <div class="v-input v-input--is-label-active v-input--is-dirty theme--light v-text-field">
-              <div class="v-input__control">
-                <div class="v-input__slot">
-                  <div class="v-text-field__slot"><label for="contractAddress" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Address*</label><input required="required" id="contractAddress" type="text"></div>
-                </div>
-                <div class="v-text-field__details">
-                  <div class="v-messages theme--light">
-                    <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+exports[`ImportContractModal.vue > Should not warn the user if he is on a premium plan and has already 10 contracts 1`] = `
+"<div class="v-dialog-stub" max-width="600">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-title text-h5">Import a third-party contract</div>
+    <div class="v-card-text">
+      <!--v-if-->
+      <div class="v-alert v-theme--light bg-success v-alert--density-default v-alert--variant-flat" role="alert">
+        <!----><span class="v-alert__underlay"></span>
+        <!---->
+        <div class="v-alert__prepend"><i class="mdi-check-circle mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="default"></i></div>
+        <div class="v-alert__content">
+          <!---->
+          <!----> Contract has been imported at address <a class="text-white" href="/address/{{ contractAddress }}">0x123</a>. If available, metadata will be automatically imported from Etherscan in a few seconds...
+        </div>
+        <!---->
+        <!---->
+      </div>
+      <!--v-if-->
+      <div> Enter an address of a contract deployed on Ethereum mainnet.<br> If the contract has been verified on Etherscan, its name and ABI will be pulled automatically.<br> If not, the contract will be imported but you'll have to manually add the name and ABI. To be able to use this, your workspace needs to be connected to a mainnet fork.<br> If it is not, the contract will still be imported but calls will fail.<br></div>
+      <div class="v-input v-input--horizontal v-input--center-affix v-input--density-default v-theme--light v-locale--is-ltr v-input--dirty v-text-field mt-4">
+        <!---->
+        <div class="v-input__control">
+          <div class="v-field v-field--active v-field--center-affix v-field--dirty v-field--variant-filled v-theme--light v-locale--is-ltr">
+            <div class="v-field__overlay"></div>
+            <div class="v-field__loader">
+              <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                <!---->
+                <div class="v-progress-linear__background"></div>
+                <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                  <div class="v-progress-linear__indeterminate">
+                    <div class="v-progress-linear__indeterminate long"></div>
+                    <div class="v-progress-linear__indeterminate short"></div>
                   </div>
-                </div>
+                </transition-stub>
+                <!---->
               </div>
             </div>
-          </div>
-          <div class="v-card__actions">
-            <div class="spacer"></div> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text" id="importContract"><span class="v-btn__content">Import</span></button>
+            <!---->
+            <div class="v-field__field" data-no-activator=""><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="contractAddress">
+                <!---->Address*
+              </label><label class="v-label v-field-label" for="contractAddress">
+                <!---->Address*
+              </label>
+              <!----><input size="1" type="text" id="contractAddress" aria-describedby="contractAddress-messages" required="" class="v-field__input" value="0x123">
+              <!---->
+            </div>
+            <!---->
+            <!---->
+            <div class="v-field__outline">
+              <!---->
+              <!---->
+            </div>
           </div>
         </div>
+        <!---->
+        <div class="v-input__details">
+          <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="contractAddress-messages">
+            <!---->
+          </transition-group-stub>
+          <!---->
+        </div>
       </div>
-    </transition-stub>
+    </div>
+    <div class="v-card-actions">
+      <div class="v-spacer"></div><button type="button" class="v-btn v-btn--slim v-theme--light text-primary v-btn--density-default v-btn--size-default v-btn--variant-text"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+        <!----><span class="v-btn__content" data-no-activator="">Close</span>
+        <!---->
+        <!---->
+      </button><button type="button" class="v-btn v-btn--slim v-theme--light text-primary v-btn--density-default v-btn--size-default v-btn--variant-text" id="importContract"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+        <!----><span class="v-btn__content" data-no-activator="">Import</span>
+        <!---->
+        <!---->
+      </button>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-</div>
+</div>"
 `;
 
-exports[`ImportContractModal.vue Should not warn the user if he is on a public explorer 1`] = `
-<div class="v-dialog__container">
-  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
-    <transition-stub name="dialog-transition" appear="true">
-      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
-        <div class="v-card v-sheet theme--light">
-          <div class="v-card__title headline">Import a third-party contract</div>
-          <div class="v-card__text">
-            <!---->
-            <div role="alert" class="v-alert v-sheet theme--dark success">Contract has been imported at address <a class="white--text" href="/address/0x123">0x123</a>. If available, metadata will be automatically imported from Etherscan in a few seconds...</div>
-            <!---->
-            <div>
-              Enter an address of a contract deployed on Ethereum mainnet.<br>
-              If the contract has been verified on Etherscan, its name and ABI will be pulled automatically.<br>
-              If not, the contract will be imported but you'll have to manually add the name and ABI.
-              To be able to use this, your workspace needs to be connected to a mainnet fork.<br>
-              If it is not, the contract will still be imported but calls will fail.<br></div>
-            <div class="v-input v-input--is-label-active v-input--is-dirty theme--light v-text-field">
-              <div class="v-input__control">
-                <div class="v-input__slot">
-                  <div class="v-text-field__slot"><label for="contractAddress" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Address*</label><input required="required" id="contractAddress" type="text"></div>
-                </div>
-                <div class="v-text-field__details">
-                  <div class="v-messages theme--light">
-                    <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+exports[`ImportContractModal.vue > Should not warn the user if he is on a public explorer 1`] = `
+"<div class="v-dialog-stub" max-width="600">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-title text-h5">Import a third-party contract</div>
+    <div class="v-card-text">
+      <!--v-if-->
+      <div class="v-alert v-theme--light bg-success v-alert--density-default v-alert--variant-flat" role="alert">
+        <!----><span class="v-alert__underlay"></span>
+        <!---->
+        <div class="v-alert__prepend"><i class="mdi-check-circle mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="default"></i></div>
+        <div class="v-alert__content">
+          <!---->
+          <!----> Contract has been imported at address <a class="text-white" href="/address/{{ contractAddress }}">0x123</a>. If available, metadata will be automatically imported from Etherscan in a few seconds...
+        </div>
+        <!---->
+        <!---->
+      </div>
+      <!--v-if-->
+      <div> Enter an address of a contract deployed on Ethereum mainnet.<br> If the contract has been verified on Etherscan, its name and ABI will be pulled automatically.<br> If not, the contract will be imported but you'll have to manually add the name and ABI. To be able to use this, your workspace needs to be connected to a mainnet fork.<br> If it is not, the contract will still be imported but calls will fail.<br></div>
+      <div class="v-input v-input--horizontal v-input--center-affix v-input--density-default v-theme--light v-locale--is-ltr v-input--dirty v-text-field mt-4">
+        <!---->
+        <div class="v-input__control">
+          <div class="v-field v-field--active v-field--center-affix v-field--dirty v-field--variant-filled v-theme--light v-locale--is-ltr">
+            <div class="v-field__overlay"></div>
+            <div class="v-field__loader">
+              <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                <!---->
+                <div class="v-progress-linear__background"></div>
+                <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                  <div class="v-progress-linear__indeterminate">
+                    <div class="v-progress-linear__indeterminate long"></div>
+                    <div class="v-progress-linear__indeterminate short"></div>
                   </div>
-                </div>
+                </transition-stub>
+                <!---->
               </div>
             </div>
-          </div>
-          <div class="v-card__actions">
-            <div class="spacer"></div> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text" id="importContract"><span class="v-btn__content">Import</span></button>
+            <!---->
+            <div class="v-field__field" data-no-activator=""><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="contractAddress">
+                <!---->Address*
+              </label><label class="v-label v-field-label" for="contractAddress">
+                <!---->Address*
+              </label>
+              <!----><input size="1" type="text" id="contractAddress" aria-describedby="contractAddress-messages" required="" class="v-field__input" value="0x123">
+              <!---->
+            </div>
+            <!---->
+            <!---->
+            <div class="v-field__outline">
+              <!---->
+              <!---->
+            </div>
           </div>
         </div>
+        <!---->
+        <div class="v-input__details">
+          <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="contractAddress-messages">
+            <!---->
+          </transition-group-stub>
+          <!---->
+        </div>
       </div>
-    </transition-stub>
+    </div>
+    <div class="v-card-actions">
+      <div class="v-spacer"></div><button type="button" class="v-btn v-btn--slim v-theme--light text-primary v-btn--density-default v-btn--size-default v-btn--variant-text"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+        <!----><span class="v-btn__content" data-no-activator="">Close</span>
+        <!---->
+        <!---->
+      </button><button type="button" class="v-btn v-btn--slim v-theme--light text-primary v-btn--density-default v-btn--size-default v-btn--variant-text" id="importContract"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+        <!----><span class="v-btn__content" data-no-activator="">Import</span>
+        <!---->
+        <!---->
+      </button>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-</div>
+</div>"
 `;
 
-exports[`ImportContractModal.vue Should warn the user if he is on a free plan and has already 10 contracts 1`] = `
-<div class="v-dialog__container">
-  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
-    <transition-stub name="dialog-transition" appear="true">
-      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
-        <div class="v-card v-sheet theme--light">
-          <div class="v-card__title headline">Import a third-party contract</div>
-          <div class="v-card__text">
-            <div role="alert" class="v-alert v-sheet theme--dark v-alert--text error--text">
-              <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-alert theme--dark error--text"></i>
-                <div class="v-alert__content">Free plan users are limited to 10 synced contracts. Remove some contracts or <a>upgrade</a> to the Premium plan for more.</div>
-              </div>
-            </div>
-            <!---->
-            <!---->
-            <div>
-              Enter an address of a contract deployed on Ethereum mainnet.<br>
-              If the contract has been verified on Etherscan, its name and ABI will be pulled automatically.<br>
-              If not, the contract will be imported but you'll have to manually add the name and ABI.
-              To be able to use this, your workspace needs to be connected to a mainnet fork.<br>
-              If it is not, the contract will still be imported but calls will fail.<br></div>
-            <div class="v-input v-input--is-disabled theme--light v-text-field">
-              <div class="v-input__control">
-                <div class="v-input__slot">
-                  <div class="v-text-field__slot"><label for="contractAddress" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Address*</label><input required="required" disabled="disabled" id="contractAddress" type="text"></div>
-                </div>
-                <div class="v-text-field__details">
-                  <div class="v-messages theme--light">
-                    <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
-                  </div>
-                </div>
-              </div>
-            </div>
+exports[`ImportContractModal.vue > Should warn the user if he is on a free plan and has already 10 contracts 1`] = `
+"<div class="v-dialog-stub" max-width="600">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
           </div>
-          <div class="v-card__actions">
-            <div class="spacer"></div> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--text theme--light v-size--default" id="importContract"><span class="v-btn__content">Import</span></button>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-title text-h5">Import a third-party contract</div>
+    <div class="v-card-text">
+      <div class="v-alert v-theme--light bg-error v-alert--density-default v-alert--variant-flat" role="alert">
+        <!----><span class="v-alert__underlay"></span>
+        <!---->
+        <div class="v-alert__prepend"><i class="mdi-close-circle mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="default"></i></div>
+        <div class="v-alert__content">
+          <!---->Free plan users are limited to 10 synced contracts. Remove some contracts or <a data-v-1ff93dc2="">upgrade</a> to the Premium plan for more.
+        </div>
+        <!---->
+        <!---->
+      </div>
+      <!--v-if-->
+      <!--v-if-->
+      <div> Enter an address of a contract deployed on Ethereum mainnet.<br> If the contract has been verified on Etherscan, its name and ABI will be pulled automatically.<br> If not, the contract will be imported but you'll have to manually add the name and ABI. To be able to use this, your workspace needs to be connected to a mainnet fork.<br> If it is not, the contract will still be imported but calls will fail.<br></div>
+      <div class="v-input v-input--horizontal v-input--center-affix v-input--density-default v-theme--light v-locale--is-ltr v-input--disabled v-text-field mt-4">
+        <!---->
+        <div class="v-input__control">
+          <div class="v-field v-field--center-affix v-field--disabled v-field--variant-filled v-theme--light v-locale--is-ltr">
+            <div class="v-field__overlay"></div>
+            <div class="v-field__loader">
+              <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                <!---->
+                <div class="v-progress-linear__background"></div>
+                <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                  <div class="v-progress-linear__indeterminate">
+                    <div class="v-progress-linear__indeterminate long"></div>
+                    <div class="v-progress-linear__indeterminate short"></div>
+                  </div>
+                </transition-stub>
+                <!---->
+              </div>
+            </div>
+            <!---->
+            <div class="v-field__field" data-no-activator=""><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="contractAddress">
+                <!---->Address*
+              </label><label class="v-label v-field-label" for="contractAddress">
+                <!---->Address*
+              </label>
+              <!----><input disabled="" size="1" type="text" id="contractAddress" aria-describedby="contractAddress-messages" required="" class="v-field__input">
+              <!---->
+            </div>
+            <!---->
+            <!---->
+            <div class="v-field__outline">
+              <!---->
+              <!---->
+            </div>
           </div>
         </div>
+        <!---->
+        <div class="v-input__details">
+          <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="contractAddress-messages">
+            <!---->
+          </transition-group-stub>
+          <!---->
+        </div>
       </div>
-    </transition-stub>
+    </div>
+    <div class="v-card-actions">
+      <div class="v-spacer"></div><button type="button" class="v-btn v-btn--slim v-theme--light text-primary v-btn--density-default v-btn--size-default v-btn--variant-text"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+        <!----><span class="v-btn__content" data-no-activator="">Close</span>
+        <!---->
+        <!---->
+      </button><button type="button" class="v-btn v-btn--disabled v-btn--slim v-theme--light text-primary v-btn--density-default v-btn--size-default v-btn--variant-text" disabled="" id="importContract"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+        <!----><span class="v-btn__content" data-no-activator="">Import</span>
+        <!---->
+        <!---->
+      </button>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-</div>
+</div>"
 `;

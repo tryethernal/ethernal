@@ -153,7 +153,11 @@ router.post('/settings', authMiddleware, async (req, res, next) => {
             }
         }
 
-        await db.updateWorkspaceSettings(data.uid, data.workspace, data.settings);
+        try {
+            await db.updateWorkspaceSettings(data.uid, data.workspace, data.settings);
+        } catch(error) {
+            return managedError(new Error(error), req, res);
+        }
 
         res.sendStatus(200);
     } catch(error) {

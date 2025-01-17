@@ -1,128 +1,227 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`CreateExplorerModal.vue Should let the user choose an existing workspace 1`] = `
-<div class="v-dialog__container">
-  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
-    <transition-stub name="dialog-transition" appear="true">
-      <div tabindex="0" class="v-dialog v-dialog--active v-dialog--persistent" style="transform-origin: center center; max-width: 900px;">
-        <div class="v-stepper v-stepper--vertical v-sheet theme--light">
-          <h3 class="mx-6 mt-4">
-            Create Explorer<button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default" style="position: relative; float: right;"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light"></i></span></button></h3>
-          <div tabindex="-1" class="v-stepper__step v-stepper__step--active"><span class="v-stepper__step__step primary">1</span>
-            <div class="v-stepper__label">Enter Setup Info</div>
+exports[`CreateExplorerModal.vue > Should let the user choose an existing workspace 1`] = `
+"<div class="v-dialog-stub" max-width="900" persistent="true">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
           </div>
-          <transition-stub name="tab-transition" class="pt-0">
-            <div class="v-stepper__content">
-              <div class="v-stepper__wrapper" style="height: auto;">
-                <!---->
-                <div class="row">
-                  <div class="col col-12">
-                    <div class="v-input mt-2 theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
-                      <div class="v-input__control">
-                        <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-19" class="v-input__slot">
-                          <fieldset aria-hidden="true">
-                            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                          </fieldset>
-                          <div class="v-select__slot"><label for="input-19" class="v-label theme--light" style="left: 0px; position: absolute;">Select Existing Workspace</label>
-                            <div class="v-select__selections"><input primary="" id="input-19" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
-                            <div class="v-input__append-inner">
-                              <div></div>
-                            </div>
-                            <div class="v-input__append-inner">
-                              <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
-                            </div><input type="hidden">
-                          </div>
-                          <div class="v-menu">
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-title d-flex justify-space-between align-center">
+      <h4>Create Explorer</h4><button type="button" class="v-btn v-btn--icon v-theme--light text-grey v-btn--density-default v-btn--size-default v-btn--variant-text"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+        <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-close mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+        <!---->
+        <!---->
+      </button>
+    </div>
+    <div class="v-expansion-panels v-expansion-panels--flat v-theme--light v-expansion-panels--variant-accordion v-stepper v-stepper--flat">
+      <div class="v-expansion-panel v-expansion-panel--active v-stepper-vertical-item">
+        <div class="v-expansion-panel__shadow"></div><button class="v-expansion-panel-title v-expansion-panel-title--active v-expansion-panel-title--static" type="button" aria-expanded="true"><span class="v-expansion-panel-title__overlay"></span>
+          <div class="v-avatar v-avatar--start v-theme--light v-avatar--density-default v-avatar--variant-flat v-stepper-vertical-item__avatar" style="width: 24px; height: 24px;">1
+            <!----><span class="v-avatar__underlay"></span>
+          </div>
+          <div>
+            <div class="v-stepper-vertical-item__title">
+              <h4>Enter Setup Info</h4>
+            </div>
+            <div class="v-stepper-vertical-item__subtitle">
+              <!---->
+            </div>
+          </div><span class="v-expansion-panel-title__icon"><i class="v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"><!----></i></span>
+        </button>
+        <transition-stub name="expand-transition" appear="false" persisted="false" css="true">
+          <div class="v-expansion-panel-text">
+            <div class="v-expansion-panel-text__wrapper">
+              <!--v-if-->
+              <div class="v-row">
+                <div class="v-col v-col-12">
+                  <div class="v-input v-input--horizontal v-input--center-affix v-input--density-default v-theme--light v-locale--is-ltr v-text-field v-select v-select--single v-select--selection-slot mt-2">
+                    <!---->
+                    <div class="v-input__control">
+                      <div class="v-field v-field--appended v-field--center-affix v-field--variant-filled v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="v-menu-5">
+                        <div class="v-field__overlay"></div>
+                        <div class="v-field__loader">
+                          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                            <!---->
+                            <div class="v-progress-linear__background"></div>
+                            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                              <div class="v-progress-linear__indeterminate">
+                                <div class="v-progress-linear__indeterminate long"></div>
+                                <div class="v-progress-linear__indeterminate short"></div>
+                              </div>
+                            </transition-stub>
                             <!---->
                           </div>
                         </div>
-                        <div class="v-text-field__details">
-                          <div class="v-messages theme--light">
-                            <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                        <!---->
+                        <div class="v-field__field" data-no-activator=""><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-3">
+                            <!---->Select Existing Workspace
+                          </label><label class="v-label v-field-label" for="input-3">
+                            <!---->Select Existing Workspace
+                          </label>
+                          <!---->
+                          <div class="v-field__input" data-no-activator="">
+                            <!---->
+                            <!----><input size="1" type="text" id="input-3" aria-describedby="input-3-messages" inputmode="none" aria-label="Open" title="Open" value="">
                           </div>
+                          <!---->
+                        </div>
+                        <transition-stub name="expand-x-transition" appear="false" persisted="false" css="true">
+                          <div class="v-field__clearable" style="display: none;"><i class="mdi-close-circle mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--clickable" role="button" aria-hidden="false" tabindex="0" aria-label="Clear Select Existing Workspace"></i></div>
+                        </transition-stub>
+                        <div class="v-field__append-inner">
+                          <!----><i class="mdi-menu-down mdi v-icon notranslate v-theme--light v-icon--size-default v-select__menu-icon" aria-hidden="true"></i>
+                          <!---->
+                        </div>
+                        <div class="v-field__outline">
+                          <!---->
+                          <!---->
                         </div>
                       </div>
                     </div>
-                    <h5>Or create a new one:</h5>
-                    <create-workspace-stub ispublic="true"></create-workspace-stub>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </transition-stub>
-          <div tabindex="-1" class="v-stepper__step v-stepper__step--inactive"><span class="v-stepper__step__step">2</span>
-            <div class="v-stepper__label">Choose A Plan</div>
-          </div>
-          <transition-stub name="tab-transition" class="pt-0">
-            <div class="v-stepper__content">
-              <div class="v-stepper__wrapper" style="height: 0px;">
-                <div class="v-card v-sheet theme--light">
-                  <div class="v-card__text">
                     <!---->
-                    <ul class="mb-4 pl-0" style="list-style: none;">
-                      <li>To setup crypto payment (Explorer 150 or above), reach out to contact@tryethernal.com.</li>
+                    <div class="v-input__details">
+                      <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="input-3-messages">
+                        <!---->
+                      </transition-group-stub>
                       <!---->
-                    </ul>
-                    <!---->
+                    </div>
                   </div>
+                  <h5>Or create a new one:</h5>
+                  <create-workspace-stub ispublic="true"></create-workspace-stub>
                 </div>
               </div>
+              <div class="v-stepper-actions v-stepper-vertical-actions"></div>
             </div>
-          </transition-stub>
-        </div>
+          </div>
+        </transition-stub>
+        <!---->
       </div>
-    </transition-stub>
+      <div class="v-expansion-panel v-expansion-panel--after-active v-stepper-vertical-item">
+        <div class="v-expansion-panel__shadow"></div><button class="v-expansion-panel-title v-expansion-panel-title--static" type="button" aria-expanded="false"><span class="v-expansion-panel-title__overlay"></span>
+          <div class="v-avatar v-avatar--start v-theme--light v-avatar--density-default v-avatar--variant-flat v-stepper-vertical-item__avatar" style="width: 24px; height: 24px;">2
+            <!----><span class="v-avatar__underlay"></span>
+          </div>
+          <div>
+            <div class="v-stepper-vertical-item__title">
+              <h4>Choose A Plan</h4>
+            </div>
+            <div class="v-stepper-vertical-item__subtitle">
+              <!---->
+            </div>
+          </div><span class="v-expansion-panel-title__icon"><i class="v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"><!----></i></span>
+        </button>
+        <transition-stub name="expand-transition" appear="false" persisted="false" css="true">
+          <div class="v-expansion-panel-text" style="display: none;">
+            <!---->
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-</div>
+</div>"
 `;
 
-exports[`CreateExplorerModal.vue Should only show creation form if no workspace available 1`] = `
-<div class="v-dialog__container">
-  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
-    <transition-stub name="dialog-transition" appear="true">
-      <div tabindex="0" class="v-dialog v-dialog--active v-dialog--persistent" style="transform-origin: center center; max-width: 900px;">
-        <div class="v-stepper v-stepper--vertical v-sheet theme--light">
-          <h3 class="mx-6 mt-4">
-            Create Explorer<button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default" style="position: relative; float: right;"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light"></i></span></button></h3>
-          <div tabindex="-1" class="v-stepper__step v-stepper__step--active"><span class="v-stepper__step__step primary">1</span>
-            <div class="v-stepper__label">Enter Setup Info</div>
+exports[`CreateExplorerModal.vue > Should only show creation form if no workspace available 1`] = `
+"<div class="v-dialog-stub" max-width="900" persistent="true">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
           </div>
-          <transition-stub name="tab-transition" class="pt-0">
-            <div class="v-stepper__content">
-              <div class="v-stepper__wrapper" style="height: auto;">
-                <!---->
-                <div class="row">
-                  <div class="col col-12">
-                    <!---->
-                    <!---->
-                    <create-workspace-stub ispublic="true"></create-workspace-stub>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </transition-stub>
-          <div tabindex="-1" class="v-stepper__step v-stepper__step--inactive"><span class="v-stepper__step__step">2</span>
-            <div class="v-stepper__label">Choose A Plan</div>
-          </div>
-          <transition-stub name="tab-transition" class="pt-0">
-            <div class="v-stepper__content">
-              <div class="v-stepper__wrapper" style="height: 0px;">
-                <div class="v-card v-sheet theme--light">
-                  <div class="v-card__text">
-                    <!---->
-                    <ul class="mb-4 pl-0" style="list-style: none;">
-                      <li>To setup crypto payment (Explorer 150 or above), reach out to contact@tryethernal.com.</li>
-                      <!---->
-                    </ul>
-                    <!---->
-                  </div>
-                </div>
-              </div>
-            </div>
-          </transition-stub>
-        </div>
+        </transition-stub>
+        <!---->
       </div>
-    </transition-stub>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-title d-flex justify-space-between align-center">
+      <h4>Create Explorer</h4><button type="button" class="v-btn v-btn--icon v-theme--light text-grey v-btn--density-default v-btn--size-default v-btn--variant-text"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+        <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-close mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+        <!---->
+        <!---->
+      </button>
+    </div>
+    <div class="v-expansion-panels v-expansion-panels--flat v-theme--light v-expansion-panels--variant-accordion v-stepper v-stepper--flat">
+      <div class="v-expansion-panel v-expansion-panel--active v-stepper-vertical-item">
+        <div class="v-expansion-panel__shadow"></div><button class="v-expansion-panel-title v-expansion-panel-title--active v-expansion-panel-title--static" type="button" aria-expanded="true"><span class="v-expansion-panel-title__overlay"></span>
+          <div class="v-avatar v-avatar--start v-theme--light v-avatar--density-default v-avatar--variant-flat v-stepper-vertical-item__avatar" style="width: 24px; height: 24px;">1
+            <!----><span class="v-avatar__underlay"></span>
+          </div>
+          <div>
+            <div class="v-stepper-vertical-item__title">
+              <h4>Enter Setup Info</h4>
+            </div>
+            <div class="v-stepper-vertical-item__subtitle">
+              <!---->
+            </div>
+          </div><span class="v-expansion-panel-title__icon"><i class="v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"><!----></i></span>
+        </button>
+        <transition-stub name="expand-transition" appear="false" persisted="false" css="true">
+          <div class="v-expansion-panel-text">
+            <div class="v-expansion-panel-text__wrapper">
+              <!--v-if-->
+              <div class="v-row">
+                <div class="v-col v-col-12">
+                  <!--v-if-->
+                  <!--v-if-->
+                  <create-workspace-stub ispublic="true"></create-workspace-stub>
+                </div>
+              </div>
+              <div class="v-stepper-actions v-stepper-vertical-actions"></div>
+            </div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+      <div class="v-expansion-panel v-expansion-panel--after-active v-stepper-vertical-item">
+        <div class="v-expansion-panel__shadow"></div><button class="v-expansion-panel-title v-expansion-panel-title--static" type="button" aria-expanded="false"><span class="v-expansion-panel-title__overlay"></span>
+          <div class="v-avatar v-avatar--start v-theme--light v-avatar--density-default v-avatar--variant-flat v-stepper-vertical-item__avatar" style="width: 24px; height: 24px;">2
+            <!----><span class="v-avatar__underlay"></span>
+          </div>
+          <div>
+            <div class="v-stepper-vertical-item__title">
+              <h4>Choose A Plan</h4>
+            </div>
+            <div class="v-stepper-vertical-item__subtitle">
+              <!---->
+            </div>
+          </div><span class="v-expansion-panel-title__icon"><i class="v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"><!----></i></span>
+        </button>
+        <transition-stub name="expand-transition" appear="false" persisted="false" css="true">
+          <div class="v-expansion-panel-text" style="display: none;">
+            <!---->
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-</div>
+</div>"
 `;

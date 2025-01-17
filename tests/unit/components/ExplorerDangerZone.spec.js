@@ -1,18 +1,14 @@
 import flushPromises from 'flush-promises';
-import MockHelper from '../MockHelper';
 
 import ExplorerDangerZone from '@/components/ExplorerDangerZone.vue';
 
-let helper;
-beforeEach(() => {
-    jest.clearAllMocks()
-    helper = new MockHelper();
-});
-
 describe('ExplorerDangerZone.vue', () => {
     it('Should display a warning message and an active delete button if pending cancelation', async () => {
-        const wrapper = helper.mountFn(ExplorerDangerZone, {
-            propsData: {
+        const wrapper = mount(ExplorerDangerZone, {
+            global: {
+                stubs: ['Delete-Explorer-Modal'],
+            },
+            props: {
                 explorer: {
                     id: 1,
                     stripeSubscription: { status: 'pending_cancelation' }
@@ -25,8 +21,11 @@ describe('ExplorerDangerZone.vue', () => {
     });
 
     it('Should have an inactive button if active subscription', async () => {
-        const wrapper = helper.mountFn(ExplorerDangerZone, {
-            propsData: {
+        const wrapper = mount(ExplorerDangerZone, {
+            global: {
+                stubs: ['Delete-Explorer-Modal'],
+            },
+            props: {
                 explorer: {
                     id: 1,
                     stripeSubscription: { status: 'active' }
@@ -39,15 +38,16 @@ describe('ExplorerDangerZone.vue', () => {
     });
 
     it('Should have an active button if active subscription & billing disabled', async () => {
-        const wrapper = helper.mountFn(ExplorerDangerZone, {
-            propsData: {
+        const wrapper = mount(ExplorerDangerZone, {
+            global: {
+                stubs: ['Delete-Explorer-Modal'],
+                plugins: [createTestingPinia({ initialState: { env: { isBillingEnabled: false } } })]
+            },
+            props: {
                 explorer: {
                     id: 1,
                     stripeSubscription: { status: 'active' }
                 }
-            },
-            getters: {
-                isBillingEnabled: jest.fn().mockReturnValue(false)
             }
         });
         await flushPromises();

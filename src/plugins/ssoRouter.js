@@ -1,13 +1,13 @@
-import VueRouter from 'vue-router';
+import { createWebHistory, createRouter } from 'vue-router';
 import SSO from '../SSO.vue';
 
 const routes = [
     { path: '/sso', component: SSO },
-    { path: '*', redirect: '/sso' }
+    { path: '/:pathMatch(.*)*', name: 'not-found', component: SSO }
 ];
 
-const router = new VueRouter({
-    mode: 'history',
+const router = createRouter({
+    history: createWebHistory(),
     routes: routes
 });
 

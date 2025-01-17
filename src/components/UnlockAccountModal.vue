@@ -1,7 +1,7 @@
 <template>
 <v-dialog v-model="dialog" max-width="430">
     <v-card>
-        <v-card-title class="headline">Unlock Account</v-card-title>
+        <v-card-title class="text-h5">Unlock Account</v-card-title>
 
         <v-card-text>
             <v-alert type="error" v-if="errorMessage">{{ errorMessage }}</v-alert>
@@ -12,12 +12,12 @@
             <div>
                 Private keys are encrypted server side with AES 256 CBC, and stored encrypted. We strongly recommend to not use accounts with any value.
             </div>
-            <v-text-field id="privateKey" outlined class="mt-2" v-model="privateKey" label="Key*" required></v-text-field>
+            <v-text-field id="privateKey" variant="outlined" class="mt-2" v-model="privateKey" label="Key*" required></v-text-field>
         </v-card-text>
 
         <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="primary" text @click="close()">Close</v-btn>
+            <v-btn color="primary" variant="text" @click="close()">Close</v-btn>
             <v-btn id="unlockAccount" color="primary" :loading="loading" :disabled="!privateKey" @click="unlockAccount(options.address, privateKey)">Unlock</v-btn>
         </v-card-actions>
     </v-card>
@@ -62,7 +62,7 @@ export default {
                 if (wallet.address.toLowerCase() != address)
                     throw { code: 'WALLET_MISMATCH'};
 
-                this.server.storeAccountPrivateKey(address, privateKey)
+                this.$server.storeAccountPrivateKey(address, privateKey)
                     .then(() => {
                         this.successMessage = 'Account unlocked.';
                     })

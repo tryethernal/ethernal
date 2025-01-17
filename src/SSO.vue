@@ -1,4 +1,3 @@
-
 <template>
     <v-app>
         <v-main>
@@ -10,7 +9,9 @@
     </v-app>
 </template>
 <script>
+import { provide } from 'vue';
 import Explorer from './components/Explorer.vue';
+import { useUserStore } from './stores/user';
 
 export default {
     name: 'Explorers',
@@ -21,11 +22,14 @@ export default {
         user: null,
         explorerId: null,
     }),
+    setup() {
+        provide('isEmbedded', true);
+    },
     mounted() {
         localStorage.setItem('ssoApiToken', this.$route.query.apiToken);
-        this.server.getCurrentUser()
+        this.$server.getCurrentUser()
             .then(({ data: { user }}) => {
-                this.$store.dispatch('updateUser', user);
+                useUserStore().updateUser(user);
                 this.explorerId = this.$route.query.explorerId;
             })
             .catch(error => {

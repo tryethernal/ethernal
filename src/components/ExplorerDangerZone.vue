@@ -1,9 +1,9 @@
 <template>
-    <v-sheet outlined color="error" rounded>
+    <v-sheet border color="error" rounded>
         <v-card class="elevation-0">
             <v-alert text type="error" v-if="errorMessage">{{ errorMessage }}</v-alert>
-            <v-card-text class="font-weight-medium error--text">
-                <template v-if="isBillingEnabled">
+            <v-card-text class="font-weight-medium text-error">
+                <template v-if="envStore.isBillingEnabled">
                     <v-row v-if="activeSubscription">
                         You can't delete an explorer that has an active subscription. Please cancel it first.
                     </v-row>
@@ -15,7 +15,7 @@
                 </template>
                 <v-row class="mt-2 pb-1">
                     <v-spacer></v-spacer>
-                    <v-btn :disabled="activeSubscription && isBillingEnabled" :loading="loading" depressed color="error" class="mt-2" @click="deleteExplorer()"><v-icon>mdi-delete</v-icon>Delete Explorer</v-btn>
+                    <v-btn :disabled="activeSubscription && envStore.isBillingEnabled" :loading="loading" variant="flat" color="error" class="mt-2" @click="deleteExplorer()"><v-icon>mdi-delete</v-icon>Delete Explorer</v-btn>
                 </v-row>
             </v-card-text>
         </v-card>
@@ -23,7 +23,8 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapStores } from 'pinia';
+import { useEnvStore } from '../stores/env';
 
 export default {
     name: 'ExplorerDangerZone',
@@ -44,7 +45,7 @@ export default {
             if (!confirm(confirmationMessage))
                 return this.loading = false;
 
-            this.server.deleteExplorer(this.explorer.id)
+            this.$server.deleteExplorer(this.explorer.id)
                 .then(() => this.$router.push({ path: `/explorers`, query: { deletedExplorer: this.explorer.name }}))
                 .catch(error => {
                     this.errorMessage = error.response && error.response.data || 'Error while deleting explorer. Please retry.';
@@ -53,9 +54,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-            'isBillingEnabled'
-        ]),
+        ...mapStores(useEnvStore),
         activeSubscription() { return this.explorer.stripeSubscription && (this.explorer.stripeSubscription.status == 'active' || this.explorer.stripeSubscription.status.startsWith('trial'))},
         pendingCancelation() { return this.explorer.stripeSubscription && this.explorer.stripeSubscription.status == 'pending_cancelation' },
     }

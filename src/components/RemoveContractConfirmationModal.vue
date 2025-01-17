@@ -1,23 +1,25 @@
 <template>
 <v-dialog v-model="dialog" max-width="600">
     <v-card>
-        <v-card-title class="headline">Remove contract</v-card-title>
+        <template v-slot:title>
+            <span class="text-h5">Remove contract</span>
+        </template>
 
-        <v-card-text>
+        <template v-slot:text>
             <v-alert type="error" v-if="errorMessage"> {{ errorMessage }}</v-alert>
             <div>
                 Removing this contract will remove metadata (name, ABI, AST, hashed bytecode) associated to this address and prevent you from:
-                <ul>
+                <ul class="ml-6 mt-2">
                     <li>Interacting with it through Ethernal.</li>
                     <li>Decoding events, function calls, internal calls (past decoded events & calls will be lost).</li>
                     <li>Decoding storage variables (past decoded variables will be lost).</li>
                 </ul>
             </div>
-        </v-card-text>
+        </template>
 
         <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="primary" text @click="close()">Close</v-btn>
+            <v-btn color="primary" variant="text" @click="close()">Close</v-btn>
             <v-btn id="removeContract" color="primary" :loading="loading" @click.stop="removeContract()">Remove</v-btn>
         </v-card-actions>
     </v-card>
@@ -52,7 +54,7 @@ export default {
         },
         removeContract: function() {
             this.loading = true;
-            this.server.removeContract(this.address)
+            this.$server.removeContract(this.address)
                 .then(() => {
                     if (this.$router.currentRoute.path != '/contracts')
                         this.$router.push({ path: '/contracts', query: { removedContract: this.address }});

@@ -66,7 +66,7 @@ router.post('/migrateExplorer', authMiddleware, async (req, res, next) => {
         const plan = await db.getStripePlan(getDemoTrialSlug());
         if (!plan)
             return managedError(new Error('Could not find plan.'), req, res);
-
+        console.log(plan);
         const subscription = await stripe.subscriptions.create({
             customer: user.stripeCustomerId,
             items: [{ price: plan.stripePriceId }],
@@ -138,7 +138,16 @@ router.post('/explorers', async (req, res, next) => {
             }
         };
 
-        const explorer = await db.createExplorerFromOptions(user.id, sanitize(options));
+        let explorer;
+        try {
+            explorer = await db.createExplorerFromOptions(user.id, sanitize(options));
+        } catch(error) {
+            const err = new Error(error);
+            if (err.message.includes('workspace with this name'))
+                return managedError(new Error('This explorername is already taken. Please choose a different name.'), req, res);
+            return managedError(new Error(error), req, res);
+        }
+
         if (!explorer)
             return managedError(new Error('Could not create explorer. Please retry.'), req, res);
 

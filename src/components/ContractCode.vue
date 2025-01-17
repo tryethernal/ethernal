@@ -1,25 +1,23 @@
 <template>
-    <v-container fluid>
-        <v-alert v-if="contractVerified" text type="success">Contract has been verified successfully!</v-alert>
-        <v-card outlined v-if="loading">
+    <div>
+        <v-alert class="mb-2" v-if="justVerified" text density="compact" type="success">Contract has been verified successfully!</v-alert>
+        <v-card v-if="loading">
             <v-card-text>
                 <v-skeleton-loader class="col-4" type="list-item-three-line"></v-skeleton-loader>
             </v-card-text>
         </v-card>
         <template v-else>
-            <template v-if="isPublicExplorer">
-                <Contract-Verification-Info v-if="isVerifiedContract" :contract="contract" />
-                <Contract-Verification v-else :address="contract.address" />
+            <template v-if="explorerStore.id">
+                <Contract-Verification-Info v-if="!!verificationData" :contract="{ ...contract, verification: verificationData }" />
+                <Contract-Verification @contractVerified="onContractVerified" v-else :address="contract.address" />
             </template>
 
-            <v-card outlined class="mb-6">
+            <v-card class="mb-6">
                 <v-card-title>Bytecode</v-card-title>
                 <v-card-text v-if="contract.bytecode">
-                    <v-textarea dense outlined disabled :value="contract.bytecode">
-                        <template v-slot:append>
-                            <v-btn icon @click="copyBytecode()">
-                                <v-icon small>mdi-content-copy</v-icon>
-                            </v-btn>
+                    <v-textarea class="text-medium-emphasis" density="compact" variant="outlined" readonly :model-value="contract.bytecode">
+                        <template v-slot:append-inner>
+                            <v-btn variant="text" density="compact" icon="mdi-content-copy" @click="copyBytecode()"></v-btn>
                         </template>
                     </v-textarea>
                     <input type="hidden" id="copyBytecode" :value="contract.bytecode">
@@ -29,7 +27,7 @@
                 </v-card-text>
             </v-card>
 
-            <v-card outlined>
+            <v-card>
                 <v-card-title>Assembly</v-card-title>
                 <v-card-text>
                     <div v-if="highlightedAsm" class="hljs" v-html="highlightedAsm"></div>
@@ -37,15 +35,16 @@
                 </v-card-text>
             </v-card>
         </template>
-    </v-container>
+    </div>
 </template>
 
 <script>
 import 'highlight.js/styles/vs2015.css';
-const hljs = require('highlight.js');
-import { mapGetters } from 'vuex';
-import ContractVerification from './ContractVerification';
-import ContractVerificationInfo from './ContractVerificationInfo';
+import hljs from 'highlight.js';
+import { mapStores } from 'pinia';
+import { useExplorerStore } from '../stores/explorer';
+import ContractVerification from './ContractVerification.vue';
+import ContractVerificationInfo from './ContractVerificationInfo.vue';
 
 export default {
     name: 'ContractCode',
@@ -56,12 +55,20 @@ export default {
     },
     data: () => ({
         loading: false,
-        contractVerified: false
+        verificationData: null,
+        justVerified: false
     }),
     mounted() {
-        this.$root.$on('contractVerified', () => this.contractVerified = true);
+        this.verificationData = this.contract.verification;
     },
     methods: {
+        onContractVerified(verificationData) {
+            if (!verificationData)
+                return;
+
+            this.verificationData = verificationData;
+            this.justVerified = true;
+        },
         copyBytecode() {
             const webhookField = document.querySelector('#copyBytecode');
             webhookField.setAttribute('type', 'text');
@@ -80,12 +87,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-            'isPublicExplorer'
-        ]),
-        isVerifiedContract() {
-            return this.contract.verification;
-        },
+        ...mapStores(useExplorerStore),
         highlightedAsm() {
             return this.contract.asm && hljs.highlight(this.contract.asm, { language: 'x86asm' }).value
         }

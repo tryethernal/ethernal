@@ -1,17 +1,9 @@
-import MockHelper from '../MockHelper';
-  
 import ImportContractModal from '@/components/ImportContractModal.vue';
 
 describe('ImportContractModal.vue', () => {
-    let helper;
-
-    beforeEach(() => {
-        helper = new MockHelper();
-    });
-
     it('Should let the user import a verified mainnet contract', async () => {
-        const wrapper = helper.mountFn(ImportContractModal);
-        const importContractMock = jest.spyOn(helper.mocks.server, 'importContract');
+        const wrapper = mount(ImportContractModal);
+        const importContractMock = vi.spyOn(server, 'importContract');
         await wrapper.setData({ dialog: true, options: { contractsCount: 1 } });
 
         await wrapper.find('#contractAddress').setValue('0x123');
@@ -24,11 +16,11 @@ describe('ImportContractModal.vue', () => {
     });
 
     it('Should let the user import a non verified mainnet contract', async () => {
-        jest.spyOn(helper.mocks.server, 'importContract')
+        vi.spyOn(server, 'importContract')
             .mockResolvedValue({ data: { success: true, contractIsVerified: false }});
 
-        const wrapper = helper.mountFn(ImportContractModal);
-        const importContractMock = jest.spyOn(helper.mocks.server, 'importContract');
+        const wrapper = mount(ImportContractModal);
+        const importContractMock = vi.spyOn(server, 'importContract');
         await wrapper.setData({ dialog: true, options: { contractsCount: 1 } });
 
         await wrapper.find('#contractAddress').setValue('0x123');
@@ -41,7 +33,7 @@ describe('ImportContractModal.vue', () => {
     });
 
     it('Should warn the user if he is on a free plan and has already 10 contracts', async () => {
-        const wrapper = helper.mountFn(ImportContractModal);
+        const wrapper = mount(ImportContractModal);
         await wrapper.setData({ dialog: true, options: { contractsCount: 10 } });
 
         await wrapper.find('#contractAddress').setValue('0x123');
@@ -52,10 +44,14 @@ describe('ImportContractModal.vue', () => {
     });
 
     it('Should not warn the user if he is on a premium plan and has already 10 contracts', async () => {
-        const wrapper = helper.mountFn(ImportContractModal, {
-            getters: {
-                user: jest.fn().mockReturnValue({ plan: 'premium' })
-            }
+        const wrapper = mount(ImportContractModal, {
+            global: {
+                plugins: [createTestingPinia({
+                    initialState: {
+                        user: { plan: 'premium' }
+                    }
+                })]
+            },
         });
         await wrapper.setData({ dialog: true, options: { contractsCount: 10 } });
 
@@ -67,10 +63,14 @@ describe('ImportContractModal.vue', () => {
     });
 
     it('Should not warn the user if he is on a public explorer', async () => {
-        const wrapper = helper.mountFn(ImportContractModal, {
-            getters: {
-                user: jest.fn().mockReturnValue({ plan: 'free' }),
-                currentWorkspace: jest.fn().mockReturnValue({ public: true })
+        const wrapper = mount(ImportContractModal, {
+            global: {
+                plugins: [createTestingPinia({
+                    initialState: {
+                        user: { plan: 'free' },
+                        currentWorkspace: { public: true }
+                    }
+                })]
             }
         });
         await wrapper.setData({ dialog: true, options: { contractsCount: 10 } });

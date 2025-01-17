@@ -1,17 +1,17 @@
 <template>
-    <v-card outlined class="mb-6">
+    <v-card class="mb-6">
         <v-card-title>Contract Verification</v-card-title>
         <v-card-text>
-            <v-alert v-if="verificationErrorMessage" text type="error">{{ verificationErrorMessage }}</v-alert>
+            <v-alert class="mb-2" v-if="verificationErrorMessage" text density="compact" type="error">{{ verificationErrorMessage }}</v-alert>
             <v-form ref="form" v-model="canSubmit">
                 <h4>Compiler Settings</h4>
-                <v-card outlined class="mb-2">
+                <v-card class="mb-2">
                     <v-card-text>
                         <v-row>
                             <v-col cols="4">
                                 <v-select
-                                    outlined
-                                    dense
+                                    variant="outlined"
+                                    density="compact"
                                     label="Compiler Version *"
                                     v-model="parameters.compiler"
                                     :items="includeNightlyBuilds ? allCompilerVersions : releasesCompilerVersions"
@@ -22,7 +22,6 @@
 
                             <v-col cols="3">
                                 <v-checkbox
-                                    dense
                                     label="Show nightly builds"
                                     v-model="includeNightlyBuilds"
                                     hide-details>
@@ -32,12 +31,12 @@
                         <v-row>
                             <v-col cols="4">
                                 <v-select
-                                    outlined
-                                    dense
+                                    variant="outlined"
+                                    density="compact"
                                     label="EVM Version *"
                                     v-model="parameters.evmVersion"
                                     :items="evmVersions"
-                                    item-text="text"
+                                    item-title="text"
                                     item-value="value"
                                     hide-details>
                                 </v-select>
@@ -46,12 +45,12 @@
                         <v-row>
                             <v-col cols="2">
                                 <v-select
-                                    outlined
-                                    dense
+                                    variant="outlined"
+                                    density="compact"
                                     label="Optimization *"
                                     v-model="parameters.optimizer"
                                     :items="[{ text: 'Yes', value: true }, { text: 'No', value: false }]"
-                                    item-text="text"
+                                    item-title="text"
                                     item-value="value"
                                     hide-details>
                                 </v-select>
@@ -61,8 +60,8 @@
                                     v-show="parameters.optimizer"
                                     v-model.number="parameters.runs"
                                     small
-                                    outlined
-                                    dense
+                                    variant="outlined"
+                                    density="compact"
                                     hide-details
                                     label="Runs *"
                                     type="number">
@@ -72,7 +71,6 @@
                         <v-row class="mt-0">
                             <v-col cols="2">
                                 <v-checkbox
-                                    dense
                                     label="Via IR"
                                     v-model="parameters.viaIR"
                                     hide-details>
@@ -83,7 +81,7 @@
                 </v-card>
 
                 <h4>Contract</h4>
-                <v-card outlined class="mb-2">
+                <v-card class="mb-2">
                     <v-card-text>
                         <v-row>
                             <v-col cols="4" class="pb-0">
@@ -91,8 +89,8 @@
                                     :rules="[v => !!v || 'Contract name is required']"
                                     v-model="parameters.name"
                                     small
-                                    outlined
-                                    dense
+                                    variant="outlined"
+                                    density="compact"
                                     label="Contract Name *">
                                 </v-text-field>
                             </v-col>
@@ -108,13 +106,13 @@
                                     accept=".sol"
                                     small-chips
                                     multiple
-                                    outlined
+                                    variant="outlined"
                                     show-size
                                     counter
                                     label="Contract Files *"
                                     prepend-inner-icon="mdi-paperclip"
                                     prepend-icon=""
-                                    @change="onFilesUploaded">
+                                    @update:modelValue="onFilesUploaded">
                                 </v-file-input>
                             </v-col>
                         </v-row>
@@ -122,7 +120,7 @@
                 </v-card>
 
                 <h4>Libraries Linking</h4>
-                <v-card outlined class="mb-2">
+                <v-card class="mb-2">
                     <v-card-text>
                         <v-row v-for="(library, index) in rawLibraries" :key="index" align="center">
                             <v-col cols="3" :class="{ 'pb-1': index == 0, 'py-0': index > 0 }">
@@ -130,8 +128,8 @@
                                     v-model="rawLibraries[index].name"
                                     :rules="[v => !!v] || 'Library name is required'"
                                     small
-                                    outlined
-                                    dense
+                                    variant="outlined"
+                                    density="compact"
                                     persistent-hint
                                     hint="Format: MyFile.sol:LibraryName"
                                     label="Library Name *">
@@ -142,11 +140,11 @@
                                     v-model="rawLibraries[index].address"
                                     :rules="[v => !!v && v.length == 42 || 'Invalid address (must be 42 characters long)']"
                                     small
-                                    outlined
-                                    dense
+                                    variant="outlined"
+                                    density="compact"
                                     label="Library Address *">
                                         <template v-slot:append-outer>
-                                            <v-btn icon small  @click="removeLibrary(index)">
+                                            <v-btn icon size="small"  @click="removeLibrary(index)">
                                                 <v-icon color="error">mdi-delete</v-icon>
                                             </v-btn>
                                         </template>
@@ -155,41 +153,41 @@
                         </v-row>
                         <v-row>
                             <v-col cols="2">
-                                <v-btn class="primary" @click="addLibrary()" depressed>Add Library</v-btn>
+                                <v-btn class="bg-primary" @click="addLibrary()" variant="flat">Add Library</v-btn>
                             </v-col>
                         </v-row>
                     </v-card-text>
                 </v-card>
 
                 <h4>Constructor Arguments</h4>
-                <v-card outlined class="mb-2">
+                <v-card class="mb-2">
                     <v-card-text>
                         <v-textarea
                             rows="3"
                             primary
                             hide-details
-                            outlined
-                            dense
+                            variant="outlined"
+                            density="compact"
                             v-model="parameters.constructorArguments"
                             label="Constructor Arguments (ABI Encoded)">
                         </v-textarea>
                     </v-card-text>
                 </v-card>
             </v-form>
-            <v-btn class="primary" :disabled="!canSubmit" :loading="loading" depressed @click="submit()">Verify</v-btn>
+            <v-btn class="bg-primary" :disabled="!canSubmit" :loading="loading" variant="flat" @click="submit()">Verify</v-btn>
         </v-card-text>
     </v-card>
 </template>
 
 <script>
-const { sanitize } = require('../lib/utils');
-import { mapGetters } from 'vuex';
+import { sanitize } from '../lib/utils';
+import { mapStores } from 'pinia';
+import { useExplorerStore } from '../stores/explorer';
 
 export default {
     name: 'ContractVerification',
     props: ['address'],
-    components: {
-    },
+    emits: ['contractVerified'],
     data: () => ({
         files: [],
         includeNightlyBuilds: false,
@@ -229,10 +227,15 @@ export default {
         canSubmit: false,
         loading: false
     }),
+    setup(props, { emit }) {
+        const emitContractVerified = (data) => emit('contractVerified', data);
+
+        return { emitContractVerified };
+    },
     mounted() {
         this.parameters.address = this.address;
-        this.parameters.slug = this.publicExplorer.slug;
-        this.server.getCompilerVersions()
+        this.parameters.slug = this.explorerStore.slug;
+        this.$server.getCompilerVersions()
             .then(({ data }) => {
                 for (let i = 0; i < data.builds.length; i++) {
                     this.allCompilerVersions.unshift(`v${data.builds[i].longVersion}`);
@@ -291,10 +294,10 @@ export default {
                 viaIR: this.parameters.viaIR
             });
 
-            this.server.verifyContract(this.address, data)
-                .then(() => {
+            this.$server.verifyContract(this.address, data)
+                .then(({ data }) => {
                     this.verificationSuccess = true;
-                    this.$root.$emit('contractVerified');
+                    this.emitContractVerified(data);
                 })
                 .catch(({ response: { data }}) => this.verificationErrorMessage =`Verification failed. ${data}`)
                 .finally(() => {
@@ -304,9 +307,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-            'publicExplorer'
-        ])
+        ...mapStores(useExplorerStore)
     }
 }
 </script>

@@ -1,216 +1,367 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ERC20Contract.vue Should display a message if the address is not a contract 1`] = `
-<div class="container container--fluid">
-  <div class="v-card v-sheet v-sheet--outlined theme--light">
-    <div class="v-card__text">
-      <div class="row">
-        <div class="col" align="center"><i aria-hidden="true" class="v-icon notranslate mdi mdi-file theme--light primary--text text--lighten-1" style="font-size: 200px; opacity: 0.25;"></i></div>
-      </div>
-      <div class="row">
-        <div class="text-body-1 text-center col">
-          There doesn't seem to be a contract at this address.
-        </div>
+exports[`ERC20Contract.vue > Should display a message if the address is not a contract 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <div class="v-card v-theme--light v-card--border v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
       </div>
     </div>
+    <!---->
+    <!---->
+    <div class="v-card-text">
+      <div class="v-row">
+        <div class="v-col" align="center"><i class="mdi-file mdi v-icon notranslate v-theme--light text-primary-lighten-1" style="font-size: 200px; height: 200px; width: 200px; opacity: 0.25;" aria-hidden="true"></i></div>
+      </div>
+      <div class="v-row">
+        <div class="v-col text-body-1 text-center"> There doesn't seem to be a contract at this address. </div>
+      </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-</div>
+</div>"
 `;
 
-exports[`ERC20Contract.vue Should display contract info 1`] = `
-<div class="container container--fluid">
-  <div class="row mb-1">
-    <div class="col-lg-5 col-12">
-      <div class="v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
-        <div class="v-card__title">
+exports[`ERC20Contract.vue > Should display contract info 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <div class="v-row mb-1">
+    <div class="v-col-lg-5 v-col-12">
+      <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated" style="height: 100%;">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!---->
+        <div class="v-card-title">
+          <!--v-if--> Amalfi
+        </div>
+        <div class="v-card-subtitle"><span class="v-chip v-theme--light v-chip--density-default v-chip--size-x-small v-chip--variant-tonal bg-success mr-2" draggable="false"><!----><span class="v-chip__underlay"></span>
           <!---->
-          Amalfi
+          <!---->
+          <div class="v-chip__content" data-no-activator="">ERC 20</div>
+          <!---->
+          <!----></span>
         </div>
-        <div class="v-card__subtitle"><span class="success mr-2 v-chip v-chip--no-color theme--light v-size--x-small"><span class="v-chip__content">
-                                ERC 20
-                            </span></span></div>
-        <div class="v-card__text">
-          <div class="row">
-            <div class="col col-6"><small>Total Supply</small><br> <span class="text-h6 ml-2">10,000,000 </span></div>
-            <div class="col col-6"><small>Decimals</small><br> <span class="text-h6 ml-2">2</span></div>
+        <div class="v-card-text">
+          <div class="v-row">
+            <div class="v-col v-col-6"><small>Total Supply</small><br><span class="text-h6 ml-2">10,000,000 </span></div>
+            <div class="v-col v-col-6"><small>Decimals</small><br><span class="text-h6 ml-2">2</span></div>
           </div>
-          <div class="row">
-            <div class="col col-6"><small>Address</small><br>
-              <hash-link-stub hash="0x123" type="address" class="ml-2"></hash-link-stub>
+          <div class="v-row">
+            <div class="v-col v-col-6"><small>Address</small><br>
+              <hash-link-stub type="address" hash="0x123" class="ml-2"></hash-link-stub>
             </div>
-            <div class="col col-6"><small>Contract Creation</small><br> <span class="ml-2"><hash-link-stub hash="0xabc" type="transaction"></hash-link-stub></span></div>
+            <div class="v-col v-col-6"><small>Contract Creation</small><br><span class="ml-2"><hash-link-stub type="transaction" hash="0xabc"></hash-link-stub></span></div>
           </div>
         </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
       </div>
     </div>
-    <div class="col-lg-7 col-12">
-      <div class="row">
-        <div class="col-sm-6 col-lg-6 col-12">
-          <stat-number-stub value="1" title="Holders"></stat-number-stub>
+    <div class="v-col-lg-7 v-col-12">
+      <div class="v-row">
+        <div class="v-col-sm-6 v-col-lg-6 v-col-12">
+          <stat-number-stub loading="false" title="Holders" value="1"></stat-number-stub>
         </div>
-        <div class="col-sm-6 col-lg-6 col-12">
-          <stat-number-stub value="2" title="Transfers"></stat-number-stub>
+        <div class="v-col-sm-6 v-col-lg-6 v-col-12">
+          <stat-number-stub loading="false" title="Transfers" value="2"></stat-number-stub>
         </div>
-        <div class="col-sm-6 col-lg-6 col-12">
-          <stat-number-stub tokentype="erc20" decimals="2" infotooltip="Number of tokens currently in circulation" value="1000000000" title="Circulating Supply"></stat-number-stub>
+        <div class="v-col-sm-6 v-col-lg-6 v-col-12">
+          <stat-number-stub loading="false" title="Circulating Supply" decimals="2" infotooltip="Number of tokens currently in circulation" tokentype="erc20" value="1000000000"></stat-number-stub>
         </div>
-        <div class="col-sm-6 col-lg-6 col-12">
-          <div class="v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
-            <div class="v-card__subtitle">Your Balance</div>
-            <div class="v-card__text">
+        <div class="v-col-sm-6 v-col-lg-6 v-col-12">
+          <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated" style="height: 100%;">
+            <!---->
+            <div class="v-card__loader">
+              <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                <!---->
+                <div class="v-progress-linear__background"></div>
+                <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                  <div class="v-progress-linear__indeterminate">
+                    <div class="v-progress-linear__indeterminate long"></div>
+                    <div class="v-progress-linear__indeterminate short"></div>
+                  </div>
+                </transition-stub>
+                <!---->
+              </div>
+            </div>
+            <div class="v-card-item">
+              <!---->
+              <div class="v-card-item__content">
+                <!---->
+                <div class="v-card-subtitle">Your Balance</div>
+                <!---->
+              </div>
+              <!---->
+            </div>
+            <!---->
+            <div class="v-card-text">
               <metamask-stub class="mt-1"></metamask-stub>
             </div>
+            <!---->
+            <!----><span class="v-card__underlay"></span>
           </div>
         </div>
       </div>
     </div>
   </div>
   <div>
-    <div class="v-tabs theme--light">
-      <div role="tablist" class="v-item-group theme--light v-slide-group v-tabs-bar v-tabs-bar--is-mobile primary--text">
-        <div class="v-slide-group__prev v-slide-group__prev--disabled">
-          <transition-stub name="fade-transition"></transition-stub>
-        </div>
-        <div class="v-slide-group__wrapper">
-          <div class="v-slide-group__content v-tabs-bar__content">
-            <div class="v-tabs-slider-wrapper" style="transition: none;">
-              <div class="v-tabs-slider"></div>
-            </div><a tabindex="0" href="#transactions" aria-selected="true" role="tab" class="v-tab v-tab--active" id="transactionsTab">Transactions</a> <a tabindex="0" href="#transfers" aria-selected="false" role="tab" class="v-tab" id="transfersTab">Transfers</a> <a tabindex="0" href="#holders" aria-selected="false" role="tab" class="v-tab" id="holdersTab">Holders</a> <a tabindex="0" href="#interactions" aria-selected="false" role="tab" class="v-tab" id="interactionsTab">Read / Write</a> <a tabindex="0" href="#code" aria-selected="false" role="tab" class="v-tab" id="codeTab">Code</a> <a tabindex="0" href="#analytics" aria-selected="false" role="tab" class="v-tab" id="analyticsTab">Analytics</a>
-          </div>
-        </div>
-        <div class="v-slide-group__next v-slide-group__next--disabled">
-          <transition-stub name="fade-transition"></transition-stub>
-        </div>
+    <div class="v-slide-group v-slide-group--mobile v-tabs v-tabs--horizontal v-tabs--align-tabs-start v-tabs--density-default" tabindex="0" role="tablist">
+      <!---->
+      <div class="v-slide-group__container">
+        <div class="v-slide-group__content"><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab text-medium-emphasis" tabindex="-1" role="tab" aria-selected="false" id="transactionsTab" value="transactions"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+            <!----><span class="v-btn__content" data-no-activator="">Transactions<div class="v-tab__slider"></div></span>
+            <!---->
+            <!---->
+          </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab text-medium-emphasis" tabindex="-1" role="tab" aria-selected="false" id="transfersTab" value="transfers"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+            <!----><span class="v-btn__content" data-no-activator="">Transfers<div class="v-tab__slider"></div></span>
+            <!---->
+            <!---->
+          </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab text-medium-emphasis" tabindex="-1" role="tab" aria-selected="false" id="holdersTab" value="holders"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+            <!----><span class="v-btn__content" data-no-activator="">Holders<div class="v-tab__slider"></div></span>
+            <!---->
+            <!---->
+          </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab text-medium-emphasis" tabindex="-1" role="tab" aria-selected="false" id="interactionsTab" value="interactions"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+            <!----><span class="v-btn__content" data-no-activator="">Read / Write<div class="v-tab__slider"></div></span>
+            <!---->
+            <!---->
+          </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab text-medium-emphasis" tabindex="-1" role="tab" aria-selected="false" id="codeTab" value="code"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+            <!----><span class="v-btn__content" data-no-activator="">Code<div class="v-tab__slider"></div></span>
+            <!---->
+            <!---->
+          </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab text-medium-emphasis" tabindex="-1" role="tab" aria-selected="false" id="analyticsTab" value="analytics"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+            <!----><span class="v-btn__content" data-no-activator="">Analytics<div class="v-tab__slider"></div></span>
+            <!---->
+            <!---->
+          </button></div>
       </div>
+      <!---->
     </div>
-    <div class="v-window v-item-group theme--light v-tabs-items">
+    <!---->
+    <div class="v-window v-theme--light v-tabs-window">
       <div class="v-window__container">
-        <transition-stub name="">
-          <div class="v-window-item v-window-item--active" id="transactions">
-            <div class="mt-3 v-card v-sheet v-sheet--outlined theme--light">
-              <div class="v-card__text">
-                <div class="container container--fluid">
-                  <transactions-list-stub address="0x123" currentaddress="0x123"></transactions-list-stub>
-                </div>
-              </div>
-            </div>
+        <transition-stub appear="false" persisted="false" css="true" disabled="true">
+          <div class="v-window-item v-tabs-window-item" style="display: none;">
+            <!---->
           </div>
         </transition-stub>
-        <transition-stub name="">
-          <!---->
+        <transition-stub appear="false" persisted="false" css="true" disabled="true">
+          <div class="v-window-item v-tabs-window-item" style="display: none;">
+            <!---->
+          </div>
         </transition-stub>
-        <transition-stub name="">
-          <!---->
+        <transition-stub appear="false" persisted="false" css="true" disabled="true">
+          <div class="v-window-item v-tabs-window-item" style="display: none;">
+            <!---->
+          </div>
         </transition-stub>
-        <transition-stub name="">
-          <!---->
+        <transition-stub appear="false" persisted="false" css="true" disabled="true">
+          <div class="v-window-item v-tabs-window-item" style="display: none;">
+            <!---->
+          </div>
         </transition-stub>
-        <transition-stub name="">
-          <!---->
+        <transition-stub appear="false" persisted="false" css="true" disabled="true">
+          <div class="v-window-item v-tabs-window-item" style="display: none;">
+            <!---->
+          </div>
         </transition-stub>
-        <transition-stub name="">
-          <!---->
+        <transition-stub appear="false" persisted="false" css="true" disabled="true">
+          <div class="v-window-item v-tabs-window-item" style="display: none;">
+            <!---->
+          </div>
         </transition-stub>
+        <!---->
       </div>
+      <!---->
     </div>
   </div>
-</div>
+</div>"
 `;
 
-exports[`ERC20Contract.vue Should display placeholders 1`] = `
-<div class="container container--fluid">
-  <div class="row mb-1">
-    <div class="col-lg-5 col-12">
-      <div class="v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
-        <div class="v-card__title">
-          <!---->
-
-        </div>
-        <div class="v-card__subtitle"></div>
-        <div class="v-card__text">
-          <div class="row">
-            <div class="col col-6"><small>Total Supply</small><br> <span class="text-h6 ml-2">N/A</span></div>
-            <div class="col col-6"><small>Decimals</small><br> <span class="text-h6 ml-2">N/A</span></div>
+exports[`ERC20Contract.vue > Should display placeholders 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <div class="v-row mb-1">
+    <div class="v-col-lg-5 v-col-12">
+      <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated" style="height: 100%;">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
           </div>
-          <div class="row">
-            <div class="col col-6"><small>Address</small><br>
-              <hash-link-stub hash="0x123" type="address" class="ml-2"></hash-link-stub>
+        </div>
+        <!---->
+        <!---->
+        <div class="v-card-title">
+          <!--v-if-->
+        </div>
+        <div class="v-card-subtitle"></div>
+        <div class="v-card-text">
+          <div class="v-row">
+            <div class="v-col v-col-6"><small>Total Supply</small><br><span class="text-h6 ml-2">N/A</span></div>
+            <div class="v-col v-col-6"><small>Decimals</small><br><span class="text-h6 ml-2">N/A</span></div>
+          </div>
+          <div class="v-row">
+            <div class="v-col v-col-6"><small>Address</small><br>
+              <hash-link-stub type="address" hash="0x123" class="ml-2"></hash-link-stub>
             </div>
-            <div class="col col-6"><small>Contract Creation</small><br> <span class="ml-2"><hash-link-stub hash="0xabc" type="transaction"></hash-link-stub></span></div>
+            <div class="v-col v-col-6"><small>Contract Creation</small><br><span class="ml-2"><hash-link-stub type="transaction" hash="0xabc"></hash-link-stub></span></div>
           </div>
         </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
       </div>
     </div>
-    <div class="col-lg-7 col-12">
-      <div class="row">
-        <div class="col-sm-6 col-lg-6 col-12">
-          <stat-number-stub value="0" title="Holders"></stat-number-stub>
+    <div class="v-col-lg-7 v-col-12">
+      <div class="v-row">
+        <div class="v-col-sm-6 v-col-lg-6 v-col-12">
+          <stat-number-stub loading="false" title="Holders" value="0"></stat-number-stub>
         </div>
-        <div class="col-sm-6 col-lg-6 col-12">
-          <stat-number-stub value="0" title="Transfers"></stat-number-stub>
+        <div class="v-col-sm-6 v-col-lg-6 v-col-12">
+          <stat-number-stub loading="false" title="Transfers" value="0"></stat-number-stub>
         </div>
-        <div class="col-sm-6 col-lg-6 col-12">
-          <stat-number-stub infotooltip="Number of tokens currently in circulation" value="0" title="Circulating Supply"></stat-number-stub>
+        <div class="v-col-sm-6 v-col-lg-6 v-col-12">
+          <stat-number-stub loading="false" title="Circulating Supply" infotooltip="Number of tokens currently in circulation" value="0"></stat-number-stub>
         </div>
-        <div class="col-sm-6 col-lg-6 col-12">
-          <div class="v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
-            <div class="v-card__subtitle">Your Balance</div>
-            <div class="v-card__text">
+        <div class="v-col-sm-6 v-col-lg-6 v-col-12">
+          <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated" style="height: 100%;">
+            <!---->
+            <div class="v-card__loader">
+              <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                <!---->
+                <div class="v-progress-linear__background"></div>
+                <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                  <div class="v-progress-linear__indeterminate">
+                    <div class="v-progress-linear__indeterminate long"></div>
+                    <div class="v-progress-linear__indeterminate short"></div>
+                  </div>
+                </transition-stub>
+                <!---->
+              </div>
+            </div>
+            <div class="v-card-item">
+              <!---->
+              <div class="v-card-item__content">
+                <!---->
+                <div class="v-card-subtitle">Your Balance</div>
+                <!---->
+              </div>
+              <!---->
+            </div>
+            <!---->
+            <div class="v-card-text">
               <metamask-stub class="mt-1"></metamask-stub>
             </div>
+            <!---->
+            <!----><span class="v-card__underlay"></span>
           </div>
         </div>
       </div>
     </div>
   </div>
   <div>
-    <div class="v-tabs theme--light">
-      <div role="tablist" class="v-item-group theme--light v-slide-group v-tabs-bar v-tabs-bar--is-mobile primary--text" data-booted="true">
-        <div class="v-slide-group__prev v-slide-group__prev--disabled">
-          <transition-stub name="fade-transition"></transition-stub>
-        </div>
-        <div class="v-slide-group__wrapper">
-          <div class="v-slide-group__content v-tabs-bar__content">
-            <div class="v-tabs-slider-wrapper" style="height: 2px; left: 0px; width: 0px;">
-              <div class="v-tabs-slider"></div>
-            </div><a tabindex="0" href="#transactions" aria-selected="true" role="tab" class="v-tab v-tab--active" id="transactionsTab">Transactions</a> <a tabindex="0" href="#transfers" aria-selected="false" role="tab" class="v-tab" id="transfersTab">Transfers</a> <a tabindex="0" href="#holders" aria-selected="false" role="tab" class="v-tab" id="holdersTab">Holders</a> <a tabindex="0" href="#interactions" aria-selected="false" role="tab" class="v-tab" id="interactionsTab">Read / Write</a> <a tabindex="0" href="#code" aria-selected="false" role="tab" class="v-tab" id="codeTab">Code</a> <a tabindex="0" href="#analytics" aria-selected="false" role="tab" class="v-tab" id="analyticsTab">Analytics</a>
-          </div>
-        </div>
-        <div class="v-slide-group__next v-slide-group__next--disabled">
-          <transition-stub name="fade-transition"></transition-stub>
-        </div>
+    <div class="v-slide-group v-slide-group--mobile v-tabs v-tabs--horizontal v-tabs--align-tabs-start v-tabs--density-default" tabindex="0" role="tablist">
+      <!---->
+      <div class="v-slide-group__container">
+        <div class="v-slide-group__content"><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab text-medium-emphasis" tabindex="-1" role="tab" aria-selected="false" id="transactionsTab" value="transactions"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+            <!----><span class="v-btn__content" data-no-activator="">Transactions<div class="v-tab__slider"></div></span>
+            <!---->
+            <!---->
+          </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab text-medium-emphasis" tabindex="-1" role="tab" aria-selected="false" id="transfersTab" value="transfers"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+            <!----><span class="v-btn__content" data-no-activator="">Transfers<div class="v-tab__slider"></div></span>
+            <!---->
+            <!---->
+          </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab text-medium-emphasis" tabindex="-1" role="tab" aria-selected="false" id="holdersTab" value="holders"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+            <!----><span class="v-btn__content" data-no-activator="">Holders<div class="v-tab__slider"></div></span>
+            <!---->
+            <!---->
+          </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab text-medium-emphasis" tabindex="-1" role="tab" aria-selected="false" id="interactionsTab" value="interactions"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+            <!----><span class="v-btn__content" data-no-activator="">Read / Write<div class="v-tab__slider"></div></span>
+            <!---->
+            <!---->
+          </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab text-medium-emphasis" tabindex="-1" role="tab" aria-selected="false" id="codeTab" value="code"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+            <!----><span class="v-btn__content" data-no-activator="">Code<div class="v-tab__slider"></div></span>
+            <!---->
+            <!---->
+          </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab text-medium-emphasis" tabindex="-1" role="tab" aria-selected="false" id="analyticsTab" value="analytics"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+            <!----><span class="v-btn__content" data-no-activator="">Analytics<div class="v-tab__slider"></div></span>
+            <!---->
+            <!---->
+          </button></div>
       </div>
+      <!---->
     </div>
-    <div class="v-window v-item-group theme--light v-tabs-items">
+    <!---->
+    <div class="v-window v-theme--light v-tabs-window">
       <div class="v-window__container">
-        <transition-stub name="v-window-x-transition">
-          <div class="v-window-item v-window-item--active" id="transactions">
-            <div class="mt-3 v-card v-sheet v-sheet--outlined theme--light">
-              <div class="v-card__text">
-                <div class="container container--fluid">
-                  <transactions-list-stub address="0x123" currentaddress="0x123"></transactions-list-stub>
-                </div>
-              </div>
-            </div>
+        <transition-stub appear="false" persisted="false" css="true" disabled="true">
+          <div class="v-window-item v-tabs-window-item" style="display: none;">
+            <!---->
           </div>
         </transition-stub>
-        <transition-stub name="v-window-x-transition">
-          <!---->
+        <transition-stub appear="false" persisted="false" css="true" disabled="true">
+          <div class="v-window-item v-tabs-window-item" style="display: none;">
+            <!---->
+          </div>
         </transition-stub>
-        <transition-stub name="v-window-x-transition">
-          <!---->
+        <transition-stub appear="false" persisted="false" css="true" disabled="true">
+          <div class="v-window-item v-tabs-window-item" style="display: none;">
+            <!---->
+          </div>
         </transition-stub>
-        <transition-stub name="v-window-x-transition">
-          <!---->
+        <transition-stub appear="false" persisted="false" css="true" disabled="true">
+          <div class="v-window-item v-tabs-window-item" style="display: none;">
+            <!---->
+          </div>
         </transition-stub>
-        <transition-stub name="v-window-x-transition">
-          <!---->
+        <transition-stub appear="false" persisted="false" css="true" disabled="true">
+          <div class="v-window-item v-tabs-window-item" style="display: none;">
+            <!---->
+          </div>
         </transition-stub>
-        <transition-stub name="v-window-x-transition">
-          <!---->
+        <transition-stub appear="false" persisted="false" css="true" disabled="true">
+          <div class="v-window-item v-tabs-window-item" style="display: none;">
+            <!---->
+          </div>
         </transition-stub>
+        <!---->
       </div>
+      <!---->
     </div>
   </div>
-</div>
+</div>"
 `;

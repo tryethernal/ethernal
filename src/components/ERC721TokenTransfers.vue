@@ -4,7 +4,7 @@
             :transfers="transfers"
             :headers="headers"
             :loading="loading"
-            :sortBy="currentOptions.sortBy[0]"
+            :sort-by="currentOptions.sortBy"
             :count="transferCount"
             :withTransactionData="true"
             :withTokenData="true"
@@ -15,7 +15,7 @@
 
 <script>
 const moment = require('moment');
-import TokenTransfers from './TokenTransfers';
+import TokenTransfers from './TokenTransfers.vue';
 
 export default {
     name: 'ERC721TokenTransfers',
@@ -28,25 +28,34 @@ export default {
         transfers: [],
         transferCount: 0,
         headers: [
-            { text: 'Mined On', value: 'timestamp' },
-            { text: 'Transaction', value: 'transactionHash', sortable: false },
-            { text: 'Block', value: 'blockNumber' },
-            { text: 'From', value: 'src' },
-            { text: 'To', value: 'dst' },
-            { text: 'Token', value: 'token', sortable: false }
+            { title: 'Mined On', key: 'timestamp' },
+            { title: 'Transaction', key: 'transactionHash', sortable: false },
+            { title: 'Block', key: 'blockNumber' },
+            { title: 'From', key: 'src' },
+            { title: 'To', key: 'dst' },
+            { title: 'Token', key: 'token', sortable: false }
         ],
-        currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['blockNumber'], sortDesc: [true] }
+        currentOptions: { page: 1, itemsPerPage: 10, sortBy: [{ key: 'blockNumber', order: 'desc' }] }
     }),
     methods: {
         moment: moment,
         onPagination(options) {
             this.getTransfers(options);
         },
-        getTransfers(newOptions) {
+        getTransfers({ page, itemsPerPage, sortBy } = {}) {
             this.loading = true;
 
+            if (!page || !itemsPerPage || !sortBy || !sortBy.length)
+                return this.loading = false;
+
+            this.currentOptions = {
+                page,
+                itemsPerPage,
+                sortBy
+            };
+
             if (this.tokenId)
-                this.server.getErc721TokenTransfers(this.address, this.tokenId)
+                this.$server.getErc721TokenTransfers(this.address, this.tokenId)
                     .then(({ data }) => {
                         this.transfers = data;
                         this.transferCount = data.length;
@@ -54,17 +63,7 @@ export default {
                     .catch(console.log)
                     .finally(() => this.loading = false);
             else {
-                if (newOptions)
-                    this.currentOptions = newOptions;
-
-                const options = {
-                    page: this.currentOptions.page,
-                    itemsPerPage: this.currentOptions.itemsPerPage,
-                    orderBy: this.currentOptions.sortBy[0],
-                    order: this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc'
-                };
-
-                this.server.getTokenTransfers(this.address, options)
+                this.$server.getTokenTransfers(this.address, { page, itemsPerPage, orderBy: sortBy[0].key, order: sortBy[0].order })
                     .then(({ data }) => {
                         this.transfers = data.items;
                         this.transferCount = data.total;
