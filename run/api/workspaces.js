@@ -47,6 +47,8 @@ router.delete('/:id', [authMiddleware], async (req, res, next) => {
         await db.deleteWorkspace(data.user.id, req.params.id);
         res.sendStatus(200);
     } catch(error) {
+        if (error.message.startsWith('Please reset'))
+            return managedError(error, req, res);
         unmanagedError(error, req, next);
     }
 });
@@ -151,7 +153,11 @@ router.post('/settings', authMiddleware, async (req, res, next) => {
             }
         }
 
-        await db.updateWorkspaceSettings(data.uid, data.workspace, data.settings);
+        try {
+            await db.updateWorkspaceSettings(data.uid, data.workspace, data.settings);
+        } catch(error) {
+            return managedError(new Error(error), req, res);
+        }
 
         res.sendStatus(200);
     } catch(error) {
@@ -182,6 +188,9 @@ router.post('/reset', authMiddleware, async (req, res, next) => {
             return managedError(new Error('Missing parameter.'), req, res);
 
         const workspace = await db.getWorkspaceByName(data.uid, data.workspace);
+
+        if (!workspace)
+            return managedError(new Error('Could not find workspace.'), req, res);
 
         const needsBatchReset = await db.workspaceNeedsBatchReset(data.uid, workspace.id);
         if (needsBatchReset)

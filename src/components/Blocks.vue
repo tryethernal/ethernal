@@ -1,6 +1,6 @@
 <template>
     <v-container fluid>
-        <v-card outlined>
+        <v-card>
             <v-card-text>
                 <Block-List />
             </v-card-text>
@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import BlockList from './BlockList';
+import BlockList from './BlockList.vue';
 
 export default {
     name: 'Blocks',

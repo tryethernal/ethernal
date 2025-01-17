@@ -1,17 +1,11 @@
-import MockHelper from '../MockHelper';
-
 import Blocks from '@/components/Blocks.vue';
 
 describe('Blocks.vue', () => {
-    let helper;
-
-    beforeEach(() => {
-        helper = new MockHelper();
-    });
-
     it('Should show the blocks list', async () => {
-        const wrapper = helper.mountFn(Blocks, {
-            stubs: ['Block-List']
+        const wrapper = mount(Blocks, {
+            global: {
+                stubs: ['Block-List']
+            }
         });
         await new Promise(process.nextTick);
 

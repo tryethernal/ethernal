@@ -1,15 +1,35 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ExplorerDexSettingsDangerZone.vue Should display danger zone 1`] = `
-<div class="v-sheet v-sheet--outlined theme--light rounded error">
-  <div class="elevation-0 v-card v-sheet theme--light">
+exports[`ExplorerDexSettingsDangerZone.vue > Should display danger zone 1`] = `
+"<div class="v-sheet v-theme--light bg-error v-sheet--border v-sheet--rounded">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated elevation-0">
     <!---->
-    <div class="v-card__text font-weight-medium error--text">
-      <div class="row">
-        Deleting this dex is irreversible.
-        <div class="spacer"></div> <button type="button" class="mt-2 v-btn v-btn--has-bg theme--light v-size--small error"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mr-1 mdi mdi-delete theme--light"></i>Delete Dex</span></button>
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
       </div>
     </div>
+    <!---->
+    <!---->
+    <!--v-if-->
+    <div class="v-card-text font-weight-medium text-error">
+      <div class="v-row"> Deleting this dex is irreversible. <div class="v-spacer"></div><button type="button" class="v-btn v-theme--light bg-error v-btn--density-default v-btn--size-small v-btn--variant-flat mt-2"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+          <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-delete mdi v-icon notranslate v-theme--light v-icon--size-default mr-1" aria-hidden="true"></i>Delete Dex</span>
+          <!---->
+          <!---->
+        </button></div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-</div>
+</div>"
 `;

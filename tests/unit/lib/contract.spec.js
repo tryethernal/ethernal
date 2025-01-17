@@ -1,14 +1,12 @@
-require('../mocks/ethers');
-require('../mocks/rpc');
+import '../mocks/ethers';
+import '../mocks/rpc';
 
-const ethers = require('ethers');
-const { isErc20, isErc721, findPatterns, formatErc721Metadata } = require('@/lib/contract');
-const { ContractConnector, ERC721Connector } = require('@/lib/rpc');
+import * as ethers from 'ethers';
+import { isErc20, isErc721, findPatterns, formatErc721Metadata } from '@/lib/contract';
+import { ContractConnector, ERC721Connector } from '@/lib/rpc';
 import DSProxyContract from '../fixtures/DSProxyContract';
 import ERC20 from '@/abis/erc20.json';
 import ERC721 from '@/abis/erc721.json';
-
-beforeEach(() => jest.clearAllMocks());
 
 describe('formatErc721Metadata', () => {
     it('Should return empty data if no metadata', () => {
@@ -141,15 +139,15 @@ describe('findPatterns', () => {
     const rpcServer = 'http://localhost', contractAddress = '0x123';
 
     it('Should find erc20 properties without abi', async () => {
-        ContractConnector.mockImplementation(function() {
+        ContractConnector.mockImplementationOnce(function() {
             return {
-                has721Interface: jest.fn().mockResolvedValue(false),
-                has721Enumerable: jest.fn().mockResolvedValue(false),
-                has721Metadata: jest.fn().mockResolvedValue(false),
-                symbol: jest.fn().mockResolvedValue('ETL'),
-                decimals: jest.fn().mockResolvedValue(18),
-                name: jest.fn().mockResolvedValue('Ethernal'),
-                totalSupply: jest.fn().mockResolvedValue(1000)
+                has721Interface: vi.fn().mockResolvedValue(false),
+                has721Enumerable: vi.fn().mockResolvedValue(false),
+                has721Metadata: vi.fn().mockResolvedValue(false),
+                symbol: vi.fn().mockResolvedValue('ETL'),
+                decimals: vi.fn().mockResolvedValue(18),
+                name: vi.fn().mockResolvedValue('Ethernal'),
+                totalSupply: vi.fn().mockResolvedValue(1000)
             }
         });
         const properties = await findPatterns(rpcServer, contractAddress);
@@ -165,15 +163,15 @@ describe('findPatterns', () => {
     });
 
     it('Should find proxy contract', async () => {
-        ContractConnector.mockImplementation(function() {
+        ContractConnector.mockImplementationOnce(function() {
             return {
-                has721Interface: jest.fn().mockResolvedValue(false),
-                has721Enumerable: jest.fn().mockResolvedValue(false),
-                has721Metadata: jest.fn().mockResolvedValue(false),
-                symbol: jest.fn().mockResolvedValue('ETL'),
-                decimals: jest.fn().mockResolvedValue(18),
-                name: jest.fn().mockResolvedValue('Ethernal'),
-                totalSupply: jest.fn().mockResolvedValue(1000)
+                has721Interface: vi.fn().mockResolvedValue(false),
+                has721Enumerable: vi.fn().mockResolvedValue(false),
+                has721Metadata: vi.fn().mockResolvedValue(false),
+                symbol: vi.fn().mockResolvedValue('ETL'),
+                decimals: vi.fn().mockResolvedValue(18),
+                name: vi.fn().mockResolvedValue('Ethernal'),
+                totalSupply: vi.fn().mockResolvedValue(1000)
             }
         });
         const properties = await findPatterns(rpcServer, contractAddress, DSProxyContract.abi);
@@ -189,7 +187,7 @@ describe('findPatterns', () => {
     });
 
     it('Should find erc721 properties', async () => {
-        jest.spyOn(ethers, 'Contract').mockImplementationOnce(function() {
+        vi.spyOn(ethers, 'Contract').mockImplementationOnce(function() {
             return {
                 name: () => 'Ethernal',
                 symbol: () => 'ETL',
@@ -197,18 +195,18 @@ describe('findPatterns', () => {
                 totalSupply: () => 1000,
             }
         });
-        ContractConnector.mockImplementation(function() {
+        ContractConnector.mockImplementationOnce(function() {
             return {
-                has721Interface: jest.fn().mockResolvedValue(true),
-                has721Metadata: jest.fn().mockResolvedValue(true),
-                has721Enumerable: jest.fn().mockResolvedValue(true),
+                has721Interface: vi.fn().mockResolvedValue(true),
+                has721Metadata: vi.fn().mockResolvedValue(true),
+                has721Enumerable: vi.fn().mockResolvedValue(true),
             }
         });
-        ERC721Connector.mockImplementation(function() {
+        ERC721Connector.mockImplementationOnce(function() {
             return {
-                symbol: jest.fn().mockResolvedValue('ETL'),
-                name: jest.fn().mockResolvedValue('Ethernal'),
-                totalSupply: jest.fn().mockResolvedValue(1000)
+                symbol: vi.fn().mockResolvedValue('ETL'),
+                name: vi.fn().mockResolvedValue('Ethernal'),
+                totalSupply: vi.fn().mockResolvedValue(1000)
             }
         });
         const properties = await findPatterns(rpcServer, contractAddress);

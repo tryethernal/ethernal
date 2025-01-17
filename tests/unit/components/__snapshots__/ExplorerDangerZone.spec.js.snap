@@ -1,49 +1,112 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ExplorerDangerZone.vue Should display a warning message and an active delete button if pending cancelation 1`] = `
-<div class="v-sheet v-sheet--outlined theme--light rounded error">
-  <div class="elevation-0 v-card v-sheet theme--light">
+exports[`ExplorerDangerZone.vue > Should display a warning message and an active delete button if pending cancelation 1`] = `
+"<div class="v-sheet v-theme--light bg-error v-sheet--border v-sheet--rounded">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated elevation-0">
     <!---->
-    <div class="v-card__text font-weight-medium error--text">
-      <div class="row">
-        Deleting the explorer is not revertible.
-        Your workspace &amp; its data will still be here and accessible with your private explorer.
-        If you'd like to clear workspace data, go in the "Settings" tab, and use the "Reset Workspace" button.
-      </div>
-      <div class="row mt-2 pb-1">
-        <div class="spacer"></div> <button type="button" class="mt-2 v-btn v-btn--has-bg theme--light v-size--default error"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i>Delete Explorer</span></button>
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
       </div>
     </div>
+    <!---->
+    <!---->
+    <!--v-if-->
+    <div class="v-card-text font-weight-medium text-error">
+      <div class="v-row"> Deleting the explorer is not revertible. Your workspace &amp; its data will still be here and accessible with your private explorer. If you'd like to clear workspace data, go in the "Settings" tab, and use the "Reset Workspace" button. </div>
+      <div class="v-row mt-2 pb-1">
+        <div class="v-spacer"></div><button type="button" class="v-btn v-theme--light bg-error v-btn--density-default v-btn--size-default v-btn--variant-flat mt-2"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+          <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-delete mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i>Delete Explorer</span>
+          <!---->
+          <!---->
+        </button>
+      </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-</div>
+</div>"
 `;
 
-exports[`ExplorerDangerZone.vue Should have an active button if active subscription & billing disabled 1`] = `
-<div class="v-sheet v-sheet--outlined theme--light rounded error">
-  <div class="elevation-0 v-card v-sheet theme--light">
+exports[`ExplorerDangerZone.vue > Should have an active button if active subscription & billing disabled 1`] = `
+"<div class="v-sheet v-theme--light bg-error v-sheet--border v-sheet--rounded">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated elevation-0">
     <!---->
-    <div class="v-card__text font-weight-medium error--text">
-      <!---->
-      <div class="row mt-2 pb-1">
-        <div class="spacer"></div> <button type="button" class="mt-2 v-btn v-btn--has-bg theme--light v-size--default error"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i>Delete Explorer</span></button>
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
       </div>
     </div>
+    <!---->
+    <!---->
+    <!--v-if-->
+    <div class="v-card-text font-weight-medium text-error">
+      <!--v-if-->
+      <div class="v-row mt-2 pb-1">
+        <div class="v-spacer"></div><button type="button" class="v-btn v-theme--light bg-error v-btn--density-default v-btn--size-default v-btn--variant-flat mt-2"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+          <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-delete mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i>Delete Explorer</span>
+          <!---->
+          <!---->
+        </button>
+      </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-</div>
+</div>"
 `;
 
-exports[`ExplorerDangerZone.vue Should have an inactive button if active subscription 1`] = `
-<div class="v-sheet v-sheet--outlined theme--light rounded error">
-  <div class="elevation-0 v-card v-sheet theme--light">
+exports[`ExplorerDangerZone.vue > Should have an inactive button if active subscription 1`] = `
+"<div class="v-sheet v-theme--light bg-error v-sheet--border v-sheet--rounded">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated elevation-0">
     <!---->
-    <div class="v-card__text font-weight-medium error--text">
-      <div class="row">
-        You can't delete an explorer that has an active subscription. Please cancel it first.
-      </div>
-      <div class="row mt-2 pb-1">
-        <div class="spacer"></div> <button type="button" disabled="disabled" class="mt-2 v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i>Delete Explorer</span></button>
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
       </div>
     </div>
+    <!---->
+    <!---->
+    <!--v-if-->
+    <div class="v-card-text font-weight-medium text-error">
+      <div class="v-row"> You can't delete an explorer that has an active subscription. Please cancel it first. </div>
+      <div class="v-row mt-2 pb-1">
+        <div class="v-spacer"></div><button type="button" class="v-btn v-btn--disabled v-theme--light bg-error v-btn--density-default v-btn--size-default v-btn--variant-flat mt-2" disabled=""><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+          <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-delete mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i>Delete Explorer</span>
+          <!---->
+          <!---->
+        </button>
+      </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-</div>
+</div>"
 `;

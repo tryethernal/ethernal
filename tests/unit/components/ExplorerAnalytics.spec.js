@@ -1,69 +1,65 @@
 import flushPromises from 'flush-promises';
-import MockHelper from '../MockHelper';
 import ExplorerAnalytics from '@/components/ExplorerAnalytics.vue';
 
-let helper;
 const stubs = [
     'Line-Chart',
 ];
 
 describe('ExplorerAnalytics.vue', () => {
-
-    beforeEach(() => {
-        jest.clearAllMocks();
-        helper = new MockHelper();
-    });
-
     it('Should display charts', async () => {
-        jest.spyOn(helper.mocks.server, 'getTransactionVolume')
+        vi.spyOn(server, 'getTransactionVolume')
             .mockResolvedValueOnce({ data: [
                 { date: 0, count: 2 },
                 { date: 1, count: 2 }
             ]});
 
-        jest.spyOn(helper.mocks.server, 'getTokenTransferVolume')
+        vi.spyOn(server, 'getTokenTransferVolume')
             .mockResolvedValueOnce({ data: [
                 { date: 0, count: 2 },
                 { date: 1, count: 2 }
             ]});
 
-        jest.spyOn(helper.mocks.server, 'getAverageGasPrice')
+        vi.spyOn(server, 'getAverageGasPrice')
             .mockResolvedValueOnce({ data: [
                 { date: 0, avg: '200000000000000000' },
                 { date: 1, avg: '300000000000000000' }
             ]});
 
-        jest.spyOn(helper.mocks.server, 'getAverageTransactionFee')
+        vi.spyOn(server, 'getAverageTransactionFee')
             .mockResolvedValueOnce({ data: [
                 { date: 0, avg: '200000000000000000' },
                 { date: 1, avg: '300000000000000000' }
             ]});
 
-        jest.spyOn(helper.mocks.server, 'getUniqueWalletCount')
+        vi.spyOn(server, 'getUniqueWalletCount')
             .mockResolvedValueOnce({ data: [
                 { date: 0, count: 2 },
                 { date: 1, count: 2 }
             ]});
 
-        jest.spyOn(helper.mocks.server, 'getCumulativeWalletCount')
+        vi.spyOn(server, 'getCumulativeWalletCount')
             .mockResolvedValueOnce({ data: [
                 { date: 0, count: 2 },
                 { date: 1, count: 2 }
             ]});
 
-        jest.spyOn(helper.mocks.server, 'getDeployedContractCount')
+        vi.spyOn(server, 'getDeployedContractCount')
             .mockResolvedValueOnce({ data: [
                 { date: 0, count: 2 },
                 { date: 1, count: 2 }
             ]});
 
-        jest.spyOn(helper.mocks.server, 'getCumulativeDeployedContractCount')
+        vi.spyOn(server, 'getCumulativeDeployedContractCount')
             .mockResolvedValueOnce({ data: [
                 { date: 0, count: 2 },
                 { date: 1, count: 2 }
             ]});
 
-        const wrapper = helper.mountFn(ExplorerAnalytics, { stubs });
+        const wrapper = mount(ExplorerAnalytics, {
+            global: {
+                stubs
+            }
+        });
 
         await flushPromises();
         expect(wrapper.html()).toMatchSnapshot();

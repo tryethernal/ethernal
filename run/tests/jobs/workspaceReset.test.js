@@ -35,8 +35,8 @@ describe('workspaceReset', () => {
         workspaceReset({ data: { workspaceId: 1, from: new Date(0), to: new Date(1000) }})
             .then(() => {
                 expect(bulkEnqueue).toHaveBeenCalledWith('batchBlockDelete', [
-                    { name: 'batchBlockDelete-1-0-1', data: { workspaceId: 1, ids: [0] }},
-                    { name: 'batchBlockDelete-1-1-2', data: { workspaceId: 1, ids: [1] }}
+                    { name: 'batchBlockDelete-1-0-1-0-1000', data: { workspaceId: 1, ids: [0] }},
+                    { name: 'batchBlockDelete-1-1-2-0-1000', data: { workspaceId: 1, ids: [1] }}
                 ]);
                 expect(bulkEnqueue).toHaveBeenCalledWith('batchContractDelete', [
                     { name: 'batchContractDelete-1-0-1', data: { workspaceId: 1, ids: [0] }},

@@ -1,13 +1,13 @@
 <template>
-    <div v-if="rawMode" class="my-3">
+    <div v-if="rawMode" class="my-3 text-medium-emphasis">
         <b>Emitter:</b> <Hash-Link :type="'address'" :hash="log.address" :contract="contract"></Hash-Link><br>
         <b>Data:</b>
         <Formatted-Sol-Var :input="{ type: 'string' }" :value="JSON.stringify(log.raw)" :notInteractive="true" :isArrayEl="true" class="ml-4" />
     </div>
-    <div v-else-if="short" class="my-3">
-        <v-tooltip top :open-delay="150" color="grey darken-1" content-class="tooltip">
-            <template v-slot:activator="{ on, attrs }">
-                <v-chip class="primary lighten-1" v-bind="attrs" v-on="on" label small>
+    <div v-else-if="short" class="my-3 text-medium-emphasis">
+        <v-tooltip location="top" :open-delay="150" color="grey-darken-1" content-class="tooltip">
+            <template v-slot:activator="{ props }">
+                <v-chip class="bg-primary-lighten-1" v-bind="props" label size="small">
                     <span class="color--text event-name">{{ eventLabel }}</span>
                 </v-chip>
             </template>
@@ -24,14 +24,14 @@
                     <b>Emitter:</b> <Hash-Link :unlink="true" :notCopiable="true" :type="'address'" :hash="log.address" :contract="contract"></Hash-Link><br>
                     <b>Topics:</b>
                     <ul>
-                        <li v-for="(topic, idx) in log.topics" :key="idx">{{ topic }}</li>
+                        <li class="ml-6" v-for="(topic, idx) in log.topics" :key="idx">{{ topic }}</li>
                     </ul>
-                    <div class="log-data"><b>Data:</b> {{ log.data }}</div>
+                    <div class="raw-input"><b>Data:</b> {{ log.data }}</div>
                 </template>
             </span>
         </v-tooltip>
     </div>
-    <div v-else class="my-3">
+    <div v-else class="my-3 text-medium-emphasis">
         <template v-if="parsedLog">
             <span v-if="parsedLog.args.length > 0"><Hash-Link :type="'address'" :notCopiable="true" :withTokenName="true" :withName="true" :hash="this.log.address" :contract="contract"/>{{ `.${parsedLog.name}(\n` }}</span>
             <span v-else>{{ `${ contract.name }.${parsedLog.name}` }}()</span>
@@ -44,7 +44,7 @@
             <b>Emitter:</b> <Hash-Link :type="'address'" :hash="log.address" :contract="contract"></Hash-Link><br>
             <b>Topics:</b>
             <ul>
-                <li v-for="(topic, idx) in log.topics" :key="idx">{{ topic }}</li>
+                <li class="ml-6" v-for="(topic, idx) in log.topics" :key="idx">{{ topic }}</li>
             </ul>
             <div class="log-data"><b>Data:</b> {{ log.data }}</div>
         </template>
@@ -52,8 +52,8 @@
 </template>
 <script>
 import { findAbiForEvent, decodeLog } from '@/lib/abi';
-import FormattedSolVar from './FormattedSolVar';
-import HashLink from './HashLink';
+import FormattedSolVar from './FormattedSolVar.vue';
+import HashLink from './HashLink.vue';
 
 export default {
     name: 'TransactionEvent',
@@ -81,7 +81,7 @@ export default {
 
         // if (this.parsedLog) return;
 
-        this.server.getContract(this.log.address)
+        this.$server.getContract(this.log.address)
             .then(({ data }) => {
                 if (data) {
                     this.contract = data.proxyContract || data;
@@ -100,13 +100,6 @@ export default {
 }
 </script>
 <style scoped>
-.log-data {
-    max-width: 71ch;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-}
-
 .event-name {
     display: block;
     max-width: 11ch;

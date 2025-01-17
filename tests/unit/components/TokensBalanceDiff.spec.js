@@ -1,17 +1,11 @@
-const ethers = require('ethers');
 import flushPromises from 'flush-promises';
-import MockHelper from '../MockHelper';
 
 import TokensBalanceDiff from '@/components/TokensBalanceDiff.vue';
 
 describe('TokensBalanceDiff.vue', () => {
-    let helper;
-
-    beforeEach(() => helper = new MockHelper());
-
     it('Should display token balances difference', async () => {
-        const wrapper = helper.mountFn(TokensBalanceDiff, {
-            propsData: {
+        const wrapper = mount(TokensBalanceDiff, {
+            props: {
                 token: '0xdc64a140aa3e981100a9beca4e685f962f0cf6c9',
                 balanceChanges: [
                     {
@@ -29,7 +23,9 @@ describe('TokensBalanceDiff.vue', () => {
                 ],
                 blockNumber: '2'
             },
-            stubs: ['Hash-Link']
+            global: {
+                stubs: ['Hash-Link']
+            }
         });
         await flushPromises();
 
@@ -37,11 +33,11 @@ describe('TokensBalanceDiff.vue', () => {
     });
 
     it('Should display formatted token balances difference', async () => {
-        jest.spyOn(helper.mocks.server, 'getContract')
+        vi.spyOn(server, 'getContract')
             .mockResolvedValue({ data: { tokenDecimals: 18, tokenSymbol: 'ETL', tokenName: 'Ethernal' }});
 
-        const wrapper = helper.mountFn(TokensBalanceDiff, {
-            propsData: {
+        const wrapper = mount(TokensBalanceDiff, {
+            props: {
                 token: '0xdc64a140aa3e981100a9beca4e685f962f0cf6c9',
                 balanceChanges: [
                     {
@@ -59,7 +55,9 @@ describe('TokensBalanceDiff.vue', () => {
                 ],
                 blockNumber: '2'
             },
-            stubs: ['Hash-Link']
+            global: {
+                stubs: ['Hash-Link']
+            }
         });
         await flushPromises();
 

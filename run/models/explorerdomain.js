@@ -27,11 +27,25 @@ module.exports = (sequelize, DataTypes) => {
     updatedAt: DataTypes.DATE,
   }, {
     hooks: {
-        afterCreate(explorerDomain) {
+        afterCreate(explorerDomain, options) {
+          const afterCommitFn = () => {
             return enqueue('updateApproximatedRecord', `updateApproximatedRecord-${explorerDomain.id}-${explorerDomain.domain}`, { explorerDomain });
+          }
+
+          if (options.transaction)
+            return options.transaction.afterCommit(afterCommitFn);
+          else
+              return afterCommitFn();
         },
-        afterDestroy(explorerDomain) {
+        afterDestroy(explorerDomain, options) {
+          const afterCommitFn = () => {
             return enqueue('updateApproximatedRecord', `updateApproximatedRecord-${explorerDomain.id}-${explorerDomain.domain}`, { explorerDomain });
+          }
+
+          if (options.transaction)
+            return options.transaction.afterCommit(afterCommitFn);
+          else
+              return afterCommitFn();
         }
     },
     sequelize,

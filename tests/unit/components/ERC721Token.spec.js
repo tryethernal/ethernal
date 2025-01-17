@@ -1,15 +1,27 @@
-import MockHelper from '../MockHelper';
 import flushPromises from 'flush-promises'
 
 import ERC721Token from '@/components/ERC721Token.vue';
 
-const helper = new MockHelper();
-
 describe('ERC721Token.vue', () => {
-    beforeEach(() => jest.clearAllMocks());
+    it('Should display a message when the token is not found', async () => {
+        vi.spyOn(server, 'getErc721TokenById')
+            .mockResolvedValue({ data: null });
+
+        const wrapper = mount(ERC721Token, {
+            props: {
+                hash: '0x123',
+                index: 0
+            },
+            global: {
+                stubs: ['ERC721-Token-Transfer-Modal', 'Hash-Link', 'Token-Transfers']
+            }
+        });
+        await flushPromises();
+        expect(wrapper.html()).toMatchSnapshot();
+    });
 
     it('Should load & display an erc721 token', async () => {
-        jest.spyOn(helper.mocks.server, 'getErc721TokenById')
+        vi.spyOn(server, 'getErc721TokenById')
             .mockResolvedValue({ data: {
                 metadata: {},
                 attributes: {
@@ -28,15 +40,17 @@ describe('ERC721Token.vue', () => {
                 }
             }
         });
-        jest.spyOn(helper.mocks.server, 'getErc721TokenTransfers')
+        vi.spyOn(server, 'getErc721TokenTransfers')
             .mockResolvedValue({ data: [{ src: '0x123', dst: '0xabc' }]});
 
-        const wrapper = helper.mountFn(ERC721Token, {
-            propsData: {
+        const wrapper = mount(ERC721Token, {
+            props: {
                 hash: '0x123',
                 index: 0
             },
-            stubs: ['ERC721-Token-Transfer-Modal', 'Hash-Link', 'Token-Transfers']
+            global: {
+                stubs: ['ERC721-Token-Transfer-Modal', 'Hash-Link', 'Token-Transfers']
+            }
         });
         await flushPromises();
 

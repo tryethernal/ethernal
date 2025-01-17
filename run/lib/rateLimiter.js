@@ -1,9 +1,5 @@
 const { RedisRateLimiter } = require('rolling-rate-limiter');
-const { getNodeEnv } = require('../lib/env');
-const Redis = require('ioredis');
-const config = require('../config/redis')[getNodeEnv()];
-
-const redis = new Redis(config);
+const redis = require('../lib/redis');
 
 class RateLimiter {
 

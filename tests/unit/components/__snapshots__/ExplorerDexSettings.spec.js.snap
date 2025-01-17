@@ -1,204 +1,352 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ExplorerDexSettings.vue Should display fully synced active dex settings 1`] = `
-<div class="container container--fluid">
-  <div class="row">
-    <div class="col col-6">
-      <div class="my-6 v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__text">
-          <div class="v-input mt-1 v-input--is-label-active v-input--is-dirty theme--light v-input--selection-controls v-input--switch v-input--switch--inset primary--text">
-            <div class="v-input__control">
-              <div class="v-input__slot">
-                <div class="v-input--selection-controls__input"><input aria-checked="true" id="input-76" role="switch" type="checkbox" aria-disabled="false" value="">
-                  <div class="v-input--selection-controls__ripple primary--text"></div>
-                  <div class="v-input--switch__track theme--light primary--text"></div>
-                  <div class="v-input--switch__thumb theme--light primary--text">
-                    <transition-stub name="fab-transition" mode="out-in"></transition-stub>
-                  </div>
-                </div><label for="input-76" class="v-label theme--light" style="left: 0px; position: relative;">Active</label>
+exports[`ExplorerDexSettings.vue > Should display fully synced active dex settings 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <div class="v-row">
+    <div class="v-col v-col-6">
+      <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated my-6">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
               </div>
-              <div class="v-messages theme--light primary--text">
-                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!---->
+        <div class="v-card-text">
+          <div class="v-input v-input--horizontal v-input--center-affix v-input--density-default v-theme--light v-locale--is-ltr v-input--dirty v-switch v-switch--inset mt-1">
+            <!---->
+            <div class="v-input__control">
+              <div class="v-selection-control v-selection-control--dirty v-selection-control--density-default">
+                <div class="v-selection-control__wrapper">
+                  <div class="v-switch__track">
+                    <!---->
+                    <!---->
+                  </div>
+                  <div class="v-selection-control__input"><input checked="" id="switch-0" aria-disabled="false" aria-label="Active" type="checkbox" aria-describedby="switch-0-messages" value="true">
+                    <div class="v-switch__thumb">
+                      <transition-stub name="scale-transition" appear="false" persisted="false" css="true">
+                        <!---->
+                      </transition-stub>
+                    </div>
+                  </div>
+                </div><label class="v-label v-label--clickable" for="switch-0">
+                  <!---->Active
+                </label>
               </div>
             </div>
-          </div> <strong>URL:</strong> <a href="//undefined/dex" target="_blank">https:///dex</a><br> <strong>Router:</strong>
-          <hash-link-stub fullhash="true" hash="0x123" type="address"></hash-link-stub><br> <strong>Factory:</strong>
-          <hash-link-stub fullhash="true" hash="0x456" type="address"></hash-link-stub><br> <strong>Wrapped Native Token:</strong>
-          <hash-link-stub contract="[object Object]" withtokenname="true" withname="true" hash="0x789" type="address"></hash-link-stub><br>
-          <hr role="separator" aria-orientation="horizontal" class="my-4 v-divider theme--light"> <strong>Pairs synchronization status:</strong>
-          <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-linear v-progress-linear--rounded v-progress-linear--visible theme--light" style="height: 15px;" aria-valuenow="100">
-            <div class="v-progress-linear__background primary" style="opacity: 0.3; left: 100%; width: 0%;"></div>
-            <div class="v-progress-linear__buffer"></div>
-            <transition-stub name="slide-x-transition">
-              <div class="v-progress-linear__determinate primary" style="width: 100%;"></div>
+            <!---->
+            <div class="v-input__details">
+              <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="switch-0-messages">
+                <!---->
+              </transition-group-stub>
+              <!---->
+            </div>
+          </div><strong>URL:</strong> <a href="//undefined/dex" target="_blank">https:///dex</a><br><strong>Router:</strong>
+          <hash-link-stub type="address" hash="0x123" fullhash="true" withname="false"></hash-link-stub><br><strong>Factory:</strong>
+          <hash-link-stub type="address" hash="0x456" fullhash="true" withname="false"></hash-link-stub><br><strong>Wrapped Native Token:</strong>
+          <hash-link-stub contract="[object Object]" type="address" hash="0x789" withtokenname="true" withname="true"></hash-link-stub><br>
+          <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator"><strong>Pairs synchronization status:</strong>
+          <div class="v-progress-linear v-progress-linear--rounded v-progress-linear--rounded v-theme--light v-locale--is-ltr" style="top: 0px; height: 20px; --v-progress-linear-height: 20px;" role="progressbar" aria-hidden="false" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100" query="false">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer bg-grey" style="opacity: 1; width: 100%;"></div>
+            <transition-stub name="slide-x-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__determinate" style="width: 100%;"></div>
             </transition-stub>
-            <div class="v-progress-linear__content"><small class="white--text">100.00% (10 / 10)</small></div>
+            <div class="v-progress-linear__content"><small class="text-white">100.00% (10 / 10)</small></div>
           </div>
-          <!---->
+          <!--v-if-->
         </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
       </div>
-      <h4 class="error--text">Danger Zone</h4>
+      <h4 class="text-error">Danger Zone</h4>
       <explorer-dex-settings-danger-zone-stub></explorer-dex-settings-danger-zone-stub>
     </div>
   </div>
-</div>
+</div>"
 `;
 
-exports[`ExplorerDexSettings.vue Should display help screen if no dex 1`] = `
-<div class="container container--fluid">
-  <div class="v-card v-sheet v-sheet--outlined theme--light">
+exports[`ExplorerDexSettings.vue > Should display help screen if no dex 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
     <create-explorer-dex-modal-stub></create-explorer-dex-modal-stub>
-    <div class="v-card__text">
-      <div class="row">
-        <div align="center" class="col"><i aria-hidden="true" class="v-icon notranslate mdi mdi-swap-horizontal theme--light primary--text text--lighten-1" style="font-size: 200px; opacity: 0.25;"></i></div>
+    <div class="v-card-text">
+      <div class="v-row">
+        <div class="v-col" align="center"><i class="mdi-swap-horizontal mdi v-icon notranslate v-theme--light text-primary-lighten-1" style="font-size: 200px; height: 200px; width: 200px; opacity: 0.25;" aria-hidden="true"></i></div>
       </div>
-      <div class="row">
-        <div class="spacer"></div>
-        <div class="text-body-1 col col-6">
-          Before setting up your dex UI, make sure you've already deployed the UniswapV2Router02 contract.<br>
-          Once it's done, you'll just need the contract address to continue.
-          <br><br>
-          By using this integrated dex, you won't have to build another UI from scratch, your token list will
-          always be synchronized, you'll have access to pool analytics right away, and your users will have everything
-          they need to interact with your chain in the same place.
-        </div>
-        <div class="spacer"></div>
+      <div class="v-row">
+        <div class="v-spacer"></div>
+        <div class="v-col v-col-6 text-body-1"> Before setting up your dex UI, make sure you've already deployed the UniswapV2Router02 contract.<br> Once it's done, you'll just need the contract address to continue. <br><br> By using this integrated dex, you won't have to build another UI from scratch, your token list will always be synchronized, you'll have access to pool analytics right away, and your users will have everything they need to interact with your chain in the same place. </div>
+        <div class="v-spacer"></div>
       </div>
     </div>
-    <div class="v-card__actions mb-4">
-      <div class="spacer"></div> <button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Setup your Dex</span></button>
-      <div class="spacer"></div>
+    <div class="v-card-actions mb-4">
+      <div class="v-spacer"></div><button type="button" class="v-btn v-btn--slim v-theme--light bg-primary v-btn--density-default v-btn--size-default v-btn--variant-flat"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+        <!----><span class="v-btn__content" data-no-activator="">Setup your Dex</span>
+        <!---->
+        <!---->
+      </button>
+      <div class="v-spacer"></div>
     </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-</div>
+</div>"
 `;
 
-exports[`ExplorerDexSettings.vue Should display limited sync 1`] = `
-<div class="container container--fluid">
-  <div class="row">
-    <div class="col col-6">
-      <div class="my-6 v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__text">
-          <div class="v-input mt-1 v-input--is-label-active v-input--is-dirty theme--light v-input--selection-controls v-input--switch v-input--switch--inset primary--text">
-            <div class="v-input__control">
-              <div class="v-input__slot">
-                <div class="v-input--selection-controls__input"><input aria-checked="true" id="input-57" role="switch" type="checkbox" aria-disabled="false" value="">
-                  <div class="v-input--selection-controls__ripple primary--text"></div>
-                  <div class="v-input--switch__track theme--light primary--text"></div>
-                  <div class="v-input--switch__thumb theme--light primary--text">
-                    <transition-stub name="fab-transition" mode="out-in"></transition-stub>
-                  </div>
-                </div><label for="input-57" class="v-label theme--light" style="left: 0px; position: relative;">Active</label>
+exports[`ExplorerDexSettings.vue > Should display limited sync 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <div class="v-row">
+    <div class="v-col v-col-6">
+      <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated my-6">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
               </div>
-              <div class="v-messages theme--light primary--text">
-                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
-              </div>
-            </div>
-          </div> <strong>URL:</strong> <a href="//undefined/dex" target="_blank">https:///dex</a><br> <strong>Router:</strong>
-          <hash-link-stub fullhash="true" hash="0x123" type="address"></hash-link-stub><br> <strong>Factory:</strong>
-          <hash-link-stub fullhash="true" hash="0x456" type="address"></hash-link-stub><br> <strong>Wrapped Native Token:</strong>
-          <hash-link-stub contract="[object Object]" withtokenname="true" withname="true" hash="0x789" type="address"></hash-link-stub><br>
-          <hr role="separator" aria-orientation="horizontal" class="my-4 v-divider theme--light"> <strong>Pairs synchronization status:</strong>
-          <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-linear v-progress-linear--rounded v-progress-linear--visible theme--light" style="height: 15px;" aria-valuenow="80">
-            <div class="v-progress-linear__background primary" style="opacity: 0.3; left: 80%; width: 20%;"></div>
-            <div class="v-progress-linear__buffer"></div>
-            <transition-stub name="slide-x-transition">
-              <div class="v-progress-linear__determinate primary" style="width: 80%;"></div>
             </transition-stub>
-            <div class="v-progress-linear__content"><small class="white--text">80.00% (8 / 10)</small></div>
-          </div> You can only sync up to 1 pairs during your trial. Contact support to remove this limit.
-        </div>
-      </div>
-      <h4 class="error--text">Danger Zone</h4>
-      <explorer-dex-settings-danger-zone-stub></explorer-dex-settings-danger-zone-stub>
-    </div>
-  </div>
-</div>
-`;
-
-exports[`ExplorerDexSettings.vue Should display message if no subscription 1`] = `
-<div class="container container--fluid">
-  <div class="row">
-    <div class="col col-6">
-      <div class="my-6 v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__text">
-          <div class="v-input mt-1 v-input--is-label-active v-input--is-dirty theme--light v-input--selection-controls v-input--switch v-input--switch--inset primary--text">
-            <div class="v-input__control">
-              <div class="v-input__slot">
-                <div class="v-input--selection-controls__input"><input aria-checked="true" id="input-19" role="switch" type="checkbox" aria-disabled="false" value="">
-                  <div class="v-input--selection-controls__ripple primary--text"></div>
-                  <div class="v-input--switch__track theme--light primary--text"></div>
-                  <div class="v-input--switch__thumb theme--light primary--text">
-                    <transition-stub name="fab-transition" mode="out-in"></transition-stub>
-                  </div>
-                </div><label for="input-19" class="v-label theme--light" style="left: 0px; position: relative;">Active</label>
-              </div>
-              <div class="v-messages theme--light primary--text">
-                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
-              </div>
-            </div>
-          </div> <strong>URL:</strong> <a href="//undefined/dex" target="_blank">https:///dex</a><br> <strong>Router:</strong>
-          <hash-link-stub fullhash="true" hash="0x123" type="address"></hash-link-stub><br> <strong>Factory:</strong>
-          <hash-link-stub fullhash="true" hash="0x456" type="address"></hash-link-stub><br> <strong>Wrapped Native Token:</strong>
-          <hash-link-stub contract="[object Object]" withtokenname="true" withname="true" hash="0x789" type="address"></hash-link-stub><br>
-          <hr role="separator" aria-orientation="horizontal" class="my-4 v-divider theme--light"> <strong>Pairs synchronization status:</strong>
-          <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-linear v-progress-linear--rounded v-progress-linear--visible theme--light" style="height: 15px;" aria-valuenow="100">
-            <div class="v-progress-linear__background primary" style="opacity: 0.3; left: 100%; width: 0%;"></div>
-            <div class="v-progress-linear__buffer"></div>
-            <transition-stub name="slide-x-transition">
-              <div class="v-progress-linear__determinate primary" style="width: 100%;"></div>
-            </transition-stub>
-            <div class="v-progress-linear__content"><small class="white--text">100.00% (10 / 10)</small></div>
-          </div> Start a subscription to sync pairs.
-        </div>
-      </div>
-      <h4 class="error--text">Danger Zone</h4>
-      <explorer-dex-settings-danger-zone-stub></explorer-dex-settings-danger-zone-stub>
-    </div>
-  </div>
-</div>
-`;
-
-exports[`ExplorerDexSettings.vue Should display syncing dex 1`] = `
-<div class="container container--fluid">
-  <div class="row">
-    <div class="col col-6">
-      <div class="my-6 v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__text">
-          <div class="v-input mt-1 v-input--is-label-active v-input--is-dirty theme--light v-input--selection-controls v-input--switch v-input--switch--inset primary--text">
-            <div class="v-input__control">
-              <div class="v-input__slot">
-                <div class="v-input--selection-controls__input"><input aria-checked="true" id="input-38" role="switch" type="checkbox" aria-disabled="false" value="">
-                  <div class="v-input--selection-controls__ripple primary--text"></div>
-                  <div class="v-input--switch__track theme--light primary--text"></div>
-                  <div class="v-input--switch__thumb theme--light primary--text">
-                    <transition-stub name="fab-transition" mode="out-in"></transition-stub>
-                  </div>
-                </div><label for="input-38" class="v-label theme--light" style="left: 0px; position: relative;">Active</label>
-              </div>
-              <div class="v-messages theme--light primary--text">
-                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
-              </div>
-            </div>
-          </div> <strong>URL:</strong> <a href="//undefined/dex" target="_blank">https:///dex</a><br> <strong>Router:</strong>
-          <hash-link-stub fullhash="true" hash="0x123" type="address"></hash-link-stub><br> <strong>Factory:</strong>
-          <hash-link-stub fullhash="true" hash="0x456" type="address"></hash-link-stub><br> <strong>Wrapped Native Token:</strong>
-          <hash-link-stub contract="[object Object]" withtokenname="true" withname="true" hash="0x789" type="address"></hash-link-stub><br>
-          <hr role="separator" aria-orientation="horizontal" class="my-4 v-divider theme--light"> <strong>Pairs synchronization status:</strong>
-          <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-linear v-progress-linear--rounded v-progress-linear--visible theme--light" style="height: 15px;" aria-valuenow="80">
-            <div class="v-progress-linear__background primary" style="opacity: 0.3; left: 80%; width: 20%;"></div>
-            <div class="v-progress-linear__buffer"></div>
-            <transition-stub name="slide-x-transition">
-              <div class="v-progress-linear__determinate primary" style="width: 80%;"></div>
-            </transition-stub>
-            <div class="v-progress-linear__content"><small class="white--text">80.00% (8 / 10)</small></div>
+            <!---->
           </div>
-          <!---->
         </div>
+        <!---->
+        <!---->
+        <div class="v-card-text">
+          <div class="v-input v-input--horizontal v-input--center-affix v-input--density-default v-theme--light v-locale--is-ltr v-input--dirty v-switch v-switch--inset mt-1">
+            <!---->
+            <div class="v-input__control">
+              <div class="v-selection-control v-selection-control--dirty v-selection-control--density-default">
+                <div class="v-selection-control__wrapper">
+                  <div class="v-switch__track">
+                    <!---->
+                    <!---->
+                  </div>
+                  <div class="v-selection-control__input"><input checked="" id="switch-0" aria-disabled="false" aria-label="Active" type="checkbox" aria-describedby="switch-0-messages" value="true">
+                    <div class="v-switch__thumb">
+                      <transition-stub name="scale-transition" appear="false" persisted="false" css="true">
+                        <!---->
+                      </transition-stub>
+                    </div>
+                  </div>
+                </div><label class="v-label v-label--clickable" for="switch-0">
+                  <!---->Active
+                </label>
+              </div>
+            </div>
+            <!---->
+            <div class="v-input__details">
+              <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="switch-0-messages">
+                <!---->
+              </transition-group-stub>
+              <!---->
+            </div>
+          </div><strong>URL:</strong> <a href="//undefined/dex" target="_blank">https:///dex</a><br><strong>Router:</strong>
+          <hash-link-stub type="address" hash="0x123" fullhash="true" withname="false"></hash-link-stub><br><strong>Factory:</strong>
+          <hash-link-stub type="address" hash="0x456" fullhash="true" withname="false"></hash-link-stub><br><strong>Wrapped Native Token:</strong>
+          <hash-link-stub contract="[object Object]" type="address" hash="0x789" withtokenname="true" withname="true"></hash-link-stub><br>
+          <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator"><strong>Pairs synchronization status:</strong>
+          <div class="v-progress-linear v-progress-linear--rounded v-progress-linear--rounded v-theme--light v-locale--is-ltr" style="top: 0px; height: 20px; --v-progress-linear-height: 20px;" role="progressbar" aria-hidden="false" aria-valuemin="0" aria-valuemax="100" aria-valuenow="80" query="false">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer bg-grey" style="opacity: 1; width: 100%;"></div>
+            <transition-stub name="slide-x-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__determinate" style="width: 80%;"></div>
+            </transition-stub>
+            <div class="v-progress-linear__content"><small class="text-white">80.00% (8 / 10)</small></div>
+          </div>You can only sync up to 20 pairs during your trial. Contact support to remove this limit.
+        </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
       </div>
-      <h4 class="error--text">Danger Zone</h4>
+      <h4 class="text-error">Danger Zone</h4>
       <explorer-dex-settings-danger-zone-stub></explorer-dex-settings-danger-zone-stub>
     </div>
   </div>
-</div>
+</div>"
+`;
+
+exports[`ExplorerDexSettings.vue > Should display message if no subscription 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <div class="v-row">
+    <div class="v-col v-col-6">
+      <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated my-6">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!---->
+        <div class="v-card-text">
+          <div class="v-input v-input--horizontal v-input--center-affix v-input--density-default v-theme--light v-locale--is-ltr v-input--dirty v-switch v-switch--inset mt-1">
+            <!---->
+            <div class="v-input__control">
+              <div class="v-selection-control v-selection-control--dirty v-selection-control--density-default">
+                <div class="v-selection-control__wrapper">
+                  <div class="v-switch__track">
+                    <!---->
+                    <!---->
+                  </div>
+                  <div class="v-selection-control__input"><input checked="" id="switch-0" aria-disabled="false" aria-label="Active" type="checkbox" aria-describedby="switch-0-messages" value="true">
+                    <div class="v-switch__thumb">
+                      <transition-stub name="scale-transition" appear="false" persisted="false" css="true">
+                        <!---->
+                      </transition-stub>
+                    </div>
+                  </div>
+                </div><label class="v-label v-label--clickable" for="switch-0">
+                  <!---->Active
+                </label>
+              </div>
+            </div>
+            <!---->
+            <div class="v-input__details">
+              <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="switch-0-messages">
+                <!---->
+              </transition-group-stub>
+              <!---->
+            </div>
+          </div><strong>URL:</strong> <a href="//undefined/dex" target="_blank">https:///dex</a><br><strong>Router:</strong>
+          <hash-link-stub type="address" hash="0x123" fullhash="true" withname="false"></hash-link-stub><br><strong>Factory:</strong>
+          <hash-link-stub type="address" hash="0x456" fullhash="true" withname="false"></hash-link-stub><br><strong>Wrapped Native Token:</strong>
+          <hash-link-stub contract="[object Object]" type="address" hash="0x789" withtokenname="true" withname="true"></hash-link-stub><br>
+          <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator"><strong>Pairs synchronization status:</strong>
+          <div class="v-progress-linear v-progress-linear--rounded v-progress-linear--rounded v-theme--light v-locale--is-ltr" style="top: 0px; height: 20px; --v-progress-linear-height: 20px;" role="progressbar" aria-hidden="false" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100" query="false">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer bg-grey" style="opacity: 1; width: 100%;"></div>
+            <transition-stub name="slide-x-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__determinate" style="width: 100%;"></div>
+            </transition-stub>
+            <div class="v-progress-linear__content"><small class="text-white">100.00% (10 / 10)</small></div>
+          </div>Start a subscription to sync pairs.
+        </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
+      </div>
+      <h4 class="text-error">Danger Zone</h4>
+      <explorer-dex-settings-danger-zone-stub></explorer-dex-settings-danger-zone-stub>
+    </div>
+  </div>
+</div>"
+`;
+
+exports[`ExplorerDexSettings.vue > Should display syncing dex 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <div class="v-row">
+    <div class="v-col v-col-6">
+      <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated my-6">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!---->
+        <div class="v-card-text">
+          <div class="v-input v-input--horizontal v-input--center-affix v-input--density-default v-theme--light v-locale--is-ltr v-input--dirty v-switch v-switch--inset mt-1">
+            <!---->
+            <div class="v-input__control">
+              <div class="v-selection-control v-selection-control--dirty v-selection-control--density-default">
+                <div class="v-selection-control__wrapper">
+                  <div class="v-switch__track">
+                    <!---->
+                    <!---->
+                  </div>
+                  <div class="v-selection-control__input"><input checked="" id="switch-0" aria-disabled="false" aria-label="Active" type="checkbox" aria-describedby="switch-0-messages" value="true">
+                    <div class="v-switch__thumb">
+                      <transition-stub name="scale-transition" appear="false" persisted="false" css="true">
+                        <!---->
+                      </transition-stub>
+                    </div>
+                  </div>
+                </div><label class="v-label v-label--clickable" for="switch-0">
+                  <!---->Active
+                </label>
+              </div>
+            </div>
+            <!---->
+            <div class="v-input__details">
+              <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="switch-0-messages">
+                <!---->
+              </transition-group-stub>
+              <!---->
+            </div>
+          </div><strong>URL:</strong> <a href="//undefined/dex" target="_blank">https:///dex</a><br><strong>Router:</strong>
+          <hash-link-stub type="address" hash="0x123" fullhash="true" withname="false"></hash-link-stub><br><strong>Factory:</strong>
+          <hash-link-stub type="address" hash="0x456" fullhash="true" withname="false"></hash-link-stub><br><strong>Wrapped Native Token:</strong>
+          <hash-link-stub contract="[object Object]" type="address" hash="0x789" withtokenname="true" withname="true"></hash-link-stub><br>
+          <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator"><strong>Pairs synchronization status:</strong>
+          <div class="v-progress-linear v-progress-linear--rounded v-progress-linear--rounded v-theme--light v-locale--is-ltr" style="top: 0px; height: 20px; --v-progress-linear-height: 20px;" role="progressbar" aria-hidden="false" aria-valuemin="0" aria-valuemax="100" aria-valuenow="80" query="false">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer bg-grey" style="opacity: 1; width: 100%;"></div>
+            <transition-stub name="slide-x-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__determinate" style="width: 80%;"></div>
+            </transition-stub>
+            <div class="v-progress-linear__content"><small class="text-white">80.00% (8 / 10)</small></div>
+          </div>
+          <!--v-if-->
+        </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
+      </div>
+      <h4 class="text-error">Danger Zone</h4>
+      <explorer-dex-settings-danger-zone-stub></explorer-dex-settings-danger-zone-stub>
+    </div>
+  </div>
+</div>"
 `;

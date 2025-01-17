@@ -414,6 +414,7 @@ describe(`POST ${BASE_URL}/:address/tokenProperties`, () => {
             has721Metadata: false,
             has721Enumerable: false
         };
+        db.getWorkspaceByName.mockResolvedValue({ id: 1 });
         db.getWorkspaceContract.mockResolvedValue({ patterns: [] });
         request.post(`${BASE_URL}/0x123/tokenProperties`)
             .send({ data: { workspace: 'My Workspace', properties }})
@@ -431,6 +432,7 @@ describe(`POST ${BASE_URL}/:address/tokenProperties`, () => {
         const properties = {
             patterns: ['erc20', 'proxy']
         };
+        db.getWorkspaceByName.mockResolvedValue({ id: 1 });
         db.getWorkspaceContract.mockResolvedValue({ patterns: ['erc20'] });
         request.post(`${BASE_URL}/0x123/tokenProperties`)
             .send({ data: { workspace: 'My Workspace', properties }})
@@ -444,13 +446,14 @@ describe(`POST ${BASE_URL}/:address/tokenProperties`, () => {
             });
     });
 
-    it('Should fail gracefully (200) if the contract does not exists', (done) => {
+    it('Should fail if the contract does not exists', (done) => {
+        db.getWorkspaceByName.mockResolvedValue({ id: 1 });
         db.getWorkspaceContract.mockResolvedValue(null);
         request.post(`${BASE_URL}/0x123/tokenProperties`)
             .send({ data: { workspace: 'My Workspace', tokenProperties: { symbol: 'ETL', decimals: 18, name: 'Ethernal' }}})
-            .expect(200)
+            .expect(400)
             .then(({ text }) => {
-                expect(text).toEqual(`Couldn't find contract at address 0x123.`)
+                expect(text).toEqual(`Could not find contract at this address.`)
                 expect(db.storeContractData).not.toHaveBeenCalled();
                 done();
             });
@@ -472,7 +475,9 @@ describe(`POST ${BASE_URL}/:address/remove`, () => {
 describe(`POST ${BASE_URL}/:address/verify`, () => {
     it('Should return 200 status code', (done) => {
         jest.spyOn(db, 'getPublicExplorerParamsBySlug').mockResolvedValueOnce({ userId: 1, workspaceId: 1 });
-        jest.spyOn(db, 'getContract').mockResolvedValueOnce({ address: '0x123' });
+        jest.spyOn(db, 'getContract')
+            .mockResolvedValueOnce({ address: '0x123' })
+            .mockResolvedValueOnce({ address: '0x123' });
         processContractVerification.mockResolvedValueOnce({ verificationSucceded: true });
 
         request.post(`${BASE_URL}/0x123/verify`)

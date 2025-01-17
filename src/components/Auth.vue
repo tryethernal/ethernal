@@ -1,20 +1,22 @@
 <template>
-    <v-layout class="primary fill-height">
+    <v-layout class="bg-primary fill-height">
         <v-row class="fill-height ma-0" justify="center" no-gutters>
             <v-col lg="4" align-self="center">
-                <div class="text-center white--text font-weight-medium">
+                <div class="text-center text-white font-weight-medium">
                     <h1 class="logo-white">Ethernal</h1>
                     <p>
                         Ethernal is an open source block explorer for EVM-based chains.
                     </p>
                 </div>
-                <v-card v-if="signInMode" outlined>
-                    <v-alert class="mb-0" dense text type="info" v-show="explorerToken">Sign up or sign in in order to finish setting up your explorer</v-alert>
-                    <v-alert class="mb-0" dense text type="error" v-show="error">{{ error }}</v-alert>
+                <v-card v-if="signInMode" border>
+                    <v-alert class="mb-0" density="compact" text type="info" v-show="explorerToken">Sign up or sign in in order to finish setting up your explorer</v-alert>
+                    <v-alert class="mb-0" density="compact" text type="error" v-show="error">{{ error }}</v-alert>
                     <v-card-title>Sign In</v-card-title>
                     <v-card-text>
                         <v-form @submit.prevent="signIn" v-model="valid">
                             <v-text-field
+                                variant="outlined"
+                                color="primary"
                                 :rules="[
                                     v => !!v || 'Email is required',
                                     v => /.+@.+\..+/.test(v) || 'Email must be valid',
@@ -29,18 +31,18 @@
                                 v-model="password" name="password" label="Password" type="password"></v-text-field>
                             <v-card-actions class="px-0">
                                 <div style="float: left;">
-                                    <small><a @click="switchMode('signup')">Sign Up</a></small><br>
-                                    <small><a @click="switchMode('forgottenPwd')">Forgot My Password</a></small>
+                                    <small><a href="#" @click.prevent="switchMode('signup')">Sign Up</a></small><br>
+                                    <small><a href="#" @click.prevent="switchMode('forgottenPwd')">Forgot My Password</a></small>
                                 </div>
                                 <v-spacer></v-spacer>
-                                <v-btn :disabled="!valid" :loading="loading" color="primary" type="submit">Sign In</v-btn>
+                                <v-btn variant="flat" :disabled="!valid" :loading="loading" color="primary" type="submit">Sign In</v-btn>
                             </v-card-actions>
                         </v-form>
                     </v-card-text>
                 </v-card>
-                <v-card v-else-if="signUpMode" outlined>
-                    <v-alert class="mb-0" dense text type="info" v-show="explorerToken">Sign up or sign in in order to finish setting up your explorer</v-alert>
-                    <v-alert class="mb-0" dense text type="error" v-show="error">{{ error }}</v-alert>
+                <v-card v-else-if="signUpMode" border>
+                    <v-alert class="mb-0" density="compact" text type="info" v-show="explorerToken">Sign up or sign in in order to finish setting up your explorer</v-alert>
+                    <v-alert class="mb-0" density="compact" text type="error" v-show="error">{{ error }}</v-alert>
                     <v-card-title>Sign Up</v-card-title>
                     <v-card-text>
                         <v-form @submit.prevent="signUp" v-model="valid">
@@ -58,18 +60,18 @@
 
                             <v-card-actions class="px-0">
                                 <div style="float: left;">
-                                    <small><a @click="switchMode('signin')">Sign In</a></small><br>
-                                    <small><a @click="switchMode('forgottenPwd')">Forgot My Password</a></small>
+                                    <small><a href="#" @click.prevent="switchMode('signin')">Sign In</a></small><br>
+                                    <small><a href="#" @click.prevent="switchMode('forgottenPwd')">Forgot My Password</a></small>
                                 </div>
                                 <v-spacer></v-spacer>
-                                <v-btn :disabled="!valid" :loading="loading" color="primary" type="submit">Sign Up</v-btn>
+                                <v-btn variant="flat" :disabled="!valid" :loading="loading" color="primary" type="submit">Sign Up</v-btn>
                             </v-card-actions>
                         </v-form>
                     </v-card-text>
                 </v-card>
-                <v-card v-else-if="forgottenPwdMode" outlined>
-                    <v-alert class="mb-0" dense text type="error" v-show="error">{{ error }}</v-alert>
-                    <v-alert class="mb-0" dense text type="success" v-show="success">{{ success }}</v-alert>
+                <v-card v-else-if="forgottenPwdMode" border>
+                    <v-alert class="mb-0" density="compact" text type="error" v-show="error">{{ error }}</v-alert>
+                    <v-alert class="mb-0" density="compact" text type="success" v-show="success">{{ success }}</v-alert>
                     <v-card-title>Forgotten Password?</v-card-title>
                     <v-card-text>
                         Enter your email below and we'll send you a link to reset your password.
@@ -83,18 +85,18 @@
 
                             <v-card-actions class="px-0">
                                 <div style="float: left;">
-                                    <small><a @click="switchMode('signin')">Sign In</a></small><br>
-                                    <small><a @click="switchMode('signup')">Sign Up</a></small>
+                                    <small><a href="#" @click.prevent="switchMode('signin')">Sign In</a></small><br>
+                                    <small><a href="#" @click.prevent="switchMode('signup')">Sign Up</a></small>
                                 </div>
                                 <v-spacer></v-spacer>
-                                <v-btn :disabled="!valid" :loading="loading" color="primary" type="submit">Submit</v-btn>
+                                <v-btn variant="flat" :disabled="!valid" :loading="loading" color="primary" type="submit">Submit</v-btn>
                             </v-card-actions>
                         </v-form>
                     </v-card-text>
                 </v-card>
-                <v-card v-else-if="resetPwdMode" outlined>
-                    <v-alert class="mb-0" dense text type="error" v-show="error">{{ error }}</v-alert>
-                    <v-alert class="mb-0" dense text type="success" v-show="success">{{ success }}</v-alert>
+                <v-card v-else-if="resetPwdMode" border>
+                    <v-alert class="mb-0" density="compact" text type="error" v-show="error">{{ error }}</v-alert>
+                    <v-alert class="mb-0" density="compact" text type="success" v-show="success">{{ success }}</v-alert>
                     <v-card-title>Reset Password</v-card-title>
                     <v-card-text>
                         <v-form @submit.prevent="resetPassword" v-model="valid">
@@ -109,7 +111,7 @@
                                     <small><a @click="switchMode('signin')">Sign In</a></small><br>
                                 </div>
                                 <v-spacer></v-spacer>
-                                <v-btn :disabled="!valid" :loading="loading" color="primary" type="submit">Submit</v-btn>
+                                <v-btn variant="flat" :disabled="!valid" :loading="loading" color="primary" type="submit">Submit</v-btn>
                             </v-card-actions>
                         </v-form>
                     </v-card-text>
@@ -120,6 +122,9 @@
 </template>
 
 <script>
+import { mapStores } from 'pinia';
+import { useUserStore } from '../stores/user';
+
 export default {
     name: 'Auth',
     data: () => ({
@@ -148,11 +153,10 @@ export default {
         signIn() {
             this.loading = true;
             this.error = null;
-            this.server.signIn(this.email, this.password)
+            this.$server.signIn(this.email, this.password)
                 .then(({ data: { user }}) => {
-                    this.$store.dispatch('updateUser', user).then(() => {
-                        document.location.href = `/transactions${this.explorerToken ? '?explorerToken=' + this.explorerToken : ''}`;
-                    });
+                    this.userStore.updateUser(user);
+                    document.location.href = `/transactions${this.explorerToken ? '?explorerToken=' + this.explorerToken : ''}`;
                 })
                 .catch(error => {
                     console.log(error);
@@ -163,11 +167,10 @@ export default {
         signUp() {
             this.loading = true;
             this.error = null;
-            this.server.signUp(this.email, this.password, this.explorerToken)
+            this.$server.signUp(this.email, this.password, this.explorerToken)
                 .then(({ data: { user }}) => {
-                    this.$store.dispatch('updateUser', user).then(() => {
-                        document.location.href = `/transactions${this.explorerToken ? '?explorerToken=' + this.explorerToken : ''}`;
-                    });
+                    this.userStore.updateUser(user)
+                    document.location.href = `/transactions${this.explorerToken ? '?explorerToken=' + this.explorerToken : ''}`;
                 })
                 .catch(error => {
                     this.error = error.response.data;
@@ -178,7 +181,7 @@ export default {
             this.loading = true;
             this.error = null;
             this.success = null;
-            this.server.sendResetPasswordEmail(this.email)
+            this.$server.sendResetPasswordEmail(this.email)
                 .then(() => this.success = 'An email has been sent with a link to reset your password.')
                 .catch(error => this.error = error.response.data)
                 .finally(() => this.loading = false);
@@ -187,13 +190,14 @@ export default {
             this.loading = true;
             this.error = null;
             this.success = null;
-            this.server.resetPassword(this.$route.query.token, this.password)
+            this.$server.resetPassword(this.$route.query.token, this.password)
                 .then(() => this.success = 'Your password has been reset successfully, you can now login.')
                 .catch(error => this.error = error.response.data)
                 .finally(() => this.loading = false);
         }
     },
     computed: {
+        ...mapStores(useUserStore),
         signInMode() { return this.mode == 'signin' },
         signUpMode() { return this.mode == 'signup' },
         forgottenPwdMode() { return this.mode == 'forgottenPwd' },
@@ -203,6 +207,9 @@ export default {
 }
 </script>
 <style scoped>
+a {
+    text-decoration: none;
+}
 a:hover {
     text-decoration: underline;
 }

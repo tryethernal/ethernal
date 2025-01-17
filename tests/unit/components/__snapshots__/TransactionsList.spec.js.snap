@@ -1,261 +1,374 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`TransactionsList.vue Should display a message if no transactions 1`] = `
-<div class="v-data-table v-data-table--has-bottom theme--light">
-  <div class="v-data-table__wrapper">
+exports[`TransactionsList.vue > Should display a message if no transactions 1`] = `
+"<div data-v-40c8aafa="" class="v-table v-table--has-top v-table--has-bottom v-theme--light v-table--density-default v-data-table hide-table-count" item-key="hash">
+  <!---->
+  <div class="v-table__wrapper">
     <table>
-      <colgroup>
-        <col class="">
-        <col class="">
-        <col class="">
-        <col class="">
-        <col class="">
-        <col class="">
-        <col class="">
-        <col class="">
-      </colgroup>
-      <thead class="v-data-table-header">
+      <!---->
+      <thead class="v-data-table__thead" role="rowgroup">
         <tr>
-          <th role="columnheader" scope="col" aria-label="Txn Hash: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Txn Hash</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-          <th role="columnheader" scope="col" aria-label="Method" class="text-start"><span>Method</span></th>
-          <th role="columnheader" scope="col" aria-label="Block: Sorted descending. Activate to sort ascending." aria-sort="descending" class="text-start sortable active desc"><span>Block</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-          <th role="columnheader" scope="col" aria-label="Mined On: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Mined On</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-          <th role="columnheader" scope="col" aria-label="From: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>From</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-          <th role="columnheader" scope="col" aria-label="To: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>To</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-          <th role="columnheader" scope="col" aria-label="Value: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Value</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-          <th role="columnheader" scope="col" aria-label="Fee" class="text-start"><span>Fee</span></th>
+          <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th" colspan="1" rowspan="1">
+            <div class="v-data-table-header__content"><span>Txn Hash</span><i class="mdi-arrow-up mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
+              <!---->
+            </div>
+          </th>
+          <th class="v-data-table__td v-data-table-column--align-start v-data-table__th" colspan="1" rowspan="1">
+            <div class="v-data-table-header__content"><span>Method</span>
+              <!---->
+              <!---->
+            </div>
+          </th>
+          <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th" colspan="1" rowspan="1">
+            <div class="v-data-table-header__content"><span>Block</span><i class="mdi-arrow-up mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
+              <!---->
+            </div>
+          </th>
+          <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th--sorted v-data-table__th" colspan="1" rowspan="1">
+            <div class="v-data-table-header__content"><span>Mined On</span><i class="mdi-arrow-down mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
+              <!---->
+            </div>
+          </th>
+          <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th" colspan="1" rowspan="1">
+            <div class="v-data-table-header__content"><span>From</span><i class="mdi-arrow-up mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
+              <!---->
+            </div>
+          </th>
+          <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th" colspan="1" rowspan="1">
+            <div class="v-data-table-header__content"><span>To</span><i class="mdi-arrow-up mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
+              <!---->
+            </div>
+          </th>
+          <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th" colspan="1" rowspan="1">
+            <div class="v-data-table-header__content"><span>Value</span><i class="mdi-arrow-up mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
+              <!---->
+            </div>
+          </th>
+          <th class="v-data-table__td v-data-table-column--align-start v-data-table__th" colspan="1" rowspan="1">
+            <div class="v-data-table-header__content"><span>Fee</span>
+              <!---->
+              <!---->
+            </div>
+          </th>
         </tr>
+        <!---->
       </thead>
-      <tbody>
-        <tr class="v-data-table__empty-wrapper">
-          <td colspan="8">
-            No transactions found
-          </td>
+      <!---->
+      <tbody class="v-data-table__tbody" role="rowgroup">
+        <!---->
+        <tr class="v-data-table-rows-no-data">
+          <td colspan="8">No transactions indexed yet</td>
         </tr>
+        <!---->
       </tbody>
+      <!---->
+      <!---->
     </table>
   </div>
-  <div class="v-data-footer">
-    <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-select">
+  <hr class="v-divider v-theme--light" aria-orientation="horizontal" role="separator">
+  <div class="v-data-table-footer">
+    <!---->
+    <div class="v-data-table-footer__items-per-page"><span>Items per page:</span>
+      <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field v-select v-select--single v-select--selected">
+        <!---->
         <div class="v-input__control">
-          <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-53" class="v-input__slot">
-            <div class="v-select__slot">
-              <div class="v-select__selections">
-                <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-53" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+          <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--no-label v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="v-menu-2">
+            <div class="v-field__overlay"></div>
+            <div class="v-field__loader">
+              <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                <!---->
+                <div class="v-progress-linear__background"></div>
+                <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                  <div class="v-progress-linear__indeterminate">
+                    <div class="v-progress-linear__indeterminate long"></div>
+                    <div class="v-progress-linear__indeterminate short"></div>
+                  </div>
+                </transition-stub>
+                <!---->
               </div>
-              <div class="v-input__append-inner">
-                <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
-              </div><input type="hidden" value="10">
             </div>
-            <div class="v-menu">
+            <!---->
+            <div class="v-field__field" data-no-activator="">
+              <!----><label class="v-label v-field-label" for="input-0">
+                <!---->
+                <!---->
+              </label>
+              <!---->
+              <div class="v-field__input" data-no-activator="">
+                <!---->
+                <!---->
+                <div class="v-select__selection"><span class="v-select__selection-text">10<!----></span></div><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" inputmode="none" aria-label="Open" title="Open" value="10">
+              </div>
+              <!---->
+            </div>
+            <!---->
+            <div class="v-field__append-inner">
+              <!----><i class="mdi-menu-down mdi v-icon notranslate v-theme--light v-icon--size-default v-select__menu-icon" aria-hidden="true"></i>
+              <!---->
+            </div>
+            <div class="v-field__outline">
+              <div class="v-field__outline__start"></div>
+              <!---->
+              <div class="v-field__outline__end"></div>
               <!---->
             </div>
           </div>
         </div>
+        <!---->
+        <!---->
       </div>
     </div>
-    <div class="v-data-footer__pagination">–</div>
-    <div class="v-data-footer__icons-before"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Previous page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-left theme--light"></i></span></button></div>
-    <div class="v-data-footer__icons-after"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Next page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span></button></div>
+    <div class="v-data-table-footer__info">
+      <div>0-0 of 0</div>
+    </div>
+    <div class="v-data-table-footer__pagination">
+      <nav class="v-pagination v-theme--light" role="navigation" aria-label="Pagination Navigation" data-test="v-pagination-root">
+        <ul class="v-pagination__list">
+          <li class="v-pagination__first" data-test="v-pagination-first"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="First page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+              <!----><span class="v-btn__content" data-no-activator=""><!----></span>
+              <!---->
+              <!---->
+            </button></li>
+          <li class="v-pagination__prev" data-test="v-pagination-prev"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="Previous page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+              <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-chevron-left mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+              <!---->
+              <!---->
+            </button></li>
+          <li class="v-pagination__next" data-test="v-pagination-next"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="Next page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+              <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-chevron-right mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+              <!---->
+              <!---->
+            </button></li>
+          <li class="v-pagination__last" data-test="v-pagination-last"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="Last page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+              <!----><span class="v-btn__content" data-no-activator=""><!----></span>
+              <!---->
+              <!---->
+            </button></li>
+        </ul>
+      </nav>
+    </div>
   </div>
-</div>
+</div>"
 `;
 
-exports[`TransactionsList.vue Should display the list 1`] = `
-<div class="v-data-table v-data-table--has-bottom theme--light" transactions="[object Object],[object Object]">
-  <div class="v-data-table__wrapper">
+exports[`TransactionsList.vue > Should display the list 1`] = `
+"<div data-v-40c8aafa="" class="v-table v-table--has-top v-table--has-bottom v-theme--light v-table--density-default v-data-table hide-table-count" item-key="hash" transactions="[object Object],[object Object]">
+  <!---->
+  <div class="v-table__wrapper">
     <table>
-      <colgroup>
-        <col class="">
-        <col class="">
-        <col class="">
-        <col class="">
-        <col class="">
-        <col class="">
-        <col class="">
-        <col class="">
-      </colgroup>
-      <thead class="v-data-table-header">
+      <!---->
+      <thead class="v-data-table__thead" role="rowgroup">
         <tr>
-          <th role="columnheader" scope="col" aria-label="Txn Hash: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Txn Hash</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-          <th role="columnheader" scope="col" aria-label="Method" class="text-start"><span>Method</span></th>
-          <th role="columnheader" scope="col" aria-label="Block: Sorted descending. Activate to sort ascending." aria-sort="descending" class="text-start sortable active desc"><span>Block</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-          <th role="columnheader" scope="col" aria-label="Mined On: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Mined On</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-          <th role="columnheader" scope="col" aria-label="From: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>From</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-          <th role="columnheader" scope="col" aria-label="To: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>To</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-          <th role="columnheader" scope="col" aria-label="Value: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Value</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-          <th role="columnheader" scope="col" aria-label="Fee" class="text-start"><span>Fee</span></th>
+          <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th" colspan="1" rowspan="1">
+            <div class="v-data-table-header__content"><span>Txn Hash</span><i class="mdi-arrow-up mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
+              <!---->
+            </div>
+          </th>
+          <th class="v-data-table__td v-data-table-column--align-start v-data-table__th" colspan="1" rowspan="1">
+            <div class="v-data-table-header__content"><span>Method</span>
+              <!---->
+              <!---->
+            </div>
+          </th>
+          <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th" colspan="1" rowspan="1">
+            <div class="v-data-table-header__content"><span>Block</span><i class="mdi-arrow-up mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
+              <!---->
+            </div>
+          </th>
+          <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th--sorted v-data-table__th" colspan="1" rowspan="1">
+            <div class="v-data-table-header__content"><span>Mined On</span><i class="mdi-arrow-down mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
+              <!---->
+            </div>
+          </th>
+          <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th" colspan="1" rowspan="1">
+            <div class="v-data-table-header__content"><span>From</span><i class="mdi-arrow-up mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
+              <!---->
+            </div>
+          </th>
+          <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th" colspan="1" rowspan="1">
+            <div class="v-data-table-header__content"><span>To</span><i class="mdi-arrow-up mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
+              <!---->
+            </div>
+          </th>
+          <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th" colspan="1" rowspan="1">
+            <div class="v-data-table-header__content"><span>Value</span><i class="mdi-arrow-up mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
+              <!---->
+            </div>
+          </th>
+          <th class="v-data-table__td v-data-table-column--align-start v-data-table__th" colspan="1" rowspan="1">
+            <div class="v-data-table-header__content"><span>Fee</span>
+              <!---->
+              <!---->
+            </div>
+          </th>
         </tr>
+        <!---->
       </thead>
-      <tbody>
-        <tr class="">
-          <td class="text-start"><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-check-circle theme--light success--text text--lighten-1" style="font-size: 16px;"></i><span class="v-tooltip v-tooltip--top"><!----></span>
-            <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px; display: none;" aria-haspopup="true" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
-                <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
+      <!---->
+      <tbody class="v-data-table__tbody" role="rowgroup">
+        <!---->
+        <tr class="v-data-table__tr">
+          <td class="v-data-table__td v-data-table-column--align-start"><i data-v-40c8aafa="" class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success-lighten-1 mr-2" aria-hidden="true" aria-describedby="v-tooltip-7"></i><i data-v-40c8aafa="" class="mdi-alert-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-error-lighten-1 mr-2" aria-hidden="true" aria-describedby="v-tooltip-7" style="display: none;"></i><i data-v-40c8aafa="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-grey-lighten-1 mr-2" aria-hidden="true" aria-describedby="v-tooltip-7" style="display: none;"></i>
+            <div data-v-40c8aafa="" class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px; display: none;" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-describedby="v-tooltip-7"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
+                <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
+                <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
               </svg>
-              <div class="v-progress-circular__info"></div>
-            </div> <i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-help-circle theme--light grey--text text--lighten-1" style="font-size: 16px; display: none;"></i> <i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-alert-circle theme--light error--text text--lighten-1" style="font-size: 16px; display: none;"></i>
-            <hash-link-stub xshash="true" hash="0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0" type="transaction"></hash-link-stub>
+              <!---->
+            </div>
+            <!--teleport start-->
+            <!--teleport end-->
+            <hash-link-stub data-v-40c8aafa="" type="transaction" hash="0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0" xshash="true"></hash-link-stub>
           </td>
-          <td class="text-start"><span><span class="v-chip v-chip--label theme--light v-size--small color--text primary lighten-1"><span class="v-chip__content">0xa9059cbb</span></span></span></td>
-          <td class="text-start"><a href="/block/1" class="" style="text-decoration: none;">1</a></td>
-          <td class="text-start">
-            <div class="my-2 text-left">
-              05/06 7:11:26 PM<br> <small>3 months ago</small></div>
-          </td>
-          <td class="text-start">
+          <td class="v-data-table__td v-data-table-column--align-start"><span data-v-40c8aafa=""><span data-v-40c8aafa="" class="v-chip v-chip--label v-theme--light bg-primary-lighten-1 v-chip--density-default v-chip--size-small v-chip--variant-flat" draggable="false"><!----><span class="v-chip__underlay"></span>
             <!---->
-            <hash-link-stub hash="0x0" type="address"></hash-link-stub>
-          </td>
-          <td class="text-start">
             <!---->
-            <hash-link-stub withtokenname="true" withname="true" hash="Ox1" type="address"></hash-link-stub>
+            <div class="v-chip__content" data-no-activator="">0xa9059cbb</div>
+            <!---->
+            <!----></span></span>
           </td>
-          <td class="text-start">
-            0 Ether
+          <td class="v-data-table__td v-data-table-column--align-start"><a data-v-40c8aafa="" style="text-decoration: none;">1</a></td>
+          <td class="v-data-table__td v-data-table-column--align-start">
+            <div data-v-40c8aafa="" class="my-2 text-left">05/06 7:11:26 PM<br data-v-40c8aafa=""><small data-v-40c8aafa="">3 months ago</small></div>
           </td>
-          <td class="text-start"><span>0 Ether</span></td>
+          <td class="v-data-table__td v-data-table-column--align-start">
+            <!--v-if-->
+            <hash-link-stub data-v-40c8aafa="" type="address" hash="0x0"></hash-link-stub>
+          </td>
+          <td class="v-data-table__td v-data-table-column--align-start">
+            <!--v-if-->
+            <hash-link-stub data-v-40c8aafa="" type="address" hash="Ox1" withtokenname="true" withname="true"></hash-link-stub>
+          </td>
+          <td class="v-data-table__td v-data-table-column--align-start">0 Ether</td>
+          <td class="v-data-table__td v-data-table-column--align-start"><span data-v-40c8aafa="">0 Ether</span></td>
         </tr>
-        <tr class="isSyncing">
-          <td class="text-start"><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-check-circle theme--light success--text text--lighten-1" style="font-size: 16px; display: none;"></i><span class="v-tooltip v-tooltip--top"><!----></span>
-            <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;" aria-haspopup="true" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
-                <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
+        <!---->
+        <tr class="v-data-table__tr">
+          <td class="v-data-table__td v-data-table-column--align-start"><i data-v-40c8aafa="" class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success-lighten-1 mr-2" aria-hidden="true" aria-describedby="v-tooltip-9" style="display: none;"></i><i data-v-40c8aafa="" class="mdi-alert-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-error-lighten-1 mr-2" aria-hidden="true" aria-describedby="v-tooltip-9" style="display: none;"></i><i data-v-40c8aafa="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-grey-lighten-1 mr-2" aria-hidden="true" aria-describedby="v-tooltip-9" style="display: none;"></i>
+            <div data-v-40c8aafa="" class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-describedby="v-tooltip-9"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
+                <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
+                <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
               </svg>
-              <div class="v-progress-circular__info"></div>
-            </div> <i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-help-circle theme--light grey--text text--lighten-1" style="font-size: 16px; display: none;"></i> <i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-alert-circle theme--light error--text text--lighten-1" style="font-size: 16px; display: none;"></i>
-            <hash-link-stub xshash="true" hash="0x1234" type="transaction"></hash-link-stub>
+              <!---->
+            </div>
+            <!--teleport start-->
+            <!--teleport end-->
+            <hash-link-stub data-v-40c8aafa="" type="transaction" hash="0x1234" xshash="true"></hash-link-stub>
           </td>
-          <td class="text-start"><span><span class="v-chip v-chip--label theme--light v-size--small color--text primary lighten-1" style="display: none;"><span class="v-chip__content"></span></span></span></td>
-          <td class="text-start"><a href="/block/1" class="" style="text-decoration: none;">1</a></td>
-          <td class="text-start">
-            <div class="my-2 text-left">
-              05/06 7:11:26 PM<br> <small>3 months ago</small></div>
-          </td>
-          <td class="text-start">
+          <td class="v-data-table__td v-data-table-column--align-start"><span data-v-40c8aafa=""><span data-v-40c8aafa="" class="v-chip v-chip--label v-theme--light bg-primary-lighten-1 v-chip--density-default v-chip--size-small v-chip--variant-flat" draggable="false" style="display: none;"><!----><span class="v-chip__underlay"></span>
             <!---->
-            <hash-link-stub hash="0x0" type="address"></hash-link-stub>
-          </td>
-          <td class="text-start">
             <!---->
-            <hash-link-stub withtokenname="true" withname="true" hash="Ox1" type="address"></hash-link-stub>
+            <div class="v-chip__content" data-no-activator=""></div>
+            <!---->
+            <!----></span></span>
           </td>
-          <td class="text-start">
-            0 Ether
+          <td class="v-data-table__td v-data-table-column--align-start"><a data-v-40c8aafa="" style="text-decoration: none;">1</a></td>
+          <td class="v-data-table__td v-data-table-column--align-start">
+            <div data-v-40c8aafa="" class="my-2 text-left">05/06 7:11:26 PM<br data-v-40c8aafa=""><small data-v-40c8aafa="">3 months ago</small></div>
           </td>
-          <td class="text-start"></td>
+          <td class="v-data-table__td v-data-table-column--align-start">
+            <!--v-if-->
+            <hash-link-stub data-v-40c8aafa="" type="address" hash="0x0"></hash-link-stub>
+          </td>
+          <td class="v-data-table__td v-data-table-column--align-start">
+            <!--v-if-->
+            <hash-link-stub data-v-40c8aafa="" type="address" hash="Ox1" withtokenname="true" withname="true"></hash-link-stub>
+          </td>
+          <td class="v-data-table__td v-data-table-column--align-start">0 Ether</td>
+          <td class="v-data-table__td v-data-table-column--align-start">
+            <!--v-if-->
+          </td>
         </tr>
+        <!---->
+        <!---->
       </tbody>
+      <!---->
+      <!---->
     </table>
   </div>
-  <div class="v-data-footer">
-    <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-select">
+  <hr class="v-divider v-theme--light" aria-orientation="horizontal" role="separator">
+  <div class="v-data-table-footer">
+    <!---->
+    <div class="v-data-table-footer__items-per-page"><span>Items per page:</span>
+      <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field v-select v-select--single v-select--selected">
+        <!---->
         <div class="v-input__control">
-          <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-9" class="v-input__slot">
-            <div class="v-select__slot">
-              <div class="v-select__selections">
-                <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-9" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+          <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--no-label v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="v-menu-2">
+            <div class="v-field__overlay"></div>
+            <div class="v-field__loader">
+              <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                <!---->
+                <div class="v-progress-linear__background"></div>
+                <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                  <div class="v-progress-linear__indeterminate">
+                    <div class="v-progress-linear__indeterminate long"></div>
+                    <div class="v-progress-linear__indeterminate short"></div>
+                  </div>
+                </transition-stub>
+                <!---->
               </div>
-              <div class="v-input__append-inner">
-                <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
-              </div><input type="hidden" value="10">
             </div>
-            <div class="v-menu">
+            <!---->
+            <div class="v-field__field" data-no-activator="">
+              <!----><label class="v-label v-field-label" for="input-0">
+                <!---->
+                <!---->
+              </label>
+              <!---->
+              <div class="v-field__input" data-no-activator="">
+                <!---->
+                <!---->
+                <div class="v-select__selection"><span class="v-select__selection-text">10<!----></span></div><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" inputmode="none" aria-label="Open" title="Open" value="10">
+              </div>
+              <!---->
+            </div>
+            <!---->
+            <div class="v-field__append-inner">
+              <!----><i class="mdi-menu-down mdi v-icon notranslate v-theme--light v-icon--size-default v-select__menu-icon" aria-hidden="true"></i>
+              <!---->
+            </div>
+            <div class="v-field__outline">
+              <div class="v-field__outline__start"></div>
+              <!---->
+              <div class="v-field__outline__end"></div>
               <!---->
             </div>
           </div>
         </div>
+        <!---->
+        <!---->
       </div>
     </div>
-    <div class="v-data-footer__pagination">1-2 of 2</div>
-    <div class="v-data-footer__icons-before"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Previous page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-left theme--light"></i></span></button></div>
-    <div class="v-data-footer__icons-after"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Next page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span></button></div>
-  </div>
-</div>
-`;
-
-exports[`TransactionsList.vue Should not display transactions count 1`] = `
-<div class="v-data-table v-data-table--has-bottom theme--light">
-  <div class="v-data-table__wrapper">
-    <table>
-      <colgroup>
-        <col class="">
-        <col class="">
-        <col class="">
-        <col class="">
-        <col class="">
-        <col class="">
-        <col class="">
-        <col class="">
-      </colgroup>
-      <thead class="v-data-table-header">
-        <tr>
-          <th role="columnheader" scope="col" aria-label="Txn Hash: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Txn Hash</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-          <th role="columnheader" scope="col" aria-label="Method" class="text-start"><span>Method</span></th>
-          <th role="columnheader" scope="col" aria-label="Block: Sorted descending. Activate to sort ascending." aria-sort="descending" class="text-start sortable active desc"><span>Block</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-          <th role="columnheader" scope="col" aria-label="Mined On: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Mined On</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-          <th role="columnheader" scope="col" aria-label="From: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>From</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-          <th role="columnheader" scope="col" aria-label="To: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>To</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-          <th role="columnheader" scope="col" aria-label="Value: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Value</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-          <th role="columnheader" scope="col" aria-label="Fee" class="text-start"><span>Fee</span></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="">
-          <td class="text-start"><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-check-circle theme--light success--text text--lighten-1" style="font-size: 16px;"></i><span class="v-tooltip v-tooltip--top"><!----></span>
-            <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px; display: none;" aria-haspopup="true" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
-                <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
-              </svg>
-              <div class="v-progress-circular__info"></div>
-            </div> <i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-help-circle theme--light grey--text text--lighten-1" style="font-size: 16px; display: none;"></i> <i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-alert-circle theme--light error--text text--lighten-1" style="font-size: 16px; display: none;"></i> <span><!----> <a href="/transaction/0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0" class="">0x060...4ef0</a> <!----> <span>
-        &nbsp;<button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0" value="0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0"></span>
-            <!----></span>
-          </td>
-          <td class="text-start"><span><span class="v-chip v-chip--label theme--light v-size--small color--text primary lighten-1"><span class="v-chip__content">0xa9059cbb</span></span></span></td>
-          <td class="text-start"><a href="/block/1" class="" style="text-decoration: none;">1</a></td>
-          <td class="text-start">
-            <div class="my-2 text-left">
-              05/06 7:11:26 PM<br> <small>3 months ago</small></div>
-          </td>
-          <td class="text-start">
-            <!----> <span><!----> <a href="/address/0x0" class="">0x0...0x0</a> <!----> <span>
-        &nbsp;<button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x0" value="0x0"></span>
-            <!----></span>
-          </td>
-          <td class="text-start">
-            <!----> <span><!----> <a href="/address/Ox1" class="">Ox1...Ox1</a> <!----> <span>
-        &nbsp;<button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox1" value="Ox1"></span>
-            <!----></span>
-          </td>
-          <td class="text-start">
-            0 Ether
-          </td>
-          <td class="text-start"><span>0 Ether</span></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <div class="v-data-footer">
-    <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-select">
-        <div class="v-input__control">
-          <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-77" class="v-input__slot">
-            <div class="v-select__slot">
-              <div class="v-select__selections">
-                <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-77" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
-              </div>
-              <div class="v-input__append-inner">
-                <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
-              </div><input type="hidden" value="10">
-            </div>
-            <div class="v-menu">
+    <div class="v-data-table-footer__info">
+      <div>0-0 of 0</div>
+    </div>
+    <div class="v-data-table-footer__pagination">
+      <nav class="v-pagination v-theme--light" role="navigation" aria-label="Pagination Navigation" data-test="v-pagination-root">
+        <ul class="v-pagination__list">
+          <li class="v-pagination__first" data-test="v-pagination-first"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="First page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+              <!----><span class="v-btn__content" data-no-activator=""><!----></span>
               <!---->
-            </div>
-          </div>
-        </div>
-      </div>
+              <!---->
+            </button></li>
+          <li class="v-pagination__prev" data-test="v-pagination-prev"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="Previous page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+              <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-chevron-left mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+              <!---->
+              <!---->
+            </button></li>
+          <li class="v-pagination__next" data-test="v-pagination-next"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="Next page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+              <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-chevron-right mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+              <!---->
+              <!---->
+            </button></li>
+          <li class="v-pagination__last" data-test="v-pagination-last"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="Last page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+              <!----><span class="v-btn__content" data-no-activator=""><!----></span>
+              <!---->
+              <!---->
+            </button></li>
+        </ul>
+      </nav>
     </div>
-    <div class="v-data-footer__pagination"></div>
-    <div class="v-data-footer__icons-before"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Previous page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-left theme--light"></i></span></button></div>
-    <div class="v-data-footer__icons-after"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Next page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span></button></div>
   </div>
-</div>
+</div>"
 `;

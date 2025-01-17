@@ -1,21 +1,12 @@
 import flushPromises from 'flush-promises';
-import MockHelper from '../MockHelper';
 
 import ExplorerSync from '@/components/ExplorerSync.vue';
 
-beforeEach(() => jest.clearAllMocks());
-
 describe('ExplorerSync.vue', () => {
-    let helper;
-
-    beforeEach(() => {
-        helper = new MockHelper();
-    });
-
     it('Should display that sync is active', async () => {
-        jest.spyOn(helper.mocks.server, 'getExplorerSyncStatus').mockResolvedValueOnce({ data: { status: 'online' }});
-        const wrapper = helper.mountFn(ExplorerSync, {
-            propsData: {
+        vi.spyOn(server, 'getExplorerSyncStatus').mockResolvedValueOnce({ data: { status: 'online' }});
+        const wrapper = mount(ExplorerSync, {
+            props: {
                 explorer: {
                     id: 1,
                     stripeSubscription: {}
@@ -28,9 +19,9 @@ describe('ExplorerSync.vue', () => {
     });
 
     it('Should display that sync is inactive', async () => {
-        jest.spyOn(helper.mocks.server, 'getExplorerSyncStatus').mockResolvedValueOnce({ data: { status: 'stopped' }});
-        const wrapper = helper.mountFn(ExplorerSync, {
-            propsData: {
+        vi.spyOn(server, 'getExplorerSyncStatus').mockResolvedValueOnce({ data: { status: 'stopped' }});
+        const wrapper = mount(ExplorerSync, {
+            props: {
                 explorer: {
                     id: 1,
                     stripeSubscription: {}
@@ -43,9 +34,9 @@ describe('ExplorerSync.vue', () => {
     });
 
     it('Should display that sync is starting', async () => {
-        jest.spyOn(helper.mocks.server, 'getExplorerSyncStatus').mockResolvedValueOnce({ data: { status: 'launching' }});
-        const wrapper = helper.mountFn(ExplorerSync, {
-            propsData: {
+        vi.spyOn(server, 'getExplorerSyncStatus').mockResolvedValueOnce({ data: { status: 'launching' }});
+        const wrapper = mount(ExplorerSync, {
+            props: {
                 explorer: {
                     id: 1,
                     stripeSubscription: {}
@@ -58,9 +49,9 @@ describe('ExplorerSync.vue', () => {
     });
 
     it('Should display that sync is stopping', async () => {
-        jest.spyOn(helper.mocks.server, 'getExplorerSyncStatus').mockResolvedValueOnce({ data: { status: 'stopping' }});
-        const wrapper = helper.mountFn(ExplorerSync, {
-            propsData: {
+        vi.spyOn(server, 'getExplorerSyncStatus').mockResolvedValueOnce({ data: { status: 'stopping' }});
+        const wrapper = mount(ExplorerSync, {
+            props: {
                 explorer: {
                     id: 1,
                     stripeSubscription: {}
@@ -73,9 +64,9 @@ describe('ExplorerSync.vue', () => {
     });
 
     it('Should display unknown status', async () => {
-        jest.spyOn(helper.mocks.server, 'getExplorerSyncStatus').mockResolvedValueOnce({ data: { status: 'unknown' }});
-        const wrapper = helper.mountFn(ExplorerSync, {
-            propsData: {
+        vi.spyOn(server, 'getExplorerSyncStatus').mockResolvedValueOnce({ data: { status: 'unknown' }});
+        const wrapper = mount(ExplorerSync, {
+            props: {
                 explorer: {
                     id: 1,
                     stripeSubscription: {}
@@ -88,9 +79,9 @@ describe('ExplorerSync.vue', () => {
     });
 
     it('Should display unreachable status', async () => {
-        jest.spyOn(helper.mocks.server, 'getExplorerSyncStatus').mockResolvedValueOnce({ data: { status: 'unreachable' }});
-        const wrapper = helper.mountFn(ExplorerSync, {
-            propsData: {
+        vi.spyOn(server, 'getExplorerSyncStatus').mockResolvedValueOnce({ data: { status: 'unreachable' }});
+        const wrapper = mount(ExplorerSync, {
+            props: {
                 explorer: {
                     id: 1,
                     stripeSubscription: {}
@@ -103,9 +94,9 @@ describe('ExplorerSync.vue', () => {
     });
 
     it('Should display quota reached status', async () => {
-        jest.spyOn(helper.mocks.server, 'getExplorerSyncStatus').mockResolvedValueOnce({ data: { status: 'transactionQuotaReached' }});
-        const wrapper = helper.mountFn(ExplorerSync, {
-            propsData: {
+        vi.spyOn(server, 'getExplorerSyncStatus').mockResolvedValueOnce({ data: { status: 'transactionQuotaReached' }});
+        const wrapper = mount(ExplorerSync, {
+            props: {
                 explorer: {
                     id: 1,
                     stripeSubscription: {}
@@ -118,9 +109,9 @@ describe('ExplorerSync.vue', () => {
     });
 
     it('Should display no subscription status', async () => {
-        jest.spyOn(helper.mocks.server, 'getExplorerSyncStatus').mockResolvedValueOnce({ data: { status: 'unreachable' }});
-        const wrapper = helper.mountFn(ExplorerSync, {
-            propsData: {
+        vi.spyOn(server, 'getExplorerSyncStatus').mockResolvedValueOnce({ data: { status: 'unreachable' }});
+        const wrapper = mount(ExplorerSync, {
+            props: {
                 explorer: {
                     id: 1
                 }
@@ -132,13 +123,13 @@ describe('ExplorerSync.vue', () => {
     });
 
     it('Should start sync', async () => {
-        jest.spyOn(helper.mocks.server, 'startExplorerSync').mockResolvedValueOnce();
-        jest.spyOn(helper.mocks.server, 'getExplorerSyncStatus')
+        vi.spyOn(server, 'startExplorerSync').mockResolvedValueOnce();
+        vi.spyOn(server, 'getExplorerSyncStatus')
             .mockResolvedValueOnce({ data: { status: 'stopped' }})
             .mockResolvedValueOnce({ data: { status: 'online' }});
 
-        const wrapper = helper.mountFn(ExplorerSync, {
-            propsData: {
+        const wrapper = mount(ExplorerSync, {
+            props: {
                 explorer: {
                     id: 1,
                     stripeSubscription: {}
@@ -154,13 +145,13 @@ describe('ExplorerSync.vue', () => {
     });
 
     it('Should stop sync', async () => {
-        jest.spyOn(helper.mocks.server, 'stopExplorerSync').mockResolvedValueOnce();
-        jest.spyOn(helper.mocks.server, 'getExplorerSyncStatus')
+        vi.spyOn(server, 'stopExplorerSync').mockResolvedValueOnce();
+        vi.spyOn(server, 'getExplorerSyncStatus')
             .mockResolvedValueOnce({ data: { status: 'online' }})
             .mockResolvedValueOnce({ data: { status: 'stopped' }});
 
-        const wrapper = helper.mountFn(ExplorerSync, {
-            propsData: {
+        const wrapper = mount(ExplorerSync, {
+            props: {
                 explorer: {
                     id: 1,
                     stripeSubscription: {}

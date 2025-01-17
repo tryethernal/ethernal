@@ -1,14 +1,9 @@
-import MockHelper from '../MockHelper';
-
 import ContractReadMethod from '@/components/ContractReadMethod.vue';
 import DSProxyFactoryContract from '../fixtures/DSProxyFactoryContract.json';
 
 describe('ContractReadMethod.vue', () => {
-    let helper, props;
-
-    beforeEach(() => {
-        helper = new MockHelper({ rpcServer: 'http://localhost:8545' });
-        props = {
+    it('Should display the UI to interact with a method', () => {
+        const props = {
             method: DSProxyFactoryContract.abi[0],
             contract: DSProxyFactoryContract,
             active: true,
@@ -18,45 +13,56 @@ describe('ContractReadMethod.vue', () => {
                 gasPrice: undefined
             }
         };
-    });
 
-    it('Should display the UI to interact with a method', () => {
-        const wrapper = helper.mountFn(ContractReadMethod, {
-            propsData: props,
-            stubs: ['Formatted-Sol-Var']
+        const wrapper = mount(ContractReadMethod, {
+            props: props,
+            global: {
+                stubs: ['Formatted-Sol-Var']
+            }
         });
 
         expect(wrapper.html()).toMatchSnapshot();
     });
 
     it('Should work when input is any array', async () => {
-        jest.spyOn(helper.mocks.server, 'callContractReadMethod')
-            .mockResolvedValue([[1, 2]]);
+        vi.spyOn(server, 'callContractReadMethod')
+            .mockResolvedValueOnce([[1, 2]]);
 
-        props.method = {
-            "inputs": [
-                {
-                    "internalType": "uint256[]",
-                    "name": "values",
-                    "type": "uint256[]"
-                }
-            ],
-            "name": "reproBug",
-            "outputs": [
-                {
-                    "internalType": "uint256[]",
-                    "name": "",
-                    "type": "uint256[]"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function",
-            "constant": true
+        const props = {
+            method: {
+                "inputs": [
+                    {
+                        "internalType": "uint256[]",
+                        "name": "values",
+                        "type": "uint256[]"
+                    }
+                ],
+                "name": "reproBug",
+                "outputs": [
+                    {
+                        "internalType": "uint256[]",
+                        "name": "",
+                        "type": "uint256[]"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function",
+                "constant": true
+            },
+            contract: DSProxyFactoryContract,
+            active: true,
+            options: {
+                from: '0x0',
+                gasLimit: '6721975',
+                gasPrice: undefined
+            }
         };
 
-        const wrapper = helper.mountFn(ContractReadMethod, {
-            propsData: props,
-            stubs: ['Formatted-Sol-Var']
+        const wrapper = mount(ContractReadMethod, {
+            props: props,
+            global: {
+                stubs: ['Formatted-Sol-Var']
+            }
         });
 
         await wrapper.find('input').setValue('[1,2]');
@@ -78,12 +84,25 @@ describe('ContractReadMethod.vue', () => {
     })
 
     it('Should return the result when interacting with the method', async () => {
-        jest.spyOn(helper.mocks.server, 'callContractReadMethod')
-            .mockResolvedValue(['true']);
+        const props = {
+            method: DSProxyFactoryContract.abi[0],
+            contract: DSProxyFactoryContract,
+            active: true,
+            options: {
+                from: '0x0',
+                gasLimit: '6721975',
+                gasPrice: undefined
+            }
+        };
 
-        const wrapper = helper.mountFn(ContractReadMethod, {
-            propsData: props,
-            stubs: ['Formatted-Sol-Var']
+        vi.spyOn(server, 'callContractReadMethod')
+            .mockResolvedValueOnce(['true']);
+
+        const wrapper = mount(ContractReadMethod, {
+            props: props,
+            global: {
+                stubs: ['Formatted-Sol-Var']
+            }
         });
 
         await wrapper.find('button').trigger('click');
@@ -102,17 +121,28 @@ describe('ContractReadMethod.vue', () => {
     });
 
     it('Should work when it is in public explorer mode', async () => {
-        jest.spyOn(helper.mocks.server, 'callContractReadMethod')
-            .mockResolvedValue(['true']);
+        const props = {
+            method: DSProxyFactoryContract.abi[0],
+            contract: DSProxyFactoryContract,
+            active: true,
+            options: {
+                from: '0x0',
+                gasLimit: '6721975',
+                gasPrice: undefined
+            }
+        };
 
-        window.ethereum = jest.fn().mockReturnValue({});
+        vi.spyOn(server, 'callContractReadMethod')
+            .mockResolvedValueOnce(['true']);
 
-        const wrapper = helper.mountFn(ContractReadMethod, {
-            propsData: props,
-            getters: {
-                isPublicExplorer: jest.fn().mockReturnValue(true)
-            },
-            stubs: ['Formatted-Sol-Var']
+        window.ethereum = vi.fn().mockReturnValueOnce({});
+
+        const wrapper = mount(ContractReadMethod, {
+            props: props,
+            global: {
+                plugins: [createTestingPinia({ initialState: { explorer: { id: 1 } } })],
+                stubs: ['Formatted-Sol-Var']
+            }
         });
 
         await wrapper.find('button').trigger('click');
@@ -131,26 +161,38 @@ describe('ContractReadMethod.vue', () => {
     });
 
     it('Should display the result even if it is not an array', async () => {
-        jest.spyOn(helper.mocks.server, 'callContractReadMethod')
-            .mockResolvedValue(['1234']);
+        vi.spyOn(server, 'callContractReadMethod')
+            .mockResolvedValueOnce(['1234']);
 
-        props.method = {
-            "inputs": [],
-            "name": "returnAnUInt",
-            "outputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function",
-            "constant": true
+        const props = {
+            method: {
+                "inputs": [],
+                "name": "returnAnUInt",
+                "outputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function",
+                "constant": true
+            },
+            contract: DSProxyFactoryContract,
+            active: true,
+            options: {
+                from: '0x0',
+                gasLimit: '6721975',
+                gasPrice: undefined
+            }
         };
-        const wrapper = helper.mountFn(ContractReadMethod, {
-            propsData: props,
-            stubs: ['Formatted-Sol-Var']
+
+        const wrapper = mount(ContractReadMethod, {
+            props: props,
+            global: {
+                stubs: ['Formatted-Sol-Var']
+            }
         });
 
         await wrapper.find('button').trigger('click');
@@ -170,26 +212,38 @@ describe('ContractReadMethod.vue', () => {
     });
 
     it('Should handle big number results', async () => {
-        jest.spyOn(helper.mocks.server, 'callContractReadMethod')
-            .mockResolvedValue(['50000000000000000000']);
+        vi.spyOn(server, 'callContractReadMethod')
+            .mockResolvedValueOnce(['50000000000000000000']);
 
-        props.method = {
-            "inputs": [],
-            "name": "returnAnUInt",
-            "outputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function",
-            "constant": true
+        const props = {
+            method: {
+                "inputs": [],
+                "name": "returnAnUInt",
+                "outputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function",
+                "constant": true
+            },
+            contract: DSProxyFactoryContract,
+            active: true,
+            options: {
+                from: '0x0',
+                gasLimit: '6721975',
+                gasPrice: undefined
+            }
         };
-        const wrapper = helper.mountFn(ContractReadMethod, {
-            propsData: props,
-            stubs: ['Formatted-Sol-Var']
+
+        const wrapper = mount(ContractReadMethod, {
+            props: props,
+            global: {
+                stubs: ['Formatted-Sol-Var']
+            }
         });
 
         await wrapper.find('button').trigger('click');
@@ -209,31 +263,43 @@ describe('ContractReadMethod.vue', () => {
     });
 
     it('Should handle multiple results', async () => {
-        jest.spyOn(helper.mocks.server, 'callContractReadMethod')
-            .mockResolvedValue(['1', '2']);
+        vi.spyOn(server, 'callContractReadMethod')
+            .mockResolvedValueOnce(['1', '2']);
 
-        props.method = {
-            "inputs": [],
-            "name": "returnAnUInt",
-            "outputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function",
-            "constant": true
+        const props = {
+            method: {
+                "inputs": [],
+                "name": "returnAnUInt",
+                "outputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function",
+                "constant": true
+            },
+            contract: DSProxyFactoryContract,
+            active: true,
+            options: {
+                from: '0x0',
+                gasLimit: '6721975',
+                gasPrice: undefined
+            }
         };
-        const wrapper = helper.mountFn(ContractReadMethod, {
-            propsData: props,
-            stubs: ['Formatted-Sol-Var']
+
+        const wrapper = mount(ContractReadMethod, {
+            props: props,
+            global: {
+                stubs: ['Formatted-Sol-Var']
+            }
         });
 
         await wrapper.find('button').trigger('click');
@@ -261,12 +327,25 @@ describe('ContractReadMethod.vue', () => {
     });
 
     it('Should display the error message if one is returned', async () => {
-        jest.spyOn(helper.mocks.server, 'callContractReadMethod')
-            .mockRejectedValue({ reason: 'Wrong parameters' });
+        vi.spyOn(server, 'callContractReadMethod')
+            .mockRejectedValueOnce({ reason: 'Wrong parameters' });
 
-        const wrapper = helper.mountFn(ContractReadMethod, {
-            propsData: props,
-            stubs: ['Formatted-Sol-Var']
+        const props = {
+            method: DSProxyFactoryContract.abi[0],
+            contract: DSProxyFactoryContract,
+            active: true,
+            options: {
+                from: '0x0',
+                gasLimit: '6721975',
+                gasPrice: undefined
+            }
+        };
+
+        const wrapper = mount(ContractReadMethod, {
+            props: props,
+            global: {
+                stubs: ['Formatted-Sol-Var']
+            }
         });
 
         await wrapper.find('button').trigger('click');
@@ -278,12 +357,25 @@ describe('ContractReadMethod.vue', () => {
     });
 
     it('Should display a generic error message if the function fails', async () => {
-        jest.spyOn(helper.mocks.server, 'callContractReadMethod')
-            .mockImplementation(() => { throw 'Error' });
+        vi.spyOn(server, 'callContractReadMethod')
+            .mockImplementationOnce(() => { throw 'Error' });
 
-        const wrapper = helper.mountFn(ContractReadMethod, {
-            propsData: props,
-            stubs: ['Formatted-Sol-Var']
+        const props = {
+            method: DSProxyFactoryContract.abi[0],
+            contract: DSProxyFactoryContract,
+            active: true,
+            options: {
+                from: '0x0',
+                gasLimit: '6721975',
+                gasPrice: undefined
+            }
+        };
+
+        const wrapper = mount(ContractReadMethod, {
+            props: props,
+            global: {
+                stubs: ['Formatted-Sol-Var']
+            }
         });
 
         await wrapper.find('button').trigger('click');

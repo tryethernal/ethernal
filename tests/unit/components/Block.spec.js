@@ -1,23 +1,17 @@
 import flushPromises from 'flush-promises';
-import MockHelper from '../MockHelper';
 
 import Block from '@/components/Block.vue';
 
 describe('Block.vue', () => {
-    let helper;
-
-    beforeEach(async () => {
-        helper = new MockHelper();
-        jest.spyOn(Date, 'now').mockImplementation(() => new Date('2022-08-07T12:33:37.000Z'));
-    });
-
     it('Should show a message if the block does not exist', async () => {
-        jest.spyOn(helper.mocks.server, 'getBlock')
+        vi.spyOn(server, 'getBlock')
             .mockResolvedValue({ data: null });
 
-        const wrapper = helper.mountFn(Block, {
-            propsData: { number: 1 },
-            stubs: ['Transactions-List']
+        const wrapper = mount(Block, {
+            props: { number: 1 },
+            global: {
+                stubs: ['Transactions-List']
+            }
         });
         await flushPromises();
 
@@ -28,19 +22,21 @@ describe('Block.vue', () => {
         const block = {
             number: 1,
             gasLimit: '1000000000',
-            timestamp: '2022-10-18 18:28:41.14+00',
+            timestamp: '2022-10-18T18:28:41.000Z',
             hash: '0x98c6edb3bb1124680a97661c1f5794d60617abb57bd1e611d81fc5b941f36d30',
             transactions: [{ id: 1 }],
             transactionsCount: 5,
             syncedTransactionCount: 3
         };
 
-        jest.spyOn(helper.mocks.server, 'getBlock')
+        vi.spyOn(server, 'getBlock')
             .mockResolvedValue({ data: block });
 
-        const wrapper = helper.mountFn(Block, {
-            propsData: { number: 1 },
-            stubs: ['Transactions-List']
+        const wrapper = mount(Block, {
+            props: { number: 1 },
+            global: {
+                stubs: ['Transactions-List']
+            }
         });
         await flushPromises();
 
@@ -51,19 +47,21 @@ describe('Block.vue', () => {
         const block = {
             number: 1,
             gasLimit: '1000000000',
-            timestamp: '2022-10-18 18:28:41.14+00',
+            timestamp: '2022-10-18T18:28:41.000Z',
             hash: '0x98c6edb3bb1124680a97661c1f5794d60617abb57bd1e611d81fc5b941f36d30',
             transactions: [{ id: 1 }],
             transactionsCount: 5,
             syncedTransactionCount: 5
         };
 
-        jest.spyOn(helper.mocks.server, 'getBlock')
+        vi.spyOn(server, 'getBlock')
             .mockResolvedValue({ data: block });
 
-        const wrapper = helper.mountFn(Block, {
-            propsData: { number: 1 },
-            stubs: ['Transactions-List']
+        const wrapper = mount(Block, {
+            props: { number: 1 },
+            global: {
+                stubs: ['Transactions-List']
+            }
         });
         await flushPromises();
 

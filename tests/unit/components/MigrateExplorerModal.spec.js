@@ -1,21 +1,18 @@
 import flushPromises from 'flush-promises';
-import MockHelper from '../MockHelper';
 
 import MigrateExplorerModal from '@/components/MigrateExplorerModal.vue';
 
-let helper;
-beforeEach(() => {
-    jest.clearAllMocks()
-    helper = new MockHelper();
-});
-
 describe('MigrateExplorerModal.vue', () => {
     it('Should display plan selector if trial not available', async () => {
-        jest.spyOn(helper.mocks.server, 'getExplorer').mockRejectedValueOnce(null);
-        const wrapper = helper.mountFn(MigrateExplorerModal, {
-            stubs: ['Explorer-Plan-Selector'],
-            getters: {
-                user: jest.fn(() => ({ canTrial: false }))
+        vi.spyOn(server, 'getExplorer').mockRejectedValueOnce(null);
+        const wrapper = mount(MigrateExplorerModal, {
+            global: {
+                plugins: [createTestingPinia({
+                    initialState: {
+                        user: { canTrial: false }
+                    }
+                })],
+                stubs: ['Explorer-Plan-Selector']
             }
         });
         wrapper.vm.open({
@@ -28,11 +25,15 @@ describe('MigrateExplorerModal.vue', () => {
     });
 
     it('Should display loading while waiting for trial setup to be finalized', async () => {
-        jest.spyOn(helper.mocks.server, 'migrateDemoExplorer').mockRejectedValueOnce(null);
-        const wrapper = helper.mountFn(MigrateExplorerModal, {
-            stubs: ['Explorer-Plan-Selector'],
-            getters: {
-                user: jest.fn(() => ({ canTrial: true }))
+        vi.spyOn(server, 'migrateDemoExplorer').mockRejectedValueOnce(null);
+        const wrapper = mount(MigrateExplorerModal, {
+            global: {
+                plugins: [createTestingPinia({
+                    initialState: {
+                        user: { canTrial: true }
+                    }
+                })],
+                stubs: ['Explorer-Plan-Selector']
             }
         });
         wrapper.vm.open({
@@ -45,11 +46,15 @@ describe('MigrateExplorerModal.vue', () => {
     });
 
     it('Should display loading while waiting for the migration to be finalized', async () => {
-        jest.spyOn(helper.mocks.server, 'getExplorer').mockRejectedValueOnce(null);
-        const wrapper = helper.mountFn(MigrateExplorerModal, {
-            stubs: ['Explorer-Plan-Selector'],
-            getters: {
-                user: jest.fn(() => ({ canTrial: false }))
+        vi.spyOn(server, 'getExplorer').mockRejectedValueOnce(null);
+        const wrapper = mount(MigrateExplorerModal, {
+            global: {
+                plugins: [createTestingPinia({
+                    initialState: {
+                        user: { canTrial: false }
+                    }
+                })],
+                stubs: ['Explorer-Plan-Selector']
             }
         });
         wrapper.vm.open({
@@ -63,12 +68,16 @@ describe('MigrateExplorerModal.vue', () => {
     });
 
     it('Should display success screen once trial is finalized', async () => {
-        jest.spyOn(helper.mocks.server, 'migrateDemoExplorer').mockResolvedValueOnce();
-        jest.spyOn(helper.mocks.server, 'getExplorer').mockResolvedValueOnce({ data: { isDemo: false, userId: 1 }});
-        const wrapper = helper.mountFn(MigrateExplorerModal, {
-            stubs: ['Explorer-Plan-Selector'],
-            getters: {
-                user: jest.fn(() => ({ id: 1, canTrial: true }))
+        vi.spyOn(server, 'migrateDemoExplorer').mockResolvedValueOnce();
+        vi.spyOn(server, 'getExplorer').mockResolvedValueOnce({ data: { isDemo: false, userId: 1 }});
+        const wrapper = mount(MigrateExplorerModal, {
+            global: {
+                plugins: [createTestingPinia({
+                    initialState: {
+                        user: { id: 1, canTrial: true }
+                    }
+                })],
+                stubs: ['Explorer-Plan-Selector']
             }
         });
         wrapper.vm.open({
@@ -81,11 +90,15 @@ describe('MigrateExplorerModal.vue', () => {
     });
 
     it('Should display success screen once migration is finalized', async () => {
-        jest.spyOn(helper.mocks.server, 'getExplorer').mockResolvedValueOnce({ data: { userId: 1, isDemo: false }});
-        const wrapper = helper.mountFn(MigrateExplorerModal, {
-            stubs: ['Explorer-Plan-Selector'],
-            getters: {
-                user: jest.fn(() => ({ id: 1, canTrial: false }))
+        vi.spyOn(server, 'getExplorer').mockResolvedValueOnce({ data: { userId: 1, isDemo: false }});
+        const wrapper = mount(MigrateExplorerModal, {
+            global: {
+                plugins: [createTestingPinia({
+                    initialState: {
+                        user: { id: 1, canTrial: false }
+                    }
+                })],
+                stubs: ['Explorer-Plan-Selector']
             }
         });
         wrapper.vm.open({

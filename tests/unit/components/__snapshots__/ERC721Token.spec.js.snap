@@ -1,13 +1,64 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ERC721Token.vue Should load & display an erc721 token 1`] = `
-<div class="container container--fluid" index="0">
-  <erc721-token-transfer-modal-stub token="[object Object]" address="0x123"></erc721-token-transfer-modal-stub>
-  <!---->
-  <div class="row mb-3">
-    <div class="col-sm-6 col-lg-4 col-12">
-      <div class="mb-1 v-card v-sheet v-sheet--outlined theme--light rounded-xl">
-        <div class="fill"><svg id="luchador1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+exports[`ERC721Token.vue > Should display a message when the token is not found 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr" index="0">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-text">
+      <div class="v-row">
+        <div class="v-col" align="center"><i class="mdi-palette-advanced mdi v-icon notranslate v-theme--light text-primary-lighten-1" style="font-size: 200px; height: 200px; width: 200px; opacity: 0.25;" aria-hidden="true"></i></div>
+      </div>
+      <div class="v-row">
+        <div class="v-col text-body-1 text-center"> We couldn't find a token with this id (<strong></strong>) at this address (<a type="address">0x123</a>). </div>
+      </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+</div>"
+`;
+
+exports[`ERC721Token.vue > Should load & display an erc721 token 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr" index="0">
+  <e-r-c721-token-transfer-modal-stub address="0x123" token="[object Object]"></e-r-c721-token-transfer-modal-stub>
+  <!--v-if-->
+  <div class="v-row mb-3">
+    <div class="v-col-sm-6 v-col-lg-4 v-col-12">
+      <div class="v-card v-card--flat v-theme--light v-card--density-default rounded-lg v-card--variant-elevated mb-1">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!---->
+        <div class="fill ma-1"><svg id="luchador1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
             <style>
               #luchador1 .lucha-base {
                 fill: #f7c23c;
@@ -61,103 +112,233 @@ exports[`ERC721Token.vue Should load & display an erc721 token 1`] = `
             <path class="lucha-base" d="M15 17H8v1h1v1h2v1h2v-1h2v-1h1v-1z"></path>
             <path class="lucha-base" d="M9 21H8v2H7v1h4v-3h-1zM16 23v-2h-3v3h4v-1z"></path>
           </svg></div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
       </div>
     </div>
-    <div class="col-sm-6 col-12">
-      <div class="v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__subtitle pb-0"><a href="/nft/0x123" class="text-h6 text-decoration-none"></a>
-          <div style="position: relative; float: right;"><a href="http://myimage" aria-haspopup="true" aria-expanded="false" class="text-decoration-none"><i aria-hidden="true" class="v-icon notranslate mr-2 mdi mdi-open-in-new theme--light primary--text"></i></a><span class="v-tooltip v-tooltip--top"><!----></span>
-            <!----> <span class="v-tooltip v-tooltip--top"><!----></span><a aria-haspopup="true" aria-expanded="false" class="text-decoration-none"><i aria-hidden="true" class="v-icon notranslate mdi mdi-send theme--light primary--text"></i></a>
+    <div class="v-col-sm-6 v-col-12">
+      <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
           </div>
         </div>
-        <div class="v-card__title text-h4 font-weight-bold">My Token #1</div>
-        <div class="v-card__subtitle">Owned by <hash-link-stub type="address"></hash-link-stub>
+        <div class="v-card-item">
+          <!---->
+          <div class="v-card-item__content">
+            <!---->
+            <div class="v-card-subtitle">
+              <div class="pb-0 d-flex justify-space-between align-center"><a align="middle" class="text-h6 text-decoration-none"></a><span><a target="_blank" aria-describedby="v-tooltip-2" class="text-decoration-none" href="http://myimage"><i class="mdi-open-in-new mdi v-icon notranslate v-theme--light v-icon--size-default text-primary mr-2" aria-hidden="true"></i></a><!--teleport start--><!--teleport end--><!--v-if--><button type="button" class="v-btn v-btn--icon v-theme--light v-btn--density-default v-btn--size-small v-btn--variant-text" aria-describedby="v-tooltip-3"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-send mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+                <!---->
+                <!----></button>
+                <!--teleport start-->
+                <!--teleport end--></span>
+              </div>
+            </div>
+            <!---->
+          </div>
+          <!---->
         </div>
-        <div class="v-card__text">This NFT is the best</div>
+        <!---->
+        <div class="v-card-title text-h4 font-weight-bold">My Token #1</div>
+        <div class="v-card-subtitle">Owned by <hash-link-stub type="address"></hash-link-stub>
+        </div>
+        <div class="v-card-text">This NFT is the best</div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
       </div>
     </div>
-    <div class="col col-12">
+    <div class="v-col v-col-12">
       <h3 class="mb-2">Transfers</h3>
-      <div class="v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__text">
-          <div class="container container--fluid">
-            <token-transfers-stub transfers="" headers="[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]" loading="true" sortby="blockNumber" count="0" withtransactiondata="true" withtokendata="true"></token-transfers-stub>
+      <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
           </div>
         </div>
+        <!---->
+        <!---->
+        <div class="v-card-text">
+          <div class="v-container v-container--fluid v-locale--is-ltr">
+            <token-transfers-stub transfers="" headers="[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]" loading="true" sortby="[object Object]" count="0" withtransactiondata="true" withtokendata="true"></token-transfers-stub>
+          </div>
+        </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
       </div>
     </div>
   </div>
   <h3>Properties</h3>
-  <div class="row mb-3">
-    <div class="col-sm-3 col-md-2 col-6">
-      <div class="v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__text text-center" style="opacity: 1;">
-          <div class="text-caption primary--text">Object</div>
-          <div class="text-h6 font-weight-bold primary--text text-truncate"><span aria-haspopup="true" aria-expanded="false">
-                                        thing
-                                    </span><span class="v-tooltip v-tooltip--top"><!----></span></div>
+  <div class="v-row mb-3">
+    <div class="v-col-sm-3 v-col-md-2 v-col-6">
+      <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
         </div>
+        <!---->
+        <!---->
+        <div class="v-card-text text-center" style="opacity: 1;">
+          <div class="text-caption text-primary">Object</div>
+          <div class="text-h6 font-weight-bold text-primary text-truncate"><span aria-describedby="v-tooltip-1">thing</span>
+            <!--teleport start-->
+            <!--teleport end-->
+          </div>
+        </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
       </div>
     </div>
   </div>
   <h3>Levels</h3>
-  <div class="row mb-3">
-    <div class="col-sm-3 col-md-2 col-6">
-      <div class="v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__text text-center" style="opacity: 1;">
-          <div class="text-caption primary--text">Level</div>
-          <div class="text-h6 font-weight-bold primary--text">2</div>
+  <div class="v-row mb-3">
+    <div class="v-col-sm-3 v-col-md-2 v-col-6">
+      <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
         </div>
+        <!---->
+        <!---->
+        <div class="v-card-text text-center" style="opacity: 1;">
+          <div class="text-caption text-primary">Level</div>
+          <div class="text-h6 font-weight-bold text-primary">2</div>
+        </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
       </div>
     </div>
   </div>
   <h3>Boosts</h3>
-  <div class="row mb-3">
-    <div class="text-center col-sm-3 col-md-2 col-6">
-      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100" class="v-progress-circular v-progress-circular--visible primary--text" style="height: 100px; width: 100px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="23.529411764705884 23.529411764705884 47.05882352941177 47.05882352941177" style="transform: rotate(360deg);">
-          <circle fill="transparent" cx="47.05882352941177" cy="47.05882352941177" r="20" stroke-width="7.058823529411765" stroke-dasharray="125.664" stroke-dashoffset="0" class="v-progress-circular__underlay"></circle>
-          <circle fill="transparent" cx="47.05882352941177" cy="47.05882352941177" r="20" stroke-width="7.058823529411765" stroke-dasharray="125.664" stroke-dashoffset="0px" class="v-progress-circular__overlay"></circle>
+  <div class="v-row mb-3">
+    <div class="v-col-sm-3 v-col-md-2 v-col-6 text-center">
+      <div class="v-progress-circular v-theme--light text-primary" style="width: 100px; height: 100px;" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><svg style="transform: rotate(calc(-90deg + 360deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 47.05882352941177 47.05882352941177">
+          <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="7.058823529411765" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
+          <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="7.058823529411765" stroke-dasharray="125.66370614359172" stroke-dashoffset="0px"></circle>
         </svg>
-        <div class="v-progress-circular__info">
-          <div class="text-h6 font-weight-bold primary--text">+3</div>
+        <div class="v-progress-circular__content">
+          <div class="text-h6 font-weight-bold text-primary">+3</div>
         </div>
       </div>
-      <div class="text-h6 font-weight-bold primary--text">Boost</div>
+      <div class="text-h6 font-weight-bold text-primary">Boost</div>
     </div>
   </div>
   <h3>Stats</h3>
-  <div class="row mb-3">
-    <div class="col-sm-3 col-md-2 col-6">
-      <div class="v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__text text-center" style="opacity: 1;">
-          <div class="text-caption primary--text">Strength</div>
-          <div class="text-h6 font-weight-bold primary--text">4</div>
+  <div class="v-row mb-3">
+    <div class="v-col-sm-3 v-col-md-2 v-col-6">
+      <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
         </div>
+        <!---->
+        <!---->
+        <div class="v-card-text text-center" style="opacity: 1;">
+          <div class="text-caption text-primary">Strength</div>
+          <div class="text-h6 font-weight-bold text-primary">4</div>
+        </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
       </div>
     </div>
   </div>
   <h3>Dates</h3>
-  <div class="row mb-3">
-    <div class="col-sm-3 col-md-2 col-6">
-      <div class="v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__text text-center" style="opacity: 1;">
-          <div class="text-caption primary--text">Birthday</div>
-          <div class="text-h6 font-weight-bold primary--text">Monday, September 5th, 2022</div>
+  <div class="v-row mb-3">
+    <div class="v-col-sm-3 v-col-md-2 v-col-6">
+      <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
         </div>
+        <!---->
+        <!---->
+        <div class="v-card-text text-center" style="opacity: 1;">
+          <div class="text-caption text-primary">Birthday</div>
+          <div class="text-h6 font-weight-bold text-primary">Monday, September 5th, 2022</div>
+        </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
       </div>
     </div>
   </div>
-  <div class="v-item-group theme--light v-expansion-panels v-expansion-panels--accordion">
-    <div aria-expanded="false" class="v-expansion-panel"><button type="button" class="v-expansion-panel-header">
-        <h3>Raw Metadata</h3>
-        <transition-stub name="fade-transition">
-          <div class="v-expansion-panel-header__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-down theme--light"></i></div>
-        </transition-stub>
+  <div class="v-expansion-panels v-expansion-panels--flat v-theme--light v-expansion-panels--variant-accordion">
+    <div class="v-expansion-panel">
+      <div class="v-expansion-panel__shadow"></div>
+      <!---->
+      <!----><button class="v-expansion-panel-title" type="button" aria-expanded="false"><span class="v-expansion-panel-title__overlay"></span>
+        <h3>Raw Metadata</h3><span class="v-expansion-panel-title__icon"><i class="mdi-chevron-down mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
       </button>
-      <transition-stub name="expand-transition">
-        <!---->
+      <transition-stub name="expand-transition" appear="false" persisted="false" css="true">
+        <div class="v-expansion-panel-text" style="display: none;">
+          <!---->
+        </div>
       </transition-stub>
     </div>
   </div>
-</div>
+</div>"
 `;

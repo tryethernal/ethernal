@@ -1,6 +1,5 @@
 const CopyPlugin = require("copy-webpack-plugin");
 const WorkerPlugin = require('worker-plugin');
-const { sentryWebpackPlugin } = require("@sentry/webpack-plugin");
 
 module.exports = {
     "transpileDependencies": [
@@ -41,13 +40,7 @@ module.exports = {
                     { from: './_headers', to: './' }
                 ]
             }),
-            new WorkerPlugin(),
-            sentryWebpackPlugin({
-                debug: true,
-                authToken: process.env.SENTRY_AUTH_TOKEN,
-                org: process.env.SENTRY_ORG,
-                project: process.env.SENTRY_PROJECT,
-            })
+            new WorkerPlugin()
         ],
         externals: {
             fsevents: "require('fsevents')",

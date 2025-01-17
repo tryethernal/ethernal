@@ -10,6 +10,9 @@ module.exports = async (job) => {
     if (!data.workspaceId || !data.from || !data.to)
         throw new Error('Missing parameter');
 
+    if (new Date(data.from).getTime() < 0 || new Date(data.to).getTime() < 0 || new Date(data.from) > new Date(data.to))
+        return 'Invalid date range';
+
     const where = { createdAt: { [Op.between]: [data.from, data.to] }};
 
     const workspace = await Workspace.findByPk(data.workspaceId);
@@ -22,7 +25,7 @@ module.exports = async (job) => {
     const blockDeleteJobs = [];
     for (let i = 0; i < blockIds.length; i += getMaxBlockForSyncReset())
         blockDeleteJobs.push({
-            name: `batchBlockDelete-${data.workspaceId}-${i}-${i + getMaxBlockForSyncReset()}`,
+            name: `batchBlockDelete-${data.workspaceId}-${i}-${i + getMaxBlockForSyncReset()}-${new Date(data.from).getTime()}-${new Date(data.to).getTime()}`,
             data: {
                 workspaceId: data.workspaceId,
                 ids: blockIds.slice(i, i + getMaxBlockForSyncReset())

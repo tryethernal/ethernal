@@ -3,9 +3,7 @@ const {
   Model,
   Sequelize
 } = require('sequelize');
-const { getTokenTransfer, getV2PoolReserves } = require('../lib/abi');
 const { sanitize } = require('../lib/utils');
-const { trigger } = require('../lib/pusher');
 const Op = Sequelize.Op;
 module.exports = (sequelize, DataTypes) => {
   class TransactionLog extends Model {
@@ -120,15 +118,6 @@ module.exports = (sequelize, DataTypes) => {
     transactionIndex: DataTypes.INTEGER,
     raw: DataTypes.JSON
   }, {
-    hooks: {
-        async afterCreate(log, options) {
-            const tokenTransfer = getTokenTransfer(log.raw);
-            if (tokenTransfer)
-                await log.safeCreateTokenTransfer(tokenTransfer, options.transaction);
-
-            return trigger(`private-contractLog;workspace=${log.workspaceId};contract=${log.address}`, 'new', null);
-        }
-    },
     sequelize,
     modelName: 'TransactionLog',
     tableName: 'transaction_logs'

@@ -1,5 +1,5 @@
-jest.mock('ethers', () => {
-    const actual = jest.requireActual('ethers');
+vi.mock('ethers', async () => {
+    const actual = await vi.importActual('ethers');
     const provider = {
         send: (command) => {
             return new Promise((resolve) => {
@@ -16,34 +16,13 @@ jest.mock('ethers', () => {
                 }
             });
         },
-        listAccounts: () => {
-            return new Promise((resolve) => {
-                resolve(['0x123', '0x456']);
-            });
-        },
-        getBalance: () => {
-            return new Promise((resolve) => {
-                resolve(1000);
-            });
-        },
-        getBlockNumber: () => {
-            return new Promise((resolve) => {
-                resolve(1);
-            });
-        },
-        getBlock: () => {
-            return new Promise((resolve) => {
-                resolve({ gasLimit: 1000 });
-            });
-        },
-        getSigner: jest.fn().mockReturnValue('0x123'),
-        getTransaction: () => {
-            return new Promise((resolve) => {
-                resolve({ to: '0xabcd' });
-            });
-        }
+        listAccounts: vi.fn().mockResolvedValue(['0x123', '0x456']),
+        getBalance: vi.fn().mockResolvedValue(1000),
+        getBlockNumber: vi.fn().mockResolvedValue(1),
+        getBlock: vi.fn().mockResolvedValue({ gasLimit: 1000 }),
+        getSigner: vi.fn().mockReturnValue('0x123'),
+        getTransaction: vi.fn().mockResolvedValue({ to: '0xabcd' })
     };
-    const ethers = jest.fn(() => provider);
     const providers = {
         JsonRpcProvider: function() { return provider; },
         WebSocketProvider: function() { return provider; },
@@ -66,20 +45,21 @@ jest.mock('ethers', () => {
                 decimals: () => [18],
                 fakeRead: () => 'This is a fake result',
                 totalSupply: () => [1000],
-                'balanceOf(address)': jest.fn(() => ++counter % 2 ? [actual.BigNumber.from('2000000000000000')] : [actual.BigNumber.from('1000000000000000')])
+                'balanceOf(address)': vi.fn(() => ++counter % 2 ? [actual.BigNumber.from('2000000000000000')] : [actual.BigNumber.from('1000000000000000')])
             },
-            fakeWrite: () => new Promise((resolve) => resolve({ hash: '0x123abc' })),
+            fakeWrite: () => vi.fn().mockResolvedValue({ hash: '0x123abc' }),
             populateTransaction: {
-                'build()': () => new Promise((resolve) => resolve({ value: actual.BigNumber.from('1') }))
+                'build()': () => vi.fn().mockResolvedValue({ value: actual.BigNumber.from('1') })
             }
         };
     };
 
-    Object.defineProperty(ethers, 'providers', { value: providers, writable: false });
-    Object.defineProperty(ethers, 'Wallet', { value: wallet, writable: false });
-    Object.defineProperty(ethers, 'Contract', { value: contract, writable: true });
-    Object.defineProperty(ethers, 'utils', { value: actual.utils, writable: false });
-    Object.defineProperty(ethers, 'BigNumber', { value: actual.BigNumber, writable: false });
-
-    return ethers;
+    return {
+        default: vi.fn(),
+        providers,
+        Wallet: wallet,
+        Contract: contract,
+        utils: actual.utils,
+        BigNumber: actual.BigNumber
+    };
 });

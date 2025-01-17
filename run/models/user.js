@@ -166,7 +166,7 @@ module.exports = (sequelize, DataTypes) => {
         }));
     }
 
-    createExplorerFromOptions({ workspaceId, rpcServer, name, networkId, tracing, faucet, token, slug, totalSupply, l1Explorer, branding, qnEndpointId, domains = [], isDemo = false, subscription }) {
+    createExplorerFromOptions({ workspaceId, rpcServer, name, networkId, chain = 'ethereum', tracing = 'other', faucet, token, slug, totalSupply, l1Explorer, branding, qnEndpointId, domains = [], isDemo = false, subscription, integrityCheckStartBlockNumber }) {
         if (!workspaceId && (!rpcServer || !name || !networkId))
             throw new Error('Missing parameters');
 
@@ -178,6 +178,18 @@ module.exports = (sequelize, DataTypes) => {
                     throw new Error('Could not find workspace');
                 if (workspace.explorer)
                     throw new Error('There is already an explorer associated to this workspace');
+                workspace.update({
+                    public: true,
+                    dataRetentionLimit: this.defaultDataRetentionLimit,
+                    integrityCheckStartBlockNumber: integrityCheckStartBlockNumber,
+                    browserSyncEnabled: false,
+                    storageEnabled: false,
+                    erc721LoadingEnabled: false,
+                    rpcHealthCheckEnabled: true,
+                    rateLimitInterval: SYNC_RATE_LIMIT_INTERVAL,
+                    rateLimitMaxInInterval: SYNC_RATE_LIMIT_MAX_IN_INTERVAL,
+                    qnEndpointId
+                }, { transaction });
             }
             else if (rpcServer && name && networkId) {
                 const existingWorkspace = await sequelize.models.Workspace.findOne({ where: { name, userId: this.id }});
@@ -187,11 +199,12 @@ module.exports = (sequelize, DataTypes) => {
                 workspace = await this.createWorkspace(sanitize({
                     name: name,
                     public: true,
-                    chain: 'ethereum',
+                    chain: chain,
                     networkId: networkId,
                     rpcServer: rpcServer,
                     tracing: tracing,
                     dataRetentionLimit: this.defaultDataRetentionLimit,
+                    integrityCheckStartBlockNumber: integrityCheckStartBlockNumber,
                     browserSyncEnabled: false,
                     storageEnabled: false,
                     erc721LoadingEnabled: false,

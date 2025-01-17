@@ -9,7 +9,7 @@
         </div>
         <div v-else-if="isBigNumber">
             <template v-if="decimals">
-                {{ value | fromWei(decimals, symbol) }}
+                {{ $fromWei(value, decimals, symbol) }}
             </template>
             <template v-else>
                 {{ value }}
@@ -21,17 +21,13 @@
     </div>
 </template>
 <script>
-import HashLink from './HashLink';
-import FromWei from '../filters/FromWei';
+import HashLink from './HashLink.vue';
 
 export default {
     name: 'CustomField',
     props: ['name', 'value', 'type', 'label', 'decimals', 'symbol', 'title'],
     components: {
         HashLink,
-    },
-    filters: {
-        FromWei
     },
     computed: {
         isText() { return this.type == 'text' },

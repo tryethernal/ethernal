@@ -1,14 +1,14 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`parseTrace Should return the processed trace 1`] = `
-Array [
-  Object {
+exports[`parseTrace > Should return the processed trace 1`] = `
+[
+  {
     "address": "0xBd919DCf1410ffc22fd6D0Fa0Fd88450a39B7A7C",
     "contractHashedBytecode": "0xdbe576b4818846aa77e82f4ed5fa78f92766b141f282d36703886d196df39322",
     "depth": 0,
     "op": "CREATE2",
   },
-  Object {
+  {
     "address": "0xbd919dcf1410ffc22fd6d0fa0fd88450a39b7a7c",
     "contractHashedBytecode": "0xdbe576b4818846aa77e82f4ed5fa78f92766b141f282d36703886d196df39322",
     "depth": 0,

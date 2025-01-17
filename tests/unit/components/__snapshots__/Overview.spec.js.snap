@@ -1,51 +1,101 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Overview.vue Should load the overview page 1`] = `
-<div class="container container--fluid">
-  <div class="row">
-    <div class="col-sm-6 col-lg-3 col-12">
-      <stat-number-stub long="true" value="1000000000000" title="Total Supply"></stat-number-stub>
+exports[`Overview.vue > Should load the overview page 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr" theme="ethernal">
+  <div class="v-row">
+    <!--v-if-->
+  </div>
+  <div class="v-row">
+    <div class="v-col-sm-6 v-col-lg-3 v-col-12">
+      <stat-number-stub type="link" title="Latest Block" loading="true" href="/block/0" value="0"></stat-number-stub>
+    </div>
+    <div class="v-col-sm-6 v-col-lg-3 v-col-12">
+      <stat-number-stub title="24h Tx Count" loading="false" value="10"></stat-number-stub>
+    </div>
+    <div class="v-col-sm-6 v-col-lg-3 v-col-12">
+      <stat-number-stub title="Total Tx Count" loading="false" value="100"></stat-number-stub>
+    </div>
+    <div class="v-col-sm-6 v-col-lg-3 v-col-12">
+      <stat-number-stub title="Total Active Wallets Count" loading="false" infotooltip="An active wallet is an address that has sent at least one transaction." value="5"></stat-number-stub>
     </div>
   </div>
-  <div class="row">
-    <div class="col-sm-6 col-lg-3 col-12">
-      <stat-number-stub href="/block/2" value="2" title="Latest Block" type="link"></stat-number-stub>
+  <div class="v-row">
+    <div class="v-col-md-6 v-col-12">
+      <line-chart-stub title="Transaction Volume" tooltipunit="transaction" index="0" xlabels="1" data="1"></line-chart-stub>
     </div>
-    <div class="col-sm-6 col-lg-3 col-12">
-      <stat-number-stub value="10" title="24h Tx Count"></stat-number-stub>
-    </div>
-    <div class="col-sm-6 col-lg-3 col-12">
-      <stat-number-stub value="100" title="Total Tx Count"></stat-number-stub>
-    </div>
-    <div class="col-sm-6 col-lg-3 col-12">
-      <stat-number-stub infotooltip="An active wallet is an address that has sent at least one transaction." value="5" title="Total Active Wallets Count"></stat-number-stub>
+    <div class="v-col-md-6 v-col-12">
+      <line-chart-stub title="Active Wallets Count" tooltipunit="wallet" index="4" xlabels="1" data="1"></line-chart-stub>
     </div>
   </div>
-  <div class="row">
-    <div class="col-md-6 col-12">
-      <line-chart-stub tooltipunit="transaction" title="Transaction Volume" index="0" data="1" xlabels="1"></line-chart-stub>
-    </div>
-    <div class="col-md-6 col-12">
-      <line-chart-stub tooltipunit="wallet" title="Active Wallets Count" index="4" data="1" xlabels="1"></line-chart-stub>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-6 col-12">
-      <div class="v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__subtitle">Latest Blocks</div>
-        <div class="v-card__text">
-          <block-list-stub dense="true"></block-list-stub>
+  <div class="v-row">
+    <div class="v-col-md-6 v-col-12">
+      <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
         </div>
+        <div class="v-card-item">
+          <!---->
+          <div class="v-card-item__content">
+            <!---->
+            <div class="v-card-subtitle">
+              <div class="pt-2">Latest Blocks</div>
+            </div>
+            <!---->
+          </div>
+          <!---->
+        </div>
+        <!---->
+        <block-list-stub dense="true" class="px-4 pb-4"></block-list-stub>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
       </div>
     </div>
-    <div class="col-md-6 col-12">
-      <div class="v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__subtitle">Latest Transactions</div>
-        <div class="v-card__text">
-          <transactions-list-stub dense="true"></transactions-list-stub>
+    <div class="v-col-md-6 v-col-12">
+      <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
         </div>
+        <div class="v-card-item">
+          <!---->
+          <div class="v-card-item__content">
+            <!---->
+            <div class="v-card-subtitle">
+              <div class="pt-2">Latest Transactions</div>
+            </div>
+            <!---->
+          </div>
+          <!---->
+        </div>
+        <!---->
+        <transactions-list-stub dense="true" class="px-4 pb-4"></transactions-list-stub>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
       </div>
     </div>
   </div>
-</div>
+</div>"
 `;

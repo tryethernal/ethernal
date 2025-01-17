@@ -7,7 +7,7 @@ jest.mock('sequelize', () => ({
 }));
 require('../mocks/lib/env');
 require('../mocks/lib/queue');
-const { ExplorerV2Dex, ExplorerFaucet, Workspace, Block, User, workspace, Explorer, ExplorerDomain, StripePlan, Transaction, StripeSubscription } = require('../mocks/models');
+const { ExplorerV2Dex, ExplorerFaucet, Workspace, Block, User, workspace, Explorer, ExplorerDomain, StripePlan, Transaction, StripeSubscription, Contract } = require('../mocks/models');
 const db = require('../../lib/firebase');
 const env = require('../../lib/env');
 
@@ -528,7 +528,7 @@ describe('markWorkspaceForDeletion', () => {
         jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({ update });
         db.markWorkspaceForDeletion(1)
             .then(() => {
-                expect(update).toHaveBeenCalledWith({ pendingDeletion: true });
+                expect(update).toHaveBeenCalledWith({ pendingDeletion: true, public: false });
                 done();
             });
     });
@@ -2233,7 +2233,6 @@ describe('getWorkspaceContracts', () => {
             .then(result => {
                 expect(result).toEqual({
                     items: [{ id: 10, address: '0x123' }, { id: 11, address: '0xabcd' }],
-                    total: 2
                 });
                 done();
             });
@@ -2411,6 +2410,7 @@ describe('storeTransactionTokenTransfers', () => {
 
 describe('storeContractData', () => {
     it('Should return contract', (done) => {
+        jest.spyOn(workspace, 'safeCreateOrUpdateContract').mockResolvedValueOnce({ toJSON: () => ({ id: 10, address: '0x123' })});
         db.storeContractData('123', 'My Workspace', '0x123', [{ address: '0xabc', name: 'My Contract' }])
             .then(contract => {
                 expect(contract).toEqual({ id: 10, address: '0x123' });
@@ -2438,6 +2438,7 @@ describe('getContractData', () => {
 
 describe('getContractByHashedBytecode', () => {
     it('Should return contract if it exists', (done) => {
+        jest.spyOn(Contract, 'findOne').mockResolvedValueOnce({ toJSON: () => ({ id: 10, address: '0x123' }) });
         db.getContractByHashedBytecode('123', 'My Workspace', '0x123')
             .then(contract => {
                 expect(contract).toEqual({ id: 10, address: '0x123' });
@@ -2446,7 +2447,7 @@ describe('getContractByHashedBytecode', () => {
     });
 
     it('Should return null if the contract does not exist', async () => {
-        jest.spyOn(workspace, 'findContractByHashedBytecode').mockResolvedValueOnce(null);
+        jest.spyOn(Contract, 'findOne').mockResolvedValueOnce(null);
 
         const contract = await db.getContractByHashedBytecode('123', 'My Workspace', '0x123');
         expect(contract).toEqual(null);

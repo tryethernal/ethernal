@@ -1,0 +1,18 @@
+FROM postgres:15
+
+# Add the TimescaleDB repo
+RUN apt-get update && apt-get install -y wget gnupg2 curl sudo \
+    && wget --quiet -O - https://packagecloud.io/timescale/timescaledb/gpgkey | apt-key add - \
+    && echo "deb https://packagecloud.io/timescale/timescaledb/debian/ buster main" > /etc/apt/sources.list.d/timescaledb.list \
+    && curl -s https://packagecloud.io/install/repositories/timescale/timescaledb/script.deb.sh | sudo bash \
+    && apt-get update \
+    && apt-get install -y sudo timescaledb-2-2.11.0-postgresql-15=2.11.0
+
+# Clean up APT when done.
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Setup the entrypoint to init TimescaleDB
+ENTRYPOINT ["docker-entrypoint.sh"]
+
+EXPOSE 5432
+CMD ["postgres"]

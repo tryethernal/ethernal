@@ -1,4 +1,4 @@
-const { Workspace } = require('../mocks/models');
+const { Explorer } = require('../mocks/models');
 require('../mocks/lib/queue');
 
 const { enqueue } = require('../../lib/queue');
@@ -8,8 +8,14 @@ beforeEach(() => jest.clearAllMocks());
 
 describe('integrityCheckStarter', () => {
     it('Should enqueue integrity check processes if integrityCheck start number is set', async () => {
-        jest.spyOn(Workspace, 'findAll').mockResolvedValueOnce([
-            { id: 2, integrityCheckStarterBlockNumber: 5 }
+        jest.spyOn(Explorer, 'findAll').mockResolvedValueOnce([
+            {
+                id: 2,
+                workspaceId: 2,
+                workspace: {
+                    integrityCheckStarterBlockNumber: 5
+                }
+            }
         ]);
 
         await integrityCheckStarter({});

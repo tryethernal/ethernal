@@ -1,17 +1,54 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ERC721TokenCard.vue Should display an erc721 token card 1`] = `
-<div class="v-card v-sheet theme--light"><a href="/token/0xabc/0" class="">
+exports[`ERC721TokenCard.vue > Should display an erc721 token card 1`] = `
+"<div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
+        </div>
+      </transition-stub>
+      <!---->
+    </div>
+  </div>
+  <!---->
+  <!----><a>
     <div rounded="lg" elevation="2"><img src="http://image"></div>
   </a>
-  <div class="v-card__text"><a href="/token/0xabc/0" class=""><b>Token #1</b></a> <br>
-    Owned by <hash-link-stub xshash="true" hash="0x123" type="address"></hash-link-stub>
+  <div class="v-card-text"><a><b>Token #1</b></a><br> Owned by <hash-link-stub type="address" hash="0x123" xshash="true"></hash-link-stub>
   </div>
-</div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
 `;
 
-exports[`ERC721TokenCard.vue Should display message if cannot fetch 1`] = `
-<div class="v-card v-sheet theme--light">
-  <div class="v-card__text">Couldn't fetch token information.</div>
-</div>
+exports[`ERC721TokenCard.vue > Should display message if cannot fetch 1`] = `
+"<div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
+        </div>
+      </transition-stub>
+      <!---->
+    </div>
+  </div>
+  <!---->
+  <!---->
+  <div class="v-card-text">Couldn't fetch token information.</div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
 `;

@@ -21,6 +21,27 @@ const ExplorerFaucet = models.ExplorerFaucet;
 const ExplorerV2Dex = models.ExplorerV2Dex;
 const V2DexPair = models.V2DexPair;
 
+const createUserStripeSubscription = (userId, stripeSubscription, stripePlan) => {
+    if (!userId || !stripeSubscription || !stripePlan)
+        throw new Error('Missing parameter');
+
+    return StripeSubscription.create({
+        userId,
+        stripeId: stripeSubscription.id,
+        stripePlanId: stripePlan.id,
+        status: stripeSubscription.status
+    });
+}
+
+const getUserStripeSubscription = (userId) => {
+    if (!userId)
+        throw new Error('Missing parameter');
+
+    return StripeSubscription.findOne({
+        where: { userId }
+    });
+};
+
 const getV2DexPairCount = async (userId, v2DexId) => {
     if (!userId || !v2DexId)
         throw new Error('Missing parameter');
@@ -490,7 +511,7 @@ const markWorkspaceForDeletion = async (workspaceId) => {
     if (!workspace)
         throw new Error('Could not find workspace');
 
-    return workspace.update({ pendingDeletion: true });
+    return workspace.update({ pendingDeletion: true, public: false });
 };
 
 const updateQuicknodeSubscription = async (qnId, qnEndpointId, stripePlanId) => {
@@ -967,9 +988,8 @@ const storeContractVerificationData = async (workspaceId, address, verificationD
     if (!workspaceId || !address || !verificationData) throw new Error('Missing parameter');
 
     const workspace = await Workspace.findByPk(workspaceId);
-
-    if (!workspace.public)
-        throw new Error('This is a private workspace');
+    if (!workspace)
+        throw new Error('Cannot find workspace');
 
     const contract = await workspace.getContractByAddress(address);
 
@@ -1165,7 +1185,7 @@ const getTransactionForProcessing = transactionId => {
             {
                 model: Workspace,
                 as: 'workspace',
-                attributes: ['id', 'name', 'public', 'rpcServer'],
+                attributes: ['id', 'name', 'public', 'rpcServer', 'tracing'],
                 include: [
                     {
                         model: User,
@@ -1876,20 +1896,18 @@ const getAddressTransactions = async (workspaceId, address, page, itemsPerPage, 
 
 const getWorkspaceContracts = async (workspaceId, page, itemsPerPage, orderBy, order, pattern) => {
     const workspace = await Workspace.findByPk(workspaceId);
-    const contracts = await workspace.getFilteredContracts(page, itemsPerPage, orderBy, order, pattern);
     const allowedPatterns = ['erc20', 'erc721'].indexOf(pattern) > -1 ? pattern : null;
-    const contractCount = await workspace.countContracts({
-        where: allowedPatterns ? { patterns: { [Op.contains]: [allowedPatterns] }} : {}
-    });
-
-    return {
-        items: contracts.map(c => c.toJSON()),
-        total: contractCount
-    }
+    const contracts = await workspace.getFilteredContracts(page, itemsPerPage, orderBy, order, allowedPatterns);
+    
+    return { items: contracts.map(c => c.toJSON()) }
 };
 
 const getWorkspaceContract = async (workspaceId, address) => {
     const workspace = await Workspace.findByPk(workspaceId);
+
+    if (!workspace)
+        return null;
+
     const contract = await workspace.findContractByAddress(address);
 
     return contract ? contract.toJSON() : null;
@@ -1999,7 +2017,7 @@ const storeContractData = async (userId, workspace, address, data, transaction) 
 
     const user = await User.findByAuthIdWithWorkspace(userId, workspace);
     const contract = await user.workspaces[0].safeCreateOrUpdateContract({ address: address, ...data }, transaction);
-    return contract.toJSON();
+    return contract ? contract.toJSON() : null;
 };
 
 const getContract = async (userId, workspaceId, address) => {
@@ -2025,11 +2043,17 @@ const getContractData = async (userId, workspace, address) => {
     return contract ? contract.toJSON() : null;
 };
 
-const getContractByHashedBytecode = async (userId, workspace, hashedBytecode) => {
-    if (!userId || !workspace || !hashedBytecode) throw new Error('Missing parameter.');
+const getContractByHashedBytecode = async (workspaceId, hashedBytecode) => {
+    if (!workspaceId || !hashedBytecode) throw new Error('Missing parameter.');
 
-    const user = await User.findByAuthIdWithWorkspace(userId, workspace);
-    const contract = await user.workspaces[0].findContractByHashedBytecode(hashedBytecode);
+    const workspace = await Workspace.findByPk(workspaceId);
+    if (!workspace)
+        throw new Error('Cannot find workspace');
+
+    const contract = await Contract.findOne({
+        attributes: ['id', 'address', 'abi'],
+        where: { workspaceId, hashedBytecode },
+    });
 
     return contract ? contract.toJSON() : null;
 };
@@ -2185,7 +2209,7 @@ const canUserSyncContract = async (userId, workspaceName, address) => {
     const user = await User.findByAuthIdWithWorkspace(userId, workspaceName);
 
     if (!user)
-        throw new Error(`Couldn't find workspace "${workspaceName}".`);
+        return false;
 
     if (user.isPremium)
         return true;
@@ -2469,5 +2493,7 @@ module.exports = {
     deactivateV2Dex: deactivateV2Dex,
     activateV2Dex: activateV2Dex,
     deleteV2Dex: deleteV2Dex,
-    getV2DexPairCount: getV2DexPairCount
+    getV2DexPairCount: getV2DexPairCount,
+    getUserStripeSubscription: getUserStripeSubscription,
+    createUserStripeSubscription: createUserStripeSubscription
 };

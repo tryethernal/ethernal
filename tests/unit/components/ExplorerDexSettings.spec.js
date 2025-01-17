@@ -1,29 +1,24 @@
 import flushPromises from 'flush-promises';
-import MockHelper from '../MockHelper';
 
 import ExplorerDexSettings from '@/components/ExplorerDexSettings.vue';
 
-let helper;
 const stubs = ['Create-Explorer-Dex-Modal', 'Explorer-Dex-Settings-Danger-Zone', 'Hash-Link'];
-
-beforeEach(() => {
-    jest.clearAllMocks()
-    helper = new MockHelper();
-});
 
 describe('ExplorerDexSettings.vue', () => {
     it('Should display help screen if no dex', async () => {
-        jest.spyOn(helper.mocks.server, 'getExplorer').mockResolvedValueOnce({
+        vi.spyOn(server, 'getExplorer').mockResolvedValueOnce({
             data: {
                 stripeSubscription: {},
                 v2Dex: null
             }
         });
-        const wrapper = helper.mountFn(ExplorerDexSettings, {
-            propsData: {
+        const wrapper = mount(ExplorerDexSettings, {
+            props: {
                 explorerId: 1
             },
-            stubs
+            global: {
+                stubs
+            }
         });
         await flushPromises();
 
@@ -31,7 +26,7 @@ describe('ExplorerDexSettings.vue', () => {
     });
 
     it('Should display message if no subscription', async () => {
-        jest.spyOn(helper.mocks.server, 'getExplorer').mockResolvedValueOnce({
+        vi.spyOn(server, 'getExplorer').mockResolvedValueOnce({
             data: {
                 stripeSubscription: null,
                 v2Dex: {
@@ -47,17 +42,19 @@ describe('ExplorerDexSettings.vue', () => {
                 }
             }
         });
-        jest.spyOn(helper.mocks.server, 'getV2DexStatus').mockResolvedValueOnce({
+        vi.spyOn(server, 'getV2DexStatus').mockResolvedValueOnce({
             data: {
                 pairCount: 10,
                 totalPairs: 10
             }
         });
-        const wrapper = helper.mountFn(ExplorerDexSettings, {
-            propsData: {
+        const wrapper = mount(ExplorerDexSettings, {
+            props: {
                 explorerId: 1
             },
-            stubs
+            global: {
+                stubs
+            }
         });
         await flushPromises();
 
@@ -65,7 +62,7 @@ describe('ExplorerDexSettings.vue', () => {
     });
 
     it('Should display syncing dex', async () => {
-        jest.spyOn(helper.mocks.server, 'getExplorer').mockResolvedValueOnce({
+        vi.spyOn(server, 'getExplorer').mockResolvedValueOnce({
             data: {
                 stripeSubscription: {},
                 v2Dex: {
@@ -81,17 +78,19 @@ describe('ExplorerDexSettings.vue', () => {
                 }
             }
         });
-        jest.spyOn(helper.mocks.server, 'getV2DexStatus').mockResolvedValueOnce({
+        vi.spyOn(server, 'getV2DexStatus').mockResolvedValueOnce({
             data: {
                 pairCount: 8,
                 totalPairs: 10
             }
         });
-        const wrapper = helper.mountFn(ExplorerDexSettings, {
-            propsData: {
+        const wrapper = mount(ExplorerDexSettings, {
+            props: {
                 explorerId: 1
             },
-            stubs
+            global: {
+                stubs
+            }
         });
         await flushPromises();
 
@@ -99,7 +98,7 @@ describe('ExplorerDexSettings.vue', () => {
     });
 
     it('Should display limited sync', async () => {
-        jest.spyOn(helper.mocks.server, 'getExplorer').mockResolvedValueOnce({
+        vi.spyOn(server, 'getExplorer').mockResolvedValueOnce({
             data: {
                 stripeSubscription: {
                     isTrialing: true
@@ -117,17 +116,19 @@ describe('ExplorerDexSettings.vue', () => {
                 }
             }
         });
-        jest.spyOn(helper.mocks.server, 'getV2DexStatus').mockResolvedValueOnce({
+        vi.spyOn(server, 'getV2DexStatus').mockResolvedValueOnce({
             data: {
                 pairCount: 8,
                 totalPairs: 10
             }
         });
-        const wrapper = helper.mountFn(ExplorerDexSettings, {
-            propsData: {
+        const wrapper = mount(ExplorerDexSettings, {
+            props: {
                 explorerId: 1
             },
-            stubs
+            global: {
+                stubs
+            }
         });
         await flushPromises();
 
@@ -135,7 +136,7 @@ describe('ExplorerDexSettings.vue', () => {
     });
 
     it('Should display fully synced active dex settings', async () => {
-        jest.spyOn(helper.mocks.server, 'getExplorer').mockResolvedValueOnce({
+        vi.spyOn(server, 'getExplorer').mockResolvedValueOnce({
             data: {
                 stripeSubscription: {},
                 v2Dex: {
@@ -151,17 +152,19 @@ describe('ExplorerDexSettings.vue', () => {
                 }
             }
         });
-        jest.spyOn(helper.mocks.server, 'getV2DexStatus').mockResolvedValueOnce({
+        vi.spyOn(server, 'getV2DexStatus').mockResolvedValueOnce({
             data: {
                 pairCount: 10,
                 totalPairs: 10
             }
         });
-        const wrapper = helper.mountFn(ExplorerDexSettings, {
-            propsData: {
+        const wrapper = mount(ExplorerDexSettings, {
+            props: {
                 explorerId: 1
             },
-            stubs
+            global: {
+                stubs
+            }
         });
         await flushPromises();
 

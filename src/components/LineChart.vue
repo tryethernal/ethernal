@@ -1,18 +1,18 @@
 <template>
-    <v-card outlined class="px-1" v-if="data">
-        <v-card-subtitle>
+    <v-card class="px-1" v-if="data">
+        <template v-slot:subtitle>
             <v-row>
                 <v-col cols="10">{{ title }}</v-col>
                 <v-col cols="2" :align="'end'" v-if="isZoomed">
-                    <v-tooltip top>
-                        <template v-slot:activator="{ on, attrs }">
-                            <v-btn v-bind="attrs" v-on="on" color="primary" dense outlined @click="resetZoom()" small><v-icon small>mdi-restore</v-icon></v-btn>
+                    <v-tooltip location="top">
+                        <template v-slot:activator="{ props }">
+                            <v-btn v-bind="props" color="primary" dense variant="outlined" @click="resetZoom()" size="small"><v-icon size="small">mdi-restore</v-icon></v-btn>
                         </template>
                         Reset Zoom
                     </v-tooltip>
                 </v-col>
             </v-row>
-        </v-card-subtitle>
+        </template>
         <div v-if="data">
             <LineChartGenerator
                 ref="chart"
@@ -30,7 +30,8 @@
 <script>
 const moment = require('moment');
 const ethers = require('ethers');
-import { Line as LineChartGenerator } from 'vue-chartjs/legacy';
+import { useTheme } from 'vuetify';
+import { Line as LineChartGenerator } from 'vue-chartjs';
 import zoomPlugin from 'chartjs-plugin-zoom';
 import {
     Chart as ChartJS,
@@ -54,7 +55,7 @@ ChartJS.register(
     zoomPlugin
 );
 
-const { hex2rgba } = require('@/lib/utils');
+import { hex2rgba } from '@/lib/utils';
 
 const DATE_FORMAT = 'MM/DD';
 
@@ -125,6 +126,8 @@ export default {
             }
         },
         options() {
+            const theme = useTheme();
+
             return {
                 extra: {
                     tokenSymbol: this.tokenSymbol,
@@ -132,7 +135,7 @@ export default {
                 },
                 responsive: true,
                 maintainAspectRatio: false,
-                borderColor: this.$vuetify.theme.themes.light.primary,
+                borderColor: theme.current.value.colors.primary,
                 borderWidth: 1,
                 pointRadius: 0,
                 interaction: {
@@ -144,9 +147,9 @@ export default {
                 },
                 spanGaps: true,
                 mouseLine: {
-                    color: this.$vuetify.theme.themes.light.primary
+                    color: theme.current.value.colors.primary
                 },
-                backgroundColor: hex2rgba(this.$vuetify.theme.themes.light.primary, 0.2),
+                backgroundColor: hex2rgba(theme.current.value.colors.primary, 0.2),
                 elements: {
                     line: {
                         cubicInterpolationMode: 'monotone',
@@ -160,7 +163,7 @@ export default {
                         suggestedMax: this.floating ? null : 5,
                         grid: {
                             drawBorder: false,
-                            color: hex2rgba(this.$vuetify.theme.themes.light.primary, 0.6)
+                            color: hex2rgba(theme.current.value.colors.primary, 0.6)
                         },
                         ticks: {
                             precision: this.floating ? null : 0,
@@ -182,7 +185,7 @@ export default {
                 },
                 plugins: {
                     tooltip: {
-                        backgroundColor: this.$vuetify.theme.themes.light.primary,
+                        backgroundColor: theme.current.value.colors.primary,
                         displayColors: false,
                         enabled: true,
                         intersect: false,

@@ -1,5 +1,5 @@
 const { ProviderConnector } = require('../lib/rpc');
-const { Workspace, Explorer, StripeSubscription, StripePlan, RpcHealthCheck, Block } = require('../models');
+const { Workspace, Explorer, StripeSubscription, RpcHealthCheck, IntegrityCheck, Block } = require('../models');
 const db = require('../lib/firebase');
 const logger = require('../lib/logger');
 const { processRawRpcObject } = require('../lib/utils');
@@ -13,6 +13,7 @@ module.exports = async job => {
         return 'Missing parameter';
 
     const workspace = await Workspace.findOne({
+        attributes: ['id', 'rpcHealthCheckEnabled', 'rateLimitInterval', 'rateLimitMaxInInterval', 'name', 'rpcServer', 'browserSyncEnabled'],
         where: {
             name: data.workspace,
             '$user.firebaseUserId$': data.userId
@@ -22,18 +23,22 @@ module.exports = async job => {
             {
                 model: Explorer,
                 as: 'explorer',
+                attributes: ['id', 'shouldSync'],
                 include: {
                     model: StripeSubscription,
                     as: 'stripeSubscription',
-                    include: {
-                        model: StripePlan,
-                        as: 'stripePlan'
-                    }
+                    attributes: ['id']
                 }
             },
             {
                 model: RpcHealthCheck,
-                as: 'rpcHealthCheck'
+                as: 'rpcHealthCheck',
+                attributes: ['id', 'isReachable']
+            },
+            {
+                model: IntegrityCheck,
+                as: 'integrityCheck',
+                attributes: ['id', 'isHealthy', 'isRecovering']
             }
         ]
     });
@@ -56,10 +61,6 @@ module.exports = async job => {
     if (workspace.browserSyncEnabled)
         await db.updateBrowserSync(workspace.id, false);
 
-    const existingBlock = await db.getWorkspaceBlock(workspace.id, data.blockNumber);
-    if (existingBlock)
-        return 'Block already exists in this workspace';
-
     if (data.source == 'recovery' && workspace.integrityCheck && workspace.integrityCheck.isHealthy)
         await db.updateWorkspaceIntegrityCheck(workspace.id, { status: 'recovering' });
     else if (data.source != 'recovery' && workspace.integrityCheck && workspace.integrityCheck.isRecovering)
@@ -75,16 +76,24 @@ module.exports = async job => {
         try {
             block = await providerConnector.fetchRawBlockWithTransactions(data.blockNumber);
         } catch(error) {
+            const priority = job.opts.priority || (data.source == 'cli-light' ? 1 : 10);
             if (error.message == 'Rate limited') {
-                const priority = job.opts.priority || (data.source == 'cli-light' ? 1 : 10);
-                await enqueue('blockSync', `blockSync-${workspace.id}-${data.blockNumber}`, {
+                return enqueue('blockSync', `blockSync-${workspace.id}-${data.blockNumber}-${Date.now()}`, {
                     userId: workspace.user.firebaseUserId,
                     workspace: workspace.name,
                     blockNumber: data.blockNumber,
                     source: data.source,
-                    rateLimited: data.rateLimited
-                }, priority, null, workspace.rateLimitInterval, data.rateLimited);
-                return `Re-enqueuing: ${error.message}`
+                    rateLimited: !!data.rateLimited
+                }, priority, null, workspace.rateLimitInterval, !!data.rateLimited);
+            }
+            else if (error.message.startsWith('Timed out after')) {
+                return enqueue('blockSync', `blockSync-${workspace.id}-${data.blockNumber}-${Date.now()}`, {
+                    userId: workspace.user.firebaseUserId,
+                    workspace: workspace.name,
+                    blockNumber: data.blockNumber,
+                    source: data.source,
+                    rateLimited: !!data.rateLimited
+                }, priority, null, workspace.rateLimitInterval || 5000, !!data.rateLimited);
             }
             else
                 throw error;
@@ -93,15 +102,12 @@ module.exports = async job => {
         if (!block)
             return "Couldn't fetch block from provider";
 
-        if (await workspace.explorer.hasReachedTransactionQuota())
-            return 'Transaction quota reached';
-    
         const processedBlock = processRawRpcObject(
             block,
             Object.keys(Block.rawAttributes).concat(['transactions'])
         );
 
-        const syncedBlock = await db.syncPartialBlock(workspace.id, processedBlock);
+        const syncedBlock = await workspace.safeCreatePartialBlock(processedBlock);
         if (!syncedBlock)
             return "Couldn't store block";
 
@@ -112,6 +118,7 @@ module.exports = async job => {
             jobs.push({
                 name: `receiptSync-${workspace.id}-${transaction.hash}`,
                 data: {
+                    transactionId: transaction.id,
                     transactionHash: transaction.hash,
                     workspaceId: workspace.id,
                     source: data.source,
@@ -123,8 +130,8 @@ module.exports = async job => {
 
         return 'Block synced';
     } catch(error) {
+        console.log(error);
         logger.error(error.message, { location: 'jobs.blockSync', error, data });
-        // await db.incrementFailedAttempts(workspace.id);
         throw error;
     }
 };

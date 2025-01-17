@@ -1,38 +1,47 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Explorer.vue Should display explorer sections 1`] = `
-<div class="container container--fluid">
-  <div class="v-tabs theme--light">
-    <div role="tablist" class="v-item-group theme--light v-slide-group v-tabs-bar v-tabs-bar--is-mobile primary--text">
-      <div class="v-slide-group__prev v-slide-group__prev--disabled">
-        <transition-stub name="fade-transition"></transition-stub>
-      </div>
-      <div class="v-slide-group__wrapper">
-        <div class="v-slide-group__content v-tabs-bar__content">
-          <div class="v-tabs-slider-wrapper" style="transition: none;">
-            <div class="v-tabs-slider"></div>
-          </div><a tabindex="0" href="#general" aria-selected="true" role="tab" class="v-tab v-tab--active" id="generalTab">General</a> <a tabindex="0" href="#faucet" aria-selected="false" role="tab" class="v-tab" id="faucetTab">Faucet</a> <a tabindex="0" href="#dex" aria-selected="false" role="tab" class="v-tab" id="dexTab">Dex</a>
-        </div>
-      </div>
-      <div class="v-slide-group__next v-slide-group__next--disabled">
-        <transition-stub name="fade-transition"></transition-stub>
-      </div>
+exports[`Explorer.vue > Should display explorer sections 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <div class="v-slide-group v-slide-group--mobile v-tabs v-tabs--horizontal v-tabs--align-tabs-start v-tabs--density-default" tabindex="-1" role="tablist">
+    <!---->
+    <div class="v-slide-group__container">
+      <div class="v-slide-group__content"><button type="button" class="v-btn v-tab-item--selected v-tab--selected v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab" tabindex="0" role="tab" aria-selected="true" id="generalTab" value="general"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+          <!----><span class="v-btn__content" data-no-activator="">General<div class="v-tab__slider"></div></span>
+          <!---->
+          <!---->
+        </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab" tabindex="-1" role="tab" aria-selected="false" id="faucetTab" value="faucet"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+          <!----><span class="v-btn__content" data-no-activator="">Faucet<div class="v-tab__slider"></div></span>
+          <!---->
+          <!---->
+        </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab" tabindex="-1" role="tab" aria-selected="false" id="dexTab" value="dex"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+          <!----><span class="v-btn__content" data-no-activator="">Dex<div class="v-tab__slider"></div></span>
+          <!---->
+          <!---->
+        </button></div>
     </div>
+    <!---->
   </div>
-  <div class="v-window v-item-group theme--light v-tabs-items">
+  <!---->
+  <div class="v-window v-theme--light v-tabs-window">
     <div class="v-window__container">
-      <transition-stub name="">
-        <div class="v-window-item v-window-item--active" id="general">
+      <transition-stub appear="false" persisted="false" css="true" disabled="true">
+        <div class="v-window-item v-window-item--active v-tabs-window-item">
           <explorer-general-stub id="1"></explorer-general-stub>
         </div>
       </transition-stub>
-      <transition-stub name="">
-        <!---->
+      <transition-stub appear="false" persisted="false" css="true" disabled="true">
+        <div class="v-window-item v-tabs-window-item" style="display: none;">
+          <!---->
+        </div>
       </transition-stub>
-      <transition-stub name="">
-        <!---->
+      <transition-stub appear="false" persisted="false" css="true" disabled="true">
+        <div class="v-window-item v-tabs-window-item" style="display: none;">
+          <!---->
+        </div>
       </transition-stub>
+      <!---->
     </div>
+    <!---->
   </div>
-</div>
+</div>"
 `;

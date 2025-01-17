@@ -1,7 +1,7 @@
 require('../instrument');
-const { getNodeEnv } = require('../lib/env');
-const { Worker } = require('bullmq');
-const connection = require('../config/redis')[getNodeEnv()];
+const Sentry = require('@sentry/node');
+const { Worker, MetricsTime } = require('bullmq');
+const connection = require('../lib/redis');
 const jobs = require('../jobs');
 const logger = require('../lib/logger');
 const priorities = require('./priorities.json');
@@ -10,8 +10,22 @@ const { managedWorkerError } = require('../lib/errors');
 priorities['medium'].forEach(jobName => {
     const worker = new Worker(
         jobName,
-        async job => await jobs[jobName](job),
-        { maxStalledCount: 5, lockDuration: 300000, concurrency: 50, connection },
+        job => {
+            return Sentry.startSpan(
+                { name: jobName }, () => {
+                    return jobs[jobName](job)
+                }
+            )
+        },
+        {
+            maxStalledCount: 5,
+            lockDuration: 300000,
+            concurrency: 50,
+            connection,
+            metrics: {
+                maxDataPoints: MetricsTime.ONE_WEEK * 2,
+            }
+        }
     );
     worker.on('failed', (job, error) => managedWorkerError(error, jobName, job.data, 'mediumPriority'));
 

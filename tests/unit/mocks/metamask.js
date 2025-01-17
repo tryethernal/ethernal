@@ -1,3 +1,3 @@
-jest.mock('@/lib/metamask', () => ({
-    sendTransaction: () => new Promise((resolve) => resolve('0x1234'))
+vi.mock('@/lib/metamask', () => ({
+    sendTransaction: vi.fn().mockResolvedValue('0x1234')
 }));

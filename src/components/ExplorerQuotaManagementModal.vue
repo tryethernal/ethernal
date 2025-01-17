@@ -1,10 +1,9 @@
 <template>
     <v-dialog v-model="dialog" max-width="1200" :persistent="true">
-        <v-card outlined>
-            <v-card-title>
-                <template>Transaction Quota Management</template>
-                <v-spacer></v-spacer>
-                <v-btn icon @click="close()" ><v-icon>mdi-close</v-icon></v-btn>
+        <v-card>
+            <v-card-title class="d-flex justify-space-between align-center">
+                <h4>Transaction Quota Management</h4>
+                <v-btn color="grey" variant="text" icon="mdi-close" @click="close()"></v-btn>
             </v-card-title>
             <v-card-text>
                 <v-alert text type="error" v-if="errorMessage">{{ errorMessage }}</v-alert>
@@ -20,13 +19,13 @@
                 <v-form v-else @submit.prevent="updateQuotaExtension()" v-model="valid">
                     <v-text-field
                         :rules="[v => parseInt(v) == 0 || parseInt(v) >= 10000 || 'Cannot be less than 10,000.']"
-                        dense
-                        outlined
+                        density="compact"
+                        variant="outlined"
                         v-model="rawExtraQuota"
                         type="number"
                         suffix="extra transactions per month"
                         label="Extra Transaction Quota"></v-text-field>
-                    <v-simple-table>
+                    <v-table>
                         <template v-slot:default>
                             <thead>
                                 <tr>
@@ -53,7 +52,7 @@
                                 </tr>
                             </tfoot>
                         </template>
-                    </v-simple-table>
+                    </v-table>
                     <div align="right">
                         <v-btn color="primary" type="submit" :loading="loading || stripePlanLoading" :disabled="!valid">Update Quota</v-btn>
                     </div>
@@ -91,7 +90,7 @@ export default {
             if (this.subscription.stripeQuotaExtension)
                 this.rawExtraQuota = this.subscription.stripeQuotaExtension.quota;
 
-            this.server.getQuotaExtensionPlan()
+            this.$server.getQuotaExtensionPlan()
                 .then(({ data }) => this.stripePlan = data)
                 .finally(() => this.stripePlanLoading = false);
 
@@ -125,7 +124,7 @@ export default {
             this.errorMessage = null;
 
             if (parseInt(this.extraQuota) == 0)
-                this.server.cancelQuotaExtension(this.explorerId)
+                this.$server.cancelQuotaExtension(this.explorerId)
                     .then(({ data: { stripeSubscription }}) => {
                         this.successMessage = 'Transaction quota updated.';
                         this.subscription = stripeSubscription;
@@ -137,7 +136,7 @@ export default {
                         this.loading = false;
                     });
             else
-                this.server.updateQuotaExtension(this.explorerId, this.stripePlan.slug, this.extraQuota)
+                this.$server.updateQuotaExtension(this.explorerId, this.stripePlan.slug, this.extraQuota)
                     .then(({ data: { stripeSubscription }}) => {
                         this.successMessage = 'Transaction quota updated.';
                         this.subscription = stripeSubscription;

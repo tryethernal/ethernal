@@ -4,6 +4,8 @@ const express = require('express');
 const router = express.Router();
 const { isStripeEnabled } = require('../lib/flags');
 const { ProviderConnector, DexConnector } = require('../lib/rpc');
+const { enqueue } = require('../lib/queue');
+const logger = require('../lib/logger');
 const { managedError, unmanagedError } = require('../lib/errors');
 const { Explorer } = require('../models');
 const { withTimeout, validateBNString, sanitize } = require('../lib/utils');
@@ -363,6 +365,36 @@ router.put('/:id/subscription', [authMiddleware, stripeMiddleware], async (req, 
     }
 });
 
+router.post('/:id/subscription', [authMiddleware, stripeMiddleware], async (req, res, next) => {
+    const data = req.body.data;
+
+    try {
+        if (!data.planSlug)
+            return managedError(new Error('Missing parameters.'), req, res);
+
+        const explorer = await db.getExplorerById(data.user.id, req.params.id);
+
+        if (!explorer)
+            return managedError(new Error(`Can't find explorer.`), req, res);
+
+        if (explorer.stripeSubscription)
+            return managedError(new Error(`Explorer already has a subscription.`), req, res);
+
+        const stripePlan = await db.getStripePlan(data.planSlug);
+        if (!stripePlan)
+            return managedError(new Error(`Can't find plan.`), req, res);
+
+        if (!stripePlan.capabilities.skipBilling)
+            return managedError(new Error(`This plan cannot be used via the API at the moment. Start the subscription using the dashboard, or reach out to contact@tryethernal.com.`), req, res);
+
+        await db.createExplorerSubscription(data.user.id, explorer.id, stripePlan.id);
+
+        res.sendStatus(200);
+    } catch(error) {
+        unmanagedError(error, req, next);
+    }
+});
+
 router.delete('/:id/subscription', [authMiddleware, stripeMiddleware], async (req, res, next) => {
     const data = req.body.data;
 
@@ -375,11 +407,12 @@ router.delete('/:id/subscription', [authMiddleware, stripeMiddleware], async (re
         if (explorer.stripeSubscription.stripeId) {
             const subscription = await stripe.subscriptions.retrieve(explorer.stripeSubscription.stripeId);
             await stripe.subscriptions.update(subscription.id, {
-                cancel_at_period_end: true,
+                cancel_at_period_end: true
             });
+            await db.cancelExplorerSubscription(data.user.id, explorer.id);
         }
-
-        await db.cancelExplorerSubscription(data.user.id, explorer.id);
+        else
+            await db.deleteExplorerSubscription(data.user.id, explorer.id);
 
         res.sendStatus(200);
     } catch(error) {
@@ -424,13 +457,55 @@ router.post('/:id/cryptoSubscription', [authMiddleware, stripeMiddleware], async
 });
 
 router.delete('/:id', authMiddleware, async (req, res, next) => {
-    const data = req.body.data;
+    const data = { ...req.body.data, ...req.query };
+
+    logger.error('Deleting explorer', { location: 'delete.api.explorers', data });
 
     try {
-        await db.deleteExplorer(data.user.id, req.params.id);
+        const explorer = await db.getExplorerById(data.user.id, req.params.id);
+        if (!explorer)
+            return managedError(new Error(`Could not delete explorer.`), req, res);
+
+        if (data.cancelSubscription && explorer.stripeSubscription) {
+            if (explorer.stripeSubscription.stripePlan.capabilities.volumeSubscription) {
+                const subscription = await stripe.subscriptions.retrieve(explorer.stripeSubscription.stripeId);
+                const item = subscription.items.data[0];
+                await stripe.subscriptionItems.update(item.id, {
+                    quantity: item.quantity - 1,
+                    proration_behavior: 'always_invoice'
+                });
+                await db.deleteExplorerSubscription(data.user.id, explorer.id);
+
+            }
+            else if (explorer.stripeSubscription.stripeId) {
+                const subscription = await stripe.subscriptions.retrieve(explorer.stripeSubscription.stripeId);
+                await stripe.subscriptions.update(subscription.id, {
+                    cancel_at_period_end: true
+                });
+                await db.cancelExplorerSubscription(data.user.id, explorer.id);
+            }
+            else
+                await db.deleteExplorerSubscription(data.user.id, explorer.id);
+        }
+        else if (explorer.stripeSubscription)
+            return managedError(new Error(`Can't delete an explorer with an active subscription.`), req, res);
+
+        await db.deleteExplorer(data.user.id, explorer.id);
+
+        if (data.deleteWorkspace)
+            await db.markWorkspaceForDeletion(explorer.workspaceId);
+            await enqueue('workspaceReset', `workspaceReset-${explorer.workspaceId}`, {
+                workspaceId: explorer.workspaceId,
+                from: new Date(0),
+                to: new Date()
+            });
+            await enqueue('deleteWorkspace', `deleteWorkspace-${explorer.workspaceId}`, {
+                workspaceId: explorer.workspaceId
+            });
 
         res.sendStatus(200);
     } catch(error) {
+        console.log(error);
         unmanagedError(error, req, next);
     }
 });
@@ -509,7 +584,11 @@ router.post('/:id/settings', authMiddleware, async (req, res, next) => {
                 await db.updateExplorerWorkspace(explorer.id, workspace.id);
         }
 
-        await db.updateExplorerSettings(explorer.id, data);
+        try {
+            await db.updateExplorerSettings(explorer.id, data);
+        } catch(error) {
+            return managedError(new Error(error), req, res);
+        }
 
         res.sendStatus(200);
     } catch(error) {
@@ -553,8 +632,9 @@ router.post('/', authMiddleware, async (req, res, next) => {
             {
                 name: data.name,
                 rpcServer: data.rpcServer,
+                chain: data.chain,
                 networkId,
-                tracing: data.tracing === 'true' ? 'other' : null,
+                tracing: data.tracing
             };
 
         if (data.faucet && data.faucet.amount && data.faucet.interval)
@@ -569,13 +649,57 @@ router.post('/', authMiddleware, async (req, res, next) => {
         options['l1Explorer'] = data.l1Explorer;
         options['branding'] = data.branding;
 
-        if (!isStripeEnabled() || user.canUseDemoPlan) {
-            const stripePlan = await db.getStripePlan(getDefaultPlanSlug());
-            options['subscription'] = {
-                stripePlanId: stripePlan.id,
-                stripeId: null,
-                cycleEndsAt: new Date(0),
-                status: 'active'
+        const usingDefaultPlan = !data.plan && (!isStripeEnabled() || user.canUseDemoPlan);
+        const planSlug = usingDefaultPlan ? getDefaultPlanSlug() : data.plan;
+
+        let stripePlan;
+        if (planSlug) {
+            stripePlan = await db.getStripePlan(planSlug);
+            if (!stripePlan)
+                return managedError(new Error(`Can't find plan.`), req, res);
+
+            if (usingDefaultPlan || stripePlan.capabilities.skipBilling) {
+                options['subscription'] = {
+                    stripePlanId: stripePlan.id,
+                    stripeId: null,
+                    cycleEndsAt: new Date(0),
+                    status: 'active'
+                }
+            }
+
+            if (stripePlan.capabilities.customStartingBlock)
+                options['integrityCheckStartBlockNumber'] = data.fromBlock;
+
+            if (stripePlan.capabilities.volumeSubscription) {
+                const stripeSubscription = await db.getUserStripeSubscription(user.id);
+                let subscription;
+                if (stripeSubscription) {
+                    subscription = await stripe.subscriptions.retrieve(stripeSubscription.stripeId);
+                    const item = subscription.items.data[0];
+                    await stripe.subscriptionItems.update(item.id, {
+                        quantity: item.quantity + 1,
+                        proration_behavior: 'always_invoice'
+                    });
+                }
+                else {
+                    subscription = await stripe.subscriptions.create({
+                        customer: user.stripeCustomerId,
+                        items: [
+                            { price: stripePlan.stripePriceId, quantity: 1 }
+                        ]
+                    });
+                    await db.createUserStripeSubscription(user.id, subscription, stripePlan);
+                }
+
+                if (subscription)
+                    options['subscription'] = {
+                        stripePlanId: stripePlan.id,
+                        stripeId: subscription.id,
+                        cycleEndsAt: new Date(subscription.current_period_end * 1000),
+                        status: subscription.status
+                    };
+                else
+                    return managedError(new Error(`Couldn't create subscription.`), req, res);
             }
         }
 
@@ -583,15 +707,7 @@ router.post('/', authMiddleware, async (req, res, next) => {
         if (!explorer)
             return managedError(new Error('Could not create explorer.'), req, res);
 
-        if (!options['subscription'] && req.query.startSubscription) {
-            if (!data.plan)
-                return managedError(new Error('Missing plan parameter.'), req, res);
-
-            const stripePlan = await db.getStripePlan(data.plan);
-
-            if (!stripePlan || !stripePlan.public)
-                return managedError(new Error(`Can't find plan.`), req, res);
-
+        if (!usingDefaultPlan && stripePlan && req.query.startSubscription && !options['subscription']) {
             let stripeParams = {
                 customer: user.stripeCustomerId,
                 items: [
@@ -604,7 +720,7 @@ router.post('/', authMiddleware, async (req, res, next) => {
 
             if (!user.cryptoPaymentEnabled) {
                 const stripeCustomer = await stripe.customers.retrieve(user.stripeCustomerId);
-                if (!stripeCustomer.default_source)
+                if (!stripeCustomer.default_source && (!stripeCustomer.invoice_settings || !stripeCustomer.invoice_settings.default_payment_method))
                     return managedError(new Error(`There doesn't seem to be a payment method associated to your account. If you never subscribed to an explorer plan, please start your first one using the dashboard. You can also reach out to support on Discord or at contact@tryethernal.com.`), req, res);
             }
             else {
@@ -680,7 +796,7 @@ router.get('/search', async (req, res, next) => {
         };
 
         fields['token'] = capabilities.nativeToken ? explorer.token : 'ether';
-        fields['themes'] = capabilities.branding ? explorer.themes : { 'default': {}};
+        fields['themes'] = capabilities.branding ? explorer.themes : { 'light': {}};
 
         if (explorer.faucet && explorer.faucet.active)
             fields['faucet'] = {

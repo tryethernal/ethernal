@@ -1,17 +1,8 @@
-import flushPromises from 'flush-promises';
-import MockHelper from '../MockHelper';
-
 import TokenBalances from '@/components/TokenBalances.vue';
 
 describe('TokenBalances.vue', () => {
-    let helper;
-
-    beforeEach(() => {
-        helper = new MockHelper();
-    });
-
     it('Should display token balances', async () => {
-        jest.spyOn(helper.mocks.server, 'getTokenBalances')
+        vi.spyOn(server, 'getTokenBalances')
             .mockResolvedValue({
                 data: [
                     { token: '0x123', address: '0xabcd', currentBalance: '99999989989989999000000000000', tokenContract: { name: 'EthernalToken', tokenName: 'Ethernal', tokenSymbol: 'ETL', tokenDecimals: 18 }},
@@ -19,8 +10,10 @@ describe('TokenBalances.vue', () => {
                 ]
             });
 
-        const wrapper = helper.mountFn(TokenBalances, {
-            stubs: ['Hash-Link']
+        const wrapper = mount(TokenBalances, {
+            global: {
+                stubs: ['Hash-Link']
+            }
         });
         await new Promise(process.nextTick);
 
@@ -28,7 +21,7 @@ describe('TokenBalances.vue', () => {
     });
 
     it('Should hide the topbar if in dense mode', async () => {
-        jest.spyOn(helper.mocks.server, 'getTokenBalances')
+        vi.spyOn(server, 'getTokenBalances')
             .mockResolvedValue({
                 data: [
                     { token: '0x123', address: '0xabcd', currentBalance: '1', tokenContract: { name: 'EthernalToken', tokenName: 'Ethernal', tokenSymbol: 'ETL' }},
@@ -36,12 +29,14 @@ describe('TokenBalances.vue', () => {
                 ]
             });
 
-        const wrapper = helper.mountFn(TokenBalances, {
-            propsData: {
+        const wrapper = mount(TokenBalances, {
+            props: {
                 patterns: ['erc721'],
                 dense: true
             },
-            stubs: ['Hash-Link']
+            global: {
+                stubs: ['Hash-Link']
+            }
         });
         await new Promise(process.nextTick);
 

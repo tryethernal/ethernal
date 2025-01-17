@@ -9,7 +9,6 @@ if (getSentryDsn()) {
         dsn: getSentryDsn(),
         environment: getNodeEnv() || 'development',
         release: `ethernal@${getVersion()}`,
-        skipOpenTelemetrySetup: true,
         integrations: [
             nodeProfilingIntegration(),
             Sentry.postgresIntegration

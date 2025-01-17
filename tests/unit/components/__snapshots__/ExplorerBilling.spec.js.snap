@@ -1,83 +1,146 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ExplorerBilling.vue Should display button to start subscription 1`] = `
-<div class="flex-grow-1 v-card v-sheet v-sheet--outlined theme--light">
-  <div class="v-dialog__container">
-    <!---->
-  </div>
-  <div class="v-dialog__container">
-    <!---->
-  </div>
-  <div class="v-card__text"><button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Start Subscription</span></button></div>
-</div>
-`;
-
-exports[`ExplorerBilling.vue Should display explorer billing status 1`] = `
-<div class="flex-grow-1 v-card v-sheet v-sheet--outlined theme--light">
-  <div class="v-dialog__container">
-    <!---->
-  </div>
-  <div class="v-dialog__container">
-    <!---->
-  </div>
-  <div class="v-card__text">
-    <div>Plan: <b>Explorer 500</b></div>
-    <div>
-      Status: <b class="success--text">Active</b>
+exports[`ExplorerBilling.vue > Should display button to start subscription 1`] = `
+"<div class="v-card v-theme--light v-card--density-default v-card--variant-elevated flex-grow-1">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
+        </div>
+      </transition-stub>
       <!---->
     </div>
-    <div>
-      Monthly Transaction Quota:
-      <b>10 / 20</b> (Resetting Aug. 28th) | <a href="#">Manage Quota</a>
-    </div> <button type="button" class="mt-2 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Update Plan</span></button>
-    <!---->
   </div>
-</div>
+  <!---->
+  <!---->
+  <update-explorer-plan-modal-stub></update-explorer-plan-modal-stub>
+  <explorer-quota-management-modal-stub></explorer-quota-management-modal-stub>
+  <div class="v-card-text"><button type="button" class="v-btn v-btn--elevated v-theme--light bg-primary v-btn--density-default v-btn--size-default v-btn--variant-elevated"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+      <!----><span class="v-btn__content" data-no-activator="">Start Subscription</span>
+      <!---->
+      <!---->
+    </button></div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
 `;
 
-exports[`ExplorerBilling.vue Should display trial without card message 1`] = `
-<div class="flex-grow-1 v-card v-sheet v-sheet--outlined theme--light">
-  <div class="v-dialog__container">
-    <!---->
-  </div>
-  <div class="v-dialog__container">
-    <!---->
-  </div>
-  <div class="v-card__text">
-    <div>Plan: <b>Explorer 500</b></div>
-    <div>
-      Status: <b class="">Trial</b>
-      | Add a payment method to keep the explorer up after your trial period.
-    </div>
-    <div>
-      Monthly Transaction Quota:
-      <b>10 / 20</b> (Resetting Aug. 28th)
+exports[`ExplorerBilling.vue > Should display explorer billing status 1`] = `
+"<div class="v-card v-theme--light v-card--density-default v-card--variant-elevated flex-grow-1">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
       <!---->
-    </div> <button type="button" class="mt-2 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Update Plan</span></button> <button type="button" class="mt-2 ml-2 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Add Payment Method</span></button>
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
+        </div>
+      </transition-stub>
+      <!---->
+    </div>
   </div>
-</div>
+  <!---->
+  <!---->
+  <update-explorer-plan-modal-stub></update-explorer-plan-modal-stub>
+  <explorer-quota-management-modal-stub></explorer-quota-management-modal-stub>
+  <div class="v-card-text">
+    <div>Plan: <b>Explorer 500</b></div>
+    <div> Status: <b class="success--text">Active</b>
+      <!--v-if-->
+    </div>
+    <div> Monthly Transaction Quota: <b>10 / 20</b> (Resetting Invalid DateTime) | <a href="#">Manage Quota</a></div><button type="button" class="v-btn v-btn--elevated v-theme--light bg-primary v-btn--density-default v-btn--size-default v-btn--variant-elevated mt-2"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+      <!----><span class="v-btn__content" data-no-activator="">Update Plan</span>
+      <!---->
+      <!---->
+    </button>
+    <!--v-if-->
+  </div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
 `;
 
-exports[`ExplorerBilling.vue Should not display update button if sso 1`] = `
-<div class="flex-grow-1 v-card v-sheet v-sheet--outlined theme--light">
-  <div class="v-dialog__container">
-    <!---->
-  </div>
-  <div class="v-dialog__container">
-    <!---->
-  </div>
-  <div class="v-card__text">
-    <div>Plan: <b>Explorer 500</b></div>
-    <div>
-      Status: <b class="success--text">Active</b>
+exports[`ExplorerBilling.vue > Should display trial without card message 1`] = `
+"<div class="v-card v-theme--light v-card--density-default v-card--variant-elevated flex-grow-1">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
+        </div>
+      </transition-stub>
       <!---->
     </div>
-    <div>
-      Monthly Transaction Quota:
-      <b>10 / 20</b> (Resetting Aug. 28th) | <a href="#">Manage Quota</a>
-    </div>
-    <!---->
-    <!---->
   </div>
-</div>
+  <!---->
+  <!---->
+  <update-explorer-plan-modal-stub></update-explorer-plan-modal-stub>
+  <explorer-quota-management-modal-stub></explorer-quota-management-modal-stub>
+  <div class="v-card-text">
+    <div>Plan: <b>Explorer 500</b></div>
+    <div> Status: <b class="">Trial</b> | Add a payment method to keep the explorer up after your trial period. </div>
+    <div> Monthly Transaction Quota: <b>10 / 20</b> (Resetting Invalid DateTime)
+      <!--v-if-->
+    </div><button type="button" class="v-btn v-btn--elevated v-theme--light bg-primary v-btn--density-default v-btn--size-default v-btn--variant-elevated mt-2"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+      <!----><span class="v-btn__content" data-no-activator="">Update Plan</span>
+      <!---->
+      <!---->
+    </button><button type="button" class="v-btn v-btn--elevated v-theme--light bg-primary v-btn--density-default v-btn--size-default v-btn--variant-elevated mt-2 ml-2"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+      <!----><span class="v-btn__content" data-no-activator="">Add Payment Method</span>
+      <!---->
+      <!---->
+    </button>
+  </div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
+`;
+
+exports[`ExplorerBilling.vue > Should not display update button if sso 1`] = `
+"<div class="v-card v-theme--light v-card--density-default v-card--variant-elevated flex-grow-1">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
+        </div>
+      </transition-stub>
+      <!---->
+    </div>
+  </div>
+  <!---->
+  <!---->
+  <update-explorer-plan-modal-stub></update-explorer-plan-modal-stub>
+  <explorer-quota-management-modal-stub></explorer-quota-management-modal-stub>
+  <div class="v-card-text">
+    <div>Plan: <b>Explorer 500</b></div>
+    <div> Status: <b class="success--text">Active</b>
+      <!--v-if-->
+    </div>
+    <div> Monthly Transaction Quota: <b>10 / 20</b> (Resetting Invalid DateTime) | <a href="#">Manage Quota</a></div>
+    <!--v-if-->
+    <!--v-if-->
+  </div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
 `;

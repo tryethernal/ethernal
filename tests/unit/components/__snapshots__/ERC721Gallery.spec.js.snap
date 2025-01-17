@@ -1,64 +1,97 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ERC721Gallery.vue Should display info message if no minted tokens 1`] = `
-<div class="container container--fluid">
-  <!---->
-  <div class="row">
-    <div class="col">
-      <div class="v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__text">There are no tokens in this collection, or the contract is missing the totalSupply() method.</div>
+exports[`ERC721Gallery.vue > Should display info message if no minted tokens 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <!--v-if-->
+  <div class="v-row">
+    <div class="v-col">
+      <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!---->
+        <div class="v-card-text">There are no tokens in this collection, or the contract is missing the totalSupply() method.</div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
       </div>
     </div>
   </div>
-</div>
+</div>"
 `;
 
-exports[`ERC721Gallery.vue Should load cards from total supply 1`] = `
-<div class="container container--fluid">
-  <div class="row">
-    <!---->
-    <div class="col-sm-4 col-lg-2 col-6">
-      <erc721-token-card-stub index="0" contractaddress="Ox123"></erc721-token-card-stub>
+exports[`ERC721Gallery.vue > Should load cards from total supply 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <div class="v-row">
+    <!--v-if-->
+    <div class="v-col-sm-4 v-col-lg-2 v-col-6">
+      <e-r-c721-token-card-stub index="0" contractaddress="Ox123"></e-r-c721-token-card-stub>
     </div>
-    <div class="col-sm-4 col-lg-2 col-6">
-      <erc721-token-card-stub index="1" contractaddress="Ox123"></erc721-token-card-stub>
+    <div class="v-col-sm-4 v-col-lg-2 v-col-6">
+      <e-r-c721-token-card-stub index="1" contractaddress="Ox123"></e-r-c721-token-card-stub>
     </div>
-    <div class="col-sm-4 col-lg-2 col-6">
-      <erc721-token-card-stub index="2" contractaddress="Ox123"></erc721-token-card-stub>
+    <div class="v-col-sm-4 v-col-lg-2 v-col-6">
+      <e-r-c721-token-card-stub index="2" contractaddress="Ox123"></e-r-c721-token-card-stub>
     </div>
-    <div class="col-sm-4 col-lg-2 col-6">
-      <erc721-token-card-stub index="3" contractaddress="Ox123"></erc721-token-card-stub>
+    <div class="v-col-sm-4 v-col-lg-2 v-col-6">
+      <e-r-c721-token-card-stub index="3" contractaddress="Ox123"></e-r-c721-token-card-stub>
     </div>
-    <div class="col-sm-4 col-lg-2 col-6">
-      <erc721-token-card-stub index="4" contractaddress="Ox123"></erc721-token-card-stub>
+    <div class="v-col-sm-4 v-col-lg-2 v-col-6">
+      <e-r-c721-token-card-stub index="4" contractaddress="Ox123"></e-r-c721-token-card-stub>
     </div>
-    <div class="col-sm-4 col-lg-2 col-6">
-      <erc721-token-card-stub index="5" contractaddress="Ox123"></erc721-token-card-stub>
+    <div class="v-col-sm-4 v-col-lg-2 v-col-6">
+      <e-r-c721-token-card-stub index="5" contractaddress="Ox123"></e-r-c721-token-card-stub>
     </div>
-    <div class="col-sm-4 col-lg-2 col-6">
-      <erc721-token-card-stub index="6" contractaddress="Ox123"></erc721-token-card-stub>
+    <div class="v-col-sm-4 v-col-lg-2 v-col-6">
+      <e-r-c721-token-card-stub index="6" contractaddress="Ox123"></e-r-c721-token-card-stub>
     </div>
-    <div class="col-sm-4 col-lg-2 col-6">
-      <erc721-token-card-stub index="7" contractaddress="Ox123"></erc721-token-card-stub>
+    <div class="v-col-sm-4 v-col-lg-2 v-col-6">
+      <e-r-c721-token-card-stub index="7" contractaddress="Ox123"></e-r-c721-token-card-stub>
     </div>
-    <div class="col-sm-4 col-lg-2 col-6">
-      <erc721-token-card-stub index="8" contractaddress="Ox123"></erc721-token-card-stub>
+    <div class="v-col-sm-4 v-col-lg-2 v-col-6">
+      <e-r-c721-token-card-stub index="8" contractaddress="Ox123"></e-r-c721-token-card-stub>
     </div>
-    <div class="col-sm-4 col-lg-2 col-6">
-      <erc721-token-card-stub index="9" contractaddress="Ox123"></erc721-token-card-stub>
+    <div class="v-col-sm-4 v-col-lg-2 v-col-6">
+      <e-r-c721-token-card-stub index="9" contractaddress="Ox123"></e-r-c721-token-card-stub>
     </div>
   </div>
-  <div class="row">
-    <div class="col">
-      <nav role="navigation" aria-label="Pagination Navigation">
-        <ul class="v-pagination theme--light">
-          <li><button disabled="disabled" type="button" aria-label="Previous page" class="v-pagination__navigation v-pagination__navigation--disabled"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-left theme--light"></i></button></li>
-          <li><button type="button" aria-current="true" aria-label="Current Page, Page 1" class="v-pagination__item v-pagination__item--active primary">1</button></li>
-          <li><button disabled="disabled" type="button" aria-label="Next page" class="v-pagination__navigation v-pagination__navigation--disabled"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></button></li>
+  <div class="v-row">
+    <div class="v-col">
+      <nav class="v-pagination v-theme--light" role="navigation" aria-label="Pagination Navigation" data-test="v-pagination-root">
+        <ul class="v-pagination__list">
+          <!---->
+          <li class="v-pagination__prev" data-test="v-pagination-prev"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text" disabled="" aria-label="Previous page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+              <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-chevron-left mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+              <!---->
+              <!---->
+            </button></li>
+          <li class="v-pagination__item v-pagination__item--is-active" data-test="v-pagination-item"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text" disabled="" ellipsis="false" aria-current="true" aria-label="Page 1, Current page"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+              <!----><span class="v-btn__content" data-no-activator="">1</span>
+              <!---->
+              <!---->
+            </button></li>
+          <li class="v-pagination__next" data-test="v-pagination-next"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text" disabled="" aria-label="Next page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+              <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-chevron-right mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+              <!---->
+              <!---->
+            </button></li>
+          <!---->
         </ul>
       </nav>
     </div>
   </div>
-  <!---->
-</div>
+  <!--v-if-->
+</div>"
 `;

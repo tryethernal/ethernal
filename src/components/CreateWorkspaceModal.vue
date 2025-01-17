@@ -1,17 +1,16 @@
 <template>
 <v-dialog v-model="dialog" max-width="700">
     <v-card>
-        <v-card-title class="headline">
-            New Workspace
-            <v-spacer></v-spacer>
-            <v-btn icon @click="close(false)"><v-icon>mdi-close</v-icon></v-btn>
+        <v-card-title class="d-flex justify-space-between align-center">
+            <h4>Create Workspace</h4>
+            <v-btn color="grey" variant="text" icon="mdi-close" @click="close(false)"></v-btn>
         </v-card-title>
         <Create-Workspace @workspaceCreated="onWorkspaceCreated" @goToBilling="goToBilling" />
     </v-card>
 </v-dialog>
 </template>
 <script>
-import CreateWorkspace from './CreateWorkspace';
+import CreateWorkspace from './CreateWorkspace.vue';
 
 export default {
     name: 'CreateWorkspaceModal',
@@ -37,7 +36,7 @@ export default {
             resolve(workspaceCreated);
         },
         onWorkspaceCreated: function(workspaceData) {
-            this.server.setCurrentWorkspace(workspaceData.name)
+            this.$server.setCurrentWorkspace(workspaceData.name)
                 .then(() => document.location = '/overview');
         },
         goToBilling: function() {

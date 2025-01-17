@@ -34,6 +34,15 @@ jest.mock('../../../lib/env', () => ({
     getRedisTls: jest.fn(() => 'a'),
     getRedisTlsSentinel: jest.fn(() => 'a'),
     getMaxV2DexPairsForTrial: jest.fn(() => 100),
-    getSentryDsn: jest.fn(() => 'a'),
-    getVersion: jest.fn(() => 'a')
+    getSentryDsn: jest.fn(() => null),
+    getVersion: jest.fn(() => 'a'),
+    getRedisUrl: jest.fn(() => 'a'),
+    getRedisFamily: jest.fn(() => 4),
+    queueMonitoringMaxProcessingTime: jest.fn(() => 60),
+    queueMonitoringHighProcessingTimeThreshold: jest.fn(() => 20),
+    queueMonitoringHighWaitingJobCountThreshold: jest.fn(() => 50),
+    queueMonitoringMaxWaitingJobCount: jest.fn(() => 100),
+    maxTimeWithoutEnqueuedJob: jest.fn(() => 60),
+    maxBlockNumberDiff: jest.fn(() => 10),
+    getOpsgenieApiKey: jest.fn(() => 'a'),
 }));

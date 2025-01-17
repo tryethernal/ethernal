@@ -4,6 +4,8 @@ const mockSubscriptionRetrieve = jest.fn();
 const mockSubscriptionUpdate = jest.fn();
 const mockSubscriptionItemDelete = jest.fn();
 const mockInvoiceListUpcomingLines = jest.fn();
+const mockSubscriptionItemUpdate = jest.fn();
+
 jest.mock('stripe', () => {
     return jest.fn().mockImplementation(() => {
         return {
@@ -16,7 +18,8 @@ jest.mock('stripe', () => {
                 update: mockSubscriptionUpdate
             },
             subscriptionItems: {
-                del: mockSubscriptionItemDelete
+                del: mockSubscriptionItemDelete,
+                update: mockSubscriptionItemUpdate
             },
             invoices: {
                 listUpcomingLines: mockInvoiceListUpcomingLines
@@ -34,7 +37,7 @@ require('../mocks/lib/flags');
 require('../mocks/lib/env');
 require('../mocks/middlewares/auth');
 const { Explorer } = require('../mocks/models');
-const { bulkEnqueue } = require('../../lib/queue');
+const { enqueue, bulkEnqueue } = require('../../lib/queue');
 const db = require('../../lib/firebase');
 const PM2 = require('../../lib/pm2');
 const { ProviderConnector, DexConnector } = require('../../lib/rpc');
@@ -691,8 +694,73 @@ describe(`PUT ${BASE_URL}/:id/subscription`, () => {
     });
 });
 
+describe(`POST ${BASE_URL}/:id/subscription`, () => {
+    it('Should return a 200 if the subscription is created', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1 });
+        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ id: 1, public: true, stripePriceId: 'priceId', capabilities: { skipBilling: true }});
+
+        request.post(`${BASE_URL}/1/subscription`)
+            .send({ data: { planSlug: 'slug' }})
+            .expect(200)
+            .then(() => {
+                expect(db.createExplorerSubscription).toHaveBeenCalledWith(1, 1, 1);
+               done();
+            });
+    });
+
+    it('Should return an error if no explorer found', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce(null);
+
+        request.post(`${BASE_URL}/1/subscription`)
+            .send({ data: { planSlug: 'slug' }})
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual(`Can't find explorer.`);
+                done();
+            });
+    });
+
+    it('Should return an error if there is already a subscription', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, stripeSubscription: { stripePlan: { slug: 'slug' }}});
+
+        request.post(`${BASE_URL}/1/subscription`)
+            .send({ data: { planSlug: 'slug' }})
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual(`Explorer already has a subscription.`);
+                done();
+            });
+    });
+
+    it('Should return an error if cannot find plan', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1 });
+        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce(null);
+
+        request.post(`${BASE_URL}/1/subscription`)
+            .send({ data: { planSlug: 'slug' }})
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual(`Can't find plan.`);
+                done();
+            });
+    });
+
+    it('Should return an error if plan does not have skipBilling capability', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1 });
+        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ id: 1, public: true, stripePriceId: 'priceId', capabilities: {}});
+
+        request.post(`${BASE_URL}/1/subscription`)
+            .send({ data: { planSlug: 'slug' }})
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual(`This plan cannot be used via the API at the moment. Start the subscription using the dashboard, or reach out to contact@tryethernal.com.`);
+                done();
+            });
+    });
+});
+
 describe(`DELETE ${BASE_URL}/:id/subscription`, () => {
-    it('Should  cancel the subscription without calling stripe if no stripeId', (done) => {
+    it('Should  delete the subscription without calling stripe if no stripeId', (done) => {
         jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, stripeSubscription: { stripePlan: { slug: 'slug' }}});
 
         request.delete(`${BASE_URL}/1/subscription`)
@@ -701,7 +769,7 @@ describe(`DELETE ${BASE_URL}/:id/subscription`, () => {
             .then(() => {
                 expect(mockSubscriptionRetrieve).not.toHaveBeenCalled();
                 expect(mockSubscriptionUpdate).not.toHaveBeenCalled();
-                expect(db.cancelExplorerSubscription).toHaveBeenCalled();
+                expect(db.deleteExplorerSubscription).toHaveBeenCalledWith(1, 1);
                 done();
             });
     });
@@ -796,12 +864,93 @@ describe(`POST ${BASE_URL}/1/cryptoSubscription`, () => {
 });
 
 describe(`DELETE ${BASE_URL}/:id`, () => {
-    it('Should return 200', (done) => {
-        jest.spyOn(db, 'deleteExplorer').mockResolvedValueOnce();
+    it('Should update the subscription for volume pricing', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, stripeSubscription: { stripeId: 'subscriptionId', stripePlan: { slug: 'slug', capabilities: { volumeSubscription: true } }}});
+        mockSubscriptionRetrieve.mockResolvedValueOnce({
+            id: 'subscriptionId',
+            items: {
+                data: [
+                    { id: 'itemId', quantity: 2 }
+                ]
+            }
+        });
 
-        request.delete(`${BASE_URL}/123`)
+        request.delete(`${BASE_URL}/1?cancelSubscription=true`)
             .expect(200)
-            .then(() => done());
+            .then(() => {
+                expect(mockSubscriptionItemUpdate).toHaveBeenCalledWith('itemId', { quantity: 1, proration_behavior: 'always_invoice' });
+                expect(db.deleteExplorerSubscription).toHaveBeenCalledWith(1, 1);
+                expect(db.deleteExplorer).toHaveBeenCalledWith(1, 1);
+                done();
+            });
+    });
+
+    it('Should return 200 if it only needs to delete the explorer', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, stripeSubscription: null });
+
+        request.delete(`${BASE_URL}/1`)
+            .expect(200)
+            .then(() => {
+                expect(db.deleteExplorer).toHaveBeenCalledWith(1, 1);
+                done();
+            });
+    });
+
+    it('Should cancel the subscription with stripe and delete the explorer', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, stripeSubscription: { stripeId: 'subscriptionId', stripePlan: { slug: 'slug', capabilities: {} }}});
+        mockSubscriptionRetrieve.mockResolvedValueOnce({ id: 'subscriptionId' });
+
+        request.delete(`${BASE_URL}/1?cancelSubscription=true`)
+            .expect(200)
+            .then(() => {
+                expect(db.cancelExplorerSubscription).toHaveBeenCalledWith(1, 1);
+                expect(db.deleteExplorer).toHaveBeenCalledWith(1, 1);
+                done();
+            });
+    });
+
+    it('Should delete the subscription if no stripe id', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, stripeSubscription: { stripePlan: { slug: 'slug', capabilities: {} }}});
+
+        request.delete(`${BASE_URL}/1?cancelSubscription=true`)
+            .expect(200)
+            .then(() => {
+                expect(db.deleteExplorerSubscription).toHaveBeenCalledWith(1, 1);
+                expect(db.deleteExplorer).toHaveBeenCalledWith(1, 1);
+                done();
+            });
+    });
+
+    it('Should return an error if trying to delete an explorer with a subscription without the cancelSubscription param', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, stripeSubscription: { stripeId: 'subscriptionId' }});
+
+        request.delete(`${BASE_URL}/1`)
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual(`Can't delete an explorer with an active subscription.`);
+                done();
+            });
+    });
+
+    it('Should delete the workspace if the flag is passed', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, workspaceId: 1, stripeSubscription: { stripePlan: { slug: 'slug', capabilities: {} }}});
+
+        request.delete(`${BASE_URL}/1?cancelSubscription=true&deleteWorkspace=true`)
+            .expect(200)
+            .then(() => {
+                expect(db.deleteExplorerSubscription).toHaveBeenCalledWith(1, 1);
+                expect(db.deleteExplorer).toHaveBeenCalledWith(1, 1);
+                expect(db.markWorkspaceForDeletion).toHaveBeenCalledWith(1);
+                expect(enqueue).toHaveBeenCalledWith('workspaceReset', 'workspaceReset-1', {
+                    workspaceId: 1,
+                    from: expect.any(Date),
+                    to: expect.any(Date)
+                });
+                expect(enqueue).toHaveBeenCalledWith('deleteWorkspace', 'deleteWorkspace-1', {
+                    workspaceId: 1
+                });
+                done();
+            });
     });
 });
 
@@ -931,12 +1080,131 @@ describe(`POST ${BASE_URL}/:id/settings`, () => {
 });
 
 describe(`POST ${BASE_URL}`, () => {
-    it('Should create both the explorer and workspace', (done) => {
+    it('Should update a volume subscription', (done) => {
+        jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, stripeCustomerId: 'customerId', workspaces: [{ id: 2 }] });
+        jest.spyOn(db, 'getUserStripeSubscription').mockResolvedValueOnce({ id: '1234' });
+        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ stripePriceId: 'priceId', public: false, id: 1, capabilities: { volumeSubscription: true }});
+        jest.spyOn(db, 'createExplorerFromOptions').mockResolvedValueOnce({ id: 1 });
+
+        mockSubscriptionRetrieve.mockResolvedValueOnce({
+            id: '1234',
+            status: 'active',
+            current_period_end: 1,
+            items: {
+                data: [
+                    { id: '1234', quantity: 1 }
+                ]
+            }
+        });
+
+        mockSubscriptionUpdate.mockResolvedValueOnce({
+            id: '1234',
+            status: 'active',
+            current_period_end: 1
+        });
+
+        request.post(BASE_URL)
+            .send({ data: { rpcServer: 'test.rpc', name: 'explorer', plan: 'slug' }})
+            .expect(200)
+            .then(({ body }) => {
+                expect(mockSubscriptionItemUpdate).toHaveBeenCalledWith('1234',
+                    { quantity: 2, proration_behavior: 'always_invoice' }
+                );
+                expect(db.createExplorerFromOptions).toHaveBeenCalledWith(1, {
+                    rpcServer: 'test.rpc',
+                    name: 'explorer',
+                    networkId: 1,
+                    subscription: {
+                        stripePlanId: 1,
+                        stripeId: '1234',
+                        cycleEndsAt: new Date(1000),
+                        status: 'active'
+                    }
+                });
+                expect(body).toEqual({ id: 1 });
+                done();
+            });
+    });
+
+    it('Should create a volume subscription', (done) => {
+        jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, stripeCustomerId: 'customerId', workspaces: [{ id: 2 }] });
+        jest.spyOn(db, 'getUserStripeSubscription').mockResolvedValueOnce(null);
+        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ stripePriceId: 'priceId', public: false, id: 1, capabilities: { volumeSubscription: true }});
+        jest.spyOn(db, 'createExplorerFromOptions').mockResolvedValueOnce({ id: 1 });
+
+        mockSubscriptionCreate.mockResolvedValueOnce({
+            id: '1234',
+            status: 'active',
+            current_period_end: 1
+        });
+
+        request.post(BASE_URL)
+            .send({ data: { rpcServer: 'test.rpc', name: 'explorer', plan: 'slug' }})
+            .expect(200)
+            .then(({ body }) => {
+                expect(db.createExplorerFromOptions).toHaveBeenCalledWith(1, {
+                    rpcServer: 'test.rpc',
+                    name: 'explorer',
+                    networkId: 1,
+                    subscription: {
+                        stripePlanId: 1,
+                        stripeId: '1234',
+                        cycleEndsAt: new Date(1000),
+                        status: 'active'
+                    }
+                });
+                expect(body).toEqual({ id: 1 });
+                done();
+            });
+    });
+
+    it('Should create the explorer with a starting block and a geth tracer', (done) => {
         jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, workspaces: [{ id: 2 }] });
+        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ public: true, id: 1, capabilities: { customStartingBlock: true }});
         jest.spyOn(db, 'createExplorerFromOptions').mockResolvedValueOnce({ id: 1 });
 
         request.post(BASE_URL)
-            .send({ data: { rpcServer: 'test.rpc', name: 'explorer' }})
+            .send({ data: { tracing: 'geth', rpcServer: 'test.rpc', name: 'explorer', plan: 'slug', fromBlock: 1 }})
+            .expect(200)
+            .then(({ body }) => {
+                expect(db.createExplorerFromOptions).toHaveBeenCalledWith(1, {
+                    rpcServer: 'test.rpc',
+                    name: 'explorer',
+                    networkId: 1,
+                    integrityCheckStartBlockNumber: 1,
+                    tracing: 'geth'
+                });
+                expect(body).toEqual({ id: 1 });
+                done();
+            });
+    });
+
+    it('Should ignore the starting block param', (done) => {
+        jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, workspaces: [{ id: 2 }] });
+        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ public: true, id: 1, capabilities: {}});
+        jest.spyOn(db, 'createExplorerFromOptions').mockResolvedValueOnce({ id: 1 });
+
+        request.post(BASE_URL)
+            .send({ data: { rpcServer: 'test.rpc', name: 'explorer', plan: 'slug', fromBlock: 1 }})
+            .expect(200)
+            .then(({ body }) => {
+                expect(db.createExplorerFromOptions).toHaveBeenCalledWith(1, {
+                    rpcServer: 'test.rpc',
+                    name: 'explorer',
+                    networkId: 1
+                });
+                expect(body).toEqual({ id: 1 });
+                done();
+            });
+    });
+
+    it('Should create both the explorer and workspace', (done) => {
+        jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, workspaces: [{ id: 2 }] });
+        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ public: true, id: 1, capabilities: {}});
+        jest.spyOn(db, 'createExplorerFromOptions').mockResolvedValueOnce({ id: 1 });
+
+        request.post(BASE_URL)
+            .send({ data: { rpcServer: 'test.rpc', name: 'explorer', plan: 'slug' }})
             .expect(200)
             .then(({ body }) => {
                 expect(body).toEqual({ id: 1 });
@@ -967,7 +1235,8 @@ describe(`POST ${BASE_URL}`, () => {
     });
 
     it('Should return an error if explorer cannot be created', (done) => {
-        jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, workspaces: [{ id: 2 }] });
+        jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, workspaces: [{ id: 2 }], canUseDemoPlan: true });
+        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ public: true, id: 1, capabilities: {}});
         jest.spyOn(db, 'createExplorerFromOptions').mockResolvedValueOnce(null);
 
         request.post(BASE_URL)
@@ -1055,7 +1324,7 @@ describe(`POST ${BASE_URL}`, () => {
     it('Should not start a subscription if crypto payment not enabled & no payment method', (done) => {
         jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, stripeCustomerId: 'customerId', workspaces: [{ id: 1, rpcServer: 'test' }] });
         jest.spyOn(db, 'createExplorerFromOptions').mockResolvedValueOnce({ id: 1 });
-        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ public: true, stripePriceId: 'priceId' });
+        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ public: true, stripePriceId: 'priceId', capabilities: {} });
         mockCustomersRetrieve.mockResolvedValueOnce({ default_source: null })
 
         request.post(`${BASE_URL}?startSubscription=true`)
@@ -1120,14 +1389,14 @@ describe(`GET ${BASE_URL}/search`, () => {
     it('Should return the correct explorer if this is a base subdomain', (done) => {
         jest.spyOn(db, 'getPublicExplorerParamsBySlug').mockResolvedValueOnce({
             stripeSubscription: { stripePlan: { capabilities: { nativeToken: true }}},
-            slug: 'ethernal', name: 'Ethernal Explorer', themes: { default: {}}
+            slug: 'ethernal', name: 'Ethernal Explorer', themes: { light: {}}
         });
         request.get(`${BASE_URL}/search?domain=ethernal.ethernal.com`)
             .expect(200)
             .then(({ body }) => {
                 expect(body).toEqual({
                     explorer: {
-                        slug: 'ethernal', name: 'Ethernal Explorer', themes: { default: {}}
+                        slug: 'ethernal', name: 'Ethernal Explorer', themes: { light: {}}
                     }
                 });
                 done();
@@ -1137,14 +1406,14 @@ describe(`GET ${BASE_URL}/search`, () => {
     it('Should return the corresponding explorer when passed a domain', (done) => {
         jest.spyOn(db, 'getPublicExplorerParamsByDomain').mockResolvedValueOnce({
             stripeSubscription: { stripePlan: { capabilities: { nativeToken: true, totalSupply: '1' }}},
-            slug: 'ethernal', name: 'Ethernal Explorer', themes: { default: {}}
+            slug: 'ethernal', name: 'Ethernal Explorer', themes: { light: {}}
         });
         request.get(`${BASE_URL}/search?domain=explorer.domain.com`)
             .expect(200)
             .then(({ body }) => {
                 expect(body).toEqual({
                     explorer: {
-                        slug: 'ethernal', name: 'Ethernal Explorer', themes: { default: {}}
+                        slug: 'ethernal', name: 'Ethernal Explorer', themes: { light: {}}
                     }
                 });
                 done();

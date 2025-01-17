@@ -1,32 +1,34 @@
 <template>
-    <v-data-table
+    <v-data-table-server
+        class="hide-table-count"
         :dense="dense"
         :loading="loading"
         :items="transactions"
-        :sort-by="currentOptions.sortBy[0]"
+        :items-length="0"
+        :sort-by="currentOptions.sortBy"
         :must-sort="true"
-        :sort-desc="true"
-        :server-items-length="transactionCount"
         :headers="headers"
         :hide-default-footer="dense"
         :hide-default-header="dense"
-        :item-class= "rowClasses"
-        :footer-props="{
-            itemsPerPageOptions: [10, 25, 100]
-        }"
+        :row-props="rowClasses"
+        no-data-text="No transactions indexed yet"
+        last-icon=""
+        first-icon=""
+        :items-per-page-options="[
+            { value: 10, title: '10' },
+            { value: 25, title: '25' },
+            { value: 100, title: '100' }
+        ]"
         item-key="hash"
         @update:options="getTransactions">
         <template v-if="!withCount" v-slot:[`footer.page-text`]=""></template>
-        <template v-slot:no-data>
-            No transactions found
-        </template>
         <template v-slot:item.hash="{ item }">
-            <v-tooltip top>
-                <template v-slot:activator="{ on, attrs }">
-                    <v-icon v-bind="attrs" v-on="on" small v-show="txStatus(item) == 'succeeded'" color="success lighten-1" class="mr-2">mdi-check-circle</v-icon>
-                    <v-icon v-bind="attrs" v-on="on" small v-show="txStatus(item) == 'failed'" color="error lighten-1" class="mr-2">mdi-alert-circle</v-icon>
-                    <v-icon v-bind="attrs" v-on="on" small v-show="txStatus(item) == 'unknown'" color="grey lighten-1" class="mr-2">mdi-help-circle</v-icon>
-                    <v-progress-circular v-bind="attrs" v-on="on" size="16" width="2" indeterminate color="primary" v-show="txStatus(item) == 'syncing'" class="mr-2"></v-progress-circular>
+            <v-tooltip location="left">
+                <template v-slot:activator="{ props }">
+                    <v-icon v-bind="props" size="small" v-show="txStatus(item) == 'succeeded'" color="success-lighten-1" class="mr-2">mdi-check-circle</v-icon>
+                    <v-icon v-bind="props" size="small" v-show="txStatus(item) == 'failed'" color="error-lighten-1" class="mr-2">mdi-alert-circle</v-icon>
+                    <v-icon v-bind="props" size="small" v-show="txStatus(item) == 'unknown'" color="grey-lighten-1" class="mr-2">mdi-help-circle</v-icon>
+                    <v-progress-circular v-bind="props" size="16" width="2" indeterminate color="primary" v-show="txStatus(item) == 'syncing'" class="mr-2"></v-progress-circular>
                 </template>
                 <span v-show="txStatus(item) == 'succeeded'">Succeeded Transaction</span>
                 <span v-show="txStatus(item) == 'failed'">Failed Transaction</span>
@@ -36,22 +38,22 @@
             <Hash-Link :type="'transaction'" :hash="item.hash" :xsHash="true" />
         </template>
         <template v-slot:item.method="{ item }">
-            <v-tooltip v-if="item.methodDetails && Object.keys(item.methodDetails).length" top :open-delay="150" color="grey darken-1" content-class="tooltip">
-                <template v-slot:activator="{ on, attrs }">
-                    <v-chip class="primary lighten-1" v-bind="attrs" v-on="on" label small>
+            <v-tooltip v-if="item.methodDetails && Object.keys(item.methodDetails).length" location="top" :open-delay="150" color="grey-darken-1" content-class="tooltip">
+                <template v-slot:activator="{ props }">
+                    <v-chip color="primary-lighten-1" label v-bind="props" size="small" variant="flat">
                         <span class="color--text methodName">{{ getMethodName(item) }}</span>
                     </v-chip>
                 </template>
                 <span style="white-space: pre">{{ getMethodLabel(item.methodDetails) }}</span>
             </v-tooltip>
             <span v-else>
-                <v-chip label small color="color--text primary lighten-1" v-show="getMethodName(item)">{{ getMethodName(item) }}</v-chip>
+                <v-chip variant="flat" label size="small" color="primary-lighten-1" v-show="getMethodName(item)">{{ getMethodName(item) }}</v-chip>
             </span>
         </template>
         <template v-slot:item.timestamp="{ item }">
             <div class="my-2 text-left">
-                {{ moment(item.timestamp) | moment('MM/DD h:mm:ss A') }}<br>
-                <small>{{ moment(item.timestamp).fromNow() }}</small>
+                {{ $dt.shortDate(item.timestamp) }}<br>
+                <small>{{ $dt.fromNow(item.timestamp) }}</small>
             </div>
         </template>
         <template v-slot:item.from="{ item }">
@@ -63,7 +65,7 @@
                 </div>
             </template>
             <template v-else>
-                <v-chip x-small class="mr-2" v-if="item.from && item.from === currentAddress">self</v-chip>
+                <v-chip size="x-small" class="mr-2" v-if="item.from && item.from === currentAddress">self</v-chip>
                 <Hash-Link :type="'address'" :hash="item.from" />
             </template>
         </template>
@@ -71,25 +73,25 @@
             <router-link style="text-decoration: none;" :to="'/block/' + item.blockNumber" :contract="item.contract">{{ commify(item.blockNumber) }}</router-link>
         </template>
         <template v-slot:item.to="{ item }">
-            <v-chip x-small class="mr-2" v-if="item.to && item.to === currentAddress">self</v-chip>
+            <v-chip size="x-small" class="mr-2" v-if="item.to && item.to === currentAddress">self</v-chip>
             <Hash-Link :type="'address'" :hash="item.to" :withTokenName="true" :withName="true" :contract="item.contract" />
         </template>
         <template v-slot:item.value="{ item }">
-            {{ item.value | fromWei('ether', chain.token, false, 4) }}
+            {{ $fromWei(item.value, 'ether', currentWorkspaceStore.chain.token, false, 4) }}
         </template>
         <template v-slot:item.fee="{ item }">
-            <span v-if="item.receipt">{{ getGasPriceFromTransaction(item) * (item.gas || item.receipt.gasUsed)  | fromWei('ether', chain.token, false, 4) }}</span>
+            <span v-if="item.receipt">{{ $fromWei(getGasPriceFromTransaction(item) * (item.gas || item.receipt.gasUsed), 'ether', currentWorkspaceStore.chain.token, false, 4) }}</span>
         </template>
-    </v-data-table>
+    </v-data-table-server>
 </template>
 
 <script>
 const moment = require('moment');
 const ethers = require('ethers');
-const { getGasPriceFromTransaction } = require('../lib/utils');
-import { mapGetters } from 'vuex';
-import FromWei from '../filters/FromWei.js';
+import { getGasPriceFromTransaction } from '../lib/utils';
+import { mapStores } from 'pinia';
 import HashLink from './HashLink.vue';
+import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
 
 const DEBOUNCING_DELAY = 3000;
 
@@ -99,12 +101,9 @@ export default {
     components: {
         HashLink
     },
-    filters: {
-        FromWei
-    },
     data: () => ({
         headers: [],
-        currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['timestamp'], sortDesc: [true] },
+        currentOptions: { page: 1, itemsPerPage: 10, sortBy: [{ key: 'timestamp', order: 'desc' }] },
         transactions: [],
         transactionCount: 0,
         loading: false,
@@ -112,9 +111,9 @@ export default {
         debounced: false
     }),
     mounted() {
-        this.currentOptions.sortBy = [this.blockNumber ? 'timestamp' : 'blockNumber'];
+        this.currentOptions.orderBy = this.blockNumber ? 'timestamp' : 'blockNumber';
 
-        this.pusherUnsubscribe = this.pusher.onNewTransaction(transaction => {
+        this.pusherUnsubscribe = this.$pusher.onNewTransaction(transaction => {
             if (this.blockNumber) {
                 if (transaction.blockNumber == this.blockNumber)
                     this.getTransactions(this.currentOptions);
@@ -129,20 +128,20 @@ export default {
 
         if (this.dense)
             this.headers = [
-                { text: 'Txn Hash', value: 'hash', align: 'start' },
-                { text: 'Mined On', value: 'timestamp' },
-                { text: 'From', value: 'from' }
+                { title: 'Txn Hash', key: 'hash', align: 'start' },
+                { title: 'Mined On', key: 'timestamp' },
+                { title: 'From', key: 'from' }
             ];
         else
             this.headers = [
-                { text: 'Txn Hash', value: 'hash', align: 'start' },
-                { text: 'Method', value: 'method', sortable: false },
-                { text: 'Block', value: 'blockNumber', sortable: !this.blockNumber },
-                { text: 'Mined On', value: 'timestamp' },
-                { text: 'From', value: 'from' },
-                { text: 'To', value: 'to' },
-                { text: 'Value', value: 'value' },
-                { text: 'Fee', value: 'fee', sortable: false }
+                { title: 'Txn Hash', key: 'hash', align: 'start' },
+                { title: 'Method', key: 'method', sortable: false },
+                { title: 'Block', key: 'blockNumber', sortable: !this.blockNumber },
+                { title: 'Mined On', key: 'timestamp' },
+                { title: 'From', key: 'from' },
+                { title: 'To', key: 'to' },
+                { title: 'Value', key: 'value' },
+                { title: 'Fee', key: 'fee', sortable: false }
             ];
     },
     destroyed() {
@@ -172,7 +171,7 @@ export default {
 
             return 'failed';
         },
-        getTransactions(newOptions) {
+        getTransactions({ page, itemsPerPage, sortBy }) {
             this.loading = true;
             if (!this.lastUpdatedAt)
                 this.lastUpdatedAt = Date.now();
@@ -180,26 +179,26 @@ export default {
                 this.debounced = true;
                 return setTimeout(() => {
                     this.lastUpdatedAt = Date.now();
-                    this.getTransactions(newOptions);
+                    const { page, itemsPerPage, sortBy } = this.currentOptions;
+                    this.getTransactions({ page, itemsPerPage, sortBy });
                     this.debounced = false;
                 }, DEBOUNCING_DELAY);
             }
 
-            if (newOptions)
-                this.currentOptions = newOptions;
+            if (!page || !itemsPerPage || !sortBy || !sortBy.length)
+                return this.loading = false;
 
-            const options = {
-                page: this.currentOptions.page,
-                itemsPerPage: this.currentOptions.itemsPerPage,
-                order: this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc',
-                orderBy: this.currentOptions.sortBy[0]
+            this.currentOptions = {
+                page,
+                itemsPerPage,
+                sortBy
             };
 
             const query = this.blockNumber ?
-                this.server.getBlockTransactions(this.blockNumber, options, !this.dense && !!this.withCount) :
+                this.$server.getBlockTransactions(this.blockNumber, { page, itemsPerPage, orderBy: sortBy[0].key, order: sortBy[0].order }, !this.dense && !!this.withCount) :
                     this.address ?
-                        this.server.getAddressTransactions(this.address, options, !this.dense && !!this.withCount) :
-                        this.server.getTransactions(options, !this.dense && !!this.withCount);
+                        this.$server.getAddressTransactions(this.address, { page, itemsPerPage, orderBy: sortBy[0].key, order: sortBy[0].order }, !this.dense && !!this.withCount) :
+                        this.$server.getTransactions({ page, itemsPerPage, orderBy: sortBy[0].key, order: sortBy[0].order }, !this.dense && !!this.withCount);
 
             query.then(({ data }) => {
                 this.transactions = data.items;
@@ -228,9 +227,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-            'chain'
-        ])
+        ...mapStores(useCurrentWorkspaceStore)
     }
 }
 </script>
