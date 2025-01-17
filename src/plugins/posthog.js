@@ -1,12 +1,15 @@
 import posthog from "posthog-js";
+import { useEnvStore } from '../stores/env';
 
 export default {
-    install(Vue, options) {
-        const store = options.store;
-        Vue.prototype.$posthog = store.getters.hasAnalyticsEnabled ?
+    install(app) {
+        const envStore = useEnvStore();
+        const $posthog = envStore.hasAnalyticsEnabled ?
             posthog.init(
-                store.getters.postHogApiKey, { api_host: store.getters.postHogApiHost }
+                envStore.postHogApiKey, { api_host: envStore.postHogApiHost }
             ) :
             { capture: () => {}, reset: () => {}, identify: () => {} }
+
+        app.config.globalProperties.$posthog = $posthog;
     }
 };

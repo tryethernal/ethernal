@@ -1,28 +1,30 @@
 <template>
-    <v-card outlined class="mb-4">
+    <v-card class="mb-4">
         <Create-Workspace-Modal ref="createWorkspaceModal" />
         <v-card-text>
-            <v-alert v-if="errorMessage" dense text type="error" v-html="errorMessage"></v-alert>
+            <v-alert v-if="errorMessage" density="compact" text type="error" v-html="errorMessage"></v-alert>
             <v-data-table
                 :loading="loading"
                 :no-data-text="'No workspaces'"
                 :items="workspaces"
                 :headers="headers">
                 <template v-slot:top>
-                    <v-toolbar flat dense class="py-0">
+                    <div class="d-flex justify-end">
                         <v-spacer></v-spacer>
-                        <v-btn depressed color="primary" class="mr-2" @click="openCreateWorkspaceModal()"><v-icon>mdi-plus</v-icon>New Workspace</v-btn>
-                    </v-toolbar>
+                        <v-btn variant="flat" color="primary" class="mr-2" @click="openCreateWorkspaceModal()"><v-icon>mdi-plus</v-icon>New Workspace</v-btn>
+                    </div>
                 </template>
                 <template v-slot:item.name="{ item }">
-                    {{ item.name }} <v-chip x-small class="ml-2" v-if="item.id == currentWorkspace.id">current</v-chip>
+                    {{ item.name }} <v-chip size="x-small" class="ml-2" v-if="item.id == currentWorkspaceStore.id">current</v-chip>
                 </template>
                 <template v-slot:item.rpcServer="{ item }">
                     <div style="max-width: 60ch; text-overflow: ellipsis; overflow: hidden;">{{ shortRpcUrl(item.rpcServer) }}</div>
                 </template>
                 <template v-slot:item.actions="{ item }">
-                    <v-btn :disabled="disabled || item.id == currentWorkspace.id" icon><v-icon small @click="switchWorkspace(item.name)">mdi-swap-horizontal</v-icon></v-btn>
-                    <v-btn :disabled="disabled" icon><v-icon color="error" small @click="deleteWorkspace(item)">mdi-delete</v-icon></v-btn>
+                    <template class="d-flex  justify-space-around align-center">
+                        <v-btn density="compact" :disabled="disabled || item.id == currentWorkspaceStore.id" class="text-medium-emphasis" icon="mdi-swap-horizontal" variant="text" @click="switchWorkspace(item.name)" size="small"></v-btn>
+                        <v-btn density="compact" :disabled="disabled" icon="mdi-delete" variant="text" @click="deleteWorkspace(item)" color="error" size="small"></v-btn>
+                    </template>
                 </template>
             </v-data-table>
         </v-card-text>
@@ -30,8 +32,9 @@
 </template>
 
 <script>
-import CreateWorkspaceModal from './CreateWorkspaceModal';
-import { mapGetters } from 'vuex';
+import CreateWorkspaceModal from './CreateWorkspaceModal.vue';
+import { mapStores } from 'pinia';
+import { useCurrentWorkspaceStore } from '@/stores/currentWorkspace';
 import { shortRpcUrl } from '@/lib/utils';
 
 export default {
@@ -45,9 +48,9 @@ export default {
         errorMessage: null,
         workspaces: [],
         headers: [
-            { text: '', value: 'actions', width: '20%', align: 'center' },
-            { text: 'Name', value: 'name', width: '30%' },
-            { text: 'RPC Server', value: 'rpcServer' },
+            { title: '', key: 'actions', width: '20%', align: 'center' },
+            { title: 'Name', key: 'name', width: '30%' },
+            { title: 'RPC Server', key: 'rpcServer' },
         ]
     }),
     mounted() {
@@ -58,7 +61,7 @@ export default {
         deleteWorkspace(workspace) {
             this.errorMessage = null;
 
-            if (this.currentWorkspace.id == workspace.id)
+            if (this.currentWorkspaceStore.id == workspace.id)
                 return this.errorMessage = `You can't delete your current workspace. Switch to another one first.`;
 
             if (workspace.explorer)
@@ -71,7 +74,7 @@ export default {
             this.loading = true;
             this.disabled = true;
 
-            this.server.deleteWorkspace(workspace.id)
+            this.$server.deleteWorkspace(workspace.id)
                 .then(this.getWorkspaces)
                 .catch(error => {
                     this.errorMessage = error.response && error.response.data || 'Error while deleting the workspace. Please retry';
@@ -82,11 +85,11 @@ export default {
                 });
         },
         switchWorkspace(name) {
-            this.server.setCurrentWorkspace(name).then(() => document.location.reload());
+            this.$server.setCurrentWorkspace(name).then(() => document.location.reload());
         },
         getWorkspaces() {
             this.loading = true;
-            this.server.getWorkspaces()
+            this.$server.getWorkspaces()
                 .then(({ data }) => this.workspaces = data)
                 .catch(console.log)
                 .finally(() => this.loading = false);
@@ -102,9 +105,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-            'currentWorkspace'
-        ])
+        ...mapStores(useCurrentWorkspaceStore)
     }
 }
 </script>

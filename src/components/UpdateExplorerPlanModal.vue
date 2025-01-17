@@ -1,23 +1,22 @@
 <template>
     <v-dialog v-model="dialog" max-width="1800" :persistent="true">
         <v-card>
-            <v-card-title>
-                Select A Plan
-                <v-spacer></v-spacer>
-                <v-btn icon @click="close()" ><v-icon>mdi-close</v-icon></v-btn>
+            <v-card-title class="d-flex justify-space-between align-center">
+                <h4>Select A Plan</h4>
+                <v-btn color="grey" variant="text" icon="mdi-close" @click="close()"></v-btn>
             </v-card-title>
             <v-card-text>
-                <ul style="list-style: none;" v-if="!user.cryptoPaymentEnabled || user.canTrial" class="mb-4 pl-0">
-                    <li v-if="!user.cryptoPaymentEnabled">To setup crypto payment (Explorer 150 or above), reach out to contact@tryethernal.com.</li>
-                    <li v-if="user.canTrial">Each plan includes a 7 day free trial - No credit card needed.</li>
+                <ul style="list-style: none;" v-if="!userStore.cryptoPaymentEnabled || userStore.canTrial" class="mb-4 pl-0">
+                    <li v-if="!userStore.cryptoPaymentEnabled">To setup crypto payment (Explorer 150 or above), reach out to contact@tryethernal.com.</li>
+                    <li v-if="userStore.canTrial">Each plan includes a 7 day free trial - No credit card needed.</li>
                 </ul>
                 <Explorer-Plan-Selector
                     :pendingCancelation="options.pendingCancelation"
                     :currentPlanSlug="options.currentPlanSlug"
                     :isTrialing="options.isTrialing"
                     :explorerId="options.explorerId"
-                    :stripeSuccessUrl="`http://app.${mainDomain}/explorers/${options.explorerId}?justCreated=true`"
-                    :stripeCancelUrl="`http://app.${mainDomain}/explorers/${options.explorerId}`"
+                    :stripeSuccessUrl="`http://app.${envStore.mainDomain}/explorers/${options.explorerId}?justCreated=true`"
+                    :stripeCancelUrl="`http://app.${envStore.mainDomain}/explorers/${options.explorerId}`"
                     @planUpdated="planUpdated"
                     @planCanceled="planCanceled"
                     @planCreated="planUpdated"></Explorer-Plan-Selector>
@@ -26,7 +25,10 @@
     </v-dialog>
 </template>
 <script>
-import { mapGetters } from 'vuex';
+import { mapStores } from 'pinia';
+import { useEnvStore } from '../stores/env';
+import { useUserStore } from '../stores/user';
+
 import ExplorerPlanSelector from './ExplorerPlanSelector.vue';
 
 export default {
@@ -75,10 +77,7 @@ export default {
         },
     },
     computed: {
-        ...mapGetters([
-            'user',
-            'mainDomain'
-        ])
+        ...mapStores(useEnvStore, useUserStore)
     }
 }
 </script>

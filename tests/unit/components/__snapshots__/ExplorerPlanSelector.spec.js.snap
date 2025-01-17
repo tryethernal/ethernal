@@ -1,15 +1,15 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ExplorerPlanSelector.vue Should display plans 1`] = `
-<div>
-  <!---->
-  <div class="row justify-center">
-    <div class="col col-3">
-      <explorer-plan-card-stub plan="[object Object]"></explorer-plan-card-stub>
+exports[`ExplorerPlanSelector.vue > Should display plans 1`] = `
+"<div>
+  <!--v-if-->
+  <div class="v-row justify-center">
+    <div class="v-col v-col-3">
+      <explorer-plan-card-stub current="false" pendingcancelation="false" bestvalue="false" plan="[object Object]"></explorer-plan-card-stub>
     </div>
-    <div class="col col-3">
-      <explorer-plan-card-stub plan="[object Object]"></explorer-plan-card-stub>
+    <div class="v-col v-col-3">
+      <explorer-plan-card-stub current="false" pendingcancelation="false" bestvalue="false" plan="[object Object]"></explorer-plan-card-stub>
     </div>
   </div>
-</div>
+</div>"
 `;

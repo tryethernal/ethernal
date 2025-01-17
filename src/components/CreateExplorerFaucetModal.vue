@@ -1,10 +1,9 @@
 <template>
     <v-dialog v-model="dialog" max-width="400">
         <v-card>
-            <v-card-title class="headline">
-                Create Faucet
-                <v-spacer></v-spacer>
-                <v-btn icon @click="close(false)"><v-icon>mdi-close</v-icon></v-btn>
+            <v-card-title class="d-flex justify-space-between align-center">
+                <h4>Create Faucet</h4>
+                <v-btn color="grey" variant="text" icon="mdi-close" @click="close(false)"></v-btn>
             </v-card-title>
             <v-card-text>
                 <v-alert text type="error" v-if="errorMessage">{{ errorMessage }}</v-alert>
@@ -13,8 +12,8 @@
                         <v-col cols="12">
                             <v-text-field
                                 class="mt-2"
-                                dense
-                                outlined
+                                density="compact"
+                                variant="outlined"
                                 required
                                 :rules="[v => !!v || 'Amount is required']"
                                 type="number"
@@ -28,8 +27,8 @@
                     <v-row>
                         <v-col cols="12">
                             <v-text-field
-                                dense
-                                outlined
+                                density="compact"
+                                variant="outlined"
                                 required
                                 :rules="[v => !!v || 'Interval is required']"
                                 type="number"
@@ -42,7 +41,7 @@
                     </v-row>
                     <v-card-actions class="pr-0 pb-0">
                         <v-spacer></v-spacer>
-                        <v-btn :loading="loading" color="primary" :disabled="!valid" type="submit">Create</v-btn>
+                        <v-btn variant="flat" :loading="loading" color="primary" :disabled="!valid" type="submit">Create</v-btn>
                     </v-card-actions>
                 </v-form>
             </v-card-text>
@@ -76,7 +75,7 @@ export default {
         },
         create() {
             this.loading = true;
-            this.server.createExplorerFaucet(this.options.explorerId, this.formattedAmount, this.interval * 60)
+            this.$server.createExplorerFaucet(this.options.explorerId, this.formattedAmount, this.interval * 60)
                 .then(() => this.close(true))
                 .catch(error => {
                     this.loading = false;

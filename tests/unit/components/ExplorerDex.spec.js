@@ -1,10 +1,9 @@
 import '../mocks/ethers';
 import '../mocks/rpc';
 import '../mocks/utils';
-const { ERC20Connector, V2DexRouterConnector } = require('@/lib/rpc');
+import { ERC20Connector, V2DexRouterConnector } from '@/lib/rpc';
 
 import flushPromises from 'flush-promises';
-import MockHelper from '../MockHelper';
 
 import ExplorerDex from '@/components/ExplorerDex.vue';
 const balances = [
@@ -111,18 +110,13 @@ const quote = {
 };
 
 describe('ExplorerDex.vue', () => {
-    let helper;
     const stubs = ['Metamask', 'Hash-Link', 'Dex-Token-Selection-Modal', 'Explorer-Dex-Parameter-Modal'];
 
-    beforeEach(() => {
-        helper = new MockHelper();
-    });
-
     it('Should display no dex message', async () => {
-        const wrapper = helper.mountFn(ExplorerDex, {
-            stubs,
-            getters: {
-                publicExplorer: jest.fn(() => ({ v2Dex: null }))
+        const wrapper = mount(ExplorerDex, {
+            global: {
+                stubs,
+                plugins: [createTestingPinia({ initialState: { explorer: { v2Dex: null } } })]
             }
         });
 
@@ -132,13 +126,11 @@ describe('ExplorerDex.vue', () => {
     });
 
     it('Should display initial state with no wallet connected', async () => {
-        jest.spyOn(helper.mocks.server, 'getV2DexTokens').mockResolvedValueOnce({ data: { tokens }});
-        const wrapper = helper.mountFn(ExplorerDex, {
-            stubs,
-            getters: {
-                publicExplorer: jest.fn().mockReturnValue({
-                    v2Dex: { routerAddress: '0x123' }
-                })
+        vi.spyOn(server, 'getV2DexTokens').mockResolvedValueOnce({ data: { tokens }});
+        const wrapper = mount(ExplorerDex, {
+            global: {
+                stubs,
+                plugins: [createTestingPinia({ initialState: { explorer: { v2Dex: { routerAddress: '0x123' } } } })]
             }
         });
 
@@ -149,17 +141,15 @@ describe('ExplorerDex.vue', () => {
 
     it('Should display initial state with wallet connected', async () => {
         ERC20Connector.mockImplementationOnce(() => ({
-            allowance: jest.fn().mockResolvedValue('0')
+            allowance: vi.fn().mockResolvedValue('0')
         }));
-        jest.spyOn(helper.mocks.server, 'getV2DexTokens').mockResolvedValueOnce({ data: { tokens }});
-        jest.spyOn(helper.mocks.server, 'getTokenBalances').mockResolvedValueOnce({ data: balances });
-        jest.spyOn(helper.mocks.server, 'getNativeTokenBalance').mockResolvedValueOnce({ data: { balance: '10000000000000000000' }});
-        const wrapper = helper.mountFn(ExplorerDex, {
-            stubs,
-            getters: {
-                publicExplorer: jest.fn().mockReturnValue({
-                    v2Dex: { routerAddress: '0x123' }
-                })
+        vi.spyOn(server, 'getV2DexTokens').mockResolvedValueOnce({ data: { tokens }});
+        vi.spyOn(server, 'getTokenBalances').mockResolvedValueOnce({ data: balances });
+        vi.spyOn(server, 'getNativeTokenBalance').mockResolvedValueOnce({ data: { balance: '10000000000000000000' }});
+        const wrapper = mount(ExplorerDex, {
+            global: {
+                stubs,
+                plugins: [createTestingPinia({ initialState: { explorer: { v2Dex: { routerAddress: '0x123' } } } })]
             }
         });
         wrapper.vm.onRpcConnectionStatusChanged({ account: '0x1bF85ED48fcda98e2c7d08E4F2A8083fb18792AA' })
@@ -170,21 +160,19 @@ describe('ExplorerDex.vue', () => {
 
     it('Should display insufficient balance warning', async () => {
         ERC20Connector.mockImplementationOnce(() => ({
-            allowance: jest.fn().mockResolvedValue('0')
+            allowance: vi.fn().mockResolvedValue('0')
         }));
-        jest.spyOn(helper.mocks.server, 'getV2DexTokens').mockResolvedValueOnce({ data: { tokens }});
-        jest.spyOn(helper.mocks.server, 'getTokenBalances').mockResolvedValueOnce({ data: balances });
-        jest.spyOn(helper.mocks.server, 'getNativeTokenBalance').mockResolvedValueOnce({ data: { balance: '10000000000000000000' }});
-        const wrapper = helper.mountFn(ExplorerDex, {
-            stubs,
+        vi.spyOn(server, 'getV2DexTokens').mockResolvedValueOnce({ data: { tokens }});
+        vi.spyOn(server, 'getTokenBalances').mockResolvedValueOnce({ data: balances });
+        vi.spyOn(server, 'getNativeTokenBalance').mockResolvedValueOnce({ data: { balance: '10000000000000000000' }});
+        const wrapper = mount(ExplorerDex, {
+            global: {
+                stubs,
+                plugins: [createTestingPinia({ initialState: { explorer: { v2Dex: { routerAddress: '0x123' } } } })]
+            },
             data: () => ({
                 sellAmount: '100'
-            }),
-            getters: {
-                publicExplorer: jest.fn().mockReturnValue({
-                    v2Dex: { routerAddress: '0x123' }
-                })
-            }
+            })
         });
         wrapper.vm.onRpcConnectionStatusChanged({ account: '0x1bF85ED48fcda98e2c7d08E4F2A8083fb18792AA' })
         await flushPromises();
@@ -194,21 +182,19 @@ describe('ExplorerDex.vue', () => {
 
     it('Should display token selection message', async () => {
         ERC20Connector.mockImplementationOnce(() => ({
-            allowance: jest.fn().mockResolvedValue('0')
+            allowance: vi.fn().mockResolvedValue('0')
         }));
-        jest.spyOn(helper.mocks.server, 'getV2DexTokens').mockResolvedValueOnce({ data: { tokens }});
-        jest.spyOn(helper.mocks.server, 'getTokenBalances').mockResolvedValueOnce({ data: balances });
-        jest.spyOn(helper.mocks.server, 'getNativeTokenBalance').mockResolvedValueOnce({ data: { balance: '10000000000000000000' }});
-        const wrapper = helper.mountFn(ExplorerDex, {
-            stubs,
+        vi.spyOn(server, 'getV2DexTokens').mockResolvedValueOnce({ data: { tokens }});
+        vi.spyOn(server, 'getTokenBalances').mockResolvedValueOnce({ data: balances });
+        vi.spyOn(server, 'getNativeTokenBalance').mockResolvedValueOnce({ data: { balance: '10000000000000000000' }});
+        const wrapper = mount(ExplorerDex, {
+            global: {
+                stubs,
+                plugins: [createTestingPinia({ initialState: { explorer: { v2Dex: { routerAddress: '0x123' } } } })]
+            },
             data: () => ({
                 sellAmount: '0.1'
-            }),
-            getters: {
-                publicExplorer: jest.fn().mockReturnValue({
-                    v2Dex: { routerAddress: '0x123' }
-                })
-            }
+            })
         });
         wrapper.vm.onRpcConnectionStatusChanged({ account: '0x1bF85ED48fcda98e2c7d08E4F2A8083fb18792AA' })
         await flushPromises();
@@ -218,22 +204,20 @@ describe('ExplorerDex.vue', () => {
 
     it('Should display approval & swap button if not enough approval', async () => {
         ERC20Connector.mockImplementation(() => ({
-            allowance: jest.fn().mockResolvedValue('0')
+            allowance: vi.fn().mockResolvedValue('0')
         }));
-        jest.spyOn(helper.mocks.server, 'getV2DexTokens').mockResolvedValueOnce({ data: { tokens }});
-        jest.spyOn(helper.mocks.server, 'getTokenBalances').mockResolvedValueOnce({ data: balances });
-        jest.spyOn(helper.mocks.server, 'getNativeTokenBalance').mockResolvedValueOnce({ data: { balance: '10000000000000000000' }});
-        jest.spyOn(helper.mocks.server, 'getV2DexQuote').mockResolvedValue({ data: { quote }});
-        const wrapper = helper.mountFn(ExplorerDex, {
-            stubs,
+        vi.spyOn(server, 'getV2DexTokens').mockResolvedValueOnce({ data: { tokens }});
+        vi.spyOn(server, 'getTokenBalances').mockResolvedValueOnce({ data: balances });
+        vi.spyOn(server, 'getNativeTokenBalance').mockResolvedValueOnce({ data: { balance: '10000000000000000000' }});
+        vi.spyOn(server, 'getV2DexQuote').mockResolvedValue({ data: { quote }});
+        const wrapper = mount(ExplorerDex, {
+            global: {
+                stubs,
+                plugins: [createTestingPinia({ initialState: { explorer: { v2Dex: { routerAddress: '0x123' } } } })]
+            },
             data: () => ({
                 quoteDirection: 'exactIn'
-            }),
-            getters: {
-                publicExplorer: jest.fn().mockReturnValue({
-                    v2Dex: { routerAddress: '0x123' }
-                })
-            }
+            })
         });
         await flushPromises();
 
@@ -253,29 +237,26 @@ describe('ExplorerDex.vue', () => {
             }
         });
         await flushPromises();
-        await new Promise((r) => setTimeout(r, 1500));
 
         expect(wrapper.html()).toMatchSnapshot();
     });
 
     it('Should display swap button and quote', async () => {
         ERC20Connector.mockImplementation(() => ({
-            allowance: jest.fn().mockResolvedValue('10000000000000000000000000000000')
+            allowance: vi.fn().mockResolvedValue('10000000000000000000000000000000')
         }));
-        jest.spyOn(helper.mocks.server, 'getV2DexTokens').mockResolvedValueOnce({ data: { tokens }});
-        jest.spyOn(helper.mocks.server, 'getTokenBalances').mockResolvedValueOnce({ data: balances });
-        jest.spyOn(helper.mocks.server, 'getNativeTokenBalance').mockResolvedValueOnce({ data: { balance: '10000000000000000000' }});
-        jest.spyOn(helper.mocks.server, 'getV2DexQuote').mockResolvedValue({ data: { quote }});
-        const wrapper = helper.mountFn(ExplorerDex, {
-            stubs,
+        vi.spyOn(server, 'getV2DexTokens').mockResolvedValueOnce({ data: { tokens }});
+        vi.spyOn(server, 'getTokenBalances').mockResolvedValueOnce({ data: balances });
+        vi.spyOn(server, 'getNativeTokenBalance').mockResolvedValueOnce({ data: { balance: '10000000000000000000' }});
+        vi.spyOn(server, 'getV2DexQuote').mockResolvedValue({ data: { quote }});
+        const wrapper = mount(ExplorerDex, {
+            global: {
+                stubs,
+                plugins: [createTestingPinia({ initialState: { explorer: { v2Dex: { routerAddress: '0x123' } } } })]
+            },
             data: () => ({
                 quoteDirection: 'exactIn'
-            }),
-            getters: {
-                publicExplorer: jest.fn().mockReturnValue({
-                    v2Dex: { routerAddress: '0x123' }
-                })
-            }
+            })
         });
         await flushPromises();
 
@@ -293,29 +274,26 @@ describe('ExplorerDex.vue', () => {
             }
         });
         await flushPromises();
-        await new Promise((r) => setTimeout(r, 1500));
 
         expect(wrapper.html()).toMatchSnapshot();
     });
 
     it('Should display successful transaction message', async () => {
         ERC20Connector.mockImplementation(() => ({
-            allowance: jest.fn().mockResolvedValue('10000000000000000000000000000000')
+            allowance: vi.fn().mockResolvedValue('10000000000000000000000000000000')
         }));
-        jest.spyOn(helper.mocks.server, 'getV2DexTokens').mockResolvedValueOnce({ data: { tokens }});
-        jest.spyOn(helper.mocks.server, 'getTokenBalances').mockResolvedValueOnce({ data: balances });
-        jest.spyOn(helper.mocks.server, 'getNativeTokenBalance').mockResolvedValueOnce({ data: { balance: '10000000000000000000' }});
-        jest.spyOn(helper.mocks.server, 'getV2DexQuote').mockResolvedValue({ data: { quote }});
-        const wrapper = helper.mountFn(ExplorerDex, {
-            stubs,
+        vi.spyOn(server, 'getV2DexTokens').mockResolvedValueOnce({ data: { tokens }});
+        vi.spyOn(server, 'getTokenBalances').mockResolvedValueOnce({ data: balances });
+        vi.spyOn(server, 'getNativeTokenBalance').mockResolvedValueOnce({ data: { balance: '10000000000000000000' }});
+        vi.spyOn(server, 'getV2DexQuote').mockResolvedValue({ data: { quote }});
+        const wrapper = mount(ExplorerDex, {
+            global: {
+                stubs,
+                plugins: [createTestingPinia({ initialState: { explorer: { v2Dex: { routerAddress: '0x123' } } } })]
+            },
             data: () => ({
                 quoteDirection: 'exactIn'
-            }),
-            getters: {
-                publicExplorer: jest.fn().mockReturnValue({
-                    v2Dex: { routerAddress: '0x123' }
-                })
-            }
+            })
         });
         await flushPromises();
 
@@ -335,34 +313,31 @@ describe('ExplorerDex.vue', () => {
         await flushPromises();
 
         const transaction = {
-            wait: jest.fn().mockResolvedValueOnce({ hash: '0xcff8dfb02341df3e011e58ebbe0b09742a6dbbbee208a7e4253adeea05f75174', status: 1 })
+            wait: vi.fn().mockResolvedValueOnce({ hash: '0xcff8dfb02341df3e011e58ebbe0b09742a6dbbbee208a7e4253adeea05f75174', status: 1 })
         };
         await wrapper.vm.waitForTransaction(transaction, 'Swap successful.', 'Swap failed');
 
         await flushPromises();
-        await new Promise((r) => setTimeout(r, 1500));
 
         expect(wrapper.html()).toMatchSnapshot();
     });
 
     it('Should display failed transaction message', async () => {
         ERC20Connector.mockImplementation(() => ({
-            allowance: jest.fn().mockResolvedValue('10000000000000000000000000000000')
+            allowance: vi.fn().mockResolvedValue('10000000000000000000000000000000')
         }));
-        jest.spyOn(helper.mocks.server, 'getV2DexTokens').mockResolvedValueOnce({ data: { tokens }});
-        jest.spyOn(helper.mocks.server, 'getTokenBalances').mockResolvedValueOnce({ data: balances });
-        jest.spyOn(helper.mocks.server, 'getNativeTokenBalance').mockResolvedValueOnce({ data: { balance: '10000000000000000000' }});
-        jest.spyOn(helper.mocks.server, 'getV2DexQuote').mockResolvedValue({ data: { quote }});
-        const wrapper = helper.mountFn(ExplorerDex, {
-            stubs,
+        vi.spyOn(server, 'getV2DexTokens').mockResolvedValueOnce({ data: { tokens }});
+        vi.spyOn(server, 'getTokenBalances').mockResolvedValueOnce({ data: balances });
+        vi.spyOn(server, 'getNativeTokenBalance').mockResolvedValueOnce({ data: { balance: '10000000000000000000' }});
+        vi.spyOn(server, 'getV2DexQuote').mockResolvedValue({ data: { quote }});
+        const wrapper = mount(ExplorerDex, {
+            global: {
+                stubs,
+                plugins: [createTestingPinia({ initialState: { explorer: { v2Dex: { routerAddress: '0x123' } } } })]
+            },
             data: () => ({
                 quoteDirection: 'exactIn'
-            }),
-            getters: {
-                publicExplorer: jest.fn().mockReturnValue({
-                    v2Dex: { routerAddress: '0x123' }
-                })
-            }
+            })
         });
         await flushPromises();
         await wrapper.vm.$nextTick();
@@ -383,35 +358,32 @@ describe('ExplorerDex.vue', () => {
         await flushPromises();
 
         const transaction = {
-            wait: jest.fn().mockResolvedValueOnce({ hash: '0xcff8dfb02341df3e011e58ebbe0b09742a6dbbbee208a7e4253adeea05f75174', status: 0 })
+            wait: vi.fn().mockResolvedValueOnce({ hash: '0xcff8dfb02341df3e011e58ebbe0b09742a6dbbbee208a7e4253adeea05f75174', status: 0 })
         };
         await wrapper.vm.waitForTransaction(transaction, 'Swap successful.', 'Swap failed.');
-        await new Promise((r) => setTimeout(r, 1500));
 
         expect(wrapper.html()).toMatchSnapshot();
     });
 
     it('Should display error message', async () => {
         ERC20Connector.mockImplementation(() => ({
-            allowance: jest.fn().mockResolvedValue('10000000000000000000000000000000')
+            allowance: vi.fn().mockResolvedValue('10000000000000000000000000000000')
         }));
         V2DexRouterConnector.mockImplementation(() => ({
-            swapExactTokensForTokens: jest.fn().mockRejectedValue({ reason: 'Failed' })
+            swapExactTokensForTokens: vi.fn().mockRejectedValue({ reason: 'Failed' })
         }));
-        jest.spyOn(helper.mocks.server, 'getV2DexTokens').mockResolvedValueOnce({ data: { tokens }});
-        jest.spyOn(helper.mocks.server, 'getTokenBalances').mockResolvedValueOnce({ data: balances });
-        jest.spyOn(helper.mocks.server, 'getNativeTokenBalance').mockResolvedValueOnce({ data: { balance: '10000000000000000000' }});
-        jest.spyOn(helper.mocks.server, 'getV2DexQuote').mockResolvedValue({ data: { quote }});
-        const wrapper = helper.mountFn(ExplorerDex, {
-            stubs,
+        vi.spyOn(server, 'getV2DexTokens').mockResolvedValueOnce({ data: { tokens }});
+        vi.spyOn(server, 'getTokenBalances').mockResolvedValueOnce({ data: balances });
+        vi.spyOn(server, 'getNativeTokenBalance').mockResolvedValueOnce({ data: { balance: '10000000000000000000' }});
+        vi.spyOn(server, 'getV2DexQuote').mockResolvedValue({ data: { quote }});
+        const wrapper = mount(ExplorerDex, {
+            global: {
+                stubs,
+                plugins: [createTestingPinia({ initialState: { explorer: { v2Dex: { routerAddress: '0x123' } } } })]
+            },
             data: () => ({
                 quoteDirection: 'exactIn'
-            }),
-            getters: {
-                publicExplorer: jest.fn().mockReturnValue({
-                    v2Dex: { routerAddress: '0x123' }
-                })
-            }
+            })
         });
         await flushPromises();
         await wrapper.vm.$nextTick();
@@ -433,7 +405,6 @@ describe('ExplorerDex.vue', () => {
 
         await wrapper.vm.swap();
         await flushPromises();
-        await new Promise((r) => setTimeout(r, 1500));
 
         expect(wrapper.html()).toMatchSnapshot();
     });

@@ -1,6 +1,6 @@
 <template>
     <v-container fluid>
-        <v-card outlined>
+        <v-card>
             <v-card-text>
                 <Transactions-List></Transactions-List>
             </v-card-text>
@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import TransactionsList from './TransactionsList';
+import TransactionsList from './TransactionsList.vue';
 
 export default {
     name: 'Transactions',

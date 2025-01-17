@@ -1,5 +1,4 @@
 require('../mocks/ethers');
-import MockHelper from '../MockHelper';
 import ethereum from '../mocks/ethereum';
 
 window.ethereum = ethereum;
@@ -9,11 +8,11 @@ import DSProxyFactoryContract from '../fixtures/DSProxyFactoryContract.json';
 import TokenContract from '../fixtures/TokenContract.json';
 
 describe('ContractWriteMethod.vue', () => {
-    let helper, props;
+    it('Should send the transaction with Metamask if senderMode is metamask', async () => {
+        vi.spyOn(window.ethereum, 'request')
+            .mockResolvedValue('0x1234');
 
-    beforeEach(() => {
-        helper = new MockHelper({ rpcServer: 'http://localhost:8545' });
-        props = {
+        const props = {
             senderMode: 'accounts',
             method: DSProxyFactoryContract.abi[2],
             contract: DSProxyFactoryContract,
@@ -25,19 +24,11 @@ describe('ContractWriteMethod.vue', () => {
             },
             active: true
         };
-    });
 
-    it('Should send the transaction with Metamask if senderMode is metamask', async () => {
-        jest.spyOn(window.ethereum, 'request')
-            .mockResolvedValue('0x1234');
-
-        const wrapper = helper.mountFn(ContractWriteMethod, {
-            propsData: {
+        const wrapper = mount(ContractWriteMethod, {
+            props: {
                 ...props,
                 senderMode: 'metamask'
-            },
-            getters: {
-                isPublicExplorer: jest.fn().mockReturnValue(true)
             }
         });
 
@@ -48,47 +39,88 @@ describe('ContractWriteMethod.vue', () => {
     });
 
     it('Should display the UI to interact with a method', () => {
-        const wrapper = helper.mountFn(ContractWriteMethod, { propsData: props });
+        const props = {
+            senderMode: 'accounts',
+            method: DSProxyFactoryContract.abi[2],
+            contract: DSProxyFactoryContract,
+            signature: 'build()',
+            options: {
+                from: { address: '0xa26e15c895efc0616177b7c1e7270a4c7d51c997' },
+                gasLimit: '6721975',
+                gasPrice: undefined
+            },
+            active: true
+        };
+
+        const wrapper = mount(ContractWriteMethod, {
+            props: props
+        });
 
         expect(wrapper.html()).toMatchSnapshot();
     });
 
     it('Should make the UI unavailable if not active flag', () => {
-        props.method = {
-            "inputs": [
-                {
-                    "internalType": "uint256[]",
-                    "name": "values",
-                    "type": "uint256[]"
-                }
-            ],
-            "name": "reproWriteBug",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
+        const props = {
+            senderMode: 'accounts',
+            method: {
+                "inputs": [
+                    {
+                        "internalType": "uint256[]",
+                        "name": "values",
+                        "type": "uint256[]"
+                    }
+                ],
+                "name": "reproWriteBug",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            contract: DSProxyFactoryContract,
+            signature: 'build()',
+            options: {
+                from: { address: '0xa26e15c895efc0616177b7c1e7270a4c7d51c997' },
+                gasLimit: '6721975',
+                gasPrice: undefined
+            },
+            active: false
         };
-        props.active = false;
-        const wrapper = helper.mountFn(ContractWriteMethod, { propsData: props });
+
+        const wrapper = mount(ContractWriteMethod, {
+            props: props
+        });
 
         expect(wrapper.html()).toMatchSnapshot();
     });
 
     it('Should accept true as an input for bool type', async () => {
-        props.method = {
-            "inputs": [
-                {
-                    "internalType": "bool",
-                    "name": "boolInp",
-                    "type": "bool"
-                }
-            ],
-            "name": "boolFun",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
+        const props = {
+            senderMode: 'accounts',
+            method: {
+                "inputs": [
+                    {
+                        "internalType": "bool",
+                        "name": "boolInp",
+                        "type": "bool"
+                    }
+                ],
+                "name": "boolFun",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            contract: DSProxyFactoryContract,
+            signature: 'build()',
+            options: {
+                from: { address: '0xa26e15c895efc0616177b7c1e7270a4c7d51c997' },
+                gasLimit: '6721975',
+                gasPrice: undefined
+            },
+            active: true
         };
 
-        const wrapper = helper.mountFn(ContractWriteMethod, { propsData: props });
+        const wrapper = mount(ContractWriteMethod, {
+            props: props
+        });
 
         await wrapper.find('input').setValue('true');
         await wrapper.find('button').trigger('click');
@@ -100,21 +132,34 @@ describe('ContractWriteMethod.vue', () => {
     });
 
     it('Should accept false as an input for bool type', async () => {
-        props.method = {
-            "inputs": [
-                {
-                    "internalType": "bool",
-                    "name": "boolInp",
-                    "type": "bool"
-                }
-            ],
-            "name": "boolFun",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
+        const props = {
+            senderMode: 'accounts',
+            method: {
+                "inputs": [
+                    {
+                        "internalType": "bool",
+                        "name": "boolInp",
+                        "type": "bool"
+                    }
+                ],
+                "name": "boolFun",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            contract: DSProxyFactoryContract,
+            signature: 'build()',
+            options: {
+                from: { address: '0xa26e15c895efc0616177b7c1e7270a4c7d51c997' },
+                gasLimit: '6721975',
+                gasPrice: undefined
+            },
+            active: true
         };
 
-        const wrapper = helper.mountFn(ContractWriteMethod, { propsData: props });
+        const wrapper = mount(ContractWriteMethod, {
+            props: props
+        });
 
         await wrapper.find('input').setValue('false');
         await wrapper.find('button').trigger('click');
@@ -126,21 +171,32 @@ describe('ContractWriteMethod.vue', () => {
     });
 
     it('Should throw an error for bool type if input is not true or false', async () => {
-        props.method = {
-            "inputs": [
-                {
-                    "internalType": "bool",
-                    "name": "boolInp",
-                    "type": "bool"
-                }
-            ],
-            "name": "boolFun",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
+        const props = {
+            senderMode: 'accounts',
+            method: {
+                "inputs": [
+                    {
+                        "internalType": "bool",
+                        "name": "boolInp",
+                        "type": "bool"
+                    }
+                ],
+                "name": "boolFun",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            contract: DSProxyFactoryContract,
+            signature: 'build()',
+            options: {
+                from: { address: '0xa26e15c895efc0616177b7c1e7270a4c7d51c997' },
+                gasLimit: '6721975',
+                gasPrice: undefined
+            },
+            active: true
         };
 
-        const wrapper = helper.mountFn(ContractWriteMethod, { propsData: props });
+        const wrapper = mount(ContractWriteMethod, { props: props });
 
         await wrapper.find('input').setValue('frbbforbuo');
         await wrapper.find('button').trigger('click');
@@ -152,21 +208,32 @@ describe('ContractWriteMethod.vue', () => {
     });
 
     it('Should handle array input properly', async () => {
-        props.method = {
-            "inputs": [
-                {
-                    "internalType": "uint256[]",
-                    "name": "values",
-                    "type": "uint256[]"
-                }
-            ],
-            "name": "reproWriteBug",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
+        const props = {
+            senderMode: 'accounts',
+            method: {
+                "inputs": [
+                    {
+                        "internalType": "uint256[]",
+                        "name": "values",
+                        "type": "uint256[]"
+                    }
+                ],
+                "name": "reproWriteBug",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            contract: DSProxyFactoryContract,
+            signature: 'build()',
+            options: {
+                from: { address: '0xa26e15c895efc0616177b7c1e7270a4c7d51c997' },
+                gasLimit: '6721975',
+                gasPrice: undefined
+            },
+            active: true
         };
 
-        const wrapper = helper.mountFn(ContractWriteMethod, { propsData: props });
+        const wrapper = mount(ContractWriteMethod, { props });
 
         await wrapper.find('input').setValue('[1,2]');
         await wrapper.find('button').trigger('click');
@@ -178,7 +245,20 @@ describe('ContractWriteMethod.vue', () => {
     })
 
     it('Should display the tx hash and status when it succeeds with a receipt', async () => {
-        const wrapper = helper.mountFn(ContractWriteMethod, { propsData: props });
+        const props = {
+            senderMode: 'accounts',
+            method: DSProxyFactoryContract.abi[2],
+            contract: DSProxyFactoryContract,
+            signature: 'build()',
+            options: {
+                from: { address: '0xa26e15c895efc0616177b7c1e7270a4c7d51c997' },
+                gasLimit: '6721975',
+                gasPrice: undefined
+            },
+            active: true
+        };
+
+        const wrapper = mount(ContractWriteMethod, { props });
 
         await wrapper.find('button').trigger('click');
         await new Promise(process.nextTick);
@@ -189,10 +269,23 @@ describe('ContractWriteMethod.vue', () => {
     });
 
     it('Should display only the tx hash when it succeeds without a receipt', async () => {
-        jest.spyOn(helper.mocks.server, 'callContractWriteMethod')
+        vi.spyOn(server, 'callContractWriteMethod')
             .mockResolvedValue({ hash: '0xabcd' });
 
-        const wrapper = helper.mountFn(ContractWriteMethod, { propsData: props });
+        const props = {
+            senderMode: 'accounts',
+            method: DSProxyFactoryContract.abi[2],
+            contract: DSProxyFactoryContract,
+            signature: 'build()',
+            options: {
+                from: { address: '0xa26e15c895efc0616177b7c1e7270a4c7d51c997' },
+                gasLimit: '6721975',
+                gasPrice: undefined
+            },
+            active: true
+        };
+
+        const wrapper = mount(ContractWriteMethod, { props });
 
         await wrapper.find('button').trigger('click');
         await new Promise(process.nextTick);
@@ -205,7 +298,7 @@ describe('ContractWriteMethod.vue', () => {
     });
 
     it('Should display only the error message with the failed tx hash', async () => {
-        jest.spyOn(helper.mocks.server, 'callContractWriteMethod')
+        vi.spyOn(server, 'callContractWriteMethod')
             .mockRejectedValue({
                 data: {
                     '0xabcd': {
@@ -215,7 +308,21 @@ describe('ContractWriteMethod.vue', () => {
                 }
             });
 
-        const wrapper = helper.mountFn(ContractWriteMethod, { propsData: props });
+
+        const props = {
+            senderMode: 'accounts',
+            method: DSProxyFactoryContract.abi[2],
+            contract: DSProxyFactoryContract,
+            signature: 'build()',
+            options: {
+                from: { address: '0xa26e15c895efc0616177b7c1e7270a4c7d51c997' },
+                gasLimit: '6721975',
+                gasPrice: undefined
+            },
+            active: true
+        };
+
+        const wrapper = mount(ContractWriteMethod, { props });
 
         await wrapper.find('button').trigger('click');
         await new Promise(process.nextTick);
@@ -226,8 +333,8 @@ describe('ContractWriteMethod.vue', () => {
     });
 
     it('Should display the formatted error message with the failed tx hash', async () => {
-        jest.spyOn(helper.mocks.server, 'callContractWriteMethod').
-            mockRejectedValue({
+        vi.spyOn(server, 'callContractWriteMethod')
+            .mockRejectedValue({
                 data: {
                     '0xabcd': {
                         error: 'revert',
@@ -247,7 +354,7 @@ describe('ContractWriteMethod.vue', () => {
             active: true
         };
 
-        const wrapper = helper.mountFn(ContractWriteMethod, { propsData: props });
+        const wrapper = mount(ContractWriteMethod, { props });
         const to = wrapper.findAll('input').at(0);
         await to.setValue('0xabcd');
 
@@ -263,12 +370,25 @@ describe('ContractWriteMethod.vue', () => {
     });
 
     it('Should display only the error message if there is no tx hash', async () => {
-        jest.spyOn(helper.mocks.server, 'callContractWriteMethod')
+        vi.spyOn(server, 'callContractWriteMethod')
             .mockRejectedValue({
                 message: 'Failed tx'
             });
 
-        const wrapper = helper.mountFn(ContractWriteMethod, { propsData: props });
+        const props = {
+            senderMode: 'accounts',
+            method: DSProxyFactoryContract.abi[2],
+            contract: DSProxyFactoryContract,
+            signature: 'build()',
+            options: {
+                from: { address: '0xa26e15c895efc0616177b7c1e7270a4c7d51c997' },
+                gasLimit: '6721975',
+                gasPrice: undefined
+            },
+            active: true
+        };
+
+        const wrapper = mount(ContractWriteMethod, { props });
 
         await wrapper.find('button').trigger('click');
         await new Promise(process.nextTick);
@@ -279,10 +399,24 @@ describe('ContractWriteMethod.vue', () => {
     });
 
     it('Should display only the error message if the tx cannot be sent', async () => {
-        jest.spyOn(helper.mocks.server, 'callContractWriteMethod').mockImplementation(function() {
+        vi.spyOn(server, 'callContractWriteMethod').mockImplementation(function() {
             throw { reason: 'call revert exception (method="feeTo()", errorSignature=null, errorArgs=[null], reason=null, code=CALL_EXCEPTION, version=abi/5.0.9)' };
         });
-        const wrapper = helper.mountFn(ContractWriteMethod, { propsData: props });
+
+        const props = {
+            senderMode: 'accounts',
+            method: DSProxyFactoryContract.abi[2],
+            contract: DSProxyFactoryContract,
+            signature: 'build()',
+            options: {
+                from: { address: '0xa26e15c895efc0616177b7c1e7270a4c7d51c997' },
+                gasLimit: '6721975',
+                gasPrice: undefined
+            },
+            active: true
+        };
+
+        const wrapper = mount(ContractWriteMethod, { props });
 
         await wrapper.find('button').trigger('click');
         await new Promise(process.nextTick);

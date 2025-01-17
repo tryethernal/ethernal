@@ -1,46 +1,48 @@
 <template>
-    <v-card outlined>
+    <v-card>
         <v-card-text>
-            <v-data-table
+            <v-data-table-server
+                class="hide-table-count"
                 :loading="loading"
                 :items="transactions"
-                :sort-by="currentOptions.sortBy[0]"
+                :items-length="0"
+                :sort-by="currentOptions.sortBy"
                 :must-sort="true"
-                :sort-desc="true"
-                :server-items-length="transactionCount"
                 :headers="headers"
-                :footer-props="{
-                    itemsPerPageOptions: [10, 25, 100]
-                }"
+                items-per-page-text="Rows per page:"
+                no-data-text="No faucet transactions yet"
+                last-icon=""
+                first-icon=""
+                :items-per-page-options="[
+                    { value: 10, title: '10' },
+                    { value: 25, title: '25' },
+                    { value: 100, title: '100' }
+                ]"
                 item-key="transactionHash"
                 @update:options="getTransactions">
-                <template v-slot:no-data>
-                    No transactions yet
-                </template>
                 <template v-slot:item.transactionHash="{ item }">
                     <Hash-Link :type="'transaction'" :hash="item.transactionHash" />
                 </template>
                 <template v-slot:item.createdAt="{ item }">
                     <div class="my-2 text-left">
-                        {{ moment(item.createdAt) | moment('MM/DD h:mm:ss A') }}<br>
-                        <small>{{ moment(item.createdAt).fromNow() }}</small>
+                        {{ $dt.shortDate(item.createdAt) }}<br>
+                        <small>{{ $dt.fromNow(item.createdAt) }}</small>
                     </div>
                 </template>
                 <template v-slot:item.address="{ item }">
                     <Hash-Link :type="'address'" :hash="item.address" :withTokenName="true" :withName="true" />
                 </template>
                 <template v-slot:item.amount="{ item }">
-                    {{ item.amount | fromWei('ether', tokenSymbol) }}
+                    {{ $fromWei(item.amount, 'ether', tokenSymbol) }}
                 </template>
-            </v-data-table>
+            </v-data-table-server>
         </v-card-text>
     </v-card>
 </template>
 
 <script>
-const moment = require('moment');
-import { mapGetters } from 'vuex';
-import FromWei from '../filters/FromWei.js';
+import { storeToRefs } from 'pinia';
+import { useExplorerStore } from '../stores/explorer';
 import HashLink from './HashLink.vue';
 
 export default {
@@ -48,49 +50,47 @@ export default {
     components: {
         HashLink
     },
-    filters: {
-        FromWei
-    },
     data: () => ({
         headers: [
-            { text: 'Transaction Hash', value: 'transactionHash', sortable: false },
-            { text: 'Timestamp', value: 'createdAt' },
-            { text: 'To', value: 'address', sortable: false },
-            { text: 'Amount', value: 'amount' }
+            { title: 'Transaction Hash', key: 'transactionHash', sortable: false },
+            { title: 'Timestamp', key: 'createdAt' },
+            { title: 'To', key: 'address', sortable: false },
+            { title: 'Amount', key: 'amount' }
         ],
-        currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['timestamp'], sortDesc: [true] },
+        currentOptions: { page: 1, itemsPerPage: 10, sortBy: [{ key: 'timestamp', order: 'desc' }] },
         transactions: [],
         transactionCount: 0,
         loading: false
     }),
-    mounted() {
-        this.currentOptions = { page: 1, itemsPerPage: 10, sortBy: ['createdAt'], sortDesc: [true] };
+    setup() {
+        const explorerStore = useExplorerStore();
+        const { faucet, token } = storeToRefs(explorerStore);
 
-        this.pusherUnsubscribe = this.pusher.onNewTransaction(transaction => {
-            if (this.publicExplorer.faucet.address == transaction.from)
+        return { faucet, token };
+    },
+    mounted() {
+        this.pusherUnsubscribe = this.$pusher.onNewTransaction(transaction => {
+            if (this.faucet.address == transaction.from)
                 this.getTransactions(this.currentOptions);
         }, this, this.address);
-
     },
     destroyed() {
         this.pusherUnsubscribe();
     },
     methods: {
-        moment,
-        getTransactions(newOptions) {
+        getTransactions({ page, itemsPerPage, sortBy } = {}) {
             this.loading = true;
 
-            if (newOptions)
-                this.currentOptions = newOptions;
+            if (!page || !itemsPerPage || !sortBy || !sortBy.length)
+                return this.loading = false;
 
-            const options = {
-                page: this.currentOptions.page,
-                itemsPerPage: this.currentOptions.itemsPerPage,
-                order: this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc',
-                orderBy: this.currentOptions.sortBy[0]
+            this.currentOptions = {
+                page,
+                itemsPerPage,
+                sortBy
             };
 
-            this.server.getFaucetTransactionHistory(this.publicExplorer.faucet.id, options)
+            this.$server.getFaucetTransactionHistory(this.faucet.id, { page, itemsPerPage, orderBy: sortBy[0].key, order: sortBy[0].order })
                 .then(({ data }) => {
                     this.transactions = data.transactions;
                     this.transactionCount = data.count;
@@ -100,11 +100,8 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-            'publicExplorer'
-        ]),
         tokenSymbol() {
-            return this.publicExplorer.token || 'ETH';
+            return this.token || 'ETH';
         }
     }
 }

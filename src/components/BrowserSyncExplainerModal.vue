@@ -1,7 +1,7 @@
 <template>
 <v-dialog v-model="dialog" max-width="600">
     <v-card v-show="show == 'intro'">
-        <v-card-title class="headline">Browser Sync</v-card-title>
+        <v-card-title class="text-h5">Browser Sync</v-card-title>
 
         <v-card-text>
             You are currently syncing blocks & transactions directly from the browser, which is great to get
@@ -22,7 +22,7 @@
         </v-card-text>
     </v-card>
     <v-card v-show="show == 'hardhat'">
-        <v-card-title class="headline">Hardhat Plugin Setup</v-card-title>
+        <v-card-title class="text-h5">Hardhat Plugin Setup</v-card-title>
 
         <v-card-text>
             <p>
@@ -30,21 +30,21 @@
                 <code>npm install hardhat-ethernal --save-dev</code><br>
             </p>
             <p>
-                Add <code>require('hardhat-ethernal');</code> in your <code>hardhat-config.js</code> file.
+                <!-- Add <code>require('hardhat-ethernal');</code> in your <code>hardhat-config.js</code> file. -->
             </p>
             <p>
-                Restart your node with <code class="mr-1">ETHERNAL_API_TOKEN={{ user.apiToken }} npx hardhat node</code><v-icon @click="copyHardhatCommand()" x-small>mdi-content-copy</v-icon><br><br>
+                Restart your node with <code class="mr-1">ETHERNAL_API_TOKEN={{ userStore.apiToken }} npx hardhat node</code><v-icon @click="copyHardhatCommand()" size="x-small">mdi-content-copy</v-icon><br><br>
                 And you are good to go :) the plugin will automatically synchronize all blocks and transactions.<br>
             </p>
-            <input type="hidden" id="copyHardhatCommandElement" :value="`ETHERNAL_API_TOKEN=${ user.apiToken } npx hardhat node`">
+            <input type="hidden" id="copyHardhatCommandElement" :value="`ETHERNAL_API_TOKEN=${ userStore.apiToken } npx hardhat node`">
 
             <div align="right">
-                <v-btn outlined elevation="0" color="primary" @click="show = 'intro'">Back</v-btn>
+                <v-btn variant="outlined" elevation="0" color="primary" @click="show = 'intro'">Back</v-btn>
             </div>
         </v-card-text>
     </v-card>
     <v-card v-show="show == 'cli'">
-        <v-card-title class="headline">CLI Setup</v-card-title>
+        <v-card-title class="text-h5">CLI Setup</v-card-title>
 
         <v-card-text>
             <p>
@@ -52,20 +52,22 @@
             </p>
 
             <p>
-                Run <code>ETHERNAL_API_TOKEN={{ user.apiToken }} ethernal listen -w "{{ currentWorkspace.name }}"</code><v-icon @click="copyCliCommand()" x-small>mdi-content-copy</v-icon><br><br>
+                Run <code>ETHERNAL_API_TOKEN={{ userStore.apiToken }} ethernal listen -w "{{ currentWorkspaceStore.name }}"</code><v-icon @click="copyCliCommand()" size="x-small">mdi-content-copy</v-icon><br><br>
                 And you are good to go :) the CLI will automatically synchronize all blocks and transactions.<br>
             </p>
-            <input type="hidden" id="copyCliCommandElement" :value="`ETHERNAL_API_TOKEN=${ user.apiToken } ethernal listen`">
+            <input type="hidden" id="copyCliCommandElement" :value="`ETHERNAL_API_TOKEN=${ userStore.apiToken } ethernal listen`">
 
             <div align="right">
-                <v-btn outlined elevation="0" color="primary" @click="show = 'intro'">Back</v-btn>
+                <v-btn variant="outlined" elevation="0" color="primary" @click="show = 'intro'">Back</v-btn>
             </div>
         </v-card-text>
     </v-card>
 </v-dialog>
 </template>
 <script>
-import { mapGetters } from 'vuex';
+import { mapStores } from 'pinia';
+import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
+import { useUserStore } from '../stores/user';
 
 export default {
     name: 'BrowserSyncExplainerModal',
@@ -120,6 +122,7 @@ export default {
             });
         },
         close: function() {
+            console.log('close');
             this.resolve(false);
             this.reset();
         },
@@ -131,10 +134,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-            'user',
-            'currentWorkspace'
-        ])
+        ...mapStores(useUserStore, useCurrentWorkspaceStore)
     }
 }
 </script>

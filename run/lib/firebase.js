@@ -1896,16 +1896,10 @@ const getAddressTransactions = async (workspaceId, address, page, itemsPerPage, 
 
 const getWorkspaceContracts = async (workspaceId, page, itemsPerPage, orderBy, order, pattern) => {
     const workspace = await Workspace.findByPk(workspaceId);
-    const contracts = await workspace.getFilteredContracts(page, itemsPerPage, orderBy, order, pattern);
     const allowedPatterns = ['erc20', 'erc721'].indexOf(pattern) > -1 ? pattern : null;
-    const contractCount = await workspace.countContracts({
-        where: allowedPatterns ? { patterns: { [Op.contains]: [allowedPatterns] }} : {}
-    });
-
-    return {
-        items: contracts.map(c => c.toJSON()),
-        total: contractCount
-    }
+    const contracts = await workspace.getFilteredContracts(page, itemsPerPage, orderBy, order, allowedPatterns);
+    
+    return { items: contracts.map(c => c.toJSON()) }
 };
 
 const getWorkspaceContract = async (workspaceId, address) => {

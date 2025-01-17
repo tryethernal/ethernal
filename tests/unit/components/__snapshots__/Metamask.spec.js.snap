@@ -1,55 +1,57 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Metamask.vue Should show a "Connect with Metamask" button if no account connected 1`] = `
-<div>
-  <div style="display: none;">
-    You need Metamask in order to interact with this contract
-  </div>
+exports[`Metamask.vue > Should show a "Connect with Metamask" button if no account connected 1`] = `
+"<div>
+  <div style="display: none;"> You need Metamask in order to interact with this contract </div>
   <div style="">
-    <!----> <button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary" style="width: 100%;" id="connectMetamask"><span class="v-btn__content">Connect With Metamask</span></button>
+    <!--v-if--><button type="button" class="v-btn v-btn--elevated v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-elevated" style="width: 100%;" id="connectMetamask"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+      <!----><span class="v-btn__content" data-no-activator="">Connect With Metamask</span>
+      <!---->
+      <!---->
+    </button>
   </div>
-</div>
+</div>"
 `;
 
-exports[`Metamask.vue Should show an error is Metamask is not on the expected network 1`] = `
-<div>
-  <div style="display: none;">
-    You need Metamask in order to interact with this contract
-  </div>
+exports[`Metamask.vue > Should show an error is Metamask is not on the expected network 1`] = `
+"<div>
+  <div style="display: none;"> You need Metamask in order to interact with this contract </div>
   <div style="">
-    <div role="alert" class="v-alert v-sheet v-sheet--outlined theme--light v-alert--dense v-alert--outlined error--text">
-      <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-alert theme--light error--text"></i>
-        <div class="v-alert__content">
-          Invalid chain id <b>0x2</b> (2), expecting <b>0x1</b> (1). Click <a>here</a> to switch network in Metamask.
-        </div>
+    <div class="v-alert v-theme--light text-error v-alert--density-compact v-alert--variant-outlined mb-2" role="alert">
+      <!----><span class="v-alert__underlay"></span>
+      <!---->
+      <div class="v-alert__prepend"><i class="mdi-close-circle mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="compact"></i></div>
+      <div class="v-alert__content">
+        <!---->
+        <!----> Invalid chain id <b>0x2</b> (2), expecting <b>0x1</b> (1). Click <a>here</a> to switch network in Metamask.
       </div>
+      <!---->
+      <!---->
     </div>
-    <div><b>Connected Metamask account:</b> 0x1234
-    </div>
+    <div><b>Connected Metamask account:</b> 0x1234</div>
   </div>
-</div>
+</div>"
 `;
 
-exports[`Metamask.vue Should show an explaination message if no metamask 1`] = `
-<div>
-  <div>
-    You need Metamask in order to interact with this contract
-  </div>
+exports[`Metamask.vue > Should show an explaination message if no metamask 1`] = `
+"<div>
+  <div> You need Metamask in order to interact with this contract </div>
   <div style="display: none;">
-    <!----> <button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary" style="width: 100%;" id="connectMetamask"><span class="v-btn__content">Connect With Metamask</span></button>
+    <!--v-if--><button type="button" class="v-btn v-btn--elevated v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-elevated" style="width: 100%;" id="connectMetamask"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+      <!----><span class="v-btn__content" data-no-activator="">Connect With Metamask</span>
+      <!---->
+      <!---->
+    </button>
   </div>
-</div>
+</div>"
 `;
 
-exports[`Metamask.vue Should show the address when an account is connected 1`] = `
-<div>
-  <div style="display: none;">
-    You need Metamask in order to interact with this contract
-  </div>
+exports[`Metamask.vue > Should show the address when an account is connected 1`] = `
+"<div>
+  <div style="display: none;"> You need Metamask in order to interact with this contract </div>
   <div style="">
-    <!---->
-    <div><b>Connected Metamask account:</b> 0x1234
-    </div>
+    <!--v-if-->
+    <div><b>Connected Metamask account:</b> 0x1234</div>
   </div>
-</div>
+</div>"
 `;

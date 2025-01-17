@@ -1,6 +1,6 @@
 const ethers = require('ethers');
 const axios = require('axios');
-const { sanitize } = require('./utils');
+import { sanitize } from './utils';
 
 const ERC20_ABI = require('../abis/erc20.json');
 const ERC721_ABI = require('../abis/erc721.json');
@@ -77,14 +77,13 @@ class ERC20Connector {
 
 class ContractConnector {
 
-    INTERFACE_IDS = {
-         '721': '0x80ac58cd',
-         '721Metadata': '0x5b5e139f',
-         '721Enumerable': '0x780e9d63'
-     };
-
     constructor(server, address, abi) {
         if (!server || !address || !abi) throw '[ContractConnector] Missing parameter';
+        this.INTERFACE_IDS = {
+            '721': '0x80ac58cd',
+            '721Metadata': '0x5b5e139f',
+            '721Enumerable': '0x780e9d63'
+        };
         this.provider = getProvider(server);
         this.contract = new ethers.Contract(address, abi, this.provider);
     }
@@ -291,10 +290,10 @@ class ERC721Connector {
     }
 }
 
-module.exports = {
-    ContractConnector: ContractConnector,
-    ERC721Connector: ERC721Connector,
-    ERC20Connector: ERC20Connector,
-    V2DexRouterConnector: V2DexRouterConnector,
-    getProvider: getProvider
+export {
+    ContractConnector,
+    ERC721Connector,
+    ERC20Connector,
+    V2DexRouterConnector,
+    getProvider
 };

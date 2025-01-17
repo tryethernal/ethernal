@@ -1,40 +1,40 @@
 <template>
-    <v-data-table
-        :dense="dense"
+    <v-data-table-server
+        class="hide-table-count"
         :loading="loading"
         :items="blocks"
-        :sort-by="currentOptions.sortBy[0]"
+        :items-length="0"
+        :sort-by="currentOptions.sortBy"
         :must-sort="true"
-        :sort-desc="true"
-        :server-items-length="blockCount"
         :hide-default-footer="dense"
         :disable-pagination="true"
         :hide-default-header="dense"
         :item-class="rowClasses"
-        :footer-props="{
-            itemsPerPageOptions: [10, 25, 100],
-        }"
+        items-per-page-text="Rows per page:"
+        no-data-text="No blocks indexed yet"
+        last-icon=""
+        first-icon=""
+        :items-per-page-options="[
+            { value: 10, title: '10' },
+            { value: 25, title: '25' },
+            { value: 100, title: '100' }
+        ]"
         :headers="headers"
         @update:options="getBlocks">
         <template v-if="!withCount" v-slot:[`footer.page-text`]=""></template>
-        <template v-slot:no-data>
-            No blocks found
-        </template>
         <template v-slot:item.number="{ item }">
-            <template>
-                <v-tooltip top>
-                    <template v-slot:activator="{ on, attrs }">
-                        <v-progress-circular v-if="item.state == 'syncing'" v-bind="attrs" v-on="on" size="16" width="2" indeterminate color="primary" class="mr-2"></v-progress-circular>
-                    </template>
-                    <span v-if="item.state == 'syncing'">Indexing block...</span>
-                </v-tooltip>
-            </template>
+            <v-tooltip location="top">
+                <template v-slot:activator="{ props }">
+                    <v-progress-circular v-if="item.state == 'syncing'" v-bind="props" size="16" width="2" indeterminate color="primary" class="mr-2"></v-progress-circular>
+                </template>
+                <span v-if="item.state == 'syncing'">Indexing block...</span>
+            </v-tooltip>
             <router-link style="text-decoration: none;" :to="'/block/' + item.number">{{ commify(item.number) }}</router-link>
         </template>
         <template v-slot:item.timestamp="{ item }">
             <div class="my-2 text-left">
-                {{ moment(item.timestamp) | moment('MM/DD h:mm:ss A') }}<br>
-                <small>{{ moment(item.timestamp).fromNow() }}</small>
+                {{ $dt.shortDate(item.timestamp) }}<br>
+                <small>{{ $dt.fromNow(item.timestamp) }}</small>
             </div>
         </template>
         <template v-slot:item.gasUsed="{ item }">
@@ -43,11 +43,10 @@
         <template v-slot:item.transactionNumber="{ item }">
             {{ item.transactionsCount  }} {{ item.transactionsCount != 1 ? 'transactions' : 'transaction' }}
         </template>
-    </v-data-table>
+    </v-data-table-server>
 </template>
 
 <script>
-const moment = require('moment');
 const ethers = require('ethers');
 
 export default {
@@ -58,42 +57,42 @@ export default {
         blockCount: 0,
         headers: [],
         loading: true,
-        currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['number'], sortDesc: [true] },
+        currentOptions: { page: 1, itemsPerPage: 10, sortBy: [{ key: 'number', order: 'desc' }] },
         pusherChannelHandler: null
     }),
     mounted() {
-        this.pusherChannelHandler = this.pusher.onNewBlock(() => this.getBlocks(this.currentOptions), this);
+        this.pusherChannelHandler = this.$pusher.onNewBlock(() => this.getBlocks(this.currentOptions), this);
 
         this.headers.push(
-            { text: 'Block', value: 'number' },
-            { text: 'Mined On', value: 'timestamp' }
+            { title: 'Block', key: 'number' },
+            { title: 'Mined On', key: 'timestamp' }
         );
         if (!this.dense)
-            this.headers.push({ text: 'Gas Used', value: 'gasUsed', sortable: false });
-        this.headers.push({ text: 'Transaction Count', value: 'transactionNumber', sortable: false });
+            this.headers.push({ title: 'Gas Used', key: 'gasUsed', sortable: false });
+        this.headers.push({ title: 'Transaction Count', key: 'transactionNumber', sortable: false });
     },
     destroyed() {
         this.pusherChannelHandler.unbind(null, null, this);
     },
     methods: {
-        moment,
         commify: ethers.utils.commify,
         rowClasses(item) {
             if (item.state == 'syncing')
                 return 'isSyncing'
         },
-        getBlocks(newOptions) {
+        getBlocks({ page, itemsPerPage, sortBy } = {}) {
             this.loading = true;
 
-            if (newOptions)
-                this.currentOptions = newOptions;
+            if (!page || !itemsPerPage || !sortBy || !sortBy.length)
+                return this.loading = false;
 
-            const options = {
-                page: this.currentOptions.page,
-                itemsPerPage: this.currentOptions.itemsPerPage,
-                order: this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc'
+            this.currentOptions = {
+                page,
+                itemsPerPage,
+                sortBy
             };
-            this.server.getBlocks(options, !this.dense && !!this.withCount)
+
+            this.$server.getBlocks({ page, itemsPerPage, orderBy: sortBy[0].key, order: sortBy[0].order }, !this.dense && !!this.withCount)
                 .then(({ data }) => {
                     this.blocks = data.items;
                     this.blockCount = data.items.length == this.currentOptions.itemsPerPage ?

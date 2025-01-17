@@ -1,5 +1,5 @@
 <template>
-    <v-card outlined>
+    <v-card class="text-medium-emphasis">
         <v-card-text v-if="parsedTransactionData">
             {{ `${parsedTransactionData.functionFragment.name}(\n` }}
             <div class="ml-4" style="white-space: pre;" v-for="(input, index) in parsedTransactionData.functionFragment.inputs" :key="index">
@@ -20,7 +20,7 @@
 import { ethers } from 'ethers';
 const web3 = require('web3');
 import { findAbiForFunction } from '@/lib/abi';
-import FormattedSolVar from './FormattedSolVar';
+import FormattedSolVar from './FormattedSolVar.vue';
 
 export default {
     name: 'TransactionFunctionCall',
@@ -62,5 +62,8 @@ export default {
 <style scoped>
 .underlined {
     text-decoration: underline;
+}
+.v-card-text {
+    line-height: 1.375rem;
 }
 </style>

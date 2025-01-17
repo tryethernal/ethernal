@@ -1,23 +1,44 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Billing.vue Should display active explorers list 1`] = `
-<div class="container container--fluid">
+exports[`Billing.vue > Should display active explorers list 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
   <create-explorer-modal-stub></create-explorer-modal-stub>
-  <!---->
-  <!---->
-  <div role="alert" class="v-alert v-sheet theme--dark v-alert--dense v-alert--text error--text" style="display: none;">
-    <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-alert theme--dark error--text"></i>
-      <div class="v-alert__content"></div>
+  <!--v-if-->
+  <!--v-if-->
+  <div class="v-alert v-theme--light bg-error v-alert--density-compact v-alert--variant-flat" role="alert" style="display: none;">
+    <!----><span class="v-alert__underlay"></span>
+    <!---->
+    <div class="v-alert__prepend"><i class="mdi-close-circle mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="compact"></i></div>
+    <div class="v-alert__content">
+      <!---->
     </div>
+    <!---->
+    <!---->
   </div>
-  <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
-    <div class="v-card__title">Public Explorer Plans</div>
-    <div class="v-card__text">
-      You have <strong>1</strong> active public explorer.
-      <div class="row">
-        <div class="col col-6">
-          <div class="v-data-table theme--light">
-            <div class="v-data-table__wrapper">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated my-4">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-title">Public Explorer Plans</div>
+    <div class="v-card-text"> You have <strong>1</strong> active public explorer. <div class="v-row">
+        <div class="v-col v-col-6">
+          <div class="v-table v-theme--light v-table--density-default">
+            <!---->
+            <div class="v-table__wrapper">
               <table>
                 <thead>
                   <tr>
@@ -34,287 +55,681 @@ exports[`Billing.vue Should display active explorers list 1`] = `
                     <td>Team</td>
                     <td>/</td>
                     <td>Active</td>
-                    <td><a href="/explorers/1" class="">Manage</a></td>
+                    <td><a>Manage</a></td>
                   </tr>
                 </tbody>
                 <tfoot>
                   <tr>
                     <td></td>
                     <td></td>
-                    <td>
-                      Total: <span class="font-weight-bold">$100/mo</span></td>
+                    <td> Total: <span class="font-weight-bold">$100/mo</span></td>
                     <td></td>
                     <td></td>
                   </tr>
                 </tfoot>
               </table>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
-    <div class="v-card__title">Private Explorer Plan</div>
-    <div class="row ml-1 mb-1">
-      <div class="col col-4">
-        <div class="v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
-          <div class="v-card__title">
-            Free
-            <div class="spacer"></div>
             <!---->
           </div>
-          <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
-          <div role="list" class="v-list v-sheet theme--light v-list--dense">
-            <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-              <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-              10 contracts
-            </div>
-            <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-              <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-              1 workspace
-            </div>
-            <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-              <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-              7 days data retention
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col col-4">
-        <div class="v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
-          <div class="v-card__title">
-            Premium - $20/month
-            <div class="spacer"></div> <span class="ml-2 v-chip theme--light v-size--small primary"><span class="v-chip__content">Current Plan</span></span>
-          </div>
-          <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
-          <div role="list" class="v-list v-sheet theme--light v-list--dense">
-            <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-              <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-              Unlimited contracts
-            </div>
-            <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-              <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-              Unlimited workspaces
-            </div>
-            <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-              <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-              Unlimited data retention
-            </div>
-          </div>
-          <div class="v-card__actions justify-center d-flex flex-column"><button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Manage Subscription</span></button></div>
         </div>
       </div>
     </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-  <div class="row">
-    <div class="col">
-      <div class="v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__text"><strong>What's the difference between "Public Explorer" &amp; "Private Explorer"?</strong>
-          <p>
-            Private explorers are only accessible after logging in.
-            You can't share a transaction page, for example.<br>
-            You'll also need to either use the CLI or the Hardhat plugin to synchronize blocks.<br>
-            Recommended if you are a solo developer, working on a local chain.
-          </p>
-          <p>
-            Public explorers are more flexible: you get a public URL for your explorer, blocks are synced automatically,
-            and you have more customization options (native token name, custom domains, branding, etc..).<br>
-            Recommended if you have your own app chain, or hosted chain that you are sharing with others.
-          </p>
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-4">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-title">Private Explorer Plan</div>
+    <div class="v-row ml-1 mb-1">
+      <div class="v-col v-col-4">
+        <div class="v-card v-card--flat v-theme--light v-card--border v-card--density-default v-card--variant-elevated" style="height: 100%;">
+          <!---->
+          <div class="v-card__loader">
+            <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+              <!---->
+              <div class="v-progress-linear__background"></div>
+              <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+              <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                <div class="v-progress-linear__indeterminate">
+                  <div class="v-progress-linear__indeterminate long"></div>
+                  <div class="v-progress-linear__indeterminate short"></div>
+                </div>
+              </transition-stub>
+              <!---->
+            </div>
+          </div>
+          <!---->
+          <!---->
+          <div class="v-card-title d-flex justify-space-between align-center"> Free <span class="v-chip v-theme--light text-primary v-chip--density-default v-chip--size-small v-chip--variant-tonal ml-2" draggable="false"><!----><span class="v-chip__underlay"></span>
+            <!---->
+            <!---->
+            <div class="v-chip__content" data-no-activator="">Current</div>
+            <!---->
+            <!----></span>
+          </div>
+          <hr class="v-divider v-theme--light" aria-orientation="horizontal" role="separator">
+          <div class="v-list v-theme--light v-list--density-compact v-list--one-line" tabindex="0" role="listbox">
+            <div class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+              <!----><span class="v-list-item__underlay"></span>
+              <div class="v-list-item__prepend"><i class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success mx-0 mr-1" aria-hidden="true"></i>
+                <div class="v-list-item__spacer"></div>
+              </div>
+              <div class="v-list-item__content" data-no-activator="">
+                <!---->
+                <!----> 10 contracts
+              </div>
+              <!---->
+            </div>
+            <div class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+              <!----><span class="v-list-item__underlay"></span>
+              <div class="v-list-item__prepend"><i class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success mx-0 mr-1" aria-hidden="true"></i>
+                <div class="v-list-item__spacer"></div>
+              </div>
+              <div class="v-list-item__content" data-no-activator="">
+                <!---->
+                <!----> 1 workspace
+              </div>
+              <!---->
+            </div>
+            <div class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+              <!----><span class="v-list-item__underlay"></span>
+              <div class="v-list-item__prepend"><i class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success mx-0 mr-1" aria-hidden="true"></i>
+                <div class="v-list-item__spacer"></div>
+              </div>
+              <div class="v-list-item__content" data-no-activator="">
+                <!---->
+                <!----> 7 days data retention
+              </div>
+              <!---->
+            </div>
+          </div>
+          <!---->
+          <!----><span class="v-card__underlay"></span>
+        </div>
+      </div>
+      <div class="v-col v-col-4">
+        <div class="v-card v-card--flat v-theme--light v-card--border v-card--density-default v-card--variant-elevated" style="height: 100%;">
+          <!---->
+          <div class="v-card__loader">
+            <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+              <!---->
+              <div class="v-progress-linear__background"></div>
+              <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+              <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                <div class="v-progress-linear__indeterminate">
+                  <div class="v-progress-linear__indeterminate long"></div>
+                  <div class="v-progress-linear__indeterminate short"></div>
+                </div>
+              </transition-stub>
+              <!---->
+            </div>
+          </div>
+          <!---->
+          <!---->
+          <div class="v-card-title d-flex justify-space-between align-center"> Premium - $20/month
+            <!--v-if-->
+          </div>
+          <hr class="v-divider v-theme--light" aria-orientation="horizontal" role="separator">
+          <div class="v-list v-theme--light v-list--density-compact v-list--one-line" tabindex="0" role="listbox">
+            <div class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+              <!----><span class="v-list-item__underlay"></span>
+              <div class="v-list-item__prepend"><i class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success mx-0 mr-1" aria-hidden="true"></i>
+                <div class="v-list-item__spacer"></div>
+              </div>
+              <div class="v-list-item__content" data-no-activator="">
+                <!---->
+                <!----> Unlimited contracts
+              </div>
+              <!---->
+            </div>
+            <div class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+              <!----><span class="v-list-item__underlay"></span>
+              <div class="v-list-item__prepend"><i class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success mx-0 mr-1" aria-hidden="true"></i>
+                <div class="v-list-item__spacer"></div>
+              </div>
+              <div class="v-list-item__content" data-no-activator="">
+                <!---->
+                <!----> Unlimited workspaces
+              </div>
+              <!---->
+            </div>
+            <div class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+              <!----><span class="v-list-item__underlay"></span>
+              <div class="v-list-item__prepend"><i class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success mx-0 mr-1" aria-hidden="true"></i>
+                <div class="v-list-item__spacer"></div>
+              </div>
+              <div class="v-list-item__content" data-no-activator="">
+                <!---->
+                <!----> Unlimited data retention
+              </div>
+              <!---->
+            </div>
+          </div>
+          <div class="v-card-actions justify-center d-flex flex-column"><button type="button" class="v-btn v-btn--slim v-theme--light bg-primary v-btn--density-default v-btn--size-default v-btn--variant-flat"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+              <!----><span class="v-btn__content" data-no-activator="">Subscribe</span>
+              <!---->
+              <!---->
+            </button></div>
+          <!---->
+          <!----><span class="v-card__underlay"></span>
         </div>
       </div>
     </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-</div>
+  <div class="v-row">
+    <div class="v-col">
+      <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!---->
+        <div class="v-card-text"><strong>What's the difference between "Public Explorer" &amp; "Private Explorer"?</strong>
+          <p> Private explorers are only accessible after logging in. You can't share a transaction page, for example.<br> You'll also need to either use the CLI or the Hardhat plugin to synchronize blocks.<br> Recommended if you are a solo developer, working on a local chain. </p>
+          <p> Public explorers are more flexible: you get a public URL for your explorer, blocks are synced automatically, and you have more customization options (native token name, custom domains, branding, etc..).<br> Recommended if you have your own app chain, or hosted chain that you are sharing with others. </p>
+        </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
+      </div>
+    </div>
+  </div>
+</div>"
 `;
 
-exports[`Billing.vue Should display the button to manage the subscription when the user has an active premium plan 1`] = `
-<div class="container container--fluid">
+exports[`Billing.vue > Should display the button to manage the subscription when the user has an active premium plan 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
   <create-explorer-modal-stub></create-explorer-modal-stub>
-  <!---->
-  <!---->
-  <div role="alert" class="v-alert v-sheet theme--dark v-alert--dense v-alert--text error--text" style="display: none;">
-    <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-alert theme--dark error--text"></i>
-      <div class="v-alert__content"></div>
+  <!--v-if-->
+  <!--v-if-->
+  <div class="v-alert v-theme--light bg-error v-alert--density-compact v-alert--variant-flat" role="alert" style="display: none;">
+    <!----><span class="v-alert__underlay"></span>
+    <!---->
+    <div class="v-alert__prepend"><i class="mdi-close-circle mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="compact"></i></div>
+    <div class="v-alert__content">
+      <!---->
     </div>
+    <!---->
+    <!---->
   </div>
-  <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
-    <div class="v-card__title">Public Explorer Plans</div>
-    <div class="v-card__text">
-      You have <strong>0</strong> active public explorers.
-      <div class="row">
-        <div class="col col-6"><button type="button" class="mt-4 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mr-1 mdi mdi-plus theme--light" style="font-size: 16px;"></i>Create Explorer
-                    </span></button></div>
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated my-4">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
       </div>
     </div>
+    <!---->
+    <!---->
+    <div class="v-card-title">Public Explorer Plans</div>
+    <div class="v-card-text"> You have <strong>0</strong> active public explorers. <div class="v-row">
+        <div class="v-col v-col-6"><button type="button" class="v-btn v-theme--light bg-primary v-btn--density-default v-btn--size-default v-btn--variant-flat mt-4"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+            <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-plus mdi v-icon notranslate v-theme--light v-icon--size-small mr-1" aria-hidden="true"></i>Create Explorer </span>
+            <!---->
+            <!---->
+          </button></div>
+      </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-  <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
-    <div class="v-card__title">Private Explorer Plan</div>
-    <div class="row ml-1 mb-1">
-      <div class="col col-4">
-        <div class="v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
-          <div class="v-card__title">
-            Free
-            <div class="spacer"></div>
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-4">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-title">Private Explorer Plan</div>
+    <div class="v-row ml-1 mb-1">
+      <div class="v-col v-col-4">
+        <div class="v-card v-card--flat v-theme--light v-card--border v-card--density-default v-card--variant-elevated" style="height: 100%;">
+          <!---->
+          <div class="v-card__loader">
+            <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+              <!---->
+              <div class="v-progress-linear__background"></div>
+              <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+              <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                <div class="v-progress-linear__indeterminate">
+                  <div class="v-progress-linear__indeterminate long"></div>
+                  <div class="v-progress-linear__indeterminate short"></div>
+                </div>
+              </transition-stub>
+              <!---->
+            </div>
+          </div>
+          <!---->
+          <!---->
+          <div class="v-card-title d-flex justify-space-between align-center"> Free
+            <!--v-if-->
+          </div>
+          <hr class="v-divider v-theme--light" aria-orientation="horizontal" role="separator">
+          <div class="v-list v-theme--light v-list--density-compact v-list--one-line" tabindex="0" role="listbox">
+            <div class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+              <!----><span class="v-list-item__underlay"></span>
+              <div class="v-list-item__prepend"><i class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success mx-0 mr-1" aria-hidden="true"></i>
+                <div class="v-list-item__spacer"></div>
+              </div>
+              <div class="v-list-item__content" data-no-activator="">
+                <!---->
+                <!----> 10 contracts
+              </div>
+              <!---->
+            </div>
+            <div class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+              <!----><span class="v-list-item__underlay"></span>
+              <div class="v-list-item__prepend"><i class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success mx-0 mr-1" aria-hidden="true"></i>
+                <div class="v-list-item__spacer"></div>
+              </div>
+              <div class="v-list-item__content" data-no-activator="">
+                <!---->
+                <!----> 1 workspace
+              </div>
+              <!---->
+            </div>
+            <div class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+              <!----><span class="v-list-item__underlay"></span>
+              <div class="v-list-item__prepend"><i class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success mx-0 mr-1" aria-hidden="true"></i>
+                <div class="v-list-item__spacer"></div>
+              </div>
+              <div class="v-list-item__content" data-no-activator="">
+                <!---->
+                <!----> 7 days data retention
+              </div>
+              <!---->
+            </div>
+          </div>
+          <!---->
+          <!----><span class="v-card__underlay"></span>
+        </div>
+      </div>
+      <div class="v-col v-col-4">
+        <div class="v-card v-card--flat v-theme--light v-card--border v-card--density-default v-card--variant-elevated" style="height: 100%;">
+          <!---->
+          <div class="v-card__loader">
+            <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+              <!---->
+              <div class="v-progress-linear__background"></div>
+              <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+              <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                <div class="v-progress-linear__indeterminate">
+                  <div class="v-progress-linear__indeterminate long"></div>
+                  <div class="v-progress-linear__indeterminate short"></div>
+                </div>
+              </transition-stub>
+              <!---->
+            </div>
+          </div>
+          <!---->
+          <!---->
+          <div class="v-card-title d-flex justify-space-between align-center"> Premium - $20/month <span class="v-chip v-theme--light text-primary v-chip--density-default v-chip--size-small v-chip--variant-tonal ml-2" draggable="false"><!----><span class="v-chip__underlay"></span>
+            <!---->
+            <!---->
+            <div class="v-chip__content" data-no-activator="">Current Plan</div>
+            <!---->
+            <!----></span>
+          </div>
+          <hr class="v-divider v-theme--light" aria-orientation="horizontal" role="separator">
+          <div class="v-list v-theme--light v-list--density-compact v-list--one-line" tabindex="0" role="listbox">
+            <div class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+              <!----><span class="v-list-item__underlay"></span>
+              <div class="v-list-item__prepend"><i class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success mx-0 mr-1" aria-hidden="true"></i>
+                <div class="v-list-item__spacer"></div>
+              </div>
+              <div class="v-list-item__content" data-no-activator="">
+                <!---->
+                <!----> Unlimited contracts
+              </div>
+              <!---->
+            </div>
+            <div class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+              <!----><span class="v-list-item__underlay"></span>
+              <div class="v-list-item__prepend"><i class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success mx-0 mr-1" aria-hidden="true"></i>
+                <div class="v-list-item__spacer"></div>
+              </div>
+              <div class="v-list-item__content" data-no-activator="">
+                <!---->
+                <!----> Unlimited workspaces
+              </div>
+              <!---->
+            </div>
+            <div class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+              <!----><span class="v-list-item__underlay"></span>
+              <div class="v-list-item__prepend"><i class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success mx-0 mr-1" aria-hidden="true"></i>
+                <div class="v-list-item__spacer"></div>
+              </div>
+              <div class="v-list-item__content" data-no-activator="">
+                <!---->
+                <!----> Unlimited data retention
+              </div>
+              <!---->
+            </div>
+          </div>
+          <div class="v-card-actions justify-center d-flex flex-column"><button type="button" class="v-btn v-btn--slim v-theme--light bg-primary v-btn--density-default v-btn--size-default v-btn--variant-flat"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+              <!----><span class="v-btn__content" data-no-activator="">Manage Subscription</span>
+              <!---->
+              <!---->
+            </button></div>
+          <!---->
+          <!----><span class="v-card__underlay"></span>
+        </div>
+      </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+  <div class="v-row">
+    <div class="v-col">
+      <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
             <!---->
           </div>
-          <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
-          <div role="list" class="v-list v-sheet theme--light v-list--dense">
-            <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-              <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-              10 contracts
-            </div>
-            <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-              <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-              1 workspace
-            </div>
-            <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-              <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-              7 days data retention
-            </div>
-          </div>
         </div>
-      </div>
-      <div class="col col-4">
-        <div class="v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
-          <div class="v-card__title">
-            Premium - $20/month
-            <div class="spacer"></div> <span class="ml-2 v-chip theme--light v-size--small primary"><span class="v-chip__content">Current Plan</span></span>
-          </div>
-          <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
-          <div role="list" class="v-list v-sheet theme--light v-list--dense">
-            <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-              <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-              Unlimited contracts
-            </div>
-            <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-              <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-              Unlimited workspaces
-            </div>
-            <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-              <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-              Unlimited data retention
-            </div>
-          </div>
-          <div class="v-card__actions justify-center d-flex flex-column"><button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Manage Subscription</span></button></div>
+        <!---->
+        <!---->
+        <div class="v-card-text"><strong>What's the difference between "Public Explorer" &amp; "Private Explorer"?</strong>
+          <p> Private explorers are only accessible after logging in. You can't share a transaction page, for example.<br> You'll also need to either use the CLI or the Hardhat plugin to synchronize blocks.<br> Recommended if you are a solo developer, working on a local chain. </p>
+          <p> Public explorers are more flexible: you get a public URL for your explorer, blocks are synced automatically, and you have more customization options (native token name, custom domains, branding, etc..).<br> Recommended if you have your own app chain, or hosted chain that you are sharing with others. </p>
         </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
       </div>
     </div>
   </div>
-  <div class="row">
-    <div class="col">
-      <div class="v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__text"><strong>What's the difference between "Public Explorer" &amp; "Private Explorer"?</strong>
-          <p>
-            Private explorers are only accessible after logging in.
-            You can't share a transaction page, for example.<br>
-            You'll also need to either use the CLI or the Hardhat plugin to synchronize blocks.<br>
-            Recommended if you are a solo developer, working on a local chain.
-          </p>
-          <p>
-            Public explorers are more flexible: you get a public URL for your explorer, blocks are synced automatically,
-            and you have more customization options (native token name, custom domains, branding, etc..).<br>
-            Recommended if you have your own app chain, or hosted chain that you are sharing with others.
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+</div>"
 `;
 
-exports[`Billing.vue Should display the button to start the subscription when the user is on a free plan 1`] = `
-<div class="container container--fluid">
+exports[`Billing.vue > Should display the button to start the subscription when the user is on a free plan 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
   <create-explorer-modal-stub></create-explorer-modal-stub>
-  <!---->
-  <!---->
-  <div role="alert" class="v-alert v-sheet theme--dark v-alert--dense v-alert--text error--text" style="display: none;">
-    <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-alert theme--dark error--text"></i>
-      <div class="v-alert__content"></div>
+  <!--v-if-->
+  <!--v-if-->
+  <div class="v-alert v-theme--light bg-error v-alert--density-compact v-alert--variant-flat" role="alert" style="display: none;">
+    <!----><span class="v-alert__underlay"></span>
+    <!---->
+    <div class="v-alert__prepend"><i class="mdi-close-circle mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="compact"></i></div>
+    <div class="v-alert__content">
+      <!---->
     </div>
+    <!---->
+    <!---->
   </div>
-  <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
-    <div class="v-card__title">Public Explorer Plans</div>
-    <div class="v-card__text">
-      You have <strong>0</strong> active public explorers.
-      <div class="row">
-        <div class="col col-6"><button type="button" class="mt-4 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mr-1 mdi mdi-plus theme--light" style="font-size: 16px;"></i>Create Explorer
-                    </span></button></div>
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated my-4">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
       </div>
     </div>
+    <!---->
+    <!---->
+    <div class="v-card-title">Public Explorer Plans</div>
+    <div class="v-card-text"> You have <strong>0</strong> active public explorers. <div class="v-row">
+        <div class="v-col v-col-6"><button type="button" class="v-btn v-theme--light bg-primary v-btn--density-default v-btn--size-default v-btn--variant-flat mt-4"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+            <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-plus mdi v-icon notranslate v-theme--light v-icon--size-small mr-1" aria-hidden="true"></i>Create Explorer </span>
+            <!---->
+            <!---->
+          </button></div>
+      </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-  <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
-    <div class="v-card__title">Private Explorer Plan</div>
-    <div class="row ml-1 mb-1">
-      <div class="col col-4">
-        <div class="v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
-          <div class="v-card__title">
-            Free
-            <div class="spacer"></div> <span class="ml-2 v-chip theme--light v-size--small primary"><span class="v-chip__content">Current</span></span>
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-4">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
           </div>
-          <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
-          <div role="list" class="v-list v-sheet theme--light v-list--dense">
-            <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-              <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-              10 contracts
-            </div>
-            <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-              <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-              1 workspace
-            </div>
-            <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-              <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-              7 days data retention
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-title">Private Explorer Plan</div>
+    <div class="v-row ml-1 mb-1">
+      <div class="v-col v-col-4">
+        <div class="v-card v-card--flat v-theme--light v-card--border v-card--density-default v-card--variant-elevated" style="height: 100%;">
+          <!---->
+          <div class="v-card__loader">
+            <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+              <!---->
+              <div class="v-progress-linear__background"></div>
+              <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+              <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                <div class="v-progress-linear__indeterminate">
+                  <div class="v-progress-linear__indeterminate long"></div>
+                  <div class="v-progress-linear__indeterminate short"></div>
+                </div>
+              </transition-stub>
+              <!---->
             </div>
           </div>
+          <!---->
+          <!---->
+          <div class="v-card-title d-flex justify-space-between align-center"> Free <span class="v-chip v-theme--light text-primary v-chip--density-default v-chip--size-small v-chip--variant-tonal ml-2" draggable="false"><!----><span class="v-chip__underlay"></span>
+            <!---->
+            <!---->
+            <div class="v-chip__content" data-no-activator="">Current</div>
+            <!---->
+            <!----></span>
+          </div>
+          <hr class="v-divider v-theme--light" aria-orientation="horizontal" role="separator">
+          <div class="v-list v-theme--light v-list--density-compact v-list--one-line" tabindex="0" role="listbox">
+            <div class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+              <!----><span class="v-list-item__underlay"></span>
+              <div class="v-list-item__prepend"><i class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success mx-0 mr-1" aria-hidden="true"></i>
+                <div class="v-list-item__spacer"></div>
+              </div>
+              <div class="v-list-item__content" data-no-activator="">
+                <!---->
+                <!----> 10 contracts
+              </div>
+              <!---->
+            </div>
+            <div class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+              <!----><span class="v-list-item__underlay"></span>
+              <div class="v-list-item__prepend"><i class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success mx-0 mr-1" aria-hidden="true"></i>
+                <div class="v-list-item__spacer"></div>
+              </div>
+              <div class="v-list-item__content" data-no-activator="">
+                <!---->
+                <!----> 1 workspace
+              </div>
+              <!---->
+            </div>
+            <div class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+              <!----><span class="v-list-item__underlay"></span>
+              <div class="v-list-item__prepend"><i class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success mx-0 mr-1" aria-hidden="true"></i>
+                <div class="v-list-item__spacer"></div>
+              </div>
+              <div class="v-list-item__content" data-no-activator="">
+                <!---->
+                <!----> 7 days data retention
+              </div>
+              <!---->
+            </div>
+          </div>
+          <!---->
+          <!----><span class="v-card__underlay"></span>
         </div>
       </div>
-      <div class="col col-4">
-        <div class="v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
-          <div class="v-card__title">
-            Premium - $20/month
-            <div class="spacer"></div>
+      <div class="v-col v-col-4">
+        <div class="v-card v-card--flat v-theme--light v-card--border v-card--density-default v-card--variant-elevated" style="height: 100%;">
+          <!---->
+          <div class="v-card__loader">
+            <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+              <!---->
+              <div class="v-progress-linear__background"></div>
+              <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+              <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                <div class="v-progress-linear__indeterminate">
+                  <div class="v-progress-linear__indeterminate long"></div>
+                  <div class="v-progress-linear__indeterminate short"></div>
+                </div>
+              </transition-stub>
+              <!---->
+            </div>
+          </div>
+          <!---->
+          <!---->
+          <div class="v-card-title d-flex justify-space-between align-center"> Premium - $20/month
+            <!--v-if-->
+          </div>
+          <hr class="v-divider v-theme--light" aria-orientation="horizontal" role="separator">
+          <div class="v-list v-theme--light v-list--density-compact v-list--one-line" tabindex="0" role="listbox">
+            <div class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+              <!----><span class="v-list-item__underlay"></span>
+              <div class="v-list-item__prepend"><i class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success mx-0 mr-1" aria-hidden="true"></i>
+                <div class="v-list-item__spacer"></div>
+              </div>
+              <div class="v-list-item__content" data-no-activator="">
+                <!---->
+                <!----> Unlimited contracts
+              </div>
+              <!---->
+            </div>
+            <div class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+              <!----><span class="v-list-item__underlay"></span>
+              <div class="v-list-item__prepend"><i class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success mx-0 mr-1" aria-hidden="true"></i>
+                <div class="v-list-item__spacer"></div>
+              </div>
+              <div class="v-list-item__content" data-no-activator="">
+                <!---->
+                <!----> Unlimited workspaces
+              </div>
+              <!---->
+            </div>
+            <div class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+              <!----><span class="v-list-item__underlay"></span>
+              <div class="v-list-item__prepend"><i class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success mx-0 mr-1" aria-hidden="true"></i>
+                <div class="v-list-item__spacer"></div>
+              </div>
+              <div class="v-list-item__content" data-no-activator="">
+                <!---->
+                <!----> Unlimited data retention
+              </div>
+              <!---->
+            </div>
+          </div>
+          <div class="v-card-actions justify-center d-flex flex-column"><button type="button" class="v-btn v-btn--slim v-theme--light bg-primary v-btn--density-default v-btn--size-default v-btn--variant-flat"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+              <!----><span class="v-btn__content" data-no-activator="">Subscribe</span>
+              <!---->
+              <!---->
+            </button></div>
+          <!---->
+          <!----><span class="v-card__underlay"></span>
+        </div>
+      </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+  <div class="v-row">
+    <div class="v-col">
+      <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
             <!---->
           </div>
-          <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
-          <div role="list" class="v-list v-sheet theme--light v-list--dense">
-            <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-              <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-              Unlimited contracts
-            </div>
-            <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-              <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-              Unlimited workspaces
-            </div>
-            <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-              <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-              Unlimited data retention
-            </div>
-          </div>
-          <div class="v-card__actions justify-center d-flex flex-column"><button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Subscribe</span></button></div>
         </div>
+        <!---->
+        <!---->
+        <div class="v-card-text"><strong>What's the difference between "Public Explorer" &amp; "Private Explorer"?</strong>
+          <p> Private explorers are only accessible after logging in. You can't share a transaction page, for example.<br> You'll also need to either use the CLI or the Hardhat plugin to synchronize blocks.<br> Recommended if you are a solo developer, working on a local chain. </p>
+          <p> Public explorers are more flexible: you get a public URL for your explorer, blocks are synced automatically, and you have more customization options (native token name, custom domains, branding, etc..).<br> Recommended if you have your own app chain, or hosted chain that you are sharing with others. </p>
+        </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
       </div>
     </div>
   </div>
-  <div class="row">
-    <div class="col">
-      <div class="v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__text"><strong>What's the difference between "Public Explorer" &amp; "Private Explorer"?</strong>
-          <p>
-            Private explorers are only accessible after logging in.
-            You can't share a transaction page, for example.<br>
-            You'll also need to either use the CLI or the Hardhat plugin to synchronize blocks.<br>
-            Recommended if you are a solo developer, working on a local chain.
-          </p>
-          <p>
-            Public explorers are more flexible: you get a public URL for your explorer, blocks are synced automatically,
-            and you have more customization options (native token name, custom domains, branding, etc..).<br>
-            Recommended if you have your own app chain, or hosted chain that you are sharing with others.
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+</div>"
 `;

@@ -1,21 +1,21 @@
 import flushPromises from 'flush-promises';
-import MockHelper from '../MockHelper';
 
 import Explorer from '@/components/Explorer.vue';
 
-beforeEach(() => jest.clearAllMocks());
-
 describe('Explorer.vue', () => {
-    let helper;
-
-    beforeEach(() => {
-        helper = new MockHelper();
-    });
-
     it('Should display explorer sections', async() => {
-        const wrapper = helper.mountFn(Explorer, {
-            stubs: ['Explorer-General', 'Explorer-Faucet-Settings'],
-            propsData: {
+        const wrapper = mount(Explorer, {
+            global: {
+                stubs: ['Explorer-General', 'Explorer-Faucet-Settings'],
+                mocks: {
+                    $route: {
+                        query: {
+                            tab: 'general'
+                        }
+                    }
+                }
+            },
+            props: {
                 id: 1
             }
         });

@@ -584,7 +584,11 @@ router.post('/:id/settings', authMiddleware, async (req, res, next) => {
                 await db.updateExplorerWorkspace(explorer.id, workspace.id);
         }
 
-        await db.updateExplorerSettings(explorer.id, data);
+        try {
+            await db.updateExplorerSettings(explorer.id, data);
+        } catch(error) {
+            return managedError(new Error(error), req, res);
+        }
 
         res.sendStatus(200);
     } catch(error) {
@@ -792,7 +796,7 @@ router.get('/search', async (req, res, next) => {
         };
 
         fields['token'] = capabilities.nativeToken ? explorer.token : 'ether';
-        fields['themes'] = capabilities.branding ? explorer.themes : { 'default': {}};
+        fields['themes'] = capabilities.branding ? explorer.themes : { 'light': {}};
 
         if (explorer.faucet && explorer.faucet.active)
             fields['faucet'] = {

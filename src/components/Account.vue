@@ -3,9 +3,9 @@
         <v-row>
             <v-col cols="6">
                 <h4>Api Token</h4>
-                <v-card outlined class="mb-4">
+                <v-card class="mb-4">
                     <v-card-text v-if="apiToken">
-                        <v-text-field id="apiToken" append-icon="mdi-content-copy" readonly @click:append="copyToken()" outlined dense hide-details="auto" :value="apiToken" v-show="apiToken"></v-text-field>
+                        <v-text-field id="apiToken" append-icon="mdi-content-copy" readonly @click:append="copyToken()" variant="outlined" density="compact" hide-details="auto" :model-value="apiToken" v-show="apiToken"></v-text-field>
                         <input type="hidden" id="copyElement" :value="apiToken">
                     </v-card-text>
                     <v-card-text v-else>
@@ -17,18 +17,19 @@
     </div>
 </template>
 <script>
-import { mapGetters } from 'vuex';
+import { mapStores } from 'pinia';
+import { useUserStore } from '@/stores/user';
 
 export default {
     name: 'Account',
     data: () => ({
-        apiToken: null,
+        apiToken: null
     }),
     mounted() {
-        this.apiToken = this.user.apiToken
+        this.apiToken = this.userStore.apiToken
     },
     methods: {
-        copyToken: function() {
+        copyToken() {
             const webhookField = document.querySelector('#copyElement');
             webhookField.setAttribute('type', 'text');
             webhookField.select();
@@ -46,9 +47,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-            'user'
-        ])
+        ...mapStores(useUserStore)
     }
 }
 </script>

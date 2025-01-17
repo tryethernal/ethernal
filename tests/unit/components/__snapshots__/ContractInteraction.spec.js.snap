@@ -1,224 +1,435 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ContractInteraction.vue Should display ABI editor & methods 1`] = `
-<div class="container container--fluid">
-  <h4>ABI</h4>
-  <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
-    <import-artifact-modal-stub></import-artifact-modal-stub>
+exports[`ContractInteraction.vue > Should display ABI editor & methods 1`] = `
+"<div data-v-90b7be59="" class="v-container v-container--fluid v-locale--is-ltr">
+  <h4 data-v-90b7be59="">ABI</h4>
+  <div data-v-90b7be59="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-4">
     <!---->
-    <div class="v-card__text">
-      An ABI has been uploaded.<span> (<a href="#">Edit</a>)</span></div>
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
     <!---->
     <!---->
+    <!--v-if-->
+    <!--v-if-->
+    <div data-v-90b7be59="" class="v-card-text"> An ABI has been uploaded.
+      <!--v-if-->
+    </div>
+    <!--v-if-->
+    <!--v-if-->
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-  <h4>Call Options</h4>
-  <contract-call-options-stub accounts="0xAD2935E147b61175D5dc3A9e7bDa93B0975A43BA"></contract-call-options-stub>
-  <h4>Read Methods</h4>
-  <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
-    <div>
-      <div class="v-card__text">
-        <div class="row pb-4">
-          <div class="col-sm-12 col-md-6 col-lg-3 col">
-            <contract-read-method-stub signature="_feeBasisPoints()" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
+  <h4 data-v-90b7be59="">Call Options</h4>
+  <contract-call-options-stub data-v-90b7be59="" accounts="" loading="false"></contract-call-options-stub>
+  <h4 data-v-90b7be59="">Read Methods</h4>
+  <div data-v-90b7be59="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-4">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-90b7be59="">
+      <div data-v-90b7be59="" class="v-card-text">
+        <div data-v-90b7be59="" class="v-row pb-4">
+          <div data-v-90b7be59="" class="v-col-sm-12 v-col-md-6 v-col-lg-6 v-col">
+            <contract-read-method-stub data-v-90b7be59="" active="false" contract="[object Object]" signature="_feeBasisPoints()" method="[object Object]" options="[object Object]"></contract-read-method-stub>
           </div>
         </div>
-        <div class="row pb-4">
-          <div class="col-sm-12 col-md-6 col-lg-3 col">
-            <contract-read-method-stub signature="owner()" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
+        <div data-v-90b7be59="" class="v-row pb-4">
+          <div data-v-90b7be59="" class="v-col-sm-12 v-col-md-6 v-col-lg-6 v-col">
+            <contract-read-method-stub data-v-90b7be59="" active="false" contract="[object Object]" signature="owner()" method="[object Object]" options="[object Object]"></contract-read-method-stub>
           </div>
         </div>
-        <div class="row pb-4">
-          <div class="col-sm-12 col-md-6 col-lg-3 col">
-            <contract-read-method-stub signature="depositsOf(address)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
+        <div data-v-90b7be59="" class="v-row pb-4">
+          <div data-v-90b7be59="" class="v-col-sm-12 v-col-md-6 v-col-lg-6 v-col">
+            <contract-read-method-stub data-v-90b7be59="" active="false" contract="[object Object]" signature="depositsOf(address)" method="[object Object]" options="[object Object]"></contract-read-method-stub>
           </div>
         </div>
-        <div class="row pb-4">
-          <div class="col-sm-12 col-md-6 col-lg-3 col">
-            <contract-read-method-stub signature="maturityOf(address)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
+        <div data-v-90b7be59="" class="v-row pb-4">
+          <div data-v-90b7be59="" class="v-col-sm-12 v-col-md-6 v-col-lg-6 v-col">
+            <contract-read-method-stub data-v-90b7be59="" active="false" contract="[object Object]" signature="maturityOf(address)" method="[object Object]" options="[object Object]"></contract-read-method-stub>
           </div>
         </div>
       </div>
     </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-  <h4>Write Methods</h4>
-  <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
-    <div>
-      <div class="v-card__text">
-        <div class="row pb-4">
-          <div class="col-sm-12 col-md-6 col-lg-3 col">
-            <contract-write-method-stub signature="renounceOwnership()" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
+  <h4 data-v-90b7be59="">Write Methods</h4>
+  <div data-v-90b7be59="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-4">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-90b7be59="">
+      <div data-v-90b7be59="" class="v-card-text">
+        <div data-v-90b7be59="" class="v-row pb-4">
+          <div data-v-90b7be59="" class="v-col-sm-12 v-col-md-6 v-col-lg-3 v-col">
+            <contract-write-method-stub data-v-90b7be59="" active="false" contract="[object Object]" signature="renounceOwnership()" method="[object Object]" options="[object Object]"></contract-write-method-stub>
           </div>
         </div>
-        <div class="row pb-4">
-          <div class="col-sm-12 col-md-6 col-lg-3 col">
-            <contract-write-method-stub signature="transferOwnership(address)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
+        <div data-v-90b7be59="" class="v-row pb-4">
+          <div data-v-90b7be59="" class="v-col-sm-12 v-col-md-6 v-col-lg-3 v-col">
+            <contract-write-method-stub data-v-90b7be59="" active="false" contract="[object Object]" signature="transferOwnership(address)" method="[object Object]" options="[object Object]"></contract-write-method-stub>
           </div>
         </div>
-        <div class="row pb-4">
-          <div class="col-sm-12 col-md-6 col-lg-3 col">
-            <contract-write-method-stub signature="setMaturity(address,uint256)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
+        <div data-v-90b7be59="" class="v-row pb-4">
+          <div data-v-90b7be59="" class="v-col-sm-12 v-col-md-6 v-col-lg-3 v-col">
+            <contract-write-method-stub data-v-90b7be59="" active="false" contract="[object Object]" signature="setMaturity(address,uint256)" method="[object Object]" options="[object Object]"></contract-write-method-stub>
           </div>
         </div>
-        <div class="row pb-4">
-          <div class="col-sm-12 col-md-6 col-lg-3 col">
-            <contract-write-method-stub signature="deposit(address)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
+        <div data-v-90b7be59="" class="v-row pb-4">
+          <div data-v-90b7be59="" class="v-col-sm-12 v-col-md-6 v-col-lg-3 v-col">
+            <contract-write-method-stub data-v-90b7be59="" active="false" contract="[object Object]" signature="deposit(address)" method="[object Object]" options="[object Object]"></contract-write-method-stub>
           </div>
         </div>
-        <div class="row pb-4">
-          <div class="col-sm-12 col-md-6 col-lg-3 col">
-            <contract-write-method-stub signature="withdraw()" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
+        <div data-v-90b7be59="" class="v-row pb-4">
+          <div data-v-90b7be59="" class="v-col-sm-12 v-col-md-6 v-col-lg-3 v-col">
+            <contract-write-method-stub data-v-90b7be59="" active="false" contract="[object Object]" signature="withdraw()" method="[object Object]" options="[object Object]"></contract-write-method-stub>
           </div>
         </div>
       </div>
     </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-</div>
+</div>"
 `;
 
-exports[`ContractInteraction.vue Should display ABI uploader 1`] = `
-<div class="container container--fluid">
-  <h4>ABI</h4>
-  <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
-    <import-artifact-modal-stub></import-artifact-modal-stub>
+exports[`ContractInteraction.vue > Should display ABI uploader 1`] = `
+"<div data-v-90b7be59="" class="v-container v-container--fluid v-locale--is-ltr">
+  <h4 data-v-90b7be59="">ABI</h4>
+  <div data-v-90b7be59="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-4">
     <!---->
-    <!---->
-    <div class="v-card__text">
-      Upload an ABI to interact with the contract:
-      <ul>
-        <li>For Hardhat projects, you can use our <a href="https://github.com/tryethernal/hardhat-ethernal" target="_blank">plugin</a>.</li>
-        <li>For other projects, you can use our <a href="https://github.com/tryethernal/ethernal-cli" target="_blank">CLI</a>.</li>
-        <li>Or you can manually edit the contract name &amp; ABI <a href="#">here</a>.</li>
-      </ul>
-    </div>
-    <!---->
-  </div>
-  <h4>Call Options</h4>
-  <contract-call-options-stub accounts="0xAD2935E147b61175D5dc3A9e7bDa93B0975A43BA"></contract-call-options-stub>
-  <h4>Read Methods</h4>
-  <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
-    <div>
-      <div class="v-card__text">
-        Upload this contract's ABI to use it here.
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
       </div>
     </div>
+    <!---->
+    <!---->
+    <!--v-if-->
+    <!--v-if-->
+    <!--v-if-->
+    <!--v-if-->
+    <div data-v-90b7be59="" class="v-card-text"> This contract hasn't been verified yet. </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-  <h4>Write Methods</h4>
-  <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
-    <div>
-      <div class="v-card__text">
-        Upload this contract's ABI to use it here.
+  <h4 data-v-90b7be59="">Call Options</h4>
+  <contract-call-options-stub data-v-90b7be59="" accounts="" loading="false"></contract-call-options-stub>
+  <h4 data-v-90b7be59="">Read Methods</h4>
+  <div data-v-90b7be59="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-4">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
       </div>
     </div>
+    <!---->
+    <!---->
+    <div data-v-90b7be59="">
+      <div data-v-90b7be59="" class="v-card-text"> Upload this contract's ABI to use it here. </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-</div>
+  <h4 data-v-90b7be59="">Write Methods</h4>
+  <div data-v-90b7be59="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-4">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-90b7be59="">
+      <div data-v-90b7be59="" class="v-card-text"> Upload this contract's ABI to use it here. </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+</div>"
 `;
 
-exports[`ContractInteraction.vue Should display unverified contract 1`] = `
-<div class="container container--fluid">
-  <h4>ABI</h4>
-  <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
+exports[`ContractInteraction.vue > Should display unverified contract 1`] = `
+"<div data-v-90b7be59="" class="v-container v-container--fluid v-locale--is-ltr">
+  <h4 data-v-90b7be59="">ABI</h4>
+  <div data-v-90b7be59="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-4">
     <!---->
-    <!---->
-    <!---->
-    <!---->
-    <div class="v-card__text">
-      This contract hasn't been verified yet.
-    </div>
-  </div>
-  <h4>Call Options</h4>
-  <contract-call-options-stub accounts="0xAD2935E147b61175D5dc3A9e7bDa93B0975A43BA"></contract-call-options-stub>
-  <h4>Read Methods</h4>
-  <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
-    <div>
-      <div class="v-card__text">
-        Upload this contract's ABI to use it here.
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
       </div>
     </div>
+    <!---->
+    <!---->
+    <!--v-if-->
+    <!--v-if-->
+    <!--v-if-->
+    <!--v-if-->
+    <div data-v-90b7be59="" class="v-card-text"> This contract hasn't been verified yet. </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-  <h4>Write Methods</h4>
-  <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
-    <div>
-      <div class="v-card__text">
-        Upload this contract's ABI to use it here.
+  <h4 data-v-90b7be59="">Call Options</h4>
+  <contract-call-options-stub data-v-90b7be59="" accounts="" loading="false"></contract-call-options-stub>
+  <h4 data-v-90b7be59="">Read Methods</h4>
+  <div data-v-90b7be59="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-4">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
       </div>
     </div>
+    <!---->
+    <!---->
+    <div data-v-90b7be59="">
+      <div data-v-90b7be59="" class="v-card-text"> Upload this contract's ABI to use it here. </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-</div>
+  <h4 data-v-90b7be59="">Write Methods</h4>
+  <div data-v-90b7be59="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-4">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-90b7be59="">
+      <div data-v-90b7be59="" class="v-card-text"> Upload this contract's ABI to use it here. </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+</div>"
 `;
 
-exports[`ContractInteraction.vue Should display verified contract 1`] = `
-<div class="container container--fluid">
-  <h4>ABI</h4>
-  <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
+exports[`ContractInteraction.vue > Should display verified contract 1`] = `
+"<div data-v-90b7be59="" class="v-container v-container--fluid v-locale--is-ltr">
+  <h4 data-v-90b7be59="">ABI</h4>
+  <div data-v-90b7be59="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-4">
     <!---->
-    <!---->
-    <div class="v-card__text">
-      An ABI has been uploaded.
-      <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
     </div>
     <!---->
     <!---->
+    <!--v-if-->
+    <!--v-if-->
+    <div data-v-90b7be59="" class="v-card-text"> An ABI has been uploaded.
+      <!--v-if-->
+    </div>
+    <!--v-if-->
+    <!--v-if-->
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-  <h4>Call Options</h4>
-  <contract-call-options-stub accounts="0xAD2935E147b61175D5dc3A9e7bDa93B0975A43BA"></contract-call-options-stub>
-  <h4>Read Methods</h4>
-  <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
-    <div>
-      <div class="v-card__text">
-        <div class="row pb-4">
-          <div class="col-sm-12 col-md-6 col-lg-3 col">
-            <contract-read-method-stub signature="_feeBasisPoints()" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
+  <h4 data-v-90b7be59="">Call Options</h4>
+  <contract-call-options-stub data-v-90b7be59="" accounts="" loading="false"></contract-call-options-stub>
+  <h4 data-v-90b7be59="">Read Methods</h4>
+  <div data-v-90b7be59="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-4">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-90b7be59="">
+      <div data-v-90b7be59="" class="v-card-text">
+        <div data-v-90b7be59="" class="v-row pb-4">
+          <div data-v-90b7be59="" class="v-col-sm-12 v-col-md-6 v-col-lg-6 v-col">
+            <contract-read-method-stub data-v-90b7be59="" active="false" contract="[object Object]" signature="_feeBasisPoints()" method="[object Object]" options="[object Object]"></contract-read-method-stub>
           </div>
         </div>
-        <div class="row pb-4">
-          <div class="col-sm-12 col-md-6 col-lg-3 col">
-            <contract-read-method-stub signature="owner()" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
+        <div data-v-90b7be59="" class="v-row pb-4">
+          <div data-v-90b7be59="" class="v-col-sm-12 v-col-md-6 v-col-lg-6 v-col">
+            <contract-read-method-stub data-v-90b7be59="" active="false" contract="[object Object]" signature="owner()" method="[object Object]" options="[object Object]"></contract-read-method-stub>
           </div>
         </div>
-        <div class="row pb-4">
-          <div class="col-sm-12 col-md-6 col-lg-3 col">
-            <contract-read-method-stub signature="depositsOf(address)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
+        <div data-v-90b7be59="" class="v-row pb-4">
+          <div data-v-90b7be59="" class="v-col-sm-12 v-col-md-6 v-col-lg-6 v-col">
+            <contract-read-method-stub data-v-90b7be59="" active="false" contract="[object Object]" signature="depositsOf(address)" method="[object Object]" options="[object Object]"></contract-read-method-stub>
           </div>
         </div>
-        <div class="row pb-4">
-          <div class="col-sm-12 col-md-6 col-lg-3 col">
-            <contract-read-method-stub signature="maturityOf(address)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
+        <div data-v-90b7be59="" class="v-row pb-4">
+          <div data-v-90b7be59="" class="v-col-sm-12 v-col-md-6 v-col-lg-6 v-col">
+            <contract-read-method-stub data-v-90b7be59="" active="false" contract="[object Object]" signature="maturityOf(address)" method="[object Object]" options="[object Object]"></contract-read-method-stub>
           </div>
         </div>
       </div>
     </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-  <h4>Write Methods</h4>
-  <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
-    <div>
-      <div class="v-card__text">
-        <div class="row pb-4">
-          <div class="col-sm-12 col-md-6 col-lg-3 col">
-            <contract-write-method-stub signature="renounceOwnership()" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
+  <h4 data-v-90b7be59="">Write Methods</h4>
+  <div data-v-90b7be59="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-4">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-90b7be59="">
+      <div data-v-90b7be59="" class="v-card-text">
+        <div data-v-90b7be59="" class="v-row pb-4">
+          <div data-v-90b7be59="" class="v-col-sm-12 v-col-md-6 v-col-lg-3 v-col">
+            <contract-write-method-stub data-v-90b7be59="" active="false" contract="[object Object]" signature="renounceOwnership()" method="[object Object]" options="[object Object]"></contract-write-method-stub>
           </div>
         </div>
-        <div class="row pb-4">
-          <div class="col-sm-12 col-md-6 col-lg-3 col">
-            <contract-write-method-stub signature="transferOwnership(address)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
+        <div data-v-90b7be59="" class="v-row pb-4">
+          <div data-v-90b7be59="" class="v-col-sm-12 v-col-md-6 v-col-lg-3 v-col">
+            <contract-write-method-stub data-v-90b7be59="" active="false" contract="[object Object]" signature="transferOwnership(address)" method="[object Object]" options="[object Object]"></contract-write-method-stub>
           </div>
         </div>
-        <div class="row pb-4">
-          <div class="col-sm-12 col-md-6 col-lg-3 col">
-            <contract-write-method-stub signature="setMaturity(address,uint256)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
+        <div data-v-90b7be59="" class="v-row pb-4">
+          <div data-v-90b7be59="" class="v-col-sm-12 v-col-md-6 v-col-lg-3 v-col">
+            <contract-write-method-stub data-v-90b7be59="" active="false" contract="[object Object]" signature="setMaturity(address,uint256)" method="[object Object]" options="[object Object]"></contract-write-method-stub>
           </div>
         </div>
-        <div class="row pb-4">
-          <div class="col-sm-12 col-md-6 col-lg-3 col">
-            <contract-write-method-stub signature="deposit(address)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
+        <div data-v-90b7be59="" class="v-row pb-4">
+          <div data-v-90b7be59="" class="v-col-sm-12 v-col-md-6 v-col-lg-3 v-col">
+            <contract-write-method-stub data-v-90b7be59="" active="false" contract="[object Object]" signature="deposit(address)" method="[object Object]" options="[object Object]"></contract-write-method-stub>
           </div>
         </div>
-        <div class="row pb-4">
-          <div class="col-sm-12 col-md-6 col-lg-3 col">
-            <contract-write-method-stub signature="withdraw()" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
+        <div data-v-90b7be59="" class="v-row pb-4">
+          <div data-v-90b7be59="" class="v-col-sm-12 v-col-md-6 v-col-lg-3 v-col">
+            <contract-write-method-stub data-v-90b7be59="" active="false" contract="[object Object]" signature="withdraw()" method="[object Object]" options="[object Object]"></contract-write-method-stub>
           </div>
         </div>
       </div>
     </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-</div>
+</div>"
 `;

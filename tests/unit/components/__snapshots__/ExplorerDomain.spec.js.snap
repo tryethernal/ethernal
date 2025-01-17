@@ -1,23 +1,47 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ExplorerDomain.vue Should display DNS status 1`] = `
-<div tabindex="-1" class="pl-0 v-list-item theme--light">
-  <explorer-domain-dns-info-modal-stub></explorer-domain-dns-info-modal-stub> <button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default" style="width: inherit; height: inherit;"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light error--text" style="font-size: 16px;"></i></span></button> <button type="button" class="mr-2 v-btn v-btn--icon v-btn--round theme--light v-size--default" style="width: inherit; height: inherit;"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-refresh theme--light primary--text" style="font-size: 16px;"></i></span></button>
-  <div clas="my-0" class="v-list-item__content">
-    <div class="v-list-item__subtitle"><a href="//ethernal.com" target="_blank">ethernal.com</a>&nbsp;|&nbsp;
-      <i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text" style="font-size: 16px;"></i> <a style="text-decoration: underline;">Incomplete DNS setup</a>
-    </div>
+exports[`ExplorerDomain.vue > Should display DNS status 1`] = `
+"<div class="v-list-item v-theme--light v-list-item--density-default rounded-0 v-list-item--variant-text pl-0">
+  <!----><span class="v-list-item__underlay"></span>
+  <div class="v-list-item__prepend"><button type="button" class="v-btn v-btn--icon v-theme--light text-error v-btn--density-compact v-btn--size-small v-btn--variant-text"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+      <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-delete mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+      <!---->
+      <!---->
+    </button><button type="button" class="v-btn v-btn--icon v-theme--light text-primary v-btn--density-compact v-btn--size-small v-btn--variant-text"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+      <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-refresh mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+      <!---->
+      <!---->
+    </button>
+    <div class="v-list-item__spacer"></div>
   </div>
-</div>
+  <div class="v-list-item__content" data-no-activator="">
+    <!---->
+    <div class="v-list-item-subtitle"><a class="ml-2" href="//ethernal.com" target="_blank">ethernal.com</a>&nbsp;|&nbsp; <i class="mdi-close mdi v-icon notranslate v-theme--light v-icon--size-small text-error" aria-hidden="true"></i><a style="text-decoration: underline;">Incomplete DNS setup</a></div>
+    <explorer-domain-d-n-s-info-modal-stub></explorer-domain-d-n-s-info-modal-stub>
+  </div>
+  <!---->
+</div>"
 `;
 
-exports[`ExplorerDomain.vue Should display N/A message 1`] = `
-<div tabindex="-1" class="pl-0 v-list-item theme--light">
-  <explorer-domain-dns-info-modal-stub></explorer-domain-dns-info-modal-stub> <button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default" style="width: inherit; height: inherit;"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light error--text" style="font-size: 16px;"></i></span></button> <button type="button" class="mr-2 v-btn v-btn--icon v-btn--round theme--light v-size--default" style="width: inherit; height: inherit;"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-refresh theme--light primary--text" style="font-size: 16px;"></i></span></button>
-  <div clas="my-0" class="v-list-item__content">
-    <div class="v-list-item__subtitle"><a href="//ethernal.com" target="_blank">ethernal.com</a>&nbsp;|&nbsp;
-      <span>DNS status not available yet.</span>
-    </div>
+exports[`ExplorerDomain.vue > Should display N/A message 1`] = `
+"<div class="v-list-item v-theme--light v-list-item--density-default rounded-0 v-list-item--variant-text pl-0">
+  <!----><span class="v-list-item__underlay"></span>
+  <div class="v-list-item__prepend"><button type="button" class="v-btn v-btn--icon v-theme--light text-error v-btn--density-compact v-btn--size-small v-btn--variant-text"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+      <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-delete mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+      <!---->
+      <!---->
+    </button><button type="button" class="v-btn v-btn--icon v-theme--light text-primary v-btn--density-compact v-btn--size-small v-btn--variant-text"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+      <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-refresh mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+      <!---->
+      <!---->
+    </button>
+    <div class="v-list-item__spacer"></div>
   </div>
-</div>
+  <div class="v-list-item__content" data-no-activator="">
+    <!---->
+    <div class="v-list-item-subtitle"><a class="ml-2" href="//ethernal.com" target="_blank">ethernal.com</a>&nbsp;|&nbsp; <span>DNS status not available yet.</span></div>
+    <explorer-domain-d-n-s-info-modal-stub></explorer-domain-d-n-s-info-modal-stub>
+  </div>
+  <!---->
+</div>"
 `;

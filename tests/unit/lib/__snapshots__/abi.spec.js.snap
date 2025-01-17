@@ -1,13 +1,13 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`decodeLog Should decode the event if it is anonymous 1`] = `
+exports[`decodeLog > Should decode the event if it is anonymous 1`] = `
 LogDescription {
-  "args": Array [
+  "args": [
     "0x1cff79cd",
     "0xf75fcD9849d3365d436D0CD889Ed500150C9482A",
     "0x00000000000000000000000082ecd135dce65fbc6dbdd0e4237e0af93ffd5038",
     "0x0000000000000000000000000000000000000000000000000000000000000040",
-    Object {
+    {
       "hex": "0x00",
       "type": "BigNumber",
     },
@@ -18,7 +18,7 @@ LogDescription {
     "anonymous": true,
     "constructor": [Function],
     "format": [Function],
-    "inputs": Array [
+    "inputs": [
       ParamType {
         "_isParamType": true,
         "arrayChildren": null,
@@ -89,12 +89,12 @@ LogDescription {
 }
 `;
 
-exports[`decodeLog Should decode the event if it is not anonymous 1`] = `
+exports[`decodeLog > Should decode the event if it is not anonymous 1`] = `
 LogDescription {
-  "args": Array [
+  "args": [
     "0xE93381fB4c4F14bDa253907b18faD305D799241a",
     "0xc00e94Cb662C3520282E6f5717214004A7f26888",
-    Object {
+    {
       "hex": "0x01",
       "type": "BigNumber",
     },
@@ -104,7 +104,7 @@ LogDescription {
     "anonymous": false,
     "constructor": [Function],
     "format": [Function],
-    "inputs": Array [
+    "inputs": [
       ParamType {
         "_isParamType": true,
         "arrayChildren": null,
@@ -145,4 +145,4 @@ LogDescription {
 }
 `;
 
-exports[`formatErrorFragment Should format custom solidity exceptions 1`] = `"InsufficientBalance(uint256 available: 0, uint256 required: 123)"`;
+exports[`formatErrorFragment > Should format custom solidity exceptions 1`] = `"InsufficientBalance(uint256 available: 0, uint256 required: 123)"`;

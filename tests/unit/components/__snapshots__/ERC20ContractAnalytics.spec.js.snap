@@ -1,81 +1,141 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ERC20ContractAnalytics.vue Should display contract analytics with bignumber formatted amounts 1`] = `
-<div class="container container--fluid">
-  <div class="row">
-    <div class="pb-0 col col-3">
-      <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
+exports[`ERC20ContractAnalytics.vue > Should display contract analytics with bignumber formatted amounts 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <div class="v-row">
+    <div class="v-col v-col-3 pb-0">
+      <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field v-select v-select--single v-select--selected">
+        <!---->
         <div class="v-input__control">
-          <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-4" class="v-input__slot">
-            <fieldset aria-hidden="true">
-              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-            </fieldset>
-            <div class="v-select__slot"><label for="input-4" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Time Range</label>
-              <div class="v-select__selections">
-                <div class="v-select__selection v-select__selection--comma">14 Days</div><input id="input-4" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+          <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="v-menu-2">
+            <div class="v-field__overlay"></div>
+            <div class="v-field__loader">
+              <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                <!---->
+                <div class="v-progress-linear__background bg-primary"></div>
+                <div class="v-progress-linear__buffer bg-primary" style="width: 0%;"></div>
+                <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                  <div class="v-progress-linear__indeterminate">
+                    <div class="v-progress-linear__indeterminate long bg-primary"></div>
+                    <div class="v-progress-linear__indeterminate short bg-primary"></div>
+                  </div>
+                </transition-stub>
+                <!---->
               </div>
-              <div class="v-input__append-inner">
-                <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
-              </div><input type="hidden" value="14">
             </div>
-            <div class="v-menu">
+            <!---->
+            <div class="v-field__field" data-no-activator="">
+              <!----><label class="v-label v-field-label" for="input-0">
+                <!---->Time Range
+              </label>
+              <!---->
+              <div class="v-field__input" data-no-activator="">
+                <!---->
+                <!---->
+                <div class="v-select__selection"><span class="v-select__selection-text">14 Days<!----></span></div><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" inputmode="none" aria-label="Open" title="Open" value="14">
+              </div>
+              <!---->
+            </div>
+            <!---->
+            <div class="v-field__append-inner">
+              <!----><i class="mdi-menu-down mdi v-icon notranslate v-theme--light v-icon--size-default v-select__menu-icon" aria-hidden="true"></i>
+              <!---->
+            </div>
+            <div class="v-field__outline">
+              <div class="v-field__outline__start"></div>
+              <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
+                  <!---->Time Range
+                </label></div>
+              <div class="v-field__outline__end"></div>
               <!---->
             </div>
           </div>
         </div>
+        <!---->
+        <!---->
       </div>
     </div>
   </div>
-  <div class="row">
-    <div class="col-md-6 col-12">
-      <line-chart-stub tooltipunit="transfer" title="Transfer Volume" index="1" data="2,2" xlabels="0,1"></line-chart-stub>
+  <div class="v-row">
+    <div class="v-col-md-6 v-col-12">
+      <line-chart-stub title="Transfer Volume" tooltipunit="transfer" index="1" xlabels="0,1" data="2,2"></line-chart-stub>
     </div>
-    <div class="col-md-6 col-12">
-      <line-chart-stub tokensymbol="ETL" title="Circulating Supply" index="2" data="0.2,0.3" xlabels="0,1"></line-chart-stub>
+    <div class="v-col-md-6 v-col-12">
+      <line-chart-stub title="Circulating Supply" tokensymbol="ETL" index="2" xlabels="0,1" data="0.2,0.3"></line-chart-stub>
     </div>
-    <div class="col-md-6 col-12">
-      <line-chart-stub tooltipunit="holder" title="Token Holder History" index="3" data="2,2" xlabels="0,1"></line-chart-stub>
+    <div class="v-col-md-6 v-col-12">
+      <line-chart-stub title="Token Holder History" tooltipunit="holder" index="3" xlabels="0,1" data="2,2"></line-chart-stub>
     </div>
   </div>
-</div>
+</div>"
 `;
 
-exports[`ERC20ContractAnalytics.vue Should display contract analytics without bignumber formatted amount 1`] = `
-<div class="container container--fluid">
-  <div class="row">
-    <div class="pb-0 col col-3">
-      <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-select">
+exports[`ERC20ContractAnalytics.vue > Should display contract analytics without bignumber formatted amount 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <div class="v-row">
+    <div class="v-col v-col-3 pb-0">
+      <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field v-select v-select--single v-select--selected">
+        <!---->
         <div class="v-input__control">
-          <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-14" class="v-input__slot">
-            <fieldset aria-hidden="true">
-              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-            </fieldset>
-            <div class="v-select__slot"><label for="input-14" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Time Range</label>
-              <div class="v-select__selections">
-                <div class="v-select__selection v-select__selection--comma">14 Days</div><input id="input-14" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+          <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="v-menu-2">
+            <div class="v-field__overlay"></div>
+            <div class="v-field__loader">
+              <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                <!---->
+                <div class="v-progress-linear__background bg-primary"></div>
+                <div class="v-progress-linear__buffer bg-primary" style="width: 0%;"></div>
+                <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                  <div class="v-progress-linear__indeterminate">
+                    <div class="v-progress-linear__indeterminate long bg-primary"></div>
+                    <div class="v-progress-linear__indeterminate short bg-primary"></div>
+                  </div>
+                </transition-stub>
+                <!---->
               </div>
-              <div class="v-input__append-inner">
-                <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
-              </div><input type="hidden" value="14">
             </div>
-            <div class="v-menu">
+            <!---->
+            <div class="v-field__field" data-no-activator="">
+              <!----><label class="v-label v-field-label" for="input-0">
+                <!---->Time Range
+              </label>
+              <!---->
+              <div class="v-field__input" data-no-activator="">
+                <!---->
+                <!---->
+                <div class="v-select__selection"><span class="v-select__selection-text">14 Days<!----></span></div><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" inputmode="none" aria-label="Open" title="Open" value="14">
+              </div>
+              <!---->
+            </div>
+            <!---->
+            <div class="v-field__append-inner">
+              <!----><i class="mdi-menu-down mdi v-icon notranslate v-theme--light v-icon--size-default v-select__menu-icon" aria-hidden="true"></i>
+              <!---->
+            </div>
+            <div class="v-field__outline">
+              <div class="v-field__outline__start"></div>
+              <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
+                  <!---->Time Range
+                </label></div>
+              <div class="v-field__outline__end"></div>
               <!---->
             </div>
           </div>
         </div>
+        <!---->
+        <!---->
       </div>
     </div>
   </div>
-  <div class="row">
-    <div class="col-md-6 col-12">
-      <line-chart-stub tooltipunit="transfer" title="Transfer Volume" index="1" data="2,2" xlabels="0,1"></line-chart-stub>
+  <div class="v-row">
+    <div class="v-col-md-6 v-col-12">
+      <line-chart-stub title="Transfer Volume" tooltipunit="transfer" index="1" xlabels="0,1" data="2,2"></line-chart-stub>
     </div>
-    <div class="col-md-6 col-12">
-      <line-chart-stub tokensymbol="ETL" title="Circulating Supply" index="2" data="2,3" xlabels="0,1"></line-chart-stub>
+    <div class="v-col-md-6 v-col-12">
+      <line-chart-stub title="Circulating Supply" tokensymbol="ETL" index="2" xlabels="0,1" data="2,3"></line-chart-stub>
     </div>
-    <div class="col-md-6 col-12">
-      <line-chart-stub tooltipunit="holder" title="Token Holder History" index="3" data="2,2" xlabels="0,1"></line-chart-stub>
+    <div class="v-col-md-6 v-col-12">
+      <line-chart-stub title="Token Holder History" tooltipunit="holder" index="3" xlabels="0,1" data="2,2"></line-chart-stub>
     </div>
   </div>
-</div>
+</div>"
 `;

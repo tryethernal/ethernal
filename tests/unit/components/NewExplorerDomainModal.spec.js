@@ -1,21 +1,14 @@
 import flushPromises from 'flush-promises';
-import MockHelper from '../MockHelper';
 
 import NewExplorerDomainModal from '@/components/NewExplorerDomainModal.vue';
 
-let helper;
-beforeEach(() => {
-    jest.clearAllMocks()
-    helper = new MockHelper();
-});
-
 describe('NewExplorerDomainModal.vue', () => {
     it('Should display dns setup info', async () => {
-        const wrapper = helper.mountFn(NewExplorerDomainModal, {
+        const wrapper = mount(NewExplorerDomainModal, {
             data() {
                 return {
                     dialog: true,
-                    resolve: jest.fn().mockResolvedValue(),
+                    resolve: vi.fn().mockResolvedValue(),
                     domain: 'explorer.protocol.com'
                 }
             }

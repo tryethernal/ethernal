@@ -1,5 +1,5 @@
 const ethers = require('ethers');
-const { eToNumber, getSignificantDigitCount } = require('../lib/utils');
+import { eToNumber, getSignificantDigitCount } from '../lib/utils';
 
 const BigNumber = ethers.BigNumber;
 const formatUnits = ethers.utils.formatUnits;

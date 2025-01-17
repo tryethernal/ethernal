@@ -1,215 +1,558 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ContractReadMethod.vue Should display a generic error message if the function fails 1`] = `
-<div>
+exports[`ContractReadMethod.vue > Should display a generic error message if the function fails 1`] = `
+"<div>
   <div class="pb-1 font-weight-bold">isProxy</div>
-  <div class="v-input py-1 col-3 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+  <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field py-1 col-3" style="width: 50%;">
+    <!---->
     <div class="v-input__control">
-      <div class="v-input__slot">
-        <fieldset aria-hidden="true">
-          <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-        </fieldset>
-        <div class="v-text-field__slot"><label for="input-70" class="v-label theme--light" style="left: 0px; position: absolute;">address</label><input id="input-70" type="text"></div>
-      </div>
-    </div>
-  </div>
-  <div>=&gt; bool</div>
-  <div id="call" style="display: none;"></div>
-  <div id="call" class="grey lighten-3 pa-2" style="">
-    Error while calling the method
-  </div> <button type="button" class="mt-1 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
-</div>
-`;
-
-exports[`ContractReadMethod.vue Should display the UI to interact with a method 1`] = `
-<div>
-  <div class="pb-1 font-weight-bold">isProxy</div>
-  <div class="v-input py-1 col-3 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-    <div class="v-input__control">
-      <div class="v-input__slot">
-        <fieldset aria-hidden="true">
-          <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-        </fieldset>
-        <div class="v-text-field__slot"><label for="input-4" class="v-label theme--light" style="left: 0px; position: absolute;">address</label><input id="input-4" type="text"></div>
-      </div>
-    </div>
-  </div>
-  <div>=&gt; bool</div>
-  <div id="call" style="display: none;"></div>
-  <div id="call" class="grey lighten-3 pa-2" style="display: none;">
-
-  </div> <button type="button" class="mt-1 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
-</div>
-`;
-
-exports[`ContractReadMethod.vue Should display the error message if one is returned 1`] = `
-<div>
-  <div class="pb-1 font-weight-bold">isProxy</div>
-  <div class="v-input py-1 col-3 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-    <div class="v-input__control">
-      <div class="v-input__slot">
-        <fieldset aria-hidden="true">
-          <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-        </fieldset>
-        <div class="v-text-field__slot"><label for="input-63" class="v-label theme--light" style="left: 0px; position: absolute;">address</label><input id="input-63" type="text"></div>
-      </div>
-    </div>
-  </div>
-  <div>=&gt; bool</div>
-  <div id="call" style="display: none;"></div>
-  <div id="call" class="grey lighten-3 pa-2" style="">
-    Wrong parameters
-  </div> <button type="button" class="mt-1 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
-</div>
-`;
-
-exports[`ContractReadMethod.vue Should display the result even if it is not an array 1`] = `
-<div>
-  <div class="pb-1 font-weight-bold">returnAnUInt</div>
-  <div>=&gt; uint256</div>
-  <div id="call" style="">
-    <div class="my-1 v-card v-sheet v-sheet--outlined theme--light">
-      <div class="v-card__text py-2 ma-0 px-1">
-        <div style="white-space: pre;">
-          <formatted-sol-var-stub value="1234" input="[object Object]"></formatted-sol-var-stub>
+      <div class="v-field v-field--center-affix v-field--variant-outlined v-theme--light v-locale--is-ltr">
+        <div class="v-field__overlay"></div>
+        <div class="v-field__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <div class="v-field__field" data-no-activator="">
+          <!----><label class="v-label v-field-label" for="input-0">
+            <!---->address
+          </label>
+          <!----><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" class="v-field__input">
+          <!---->
+        </div>
+        <!---->
+        <!---->
+        <div class="v-field__outline">
+          <div class="v-field__outline__start"></div>
+          <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
+              <!---->address
+            </label></div>
+          <div class="v-field__outline__end"></div>
+          <!---->
         </div>
       </div>
     </div>
+    <!---->
+    <!---->
   </div>
-  <div id="call" class="grey lighten-3 pa-2" style="display: none;">
-
-  </div> <button type="button" class="mt-1 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
-</div>
+  <div>=&gt; bool</div>
+  <div id="call" style="display: none;"></div>
+  <div id="call" class="bg-grey-lighten-3 pa-2" style="">Error while calling the method</div><button type="button" class="v-btn v-btn--elevated v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-elevated mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+    <!----><span class="v-btn__content" data-no-activator="">Query</span>
+    <!---->
+    <!---->
+  </button>
+</div>"
 `;
 
-exports[`ContractReadMethod.vue Should handle big number results 1`] = `
-<div>
-  <div class="pb-1 font-weight-bold">returnAnUInt</div>
-  <div>=&gt; uint256</div>
-  <div id="call" style="">
-    <div class="my-1 v-card v-sheet v-sheet--outlined theme--light">
-      <div class="v-card__text py-2 ma-0 px-1">
-        <div style="white-space: pre;">
-          <formatted-sol-var-stub value="50000000000000000000" input="[object Object]"></formatted-sol-var-stub>
+exports[`ContractReadMethod.vue > Should display the UI to interact with a method 1`] = `
+"<div>
+  <div class="pb-1 font-weight-bold">isProxy</div>
+  <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field py-1 col-3" style="width: 50%;">
+    <!---->
+    <div class="v-input__control">
+      <div class="v-field v-field--center-affix v-field--variant-outlined v-theme--light v-locale--is-ltr">
+        <div class="v-field__overlay"></div>
+        <div class="v-field__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <div class="v-field__field" data-no-activator="">
+          <!----><label class="v-label v-field-label" for="input-0">
+            <!---->address
+          </label>
+          <!----><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" class="v-field__input">
+          <!---->
+        </div>
+        <!---->
+        <!---->
+        <div class="v-field__outline">
+          <div class="v-field__outline__start"></div>
+          <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
+              <!---->address
+            </label></div>
+          <div class="v-field__outline__end"></div>
+          <!---->
         </div>
       </div>
     </div>
+    <!---->
+    <!---->
   </div>
-  <div id="call" class="grey lighten-3 pa-2" style="display: none;">
-
-  </div> <button type="button" class="mt-1 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
-</div>
+  <div>=&gt; bool</div>
+  <div id="call" style="display: none;"></div>
+  <div id="call" class="bg-grey-lighten-3 pa-2" style="display: none;"></div><button type="button" class="v-btn v-btn--elevated v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-elevated mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+    <!----><span class="v-btn__content" data-no-activator="">Query</span>
+    <!---->
+    <!---->
+  </button>
+</div>"
 `;
 
-exports[`ContractReadMethod.vue Should handle multiple results 1`] = `
-<div>
+exports[`ContractReadMethod.vue > Should display the error message if one is returned 1`] = `
+"<div>
+  <div class="pb-1 font-weight-bold">isProxy</div>
+  <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field py-1 col-3" style="width: 50%;">
+    <!---->
+    <div class="v-input__control">
+      <div class="v-field v-field--center-affix v-field--variant-outlined v-theme--light v-locale--is-ltr">
+        <div class="v-field__overlay"></div>
+        <div class="v-field__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <div class="v-field__field" data-no-activator="">
+          <!----><label class="v-label v-field-label" for="input-0">
+            <!---->address
+          </label>
+          <!----><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" class="v-field__input">
+          <!---->
+        </div>
+        <!---->
+        <!---->
+        <div class="v-field__outline">
+          <div class="v-field__outline__start"></div>
+          <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
+              <!---->address
+            </label></div>
+          <div class="v-field__outline__end"></div>
+          <!---->
+        </div>
+      </div>
+    </div>
+    <!---->
+    <!---->
+  </div>
+  <div>=&gt; bool</div>
+  <div id="call" style="display: none;"></div>
+  <div id="call" class="bg-grey-lighten-3 pa-2" style="">Wrong parameters</div><button type="button" class="v-btn v-btn--elevated v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-elevated mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+    <!----><span class="v-btn__content" data-no-activator="">Query</span>
+    <!---->
+    <!---->
+  </button>
+</div>"
+`;
+
+exports[`ContractReadMethod.vue > Should display the result even if it is not an array 1`] = `
+"<div>
+  <div class="pb-1 font-weight-bold">returnAnUInt</div>
+  <div>=&gt; uint256</div>
+  <div id="call" style="">
+    <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated my-1">
+      <!---->
+      <div class="v-card__loader">
+        <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+          <!---->
+          <div class="v-progress-linear__background"></div>
+          <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+          <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+            <div class="v-progress-linear__indeterminate">
+              <div class="v-progress-linear__indeterminate long"></div>
+              <div class="v-progress-linear__indeterminate short"></div>
+            </div>
+          </transition-stub>
+          <!---->
+        </div>
+      </div>
+      <!---->
+      <!---->
+      <div class="v-card-text py-2 ma-0 px-1">
+        <div style="white-space: pre;">
+          <formatted-sol-var-stub input="[object Object]" value="1234"></formatted-sol-var-stub>
+        </div>
+      </div>
+      <!---->
+      <!----><span class="v-card__underlay"></span>
+    </div>
+  </div>
+  <div id="call" class="bg-grey-lighten-3 pa-2" style="display: none;"></div><button type="button" class="v-btn v-btn--elevated v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-elevated mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+    <!----><span class="v-btn__content" data-no-activator="">Query</span>
+    <!---->
+    <!---->
+  </button>
+</div>"
+`;
+
+exports[`ContractReadMethod.vue > Should handle big number results 1`] = `
+"<div>
+  <div class="pb-1 font-weight-bold">returnAnUInt</div>
+  <div>=&gt; uint256</div>
+  <div id="call" style="">
+    <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated my-1">
+      <!---->
+      <div class="v-card__loader">
+        <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+          <!---->
+          <div class="v-progress-linear__background"></div>
+          <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+          <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+            <div class="v-progress-linear__indeterminate">
+              <div class="v-progress-linear__indeterminate long"></div>
+              <div class="v-progress-linear__indeterminate short"></div>
+            </div>
+          </transition-stub>
+          <!---->
+        </div>
+      </div>
+      <!---->
+      <!---->
+      <div class="v-card-text py-2 ma-0 px-1">
+        <div style="white-space: pre;">
+          <formatted-sol-var-stub input="[object Object]" value="50000000000000000000"></formatted-sol-var-stub>
+        </div>
+      </div>
+      <!---->
+      <!----><span class="v-card__underlay"></span>
+    </div>
+  </div>
+  <div id="call" class="bg-grey-lighten-3 pa-2" style="display: none;"></div><button type="button" class="v-btn v-btn--elevated v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-elevated mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+    <!----><span class="v-btn__content" data-no-activator="">Query</span>
+    <!---->
+    <!---->
+  </button>
+</div>"
+`;
+
+exports[`ContractReadMethod.vue > Should handle multiple results 1`] = `
+"<div>
   <div class="pb-1 font-weight-bold">returnAnUInt</div>
   <div>=&gt; uint256, uint256</div>
   <div id="call" style="">
-    <div class="my-1 v-card v-sheet v-sheet--outlined theme--light">
-      <div class="v-card__text py-2 ma-0 px-1">
-        <div style="white-space: pre;">
-          <formatted-sol-var-stub value="1" input="[object Object]"></formatted-sol-var-stub>
+    <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated my-1">
+      <!---->
+      <div class="v-card__loader">
+        <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+          <!---->
+          <div class="v-progress-linear__background"></div>
+          <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+          <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+            <div class="v-progress-linear__indeterminate">
+              <div class="v-progress-linear__indeterminate long"></div>
+              <div class="v-progress-linear__indeterminate short"></div>
+            </div>
+          </transition-stub>
+          <!---->
         </div>
       </div>
+      <!---->
+      <!---->
+      <div class="v-card-text py-2 ma-0 px-1">
+        <div style="white-space: pre;">
+          <formatted-sol-var-stub input="[object Object]" value="1"></formatted-sol-var-stub>
+        </div>
+      </div>
+      <!---->
+      <!----><span class="v-card__underlay"></span>
     </div>
-    <div class="my-1 v-card v-sheet v-sheet--outlined theme--light">
-      <div class="v-card__text py-2 ma-0 px-1">
-        <div style="white-space: pre;">
-          <formatted-sol-var-stub value="2" input="[object Object]"></formatted-sol-var-stub>
+    <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated my-1">
+      <!---->
+      <div class="v-card__loader">
+        <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+          <!---->
+          <div class="v-progress-linear__background"></div>
+          <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+          <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+            <div class="v-progress-linear__indeterminate">
+              <div class="v-progress-linear__indeterminate long"></div>
+              <div class="v-progress-linear__indeterminate short"></div>
+            </div>
+          </transition-stub>
+          <!---->
         </div>
       </div>
+      <!---->
+      <!---->
+      <div class="v-card-text py-2 ma-0 px-1">
+        <div style="white-space: pre;">
+          <formatted-sol-var-stub input="[object Object]" value="2"></formatted-sol-var-stub>
+        </div>
+      </div>
+      <!---->
+      <!----><span class="v-card__underlay"></span>
     </div>
   </div>
-  <div id="call" class="grey lighten-3 pa-2" style="display: none;">
-
-  </div> <button type="button" class="mt-1 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
-</div>
+  <div id="call" class="bg-grey-lighten-3 pa-2" style="display: none;"></div><button type="button" class="v-btn v-btn--elevated v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-elevated mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+    <!----><span class="v-btn__content" data-no-activator="">Query</span>
+    <!---->
+    <!---->
+  </button>
+</div>"
 `;
 
-exports[`ContractReadMethod.vue Should return the result when interacting with the method 1`] = `
-<div>
+exports[`ContractReadMethod.vue > Should return the result when interacting with the method 1`] = `
+"<div>
   <div class="pb-1 font-weight-bold">isProxy</div>
-  <div class="v-input py-1 col-3 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+  <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field py-1 col-3" style="width: 50%;">
+    <!---->
     <div class="v-input__control">
-      <div class="v-input__slot">
-        <fieldset aria-hidden="true">
-          <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-        </fieldset>
-        <div class="v-text-field__slot"><label for="input-19" class="v-label theme--light" style="left: 0px; position: absolute;">address</label><input id="input-19" type="text"></div>
+      <div class="v-field v-field--center-affix v-field--variant-outlined v-theme--light v-locale--is-ltr">
+        <div class="v-field__overlay"></div>
+        <div class="v-field__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <div class="v-field__field" data-no-activator="">
+          <!----><label class="v-label v-field-label" for="input-0">
+            <!---->address
+          </label>
+          <!----><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" class="v-field__input">
+          <!---->
+        </div>
+        <!---->
+        <!---->
+        <div class="v-field__outline">
+          <div class="v-field__outline__start"></div>
+          <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
+              <!---->address
+            </label></div>
+          <div class="v-field__outline__end"></div>
+          <!---->
+        </div>
       </div>
     </div>
+    <!---->
+    <!---->
   </div>
   <div>=&gt; bool</div>
   <div id="call" style="">
-    <div class="my-1 v-card v-sheet v-sheet--outlined theme--light">
-      <div class="v-card__text py-2 ma-0 px-1">
+    <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated my-1">
+      <!---->
+      <div class="v-card__loader">
+        <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+          <!---->
+          <div class="v-progress-linear__background"></div>
+          <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+          <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+            <div class="v-progress-linear__indeterminate">
+              <div class="v-progress-linear__indeterminate long"></div>
+              <div class="v-progress-linear__indeterminate short"></div>
+            </div>
+          </transition-stub>
+          <!---->
+        </div>
+      </div>
+      <!---->
+      <!---->
+      <div class="v-card-text py-2 ma-0 px-1">
         <div style="white-space: pre;">
-          <formatted-sol-var-stub value="true" input="[object Object]"></formatted-sol-var-stub>
+          <formatted-sol-var-stub input="[object Object]" value="true"></formatted-sol-var-stub>
+        </div>
+      </div>
+      <!---->
+      <!----><span class="v-card__underlay"></span>
+    </div>
+  </div>
+  <div id="call" class="bg-grey-lighten-3 pa-2" style="display: none;"></div><button type="button" class="v-btn v-btn--elevated v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-elevated mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+    <!----><span class="v-btn__content" data-no-activator="">Query</span>
+    <!---->
+    <!---->
+  </button>
+</div>"
+`;
+
+exports[`ContractReadMethod.vue > Should work when input is any array 1`] = `
+"<div>
+  <div class="pb-1 font-weight-bold">reproBug</div>
+  <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field py-1 col-3" style="width: 50%;">
+    <!---->
+    <div class="v-input__control">
+      <div class="v-field v-field--active v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr">
+        <div class="v-field__overlay"></div>
+        <div class="v-field__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <div class="v-field__field" data-no-activator="">
+          <!----><label class="v-label v-field-label" for="input-0">
+            <!---->uint256[] values
+          </label>
+          <!----><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" class="v-field__input" value="[1,2]">
+          <!---->
+        </div>
+        <!---->
+        <!---->
+        <div class="v-field__outline">
+          <div class="v-field__outline__start"></div>
+          <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
+              <!---->uint256[] values
+            </label></div>
+          <div class="v-field__outline__end"></div>
+          <!---->
         </div>
       </div>
     </div>
-  </div>
-  <div id="call" class="grey lighten-3 pa-2" style="display: none;">
-
-  </div> <button type="button" class="mt-1 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
-</div>
-`;
-
-exports[`ContractReadMethod.vue Should work when input is any array 1`] = `
-<div>
-  <div class="pb-1 font-weight-bold">reproBug</div>
-  <div class="v-input py-1 col-3 v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-    <div class="v-input__control">
-      <div class="v-input__slot">
-        <fieldset aria-hidden="true">
-          <legend style="width: -24px;"><span class="notranslate">​</span></legend>
-        </fieldset>
-        <div class="v-text-field__slot"><label for="input-10" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">uint256[] values</label><input id="input-10" type="text"></div>
-      </div>
-    </div>
+    <!---->
+    <!---->
   </div>
   <div>=&gt; uint256[]</div>
   <div id="call" style="">
-    <div class="my-1 v-card v-sheet v-sheet--outlined theme--light">
-      <div class="v-card__text py-2 ma-0 px-1">
+    <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated my-1">
+      <!---->
+      <div class="v-card__loader">
+        <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+          <!---->
+          <div class="v-progress-linear__background"></div>
+          <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+          <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+            <div class="v-progress-linear__indeterminate">
+              <div class="v-progress-linear__indeterminate long"></div>
+              <div class="v-progress-linear__indeterminate short"></div>
+            </div>
+          </transition-stub>
+          <!---->
+        </div>
+      </div>
+      <!---->
+      <!---->
+      <div class="v-card-text py-2 ma-0 px-1">
         <div style="white-space: pre;">
-          <formatted-sol-var-stub value="1,2" input="[object Object]"></formatted-sol-var-stub>
+          <formatted-sol-var-stub input="[object Object]" value="1,2"></formatted-sol-var-stub>
+        </div>
+      </div>
+      <!---->
+      <!----><span class="v-card__underlay"></span>
+    </div>
+  </div>
+  <div id="call" class="bg-grey-lighten-3 pa-2" style="display: none;"></div><button type="button" class="v-btn v-btn--elevated v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-elevated mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+    <!----><span class="v-btn__content" data-no-activator="">Query</span>
+    <!---->
+    <!---->
+  </button>
+</div>"
+`;
+
+exports[`ContractReadMethod.vue > Should work when it is in public explorer mode 1`] = `
+"<div>
+  <div class="pb-1 font-weight-bold">isProxy</div>
+  <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field py-1 col-3" style="width: 50%;">
+    <!---->
+    <div class="v-input__control">
+      <div class="v-field v-field--center-affix v-field--variant-outlined v-theme--light v-locale--is-ltr">
+        <div class="v-field__overlay"></div>
+        <div class="v-field__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <div class="v-field__field" data-no-activator="">
+          <!----><label class="v-label v-field-label" for="input-0">
+            <!---->address
+          </label>
+          <!----><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" class="v-field__input">
+          <!---->
+        </div>
+        <!---->
+        <!---->
+        <div class="v-field__outline">
+          <div class="v-field__outline__start"></div>
+          <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
+              <!---->address
+            </label></div>
+          <div class="v-field__outline__end"></div>
+          <!---->
         </div>
       </div>
     </div>
-  </div>
-  <div id="call" class="grey lighten-3 pa-2" style="display: none;">
-
-  </div> <button type="button" class="mt-1 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
-</div>
-`;
-
-exports[`ContractReadMethod.vue Should work when it is in public explorer mode 1`] = `
-<div>
-  <div class="pb-1 font-weight-bold">isProxy</div>
-  <div class="v-input py-1 col-3 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-    <div class="v-input__control">
-      <div class="v-input__slot">
-        <fieldset aria-hidden="true">
-          <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-        </fieldset>
-        <div class="v-text-field__slot"><label for="input-28" class="v-label theme--light" style="left: 0px; position: absolute;">address</label><input id="input-28" type="text"></div>
-      </div>
-    </div>
+    <!---->
+    <!---->
   </div>
   <div>=&gt; bool</div>
   <div id="call" style="">
-    <div class="my-1 v-card v-sheet v-sheet--outlined theme--light">
-      <div class="v-card__text py-2 ma-0 px-1">
-        <div style="white-space: pre;">
-          <formatted-sol-var-stub value="true" input="[object Object]"></formatted-sol-var-stub>
+    <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated my-1">
+      <!---->
+      <div class="v-card__loader">
+        <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+          <!---->
+          <div class="v-progress-linear__background"></div>
+          <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+          <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+            <div class="v-progress-linear__indeterminate">
+              <div class="v-progress-linear__indeterminate long"></div>
+              <div class="v-progress-linear__indeterminate short"></div>
+            </div>
+          </transition-stub>
+          <!---->
         </div>
       </div>
+      <!---->
+      <!---->
+      <div class="v-card-text py-2 ma-0 px-1">
+        <div style="white-space: pre;">
+          <formatted-sol-var-stub input="[object Object]" value="true"></formatted-sol-var-stub>
+        </div>
+      </div>
+      <!---->
+      <!----><span class="v-card__underlay"></span>
     </div>
   </div>
-  <div id="call" class="grey lighten-3 pa-2" style="display: none;">
-
-  </div> <button type="button" class="mt-1 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
-</div>
+  <div id="call" class="bg-grey-lighten-3 pa-2" style="display: none;"></div><button type="button" class="v-btn v-btn--elevated v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-elevated mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+    <!----><span class="v-btn__content" data-no-activator="">Query</span>
+    <!---->
+    <!---->
+  </button>
+</div>"
 `;

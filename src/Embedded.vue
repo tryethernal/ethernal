@@ -5,7 +5,12 @@
 </template>
 
 <script>
+import { provide } from 'vue';
+
 export default {
-    name: 'Embedded'
+    name: 'Embedded',
+    setup() {
+        provide('isEmbedded', true);
+    }
 };
 </script>

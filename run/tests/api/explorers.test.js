@@ -1389,14 +1389,14 @@ describe(`GET ${BASE_URL}/search`, () => {
     it('Should return the correct explorer if this is a base subdomain', (done) => {
         jest.spyOn(db, 'getPublicExplorerParamsBySlug').mockResolvedValueOnce({
             stripeSubscription: { stripePlan: { capabilities: { nativeToken: true }}},
-            slug: 'ethernal', name: 'Ethernal Explorer', themes: { default: {}}
+            slug: 'ethernal', name: 'Ethernal Explorer', themes: { light: {}}
         });
         request.get(`${BASE_URL}/search?domain=ethernal.ethernal.com`)
             .expect(200)
             .then(({ body }) => {
                 expect(body).toEqual({
                     explorer: {
-                        slug: 'ethernal', name: 'Ethernal Explorer', themes: { default: {}}
+                        slug: 'ethernal', name: 'Ethernal Explorer', themes: { light: {}}
                     }
                 });
                 done();
@@ -1406,14 +1406,14 @@ describe(`GET ${BASE_URL}/search`, () => {
     it('Should return the corresponding explorer when passed a domain', (done) => {
         jest.spyOn(db, 'getPublicExplorerParamsByDomain').mockResolvedValueOnce({
             stripeSubscription: { stripePlan: { capabilities: { nativeToken: true, totalSupply: '1' }}},
-            slug: 'ethernal', name: 'Ethernal Explorer', themes: { default: {}}
+            slug: 'ethernal', name: 'Ethernal Explorer', themes: { light: {}}
         });
         request.get(`${BASE_URL}/search?domain=explorer.domain.com`)
             .expect(200)
             .then(({ body }) => {
                 expect(body).toEqual({
                     explorer: {
-                        slug: 'ethernal', name: 'Ethernal Explorer', themes: { default: {}}
+                        slug: 'ethernal', name: 'Ethernal Explorer', themes: { light: {}}
                     }
                 });
                 done();

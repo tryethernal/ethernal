@@ -1,4 +1,4 @@
-import VueRouter from 'vue-router';
+import { createWebHistory, createRouter } from 'vue-router';
 import Blocks from '../components/Blocks.vue';
 import Block from '../components/Block.vue';
 import Transactions from '../components/Transactions.vue';
@@ -21,22 +21,34 @@ import ExplorerAnalytics from '../components/ExplorerAnalytics.vue';
 import ExplorerFaucet from '../components/ExplorerFaucet.vue';
 import ExplorerDex from '../components/ExplorerDex.vue';
 
-const auth = () => {
-    return { currentUser: router.app.$store.getters.user };
-}
+import { useEnvStore } from '../stores/env';
+
+const isLoggedIn = () => {
+    return localStorage.getItem('apiToken') !== null;
+};
+
+const isPublic = () => {
+    const envStore = useEnvStore();
+    return !envStore.isAdmin;
+};
 
 const redirectIfLoggedIn = function (to, from, next) {
-    if (auth().currentUser.id) {
-        next(to || { path: '/transactions' });
-    }
-    else next();
+    if (isLoggedIn() || isPublic()) {
+        if (to.path == '/auth')
+            next({ path: '/transactions', query: to.query });
+        else
+            next(to || { path: '/transactions', query: to.query });
+    } else
+        next();
 };
 
 const redirectIfLoggedOut = function (to, from, next) {
     if (to.hash && to.hash.startsWith('#'))
         to.query.tab = to.hash.split('#')[1];
-
-    next();
+    if (isLoggedIn() || isPublic())
+        next();
+    else
+        next({ path: '/auth', query: to.query });
 };
 
 const routes = [
@@ -64,11 +76,11 @@ const routes = [
     { path: '/status', component: ExplorerStatus, beforeEnter: redirectIfLoggedOut },
     { path: '/faucet', component: ExplorerFaucet, beforeEnter: redirectIfLoggedOut },
     { path: '/dex', component: ExplorerDex, beforeEnter: redirectIfLoggedOut },
-    { path: '*', redirect: '/overview' }
+    { path: '/:pathMatch(.*)*', name: 'not-found', component: Overview, beforeEnter: redirectIfLoggedOut }
 ];
 
-const router = new VueRouter({
-    mode: 'history',
+const router = createRouter({
+    history: createWebHistory(),
     routes: routes
 });
 

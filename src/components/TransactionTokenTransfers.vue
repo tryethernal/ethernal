@@ -3,7 +3,7 @@
         <Token-Transfers
             :transfers="transfers"
             :loading="loading"
-            :sortBy="currentOptions.sortBy[0]"
+            :sortBy="[{ key: currentOptions.orderBy, order: currentOptions.order }]"
             :count="transferCount"
             :headers="headers"
             @pagination="onPagination"
@@ -12,8 +12,7 @@
 </template>
 
 <script>
-const moment = require('moment');
-import TokenTransfers from './TokenTransfers';
+import TokenTransfers from './TokenTransfers.vue';
 
 export default {
     name: 'TransactionTokenTransfers',
@@ -25,34 +24,36 @@ export default {
         loading: true,
         transfers: [],
         transferCount: 0,
-        currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['from'], sortDesc: [true] },
+        currentOptions: { page: 1, itemsPerPage: 10, orderBy: 'src', order: 'desc' },
         headers: [
-            { text: 'Type', value: 'type' },
-            { text: 'From', value: 'src' },
-            { text: 'To', value: 'dst' },
-            { text: 'Token', value: 'token' },
-            { text: 'Amount', value: 'amount' }
+            { title: 'Type', key: 'type' },
+            { title: 'From', key: 'src' },
+            { title: 'To', key: 'dst' },
+            { title: 'Token', key: 'token' },
+            { title: 'Amount', key: 'amount' }
         ]
     }),
     methods: {
-        moment: moment,
         onPagination(options) {
             this.getTransfers(options);
         },
-        getTransfers(newOptions) {
+        getTransfers({ page, itemsPerPage, sortBy }) {
             this.loading = true;
 
-            if (newOptions)
-                this.currentOptions = newOptions;
+            if (!page || !itemsPerPage || !sortBy || !sortBy.length)
+                return this.loading = false;
 
-            const options = {
-                page: this.currentOptions.page,
-                itemsPerPage: this.currentOptions.itemsPerPage,
-                orderBy: this.currentOptions.sortBy[0],
-                order: this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc'
+            if (this.transfers.length && this.currentOptions.page == page && this.currentOptions.itemsPerPage == itemsPerPage && this.currentOptions.orderBy == sortBy[0].key && this.currentOptions.order == sortBy[0].order)
+                return this.loading = false;
+
+            this.currentOptions = {
+                page,
+                itemsPerPage,
+                orderBy: sortBy[0].key,
+                order: sortBy[0].order
             };
 
-            this.server.getTransactionTokenTransfers(this.hash, options)
+            this.$server.getTransactionTokenTransfers(this.hash, this.currentOptions)
                 .then(({ data }) => {
                     this.transfers = data.items;
                     this.transferCount = data.total;

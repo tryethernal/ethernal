@@ -1,61 +1,117 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`RemoveContractConfirmationModal.vue Should display an error message if something is wrong 1`] = `
-<div class="v-dialog__container">
-  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
-    <transition-stub name="dialog-transition" appear="true">
-      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
-        <div class="v-card v-sheet theme--light">
-          <div class="v-card__title headline">Remove contract</div>
-          <div class="v-card__text">
-            <div role="alert" class="v-alert v-sheet theme--dark error">
-              <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-alert theme--dark"></i>
-                <div class="v-alert__content"> There is an error</div>
-              </div>
-            </div>
-            <div>
-              Removing this contract will remove metadata (name, ABI, AST, hashed bytecode) associated to this address and prevent you from:
-              <ul>
-                <li>Interacting with it through Ethernal.</li>
-                <li>Decoding events, function calls, internal calls (past decoded events &amp; calls will be lost).</li>
-                <li>Decoding storage variables (past decoded variables will be lost).</li>
-              </ul>
-            </div>
+exports[`RemoveContractConfirmationModal.vue > Should display an error message if something is wrong 1`] = `
+"<div class="v-dialog-stub" max-width="600">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
           </div>
-          <div class="v-card__actions">
-            <div class="spacer"></div> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary" id="removeContract"><span class="v-btn__content">Remove</span></button>
-          </div>
-        </div>
+        </transition-stub>
+        <!---->
       </div>
-    </transition-stub>
+    </div>
+    <div class="v-card-item">
+      <!---->
+      <div class="v-card-item__content">
+        <div class="v-card-title"><span class="text-h5">Remove contract</span></div>
+        <!---->
+        <!---->
+      </div>
+      <!---->
+    </div>
+    <div class="v-card-text">
+      <div class="v-alert v-theme--light bg-error v-alert--density-default v-alert--variant-flat" role="alert">
+        <!----><span class="v-alert__underlay"></span>
+        <!---->
+        <div class="v-alert__prepend"><i class="mdi-close-circle mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="default"></i></div>
+        <div class="v-alert__content">
+          <!---->
+          <!---->There is an error
+        </div>
+        <!---->
+        <!---->
+      </div>
+      <div> Removing this contract will remove metadata (name, ABI, AST, hashed bytecode) associated to this address and prevent you from: <ul class="ml-6 mt-2">
+          <li>Interacting with it through Ethernal.</li>
+          <li>Decoding events, function calls, internal calls (past decoded events &amp; calls will be lost).</li>
+          <li>Decoding storage variables (past decoded variables will be lost).</li>
+        </ul>
+      </div>
+    </div>
+    <div class="v-card-actions">
+      <div class="v-spacer"></div><button type="button" class="v-btn v-btn--slim v-theme--light text-primary v-btn--density-default v-btn--size-default v-btn--variant-text"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+        <!----><span class="v-btn__content" data-no-activator="">Close</span>
+        <!---->
+        <!---->
+      </button><button type="button" class="v-btn v-btn--slim v-theme--light text-primary v-btn--density-default v-btn--size-default v-btn--variant-text" id="removeContract"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+        <!----><span class="v-btn__content" data-no-activator="">Remove</span>
+        <!---->
+        <!---->
+      </button>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-</div>
+</div>"
 `;
 
-exports[`RemoveContractConfirmationModal.vue Should display the modal 1`] = `
-<div class="v-dialog__container">
-  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
-    <transition-stub name="dialog-transition" appear="true">
-      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
-        <div class="v-card v-sheet theme--light">
-          <div class="v-card__title headline">Remove contract</div>
-          <div class="v-card__text">
-            <!---->
-            <div>
-              Removing this contract will remove metadata (name, ABI, AST, hashed bytecode) associated to this address and prevent you from:
-              <ul>
-                <li>Interacting with it through Ethernal.</li>
-                <li>Decoding events, function calls, internal calls (past decoded events &amp; calls will be lost).</li>
-                <li>Decoding storage variables (past decoded variables will be lost).</li>
-              </ul>
-            </div>
+exports[`RemoveContractConfirmationModal.vue > Should display the modal 1`] = `
+"<div class="v-dialog-stub" max-width="600">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
           </div>
-          <div class="v-card__actions">
-            <div class="spacer"></div> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary" id="removeContract"><span class="v-btn__content">Remove</span></button>
-          </div>
-        </div>
+        </transition-stub>
+        <!---->
       </div>
-    </transition-stub>
+    </div>
+    <div class="v-card-item">
+      <!---->
+      <div class="v-card-item__content">
+        <div class="v-card-title"><span class="text-h5">Remove contract</span></div>
+        <!---->
+        <!---->
+      </div>
+      <!---->
+    </div>
+    <div class="v-card-text">
+      <!--v-if-->
+      <div> Removing this contract will remove metadata (name, ABI, AST, hashed bytecode) associated to this address and prevent you from: <ul class="ml-6 mt-2">
+          <li>Interacting with it through Ethernal.</li>
+          <li>Decoding events, function calls, internal calls (past decoded events &amp; calls will be lost).</li>
+          <li>Decoding storage variables (past decoded variables will be lost).</li>
+        </ul>
+      </div>
+    </div>
+    <div class="v-card-actions">
+      <div class="v-spacer"></div><button type="button" class="v-btn v-btn--slim v-theme--light text-primary v-btn--density-default v-btn--size-default v-btn--variant-text"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+        <!----><span class="v-btn__content" data-no-activator="">Close</span>
+        <!---->
+        <!---->
+      </button><button type="button" class="v-btn v-btn--slim v-theme--light text-primary v-btn--density-default v-btn--size-default v-btn--variant-text" id="removeContract"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+        <!----><span class="v-btn__content" data-no-activator="">Remove</span>
+        <!---->
+        <!---->
+      </button>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
-</div>
+</div>"
 `;

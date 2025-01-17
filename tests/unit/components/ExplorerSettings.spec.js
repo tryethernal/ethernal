@@ -1,13 +1,6 @@
 import flushPromises from 'flush-promises';
-import MockHelper from '../MockHelper';
 
 import ExplorerSettings from '@/components/ExplorerSettings.vue';
-
-let helper;
-beforeEach(() => {
-    jest.clearAllMocks()
-    helper = new MockHelper();
-});
 
 const explorer = {
     workspaceId: 1,
@@ -24,8 +17,8 @@ const workspaces = [{ id: 1, name: 'Workspace 1', rpcServer: 'rpc', networkId: 1
 
 describe('ExplorerSettings.vue', () => {
     it('Should display settings with all options', async () => {
-        const wrapper = helper.mountFn(ExplorerSettings, {
-            propsData: { explorer, workspaces }
+        const wrapper = mount(ExplorerSettings, {
+            props: { explorer, workspaces }
         });
         await flushPromises();
 
@@ -33,8 +26,8 @@ describe('ExplorerSettings.vue', () => {
     });
 
     it('Should display settings with deactivated options', async () => {
-        const wrapper = helper.mountFn(ExplorerSettings, {
-            propsData: {
+        const wrapper = mount(ExplorerSettings, {
+            props: {
                 explorer: { ...explorer, stripeSubscription: { stripePlan: { capabilities: { nativeToken: false, totalSupply: false }}}},
                 workspaces
             }

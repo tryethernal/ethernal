@@ -1,7 +1,7 @@
 <template>
 <v-dialog v-model="dialog" max-width="600">
     <v-card>
-        <v-card-title class="headline">Update Contract Metadata</v-card-title>
+        <v-card-title class="text-h5">Update Contract Metadata</v-card-title>
 
         <v-card-text>
             <v-alert type="success" v-if="successMessage" v-html="successMessage"></v-alert>
@@ -11,8 +11,8 @@
                 Only the formatting of the ABI is checked, it's up to you to make sure it is valid for the current address. If it's not, calls will fail.
             </div>
             <div>
-                <v-text-field id="contractName" class="mb-3" primary hide-details="auto" outlined dense v-model="name" label="Contract Name"></v-text-field>
-                <v-textarea id="contractAbi" primary hide-details="auto" outlined dense v-model="abi" label="ABI"></v-textarea>
+                <v-text-field id="contractName" class="mb-3" primary hide-details="auto" variant="outlined" density="compact" v-model="name" label="Contract Name"></v-text-field>
+                <v-textarea id="contractAbi" primary hide-details="auto" variant="outlined" density="compact" v-model="abi" label="ABI"></v-textarea>
                 <v-divider class="my-3"></v-divider>
                 Or upload a json file containing a <b>contractName</b> field and/or an <b>abi</b> field (a Truffle or Hardhat build file for example):<br>
                 <input type="file" id="fileUploader" ref="fileUploader" accept="application/json" v-on:change="handleFileUpload" />
@@ -21,15 +21,14 @@
 
         <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="primary" text @click.stop="close()">Close</v-btn>
-            <v-btn id="updateContract" color="primary" :loading="loading" text @click.stop="update()">Update</v-btn>
+            <v-btn color="primary" variant="text" @click.stop="close()">Close</v-btn>
+            <v-btn id="updateContract" color="primary" :loading="loading" variant="text" @click.stop="update()">Update</v-btn>
         </v-card-actions>
     </v-card>
 </v-dialog>
 </template>
 <script>
 const ethers = require('ethers');
-import { mapGetters } from 'vuex';
 
 export default {
     name: 'ImportArtifactModal',
@@ -101,7 +100,7 @@ export default {
                 }
             }
 
-            this.server.syncContractData(this.address, this.name, parsedAbi)
+            this.$server.syncContractData(this.address, this.name, parsedAbi)
                 .then(() => {
                     this.updated = true;
                     this.successMessage = 'Metadata updated';
@@ -123,11 +122,6 @@ export default {
             this.successMessage = null;
             this.errorMessage = null;
         }
-    },
-    computed: {
-        ...mapGetters([
-            'currentWorkspace'
-        ])
     }
 }
 </script>

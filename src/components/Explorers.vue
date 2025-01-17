@@ -1,9 +1,9 @@
 <template>
     <v-container fluid>
-        <v-card outlined>
+        <v-card>
             <v-card-text>
                 <Create-Explorer-Modal ref="createExplorerModalRef" @explorerCreated="getExplorers" />
-                <v-card v-if="!explorers.length && !loading" flat outlined>
+                <v-card v-if="!explorers.length && !loading" flat border>
                     <v-card-title>Public Explorers</v-card-title>
                     <v-card-text>
                         At the moment, only your account is able to use this explorer.
@@ -12,7 +12,7 @@
                         be easily accessible, without needing a login, to anyone that needs it.<br><br>
 
                         You will get the following:
-                        <ul>
+                        <ul class="ml-2 mt-2">
                             <li>A public explorer showing blocks, transactions, contracts, tokens, etc...</li>
                             <li>A custom url like http://explorer.myprotocol.com to access it</li>
                             <li>A Metamask integration so your users can easily interact with contracts</li>
@@ -23,38 +23,44 @@
                         </ul>
 
                         <div class="mt-4" align="center">
-                            <v-btn depressed color="primary" class="mr-2" @click="openCreateExplorerModal()">
+                            <v-btn variant="flat" color="primary" class="mr-2" @click="openCreateExplorerModal()">
                                 <v-icon class="mr-1">mdi-plus</v-icon>Create Explorer
                             </v-btn>
                         </div>
                     </v-card-text>
                 </v-card>
                 <template v-else>
-                    <v-alert v-if="deletedExplorer" dense text type="success">Explorer "<b>{{ deletedExplorer }}</b>" has been successfully deleted.</v-alert>
-                    <v-data-table
+                    <v-alert v-if="deletedExplorer" density="compact" text type="success">Explorer "<b>{{ deletedExplorer }}</b>" has been successfully deleted.</v-alert>
+                    <v-data-table-server
                         :loading="loading"
                         :items="explorers"
                         :must-sort="true"
-                        :sort-desc="true"
-                        :server-items-length="explorerCount"
-                        :sort-by="currentOptions.sortBy[0]"
+                        :sort-by="[{ key: currentOptions.orderBy, order: currentOptions.order }]"
+                        :items-length="explorerCount"
                         :footer-props="{
                             itemsPerPageOptions: [10, 25, 100]
                         }"
+                        items-per-page-text="Rows per page:"
+                        last-icon=""
+                        first-icon=""
+                        :items-per-page-options="[
+                            { value: 10, title: '10' },
+                            { value: 25, title: '25' },
+                            { value: 100, title: '100' }
+                        ]"
                         :headers="headers"
                         @update:options="getExplorers">
                         <template v-slot:top>
-                            <v-toolbar flat dense class="py-0">
-                                <v-spacer></v-spacer>
-                                <v-btn small depressed color="primary" class="mr-2" @click="openCreateExplorerModal()">
-                                    <v-icon small class="mr-1">mdi-plus</v-icon>Create Explorer
+                            <div class="d-flex justify-end">
+                                <v-btn size="small" variant="flat" color="primary" class="mr-2" @click="openCreateExplorerModal()">
+                                    <v-icon size="small" class="mr-1">mdi-plus</v-icon>Create Explorer
                                 </v-btn>
-                            </v-toolbar>
+                            </div>
                         </template>
                         <template v-slot:item.name="{ item }">
-                            <v-tooltip top>
-                                <template v-slot:activator="{ on, attrs }">
-                                    <v-icon v-bind="attrs" v-on="on" small :color="statusClass(item.stripeSubscription) + ' lignthen'" class="mr-2">{{ statusIcon(item.stripeSubscription) }}</v-icon>
+                            <v-tooltip location="top">
+                                <template v-slot:activator="{ props }">
+                                    <v-icon v-bind="props" size="small" :color="statusClass(item.stripeSubscription) + ' lignthen'" class="mr-2">{{ statusIcon(item.stripeSubscription) }}</v-icon>
                                 </template>
                                 {{ statusText(item.stripeSubscription) }}
                             </v-tooltip>
@@ -63,9 +69,9 @@
                         <template v-slot:item.domain="{ item }">
                             <template v-if="item.domains.length > 0">
                                 <a :href="`http://${ item.domains[0].domain }`" target="_blank">{{ item.domains[0].domain }}</a>
-                                <v-tooltip top v-if="item.domains.length > 1">
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <v-chip v-bind="attrs" v-on="on" class="ml-2" x-small>+ {{ item.domains.length - 1 }}</v-chip>
+                                <v-tooltip location="top" v-if="item.domains.length > 1">
+                                    <template v-slot:activator="{ props }">
+                                        <v-chip v-bind="props" class="ml-2" size="x-small">+ {{ item.domains.length - 1 }}</v-chip>
                                     </template>
                                     <ul>
                                         <li v-for="(domain, idx) in item.domains.slice(1)" :key="idx">{{ domain.domain }}</li>
@@ -73,7 +79,7 @@
                                 </v-tooltip>
                             </template>
                             <template v-else>
-                                <a :href="`http://${ item.slug }.${ mainDomain }`" target="_blank">{{ item.slug }}.{{ mainDomain }}</a>
+                                <a :href="`http://${ item.slug }.${ envStore.mainDomain }`" target="_blank">{{ item.slug }}.{{ envStore.mainDomain }}</a>
                             </template>
                         </template>
                         <template v-slot:item.rpcServer="{ item }">
@@ -82,7 +88,7 @@
                         <template v-slot:item.workspace="{ item }">
                             {{ item.workspace.name }}
                         </template>
-                    </v-data-table>
+                    </v-data-table-server>
                 </template>
             </v-card-text>
         </v-card>
@@ -90,7 +96,9 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapStores } from 'pinia';
+import { useEnvStore } from '../stores/env';
+
 import CreateExplorerModal from './CreateExplorerModal.vue';
 import { shortRpcUrl } from '../lib/utils';
 
@@ -104,31 +112,35 @@ export default {
         explorerCount: 0,
         headers: [],
         loading: true,
-        currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['id'], sortDesc: [true] },
+        currentOptions: { page: 1, itemsPerPage: 10, orderBy: 'id', order: 'desc' },
     }),
     mounted() {
         this.headers.push(
-            { text: 'Name', value: 'name' },
-            { text: 'Workspace', value: 'workspace', sortable: false },
-            { text: 'Domains', value: 'domain', sortable: false },
-            { text: 'RPC', value: 'rpcServer', sortable: false }
+            { title: 'Name', key: 'name' },
+            { title: 'Workspace', key: 'workspace', sortable: false },
+            { title: 'Domains', key: 'domain', sortable: false },
+            { title: 'RPC', key: 'rpcServer', sortable: false }
         );
     },
     methods: {
         shortRpcUrl,
-        getExplorers(newOptions) {
+        getExplorers({ page, itemsPerPage, sortBy } = {}) {
             this.loading = true;
 
-            if (newOptions)
-                this.currentOptions = newOptions;
+            if (!page || !itemsPerPage || !sortBy || !sortBy.length)
+                return this.loading = false;
 
-            const options = {
-                page: this.currentOptions.page,
-                itemsPerPage: this.currentOptions.itemsPerPage,
-                order: this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc',
-                orderBy: this.currentOptions.sortBy[0]
+            if (this.currentOptions.page == page && this.currentOptions.itemsPerPage == itemsPerPage && this.currentOptions.sortBy == sortBy[0].key && this.currentOptions.sort == sortBy[0].order)
+                return this.loading = false;
+
+            this.currentOptions = {
+                page,
+                itemsPerPage,
+                orderBy: sortBy[0].key,
+                order: sortBy[0].order
             };
-            this.server.getExplorers(options)
+
+            this.$server.getExplorers(this.currentOptions)
                 .then(({ data }) => {
                     this.explorers = data.items;
                     this.explorerCount = data.total;
@@ -162,9 +174,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-            'mainDomain'
-        ]),
+        ...mapStores(useEnvStore),
         deletedExplorer() {
             return this.$route.query.deletedExplorer ? this.$route.query.deletedExplorer : null;
         }

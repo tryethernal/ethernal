@@ -5,13 +5,13 @@
             <v-divider vertical class="mx-2"></v-divider>
             <router-link :to="`/block/${transaction.blockNumber}`">{{ transaction.blockNumber }}</router-link>
             <v-divider vertical class="ml-2"></v-divider>
-            <v-btn @click="reload" icon text class="primary--text">
-                <v-icon small class="link">mdi-reload</v-icon>
+            <v-btn @click="reload" icon variant="text" class="text-primary">
+                <v-icon size="small" class="link">mdi-reload</v-icon>
             </v-btn>
         </div>
         <template v-if="transaction.storage && Object.keys(transaction.storage).length > 0">
             <h4>Storage</h4>
-            <v-card outlined>
+            <v-card>
                 <v-card-text>
                     <pre>{{ transaction.storage }}</pre>
                 </v-card-text>
@@ -26,20 +26,20 @@
         <v-row class="my-2" v-else>
             <v-col>
                 <h3 class="mb-2">Contract Creation Data</h3>
-                <v-textarea dense outlined disabled :value="transaction.data"></v-textarea>
+                <v-textarea density="compact" variant="outlined" disabled :model-value="transaction.data"></v-textarea>
             </v-col>
         </v-row>
         <v-row class="my-2" v-if="logs.length > 0">
             <v-col>
                 <h3 class="mb-2">Emitted Events</h3>
                 <template v-if="!transactionLogLoading">
-                    <v-card outlined class="my-2" v-for="log in logs" :key="log.id">
+                    <v-card class="my-2" v-for="log in logs" :key="log.id">
                         <v-card-text>
                             <Transaction-Event :log="log" />
                         </v-card-text>
                     </v-card>
                 </template>
-                <v-card outlined v-else>
+                <v-card v-else>
                     <v-card-text>
                         <v-skeleton-loader type="list-item-three-line"></v-skeleton-loader>
                     </v-card-text>
@@ -48,7 +48,7 @@
                     v-model="page"
                     :length="logCount"
                     :total-visible="7"
-                    @input="pageChanged">
+                    @update:model-value="pageChanged">
                 </v-pagination>
             </v-col>
         </v-row>
@@ -58,8 +58,8 @@
     </div>
 </template>
 <script>
-import TransactionFunctionCall from './TransactionFunctionCall';
-import TransactionEvent from './TransactionEvent';
+import TransactionFunctionCall from './TransactionFunctionCall.vue';
+import TransactionEvent from './TransactionEvent.vue';
 
 export default {
     name: 'TransactionData',
@@ -89,7 +89,7 @@ export default {
         },
         loadTransactionLogs() {
             this.transactionLogLoading = true;
-            this.server.getTransactionLogs(this.transaction.hash, this.currentOptions)
+            this.$server.getTransactionLogs(this.transaction.hash, this.currentOptions)
                 .then(({ data: { logs, count } }) => {
                     this.logs = logs;
                     this.logCount = count;

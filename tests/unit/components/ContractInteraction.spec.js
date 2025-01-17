@@ -1,13 +1,9 @@
 import flushPromises from 'flush-promises';
-import MockHelper from '../MockHelper';
-import ethereum from '../mocks/ethereum';
 import AmalfiContract from '../fixtures/AmalfiContract.json';
 
-jest.mock('@metamask/detect-provider');
-import detectEthereumProvider from '@metamask/detect-provider';
+vi.mock('@metamask/detect-provider');
 import ContractInteraction from '@/components/ContractInteraction.vue';
 
-let helper;
 const stubs = [
     'Import-Artifact-Modal',
     'Contract-Call-Options',
@@ -16,23 +12,19 @@ const stubs = [
 ];
 
 describe('ContractInteraction.vue', () => {
-
-    beforeEach(() => {
-        jest.clearAllMocks();
-        helper = new MockHelper();
-    });
-
     it('Should display ABI editor & methods', async () => {
-        jest.spyOn(helper.mocks.server, 'getContract')
+        vi.spyOn(server, 'getContract')
             .mockResolvedValueOnce({ data: {
                 name: 'Amalfi',
                 abi: AmalfiContract.artifact.abi
             }});
-        const wrapper = helper.mountFn(ContractInteraction, {
-            propsData: {
+        const wrapper = mount(ContractInteraction, {
+            props: {
                 address: '0x123'
             },
-            stubs: stubs
+            global: {
+                stubs
+            }
         });
 
         await flushPromises();
@@ -40,15 +32,17 @@ describe('ContractInteraction.vue', () => {
     });
 
     it('Should display ABI uploader', async () => {
-        jest.spyOn(helper.mocks.server, 'getContract')
+        vi.spyOn(server, 'getContract')
             .mockResolvedValueOnce({ data: {
                 address: '0x123'
             }});
-        const wrapper = helper.mountFn(ContractInteraction, {
-            propsData: {
+        const wrapper = mount(ContractInteraction, {
+            props: {
                 address: '0x123'
             },
-            stubs: stubs
+            global: {
+                stubs
+            }
         });
 
         await flushPromises();
@@ -56,20 +50,20 @@ describe('ContractInteraction.vue', () => {
     });
 
     it('Should display verified contract', async () => {
-        jest.spyOn(helper.mocks.server, 'getContract')
+        vi.spyOn(server, 'getContract')
             .mockResolvedValueOnce({ data: {
                 verificationStatus: 'success',
                 address: '0x123',
                 name: 'Amalfi',
                 abi: AmalfiContract.artifact.abi
             }});
-        const wrapper = helper.mountFn(ContractInteraction, {
-            propsData: {
+        const wrapper = mount(ContractInteraction, {
+            props: {
                 address: '0x123'
             },
-            stubs: stubs,
-            getters: {
-                isUserAdmin: jest.fn(() => false)
+            global: {
+                stubs,
+                plugins: [createTestingPinia({ initialState: { user: { isAdmin: false } } })]
             }
         });
 
@@ -78,18 +72,18 @@ describe('ContractInteraction.vue', () => {
     });
 
     it('Should display unverified contract', async () => {
-        jest.spyOn(helper.mocks.server, 'getContract')
+        vi.spyOn(server, 'getContract')
             .mockResolvedValueOnce({ data: {
                 verificationStatus: null,
                 address: '0x123',
             }});
-        const wrapper = helper.mountFn(ContractInteraction, {
-            propsData: {
+        const wrapper = mount(ContractInteraction, {
+            props: {
                 address: '0x123'
             },
-            stubs: stubs,
-            getters: {
-                isUserAdmin: jest.fn(() => false)
+            global: {
+                stubs,
+                plugins: [createTestingPinia({ initialState: { user: { isAdmin: false } } })]
             }
         });
 

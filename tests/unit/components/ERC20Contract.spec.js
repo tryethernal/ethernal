@@ -1,8 +1,6 @@
-import MockHelper from '../MockHelper';
 import flushPromises from 'flush-promises';
 import ERC20Contract from '@/components/ERC20Contract.vue';
 
-let helper;
 const stubs = [
     'Hash-Link',
     'Stat-Number',
@@ -15,27 +13,24 @@ const stubs = [
 ];
 
 describe('ERC20Contract.vue', () => {
-    beforeEach(() => {
-        jest.clearAllMocks();
-        helper = new MockHelper();
-    });
-
     it('Should display a message if the address is not a contract', async () => {
-        jest.spyOn(helper.mocks.server, 'getContract')
+        vi.spyOn(server, 'getContract')
             .mockResolvedValueOnce({ data: null });
 
-        jest.spyOn(helper.mocks.server, 'getContractStats')
+        vi.spyOn(server, 'getContractStats')
             .mockResolvedValueOnce({ data: {
                 tokenHolderCount: null,
                 tokenTransferCount: null,
                 tokenCirculatingSupply: null,
             }});
 
-        const wrapper = helper.mountFn(ERC20Contract, {
-            propsData: {
+        const wrapper = mount(ERC20Contract, {
+            props: {
                 address: '0x123'
             },
-            stubs
+            global: {
+                stubs
+            }
         });
 
         await flushPromises();
@@ -43,7 +38,7 @@ describe('ERC20Contract.vue', () => {
     });
 
     it('Should display contract info', async () => {
-        jest.spyOn(helper.mocks.server, 'getContract')
+        vi.spyOn(server, 'getContract')
             .mockResolvedValueOnce({ data: {
                 tokenName: 'Amalfi',
                 patterns: ['erc20'],
@@ -53,18 +48,20 @@ describe('ERC20Contract.vue', () => {
                 creationTransaction: { hash: '0xabc' }
             }});
 
-        jest.spyOn(helper.mocks.server, 'getContractStats')
+        vi.spyOn(server, 'getContractStats')
             .mockResolvedValueOnce({ data: {
                 tokenHolderCount: 1,
                 tokenTransferCount: 2,
                 tokenCirculatingSupply: '1000000000',
             }});
 
-        const wrapper = helper.mountFn(ERC20Contract, {
-            propsData: {
+        const wrapper = mount(ERC20Contract, {
+            props: {
                 address: '0x123'
             },
-            stubs
+            global: {
+                stubs
+            }
         });
 
         await flushPromises();
@@ -72,7 +69,7 @@ describe('ERC20Contract.vue', () => {
     });
 
     it('Should display placeholders', async () => {
-        jest.spyOn(helper.mocks.server, 'getContract')
+        vi.spyOn(server, 'getContract')
             .mockResolvedValueOnce({ data: {
                 name: 'Amalfi',
                 tokenName: null,
@@ -83,22 +80,23 @@ describe('ERC20Contract.vue', () => {
                 creationTransaction: { hash: '0xabc' }
             }});
 
-        jest.spyOn(helper.mocks.server, 'getContractStats')
+        vi.spyOn(server, 'getContractStats')
             .mockResolvedValueOnce({ data: {
                 tokenHolderCount: 0,
                 tokenTransferCount: 0,
                 tokenCirculatingSupply: 0,
             }});
 
-        const wrapper = helper.mountFn(ERC20Contract, {
-            propsData: {
+        const wrapper = mount(ERC20Contract, {
+            props: {
                 address: '0x123'
             },
-            stubs
+            global: {
+                stubs
+            }
         });
 
         await flushPromises();
-        await new Promise((r) => setTimeout(r, 1500));
 
         expect(wrapper.html()).toMatchSnapshot();
     });
