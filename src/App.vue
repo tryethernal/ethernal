@@ -93,6 +93,7 @@ import { useCurrentWorkspaceStore } from './stores/currentWorkspace';
 import { useEnvStore } from './stores/env';
 import { useExplorerStore } from './stores/explorer';
 import { useUserStore } from './stores/user';
+import { useCustomisationStore } from './stores/customisation';
 import RpcConnector from './components/RpcConnector';
 import OnboardingModal from './components/OnboardingModal';
 import BrowserSyncExplainerModal from './components/BrowserSyncExplainerModal';
@@ -300,7 +301,9 @@ export default {
                 id: explorer.workspace.id,
                 defaultAccount: explorer.workspace.defaultAccount,
                 gasPrice: explorer.workspace.gasPrice,
-                gasLimit: explorer.workspace.gasLimit
+                gasLimit: explorer.workspace.gasLimit,
+                functions: explorer.workspace.functions,
+                packages: explorer.workspace.packages
             });
         },
         initWorkspace(workspace) {
@@ -322,7 +325,8 @@ export default {
             useCurrentWorkspaceStore,
             useEnvStore,
             useExplorerStore,
-            useUserStore
+            useUserStore,
+            useCustomisationStore
         ),
         hasNetworkInfo() {
             return !!(this.explorerStore.name && this.explorerStore.domain && this.explorerStore.token && this.explorerStore.rpcServer);

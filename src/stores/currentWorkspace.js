@@ -4,6 +4,7 @@ import { defineStore } from 'pinia';
 import { useExplorerStore } from './explorer';
 import { useUserStore } from './user';
 import { useEnvStore } from './env';
+import { useCustomisationStore } from './customisation';
 
 const usePrivateCurrentWorkspaceStore = defineStore('privateCurrentWorkspace', {
     state: () => ({
@@ -77,6 +78,32 @@ export const useCurrentWorkspaceStore = defineStore('currentWorkspace', {
 
             if (workspace.explorer)
                 useExplorerStore().updateExplorer(workspace.explorer);
+
+            let functions = {};
+            let packages = {};
+
+            try {
+                if (workspace.packages)
+                    workspace.packages.forEach(p => {
+                        packages = { ...packages, ...JSON.parse(p.function) };
+                    });
+
+                if (workspace.functions)
+                    workspace.functions.forEach(f => {
+                        functions = { ...functions, ...JSON.parse(f.function) };
+                    });
+            } catch (error) {
+                console.error(error);
+                functions = {};
+                packages = {};
+            }
+
+            const customisations = { functions, packages};
+
+            if (Object.keys(customisations.functions).length || Object.keys(customisations.packages).length) {
+                const customisationStore = useCustomisationStore();
+                customisationStore.updateCustomisations(customisations);
+            }
 
             const userStore = useUserStore();
             if (this.userId && this.userId === userStore.id)

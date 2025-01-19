@@ -812,7 +812,7 @@ router.get('/search', async (req, res, next) => {
                 routerAddress: explorer.v2Dex.routerAddress
             };
 
-        res.status(200).json({ explorer: fields });
+            res.status(200).json({ explorer: fields });
     } catch(error) {
         unmanagedError(error, req, next);
     }
