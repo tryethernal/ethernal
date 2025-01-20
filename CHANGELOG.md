@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [4.0.4] - 2025-01-20
 ### Fixed
+- Build time env variables
+
+## [4.0.4] - 2025-01-20
+### Fixed
 - Netlify files
 
 ## [4.0.3] - 2025-01-20
