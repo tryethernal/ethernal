@@ -9,7 +9,7 @@
                     :loading="loading"
                     no-data-text="No accounts available"
                     :items="accounts"
-                    :items-length="0"
+                    :items-length="accountCount"
                     :sort-by="[{ key: currentOptions.orderBy, order: currentOptions.order }]"
                     :must-sort="true"
                     items-per-page-text="Rows per page:"

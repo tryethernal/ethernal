@@ -128,7 +128,7 @@ exports[`BlockList.vue > Should display pending blocks 1`] = `
       </div>
     </div>
     <div class="v-data-table-footer__info">
-      <div>0-0 of 0</div>
+      <div>1-2 of 2</div>
     </div>
     <div class="v-data-table-footer__pagination">
       <nav class="v-pagination v-theme--light" role="navigation" aria-label="Pagination Navigation" data-test="v-pagination-root">
@@ -283,7 +283,7 @@ exports[`BlockList.vue > Should not show blocks count 1`] = `
       </div>
     </div>
     <div class="v-data-table-footer__info">
-      <div>0-0 of 0</div>
+      <div>1-2 of 2</div>
     </div>
     <div class="v-data-table-footer__pagination">
       <nav class="v-pagination v-theme--light" role="navigation" aria-label="Pagination Navigation" data-test="v-pagination-root">
@@ -438,7 +438,7 @@ exports[`BlockList.vue > Should show the blocks list 1`] = `
       </div>
     </div>
     <div class="v-data-table-footer__info">
-      <div>0-0 of 0</div>
+      <div>1-2 of 2</div>
     </div>
     <div class="v-data-table-footer__pagination">
       <nav class="v-pagination v-theme--light" role="navigation" aria-label="Pagination Navigation" data-test="v-pagination-root">

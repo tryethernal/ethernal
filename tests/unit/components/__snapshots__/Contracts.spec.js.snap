@@ -467,7 +467,7 @@ exports[`Contracts.vue > Should display a warning message for free users with 10
             </div>
           </div>
           <div class="v-data-table-footer__info">
-            <div>0-0 of 0</div>
+            <div>1-10 of 11</div>
           </div>
           <div class="v-data-table-footer__pagination">
             <nav class="v-pagination v-theme--light" role="navigation" aria-label="Pagination Navigation" data-test="v-pagination-root">
@@ -482,12 +482,12 @@ exports[`Contracts.vue > Should display a warning message for free users with 10
                     <!---->
                     <!---->
                   </button></li>
-                <li class="v-pagination__next" data-test="v-pagination-next"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="Next page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <li class="v-pagination__next" data-test="v-pagination-next"><button type="button" class="v-btn v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" aria-label="Next page" aria-disabled="false"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
                     <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-chevron-right mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
                     <!---->
                     <!---->
                   </button></li>
-                <li class="v-pagination__last" data-test="v-pagination-last"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="Last page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <li class="v-pagination__last" data-test="v-pagination-last"><button type="button" class="v-btn v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" aria-label="Last page" aria-disabled="false"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
                     <!----><span class="v-btn__content" data-no-activator=""><!----></span>
                     <!---->
                     <!---->
@@ -962,7 +962,7 @@ exports[`Contracts.vue > Should not display a warning message for premium users 
             </div>
           </div>
           <div class="v-data-table-footer__info">
-            <div>0-0 of 0</div>
+            <div>1-10 of 11</div>
           </div>
           <div class="v-data-table-footer__pagination">
             <nav class="v-pagination v-theme--light" role="navigation" aria-label="Pagination Navigation" data-test="v-pagination-root">
@@ -977,12 +977,12 @@ exports[`Contracts.vue > Should not display a warning message for premium users 
                     <!---->
                     <!---->
                   </button></li>
-                <li class="v-pagination__next" data-test="v-pagination-next"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="Next page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <li class="v-pagination__next" data-test="v-pagination-next"><button type="button" class="v-btn v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" aria-label="Next page" aria-disabled="false"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
                     <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-chevron-right mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
                     <!---->
                     <!---->
                   </button></li>
-                <li class="v-pagination__last" data-test="v-pagination-last"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="Last page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <li class="v-pagination__last" data-test="v-pagination-last"><button type="button" class="v-btn v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" aria-label="Last page" aria-disabled="false"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
                     <!----><span class="v-btn__content" data-no-activator=""><!----></span>
                     <!---->
                     <!---->
@@ -1457,7 +1457,7 @@ exports[`Contracts.vue > Should not display a warning message for public explore
             </div>
           </div>
           <div class="v-data-table-footer__info">
-            <div>0-0 of 0</div>
+            <div>1-10 of 11</div>
           </div>
           <div class="v-data-table-footer__pagination">
             <nav class="v-pagination v-theme--light" role="navigation" aria-label="Pagination Navigation" data-test="v-pagination-root">
@@ -1472,12 +1472,12 @@ exports[`Contracts.vue > Should not display a warning message for public explore
                     <!---->
                     <!---->
                   </button></li>
-                <li class="v-pagination__next" data-test="v-pagination-next"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="Next page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <li class="v-pagination__next" data-test="v-pagination-next"><button type="button" class="v-btn v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" aria-label="Next page" aria-disabled="false"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
                     <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-chevron-right mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
                     <!---->
                     <!---->
                   </button></li>
-                <li class="v-pagination__last" data-test="v-pagination-last"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="Last page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <li class="v-pagination__last" data-test="v-pagination-last"><button type="button" class="v-btn v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" aria-label="Last page" aria-disabled="false"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
                     <!----><span class="v-btn__content" data-no-activator=""><!----></span>
                     <!---->
                     <!---->
@@ -1642,7 +1642,7 @@ exports[`Contracts.vue > Should show the contracts list 1`] = `
             </div>
           </div>
           <div class="v-data-table-footer__info">
-            <div>0-0 of 0</div>
+            <div>1-2 of 2</div>
           </div>
           <div class="v-data-table-footer__pagination">
             <nav class="v-pagination v-theme--light" role="navigation" aria-label="Pagination Navigation" data-test="v-pagination-root">

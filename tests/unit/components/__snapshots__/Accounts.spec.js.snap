@@ -127,7 +127,7 @@ exports[`Accounts.vue > Should load stored accounts 1`] = `
             </div>
           </div>
           <div class="v-data-table-footer__info">
-            <div>0-0 of 0</div>
+            <div>1-1 of 1</div>
           </div>
           <div class="v-data-table-footer__pagination">
             <nav class="v-pagination v-theme--light" role="navigation" aria-label="Pagination Navigation" data-test="v-pagination-root">

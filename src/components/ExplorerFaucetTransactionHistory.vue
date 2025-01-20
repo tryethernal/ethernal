@@ -5,7 +5,7 @@
                 class="hide-table-count"
                 :loading="loading"
                 :items="transactions"
-                :items-length="0"
+                :items-length="transactionCount"
                 :sort-by="currentOptions.sortBy"
                 :must-sort="true"
                 :headers="headers"
