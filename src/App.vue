@@ -310,11 +310,6 @@ export default {
             this.isOverlayActive = false;
             this.appBarComponent = 'rpc-connector';
             this.routerComponent = 'router-view';
-
-            if (this.envStore.isAdmin && this.envStore.isMarketingEnabled) {
-                this.$server.getProductRoadToken().then(res => this.prAuthToken = res.data.token);
-                this.$server.getMarketingFlags().then(({ data: { isRemote }}) => this.isRemote = !!isRemote);
-            }
         }
     },
     computed: {

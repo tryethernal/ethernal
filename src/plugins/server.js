@@ -894,13 +894,6 @@ export default {
                 return axios.post(resource, { data });
             },
 
-            getMarketingFlags() {
-                const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, };
-
-                const resource = `${envStore.apiRoot}/api/marketing`;
-                return axios.get(resource, { params });
-            },
-
             verifyContract(address, data) {
                 const resource = `${envStore.apiRoot}/api/contracts/${address}/verify`;
                 return axios.post(resource, data);
@@ -1212,16 +1205,6 @@ export default {
 
                 const resource = `${envStore.apiRoot}/api/contracts/${contractAddress}`;
                 return axios.post(resource, { data });
-            },
-
-            getProductRoadToken() {
-                const params = {
-                    firebaseUserId: firebaseUserId.value,
-                    workspace: workspace.value,
-                };
-
-                const resource = `${envStore.apiRoot}/api/marketing/productRoadToken`;
-                return axios.get(resource, { params });
             },
 
             syncTransactionData(hash, transactionData) {
