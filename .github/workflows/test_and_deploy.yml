@@ -161,7 +161,6 @@ jobs:
       - name: Install deps & build
         run: yarn && yarn build
         env:
-          NODE_ENV: 'production'
           VITE_API_ROOT: ${{ secrets.API_ROOT }}
           VITE_ENABLE_BILLING: true
           VITE_MAIN_DOMAIN: ${{ secrets.MAIN_DOMAIN }}
