@@ -1,4 +1,5 @@
-import * as Sentry from "@sentry/vue";
+import * as Sentry from '@sentry/vue';
+import { getCurrentInstance } from 'vue';
 import { defineStore } from 'pinia';
 
 import { useEnvStore } from './env';
@@ -17,8 +18,6 @@ export const useUserStore = defineStore('user', {
     }),
 
     actions: {
-        // TODO: Do not forget to update the code using updateUserPlan
-
         updateUser(user) {
             const env = useEnvStore();
 
@@ -31,8 +30,8 @@ export const useUserStore = defineStore('user', {
                     localStorage.setItem('apiToken', user.apiToken);
 
                 if (env.hasAnalyticsEnabled) {
-                    window.feedbackfin.config.user = { email: this.email };
-                    this._vm.$posthog.identify(this.id, { email: this.email });
+                    if (window.feedbackfin && window.feedbackfin.config)
+                        window.feedbackfin.config.user = { email: this.email };
                     if (window.smartsupp) {
                         window.smartsupp('name', this.email);
                         window.smartsupp('email', this.email);
@@ -44,8 +43,10 @@ export const useUserStore = defineStore('user', {
                 Sentry.setUser(null);
                 localStorage.clear();
                 if (env.hasAnalyticsEnabled) {
-                    window.feedbackfin.config.user = null;
-                    this._vm.$posthog.reset();
+                    if (window.feedbackfin && window.feedbackfin.config)
+                        window.feedbackfin.config.user = null;
+
+                    this.globalProperties.$posthog.reset();
                     if (window.smartsupp) {
                         window.smartsupp('name', null);
                         window.smartsupp('email', null);
