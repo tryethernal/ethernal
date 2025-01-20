@@ -4,7 +4,7 @@
             class="hide-table-count"
             :loading="loading"
             :items="holders"
-            :items-length="0"
+            :items-length="holderCount"
             no-data-text="No holders"
             :sort-by="currentOptions.sortBy"
             :headers="headers"

@@ -6,7 +6,7 @@
                     class="hide-table-count"
                     :loading="loading"
                     :items="tokens"
-                    :items-length="0"
+                    :items-length="tokenCount"
                     :headers="headers"
                     :sort-by="[{ key: currentOptions.orderBy, order: currentOptions.order }]"
                     :must-sort="true"
@@ -102,7 +102,12 @@ export default {
             };
 
             this.$server.getContracts(this.currentOptions)
-                .then(({ data }) => this.tokens = data.items)
+                .then(({ data }) => {
+                    this.tokens = data.items;
+                    this.tokenCount = data.items.length == this.currentOptions.itemsPerPage ?
+                        (this.currentOptions.page * data.items.length) + 1 :
+                        this.currentOptions.page * data.items.length;
+                })
                 .catch(console.log)
                 .finally(() => this.loading = false);
         },

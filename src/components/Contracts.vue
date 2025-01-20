@@ -12,7 +12,7 @@
                     class="hide-table-count"
                     :loading="loading"
                     :items="contracts"
-                    :items-length="0"
+                    :items-length="contractCount"
                     :headers="headers"
                     :sort-by="currentOptions.sortBy"
                     :must-sort="true"
@@ -143,7 +143,9 @@ export default {
             this.$server.getContracts({ page, itemsPerPage, orderBy: sortBy[0].key, order: sortBy[0].order })
                 .then(({ data }) => {
                     this.contracts = data.items;
-                    this.contractCount = data.total;
+                    this.contractCount = data.items.length == this.currentOptions.itemsPerPage ?
+                        (this.currentOptions.page * data.items.length) + 1 :
+                        this.currentOptions.page * data.items.length;
                 })
                 .catch(console.log)
                 .finally(() => this.loading = false);
