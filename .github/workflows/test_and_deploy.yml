@@ -212,6 +212,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Setup credentials
+        run: |
+          echo "$GCLOUD_CREDENTIALS" >> ethernal-95a14-19f78a7e26cc.json
+        shell: bash
+        env:
+          GCLOUD_CREDENTIALS: ${{ secrets.GCLOUD_CREDENTIALS }}
+
       - uses: superfly/flyctl-actions/setup-flyctl@master
 
       - name: Build & push backend image
