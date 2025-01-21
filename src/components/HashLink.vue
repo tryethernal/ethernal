@@ -15,10 +15,13 @@
             &nbsp;(<router-link :to="`/address/${hash}/${tokenId}`">#{{ tokenId }}</router-link>)
         </span>
         <span v-if="hash && !copied && !notCopiable">
-            &nbsp;<v-icon class="text-medium-emphasis" @click="copyHash()" size="x-small">mdi-content-copy</v-icon><input type="hidden" :id="`copyElement-${hash}`" :value="hash">
+            &nbsp;<v-icon class="text-medium-emphasis" @click="copyHash()" size="x-small">mdi-content-copy</v-icon><input type="hidden" :id="`copyElement-${hash}`" :value="alternateLink && showAlternateLink ? alternateLink : hash">
         </span>
         <span v-if="copied">
             &nbsp; <v-icon class="text-medium-emphasis" size="x-small">mdi-check</v-icon>
+        </span>
+        <span v-if="alternateLink">
+            &nbsp; <v-icon class="text-medium-emphasis" size="x-small" @click="showAlternateLink = !showAlternateLink">mdi-swap-horizontal</v-icon>
         </span>
     </span>
 </template>
@@ -26,6 +29,7 @@
 import { inject } from 'vue';
 import { mapStores } from 'pinia';
 import { useExplorerStore } from '../stores/explorer';
+import { useCustomisationStore } from '../stores/customisation';
 import { sanitize } from '../lib/utils';
 
 export default {
@@ -36,10 +40,16 @@ export default {
         token: null,
         contractName: null,
         verified: false,
+        alternateLink: null,
+        showAlternateLink: false
     }),
     setup() {
         const isEmbedded = inject('isEmbedded', false);
         return { embedded: !!isEmbedded };
+    },
+    mounted() {
+        if (this.type == 'address')
+            this.setupAlternateLink();
     },
     watch: {
         hash: {
@@ -82,21 +92,17 @@ export default {
         }
     },
     computed: {
-        ...mapStores(useExplorerStore),
+        ...mapStores(useExplorerStore, useCustomisationStore),
         formattedHash() {
-            if (!this.hash) return;
-            if (this.fullHash) {
-                return this.hash;
-            }
-            else if (this.xsHash) {
-                return `${this.hash.slice(0, 5)}...${this.hash.slice(-4)}`;
-            }
-            else {
-                return `${this.hash.slice(0, 8)}...${this.hash.slice(-4)}`;
-            }
+            if (this.alternateLink && this.showAlternateLink)
+                return this.formatHash(this.alternateLink);
+            else
+                return this.formatHash(this.hash);
         },
         name() {
-            if (this.customLabel)
+            if (this.alternateLink && this.showAlternateLink)
+                return this.formatHash(this.alternateLink);
+            else if (this.customLabel)
                 return this.customLabel;
             if (this.withName != false && this.explorerStore.faucet && this.hash == this.explorerStore.faucet.address)
                 return `${this.explorerStore.token || 'ETH'} faucet`;
@@ -111,6 +117,26 @@ export default {
         externalLink() { return `//${this.explorerStore.domain}/${[this.type, this.hash].join('/')}`; }
     },
     methods: {
+        setupAlternateLink() {
+            this.customisationStore.alternateLink(this.hash)
+                .then(result => {
+                    this.alternateLink = result;
+                    if (!result) {
+                        let unsubscribe = this.customisationStore.$subscribe((mutation, state) => {
+                            if (state.worker) {
+                                unsubscribe();
+                                this.setupAlternateLink();
+                            }
+                        });
+                    }
+                });
+        },
+        formatHash(hash) {
+            if (!hash) return;
+            if (this.fullHash) return hash;
+            else if (this.xsHash) return `${hash.slice(0, 5)}...${hash.slice(-4)}`;
+            else return `${hash.slice(0, 8)}...${hash.slice(-4)}`;
+        },
         copyHash() {
             const webhookField = document.querySelector(`#copyElement-${this.hash}`);
             webhookField.setAttribute('type', 'text');

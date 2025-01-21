@@ -72,7 +72,19 @@ module.exports = (sequelize, DataTypes) => {
                 {
                     model: sequelize.models.Workspace,
                     attributes: ['id', 'name', 'storageEnabled', 'defaultAccount', 'gasPrice', 'gasLimit', 'erc721LoadingEnabled', 'statusPageEnabled', 'public'],
-                    as: 'workspace'
+                    as: 'workspace',
+                    include: [
+                        {
+                            model: sequelize.models.CustomField,
+                            as: 'packages',
+                            attributes: ['function']
+                        },
+                        {
+                            model: sequelize.models.CustomField,
+                            as: 'functions',
+                            attributes: ['function']
+                        }
+                    ]
                 },
                 {
                     model: sequelize.models.ExplorerFaucet,
@@ -119,7 +131,19 @@ module.exports = (sequelize, DataTypes) => {
                         {
                             model: sequelize.models.Workspace,
                             attributes: ['id', 'name', 'storageEnabled', 'defaultAccount', 'gasPrice', 'gasLimit', 'erc721LoadingEnabled', 'statusPageEnabled', 'public'],
-                            as: 'workspace'
+                            as: 'workspace',
+                            include: [
+                                {
+                                    model: sequelize.models.CustomField,
+                                    as: 'packages',
+                                    attributes: ['function']
+                                },
+                                {
+                                    model: sequelize.models.CustomField,
+                                    as: 'functions',
+                                    attributes: ['function']
+                                }
+                            ]
                         },
                         {
                             model: sequelize.models.ExplorerFaucet,

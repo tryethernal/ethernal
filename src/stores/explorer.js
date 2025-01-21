@@ -19,10 +19,11 @@ export const useExplorerStore = defineStore('explorer', {
 
     actions: {
         updateExplorer(explorer) {
-            if (explorer)
-                this.$patch(explorer);
-            else
+            if (!explorer)
                 this.$reset();
+
+            this.$patch(explorer);
         }
     }
 });
+
