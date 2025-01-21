@@ -303,4 +303,25 @@ describe('HashLink.vue', () => {
 
         expect(wrapper.html()).toMatchSnapshot();
     });
+
+    it('Should display alternative link switch', async () => {
+        const pinia = getPiniaInstance({
+            initialState: {},
+            mockAlternateLink: 'alternateLink'
+        });
+
+        const wrapper = mount(HashLink, {
+            global: {
+                plugins: [pinia]
+            },
+            props: {
+                type: 'address',
+                fullHash: true,
+                hash: '0xed5af388653567af2f388e6224dc7c4b3241c544'
+            }
+        });
+        await flushPromises();
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
 });

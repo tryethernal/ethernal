@@ -12,6 +12,11 @@ exports[`HashLink.vue > Should display a shortened link to the address 1`] = `
 <!--v-if--></span>"
 `;
 
+exports[`HashLink.vue > Should display alternative link switch 1`] = `
+"<span><!--v-if--><a>0xed5af388653567af2f388e6224dc7c4b3241c544</a><!--v-if--><span> &nbsp;<i class="mdi-content-copy mdi v-icon notranslate v-theme--light v-icon--size-x-small v-icon--clickable text-medium-emphasis" role="button" aria-hidden="false" tabindex="0"></i><input type="hidden" id="copyElement-0xed5af388653567af2f388e6224dc7c4b3241c544" value="0xed5af388653567af2f388e6224dc7c4b3241c544"></span>
+<!--v-if--><span> &nbsp; <i class="mdi-swap-horizontal mdi v-icon notranslate v-theme--light v-icon--size-x-small v-icon--clickable text-medium-emphasis" role="button" aria-hidden="false" tabindex="0"></i></span></span>"
+`;
+
 exports[`HashLink.vue > Should display an external link if embedded 1`] = `
 "<span><!--v-if--><a href="//explorer.tryethernal.com/address/0xed5af388653567af2f388e6224dc7c4b3241c544" target="_blank">0xed5af3...c544</a><!--v-if--><span> &nbsp;<i class="mdi-content-copy mdi v-icon notranslate v-theme--light v-icon--size-x-small v-icon--clickable text-medium-emphasis" role="button" aria-hidden="false" tabindex="0"></i><input type="hidden" id="copyElement-0xed5af388653567af2f388e6224dc7c4b3241c544" value="0xed5af388653567af2f388e6224dc7c4b3241c544"></span>
 <!--v-if-->
