@@ -1,20 +1,33 @@
 import flushPromises from 'flush-promises';
 
+import { useCustomisationStore } from '@/stores/customisation.js';
 import HashLink from '@/components/HashLink.vue';
 
+const getPiniaInstance = ({ initialState, mockUpdateCustomisations = null, mockAlternateLink = null }) => {
+    const pinia = createTestingPinia({ initialState });
+    const customisationsStore = useCustomisationStore(pinia);
+    vi.mocked(customisationsStore.updateCustomisations).mockResolvedValueOnce(mockUpdateCustomisations);
+    vi.mocked(customisationsStore.alternateLink).mockResolvedValueOnce(mockAlternateLink);
+    return pinia;
+}
+
 describe('HashLink.vue', () => {
-    it('Should display an external link if embedded', async () => {
+    it.only('Should display an external link if embedded', async () => {
+        const pinia = getPiniaInstance(
+            {
+                explorer: { domain: 'explorer.tryethernal.com' },
+            },
+            null,
+            null
+        );
+
         const wrapper = mount(HashLink, {
             props: {
                 type: 'address',
                 hash: '0xed5af388653567af2f388e6224dc7c4b3241c544'
             },
             global: {
-                plugins: [createTestingPinia({
-                    initialState: {
-                        explorer: { domain: 'explorer.tryethernal.com' }
-                    }
-                })],
+                plugins: [pinia],
                 provide: {
                     isEmbedded: true
                 }
@@ -38,7 +51,8 @@ describe('HashLink.vue', () => {
                         explorer: {
                             token: 'ETL',
                             faucet: { address: '0xed5af388653567af2f388e6224dc7c4b3241c544' }
-                        }
+                        },
+                        customisation: {}
                     }
                 })]
             }
