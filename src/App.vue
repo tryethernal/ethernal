@@ -281,7 +281,7 @@ export default {
                 if (font)
                     WebFont.load({
                         fontactive: () => {
-                            this.$set(this.styles, 'fontFamily', font);
+                            this.styles['fontFamily'] = font;
                         },
                         google: {
                             families: [`${font}:100,300,400,500,700,900&display=swap`]
