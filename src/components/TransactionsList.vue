@@ -4,7 +4,7 @@
         :dense="dense"
         :loading="loading"
         :items="transactions"
-        :items-length="0"
+        :items-length="transactionCount"
         :sort-by="currentOptions.sortBy"
         :must-sort="true"
         :headers="headers"
@@ -175,12 +175,9 @@ export default {
             this.loading = true;
             if (!this.lastUpdatedAt)
                 this.lastUpdatedAt = Date.now();
-            else if (this.lastUpdatedAt - DEBOUNCING_DELAY < Date.now() && !this.debounced) {
+            else if (this.lastUpdatedAt - DEBOUNCING_DELAY < Date.now() && !this.debounced && page == this.currentOptions.page) {
                 this.debounced = true;
                 return setTimeout(() => {
-                    this.lastUpdatedAt = Date.now();
-                    const { page, itemsPerPage, sortBy } = this.currentOptions;
-                    this.getTransactions({ page, itemsPerPage, sortBy });
                     this.debounced = false;
                 }, DEBOUNCING_DELAY);
             }
@@ -209,7 +206,7 @@ export default {
                         (this.currentOptions.page * data.items.length) + 1 :
                         this.currentOptions.page * data.items.length;
 
-                this.$emit('listUpdated');
+                        this.$emit('listUpdated');
             })
             .catch(console.log)
             .finally(() => this.loading = false);

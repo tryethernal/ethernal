@@ -2,14 +2,14 @@
     <v-container fluid>
         <v-card>
             <v-card-text>
-                <Add-Account-Modal ref="addAccountModalRef" v-if="userStore.isAdmin" />
-                <Unlock-Account-Modal ref="openUnlockAccountModalRef" v-if="userStore.isAdmin" />
+                <Add-Account-Modal ref="addAccountModalRef" v-if="envStore.isAdmin" />
+                <Unlock-Account-Modal ref="openUnlockAccountModalRef" v-if="envStore.isAdmin" />
                 <v-data-table-server
                     class="hide-table-count"
                     :loading="loading"
                     no-data-text="No accounts available"
                     :items="accounts"
-                    :items-length="0"
+                    :items-length="accountCount"
                     :sort-by="[{ key: currentOptions.orderBy, order: currentOptions.order }]"
                     :must-sort="true"
                     items-per-page-text="Rows per page:"
@@ -54,7 +54,7 @@
                         </span>
                         <span v-else>N/A</span>
                     </template>
-                    <template v-slot:item.actions="{ item }" v-if="userStore.isAdmin">
+                    <template v-slot:item.actions="{ item }" v-if="envStore.isAdmin">
                         <a href="#" @click.prevent="openUnlockAccountModal(item)">Set Private Key</a>
                     </template>
                 </v-data-table-server>
@@ -67,7 +67,7 @@ const ethers = require('ethers');
 import { mapStores } from 'pinia';
 
 import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
-import { useUserStore } from '../stores/user';
+import { useEnvStore } from '../stores/env';
 
 import AddAccountModal from './AddAccountModal.vue';
 import UnlockAccountModal from './UnlockAccountModal.vue';
@@ -93,7 +93,7 @@ export default {
     }),
     mounted() {
         this.pusherUnsubscribe = this.$pusher.onUpdatedAccount(() => this.getAccounts());
-        if (this.userStore.isAdmin)
+        if (this.envStore.isAdmin)
             this.headers.push({ title: 'Actions', key: 'actions' });
     },
     destroyed() {
@@ -156,7 +156,7 @@ export default {
         }
     },
     computed: {
-        ...mapStores(useCurrentWorkspaceStore, useUserStore),
+        ...mapStores(useCurrentWorkspaceStore, useEnvStore),
     }
 }
 </script>

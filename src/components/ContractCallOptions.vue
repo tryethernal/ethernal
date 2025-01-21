@@ -2,7 +2,7 @@
     <div>
         <v-card class="mb-4" :loading="loading">
             <v-card-text>
-                <v-alert density="compact" type="info" text class="mb-3" v-if="!accounts.length && userStore.isAdmin">
+                <v-alert density="compact" type="info" text class="mb-3" v-if="!accounts.length && envStore.isAdmin">
                     To call contracts with loaded accounts, go to the "Accounts" tab and sync them from your chain, or add them using a private key or the impersonification feature.
                 </v-alert>
                 <div class="mb-5" v-if="accounts.length">
@@ -52,7 +52,7 @@
 <script>
 import { mapStores } from 'pinia';
 import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
-import { useUserStore } from '../stores/user';
+import { useEnvStore } from '../stores/env';
 
 import Metamask from './Metamask.vue';
 
@@ -119,7 +119,7 @@ export default {
         }
     },
     computed: {
-        ...mapStores(useCurrentWorkspaceStore, useUserStore),
+        ...mapStores(useCurrentWorkspaceStore, useEnvStore),
         displayMetamask() {
             return this.mode === 'metamask';
         }

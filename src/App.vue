@@ -51,7 +51,7 @@
                 <v-list density="compact" nav>
                     <v-list-item prepend-icon="arcticons:metamask" title="Add To Metamask" link v-if="ethereum && hasNetworkInfo" @click="addNetworkToMetamask()"></v-list-item>
 
-                    <v-list-item v-for="(link, idx) in links" :prepend-icon="link.icon || 'mdi-open-in-new'" title="link.name" target="_blank" :href="link.url" :key="idx"></v-list-item>
+                    <v-list-item v-for="(link, idx) in links" :prepend-icon="link.icon || 'mdi-open-in-new'" :title="link.name" target="_blank" :href="link.url" :key="idx"></v-list-item>
                     <v-list-item prepend-icon="mdi-text-box-multiple" title="Documentation" target="_blank" :href="`https://doc.tryethernal.com`" v-if="envStore.isAdmin"></v-list-item>
                     <v-list-item prepend-icon="mdi-forum" title="Discord" target="_blank" :href="`https://discord.gg/jEAprf45jj`" v-if="envStore.isAdmin"></v-list-item>
                     <v-list-item prepend-icon="mdi-feature-search" title="Feature Requests" v-show="prAuthToken" target="_blank" :href="`https://ethernal.productroad.com/company/auth/?token=${prAuthToken}`"></v-list-item>
@@ -313,11 +313,6 @@ export default {
             this.isOverlayActive = false;
             this.appBarComponent = 'rpc-connector';
             this.routerComponent = 'router-view';
-
-            if (this.envStore.isAdmin && this.envStore.isMarketingEnabled) {
-                this.$server.getProductRoadToken().then(res => this.prAuthToken = res.data.token);
-                this.$server.getMarketingFlags().then(({ data: { isRemote }}) => this.isRemote = !!isRemote);
-            }
         }
     },
     computed: {

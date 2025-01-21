@@ -11,7 +11,10 @@
                 </v-tooltip>
             </div>
         </template>
-        <v-card-text class="text-h3 text-medium-emphasis" align="center">
+        <v-card-text v-if="loading">
+            <v-skeleton-loader type="list-item"></v-skeleton-loader>
+        </v-card-text>
+        <v-card-text class="text-h3 text-medium-emphasis" align="center" v-else>
             <template v-if="isValueDefined">
                 <router-link v-if="type == 'link'" style="text-decoration: none;" :to="href">{{ commify(value) }}</router-link>
                 <span v-else>

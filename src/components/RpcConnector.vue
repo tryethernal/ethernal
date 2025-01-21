@@ -81,7 +81,7 @@
 <script>
 const ethers = require('ethers');
 import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
-import { useUserStore } from '../stores/user';
+import { useEnvStore } from '../stores/env';
 import { mapStores } from 'pinia';
 import { formatContractPattern, shortRpcUrl } from '@/lib/utils';
 
@@ -210,10 +210,10 @@ export default {
     computed: {
         ...mapStores(
             useCurrentWorkspaceStore,
-            useUserStore
+            useEnvStore
         ),
         isUserAdmin() {
-            return this.userStore.isAdmin;
+            return this.envStore.isAdmin;
         },
         orderedItems() {
             const items = {

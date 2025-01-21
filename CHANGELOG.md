@@ -4,6 +4,46 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.0.9] - 2025-01-20
+### Fixed
+- Added skeleton loader on overview page stats
+
+## [4.0.8] - 2025-01-20
+### Fixed
+- Count on some lists
+
+## [4.0.7] - 2025-01-20
+### Fixed
+- Frontend build
+
+## [4.0.6] - 2025-01-20
+### Fixed
+- Release log
+
+## [4.0.5] - 2025-01-20
+### Fixed
+- Build time env variables
+
+## [4.0.4] - 2025-01-20
+### Fixed
+- Netlify files
+
+## [4.0.3] - 2025-01-20
+### Fixed
+- Custom sidebar links
+
+## [4.0.2] - 2025-01-20
+### Fixed
+- Contract edit modal
+- App initialization
+
+### Changed
+- Use envStore instead of userStore for admin checks
+
+## [4.0.1] - 2025-01-20
+### Fixed
+- Backend build process
+
 ## [4.0.0] - 2025-01-18
 ### Changed
 - Upgraded Vue2 => Vue3

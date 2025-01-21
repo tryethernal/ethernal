@@ -41,6 +41,11 @@ const createVueApp = (rootComponent, options) => {
         enabled: false,
     });
 
+    function createPiniaGlobalPlugin(app) {
+        return () => ({ globalProperties: app.config.globalProperties });
+    }
+    pinia.use(createPiniaGlobalPlugin(app));
+
     app.use(pinia);
     if (options.router)
         app.use(options.router);
