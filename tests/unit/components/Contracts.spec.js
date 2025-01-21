@@ -32,7 +32,11 @@ describe('Contracts.vue', () => {
         vi.spyOn(server, 'getContracts')
             .mockResolvedValue({ data: { items: [], total: 0 }});
 
-        const wrapper = mount(Contracts);
+        const wrapper = mount(Contracts, {
+            global: {
+                stubs: ['Hash-Link', 'Import-Contract-Modal', 'Remove-Contract-Confirmation-Modal']
+            }
+        });
         await new Promise(process.nextTick);
 
         expect(wrapper.html()).toMatchSnapshot();
@@ -48,7 +52,7 @@ describe('Contracts.vue', () => {
 
         const wrapper = mount(Contracts, {
             global: {
-                stubs: ['Hash-Link'],
+                stubs: ['Hash-Link', 'Import-Contract-Modal', 'Remove-Contract-Confirmation-Modal'],
                 plugins: [createTestingPinia({ initialState: { user: { plan: 'free' }, env: { isAdmin: true } } })]
             }
         });
@@ -67,7 +71,7 @@ describe('Contracts.vue', () => {
 
         const wrapper = mount(Contracts, {
             global: {
-                stubs: ['Hash-Link'],
+                stubs: ['Hash-Link', 'Import-Contract-Modal', 'Remove-Contract-Confirmation-Modal'],
                 plugins: [createTestingPinia({ initialState: { user: { plan: 'premium' }, env: { isAdmin: true } } })]
             }
         });
@@ -86,7 +90,7 @@ describe('Contracts.vue', () => {
 
         const wrapper = mount(Contracts, {
             global: {
-                stubs: ['Hash-Link'],
+                stubs: ['Hash-Link', 'Import-Contract-Modal', 'Remove-Contract-Confirmation-Modal'],
                 plugins: [createTestingPinia({
                     initialState: {
                         user: { plan: 'free' },

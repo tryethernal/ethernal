@@ -80,7 +80,7 @@ exports[`ExplorerAnalytics.vue > Should display charts 1`] = `
           <line-chart-stub title="Transaction Volume" tooltipunit="transaction" index="0" xlabels="0,1" data="2,2"></line-chart-stub>
         </div>
         <div class="v-col-md-6 v-col-12">
-          <line-chart-stub title="ERC20 Transfer Volume" tooltipunit="transfers" index="1" xlabels="0,1" data="2,2"></line-chart-stub>
+          <line-chart-stub title="ERC20 Transfer Volume" tooltipunit="transfer" index="1" xlabels="0,1" data="2,2"></line-chart-stub>
         </div>
         <div class="v-col-md-6 v-col-12">
           <line-chart-stub title="Average Gas Price" tokensymbol="gwei" floating="true" index="2" xlabels="0,1" data="200000000,300000000"></line-chart-stub>

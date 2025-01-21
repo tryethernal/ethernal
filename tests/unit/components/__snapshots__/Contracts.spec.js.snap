@@ -32,150 +32,8 @@ exports[`Contracts.vue > Should display a warning message for free users with 10
         <!---->
         <!---->
       </div>
-      <div class="v-dialog-stub" max-width="600">
-        <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
-          <!---->
-          <div class="v-card__loader">
-            <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
-              <!---->
-              <div class="v-progress-linear__background"></div>
-              <div class="v-progress-linear__buffer" style="width: 0%;"></div>
-              <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
-                <div class="v-progress-linear__indeterminate">
-                  <div class="v-progress-linear__indeterminate long"></div>
-                  <div class="v-progress-linear__indeterminate short"></div>
-                </div>
-              </transition-stub>
-              <!---->
-            </div>
-          </div>
-          <!---->
-          <!---->
-          <div class="v-card-title text-h5">Import a third-party contract</div>
-          <div class="v-card-text">
-            <div class="v-alert v-theme--light bg-error v-alert--density-default v-alert--variant-flat" role="alert">
-              <!----><span class="v-alert__underlay"></span>
-              <!---->
-              <div class="v-alert__prepend"><i class="mdi-close-circle mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="default"></i></div>
-              <div class="v-alert__content">
-                <!---->Free plan users are limited to 10 synced contracts. Remove some contracts or <a data-v-1ff93dc2="">upgrade</a> to the Premium plan for more.
-              </div>
-              <!---->
-              <!---->
-            </div>
-            <!--v-if-->
-            <!--v-if-->
-            <div> Enter an address of a contract deployed on Ethereum mainnet.<br> If the contract has been verified on Etherscan, its name and ABI will be pulled automatically.<br> If not, the contract will be imported but you'll have to manually add the name and ABI. To be able to use this, your workspace needs to be connected to a mainnet fork.<br> If it is not, the contract will still be imported but calls will fail.<br></div>
-            <div class="v-input v-input--horizontal v-input--center-affix v-input--density-default v-theme--light v-locale--is-ltr v-input--disabled v-text-field mt-4">
-              <!---->
-              <div class="v-input__control">
-                <div class="v-field v-field--center-affix v-field--disabled v-field--variant-filled v-theme--light v-locale--is-ltr">
-                  <div class="v-field__overlay"></div>
-                  <div class="v-field__loader">
-                    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
-                      <!---->
-                      <div class="v-progress-linear__background"></div>
-                      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
-                      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
-                        <div class="v-progress-linear__indeterminate">
-                          <div class="v-progress-linear__indeterminate long"></div>
-                          <div class="v-progress-linear__indeterminate short"></div>
-                        </div>
-                      </transition-stub>
-                      <!---->
-                    </div>
-                  </div>
-                  <!---->
-                  <div class="v-field__field" data-no-activator=""><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="contractAddress">
-                      <!---->Address*
-                    </label><label class="v-label v-field-label" for="contractAddress">
-                      <!---->Address*
-                    </label>
-                    <!----><input disabled="" size="1" type="text" id="contractAddress" aria-describedby="contractAddress-messages" required="" class="v-field__input">
-                    <!---->
-                  </div>
-                  <!---->
-                  <!---->
-                  <div class="v-field__outline">
-                    <!---->
-                    <!---->
-                  </div>
-                </div>
-              </div>
-              <!---->
-              <div class="v-input__details">
-                <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="contractAddress-messages">
-                  <!---->
-                </transition-group-stub>
-                <!---->
-              </div>
-            </div>
-          </div>
-          <div class="v-card-actions">
-            <div class="v-spacer"></div><button type="button" class="v-btn v-btn--slim v-theme--light text-primary v-btn--density-default v-btn--size-default v-btn--variant-text"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-              <!----><span class="v-btn__content" data-no-activator="">Close</span>
-              <!---->
-              <!---->
-            </button><button type="button" class="v-btn v-btn--disabled v-btn--slim v-theme--light text-primary v-btn--density-default v-btn--size-default v-btn--variant-text" disabled="" id="importContract"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-              <!----><span class="v-btn__content" data-no-activator="">Import</span>
-              <!---->
-              <!---->
-            </button>
-          </div>
-          <!---->
-          <!----><span class="v-card__underlay"></span>
-        </div>
-      </div>
-      <div class="v-dialog-stub" max-width="600">
-        <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
-          <!---->
-          <div class="v-card__loader">
-            <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
-              <!---->
-              <div class="v-progress-linear__background"></div>
-              <div class="v-progress-linear__buffer" style="width: 0%;"></div>
-              <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
-                <div class="v-progress-linear__indeterminate">
-                  <div class="v-progress-linear__indeterminate long"></div>
-                  <div class="v-progress-linear__indeterminate short"></div>
-                </div>
-              </transition-stub>
-              <!---->
-            </div>
-          </div>
-          <div class="v-card-item">
-            <!---->
-            <div class="v-card-item__content">
-              <div class="v-card-title"><span class="text-h5">Remove contract</span></div>
-              <!---->
-              <!---->
-            </div>
-            <!---->
-          </div>
-          <div class="v-card-text">
-            <!--v-if-->
-            <div> Removing this contract will remove metadata (name, ABI, AST, hashed bytecode) associated to this address and prevent you from: <ul class="ml-6 mt-2">
-                <li>Interacting with it through Ethernal.</li>
-                <li>Decoding events, function calls, internal calls (past decoded events &amp; calls will be lost).</li>
-                <li>Decoding storage variables (past decoded variables will be lost).</li>
-              </ul>
-            </div>
-          </div>
-          <div class="v-card-actions">
-            <div class="v-spacer"></div><button type="button" class="v-btn v-btn--slim v-theme--light text-primary v-btn--density-default v-btn--size-default v-btn--variant-text"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-              <!----><span class="v-btn__content" data-no-activator="">Close</span>
-              <!---->
-              <!---->
-            </button><button type="button" class="v-btn v-btn--slim v-theme--light text-primary v-btn--density-default v-btn--size-default v-btn--variant-text" id="removeContract"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-              <!----><span class="v-btn__content" data-no-activator="">Remove</span>
-              <!---->
-              <!---->
-            </button>
-          </div>
-          <!---->
-          <!----><span class="v-card__underlay"></span>
-        </div>
-      </div>
+      <import-contract-modal-stub></import-contract-modal-stub>
+      <remove-contract-confirmation-modal-stub></remove-contract-confirmation-modal-stub>
       <div class="v-table v-table--has-top v-table--has-bottom v-theme--light v-table--density-default v-data-table hide-table-count" sort-desc="true" item-key="address">
         <div class="d-flex justify-end"><button type="button" class="v-btn v-theme--light bg-primary v-btn--density-default v-btn--size-small v-btn--variant-flat mr-2" style="max-width: 175px;"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
             <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-import mdi v-icon notranslate v-theme--light v-icon--size-small mr-1" aria-hidden="true"></i>Import Contract </span>
@@ -231,7 +89,7 @@ exports[`Contracts.vue > Should display a warning message for free users with 10
                   <hash-link-stub type="address" hash="0x0" contract="[object Object]"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x0</td>
-                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-14"></span>
+                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-8"></span>
                   <!--teleport start-->
                   <!--teleport end-->
                 </td>
@@ -249,7 +107,7 @@ exports[`Contracts.vue > Should display a warning message for free users with 10
                   <hash-link-stub type="address" hash="0x1" contract="[object Object]"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x1</td>
-                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-16"></span>
+                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-10"></span>
                   <!--teleport start-->
                   <!--teleport end-->
                 </td>
@@ -267,7 +125,7 @@ exports[`Contracts.vue > Should display a warning message for free users with 10
                   <hash-link-stub type="address" hash="0x2" contract="[object Object]"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x2</td>
-                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-18"></span>
+                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-12"></span>
                   <!--teleport start-->
                   <!--teleport end-->
                 </td>
@@ -285,7 +143,7 @@ exports[`Contracts.vue > Should display a warning message for free users with 10
                   <hash-link-stub type="address" hash="0x3" contract="[object Object]"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x3</td>
-                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-20"></span>
+                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-14"></span>
                   <!--teleport start-->
                   <!--teleport end-->
                 </td>
@@ -303,7 +161,7 @@ exports[`Contracts.vue > Should display a warning message for free users with 10
                   <hash-link-stub type="address" hash="0x4" contract="[object Object]"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x4</td>
-                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-22"></span>
+                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-16"></span>
                   <!--teleport start-->
                   <!--teleport end-->
                 </td>
@@ -321,7 +179,7 @@ exports[`Contracts.vue > Should display a warning message for free users with 10
                   <hash-link-stub type="address" hash="0x5" contract="[object Object]"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x5</td>
-                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-24"></span>
+                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-18"></span>
                   <!--teleport start-->
                   <!--teleport end-->
                 </td>
@@ -339,7 +197,7 @@ exports[`Contracts.vue > Should display a warning message for free users with 10
                   <hash-link-stub type="address" hash="0x6" contract="[object Object]"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x6</td>
-                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-26"></span>
+                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-20"></span>
                   <!--teleport start-->
                   <!--teleport end-->
                 </td>
@@ -357,7 +215,7 @@ exports[`Contracts.vue > Should display a warning message for free users with 10
                   <hash-link-stub type="address" hash="0x7" contract="[object Object]"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x7</td>
-                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-28"></span>
+                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-22"></span>
                   <!--teleport start-->
                   <!--teleport end-->
                 </td>
@@ -375,7 +233,7 @@ exports[`Contracts.vue > Should display a warning message for free users with 10
                   <hash-link-stub type="address" hash="0x8" contract="[object Object]"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x8</td>
-                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-30"></span>
+                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-24"></span>
                   <!--teleport start-->
                   <!--teleport end-->
                 </td>
@@ -393,7 +251,7 @@ exports[`Contracts.vue > Should display a warning message for free users with 10
                   <hash-link-stub type="address" hash="0x9" contract="[object Object]"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x9</td>
-                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-32"></span>
+                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-26"></span>
                   <!--teleport start-->
                   <!--teleport end-->
                 </td>
@@ -419,7 +277,7 @@ exports[`Contracts.vue > Should display a warning message for free users with 10
             <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field v-select v-select--single v-select--selected">
               <!---->
               <div class="v-input__control">
-                <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--no-label v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="v-menu-9">
+                <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--no-label v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="v-menu-3">
                   <div class="v-field__overlay"></div>
                   <div class="v-field__loader">
                     <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
@@ -437,7 +295,7 @@ exports[`Contracts.vue > Should display a warning message for free users with 10
                   </div>
                   <!---->
                   <div class="v-field__field" data-no-activator="">
-                    <!----><label class="v-label v-field-label" for="input-7">
+                    <!----><label class="v-label v-field-label" for="input-1">
                       <!---->
                       <!---->
                     </label>
@@ -445,7 +303,7 @@ exports[`Contracts.vue > Should display a warning message for free users with 10
                     <div class="v-field__input" data-no-activator="">
                       <!---->
                       <!---->
-                      <div class="v-select__selection"><span class="v-select__selection-text">10<!----></span></div><input size="1" type="text" id="input-7" aria-describedby="input-7-messages" inputmode="none" aria-label="Open" title="Open" value="10">
+                      <div class="v-select__selection"><span class="v-select__selection-text">10<!----></span></div><input size="1" type="text" id="input-1" aria-describedby="input-1-messages" inputmode="none" aria-label="Open" title="Open" value="10">
                     </div>
                     <!---->
                   </div>
@@ -536,141 +394,8 @@ exports[`Contracts.vue > Should not display a warning message for premium users 
         <!---->
         <!---->
       </div>
-      <div class="v-dialog-stub" max-width="600">
-        <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
-          <!---->
-          <div class="v-card__loader">
-            <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
-              <!---->
-              <div class="v-progress-linear__background"></div>
-              <div class="v-progress-linear__buffer" style="width: 0%;"></div>
-              <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
-                <div class="v-progress-linear__indeterminate">
-                  <div class="v-progress-linear__indeterminate long"></div>
-                  <div class="v-progress-linear__indeterminate short"></div>
-                </div>
-              </transition-stub>
-              <!---->
-            </div>
-          </div>
-          <!---->
-          <!---->
-          <div class="v-card-title text-h5">Import a third-party contract</div>
-          <div class="v-card-text">
-            <!--v-if-->
-            <!--v-if-->
-            <!--v-if-->
-            <div> Enter an address of a contract deployed on Ethereum mainnet.<br> If the contract has been verified on Etherscan, its name and ABI will be pulled automatically.<br> If not, the contract will be imported but you'll have to manually add the name and ABI. To be able to use this, your workspace needs to be connected to a mainnet fork.<br> If it is not, the contract will still be imported but calls will fail.<br></div>
-            <div class="v-input v-input--horizontal v-input--center-affix v-input--density-default v-theme--light v-locale--is-ltr v-text-field mt-4">
-              <!---->
-              <div class="v-input__control">
-                <div class="v-field v-field--center-affix v-field--variant-filled v-theme--light v-locale--is-ltr">
-                  <div class="v-field__overlay"></div>
-                  <div class="v-field__loader">
-                    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
-                      <!---->
-                      <div class="v-progress-linear__background"></div>
-                      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
-                      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
-                        <div class="v-progress-linear__indeterminate">
-                          <div class="v-progress-linear__indeterminate long"></div>
-                          <div class="v-progress-linear__indeterminate short"></div>
-                        </div>
-                      </transition-stub>
-                      <!---->
-                    </div>
-                  </div>
-                  <!---->
-                  <div class="v-field__field" data-no-activator=""><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="contractAddress">
-                      <!---->Address*
-                    </label><label class="v-label v-field-label" for="contractAddress">
-                      <!---->Address*
-                    </label>
-                    <!----><input size="1" type="text" id="contractAddress" aria-describedby="contractAddress-messages" required="" class="v-field__input">
-                    <!---->
-                  </div>
-                  <!---->
-                  <!---->
-                  <div class="v-field__outline">
-                    <!---->
-                    <!---->
-                  </div>
-                </div>
-              </div>
-              <!---->
-              <div class="v-input__details">
-                <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="contractAddress-messages">
-                  <!---->
-                </transition-group-stub>
-                <!---->
-              </div>
-            </div>
-          </div>
-          <div class="v-card-actions">
-            <div class="v-spacer"></div><button type="button" class="v-btn v-btn--slim v-theme--light text-primary v-btn--density-default v-btn--size-default v-btn--variant-text"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-              <!----><span class="v-btn__content" data-no-activator="">Close</span>
-              <!---->
-              <!---->
-            </button><button type="button" class="v-btn v-btn--disabled v-btn--slim v-theme--light text-primary v-btn--density-default v-btn--size-default v-btn--variant-text" disabled="" id="importContract"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-              <!----><span class="v-btn__content" data-no-activator="">Import</span>
-              <!---->
-              <!---->
-            </button>
-          </div>
-          <!---->
-          <!----><span class="v-card__underlay"></span>
-        </div>
-      </div>
-      <div class="v-dialog-stub" max-width="600">
-        <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
-          <!---->
-          <div class="v-card__loader">
-            <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
-              <!---->
-              <div class="v-progress-linear__background"></div>
-              <div class="v-progress-linear__buffer" style="width: 0%;"></div>
-              <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
-                <div class="v-progress-linear__indeterminate">
-                  <div class="v-progress-linear__indeterminate long"></div>
-                  <div class="v-progress-linear__indeterminate short"></div>
-                </div>
-              </transition-stub>
-              <!---->
-            </div>
-          </div>
-          <div class="v-card-item">
-            <!---->
-            <div class="v-card-item__content">
-              <div class="v-card-title"><span class="text-h5">Remove contract</span></div>
-              <!---->
-              <!---->
-            </div>
-            <!---->
-          </div>
-          <div class="v-card-text">
-            <!--v-if-->
-            <div> Removing this contract will remove metadata (name, ABI, AST, hashed bytecode) associated to this address and prevent you from: <ul class="ml-6 mt-2">
-                <li>Interacting with it through Ethernal.</li>
-                <li>Decoding events, function calls, internal calls (past decoded events &amp; calls will be lost).</li>
-                <li>Decoding storage variables (past decoded variables will be lost).</li>
-              </ul>
-            </div>
-          </div>
-          <div class="v-card-actions">
-            <div class="v-spacer"></div><button type="button" class="v-btn v-btn--slim v-theme--light text-primary v-btn--density-default v-btn--size-default v-btn--variant-text"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-              <!----><span class="v-btn__content" data-no-activator="">Close</span>
-              <!---->
-              <!---->
-            </button><button type="button" class="v-btn v-btn--slim v-theme--light text-primary v-btn--density-default v-btn--size-default v-btn--variant-text" id="removeContract"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-              <!----><span class="v-btn__content" data-no-activator="">Remove</span>
-              <!---->
-              <!---->
-            </button>
-          </div>
-          <!---->
-          <!----><span class="v-card__underlay"></span>
-        </div>
-      </div>
+      <import-contract-modal-stub></import-contract-modal-stub>
+      <remove-contract-confirmation-modal-stub></remove-contract-confirmation-modal-stub>
       <div class="v-table v-table--has-top v-table--has-bottom v-theme--light v-table--density-default v-data-table hide-table-count" sort-desc="true" item-key="address">
         <div class="d-flex justify-end"><button type="button" class="v-btn v-theme--light bg-primary v-btn--density-default v-btn--size-small v-btn--variant-flat mr-2" style="max-width: 175px;"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
             <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-import mdi v-icon notranslate v-theme--light v-icon--size-small mr-1" aria-hidden="true"></i>Import Contract </span>
@@ -726,7 +451,7 @@ exports[`Contracts.vue > Should not display a warning message for premium users 
                   <hash-link-stub type="address" hash="0x0" contract="[object Object]"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x0</td>
-                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-14"></span>
+                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-8"></span>
                   <!--teleport start-->
                   <!--teleport end-->
                 </td>
@@ -744,7 +469,7 @@ exports[`Contracts.vue > Should not display a warning message for premium users 
                   <hash-link-stub type="address" hash="0x1" contract="[object Object]"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x1</td>
-                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-16"></span>
+                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-10"></span>
                   <!--teleport start-->
                   <!--teleport end-->
                 </td>
@@ -762,7 +487,7 @@ exports[`Contracts.vue > Should not display a warning message for premium users 
                   <hash-link-stub type="address" hash="0x2" contract="[object Object]"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x2</td>
-                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-18"></span>
+                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-12"></span>
                   <!--teleport start-->
                   <!--teleport end-->
                 </td>
@@ -780,7 +505,7 @@ exports[`Contracts.vue > Should not display a warning message for premium users 
                   <hash-link-stub type="address" hash="0x3" contract="[object Object]"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x3</td>
-                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-20"></span>
+                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-14"></span>
                   <!--teleport start-->
                   <!--teleport end-->
                 </td>
@@ -798,7 +523,7 @@ exports[`Contracts.vue > Should not display a warning message for premium users 
                   <hash-link-stub type="address" hash="0x4" contract="[object Object]"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x4</td>
-                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-22"></span>
+                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-16"></span>
                   <!--teleport start-->
                   <!--teleport end-->
                 </td>
@@ -816,7 +541,7 @@ exports[`Contracts.vue > Should not display a warning message for premium users 
                   <hash-link-stub type="address" hash="0x5" contract="[object Object]"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x5</td>
-                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-24"></span>
+                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-18"></span>
                   <!--teleport start-->
                   <!--teleport end-->
                 </td>
@@ -834,7 +559,7 @@ exports[`Contracts.vue > Should not display a warning message for premium users 
                   <hash-link-stub type="address" hash="0x6" contract="[object Object]"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x6</td>
-                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-26"></span>
+                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-20"></span>
                   <!--teleport start-->
                   <!--teleport end-->
                 </td>
@@ -852,7 +577,7 @@ exports[`Contracts.vue > Should not display a warning message for premium users 
                   <hash-link-stub type="address" hash="0x7" contract="[object Object]"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x7</td>
-                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-28"></span>
+                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-22"></span>
                   <!--teleport start-->
                   <!--teleport end-->
                 </td>
@@ -870,7 +595,7 @@ exports[`Contracts.vue > Should not display a warning message for premium users 
                   <hash-link-stub type="address" hash="0x8" contract="[object Object]"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x8</td>
-                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-30"></span>
+                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-24"></span>
                   <!--teleport start-->
                   <!--teleport end-->
                 </td>
@@ -888,7 +613,7 @@ exports[`Contracts.vue > Should not display a warning message for premium users 
                   <hash-link-stub type="address" hash="0x9" contract="[object Object]"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x9</td>
-                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-32"></span>
+                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-26"></span>
                   <!--teleport start-->
                   <!--teleport end-->
                 </td>
@@ -914,7 +639,7 @@ exports[`Contracts.vue > Should not display a warning message for premium users 
             <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field v-select v-select--single v-select--selected">
               <!---->
               <div class="v-input__control">
-                <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--no-label v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="v-menu-9">
+                <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--no-label v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="v-menu-3">
                   <div class="v-field__overlay"></div>
                   <div class="v-field__loader">
                     <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
@@ -932,7 +657,7 @@ exports[`Contracts.vue > Should not display a warning message for premium users 
                   </div>
                   <!---->
                   <div class="v-field__field" data-no-activator="">
-                    <!----><label class="v-label v-field-label" for="input-7">
+                    <!----><label class="v-label v-field-label" for="input-1">
                       <!---->
                       <!---->
                     </label>
@@ -940,7 +665,7 @@ exports[`Contracts.vue > Should not display a warning message for premium users 
                     <div class="v-field__input" data-no-activator="">
                       <!---->
                       <!---->
-                      <div class="v-select__selection"><span class="v-select__selection-text">10<!----></span></div><input size="1" type="text" id="input-7" aria-describedby="input-7-messages" inputmode="none" aria-label="Open" title="Open" value="10">
+                      <div class="v-select__selection"><span class="v-select__selection-text">10<!----></span></div><input size="1" type="text" id="input-1" aria-describedby="input-1-messages" inputmode="none" aria-label="Open" title="Open" value="10">
                     </div>
                     <!---->
                   </div>
@@ -1031,141 +756,8 @@ exports[`Contracts.vue > Should not display a warning message for public explore
         <!---->
         <!---->
       </div>
-      <div class="v-dialog-stub" max-width="600">
-        <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
-          <!---->
-          <div class="v-card__loader">
-            <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
-              <!---->
-              <div class="v-progress-linear__background"></div>
-              <div class="v-progress-linear__buffer" style="width: 0%;"></div>
-              <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
-                <div class="v-progress-linear__indeterminate">
-                  <div class="v-progress-linear__indeterminate long"></div>
-                  <div class="v-progress-linear__indeterminate short"></div>
-                </div>
-              </transition-stub>
-              <!---->
-            </div>
-          </div>
-          <!---->
-          <!---->
-          <div class="v-card-title text-h5">Import a third-party contract</div>
-          <div class="v-card-text">
-            <!--v-if-->
-            <!--v-if-->
-            <!--v-if-->
-            <div> Enter an address of a contract deployed on Ethereum mainnet.<br> If the contract has been verified on Etherscan, its name and ABI will be pulled automatically.<br> If not, the contract will be imported but you'll have to manually add the name and ABI. To be able to use this, your workspace needs to be connected to a mainnet fork.<br> If it is not, the contract will still be imported but calls will fail.<br></div>
-            <div class="v-input v-input--horizontal v-input--center-affix v-input--density-default v-theme--light v-locale--is-ltr v-text-field mt-4">
-              <!---->
-              <div class="v-input__control">
-                <div class="v-field v-field--center-affix v-field--variant-filled v-theme--light v-locale--is-ltr">
-                  <div class="v-field__overlay"></div>
-                  <div class="v-field__loader">
-                    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
-                      <!---->
-                      <div class="v-progress-linear__background"></div>
-                      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
-                      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
-                        <div class="v-progress-linear__indeterminate">
-                          <div class="v-progress-linear__indeterminate long"></div>
-                          <div class="v-progress-linear__indeterminate short"></div>
-                        </div>
-                      </transition-stub>
-                      <!---->
-                    </div>
-                  </div>
-                  <!---->
-                  <div class="v-field__field" data-no-activator=""><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="contractAddress">
-                      <!---->Address*
-                    </label><label class="v-label v-field-label" for="contractAddress">
-                      <!---->Address*
-                    </label>
-                    <!----><input size="1" type="text" id="contractAddress" aria-describedby="contractAddress-messages" required="" class="v-field__input">
-                    <!---->
-                  </div>
-                  <!---->
-                  <!---->
-                  <div class="v-field__outline">
-                    <!---->
-                    <!---->
-                  </div>
-                </div>
-              </div>
-              <!---->
-              <div class="v-input__details">
-                <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="contractAddress-messages">
-                  <!---->
-                </transition-group-stub>
-                <!---->
-              </div>
-            </div>
-          </div>
-          <div class="v-card-actions">
-            <div class="v-spacer"></div><button type="button" class="v-btn v-btn--slim v-theme--light text-primary v-btn--density-default v-btn--size-default v-btn--variant-text"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-              <!----><span class="v-btn__content" data-no-activator="">Close</span>
-              <!---->
-              <!---->
-            </button><button type="button" class="v-btn v-btn--disabled v-btn--slim v-theme--light text-primary v-btn--density-default v-btn--size-default v-btn--variant-text" disabled="" id="importContract"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-              <!----><span class="v-btn__content" data-no-activator="">Import</span>
-              <!---->
-              <!---->
-            </button>
-          </div>
-          <!---->
-          <!----><span class="v-card__underlay"></span>
-        </div>
-      </div>
-      <div class="v-dialog-stub" max-width="600">
-        <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
-          <!---->
-          <div class="v-card__loader">
-            <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
-              <!---->
-              <div class="v-progress-linear__background"></div>
-              <div class="v-progress-linear__buffer" style="width: 0%;"></div>
-              <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
-                <div class="v-progress-linear__indeterminate">
-                  <div class="v-progress-linear__indeterminate long"></div>
-                  <div class="v-progress-linear__indeterminate short"></div>
-                </div>
-              </transition-stub>
-              <!---->
-            </div>
-          </div>
-          <div class="v-card-item">
-            <!---->
-            <div class="v-card-item__content">
-              <div class="v-card-title"><span class="text-h5">Remove contract</span></div>
-              <!---->
-              <!---->
-            </div>
-            <!---->
-          </div>
-          <div class="v-card-text">
-            <!--v-if-->
-            <div> Removing this contract will remove metadata (name, ABI, AST, hashed bytecode) associated to this address and prevent you from: <ul class="ml-6 mt-2">
-                <li>Interacting with it through Ethernal.</li>
-                <li>Decoding events, function calls, internal calls (past decoded events &amp; calls will be lost).</li>
-                <li>Decoding storage variables (past decoded variables will be lost).</li>
-              </ul>
-            </div>
-          </div>
-          <div class="v-card-actions">
-            <div class="v-spacer"></div><button type="button" class="v-btn v-btn--slim v-theme--light text-primary v-btn--density-default v-btn--size-default v-btn--variant-text"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-              <!----><span class="v-btn__content" data-no-activator="">Close</span>
-              <!---->
-              <!---->
-            </button><button type="button" class="v-btn v-btn--slim v-theme--light text-primary v-btn--density-default v-btn--size-default v-btn--variant-text" id="removeContract"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-              <!----><span class="v-btn__content" data-no-activator="">Remove</span>
-              <!---->
-              <!---->
-            </button>
-          </div>
-          <!---->
-          <!----><span class="v-card__underlay"></span>
-        </div>
-      </div>
+      <import-contract-modal-stub></import-contract-modal-stub>
+      <remove-contract-confirmation-modal-stub></remove-contract-confirmation-modal-stub>
       <div class="v-table v-table--has-top v-table--has-bottom v-theme--light v-table--density-default v-data-table hide-table-count" sort-desc="true" item-key="address">
         <div class="d-flex justify-end"><button type="button" class="v-btn v-theme--light bg-primary v-btn--density-default v-btn--size-small v-btn--variant-flat mr-2" style="max-width: 175px;"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
             <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-import mdi v-icon notranslate v-theme--light v-icon--size-small mr-1" aria-hidden="true"></i>Import Contract </span>
@@ -1221,7 +813,7 @@ exports[`Contracts.vue > Should not display a warning message for public explore
                   <hash-link-stub type="address" hash="0x0" contract="[object Object]"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x0</td>
-                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-14"></span>
+                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-8"></span>
                   <!--teleport start-->
                   <!--teleport end-->
                 </td>
@@ -1239,7 +831,7 @@ exports[`Contracts.vue > Should not display a warning message for public explore
                   <hash-link-stub type="address" hash="0x1" contract="[object Object]"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x1</td>
-                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-16"></span>
+                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-10"></span>
                   <!--teleport start-->
                   <!--teleport end-->
                 </td>
@@ -1257,7 +849,7 @@ exports[`Contracts.vue > Should not display a warning message for public explore
                   <hash-link-stub type="address" hash="0x2" contract="[object Object]"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x2</td>
-                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-18"></span>
+                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-12"></span>
                   <!--teleport start-->
                   <!--teleport end-->
                 </td>
@@ -1275,7 +867,7 @@ exports[`Contracts.vue > Should not display a warning message for public explore
                   <hash-link-stub type="address" hash="0x3" contract="[object Object]"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x3</td>
-                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-20"></span>
+                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-14"></span>
                   <!--teleport start-->
                   <!--teleport end-->
                 </td>
@@ -1293,7 +885,7 @@ exports[`Contracts.vue > Should not display a warning message for public explore
                   <hash-link-stub type="address" hash="0x4" contract="[object Object]"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x4</td>
-                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-22"></span>
+                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-16"></span>
                   <!--teleport start-->
                   <!--teleport end-->
                 </td>
@@ -1311,7 +903,7 @@ exports[`Contracts.vue > Should not display a warning message for public explore
                   <hash-link-stub type="address" hash="0x5" contract="[object Object]"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x5</td>
-                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-24"></span>
+                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-18"></span>
                   <!--teleport start-->
                   <!--teleport end-->
                 </td>
@@ -1329,7 +921,7 @@ exports[`Contracts.vue > Should not display a warning message for public explore
                   <hash-link-stub type="address" hash="0x6" contract="[object Object]"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x6</td>
-                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-26"></span>
+                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-20"></span>
                   <!--teleport start-->
                   <!--teleport end-->
                 </td>
@@ -1347,7 +939,7 @@ exports[`Contracts.vue > Should not display a warning message for public explore
                   <hash-link-stub type="address" hash="0x7" contract="[object Object]"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x7</td>
-                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-28"></span>
+                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-22"></span>
                   <!--teleport start-->
                   <!--teleport end-->
                 </td>
@@ -1365,7 +957,7 @@ exports[`Contracts.vue > Should not display a warning message for public explore
                   <hash-link-stub type="address" hash="0x8" contract="[object Object]"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x8</td>
-                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-30"></span>
+                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-24"></span>
                   <!--teleport start-->
                   <!--teleport end-->
                 </td>
@@ -1383,7 +975,7 @@ exports[`Contracts.vue > Should not display a warning message for public explore
                   <hash-link-stub type="address" hash="0x9" contract="[object Object]"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x9</td>
-                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-32"></span>
+                <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-26"></span>
                   <!--teleport start-->
                   <!--teleport end-->
                 </td>
@@ -1409,7 +1001,7 @@ exports[`Contracts.vue > Should not display a warning message for public explore
             <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field v-select v-select--single v-select--selected">
               <!---->
               <div class="v-input__control">
-                <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--no-label v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="v-menu-9">
+                <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--no-label v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="v-menu-3">
                   <div class="v-field__overlay"></div>
                   <div class="v-field__loader">
                     <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
@@ -1427,7 +1019,7 @@ exports[`Contracts.vue > Should not display a warning message for public explore
                   </div>
                   <!---->
                   <div class="v-field__field" data-no-activator="">
-                    <!----><label class="v-label v-field-label" for="input-7">
+                    <!----><label class="v-label v-field-label" for="input-1">
                       <!---->
                       <!---->
                     </label>
@@ -1435,7 +1027,7 @@ exports[`Contracts.vue > Should not display a warning message for public explore
                     <div class="v-field__input" data-no-activator="">
                       <!---->
                       <!---->
-                      <div class="v-select__selection"><span class="v-select__selection-text">10<!----></span></div><input size="1" type="text" id="input-7" aria-describedby="input-7-messages" inputmode="none" aria-label="Open" title="Open" value="10">
+                      <div class="v-select__selection"><span class="v-select__selection-text">10<!----></span></div><input size="1" type="text" id="input-1" aria-describedby="input-1-messages" inputmode="none" aria-label="Open" title="Open" value="10">
                     </div>
                     <!---->
                   </div>

@@ -150,7 +150,7 @@ describe('Transaction.vue', () => {
                 stubs,
                 plugins: [createTestingPinia({
                     initialState: {
-                        explorer: { id: 1 }
+                        explorer: { id: 1, token: 'ETL' }
                     }
                 })]
             }

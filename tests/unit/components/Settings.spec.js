@@ -70,7 +70,7 @@ describe('Settings.vue', () => {
                 stubs: ['Workspace-List', 'Billing', 'Account'],
                 plugins: [createTestingPinia({
                     initialState: {
-                        currentWorkspace: { id: 1, name: 'Hardhat', rpcServer: 'http://localhost:8545', defaultAccount: '0x123' }
+                        currentWorkspace: { id: 1, name: 'Hardhat', chain: 'ethereum', rpcServer: 'http://localhost:8545', defaultAccount: '0x123' }
                     }
                 })],
                 mocks: {
