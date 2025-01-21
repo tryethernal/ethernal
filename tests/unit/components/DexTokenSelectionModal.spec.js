@@ -7,7 +7,11 @@ const tokens = [{"address":"0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee","tokenSy
 
 describe('DexTokenSelectionModal.vue', () => {
     it('Should show token selection modal', async () => {
-        const wrapper = mount(DexTokenSelectionModal);
+        const wrapper = mount(DexTokenSelectionModal, {
+            global: {
+                stubs: ['Hash-Link']
+            }
+        });
 
         wrapper.vm.open({ tokens, balances, oppositeTokenAddress: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' });
         await flushPromises();
