@@ -14,7 +14,7 @@
                     </v-col>
 
                     <v-col cols="12" md="6">
-                        <Line-Chart :title="'ERC20 Transfer Volume'" :xLabels="charts['erc20TransferVolume'].xLabels" :data="charts['erc20TransferVolume'].data" :tooltipUnit="'transfers'" :index="1" />
+                        <Line-Chart :title="'ERC20 Transfer Volume'" :xLabels="charts['erc20TransferVolume'].xLabels" :data="charts['erc20TransferVolume'].data" :tooltipUnit="'transfer'" :index="1" />
                     </v-col>
 
                     <v-col cols="12" md="6">

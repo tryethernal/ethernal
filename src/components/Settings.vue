@@ -222,7 +222,7 @@ export default {
 
         this.settings = {
             workspaceId: this.currentWorkspaceStore.id,
-            chain: this.currentWorkspaceStore.chain.slug,
+            chain: this.currentWorkspaceStore.chainSlug || 'ethereum',
             defaultAccount: this.currentWorkspaceStore.defaultAccount,
             gasLimit: this.currentWorkspaceStore.gasLimit,
             gasPrice: this.currentWorkspaceStore.gasPrice,
