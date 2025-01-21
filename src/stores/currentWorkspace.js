@@ -121,7 +121,8 @@ export const useCurrentWorkspaceStore = defineStore('currentWorkspace', {
 
     getters: {
         chain(state) {
-            return this.explorer || useEnvStore().chains[state.chainSlug || 'ethereum'];
+            const hasExplorer = useExplorerStore().id;
+            return hasExplorer ? useExplorerStore() : useEnvStore().chains[state.chainSlug || 'ethereum'];
         }
     }
 });

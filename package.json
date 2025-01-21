@@ -1,6 +1,6 @@
 {
   "name": "ethernal",
-  "version": "4.0.9",
+  "version": "4.0.11",
   "private": true,
   "scripts": {
     "serve": "vite",

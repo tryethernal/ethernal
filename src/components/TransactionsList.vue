@@ -175,7 +175,7 @@ export default {
             this.loading = true;
             if (!this.lastUpdatedAt)
                 this.lastUpdatedAt = Date.now();
-            else if (this.lastUpdatedAt - DEBOUNCING_DELAY < Date.now() && !this.debounced && page == this.currentOptions.page) {
+            else if (this.lastUpdatedAt - DEBOUNCING_DELAY < Date.now() && !this.debounced && page == this.currentOptions.page && itemsPerPage == this.currentOptions.itemsPerPage && sortBy == this.currentOptions.sortBy) {
                 this.debounced = true;
                 return setTimeout(() => {
                     this.debounced = false;

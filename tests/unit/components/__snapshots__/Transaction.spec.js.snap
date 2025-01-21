@@ -479,10 +479,10 @@ exports[`Transaction.vue > Should not display the menu if public explorer 1`] = 
       <div data-v-a8515013="" class="text-overline">Gas Price</div> 59 gwei
     </div>
     <div data-v-a8515013="" class="v-col-sm-12 v-col-md-6 v-col-lg-2 v-col">
-      <div data-v-a8515013="" class="text-overline">Cost</div><span data-v-a8515013="">0.002579067 Ether</span>
+      <div data-v-a8515013="" class="text-overline">Cost</div><span data-v-a8515013="">0.002579067 ETL</span>
     </div>
     <div data-v-a8515013="" class="v-col-sm-12 v-col-md-6 v-col-lg-2 v-col">
-      <div data-v-a8515013="" class="text-overline">Value</div> 0 Ether
+      <div data-v-a8515013="" class="text-overline">Value</div> 0 ETL
     </div>
   </div>
   <div data-v-a8515013="" class="v-row mb-4">
