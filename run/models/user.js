@@ -58,28 +58,40 @@ module.exports = (sequelize, DataTypes) => {
                 {
                     model: sequelize.models.Workspace,
                     as: 'currentWorkspace',
-                    include: {
-                        model: sequelize.models.Explorer,
-                        as: 'explorer',
-                        attributes: currentExplorerAttributes,
-                        include: [
-                            {
-                                model: sequelize.models.ExplorerDomain,
-                                as: 'domains',
-                                attributes: ['domain']
-                            },
-                            {
-                                model: sequelize.models.ExplorerFaucet,
-                                as: 'faucet',
-                                attributes: ['id', 'address', 'interval', 'amount', 'active']
-                            },
-                            {
-                                model: sequelize.models.ExplorerV2Dex,
-                                as: 'v2Dex',
-                                attributes: ['id', 'routerAddress', 'active']
-                            }
-                        ]
-                    }
+                    include: [
+                        {
+                            model: sequelize.models.Explorer,
+                            as: 'explorer',
+                            attributes: currentExplorerAttributes,
+                            include: [
+                                {
+                                    model: sequelize.models.ExplorerDomain,
+                                    as: 'domains',
+                                    attributes: ['domain']
+                                },
+                                {
+                                    model: sequelize.models.ExplorerFaucet,
+                                    as: 'faucet',
+                                    attributes: ['id', 'address', 'interval', 'amount', 'active']
+                                },
+                                {
+                                    model: sequelize.models.ExplorerV2Dex,
+                                    as: 'v2Dex',
+                                    attributes: ['id', 'routerAddress', 'active']
+                                }
+                            ]
+                        },
+                        {
+                            model: sequelize.models.CustomField,
+                            as: 'packages',
+                            attributes: ['function']
+                        },
+                        {
+                            model: sequelize.models.CustomField,
+                            as: 'functions',
+                            attributes: ['function']
+                        }
+                    ]
                 },
             ]
         });

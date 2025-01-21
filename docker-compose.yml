@@ -83,6 +83,7 @@ services:
       - "8080:8080"
     volumes:
       - ./public:/app/public
+      - ./index.html:/app/index.html
       - ./src:/app/src
       - type: bind
         source: package.json
