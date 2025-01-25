@@ -69,12 +69,8 @@
             <v-divider vertical inset class="mx-2"></v-divider>
             <v-progress-circular indeterminate class="mr-2" size="16" width="2" color="primary"></v-progress-circular>Processing Contracts...
         </div>
-        <template v-if="isUserAdmin">
-            <v-spacer></v-spacer>
-            <v-btn id="feedbackfin__back" @click="openFeedbackWindow" size="small" color="primary" variant="outlined" data-feedbackfin-button>
-                <v-icon class="mr-1">mdi-chat-processing-outline</v-icon>Feedback
-            </v-btn>
-        </template>
+        <v-spacer></v-spacer>
+        <WalletConnector />
     </v-toolbar>
 </template>
 
@@ -84,9 +80,13 @@ import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
 import { useEnvStore } from '../stores/env';
 import { mapStores } from 'pinia';
 import { formatContractPattern, shortRpcUrl } from '@/lib/utils';
+import WalletConnector from './WalletConnector.vue';
 
 export default {
     name: 'RpcConnector',
+    components: {
+        WalletConnector
+    },
     data: () => ({
         searchSelectedItem: null,
         searchItems: [],
