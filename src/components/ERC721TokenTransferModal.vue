@@ -66,14 +66,11 @@ export default {
         dialog: false,
         resolve: null,
         reject: null,
-        successMessage: null,
         errorMessage: null,
         loading: false,
         transaction: {
             receipt: {}
         },
-        rpcConnectionStatus: false,
-        metamaskData: {},
         didTransfer: false
     }),
     setup() {
@@ -82,6 +79,8 @@ export default {
         const { rpcServer, public: isPublicExplorer } = currentWorkspaceStore;
         const { wagmiConfig } = storeToRefs(currentWorkspaceStore);
         const { wagmiConnector, connectedAddress } = storeToRefs(walletStore);
+
+        const successMessage = ref(null);
 
         const recipient = ref(null);
         const options = ref({});
@@ -97,16 +96,13 @@ export default {
                 connector: wagmiConnector.value,
                 account: connectedAddress.value
             })
-            .then(hash => this.successMessage = `Transfer transaction sent: <a class="white--text" href="/transaction/${hash}">${hash}</a>`)
+            .then(hash => successMessage.value = `Transfer transaction sent: <a class="white--text" href="/transaction/${hash}">${hash}</a>`)
             .catch(console.error);
         }
 
-        return { rpcServer, isPublicExplorer, wagmiConfig, wagmiConnector, transferWithInjectedWallet, recipient, options, connectedAddress, invalidOwner };
+        return { rpcServer, isPublicExplorer, wagmiConfig, wagmiConnector, transferWithInjectedWallet, recipient, options, connectedAddress, invalidOwner, successMessage };
     },
     methods: {
-        onRpcConnectionStatusChanged(data) {
-            this.metamaskData = data;
-        },
         transferToken() {
             this.loading = true;
             this.successMessage = null;
@@ -164,7 +160,6 @@ export default {
             this.validForm = false;
             this.didTransfer = false;
             this.rpcConnectionStatus = false;
-            this.metamaskData = {};
             this.invalidOwner = false;
             this.recipient = null;
             this.successMessage = null;

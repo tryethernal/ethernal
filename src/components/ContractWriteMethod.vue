@@ -48,8 +48,8 @@
 <script>
 const Web3 = require('web3');
 const ethers = require('ethers');
-const { parseEther } = require('viem');
-const { writeContract } = require('@wagmi/core');
+import { parseEther } from 'viem';
+import { writeContract } from '@web3-onboard/wagmi';
 import { mapStores } from 'pinia';
 import { useCurrentWorkspaceStore } from '@/stores/currentWorkspace';
 import { useWalletStore } from '@/stores/walletStore';

@@ -89,8 +89,8 @@ exports[`Auth.vue > Should display an explorer migration message 1`] = `
                 </div>
               </div>
               <!---->
-              <div class="v-input__details">
-                <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="input-0-messages">
+              <div id="input-0-messages" class="v-input__details" role="alert" aria-live="polite">
+                <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
                   <!---->
                 </transition-group-stub>
                 <!---->
@@ -133,8 +133,8 @@ exports[`Auth.vue > Should display an explorer migration message 1`] = `
                 </div>
               </div>
               <!---->
-              <div class="v-input__details">
-                <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="input-2-messages">
+              <div id="input-2-messages" class="v-input__details" role="alert" aria-live="polite">
+                <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
                   <!---->
                 </transition-group-stub>
                 <!---->
@@ -244,8 +244,8 @@ exports[`Auth.vue > Should load the reset password screen 1`] = `
                 </div>
               </div>
               <!---->
-              <div class="v-input__details">
-                <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="input-5-messages">
+              <div id="input-5-messages" class="v-input__details" role="alert" aria-live="polite">
+                <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
                   <!---->
                 </transition-group-stub>
                 <!---->
@@ -354,8 +354,8 @@ exports[`Auth.vue > Should load the send reset password email screen 1`] = `
                 </div>
               </div>
               <!---->
-              <div class="v-input__details">
-                <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="input-5-messages">
+              <div id="input-5-messages" class="v-input__details" role="alert" aria-live="polite">
+                <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
                   <!---->
                 </transition-group-stub>
                 <!---->
@@ -468,8 +468,8 @@ exports[`Auth.vue > Should load the signin screen 1`] = `
                 </div>
               </div>
               <!---->
-              <div class="v-input__details">
-                <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="input-0-messages">
+              <div id="input-0-messages" class="v-input__details" role="alert" aria-live="polite">
+                <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
                   <!---->
                 </transition-group-stub>
                 <!---->
@@ -512,8 +512,8 @@ exports[`Auth.vue > Should load the signin screen 1`] = `
                 </div>
               </div>
               <!---->
-              <div class="v-input__details">
-                <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="input-2-messages">
+              <div id="input-2-messages" class="v-input__details" role="alert" aria-live="polite">
+                <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
                   <!---->
                 </transition-group-stub>
                 <!---->
@@ -623,8 +623,8 @@ exports[`Auth.vue > Should load the signup screen 1`] = `
                 </div>
               </div>
               <!---->
-              <div class="v-input__details">
-                <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="input-5-messages">
+              <div id="input-5-messages" class="v-input__details" role="alert" aria-live="polite">
+                <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
                   <!---->
                 </transition-group-stub>
                 <!---->
@@ -667,8 +667,8 @@ exports[`Auth.vue > Should load the signup screen 1`] = `
                 </div>
               </div>
               <!---->
-              <div class="v-input__details">
-                <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="input-7-messages">
+              <div id="input-7-messages" class="v-input__details" role="alert" aria-live="polite">
+                <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
                   <!---->
                 </transition-group-stub>
                 <!---->

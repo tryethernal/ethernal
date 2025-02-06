@@ -7,8 +7,6 @@
     "build": "vite build",
     "test": "FORCE_COLOR=true vitest run",
     "test:update": "FORCE_COLOR=true vitest run --update",
-    "test:unit": "vue-cli-service test:unit",
-    "test:unit:update": "vue-cli-service test:unit -u",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src",
     "dev": "vite"
   },

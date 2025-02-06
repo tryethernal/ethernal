@@ -26,12 +26,12 @@
         <div id="call" class="bg-grey-lighten-3 pa-2" v-show="error">
             {{ error }}
         </div>
-        <v-btn :disabled="!walletStore.connectedAddress" :loading="loading" class="mt-1" @click="callMethod()">Query</v-btn>
+        <v-btn id="query" :disabled="!walletStore.connectedAddress" :loading="loading" class="mt-1" @click="callMethod()">Query</v-btn>
     </div>
 </template>
 <script>
 import { mapStores } from 'pinia';
-import { readContract } from '@wagmi/core'
+import { readContract } from '@web3-onboard/wagmi'
 import { useCurrentWorkspaceStore } from '@/stores/currentWorkspace';
 import { useWalletStore } from '@/stores/walletStore';
 import { processMethodCallParam } from '@/lib/utils';
@@ -39,7 +39,7 @@ import FormattedSolVar from './FormattedSolVar.vue';
 
 export default {
     name: 'ContractReadMethod',
-    props: ['method', 'contract', 'signature', 'senderMode'],
+    props: ['method', 'contract', 'signature'],
     components: {
         FormattedSolVar
     },

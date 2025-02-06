@@ -70,10 +70,8 @@ exports[`ExplorerDexParametersModal.vue > Should display dex parameters 1`] = `
               </div>
               <!---->
               <div class="v-field__field" data-no-activator="">
-                <!----><label class="v-label v-field-label" for="input-4">
-                  <!---->
-                  <!---->
-                </label>
+                <!---->
+                <!---->
                 <!----><input size="1" type="text" id="input-4" aria-describedby="input-4-messages" class="v-field__input" value="0.5">
                 <!---->
               </div>
@@ -114,10 +112,8 @@ exports[`ExplorerDexParametersModal.vue > Should display dex parameters 1`] = `
             </div>
             <!---->
             <div class="v-field__field" data-no-activator="">
-              <!----><label class="v-label v-field-label" for="input-6">
-                <!---->
-                <!---->
-              </label>
+              <!---->
+              <!---->
               <!----><input size="1" type="number" id="input-6" aria-describedby="input-6-messages" class="v-field__input" value="1200">
               <!---->
             </div>

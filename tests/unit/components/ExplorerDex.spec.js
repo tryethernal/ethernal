@@ -110,7 +110,7 @@ const quote = {
 };
 
 describe('ExplorerDex.vue', () => {
-    const stubs = ['Metamask', 'Hash-Link', 'Dex-Token-Selection-Modal', 'Explorer-Dex-Parameter-Modal'];
+    const stubs = ['WalletConnector', 'WalletConnectorMirror', 'Hash-Link', 'Dex-Token-Selection-Modal', 'Explorer-Dex-Parameter-Modal'];
 
     it('Should display no dex message', async () => {
         const wrapper = mount(ExplorerDex, {
@@ -149,7 +149,10 @@ describe('ExplorerDex.vue', () => {
         const wrapper = mount(ExplorerDex, {
             global: {
                 stubs,
-                plugins: [createTestingPinia({ initialState: { explorer: { v2Dex: { routerAddress: '0x123' } } } })]
+                plugins: [createTestingPinia({ initialState: {
+                    explorer: { v2Dex: { routerAddress: '0x123' }},
+                    wallet: { connectedAddress: '0x1bF85ED48fcda98e2c7d08E4F2A8083fb18792AA' }
+                }})]
             }
         });
         wrapper.vm.onRpcConnectionStatusChanged({ account: '0x1bF85ED48fcda98e2c7d08E4F2A8083fb18792AA' })
@@ -168,7 +171,10 @@ describe('ExplorerDex.vue', () => {
         const wrapper = mount(ExplorerDex, {
             global: {
                 stubs,
-                plugins: [createTestingPinia({ initialState: { explorer: { v2Dex: { routerAddress: '0x123' } } } })]
+                plugins: [createTestingPinia({ initialState: {
+                    explorer: { v2Dex: { routerAddress: '0x123' }},
+                    wallet: { connectedAddress: '0x1bF85ED48fcda98e2c7d08E4F2A8083fb18792AA' }
+                }})]
             },
             data: () => ({
                 sellAmount: '100'
@@ -190,7 +196,10 @@ describe('ExplorerDex.vue', () => {
         const wrapper = mount(ExplorerDex, {
             global: {
                 stubs,
-                plugins: [createTestingPinia({ initialState: { explorer: { v2Dex: { routerAddress: '0x123' } } } })]
+                plugins: [createTestingPinia({ initialState: {
+                    explorer: { v2Dex: { routerAddress: '0x123' }},
+                    wallet: { connectedAddress: '0x1bF85ED48fcda98e2c7d08E4F2A8083fb18792AA' }
+                }})]
             },
             data: () => ({
                 sellAmount: '0.1'
@@ -213,7 +222,10 @@ describe('ExplorerDex.vue', () => {
         const wrapper = mount(ExplorerDex, {
             global: {
                 stubs,
-                plugins: [createTestingPinia({ initialState: { explorer: { v2Dex: { routerAddress: '0x123' } } } })]
+                plugins: [createTestingPinia({ initialState: {
+                    explorer: { v2Dex: { routerAddress: '0x123' }},
+                    wallet: { connectedAddress: '0x1bF85ED48fcda98e2c7d08E4F2A8083fb18792AA' }
+                }})]
             },
             data: () => ({
                 quoteDirection: 'exactIn'
@@ -252,7 +264,10 @@ describe('ExplorerDex.vue', () => {
         const wrapper = mount(ExplorerDex, {
             global: {
                 stubs,
-                plugins: [createTestingPinia({ initialState: { explorer: { v2Dex: { routerAddress: '0x123' } } } })]
+                plugins: [createTestingPinia({ initialState: {
+                    explorer: { v2Dex: { routerAddress: '0x123' }},
+                    wallet: { connectedAddress: '0x1bF85ED48fcda98e2c7d08E4F2A8083fb18792AA' }
+                }})]
             },
             data: () => ({
                 quoteDirection: 'exactIn'
@@ -289,7 +304,10 @@ describe('ExplorerDex.vue', () => {
         const wrapper = mount(ExplorerDex, {
             global: {
                 stubs,
-                plugins: [createTestingPinia({ initialState: { explorer: { v2Dex: { routerAddress: '0x123' } } } })]
+                plugins: [createTestingPinia({ initialState: {
+                    explorer: { v2Dex: { routerAddress: '0x123' }},
+                    wallet: { connectedAddress: '0x1bF85ED48fcda98e2c7d08E4F2A8083fb18792AA' }
+                }})]
             },
             data: () => ({
                 quoteDirection: 'exactIn'
@@ -333,7 +351,10 @@ describe('ExplorerDex.vue', () => {
         const wrapper = mount(ExplorerDex, {
             global: {
                 stubs,
-                plugins: [createTestingPinia({ initialState: { explorer: { v2Dex: { routerAddress: '0x123' } } } })]
+                plugins: [createTestingPinia({ initialState: {
+                    explorer: { v2Dex: { routerAddress: '0x123' }},
+                    wallet: { connectedAddress: '0x1bF85ED48fcda98e2c7d08E4F2A8083fb18792AA' }
+                }})]
             },
             data: () => ({
                 quoteDirection: 'exactIn'
@@ -379,7 +400,10 @@ describe('ExplorerDex.vue', () => {
         const wrapper = mount(ExplorerDex, {
             global: {
                 stubs,
-                plugins: [createTestingPinia({ initialState: { explorer: { v2Dex: { routerAddress: '0x123' } } } })]
+                plugins: [createTestingPinia({ initialState: {
+                    explorer: { v2Dex: { routerAddress: '0x123' }},
+                    wallet: { connectedAddress: '0x1bF85ED48fcda98e2c7d08E4F2A8083fb18792AA' }
+                }})]
             },
             data: () => ({
                 quoteDirection: 'exactIn'
