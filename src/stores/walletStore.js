@@ -1,32 +1,55 @@
-import { ref, computed, markRaw } from 'vue';
+import { ref, computed } from 'vue';
 import { defineStore } from 'pinia';
-import { ethers } from 'ethers';
+import { getBalance } from '@web3-onboard/wagmi';
 import { useCurrentWorkspaceStore } from './currentWorkspace';
 
 export const useWalletStore = defineStore('wallet', () => {
     const connectedAddress = ref(null);
-    const provider = ref(null);
     const currentBalance = ref(null);
+    const connectedChainId = ref(null);
+    const wagmiConnector = ref(null);
+    const isConnectorLoading = ref(false);
+
+    function updateIsConnectorLoading(loading) {
+        isConnectorLoading.value = loading;
+    }
 
     function updateConnectedAddress(address) {
         connectedAddress.value = address;
+        if (address)
+            updateCurrentBalance();
+        else {
+            currentBalance.value = null;
+            connectedChainId.value = null;
+        }
     }
 
-    function updateProvider(walletProvider) {
-        provider.value = markRaw(new ethers.providers.Web3Provider(walletProvider));
+    function updateConnectedChainId(chainId) {
+        connectedChainId.value = chainId;
     }
 
-    async function updateCurrentBalance() {
-        if (!provider.value) return;
+    function updateCurrentBalance() {
+        if (!connectedAddress.value) return;
 
-        currentBalance.value = await provider.value.getBalance(connectedAddress.value);
+        const currentWorkspaceStore = useCurrentWorkspaceStore();
+        getBalance(currentWorkspaceStore.wagmiConfig, {
+            address: connectedAddress.value,
+            chainId: currentWorkspaceStore.networkId
+        })
+        .then(balance => currentBalance.value = balance)
+        .catch(error => console.error(error));
+    }
+
+    function updateWagmiConnector(_wagmiConnector) {
+        wagmiConnector.value = _wagmiConnector;
     }
 
     const formattedBalance = computed(() => {
         if (!currentBalance.value) return null;
 
-        const currentWorkspaceStore = useCurrentWorkspaceStore();
-        return `${ethers.utils.formatEther(currentBalance.value)} ${currentWorkspaceStore.chain.token}`
+        const rounded = parseFloat(currentBalance.value.formatted).toFixed(3);
+
+        return `${rounded} ${currentBalance.value.symbol}`
     })
 
     const shortenedConnectedAddress = computed(() => {
@@ -35,14 +58,26 @@ export const useWalletStore = defineStore('wallet', () => {
         return connectedAddress.value.slice(0, 6) + '...' + connectedAddress.value.slice(-4);
     })
 
+    const parsedChainId = computed(() => connectedChainId.value ? parseInt(connectedChainId.value) : null);
+
+    const isChainIdCorrect = computed(() => {
+        const currentWorkspaceStore = useCurrentWorkspaceStore();
+        return parsedChainId.value === parseInt(currentWorkspaceStore.networkId);
+    });
+
     return {
         connectedAddress,
-        provider,
         currentBalance,
         updateConnectedAddress,
-        updateProvider,
         updateCurrentBalance,
         formattedBalance,
-        shortenedConnectedAddress
+        shortenedConnectedAddress,
+        updateConnectedChainId,
+        parsedChainId,
+        isChainIdCorrect,
+        updateWagmiConnector,
+        wagmiConnector,
+        isConnectorLoading,
+        updateIsConnectorLoading
     }
 });

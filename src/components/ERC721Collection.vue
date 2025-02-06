@@ -90,23 +90,7 @@
                             </v-col>
 
                             <v-col cols="12" sm="6" lg="6">
-                                <v-card style="height: 100%">
-                                    <v-card-subtitle v-if="metamaskData.account && metamaskData.isReady">
-                                        <div style="position: absolute;">Your Balance</div>
-                                        <div class="text-right" v-if="metamaskData.account">
-                                            <Hash-Link :type="'address'" :hash="metamaskData.account" />
-                                        </div>
-                                    </v-card-subtitle>
-                                    <v-card-subtitle v-else>Your Balance</v-card-subtitle>
-                                    <v-card-text class="text-h3" align="center" v-if="metamaskData.account && metamaskData.isReady">
-                                        <v-skeleton-loader v-if="loadingBalance" type="list-item"></v-skeleton-loader>
-                                        <template v-else-if="connectedAccountBalance">{{ formatNumber(connectedAccountBalance, { short: true, decimals: 0 })}} {{ contract.tokenSymbol }}</template>
-                                        <template v-else>N/A</template>
-                                    </v-card-text>
-                                    <v-card-text v-else>
-                                        <Metamask class="mt-1" @rpcConnectionStatusChanged="onRpcConnectionStatusChanged"></Metamask>
-                                    </v-card-text>
-                                </v-card>
+                                <TokenBalanceCard :contract="contract" />
                             </v-col>
                         </v-row>
                     </v-col>
@@ -189,7 +173,7 @@ import ERC721Gallery from './ERC721Gallery.vue';
 import ContractCode from './ContractCode.vue';
 import StatNumber from './StatNumber.vue';
 import HashLink from './HashLink.vue';
-import Metamask from './Metamask.vue';
+import TokenBalanceCard from './TokenBalanceCard.vue';
 
 export default {
     name: 'ERC721Collection',
@@ -198,7 +182,7 @@ export default {
         AddressTransactionsList,
         StatNumber,
         HashLink,
-        Metamask,
+        TokenBalanceCard,
         ContractInteraction,
         ERC20TokenHolders,
         ERC20ContractAnalytics,

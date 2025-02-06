@@ -79,6 +79,7 @@
     "vuetify": "^3.7.1",
     "vuex": "^3.6.0",
     "vuexfire": "^3.2.5",
+    "wagmi": "^2.14.9",
     "web3": "^1.3.1",
     "web3-providers-ws": "^1.3.1",
     "webfontloader": "^1.6.28",

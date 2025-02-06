@@ -4,12 +4,14 @@
         <v-card-title class="text-h5">Transfer {{ token.attributes.name }}</v-card-title>
         <v-form v-model="validForm">
             <v-card-text>
-                <v-alert type="success" v-if="successMessage" v-html="successMessage"></v-alert>
-                <v-alert type="error" v-if="errorMessage" v-html="errorMessage"></v-alert>
-                <v-alert type="error" v-if="invalidOwner">The connected account is not the owner of this token.</v-alert>
-                <v-alert v-if="!successMessage && !errorMessage && !isPublicExplorer && !invalidOwner" type="info" text v-html="'This will only work if your node supports either <code>hardhat_impersonateAccount</code> or <code>evm_unlockUnknownAccount</code>.'"></v-alert>
+                <v-alert class="mb-3" density="compact" type="success" v-if="successMessage" v-html="successMessage"></v-alert>
+                <v-alert class="mb-3" density="compact" type="error" v-if="errorMessage" v-html="errorMessage"></v-alert>
+                <v-alert class="mb-3" density="compact" type="warning" v-if="invalidOwner && isPublicExplorer">The connected account is not the owner of this token.</v-alert>
+                <v-alert class="mb-3" density="compact" v-if="!successMessage && !errorMessage && !isPublicExplorer && !invalidOwner" type="info">This will only work if your node supports <code>hardhat_impersonateAccount</code> or <code>evm_unlockUnknownAccount</code>.</v-alert>
 
-                Owner: <Hash-Link :type="'address'" :fullHash="true" :hash="token.owner"></Hash-Link>
+                <div>Owner: <Hash-Link :type="'address'" :fullHash="true" :hash="token.owner"></Hash-Link></div>
+                <div v-if="connectedAddress">Connected account: <Hash-Link :type="'address'" :fullHash="true" :hash="connectedAddress"></Hash-Link></div>
+                <WalletConnectorMirror v-else prepend-icon="mdi-wallet" rounded size="small" variant="outlined" />
                 <v-text-field
                     v-model="recipient"
                     :rules="[v => !!v && v.length == 42 || 'Invalid address (must be 42 characters long)']"
@@ -17,7 +19,7 @@
                     variant="outlined"
                     density="compact"
                     prepend-inner-icon="mdi-arrow-right"
-                    class="mt-3"
+                    class="mt-5"
                     id="recipient"
                     label="Recipient Address">
                 </v-text-field>
@@ -30,81 +32,85 @@
                     </template>
                     <Hash-Link :type="'transaction'" :hash="transaction.hash"></Hash-Link>
                 </span>
-                <Metamask v-if="dialog && isPublicExplorer" class="mt-1" @rpcConnectionStatusChanged="onRpcConnectionStatusChanged"></Metamask>
             </v-card-text>
 
             <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn @click.stop="close()">Close</v-btn>
-                <v-btn id="transferToken" variant="flat" :disabled="!validForm || isPublicExplorer && !metamaskData.isReady || invalidOwner" :loading="loading" @click.stop="transferToken()">Transfer Token</v-btn>
+                <v-btn v-if="isPublicExplorer" id="transferToken" variant="flat" :disabled="!validForm || invalidOwner" :loading="loading" @click.stop="transferWithInjectedWallet()">Transfer Token</v-btn>
+                <v-btn v-else id="transferToken" variant="flat" :disabled="!validForm" :loading="loading" @click.stop="transferToken()">Transfer Token</v-btn>
             </v-card-actions>
         </v-form>
     </v-card>
 </v-dialog>
 </template>
 <script>
-import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
+import { computed, ref } from 'vue';
+import { storeToRefs } from 'pinia';
+import { writeContract } from '@web3-onboard/wagmi';
+import { useCurrentWorkspaceStore } from '@/stores/currentWorkspace';
+import { useWalletStore } from '@/stores/walletStore';
 import ERC721_ABI from '../abis/erc721.json';
-import { sendTransaction } from '../lib/metamask';
 import HashLink from './HashLink.vue';
-import Metamask from './Metamask.vue';
+import WalletConnectorMirror from './WalletConnectorMirror.vue';
 
 export default {
     name: 'ERC721TokenTransferModal',
     props: ['address', 'token'],
     components: {
         HashLink,
-        Metamask
+        WalletConnectorMirror
     },
     data: () => ({
         validForm: false,
-        recipient: null,
         dialog: false,
         resolve: null,
         reject: null,
         successMessage: null,
         errorMessage: null,
         loading: false,
-        options: {},
         transaction: {
             receipt: {}
         },
         rpcConnectionStatus: false,
         metamaskData: {},
-        invalidOwner: false,
         didTransfer: false
     }),
     setup() {
-        const { rpcServer, public: isPublicExplorer } = useCurrentWorkspaceStore();
-        return { rpcServer, isPublicExplorer };
+        const currentWorkspaceStore = useCurrentWorkspaceStore();
+        const walletStore = useWalletStore();
+        const { rpcServer, public: isPublicExplorer } = currentWorkspaceStore;
+        const { wagmiConfig } = storeToRefs(currentWorkspaceStore);
+        const { wagmiConnector, connectedAddress } = storeToRefs(walletStore);
+
+        const recipient = ref(null);
+        const options = ref({});
+
+        const invalidOwner = computed(() => !options.value.token || connectedAddress.value !== options.value.token.owner);
+
+        function transferWithInjectedWallet() {
+            writeContract(wagmiConfig.value, {
+                abi: ERC721_ABI,
+                address: options.value.address,
+                functionName: 'safeTransferFrom',
+                args: [connectedAddress.value, recipient.value, options.value.token.tokenId],
+                connector: wagmiConnector.value,
+                account: connectedAddress.value
+            })
+            .then(hash => this.successMessage = `Transfer transaction sent: <a class="white--text" href="/transaction/${hash}">${hash}</a>`)
+            .catch(console.error);
+        }
+
+        return { rpcServer, isPublicExplorer, wagmiConfig, wagmiConnector, transferWithInjectedWallet, recipient, options, connectedAddress, invalidOwner };
     },
     methods: {
-        transferWithMetamask() {
-            sendTransaction({
-                ethereum: window.ethereum,
-                address: this.address,
-                abi: ERC721_ABI,
-                signature: 'safeTransferFrom(address,address,uint256)',
-                params: [this.metamaskData.account, this.recipient, this.token.tokenId],
-                options: { value: '0' }
-            })
-            .then(txHash => {
-                this.successMessage = `Transfer transaction sent: <a class="white--text" href="/transaction/${txHash}">${txHash}</a>`;
-                this.didTransfer = true;
-            })
-            .catch(error => this.errorMessage = error.message || error)
-            .finally(() => this.loading = false);
-        },
         onRpcConnectionStatusChanged(data) {
             this.metamaskData = data;
-            this.invalidOwner = data.isReady && this.token.owner !== data.account;
         },
         transferToken() {
             this.loading = true;
             this.successMessage = null;
             this.errorMessage = null;
-            if (this.metamaskData.isReady)
-                return this.transferWithMetamask();
 
             this.$server.impersonateAccount(this.rpcServer, this.token.owner)
                 .then(hasBeenUnlocked => {

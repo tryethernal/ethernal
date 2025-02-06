@@ -231,15 +231,17 @@ const serverFunctions = {
             throw { reason: reason };
         }
     },
-    impersonateAccount: async function(data) {
+    async impersonateAccount(data) {
         try {
             const rpcProvider = new serverFunctions._getProvider(data.rpcServer)
-            const hardhatResult = await rpcProvider.send('hardhat_impersonateAccount', [data.accountAddress]).catch(console.log);
-            if (hardhatResult) {
+            try {
+                await rpcProvider.send('hardhat_impersonateAccount', [data.accountAddress]);
+                return true;
+            } catch(error) {
+                console.log(error);
+                await rpcProvider.send('evm_unlockUnknownAccount', [data.accountAddress]).catch(console.log);
                 return true;
             }
-            const ganacheResult = await rpcProvider.send('evm_unlockUnknownAccount', [data.accountAddress]).catch(console.log);
-            return ganacheResult;
         } catch(error) {
             console.log(error);
             const reason = error.body ? JSON.parse(error.body).error.message : error.reason || error.message || "Can't connect to the server";
@@ -1327,7 +1329,7 @@ export default {
                  try {
                     for (let i = 0; i < transactions.length; i++) {
                         const transaction = transactions[i];
-
+                        console.log(transaction);
                         if (transaction.receipt.status === 0 || transaction.receipt.status === false) {
                             serverFunctions.fetchErrorData(transaction, rpcServer)
                                 .then(result => this.syncFailedTransactionError(transaction.hash, result))

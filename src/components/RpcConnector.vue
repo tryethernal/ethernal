@@ -70,7 +70,7 @@
             <v-progress-circular indeterminate class="mr-2" size="16" width="2" color="primary"></v-progress-circular>Processing Contracts...
         </div>
         <v-spacer></v-spacer>
-        <WalletConnector />
+        <WalletConnector :key="2" />
     </v-toolbar>
 </template>
 
