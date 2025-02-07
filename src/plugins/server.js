@@ -1329,7 +1329,6 @@ export default {
                  try {
                     for (let i = 0; i < transactions.length; i++) {
                         const transaction = transactions[i];
-                        console.log(transaction);
                         if (transaction.receipt.status === 0 || transaction.receipt.status === false) {
                             serverFunctions.fetchErrorData(transaction, rpcServer)
                                 .then(result => this.syncFailedTransactionError(transaction.hash, result))

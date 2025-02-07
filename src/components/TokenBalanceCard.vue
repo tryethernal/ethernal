@@ -14,7 +14,7 @@
             <template v-else-if="!connectedAddress && isConnectorLoading || connectedAddress && loadingBalance">
                 <v-skeleton-loader type="list-item"></v-skeleton-loader>
             </template>
-            <WalletConnectorMirror v-else prepend-icon="mdi-wallet" rounded size="small" variant="outlined" />
+            <Wallet-Connector-Mirror v-else prepend-icon="mdi-wallet" rounded size="small" variant="outlined" />
         </v-card-text>
     </v-card>
 </template>
@@ -69,6 +69,4 @@ walletStore.$subscribe((_mutation, state) => {
         }
     })
 }, { immediate: true })
-
-
 </script>
