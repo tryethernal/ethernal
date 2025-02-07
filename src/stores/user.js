@@ -24,34 +24,34 @@ export const useUserStore = defineStore('user', {
             if (user) {
                 this.$patch(user);
 
-                Sentry.setUser({ id: this.id, email: this.email });
+                Sentry.setUser({ id: user.id, email: user.email });
 
                 if (user.apiToken)
                     localStorage.setItem('apiToken', user.apiToken);
 
-                if (env.hasAnalyticsEnabled) {
-                    if (window.feedbackfin && window.feedbackfin.config)
-                        window.feedbackfin.config.user = { email: this.email };
-                    if (window.smartsupp) {
-                        window.smartsupp('name', this.email);
-                        window.smartsupp('email', this.email);
-                    }
+                if (window.feedbackfin && window.feedbackfin.config && user.email)
+                    window.feedbackfin.config.user = { email: user.email };
+
+                if (window.smartsupp && user.email) {
+                    window.smartsupp('name', user.email);
+                    window.smartsupp('email', user.email);
                 }
             }
             else {
                 this.$reset();
                 Sentry.setUser(null);
                 localStorage.clear();
-                if (env.hasAnalyticsEnabled) {
-                    if (window.feedbackfin && window.feedbackfin.config)
-                        window.feedbackfin.config.user = null;
 
-                    this.globalProperties.$posthog.reset();
-                    if (window.smartsupp) {
-                        window.smartsupp('name', null);
-                        window.smartsupp('email', null);
-                    }
+                if (window.feedbackfin && window.feedbackfin.config)
+                    window.feedbackfin.config.user = null;
+
+                if (window.smartsupp) {
+                    window.smartsupp('name', null);
+                    window.smartsupp('email', null);
                 }
+
+                if (env.hasAnalyticsEnabled)
+                    this.globalProperties.$posthog.reset();
             }
         }
     },
