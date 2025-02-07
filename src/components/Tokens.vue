@@ -73,7 +73,8 @@ export default {
         ],
         currentOptions: { page: 1, itemsPerPage: 10, orderBy: 'timestamp', order: 'desc', pattern: 'erc20' },
         newTokenPusherHandler: null,
-        destroyedContractPusherHandler: null
+        destroyedContractPusherHandler: null,
+        tokenCount: 0
     }),
     mounted: function() {
         this.newTokenPusherHandler = this.$pusher.onNewToken(() => this.getTokens(this.currentOptions), this);

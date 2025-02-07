@@ -7,6 +7,10 @@
                 color="primary"
             ></v-progress-circular>
         </v-overlay>
+
+        <v-overlay persistent class="d-flex justify-center align-center" :model-value="isWalletConnecting" scrim="primary" :opacity="0.2">
+        </v-overlay>
+
         <v-system-bar height="40" v-html="banner" v-if="banner" class="d-flex justify-start font-weight-bold" color="primary"></v-system-bar>
 
         <v-navigation-drawer v-model="drawer" :style="styles" v-if="canDisplaySides">
@@ -121,6 +125,7 @@ export default {
         banner: null,
         isRemote: false,
         isOverlayActive: false,
+        isWalletConnecting: false,
         ethereum: null,
         drawer: null
     }),
@@ -133,6 +138,7 @@ export default {
             if (!provider || provider !== window.ethereum) return;
             this.ethereum = provider;
         });
+
         this.isOverlayActive = true;
         if (localStorage.getItem('ssoApiToken'))
             localStorage.removeItem('ssoApiToken');
@@ -327,7 +333,7 @@ export default {
             return !!(this.explorerStore.name && this.explorerStore.domain && this.explorerStore.token && this.explorerStore.rpcServer);
         },
         formattedExpectedChainId() {
-            return `0x${parseInt(this.currentWorkspace.networkId).toString(16)}`;
+            return `0x${parseInt(this.currentWorkspaceStore.networkId).toString(16)}`;
         },
         isAuthPage() { return this.$route.path.indexOf('/auth') > -1 },
         canDisplaySides() { return (this.userStore.loggedIn || this.explorerStore.id) && !this.isAuthPage && !this.isOverlayActive },

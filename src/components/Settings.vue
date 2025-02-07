@@ -53,13 +53,16 @@
                                         v-model="settings.defaultAccount"
                                         item-title="address"
                                         :items="accounts">
-                                        <template v-slot:item="{ item }">
-                                            <v-icon size="small" class="mr-1" v-if="item.privateKey">mdi-lock-open-outline</v-icon>
-                                            {{ item.address }}
+                                        <template v-slot:item="{ props, item }">
+                                            <v-list-item v-bind="props" :subtitle="item.address">
+                                                <template v-slot:prepend>
+                                                    <v-icon size="small" class="mr-1" v-if="item.privateKey">mdi-lock-open-outline</v-icon>
+                                                </template>
+                                            </v-list-item>
                                         </template>
                                         <template v-slot:selection="{ item }">
-                                            <v-icon size="small" class="mr-1" v-if="item.privateKey">mdi-lock-open-outline</v-icon>
-                                            {{ item.address }}
+                                            <v-icon size="small" class="mr-1" v-if="item.raw.privateKey">mdi-lock-open-outline</v-icon>
+                                            {{ item.raw.address }}
                                         </template>
                                     </v-select>
                                     <v-text-field

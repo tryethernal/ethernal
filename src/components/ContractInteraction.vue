@@ -37,7 +37,7 @@
                 <v-card-text v-if="contract.abi">
                     <v-row v-for="(method, idx) in contractReadMethods" :key="idx" class="pb-4">
                         <v-col lg="6" md="6" sm="12">
-                            <Contract-Read-Method :active="rpcConnectionStatus" :contract="contract" :signature="method[0]" :method="method[1]" :options="callOptions" :senderMode="senderMode" />
+                            <Contract-Read-Method :active="walletStore.connectedAddress" :contract="contract" :signature="method[0]" :method="method[1]" :options="callOptions" :senderMode="senderMode" />
                         </v-col>
                     </v-row>
                 </v-card-text>
@@ -73,6 +73,7 @@ import { sanitize } from '../lib/utils';
 import { mapStores } from 'pinia';
 import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
 import { useEnvStore } from '../stores/env';
+import { useWalletStore } from '../stores/walletStore';
 
 import ContractCallOptions from './ContractCallOptions.vue';
 import ContractReadMethod from './ContractReadMethod.vue';
@@ -153,7 +154,7 @@ export default {
         }
     },
     computed: {
-        ...mapStores(useCurrentWorkspaceStore, useEnvStore),
+        ...mapStores(useCurrentWorkspaceStore, useEnvStore, useWalletStore),
         isContractVerified() {
             return !!this.contract.verification;
         },

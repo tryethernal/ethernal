@@ -1,8 +1,12 @@
-import ContractReadMethod from '@/components/ContractReadMethod.vue';
+import flushPromises from 'flush-promises';
 import DSProxyFactoryContract from '../fixtures/DSProxyFactoryContract.json';
 
 describe('ContractReadMethod.vue', () => {
-    it('Should display the UI to interact with a method', () => {
+    beforeEach(() => {
+        vi.resetModules();
+    });
+
+    it('Should display the UI to interact with a method', async () => {
         const props = {
             method: DSProxyFactoryContract.abi[0],
             contract: DSProxyFactoryContract,
@@ -14,10 +18,16 @@ describe('ContractReadMethod.vue', () => {
             }
         };
 
+        const { default: ContractReadMethod } = await import('@/components/ContractReadMethod.vue');
+
         const wrapper = mount(ContractReadMethod, {
             props: props,
             global: {
-                stubs: ['Formatted-Sol-Var']
+                stubs: ['Formatted-Sol-Var'],
+                plugins: [createTestingPinia({ initialState: {
+                    wallet: { connectedAddress: '0x123' },
+                    currentWorkspace: { wagmiConfig: {} }
+                }})]
             }
         });
 
@@ -25,8 +35,9 @@ describe('ContractReadMethod.vue', () => {
     });
 
     it('Should work when input is any array', async () => {
-        vi.spyOn(server, 'callContractReadMethod')
-            .mockResolvedValueOnce([[1, 2]]);
+        vi.doMock('@web3-onboard/wagmi', () => ({
+            readContract: vi.fn().mockResolvedValueOnce([[1, 2]])
+        }));
 
         const props = {
             method: {
@@ -50,24 +61,26 @@ describe('ContractReadMethod.vue', () => {
                 "constant": true
             },
             contract: DSProxyFactoryContract,
-            active: true,
-            options: {
-                from: '0x0',
-                gasLimit: '6721975',
-                gasPrice: undefined
-            }
+            signature: 'test',
         };
 
+        const { default: ContractReadMethod } = await import('@/components/ContractReadMethod.vue');
+
         const wrapper = mount(ContractReadMethod, {
-            props: props,
+            props,
             global: {
-                stubs: ['Formatted-Sol-Var']
+                stubs: ['Formatted-Sol-Var'],
+                plugins: [createTestingPinia({ initialState: {
+                    wallet: { connectedAddress: '0x123' },
+                    currentWorkspace: { wagmiConfig: {} }
+                }})],
             }
         });
+        await flushPromises();
 
         await wrapper.find('input').setValue('[1,2]');
-        await wrapper.find('button').trigger('click');
-        await new Promise(process.nextTick);
+        await wrapper.vm.callMethod();
+        await flushPromises();
 
         expect(wrapper.vm.results.length).toEqual(1);
         expect(wrapper.vm.results).toEqual([
@@ -95,13 +108,20 @@ describe('ContractReadMethod.vue', () => {
             }
         };
 
-        vi.spyOn(server, 'callContractReadMethod')
-            .mockResolvedValueOnce(['true']);
+        vi.doMock('@web3-onboard/wagmi', () => ({
+            readContract: vi.fn().mockResolvedValueOnce(['true'])
+        }));
+
+        const { default: ContractReadMethod } = await import('@/components/ContractReadMethod.vue');
 
         const wrapper = mount(ContractReadMethod, {
             props: props,
             global: {
-                stubs: ['Formatted-Sol-Var']
+                stubs: ['Formatted-Sol-Var'],
+                plugins: [createTestingPinia({ initialState: {
+                    wallet: { connectedAddress: '0x123' },
+                    currentWorkspace: { wagmiConfig: {} }
+                }})]
             }
         });
 
@@ -132,15 +152,20 @@ describe('ContractReadMethod.vue', () => {
             }
         };
 
-        vi.spyOn(server, 'callContractReadMethod')
-            .mockResolvedValueOnce(['true']);
+        vi.doMock('@web3-onboard/wagmi', () => ({
+            readContract: vi.fn().mockResolvedValueOnce(['true'])
+        }));
 
-        window.ethereum = vi.fn().mockReturnValueOnce({});
+        const { default: ContractReadMethod } = await import('@/components/ContractReadMethod.vue');
 
         const wrapper = mount(ContractReadMethod, {
             props: props,
             global: {
-                plugins: [createTestingPinia({ initialState: { explorer: { id: 1 } } })],
+                plugins: [createTestingPinia({ initialState: {
+                    explorer: { id: 1 },
+                    wallet: { connectedAddress: '0x123' },
+                    currentWorkspace: { wagmiConfig: {} }
+                }})],
                 stubs: ['Formatted-Sol-Var']
             }
         });
@@ -161,8 +186,9 @@ describe('ContractReadMethod.vue', () => {
     });
 
     it('Should display the result even if it is not an array', async () => {
-        vi.spyOn(server, 'callContractReadMethod')
-            .mockResolvedValueOnce(['1234']);
+        vi.doMock('@web3-onboard/wagmi', () => ({
+            readContract: vi.fn().mockResolvedValueOnce(['1234'])
+        }));
 
         const props = {
             method: {
@@ -188,10 +214,16 @@ describe('ContractReadMethod.vue', () => {
             }
         };
 
+        const { default: ContractReadMethod } = await import('@/components/ContractReadMethod.vue');
+
         const wrapper = mount(ContractReadMethod, {
             props: props,
             global: {
-                stubs: ['Formatted-Sol-Var']
+                stubs: ['Formatted-Sol-Var'],
+                plugins: [createTestingPinia({ initialState: {
+                    wallet: { connectedAddress: '0x123' },
+                    currentWorkspace: { wagmiConfig: {} }
+                }})]
             }
         });
 
@@ -212,8 +244,9 @@ describe('ContractReadMethod.vue', () => {
     });
 
     it('Should handle big number results', async () => {
-        vi.spyOn(server, 'callContractReadMethod')
-            .mockResolvedValueOnce(['50000000000000000000']);
+        vi.doMock('@web3-onboard/wagmi', () => ({ 
+            readContract: vi.fn().mockResolvedValueOnce(['50000000000000000000'])
+        }));
 
         const props = {
             method: {
@@ -239,10 +272,16 @@ describe('ContractReadMethod.vue', () => {
             }
         };
 
+        const { default: ContractReadMethod } = await import('@/components/ContractReadMethod.vue');
+
         const wrapper = mount(ContractReadMethod, {
             props: props,
             global: {
-                stubs: ['Formatted-Sol-Var']
+                stubs: ['Formatted-Sol-Var'],
+                plugins: [createTestingPinia({ initialState: {
+                    wallet: { connectedAddress: '0x123' },
+                    currentWorkspace: { wagmiConfig: {} }
+                }})]
             }
         });
 
@@ -263,8 +302,9 @@ describe('ContractReadMethod.vue', () => {
     });
 
     it('Should handle multiple results', async () => {
-        vi.spyOn(server, 'callContractReadMethod')
-            .mockResolvedValueOnce(['1', '2']);
+        vi.doMock('@web3-onboard/wagmi', () => ({
+            readContract: vi.fn().mockResolvedValueOnce(['1', '2'])
+        }));
 
         const props = {
             method: {
@@ -295,10 +335,16 @@ describe('ContractReadMethod.vue', () => {
             }
         };
 
+        const { default: ContractReadMethod } = await import('@/components/ContractReadMethod.vue');
+
         const wrapper = mount(ContractReadMethod, {
             props: props,
             global: {
-                stubs: ['Formatted-Sol-Var']
+                stubs: ['Formatted-Sol-Var'],
+                plugins: [createTestingPinia({ initialState: {
+                    wallet: { connectedAddress: '0x123' },
+                    currentWorkspace: { wagmiConfig: {} }
+                }})]
             }
         });
 
@@ -327,8 +373,9 @@ describe('ContractReadMethod.vue', () => {
     });
 
     it('Should display the error message if one is returned', async () => {
-        vi.spyOn(server, 'callContractReadMethod')
-            .mockRejectedValueOnce({ reason: 'Wrong parameters' });
+        vi.doMock('@web3-onboard/wagmi', () => ({
+            readContract: vi.fn().mockRejectedValueOnce({ reason: 'Wrong parameters' })
+        }));
 
         const props = {
             method: DSProxyFactoryContract.abi[0],
@@ -341,24 +388,31 @@ describe('ContractReadMethod.vue', () => {
             }
         };
 
+        const { default: ContractReadMethod } = await import('@/components/ContractReadMethod.vue');
+
         const wrapper = mount(ContractReadMethod, {
             props: props,
             global: {
-                stubs: ['Formatted-Sol-Var']
+                stubs: ['Formatted-Sol-Var'],
+                plugins: [createTestingPinia({ initialState: {
+                    wallet: { connectedAddress: '0x123' },
+                    currentWorkspace: { wagmiConfig: {} }
+                }})]
             }
         });
 
         await wrapper.find('button').trigger('click');
         await new Promise(process.nextTick);
 
-        expect(wrapper.vm.error).toEqual('Wrong parameters');
+        expect(wrapper.vm.error).toEqual('Error: Wrong parameters');
         expect(wrapper.vm.results).toEqual([]);
         expect(wrapper.html()).toMatchSnapshot();
     });
 
     it('Should display a generic error message if the function fails', async () => {
-        vi.spyOn(server, 'callContractReadMethod')
-            .mockImplementationOnce(() => { throw 'Error' });
+        vi.doMock('@web3-onboard/wagmi', () => ({
+            readContract: vi.fn().mockImplementationOnce(() => { throw 'Error' })
+        }));
 
         const props = {
             method: DSProxyFactoryContract.abi[0],
@@ -371,10 +425,15 @@ describe('ContractReadMethod.vue', () => {
             }
         };
 
+        const { default: ContractReadMethod } = await import('@/components/ContractReadMethod.vue');
+
         const wrapper = mount(ContractReadMethod, {
             props: props,
             global: {
-                stubs: ['Formatted-Sol-Var']
+                stubs: ['Formatted-Sol-Var'],
+                plugins: [createTestingPinia({ initialState: {
+                    wallet: { connectedAddress: '0x123' }
+                }})]
             }
         });
 

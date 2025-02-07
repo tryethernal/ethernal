@@ -120,8 +120,8 @@ exports[`AddAccountModal.vue > Should be able to add an account from a valid pri
           </div>
         </div>
         <!---->
-        <div class="v-input__details">
-          <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="accountAddress-messages">
+        <div id="accountAddress-messages" class="v-input__details" role="alert" aria-live="polite">
+          <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
             <!---->
           </transition-group-stub>
           <!---->
@@ -265,8 +265,8 @@ exports[`AddAccountModal.vue > Should be able to add an account from an address 
           </div>
         </div>
         <!---->
-        <div class="v-input__details">
-          <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="accountAddress-messages">
+        <div id="accountAddress-messages" class="v-input__details" role="alert" aria-live="polite">
+          <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
             <!---->
           </transition-group-stub>
           <!---->
@@ -410,8 +410,8 @@ exports[`AddAccountModal.vue > Should display an error message if the private ke
           </div>
         </div>
         <!---->
-        <div class="v-input__details">
-          <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="accountAddress-messages">
+        <div id="accountAddress-messages" class="v-input__details" role="alert" aria-live="polite">
+          <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
             <!---->
           </transition-group-stub>
           <!---->

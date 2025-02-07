@@ -45,8 +45,8 @@ exports[`ExplorerDexSettings.vue > Should display fully synced active dex settin
               </div>
             </div>
             <!---->
-            <div class="v-input__details">
-              <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="switch-0-messages">
+            <div id="switch-0-messages" class="v-input__details" role="alert" aria-live="polite">
+              <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
                 <!---->
               </transition-group-stub>
               <!---->
@@ -167,8 +167,8 @@ exports[`ExplorerDexSettings.vue > Should display limited sync 1`] = `
               </div>
             </div>
             <!---->
-            <div class="v-input__details">
-              <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="switch-0-messages">
+            <div id="switch-0-messages" class="v-input__details" role="alert" aria-live="polite">
+              <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
                 <!---->
               </transition-group-stub>
               <!---->
@@ -243,8 +243,8 @@ exports[`ExplorerDexSettings.vue > Should display message if no subscription 1`]
               </div>
             </div>
             <!---->
-            <div class="v-input__details">
-              <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="switch-0-messages">
+            <div id="switch-0-messages" class="v-input__details" role="alert" aria-live="polite">
+              <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
                 <!---->
               </transition-group-stub>
               <!---->
@@ -319,8 +319,8 @@ exports[`ExplorerDexSettings.vue > Should display syncing dex 1`] = `
               </div>
             </div>
             <!---->
-            <div class="v-input__details">
-              <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="switch-0-messages">
+            <div id="switch-0-messages" class="v-input__details" role="alert" aria-live="polite">
+              <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
                 <!---->
               </transition-group-stub>
               <!---->

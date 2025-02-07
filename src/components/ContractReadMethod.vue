@@ -9,7 +9,7 @@
             width="50%"
             v-model="params[inputIdx]"
             v-for="(input, inputIdx) in method.inputs"
-            :disabled='!active'
+            :disabled='!walletStore.connectedAddress'
             :key="inputIdx"
             :label="inputSignature(input)">
         </v-text-field>
@@ -26,18 +26,20 @@
         <div id="call" class="bg-grey-lighten-3 pa-2" v-show="error">
             {{ error }}
         </div>
-        <v-btn :disabled="!active" :loading="loading" class="mt-1" @click="callMethod()">Query</v-btn>
+        <v-btn id="query" :disabled="!walletStore.connectedAddress" :loading="loading" class="mt-1" @click="callMethod()">Query</v-btn>
     </div>
 </template>
 <script>
 import { mapStores } from 'pinia';
+import { readContract } from '@web3-onboard/wagmi'
 import { useCurrentWorkspaceStore } from '@/stores/currentWorkspace';
+import { useWalletStore } from '@/stores/walletStore';
 import { processMethodCallParam } from '@/lib/utils';
 import FormattedSolVar from './FormattedSolVar.vue';
 
 export default {
     name: 'ContractReadMethod',
-    props: ['method', 'contract', 'options', 'signature', 'active', 'senderMode'],
+    props: ['method', 'contract', 'signature'],
     components: {
         FormattedSolVar
     },
@@ -58,24 +60,19 @@ export default {
                     processedParams[i] = processMethodCallParam(this.params[i], this.method.inputs[i].type);
                 }
 
-                const provider = this.senderMode == 'metamask' ? window.ethereum : null;
-
-                const options = {
-                    ...this.options,
-                    from: this.options.from.address
-                };
-
-                this.$server.callContractReadMethod(this.contract, this.signature, options, processedParams, this.currentWorkspaceStore.rpcServer, provider)
-                    .then(res => {
-                        this.results = Array.isArray(res) ? this.processResult(res) : this.processResult([res]);
-                    })
-                    .catch(error => {
-                        console.error(error);
-                        this.error = error.reason || error;
-                    })
-                    .finally(() => {
-                        this.loading = false;
-                    })
+                readContract(this.currentWorkspaceStore.wagmiConfig, {
+                    address: this.contract.address,
+                    abi: this.contract.abi,
+                    functionName: this.method.name
+                })
+                .then(res => {
+                    this.results = Array.isArray(res) ? this.processResult(res) : this.processResult([res]);
+                })
+                .catch(error => {
+                    console.log(JSON.stringify(error, null, 2));
+                    this.error = `Error: ${error.shortMessage || error.message || error.reason}`
+                })
+                .finally(() => this.loading = false);
             } catch(error) {
                 console.log(error);
                 if (error.reason)
@@ -104,7 +101,7 @@ export default {
         }
     },
     computed: {
-        ...mapStores(useCurrentWorkspaceStore),
+        ...mapStores(useCurrentWorkspaceStore, useWalletStore),
         outputSignature() {
             const res = [];
             const outputs = this.method.outputs;

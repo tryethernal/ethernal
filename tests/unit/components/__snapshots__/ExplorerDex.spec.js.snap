@@ -72,10 +72,8 @@ exports[`ExplorerDex.vue > Should display approval & swap button if not enough a
                 </div>
                 <!---->
                 <div class="v-field__field" data-no-activator="">
-                  <!----><label class="v-label v-field-label" for="input-4">
-                    <!---->
-                    <!---->
-                  </label>
+                  <!---->
+                  <!---->
                   <!----><input size="1" type="text" id="input-4" aria-describedby="input-4-messages" class="v-field__input" value="">
                   <!---->
                 </div>
@@ -116,10 +114,8 @@ exports[`ExplorerDex.vue > Should display approval & swap button if not enough a
               </div>
               <!---->
               <div class="v-field__field" data-no-activator="">
-                <!----><label class="v-label v-field-label" for="input-6">
-                  <!---->
-                  <!---->
-                </label>
+                <!---->
+                <!---->
                 <!----><input size="1" type="number" id="input-6" aria-describedby="input-6-messages" class="v-field__input" value="0">
                 <!---->
               </div>
@@ -381,10 +377,8 @@ exports[`ExplorerDex.vue > Should display error message 1`] = `
                 </div>
                 <!---->
                 <div class="v-field__field" data-no-activator="">
-                  <!----><label class="v-label v-field-label" for="input-4">
-                    <!---->
-                    <!---->
-                  </label>
+                  <!---->
+                  <!---->
                   <!----><input size="1" type="text" id="input-4" aria-describedby="input-4-messages" class="v-field__input" value="">
                   <!---->
                 </div>
@@ -425,10 +419,8 @@ exports[`ExplorerDex.vue > Should display error message 1`] = `
               </div>
               <!---->
               <div class="v-field__field" data-no-activator="">
-                <!----><label class="v-label v-field-label" for="input-6">
-                  <!---->
-                  <!---->
-                </label>
+                <!---->
+                <!---->
                 <!----><input size="1" type="number" id="input-6" aria-describedby="input-6-messages" class="v-field__input" value="0">
                 <!---->
               </div>
@@ -688,10 +680,8 @@ exports[`ExplorerDex.vue > Should display failed transaction message 1`] = `
                 </div>
                 <!---->
                 <div class="v-field__field" data-no-activator="">
-                  <!----><label class="v-label v-field-label" for="input-4">
-                    <!---->
-                    <!---->
-                  </label>
+                  <!---->
+                  <!---->
                   <!----><input size="1" type="text" id="input-4" aria-describedby="input-4-messages" class="v-field__input" value="">
                   <!---->
                 </div>
@@ -732,10 +722,8 @@ exports[`ExplorerDex.vue > Should display failed transaction message 1`] = `
               </div>
               <!---->
               <div class="v-field__field" data-no-activator="">
-                <!----><label class="v-label v-field-label" for="input-6">
-                  <!---->
-                  <!---->
-                </label>
+                <!---->
+                <!---->
                 <!----><input size="1" type="number" id="input-6" aria-describedby="input-6-messages" class="v-field__input" value="0">
                 <!---->
               </div>
@@ -997,10 +985,8 @@ exports[`ExplorerDex.vue > Should display initial state with no wallet connected
                 </div>
                 <!---->
                 <div class="v-field__field" data-no-activator="">
-                  <!----><label class="v-label v-field-label" for="input-4">
-                    <!---->
-                    <!---->
-                  </label>
+                  <!---->
+                  <!---->
                   <!----><input size="1" type="text" id="input-4" aria-describedby="input-4-messages" class="v-field__input" value="">
                   <!---->
                 </div>
@@ -1041,10 +1027,8 @@ exports[`ExplorerDex.vue > Should display initial state with no wallet connected
               </div>
               <!---->
               <div class="v-field__field" data-no-activator="">
-                <!----><label class="v-label v-field-label" for="input-6">
-                  <!---->
-                  <!---->
-                </label>
+                <!---->
+                <!---->
                 <!----><input size="1" type="number" id="input-6" aria-describedby="input-6-messages" class="v-field__input" value="0">
                 <!---->
               </div>
@@ -1092,7 +1076,7 @@ exports[`ExplorerDex.vue > Should display initial state with no wallet connected
         <!---->
         <!---->
         <div data-v-dcab24f1="" class="mb-5 mt-1 mx-5 d-flex justify-space-between align-center">
-          <!--v-if--><button data-v-dcab24f1="" type="button" class="v-btn v-btn--icon v-theme--light v-btn--density-default v-btn--size-small v-btn--variant-text"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+          <div data-v-dcab24f1="" class="v-spacer"></div><button data-v-dcab24f1="" type="button" class="v-btn v-btn--icon v-theme--light v-btn--density-default v-btn--size-small v-btn--variant-text"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
             <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-cog mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
             <!---->
             <!---->
@@ -1205,7 +1189,7 @@ exports[`ExplorerDex.vue > Should display initial state with no wallet connected
                 <!---->
                 <!---->
               </div>
-              <metamask-stub data-v-dcab24f1="" class="mt-3"></metamask-stub>
+              <wallet-connector-mirror-stub data-v-dcab24f1="" width="100%" size="large" class="mt-3"></wallet-connector-mirror-stub>
             </div>
             <!--v-if-->
             <!--v-if-->
@@ -1291,10 +1275,8 @@ exports[`ExplorerDex.vue > Should display initial state with wallet connected 1`
                 </div>
                 <!---->
                 <div class="v-field__field" data-no-activator="">
-                  <!----><label class="v-label v-field-label" for="input-4">
-                    <!---->
-                    <!---->
-                  </label>
+                  <!---->
+                  <!---->
                   <!----><input size="1" type="text" id="input-4" aria-describedby="input-4-messages" class="v-field__input" value="">
                   <!---->
                 </div>
@@ -1335,10 +1317,8 @@ exports[`ExplorerDex.vue > Should display initial state with wallet connected 1`
               </div>
               <!---->
               <div class="v-field__field" data-no-activator="">
-                <!----><label class="v-label v-field-label" for="input-6">
-                  <!---->
-                  <!---->
-                </label>
+                <!---->
+                <!---->
                 <!----><input size="1" type="number" id="input-6" aria-describedby="input-6-messages" class="v-field__input" value="0">
                 <!---->
               </div>
@@ -1592,10 +1572,8 @@ exports[`ExplorerDex.vue > Should display insufficient balance warning 1`] = `
                 </div>
                 <!---->
                 <div class="v-field__field" data-no-activator="">
-                  <!----><label class="v-label v-field-label" for="input-4">
-                    <!---->
-                    <!---->
-                  </label>
+                  <!---->
+                  <!---->
                   <!----><input size="1" type="text" id="input-4" aria-describedby="input-4-messages" class="v-field__input" value="">
                   <!---->
                 </div>
@@ -1636,10 +1614,8 @@ exports[`ExplorerDex.vue > Should display insufficient balance warning 1`] = `
               </div>
               <!---->
               <div class="v-field__field" data-no-activator="">
-                <!----><label class="v-label v-field-label" for="input-6">
-                  <!---->
-                  <!---->
-                </label>
+                <!---->
+                <!---->
                 <!----><input size="1" type="number" id="input-6" aria-describedby="input-6-messages" class="v-field__input" value="0">
                 <!---->
               </div>
@@ -1929,10 +1905,8 @@ exports[`ExplorerDex.vue > Should display successful transaction message 1`] = `
                 </div>
                 <!---->
                 <div class="v-field__field" data-no-activator="">
-                  <!----><label class="v-label v-field-label" for="input-4">
-                    <!---->
-                    <!---->
-                  </label>
+                  <!---->
+                  <!---->
                   <!----><input size="1" type="text" id="input-4" aria-describedby="input-4-messages" class="v-field__input" value="">
                   <!---->
                 </div>
@@ -1973,10 +1947,8 @@ exports[`ExplorerDex.vue > Should display successful transaction message 1`] = `
               </div>
               <!---->
               <div class="v-field__field" data-no-activator="">
-                <!----><label class="v-label v-field-label" for="input-6">
-                  <!---->
-                  <!---->
-                </label>
+                <!---->
+                <!---->
                 <!----><input size="1" type="number" id="input-6" aria-describedby="input-6-messages" class="v-field__input" value="0">
                 <!---->
               </div>
@@ -2238,10 +2210,8 @@ exports[`ExplorerDex.vue > Should display swap button and quote 1`] = `
                 </div>
                 <!---->
                 <div class="v-field__field" data-no-activator="">
-                  <!----><label class="v-label v-field-label" for="input-4">
-                    <!---->
-                    <!---->
-                  </label>
+                  <!---->
+                  <!---->
                   <!----><input size="1" type="text" id="input-4" aria-describedby="input-4-messages" class="v-field__input" value="">
                   <!---->
                 </div>
@@ -2282,10 +2252,8 @@ exports[`ExplorerDex.vue > Should display swap button and quote 1`] = `
               </div>
               <!---->
               <div class="v-field__field" data-no-activator="">
-                <!----><label class="v-label v-field-label" for="input-6">
-                  <!---->
-                  <!---->
-                </label>
+                <!---->
+                <!---->
                 <!----><input size="1" type="number" id="input-6" aria-describedby="input-6-messages" class="v-field__input" value="0">
                 <!---->
               </div>
@@ -2545,10 +2513,8 @@ exports[`ExplorerDex.vue > Should display token selection message 1`] = `
                 </div>
                 <!---->
                 <div class="v-field__field" data-no-activator="">
-                  <!----><label class="v-label v-field-label" for="input-4">
-                    <!---->
-                    <!---->
-                  </label>
+                  <!---->
+                  <!---->
                   <!----><input size="1" type="text" id="input-4" aria-describedby="input-4-messages" class="v-field__input" value="">
                   <!---->
                 </div>
@@ -2589,10 +2555,8 @@ exports[`ExplorerDex.vue > Should display token selection message 1`] = `
               </div>
               <!---->
               <div class="v-field__field" data-no-activator="">
-                <!----><label class="v-label v-field-label" for="input-6">
-                  <!---->
-                  <!---->
-                </label>
+                <!---->
+                <!---->
                 <!----><input size="1" type="number" id="input-6" aria-describedby="input-6-messages" class="v-field__input" value="0">
                 <!---->
               </div>

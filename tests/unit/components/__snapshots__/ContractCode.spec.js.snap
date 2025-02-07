@@ -45,10 +45,8 @@ exports[`ContractCode.vue > Should display contract verification info if public 
             </div>
             <!---->
             <div class="v-field__field" data-no-activator="">
-              <!----><label class="v-label v-field-label" for="input-0">
-                <!---->
-                <!---->
-              </label>
+              <!---->
+              <!---->
               <!----><textarea class="v-field__input" readonly="" rows="5" id="input-0" aria-describedby="input-0-messages" value="0x60"></textarea>
               <!---->
               <!---->
@@ -70,8 +68,8 @@ exports[`ContractCode.vue > Should display contract verification info if public 
           </div>
         </div>
         <!---->
-        <div class="v-input__details">
-          <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="input-0-messages">
+        <div id="input-0-messages" class="v-input__details" role="alert" aria-live="polite">
+          <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
             <!---->
           </transition-group-stub>
           <!---->
@@ -154,10 +152,8 @@ exports[`ContractCode.vue > Should display the contract verification panel for p
             </div>
             <!---->
             <div class="v-field__field" data-no-activator="">
-              <!----><label class="v-label v-field-label" for="input-0">
-                <!---->
-                <!---->
-              </label>
+              <!---->
+              <!---->
               <!----><textarea class="v-field__input" readonly="" rows="5" id="input-0" aria-describedby="input-0-messages" value="0x60"></textarea>
               <!---->
               <!---->
@@ -179,8 +175,8 @@ exports[`ContractCode.vue > Should display the contract verification panel for p
           </div>
         </div>
         <!---->
-        <div class="v-input__details">
-          <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="input-0-messages">
+        <div id="input-0-messages" class="v-input__details" role="alert" aria-live="polite">
+          <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
             <!---->
           </transition-group-stub>
           <!---->

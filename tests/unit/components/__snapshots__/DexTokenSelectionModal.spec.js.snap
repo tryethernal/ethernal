@@ -43,10 +43,8 @@ exports[`DexTokenSelectionModal.vue > Should show token selection modal 1`] = `
             </div>
             <!---->
             <div class="v-field__field" data-no-activator="">
-              <!----><label class="v-label v-field-label" for="input-0">
-                <!---->
-                <!---->
-              </label>
+              <!---->
+              <!---->
               <!----><input placeholder="Search name or paste address" size="1" type="text" id="input-0" aria-describedby="input-0-messages" class="v-field__input">
               <!---->
             </div>

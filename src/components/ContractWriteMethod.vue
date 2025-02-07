@@ -48,14 +48,17 @@
 <script>
 const Web3 = require('web3');
 const ethers = require('ethers');
+import { parseEther } from 'viem';
+import { writeContract } from '@web3-onboard/wagmi';
 import { mapStores } from 'pinia';
 import { useCurrentWorkspaceStore } from '@/stores/currentWorkspace';
+import { useWalletStore } from '@/stores/walletStore';
 import { sanitize, processMethodCallParam } from '../lib/utils';
 import { formatErrorFragment } from '../lib/abi';
 
 export default {
     name: 'ContractWriteMethod',
-    props: ['method', 'contract', 'options', 'signature', 'active', 'senderMode'],
+    props: ['method', 'contract', 'signature', 'senderMode', 'options'],
     data: () => ({
         valueInEth: 0,
         params: {},
@@ -81,39 +84,24 @@ export default {
             for (let i = 0; i < this.method.inputs.length; i++) {
                 processedParams[i] = processMethodCallParam(this.params[i], this.method.inputs[i].type);
             }
-            const options = sanitize({ ...this.options, from: this.options.from.address, value: this.value });
-            const provider = new ethers.providers.Web3Provider(window.ethereum, 'any');
 
-            const signer = provider.getSigner(this.options.from.address);
-            const contract = new ethers.Contract(this.contract.address, this.contract.abi, signer);
-
-            contract.populateTransaction[this.signature](...Object.values(processedParams), options)
-                .then((transaction) => {
-                    const params = {
-                        ...transaction,
-                        value: transaction.value.toHexString()
-                    };
-
-                    window.ethereum.request({
-                        method: 'eth_sendTransaction',
-                        params: [params]
-                    })
-                    .then((txHash) => {
-                        this.result.txHash = txHash;
-                        this.noReceipt = true;
-                    })
-                    .catch((error) => this.result.message = error.message)
-                    .finally(() => {
-                        this.loading = false;
-                    });
-                })
-                .catch((error) => {
-                    this.loading = false;
-                    console.log(error);
-                    if (error.reason) {
-                        this.result.message = `Error: ${error.reason}`;
-                    }
-                });
+            writeContract(this.currentWorkspaceStore.wagmiConfig, sanitize({
+                address: this.contract.address,
+                abi: this.contract.abi,
+                functionName: this.method.name,
+                args: Object.values(processedParams),
+                gasPrice: this.currentWorkspaceStore.gasPrice,
+                gasLimit: this.currentWorkspaceStore.gasLimit,
+                value: parseEther(this.valueInEth.toString()),
+                connector: this.walletStore.wagmiConnector,
+                account: this.walletStore.connectedAddress
+            }))
+            .then(res => this.result.txHash = res)
+            .catch(error => {
+                console.log(JSON.stringify(error, null, 2));
+                this.result.message = `Error: ${error.shortMessage || error.message || error.reason}`
+            })
+            .finally(() => this.loading = false);
         },
         async sendMethod() {
             try {
@@ -129,8 +117,8 @@ export default {
                     throw new Error('You must select a "from" address.');
 
                 var options = sanitize({
-                    gasPrice: this.options.gasPrice,
-                    gasLimit: this.options.gasLimit,
+                    gasPrice: this.currentWorkspaceStore.gasPrice,
+                    gasLimit: this.currentWorkspaceStore.gasLimit,
                     value: this.value,
                     privateKey: this.options.from.privateKey,
                     from: this.options.from.address
@@ -145,7 +133,7 @@ export default {
                     processedParams[i] = processMethodCallParam(this.params[i], this.method.inputs[i].type);
                 }
 
-                this.$server.callContractWriteMethod(this.contract, this.signature, options, processedParams, this.rpcServer)
+                this.$server.callContractWriteMethod(this.contract, this.signature, options, processedParams, this.currentWorkspaceStore.rpcServer)
                     .then((pendingTx) => {
                         this.result.txHash = pendingTx.hash;
 
@@ -228,7 +216,10 @@ export default {
         }
     },
     computed: {
-        ...mapStores(useCurrentWorkspaceStore),
+        ...mapStores(useCurrentWorkspaceStore, useWalletStore),
+        active() {
+            return this.walletStore.connectedAddress;
+        },
         value() {
             return this.web3.utils.toWei(this.valueInEth.toString(), 'ether');
         },

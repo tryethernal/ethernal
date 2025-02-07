@@ -16,7 +16,7 @@ exports[`RpcConnector.vue > Should display the correct info 1`] = `
           <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field v-autocomplete v-autocomplete--single v-autocomplete--selection-slot ml-2">
             <!---->
             <div class="v-input__control">
-              <div class="v-field v-field--appended v-field--center-affix v-field--no-label v-field--variant-filled v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="menu" aria-expanded="false" aria-owns="v-menu-3">
+              <div class="v-field v-field--appended v-field--center-affix v-field--no-label v-field--variant-filled v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-3">
                 <div class="v-field__overlay"></div>
                 <div class="v-field__loader">
                   <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
@@ -34,10 +34,8 @@ exports[`RpcConnector.vue > Should display the correct info 1`] = `
                 </div>
                 <!---->
                 <div class="v-field__field" data-no-activator="">
-                  <!----><label class="v-label v-field-label" for="input-1">
-                    <!---->
-                    <!---->
-                  </label>
+                  <!---->
+                  <!---->
                   <!---->
                   <div class="v-field__input" data-no-activator="">
                     <!---->
@@ -76,7 +74,8 @@ exports[`RpcConnector.vue > Should display the correct info 1`] = `
         <!---->
       </div>Processing Contracts...
     </div>
-    <!--v-if-->
+    <div class="v-spacer"></div>
+    <wallet-connector-stub></wallet-connector-stub>
     <!---->
   </div>
   <transition-stub name="expand-transition" appear="false" persisted="false" css="true">
@@ -119,10 +118,8 @@ exports[`RpcConnector.vue > Should not do private operations when in public expl
                 </div>
                 <!---->
                 <div class="v-field__field" data-no-activator="">
-                  <!----><label class="v-label v-field-label" for="input-1">
-                    <!---->
-                    <!---->
-                  </label>
+                  <!---->
+                  <!---->
                   <!---->
                   <div class="v-field__input" data-no-activator="">
                     <!---->
@@ -161,7 +158,8 @@ exports[`RpcConnector.vue > Should not do private operations when in public expl
         <!---->
       </div>Processing Contracts...
     </div>
-    <!--v-if-->
+    <div class="v-spacer"></div>
+    <wallet-connector-stub></wallet-connector-stub>
     <!---->
   </div>
   <transition-stub name="expand-transition" appear="false" persisted="false" css="true">

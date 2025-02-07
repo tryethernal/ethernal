@@ -1,7 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`ContractWriteMethod.vue > Should accept false as an input for bool type 1`] = `
-"<div>
+"<div active="true">
   <div class="font-weight-bold">boolFun</div>
   <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field py-1">
     <!---->
@@ -68,7 +68,7 @@ exports[`ContractWriteMethod.vue > Should accept false as an input for bool type
           <!---->
           <div class="v-field__field" data-no-activator="">
             <!----><label class="v-label v-field-label" for="input-2">
-              <!---->Value (in Ether)
+              <!---->Value (in ETH)
             </label>
             <!----><input size="1" type="number" id="input-2" aria-describedby="input-2-messages" small="" class="v-field__input" value="0">
             <!---->
@@ -78,7 +78,7 @@ exports[`ContractWriteMethod.vue > Should accept false as an input for bool type
           <div class="v-field__outline">
             <div class="v-field__outline__start"></div>
             <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-2">
-                <!---->Value (in Ether)
+                <!---->Value (in ETH)
               </label></div>
             <div class="v-field__outline__end"></div>
             <!---->
@@ -112,7 +112,7 @@ exports[`ContractWriteMethod.vue > Should accept false as an input for bool type
 `;
 
 exports[`ContractWriteMethod.vue > Should accept true as an input for bool type 1`] = `
-"<div>
+"<div active="true">
   <div class="font-weight-bold">boolFun</div>
   <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field py-1">
     <!---->
@@ -179,7 +179,7 @@ exports[`ContractWriteMethod.vue > Should accept true as an input for bool type 
           <!---->
           <div class="v-field__field" data-no-activator="">
             <!----><label class="v-label v-field-label" for="input-2">
-              <!---->Value (in Ether)
+              <!---->Value (in ETH)
             </label>
             <!----><input size="1" type="number" id="input-2" aria-describedby="input-2-messages" small="" class="v-field__input" value="0">
             <!---->
@@ -189,7 +189,7 @@ exports[`ContractWriteMethod.vue > Should accept true as an input for bool type 
           <div class="v-field__outline">
             <div class="v-field__outline__start"></div>
             <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-2">
-                <!---->Value (in Ether)
+                <!---->Value (in ETH)
               </label></div>
             <div class="v-field__outline__end"></div>
             <!---->
@@ -223,7 +223,7 @@ exports[`ContractWriteMethod.vue > Should accept true as an input for bool type 
 `;
 
 exports[`ContractWriteMethod.vue > Should display only the error message if the tx cannot be sent 1`] = `
-"<div>
+"<div active="true">
   <div class="font-weight-bold">build</div>
   <div class="col-4 px-0 py-1">
     <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field">
@@ -248,7 +248,7 @@ exports[`ContractWriteMethod.vue > Should display only the error message if the 
           <!---->
           <div class="v-field__field" data-no-activator="">
             <!----><label class="v-label v-field-label" for="input-0">
-              <!---->Value (in Ether)
+              <!---->Value (in ETH)
             </label>
             <!----><input size="1" type="number" id="input-0" aria-describedby="input-0-messages" small="" class="v-field__input" value="0">
             <!---->
@@ -258,7 +258,7 @@ exports[`ContractWriteMethod.vue > Should display only the error message if the 
           <div class="v-field__outline">
             <div class="v-field__outline__start"></div>
             <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
-                <!---->Value (in Ether)
+                <!---->Value (in ETH)
               </label></div>
             <div class="v-field__outline__end"></div>
             <!---->
@@ -292,7 +292,7 @@ exports[`ContractWriteMethod.vue > Should display only the error message if the 
 `;
 
 exports[`ContractWriteMethod.vue > Should display only the error message if there is no tx hash 1`] = `
-"<div>
+"<div active="true">
   <div class="font-weight-bold">build</div>
   <div class="col-4 px-0 py-1">
     <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field">
@@ -317,7 +317,7 @@ exports[`ContractWriteMethod.vue > Should display only the error message if ther
           <!---->
           <div class="v-field__field" data-no-activator="">
             <!----><label class="v-label v-field-label" for="input-0">
-              <!---->Value (in Ether)
+              <!---->Value (in ETH)
             </label>
             <!----><input size="1" type="number" id="input-0" aria-describedby="input-0-messages" small="" class="v-field__input" value="0">
             <!---->
@@ -327,7 +327,7 @@ exports[`ContractWriteMethod.vue > Should display only the error message if ther
           <div class="v-field__outline">
             <div class="v-field__outline__start"></div>
             <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
-                <!---->Value (in Ether)
+                <!---->Value (in ETH)
               </label></div>
             <div class="v-field__outline__end"></div>
             <!---->
@@ -361,7 +361,7 @@ exports[`ContractWriteMethod.vue > Should display only the error message if ther
 `;
 
 exports[`ContractWriteMethod.vue > Should display only the error message with the failed tx hash 1`] = `
-"<div>
+"<div active="true">
   <div class="font-weight-bold">build</div>
   <div class="col-4 px-0 py-1">
     <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field">
@@ -386,7 +386,7 @@ exports[`ContractWriteMethod.vue > Should display only the error message with th
           <!---->
           <div class="v-field__field" data-no-activator="">
             <!----><label class="v-label v-field-label" for="input-0">
-              <!---->Value (in Ether)
+              <!---->Value (in ETH)
             </label>
             <!----><input size="1" type="number" id="input-0" aria-describedby="input-0-messages" small="" class="v-field__input" value="0">
             <!---->
@@ -396,7 +396,7 @@ exports[`ContractWriteMethod.vue > Should display only the error message with th
           <div class="v-field__outline">
             <div class="v-field__outline__start"></div>
             <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
-                <!---->Value (in Ether)
+                <!---->Value (in ETH)
               </label></div>
             <div class="v-field__outline__end"></div>
             <!---->
@@ -430,7 +430,7 @@ exports[`ContractWriteMethod.vue > Should display only the error message with th
 `;
 
 exports[`ContractWriteMethod.vue > Should display only the tx hash when it succeeds without a receipt 1`] = `
-"<div>
+"<div active="true">
   <div class="font-weight-bold">build</div>
   <div class="col-4 px-0 py-1">
     <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field">
@@ -455,7 +455,7 @@ exports[`ContractWriteMethod.vue > Should display only the tx hash when it succe
           <!---->
           <div class="v-field__field" data-no-activator="">
             <!----><label class="v-label v-field-label" for="input-0">
-              <!---->Value (in Ether)
+              <!---->Value (in ETH)
             </label>
             <!----><input size="1" type="number" id="input-0" aria-describedby="input-0-messages" small="" class="v-field__input" value="0">
             <!---->
@@ -465,7 +465,7 @@ exports[`ContractWriteMethod.vue > Should display only the tx hash when it succe
           <div class="v-field__outline">
             <div class="v-field__outline__start"></div>
             <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
-                <!---->Value (in Ether)
+                <!---->Value (in ETH)
               </label></div>
             <div class="v-field__outline__end"></div>
             <!---->
@@ -499,7 +499,7 @@ exports[`ContractWriteMethod.vue > Should display only the tx hash when it succe
 `;
 
 exports[`ContractWriteMethod.vue > Should display the UI to interact with a method 1`] = `
-"<div>
+"<div active="true">
   <div class="font-weight-bold">build</div>
   <div class="col-4 px-0 py-1">
     <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field">
@@ -524,7 +524,7 @@ exports[`ContractWriteMethod.vue > Should display the UI to interact with a meth
           <!---->
           <div class="v-field__field" data-no-activator="">
             <!----><label class="v-label v-field-label" for="input-0">
-              <!---->Value (in Ether)
+              <!---->Value (in ETH)
             </label>
             <!----><input size="1" type="number" id="input-0" aria-describedby="input-0-messages" small="" class="v-field__input" value="0">
             <!---->
@@ -534,7 +534,7 @@ exports[`ContractWriteMethod.vue > Should display the UI to interact with a meth
           <div class="v-field__outline">
             <div class="v-field__outline__start"></div>
             <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
-                <!---->Value (in Ether)
+                <!---->Value (in ETH)
               </label></div>
             <div class="v-field__outline__end"></div>
             <!---->
@@ -568,7 +568,7 @@ exports[`ContractWriteMethod.vue > Should display the UI to interact with a meth
 `;
 
 exports[`ContractWriteMethod.vue > Should display the formatted error message with the failed tx hash 1`] = `
-"<div>
+"<div active="true">
   <div class="font-weight-bold">transfer</div>
   <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field py-1">
     <!---->
@@ -677,7 +677,7 @@ exports[`ContractWriteMethod.vue > Should display the formatted error message wi
           <!---->
           <div class="v-field__field" data-no-activator="">
             <!----><label class="v-label v-field-label" for="input-4">
-              <!---->Value (in Ether)
+              <!---->Value (in ETH)
             </label>
             <!----><input size="1" type="number" id="input-4" aria-describedby="input-4-messages" small="" class="v-field__input" value="0">
             <!---->
@@ -687,7 +687,7 @@ exports[`ContractWriteMethod.vue > Should display the formatted error message wi
           <div class="v-field__outline">
             <div class="v-field__outline__start"></div>
             <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-4">
-                <!---->Value (in Ether)
+                <!---->Value (in ETH)
               </label></div>
             <div class="v-field__outline__end"></div>
             <!---->
@@ -721,7 +721,7 @@ exports[`ContractWriteMethod.vue > Should display the formatted error message wi
 `;
 
 exports[`ContractWriteMethod.vue > Should display the tx hash and status when it succeeds with a receipt 1`] = `
-"<div>
+"<div active="true">
   <div class="font-weight-bold">build</div>
   <div class="col-4 px-0 py-1">
     <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field">
@@ -746,7 +746,7 @@ exports[`ContractWriteMethod.vue > Should display the tx hash and status when it
           <!---->
           <div class="v-field__field" data-no-activator="">
             <!----><label class="v-label v-field-label" for="input-0">
-              <!---->Value (in Ether)
+              <!---->Value (in ETH)
             </label>
             <!----><input size="1" type="number" id="input-0" aria-describedby="input-0-messages" small="" class="v-field__input" value="0">
             <!---->
@@ -756,7 +756,7 @@ exports[`ContractWriteMethod.vue > Should display the tx hash and status when it
           <div class="v-field__outline">
             <div class="v-field__outline__start"></div>
             <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
-                <!---->Value (in Ether)
+                <!---->Value (in ETH)
               </label></div>
             <div class="v-field__outline__end"></div>
             <!---->
@@ -790,7 +790,7 @@ exports[`ContractWriteMethod.vue > Should display the tx hash and status when it
 `;
 
 exports[`ContractWriteMethod.vue > Should handle array input properly 1`] = `
-"<div>
+"<div active="true">
   <div class="font-weight-bold">reproWriteBug</div>
   <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field py-1">
     <!---->
@@ -857,7 +857,7 @@ exports[`ContractWriteMethod.vue > Should handle array input properly 1`] = `
           <!---->
           <div class="v-field__field" data-no-activator="">
             <!----><label class="v-label v-field-label" for="input-2">
-              <!---->Value (in Ether)
+              <!---->Value (in ETH)
             </label>
             <!----><input size="1" type="number" id="input-2" aria-describedby="input-2-messages" small="" class="v-field__input" value="0">
             <!---->
@@ -867,7 +867,7 @@ exports[`ContractWriteMethod.vue > Should handle array input properly 1`] = `
           <div class="v-field__outline">
             <div class="v-field__outline__start"></div>
             <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-2">
-                <!---->Value (in Ether)
+                <!---->Value (in ETH)
               </label></div>
             <div class="v-field__outline__end"></div>
             <!---->
@@ -900,8 +900,8 @@ exports[`ContractWriteMethod.vue > Should handle array input properly 1`] = `
 </div>"
 `;
 
-exports[`ContractWriteMethod.vue > Should make the UI unavailable if not active flag 1`] = `
-"<div>
+exports[`ContractWriteMethod.vue > Should make the UI unavailable if not account connected flag 1`] = `
+"<div active="false">
   <div class="font-weight-bold">reproWriteBug</div>
   <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--disabled v-text-field py-1">
     <!---->
@@ -968,7 +968,7 @@ exports[`ContractWriteMethod.vue > Should make the UI unavailable if not active 
           <!---->
           <div class="v-field__field" data-no-activator="">
             <!----><label class="v-label v-field-label" for="input-2">
-              <!---->Value (in Ether)
+              <!---->Value (in ETH)
             </label>
             <!----><input disabled="" size="1" type="number" id="input-2" aria-describedby="input-2-messages" small="" class="v-field__input" value="0">
             <!---->
@@ -978,7 +978,7 @@ exports[`ContractWriteMethod.vue > Should make the UI unavailable if not active 
           <div class="v-field__outline">
             <div class="v-field__outline__start"></div>
             <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-2">
-                <!---->Value (in Ether)
+                <!---->Value (in ETH)
               </label></div>
             <div class="v-field__outline__end"></div>
             <!---->
@@ -1037,7 +1037,7 @@ exports[`ContractWriteMethod.vue > Should send the transaction with Metamask if 
           <!---->
           <div class="v-field__field" data-no-activator="">
             <!----><label class="v-label v-field-label" for="input-0">
-              <!---->Value (in Ether)
+              <!---->Value (in ETH)
             </label>
             <!----><input size="1" type="number" id="input-0" aria-describedby="input-0-messages" small="" class="v-field__input" value="0">
             <!---->
@@ -1047,7 +1047,7 @@ exports[`ContractWriteMethod.vue > Should send the transaction with Metamask if 
           <div class="v-field__outline">
             <div class="v-field__outline__start"></div>
             <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
-                <!---->Value (in Ether)
+                <!---->Value (in ETH)
               </label></div>
             <div class="v-field__outline__end"></div>
             <!---->
@@ -1061,7 +1061,7 @@ exports[`ContractWriteMethod.vue > Should send the transaction with Metamask if 
   <div class="bg-grey-lighten-3 pa-2 mt-1" style="">
     <div style="display: none;"></div>
     <div style=""> Tx: <a href="/transaction/0x1234" target="_blank">0x1234</a></div>
-    <div style="display: none;">
+    <div style="">
       <div class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
           <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
           <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
@@ -1081,7 +1081,7 @@ exports[`ContractWriteMethod.vue > Should send the transaction with Metamask if 
 `;
 
 exports[`ContractWriteMethod.vue > Should throw an error for bool type if input is not true or false 1`] = `
-"<div>
+"<div active="true">
   <div class="font-weight-bold">boolFun</div>
   <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field py-1">
     <!---->
@@ -1148,7 +1148,7 @@ exports[`ContractWriteMethod.vue > Should throw an error for bool type if input 
           <!---->
           <div class="v-field__field" data-no-activator="">
             <!----><label class="v-label v-field-label" for="input-2">
-              <!---->Value (in Ether)
+              <!---->Value (in ETH)
             </label>
             <!----><input size="1" type="number" id="input-2" aria-describedby="input-2-messages" small="" class="v-field__input" value="0">
             <!---->
@@ -1158,7 +1158,7 @@ exports[`ContractWriteMethod.vue > Should throw an error for bool type if input 
           <div class="v-field__outline">
             <div class="v-field__outline__start"></div>
             <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-2">
-                <!---->Value (in Ether)
+                <!---->Value (in ETH)
               </label></div>
             <div class="v-field__outline__end"></div>
             <!---->

@@ -103,7 +103,7 @@ exports[`Tokens.vue > Should display token contracts 1`] = `
             <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field v-select v-select--single v-select--selected">
               <!---->
               <div class="v-input__control">
-                <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--no-label v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="v-menu-2">
+                <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--no-label v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="v-menu-2">
                   <div class="v-field__overlay"></div>
                   <div class="v-field__loader">
                     <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
@@ -121,10 +121,8 @@ exports[`Tokens.vue > Should display token contracts 1`] = `
                   </div>
                   <!---->
                   <div class="v-field__field" data-no-activator="">
-                    <!----><label class="v-label v-field-label" for="input-0">
-                      <!---->
-                      <!---->
-                    </label>
+                    <!---->
+                    <!---->
                     <!---->
                     <div class="v-field__input" data-no-activator="">
                       <!---->
@@ -166,12 +164,12 @@ exports[`Tokens.vue > Should display token contracts 1`] = `
                     <!---->
                     <!---->
                   </button></li>
-                <li class="v-pagination__next" data-test="v-pagination-next"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" aria-label="Next page" aria-disabled="true" disabled=""><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <li class="v-pagination__next" data-test="v-pagination-next"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="Next page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
                     <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-chevron-right mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
                     <!---->
                     <!---->
                   </button></li>
-                <li class="v-pagination__last" data-test="v-pagination-last"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" aria-label="Last page" aria-disabled="true" disabled=""><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <li class="v-pagination__last" data-test="v-pagination-last"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="Last page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
                     <!----><span class="v-btn__content" data-no-activator=""><!----></span>
                     <!---->
                     <!---->
