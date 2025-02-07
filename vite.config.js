@@ -9,6 +9,9 @@ export default ({ mode }) => {
     const env = loadEnv(mode, process.cwd(), '');
 
     return defineConfig({
+        build: {
+            minify: 'terser'
+        },
         plugins: [
             vue(),
             commonjs(),
