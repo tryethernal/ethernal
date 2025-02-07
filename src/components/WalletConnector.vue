@@ -73,7 +73,6 @@ export default {
             ]
         });
 
-
         const { connectWallet, disconnectConnectedWallet, connectedWallet, alreadyConnectedWallets, connectingWallet, connectedChain } = useOnboard();
         const { isConnectorLoading, isChainIdCorrect, connectedAddress, formattedBalance, shortenedConnectedAddress, parsedChainId } = storeToRefs(walletStore);
 
