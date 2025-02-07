@@ -9,7 +9,7 @@ const stubs = [
     'ERC-2O-Token-Holders',
     'ERC-2O-Contract-Analytics',
     'ERC-2O-Token-Transfers',
-    'Metamask'
+    'Token-Balance-Card'
 ];
 
 describe('ERC20Contract.vue', () => {

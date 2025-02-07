@@ -33,7 +33,7 @@ exports[`Address.vue > Should display EOA accounts stats 1`] = `
               <!---->
             </div>
             <!---->
-            <div data-v-3c86d4bd="" class="v-card-text text-h4 text-medium-emphasis" align="center">0.00000000000001 Ether</div>
+            <div data-v-3c86d4bd="" class="v-card-text text-h4 text-medium-emphasis" align="center">0.00000000000001 ETH</div>
             <!---->
             <!----><span class="v-card__underlay"></span>
           </div>
@@ -263,7 +263,7 @@ exports[`Address.vue > Should display ERC20 contract stats 1`] = `
               <!---->
             </div>
             <!---->
-            <div data-v-3c86d4bd="" class="v-card-text text-h4 text-medium-emphasis" align="center">0.00000000000001 Ether</div>
+            <div data-v-3c86d4bd="" class="v-card-text text-h4 text-medium-emphasis" align="center">0.00000000000001 ETH</div>
             <!---->
             <!----><span class="v-card__underlay"></span>
           </div>
@@ -516,7 +516,7 @@ exports[`Address.vue > Should display ERC721 contract stats 1`] = `
               <!---->
             </div>
             <!---->
-            <div data-v-3c86d4bd="" class="v-card-text text-h4 text-medium-emphasis" align="center">0.00000000000001 Ether</div>
+            <div data-v-3c86d4bd="" class="v-card-text text-h4 text-medium-emphasis" align="center">0.00000000000001 ETH</div>
             <!---->
             <!----><span class="v-card__underlay"></span>
           </div>

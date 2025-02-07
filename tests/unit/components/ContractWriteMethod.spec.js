@@ -1,16 +1,16 @@
+import flushPromises from 'flush-promises';
 require('../mocks/ethers');
-import ethereum from '../mocks/ethereum';
 
-window.ethereum = ethereum;
-
-import ContractWriteMethod from '@/components/ContractWriteMethod.vue';
 import DSProxyFactoryContract from '../fixtures/DSProxyFactoryContract.json';
 import TokenContract from '../fixtures/TokenContract.json';
 
 describe('ContractWriteMethod.vue', () => {
     it('Should send the transaction with Metamask if senderMode is metamask', async () => {
-        vi.spyOn(window.ethereum, 'request')
-            .mockResolvedValue('0x1234');
+        vi.doMock('@web3-onboard/wagmi', () => ({
+            writeContract: vi.fn().mockResolvedValueOnce('0x1234')
+        }));
+
+        const { default: ContractWriteMethod } = await import('@/components/ContractWriteMethod.vue');
 
         const props = {
             senderMode: 'accounts',
@@ -21,16 +21,22 @@ describe('ContractWriteMethod.vue', () => {
                 from: { address: '0xa26e15c895efc0616177b7c1e7270a4c7d51c997' },
                 gasLimit: '6721975',
                 gasPrice: undefined
-            },
-            active: true
+            }
         };
 
         const wrapper = mount(ContractWriteMethod, {
             props: {
                 ...props,
                 senderMode: 'metamask'
+            },
+            global: {
+                plugins: [createTestingPinia({ initialState: {
+                    wallet: { connectedAddress: '0x123', wagmiConnector: {} },
+                    currentWorkspace: { wagmiConfig: {} }
+                }})]
             }
         });
+        await flushPromises();
 
         await wrapper.find('button').trigger('click');
         await new Promise(process.nextTick);
@@ -38,7 +44,7 @@ describe('ContractWriteMethod.vue', () => {
         expect(wrapper.html()).toMatchSnapshot();
     });
 
-    it('Should display the UI to interact with a method', () => {
+    it('Should display the UI to interact with a method', async () => {
         const props = {
             senderMode: 'accounts',
             method: DSProxyFactoryContract.abi[2],
@@ -52,14 +58,22 @@ describe('ContractWriteMethod.vue', () => {
             active: true
         };
 
+        const { default: ContractWriteMethod } = await import('@/components/ContractWriteMethod.vue');
+
         const wrapper = mount(ContractWriteMethod, {
-            props: props
+            props: props,
+            global: {
+                plugins: [createTestingPinia({ initialState: {
+                    wallet: { connectedAddress: '0x123', wagmiConnector: {} },
+                    currentWorkspace: { wagmiConfig: {} }
+                }})]
+            }
         });
 
         expect(wrapper.html()).toMatchSnapshot();
     });
 
-    it('Should make the UI unavailable if not active flag', () => {
+    it('Should make the UI unavailable if not account connected flag', async () => {
         const props = {
             senderMode: 'accounts',
             method: {
@@ -85,8 +99,16 @@ describe('ContractWriteMethod.vue', () => {
             active: false
         };
 
+        const { default: ContractWriteMethod } = await import('@/components/ContractWriteMethod.vue');
+
         const wrapper = mount(ContractWriteMethod, {
-            props: props
+            props: props,
+            global: {
+                plugins: [createTestingPinia({ initialState: {
+                    wallet: { wagmiConnector: {} },
+                    currentWorkspace: { wagmiConfig: {} }
+                }})]
+            }
         });
 
         expect(wrapper.html()).toMatchSnapshot();
@@ -118,8 +140,16 @@ describe('ContractWriteMethod.vue', () => {
             active: true
         };
 
+        const { default: ContractWriteMethod } = await import('@/components/ContractWriteMethod.vue');
+
         const wrapper = mount(ContractWriteMethod, {
-            props: props
+            props: props,
+            global: {
+                plugins: [createTestingPinia({ initialState: {
+                    wallet: { connectedAddress: '0x123', wagmiConnector: {} },
+                    currentWorkspace: { wagmiConfig: {} }
+                }})]
+            }
         });
 
         await wrapper.find('input').setValue('true');
@@ -157,8 +187,16 @@ describe('ContractWriteMethod.vue', () => {
             active: true
         };
 
+        const { default: ContractWriteMethod } = await import('@/components/ContractWriteMethod.vue');
+
         const wrapper = mount(ContractWriteMethod, {
-            props: props
+            props: props,
+            global: {
+                plugins: [createTestingPinia({ initialState: {
+                    wallet: { connectedAddress: '0x123', wagmiConnector: {} },
+                    currentWorkspace: { wagmiConfig: {} }
+                }})]
+            }
         });
 
         await wrapper.find('input').setValue('false');
@@ -196,7 +234,17 @@ describe('ContractWriteMethod.vue', () => {
             active: true
         };
 
-        const wrapper = mount(ContractWriteMethod, { props: props });
+        const { default: ContractWriteMethod } = await import('@/components/ContractWriteMethod.vue');
+
+        const wrapper = mount(ContractWriteMethod, {
+            props: props,
+            global: {
+                plugins: [createTestingPinia({ initialState: {
+                    wallet: { connectedAddress: '0x123', wagmiConnector: {} },
+                    currentWorkspace: { wagmiConfig: {} }
+                }})]
+            }
+        });
 
         await wrapper.find('input').setValue('frbbforbuo');
         await wrapper.find('button').trigger('click');
@@ -233,7 +281,17 @@ describe('ContractWriteMethod.vue', () => {
             active: true
         };
 
-        const wrapper = mount(ContractWriteMethod, { props });
+        const { default: ContractWriteMethod } = await import('@/components/ContractWriteMethod.vue');
+
+        const wrapper = mount(ContractWriteMethod, {
+            props: props,
+            global: {
+                plugins: [createTestingPinia({ initialState: {
+                    wallet: { connectedAddress: '0x123', wagmiConnector: {} },
+                    currentWorkspace: { wagmiConfig: {} }
+                }})]
+            }
+        });
 
         await wrapper.find('input').setValue('[1,2]');
         await wrapper.find('button').trigger('click');
@@ -258,7 +316,17 @@ describe('ContractWriteMethod.vue', () => {
             active: true
         };
 
-        const wrapper = mount(ContractWriteMethod, { props });
+        const { default: ContractWriteMethod } = await import('@/components/ContractWriteMethod.vue');
+
+        const wrapper = mount(ContractWriteMethod, {
+            props: props,
+            global: {
+                plugins: [createTestingPinia({ initialState: {
+                    wallet: { connectedAddress: '0x123', wagmiConnector: {} },
+                    currentWorkspace: { wagmiConfig: {} }
+                }})]
+            }
+        });
 
         await wrapper.find('button').trigger('click');
         await new Promise(process.nextTick);
@@ -285,7 +353,17 @@ describe('ContractWriteMethod.vue', () => {
             active: true
         };
 
-        const wrapper = mount(ContractWriteMethod, { props });
+        const { default: ContractWriteMethod } = await import('@/components/ContractWriteMethod.vue');
+
+        const wrapper = mount(ContractWriteMethod, {
+            props: props,
+            global: {
+                plugins: [createTestingPinia({ initialState: {
+                    wallet: { connectedAddress: '0x123', wagmiConnector: {} },
+                    currentWorkspace: { wagmiConfig: {} }
+                }})]
+            }
+        });
 
         await wrapper.find('button').trigger('click');
         await new Promise(process.nextTick);
@@ -306,8 +384,9 @@ describe('ContractWriteMethod.vue', () => {
                         reason: 'Wrong param.'
                     }
                 }
-            });
+            })
 
+        const { default: ContractWriteMethod } = await import('@/components/ContractWriteMethod.vue');
 
         const props = {
             senderMode: 'accounts',
@@ -322,7 +401,15 @@ describe('ContractWriteMethod.vue', () => {
             active: true
         };
 
-        const wrapper = mount(ContractWriteMethod, { props });
+        const wrapper = mount(ContractWriteMethod, {
+            props: props,
+            global: {
+                plugins: [createTestingPinia({ initialState: {
+                    wallet: { connectedAddress: '0x123', wagmiConnector: {} },
+                    currentWorkspace: { wagmiConfig: {} }
+                }})]
+            }
+        });
 
         await wrapper.find('button').trigger('click');
         await new Promise(process.nextTick);
@@ -341,7 +428,7 @@ describe('ContractWriteMethod.vue', () => {
                         return: '0xcf4791810000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000007b'
                     }
                 }
-            });
+            })
 
         const props = {
             method: TokenContract.abi[1],
@@ -354,7 +441,17 @@ describe('ContractWriteMethod.vue', () => {
             active: true
         };
 
-        const wrapper = mount(ContractWriteMethod, { props });
+        const { default: ContractWriteMethod } = await import('@/components/ContractWriteMethod.vue');
+
+        const wrapper = mount(ContractWriteMethod, {
+            props: props,
+            global: {
+                plugins: [createTestingPinia({ initialState: {
+                    wallet: { connectedAddress: '0x123', wagmiConnector: {} },
+                    currentWorkspace: { wagmiConfig: {} }
+                }})]
+            }
+        });
         const to = wrapper.findAll('input').at(0);
         await to.setValue('0xabcd');
 
@@ -373,7 +470,7 @@ describe('ContractWriteMethod.vue', () => {
         vi.spyOn(server, 'callContractWriteMethod')
             .mockRejectedValue({
                 message: 'Failed tx'
-            });
+            })
 
         const props = {
             senderMode: 'accounts',
@@ -388,7 +485,17 @@ describe('ContractWriteMethod.vue', () => {
             active: true
         };
 
-        const wrapper = mount(ContractWriteMethod, { props });
+        const { default: ContractWriteMethod } = await import('@/components/ContractWriteMethod.vue');
+
+        const wrapper = mount(ContractWriteMethod, {
+            props: props,
+            global: {
+                plugins: [createTestingPinia({ initialState: {
+                    wallet: { connectedAddress: '0x123', wagmiConnector: {} },
+                    currentWorkspace: { wagmiConfig: {} }
+                }})]
+            }
+        });
 
         await wrapper.find('button').trigger('click');
         await new Promise(process.nextTick);
@@ -403,6 +510,8 @@ describe('ContractWriteMethod.vue', () => {
             throw { reason: 'call revert exception (method="feeTo()", errorSignature=null, errorArgs=[null], reason=null, code=CALL_EXCEPTION, version=abi/5.0.9)' };
         });
 
+        const { default: ContractWriteMethod } = await import('@/components/ContractWriteMethod.vue');
+
         const props = {
             senderMode: 'accounts',
             method: DSProxyFactoryContract.abi[2],
@@ -416,7 +525,15 @@ describe('ContractWriteMethod.vue', () => {
             active: true
         };
 
-        const wrapper = mount(ContractWriteMethod, { props });
+        const wrapper = mount(ContractWriteMethod, {
+            props: props,
+            global: {
+                plugins: [createTestingPinia({ initialState: {
+                    wallet: { connectedAddress: '0x123', wagmiConnector: {} },
+                    currentWorkspace: { wagmiConfig: {} }
+                }})]
+            }
+        });
 
         await wrapper.find('button').trigger('click');
         await new Promise(process.nextTick);

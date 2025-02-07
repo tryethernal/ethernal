@@ -26,7 +26,7 @@ exports[`ExplorerAnalytics.vue > Should display charts 1`] = `
           <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field v-select v-select--single v-select--selected">
             <!---->
             <div class="v-input__control">
-              <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="v-menu-2">
+              <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="v-menu-2">
                 <div class="v-field__overlay"></div>
                 <div class="v-field__loader">
                   <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
@@ -86,7 +86,7 @@ exports[`ExplorerAnalytics.vue > Should display charts 1`] = `
           <line-chart-stub title="Average Gas Price" tokensymbol="gwei" floating="true" index="2" xlabels="0,1" data="200000000,300000000"></line-chart-stub>
         </div>
         <div class="v-col-md-6 v-col-12">
-          <line-chart-stub title="Average Transaction Fee" tokensymbol="Ether" floating="true" index="3" xlabels="0,1" data="0.2,0.3"></line-chart-stub>
+          <line-chart-stub title="Average Transaction Fee" tokensymbol="ETH" floating="true" index="3" xlabels="0,1" data="0.2,0.3"></line-chart-stub>
         </div>
         <div class="v-col-md-6 v-col-12">
           <line-chart-stub title="Active Wallets Count" tooltipunit="wallet" index="4" xlabels="0,1" data="2,2"></line-chart-stub>

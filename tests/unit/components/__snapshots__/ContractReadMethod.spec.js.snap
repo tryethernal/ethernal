@@ -1,7 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`ContractReadMethod.vue > Should display a generic error message if the function fails 1`] = `
-"<div>
+"<div active="true" options="[object Object]">
   <div class="pb-1 font-weight-bold">isProxy</div>
   <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field py-1 col-3" style="width: 50%;">
     <!---->
@@ -47,7 +47,7 @@ exports[`ContractReadMethod.vue > Should display a generic error message if the 
   </div>
   <div>=&gt; bool</div>
   <div id="call" style="display: none;"></div>
-  <div id="call" class="bg-grey-lighten-3 pa-2" style="">Error while calling the method</div><button type="button" class="v-btn v-btn--elevated v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-elevated mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+  <div id="call" class="bg-grey-lighten-3 pa-2" style="">Error while calling the method</div><button type="button" class="v-btn v-btn--elevated v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-elevated mt-1" id="query"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
     <!----><span class="v-btn__content" data-no-activator="">Query</span>
     <!---->
     <!---->
@@ -56,7 +56,7 @@ exports[`ContractReadMethod.vue > Should display a generic error message if the 
 `;
 
 exports[`ContractReadMethod.vue > Should display the UI to interact with a method 1`] = `
-"<div>
+"<div active="true" options="[object Object]">
   <div class="pb-1 font-weight-bold">isProxy</div>
   <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field py-1 col-3" style="width: 50%;">
     <!---->
@@ -102,7 +102,7 @@ exports[`ContractReadMethod.vue > Should display the UI to interact with a metho
   </div>
   <div>=&gt; bool</div>
   <div id="call" style="display: none;"></div>
-  <div id="call" class="bg-grey-lighten-3 pa-2" style="display: none;"></div><button type="button" class="v-btn v-btn--elevated v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-elevated mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+  <div id="call" class="bg-grey-lighten-3 pa-2" style="display: none;"></div><button type="button" class="v-btn v-btn--elevated v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-elevated mt-1" id="query"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
     <!----><span class="v-btn__content" data-no-activator="">Query</span>
     <!---->
     <!---->
@@ -111,7 +111,7 @@ exports[`ContractReadMethod.vue > Should display the UI to interact with a metho
 `;
 
 exports[`ContractReadMethod.vue > Should display the error message if one is returned 1`] = `
-"<div>
+"<div active="true" options="[object Object]">
   <div class="pb-1 font-weight-bold">isProxy</div>
   <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field py-1 col-3" style="width: 50%;">
     <!---->
@@ -157,7 +157,7 @@ exports[`ContractReadMethod.vue > Should display the error message if one is ret
   </div>
   <div>=&gt; bool</div>
   <div id="call" style="display: none;"></div>
-  <div id="call" class="bg-grey-lighten-3 pa-2" style="">Wrong parameters</div><button type="button" class="v-btn v-btn--elevated v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-elevated mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+  <div id="call" class="bg-grey-lighten-3 pa-2" style="">Error: Wrong parameters</div><button type="button" class="v-btn v-btn--elevated v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-elevated mt-1" id="query"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
     <!----><span class="v-btn__content" data-no-activator="">Query</span>
     <!---->
     <!---->
@@ -166,7 +166,7 @@ exports[`ContractReadMethod.vue > Should display the error message if one is ret
 `;
 
 exports[`ContractReadMethod.vue > Should display the result even if it is not an array 1`] = `
-"<div>
+"<div active="true" options="[object Object]">
   <div class="pb-1 font-weight-bold">returnAnUInt</div>
   <div>=&gt; uint256</div>
   <div id="call" style="">
@@ -197,7 +197,7 @@ exports[`ContractReadMethod.vue > Should display the result even if it is not an
       <!----><span class="v-card__underlay"></span>
     </div>
   </div>
-  <div id="call" class="bg-grey-lighten-3 pa-2" style="display: none;"></div><button type="button" class="v-btn v-btn--elevated v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-elevated mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+  <div id="call" class="bg-grey-lighten-3 pa-2" style="display: none;"></div><button type="button" class="v-btn v-btn--elevated v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-elevated mt-1" id="query"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
     <!----><span class="v-btn__content" data-no-activator="">Query</span>
     <!---->
     <!---->
@@ -206,7 +206,7 @@ exports[`ContractReadMethod.vue > Should display the result even if it is not an
 `;
 
 exports[`ContractReadMethod.vue > Should handle big number results 1`] = `
-"<div>
+"<div active="true" options="[object Object]">
   <div class="pb-1 font-weight-bold">returnAnUInt</div>
   <div>=&gt; uint256</div>
   <div id="call" style="">
@@ -237,7 +237,7 @@ exports[`ContractReadMethod.vue > Should handle big number results 1`] = `
       <!----><span class="v-card__underlay"></span>
     </div>
   </div>
-  <div id="call" class="bg-grey-lighten-3 pa-2" style="display: none;"></div><button type="button" class="v-btn v-btn--elevated v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-elevated mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+  <div id="call" class="bg-grey-lighten-3 pa-2" style="display: none;"></div><button type="button" class="v-btn v-btn--elevated v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-elevated mt-1" id="query"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
     <!----><span class="v-btn__content" data-no-activator="">Query</span>
     <!---->
     <!---->
@@ -246,7 +246,7 @@ exports[`ContractReadMethod.vue > Should handle big number results 1`] = `
 `;
 
 exports[`ContractReadMethod.vue > Should handle multiple results 1`] = `
-"<div>
+"<div active="true" options="[object Object]">
   <div class="pb-1 font-weight-bold">returnAnUInt</div>
   <div>=&gt; uint256, uint256</div>
   <div id="call" style="">
@@ -303,7 +303,7 @@ exports[`ContractReadMethod.vue > Should handle multiple results 1`] = `
       <!----><span class="v-card__underlay"></span>
     </div>
   </div>
-  <div id="call" class="bg-grey-lighten-3 pa-2" style="display: none;"></div><button type="button" class="v-btn v-btn--elevated v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-elevated mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+  <div id="call" class="bg-grey-lighten-3 pa-2" style="display: none;"></div><button type="button" class="v-btn v-btn--elevated v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-elevated mt-1" id="query"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
     <!----><span class="v-btn__content" data-no-activator="">Query</span>
     <!---->
     <!---->
@@ -312,7 +312,7 @@ exports[`ContractReadMethod.vue > Should handle multiple results 1`] = `
 `;
 
 exports[`ContractReadMethod.vue > Should return the result when interacting with the method 1`] = `
-"<div>
+"<div active="true" options="[object Object]">
   <div class="pb-1 font-weight-bold">isProxy</div>
   <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field py-1 col-3" style="width: 50%;">
     <!---->
@@ -385,7 +385,7 @@ exports[`ContractReadMethod.vue > Should return the result when interacting with
       <!----><span class="v-card__underlay"></span>
     </div>
   </div>
-  <div id="call" class="bg-grey-lighten-3 pa-2" style="display: none;"></div><button type="button" class="v-btn v-btn--elevated v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-elevated mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+  <div id="call" class="bg-grey-lighten-3 pa-2" style="display: none;"></div><button type="button" class="v-btn v-btn--elevated v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-elevated mt-1" id="query"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
     <!----><span class="v-btn__content" data-no-activator="">Query</span>
     <!---->
     <!---->
@@ -467,7 +467,7 @@ exports[`ContractReadMethod.vue > Should work when input is any array 1`] = `
       <!----><span class="v-card__underlay"></span>
     </div>
   </div>
-  <div id="call" class="bg-grey-lighten-3 pa-2" style="display: none;"></div><button type="button" class="v-btn v-btn--elevated v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-elevated mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+  <div id="call" class="bg-grey-lighten-3 pa-2" style="display: none;"></div><button type="button" class="v-btn v-btn--elevated v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-elevated mt-1" id="query"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
     <!----><span class="v-btn__content" data-no-activator="">Query</span>
     <!---->
     <!---->
@@ -476,7 +476,7 @@ exports[`ContractReadMethod.vue > Should work when input is any array 1`] = `
 `;
 
 exports[`ContractReadMethod.vue > Should work when it is in public explorer mode 1`] = `
-"<div>
+"<div active="true" options="[object Object]">
   <div class="pb-1 font-weight-bold">isProxy</div>
   <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field py-1 col-3" style="width: 50%;">
     <!---->
@@ -549,7 +549,7 @@ exports[`ContractReadMethod.vue > Should work when it is in public explorer mode
       <!----><span class="v-card__underlay"></span>
     </div>
   </div>
-  <div id="call" class="bg-grey-lighten-3 pa-2" style="display: none;"></div><button type="button" class="v-btn v-btn--elevated v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-elevated mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+  <div id="call" class="bg-grey-lighten-3 pa-2" style="display: none;"></div><button type="button" class="v-btn v-btn--elevated v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-elevated mt-1" id="query"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
     <!----><span class="v-btn__content" data-no-activator="">Query</span>
     <!---->
     <!---->

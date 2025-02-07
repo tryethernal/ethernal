@@ -14,7 +14,7 @@ exports[`Transaction.vue > Should display parsed error messages 1`] = `
           <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
         </svg>
         <!---->
-      </div><button data-v-a8515013="" type="button" class="v-btn v-btn--elevated v-btn--icon v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-elevated" aria-haspopup="menu" aria-expanded="false" aria-owns="v-menu-0"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+      </div><button data-v-a8515013="" type="button" class="v-btn v-btn--elevated v-btn--icon v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-elevated" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-0"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
         <!----><span class="v-btn__content" data-no-activator=""><i data-v-a8515013="" class="mdi-dots-vertical mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
         <!---->
         <!---->
@@ -83,10 +83,10 @@ exports[`Transaction.vue > Should display parsed error messages 1`] = `
       <div data-v-a8515013="" class="text-overline">Gas Price</div> 59 gwei
     </div>
     <div data-v-a8515013="" class="v-col-sm-12 v-col-md-6 v-col-lg-2 v-col">
-      <div data-v-a8515013="" class="text-overline">Cost</div><span data-v-a8515013="">0.002579067 Ether</span>
+      <div data-v-a8515013="" class="text-overline">Cost</div><span data-v-a8515013="">0.002579067 ETH</span>
     </div>
     <div data-v-a8515013="" class="v-col-sm-12 v-col-md-6 v-col-lg-2 v-col">
-      <div data-v-a8515013="" class="text-overline">Value</div> 0 Ether
+      <div data-v-a8515013="" class="text-overline">Value</div> 0 ETH
     </div>
   </div>
   <div data-v-a8515013="" class="v-row mb-4">
@@ -126,7 +126,7 @@ exports[`Transaction.vue > Should display raw error messages 1`] = `
           <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
         </svg>
         <!---->
-      </div><button data-v-a8515013="" type="button" class="v-btn v-btn--elevated v-btn--icon v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-elevated" aria-haspopup="menu" aria-expanded="false" aria-owns="v-menu-0"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+      </div><button data-v-a8515013="" type="button" class="v-btn v-btn--elevated v-btn--icon v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-elevated" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-0"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
         <!----><span class="v-btn__content" data-no-activator=""><i data-v-a8515013="" class="mdi-dots-vertical mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
         <!---->
         <!---->
@@ -197,10 +197,10 @@ exports[`Transaction.vue > Should display raw error messages 1`] = `
       <div data-v-a8515013="" class="text-overline">Gas Price</div> 59 gwei
     </div>
     <div data-v-a8515013="" class="v-col-sm-12 v-col-md-6 v-col-lg-2 v-col">
-      <div data-v-a8515013="" class="text-overline">Cost</div><span data-v-a8515013="">0.002579067 Ether</span>
+      <div data-v-a8515013="" class="text-overline">Cost</div><span data-v-a8515013="">0.002579067 ETH</span>
     </div>
     <div data-v-a8515013="" class="v-col-sm-12 v-col-md-6 v-col-lg-2 v-col">
-      <div data-v-a8515013="" class="text-overline">Value</div> 0 Ether
+      <div data-v-a8515013="" class="text-overline">Value</div> 0 ETH
     </div>
   </div>
   <div data-v-a8515013="" class="v-row mb-4">
@@ -249,7 +249,7 @@ exports[`Transaction.vue > Should display the transaction when the receipt is no
           <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
         </svg>
         <!---->
-      </div><button data-v-a8515013="" type="button" class="v-btn v-btn--elevated v-btn--icon v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-elevated" aria-haspopup="menu" aria-expanded="false" aria-owns="v-menu-0"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+      </div><button data-v-a8515013="" type="button" class="v-btn v-btn--elevated v-btn--icon v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-elevated" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-0"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
         <!----><span class="v-btn__content" data-no-activator=""><i data-v-a8515013="" class="mdi-dots-vertical mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
         <!---->
         <!---->
@@ -296,7 +296,7 @@ exports[`Transaction.vue > Should display the transaction when the receipt is no
       <!----></span>
     </div>
     <div data-v-a8515013="" class="v-col-sm-12 v-col-md-6 v-col-lg-2 v-col">
-      <div data-v-a8515013="" class="text-overline">Value</div> 0 Ether
+      <div data-v-a8515013="" class="text-overline">Value</div> 0 ETH
     </div>
   </div>
   <div data-v-a8515013="" class="v-row mb-4">
@@ -345,7 +345,7 @@ exports[`Transaction.vue > Should display the transaction when the receipt is no
           <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
         </svg>
         <!---->
-      </div><button data-v-a8515013="" type="button" class="v-btn v-btn--elevated v-btn--icon v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-elevated" aria-haspopup="menu" aria-expanded="false" aria-owns="v-menu-0"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+      </div><button data-v-a8515013="" type="button" class="v-btn v-btn--elevated v-btn--icon v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-elevated" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-0"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
         <!----><span class="v-btn__content" data-no-activator=""><i data-v-a8515013="" class="mdi-dots-vertical mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
         <!---->
         <!---->
@@ -400,7 +400,7 @@ exports[`Transaction.vue > Should display the transaction when the receipt is no
       <!----></span>
     </div>
     <div data-v-a8515013="" class="v-col-sm-12 v-col-md-6 v-col-lg-2 v-col">
-      <div data-v-a8515013="" class="text-overline">Value</div> 0 Ether
+      <div data-v-a8515013="" class="text-overline">Value</div> 0 ETH
     </div>
   </div>
   <div data-v-a8515013="" class="v-row mb-4">

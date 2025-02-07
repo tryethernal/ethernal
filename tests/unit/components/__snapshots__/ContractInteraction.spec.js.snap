@@ -56,22 +56,22 @@ exports[`ContractInteraction.vue > Should display ABI editor & methods 1`] = `
       <div data-v-90b7be59="" class="v-card-text">
         <div data-v-90b7be59="" class="v-row pb-4">
           <div data-v-90b7be59="" class="v-col-sm-12 v-col-md-6 v-col-lg-6 v-col">
-            <contract-read-method-stub data-v-90b7be59="" active="false" contract="[object Object]" signature="_feeBasisPoints()" method="[object Object]" options="[object Object]"></contract-read-method-stub>
+            <contract-read-method-stub data-v-90b7be59="" contract="[object Object]" signature="_feeBasisPoints()" method="[object Object]" options="[object Object]"></contract-read-method-stub>
           </div>
         </div>
         <div data-v-90b7be59="" class="v-row pb-4">
           <div data-v-90b7be59="" class="v-col-sm-12 v-col-md-6 v-col-lg-6 v-col">
-            <contract-read-method-stub data-v-90b7be59="" active="false" contract="[object Object]" signature="owner()" method="[object Object]" options="[object Object]"></contract-read-method-stub>
+            <contract-read-method-stub data-v-90b7be59="" contract="[object Object]" signature="owner()" method="[object Object]" options="[object Object]"></contract-read-method-stub>
           </div>
         </div>
         <div data-v-90b7be59="" class="v-row pb-4">
           <div data-v-90b7be59="" class="v-col-sm-12 v-col-md-6 v-col-lg-6 v-col">
-            <contract-read-method-stub data-v-90b7be59="" active="false" contract="[object Object]" signature="depositsOf(address)" method="[object Object]" options="[object Object]"></contract-read-method-stub>
+            <contract-read-method-stub data-v-90b7be59="" contract="[object Object]" signature="depositsOf(address)" method="[object Object]" options="[object Object]"></contract-read-method-stub>
           </div>
         </div>
         <div data-v-90b7be59="" class="v-row pb-4">
           <div data-v-90b7be59="" class="v-col-sm-12 v-col-md-6 v-col-lg-6 v-col">
-            <contract-read-method-stub data-v-90b7be59="" active="false" contract="[object Object]" signature="maturityOf(address)" method="[object Object]" options="[object Object]"></contract-read-method-stub>
+            <contract-read-method-stub data-v-90b7be59="" contract="[object Object]" signature="maturityOf(address)" method="[object Object]" options="[object Object]"></contract-read-method-stub>
           </div>
         </div>
       </div>
@@ -102,27 +102,27 @@ exports[`ContractInteraction.vue > Should display ABI editor & methods 1`] = `
       <div data-v-90b7be59="" class="v-card-text">
         <div data-v-90b7be59="" class="v-row pb-4">
           <div data-v-90b7be59="" class="v-col-sm-12 v-col-md-6 v-col-lg-3 v-col">
-            <contract-write-method-stub data-v-90b7be59="" active="false" contract="[object Object]" signature="renounceOwnership()" method="[object Object]" options="[object Object]"></contract-write-method-stub>
+            <contract-write-method-stub data-v-90b7be59="" contract="[object Object]" signature="renounceOwnership()" method="[object Object]" options="[object Object]" active="false"></contract-write-method-stub>
           </div>
         </div>
         <div data-v-90b7be59="" class="v-row pb-4">
           <div data-v-90b7be59="" class="v-col-sm-12 v-col-md-6 v-col-lg-3 v-col">
-            <contract-write-method-stub data-v-90b7be59="" active="false" contract="[object Object]" signature="transferOwnership(address)" method="[object Object]" options="[object Object]"></contract-write-method-stub>
+            <contract-write-method-stub data-v-90b7be59="" contract="[object Object]" signature="transferOwnership(address)" method="[object Object]" options="[object Object]" active="false"></contract-write-method-stub>
           </div>
         </div>
         <div data-v-90b7be59="" class="v-row pb-4">
           <div data-v-90b7be59="" class="v-col-sm-12 v-col-md-6 v-col-lg-3 v-col">
-            <contract-write-method-stub data-v-90b7be59="" active="false" contract="[object Object]" signature="setMaturity(address,uint256)" method="[object Object]" options="[object Object]"></contract-write-method-stub>
+            <contract-write-method-stub data-v-90b7be59="" contract="[object Object]" signature="setMaturity(address,uint256)" method="[object Object]" options="[object Object]" active="false"></contract-write-method-stub>
           </div>
         </div>
         <div data-v-90b7be59="" class="v-row pb-4">
           <div data-v-90b7be59="" class="v-col-sm-12 v-col-md-6 v-col-lg-3 v-col">
-            <contract-write-method-stub data-v-90b7be59="" active="false" contract="[object Object]" signature="deposit(address)" method="[object Object]" options="[object Object]"></contract-write-method-stub>
+            <contract-write-method-stub data-v-90b7be59="" contract="[object Object]" signature="deposit(address)" method="[object Object]" options="[object Object]" active="false"></contract-write-method-stub>
           </div>
         </div>
         <div data-v-90b7be59="" class="v-row pb-4">
           <div data-v-90b7be59="" class="v-col-sm-12 v-col-md-6 v-col-lg-3 v-col">
-            <contract-write-method-stub data-v-90b7be59="" active="false" contract="[object Object]" signature="withdraw()" method="[object Object]" options="[object Object]"></contract-write-method-stub>
+            <contract-write-method-stub data-v-90b7be59="" contract="[object Object]" signature="withdraw()" method="[object Object]" options="[object Object]" active="false"></contract-write-method-stub>
           </div>
         </div>
       </div>
@@ -357,22 +357,22 @@ exports[`ContractInteraction.vue > Should display verified contract 1`] = `
       <div data-v-90b7be59="" class="v-card-text">
         <div data-v-90b7be59="" class="v-row pb-4">
           <div data-v-90b7be59="" class="v-col-sm-12 v-col-md-6 v-col-lg-6 v-col">
-            <contract-read-method-stub data-v-90b7be59="" active="false" contract="[object Object]" signature="_feeBasisPoints()" method="[object Object]" options="[object Object]"></contract-read-method-stub>
+            <contract-read-method-stub data-v-90b7be59="" contract="[object Object]" signature="_feeBasisPoints()" method="[object Object]" options="[object Object]"></contract-read-method-stub>
           </div>
         </div>
         <div data-v-90b7be59="" class="v-row pb-4">
           <div data-v-90b7be59="" class="v-col-sm-12 v-col-md-6 v-col-lg-6 v-col">
-            <contract-read-method-stub data-v-90b7be59="" active="false" contract="[object Object]" signature="owner()" method="[object Object]" options="[object Object]"></contract-read-method-stub>
+            <contract-read-method-stub data-v-90b7be59="" contract="[object Object]" signature="owner()" method="[object Object]" options="[object Object]"></contract-read-method-stub>
           </div>
         </div>
         <div data-v-90b7be59="" class="v-row pb-4">
           <div data-v-90b7be59="" class="v-col-sm-12 v-col-md-6 v-col-lg-6 v-col">
-            <contract-read-method-stub data-v-90b7be59="" active="false" contract="[object Object]" signature="depositsOf(address)" method="[object Object]" options="[object Object]"></contract-read-method-stub>
+            <contract-read-method-stub data-v-90b7be59="" contract="[object Object]" signature="depositsOf(address)" method="[object Object]" options="[object Object]"></contract-read-method-stub>
           </div>
         </div>
         <div data-v-90b7be59="" class="v-row pb-4">
           <div data-v-90b7be59="" class="v-col-sm-12 v-col-md-6 v-col-lg-6 v-col">
-            <contract-read-method-stub data-v-90b7be59="" active="false" contract="[object Object]" signature="maturityOf(address)" method="[object Object]" options="[object Object]"></contract-read-method-stub>
+            <contract-read-method-stub data-v-90b7be59="" contract="[object Object]" signature="maturityOf(address)" method="[object Object]" options="[object Object]"></contract-read-method-stub>
           </div>
         </div>
       </div>
@@ -403,27 +403,27 @@ exports[`ContractInteraction.vue > Should display verified contract 1`] = `
       <div data-v-90b7be59="" class="v-card-text">
         <div data-v-90b7be59="" class="v-row pb-4">
           <div data-v-90b7be59="" class="v-col-sm-12 v-col-md-6 v-col-lg-3 v-col">
-            <contract-write-method-stub data-v-90b7be59="" active="false" contract="[object Object]" signature="renounceOwnership()" method="[object Object]" options="[object Object]"></contract-write-method-stub>
+            <contract-write-method-stub data-v-90b7be59="" contract="[object Object]" signature="renounceOwnership()" method="[object Object]" options="[object Object]" active="false"></contract-write-method-stub>
           </div>
         </div>
         <div data-v-90b7be59="" class="v-row pb-4">
           <div data-v-90b7be59="" class="v-col-sm-12 v-col-md-6 v-col-lg-3 v-col">
-            <contract-write-method-stub data-v-90b7be59="" active="false" contract="[object Object]" signature="transferOwnership(address)" method="[object Object]" options="[object Object]"></contract-write-method-stub>
+            <contract-write-method-stub data-v-90b7be59="" contract="[object Object]" signature="transferOwnership(address)" method="[object Object]" options="[object Object]" active="false"></contract-write-method-stub>
           </div>
         </div>
         <div data-v-90b7be59="" class="v-row pb-4">
           <div data-v-90b7be59="" class="v-col-sm-12 v-col-md-6 v-col-lg-3 v-col">
-            <contract-write-method-stub data-v-90b7be59="" active="false" contract="[object Object]" signature="setMaturity(address,uint256)" method="[object Object]" options="[object Object]"></contract-write-method-stub>
+            <contract-write-method-stub data-v-90b7be59="" contract="[object Object]" signature="setMaturity(address,uint256)" method="[object Object]" options="[object Object]" active="false"></contract-write-method-stub>
           </div>
         </div>
         <div data-v-90b7be59="" class="v-row pb-4">
           <div data-v-90b7be59="" class="v-col-sm-12 v-col-md-6 v-col-lg-3 v-col">
-            <contract-write-method-stub data-v-90b7be59="" active="false" contract="[object Object]" signature="deposit(address)" method="[object Object]" options="[object Object]"></contract-write-method-stub>
+            <contract-write-method-stub data-v-90b7be59="" contract="[object Object]" signature="deposit(address)" method="[object Object]" options="[object Object]" active="false"></contract-write-method-stub>
           </div>
         </div>
         <div data-v-90b7be59="" class="v-row pb-4">
           <div data-v-90b7be59="" class="v-col-sm-12 v-col-md-6 v-col-lg-3 v-col">
-            <contract-write-method-stub data-v-90b7be59="" active="false" contract="[object Object]" signature="withdraw()" method="[object Object]" options="[object Object]"></contract-write-method-stub>
+            <contract-write-method-stub data-v-90b7be59="" contract="[object Object]" signature="withdraw()" method="[object Object]" options="[object Object]" active="false"></contract-write-method-stub>
           </div>
         </div>
       </div>

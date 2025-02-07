@@ -85,6 +85,7 @@ export default {
                 });
         },
         switchWorkspace(name) {
+            localStorage.removeItem('wagmi.store');
             this.$server.setCurrentWorkspace(name).then(() => document.location.reload());
         },
         getWorkspaces() {
