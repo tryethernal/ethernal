@@ -208,7 +208,7 @@ jobs:
     environment: production
     steps:
       - name: Download Deploy ID
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: netlify_deploy_id
 
