@@ -10,7 +10,8 @@ const stubs = [
     'ERC-721-Gallery',
     'ERC-20-Contract-Analytics',
     'ERC-721-Token-Transfers',
-    'Address-Transactions-List'
+    'Address-Transactions-List',
+    'Token-Balance-Card'
 ];
 
 describe('ERC721Collection.vue', () => {

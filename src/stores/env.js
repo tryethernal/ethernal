@@ -23,7 +23,7 @@ export const useEnvStore = defineStore('env', {
             ethereum: {
                 slug: 'ethereum',
                 name: 'Ethereum',
-                token: 'Ether',
+                token: 'ETH',
                 scanner: 'Etherscan'
             },
             bsc: {

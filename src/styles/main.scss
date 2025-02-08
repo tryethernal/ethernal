@@ -57,3 +57,8 @@ a.underlined {
 .hide-table-count .v-data-table-footer__info {
     display: none !important;
 }
+
+:root {
+    --onboard-modal-backdrop: rgb(var(--v-theme-primary), 0.2);
+    --onboard-modal-z-index: 10000;
+}

@@ -72,8 +72,8 @@ exports[`ExplorerQuotaManagementModal.vue > Should display base cost simulation 
             </div>
           </div>
           <!---->
-          <div class="v-input__details">
-            <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="input-4-messages">
+          <div id="input-4-messages" class="v-input__details" role="alert" aria-live="polite">
+            <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
               <!---->
             </transition-group-stub>
             <!---->
@@ -214,8 +214,8 @@ exports[`ExplorerQuotaManagementModal.vue > Should display current quota info 1`
             </div>
           </div>
           <!---->
-          <div class="v-input__details">
-            <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="input-4-messages">
+          <div id="input-4-messages" class="v-input__details" role="alert" aria-live="polite">
+            <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
               <!---->
             </transition-group-stub>
             <!---->

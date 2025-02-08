@@ -167,7 +167,7 @@ jobs:
           echo $ID > deploy_id.txt
 
       - name: Upload deploy ID
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: netlify_deploy_id
           path: deploy_id.txt
@@ -208,7 +208,7 @@ jobs:
     environment: production
     steps:
       - name: Download Deploy ID
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: netlify_deploy_id
 

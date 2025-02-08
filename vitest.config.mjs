@@ -10,7 +10,7 @@ export default defineConfig({
         setupFiles: ['./tests/setup.js'],
         server: {
             deps: {
-                inline: ['vuetify']
+                inline: ['vuetify', '@web3-onboard/wagmi']
             }
         }
     },

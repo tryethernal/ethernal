@@ -7,6 +7,8 @@ import { auth } from '@/plugins/firebase';
 
 import RpcConnector from '@/components/RpcConnector.vue';
 
+const stubs = ['WalletConnector'];
+
 describe('RpcConnector.vue', () => {
     it('Should display the correct info', async () => {
         auth.mockReturnValue({ currentUser: { id: '1' }});
@@ -19,6 +21,7 @@ describe('RpcConnector.vue', () => {
         const processContractMock = vi.spyOn(server, 'processContracts').mockResolvedValue();
         const wrapper = mount(RpcConnector, {
             global: {
+                stubs,
                 plugins: [createTestingPinia({
                     initialState: {
                         currentWorkspace: { name: 'Hardhat', rpcServer: 'http://localhost:8545' }
@@ -42,6 +45,7 @@ describe('RpcConnector.vue', () => {
         const processContractsMock = vi.spyOn(server, 'processContracts').mockResolvedValue();
         const wrapper = mount(RpcConnector, {
             global: {
+                stubs,
                 plugins: [createTestingPinia({
                     initialState: {
                         currentWorkspace: { name: 'Hardhat', rpcServer: 'http://localhost:8545', public: true }

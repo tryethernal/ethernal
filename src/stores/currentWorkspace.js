@@ -30,7 +30,8 @@ export const useCurrentWorkspaceStore = defineStore('currentWorkspace', {
         networkId: null,
         tracing: null,
         chainSlug: null,
-        storageEnabled: null
+        storageEnabled: null,
+        wagmiConfig: null
     }),
 
     actions: {
@@ -72,9 +73,16 @@ export const useCurrentWorkspaceStore = defineStore('currentWorkspace', {
                 this.accounts = accounts;
         },
 
+        updateWagmiConfig(_wagmiConfig) {
+            this.wagmiConfig = _wagmiConfig;
+        },
+
         updateCurrentWorkspace(workspace) {
             this.$patch(workspace);
             this.chainSlug = workspace.chain;
+
+            if (workspace.networkId)
+                this.networkId = parseInt(workspace.networkId);
 
             if (workspace.explorer)
                 useExplorerStore().updateExplorer(workspace.explorer);
