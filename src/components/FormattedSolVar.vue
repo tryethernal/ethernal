@@ -83,7 +83,6 @@ export default {
     mounted() {
         if (this.input.type == 'uint256')
             this.formatted = false;
-        console.log(this.input);
     },
     methods: {
         JSONPrettyCustomFormatter: function(data, _key, _path, defaultFormatResult) {
