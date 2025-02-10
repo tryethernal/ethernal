@@ -4,6 +4,7 @@ const {
   Sequelize,
   QueryTypes,
 } = require('sequelize');
+const { defineChain, createPublicClient, http, webSocket } = require('viem');
 const moment = require('moment');
 const { sanitize, slugify, processRawRpcObject } = require('../lib/utils');
 const { ProviderConnector } = require('../lib/rpc');
@@ -53,6 +54,38 @@ module.exports = (sequelize, DataTypes) => {
                 name: name
             }
         });
+    }
+
+    getViemPublicClient() {
+        const fetchOptions = () => {
+            const rpcServer = new URL(this.rpcServer);
+            if (rpcServer.username.length || rpcServer.password.length) {
+                const base64Credentials = btoa(`${rpcServer.username}:${rpcServer.password}`);
+                return { headers: { 'Authorization': `Basic ${base64Credentials}` }};
+            }
+            else
+                return {};
+        };
+
+        const provider = this.rpcServer.startsWith('http') ?
+            { http: [this.rpcServer], webSocket: [this.rpcServer] } :
+            { http: [], webSocket: [this.rpcServer] };
+
+        const transport = this.rpcServer.startsWith('http') ?
+            http(new URL(this.rpcServer).origin + new URL(this.rpcServer).pathname, { fetchOptions: fetchOptions() }) :
+            webSocket(new URL(this.rpcServer).origin + new URL(this.rpcServer).pathname);
+
+        const chain = defineChain({
+            id: this.networkId,
+            name: this.name,
+            network: this.name,
+            rpcUrls: {
+                default: provider,
+                public: provider
+            }
+        });
+
+        return createPublicClient({ chain, transport });
     }
 
     getProvider() {

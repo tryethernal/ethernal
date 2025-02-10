@@ -1,6 +1,8 @@
 const { getNodeEnv } = require('../lib/env');
 const { Block, Workspace, Explorer, Transaction } = require('../models');
+const { Op } = require('sequelize');
 const { bulkEnqueue, enqueue } = require('../lib/queue');
+const { avg } = require('../lib/utils');
 const STALLED_BLOCK_REMOVAL_DELAY = getNodeEnv() == 'production' ? 5 * 60 * 1000 : 15 * 60 * 1000;
 
 module.exports = async job => {
@@ -19,7 +21,7 @@ module.exports = async job => {
             {
                 model: Workspace,
                 as: 'workspace',
-                attributes: ['id', 'public', 'tracing', 'integrityCheckStartBlockNumber'],
+                attributes: ['id', 'public', 'tracing', 'integrityCheckStartBlockNumber', 'rpcServer', 'name'],
                 include: {
                     model: Explorer,
                     as: 'explorer',
@@ -63,6 +65,50 @@ module.exports = async job => {
     if (block.number == block.workspace.integrityCheckStartBlockNumber) {
         await enqueue('integrityCheck', `integrityCheck-${block.workspaceId}`, { workspaceId: block.workspaceId });
     }
+
+    const client = block.workspace.getViemPublicClient();
+
+    const feeHistory = await client.getFeeHistory({
+        blockCount: 1,
+        blockNumber: block.number,
+        rewardPercentiles: [20, 50, 75]
+    });
+    console.log(block.number, feeHistory);
+    feeHistory.reward[0].forEach(x => console.log((Number(x) + Number(feeHistory.baseFeePerGas[0])) / 1e9));
+    console.log('###########################');
+
+    // let blockNum = Number(feeHistory.oldestBlock);
+    // let index = 0;
+    // const blocks = [];
+    // while (blockNum < Number(feeHistory.oldestBlock) + 4) {
+    //     blocks.push({
+    //         number: blockNum,
+    //         baseFeePerGas: Number(feeHistory.baseFeePerGas[index]),
+    //         gasUsedRatio: Number(feeHistory.gasUsedRatio[index]),
+    //         priorityFeePerGas: feeHistory.reward[index].map(x => Number(x)),
+    //     });
+    //     blockNum += 1;
+    //     index += 1;
+    // }
+
+    // const pendingBlock = await client.getBlock({
+    //     blockTag: 'pending',
+    //     includeTransactions: true
+    // });
+    // const baseFeePerGas = Number(pendingBlock.baseFeePerGas);
+
+    // const slow = avg(blocks.map(b => b.priorityFeePerGas[0]));
+    // const average = avg(blocks.map(b => b.priorityFeePerGas[1]));
+    // const fast = avg(blocks.map(b => b.priorityFeePerGas[2]));
+
+    // console.log(`Manual estimate (${block.workspace.name}) :`, {
+    //     slow: slow + baseFeePerGas,
+    //     average: average + baseFeePerGas,
+    //     fast: fast + baseFeePerGas,
+    // });
+
+    // const estimates = await calculateGasEstimates();
+    // console.log(estimates);
 
     return true;
 };
