@@ -63,7 +63,8 @@ export default {
                 readContract(this.currentWorkspaceStore.wagmiConfig, {
                     address: this.contract.address,
                     abi: this.contract.abi,
-                    functionName: this.method.name
+                    functionName: this.method.name,
+                    args: Object.values(processedParams)
                 })
                 .then(res => {
                     this.results = Array.isArray(res) ? this.processResult(res) : this.processResult([res]);
