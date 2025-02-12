@@ -3,7 +3,7 @@
 exports[`TransactionEvent.vue > Should display in raw mode if no topics 1`] = `
 "<div data-v-1a031228="" class="my-3 text-medium-emphasis"><b data-v-1a031228="">Emitter:</b>
   <hash-link-stub data-v-1a031228="" type="address" hash="0xc00e94Cb662C3520282E6f5717214004A7f26888"></hash-link-stub><br data-v-1a031228=""><b data-v-1a031228="">Data:</b>
-  <formatted-sol-var-stub data-v-1a031228="" input="[object Object]" notinteractive="true" isarrayel="true" class="ml-4"></formatted-sol-var-stub>
+  <formatted-sol-var-stub data-v-1a031228="" notinteractive="true" isarrayel="true" input="[object Object]" class="ml-4"></formatted-sol-var-stub>
 </div>"
 `;
 

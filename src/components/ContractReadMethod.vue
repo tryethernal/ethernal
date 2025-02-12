@@ -87,11 +87,19 @@ export default {
         },
         processResult(result) {
             const processed = [];
-            for (let i = 0; i < result.length; i++) {
+            if (this.method.outputs[0].baseType == 'array') {
                 processed.push({
-                    input: this.method.outputs[i],
-                    value: result[i]
-                })
+                    input: this.method.outputs[0],
+                    value: result
+                });
+            }
+            else {
+                for (let i = 0; i < result.length; i++) {
+                    processed.push({
+                        input: this.method.outputs[i],
+                        value: result[i]
+                    });
+                }
             }
             return processed;
         },
