@@ -17,13 +17,32 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Block.belongsTo(models.Workspace, { foreignKey: 'workspaceId', as: 'workspace' });
       Block.hasMany(models.Transaction, { foreignKey: 'blockId', as: 'transactions' });
+      Block.hasOne(models.BlockEvent, { foreignKey: 'blockId', as: 'event' });
     }
 
     async safeDestroy(transaction) {
       const transactions = await this.getTransactions();
       for (let i = 0; i < transactions.length; i++)
         await transactions[i].safeDestroy(transaction);
+
+      const event = await this.getEvent();
+      if (event)
+        await event.destroy({ transaction });
+
       return this.destroy({ transaction });
+    }
+
+    safeCreateEvent(event, transaction) {
+      return this.createEvent({
+        workspaceId: this.workspaceId,
+        number: this.number,
+        timestamp: this.timestamp,
+        baseFeePerGas: event.baseFeePerGas,
+        gasLimit: event.gasLimit,
+        gasUsed: event.gasUsed,
+        gasUsedRatio: event.gasUsedRatio,
+        priorityFeePerGas: event.priorityFeePerGas,
+      }, { transaction });
     }
 
     async revertIfPartial() {

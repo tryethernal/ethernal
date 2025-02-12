@@ -11,7 +11,8 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      BlockEvent.belongsTo(models.Workspace, { foreignKey: 'workspaceId', as: 'workspace' });
+      BlockEvent.belongsTo(models.Block, { foreignKey: 'blockId', as: 'block' });
     }
   }
   BlockEvent.init({

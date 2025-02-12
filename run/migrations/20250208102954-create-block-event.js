@@ -42,7 +42,7 @@ module.exports = {
             },
             gasLimit: {
               type: Sequelize.NUMERIC,
-              allowNull: false
+              allowNull: true
             },
             gasUsed: {
               type: Sequelize.NUMERIC,
