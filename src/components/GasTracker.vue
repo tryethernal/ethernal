@@ -1,11 +1,14 @@
 <template>
     <v-container fluid>
-        <h4 class="text-center mt-6 mb-10">{{ explorerStore.name }} Gas Tracker <v-icon color="primary">mdi-gas-station</v-icon></h4>
+        <h4 class="text-center mt-6 mb-10">{{ explorerStore.name }} Gas Tracker</h4>
         <div class="mb-2">Next update in 2s</div>
         <v-row>
             <v-col cols="3">
                 <v-card rounded="lg" class="fill-height text-center">
-                    <v-card-title>Low</v-card-title>
+                    <template #title>
+                        <v-icon class="mr-2" size="x-small">mdi-snail</v-icon>
+                        <span>Slow</span>
+                    </template>
                     <v-card-text>
                         <div>1.336 gwei</div>
                         <div>
@@ -16,7 +19,10 @@
             </v-col>
             <v-col cols="3">
                 <v-card rounded="lg" class="fill-height text-center">
-                    <v-card-title>Average</v-card-title>
+                    <template #title>
+                        <v-icon class="mr-2" size="x-small">mdi-speedometer-medium</v-icon>
+                        <span>Normal</span>
+                    </template>
                     <v-card-text>
                         <div>1.336 gwei</div>
                         <div>
@@ -27,7 +33,10 @@
             </v-col>
             <v-col cols="3">
                 <v-card rounded="lg" class="fill-height text-center">
-                    <v-card-title>High</v-card-title>
+                    <template #title>
+                        <v-icon class="mr-2" size="x-small">mdi-rocket-launch</v-icon>
+                        <span>Fast</span>
+                    </template>
                     <v-card-text>
                         <div>1.336 gwei</div>
                         <div>
