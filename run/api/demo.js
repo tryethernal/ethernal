@@ -66,7 +66,7 @@ router.post('/migrateExplorer', authMiddleware, async (req, res, next) => {
         const plan = await db.getStripePlan(getDemoTrialSlug());
         if (!plan)
             return managedError(new Error('Could not find plan.'), req, res);
-        console.log(plan);
+
         const subscription = await stripe.subscriptions.create({
             customer: user.stripeCustomerId,
             items: [{ price: plan.stripePriceId }],
@@ -86,6 +86,20 @@ router.post('/migrateExplorer', authMiddleware, async (req, res, next) => {
     }
 });
 
+
+/*
+    Creates a free demo explorer from a RPC server
+    @param {string} rpcServer - The RPC server to use for the explorer
+    @param {string} name (optional) - The name of the explorer
+    @param {string} token (optional) - The native token to use for the explorer
+    @returns {object} - The explorer object
+
+    Demo explorers are deleted after 24 hours. They have a banner on the top of the page with
+    a link to convert to a free trial.
+    Some chainIds are blocked from being used for demo explorers. Those are the ones that have a
+    high volume of transactions, already have an explorer, and are likely to be rate limited causing
+    the explorer to not function properly.
+*/
 router.post('/explorers', async (req, res, next) => {
     const data = req.body;
     try {
@@ -107,7 +121,13 @@ router.post('/explorers', async (req, res, next) => {
             networkId = null;
         }
 
-        const forbiddenChains = (await axios.get('https://raw.githubusercontent.com/DefiLlama/chainlist/e7c619a1955529d874b189c94487fd2326859029/constants/chainIds.json')).data;
+        const response = await axios.get('https://raw.githubusercontent.com/tryethernal/chainlist/refs/heads/main/constants/chainIds.js', {
+            responseType: 'text',
+            headers: { 'Cache-Control': 'no-cache' }
+        });
+        const jsonString = response.data.replace(/^export default\s*/, '');
+        const forbiddenChains = JSON.parse(jsonString);
+
         if (forbiddenChains[networkId])
             return managedError(new Error(`You can't create a demo with this network id (${networkId} - ${forbiddenChains[networkId]}). If you'd still like an explorer for this chain. Please reach out to contact@tryethernal.com, and we'll set one up for you.`), req, res);
 
