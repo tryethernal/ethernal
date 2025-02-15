@@ -29,6 +29,7 @@ module.exports = (sequelize, DataTypes) => {
           this.setDataValue('timestamp', moment.unix(value).format());
       }
     },
+    transactionCount: DataTypes.INTEGER,
     baseFeePerGas: DataTypes.STRING,
     gasLimit: DataTypes.STRING,
     gasUsed: DataTypes.STRING,

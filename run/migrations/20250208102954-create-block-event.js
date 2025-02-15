@@ -36,6 +36,10 @@ module.exports = {
                 type: 'TIMESTAMPTZ',
                 allowNull: false,
             },
+            transactionCount: {
+              type: Sequelize.INTEGER,
+              allowNull: false
+            },
             baseFeePerGas: {
               type: Sequelize.NUMERIC,
               allowNull: false

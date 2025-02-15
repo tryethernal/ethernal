@@ -92,6 +92,226 @@ module.exports = (sequelize, DataTypes) => {
         return new ProviderConnector(this.rpcServer);
     }
 
+    /*
+        This method is used to get the latest biggest gas spenders for a workspace
+        for a given interval (now - intervalInHours).
+
+        @param {number} intervalInHours - The interval in hours to get the gas spenders for
+        @param {number} limit - The limit of gas spenders to return
+        @returns {array} - The gas spenders
+            - from: The address of the gas spender
+            - gasUsed: The total gas used by the gas spender
+            - gasCost: Cost of total gas used
+            - percentUsed: The percentage of total gas used by the gas spender
+    */
+    getLatestGasSpenders(intervalInHours = 24, limit = 50) {
+        return sequelize.query(`
+            SELECT
+                "from",
+                SUM("gasUsed"::numeric) as "gasUsed",
+                SUM("gasPrice"::numeric * "gasUsed"::numeric) as "gasCost",
+                SUM("gasUsed"::numeric) / (
+                    SELECT SUM("gasUsed"::numeric)
+                    FROM transaction_events
+                    WHERE "workspaceId" = :workspaceId
+                ) as "percentUsed"
+            FROM transaction_events
+            WHERE "workspaceId" = :workspaceId
+            GROUP BY "from"
+            ORDER BY "gasUsed" DESC
+            LIMIT :limit
+        `, {
+            replacements: { workspaceId: this.id, intervalInHours, limit },
+            type: QueryTypes.SELECT
+        });
+    }
+
+    /*
+        This method is used to get the latest biggest gas consumers for a workspace
+        for a given interval (now - intervalInHours).
+
+        @param {number} intervalInHours - The interval in hours to get the gas consumers for
+        @param {number} limit - The limit of gas consumers to return
+        @returns {array} - The gas consumers
+            - to: The address of the gas consumer
+            - gasUsed: The total gas used by the gas consumer
+            - gasCost: Cost of total gas used
+            - percentUsed: The percentage of total gas used by the gas consumer
+    */
+    getLatestGasConsumers(intervalInHours = 24, limit = 50) {
+        return sequelize.query(`
+            SELECT
+                "to",
+                SUM("gasUsed"::numeric) as "gasUsed",
+                SUM("gasPrice"::numeric * "gasUsed"::numeric) as "gasCost",
+                SUM("gasUsed"::numeric) / (
+                    SELECT SUM("gasUsed"::numeric)
+                    FROM transaction_events
+                    WHERE "workspaceId" = :workspaceId
+                ) as "percentUsed"
+            FROM transaction_events
+            WHERE "workspaceId" = :workspaceId
+            GROUP BY "to"
+            ORDER BY "gasUsed" DESC
+            LIMIT :limit
+        `, {
+            replacements: { workspaceId: this.id, intervalInHours, limit },
+            type: QueryTypes.SELECT
+        });
+    }
+
+    /*
+        This method is used to get the gas utilization ratio history for a workspace.
+
+        @param {string} from - The start date of the gas utilization ratio history
+        @param {string} to - The end date of the gas utilization ratio history
+        @returns {array} - The gas utilization ratio history
+            - day: The day of the gas utilization ratio history
+            - gasUtilizationRatio: The average gas utilization ratio for the day
+    */
+    getGasUtilizationRatioHistory(from, to) {
+        if (!from || !to)
+            throw new Error('Missing parameter');
+
+        return sequelize.query(`
+            SELECT
+                time_bucket('1 minute', timestamp) as day,
+                round(avg("gasUsedRatio"::numeric) * 100, 2) as "gasUtilizationRatio"
+            FROM block_events
+            WHERE "workspaceId" = :workspaceId
+            AND "timestamp" >= timestamp :from
+            AND "timestamp" < timestamp :to
+            GROUP BY day
+            ORDER BY day ASC
+        `, {
+            replacements: { workspaceId: this.id, from, to },
+            type: QueryTypes.SELECT
+        });
+    }
+
+    /*
+        This method is used to get the gas limit history for a workspace.
+
+        @param {string} from - The start date of the gas limit history
+        @param {string} to - The end date of the gas limit history
+        @returns {array} - The gas limit history
+            - day: The day of the gas limit history
+            - gasLimit: The average gas limit for the day
+    */
+    getGasLimitHistory(from, to) {
+        if (!from || !to)
+            throw new Error('Missing parameter');
+
+        return sequelize.query(`
+            SELECT
+                time_bucket('1 minute', timestamp) as day,
+                avg("gasLimit"::numeric) as "gasLimit"
+            FROM block_events
+            WHERE "workspaceId" = :workspaceId
+            AND "timestamp" >= timestamp :from
+            AND "timestamp" < timestamp :to
+            GROUP BY day
+            ORDER BY day ASC
+        `, {
+            replacements: { workspaceId: this.id, from, to },
+            type: QueryTypes.SELECT
+        });
+    }
+
+    /*
+        This method is used to get the gas price history for a workspace.
+
+        @param {string} from - The start date of the gas price history
+        @param {string} to - The end date of the gas price history
+        @returns {array} - The gas price history
+            - day: The day of the gas price history
+            - minSlow: The minimum slow gas price
+            - slow: The average slow gas price
+            - maxSlow: The maximum slow gas price
+            - minAverage: The minimum average gas price
+            - average: The average average gas price
+            - maxAverage: The maximum average gas price
+            - minFast: The minimum fast gas price
+            - fast: The average fast gas price
+            - maxFast: The maximum fast gas price
+    */
+    getGasPriceHistory(from, to) {
+        if (!from || !to)
+            throw new Error('Missing parameter');
+
+        return sequelize.query(`
+            SELECT
+                time_bucket('1 minute', timestamp) as day,
+                min("baseFeePerGas"::numeric + "priorityFeePerGas"[1]::numeric) as "minSlow",
+                avg("baseFeePerGas"::numeric + "priorityFeePerGas"[1]::numeric) as "slow",
+                max("baseFeePerGas"::numeric + "priorityFeePerGas"[1]::numeric) as "maxSlow",
+                min("baseFeePerGas"::numeric + "priorityFeePerGas"[2]::numeric) as "minAverage",
+                avg("baseFeePerGas"::numeric + "priorityFeePerGas"[2]::numeric) as "average",
+                max("baseFeePerGas"::numeric + "priorityFeePerGas"[2]::numeric) as "maxAverage",
+                min("baseFeePerGas"::numeric + "priorityFeePerGas"[3]::numeric) as "minFast",
+                avg("baseFeePerGas"::numeric + "priorityFeePerGas"[3]::numeric) as "fast",
+                max("baseFeePerGas"::numeric + "priorityFeePerGas"[3]::numeric) as "maxFast"
+            FROM public.block_events
+            WHERE "workspaceId" = :workspaceId
+            AND "timestamp" >= timestamp :from
+            AND "timestamp" < timestamp :to
+            GROUP BY day
+            ORDER BY day ASC
+        `, {
+            replacements: { workspaceId: this.id, from, to },
+            type: QueryTypes.SELECT
+        });
+    }
+
+    /*
+        This method is used to get the latest gas stats for a workspace.
+
+        @param {number} intervalInMinutes - The interval in minutes to get the gas stats for
+        @returns {object} - The gas stats object
+            - averageBlockSize: The average block size in transactions
+            - averageUtilization: The average quantity of gas used per block
+            - averageBlockTime: The average block time in seconds
+            - latestBlockNumber: The number of the latest block used for this calculation
+            - baseFeePerGas: The base fee per gas for the latest block
+            - priorityFeePerGas: The three levels of priority fee per gas for the latest block (slow, average, fast)
+    */
+    async getLatestGasStats(intervalInMinutes = 1) {
+        const [latestBlockEvents] = await sequelize.query(`
+            SELECT * FROM block_events
+            WHERE "workspaceId" = :workspaceId
+            ORDER BY "timestamp" DESC
+            LIMIT 5
+        `, {
+            replacements: { workspaceId: this.id }
+        });
+
+        const latestBlock = latestBlockEvents[0];
+
+        const averageBlockSize = Math.round(latestBlockEvents.reduce((sum, event) => sum + event.transactionCount, 0) / latestBlockEvents.length);
+        const averageUtilization = latestBlockEvents.reduce((sum, event) => sum + event.gasUsedRatio, 0) / latestBlockEvents.length;
+        const averageBlockTime = latestBlockEvents.length > 1 ? 
+            latestBlockEvents.reduce((sum, event, index) => {
+                if (index === latestBlockEvents.length - 1) return sum;
+                const timeDiff = new Date(latestBlockEvents[index].timestamp) - new Date(latestBlockEvents[index + 1].timestamp);
+                return sum + timeDiff;
+            }, 0) / (latestBlockEvents.length - 1) / 1000 : 0;
+        const latestBlockNumber = latestBlock.number;
+        const priorityFeePerGas = {
+            slow: latestBlock.priorityFeePerGas[0],
+            average: latestBlock.priorityFeePerGas[1],
+            fast: latestBlock.priorityFeePerGas[2]
+        };
+
+        return {
+            averageBlockSize,
+            averageUtilization,
+            averageBlockTime,
+            latestBlockNumber,
+            baseFeePerGas: latestBlock.baseFeePerGas,
+            priorityFeePerGas
+        };
+    }
+
     async getLatestReadyBlock() {
         const [latestReadyBlock] = await sequelize.query(`
             SELECT number, timestamp
