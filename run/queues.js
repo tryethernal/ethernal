@@ -53,4 +53,22 @@ priorities['low'].forEach(jobName => {
     });
 });
 
+queues['processHistoricalBlocks'] = new Queue('processHistoricalBlocks', {
+    defaultJobOptions: {
+        attempts: 5,
+        removeOnComplete: {
+            count: 100,
+            age: 4 * 60
+        },
+        timeout: 30000,
+        backoff: {
+            type: 'fixed',
+            delay: 30000
+        },
+    },
+    stalledInterval: 29000,
+    maxStalledCount: 5,
+    connection,
+});
+
 module.exports = queues;

@@ -20,6 +20,7 @@ kill_timeout = "5s"
   hpworker = "node workers/highPriority.js"
   lpworker = "node workers/lowPriority.js"
   mpworker = "node workers/mediumPriority.js"
+  phworker = "node workers/processHistoricalBlocks.js"
 
 [[services]]
   protocol = "tcp"
