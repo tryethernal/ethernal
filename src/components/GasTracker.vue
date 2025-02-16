@@ -4,7 +4,7 @@
             {{ explorerStore.name }} Gas Tracker
         </h2>
         <small class="text-medium-emphasis">Next update in <b class="text-primary">{{ nextRefreshIn / 1000 }}s</b></small>
-        <v-row class="pt-2">
+        <v-row class="pt-2" v-if="speedEstimatesAvailable">
             <v-col cols="12" lg="6" class="d-flex flex-column">
                 <v-row class="mb-0">
                     <v-col cols="12" sm="12" lg="4">
@@ -14,9 +14,9 @@
                                 <small class="text-medium-emphasis">Slow</small>
                             </template>
                             <v-card-text v-if="totalSlowCost !== null">
-                                <span class="text-success text-h5">{{ fromWei(totalSlowCost, 'gwei', 'gwei', false, 2) }}</span>
+                                <span class="text-h5 slow">{{ formatGweiAmount(totalSlowCost) }} gwei</span>
                                 <div class="mt-2">
-                                    <small>Base: {{ fromWei(gasStats.baseFeePerGas, 'gwei', 'gwei', false, 2) }} | Priority: {{ fromWei(gasStats.priorityFeePerGas?.slow, 'gwei', 'gwei', false, 2 ) }}</small>
+                                    <small>Base: {{ formatGweiAmount(gasStats.baseFeePerGas) }} | Priority: {{ formatGweiAmount(gasStats.priorityFeePerGas?.slow) }}</small>
                                 </div>
                             </v-card-text>
                         </v-card>
@@ -28,9 +28,9 @@
                                 <small class="text-medium-emphasis">Average</small>
                             </template>
                             <v-card-text v-if="totalAverageCost !== null">
-                                <span class="text-primary text-h5">{{ fromWei(totalAverageCost, 'gwei', 'gwei', false, 2) }}</span>
+                                <span class="text-h5 average">{{ formatGweiAmount(totalAverageCost) }} gwei</span>
                                 <div class="mt-2">
-                                    <small>Base: {{ fromWei(gasStats.baseFeePerGas, 'gwei', 'gwei', false, 2) }} | Priority: {{ fromWei(gasStats.priorityFeePerGas?.average, 'gwei', 'gwei', false, 2) }}</small>
+                                    <small>Base: {{ formatGweiAmount(gasStats.baseFeePerGas) }} | Priority: {{ formatGweiAmount(gasStats.priorityFeePerGas?.average) }}</small>
                                 </div>
                             </v-card-text>
                         </v-card>
@@ -42,9 +42,9 @@
                                 <small class="text-medium-emphasis">Fast</small>
                             </template>
                             <v-card-text v-if="totalFastCost !== null">
-                                <span class="text-error text-h5">{{ fromWei(totalFastCost, 'gwei', 'gwei', false, 2) }}</span>
+                                <span class="text-h5 fast">{{ formatGweiAmount(totalFastCost) }} gwei</span>
                                 <div class="mt-2">
-                                    <small>Base: {{ fromWei(gasStats.baseFeePerGas, 'gwei', 'gwei', false, 2) }} | Priority: {{ fromWei(gasStats.priorityFeePerGas?.fast, 'gwei', 'gwei', false, 2) }}</small>
+                                    <small>Base: {{ formatGweiAmount(gasStats.baseFeePerGas) }} | Priority: {{ formatGweiAmount(gasStats.priorityFeePerGas?.fast) }}</small>
                                 </div>
                             </v-card-text>
                         </v-card>
@@ -134,7 +134,6 @@
 
 <script setup>
 import { onMounted, onUnmounted, inject, ref, computed } from 'vue';
-import { useTheme } from 'vuetify';
 import { formatGwei } from 'viem';
 import { useExplorerStore } from '../stores/explorer';
 
@@ -146,7 +145,6 @@ import GasSpender from './GasSpender.vue';
 const explorerStore = useExplorerStore();
 const server = inject('$server');
 const fromWei = inject('$fromWei');
-const theme = useTheme();
 
 const gasStats = ref({});
 const nextRefreshIn = ref(10000);
@@ -158,12 +156,26 @@ const to = ref(new Date());
 const selectedChart = ref('gasPrice');
 const originalTitle = document.title;
 
+const MINIMUM_DISPLAY_GWEI = 10000000;
+
+const formatGweiAmount = (amount) => {
+    if (amount === null || amount === undefined)
+        return null;
+
+    else if (amount == 0)
+        return 0;
+    else if (amount < MINIMUM_DISPLAY_GWEI)
+        return `<0.01`;
+    else
+        return fromWei(amount, 'gwei', '', false, 2);
+};
+
 const formattedUtilization = computed(() => {
-    return gasStats.value.averageUtilization ? `${(gasStats.value.averageUtilization * 100).toFixed(2)}%` : null;
+    return gasStats.value.averageUtilization !== null && gasStats.value.averageUtilization !== undefined ? `${(gasStats.value.averageUtilization * 100).toFixed(2)}%` : null;
 });
 
 const formattedBlockTime = computed(() => {
-    return gasStats.value.averageBlockTime ? `${Math.round(gasStats.value.averageBlockTime * 100) / 100}s` : null;
+    return gasStats.value.averageBlockTime !== null && gasStats.value.averageBlockTime !== undefined ? `${Math.round(gasStats.value.averageBlockTime * 100) / 100}s` : null;
 });
 
 const formattedLastBlockNumber = computed(() => {
@@ -191,12 +203,16 @@ const totalFastCost = computed(() => {
     return Number(gasStats.value.priorityFeePerGas?.fast) + Number(gasStats.value.baseFeePerGas);
 });
 
+const speedEstimatesAvailable = computed(() => {
+    return gasStats.value.baseFeePerGas !== null && gasStats.value.priorityFeePerGas && Object.keys(gasStats.value.priorityFeePerGas).length > 0;
+});
+
 const getLatestGasStats = () => {
     server.getLatestGasStats(1)
         .then(({ data }) => {
             gasStats.value = data;
             if (totalSlowCost.value !== null)
-                document.title = `${fromWei(totalSlowCost.value, 'gwei', 'Gwei', false, 2)} | ${explorerStore.name}`;
+                document.title = `${formatGweiAmount(totalSlowCost.value)} gwei | ${explorerStore.name}`;
         });
 }
 
@@ -231,21 +247,21 @@ const getGasPriceHistory = () => {
                         data: data.map(t => formatGwei(Number(t.slow))),
                         max: data.map(t => formatGwei(Number(t.maxSlow))),
                         min: data.map(t => formatGwei(Number(t.minSlow))),
-                        borderColor: theme.current.value.colors.success,
+                        borderColor: '#4CAF50',
                     },
                     {
                         label: 'Average',
                         data: data.map(t => formatGwei(Number(t.average))),
                         max: data.map(t => formatGwei(Number(t.maxAverage))),
                         min: data.map(t => formatGwei(Number(t.minAverage))),
-                        borderColor: theme.current.value.colors.primary,
+                        borderColor: '#3D95CE',
                     },
                     {
                         label: 'Fast',
                         data: data.map(t => formatGwei(Number(t.fast))),
                         max: data.map(t => formatGwei(Number(t.maxFast))),
                         min: data.map(t => formatGwei(Number(t.minFast))),
-                        borderColor: theme.current.value.colors.error,
+                        borderColor: '#E72732',
                     }
                 ]
             };
@@ -273,5 +289,17 @@ onMounted(async () => {
 onUnmounted(() => {
     document.title = originalTitle;
 });
-
 </script>
+<style scoped>
+.slow {
+    color: #4CAF50;
+}
+
+.average {
+    color: #3D95CE;
+}
+
+.fast {
+    color: #E72732;
+}
+</style>

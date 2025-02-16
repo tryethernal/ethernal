@@ -13,7 +13,8 @@
         <v-card-text>
             <v-data-table :items="gasConsumers" :headers="headers">
                 <template v-slot:item.to="{ item }">
-                    <HashLink type="address" :hash="item.to" :loadContract="true" :withName="true" :fullHash="true" />
+                    <HashLink v-if="item.to" type="address" :hash="item.to" :loadContract="true" :withName="true" :fullHash="true" />
+                    <i v-else>Contract Creation</i>
                 </template>
                 <template v-slot:item.fees="{ item }">
                     {{ fromWei(item.gasCost, 'ether', currentWorkspaceStore.chain.token, false, 3) }}
