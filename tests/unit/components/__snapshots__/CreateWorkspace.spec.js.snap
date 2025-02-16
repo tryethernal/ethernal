@@ -20,7 +20,7 @@ exports[`CreateWorkspace.vue > Should display a warning if browser is Safari 1`]
   <!---->
   <!---->
   <div class="v-card-text">
-    <div class="v-alert v-theme--light bg-error v-alert--density-compact v-alert--variant-flat" role="alert" style="display: none;">
+    <div class="v-alert v-theme--light bg-error v-alert--density-compact v-alert--variant-flat mb-3" role="alert" style="display: none;">
       <!----><span class="v-alert__underlay"></span>
       <!---->
       <div class="v-alert__prepend"><i class="mdi-close-circle mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="compact"></i></div>
@@ -243,7 +243,7 @@ exports[`CreateWorkspace.vue > Should display an error if it cannot connect to t
   <!---->
   <!---->
   <div class="v-card-text">
-    <div class="v-alert v-theme--light bg-error v-alert--density-compact v-alert--variant-flat" role="alert" style="">
+    <div class="v-alert v-theme--light bg-error v-alert--density-compact v-alert--variant-flat mb-3" role="alert" style="">
       Can't connect to rpc server,
       make sure your node is up, and reachable from the browser.<br>
       If you are using Brave, you'll need to disable Shields.
@@ -426,7 +426,7 @@ exports[`CreateWorkspace.vue > Should display locally running networks 1`] = `
   <!---->
   <!---->
   <div class="v-card-text">
-    <div class="v-alert v-theme--light bg-error v-alert--density-compact v-alert--variant-flat" role="alert" style="display: none;">
+    <div class="v-alert v-theme--light bg-error v-alert--density-compact v-alert--variant-flat mb-3" role="alert" style="display: none;">
       <!----><span class="v-alert__underlay"></span>
       <!---->
       <div class="v-alert__prepend"><i class="mdi-close-circle mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="compact"></i></div>
@@ -615,7 +615,7 @@ exports[`CreateWorkspace.vue > Should not display a warning message if user has 
   <!---->
   <!---->
   <div class="v-card-text">
-    <div class="v-alert v-theme--light bg-error v-alert--density-compact v-alert--variant-flat" role="alert" style="display: none;">
+    <div class="v-alert v-theme--light bg-error v-alert--density-compact v-alert--variant-flat mb-3" role="alert" style="display: none;">
       <!----><span class="v-alert__underlay"></span>
       <!---->
       <div class="v-alert__prepend"><i class="mdi-close-circle mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="compact"></i></div>

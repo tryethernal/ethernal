@@ -86,19 +86,18 @@ router.post('/migrateExplorer', authMiddleware, async (req, res, next) => {
     }
 });
 
-
 /*
     Creates a free demo explorer from a RPC server
-    @param {string} rpcServer - The RPC server to use for the explorer
-    @param {string} name (optional) - The name of the explorer
-    @param {string} token (optional) - The native token to use for the explorer
-    @returns {object} - The explorer object
-
     Demo explorers are deleted after 24 hours. They have a banner on the top of the page with
     a link to convert to a free trial.
     Some chainIds are blocked from being used for demo explorers. Those are the ones that have a
     high volume of transactions, already have an explorer, and are likely to be rate limited causing
     the explorer to not function properly.
+
+    @param {string} rpcServer - The RPC server to use for the explorer
+    @param {string} name (optional) - The name of the explorer
+    @param {string} token (optional) - The native token to use for the explorer
+    @returns {object} - The explorer object
 */
 router.post('/explorers', async (req, res, next) => {
     const data = req.body;
