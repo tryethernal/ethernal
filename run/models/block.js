@@ -37,17 +37,27 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     safeCreateEvent(event, transaction) {
-      return this.createEvent({
-        workspaceId: this.workspaceId,
-        number: this.number,
-        timestamp: this.timestamp,
-        transactionCount: this.transactionsCount,
-        baseFeePerGas: event.baseFeePerGas,
-        gasLimit: event.gasLimit,
-        gasUsed: event.gasUsed,
-        gasUsedRatio: event.gasUsedRatio,
-        priorityFeePerGas: event.priorityFeePerGas,
-      }, { transaction });
+      return sequelize.models.BlockEvent.bulkCreate(
+        [
+            {
+                blockId: this.id,
+                workspaceId: this.workspaceId,
+                number: this.number,
+                timestamp: this.timestamp,
+                transactionCount: this.transactionsCount,
+                baseFeePerGas: event.baseFeePerGas,
+                gasLimit: event.gasLimit,
+                gasUsed: event.gasUsed,
+                gasUsedRatio: event.gasUsedRatio,
+                priorityFeePerGas: event.priorityFeePerGas ? Sequelize.literal(`ARRAY[${event.priorityFeePerGas.join(',')}]::numeric[]`) : undefined,
+            }
+        ],
+        {
+            ignoreDuplicates: true,
+            returning: true,
+            transaction
+        }
+      );
     }
 
     async revertIfPartial() {
