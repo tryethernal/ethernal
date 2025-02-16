@@ -4,7 +4,7 @@
             <v-alert density="compact" text type="error">Free plan users are limited to one workspace. <a href="#" @click.stop="goToBilling()">Upgrade</a> to our Premium plan to create more.</v-alert>
         </v-card-text>
         <v-card-text v-else>
-            <v-alert v-show="errorMessage" density="compact" text type="error" v-html="errorMessage"></v-alert>
+            <v-alert class="mb-3" v-show="errorMessage" density="compact" text type="error" v-html="errorMessage"></v-alert>
             <template v-if="!isPublic">
                 <div class="mb-2">
                     <v-alert type="warning" class="my-2" v-if="isUsingSafari">
