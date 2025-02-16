@@ -58,7 +58,8 @@ module.exports = {
             },
             priorityFeePerGas: {
               type: Sequelize.ARRAY(Sequelize.NUMERIC),
-              allowNull: true
+              allowNull: false,
+              defaultValue: []
             }
           }, { transaction });
 
