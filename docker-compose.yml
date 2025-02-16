@@ -73,6 +73,11 @@ services:
     ports: []
     command: nodemon workers/lowPriority.js
 
+  process_historical_blocks:
+    <<: *backend
+    ports: []
+    command: nodemon workers/processHistoricalBlocks.js
+
   front:
     extra_hosts:
       - "app.ethernal.local:0.0.0.0"

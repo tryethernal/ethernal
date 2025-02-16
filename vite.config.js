@@ -26,6 +26,7 @@ export default ({ mode }) => {
         },
         server: {
             host: '0.0.0.0',
+            allowedHosts: true,
             port: 8080,
             headers: {
                 'Document-Policy': 'js-profiling'
