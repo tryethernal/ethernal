@@ -42,11 +42,11 @@ module.exports = {
             },
             baseFeePerGas: {
               type: Sequelize.NUMERIC,
-              allowNull: false
+              allowNull: true
             },
             gasLimit: {
               type: Sequelize.NUMERIC,
-              allowNull: true
+              allowNull: false
             },
             gasUsed: {
               type: Sequelize.NUMERIC,
@@ -54,11 +54,12 @@ module.exports = {
             },
             gasUsedRatio: {
               type: Sequelize.FLOAT,
-              allowNull: false
+              allowNull: true
             },
             priorityFeePerGas: {
               type: Sequelize.ARRAY(Sequelize.NUMERIC),
-              allowNull: false
+              allowNull: false,
+              defaultValue: []
             }
           }, { transaction });
 

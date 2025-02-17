@@ -175,14 +175,15 @@ module.exports = (sequelize, DataTypes) => {
 
         return sequelize.query(`
             SELECT
-                time_bucket('1 minute', timestamp) as day,
+                time_bucket_gapfill('1 day', timestamp) as day,
                 round(avg("gasUsedRatio"::numeric) * 100, 2) as "gasUtilizationRatio"
             FROM block_events
             WHERE "workspaceId" = :workspaceId
             AND "timestamp" >= timestamp :from
             AND "timestamp" < timestamp :to
             GROUP BY day
-            ORDER BY day ASC
+            ORDER BY day DESC
+            LIMIT 7
         `, {
             replacements: { workspaceId: this.id, from, to },
             type: QueryTypes.SELECT
@@ -204,14 +205,15 @@ module.exports = (sequelize, DataTypes) => {
 
         return sequelize.query(`
             SELECT
-                time_bucket('1 minute', timestamp) as day,
+                time_bucket_gapfill('1 day', timestamp) as day,
                 avg("gasLimit"::numeric) as "gasLimit"
             FROM block_events
             WHERE "workspaceId" = :workspaceId
             AND "timestamp" >= timestamp :from
             AND "timestamp" < timestamp :to
             GROUP BY day
-            ORDER BY day ASC
+            ORDER BY day DESC
+            LIMIT 7
         `, {
             replacements: { workspaceId: this.id, from, to },
             type: QueryTypes.SELECT
@@ -241,7 +243,7 @@ module.exports = (sequelize, DataTypes) => {
 
         return sequelize.query(`
             SELECT
-                time_bucket('1 minute', timestamp) as day,
+                time_bucket_gapfill('1 day', timestamp) as day,
                 min("baseFeePerGas"::numeric + "priorityFeePerGas"[1]::numeric) as "minSlow",
                 avg("baseFeePerGas"::numeric + "priorityFeePerGas"[1]::numeric) as "slow",
                 max("baseFeePerGas"::numeric + "priorityFeePerGas"[1]::numeric) as "maxSlow",
@@ -256,7 +258,8 @@ module.exports = (sequelize, DataTypes) => {
             AND "timestamp" >= timestamp :from
             AND "timestamp" < timestamp :to
             GROUP BY day
-            ORDER BY day ASC
+            ORDER BY day DESC
+            LIMIT 7
         `, {
             replacements: { workspaceId: this.id, from, to },
             type: QueryTypes.SELECT

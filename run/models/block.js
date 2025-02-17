@@ -37,17 +37,27 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     safeCreateEvent(event, transaction) {
-      return this.createEvent({
-        workspaceId: this.workspaceId,
-        number: this.number,
-        timestamp: this.timestamp,
-        transactionCount: this.transactionsCount,
-        baseFeePerGas: event.baseFeePerGas,
-        gasLimit: event.gasLimit,
-        gasUsed: event.gasUsed,
-        gasUsedRatio: event.gasUsedRatio,
-        priorityFeePerGas: event.priorityFeePerGas,
-      }, { transaction });
+      return sequelize.models.BlockEvent.bulkCreate(
+        [
+            {
+                blockId: this.id,
+                workspaceId: this.workspaceId,
+                number: this.number,
+                timestamp: this.timestamp,
+                transactionCount: this.transactionsCount,
+                baseFeePerGas: event.baseFeePerGas,
+                gasLimit: event.gasLimit,
+                gasUsed: event.gasUsed,
+                gasUsedRatio: event.gasUsedRatio,
+                priorityFeePerGas: event.priorityFeePerGas ? Sequelize.literal(`ARRAY[${event.priorityFeePerGas.join(',')}]::numeric[]`) : undefined,
+            }
+        ],
+        {
+            ignoreDuplicates: true,
+            returning: true,
+            transaction
+        }
+      );
     }
 
     async revertIfPartial() {
@@ -74,8 +84,9 @@ module.exports = (sequelize, DataTypes) => {
 
                 if (workspace.tracing && workspace.tracing != 'hardhat') {
                     const jobs = [];
-                    for (let i = 0; i < this.transactions.length; i++) {
-                        const transaction = this.transactions[i];
+                    const transactions = await this.getTransactions();
+                    for (let i = 0; i < transactions.length; i++) {
+                        const transaction = transactions[i];
                         jobs.push({
                             name: `processTransactionTrace-${this.workspaceId}-${transaction.hash}`,
                             data: { transactionId: transaction.id }
@@ -92,9 +103,9 @@ module.exports = (sequelize, DataTypes) => {
                 if (this.number == workspace.integrityCheckStartBlockNumber) {
                     await enqueue('integrityCheck', `integrityCheck-${this.workspaceId}`, { workspaceId: this.workspaceId });
                 }
-            }
 
-            return enqueue('processBlock', `processBlock-${this.id}`, { blockId: this.id });
+                return enqueue('processBlock', `processBlock-${this.id}`, { blockId: this.id });
+            }
         };
 
         if (options.transaction)

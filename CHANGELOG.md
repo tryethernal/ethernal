@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.2.11] - 2025-02-16
+### Fixed
+- Block event creation when duplicate
+
+## [4.2.10] - 2025-02-16
+### Changed
+- Disable gas analytics if the rpc doesn't support eth_feeHistory
+
+## [4.2.9] - 2025-02-16
+### Added
+- Block event processing
+
 ## [4.2.8] - 2025-02-12
 ### Changed
 - Improve blacklisted chainIds for demo explorers

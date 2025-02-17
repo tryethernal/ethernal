@@ -1,4 +1,8 @@
 const { Block, Workspace } = require('../models');
+<<<<<<< HEAD
+=======
+const { sanitize } = require('../lib/utils');
+>>>>>>> develop
 
 module.exports = async job => {
     const data = job.data;
@@ -26,19 +30,31 @@ module.exports = async job => {
     if (!block.workspace.explorer.shouldSync)
         return 'Sync is disabled';
 
-    const client = block.workspace.getViemPublicClient();
+    let blockEvent = {};
+    if (block.workspace.explorer.gasAnalyticsEnabled) {
+        const client = block.workspace.getViemPublicClient();
 
-    const feeHistory = await client.getFeeHistory({
-        blockCount: 1,
-        blockNumber: block.number,
-        rewardPercentiles: [20, 50, 75]
-    });
+        try {
+            const feeHistory = await client.getFeeHistory({
+                blockCount: 1,
+                blockNumber: block.number,
+                rewardPercentiles: [20, 50, 75]
+            });
 
-    return block.safeCreateEvent({
-        baseFeePerGas: feeHistory.baseFeePerGas[0].toString(),
+            blockEvent = {
+                baseFeePerGas: feeHistory.baseFeePerGas[0].toString(),
+                gasUsedRatio: feeHistory.gasUsedRatio[0].toString(),
+                priorityFeePerGas: feeHistory.reward[0].map(x => x.toString())
+            };
+        } catch (error) {
+            if (error.code == -32601)
+                await block.workspace.explorer.update({ gasAnalyticsEnabled: false });
+        }
+    }
+
+    return block.safeCreateEvent(sanitize({
+        ...blockEvent,
         gasUsed: block.gasUsed,
         gasLimit: block.gasLimit,
-        gasUsedRatio: feeHistory.gasUsedRatio[0].toString(),
-        priorityFeePerGas: feeHistory.reward[0].map(x => x.toString())
-    });
+    }));
 };

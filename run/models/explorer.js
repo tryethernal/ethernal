@@ -548,7 +548,8 @@ module.exports = (sequelize, DataTypes) => {
     shouldSync: DataTypes.BOOLEAN,
     shouldEnforceQuota: DataTypes.BOOLEAN,
     isDemo: DataTypes.BOOLEAN,
-    l1Explorer: DataTypes.STRING
+    l1Explorer: DataTypes.STRING,
+    gasAnalyticsEnabled: DataTypes.BOOLEAN
   }, {
     hooks: {
         afterCreate(explorer, options) {

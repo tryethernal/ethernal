@@ -14,9 +14,12 @@
                                 <small class="text-medium-emphasis">Slow</small>
                             </template>
                             <v-card-text v-if="totalSlowCost !== null">
-                                <span class="text-h5 slow">{{ formatGweiAmount(totalSlowCost) }} gwei</span>
+                                <span v-tooltip="`${totalSlowCost} wei`" class="text-h5 slow">{{ formatGweiAmount(totalSlowCost) }} gwei</span>
                                 <div class="mt-2">
-                                    <small>Base: {{ formatGweiAmount(gasStats.baseFeePerGas) }} | Priority: {{ formatGweiAmount(gasStats.priorityFeePerGas?.slow) }}</small>
+                                    <small>
+                                        <span v-tooltip="`${gasStats.baseFeePerGas} wei`">Base: {{ formatGweiAmount(gasStats.baseFeePerGas) }}</span> |
+                                        <span v-tooltip="`${gasStats.priorityFeePerGas?.slow} wei`">Priority: {{ formatGweiAmount(gasStats.priorityFeePerGas?.slow) }}</span>
+                                    </small>
                                 </div>
                             </v-card-text>
                         </v-card>
@@ -28,9 +31,12 @@
                                 <small class="text-medium-emphasis">Average</small>
                             </template>
                             <v-card-text v-if="totalAverageCost !== null">
-                                <span class="text-h5 average">{{ formatGweiAmount(totalAverageCost) }} gwei</span>
+                                <span v-tooltip="`${totalAverageCost} wei`" class="text-h5 average">{{ formatGweiAmount(totalAverageCost) }} gwei</span>
                                 <div class="mt-2">
-                                    <small>Base: {{ formatGweiAmount(gasStats.baseFeePerGas) }} | Priority: {{ formatGweiAmount(gasStats.priorityFeePerGas?.average) }}</small>
+                                    <small>
+                                        <span v-tooltip="`${gasStats.baseFeePerGas} wei`">Base: {{ formatGweiAmount(gasStats.baseFeePerGas) }}</span> |
+                                        <span v-tooltip="`${gasStats.priorityFeePerGas?.average} wei`">Priority: {{ formatGweiAmount(gasStats.priorityFeePerGas?.average) }}</span>
+                                    </small>
                                 </div>
                             </v-card-text>
                         </v-card>
@@ -42,9 +48,12 @@
                                 <small class="text-medium-emphasis">Fast</small>
                             </template>
                             <v-card-text v-if="totalFastCost !== null">
-                                <span class="text-h5 fast">{{ formatGweiAmount(totalFastCost) }} gwei</span>
+                                <span v-tooltip="`${totalFastCost} wei`" class="text-h5 fast">{{ formatGweiAmount(totalFastCost) }} gwei</span>
                                 <div class="mt-2">
-                                    <small>Base: {{ formatGweiAmount(gasStats.baseFeePerGas) }} | Priority: {{ formatGweiAmount(gasStats.priorityFeePerGas?.fast) }}</small>
+                                    <small>
+                                        <span v-tooltip="`${gasStats.baseFeePerGas} wei`">Base: {{ formatGweiAmount(gasStats.baseFeePerGas) }}</span> |
+                                        <span v-tooltip="`${gasStats.priorityFeePerGas?.fast} wei`">Priority: {{ formatGweiAmount(gasStats.priorityFeePerGas?.fast) }}</span>
+                                    </small>
                                 </div>
                             </v-card-text>
                         </v-card>
@@ -53,10 +62,9 @@
                 <v-row class="mt-0">
                     <v-col cols="12" class="pt-0">
                         <v-card class="fill-height">
-                            <v-card-title class="text-primary">
-                                <small>
-                                    Additional Info
-                                </small>
+                            <v-card-title class="text-primary d-flex justify-space-between">
+                                <small>Additional Info</small>
+                                <v-icon v-tooltip="'Calculated over the last minute'" class="mb-1" size="x-small">mdi-information-outline</v-icon>
                             </v-card-title>
                             <v-card-text>
                                 <v-row>
@@ -114,9 +122,9 @@
                             <v-chip size="small" value="gasLimit">Gas Limit</v-chip>
                             <v-chip size="small" value="utilization">Utilization</v-chip>
                         </v-chip-group>
-                        <MultiLineChart v-if="selectedChart === 'gasPrice'" :xLabels="gasPriceHistory.xLabels" :data="gasPriceHistory.data" tokenSymbol="gwei" :index="0" />
-                        <LineChart v-if="selectedChart === 'gasLimit'" :xLabels="gasLimitHistory.xLabels" :data="gasLimitHistory.data" tokenSymbol="gwei" :index="1" />
-                        <LineChart v-if="selectedChart === 'utilization'" :xLabels="gasUtilizationRatioHistory.xLabels" :data="gasUtilizationRatioHistory.data" tokenSymbol="%" :index="2" />
+                        <MultiLineChart v-if="selectedChart === 'gasPrice'" :xLabels="gasPriceHistory.xLabels" :data="gasPriceHistory.data" tokenSymbol="gwei" :floating="true" />
+                        <LineChart v-if="selectedChart === 'gasLimit'" :xLabels="gasLimitHistory.xLabels" :data="gasLimitHistory.data" tokenSymbol="gwei" />
+                        <LineChart v-if="selectedChart === 'utilization'" :xLabels="gasUtilizationRatioHistory.xLabels" :data="gasUtilizationRatioHistory.data" tokenSymbol="%" />
                     </v-card-text>
                 </v-card>
             </v-col>
@@ -163,11 +171,11 @@ const formatGweiAmount = (amount) => {
         return null;
 
     else if (amount == 0)
-        return 0;
+        return '0';
     else if (amount < MINIMUM_DISPLAY_GWEI)
         return `<0.01`;
     else
-        return fromWei(amount, 'gwei', '', false, 2);
+        return fromWei(amount, 'gwei', ' ', false, 2);
 };
 
 const formattedUtilization = computed(() => {

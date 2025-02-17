@@ -27,6 +27,7 @@ export default ({ mode }) => {
         server: {
             allowedHosts: ['app.ethernal.local'],
             host: '0.0.0.0',
+            allowedHosts: true,
             port: 8080,
             headers: {
                 'Document-Policy': 'js-profiling'
