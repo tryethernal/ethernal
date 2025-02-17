@@ -11,7 +11,7 @@
             </div>
         </v-card-title>
         <v-card-text>
-            <v-data-table :items="gasConsumers" :headers="headers">
+            <v-data-table :items="gasConsumers" :headers="headers" :loading="loading">
                 <template v-slot:item.to="{ item }">
                     <HashLink v-if="item.to" type="address" :hash="item.to" :loadContract="true" :withName="true" :fullHash="true" />
                     <i v-else>Contract Creation</i>
@@ -44,6 +44,7 @@ const server = inject('$server');
 const fromWei = inject('$fromWei');
 const intervalInHours = ref("24");
 const gasConsumers = ref([]);
+const loading = ref(true);
 
 const headers = [
     { title: 'Address', key: 'to' },
@@ -51,13 +52,13 @@ const headers = [
     { title: '% Used', key: 'percentUsed' }
 ];
 
-watch(intervalInHours, async () => {
+const getLatestGasConsumers = () => {
+    loading.value = true;
     server.getLatestGasConsumers(intervalInHours.value)
-        .then(response => gasConsumers.value = response.data);
-});
+        .then(response => gasConsumers.value = response.data)
+        .finally(() => loading.value = false);
+}
 
-onMounted(async () => {
-    server.getLatestGasConsumers(intervalInHours.value)
-        .then(response => gasConsumers.value = response.data);
-});
+watch(intervalInHours, () => getLatestGasConsumers());
+onMounted(() => getLatestGasConsumers());
 </script>

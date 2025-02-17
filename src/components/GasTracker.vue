@@ -64,7 +64,7 @@
                         <v-card class="fill-height">
                             <v-card-title class="text-primary d-flex justify-space-between">
                                 <small>Additional Info</small>
-                                <v-icon v-tooltip="'Calculated over the last minute'" class="mb-1" size="x-small">mdi-information-outline</v-icon>
+                                <v-icon v-tooltip="'Calculated over the latest 20 blocks'" class="mb-1" size="x-small">mdi-information-outline</v-icon>
                             </v-card-title>
                             <v-card-text>
                                 <v-row>
@@ -72,9 +72,9 @@
                                         <v-card color="primary" class="ma-0 pa-0" variant="tonal">
                                             <template #title>
                                                 <div class="d-flex flex-column">
-                                            <span class="text-caption">LATEST BLOCK</span>
-                                            <small>{{ formattedLastBlockNumber }}</small>
-                                        </div>
+                                                    <span class="text-caption">LATEST BLOCK</span>
+                                                    <small>{{ formattedLastBlockNumber }}</small>
+                                                </div>
                                             </template>
                                         </v-card>
                                     </v-col>
@@ -82,9 +82,9 @@
                                         <v-card color="primary" class="ma-0 pa-0" variant="tonal">
                                             <template #title>
                                                 <div class="d-flex flex-column">
-                                            <span class="text-caption">AVG BLOCK TIME</span>
-                                            <small>{{ formattedBlockTime }}</small>
-                                        </div>
+                                                    <span class="text-caption">AVG BLOCK TIME</span>
+                                                    <small>{{ formattedBlockTime }}</small>
+                                                </div>
                                             </template>
                                         </v-card>
                                     </v-col>
@@ -92,9 +92,9 @@
                                         <v-card color="primary" class="ma-0 pa-0" variant="tonal">
                                             <template #title>
                                                 <div class="d-flex flex-column">
-                                            <span class="text-caption">AVG BLOCK SIZE</span>
-                                            <small>{{ gasStats.averageBlockSize }}</small>
-                                        </div>
+                                                    <span class="text-caption">AVG BLOCK SIZE</span>
+                                                    <small>{{ gasStats.averageBlockSize }}</small>
+                                                </div>
                                             </template>
                                         </v-card>
                                     </v-col>
@@ -102,12 +102,13 @@
                                         <v-card color="primary" class="ma-0 pa-0" variant="tonal">
                                             <template #title>
                                                 <div class="d-flex flex-column">
-                                            <span class="text-caption">AVG UTILIZATION</span>
-                                            <small>{{ formattedUtilization }}</small>
-                                        </div>
+                                                    <span class="text-caption">AVG UTILIZATION</span>
+                                                    <small>{{ formattedUtilization }}</small>
+                                                </div>
                                             </template>
                                         </v-card>
                                     </v-col>
+                                    <small class="ml-4 text-medium-emphasis">Last updated at {{ moment(gasStats.latestBlockTimestamp).format('h:mm:ssa') }}.</small>
                                 </v-row>
                             </v-card-text>
                         </v-card>
@@ -124,7 +125,7 @@
                         </v-chip-group>
                         <MultiLineChart v-if="selectedChart === 'gasPrice'" :xLabels="gasPriceHistory.xLabels" :data="gasPriceHistory.data" tokenSymbol="gwei" :floating="true" />
                         <LineChart v-if="selectedChart === 'gasLimit'" :xLabels="gasLimitHistory.xLabels" :data="gasLimitHistory.data" tokenSymbol="gwei" />
-                        <LineChart v-if="selectedChart === 'utilization'" :xLabels="gasUtilizationRatioHistory.xLabels" :data="gasUtilizationRatioHistory.data" tokenSymbol="%" />
+                        <LineChart v-if="selectedChart === 'utilization'" :xLabels="gasUtilizationRatioHistory.xLabels" :data="gasUtilizationRatioHistory.data" tokenSymbol="%" :floating="true" yAxisSymbol="%" />
                     </v-card-text>
                 </v-card>
             </v-col>
@@ -141,6 +142,7 @@
 </template>
 
 <script setup>
+import moment from 'moment';
 import { onMounted, onUnmounted, inject, ref, computed } from 'vue';
 import { formatGwei } from 'viem';
 import { useExplorerStore } from '../stores/explorer';
@@ -160,7 +162,7 @@ const gasPriceHistory = ref({});
 const gasLimitHistory = ref({});
 const gasUtilizationRatioHistory = ref({});
 const from = ref(new Date(new Date() - 7 * 24 * 3600 * 1000));
-const to = ref(new Date());
+const to = ref(new Date(new Date().setHours(24,0,0,0)));
 const selectedChart = ref('gasPrice');
 const originalTitle = document.title;
 
@@ -229,7 +231,7 @@ const getGasLimitHistory = () => {
         .then(({ data }) => {
             gasLimitHistory.value = {
                 xLabels: data.map(t => t.day),
-                data: data.map(t => Number(t.gasLimit)),
+                data: data.map(t => t.gasLimit ? Number(t.gasLimit) : null),
             };
         });
 }
@@ -239,7 +241,7 @@ const getGasUtilizationRatioHistory = () => {
         .then(({ data }) => {
             gasUtilizationRatioHistory.value = {
                 xLabels: data.map(t => t.day),
-                data: data.map(t => Number(t.gasUtilizationRatio)),
+                data: data.map(t => t.gasUtilizationRatio ? Number(t.gasUtilizationRatio) : null),
             };
         });
 }
@@ -252,23 +254,23 @@ const getGasPriceHistory = () => {
                 data: [
                     {
                         label: 'Slow',
-                        data: data.map(t => formatGwei(Number(t.slow))),
-                        max: data.map(t => formatGwei(Number(t.maxSlow))),
-                        min: data.map(t => formatGwei(Number(t.minSlow))),
+                        data: data.map(t => t.slow ? formatGwei(Number(t.slow)) : null),
+                        max: data.map(t => t.maxSlow ? formatGwei(Number(t.maxSlow)) : null),
+                        min: data.map(t => t.minSlow ? formatGwei(Number(t.minSlow)) : null),
                         borderColor: '#4CAF50',
                     },
                     {
                         label: 'Average',
-                        data: data.map(t => formatGwei(Number(t.average))),
-                        max: data.map(t => formatGwei(Number(t.maxAverage))),
-                        min: data.map(t => formatGwei(Number(t.minAverage))),
+                        data: data.map(t => t.average ? formatGwei(Number(t.average)) : null),
+                        max: data.map(t => t.maxAverage ? formatGwei(Number(t.maxAverage)) : null),
+                        min: data.map(t => t.minAverage ? formatGwei(Number(t.minAverage)) : null),
                         borderColor: '#3D95CE',
                     },
                     {
                         label: 'Fast',
-                        data: data.map(t => formatGwei(Number(t.fast))),
-                        max: data.map(t => formatGwei(Number(t.maxFast))),
-                        min: data.map(t => formatGwei(Number(t.minFast))),
+                        data: data.map(t => t.fast ? formatGwei(Number(t.fast)) : null),
+                        max: data.map(t => t.maxFast ? formatGwei(Number(t.maxFast)) : null),
+                        min: data.map(t => t.minFast ? formatGwei(Number(t.minFast)) : null),
                         borderColor: '#E72732',
                     }
                 ]

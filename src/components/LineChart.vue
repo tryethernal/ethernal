@@ -63,7 +63,7 @@ const DATE_FORMAT = 'MM/DD';
 
 export default {
     name: 'LineChart',
-    props: ['title', 'xLabels', 'data', 'tooltipUnit', 'tokenSymbol', 'floating'],
+    props: ['title', 'xLabels', 'data', 'tooltipUnit', 'tokenSymbol', 'floating', 'yAxisSymbol'],
     components: {
         LineChartGenerator
     },
@@ -133,7 +133,7 @@ export default {
             return {
                 extra: {
                     tokenSymbol: this.tokenSymbol,
-                    tooltipUnit: this.tooltipUnit
+                    tooltipUnit: this.tooltipUnit,
                 },
                 responsive: true,
                 maintainAspectRatio: false,
@@ -170,7 +170,10 @@ export default {
                         ticks: {
                             precision: this.floating ? null : 0,
                             autoSkip: false,
-                            maxTicksLimit: 6
+                            maxTicksLimit: 6,
+                            callback: (value) => {
+                                return this.yAxisSymbol ? `${value}${this.yAxisSymbol}` : value.toLocaleString();
+                            }
                         }
                     },
                     x: {

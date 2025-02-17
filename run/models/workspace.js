@@ -182,8 +182,7 @@ module.exports = (sequelize, DataTypes) => {
             AND "timestamp" >= timestamp :from
             AND "timestamp" < timestamp :to
             GROUP BY day
-            ORDER BY day DESC
-            LIMIT 7
+            ORDER BY day ASC
         `, {
             replacements: { workspaceId: this.id, from, to },
             type: QueryTypes.SELECT
@@ -206,14 +205,13 @@ module.exports = (sequelize, DataTypes) => {
         return sequelize.query(`
             SELECT
                 time_bucket_gapfill('1 day', timestamp) as day,
-                avg("gasLimit"::numeric) as "gasLimit"
+                round(avg("gasLimit"::numeric), 0) as "gasLimit"
             FROM block_events
             WHERE "workspaceId" = :workspaceId
             AND "timestamp" >= timestamp :from
             AND "timestamp" < timestamp :to
             GROUP BY day
-            ORDER BY day DESC
-            LIMIT 7
+            ORDER BY day ASC
         `, {
             replacements: { workspaceId: this.id, from, to },
             type: QueryTypes.SELECT
@@ -245,21 +243,20 @@ module.exports = (sequelize, DataTypes) => {
             SELECT
                 time_bucket_gapfill('1 day', timestamp) as day,
                 min("baseFeePerGas"::numeric + "priorityFeePerGas"[1]::numeric) as "minSlow",
-                avg("baseFeePerGas"::numeric + "priorityFeePerGas"[1]::numeric) as "slow",
+                round(avg("baseFeePerGas"::numeric + "priorityFeePerGas"[1]::numeric), 0) as "slow",
                 max("baseFeePerGas"::numeric + "priorityFeePerGas"[1]::numeric) as "maxSlow",
                 min("baseFeePerGas"::numeric + "priorityFeePerGas"[2]::numeric) as "minAverage",
-                avg("baseFeePerGas"::numeric + "priorityFeePerGas"[2]::numeric) as "average",
+                round(avg("baseFeePerGas"::numeric + "priorityFeePerGas"[2]::numeric), 0) as "average",
                 max("baseFeePerGas"::numeric + "priorityFeePerGas"[2]::numeric) as "maxAverage",
                 min("baseFeePerGas"::numeric + "priorityFeePerGas"[3]::numeric) as "minFast",
-                avg("baseFeePerGas"::numeric + "priorityFeePerGas"[3]::numeric) as "fast",
+                round(avg("baseFeePerGas"::numeric + "priorityFeePerGas"[3]::numeric), 0) as "fast",
                 max("baseFeePerGas"::numeric + "priorityFeePerGas"[3]::numeric) as "maxFast"
             FROM public.block_events
             WHERE "workspaceId" = :workspaceId
             AND "timestamp" >= timestamp :from
             AND "timestamp" < timestamp :to
             GROUP BY day
-            ORDER BY day DESC
-            LIMIT 7
+            ORDER BY day ASC
         `, {
             replacements: { workspaceId: this.id, from, to },
             type: QueryTypes.SELECT
@@ -283,7 +280,7 @@ module.exports = (sequelize, DataTypes) => {
             SELECT * FROM block_events
             WHERE "workspaceId" = :workspaceId
             ORDER BY "timestamp" DESC
-            LIMIT 5
+            LIMIT 20
         `, {
             replacements: { workspaceId: this.id }
         });
@@ -310,6 +307,7 @@ module.exports = (sequelize, DataTypes) => {
             averageUtilization,
             averageBlockTime,
             latestBlockNumber,
+            latestBlockTimestamp: latestBlock.timestamp,
             baseFeePerGas: latestBlock.baseFeePerGas,
             priorityFeePerGas
         };

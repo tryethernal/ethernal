@@ -1,8 +1,5 @@
 const { Block, Workspace } = require('../models');
-<<<<<<< HEAD
-=======
 const { sanitize } = require('../lib/utils');
->>>>>>> develop
 
 module.exports = async job => {
     const data = job.data;

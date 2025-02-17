@@ -14,6 +14,7 @@
             <v-data-table
                 :items="gasSpenders"
                 :headers="headers"
+                :loading="loading"
                 :items-per-page-options="[
                     { value: 10, title: '10' },
                     { value: 25, title: '25' },
@@ -50,20 +51,20 @@ const server = inject('$server');
 const fromWei = inject('$fromWei');
 const intervalInHours = ref("24");
 const gasSpenders = ref([]);
-
+const loading = ref(true);
 const headers = [
     { title: 'Address', key: 'from' },
     { title: 'Fees', key: 'fees' },
     { title: '% Used', key: 'percentUsed' }
 ];
 
-watch(intervalInHours, async () => {
+const getLatestGasSpenders = () => {
+    loading.value = true;
     server.getLatestGasSpenders(intervalInHours.value)
-        .then(response => gasSpenders.value = response.data);
-});
+        .then(response => gasSpenders.value = response.data)
+        .finally(() => loading.value = false);
+}
 
-onMounted(async () => {
-    server.getLatestGasSpenders(intervalInHours.value)
-        .then(response => gasSpenders.value = response.data);
-});
+watch(intervalInHours, () => getLatestGasSpenders());
+onMounted(() => getLatestGasSpenders());
 </script>
