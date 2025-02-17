@@ -60,8 +60,6 @@ export default {
                     processedParams[i] = processMethodCallParam(this.params[i], this.method.inputs[i].type);
                 }
 
-                console.log(processedParams);
-
                 readContract(this.currentWorkspaceStore.wagmiConfig, {
                     address: this.contract.address,
                     abi: this.contract.abi,

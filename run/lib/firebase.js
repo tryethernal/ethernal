@@ -46,6 +46,9 @@ const V2DexPair = models.V2DexPair;
         - percentUsed: The percentage of total gas used by the gas spender
 */
 const getLatestGasSpenders = async (workspaceId, intervalInHours = 24, limit = 50) => {
+    if (!workspaceId)
+        throw new Error('Missing parameter');
+
     const workspace = await Workspace.findByPk(workspaceId);
     if (!workspace)
         throw new Error('Could not find workspace');
@@ -66,6 +69,9 @@ const getLatestGasSpenders = async (workspaceId, intervalInHours = 24, limit = 5
         - gasCost: Cost of total gas used
 */
 const getLatestGasConsumers = async (workspaceId, intervalInHours = 24, limit = 50) => {
+    if (!workspaceId)
+        throw new Error('Missing parameter');
+
     const workspace = await Workspace.findByPk(workspaceId);
     if (!workspace)
         throw new Error('Could not find workspace');
