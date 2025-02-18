@@ -54,7 +54,7 @@ router.get('/getabi', async (req, res) => {
             result: JSON.stringify(contract.abi)
         });
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.contracts.getabi', error, queryParams: req.query, headers: req.headers });
+        logger.error(error.message, { location: 'get.api.contracts.getabi', error, data, headers: req.headers });
         res.status(200).json({
             status: "0",
             message: "OK",
@@ -117,7 +117,7 @@ router.get('/sourceCode', async (req, res) => {
             result: [response]
         });
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.contracts.sourceCode', error, queryParams: req.query });
+        logger.error(error.message, { location: 'get.api.contracts.sourceCode', error, data });
         res.status(200).json({
             status: "0",
             message: "OK",
@@ -208,7 +208,7 @@ router.post('/verify', async (req, res) => {
     } catch(error) {
         if (lock && isLockAcquired)
             await lock.release();
-        logger.error(error.message, { location: 'post.api.contracts.verify', error, queryParams: req.query });
+        logger.error(error.message, { location: 'post.api.contracts.verify', error, data });
         res.status(200).json({
             status: "0",
             message: "OK",
