@@ -118,7 +118,7 @@
             <v-col cols="12" lg="6">
                 <v-card>
                     <v-card-text>
-                        <v-chip-group class="pt-0 mb-1" v-model="selectedChart" selected-class="text-primary">
+                        <v-chip-group mandatory class="pt-0 mb-1" v-model="selectedChart" selected-class="text-primary">
                             <v-chip size="small" value="gasPrice">Gas Price</v-chip>
                             <v-chip size="small" value="gasLimit">Gas Limit</v-chip>
                             <v-chip size="small" value="utilization">Utilization</v-chip>
@@ -181,7 +181,14 @@ const formatGweiAmount = (amount) => {
 };
 
 const formattedUtilization = computed(() => {
-    return gasStats.value.averageUtilization !== null && gasStats.value.averageUtilization !== undefined ? `${(gasStats.value.averageUtilization * 100).toFixed(2)}%` : null;
+    if (gasStats.value.averageUtilization === null || gasStats.value.averageUtilization === undefined)
+        return null;
+    else if (gasStats.value.averageUtilization == 0)
+        return '0%';
+    else if (gasStats.value.averageUtilization < 0.0001)
+        return '<0.01%';
+    else
+        return `${(gasStats.value.averageUtilization * 100).toFixed(2)}%`;
 });
 
 const formattedBlockTime = computed(() => {
