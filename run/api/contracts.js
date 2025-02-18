@@ -137,6 +137,7 @@ router.post('/verify', async (req, res) => {
         const contractAddress = data.contractaddress.toLowerCase();
 
         let explorer;
+
         if (req.headers['apx-incoming-host']) {
             explorer = await db.getPublicExplorerParamsByDomain(req.headers['apx-incoming-host'])
         }
@@ -217,6 +218,14 @@ router.post('/verify', async (req, res) => {
 });
 
 router.get('/verificationStatus', async (req, res) => {
+    res.status(200).json({
+        status: "1",
+        message: "OK",
+        result: "Pass - Verified"
+    });
+});
+
+router.post('/verificationStatus', async (req, res) => {
     res.status(200).json({
         status: "1",
         message: "OK",
