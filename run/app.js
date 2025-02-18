@@ -39,13 +39,15 @@ if (process.env.NODE_ENV != 'production') {
         if (req.path != '/api')
             return next();
 
-        if (req.body.module == 'contract' && req.body.action == 'verifysourcecode')
+        const data = { ...req.query, ...req.body };
+
+        if (data.module == 'contract' && data.action == 'verifysourcecode')
             req.url = '/api/contracts/verify';
-        else if (req.query.module == 'contract' && req.query.action == 'getsourcecode' && req.query.apikey)
+        else if (data.module == 'contract' && data.action == 'getsourcecode' && data.apikey)
             req.url = '/api/contracts/sourceCode';
         else if (req.query.module == 'contract' && req.query.action == 'getabi' && req.query.apikey)
             req.url = '/api/contracts/getabi';
-        else if (req.query.module == 'contract' && req.query.action == 'checkverifystatus' && req.query.apikey && req.query.guid)
+        else if (data.module == 'contract' && data.action == 'checkverifystatus' && data.apikey && data.guid)
             req.url = '/api/contracts/verificationStatus';
 
         next();
