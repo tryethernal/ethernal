@@ -1856,11 +1856,6 @@ module.exports = (sequelize, DataTypes) => {
                     attributes: ['id'],
                     include: [
                         {
-                            model: sequelize.models.BlockEvent,
-                            attributes: ['id'],
-                            as: 'event'
-                        },
-                        {
                             model: sequelize.models.Transaction,
                             attributes: ['id'],
                             as: 'transactions',
@@ -1906,7 +1901,6 @@ module.exports = (sequelize, DataTypes) => {
                 const entities = {};
 
                 entities.blocks = blocks;
-                entities.block_events = blocks.flatMap(block => block.event).filter(event => !!event);
                 entities.transactions = blocks.flatMap(block => block.transactions);
                 entities.transaction_trace_steps = entities.transactions.flatMap(transaction => transaction.traceSteps).filter(traceStep => !!traceStep);
                 entities.contracts = entities.transactions.flatMap(transaction => transaction.createdContract).filter(contract => !!contract);
@@ -1917,6 +1911,13 @@ module.exports = (sequelize, DataTypes) => {
 
                 for (const contract of entities.contracts)
                     await contract.update({ transactionId: null }, { transaction });
+
+                if (entities.blocks.length) {
+                    await sequelize.query(`DELETE FROM block_events WHERE "blockId" IN (:ids) AND "workspaceId" = :workspaceId`, {
+                        replacements: { ids: entities.blocks.map(row => row.id), workspaceId: this.id },
+                        transaction
+                    });
+                }
 
                 if (entities.transactions.length) {
                     await sequelize.query(`DELETE FROM transaction_events WHERE "transactionId" IN (:ids) AND "workspaceId" = :workspaceId`, {
@@ -1939,7 +1940,7 @@ module.exports = (sequelize, DataTypes) => {
                     });
                 }
 
-                for (const table of ['token_balance_changes', 'token_transfers', 'transaction_logs', 'transaction_receipts', 'transaction_trace_steps', 'transactions', 'blocks', 'block_events']) {
+                for (const table of ['token_balance_changes', 'token_transfers', 'transaction_logs', 'transaction_receipts', 'transaction_trace_steps', 'transactions', 'blocks']) {
                     if (entities[table].length) {
                         await sequelize.query(`DELETE FROM ${table} WHERE "id" IN (:ids) AND "workspaceId" = :workspaceId`, {
                             replacements: { ids: entities[table].map(row => row.id), workspaceId: this.id },
