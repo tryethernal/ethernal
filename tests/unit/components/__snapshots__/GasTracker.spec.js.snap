@@ -136,41 +136,7 @@ exports[`GasTracker.vue > Should display gas tracker 1`] = `
               </i></div>
             <div data-v-931b96d5="" class="v-card-text">
               <div data-v-931b96d5="" class="v-row">
-                <div data-v-931b96d5="" class="v-col-md-6 v-col-lg-3 v-col-6">
-                  <div data-v-931b96d5="" class="v-card v-theme--light text-primary v-card--density-default v-card--variant-tonal ma-0 pa-0">
-                    <!---->
-                    <div class="v-card__loader">
-                      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
-                        <!---->
-                        <div class="v-progress-linear__background"></div>
-                        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
-                        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
-                          <div class="v-progress-linear__indeterminate">
-                            <div class="v-progress-linear__indeterminate long"></div>
-                            <div class="v-progress-linear__indeterminate short"></div>
-                          </div>
-                        </transition-stub>
-                        <!---->
-                      </div>
-                    </div>
-                    <div class="v-card-item">
-                      <!---->
-                      <div class="v-card-item__content">
-                        <div class="v-card-title">
-                          <div data-v-931b96d5="" class="d-flex flex-column"><span data-v-931b96d5="" class="text-caption">LATEST BLOCK</span><small data-v-931b96d5="">10,000,000</small></div>
-                        </div>
-                        <!---->
-                        <!---->
-                      </div>
-                      <!---->
-                    </div>
-                    <!---->
-                    <!---->
-                    <!---->
-                    <!----><span class="v-card__underlay"></span>
-                  </div>
-                </div>
-                <div data-v-931b96d5="" class="v-col-md-6 v-col-lg-3 v-col-6">
+                <div data-v-931b96d5="" class="v-col-lg-4 v-col-12">
                   <div data-v-931b96d5="" class="v-card v-theme--light text-primary v-card--density-default v-card--variant-tonal ma-0 pa-0">
                     <!---->
                     <div class="v-card__loader">
@@ -204,7 +170,7 @@ exports[`GasTracker.vue > Should display gas tracker 1`] = `
                     <!----><span class="v-card__underlay"></span>
                   </div>
                 </div>
-                <div data-v-931b96d5="" class="v-col-md-6 v-col-lg-3 v-col-6">
+                <div data-v-931b96d5="" class="v-col-lg-4 v-col-12">
                   <div data-v-931b96d5="" class="v-card v-theme--light text-primary v-card--density-default v-card--variant-tonal ma-0 pa-0">
                     <!---->
                     <div class="v-card__loader">
@@ -238,7 +204,7 @@ exports[`GasTracker.vue > Should display gas tracker 1`] = `
                     <!----><span class="v-card__underlay"></span>
                   </div>
                 </div>
-                <div data-v-931b96d5="" class="v-col-md-6 v-col-lg-3 v-col-6">
+                <div data-v-931b96d5="" class="v-col-lg-4 v-col-12">
                   <div data-v-931b96d5="" class="v-card v-theme--light text-primary v-card--density-default v-card--variant-tonal ma-0 pa-0">
                     <!---->
                     <div class="v-card__loader">
@@ -271,7 +237,7 @@ exports[`GasTracker.vue > Should display gas tracker 1`] = `
                     <!---->
                     <!----><span class="v-card__underlay"></span>
                   </div>
-                </div><small data-v-931b96d5="" class="ml-4 text-medium-emphasis">Last updated at 10:23:26pm.</small>
+                </div><small data-v-931b96d5="" class="ml-4 text-medium-emphasis">Last updated at 10:23:26pm (block 10,000,000).</small>
               </div>
             </div>
             <!---->
@@ -479,41 +445,7 @@ exports[`GasTracker.vue > Should display very small gas speeds 1`] = `
               </i></div>
             <div data-v-931b96d5="" class="v-card-text">
               <div data-v-931b96d5="" class="v-row">
-                <div data-v-931b96d5="" class="v-col-md-6 v-col-lg-3 v-col-6">
-                  <div data-v-931b96d5="" class="v-card v-theme--light text-primary v-card--density-default v-card--variant-tonal ma-0 pa-0">
-                    <!---->
-                    <div class="v-card__loader">
-                      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
-                        <!---->
-                        <div class="v-progress-linear__background"></div>
-                        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
-                        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
-                          <div class="v-progress-linear__indeterminate">
-                            <div class="v-progress-linear__indeterminate long"></div>
-                            <div class="v-progress-linear__indeterminate short"></div>
-                          </div>
-                        </transition-stub>
-                        <!---->
-                      </div>
-                    </div>
-                    <div class="v-card-item">
-                      <!---->
-                      <div class="v-card-item__content">
-                        <div class="v-card-title">
-                          <div data-v-931b96d5="" class="d-flex flex-column"><span data-v-931b96d5="" class="text-caption">LATEST BLOCK</span><small data-v-931b96d5="">10,000,000</small></div>
-                        </div>
-                        <!---->
-                        <!---->
-                      </div>
-                      <!---->
-                    </div>
-                    <!---->
-                    <!---->
-                    <!---->
-                    <!----><span class="v-card__underlay"></span>
-                  </div>
-                </div>
-                <div data-v-931b96d5="" class="v-col-md-6 v-col-lg-3 v-col-6">
+                <div data-v-931b96d5="" class="v-col-lg-4 v-col-12">
                   <div data-v-931b96d5="" class="v-card v-theme--light text-primary v-card--density-default v-card--variant-tonal ma-0 pa-0">
                     <!---->
                     <div class="v-card__loader">
@@ -547,7 +479,7 @@ exports[`GasTracker.vue > Should display very small gas speeds 1`] = `
                     <!----><span class="v-card__underlay"></span>
                   </div>
                 </div>
-                <div data-v-931b96d5="" class="v-col-md-6 v-col-lg-3 v-col-6">
+                <div data-v-931b96d5="" class="v-col-lg-4 v-col-12">
                   <div data-v-931b96d5="" class="v-card v-theme--light text-primary v-card--density-default v-card--variant-tonal ma-0 pa-0">
                     <!---->
                     <div class="v-card__loader">
@@ -581,7 +513,7 @@ exports[`GasTracker.vue > Should display very small gas speeds 1`] = `
                     <!----><span class="v-card__underlay"></span>
                   </div>
                 </div>
-                <div data-v-931b96d5="" class="v-col-md-6 v-col-lg-3 v-col-6">
+                <div data-v-931b96d5="" class="v-col-lg-4 v-col-12">
                   <div data-v-931b96d5="" class="v-card v-theme--light text-primary v-card--density-default v-card--variant-tonal ma-0 pa-0">
                     <!---->
                     <div class="v-card__loader">
@@ -614,7 +546,7 @@ exports[`GasTracker.vue > Should display very small gas speeds 1`] = `
                     <!---->
                     <!----><span class="v-card__underlay"></span>
                   </div>
-                </div><small data-v-931b96d5="" class="ml-4 text-medium-emphasis">Last updated at 10:23:26pm.</small>
+                </div><small data-v-931b96d5="" class="ml-4 text-medium-emphasis">Last updated at 10:23:26pm (block 10,000,000).</small>
               </div>
             </div>
             <!---->

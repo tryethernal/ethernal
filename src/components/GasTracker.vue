@@ -68,17 +68,7 @@
                             </v-card-title>
                             <v-card-text>
                                 <v-row>
-                                    <v-col cols="6" md="6" lg="3">
-                                        <v-card color="primary" class="ma-0 pa-0" variant="tonal">
-                                            <template #title>
-                                                <div class="d-flex flex-column">
-                                                    <span class="text-caption">LATEST BLOCK</span>
-                                                    <small>{{ formattedLastBlockNumber }}</small>
-                                                </div>
-                                            </template>
-                                        </v-card>
-                                    </v-col>
-                                    <v-col cols="6" md="6" lg="3">
+                                    <v-col cols="12" lg="4">
                                         <v-card color="primary" class="ma-0 pa-0" variant="tonal">
                                             <template #title>
                                                 <div class="d-flex flex-column">
@@ -88,7 +78,7 @@
                                             </template>
                                         </v-card>
                                     </v-col>
-                                    <v-col cols="6" md="6" lg="3">
+                                    <v-col cols="12" lg="4">
                                         <v-card color="primary" class="ma-0 pa-0" variant="tonal">
                                             <template #title>
                                                 <div class="d-flex flex-column">
@@ -98,7 +88,7 @@
                                             </template>
                                         </v-card>
                                     </v-col>
-                                    <v-col cols="6" md="6" lg="3">
+                                    <v-col cols="12" lg="4">
                                         <v-card color="primary" class="ma-0 pa-0" variant="tonal">
                                             <template #title>
                                                 <div class="d-flex flex-column">
@@ -108,7 +98,7 @@
                                             </template>
                                         </v-card>
                                     </v-col>
-                                    <small class="ml-4 text-medium-emphasis">Last updated at {{ moment(gasStats.latestBlockTimestamp).format('h:mm:ssa') }}.</small>
+                                    <small class="ml-4 text-medium-emphasis">Last updated at {{ moment(gasStats.latestBlockTimestamp).format('h:mm:ssa') }} (block {{ formattedLastBlockNumber }}).</small>
                                 </v-row>
                             </v-card-text>
                         </v-card>
