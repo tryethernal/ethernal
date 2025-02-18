@@ -83,7 +83,7 @@ exports[`GasConsumers.vue > Should show gas consumers 1`] = `
             <!---->
             <tr class="v-data-table__tr">
               <td class="v-data-table__td v-data-table-column--align-start">
-                <hash-link-stub type="address" hash="0x1235" loadcontract="true" withname="true" fullhash="true"></hash-link-stub>
+                <hash-link-stub type="address" hash="0x1235" loadcontract="true" withname="true"></hash-link-stub>
               </td>
               <td class="v-data-table__td v-data-table-column--align-start">0.00000000003 ETH</td>
               <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-11">4.32% <!----><!--teleport start--><!--teleport end--></span></td>
