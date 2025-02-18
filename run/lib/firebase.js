@@ -33,6 +33,48 @@ const ExplorerV2Dex = models.ExplorerV2Dex;
 const V2DexPair = models.V2DexPair;
 
 /*
+    This method is used to get the block size history for a workspace.
+
+    @param {number} workspaceId - The ID of the workspace
+    @param {string} from - The start date of the block size history
+    @param {string} to - The end date of the block size history
+    @returns {array} - The block size history
+        - day: The day of the block size history
+        - size: The average block size for the day
+*/
+const getBlockSizeHistory = async (workspaceId, from, to) => {
+    if (!workspaceId || !from || !to)
+        throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+    if (!workspace)
+        throw new Error('Could not find workspace');
+
+    return workspace.getBlockSizeHistory(from, to);
+};
+
+/*
+    This method is used to get the block time history for a workspace.
+
+    @param {number} workspaceId - The ID of the workspace
+    @param {string} from - The start date of the block time history
+    @param {string} to - The end date of the block time history
+    @returns {array} - The block time history
+        - day: The day of the block time history
+        - blockTime: The average block time for the day
+*/
+const getBlockTimeHistory = async (workspaceId, from, to) => {
+    if (!workspaceId || !from || !to)
+        throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+    if (!workspace)
+        throw new Error('Could not find workspace');
+
+    return workspace.getBlockTimeHistory(from, to);
+};
+
+/*
     This method is used to get the latest biggest gas spenders for a workspace
     for a given interval (now - intervalInHours).
 
@@ -2651,5 +2693,7 @@ module.exports = {
     getGasLimitHistory: getGasLimitHistory,
     getGasUtilizationRatioHistory: getGasUtilizationRatioHistory,
     getLatestGasConsumers: getLatestGasConsumers,
-    getLatestGasSpenders: getLatestGasSpenders
+    getLatestGasSpenders: getLatestGasSpenders,
+    getBlockTimeHistory: getBlockTimeHistory,
+    getBlockSizeHistory: getBlockSizeHistory
 };

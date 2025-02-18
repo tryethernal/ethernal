@@ -352,6 +352,28 @@ export default {
         );
 
         const $server = {
+            getBlockSizeHistory(from, to) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    from,
+                    to
+                }
+                const resource = `${envStore.apiRoot}/api/stats/blockSizeHistory`;
+                return axios.get(resource, { params });
+            },
+
+            getBlockTimeHistory(from, to) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    from,
+                    to
+                }
+                const resource = `${envStore.apiRoot}/api/stats/blockTimeHistory`;
+                return axios.get(resource, { params });
+            },
+
             getLatestGasSpenders(intervalInHours = 24) {
                 const params = {
                     firebaseUserId: firebaseUserId.value,
