@@ -20,7 +20,6 @@
                 :chart-options="options"
                 :chart-data="{ labels: xLabels, datasets: data }"
                 :chart-id="'line-chart'"
-                :dataset-id-key="'transactionVolume'"
                 :plugins="plugins"
             />
         </div>
