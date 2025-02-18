@@ -17,8 +17,8 @@
             <LineChartGenerator
                 ref="chart"
                 :style="styles"
-                :chart-options="options"
-                :chart-data="{ labels: xLabels, datasets: [{ data }]}"
+                :options="options"
+                :data="{ labels: xLabels, datasets: [{ data }]}"
                 :chart-id="'line-chart'"
                 :plugins="plugins"
             />
