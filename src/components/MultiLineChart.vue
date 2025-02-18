@@ -154,7 +154,7 @@ export default {
                             return idx === 0;
                         },
                         callbacks: {
-                            title() {},
+                            title() { return '' },
                             label: (context) => {
                                 const avgValue = context.parsed.y < 1 ? context.parsed.y : ethers.utils.commify(context.parsed.y);
                                 const minValue = context.dataset.min[context.dataIndex] < 1 ? context.dataset.min[context.dataIndex] : ethers.utils.commify(context.dataset.min[context.dataIndex]);
