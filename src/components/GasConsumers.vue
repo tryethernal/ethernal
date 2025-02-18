@@ -20,12 +20,13 @@
                     {{ fromWei(item.gasCost, 'ether', currentWorkspaceStore.chain.token, false, 3) }}
                 </template>
                 <template v-slot:item.percentUsed="{ item }">
-                    <v-tooltip>
-                        <template #activator="{ props }">
-                            <span v-bind="props">{{ item.percentUsed ? (item.percentUsed * 100).toFixed(2) : 0 }}%</span>
-                        </template>
-                        <span>Gas Units Used: {{ ethers.utils.commify(item.gasUsed) }}</span>
-                    </v-tooltip>
+                    <span v-tooltip="`Gas Units Used: ${ethers.utils.commify(item.gasUsed)}`">
+                        {{
+                            item.percentUsed ?
+                            (item.percentUsed > 0.0001 ? (item.percentUsed * 100).toFixed(2) : '<0.01%') :
+                            0
+                        }}%
+                    </span>
                 </template>
             </v-data-table>
         </v-card-text>
