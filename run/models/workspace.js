@@ -116,7 +116,9 @@ module.exports = (sequelize, DataTypes) => {
                     WHERE "workspaceId" = :workspaceId
                 ) as "percentUsed"
             FROM transaction_events
-            WHERE "workspaceId" = :workspaceId
+            WHERE
+                "workspaceId" = :workspaceId AND
+                timestamp >= now() - interval '1 hour' * :intervalInHours
             GROUP BY "from"
             ORDER BY "gasUsed" DESC
             LIMIT :limit
@@ -150,7 +152,10 @@ module.exports = (sequelize, DataTypes) => {
                     WHERE "workspaceId" = :workspaceId
                 ) as "percentUsed"
             FROM transaction_events
-            WHERE "workspaceId" = :workspaceId
+            WHERE 
+                "workspaceId" = :workspaceId AND 
+                timestamp >= now() - interval '1 hour' * :intervalInHours AND
+                "to" IS NOT NULL
             GROUP BY "to"
             ORDER BY "gasUsed" DESC
             LIMIT :limit
