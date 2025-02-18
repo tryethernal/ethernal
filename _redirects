@@ -5,6 +5,11 @@
 /api/2/security/* https://sentry.tryethernal.com/api/2/security/:splat 200!
 /api/2/store/* https://sentry.tryethernal.com/api/2/store/:splat 200!
 
+/api module=contract action=checkverifystatus apikey=:apikey https://api.tryethernal.com/api/contracts/verificationStatus 200!
+/api module=contract action=getsourcecode apikey=:apikey https://api.tryethernal.com/api/contracts/sourceCode 200!
+/api module=contract action=getabi apikey=:apikey https://api.tryethernal.com/api/contracts/getabi 200!
+/api https://api.tryethernal.com/api 200!
+
 /api/* https://api.tryethernal.com/api/:splat 200!
 
 /*   /index.html   200
