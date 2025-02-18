@@ -163,8 +163,10 @@ export default {
                         grace: '15%',
                         suggestedMax: this.floating ? null : 5,
                         grid: {
-                            drawBorder: false,
                             color: hex2rgba(theme.current.value.colors.primary, 0.6)
+                        },
+                        border: {
+                            display: false
                         },
                         ticks: {
                             precision: this.floating ? null : 0,
@@ -178,7 +180,9 @@ export default {
                     x: {
                         grid: {
                             display: false,
-                            drawBorder: false
+                        },
+                        border: {
+                            display: false
                         },
                         ticks: {
                             callback: (_value, index) => {
