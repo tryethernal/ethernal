@@ -17,7 +17,7 @@ router.get('/:address/holders', workspaceAuthMiddleware, holders);
 router.get('/:address/transfers', workspaceAuthMiddleware, transfers);
 
 router.get('/getabi', async (req, res) => {
-    const data = req.query;
+    const data = { ...req.query, ...req.body };
 
     try {
         if (!data.address)
@@ -64,7 +64,7 @@ router.get('/getabi', async (req, res) => {
 });
 
 router.get('/sourceCode', async (req, res) => {
-    const data = req.query;
+    const data = { ...req.query, ...req.body };
 
     try {
         if (!data.address)
