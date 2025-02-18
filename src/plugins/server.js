@@ -352,6 +352,69 @@ export default {
         );
 
         const $server = {
+            getLatestGasSpenders(intervalInHours = 24) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    intervalInHours
+                }
+                const resource = `${envStore.apiRoot}/api/gas/spenders`;
+                return axios.get(resource, { params });
+            },
+
+            getLatestGasConsumers(intervalInHours = 24) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    intervalInHours
+                }
+                const resource = `${envStore.apiRoot}/api/gas/consumers`;
+                return axios.get(resource, { params });
+            },
+
+            getGasUtilizationRatioHistory(from, to) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    from,
+                    to
+                }
+                const resource = `${envStore.apiRoot}/api/gas/utilizationRatioHistory`;
+                return axios.get(resource, { params });
+            },
+
+            getGasLimitHistory(from, to) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    from,
+                    to
+                }
+                const resource = `${envStore.apiRoot}/api/gas/limitHistory`;
+                return axios.get(resource, { params });
+            },
+
+            getGasPriceHistory(from, to) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    from,
+                    to
+                }
+                const resource = `${envStore.apiRoot}/api/gas/priceHistory`;
+                return axios.get(resource, { params });
+            },
+
+            getLatestGasStats(intervalInMinutes = 1) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    intervalInMinutes
+                }
+                const resource = `${envStore.apiRoot}/api/gas/stats`;
+                return axios.get(resource, { params });
+            },
+
             searchExplorer(domain) {
                 const resource = `${envStore.apiRoot}/api/explorers/search`;
                 return axios.get(resource, { params: { domain }});
@@ -1460,5 +1523,6 @@ export default {
         };
 
         app.config.globalProperties.$server = $server;
+        app.provide('$server', $server);
     }
 };

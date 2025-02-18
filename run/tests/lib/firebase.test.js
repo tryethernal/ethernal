@@ -13,6 +13,154 @@ const env = require('../../lib/env');
 
 beforeEach(() => jest.clearAllMocks());
 
+describe('getLatestGasSpenders', () => {
+    it('Should throw an error if no workspace', (done) => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce(null);
+        db.getLatestGasSpenders(1, 1)
+            .catch(error => {
+                expect(error).toEqual(new Error('Could not find workspace'));
+                done();
+            });
+    });
+
+    it('Should return gas spenders', (done) => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
+            getLatestGasSpenders: jest.fn().mockResolvedValueOnce([])
+        });
+        db.getLatestGasSpenders(1, 1)
+            .then((res) => {
+                expect(res).toEqual([]);
+                done();
+            });
+    });
+});
+
+describe('getLatestGasConsumers', () => {
+    it('Should throw an error if no workspace', (done) => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce(null);
+        db.getLatestGasConsumers(1, 1)
+            .catch(error => {
+                expect(error).toEqual(new Error('Could not find workspace'));
+                done();
+            });
+    });
+
+    it('Should return gas consumers', (done) => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
+            getLatestGasConsumers: jest.fn().mockResolvedValueOnce([])
+        });
+        db.getLatestGasConsumers(1, 1)
+            .then((res) => {
+                expect(res).toEqual([]);
+                done();
+            });
+    });
+});
+
+describe('getGasUtilizationRatioHistory', () => {
+    it('Should throw an error if no workspace', (done) => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce(null);
+        db.getGasUtilizationRatioHistory(1, '2024-06-01', '2024-06-10')
+            .catch(error => {
+                expect(error).toEqual(new Error('Could not find workspace'));
+                done();
+            });
+    });
+
+    it('Should return gas utilization ratio history', (done) => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
+            getGasUtilizationRatioHistory: jest.fn().mockResolvedValueOnce([])
+        });
+        db.getGasUtilizationRatioHistory(1, '2024-06-01', '2024-06-10')
+            .then((res) => {
+                expect(res).toEqual([]);
+                done();
+            });
+    });
+});
+
+describe('getGasLimitHistory', () => {
+    it('Should throw an error if no workspace', (done) => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce(null);
+        db.getGasLimitHistory(1, '2024-06-01', '2024-06-10')
+            .catch(error => {
+                expect(error).toEqual(new Error('Could not find workspace'));
+                done();
+            });
+    });
+
+    it('Should return gas limit history', (done) => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
+            getGasLimitHistory: jest.fn().mockResolvedValueOnce([])
+        });
+        db.getGasLimitHistory(1, '2024-06-01', '2024-06-10')
+            .then((res) => {
+                expect(res).toEqual([]);
+                done();
+            });
+    });
+});
+
+describe('getGasPriceHistory', () => {
+    it('Should throw an error if no workspace', (done) => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce(null);
+        db.getGasPriceHistory(1, '2024-06-01', '2024-06-10')
+            .catch(error => {
+                expect(error).toEqual(new Error('Could not find workspace'));
+                done();
+            });
+    });
+
+    it('Should return gas price history', (done) => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
+            getGasPriceHistory: jest.fn().mockResolvedValueOnce([])
+        });
+        db.getGasPriceHistory(1, '2024-06-01', '2024-06-10')
+            .then((res) => {
+                expect(res).toEqual([]);
+                done();
+            });
+    });
+});
+
+describe('getLatestGasStats', () => {
+    it('Should throw an error if no workspace', (done) => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce(null);
+        db.getLatestGasStats(1, 1)
+            .catch(error => {
+                expect(error).toEqual(new Error('Could not find workspace'));
+                done();
+            });
+    });
+
+    it('Should return gas stats', (done) => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
+            getLatestGasStats: jest.fn().mockResolvedValueOnce({
+                blockNumber: 10,
+                averageBlockSize: 10,
+                averageUtilization: 10,
+                averageBlockTime: 10,
+                latestBlockNumber: 10,
+                baseFeePerGas: 10,
+                priorityFeePerGas: 10
+            })
+        });
+        db.getLatestGasStats(1, 1)
+            .then((res) => {
+                expect(res).toEqual({
+                    blockNumber: 10,
+                    averageBlockSize: 10,
+                    averageUtilization: 10,
+                    averageBlockTime: 10,
+                    latestBlockNumber: 10,
+                    baseFeePerGas: 10,
+                    priorityFeePerGas: 10
+                });
+                done();
+            });
+    });
+});
+
 describe('getV2DexPairCount', () => {
     it('Should throw an error if no dex', (done) => {
         jest.spyOn(ExplorerV2Dex, 'findOne').mockResolvedValueOnce(null);

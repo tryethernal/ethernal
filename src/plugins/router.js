@@ -20,7 +20,7 @@ import Explorer from '../components/Explorer.vue';
 import ExplorerAnalytics from '../components/ExplorerAnalytics.vue';
 import ExplorerFaucet from '../components/ExplorerFaucet.vue';
 import ExplorerDex from '../components/ExplorerDex.vue';
-
+import GasTracker from '../components/GasTracker.vue';
 import { useEnvStore } from '../stores/env';
 
 const isLoggedIn = () => {
@@ -56,6 +56,8 @@ const routes = [
     { path: '/blocks', component: Blocks, beforeEnter: redirectIfLoggedOut },
     { path: '/overview', component: Overview, beforeEnter: redirectIfLoggedOut },
     { path: '/block/:number', component: Block, props: true, beforeEnter: redirectIfLoggedOut },
+    { path: '/gas', component: GasTracker, beforeEnter: redirectIfLoggedOut },
+    { path: '/gastracker', component: GasTracker, beforeEnter: redirectIfLoggedOut },
     { path: '/transactions', component: Transactions, beforeEnter: redirectIfLoggedOut },
     { path: '/accounts', component: Accounts, beforeEnter: redirectIfLoggedOut },
     { path: '/transaction/:hash', component: Transaction, props: true, beforeEnter: redirectIfLoggedOut },
