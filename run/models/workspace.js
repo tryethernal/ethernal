@@ -1854,51 +1854,59 @@ module.exports = (sequelize, DataTypes) => {
                 const blocks = await this.getBlocks({
                     where: { id: ids },
                     attributes: ['id'],
-                    include: {
-                        model: sequelize.models.Transaction,
-                        attributes: ['id'],
-                        as: 'transactions',
-                        include: [
-                            {
-                                model: sequelize.models.TransactionEvent,
-                                as: 'event'
-                            },
-                            {
-                                model: sequelize.models.TransactionTraceStep,
-                                attributes: ['id'],
-                                as: 'traceSteps',
-                            },
-                            {
-                                model: sequelize.models.Contract,
-                                as: 'createdContract',
-                            },
-                            {
-                                model: sequelize.models.TransactionReceipt,
-                                attributes: ['id'],
-                                as: 'receipt',
-                                include: {
-                                    model: sequelize.models.TransactionLog,
+                    include: [
+                        {
+                            model: sequelize.models.BlockEvent,
+                            attributes: ['id'],
+                            as: 'event'
+                        },
+                        {
+                            model: sequelize.models.Transaction,
+                            attributes: ['id'],
+                            as: 'transactions',
+                            include: [
+                                {
+                                    model: sequelize.models.TransactionEvent,
+                                    as: 'event'
+                                },
+                                {
+                                    model: sequelize.models.TransactionTraceStep,
                                     attributes: ['id'],
-                                    as: 'logs',
+                                    as: 'traceSteps',
+                                },
+                                {
+                                    model: sequelize.models.Contract,
+                                    as: 'createdContract',
+                                },
+                                {
+                                    model: sequelize.models.TransactionReceipt,
+                                    attributes: ['id'],
+                                    as: 'receipt',
                                     include: {
-                                        model: sequelize.models.TokenTransfer,
+                                        model: sequelize.models.TransactionLog,
                                         attributes: ['id'],
-                                        as: 'tokenTransfer',
+                                        as: 'logs',
                                         include: {
-                                            model: sequelize.models.TokenBalanceChange,
+                                            model: sequelize.models.TokenTransfer,
                                             attributes: ['id'],
-                                            as: 'tokenBalanceChanges'
+                                            as: 'tokenTransfer',
+                                            include: {
+                                                model: sequelize.models.TokenBalanceChange,
+                                                attributes: ['id'],
+                                                as: 'tokenBalanceChanges'
+                                            }
                                         }
                                     }
-                                }
-                            },
-                        ]
-                    }
+                                },
+                            ]
+                        }
+                    ]
                 });
 
                 const entities = {};
 
                 entities.blocks = blocks;
+                entities.block_events = blocks.flatMap(block => block.event).filter(event => !!event);
                 entities.transactions = blocks.flatMap(block => block.transactions);
                 entities.transaction_trace_steps = entities.transactions.flatMap(transaction => transaction.traceSteps).filter(traceStep => !!traceStep);
                 entities.contracts = entities.transactions.flatMap(transaction => transaction.createdContract).filter(contract => !!contract);
@@ -1931,7 +1939,7 @@ module.exports = (sequelize, DataTypes) => {
                     });
                 }
 
-                for (const table of ['token_balance_changes', 'token_transfers', 'transaction_logs', 'transaction_receipts', 'transaction_trace_steps', 'transactions', 'blocks']) {
+                for (const table of ['token_balance_changes', 'token_transfers', 'transaction_logs', 'transaction_receipts', 'transaction_trace_steps', 'transactions', 'blocks', 'block_events']) {
                     if (entities[table].length) {
                         await sequelize.query(`DELETE FROM ${table} WHERE "id" IN (:ids) AND "workspaceId" = :workspaceId`, {
                             replacements: { ids: entities[table].map(row => row.id), workspaceId: this.id },
