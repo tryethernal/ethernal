@@ -1,5 +1,4 @@
 import flushPromises from 'flush-promises';
-require('../mocks/ethers');
 
 import DSProxyFactoryContract from '../fixtures/DSProxyFactoryContract.json';
 import TokenContract from '../fixtures/TokenContract.json';
