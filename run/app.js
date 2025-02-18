@@ -35,7 +35,7 @@ app.use(express.urlencoded({ limit: '25mb', extended: true }));
 app.use(cors({ origin: '*', methods: ['GET', 'POST', 'OPTIONS', 'DELETE', 'PUT'] }));
 
 app.use((req, res, next) => {
-    if (req.path != '/api')
+    if (req.path != '/api' && req.path != '/api/')
         return next();
 
     const data = { ...req.query, ...req.body };
