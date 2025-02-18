@@ -104,7 +104,7 @@ describe('processContractVerification', () => {
             compilerVersion: '1',
             constructorArguments: '',
             contractName: 'MyContract',
-            evmVersion: 'shanghai',
+            evmVersion: 'cancun',
             sources: message.code.sources,
             libraries: undefined,
             runs: undefined
@@ -177,7 +177,7 @@ describe('processContractVerification', () => {
 
         await expect(async () => {
             await processContractVerification(db, message); 
-        }).rejects.toEqual(new Error(`Invalid EVM version "Saint Même le Tenu". Valid versions are: homestead, tangerineWhistle, spuriousDragon, byzantium, constantinople, petersburg, istanbul, berlin, london, paris, shanghai.`));
+        }).rejects.toEqual(new Error(`Invalid EVM version "Saint Même le Tenu". Valid versions are: homestead, tangerineWhistle, spuriousDragon, byzantium, constantinople, petersburg, istanbul, berlin, london, paris, shanghai, cancun.`));
     });
 
     it('Should throw an error if there is a user / workspace mismatch', async () => {
