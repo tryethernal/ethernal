@@ -13,7 +13,7 @@
         <v-card-text>
             <v-data-table :items="gasConsumers" :headers="headers" :loading="loading">
                 <template v-slot:item.to="{ item }">
-                    <HashLink v-if="item.to" type="address" :hash="item.to" :loadContract="true" :withName="true" :fullHash="true" />
+                    <HashLink v-if="item.to" type="address" :hash="item.to" :loadContract="true" :withName="true" />
                     <i v-else>Contract Creation</i>
                 </template>
                 <template v-slot:item.fees="{ item }">
