@@ -32,7 +32,11 @@ export default ({ mode }) => {
                 'Document-Policy': 'js-profiling'
             },
             proxy: {
-                '^/api/[1-9]\\d*/(envelope|minidump|security|store)/': env.VITE_SENTRY_URL
+                '^/api/[1-9]\\d*/(envelope|minidump|security|store)/': env.VITE_SENTRY_URL,
+                '^/api/*': {
+                    target: 'http://host.docker.internal:8888',
+                    changeOrigin: true,
+                }
             }
         },
         define: {
