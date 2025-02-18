@@ -199,7 +199,7 @@ export default {
                         mode: 'index',
                         bodyFont: { weight: 'bold' },
                         callbacks: {
-                            title() {},
+                            title() { return ''},
                             label: (context) => {
                                 const value = context.parsed.y < 1 ? context.parsed.y : ethers.utils.commify(context.parsed.y);
                                 const date = moment(this.xLabels[context.parsed.x]).format(DATE_FORMAT);
