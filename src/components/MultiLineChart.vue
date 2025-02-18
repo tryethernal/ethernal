@@ -31,7 +31,6 @@
 const moment = require('moment');
 const ethers = require('ethers');
 import { useTheme } from 'vuetify';
-import { Line as LineChartGenerator } from 'vue-chartjs';
 import zoomPlugin from 'chartjs-plugin-zoom';
 import {
     Chart as ChartJS,
@@ -42,6 +41,7 @@ import {
     PointElement,
     Legend
 } from 'chart.js';
+import { Line as LineChartGenerator } from 'vue-chartjs';
 
 ChartJS.register(
     Tooltip,
