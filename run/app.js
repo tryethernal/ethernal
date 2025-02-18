@@ -42,11 +42,11 @@ app.use((req, res, next) => {
 
     if (data.module == 'contract' && data.action == 'verifysourcecode')
         req.url = '/api/contracts/verify';
-    else if (data.module == 'contract' && data.action == 'getsourcecode' && data.apikey)
+    else if (data.module == 'contract' && data.action == 'getsourcecode')
         req.url = '/api/contracts/sourceCode';
-    else if (req.query.module == 'contract' && req.query.action == 'getabi' && req.query.apikey)
+    else if (req.query.module == 'contract' && req.query.action == 'getabi')
         req.url = '/api/contracts/getabi';
-    else if (data.module == 'contract' && data.action == 'checkverifystatus' && data.apikey && data.guid)
+    else if (data.module == 'contract' && data.action == 'checkverifystatus' && data.guid)
         req.url = '/api/contracts/verificationStatus';
 
     next();
