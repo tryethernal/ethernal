@@ -25,8 +25,8 @@ export default ({ mode }) => {
             extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue'],
         },
         server: {
-            host: '0.0.0.0',
             allowedHosts: true,
+            host: '0.0.0.0',
             port: 8080,
             headers: {
                 'Document-Policy': 'js-profiling'

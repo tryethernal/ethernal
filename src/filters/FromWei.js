@@ -19,7 +19,7 @@ export default function (amount = 0, to, symbol = 'ether', unformatted = false, 
         amountInt = amount
     }
 
-    if (['wei', 'kwei', 'mwei', 'gwei', 'szabo', 'finney'].indexOf(to) > -1)
+    if (['wei', 'kwei', 'mwei', 'gwei', 'szabo', 'finney'].indexOf(to) > -1 && !symbol)
         symbol = to;
 
     let stringedAmount = typeof amountInt.toLocaleString === 'function' ? amountInt.toLocaleString('fullwide', { useGrouping: false }) : String(amountInt);
