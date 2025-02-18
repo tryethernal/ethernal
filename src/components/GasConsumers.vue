@@ -23,7 +23,7 @@
                     <span v-tooltip="`Gas Units Used: ${ethers.utils.commify(item.gasUsed)}`">
                         {{
                             item.percentUsed ?
-                            (item.percentUsed > 0.0001 ? (item.percentUsed * 100).toFixed(2) : '<0.01%') :
+                            (item.percentUsed > 0.0001 ? (item.percentUsed * 100).toFixed(2) : '<0.01') :
                             0
                         }}%
                     </span>
