@@ -93,6 +93,112 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     /*
+        This method is used to get the block size history for a workspace.
+
+        @param {string} from - The start date of the block size history
+        @param {string} to - The end date of the block size history
+        @returns {array} - The block size history
+            - day: The day of the block size history
+            - size: The average block size for the day
+    */
+    async getBlockSizeHistory(from, to) {
+        if (!from || !to)
+            throw new Error('Missing parameter');
+
+        const [earliestBlock] = await this.getBlocks({
+            attributes: ['timestamp'],
+            where: {
+                timestamp: { [Op.gt]: new Date(0) }
+            },
+            order: [['number', 'ASC']],
+            limit: 1
+        });
+
+        if (!earliestBlock && +new Date(from) == 0)
+            return [];
+
+        const earliestTimestamp = +new Date(from) == 0 ? earliestBlock.timestamp : new Date(from);
+
+        return sequelize.query(`
+            SELECT
+                time_bucket_gapfill('1 day', timestamp) as day,
+                round(avg("transactionCount"), 0) as "size"
+            FROM block_events
+            WHERE "workspaceId" = :workspaceId
+            AND "timestamp" >= timestamp :from
+            AND "timestamp" < timestamp :to
+            GROUP BY day
+            ORDER BY day ASC
+        `, {
+            replacements: { workspaceId: this.id, from: new Date(earliestTimestamp), to },
+            type: QueryTypes.SELECT
+        });
+    }
+
+    /*
+        This method is used to get the block time history for a workspace.
+
+        @param {string} from - The start date of the block time history
+        @param {string} to - The end date of the block time history
+        @returns {array} - The block time history
+            - day: The day of the block time history
+            - blockTime: The average block time for the day
+    */
+    async getBlockTimeHistory(from, to) {
+        if (!from || !to)
+            throw new Error('Missing parameter');
+
+        const [earliestBlock] = await this.getBlocks({
+            attributes: ['timestamp'],
+            where: {
+                timestamp: { [Op.gt]: new Date(0) }
+            },
+            order: [['number', 'ASC']],
+            limit: 1
+        });
+
+        if (!earliestBlock && +new Date(from) == 0)
+            return [];
+
+        const earliestTimestamp = +new Date(from) == 0 ? earliestBlock.timestamp : new Date(from);
+        
+        return sequelize.query(`
+            WITH time_difference AS (
+                SELECT
+                    time_bucket('1 day', timestamp) as bucket,
+                    EXTRACT(EPOCH FROM timestamp - LAG(timestamp) OVER (PARTITION BY time_bucket('1 day', timestamp) ORDER BY timestamp)) AS "blockTime"
+                FROM block_events
+                WHERE "workspaceId" = :workspaceId
+                AND "timestamp" >= timestamp :from
+                AND "timestamp" < timestamp :to
+            ),
+            aggregated AS (
+                SELECT
+                    bucket,
+                    ROUND(AVG("blockTime"), 2) AS "blockTime"
+                FROM time_difference
+                GROUP BY bucket
+            ),
+            date_series AS (
+                SELECT generate_series(
+                    DATE_TRUNC('day', :from::timestamp),
+                    DATE_TRUNC('day', :to::timestamp),
+                    INTERVAL '1 day'
+                ) AS day
+            )
+            SELECT
+                ds.day,
+                a."blockTime"
+            FROM date_series ds
+            LEFT JOIN aggregated a ON ds.day = a.bucket
+            ORDER BY ds.day ASC
+        `, {
+            replacements: { workspaceId: this.id, from: new Date(earliestTimestamp), to },
+            type: QueryTypes.SELECT
+        });
+    }
+
+    /*
         This method is used to get the latest biggest gas spenders for a workspace
         for a given interval (now - intervalInHours).
 

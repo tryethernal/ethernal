@@ -107,7 +107,7 @@ export default {
     methods: {
         hex2rgba,
         resetZoom() {
-            this.$refs.chart.getCurrentChart().resetZoom();
+            this.$refs.chart.chart.resetZoom();
             this.isZoomed = false;
         },
     },

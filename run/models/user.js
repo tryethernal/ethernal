@@ -27,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     static async findByAuthId(firebaseUserId, extraFields = []) {
-        const currentExplorerAttributes = ['id', 'chainId', 'domain', 'isDemo', 'name', 'rpcServer', 'shouldSync', 'slug', 'themes', 'userId', 'workspaceId'];
+        const currentExplorerAttributes = ['id', 'chainId', 'domain', 'isDemo', 'name', 'rpcServer', 'shouldSync', 'slug', 'themes', 'userId', 'workspaceId', 'gasAnalyticsEnabled'];
         const user = await User.findOne({ where: { firebaseUserId }, include: 'currentWorkspace' })
         if (user.currentWorkspace) {
             const currentExplorer = await user.currentWorkspace.getExplorer({

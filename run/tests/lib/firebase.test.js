@@ -13,6 +13,50 @@ const env = require('../../lib/env');
 
 beforeEach(() => jest.clearAllMocks());
 
+describe('getBlockSizeHistory', () => {
+    it('Should throw an error if no workspace', (done) => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce(null);
+        db.getBlockSizeHistory(1, '2022-04-05', '2022-04-15')
+            .catch(error => {
+                expect(error).toEqual(new Error('Could not find workspace'));
+                done();
+            });
+    });
+
+    it('Should return block size history', (done) => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
+            getBlockSizeHistory: jest.fn().mockResolvedValueOnce([])
+        });
+        db.getBlockSizeHistory(1, '2022-04-05', '2022-04-15')
+            .then((res) => {
+                expect(res).toEqual([]);
+                done();
+            });
+    });
+});
+
+describe('getBlockTimeHistory', () => {
+    it('Should throw an error if no workspace', (done) => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce(null);
+        db.getBlockTimeHistory(1, '2022-04-05', '2022-04-15')
+            .catch(error => {
+                expect(error).toEqual(new Error('Could not find workspace'));
+                done();
+            });
+    });
+
+    it('Should return block time history', (done) => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
+            getBlockTimeHistory: jest.fn().mockResolvedValueOnce([])
+        });
+        db.getBlockTimeHistory(1, '2022-04-05', '2022-04-15')
+            .then((res) => {
+                expect(res).toEqual([]);
+                done();
+            });
+    });
+});
+
 describe('getLatestGasSpenders', () => {
     it('Should throw an error if no workspace', (done) => {
         jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce(null);
