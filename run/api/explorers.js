@@ -792,7 +792,8 @@ router.get('/search', async (req, res, next) => {
             rpcServer: explorer.rpcServer,
             slug: explorer.slug,
             admin: explorer.admin,
-            workspace: explorer.workspace
+            workspace: explorer.workspace,
+            gasAnalyticsEnabled: explorer.gasAnalyticsEnabled
         };
 
         fields['token'] = capabilities.nativeToken ? explorer.token : 'ether';

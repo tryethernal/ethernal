@@ -46,7 +46,7 @@ module.exports = (sequelize, DataTypes) => {
 
     static findBySlug(slug) {
         return Explorer.findOne({
-            attributes: ['id', 'chainId', 'domain', 'l1Explorer', 'name', 'rpcServer', 'slug', 'token', 'themes', 'userId', 'workspaceId'],
+            attributes: ['id', 'chainId', 'domain', 'l1Explorer', 'name', 'rpcServer', 'slug', 'token', 'themes', 'userId', 'workspaceId', 'gasAnalyticsEnabled'],
             where: { slug },
             include: [
                 {
@@ -111,7 +111,7 @@ module.exports = (sequelize, DataTypes) => {
                 {
                     model: Explorer,
                     as: 'explorer',
-                    attributes: ['id', 'chainId', 'domain', 'l1Explorer', 'name', 'rpcServer', 'slug', 'token', 'themes', 'userId', 'workspaceId'],
+                    attributes: ['id', 'chainId', 'domain', 'l1Explorer', 'name', 'rpcServer', 'slug', 'token', 'themes', 'userId', 'workspaceId', 'gasAnalyticsEnabled'],
                     include: [
                         {
                             model: sequelize.models.StripeSubscription,

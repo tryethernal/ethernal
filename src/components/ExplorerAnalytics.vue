@@ -37,25 +37,27 @@
                         <Line-Chart :title="'Cumulative Deployed Contracts Count'" :xLabels="charts['cumulativeDeployedContractCount'].xLabels" :data="charts['cumulativeDeployedContractCount'].data" :tooltipUnit="'contract'" :index="6" />
                     </v-col>
 
-                    <v-col cols="12" md="6">
-                        <MultiLineChart :xLabels="charts['gasPrice'].xLabels" :data="charts['gasPrice'].data" tokenSymbol="gwei" :floating="true" />
-                    </v-col>
+                    <template v-if="explorerStore.gasAnalyticsEnabled">
+                        <v-col cols="12" md="6">
+                            <MultiLineChart :xLabels="charts['gasPrice'].xLabels" :data="charts['gasPrice'].data" tokenSymbol="gwei" :floating="true" />
+                        </v-col>
 
-                    <v-col cols="12" md="6">
-                        <Line-Chart :title="'AverageGas Limit'" :xLabels="charts['gasLimit'].xLabels" :data="charts['gasLimit'].data" :tooltipUnit="'gas unit'" :index="7" />
-                    </v-col>
+                        <v-col cols="12" md="6">
+                            <Line-Chart :title="'Average Gas Limit'" :xLabels="charts['gasLimit'].xLabels" :data="charts['gasLimit'].data" :tooltipUnit="'gas unit'" :index="7" />
+                        </v-col>
 
-                    <v-col cols="12" md="6">
-                        <Line-Chart :title="'Gas Utilization Ratio'" :xLabels="charts['gasUtilizationRatio'].xLabels" :data="charts['gasUtilizationRatio'].data" tokenSymbol="%" :yAxisSymbol="'%'" :floating="true" :index="8" />
-                    </v-col>
+                        <v-col cols="12" md="6">
+                            <Line-Chart :title="'Gas Utilization Ratio'" :xLabels="charts['gasUtilizationRatio'].xLabels" :data="charts['gasUtilizationRatio'].data" tokenSymbol="%" :yAxisSymbol="'%'" :floating="true" :index="8" />
+                        </v-col>
 
-                    <v-col cols="12" md="6">
-                        <Line-Chart :title="'Average Block Time'" :xLabels="charts['blockTime'].xLabels" :data="charts['blockTime'].data" tooltipUnit="second" :floating="true" :index="9" />
-                    </v-col>
+                        <v-col cols="12" md="6">
+                            <Line-Chart :title="'Average Block Time'" :xLabels="charts['blockTime'].xLabels" :data="charts['blockTime'].data" tooltipUnit="second" :floating="true" :index="9" />
+                        </v-col>
 
-                    <v-col cols="12" md="6">
-                        <Line-Chart :title="'Average Block Size'" :xLabels="charts['blockSize'].xLabels" :data="charts['blockSize'].data" tooltipUnit="transaction" :floating="true" :index="10" />
-                    </v-col>
+                        <v-col cols="12" md="6">
+                            <Line-Chart :title="'Average Block Size'" :xLabels="charts['blockSize'].xLabels" :data="charts['blockSize'].data" tooltipUnit="transaction" :floating="true" :index="10" />
+                        </v-col>
+                    </template>
                 </v-row>
             </v-card-text>
         </v-card>
@@ -68,6 +70,7 @@ const ethers = require('ethers');
 import { formatGwei } from 'viem';
 import { mapStores } from 'pinia';
 import { useCurrentWorkspaceStore } from '@/stores/currentWorkspace';
+import { useExplorerStore } from '@/stores/explorer';
 import LineChart from './LineChart.vue';
 import MultiLineChart from './MultiLineChart.vue';
 
@@ -113,11 +116,13 @@ export default {
             this.getUniqueWalletCount();
             this.getDeployedContractCount();
             this.getCumulativeDeployedContractCount();
-            this.getGasPriceHistory();
-            this.getGasLimitHistory();
-            this.getGasUtilizationRatioHistory();
-            this.getBlockTimeHistory();
-            this.getBlockSizeHistory();
+            if (this.explorerStore.gasAnalyticsEnabled) {
+                this.getGasPriceHistory();
+                this.getGasLimitHistory();
+                this.getGasUtilizationRatioHistory();
+                this.getBlockTimeHistory();
+                this.getBlockSizeHistory();
+            }
         },
         getBlockSizeHistory() {
             this.$server.getBlockSizeHistory(this.from, this.to)
@@ -263,7 +268,7 @@ export default {
         }
     },
     computed: {
-        ...mapStores(useCurrentWorkspaceStore),
+        ...mapStores(useCurrentWorkspaceStore, useExplorerStore),
         from() {
             return this.selectedTimeRange > 0 ? new Date(new Date() - this.selectedTimeRange * 24 * 3600 * 1000) : new Date(0);
         },
