@@ -155,7 +155,7 @@ const from = ref(new Date(new Date() - 7 * 24 * 3600 * 1000));
 const to = ref(new Date(new Date().setHours(24,0,0,0)));
 const selectedChart = ref('gasPrice');
 const originalTitle = document.title;
-
+const interval = ref(null);
 const MINIMUM_DISPLAY_GWEI = 10000000;
 
 const formatGweiAmount = (amount) => {
@@ -284,7 +284,7 @@ const refreshAllStats = () => {
 
 onMounted(async () => {
     refreshAllStats();
-    setInterval(() => {
+    interval.value = setInterval(() => {
         nextRefreshIn.value -= 1000;
         if (nextRefreshIn.value <= 0) {
             getLatestGasStats();
@@ -295,6 +295,7 @@ onMounted(async () => {
 
 onUnmounted(() => {
     document.title = originalTitle;
+    clearInterval(interval.value);
 });
 </script>
 <style scoped>
