@@ -38,8 +38,6 @@ app.use((req, res, next) => {
     if (req.path != '/api')
         return next();
 
-    req.query.apikey = 'swisstronik';
-
     const data = { ...req.query, ...req.body };
 
     if (data.module == 'contract' && data.action == 'verifysourcecode')
