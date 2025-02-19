@@ -13,7 +13,7 @@
         <v-card-text>
             <v-data-table :items="gasConsumers" :headers="headers" :loading="loading">
                 <template v-slot:item.to="{ item }">
-                    <HashLink v-if="item.to" type="address" :hash="item.to" :loadContract="true" :withName="true" :fullHash="true" />
+                    <HashLink v-if="item.to" type="address" :hash="item.to" :loadContract="true" :withName="true" />
                     <i v-else>Contract Creation</i>
                 </template>
                 <template v-slot:item.fees="{ item }">
@@ -23,7 +23,7 @@
                     <span v-tooltip="`Gas Units Used: ${ethers.utils.commify(item.gasUsed)}`">
                         {{
                             item.percentUsed ?
-                            (item.percentUsed > 0.0001 ? (item.percentUsed * 100).toFixed(2) : '<0.01%') :
+                            (item.percentUsed > 0.0001 ? (item.percentUsed * 100).toFixed(2) : '<0.01') :
                             0
                         }}%
                     </span>

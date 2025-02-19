@@ -21,7 +21,7 @@
                     { value: 100, title: '100' }
                 ]">
                 <template v-slot:item.from="{ item }">
-                    <HashLink type="address" :hash="item.from" :loadContract="true" :withName="true" :fullHash="true" />
+                    <HashLink type="address" :hash="item.from" :loadContract="true" :withName="true" />
                 </template>
                 <template v-slot:item.fees="{ item }">
                     {{ fromWei(item.gasCost, 'ether', currentWorkspaceStore.chain.token, false, 3) }}
@@ -30,7 +30,7 @@
                     <span v-tooltip="`Gas Units Used: ${ethers.utils.commify(item.gasUsed)}`">
                         {{
                             item.percentUsed ?
-                            item.percentUsed > 0.0001 ? (item.percentUsed * 100).toFixed(2) : '<0.01%' :
+                            item.percentUsed > 0.0001 ? (item.percentUsed * 100).toFixed(2) : '<0.01' :
                             0
                         }}%
                     </span>
