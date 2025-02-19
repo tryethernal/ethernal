@@ -12,6 +12,46 @@ const request = supertest(app);
 
 const BASE_URL = '/api/stats';
 
+describe(`GET /blockSizeHistory`, () => {
+    beforeEach(() => jest.clearAllMocks());
+
+    it('Should return block size history', (done) => {
+        workspaceAuthMiddleware.mockImplementationOnce((req, res, next) => {
+            req.query.firebaseUserId = '123';
+            req.query.workspace = { id: 1, name: 'My Workspace', public: true }
+            next();
+        });
+        jest.spyOn(db, 'getBlockSizeHistory').mockResolvedValueOnce([{ day: '2022-04-05', size: 1 }]);
+
+        request.get(`${BASE_URL}/blockSizeHistory?from=2022-04-05&to=2022-04-15`)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual([{ day: '2022-04-05', size: 1 }]);
+                done();
+            });
+    });
+});
+
+describe(`GET /blockTimeHistory`, () => {
+    beforeEach(() => jest.clearAllMocks());
+
+    it('Should return block time history', (done) => {
+        workspaceAuthMiddleware.mockImplementationOnce((req, res, next) => {
+            req.query.firebaseUserId = '123';
+            req.query.workspace = { id: 1, name: 'My Workspace', public: true }
+            next();
+        });
+        jest.spyOn(db, 'getBlockTimeHistory').mockResolvedValueOnce([{ day: '2022-04-05', blockTime: 1 }]);
+
+        request.get(`${BASE_URL}/blockTimeHistory?from=2022-04-05&to=2022-04-15`)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual([{ day: '2022-04-05', blockTime: 1 }]);
+                done();
+            });
+    });
+});
+
 describe(`GET /activeWalletCount`, () => {
     beforeEach(() => jest.clearAllMocks());
 

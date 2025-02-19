@@ -36,6 +36,28 @@
                     <v-col cols="12" md="6">
                         <Line-Chart :title="'Cumulative Deployed Contracts Count'" :xLabels="charts['cumulativeDeployedContractCount'].xLabels" :data="charts['cumulativeDeployedContractCount'].data" :tooltipUnit="'contract'" :index="6" />
                     </v-col>
+
+                    <template v-if="explorerStore.gasAnalyticsEnabled">
+                        <v-col cols="12" md="6">
+                            <MultiLineChart :xLabels="charts['gasPrice'].xLabels" :data="charts['gasPrice'].data" tokenSymbol="gwei" :floating="true" />
+                        </v-col>
+
+                        <v-col cols="12" md="6">
+                            <Line-Chart :title="'Average Gas Limit'" :xLabels="charts['gasLimit'].xLabels" :data="charts['gasLimit'].data" :tooltipUnit="'gas unit'" :index="7" />
+                        </v-col>
+
+                        <v-col cols="12" md="6">
+                            <Line-Chart :title="'Gas Utilization Ratio'" :xLabels="charts['gasUtilizationRatio'].xLabels" :data="charts['gasUtilizationRatio'].data" tokenSymbol="%" :yAxisSymbol="'%'" :floating="true" :index="8" />
+                        </v-col>
+
+                        <v-col cols="12" md="6">
+                            <Line-Chart :title="'Average Block Time'" :xLabels="charts['blockTime'].xLabels" :data="charts['blockTime'].data" tooltipUnit="second" :floating="true" :index="9" />
+                        </v-col>
+
+                        <v-col cols="12" md="6">
+                            <Line-Chart :title="'Average Block Size'" :xLabels="charts['blockSize'].xLabels" :data="charts['blockSize'].data" tooltipUnit="transaction" :floating="true" :index="10" />
+                        </v-col>
+                    </template>
                 </v-row>
             </v-card-text>
         </v-card>
@@ -45,14 +67,18 @@
 <script>
 const moment = require('moment');
 const ethers = require('ethers');
+import { formatGwei } from 'viem';
 import { mapStores } from 'pinia';
 import { useCurrentWorkspaceStore } from '@/stores/currentWorkspace';
+import { useExplorerStore } from '@/stores/explorer';
 import LineChart from './LineChart.vue';
+import MultiLineChart from './MultiLineChart.vue';
 
 export default {
     name: 'ExplorerAnalytics',
     components: {
-        LineChart
+        LineChart,
+        MultiLineChart
     },
     data: () => ({
         selectedTimeRange: 14,
@@ -69,7 +95,12 @@ export default {
             uniqueWalletCount: {},
             cumulativeWalletCount: {},
             deployedContractCount: {},
-            cumulativeDeployedContractCount: {}
+            cumulativeDeployedContractCount: {},
+            gasPrice: {},
+            gasLimit: {},
+            gasUtilizationRatio: {},
+            blockTime: {},
+            blockSize: {}
         },
     }),
     mounted() {
@@ -83,9 +114,87 @@ export default {
             this.getAverageGasPrice();
             this.getAverageTransactionFee();
             this.getUniqueWalletCount();
-            // this.getCumulativeWalletCount();
             this.getDeployedContractCount();
             this.getCumulativeDeployedContractCount();
+            if (this.explorerStore.gasAnalyticsEnabled) {
+                this.getGasPriceHistory();
+                this.getGasLimitHistory();
+                this.getGasUtilizationRatioHistory();
+                this.getBlockTimeHistory();
+                this.getBlockSizeHistory();
+            }
+        },
+        getBlockSizeHistory() {
+            this.$server.getBlockSizeHistory(this.from, this.to)
+                .then(({ data }) => {
+                    this.charts['blockSize'] = {
+                        xLabels: data.map(t => t.day),
+                        data: data.map(t => t.size ? Number(t.size) : null),
+                    };
+                })
+                .catch(console.log);
+        },
+        getBlockTimeHistory() {
+            this.$server.getBlockTimeHistory(this.from, this.to)
+                .then(({ data }) => {
+                    this.charts['blockTime'] = {
+                        xLabels: data.map(t => t.day),
+                        data: data.map(t => t.blockTime ? Number(t.blockTime) : null),
+                    };
+                })
+                .catch(console.log);
+        },
+        getGasUtilizationRatioHistory() {
+            this.$server.getGasUtilizationRatioHistory(this.from, this.to)
+                .then(({ data }) => {
+                    this.charts['gasUtilizationRatio'] = {
+                        xLabels: data.map(t => t.day),
+                        data: data.map(t => t.gasUtilizationRatio ? Number(t.gasUtilizationRatio) : null),
+                    };
+                })
+                .catch(console.log);
+        },
+        getGasLimitHistory() {
+            this.$server.getGasLimitHistory(this.from, this.to)
+                .then(({ data }) => {
+                    this.charts['gasLimit'] = {
+                        xLabels: data.map(t => t.day),
+                        data: data.map(t => t.gasLimit ? Number(t.gasLimit) : null),
+                    };
+                })
+                .catch(console.log);
+        },
+        getGasPriceHistory() {
+            this.$server.getGasPriceHistory(this.from, this.to)
+                .then(({ data }) => {
+                    this.charts['gasPrice'] = {
+                        xLabels: data.map(t => t.day),
+                        data: [
+                            {
+                                label: 'Slow',
+                                data: data.map(t => t.slow ? formatGwei(Number(t.slow)) : null),
+                                max: data.map(t => t.maxSlow ? formatGwei(Number(t.maxSlow)) : null),
+                                min: data.map(t => t.minSlow ? formatGwei(Number(t.minSlow)) : null),
+                                borderColor: '#4CAF50',
+                            },
+                            {
+                                label: 'Average',
+                                data: data.map(t => t.average ? formatGwei(Number(t.average)) : null),
+                                max: data.map(t => t.maxAverage ? formatGwei(Number(t.maxAverage)) : null),
+                                min: data.map(t => t.minAverage ? formatGwei(Number(t.minAverage)) : null),
+                                borderColor: '#3D95CE',
+                            },
+                            {
+                                label: 'Fast',
+                                data: data.map(t => t.fast ? formatGwei(Number(t.fast)) : null),
+                                max: data.map(t => t.maxFast ? formatGwei(Number(t.maxFast)) : null),
+                                min: data.map(t => t.minFast ? formatGwei(Number(t.minFast)) : null),
+                                borderColor: '#E72732',
+                            }
+                        ]
+                    };
+                })
+                .catch(console.log);
         },
         getTransactionVolume() {
             this.$server.getTransactionVolume(this.from, this.to)
@@ -137,16 +246,6 @@ export default {
                 })
                 .catch(console.log);
         },
-        getCumulativeWalletCount() {
-            this.$server.getCumulativeWalletCount(this.from, this.to)
-                .then(({ data }) => {
-                    this.charts['cumulativeWalletCount'] = {
-                        xLabels: data.map(t => t.date),
-                        data: data.map(t => parseInt(t.count))
-                    };
-                })
-                .catch(console.log);
-        },
         getDeployedContractCount() {
             this.$server.getDeployedContractCount(this.from, this.to)
                 .then(({ data }) => {
@@ -169,7 +268,7 @@ export default {
         }
     },
     computed: {
-        ...mapStores(useCurrentWorkspaceStore),
+        ...mapStores(useCurrentWorkspaceStore, useExplorerStore),
         from() {
             return this.selectedTimeRange > 0 ? new Date(new Date() - this.selectedTimeRange * 24 * 3600 * 1000) : new Date(0);
         },

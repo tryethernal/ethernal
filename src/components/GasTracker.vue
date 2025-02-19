@@ -114,7 +114,7 @@
                             <v-chip size="small" value="utilization">Utilization</v-chip>
                         </v-chip-group>
                         <MultiLineChart v-if="selectedChart === 'gasPrice'" :xLabels="gasPriceHistory.xLabels" :data="gasPriceHistory.data" tokenSymbol="gwei" :floating="true" />
-                        <LineChart v-if="selectedChart === 'gasLimit'" :xLabels="gasLimitHistory.xLabels" :data="gasLimitHistory.data" tokenSymbol="gwei" />
+                        <LineChart v-if="selectedChart === 'gasLimit'" :xLabels="gasLimitHistory.xLabels" :data="gasLimitHistory.data" tokenSymbol="gas unit" />
                         <LineChart v-if="selectedChart === 'utilization'" :xLabels="gasUtilizationRatioHistory.xLabels" :data="gasUtilizationRatioHistory.data" tokenSymbol="%" :floating="true" yAxisSymbol="%" />
                     </v-card-text>
                 </v-card>
