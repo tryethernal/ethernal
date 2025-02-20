@@ -4,7 +4,7 @@
             <v-card-text>
                 <v-row>
                     <v-col cols="3" class="pb-0">
-                        <v-select @update:model-value="initAllCharts" hide-details="true" density="compact" primary variant="outlined" label="Time Range" :items="ranges" v-model="selectedTimeRange" item-title="label" item-value="value">
+                        <v-select hide-details="true" density="compact" primary variant="outlined" label="Time Range" :items="ranges" v-model="selectedTimeRange" item-title="label" item-value="value">
                         </v-select>
                     </v-col>
                 </v-row>
@@ -109,6 +109,21 @@ export default {
     methods: {
         moment,
         initAllCharts() {
+            console.log(this.selectedTimeRange);
+            this.charts = {
+                transactionVolume: {},
+                erc20TransferVolume: {},
+                averageGasPrice: {},
+                averageTransactionFee: {},
+                uniqueWalletCount: {},
+                deployedContractCount: {},
+                cumulativeDeployedContractCount: {},
+                gasPrice: {},
+                gasLimit: {},
+                gasUtilizationRatio: {},
+                blockTime: {},
+                blockSize: {}
+            }
             this.getTransactionVolume();
             this.getErc20TransferVolume();
             this.getAverageGasPrice();
@@ -265,6 +280,11 @@ export default {
                     };
                 })
                 .catch(console.log);
+        }
+    },
+    watch: {
+        selectedTimeRange() {
+            this.initAllCharts();
         }
     },
     computed: {
