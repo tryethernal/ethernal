@@ -212,22 +212,24 @@ module.exports = (sequelize, DataTypes) => {
     */
     getLatestGasSpenders(intervalInHours = 24, limit = 50) {
         return sequelize.query(`
+            WITH total_gas AS (
+                SELECT SUM("gasUsed"::numeric) AS totalGasUsed
+                FROM transaction_events
+                WHERE "workspaceId" = :workspaceId
+                AND timestamp >= now() - interval '1 hour' * :intervalInHours
+            )
             SELECT
                 "from",
-                SUM("gasUsed"::numeric) as "gasUsed",
-                SUM("gasPrice"::numeric * "gasUsed"::numeric) as "gasCost",
-                SUM("gasUsed"::numeric) / (
-                    SELECT SUM("gasUsed"::numeric)
-                    FROM transaction_events
-                    WHERE "workspaceId" = :workspaceId
-                ) as "percentUsed"
-            FROM transaction_events
-            WHERE
-                "workspaceId" = :workspaceId AND
-                timestamp >= now() - interval '1 hour' * :intervalInHours
-            GROUP BY "from"
+                SUM("gasUsed"::numeric) AS "gasUsed",
+                SUM("gasPrice"::numeric * "gasUsed"::numeric) AS "gasCost",
+                SUM("gasUsed"::numeric) / totalGasUsed AS "percentUsed"
+            FROM transaction_events, total_gas
+            WHERE 
+                "workspaceId" = :workspaceId 
+                AND timestamp >= now() - interval '1 hour' * :intervalInHours
+            GROUP BY "from", totalGasUsed
             ORDER BY "gasUsed" DESC
-            LIMIT :limit
+            LIMIT :limit;
         `, {
             replacements: { workspaceId: this.id, intervalInHours, limit },
             type: QueryTypes.SELECT
@@ -248,23 +250,25 @@ module.exports = (sequelize, DataTypes) => {
     */
     getLatestGasConsumers(intervalInHours = 24, limit = 50) {
         return sequelize.query(`
+            WITH total_gas AS (
+                SELECT SUM("gasUsed"::numeric) AS totalGasUsed
+                FROM transaction_events
+                WHERE "workspaceId" = :workspaceId
+                AND timestamp >= now() - interval '1 hour' * :intervalInHours
+            )
             SELECT
                 "to",
-                SUM("gasUsed"::numeric) as "gasUsed",
-                SUM("gasPrice"::numeric * "gasUsed"::numeric) as "gasCost",
-                SUM("gasUsed"::numeric) / (
-                    SELECT SUM("gasUsed"::numeric)
-                    FROM transaction_events
-                    WHERE "workspaceId" = :workspaceId
-                ) as "percentUsed"
-            FROM transaction_events
+                SUM("gasUsed"::numeric) AS "gasUsed",
+                SUM("gasPrice"::numeric * "gasUsed"::numeric) AS "gasCost",
+                SUM("gasUsed"::numeric) / totalGasUsed AS "percentUsed"
+            FROM transaction_events, total_gas
             WHERE 
-                "workspaceId" = :workspaceId AND 
-                timestamp >= now() - interval '1 hour' * :intervalInHours AND
-                "to" IS NOT NULL
-            GROUP BY "to"
+                "workspaceId" = :workspaceId 
+                AND timestamp >= now() - interval '1 hour' * :intervalInHours
+                AND "to" IS NOT NULL
+            GROUP BY "to", totalGasUsed
             ORDER BY "gasUsed" DESC
-            LIMIT :limit
+            LIMIT :limit;
         `, {
             replacements: { workspaceId: this.id, intervalInHours, limit },
             type: QueryTypes.SELECT
