@@ -24,7 +24,7 @@ exports[`GasSpender.vue > Should show gas spenders 1`] = `
       <div class="v-slide-group v-slide-group--mobile v-chip-group v-theme--light pt-0 mb-1" tabindex="0">
         <!---->
         <div class="v-slide-group__container">
-          <div class="v-slide-group__content"><span class="v-chip v-chip--link v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal text-primary" draggable="false" tabindex="0"><span class="v-chip__overlay"></span><span class="v-chip__underlay"></span>
+          <div class="v-slide-group__content"><span class="v-chip v-chip--link v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal text-secondary" draggable="false" tabindex="0"><span class="v-chip__overlay"></span><span class="v-chip__underlay"></span>
             <!---->
             <!---->
             <div class="v-chip__content" data-no-activator="">24 Hours</div>
@@ -64,8 +64,8 @@ exports[`GasSpender.vue > Should show gas spenders 1`] = `
                   <!---->
                 </div>
               </th>
-              <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th" colspan="1" rowspan="1">
-                <div class="v-data-table-header__content"><span>% Used</span><i class="mdi-arrow-up mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
+              <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th--sorted v-data-table__th" colspan="1" rowspan="1">
+                <div class="v-data-table-header__content"><span>% Used</span><i class="mdi-arrow-down mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
                   <!---->
                 </div>
               </th>
@@ -77,18 +77,18 @@ exports[`GasSpender.vue > Should show gas spenders 1`] = `
             <!---->
             <tr class="v-data-table__tr">
               <td class="v-data-table__td v-data-table-column--align-start">
-                <hash-link-stub type="address" hash="0x1234" loadcontract="true" withname="true"></hash-link-stub>
+                <hash-link-stub type="address" hash="0x1235" loadcontract="true" withname="true"></hash-link-stub>
               </td>
-              <td class="v-data-table__td v-data-table-column--align-start">0.00000000001 ETH</td>
-              <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-10">1.23% <!----><!--teleport start--><!--teleport end--></span></td>
+              <td class="v-data-table__td v-data-table-column--align-start">0.00000000003 ETH</td>
+              <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-10">4.32% <!----><!--teleport start--><!--teleport end--></span></td>
             </tr>
             <!---->
             <tr class="v-data-table__tr">
               <td class="v-data-table__td v-data-table-column--align-start">
-                <hash-link-stub type="address" hash="0x1235" loadcontract="true" withname="true"></hash-link-stub>
+                <hash-link-stub type="address" hash="0x1234" loadcontract="true" withname="true"></hash-link-stub>
               </td>
-              <td class="v-data-table__td v-data-table-column--align-start">0.00000000003 ETH</td>
-              <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-11">4.32% <!----><!--teleport start--><!--teleport end--></span></td>
+              <td class="v-data-table__td v-data-table-column--align-start">0.00000000001 ETH</td>
+              <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-11">1.23% <!----><!--teleport start--><!--teleport end--></span></td>
             </tr>
             <!---->
             <!---->
