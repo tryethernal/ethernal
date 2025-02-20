@@ -108,7 +108,7 @@
             <v-col cols="12" lg="6">
                 <v-card>
                     <v-card-text>
-                        <v-chip-group mandatory class="pt-0 mb-1" v-model="selectedChart" selected-class="text-primary">
+                        <v-chip-group mandatory class="pt-0 mb-1" v-model="selectedChart" :selected-class="`text-${contrastingColor}`">
                             <v-chip size="small" value="gasPrice">Gas Price</v-chip>
                             <v-chip size="small" value="gasLimit">Gas Limit</v-chip>
                             <v-chip size="small" value="utilization">Utilization</v-chip>
@@ -134,8 +134,10 @@
 <script setup>
 import moment from 'moment';
 import { onMounted, onUnmounted, inject, ref, computed } from 'vue';
+import { useTheme } from 'vuetify';
 import { formatGwei } from 'viem';
 import { useExplorerStore } from '../stores/explorer';
+import { getBestContrastingColor } from '../lib/utils';
 
 import MultiLineChart from './MultiLineChart.vue';
 import LineChart from './LineChart.vue';
@@ -212,6 +214,11 @@ const totalFastCost = computed(() => {
 
 const speedEstimatesAvailable = computed(() => {
     return gasStats.value.baseFeePerGas !== null && gasStats.value.priorityFeePerGas && Object.keys(gasStats.value.priorityFeePerGas).length > 0;
+});
+
+const contrastingColor = computed(() => {
+    const theme = useTheme();
+    return getBestContrastingColor('#4242421f', theme.current.value.colors);
 });
 
 const getLatestGasStats = () => {
