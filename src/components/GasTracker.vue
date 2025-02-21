@@ -158,6 +158,7 @@ const to = ref(new Date(new Date().setHours(24,0,0,0)));
 const selectedChart = ref('gasPrice');
 const originalTitle = document.title;
 const interval = ref(null);
+
 const MINIMUM_DISPLAY_GWEI = 10000000;
 
 const formatGweiAmount = (amount) => {

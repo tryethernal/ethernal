@@ -24,7 +24,7 @@ describe('RpcConnector.vue', () => {
                 stubs,
                 plugins: [createTestingPinia({
                     initialState: {
-                        currentWorkspace: { name: 'Hardhat', rpcServer: 'http://localhost:8545' }
+                        currentWorkspace: { name: 'Hardhat', rpcServer: 'http://localhost:8545', currentBlock: { number: 1 } },
                     }
                 })]
             }
@@ -48,7 +48,8 @@ describe('RpcConnector.vue', () => {
                 stubs,
                 plugins: [createTestingPinia({
                     initialState: {
-                        currentWorkspace: { name: 'Hardhat', rpcServer: 'http://localhost:8545', public: true }
+                        currentWorkspace: { name: 'Hardhat', rpcServer: 'http://localhost:8545', public: true, currentBlock: { number: 1 } },
+                        explorer: { id: '1', gasAnalyticsEnabled: true }
                     }
                 })]
             }

@@ -55,16 +55,20 @@
         </v-slide-x-transition>
         <template v-if="isUserAdmin">
             <v-divider vertical inset class="mx-2"></v-divider>
-            Workspace: {{ currentWorkspaceStore.name }}<template v-if="!currentWorkspaceStore.explorer"> ({{ currentWorkspaceStore.chain.name }})</template>
+            Workspace: {{ currentWorkspaceStore.name }}
         </template>
-        <template v-if="isUserAdmin">
+        <template v-if="isUserAdmin && !currentWorkspaceStore.public">
             <v-divider vertical inset class="mx-2"></v-divider>
             <span style="max-width: 50ch; text-overflow: ellipsis; overflow: hidden;">{{ shortRpcUrl(currentWorkspaceStore.rpcServer) }}</span>
         </template>
-        <div v-show="currentWorkspaceStore.currentBlock.number">
+        <template v-if="currentWorkspaceStore.currentBlock.number">
             <v-divider vertical inset class="mx-2"></v-divider>
-            Latest Block: <router-link style="text-decoration: none;" :to="'/block/' + currentWorkspaceStore.currentBlock.number">{{ currentWorkspaceStore.currentBlock.number && commify(currentWorkspaceStore.currentBlock.number) }}</router-link>
-        </div>
+            Latest Block: <router-link class="text-decoration-none ml-1" :to="'/block/' + currentWorkspaceStore.currentBlock.number">{{ currentWorkspaceStore.currentBlock.number && commify(currentWorkspaceStore.currentBlock.number) }}</router-link>
+        </template>
+        <template v-if="explorerStore.id && explorerStore.gasAnalyticsEnabled && gasPrice">
+            <v-divider vertical inset class="mx-2"></v-divider>
+            Gas: <router-link class="text-decoration-none ml-1" :to="'/gas'">{{ gasPrice }}</router-link>
+        </template>
         <div v-show="processingContracts">
             <v-divider vertical inset class="mx-2"></v-divider>
             <v-progress-circular indeterminate class="mr-2" size="16" width="2" color="primary"></v-progress-circular>Processing Contracts...
@@ -77,10 +81,13 @@
 <script>
 const ethers = require('ethers');
 import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
+import { useExplorerStore } from '../stores/explorer';
 import { useEnvStore } from '../stores/env';
 import { mapStores } from 'pinia';
 import { formatContractPattern, shortRpcUrl } from '@/lib/utils';
 import WalletConnector from './WalletConnector.vue';
+
+const MINIMUM_DISPLAY_GWEI = 10000000;
 
 export default {
     name: 'RpcConnector',
@@ -94,7 +101,8 @@ export default {
         searchType: null,
         showSearchBar: false,
         processingContracts: false,
-        page: null
+        page: null,
+        gasPrice: null
     }),
     created() {
         this.page = this.$route.path;
@@ -118,6 +126,15 @@ export default {
         this.$pusher.onNewBlock(block => {
             if (block.number > this.currentWorkspaceStore.currentBlock.number)
                 this.currentWorkspaceStore.updateCurrentBlock(block);
+        }, this);
+
+        this.$pusher.onNewBlockEvent(blockEvent => {
+            if (blockEvent.gasPrice < 0)
+                this.gasPrice = '0 gwei';
+            else if (blockEvent.gasPrice < MINIMUM_DISPLAY_GWEI)
+                this.gasPrice = `<0.01 gwei`;
+            else
+                this.gasPrice = this.$fromWei(blockEvent.gasPrice, 'gwei', ' ', false, 2);
         }, this);
     },
     methods: {
@@ -210,7 +227,8 @@ export default {
     computed: {
         ...mapStores(
             useCurrentWorkspaceStore,
-            useEnvStore
+            useEnvStore,
+            useExplorerStore
         ),
         isUserAdmin() {
             return this.envStore.isAdmin;
