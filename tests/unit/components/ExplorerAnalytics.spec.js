@@ -2,7 +2,7 @@ import flushPromises from 'flush-promises';
 import ExplorerAnalytics from '@/components/ExplorerAnalytics.vue';
 
 const stubs = [
-    'Line-Chart', 'Multi-Line-Chart'
+    'Line-Chart', 'Multi-Line-Chart', 'Date-Range-Selector'
 ];
 
 describe('ExplorerAnalytics.vue', () => {

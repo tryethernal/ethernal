@@ -5,8 +5,7 @@ const ethers = require('ethers');
 export const getBestContrastingColor = (background, themeColors) => {
     const colorValues = {
         [themeColors.primary]: 'primary',
-        [themeColors.accent]: 'accent',
-        [themeColors.secondary]: 'secondary',
+        [themeColors.accent]: 'accent'
     }
     const colors = Object.keys(colorValues);
 

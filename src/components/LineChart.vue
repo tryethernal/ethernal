@@ -4,12 +4,7 @@
             <v-row>
                 <v-col cols="10">{{ title }}</v-col>
                 <v-col cols="2" :align="'end'" v-if="isZoomed">
-                    <v-tooltip location="top">
-                        <template v-slot:activator="{ props }">
-                            <v-btn v-bind="props" color="primary" dense variant="outlined" @click="resetZoom()" size="small"><v-icon size="small">mdi-restore</v-icon></v-btn>
-                        </template>
-                        Reset Zoom
-                    </v-tooltip>
+                    <v-btn v-tooltip="'Reset Zoom'" color="primary" dense variant="outlined" @click="resetZoom()" size="small"><v-icon size="small">mdi-restore</v-icon></v-btn>
                 </v-col>
             </v-row>
         </template>
@@ -203,7 +198,7 @@ export default {
                         mode: 'index',
                         bodyFont: { weight: 'bold' },
                         callbacks: {
-                            title() { return ''},
+                            title() { return '' },
                             label: (context) => {
                                 const value = context.parsed.y < 1 ? context.parsed.y : ethers.utils.commify(context.parsed.y);
                                 const date = moment(this.xLabels[context.parsed.x]).format(DATE_FORMAT);
