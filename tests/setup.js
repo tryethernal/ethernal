@@ -61,7 +61,8 @@ const $pusher = {
     onNewToken: vi.fn(),
     onNewNft: vi.fn(),
     onUserUpdated: vi.fn(),
-    onDestroyedContract: vi.fn()
+    onDestroyedContract: vi.fn(),
+    onNewBlockEvent: vi.fn()
 };
 
 vi.stubGlobal('server', $server);

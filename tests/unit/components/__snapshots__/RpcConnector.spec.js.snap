@@ -62,9 +62,8 @@ exports[`RpcConnector.vue > Should display the correct info 1`] = `
     </transition-stub>
     <!--v-if-->
     <!--v-if-->
-    <div style="display: none;">
-      <hr class="v-divider v-divider--inset v-divider--vertical v-theme--light mx-2" aria-orientation="vertical" role="separator"> Latest Block: <a style="text-decoration: none;">0</a>
-    </div>
+    <hr class="v-divider v-divider--inset v-divider--vertical v-theme--light mx-2" aria-orientation="vertical" role="separator"> Latest Block: <a class="text-decoration-none ml-1">1</a>
+    <!--v-if-->
     <div style="display: none;">
       <hr class="v-divider v-divider--inset v-divider--vertical v-theme--light mx-2" aria-orientation="vertical" role="separator">
       <div class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
@@ -146,9 +145,8 @@ exports[`RpcConnector.vue > Should not do private operations when in public expl
     </transition-stub>
     <!--v-if-->
     <!--v-if-->
-    <div style="display: none;">
-      <hr class="v-divider v-divider--inset v-divider--vertical v-theme--light mx-2" aria-orientation="vertical" role="separator"> Latest Block: <a style="text-decoration: none;">0</a>
-    </div>
+    <hr class="v-divider v-divider--inset v-divider--vertical v-theme--light mx-2" aria-orientation="vertical" role="separator"> Latest Block: <a class="text-decoration-none ml-1">1</a>
+    <!--v-if-->
     <div style="display: none;">
       <hr class="v-divider v-divider--inset v-divider--vertical v-theme--light mx-2" aria-orientation="vertical" role="separator">
       <div class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
