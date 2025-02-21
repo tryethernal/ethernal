@@ -135,7 +135,7 @@ export default {
             else if (blockEvent.gasPrice < MINIMUM_DISPLAY_GWEI)
                 this.gasPrice = `<0.01 gwei`;
             else
-                    this.gasPrice = this.$fromWei(blockEvent.gasPrice, 'gwei', ' ', false, 2);
+                this.gasPrice = this.$fromWei(blockEvent.gasPrice, 'gwei', 'gwei', false, 2);
             }, this);
         }
     },
