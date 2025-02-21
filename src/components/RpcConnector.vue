@@ -128,14 +128,16 @@ export default {
                 this.currentWorkspaceStore.updateCurrentBlock(block);
         }, this);
 
-        this.$pusher.onNewBlockEvent(blockEvent => {
-            if (blockEvent.gasPrice < 0)
-                this.gasPrice = '0 gwei';
+        if (this.explorerStore.id && this.explorerStore.gasAnalyticsEnabled) {
+            this.$pusher.onNewBlockEvent(blockEvent => {
+                if (blockEvent.gasPrice < 0)
+                    this.gasPrice = '0 gwei';
             else if (blockEvent.gasPrice < MINIMUM_DISPLAY_GWEI)
                 this.gasPrice = `<0.01 gwei`;
             else
-                this.gasPrice = this.$fromWei(blockEvent.gasPrice, 'gwei', ' ', false, 2);
-        }, this);
+                    this.gasPrice = this.$fromWei(blockEvent.gasPrice, 'gwei', ' ', false, 2);
+            }, this);
+        }
     },
     methods: {
         formatContractPattern, shortRpcUrl,
