@@ -2,14 +2,9 @@
     <v-card class="px-1" v-if="data">
         <template v-slot:subtitle>
             <v-row>
+                <v-col cols="10">{{ title }}</v-col>
                 <v-col cols="2" :align="'end'" v-if="isZoomed">
-                    <v-tooltip location="top">
-                        <template v-slot:activator="{ props }">
-                            <v-spacer />
-                            <v-btn v-bind="props" color="primary" dense variant="outlined" @click="resetZoom()" size="small"><v-icon size="small">mdi-restore</v-icon></v-btn>
-                        </template>
-                        Reset Zoom
-                    </v-tooltip>
+                    <v-btn v-tooltip="'Reset Zoom'" color="primary" dense variant="outlined" @click="resetZoom()" size="small"><v-icon size="small">mdi-restore</v-icon></v-btn>
                 </v-col>
             </v-row>
         </template>
@@ -58,7 +53,7 @@ const DATE_FORMAT = 'MM/DD';
 
 export default {
     name: 'MultiLineChart',
-    props: ['xLabels', 'data', 'tooltipUnit', 'tokenSymbol', 'floating'],
+    props: ['xLabels', 'data', 'tooltipUnit', 'tokenSymbol', 'floating', 'title'],
     components: {
         LineChartGenerator
     },

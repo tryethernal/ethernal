@@ -1,13 +1,8 @@
 <template>
     <v-container fluid>
+        <DateRangeSelector @rangeUpdated="rangeUpdated" />
         <v-card style="height: 100%">
             <v-card-text>
-                <v-row>
-                    <v-col cols="3" class="pb-0">
-                        <v-select hide-details="true" density="compact" primary variant="outlined" label="Time Range" :items="ranges" v-model="selectedTimeRange" item-title="label" item-value="value">
-                        </v-select>
-                    </v-col>
-                </v-row>
                 <v-row>
                     <v-col cols="12" md="6">
                         <Line-Chart :title="'Transaction Volume'" :xLabels="charts['transactionVolume'].xLabels" :data="charts['transactionVolume'].data" :tooltipUnit="'transaction'" :index="0" />
@@ -39,7 +34,7 @@
 
                     <template v-if="explorerStore.gasAnalyticsEnabled">
                         <v-col cols="12" md="6">
-                            <MultiLineChart :xLabels="charts['gasPrice'].xLabels" :data="charts['gasPrice'].data" tokenSymbol="gwei" :floating="true" />
+                            <MultiLineChart :title="'Gas Price'" :xLabels="charts['gasPrice'].xLabels" :data="charts['gasPrice'].data" tokenSymbol="gwei" :floating="true" />
                         </v-col>
 
                         <v-col cols="12" md="6">
@@ -67,26 +62,24 @@
 <script>
 const moment = require('moment');
 const ethers = require('ethers');
+import { useTheme } from 'vuetify';
 import { formatGwei } from 'viem';
 import { mapStores } from 'pinia';
 import { useCurrentWorkspaceStore } from '@/stores/currentWorkspace';
 import { useExplorerStore } from '@/stores/explorer';
+import { getBestContrastingColor } from '@/lib/utils';
 import LineChart from './LineChart.vue';
 import MultiLineChart from './MultiLineChart.vue';
+import DateRangeSelector from './DateRangeSelector.vue';
 
 export default {
     name: 'ExplorerAnalytics',
     components: {
+        DateRangeSelector,
         LineChart,
         MultiLineChart
     },
     data: () => ({
-        selectedTimeRange: 14,
-        ranges: [
-            { label: '14 Days', value: 14 },
-            { label: '30 Days', value: 30 },
-            { label: 'All Time', value: 0 }
-        ],
         charts: {
             transactionVolume: {},
             erc20TransferVolume: {},
@@ -102,14 +95,18 @@ export default {
             blockTime: {},
             blockSize: {}
         },
+        showCustomPicker: false,
+        from: null,
+        to: null
     }),
-    mounted() {
-       this.initAllCharts();
-    },
     methods: {
         moment,
+        rangeUpdated(range) {
+            this.from = range.from;
+            this.to = range.to;
+            this.initAllCharts();
+        },
         initAllCharts() {
-            console.log(this.selectedTimeRange);
             this.charts = {
                 transactionVolume: {},
                 erc20TransferVolume: {},
@@ -289,11 +286,9 @@ export default {
     },
     computed: {
         ...mapStores(useCurrentWorkspaceStore, useExplorerStore),
-        from() {
-            return this.selectedTimeRange > 0 ? new Date(new Date() - this.selectedTimeRange * 24 * 3600 * 1000) : new Date(0);
-        },
-        to() {
-            return new Date();
+        contrastingColor() {
+            const theme = useTheme();
+            return getBestContrastingColor('#4242421f', theme.current.value.colors);
         }
     }
 }
