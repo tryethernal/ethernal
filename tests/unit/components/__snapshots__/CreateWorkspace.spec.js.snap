@@ -20,7 +20,7 @@ exports[`CreateWorkspace.vue > Should display a warning if browser is Safari 1`]
   <!---->
   <!---->
   <div class="v-card-text">
-    <div class="v-alert v-theme--light bg-error v-alert--density-compact v-alert--variant-flat" role="alert" style="display: none;">
+    <div class="v-alert v-theme--light bg-error v-alert--density-compact v-alert--variant-flat mb-3" role="alert" style="display: none;">
       <!----><span class="v-alert__underlay"></span>
       <!---->
       <div class="v-alert__prepend"><i class="mdi-close-circle mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="compact"></i></div>
@@ -243,7 +243,7 @@ exports[`CreateWorkspace.vue > Should display an error if it cannot connect to t
   <!---->
   <!---->
   <div class="v-card-text">
-    <div class="v-alert v-theme--light bg-error v-alert--density-compact v-alert--variant-flat" role="alert" style="">
+    <div class="v-alert v-theme--light bg-error v-alert--density-compact v-alert--variant-flat mb-3" role="alert" style="">
       Can't connect to rpc server,
       make sure your node is up, and reachable from the browser.<br>
       If you are using Brave, you'll need to disable Shields.
@@ -345,7 +345,7 @@ exports[`CreateWorkspace.vue > Should display an error if it cannot connect to t
       <div class="v-input v-input--horizontal v-input--center-affix v-input--density-default v-theme--light v-locale--is-ltr v-input--dirty v-text-field v-select v-select--single v-select--selected">
         <!---->
         <div class="v-input__control">
-          <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="v-menu-7">
+          <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="v-menu-7">
             <div class="v-field__overlay"></div>
             <div class="v-field__loader">
               <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
@@ -426,7 +426,7 @@ exports[`CreateWorkspace.vue > Should display locally running networks 1`] = `
   <!---->
   <!---->
   <div class="v-card-text">
-    <div class="v-alert v-theme--light bg-error v-alert--density-compact v-alert--variant-flat" role="alert" style="display: none;">
+    <div class="v-alert v-theme--light bg-error v-alert--density-compact v-alert--variant-flat mb-3" role="alert" style="display: none;">
       <!----><span class="v-alert__underlay"></span>
       <!---->
       <div class="v-alert__prepend"><i class="mdi-close-circle mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="compact"></i></div>
@@ -534,7 +534,7 @@ exports[`CreateWorkspace.vue > Should display locally running networks 1`] = `
       <div class="v-input v-input--horizontal v-input--center-affix v-input--density-default v-theme--light v-locale--is-ltr v-input--dirty v-text-field v-select v-select--single v-select--selected">
         <!---->
         <div class="v-input__control">
-          <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="v-menu-7">
+          <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="v-menu-7">
             <div class="v-field__overlay"></div>
             <div class="v-field__loader">
               <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
@@ -615,7 +615,7 @@ exports[`CreateWorkspace.vue > Should not display a warning message if user has 
   <!---->
   <!---->
   <div class="v-card-text">
-    <div class="v-alert v-theme--light bg-error v-alert--density-compact v-alert--variant-flat" role="alert" style="display: none;">
+    <div class="v-alert v-theme--light bg-error v-alert--density-compact v-alert--variant-flat mb-3" role="alert" style="display: none;">
       <!----><span class="v-alert__underlay"></span>
       <!---->
       <div class="v-alert__prepend"><i class="mdi-close-circle mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="compact"></i></div>

@@ -3,8 +3,15 @@ const {
     sanitize,
     stringifyBns,
     isJson,
-    validateBNString
+    validateBNString,
+    avg
 } = require('../../lib/utils');
+
+describe('avg', () => {
+    it('Should return the average of an array', () => {
+        expect(avg([1, 2, 3, 4, 5])).toEqual(3);
+    });
+});
 
 describe('validateBNString', () => {
     it('Should return true if valid', () => {

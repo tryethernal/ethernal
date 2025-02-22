@@ -7,6 +7,10 @@
                 color="primary"
             ></v-progress-circular>
         </v-overlay>
+
+        <v-overlay persistent class="d-flex justify-center align-center" :model-value="isWalletConnecting" scrim="primary" :opacity="0.2">
+        </v-overlay>
+
         <v-system-bar height="40" v-html="banner" v-if="banner" class="d-flex justify-start font-weight-bold" color="primary"></v-system-bar>
 
         <v-navigation-drawer v-model="drawer" :style="styles" v-if="canDisplaySides">
@@ -51,7 +55,7 @@
                 <v-list density="compact" nav>
                     <v-list-item prepend-icon="arcticons:metamask" title="Add To Metamask" link v-if="ethereum && hasNetworkInfo" @click="addNetworkToMetamask()"></v-list-item>
 
-                    <v-list-item v-for="(link, idx) in links" :prepend-icon="link.icon || 'mdi-open-in-new'" title="link.name" target="_blank" :href="link.url" :key="idx"></v-list-item>
+                    <v-list-item v-for="(link, idx) in links" :prepend-icon="link.icon || 'mdi-open-in-new'" :title="link.name" target="_blank" :href="link.url" :key="idx"></v-list-item>
                     <v-list-item prepend-icon="mdi-text-box-multiple" title="Documentation" target="_blank" :href="`https://doc.tryethernal.com`" v-if="envStore.isAdmin"></v-list-item>
                     <v-list-item prepend-icon="mdi-forum" title="Discord" target="_blank" :href="`https://discord.gg/jEAprf45jj`" v-if="envStore.isAdmin"></v-list-item>
                     <v-list-item prepend-icon="mdi-feature-search" title="Feature Requests" v-show="prAuthToken" target="_blank" :href="`https://ethernal.productroad.com/company/auth/?token=${prAuthToken}`"></v-list-item>
@@ -93,6 +97,7 @@ import { useCurrentWorkspaceStore } from './stores/currentWorkspace';
 import { useEnvStore } from './stores/env';
 import { useExplorerStore } from './stores/explorer';
 import { useUserStore } from './stores/user';
+import { useCustomisationStore } from './stores/customisation';
 import RpcConnector from './components/RpcConnector';
 import OnboardingModal from './components/OnboardingModal';
 import BrowserSyncExplainerModal from './components/BrowserSyncExplainerModal';
@@ -120,6 +125,7 @@ export default {
         banner: null,
         isRemote: false,
         isOverlayActive: false,
+        isWalletConnecting: false,
         ethereum: null,
         drawer: null
     }),
@@ -132,6 +138,7 @@ export default {
             if (!provider || provider !== window.ethereum) return;
             this.ethereum = provider;
         });
+
         this.isOverlayActive = true;
         if (localStorage.getItem('ssoApiToken'))
             localStorage.removeItem('ssoApiToken');
@@ -280,7 +287,7 @@ export default {
                 if (font)
                     WebFont.load({
                         fontactive: () => {
-                            this.$set(this.styles, 'fontFamily', font);
+                            this.styles['fontFamily'] = font;
                         },
                         google: {
                             families: [`${font}:100,300,400,500,700,900&display=swap`]
@@ -300,7 +307,9 @@ export default {
                 id: explorer.workspace.id,
                 defaultAccount: explorer.workspace.defaultAccount,
                 gasPrice: explorer.workspace.gasPrice,
-                gasLimit: explorer.workspace.gasLimit
+                gasLimit: explorer.workspace.gasLimit,
+                functions: explorer.workspace.functions,
+                packages: explorer.workspace.packages
             });
         },
         initWorkspace(workspace) {
@@ -310,11 +319,6 @@ export default {
             this.isOverlayActive = false;
             this.appBarComponent = 'rpc-connector';
             this.routerComponent = 'router-view';
-
-            if (this.envStore.isAdmin && this.envStore.isMarketingEnabled) {
-                this.$server.getProductRoadToken().then(res => this.prAuthToken = res.data.token);
-                this.$server.getMarketingFlags().then(({ data: { isRemote }}) => this.isRemote = !!isRemote);
-            }
         }
     },
     computed: {
@@ -322,13 +326,14 @@ export default {
             useCurrentWorkspaceStore,
             useEnvStore,
             useExplorerStore,
-            useUserStore
+            useUserStore,
+            useCustomisationStore
         ),
         hasNetworkInfo() {
             return !!(this.explorerStore.name && this.explorerStore.domain && this.explorerStore.token && this.explorerStore.rpcServer);
         },
         formattedExpectedChainId() {
-            return `0x${parseInt(this.currentWorkspace.networkId).toString(16)}`;
+            return `0x${parseInt(this.currentWorkspaceStore.networkId).toString(16)}`;
         },
         isAuthPage() { return this.$route.path.indexOf('/auth') > -1 },
         canDisplaySides() { return (this.userStore.loggedIn || this.explorerStore.id) && !this.isAuthPage && !this.isOverlayActive },

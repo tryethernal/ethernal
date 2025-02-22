@@ -6,6 +6,7 @@ import flushPromises from 'flush-promises';
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import { VStepperVertical, VStepperVerticalItem } from 'vuetify/labs/VStepperVertical'
+
 import $server from './unit/mocks/server';
 import FromWei from '@/filters/FromWei';
 import dt from '@/filters/dt';
@@ -60,12 +61,14 @@ const $pusher = {
     onNewToken: vi.fn(),
     onNewNft: vi.fn(),
     onUserUpdated: vi.fn(),
-    onDestroyedContract: vi.fn()
+    onDestroyedContract: vi.fn(),
+    onNewBlockEvent: vi.fn()
 };
 
 vi.stubGlobal('server', $server);
 vi.stubGlobal('pusher', $pusher);
 vi.stubGlobal('router', $router);
+vi.stubGlobal('fromWei', FromWei);
 vi.stubGlobal('mount', customMount);
 vi.stubGlobal('createTestingPinia', createTestingPinia);
 vi.stubGlobal('flushPromises', flushPromises);

@@ -4,6 +4,46 @@ const db = require('../lib/firebase');
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const { managedError, unmanagedError } = require('../lib/errors');
 
+/*
+    This endpoint is used to get the block size history for a workspace.
+
+    @param {string} from - The start date of the block size history
+    @param {string} to - The end date of the block size history
+    @returns {array} - The block size history
+        - day: The day of the block size history
+        - size: The average block size for the day
+*/
+router.get('/blockSizeHistory', workspaceAuthMiddleware, async (req, res, next) => {
+    const data = req.query;
+    try {
+        const blockSizeHistory = await db.getBlockSizeHistory(data.workspace.id, data.from, data.to);
+
+        res.status(200).json(blockSizeHistory);
+    } catch(error) {
+        unmanagedError(error, req, next);
+    }
+});
+
+/*
+    This endpoint is used to get the block time history for a workspace.
+
+    @param {string} from - The start date of the block time history
+    @param {string} to - The end date of the block time history
+    @returns {array} - The block time history
+        - day: The day of the block time history
+        - blockTime: The average block time for the day
+*/
+router.get('/blockTimeHistory', workspaceAuthMiddleware, async (req, res, next) => {
+    const data = req.query;
+    try {
+        const blockTimeHistory = await db.getBlockTimeHistory(data.workspace.id, data.from, data.to);
+
+        res.status(200).json(blockTimeHistory);
+    } catch(error) {
+        unmanagedError(error, req, next);
+    }
+});
+
 router.get('/transactions', workspaceAuthMiddleware, async (req, res, next) => {
     const data = req.query;
     try {

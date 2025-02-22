@@ -11,11 +11,13 @@
                     <Hash-Link :type="'address'" :hash="value" :withName="true" :notCopiable="notInteractive" />
                 </span>
                 <span v-else-if="input.type == 'tuple'">
-                    { {{ '\n' }}
-                    <span v-for="(el, idx) in value" :key="idx">
-                        <Formatted-Sol-Var :input="input.components[idx]" :value="el" :depth="displayDepth + titanicLevelDepth + 1" />{{ '\n' }}
-                    </span>
-                     <span :class="`ml-${4 * displayDepth} pl-${4 * titanicLevelDepth}`">}</span>
+                    {
+                    <div class="pl-2">
+                        <span v-for="(component, idx) in input.components" :key="idx">
+                            <Formatted-Sol-Var :input="component" :value="value[component.name]" :depth="displayDepth + titanicLevelDepth + 1" />{{ '\n' }}
+                        </span>
+                    </div>
+                    <span :class="`ml-${4 * displayDepth} pl-${4 * titanicLevelDepth}`">&nbsp;}</span>
                 </span>
                 <span v-else-if="input.type == 'string'">
                     <span v-if="isValueJSON" style="white-space: normal;">
@@ -28,13 +30,15 @@
                     <span v-else v-html="formatString(value)"></span>
                 </span>
                 <span v-else-if="isInputArray">
-                    [{{ '\n' }}
+                    [
+                    <div class="pl-2">
                         <span v-for="(el, idx) in value" :key="idx">
                             <Formatted-Sol-Var v-if="input.arrayChildren" :input="input.arrayChildren" :value="el" :depth="displayDepth + titanicLevelDepth + 1" :isArrayEl="true" />
-                            <Formatted-Sol-Var v-else :input="{type: 'string'}" :value="el" :depth="displayDepth + titanicLevelDepth + 1" :isArrayEl="true" />
+                            <Formatted-Sol-Var v-else :input="input.type" :value="el" :depth="displayDepth + titanicLevelDepth + 1" :isArrayEl="true" />
                             {{ '\n' }}
                         </span>
-                    <span :class="`ml-${4 * displayDepth} pl-${4 * titanicLevelDepth}`">]</span>
+                    </div>
+                    <span :class="`ml-${4 * displayDepth} pl-${4 * titanicLevelDepth}`">&nbsp;]</span>
                 </span>
                 <span v-else>
                     {{ value }}
@@ -51,7 +55,24 @@ import HashLink from './HashLink.vue';
 
 export default {
     name: 'FormattedSolVar',
-    props: ['input', 'value', 'depth', 'isArrayEl', 'notInteractive'],
+    props: {
+        input: {
+            required: false,
+            default: {}
+        },
+        value: {
+            required: false
+        },
+        depth: {
+            required: false
+        },
+        isArrayEl: {
+            required: false
+        },
+        notInteractive: {
+            required: false
+        }
+    },
     components: {
         HashLink,
         VueJsonPretty
@@ -93,7 +114,7 @@ export default {
             return this.depth !== undefined && this.depth !== null ? Math.min(this.depth, 4) : 1;
         },
         isInputArray: function() {
-            return !!this.input.arrayChildren || this.input.type.endsWith('[]');
+            return !!this.input.arrayChildren || (this.input.type && this.input.type.endsWith('[]'));
         },
         isFormattable: function() {
             return ['address', 'string'].indexOf(this.input.type) > -1;

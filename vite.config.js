@@ -9,6 +9,9 @@ export default ({ mode }) => {
     const env = loadEnv(mode, process.cwd(), '');
 
     return defineConfig({
+        build: {
+            minify: 'terser'
+        },
         plugins: [
             vue(),
             commonjs(),
@@ -22,13 +25,18 @@ export default ({ mode }) => {
             extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue'],
         },
         server: {
+            allowedHosts: true,
             host: '0.0.0.0',
             port: 8080,
             headers: {
                 'Document-Policy': 'js-profiling'
             },
             proxy: {
-                '^/api/[1-9]\\d*/(envelope|minidump|security|store)/': env.VITE_SENTRY_URL
+                '^/api/[1-9]\\d*/(envelope|minidump|security|store)/': env.VITE_SENTRY_URL,
+                '^/api/*': {
+                    target: 'http://host.docker.internal:8888',
+                    changeOrigin: true,
+                }
             }
         },
         define: {

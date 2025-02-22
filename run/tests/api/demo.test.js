@@ -12,7 +12,7 @@ jest.mock('stripe', () => {
         }
     });
 });
-const mockAxiosGet = jest.fn().mockResolvedValue({ data: {}});
+const mockAxiosGet = jest.fn().mockResolvedValue({ data: 'export default {}' });
 jest.mock('axios', () => ({
     get: mockAxiosGet
 }));
@@ -203,7 +203,7 @@ describe(`POST ${BASE_URL}/migrateExplorer`, () => {
 });
 
 describe(`POST ${BASE_URL}/explorers`, () => {
-    mockAxiosGet.mockResolvedValueOnce({ data: { "1": "ethereum" }});
+    mockAxiosGet.mockResolvedValueOnce({ data: 'export default { "1": "ethereum" }' });
     ProviderConnector.mockImplementationOnce(() => ({
         fetchNetworkId: jest.fn().mockResolvedValueOnce(1)
     }));

@@ -14,15 +14,17 @@ export const useExplorerStore = defineStore('explorer', {
         admin: {},
         workspace: {},
         faucet: null,
-        v2Dex: null
+        v2Dex: null,
+        gasAnalyticsEnabled: null
     }),
 
     actions: {
         updateExplorer(explorer) {
-            if (explorer)
-                this.$patch(explorer);
-            else
+            if (!explorer)
                 this.$reset();
+
+            this.$patch(explorer);
         }
     }
 });
+

@@ -2,7 +2,16 @@ import ImportContractModal from '@/components/ImportContractModal.vue';
 
 describe('ImportContractModal.vue', () => {
     it('Should let the user import a verified mainnet contract', async () => {
-        const wrapper = mount(ImportContractModal);
+        const wrapper = mount(ImportContractModal, {
+            global: {
+                plugins: [createTestingPinia({
+                    initialState: {
+                        currentWorkspace: { chain: { scanner: 'etherscan', name: 'Ethereum' } },
+                        explorer: {}
+                    }
+                })]
+            }
+        });
         const importContractMock = vi.spyOn(server, 'importContract');
         await wrapper.setData({ dialog: true, options: { contractsCount: 1 } });
 
@@ -19,7 +28,15 @@ describe('ImportContractModal.vue', () => {
         vi.spyOn(server, 'importContract')
             .mockResolvedValue({ data: { success: true, contractIsVerified: false }});
 
-        const wrapper = mount(ImportContractModal);
+        const wrapper = mount(ImportContractModal, {
+            global: {
+                plugins: [createTestingPinia({
+                    initialState: {
+                        currentWorkspace: { chain: { scanner: 'etherscan', name: 'Ethereum' } }
+                    }
+                })]
+            }
+        });
         const importContractMock = vi.spyOn(server, 'importContract');
         await wrapper.setData({ dialog: true, options: { contractsCount: 1 } });
 
@@ -48,7 +65,13 @@ describe('ImportContractModal.vue', () => {
             global: {
                 plugins: [createTestingPinia({
                     initialState: {
-                        user: { plan: 'premium' }
+                        user: { plan: 'premium' },
+                        currentWorkspace: {
+                            chain: {
+                                scanner: 'etherscan',
+                                name: 'Ethereum'
+                            }
+                        }
                     }
                 })]
             },
@@ -68,7 +91,8 @@ describe('ImportContractModal.vue', () => {
                 plugins: [createTestingPinia({
                     initialState: {
                         user: { plan: 'free' },
-                        currentWorkspace: { public: true }
+                        currentWorkspace: { public: true },
+                        explorer: { token: 'ETH' }
                     }
                 })]
             }

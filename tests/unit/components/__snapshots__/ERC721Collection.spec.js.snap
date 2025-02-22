@@ -93,31 +93,7 @@ exports[`ERC721Collection.vue > Should display contract info 1`] = `
           <stat-number-stub loading="false" title="Circulating Supply" decimals="0" infotooltip="Number of tokens currently in circulation" value="1000000000"></stat-number-stub>
         </div>
         <div class="v-col-sm-6 v-col-lg-6 v-col-12">
-          <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated" style="height: 100%;">
-            <!---->
-            <div class="v-card__loader">
-              <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
-                <!---->
-                <div class="v-progress-linear__background"></div>
-                <div class="v-progress-linear__buffer" style="width: 0%;"></div>
-                <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
-                  <div class="v-progress-linear__indeterminate">
-                    <div class="v-progress-linear__indeterminate long"></div>
-                    <div class="v-progress-linear__indeterminate short"></div>
-                  </div>
-                </transition-stub>
-                <!---->
-              </div>
-            </div>
-            <!---->
-            <!---->
-            <div class="v-card-subtitle">Your Balance</div>
-            <div class="v-card-text">
-              <metamask-stub class="mt-1"></metamask-stub>
-            </div>
-            <!---->
-            <!----><span class="v-card__underlay"></span>
-          </div>
+          <token-balance-card-stub contract="[object Object]"></token-balance-card-stub>
         </div>
       </div>
     </div>
@@ -255,31 +231,7 @@ exports[`ERC721Collection.vue > Should display placeholders 1`] = `
           <stat-number-stub loading="false" title="Circulating Supply" decimals="0" infotooltip="Number of tokens currently in circulation" value="0"></stat-number-stub>
         </div>
         <div class="v-col-sm-6 v-col-lg-6 v-col-12">
-          <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated" style="height: 100%;">
-            <!---->
-            <div class="v-card__loader">
-              <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
-                <!---->
-                <div class="v-progress-linear__background"></div>
-                <div class="v-progress-linear__buffer" style="width: 0%;"></div>
-                <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
-                  <div class="v-progress-linear__indeterminate">
-                    <div class="v-progress-linear__indeterminate long"></div>
-                    <div class="v-progress-linear__indeterminate short"></div>
-                  </div>
-                </transition-stub>
-                <!---->
-              </div>
-            </div>
-            <!---->
-            <!---->
-            <div class="v-card-subtitle">Your Balance</div>
-            <div class="v-card-text">
-              <metamask-stub class="mt-1"></metamask-stub>
-            </div>
-            <!---->
-            <!----><span class="v-card__underlay"></span>
-          </div>
+          <token-balance-card-stub contract="[object Object]"></token-balance-card-stub>
         </div>
       </div>
     </div>

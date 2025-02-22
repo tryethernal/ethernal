@@ -120,6 +120,14 @@ export default {
                 const channel = pusher.subscribe(channelString);
                 channel.bind('updated', handler, context);
                 return () => pusher.unsubscribe(channelString);
+            },
+
+            onNewBlockEvent(handler, context) {
+                const workspaceId = currentWorkspaceStore.id;
+                const channelString = `private-cache-block-events;workspace=${workspaceId}`;
+                const channel = pusher.subscribe(channelString);
+                channel.bind('new', handler, context);
+                return () => pusher.unsubscribe(channelString);
             }
         }
 

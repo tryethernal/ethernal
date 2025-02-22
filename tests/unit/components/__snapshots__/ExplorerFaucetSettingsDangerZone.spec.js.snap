@@ -50,10 +50,8 @@ exports[`ExplorerFaucetSettingsDangerZone.vue > Should display danger zone 1`] =
               </div>
               <!---->
               <div class="v-field__field" data-no-activator="">
-                <!----><label class="v-label v-field-label" for="input-1">
-                  <!---->
-                  <!---->
-                </label>
+                <!---->
+                <!---->
                 <!----><input readonly="" size="1" type="text" id="input-1" aria-describedby="input-1-messages" class="v-field__input">
                 <!---->
               </div>

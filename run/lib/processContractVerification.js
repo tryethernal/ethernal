@@ -20,7 +20,7 @@ const removeMetadata = (bytecode) => {
 };
 
 module.exports = async function(db, payload) {
-    const VALID_EVM_VERSIONS = ['homestead', 'tangerineWhistle', 'spuriousDragon', 'byzantium', 'constantinople', 'petersburg', 'istanbul', 'berlin', 'london', 'paris', 'shanghai'];
+    const VALID_EVM_VERSIONS = ['homestead', 'tangerineWhistle', 'spuriousDragon', 'byzantium', 'constantinople', 'petersburg', 'istanbul', 'berlin', 'london', 'paris', 'shanghai', 'cancun'];
     const solc = require('solc');
     const linker = require('solc/linker');
     const code = payload.code;

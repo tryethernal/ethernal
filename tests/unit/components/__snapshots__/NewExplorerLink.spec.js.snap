@@ -44,8 +44,8 @@ exports[`NewExplorerLink.vue > Should display a new link form 1`] = `
           </div>
         </div>
         <!---->
-        <div class="v-input__details">
-          <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="input-0-messages">
+        <div id="input-0-messages" class="v-input__details" role="alert" aria-live="polite">
+          <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
             <!---->
           </transition-group-stub>
           <!---->
@@ -93,8 +93,8 @@ exports[`NewExplorerLink.vue > Should display a new link form 1`] = `
           </div>
         </div>
         <!---->
-        <div class="v-input__details">
-          <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="input-2-messages">
+        <div id="input-2-messages" class="v-input__details" role="alert" aria-live="polite">
+          <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
             <!---->
           </transition-group-stub>
           <!---->
@@ -152,8 +152,8 @@ exports[`NewExplorerLink.vue > Should display an existing link form 1`] = `
           </div>
         </div>
         <!---->
-        <div class="v-input__details">
-          <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="input-0-messages">
+        <div id="input-0-messages" class="v-input__details" role="alert" aria-live="polite">
+          <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
             <!---->
           </transition-group-stub>
           <!---->
@@ -201,8 +201,8 @@ exports[`NewExplorerLink.vue > Should display an existing link form 1`] = `
           </div>
         </div>
         <!---->
-        <div class="v-input__details">
-          <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="input-2-messages">
+        <div id="input-2-messages" class="v-input__details" role="alert" aria-live="polite">
+          <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
             <!---->
           </transition-group-stub>
           <!---->

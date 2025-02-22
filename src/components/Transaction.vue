@@ -115,7 +115,7 @@
                 </v-col>
                 <v-col lg="2" md="6" sm="12" v-if="transaction.receipt">
                     <div class="text-overline">Gas Price</div>
-                    {{ $fromWei(getGasPriceFromTransaction(transaction), 'gwei', currentWorkspaceStore.chain.token) }}
+                    {{ $fromWei(getGasPriceFromTransaction(transaction), 'gwei', 'gwei') }}
                 </v-col>
                 <v-col lg="2" md="6" sm="12">
                     <div class="text-overline">Cost</div>

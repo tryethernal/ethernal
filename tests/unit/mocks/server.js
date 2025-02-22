@@ -90,6 +90,14 @@ export default {
     getActiveWalletCount: vi.fn(),
     getTxCountTotal: vi.fn(),
     getTxCount24h: vi.fn(),
+    getLatestGasConsumers: vi.fn(),
+    getLatestGasSpenders: vi.fn(),
+    getLatestGasStats: vi.fn(),
+    getGasLimitHistory: vi.fn(),
+    getGasUtilizationRatioHistory: vi.fn(),
+    getGasPriceHistory: vi.fn(),
+    getBlockSizeHistory: vi.fn(),
+    getBlockTimeHistory: vi.fn(),
 
     syncTransactionData: function() {
         return new Promise((resolve) => resolve(true))

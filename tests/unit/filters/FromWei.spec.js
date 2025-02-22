@@ -7,7 +7,7 @@ describe('FromWei', () => {
     });
 
     it('Convert to given unit & format', () => {
-        const result = FromWei(1000000000000000000, 'gwei');
+        const result = FromWei(1000000000000000000, 'gwei', 'gwei');
         expect(result).toEqual('1,000,000,000 gwei');
     });
 
@@ -18,6 +18,6 @@ describe('FromWei', () => {
 
     it('Convert to given unit & format even with a native token passed', () => {
         const result = FromWei(1000000000000000000, 'gwei', 'Matic');
-        expect(result).toEqual('1,000,000,000 gwei');
+        expect(result).toEqual('1,000,000,000 Matic');
     });
 });
