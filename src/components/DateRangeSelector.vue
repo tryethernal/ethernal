@@ -2,8 +2,8 @@
     <div>
         <v-chip-group mandatory class="pt-0 mb-1" v-model="selectedRange" :selected-class="`text-${contrastingColor}`">
             <v-chip class="pa-2" size="small" value="7">7 Day</v-chip>
-            <v-chip class="pa-2" size="small" value="14">14 Days</v-chip>
             <v-chip class="pa-2" size="small" value="30">30 Days</v-chip>
+            <v-chip class="pa-2" size="small" value="alltime">All Time</v-chip>
             <v-chip class="pa-2 pl-3" size="small" prepend-icon="mdi-calendar" value="custom" @click="showCustomPicker = true">
                 <span v-if="selectedRange != 'custom'">Custom Range</span>
                 <span v-else-if="from && to">{{ from.toLocaleDateString() }} to {{ to.toLocaleDateString() }}</span>
@@ -47,7 +47,7 @@ const emit = defineEmits(['rangeUpdated']);
 const props = defineProps({
     initialRange: {
         type: String,
-        default: "14"
+        default: "7"
     }
 });
 
@@ -95,7 +95,7 @@ watch(selectedRange, (newVal, oldVal) => {
 
     pickerRange.value = [];
 
-    from.value = new Date(new Date() - (parseInt(newVal) - 1) * 24 * 3600 * 1000);
+    from.value = newVal == 'alltime' ? new Date(0) : new Date(new Date() - (parseInt(newVal) - 1) * 24 * 3600 * 1000);
     to.value = new Date();
 
     emitRange();
