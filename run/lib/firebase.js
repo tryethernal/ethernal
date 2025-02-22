@@ -1,3 +1,14 @@
+/*
+    This file contains all the methods to interact with
+    models from the API. They check for parameters,
+    make sure the required resources exist and can
+    be accessed by the user.
+    APIs should use methods from this file and not interact
+    with the models directly.
+    Background jobs do not need to use methods here and
+    can interact with the models directly, as they are not
+    exposed to the user.
+*/
 const Sequelize = require('sequelize');
 const { getDemoUserId, getMaxBlockForSyncReset } = require('./env');
 const models = require('../models');
@@ -20,6 +31,187 @@ const StripeQuotaExtension = models.StripeQuotaExtension;
 const ExplorerFaucet = models.ExplorerFaucet;
 const ExplorerV2Dex = models.ExplorerV2Dex;
 const V2DexPair = models.V2DexPair;
+
+/*
+    This method is used to get the block size history for a workspace.
+
+    @param {number} workspaceId - The ID of the workspace
+    @param {string} from - The start date of the block size history
+    @param {string} to - The end date of the block size history
+    @returns {array} - The block size history
+        - day: The day of the block size history
+        - size: The average block size for the day
+*/
+const getBlockSizeHistory = async (workspaceId, from, to) => {
+    if (!workspaceId || !from || !to)
+        throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+    if (!workspace)
+        throw new Error('Could not find workspace');
+
+    return workspace.getBlockSizeHistory(from, to);
+};
+
+/*
+    This method is used to get the block time history for a workspace.
+
+    @param {number} workspaceId - The ID of the workspace
+    @param {string} from - The start date of the block time history
+    @param {string} to - The end date of the block time history
+    @returns {array} - The block time history
+        - day: The day of the block time history
+        - blockTime: The average block time for the day
+*/
+const getBlockTimeHistory = async (workspaceId, from, to) => {
+    if (!workspaceId || !from || !to)
+        throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+    if (!workspace)
+        throw new Error('Could not find workspace');
+
+    return workspace.getBlockTimeHistory(from, to);
+};
+
+/*
+    This method is used to get the latest biggest gas spenders for a workspace
+    for a given interval (now - intervalInHours).
+
+    @param {number} workspaceId - The ID of the workspace
+    @param {number} intervalInHours - The interval in hours to get the gas spenders for
+    @param {number} limit - The limit of gas spenders to return
+    @returns {array} - The gas spenders
+        - from: The address of the gas spender
+        - gasUsed: The total gas used by the gas spender
+        - gasCost: Cost of total gas used
+        - percentUsed: The percentage of total gas used by the gas spender
+*/
+const getLatestGasSpenders = async (workspaceId, intervalInHours = 24, limit = 50) => {
+    if (!workspaceId)
+        throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+    if (!workspace)
+        throw new Error('Could not find workspace');
+
+    return workspace.getLatestGasSpenders(intervalInHours, limit);
+};
+
+/*
+    This method is used to get the latest biggest gas consumers for a workspace
+    for a given interval (now - intervalInHours).
+
+    @param {number} workspaceId - The ID of the workspace
+    @param {number} intervalInHours - The interval in hours to get the gas consumers for
+    @param {number} limit - The limit of gas consumers to return
+    @returns {array} - The gas consumers
+        - to: The address of the gas consumer
+        - gasUsed: The total gas used by the gas consumer
+        - gasCost: Cost of total gas used
+*/
+const getLatestGasConsumers = async (workspaceId, intervalInHours = 24, limit = 50) => {
+    if (!workspaceId)
+        throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+    if (!workspace)
+        throw new Error('Could not find workspace');
+
+    return workspace.getLatestGasConsumers(intervalInHours, limit);
+};
+
+/*
+    This method is used to get the gas utilization ratio history for a workspace.
+
+    @param {number} workspaceId - The ID of the workspace
+    @param {string} from - The start date of the gas utilization ratio history
+    @param {string} to - The end date of the gas utilization ratio history
+    @returns {array} - The gas utilization ratio history
+        - day: The day of the gas utilization ratio history
+        - gasUtilizationRatio: The average gas utilization ratio for the day
+*/
+const getGasUtilizationRatioHistory = async (workspaceId, from, to) => {
+    if (!workspaceId || !from || !to)
+        throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+    if (!workspace)
+        throw new Error('Could not find workspace');
+
+    return workspace.getGasUtilizationRatioHistory(from, to);
+};
+
+/*
+    This method is used to get the gas limit history for a workspace.
+
+    @param {number} workspaceId - The ID of the workspace
+    @param {string} from - The start date of the gas limit history
+    @param {string} to - The end date of the gas limit history
+    @returns {array} - The gas limit history
+        - day: The day of the gas limit history
+        - gasLimit: The average gas limit for the day
+*/
+const getGasLimitHistory = async (workspaceId, from, to) => {
+    if (!workspaceId || !from || !to)
+        throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+    if (!workspace)
+        throw new Error('Could not find workspace');
+
+    return workspace.getGasLimitHistory(from, to);
+};
+
+/*
+    This method is used to get the gas price history for a workspace.
+
+    @param {number} workspaceId - The ID of the workspace
+    @param {string} from - The start date of the gas price history
+    @param {string} to - The end date of the gas price history
+    @returns {array} - The gas price history
+        - day: The day of the gas price history
+        - minSlow: The minimum slow gas price
+        - slow: The average slow gas price
+        - maxSlow: The maximum slow gas price
+        - minAverage: The minimum average gas price
+        - average: The average average gas price
+        - maxAverage: The maximum average gas price
+        - minFast: The minimum fast gas price
+        - fast: The average fast gas price
+        - maxFast: The maximum fast gas price
+*/
+const getGasPriceHistory = async (workspaceId, from, to) => {
+    if (!workspaceId || !from || !to)
+        throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+    if (!workspace)
+        throw new Error('Could not find workspace');
+
+    return workspace.getGasPriceHistory(from, to);
+};
+
+/*
+    This method is used to get the latest gas stats for a workspace.
+
+    @param {number} workspaceId - The ID of the workspace
+    @param {number} intervalInMinutes - The interval in minutes to get the gas stats for
+    @returns {object} - The gas stats object
+        - averageBlockSize: The average block size in transactions
+        - averageUtilization: The average quantity of gas used per block
+        - averageBlockTime: The average block time in seconds
+        - latestBlockNumber: The number of the latest block used for this calculation
+        - baseFeePerGas: The base fee per gas for the latest block
+        - priorityFeePerGas: The three levels of priority fee per gas for the latest block (slow, average, fast)
+*/
+const getLatestGasStats = async (workspaceId, intervalInMinutes = 1) => {
+    const workspace = await Workspace.findByPk(workspaceId);
+    if (!workspace)
+        throw new Error('Could not find workspace');
+
+    return workspace.getLatestGasStats(intervalInMinutes);
+};
 
 const createUserStripeSubscription = (userId, stripeSubscription, stripePlan) => {
     if (!userId || !stripeSubscription || !stripePlan)
@@ -2495,5 +2687,13 @@ module.exports = {
     deleteV2Dex: deleteV2Dex,
     getV2DexPairCount: getV2DexPairCount,
     getUserStripeSubscription: getUserStripeSubscription,
-    createUserStripeSubscription: createUserStripeSubscription
+    createUserStripeSubscription: createUserStripeSubscription,
+    getLatestGasStats: getLatestGasStats,
+    getGasPriceHistory: getGasPriceHistory,
+    getGasLimitHistory: getGasLimitHistory,
+    getGasUtilizationRatioHistory: getGasUtilizationRatioHistory,
+    getLatestGasConsumers: getLatestGasConsumers,
+    getLatestGasSpenders: getLatestGasSpenders,
+    getBlockTimeHistory: getBlockTimeHistory,
+    getBlockSizeHistory: getBlockSizeHistory
 };

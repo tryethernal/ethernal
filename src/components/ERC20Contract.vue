@@ -95,23 +95,7 @@
                             </v-col>
 
                             <v-col cols="12" sm="6" lg="6">
-                                <v-card style="height: 100%">
-                                    <template v-slot:subtitle v-if="metamaskData.account && metamaskData.isReady">
-                                        <div style="position: absolute;">Your Balance</div>
-                                        <div class="text-right" v-if="metamaskData.account">
-                                            <Hash-Link :type="'address'" :hash="metamaskData.account" />
-                                        </div>
-                                    </template>
-                                    <template v-slot:subtitle v-else>Your Balance</template>
-                                    <v-card-text class="text-h3" align="center" v-if="metamaskData.account && metamaskData.isReady">
-                                        <v-skeleton-loader v-if="loadingBalance" type="list-item"></v-skeleton-loader>
-                                        <template v-else-if="connectedAccountBalance">{{ formatNumber(connectedAccountBalance, { short: true }) }} {{ contract.tokenSymbol }}</template>
-                                        <template v-else>N/A</template>
-                                    </v-card-text>
-                                    <v-card-text v-else>
-                                        <Metamask class="mt-1" @rpcConnectionStatusChanged="onRpcConnectionStatusChanged"></Metamask>
-                                    </v-card-text>
-                                </v-card>
+                                <TokenBalanceCard :contract="contract" />
                             </v-col>
                         </v-row>
                     </v-col>
@@ -189,16 +173,16 @@ import ERC20TokenTransfers from './ERC20TokenTransfers.vue';
 import ContractCode from './ContractCode.vue';
 import StatNumber from './StatNumber.vue';
 import HashLink from './HashLink.vue';
-import Metamask from './Metamask.vue';
+import TokenBalanceCard from './TokenBalanceCard.vue';
 
 export default {
     name: 'ERC20Contract',
     props: ['address'],
     components: {
         AddressTransactionsList,
+        TokenBalanceCard,
         StatNumber,
         HashLink,
-        Metamask,
         ContractInteraction,
         ERC20TokenHolders,
         ERC20ContractAnalytics,

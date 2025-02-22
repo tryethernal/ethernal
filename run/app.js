@@ -34,23 +34,23 @@ app.use(express.json({
 app.use(express.urlencoded({ limit: '25mb', extended: true }));
 app.use(cors({ origin: '*', methods: ['GET', 'POST', 'OPTIONS', 'DELETE', 'PUT'] }));
 
-if (process.env.NODE_ENV != 'production') {
-    app.use((req, res, next) => {
-        if (req.path != '/api')
-            return next();
+app.use((req, res, next) => {
+    if (req.path != '/api')
+        return next();
 
-        if (req.body.module == 'contract' && req.body.action == 'verifysourcecode')
-            req.url = '/api/contracts/verify';
-        else if (req.query.module == 'contract' && req.query.action == 'getsourcecode' && req.query.apikey)
-            req.url = '/api/contracts/sourceCode';
-        else if (req.query.module == 'contract' && req.query.action == 'getabi' && req.query.apikey)
-            req.url = '/api/contracts/getabi';
-        else if (req.query.module == 'contract' && req.query.action == 'checkverifystatus' && req.query.apikey && req.query.guid)
-            req.url = '/api/contracts/verificationStatus';
+    const data = { ...req.query, ...req.body };
 
-        next();
-    });
-}
+    if (data.module == 'contract' && data.action == 'verifysourcecode')
+        req.url = '/api/contracts/verify';
+    else if (data.module == 'contract' && data.action == 'getsourcecode')
+        req.url = '/api/contracts/sourceCode';
+    else if (req.query.module == 'contract' && req.query.action == 'getabi')
+        req.url = '/api/contracts/getabi';
+    else if (data.module == 'contract' && data.action == 'checkverifystatus' && data.guid)
+        req.url = '/api/contracts/verificationStatus';
+
+    next();
+});
 
 const serverAdapter = new ExpressAdapter();
 serverAdapter.setBasePath('/bull');

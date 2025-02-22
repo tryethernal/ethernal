@@ -4,6 +4,249 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.4.1] - 2025-02-21
+### Fixed
+- Gas page link typo
+
+## [4.4.0] - 2025-02-21
+### Added
+- Gas page link
+
+## [4.3.4] - 2025-02-21
+### Added
+- Added custom date range selector for analytics charts
+
+## [4.3.3] - 2025-02-20
+### Fixed
+- Gas spender/consumer tables
+
+## [4.3.2] - 2025-02-20
+### Changed
+- Optimized gas queries
+
+## [4.3.1] - 2025-02-19
+### Fixed
+- Analytics charts
+
+## [4.3.0] - 2025-02-19
+### Added
+- Gas analytics
+
+## [4.2.38] - 2025-02-19
+### Fixed
+- Removed test value
+
+## [4.2.37] - 2025-02-19
+### Fixed
+- Contract verification
+
+## [4.2.36] - 2025-02-19
+### Fixed
+- Tests
+
+## [4.2.35] - 2025-02-19
+### Changed
+- Cleaner gas tracker UI
+
+## [4.2.34] - 2025-02-19
+### Fixed
+- Gas stats typo
+
+## [4.2.33] - 2025-02-19
+### Fixed
+- Batch deletion of block events
+
+## [4.2.32] - 2025-02-18
+### Fixed
+- Batch deletion of block events
+
+## [4.2.31] - 2025-02-18
+### Changed
+- Gas stats formatting for very small values
+
+## [4.2.30] - 2025-02-18
+### Changed
+- Better display of gas consumers and spenders % gas used
+
+## [4.2.29] - 2025-02-18
+### Changed
+- Removed chart borders
+
+## [4.2.28] - 2025-02-18
+### Fixed
+- Line chart tooltip
+
+## [4.2.27] - 2025-02-18
+### Fixed
+- Redirects
+
+## [4.2.26] - 2025-02-18
+### Fixed
+- Contract verification redirects
+
+## [4.2.25] - 2025-02-18
+### Fixed
+- Contract verification redirects
+
+## [4.2.24] - 2025-02-18
+### Fixed
+- Add logging
+
+## [4.2.23] - 2025-02-18
+### Fixed
+- Forge contract verification
+
+## [4.2.22] - 2025-02-18
+### Changed
+- Optional apikey for contract verification status endpoint
+
+## [4.2.21] - 2025-02-18
+### Fixed
+- Forge contract verification
+
+## [4.2.20] - 2025-02-18
+### Fixed
+- Line chart
+
+## [4.2.19] - 2025-02-18
+### Fixed
+- Tests
+
+## [4.2.18] - 2025-02-18
+### Fixed
+- Graphs
+- Contract verification status endpoint
+
+## [4.2.17] - 2025-02-18
+### Fixed
+- Tests
+
+## [4.2.16] - 2025-02-18
+### Fixed
+- Contract verification status endpoint
+
+## [4.2.15] - 2025-02-18
+### Fixed
+- Removed datasetIdKey from line charts
+
+## [4.2.14] - 2025-02-18
+### Fixed
+- Gas tracker charts
+- Gas spender/consumer tables
+
+## [4.2.13] - 2025-02-18
+### Fixed
+- Fixed previous release
+
+## [4.2.12] - 2025-02-18
+### Added
+- Gas tracker page soft launch
+
+## [4.2.11] - 2025-02-16
+### Fixed
+- Block event creation when duplicate
+
+## [4.2.10] - 2025-02-16
+### Changed
+- Disable gas analytics if the rpc doesn't support eth_feeHistory
+
+## [4.2.9] - 2025-02-16
+### Added
+- Block event processing
+
+## [4.2.8] - 2025-02-12
+### Changed
+- Improve blacklisted chainIds for demo explorers
+
+## [4.2.7] - 2025-02-10
+### Fixed
+- ABI copy button
+
+## [4.2.6] - 2025-02-10
+### Changed
+- Improved array/tuples display
+
+## [4.2.5] - 2025-02-10
+### Fixed
+- Contract read method
+
+## [4.2.4] - 2025-02-07
+### Fixed
+- Smartsupp config
+
+## [4.2.3] - 2025-02-07
+### Fixed
+- Deploy workflow
+
+## [4.2.2] - 2025-02-07
+### Fixed
+- Frontend build
+
+## [4.2.1] - 2025-02-07
+### Fixed
+- Deploy workflow
+
+## [4.2.0] - 2025-02-07
+### Added
+- Web3-onboard for more wallet options
+- Smartsupp live chat is back in-app
+
+## [4.1.1] - 2025-01-21
+### Fixed
+- Custom font
+
+## [4.1.0] - 2025-01-21
+### Added
+- Customizable addresses
+
+## [4.0.11] - 2025-01-21
+### Fixed
+- Transaction list debouncing
+
+## [4.0.10] - 2025-01-21
+### Fixed
+- Token symbol display
+
+## [4.0.9] - 2025-01-20
+### Fixed
+- Added skeleton loader on overview page stats
+
+## [4.0.8] - 2025-01-20
+### Fixed
+- Count on some lists
+
+## [4.0.7] - 2025-01-20
+### Fixed
+- Frontend build
+
+## [4.0.6] - 2025-01-20
+### Fixed
+- Release log
+
+## [4.0.5] - 2025-01-20
+### Fixed
+- Build time env variables
+
+## [4.0.4] - 2025-01-20
+### Fixed
+- Netlify files
+
+## [4.0.3] - 2025-01-20
+### Fixed
+- Custom sidebar links
+
+## [4.0.2] - 2025-01-20
+### Fixed
+- Contract edit modal
+- App initialization
+
+### Changed
+- Use envStore instead of userStore for admin checks
+
+## [4.0.1] - 2025-01-20
+### Fixed
+- Backend build process
+
 ## [4.0.0] - 2025-01-18
 ### Changed
 - Upgraded Vue2 => Vue3

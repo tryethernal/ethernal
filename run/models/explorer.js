@@ -46,7 +46,7 @@ module.exports = (sequelize, DataTypes) => {
 
     static findBySlug(slug) {
         return Explorer.findOne({
-            attributes: ['id', 'chainId', 'domain', 'l1Explorer', 'name', 'rpcServer', 'slug', 'token', 'themes', 'userId', 'workspaceId'],
+            attributes: ['id', 'chainId', 'domain', 'l1Explorer', 'name', 'rpcServer', 'slug', 'token', 'themes', 'userId', 'workspaceId', 'gasAnalyticsEnabled'],
             where: { slug },
             include: [
                 {
@@ -72,7 +72,19 @@ module.exports = (sequelize, DataTypes) => {
                 {
                     model: sequelize.models.Workspace,
                     attributes: ['id', 'name', 'storageEnabled', 'defaultAccount', 'gasPrice', 'gasLimit', 'erc721LoadingEnabled', 'statusPageEnabled', 'public'],
-                    as: 'workspace'
+                    as: 'workspace',
+                    include: [
+                        {
+                            model: sequelize.models.CustomField,
+                            as: 'packages',
+                            attributes: ['function']
+                        },
+                        {
+                            model: sequelize.models.CustomField,
+                            as: 'functions',
+                            attributes: ['function']
+                        }
+                    ]
                 },
                 {
                     model: sequelize.models.ExplorerFaucet,
@@ -99,7 +111,7 @@ module.exports = (sequelize, DataTypes) => {
                 {
                     model: Explorer,
                     as: 'explorer',
-                    attributes: ['id', 'chainId', 'domain', 'l1Explorer', 'name', 'rpcServer', 'slug', 'token', 'themes', 'userId', 'workspaceId'],
+                    attributes: ['id', 'chainId', 'domain', 'l1Explorer', 'name', 'rpcServer', 'slug', 'token', 'themes', 'userId', 'workspaceId', 'gasAnalyticsEnabled'],
                     include: [
                         {
                             model: sequelize.models.StripeSubscription,
@@ -119,7 +131,19 @@ module.exports = (sequelize, DataTypes) => {
                         {
                             model: sequelize.models.Workspace,
                             attributes: ['id', 'name', 'storageEnabled', 'defaultAccount', 'gasPrice', 'gasLimit', 'erc721LoadingEnabled', 'statusPageEnabled', 'public'],
-                            as: 'workspace'
+                            as: 'workspace',
+                            include: [
+                                {
+                                    model: sequelize.models.CustomField,
+                                    as: 'packages',
+                                    attributes: ['function']
+                                },
+                                {
+                                    model: sequelize.models.CustomField,
+                                    as: 'functions',
+                                    attributes: ['function']
+                                }
+                            ]
                         },
                         {
                             model: sequelize.models.ExplorerFaucet,
@@ -524,7 +548,8 @@ module.exports = (sequelize, DataTypes) => {
     shouldSync: DataTypes.BOOLEAN,
     shouldEnforceQuota: DataTypes.BOOLEAN,
     isDemo: DataTypes.BOOLEAN,
-    l1Explorer: DataTypes.STRING
+    l1Explorer: DataTypes.STRING,
+    gasAnalyticsEnabled: DataTypes.BOOLEAN
   }, {
     hooks: {
         afterCreate(explorer, options) {

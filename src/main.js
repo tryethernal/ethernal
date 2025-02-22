@@ -41,6 +41,11 @@ const createVueApp = (rootComponent, options) => {
         enabled: false,
     });
 
+    function createPiniaGlobalPlugin(app) {
+        return () => ({ globalProperties: app.config.globalProperties });
+    }
+    pinia.use(createPiniaGlobalPlugin(app));
+
     app.use(pinia);
     if (options.router)
         app.use(options.router);
@@ -53,6 +58,9 @@ const createVueApp = (rootComponent, options) => {
 
     app.config.globalProperties.$dt = dt;
     app.config.globalProperties.$fromWei = FromWei;
+
+    app.provide('$fromWei', FromWei);
+
     return app;
 }
 if (import.meta.env.VITE_ENABLE_DEMO && window.location.pathname.startsWith('/demo'))

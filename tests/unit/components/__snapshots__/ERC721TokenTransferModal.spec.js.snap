@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ERC721TokenTransferModal.vue > Should not show the metamask button if not public explorer 1`] = `
+exports[`ERC721TokenTransferModal.vue > Should not show the wallet connection button if not public explorer 1`] = `
 "<div class="v-dialog-stub" max-width="600">
   <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
     <!---->
@@ -26,8 +26,11 @@ exports[`ERC721TokenTransferModal.vue > Should not show the metamask button if n
         <!--v-if-->
         <!--v-if-->
         <!--v-if-->
-        <div class="v-alert v-theme--light bg-info v-alert--density-default v-alert--variant-flat" role="alert">This will only work if your node supports either <code>hardhat_impersonateAccount</code> or <code>evm_unlockUnknownAccount</code>.</div> Owner: <hash-link-stub type="address" fullhash="true" hash="0xabc"></hash-link-stub>
-        <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field mt-3">
+        <!--v-if-->
+        <div>Owner: <hash-link-stub type="address" fullhash="true" hash="0xabc"></hash-link-stub>
+        </div>
+        <wallet-connector-mirror-stub prependicon="mdi-wallet" rounded="" size="small" variant="outlined"></wallet-connector-mirror-stub>
+        <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field mt-5">
           <!---->
           <div class="v-input__control">
             <div class="v-field v-field--center-affix v-field--prepended v-field--variant-outlined v-theme--light v-locale--is-ltr">
@@ -69,14 +72,13 @@ exports[`ERC721TokenTransferModal.vue > Should not show the metamask button if n
             </div>
           </div>
           <!---->
-          <div class="v-input__details">
-            <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="recipient-messages">
+          <div id="recipient-messages" class="v-input__details" role="alert" aria-live="polite">
+            <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
               <!---->
             </transition-group-stub>
             <!---->
           </div>
         </div>
-        <!--v-if-->
         <!--v-if-->
       </div>
       <div class="v-card-actions">
@@ -120,11 +122,15 @@ exports[`ERC721TokenTransferModal.vue > Should send a transation with Metamask 1
     <div class="v-card-title text-h5">Transfer My Token #1</div>
     <form class="v-form" novalidate="">
       <div class="v-card-text">
-        <div class="v-alert v-theme--light bg-success v-alert--density-default v-alert--variant-flat" role="alert">Transfer transaction sent: <a class="white--text" href="/transaction/0x1234">0x1234</a></div>
+        <div class="v-alert v-theme--light bg-success v-alert--density-compact v-alert--variant-flat mb-3" role="alert">Transfer transaction sent: <a class="white--text" href="/transaction/0x1234">0x1234</a></div>
         <!--v-if-->
         <!--v-if-->
-        <!--v-if--> Owner: <hash-link-stub type="address" fullhash="true" hash="0xabc"></hash-link-stub>
-        <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field mt-3">
+        <!--v-if-->
+        <div>Owner: <hash-link-stub type="address" fullhash="true" hash="0xabc"></hash-link-stub>
+        </div>
+        <div>Connected account: <hash-link-stub type="address" fullhash="true" hash="0x1bF85ED48fcda98e2c7d08E4F2A8083fb18792AA"></hash-link-stub>
+        </div>
+        <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field mt-5">
           <!---->
           <div class="v-input__control">
             <div class="v-field v-field--active v-field--center-affix v-field--dirty v-field--prepended v-field--variant-outlined v-theme--light v-locale--is-ltr">
@@ -166,15 +172,14 @@ exports[`ERC721TokenTransferModal.vue > Should send a transation with Metamask 1
             </div>
           </div>
           <!---->
-          <div class="v-input__details">
-            <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="recipient-messages">
+          <div id="recipient-messages" class="v-input__details" role="alert" aria-live="polite">
+            <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
               <!---->
             </transition-group-stub>
             <!---->
           </div>
         </div>
         <!--v-if-->
-        <metamask-stub class="mt-1"></metamask-stub>
       </div>
       <div class="v-card-actions">
         <div class="v-spacer"></div><button type="button" class="v-btn v-btn--slim v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
@@ -194,7 +199,7 @@ exports[`ERC721TokenTransferModal.vue > Should send a transation with Metamask 1
 </div>"
 `;
 
-exports[`ERC721TokenTransferModal.vue > Should show the Metamask button if public explorer 1`] = `
+exports[`ERC721TokenTransferModal.vue > Should show the wallet connection button if public explorer 1`] = `
 "<div class="v-dialog-stub" max-width="600">
   <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
     <!---->
@@ -219,9 +224,27 @@ exports[`ERC721TokenTransferModal.vue > Should show the Metamask button if publi
       <div class="v-card-text">
         <!--v-if-->
         <!--v-if-->
+        <div class="v-alert v-theme--light bg-warning v-alert--density-compact v-alert--variant-flat mb-3" role="alert">
+          <!----><span class="v-alert__underlay"></span>
+          <!---->
+          <div class="v-alert__prepend"><i class="mdi-alert-circle mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="compact"></i></div>
+          <div class="v-alert__content">
+            <!---->
+            <!---->The connected account is not the owner of this token.
+          </div>
+          <!---->
+          <!---->
+        </div>
         <!--v-if-->
-        <!--v-if--> Owner: <hash-link-stub type="address" fullhash="true" hash="0xabc"></hash-link-stub>
-        <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field mt-3">
+        <div>Owner: <hash-link-stub type="address" fullhash="true" hash="0xabc"></hash-link-stub>
+        </div>
+        <div>
+          <div><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--rounded v-btn--size-small v-btn--variant-outlined"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span><span class="v-btn__prepend"><i class="mdi-wallet mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span><span class="v-btn__content" data-no-activator="">Connect Wallet</span>
+              <!---->
+              <!---->
+            </button></div>
+        </div>
+        <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field mt-5">
           <!---->
           <div class="v-input__control">
             <div class="v-field v-field--center-affix v-field--prepended v-field--variant-outlined v-theme--light v-locale--is-ltr">
@@ -263,15 +286,14 @@ exports[`ERC721TokenTransferModal.vue > Should show the Metamask button if publi
             </div>
           </div>
           <!---->
-          <div class="v-input__details">
-            <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="recipient-messages">
+          <div id="recipient-messages" class="v-input__details" role="alert" aria-live="polite">
+            <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
               <!---->
             </transition-group-stub>
             <!---->
           </div>
         </div>
         <!--v-if-->
-        <metamask-stub class="mt-1"></metamask-stub>
       </div>
       <div class="v-card-actions">
         <div class="v-spacer"></div><button type="button" class="v-btn v-btn--slim v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
@@ -314,11 +336,14 @@ exports[`ERC721TokenTransferModal.vue > Should successfully impersonate the acco
     <div class="v-card-title text-h5">Transfer My Token #1</div>
     <form class="v-form" novalidate="">
       <div class="v-card-text">
-        <div class="v-alert v-theme--light bg-success v-alert--density-default v-alert--variant-flat" role="alert">Token transferred successfully!</div>
+        <div class="v-alert v-theme--light bg-success v-alert--density-compact v-alert--variant-flat mb-3" role="alert">Token transferred successfully!</div>
         <!--v-if-->
         <!--v-if-->
-        <!--v-if--> Owner: <hash-link-stub type="address" fullhash="true" hash="0xabc"></hash-link-stub>
-        <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field mt-3">
+        <!--v-if-->
+        <div>Owner: <hash-link-stub type="address" fullhash="true" hash="0xabc"></hash-link-stub>
+        </div>
+        <wallet-connector-mirror-stub prependicon="mdi-wallet" rounded="" size="small" variant="outlined"></wallet-connector-mirror-stub>
+        <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field mt-5">
           <!---->
           <div class="v-input__control">
             <div class="v-field v-field--active v-field--center-affix v-field--dirty v-field--prepended v-field--variant-outlined v-theme--light v-locale--is-ltr">
@@ -360,14 +385,13 @@ exports[`ERC721TokenTransferModal.vue > Should successfully impersonate the acco
             </div>
           </div>
           <!---->
-          <div class="v-input__details">
-            <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="recipient-messages">
+          <div id="recipient-messages" class="v-input__details" role="alert" aria-live="polite">
+            <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
               <!---->
             </transition-group-stub>
             <!---->
           </div>
         </div><span class="align-right"> Transaction: <i class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success-lighten-1 mr-1 align-with-text" aria-hidden="true"></i><i class="mdi-alert-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-error-lighten-1 mr-1 align-with-text" aria-hidden="true" style="display: none;"></i><hash-link-stub type="transaction" hash="0xdef"></hash-link-stub></span>
-        <!--v-if-->
       </div>
       <div class="v-card-actions">
         <div class="v-spacer"></div><button type="button" class="v-btn v-btn--slim v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>

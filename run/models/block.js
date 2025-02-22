@@ -3,9 +3,13 @@ const {
   Model,
   Sequelize
 } = require('sequelize');
-const { trigger } = require('../lib/pusher');
-const { enqueue } = require('../lib/queue');
 const moment = require('moment');
+
+const { trigger } = require('../lib/pusher');
+const { enqueue, bulkEnqueue } = require('../lib/queue');
+const { getNodeEnv } = require('../lib/env');
+
+const STALLED_BLOCK_REMOVAL_DELAY = getNodeEnv() == 'production' ? 5 * 60 * 1000 : 15 * 60 * 1000;
 
 module.exports = (sequelize, DataTypes) => {
   class Block extends Model {
@@ -17,13 +21,43 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Block.belongsTo(models.Workspace, { foreignKey: 'workspaceId', as: 'workspace' });
       Block.hasMany(models.Transaction, { foreignKey: 'blockId', as: 'transactions' });
+      Block.hasOne(models.BlockEvent, { foreignKey: 'blockId', as: 'event' });
     }
 
     async safeDestroy(transaction) {
       const transactions = await this.getTransactions();
       for (let i = 0; i < transactions.length; i++)
         await transactions[i].safeDestroy(transaction);
+
+      const event = await this.getEvent();
+      if (event)
+        await event.destroy({ transaction });
+
       return this.destroy({ transaction });
+    }
+
+    safeCreateEvent(event, transaction) {
+      return sequelize.models.BlockEvent.bulkCreate(
+        [
+            {
+                blockId: this.id,
+                workspaceId: this.workspaceId,
+                number: this.number,
+                timestamp: this.timestamp,
+                transactionCount: this.transactionsCount,
+                baseFeePerGas: event.baseFeePerGas,
+                gasLimit: event.gasLimit,
+                gasUsed: event.gasUsed,
+                gasUsedRatio: event.gasUsedRatio,
+                priorityFeePerGas: event.priorityFeePerGas ? Sequelize.literal(`ARRAY[${event.priorityFeePerGas.join(',')}]::numeric[]`) : undefined,
+            }
+        ],
+        {
+            ignoreDuplicates: true,
+            returning: true,
+            transaction
+        }
+      );
     }
 
     async revertIfPartial() {
@@ -40,16 +74,44 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async afterCreate(options) {
-      const afterCreateFn = () => {
-        if (Date.now() / 1000 - this.timestamp < 60 * 10)
-          trigger(`private-blocks;workspace=${this.workspaceId}`, 'new', { number: this.number, withTransactions: this.transactionsCount > 0 });
-        return enqueue('processBlock', `processBlock-${this.id}`, { blockId: this.id });
-      };
+        const afterCreateFn = async () => {
+            if (Date.now() / 1000 - this.timestamp < 60 * 10)
+                trigger(`private-blocks;workspace=${this.workspaceId}`, 'new', { number: this.number, withTransactions: this.transactionsCount > 0 });
 
-      if (options.transaction)
-        return options.transaction.afterCommit(afterCreateFn);
-      else
-        return afterCreateFn();
+            const workspace = await this.getWorkspace();
+            if (workspace.public) {
+                await enqueue('removeStalledBlock', `removeStalledBlock-${this.id}`, { blockId: this.id }, null, null, STALLED_BLOCK_REMOVAL_DELAY);
+
+                if (workspace.tracing && workspace.tracing != 'hardhat') {
+                    const jobs = [];
+                    const transactions = await this.getTransactions();
+                    for (let i = 0; i < transactions.length; i++) {
+                        const transaction = transactions[i];
+                        jobs.push({
+                            name: `processTransactionTrace-${this.workspaceId}-${transaction.hash}`,
+                            data: { transactionId: transaction.id }
+                        });
+                    }
+                    await bulkEnqueue('processTransactionTrace', jobs);
+                }
+
+                if (workspace.integrityCheckStartBlockNumber === undefined || workspace.integrityCheckStartBlockNumber === null) {
+                    const integrityCheckStartBlockNumber = this.number < 1000 ? 0 : this.number;
+                    await workspace.update({ integrityCheckStartBlockNumber });
+                }
+
+                if (this.number == workspace.integrityCheckStartBlockNumber) {
+                    await enqueue('integrityCheck', `integrityCheck-${this.workspaceId}`, { workspaceId: this.workspaceId });
+                }
+
+                return enqueue('processBlock', `processBlock-${this.id}`, { blockId: this.id });
+            }
+        };
+
+        if (options.transaction)
+            return options.transaction.afterCommit(afterCreateFn);
+        else
+            return afterCreateFn();
     }
   }
   Block.init({

@@ -48,7 +48,7 @@ exports[`ContractVerification.vue > Should load the UI & the Solidity releases 1
               <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field v-select v-select--single v-select--selected">
                 <!---->
                 <div class="v-input__control">
-                  <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="v-menu-2">
+                  <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="v-menu-2">
                     <div class="v-field__overlay"></div>
                     <div class="v-field__loader">
                       <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
@@ -119,7 +119,7 @@ exports[`ContractVerification.vue > Should load the UI & the Solidity releases 1
               <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field v-select v-select--single v-select--selected">
                 <!---->
                 <div class="v-input__control">
-                  <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="v-menu-8">
+                  <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="v-menu-8">
                     <div class="v-field__overlay"></div>
                     <div class="v-field__loader">
                       <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
@@ -173,7 +173,7 @@ exports[`ContractVerification.vue > Should load the UI & the Solidity releases 1
               <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field v-select v-select--single v-select--selected">
                 <!---->
                 <div class="v-input__control">
-                  <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="v-menu-11">
+                  <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="v-menu-11">
                     <div class="v-field__overlay"></div>
                     <div class="v-field__loader">
                       <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
@@ -351,8 +351,8 @@ exports[`ContractVerification.vue > Should load the UI & the Solidity releases 1
                   </div>
                 </div>
                 <!---->
-                <div class="v-input__details">
-                  <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="input-17-messages">
+                <div id="input-17-messages" class="v-input__details" role="alert" aria-live="polite">
+                  <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
                     <!---->
                   </transition-group-stub>
                   <!---->
@@ -410,8 +410,8 @@ exports[`ContractVerification.vue > Should load the UI & the Solidity releases 1
                   </div>
                 </div>
                 <!---->
-                <div class="v-input__details">
-                  <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="input-19-messages">
+                <div id="input-19-messages" class="v-input__details" role="alert" aria-live="polite">
+                  <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
                     <div class="v-messages__message">To add multiple files, select them all at once.</div>
                   </transition-group-stub>
                   <!----><span></span>

@@ -89,7 +89,7 @@ exports[`ERC721Collections.vue > Should load & display erc721 contracts 1`] = `
             <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field v-select v-select--single v-select--selected">
               <!---->
               <div class="v-input__control">
-                <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--no-label v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="v-menu-2">
+                <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--no-label v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="v-menu-2">
                   <div class="v-field__overlay"></div>
                   <div class="v-field__loader">
                     <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
@@ -107,10 +107,8 @@ exports[`ERC721Collections.vue > Should load & display erc721 contracts 1`] = `
                   </div>
                   <!---->
                   <div class="v-field__field" data-no-activator="">
-                    <!----><label class="v-label v-field-label" for="input-0">
-                      <!---->
-                      <!---->
-                    </label>
+                    <!---->
+                    <!---->
                     <!---->
                     <div class="v-field__input" data-no-activator="">
                       <!---->
@@ -137,7 +135,7 @@ exports[`ERC721Collections.vue > Should load & display erc721 contracts 1`] = `
             </div>
           </div>
           <div class="v-data-table-footer__info">
-            <div>0-0 of 0</div>
+            <div>1-1 of 1</div>
           </div>
           <div class="v-data-table-footer__pagination">
             <nav class="v-pagination v-theme--light" role="navigation" aria-label="Pagination Navigation" data-test="v-pagination-root">

@@ -231,15 +231,17 @@ const serverFunctions = {
             throw { reason: reason };
         }
     },
-    impersonateAccount: async function(data) {
+    async impersonateAccount(data) {
         try {
             const rpcProvider = new serverFunctions._getProvider(data.rpcServer)
-            const hardhatResult = await rpcProvider.send('hardhat_impersonateAccount', [data.accountAddress]).catch(console.log);
-            if (hardhatResult) {
+            try {
+                await rpcProvider.send('hardhat_impersonateAccount', [data.accountAddress]);
+                return true;
+            } catch(error) {
+                console.log(error);
+                await rpcProvider.send('evm_unlockUnknownAccount', [data.accountAddress]).catch(console.log);
                 return true;
             }
-            const ganacheResult = await rpcProvider.send('evm_unlockUnknownAccount', [data.accountAddress]).catch(console.log);
-            return ganacheResult;
         } catch(error) {
             console.log(error);
             const reason = error.body ? JSON.parse(error.body).error.message : error.reason || error.message || "Can't connect to the server";
@@ -350,6 +352,91 @@ export default {
         );
 
         const $server = {
+            getBlockSizeHistory(from, to) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    from,
+                    to
+                }
+                const resource = `${envStore.apiRoot}/api/stats/blockSizeHistory`;
+                return axios.get(resource, { params });
+            },
+
+            getBlockTimeHistory(from, to) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    from,
+                    to
+                }
+                const resource = `${envStore.apiRoot}/api/stats/blockTimeHistory`;
+                return axios.get(resource, { params });
+            },
+
+            getLatestGasSpenders(intervalInHours = 24) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    intervalInHours
+                }
+                const resource = `${envStore.apiRoot}/api/gas/spenders`;
+                return axios.get(resource, { params });
+            },
+
+            getLatestGasConsumers(intervalInHours = 24) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    intervalInHours
+                }
+                const resource = `${envStore.apiRoot}/api/gas/consumers`;
+                return axios.get(resource, { params });
+            },
+
+            getGasUtilizationRatioHistory(from, to) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    from,
+                    to
+                }
+                const resource = `${envStore.apiRoot}/api/gas/utilizationRatioHistory`;
+                return axios.get(resource, { params });
+            },
+
+            getGasLimitHistory(from, to) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    from,
+                    to
+                }
+                const resource = `${envStore.apiRoot}/api/gas/limitHistory`;
+                return axios.get(resource, { params });
+            },
+
+            getGasPriceHistory(from, to) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    from,
+                    to
+                }
+                const resource = `${envStore.apiRoot}/api/gas/priceHistory`;
+                return axios.get(resource, { params });
+            },
+
+            getLatestGasStats(intervalInMinutes = 1) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    intervalInMinutes
+                }
+                const resource = `${envStore.apiRoot}/api/gas/stats`;
+                return axios.get(resource, { params });
+            },
+
             searchExplorer(domain) {
                 const resource = `${envStore.apiRoot}/api/explorers/search`;
                 return axios.get(resource, { params: { domain }});
@@ -894,13 +981,6 @@ export default {
                 return axios.post(resource, { data });
             },
 
-            getMarketingFlags() {
-                const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, };
-
-                const resource = `${envStore.apiRoot}/api/marketing`;
-                return axios.get(resource, { params });
-            },
-
             verifyContract(address, data) {
                 const resource = `${envStore.apiRoot}/api/contracts/${address}/verify`;
                 return axios.post(resource, data);
@@ -1214,16 +1294,6 @@ export default {
                 return axios.post(resource, { data });
             },
 
-            getProductRoadToken() {
-                const params = {
-                    firebaseUserId: firebaseUserId.value,
-                    workspace: workspace.value,
-                };
-
-                const resource = `${envStore.apiRoot}/api/marketing/productRoadToken`;
-                return axios.get(resource, { params });
-            },
-
             syncTransactionData(hash, transactionData) {
                 const data = {
                     firebaseUserId: firebaseUserId.value,
@@ -1344,7 +1414,6 @@ export default {
                  try {
                     for (let i = 0; i < transactions.length; i++) {
                         const transaction = transactions[i];
-
                         if (transaction.receipt.status === 0 || transaction.receipt.status === false) {
                             serverFunctions.fetchErrorData(transaction, rpcServer)
                                 .then(result => this.syncFailedTransactionError(transaction.hash, result))
@@ -1476,5 +1545,6 @@ export default {
         };
 
         app.config.globalProperties.$server = $server;
+        app.provide('$server', $server);
     }
 };

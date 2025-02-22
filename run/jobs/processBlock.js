@@ -1,7 +1,5 @@
-const { getNodeEnv } = require('../lib/env');
-const { Block, Workspace, Explorer, Transaction } = require('../models');
-const { bulkEnqueue, enqueue } = require('../lib/queue');
-const STALLED_BLOCK_REMOVAL_DELAY = getNodeEnv() == 'production' ? 5 * 60 * 1000 : 15 * 60 * 1000;
+const { Block, Workspace } = require('../models');
+const { sanitize } = require('../lib/utils');
 
 module.exports = async job => {
     const data = job.data;
@@ -10,23 +8,11 @@ module.exports = async job => {
         return 'Missing parameter';
 
     const block = await Block.findByPk(data.blockId, {
-        include: [
-            {
-                model: Transaction,
-                as: 'transactions',
-                attributes: ['id', 'hash']
-            },
-            {
-                model: Workspace,
-                as: 'workspace',
-                attributes: ['id', 'public', 'tracing', 'integrityCheckStartBlockNumber'],
-                include: {
-                    model: Explorer,
-                    as: 'explorer',
-                    attributes: ['id', 'shouldSync']
-                }
-            }
-        ]
+        include: {
+            model: Workspace,
+            as: 'workspace',
+            include: 'explorer'
+        }
     });
 
     if (!block)
@@ -41,28 +27,31 @@ module.exports = async job => {
     if (!block.workspace.explorer.shouldSync)
         return 'Sync is disabled';
 
-    await enqueue('removeStalledBlock', `removeStalledBlock-${block.id}`, { blockId: block.id }, null, null, STALLED_BLOCK_REMOVAL_DELAY);
+    let blockEvent = {};
+    if (block.workspace.explorer.gasAnalyticsEnabled) {
+        const client = block.workspace.getViemPublicClient();
 
-    if (block.workspace.tracing && block.workspace.tracing != 'hardhat') {
-        const jobs = [];
-        for (let i = 0; i < block.transactions.length; i++) {
-            const transaction = block.transactions[i];
-            jobs.push({
-                name: `processTransactionTrace-${block.workspaceId}-${transaction.hash}`,
-                data: { transactionId: transaction.id }
+        try {
+            const feeHistory = await client.getFeeHistory({
+                blockCount: 1,
+                blockNumber: block.number,
+                rewardPercentiles: [20, 50, 75]
             });
+
+            blockEvent = {
+                baseFeePerGas: feeHistory.baseFeePerGas[0].toString(),
+                gasUsedRatio: feeHistory.gasUsedRatio[0].toString(),
+                priorityFeePerGas: feeHistory.reward[0].map(x => x.toString())
+            };
+        } catch (error) {
+            if (error.code == -32601)
+                await block.workspace.explorer.update({ gasAnalyticsEnabled: false });
         }
-        await bulkEnqueue('processTransactionTrace', jobs);
     }
 
-    if (block.workspace.integrityCheckStartBlockNumber === undefined || block.workspace.integrityCheckStartBlockNumber === null) {
-        const integrityCheckStartBlockNumber = block.number < 1000 ? 0 : block.number;
-        await block.workspace.update({ integrityCheckStartBlockNumber });
-    }
-
-    if (block.number == block.workspace.integrityCheckStartBlockNumber) {
-        await enqueue('integrityCheck', `integrityCheck-${block.workspaceId}`, { workspaceId: block.workspaceId });
-    }
-
-    return true;
+    return block.safeCreateEvent(sanitize({
+        ...blockEvent,
+        gasUsed: block.gasUsed,
+        gasLimit: block.gasLimit,
+    }));
 };

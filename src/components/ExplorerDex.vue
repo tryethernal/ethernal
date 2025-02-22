@@ -12,9 +12,10 @@
                 <v-col md="6" sm="12">
                     <v-card class="rounded-card rounded-xl">
                         <div class="mb-5 mt-1 mx-5 d-flex justify-space-between align-center">
-                            <template v-if="connectedAccount">
-                                <small>Connected Account: <Hash-Link :withName="false" :type="'address'" :hash="connectedAccount" /></small>
+                            <template v-if="connectedAddress">
+                                <small>Connected Account: <Hash-Link :withName="false" :type="'address'" :hash="connectedAddress" /></small>
                             </template>
+                            <template v-else><v-spacer /></template>
                             <v-btn size="small" variant="text" icon="mdi-cog" @click="openExplorerDexParametersModal()"></v-btn>
                         </div>
                         <div class="pa-12 pt-0">
@@ -75,7 +76,7 @@
                                             </div>
                                         </template>
                                     </v-text-field>
-                                    <Metamask class="mt-3"  v-if="!connectedAccount" @rpcConnectionStatusChanged="onRpcConnectionStatusChanged"/>
+                                    <WalletConnectorMirror width="100%" size="large" class="mt-3" v-if="!connectedAddress" />
                                     <div v-else class="mt-3 mb-4">
                                         <template v-if="executionInfo.executionPrice">
                                             <div class="d-flex justify-space-between mx-2">
@@ -173,8 +174,9 @@
 import * as ethers from 'ethers';
 import { storeToRefs } from 'pinia';
 import { useExplorerStore } from '@/stores/explorer';
+import { useWalletStore } from '@/stores/walletStore';
 import { useEnvStore } from '@/stores/env';
-import Metamask from './Metamask.vue';
+import WalletConnectorMirror from './WalletConnectorMirror.vue';
 import HashLink from './HashLink.vue';
 import DexTokenSelectionModal from './DexTokenSelectionModal.vue';
 import ExplorerDexParametersModal from './ExplorerDexParametersModal.vue';
@@ -197,7 +199,7 @@ export default{
     components: {
         DexTokenSelectionModal,
         ExplorerDexParametersModal,
-        Metamask,
+        WalletConnectorMirror,
         HashLink
     },
     data: () => ({
@@ -233,9 +235,10 @@ export default{
     }),
     setup() {
         const { v2Dex, token, name, chainId } = storeToRefs(useExplorerStore());
+        const { connectedAddress } = storeToRefs(useWalletStore());
         const { nativeTokenAddress } = useEnvStore();
 
-        return { v2Dex, token, nativeTokenAddress, explorerName: name, explorerChainId: chainId };
+        return { v2Dex, token, nativeTokenAddress, explorerName: name, explorerChainId: chainId, connectedAddress };
     },
     mounted() {
         if (!this.v2Dex)

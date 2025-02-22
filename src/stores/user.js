@@ -1,4 +1,5 @@
-import * as Sentry from "@sentry/vue";
+import * as Sentry from '@sentry/vue';
+import { getCurrentInstance } from 'vue';
 import { defineStore } from 'pinia';
 
 import { useEnvStore } from './env';
@@ -17,40 +18,40 @@ export const useUserStore = defineStore('user', {
     }),
 
     actions: {
-        // TODO: Do not forget to update the code using updateUserPlan
-
         updateUser(user) {
             const env = useEnvStore();
 
             if (user) {
                 this.$patch(user);
 
-                Sentry.setUser({ id: this.id, email: this.email });
+                Sentry.setUser({ id: user.id, email: user.email });
 
                 if (user.apiToken)
                     localStorage.setItem('apiToken', user.apiToken);
 
-                if (env.hasAnalyticsEnabled) {
-                    window.feedbackfin.config.user = { email: this.email };
-                    this._vm.$posthog.identify(this.id, { email: this.email });
-                    if (window.smartsupp) {
-                        window.smartsupp('name', this.email);
-                        window.smartsupp('email', this.email);
-                    }
+                if (window.feedbackfin && window.feedbackfin.config && user.email)
+                    window.feedbackfin.config.user = { email: user.email };
+
+                if (window.smartsupp && user.email) {
+                    window.smartsupp('name', user.email);
+                    window.smartsupp('email', user.email);
                 }
             }
             else {
                 this.$reset();
                 Sentry.setUser(null);
                 localStorage.clear();
-                if (env.hasAnalyticsEnabled) {
+
+                if (window.feedbackfin && window.feedbackfin.config)
                     window.feedbackfin.config.user = null;
-                    this._vm.$posthog.reset();
-                    if (window.smartsupp) {
-                        window.smartsupp('name', null);
-                        window.smartsupp('email', null);
-                    }
+
+                if (window.smartsupp) {
+                    window.smartsupp('name', null);
+                    window.smartsupp('email', null);
                 }
+
+                if (env.hasAnalyticsEnabled)
+                    this.globalProperties.$posthog.reset();
             }
         }
     },

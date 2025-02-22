@@ -72,7 +72,7 @@ exports[`TransactionsList.vue > Should display a message if no transactions 1`] 
       <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field v-select v-select--single v-select--selected">
         <!---->
         <div class="v-input__control">
-          <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--no-label v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="v-menu-2">
+          <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--no-label v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="v-menu-2">
             <div class="v-field__overlay"></div>
             <div class="v-field__loader">
               <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
@@ -90,10 +90,8 @@ exports[`TransactionsList.vue > Should display a message if no transactions 1`] 
             </div>
             <!---->
             <div class="v-field__field" data-no-activator="">
-              <!----><label class="v-label v-field-label" for="input-0">
-                <!---->
-                <!---->
-              </label>
+              <!---->
+              <!---->
               <!---->
               <div class="v-field__input" data-no-activator="">
                 <!---->
@@ -239,8 +237,8 @@ exports[`TransactionsList.vue > Should display the list 1`] = `
             <!--v-if-->
             <hash-link-stub data-v-40c8aafa="" type="address" hash="Ox1" withtokenname="true" withname="true"></hash-link-stub>
           </td>
-          <td class="v-data-table__td v-data-table-column--align-start">0 Ether</td>
-          <td class="v-data-table__td v-data-table-column--align-start"><span data-v-40c8aafa="">0 Ether</span></td>
+          <td class="v-data-table__td v-data-table-column--align-start">0 ETH</td>
+          <td class="v-data-table__td v-data-table-column--align-start"><span data-v-40c8aafa="">0 ETH</span></td>
         </tr>
         <!---->
         <tr class="v-data-table__tr">
@@ -274,7 +272,7 @@ exports[`TransactionsList.vue > Should display the list 1`] = `
             <!--v-if-->
             <hash-link-stub data-v-40c8aafa="" type="address" hash="Ox1" withtokenname="true" withname="true"></hash-link-stub>
           </td>
-          <td class="v-data-table__td v-data-table-column--align-start">0 Ether</td>
+          <td class="v-data-table__td v-data-table-column--align-start">0 ETH</td>
           <td class="v-data-table__td v-data-table-column--align-start">
             <!--v-if-->
           </td>
@@ -293,7 +291,7 @@ exports[`TransactionsList.vue > Should display the list 1`] = `
       <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field v-select v-select--single v-select--selected">
         <!---->
         <div class="v-input__control">
-          <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--no-label v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="v-menu-2">
+          <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--no-label v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="v-menu-2">
             <div class="v-field__overlay"></div>
             <div class="v-field__loader">
               <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
@@ -311,10 +309,8 @@ exports[`TransactionsList.vue > Should display the list 1`] = `
             </div>
             <!---->
             <div class="v-field__field" data-no-activator="">
-              <!----><label class="v-label v-field-label" for="input-0">
-                <!---->
-                <!---->
-              </label>
+              <!---->
+              <!---->
               <!---->
               <div class="v-field__input" data-no-activator="">
                 <!---->
@@ -341,7 +337,7 @@ exports[`TransactionsList.vue > Should display the list 1`] = `
       </div>
     </div>
     <div class="v-data-table-footer__info">
-      <div>0-0 of 0</div>
+      <div>1-2 of 2</div>
     </div>
     <div class="v-data-table-footer__pagination">
       <nav class="v-pagination v-theme--light" role="navigation" aria-label="Pagination Navigation" data-test="v-pagination-root">

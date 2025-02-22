@@ -73,8 +73,8 @@ exports[`CreateExplorerDexModal.vue > Should show dex creation modal 1`] = `
                 </div>
               </div>
               <!---->
-              <div class="v-input__details">
-                <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="input-1-messages">
+              <div id="input-1-messages" class="v-input__details" role="alert" aria-live="polite">
+                <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
                   <!---->
                 </transition-group-stub>
                 <!---->
@@ -120,8 +120,8 @@ exports[`CreateExplorerDexModal.vue > Should show dex creation modal 1`] = `
                 </div>
               </div>
               <!---->
-              <div class="v-input__details">
-                <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages" role="alert" aria-live="polite" id="input-3-messages">
+              <div id="input-3-messages" class="v-input__details" role="alert" aria-live="polite">
+                <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
                   <div class="v-messages__message">We need this address to be able to route native token swaps</div>
                 </transition-group-stub>
                 <!---->

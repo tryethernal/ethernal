@@ -45,10 +45,8 @@ exports[`Account.vue > Should load the account tab 1`] = `
                 </div>
                 <!---->
                 <div class="v-field__field" data-no-activator="">
-                  <!----><label class="v-label v-field-label" for="apiToken">
-                    <!---->
-                    <!---->
-                  </label>
+                  <!---->
+                  <!---->
                   <!----><input readonly="" size="1" type="text" id="apiToken" aria-describedby="apiToken-messages" class="v-field__input" value="1234">
                   <!---->
                 </div>

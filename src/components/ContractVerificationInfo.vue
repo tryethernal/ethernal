@@ -57,11 +57,9 @@
         <v-card v-if="contract.abi" border class="mb-6">
             <v-card-title>ABI</v-card-title>
             <v-card-text>
-                <v-textarea density="compact" variant="outlined" disabled :model-value="JSON.stringify(contract.abi)">
-                    <template v-slot:append>
-                        <v-btn icon @click="copyAbi()">
-                            <v-icon size="small">mdi-content-copy</v-icon>
-                        </v-btn>
+                <v-textarea class="text-medium-emphasis" density="compact" variant="outlined" readonly :model-value="JSON.stringify(contract.abi)">
+                    <template v-slot:append-inner>
+                        <v-btn variant="text" density="compact" icon="mdi-content-copy" @click="copyAbi()"></v-btn>
                     </template>
                 </v-textarea>
                 <input type="hidden" id="copyAbi" :value="JSON.stringify(contract.abi)">

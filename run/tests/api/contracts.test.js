@@ -233,30 +233,6 @@ describe(`POST ${BASE_URL}/verify`, () => {
             });
     });
 
-    it('Should throw an error if contract name has an invalid format', (done) => {
-        jest.spyOn(db, 'getPublicExplorerParamsBySlug').mockResolvedValueOnce({ id: 1, workspaceId: 1 });
-        jest.spyOn(db, 'getContractByWorkspaceId').mockResolvedValueOnce({ id: 1 });
-
-        request.post(`${BASE_URL}/verify`)
-            .send({
-                sourceCode: 'a',
-                contractaddress: '0xabc',
-                apikey: 'ethernal',
-                compilerversion: '0.8.0',
-                constructorArguements: '',
-                contractname: 'Ethernal'
-            })
-            .expect(200)
-            .then(({ body }) => {
-                expect(body).toEqual({
-                    status: "0",
-                    message: "OK",
-                    result: `Contract verification failed: Invalid contract name format.`
-                });
-                done();
-            });
-    });
-
     it('Should throw an error if the contract is being verified', (done) => {
         jest.spyOn(db, 'getPublicExplorerParamsBySlug').mockResolvedValueOnce({ id: 1, workspaceId: 1 });
         jest.spyOn(db, 'getContractByWorkspaceId').mockResolvedValueOnce({ id: 1 });
@@ -292,6 +268,9 @@ describe(`POST ${BASE_URL}/verify`, () => {
             release: jest.fn().mockResolvedValue(true)
         }));
         processContractVerification.mockResolvedValueOnce({ verificationSucceded: true });
+        jest.mock('../../lib/verifierParams', () => ({
+            solidityStandardJsonInput: jest.fn().mockReturnValue({})
+        }));
 
         request.post(`${BASE_URL}/verify`)
             .send({
@@ -300,7 +279,43 @@ describe(`POST ${BASE_URL}/verify`, () => {
                 apikey: 'ethernal',
                 compilerversion: '0.8.0',
                 constructorArguements: '',
-                contractname: 'Ethernal.sol:Ethernal'
+                contractname: 'Ethernal.sol:Ethernal',
+                codeformat: 'solidity-standard-json-input'
+            })
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual({
+                    status: "1",
+                    message: "OK",
+                    result: `1234`
+                });
+                done();
+            });
+    });
+
+    it('Should accept single file format', (done) => {
+        jest.spyOn(db, 'getPublicExplorerParamsBySlug').mockResolvedValueOnce({ id: 1, workspaceId: 1 });
+        jest.spyOn(db, 'getContractByWorkspaceId').mockResolvedValueOnce({ id: 1 });
+        Lock.mockImplementationOnce(() => ({
+            acquire: jest.fn().mockResolvedValue(true),
+            release: jest.fn().mockResolvedValue(true)
+        }));
+        processContractVerification.mockResolvedValueOnce({ verificationSucceded: true });
+        jest.mock('../../lib/verifierParams', () => ({
+            soliditySingleFile: jest.fn().mockReturnValue({})
+        }));
+
+        request.post(`${BASE_URL}/verify`)
+            .send({
+                sourceCode: 'a',
+                contractaddress: '0xabc',
+                apikey: 'ethernal',
+                compilerversion: '0.8.0',
+                constructorArguements: '',
+                contractname: 'Ethernal.sol:Ethernal',
+                codeformat: 'solidity-single-file',
+                optimizationRuns: 1,
+                evmVersion: 'cancun'
             })
             .expect(200)
             .then(({ body }) => {

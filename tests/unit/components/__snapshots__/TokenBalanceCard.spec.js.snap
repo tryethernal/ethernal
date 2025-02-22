@@ -1,0 +1,120 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`TokenBalanceCard.vue > Should show a loader 1`] = `
+"<div class="v-card v-theme--light v-card--density-default v-card--variant-elevated" style="height: 100%;">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
+        </div>
+      </transition-stub>
+      <!---->
+    </div>
+  </div>
+  <div class="v-card-item">
+    <!---->
+    <div class="v-card-item__content">
+      <!---->
+      <div class="v-card-subtitle">
+        <div class="d-flex justify-space-between"><span>Your Balance</span>
+          <!--v-if-->
+        </div>
+      </div>
+      <!---->
+    </div>
+    <!---->
+  </div>
+  <!---->
+  <div class="v-card-text text-h3 text-medium-emphasis" align="center">
+    <div class="v-skeleton-loader v-theme--light" arialive="polite" arialabel="Loading..." role="alert">
+      <div class="v-skeleton-loader__bone v-skeleton-loader__list-item">
+        <div class="v-skeleton-loader__bone v-skeleton-loader__text"></div>
+      </div>
+    </div>
+  </div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
+`;
+
+exports[`TokenBalanceCard.vue > Should show the wallet connector 1`] = `
+"<div class="v-card v-theme--light v-card--density-default v-card--variant-elevated" style="height: 100%;">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
+        </div>
+      </transition-stub>
+      <!---->
+    </div>
+  </div>
+  <div class="v-card-item">
+    <!---->
+    <div class="v-card-item__content">
+      <!---->
+      <div class="v-card-subtitle">
+        <div class="d-flex justify-space-between"><span>Your Balance</span>
+          <!--v-if-->
+        </div>
+      </div>
+      <!---->
+    </div>
+    <!---->
+  </div>
+  <!---->
+  <div class="v-card-text text-h3 text-medium-emphasis" align="center">
+    <wallet-connector-mirror-stub prependicon="mdi-wallet" rounded="" size="small" variant="outlined"></wallet-connector-mirror-stub>
+  </div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
+`;
+
+exports[`TokenBalanceCard.vue > Should show token balance 1`] = `
+"<div class="v-card v-theme--light v-card--density-default v-card--variant-elevated" style="height: 100%;">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
+        </div>
+      </transition-stub>
+      <!---->
+    </div>
+  </div>
+  <div class="v-card-item">
+    <!---->
+    <div class="v-card-item__content">
+      <!---->
+      <div class="v-card-subtitle">
+        <div class="d-flex justify-space-between"><span>Your Balance</span>
+          <hash-link-stub type="address" hash="0x1234"></hash-link-stub>
+        </div>
+      </div>
+      <!---->
+    </div>
+    <!---->
+  </div>
+  <!---->
+  <div class="v-card-text text-h3 text-medium-emphasis" align="center">1 ETH</div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
+`;

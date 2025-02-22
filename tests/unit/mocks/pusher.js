@@ -12,7 +12,8 @@ jest.mock('../../../src/plugins/pusher', () => ({
                 onNewToken: jest.fn(),
                 onNewNft: jest.fn(),
                 onUserUpdated: jest.fn(),
-                onDestroyedContract: jest.fn()
+                onDestroyedContract: jest.fn(),
+                onNewBlockEvent: jest.fn()
             }
         }
     }

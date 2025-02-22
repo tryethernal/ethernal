@@ -10,6 +10,7 @@ const authMiddleware = require('../middlewares/auth');
 const processContractVerification = require('../lib/processContractVerification');
 const { holderHistory, circulatingSupply, holders, transfers } = require('./modules/tokens');
 const { managedError, unmanagedError } = require('../lib/errors');
+const verifierParamsFormatters = require('../lib/verifierParams');
 
 router.get('/:address/holderHistory', workspaceAuthMiddleware, holderHistory);
 router.get('/:address/circulatingSupply', workspaceAuthMiddleware, circulatingSupply);
@@ -17,7 +18,7 @@ router.get('/:address/holders', workspaceAuthMiddleware, holders);
 router.get('/:address/transfers', workspaceAuthMiddleware, transfers);
 
 router.get('/getabi', async (req, res) => {
-    const data = req.query;
+    const data = { ...req.query, ...req.body };
 
     try {
         if (!data.address)
@@ -54,7 +55,7 @@ router.get('/getabi', async (req, res) => {
             result: JSON.stringify(contract.abi)
         });
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.contracts.getabi', error, queryParams: req.query, headers: req.headers });
+        logger.error(error.message, { location: 'get.api.contracts.getabi', error, data, headers: req.headers });
         res.status(200).json({
             status: "0",
             message: "OK",
@@ -64,7 +65,7 @@ router.get('/getabi', async (req, res) => {
 });
 
 router.get('/sourceCode', async (req, res) => {
-    const data = req.query;
+    const data = { ...req.query, ...req.body };
 
     try {
         if (!data.address)
@@ -117,7 +118,7 @@ router.get('/sourceCode', async (req, res) => {
             result: [response]
         });
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.contracts.sourceCode', error, queryParams: req.query });
+        logger.error(error.message, { location: 'get.api.contracts.sourceCode', error, data });
         res.status(200).json({
             status: "0",
             message: "OK",
@@ -137,6 +138,7 @@ router.post('/verify', async (req, res) => {
         const contractAddress = data.contractaddress.toLowerCase();
 
         let explorer;
+
         if (req.headers['apx-incoming-host']) {
             explorer = await db.getPublicExplorerParamsByDomain(req.headers['apx-incoming-host'])
         }
@@ -167,9 +169,6 @@ router.post('/verify', async (req, res) => {
                 result: "Already Verified"
             });
 
-        if (data.contractname.split(':').length != 2)
-            throw new Error('Invalid contract name format.');
-
         lock = new Lock(`contractVerification-${explorer.id}-${contract.id}`, 60000);
 
         isLockAcquired = await lock.acquire();
@@ -178,21 +177,11 @@ router.post('/verify', async (req, res) => {
 
         await lock.acquire();
 
-        const contractFile = data.contractname.split(':')[0];
-        const contractName = data.contractname.split(':')[1];
-
-        const source = JSON.parse(data.sourceCode);
+        const params = verifierParamsFormatters[data.codeformat](data);
 
         const payload = {
             publicExplorerParams: explorer,
-            contractAddress: contractAddress,
-            compilerVersion: data.compilerversion,
-            constructorArguments: data.constructorArguements,
-            code: { sources: source.sources, libraries: source.settings.libraries },
-            contractName, contractFile,
-            optimizer: source.settings.optimizer ? source.settings.optimizer.enabled : false,
-            runs: source.settings.optimizer ? source.settings.optimizer.runs : 0,
-            evmVersion: source.settings.evmVersion
+            ...params
         }
 
         await processContractVerification(db, payload);
@@ -207,7 +196,7 @@ router.post('/verify', async (req, res) => {
     } catch(error) {
         if (lock && isLockAcquired)
             await lock.release();
-        logger.error(error.message, { location: 'post.api.contracts.verify', error, queryParams: req.query });
+        logger.error(error.message, { location: 'post.api.contracts.verify', error, data });
         res.status(200).json({
             status: "0",
             message: "OK",
@@ -217,6 +206,14 @@ router.post('/verify', async (req, res) => {
 });
 
 router.get('/verificationStatus', async (req, res) => {
+    res.status(200).json({
+        status: "1",
+        message: "OK",
+        result: "Pass - Verified"
+    });
+});
+
+router.post('/verificationStatus', async (req, res) => {
     res.status(200).json({
         status: "1",
         message: "OK",

@@ -1,0 +1,634 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`GasTracker.vue > Should display gas tracker 1`] = `
+"<div data-v-931b96d5="" class="v-container v-container--fluid v-locale--is-ltr">
+  <h2 data-v-931b96d5="" class="text-center text-primary my-6"> Gas Tracker </h2><small data-v-931b96d5="" class="text-medium-emphasis">Next update in <b data-v-931b96d5="" class="text-primary">10s</b></small>
+  <div data-v-931b96d5="" class="v-row pt-2">
+    <div data-v-931b96d5="" class="v-col-lg-6 v-col-12 d-flex flex-column">
+      <div data-v-931b96d5="" class="v-row mb-0">
+        <div data-v-931b96d5="" class="v-col-sm-12 v-col-lg-4 v-col-12">
+          <div data-v-931b96d5="" class="v-card v-theme--light v-card--density-default rounded-lg v-card--variant-elevated text-center">
+            <!---->
+            <div class="v-card__loader">
+              <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                <!---->
+                <div class="v-progress-linear__background"></div>
+                <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                  <div class="v-progress-linear__indeterminate">
+                    <div class="v-progress-linear__indeterminate long"></div>
+                    <div class="v-progress-linear__indeterminate short"></div>
+                  </div>
+                </transition-stub>
+                <!---->
+              </div>
+            </div>
+            <div class="v-card-item">
+              <!---->
+              <div class="v-card-item__content">
+                <div class="v-card-title"><i data-v-931b96d5="" class="mdi-snail mdi v-icon notranslate v-theme--light v-icon--size-x-small mr-2 text-medium-emphasis" aria-hidden="true"></i><small data-v-931b96d5="" class="text-medium-emphasis">Slow</small></div>
+                <!---->
+                <!---->
+              </div>
+              <!---->
+            </div>
+            <!---->
+            <div data-v-931b96d5="" class="v-card-text"><span data-v-931b96d5="" class="text-h5 slow" aria-describedby="v-tooltip-3">0.02   gwei<!----><!--teleport start--><!--teleport end--></span>
+              <div data-v-931b96d5="" class="mt-2"><small data-v-931b96d5=""><span data-v-931b96d5="" aria-describedby="v-tooltip-4">Base: 0.01  <!----><!--teleport start--><!--teleport end--></span> | <span data-v-931b96d5="" aria-describedby="v-tooltip-5">Priority: 0.01  <!----><!--teleport start--><!--teleport end--></span></small></div>
+            </div>
+            <!---->
+            <!----><span class="v-card__underlay"></span>
+          </div>
+        </div>
+        <div data-v-931b96d5="" class="v-col-sm-12 v-col-lg-4 v-col-12">
+          <div data-v-931b96d5="" class="v-card v-theme--light v-card--density-default rounded-lg v-card--variant-elevated text-center">
+            <!---->
+            <div class="v-card__loader">
+              <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                <!---->
+                <div class="v-progress-linear__background"></div>
+                <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                  <div class="v-progress-linear__indeterminate">
+                    <div class="v-progress-linear__indeterminate long"></div>
+                    <div class="v-progress-linear__indeterminate short"></div>
+                  </div>
+                </transition-stub>
+                <!---->
+              </div>
+            </div>
+            <div class="v-card-item">
+              <!---->
+              <div class="v-card-item__content">
+                <div class="v-card-title"><i data-v-931b96d5="" class="mdi-speedometer-medium mdi v-icon notranslate v-theme--light v-icon--size-x-small mr-2 text-medium-emphasis" aria-hidden="true"></i><small data-v-931b96d5="" class="text-medium-emphasis">Average</small></div>
+                <!---->
+                <!---->
+              </div>
+              <!---->
+            </div>
+            <!---->
+            <div data-v-931b96d5="" class="v-card-text"><span data-v-931b96d5="" class="text-h5 average" aria-describedby="v-tooltip-6">0.02   gwei<!----><!--teleport start--><!--teleport end--></span>
+              <div data-v-931b96d5="" class="mt-2"><small data-v-931b96d5=""><span data-v-931b96d5="" aria-describedby="v-tooltip-7">Base: 0.01  <!----><!--teleport start--><!--teleport end--></span> | <span data-v-931b96d5="" aria-describedby="v-tooltip-8">Priority: 0.01  <!----><!--teleport start--><!--teleport end--></span></small></div>
+            </div>
+            <!---->
+            <!----><span class="v-card__underlay"></span>
+          </div>
+        </div>
+        <div data-v-931b96d5="" class="v-col-sm-12 v-col-lg-4 v-col-12">
+          <div data-v-931b96d5="" class="v-card v-theme--light v-card--density-default rounded-lg v-card--variant-elevated text-center">
+            <!---->
+            <div class="v-card__loader">
+              <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                <!---->
+                <div class="v-progress-linear__background"></div>
+                <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                  <div class="v-progress-linear__indeterminate">
+                    <div class="v-progress-linear__indeterminate long"></div>
+                    <div class="v-progress-linear__indeterminate short"></div>
+                  </div>
+                </transition-stub>
+                <!---->
+              </div>
+            </div>
+            <div class="v-card-item">
+              <!---->
+              <div class="v-card-item__content">
+                <div class="v-card-title"><i data-v-931b96d5="" class="mdi-rocket-launch mdi v-icon notranslate v-theme--light v-icon--size-x-small mr-2 text-medium-emphasis" aria-hidden="true"></i><small data-v-931b96d5="" class="text-medium-emphasis">Fast</small></div>
+                <!---->
+                <!---->
+              </div>
+              <!---->
+            </div>
+            <!---->
+            <div data-v-931b96d5="" class="v-card-text"><span data-v-931b96d5="" class="text-h5 fast" aria-describedby="v-tooltip-9">0.02   gwei<!----><!--teleport start--><!--teleport end--></span>
+              <div data-v-931b96d5="" class="mt-2"><small data-v-931b96d5=""><span data-v-931b96d5="" aria-describedby="v-tooltip-10">Base: 0.01  <!----><!--teleport start--><!--teleport end--></span> | <span data-v-931b96d5="" aria-describedby="v-tooltip-11">Priority: 0.01  <!----><!--teleport start--><!--teleport end--></span></small></div>
+            </div>
+            <!---->
+            <!----><span class="v-card__underlay"></span>
+          </div>
+        </div>
+      </div>
+      <div data-v-931b96d5="" class="v-row mt-0">
+        <div data-v-931b96d5="" class="v-col v-col-12 pt-0">
+          <div data-v-931b96d5="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated fill-height">
+            <!---->
+            <div class="v-card__loader">
+              <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                <!---->
+                <div class="v-progress-linear__background"></div>
+                <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                  <div class="v-progress-linear__indeterminate">
+                    <div class="v-progress-linear__indeterminate long"></div>
+                    <div class="v-progress-linear__indeterminate short"></div>
+                  </div>
+                </transition-stub>
+                <!---->
+              </div>
+            </div>
+            <!---->
+            <!---->
+            <div data-v-931b96d5="" class="v-card-title text-primary d-flex justify-space-between"><small data-v-931b96d5="">Additional Info</small><i data-v-931b96d5="" class="mdi-information-outline mdi v-icon notranslate v-theme--light v-icon--size-x-small mb-1" aria-hidden="true" aria-describedby="v-tooltip-12">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i></div>
+            <div data-v-931b96d5="" class="v-card-text">
+              <div data-v-931b96d5="" class="v-row">
+                <div data-v-931b96d5="" class="v-col-lg-4 v-col-12">
+                  <div data-v-931b96d5="" class="v-card v-theme--light text-primary v-card--density-default v-card--variant-tonal ma-0 pa-0">
+                    <!---->
+                    <div class="v-card__loader">
+                      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                        <!---->
+                        <div class="v-progress-linear__background"></div>
+                        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                          <div class="v-progress-linear__indeterminate">
+                            <div class="v-progress-linear__indeterminate long"></div>
+                            <div class="v-progress-linear__indeterminate short"></div>
+                          </div>
+                        </transition-stub>
+                        <!---->
+                      </div>
+                    </div>
+                    <div class="v-card-item">
+                      <!---->
+                      <div class="v-card-item__content">
+                        <div class="v-card-title">
+                          <div data-v-931b96d5="" class="d-flex flex-column"><span data-v-931b96d5="" class="text-caption">AVG BLOCK TIME</span><small data-v-931b96d5="">12s</small></div>
+                        </div>
+                        <!---->
+                        <!---->
+                      </div>
+                      <!---->
+                    </div>
+                    <!---->
+                    <!---->
+                    <!---->
+                    <!----><span class="v-card__underlay"></span>
+                  </div>
+                </div>
+                <div data-v-931b96d5="" class="v-col-lg-4 v-col-12">
+                  <div data-v-931b96d5="" class="v-card v-theme--light text-primary v-card--density-default v-card--variant-tonal ma-0 pa-0">
+                    <!---->
+                    <div class="v-card__loader">
+                      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                        <!---->
+                        <div class="v-progress-linear__background"></div>
+                        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                          <div class="v-progress-linear__indeterminate">
+                            <div class="v-progress-linear__indeterminate long"></div>
+                            <div class="v-progress-linear__indeterminate short"></div>
+                          </div>
+                        </transition-stub>
+                        <!---->
+                      </div>
+                    </div>
+                    <div class="v-card-item">
+                      <!---->
+                      <div class="v-card-item__content">
+                        <div class="v-card-title">
+                          <div data-v-931b96d5="" class="d-flex flex-column"><span data-v-931b96d5="" class="text-caption">AVG BLOCK SIZE</span><small data-v-931b96d5="">5</small></div>
+                        </div>
+                        <!---->
+                        <!---->
+                      </div>
+                      <!---->
+                    </div>
+                    <!---->
+                    <!---->
+                    <!---->
+                    <!----><span class="v-card__underlay"></span>
+                  </div>
+                </div>
+                <div data-v-931b96d5="" class="v-col-lg-4 v-col-12">
+                  <div data-v-931b96d5="" class="v-card v-theme--light text-primary v-card--density-default v-card--variant-tonal ma-0 pa-0">
+                    <!---->
+                    <div class="v-card__loader">
+                      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                        <!---->
+                        <div class="v-progress-linear__background"></div>
+                        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                          <div class="v-progress-linear__indeterminate">
+                            <div class="v-progress-linear__indeterminate long"></div>
+                            <div class="v-progress-linear__indeterminate short"></div>
+                          </div>
+                        </transition-stub>
+                        <!---->
+                      </div>
+                    </div>
+                    <div class="v-card-item">
+                      <!---->
+                      <div class="v-card-item__content">
+                        <div class="v-card-title">
+                          <div data-v-931b96d5="" class="d-flex flex-column"><span data-v-931b96d5="" class="text-caption">AVG UTILIZATION</span><small data-v-931b96d5="">5.00%</small></div>
+                        </div>
+                        <!---->
+                        <!---->
+                      </div>
+                      <!---->
+                    </div>
+                    <!---->
+                    <!---->
+                    <!---->
+                    <!----><span class="v-card__underlay"></span>
+                  </div>
+                </div><small data-v-931b96d5="" class="ml-4 text-medium-emphasis">Last updated at 10:23:26pm (block 10,000,000).</small>
+              </div>
+            </div>
+            <!---->
+            <!----><span class="v-card__underlay"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div data-v-931b96d5="" class="v-col-lg-6 v-col-12">
+      <div data-v-931b96d5="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!---->
+        <div data-v-931b96d5="" class="v-card-text">
+          <div data-v-931b96d5="" class="v-slide-group v-slide-group--mobile v-chip-group v-theme--light pt-0 mb-1" tabindex="0">
+            <!---->
+            <div class="v-slide-group__container">
+              <div class="v-slide-group__content"><span data-v-931b96d5="" class="v-chip v-chip--link v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal text-primary" draggable="false" tabindex="0"><span class="v-chip__overlay"></span><span class="v-chip__underlay"></span>
+                <!---->
+                <!---->
+                <div class="v-chip__content" data-no-activator="">Gas Price</div>
+                <!---->
+                <!----></span><span data-v-931b96d5="" class="v-chip v-chip--link v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal" draggable="false" tabindex="0"><span class="v-chip__overlay"></span><span class="v-chip__underlay"></span>
+                <!---->
+                <!---->
+                <div class="v-chip__content" data-no-activator="">Gas Limit</div>
+                <!---->
+                <!----></span><span data-v-931b96d5="" class="v-chip v-chip--link v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal" draggable="false" tabindex="0"><span class="v-chip__overlay"></span><span class="v-chip__underlay"></span>
+                <!---->
+                <!---->
+                <div class="v-chip__content" data-no-activator="">Utilization</div>
+                <!---->
+                <!----></span>
+              </div>
+            </div>
+            <!---->
+          </div>
+          <multi-line-chart-stub data-v-931b96d5="" xlabels="2025-02-17,2025-02-16,2025-02-15" data="[object Object],[object Object],[object Object]" tokensymbol="gwei" floating="true"></multi-line-chart-stub>
+          <!--v-if-->
+          <!--v-if-->
+        </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
+      </div>
+    </div>
+  </div>
+  <div data-v-931b96d5="" class="v-row">
+    <div data-v-931b96d5="" class="v-col-md-6 v-col-12">
+      <gas-consumers-stub data-v-931b96d5=""></gas-consumers-stub>
+    </div>
+    <div data-v-931b96d5="" class="v-col-md-6 v-col-12">
+      <gas-spender-stub data-v-931b96d5=""></gas-spender-stub>
+    </div>
+  </div>
+</div>"
+`;
+
+exports[`GasTracker.vue > Should display very small gas speeds 1`] = `
+"<div data-v-931b96d5="" class="v-container v-container--fluid v-locale--is-ltr">
+  <h2 data-v-931b96d5="" class="text-center text-primary my-6"> Gas Tracker </h2><small data-v-931b96d5="" class="text-medium-emphasis">Next update in <b data-v-931b96d5="" class="text-primary">10s</b></small>
+  <div data-v-931b96d5="" class="v-row pt-2">
+    <div data-v-931b96d5="" class="v-col-lg-6 v-col-12 d-flex flex-column">
+      <div data-v-931b96d5="" class="v-row mb-0">
+        <div data-v-931b96d5="" class="v-col-sm-12 v-col-lg-4 v-col-12">
+          <div data-v-931b96d5="" class="v-card v-theme--light v-card--density-default rounded-lg v-card--variant-elevated text-center">
+            <!---->
+            <div class="v-card__loader">
+              <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                <!---->
+                <div class="v-progress-linear__background"></div>
+                <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                  <div class="v-progress-linear__indeterminate">
+                    <div class="v-progress-linear__indeterminate long"></div>
+                    <div class="v-progress-linear__indeterminate short"></div>
+                  </div>
+                </transition-stub>
+                <!---->
+              </div>
+            </div>
+            <div class="v-card-item">
+              <!---->
+              <div class="v-card-item__content">
+                <div class="v-card-title"><i data-v-931b96d5="" class="mdi-snail mdi v-icon notranslate v-theme--light v-icon--size-x-small mr-2 text-medium-emphasis" aria-hidden="true"></i><small data-v-931b96d5="" class="text-medium-emphasis">Slow</small></div>
+                <!---->
+                <!---->
+              </div>
+              <!---->
+            </div>
+            <!---->
+            <div data-v-931b96d5="" class="v-card-text"><span data-v-931b96d5="" class="text-h5 slow" aria-describedby="v-tooltip-3">&lt;0.01 gwei<!----><!--teleport start--><!--teleport end--></span>
+              <div data-v-931b96d5="" class="mt-2"><small data-v-931b96d5=""><span data-v-931b96d5="" aria-describedby="v-tooltip-4">Base: &lt;0.01<!----><!--teleport start--><!--teleport end--></span> | <span data-v-931b96d5="" aria-describedby="v-tooltip-5">Priority: 0<!----><!--teleport start--><!--teleport end--></span></small></div>
+            </div>
+            <!---->
+            <!----><span class="v-card__underlay"></span>
+          </div>
+        </div>
+        <div data-v-931b96d5="" class="v-col-sm-12 v-col-lg-4 v-col-12">
+          <div data-v-931b96d5="" class="v-card v-theme--light v-card--density-default rounded-lg v-card--variant-elevated text-center">
+            <!---->
+            <div class="v-card__loader">
+              <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                <!---->
+                <div class="v-progress-linear__background"></div>
+                <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                  <div class="v-progress-linear__indeterminate">
+                    <div class="v-progress-linear__indeterminate long"></div>
+                    <div class="v-progress-linear__indeterminate short"></div>
+                  </div>
+                </transition-stub>
+                <!---->
+              </div>
+            </div>
+            <div class="v-card-item">
+              <!---->
+              <div class="v-card-item__content">
+                <div class="v-card-title"><i data-v-931b96d5="" class="mdi-speedometer-medium mdi v-icon notranslate v-theme--light v-icon--size-x-small mr-2 text-medium-emphasis" aria-hidden="true"></i><small data-v-931b96d5="" class="text-medium-emphasis">Average</small></div>
+                <!---->
+                <!---->
+              </div>
+              <!---->
+            </div>
+            <!---->
+            <div data-v-931b96d5="" class="v-card-text"><span data-v-931b96d5="" class="text-h5 average" aria-describedby="v-tooltip-6">&lt;0.01 gwei<!----><!--teleport start--><!--teleport end--></span>
+              <div data-v-931b96d5="" class="mt-2"><small data-v-931b96d5=""><span data-v-931b96d5="" aria-describedby="v-tooltip-7">Base: &lt;0.01<!----><!--teleport start--><!--teleport end--></span> | <span data-v-931b96d5="" aria-describedby="v-tooltip-8">Priority: 0<!----><!--teleport start--><!--teleport end--></span></small></div>
+            </div>
+            <!---->
+            <!----><span class="v-card__underlay"></span>
+          </div>
+        </div>
+        <div data-v-931b96d5="" class="v-col-sm-12 v-col-lg-4 v-col-12">
+          <div data-v-931b96d5="" class="v-card v-theme--light v-card--density-default rounded-lg v-card--variant-elevated text-center">
+            <!---->
+            <div class="v-card__loader">
+              <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                <!---->
+                <div class="v-progress-linear__background"></div>
+                <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                  <div class="v-progress-linear__indeterminate">
+                    <div class="v-progress-linear__indeterminate long"></div>
+                    <div class="v-progress-linear__indeterminate short"></div>
+                  </div>
+                </transition-stub>
+                <!---->
+              </div>
+            </div>
+            <div class="v-card-item">
+              <!---->
+              <div class="v-card-item__content">
+                <div class="v-card-title"><i data-v-931b96d5="" class="mdi-rocket-launch mdi v-icon notranslate v-theme--light v-icon--size-x-small mr-2 text-medium-emphasis" aria-hidden="true"></i><small data-v-931b96d5="" class="text-medium-emphasis">Fast</small></div>
+                <!---->
+                <!---->
+              </div>
+              <!---->
+            </div>
+            <!---->
+            <div data-v-931b96d5="" class="v-card-text"><span data-v-931b96d5="" class="text-h5 fast" aria-describedby="v-tooltip-9">&lt;0.01 gwei<!----><!--teleport start--><!--teleport end--></span>
+              <div data-v-931b96d5="" class="mt-2"><small data-v-931b96d5=""><span data-v-931b96d5="" aria-describedby="v-tooltip-10">Base: &lt;0.01<!----><!--teleport start--><!--teleport end--></span> | <span data-v-931b96d5="" aria-describedby="v-tooltip-11">Priority: 0<!----><!--teleport start--><!--teleport end--></span></small></div>
+            </div>
+            <!---->
+            <!----><span class="v-card__underlay"></span>
+          </div>
+        </div>
+      </div>
+      <div data-v-931b96d5="" class="v-row mt-0">
+        <div data-v-931b96d5="" class="v-col v-col-12 pt-0">
+          <div data-v-931b96d5="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated fill-height">
+            <!---->
+            <div class="v-card__loader">
+              <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                <!---->
+                <div class="v-progress-linear__background"></div>
+                <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                  <div class="v-progress-linear__indeterminate">
+                    <div class="v-progress-linear__indeterminate long"></div>
+                    <div class="v-progress-linear__indeterminate short"></div>
+                  </div>
+                </transition-stub>
+                <!---->
+              </div>
+            </div>
+            <!---->
+            <!---->
+            <div data-v-931b96d5="" class="v-card-title text-primary d-flex justify-space-between"><small data-v-931b96d5="">Additional Info</small><i data-v-931b96d5="" class="mdi-information-outline mdi v-icon notranslate v-theme--light v-icon--size-x-small mb-1" aria-hidden="true" aria-describedby="v-tooltip-12">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i></div>
+            <div data-v-931b96d5="" class="v-card-text">
+              <div data-v-931b96d5="" class="v-row">
+                <div data-v-931b96d5="" class="v-col-lg-4 v-col-12">
+                  <div data-v-931b96d5="" class="v-card v-theme--light text-primary v-card--density-default v-card--variant-tonal ma-0 pa-0">
+                    <!---->
+                    <div class="v-card__loader">
+                      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                        <!---->
+                        <div class="v-progress-linear__background"></div>
+                        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                          <div class="v-progress-linear__indeterminate">
+                            <div class="v-progress-linear__indeterminate long"></div>
+                            <div class="v-progress-linear__indeterminate short"></div>
+                          </div>
+                        </transition-stub>
+                        <!---->
+                      </div>
+                    </div>
+                    <div class="v-card-item">
+                      <!---->
+                      <div class="v-card-item__content">
+                        <div class="v-card-title">
+                          <div data-v-931b96d5="" class="d-flex flex-column"><span data-v-931b96d5="" class="text-caption">AVG BLOCK TIME</span><small data-v-931b96d5="">12s</small></div>
+                        </div>
+                        <!---->
+                        <!---->
+                      </div>
+                      <!---->
+                    </div>
+                    <!---->
+                    <!---->
+                    <!---->
+                    <!----><span class="v-card__underlay"></span>
+                  </div>
+                </div>
+                <div data-v-931b96d5="" class="v-col-lg-4 v-col-12">
+                  <div data-v-931b96d5="" class="v-card v-theme--light text-primary v-card--density-default v-card--variant-tonal ma-0 pa-0">
+                    <!---->
+                    <div class="v-card__loader">
+                      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                        <!---->
+                        <div class="v-progress-linear__background"></div>
+                        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                          <div class="v-progress-linear__indeterminate">
+                            <div class="v-progress-linear__indeterminate long"></div>
+                            <div class="v-progress-linear__indeterminate short"></div>
+                          </div>
+                        </transition-stub>
+                        <!---->
+                      </div>
+                    </div>
+                    <div class="v-card-item">
+                      <!---->
+                      <div class="v-card-item__content">
+                        <div class="v-card-title">
+                          <div data-v-931b96d5="" class="d-flex flex-column"><span data-v-931b96d5="" class="text-caption">AVG BLOCK SIZE</span><small data-v-931b96d5="">5</small></div>
+                        </div>
+                        <!---->
+                        <!---->
+                      </div>
+                      <!---->
+                    </div>
+                    <!---->
+                    <!---->
+                    <!---->
+                    <!----><span class="v-card__underlay"></span>
+                  </div>
+                </div>
+                <div data-v-931b96d5="" class="v-col-lg-4 v-col-12">
+                  <div data-v-931b96d5="" class="v-card v-theme--light text-primary v-card--density-default v-card--variant-tonal ma-0 pa-0">
+                    <!---->
+                    <div class="v-card__loader">
+                      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                        <!---->
+                        <div class="v-progress-linear__background"></div>
+                        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                          <div class="v-progress-linear__indeterminate">
+                            <div class="v-progress-linear__indeterminate long"></div>
+                            <div class="v-progress-linear__indeterminate short"></div>
+                          </div>
+                        </transition-stub>
+                        <!---->
+                      </div>
+                    </div>
+                    <div class="v-card-item">
+                      <!---->
+                      <div class="v-card-item__content">
+                        <div class="v-card-title">
+                          <div data-v-931b96d5="" class="d-flex flex-column"><span data-v-931b96d5="" class="text-caption">AVG UTILIZATION</span><small data-v-931b96d5="">5.00%</small></div>
+                        </div>
+                        <!---->
+                        <!---->
+                      </div>
+                      <!---->
+                    </div>
+                    <!---->
+                    <!---->
+                    <!---->
+                    <!----><span class="v-card__underlay"></span>
+                  </div>
+                </div><small data-v-931b96d5="" class="ml-4 text-medium-emphasis">Last updated at 10:23:26pm (block 10,000,000).</small>
+              </div>
+            </div>
+            <!---->
+            <!----><span class="v-card__underlay"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div data-v-931b96d5="" class="v-col-lg-6 v-col-12">
+      <div data-v-931b96d5="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!---->
+        <div data-v-931b96d5="" class="v-card-text">
+          <div data-v-931b96d5="" class="v-slide-group v-slide-group--mobile v-chip-group v-theme--light pt-0 mb-1" tabindex="0">
+            <!---->
+            <div class="v-slide-group__container">
+              <div class="v-slide-group__content"><span data-v-931b96d5="" class="v-chip v-chip--link v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal text-primary" draggable="false" tabindex="0"><span class="v-chip__overlay"></span><span class="v-chip__underlay"></span>
+                <!---->
+                <!---->
+                <div class="v-chip__content" data-no-activator="">Gas Price</div>
+                <!---->
+                <!----></span><span data-v-931b96d5="" class="v-chip v-chip--link v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal" draggable="false" tabindex="0"><span class="v-chip__overlay"></span><span class="v-chip__underlay"></span>
+                <!---->
+                <!---->
+                <div class="v-chip__content" data-no-activator="">Gas Limit</div>
+                <!---->
+                <!----></span><span data-v-931b96d5="" class="v-chip v-chip--link v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal" draggable="false" tabindex="0"><span class="v-chip__overlay"></span><span class="v-chip__underlay"></span>
+                <!---->
+                <!---->
+                <div class="v-chip__content" data-no-activator="">Utilization</div>
+                <!---->
+                <!----></span>
+              </div>
+            </div>
+            <!---->
+          </div>
+          <multi-line-chart-stub data-v-931b96d5="" xlabels="2025-02-17,2025-02-16,2025-02-15" data="[object Object],[object Object],[object Object]" tokensymbol="gwei" floating="true"></multi-line-chart-stub>
+          <!--v-if-->
+          <!--v-if-->
+        </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
+      </div>
+    </div>
+  </div>
+  <div data-v-931b96d5="" class="v-row">
+    <div data-v-931b96d5="" class="v-col-md-6 v-col-12">
+      <gas-consumers-stub data-v-931b96d5=""></gas-consumers-stub>
+    </div>
+    <div data-v-931b96d5="" class="v-col-md-6 v-col-12">
+      <gas-spender-stub data-v-931b96d5=""></gas-spender-stub>
+    </div>
+  </div>
+</div>"
+`;
+
+exports[`GasTracker.vue > Should only display gas spender & consumers if no data is available 1`] = `
+"<div data-v-931b96d5="" class="v-container v-container--fluid v-locale--is-ltr">
+  <h2 data-v-931b96d5="" class="text-center text-primary my-6"> Gas Tracker </h2><small data-v-931b96d5="" class="text-medium-emphasis">Next update in <b data-v-931b96d5="" class="text-primary">10s</b></small>
+  <!--v-if-->
+  <div data-v-931b96d5="" class="v-row">
+    <div data-v-931b96d5="" class="v-col-md-6 v-col-12">
+      <gas-consumers-stub data-v-931b96d5=""></gas-consumers-stub>
+    </div>
+    <div data-v-931b96d5="" class="v-col-md-6 v-col-12">
+      <gas-spender-stub data-v-931b96d5=""></gas-spender-stub>
+    </div>
+  </div>
+</div>"
+`;

@@ -109,7 +109,7 @@ exports[`TokenTransfers.vue > Should display erc721 token transfers 1`] = `
       <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field v-select v-select--single v-select--selected">
         <!---->
         <div class="v-input__control">
-          <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--no-label v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="v-menu-5">
+          <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--no-label v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="v-menu-5">
             <div class="v-field__overlay"></div>
             <div class="v-field__loader">
               <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
@@ -127,10 +127,8 @@ exports[`TokenTransfers.vue > Should display erc721 token transfers 1`] = `
             </div>
             <!---->
             <div class="v-field__field" data-no-activator="">
-              <!----><label class="v-label v-field-label" for="input-3">
-                <!---->
-                <!---->
-              </label>
+              <!---->
+              <!---->
               <!---->
               <div class="v-field__input" data-no-activator="">
                 <!---->
@@ -280,7 +278,7 @@ exports[`TokenTransfers.vue > Should display fomatted amounts if info is present
       <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field v-select v-select--single v-select--selected">
         <!---->
         <div class="v-input__control">
-          <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--no-label v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="v-menu-5">
+          <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--no-label v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="v-menu-5">
             <div class="v-field__overlay"></div>
             <div class="v-field__loader">
               <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
@@ -298,10 +296,8 @@ exports[`TokenTransfers.vue > Should display fomatted amounts if info is present
             </div>
             <!---->
             <div class="v-field__field" data-no-activator="">
-              <!----><label class="v-label v-field-label" for="input-3">
-                <!---->
-                <!---->
-              </label>
+              <!---->
+              <!---->
               <!---->
               <div class="v-field__input" data-no-activator="">
                 <!---->

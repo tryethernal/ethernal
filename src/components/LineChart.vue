@@ -4,12 +4,7 @@
             <v-row>
                 <v-col cols="10">{{ title }}</v-col>
                 <v-col cols="2" :align="'end'" v-if="isZoomed">
-                    <v-tooltip location="top">
-                        <template v-slot:activator="{ props }">
-                            <v-btn v-bind="props" color="primary" dense variant="outlined" @click="resetZoom()" size="small"><v-icon size="small">mdi-restore</v-icon></v-btn>
-                        </template>
-                        Reset Zoom
-                    </v-tooltip>
+                    <v-btn v-tooltip="'Reset Zoom'" color="primary" dense variant="outlined" @click="resetZoom()" size="small"><v-icon size="small">mdi-restore</v-icon></v-btn>
                 </v-col>
             </v-row>
         </template>
@@ -17,10 +12,9 @@
             <LineChartGenerator
                 ref="chart"
                 :style="styles"
-                :chart-options="options"
-                :chart-data="{ labels: xLabels, datasets: [{ data }]}"
+                :options="options"
+                :data="{ labels: xLabels, datasets: [{ data }]}"
                 :chart-id="'line-chart'"
-                :dataset-id-key="'transactionVolume'"
                 :plugins="plugins"
             />
         </div>
@@ -41,7 +35,8 @@ import {
     LinearScale,
     CategoryScale,
     PointElement,
-    Filler
+    Filler,
+    Legend
 } from 'chart.js';
 
 ChartJS.register(
@@ -52,6 +47,7 @@ ChartJS.register(
     CategoryScale,
     PointElement,
     Filler,
+    Legend,
     zoomPlugin
 );
 
@@ -61,7 +57,7 @@ const DATE_FORMAT = 'MM/DD';
 
 export default {
     name: 'LineChart',
-    props: ['title', 'xLabels', 'data', 'tooltipUnit', 'tokenSymbol', 'floating'],
+    props: ['title', 'xLabels', 'data', 'tooltipUnit', 'tokenSymbol', 'floating', 'yAxisSymbol'],
     components: {
         LineChartGenerator
     },
@@ -106,7 +102,7 @@ export default {
     methods: {
         hex2rgba,
         resetZoom() {
-            this.$refs.chart.getCurrentChart().resetZoom();
+            this.$refs.chart.chart.resetZoom();
             this.isZoomed = false;
         },
     },
@@ -131,7 +127,7 @@ export default {
             return {
                 extra: {
                     tokenSymbol: this.tokenSymbol,
-                    tooltipUnit: this.tooltipUnit
+                    tooltipUnit: this.tooltipUnit,
                 },
                 responsive: true,
                 maintainAspectRatio: false,
@@ -162,19 +158,26 @@ export default {
                         grace: '15%',
                         suggestedMax: this.floating ? null : 5,
                         grid: {
-                            drawBorder: false,
                             color: hex2rgba(theme.current.value.colors.primary, 0.6)
+                        },
+                        border: {
+                            display: false
                         },
                         ticks: {
                             precision: this.floating ? null : 0,
                             autoSkip: false,
-                            maxTicksLimit: 6
+                            maxTicksLimit: 6,
+                            callback: (value) => {
+                                return this.yAxisSymbol ? `${value}${this.yAxisSymbol}` : value.toLocaleString();
+                            }
                         }
                     },
                     x: {
                         grid: {
                             display: false,
-                            drawBorder: false
+                        },
+                        border: {
+                            display: false
                         },
                         ticks: {
                             callback: (_value, index) => {
@@ -184,6 +187,9 @@ export default {
                     }
                 },
                 plugins: {
+                    legend: {
+                        display: false
+                    },
                     tooltip: {
                         backgroundColor: theme.current.value.colors.primary,
                         displayColors: false,
@@ -192,7 +198,7 @@ export default {
                         mode: 'index',
                         bodyFont: { weight: 'bold' },
                         callbacks: {
-                            title() {},
+                            title() { return '' },
                             label: (context) => {
                                 const value = context.parsed.y < 1 ? context.parsed.y : ethers.utils.commify(context.parsed.y);
                                 const date = moment(this.xLabels[context.parsed.x]).format(DATE_FORMAT);

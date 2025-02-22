@@ -2,6 +2,12 @@ const ethers = require('ethers');
 
 const DEFAULT_PROMISE_TIMEOUT = 10 * 1000;
 
+const avg = (arr) => {
+    const sum = arr.reduce((a, v) => a + v);
+    return Math.round(sum/arr.length);
+};
+
+
 const sleep = (ms) => {
     return new Promise((r) => setTimeout(r, ms))
 };
@@ -181,5 +187,6 @@ module.exports = {
     processRawRpcObject,
     formatErc721Metadata,
     validateBNString,
-    sleep
+    sleep,
+    avg
 };

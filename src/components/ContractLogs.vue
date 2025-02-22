@@ -4,7 +4,7 @@
             class="hide-table-count"
             :loading="loading"
             :items="logs"
-            :items-length="0"
+            :items-length="logCount"
             :sort-by="[{ key: currentOptions.orderBy, order: currentOptions.order }]"
             :must-sort="true"
             :sort-desc="true"

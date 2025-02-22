@@ -2,6 +2,75 @@ const Web3 = require('web3');
 const ethers = require('ethers');
 // const BigNumber = ethers.BigNumber;
 
+export const getBestContrastingColor = (background, themeColors) => {
+    const colorValues = {
+        [themeColors.primary]: 'primary',
+        [themeColors.accent]: 'accent'
+    }
+    const colors = Object.keys(colorValues);
+
+    // Convert hex to RGB
+    const hexToRgb = (hex) => {
+        // Handle hex with opacity (#RRGGBBAA)
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})?$/i.exec(hex);
+        return result ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16),
+            a: result[4] ? parseInt(result[4], 16) / 255 : 1
+        } : null;
+    };
+
+    // Calculate relative luminance
+    const getLuminance = (r, g, b) => {
+        const a = [r, g, b].map(v => {
+            v /= 255;
+            return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+        });
+        return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
+    };
+
+    // Calculate contrast ratio
+    const getContrastRatio = (l1, l2) => {
+        const lighter = Math.max(l1, l2);
+        const darker = Math.min(l1, l2);
+        return (lighter + 0.05) / (darker + 0.05);
+    };
+
+    // Validate inputs
+    const bg = hexToRgb(background);
+    if (!bg) {
+        console.error(`Invalid background color: ${background}`);
+        return null;
+    }
+
+    if (!Array.isArray(colors) || colors.length === 0) {
+        console.error('Colors array is empty or invalid.');
+        return null;
+    }
+
+    const bgLuminance = getLuminance(bg.r, bg.g, bg.b);
+    let bestContrast = 0;
+    let bestColor = colors[0]; // Default to first color
+
+    colors.forEach(color => {
+        const rgb = hexToRgb(color);
+        if (!rgb) {
+            console.error(`Invalid color: ${color}`);
+            return;
+        }
+        const luminance = getLuminance(rgb.r, rgb.g, rgb.b);
+        const contrast = getContrastRatio(bgLuminance, luminance);
+
+        if (contrast > bestContrast) {
+            bestContrast = contrast;
+            bestColor = color;
+        }
+    });
+
+    return colorValues[bestColor];
+};
+
 // https://stackoverflow.com/a/22885197/1373409
 export const getSignificantDigitCount = (n) => {
     const log10 = Math.log(10);

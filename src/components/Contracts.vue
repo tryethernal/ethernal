@@ -2,7 +2,7 @@
     <v-container fluid>
         <v-card>
             <v-card-text>
-                <template v-if="userStore.isAdmin">
+                <template v-if="envStore.isAdmin">
                     <v-alert class="mb-4" v-if="removedContract" density="compact" text type="success">Contract at address <b>{{ removedContract }}</b> has been successfully removed.</v-alert>
                     <v-alert class="mb-4" density="compact" text v-show="!canImport" type="warning">Free plan users are limited to 10 synced contracts. Remove some contracts or <Upgrade-Link @goToBilling="goToBilling" :emit="true"><span class="text-white text-decoration-underline font-weight-bold">upgrade</span></Upgrade-Link> to the Premium plan for more.</v-alert>
                     <Import-Contract-Modal ref="importContractModal" />
@@ -12,7 +12,7 @@
                     class="hide-table-count"
                     :loading="loading"
                     :items="contracts"
-                    :items-length="0"
+                    :items-length="contractCount"
                     :headers="headers"
                     :sort-by="currentOptions.sortBy"
                     :must-sort="true"
@@ -27,7 +27,7 @@
                     ]"
                     item-key="address"
                     @update:options="getContracts">
-                    <template v-slot:top v-if="userStore.isAdmin">
+                    <template v-slot:top v-if="envStore.isAdmin">
                         <div class="d-flex justify-end">
                             <v-btn max-width="175" size="small" variant="flat" color="primary" class="mr-2" @click="openImportContractModal()">
                                 <v-icon size="small" class="mr-1">mdi-import</v-icon>Import Contract
@@ -57,7 +57,7 @@
                             </v-tooltip>
                         </template>
                     </template>
-                    <template v-slot:item.actions="{ item }" v-if="userStore.isAdmin">
+                    <template v-slot:item.actions="{ item }" v-if="envStore.isAdmin">
                         <v-btn variant="text" icon="mdi-delete" color="error" size="x-small" @click="openRemoveContractConfirmationModal(item.address)"></v-btn>
                     </template>
                 </v-data-table-server>
@@ -69,6 +69,7 @@
 import { mapStores } from 'pinia';
 import { useCurrentWorkspaceStore } from '@/stores/currentWorkspace';
 import { useUserStore } from '@/stores/user';
+import { useEnvStore } from '@/stores/env';
 import ImportContractModal from './ImportContractModal.vue';
 import HashLink from './HashLink.vue';
 import UpgradeLink from './UpgradeLink.vue';
@@ -116,7 +117,7 @@ export default {
         destroyedContractPusherHandler: null
     }),
     mounted() {
-        if (this.userStore.isAdmin)
+        if (this.envStore.isAdmin)
             this.headers.push({ text: '', value: 'remove' });
 
         this.newContractPusherHandler = this.$pusher.onNewContract(() => this.getContracts(this.currentOptions), this);
@@ -142,7 +143,9 @@ export default {
             this.$server.getContracts({ page, itemsPerPage, orderBy: sortBy[0].key, order: sortBy[0].order })
                 .then(({ data }) => {
                     this.contracts = data.items;
-                    this.contractCount = data.total;
+                    this.contractCount = data.items.length == this.currentOptions.itemsPerPage ?
+                        (this.currentOptions.page * data.items.length) + 1 :
+                        this.currentOptions.page * data.items.length;
                 })
                 .catch(console.log)
                 .finally(() => this.loading = false);
@@ -164,7 +167,8 @@ export default {
     computed: {
         ...mapStores(
             useCurrentWorkspaceStore,
-            useUserStore
+            useUserStore,
+            useEnvStore
         ),
         canImport() {
             return this.currentWorkspaceStore.public || this.contracts.length < 10 || this.userStore.plan != 'free';

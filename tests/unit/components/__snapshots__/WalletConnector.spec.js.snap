@@ -1,0 +1,27 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`WalletConnector.vue > Should show a loading state 1`] = `
+"<div><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--rounded v-btn--size-small v-btn--variant-outlined"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span><span class="v-btn__prepend"><i class="mdi-wallet mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span><span class="v-btn__content" data-no-activator="">Connecting...</span>
+    <!---->
+    <!---->
+  </button></div>"
+`;
+
+exports[`WalletConnector.vue > Should show an invalid network warning 1`] = `
+"<div><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--rounded v-btn--size-small v-btn--variant-outlined"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span><span class="v-btn__prepend"><span><i class="mdi-alert mdi v-icon notranslate v-theme--light v-icon--size-default text-warning v-icon--clickable" role="button" aria-hidden="false" tabindex="0" aria-describedby="v-tooltip-1"></i><!--teleport start--><!--teleport end--><span class="ml-1 mr-1">|</span></span><span>1 ETH | </span></span><span class="v-btn__content" data-no-activator="">0x1bF8...92AA </span><span class="v-btn__append"> | <i class="mdi-logout mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--clickable ml-1" role="button" aria-hidden="false" tabindex="0"></i></span>
+    <!---->
+  </button></div>"
+`;
+
+exports[`WalletConnector.vue > Should show the address & balance 1`] = `
+"<div><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--rounded v-btn--size-small v-btn--variant-outlined"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span><span class="v-btn__prepend"><!--v-if--><span>1 ETH | </span></span><span class="v-btn__content" data-no-activator="">0x1bF8...92AA </span><span class="v-btn__append"> | <i class="mdi-logout mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--clickable ml-1" role="button" aria-hidden="false" tabindex="0"></i></span>
+    <!---->
+  </button></div>"
+`;
+
+exports[`WalletConnector.vue > Should wallet connection button 1`] = `
+"<div><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--rounded v-btn--size-small v-btn--variant-outlined"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span><span class="v-btn__prepend"><i class="mdi-wallet mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span><span class="v-btn__content" data-no-activator="">Connect Wallet</span>
+    <!---->
+    <!---->
+  </button></div>"
+`;

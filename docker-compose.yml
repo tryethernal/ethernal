@@ -73,6 +73,11 @@ services:
     ports: []
     command: nodemon workers/lowPriority.js
 
+  process_historical_blocks:
+    <<: *backend
+    ports: []
+    command: nodemon workers/processHistoricalBlocks.js
+
   front:
     extra_hosts:
       - "app.ethernal.local:0.0.0.0"
@@ -83,6 +88,7 @@ services:
       - "8080:8080"
     volumes:
       - ./public:/app/public
+      - ./index.html:/app/index.html
       - ./src:/app/src
       - type: bind
         source: package.json
@@ -109,7 +115,7 @@ services:
     env_file: pm2-server/.env
 
   soketi:
-    image: quay.io/soketi/soketi:1.4-16-debian
+    image: quay.io/soketi/soketi:1.6.1-16-debian
     ports:
       - "6001:6001"
     env_file: run/.env

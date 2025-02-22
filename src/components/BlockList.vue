@@ -3,7 +3,7 @@
         class="hide-table-count"
         :loading="loading"
         :items="blocks"
-        :items-length="0"
+        :items-length="blockCount"
         :sort-by="currentOptions.sortBy"
         :must-sort="true"
         :hide-default-footer="dense"
