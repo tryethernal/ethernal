@@ -161,7 +161,7 @@ module.exports = (sequelize, DataTypes) => {
             return [];
 
         const earliestTimestamp = +new Date(from) == 0 ? earliestBlock.timestamp : new Date(from);
-        
+
         return sequelize.query(`
             WITH time_difference AS (
                 SELECT

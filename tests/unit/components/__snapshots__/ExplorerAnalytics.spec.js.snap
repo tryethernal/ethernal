@@ -2,7 +2,7 @@
 
 exports[`ExplorerAnalytics.vue > Should display charts 1`] = `
 "<div class="v-container v-container--fluid v-locale--is-ltr">
-  <date-range-selector-stub initialrange="14"></date-range-selector-stub>
+  <date-range-selector-stub initialrange="7"></date-range-selector-stub>
   <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated" style="height: 100%;">
     <!---->
     <div class="v-card__loader">
@@ -55,7 +55,7 @@ exports[`ExplorerAnalytics.vue > Should display charts 1`] = `
 
 exports[`ExplorerAnalytics.vue > Should display gas analytics 1`] = `
 "<div class="v-container v-container--fluid v-locale--is-ltr">
-  <date-range-selector-stub initialrange="14"></date-range-selector-stub>
+  <date-range-selector-stub initialrange="7"></date-range-selector-stub>
   <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated" style="height: 100%;">
     <!---->
     <div class="v-card__loader">
