@@ -90,7 +90,7 @@ exports[`Block.vue > Should show a message if the block is syncing 1`] = `
     </div>
     <!---->
     <!---->
-    <transactions-list-stub blocknumber="1" withcount="true"></transactions-list-stub>
+    <transactions-list-stub blocknumber="1" dense="false" withcount="true"></transactions-list-stub>
     <!---->
     <!----><span class="v-card__underlay"></span>
   </div>
@@ -153,7 +153,7 @@ exports[`Block.vue > Should show the block component 1`] = `
     </div>
     <!---->
     <!---->
-    <transactions-list-stub blocknumber="1" withcount="true"></transactions-list-stub>
+    <transactions-list-stub blocknumber="1" dense="false" withcount="true"></transactions-list-stub>
     <!---->
     <!----><span class="v-card__underlay"></span>
   </div>
