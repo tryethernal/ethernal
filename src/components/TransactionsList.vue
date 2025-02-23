@@ -70,7 +70,7 @@
             </template>
         </template>
         <template v-slot:item.blockNumber="{ item }">
-            <router-link style="text-decoration: none;" :to="'/block/' + item.blockNumber" :contract="item.contract">{{ commify(item.blockNumber) }}</router-link>
+            <router-link style="text-decoration: none;" :to="'/block/' + item.blockNumber" :contract="item.contract">{{ ethers.utils.commify(item.blockNumber) }}</router-link>
         </template>
         <template v-slot:item.to="{ item }">
             <v-chip size="x-small" class="mr-2" v-if="item.to && item.to === currentAddress">self</v-chip>
@@ -84,149 +84,159 @@
         </template>
     </v-data-table-server>
 </template>
+<script setup>
+import { ethers } from 'ethers';
+import { defineProps, shallowRef, ref, onMounted, onUnmounted, inject, defineEmits, watch } from 'vue';
 
-<script>
-const moment = require('moment');
-const ethers = require('ethers');
-import { getGasPriceFromTransaction } from '../lib/utils';
-import { mapStores } from 'pinia';
 import HashLink from './HashLink.vue';
-import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
 
+import { useCurrentWorkspaceStore } from '@/stores/currentWorkspace';
+import { getGasPriceFromTransaction } from '@/lib/utils';
+
+const props = defineProps({
+    currentAddress: String,
+    dense: Boolean,
+    blockNumber: String,
+    address: String,
+    withCount: Boolean
+});
+const emit = defineEmits(['listUpdated']);
+
+const currentWorkspaceStore = useCurrentWorkspaceStore();
+const $server = inject('$server');
+const $pusher = inject('$pusher');
+
+const currentOptions = ref({ page: 1, itemsPerPage: 10, sortBy: [{ key: 'timestamp', order: 'desc' }] });
+const transactions = shallowRef([]);
+const transactionCount = ref(0);
+const loading = ref(false);
+const lastUpdatedAt = ref(0);
+let pusherUnsubscribe = ref(null);
+const headers = shallowRef([]);
 const DEBOUNCING_DELAY = 3000;
 
-export default {
-    name: 'TransactionsList',
-    props: ['currentAddress', 'dense', 'blockNumber', 'address', 'withCount'],
-    components: {
-        HashLink
-    },
-    data: () => ({
-        headers: [],
-        currentOptions: { page: 1, itemsPerPage: 10, sortBy: [{ key: 'timestamp', order: 'desc' }] },
-        transactions: [],
-        transactionCount: 0,
-        loading: false,
-        lastUpdatedAt: 0,
-        debounced: false
-    }),
-    mounted() {
-        this.currentOptions.orderBy = this.blockNumber ? 'timestamp' : 'blockNumber';
+const getTransactions = ({ page, itemsPerPage, sortBy }) => {
+    if (loading.value)
+        return;
 
-        this.pusherUnsubscribe = this.$pusher.onNewTransaction(transaction => {
-            if (this.blockNumber) {
-                if (transaction.blockNumber == this.blockNumber)
-                    this.getTransactions(this.currentOptions);
-            }
-            else if (this.address) {
-                if (transaction.from == this.address || transaction.to == this.address)
-                    this.getTransactions(this.currentOptions);
-            }
-            else
-                this.getTransactions(this.currentOptions);
-        }, this, this.address);
+    lastUpdatedAt.value = Date.now();
+    loading.value = true;
 
-        if (this.dense)
-            this.headers = [
-                { title: 'Txn Hash', key: 'hash', align: 'start' },
-                { title: 'Mined On', key: 'timestamp' },
-                { title: 'From', key: 'from' }
-            ];
+    if (!page || !itemsPerPage || !sortBy || !sortBy.length)
+        return loading.value = false;
+
+    currentOptions.value = { page, itemsPerPage, sortBy };
+
+    const query = props.blockNumber ?
+        $server.getBlockTransactions(props.blockNumber, { page, itemsPerPage, orderBy: sortBy[0].key, order: sortBy[0].order }, !props.dense && !!props.withCount) :
+            props.address ?
+                $server.getAddressTransactions(props.address, { page, itemsPerPage, orderBy: sortBy[0].key, order: sortBy[0].order }, !props.dense && !!props.withCount) :
+                $server.getTransactions({ page, itemsPerPage, orderBy: sortBy[0].key, order: sortBy[0].order }, !props.dense && !!props.withCount);
+
+    query.then(({ data }) => {
+        transactions.value = data.items;
+        if (data.total)
+            transactionCount.value = data.total;
         else
-            this.headers = [
-                { title: 'Txn Hash', key: 'hash', align: 'start' },
-                { title: 'Method', key: 'method', sortable: false },
-                { title: 'Block', key: 'blockNumber', sortable: !this.blockNumber },
-                { title: 'Mined On', key: 'timestamp' },
-                { title: 'From', key: 'from' },
-                { title: 'To', key: 'to' },
-                { title: 'Value', key: 'value' },
-                { title: 'Fee', key: 'fee', sortable: false }
-            ];
-    },
-    destroyed() {
-        this.pusherUnsubscribe();
-    },
-    methods: {
-        getGasPriceFromTransaction,
-        moment,
-        commify: ethers.utils.commify,
-        rowClasses(item) {
-            if (item.state == 'syncing')
-                return 'isSyncing'
-        },
-        txStatus(item) {
-            if (!item) return 'unknown';
+            transactionCount.value = data.items.length == currentOptions.value.itemsPerPage ?
+                (currentOptions.value.page * data.items.length) + 1 :
+                currentOptions.value.page * data.items.length;
 
-            if (item.state == 'syncing') return 'syncing';
+        emit('listUpdated');
+    })
+    .catch(console.log)
+    .finally(() => loading.value = false);
+};
 
-            if (!item.receipt) return 'unknown';
+const rowClasses = (item) => {
+    if (item.state == 'syncing')
+        return 'isSyncing'
+};
 
-            const receipt = item.receipt;
-            if (receipt.status !== null && receipt.status !== undefined)
-                return receipt.status ? 'succeeded' : 'failed';
+const getMethodName = (transaction) => {
+    if (!transaction.methodDetails) return getSighash(transaction);
+    return transaction.methodDetails.name ? transaction.methodDetails.name : getSighash(transaction);
+};
 
-            if (receipt.root && receipt.root != '0x' && parseInt(receipt.cumulativeGasUsed) >= parseInt(receipt.gasUsed))
-                return 'succeeded';
+const getMethodLabel = (methodDetails) => {
+    if (!methodDetails) return null;
+    return methodDetails.label ? methodDetails.label : null;
+};
 
-            return 'failed';
-        },
-        getTransactions({ page, itemsPerPage, sortBy }) {
-            this.loading = true;
-            if (!this.lastUpdatedAt)
-                this.lastUpdatedAt = Date.now();
-            else if (this.lastUpdatedAt - DEBOUNCING_DELAY < Date.now() && !this.debounced && page == this.currentOptions.page && itemsPerPage == this.currentOptions.itemsPerPage && sortBy == this.currentOptions.sortBy) {
-                this.debounced = true;
-                return setTimeout(() => {
-                    this.debounced = false;
-                }, DEBOUNCING_DELAY);
+const getSighash = (transaction) => {
+    return transaction.data && transaction.data != '0x' ? transaction.data.slice(0, 10) : null;
+};
+
+const txStatus = (item) => {
+    if (!item) return 'unknown';
+
+    if (item.state == 'syncing') return 'syncing';
+
+    if (!item.receipt) return 'unknown';
+
+    const receipt = item.receipt;
+    if (receipt.status !== null && receipt.status !== undefined)
+        return receipt.status ? 'succeeded' : 'failed';
+
+    if (receipt.root && receipt.root != '0x' && parseInt(receipt.cumulativeGasUsed) >= parseInt(receipt.gasUsed))
+        return 'succeeded';
+
+    return 'failed';
+};
+
+watch(currentOptions, (newOptions, oldOptions) => {
+    if (JSON.stringify(newOptions) !== JSON.stringify(oldOptions))
+        getTransactions(newOptions);
+}, { deep: false });
+
+onMounted(() => {
+    currentOptions.value.sortBy = [{ key: props.blockNumber ? 'timestamp' : 'blockNumber', order: 'desc' }];
+
+    if (props.dense)
+        headers.value = [
+            { title: 'Txn Hash', key: 'hash', align: 'start' },
+            { title: 'Mined On', key: 'timestamp' },
+            { title: 'From', key: 'from' }
+        ];
+    else
+        headers.value = [
+            { title: 'Txn Hash', key: 'hash', align: 'start' },
+            { title: 'Method', key: 'method', sortable: false },
+            { title: 'Block', key: 'blockNumber', sortable: !props.blockNumber },
+            { title: 'Mined On', key: 'timestamp' },
+            { title: 'From', key: 'from' },
+            { title: 'To', key: 'to' },
+            { title: 'Value', key: 'value' },
+            { title: 'Fee', key: 'fee', sortable: false }
+        ];
+
+    pusherUnsubscribe.value = $pusher.onNewTransaction(transaction => {
+        if (lastUpdatedAt.value && Date.now() - lastUpdatedAt.value < DEBOUNCING_DELAY)
+            return;
+
+        if (props.blockNumber) {
+            if (transaction.blockNumber == props.blockNumber) {
+                getTransactions(currentOptions.value);
             }
-
-            if (!page || !itemsPerPage || !sortBy || !sortBy.length)
-                return this.loading = false;
-
-            this.currentOptions = {
-                page,
-                itemsPerPage,
-                sortBy
-            };
-
-            const query = this.blockNumber ?
-                this.$server.getBlockTransactions(this.blockNumber, { page, itemsPerPage, orderBy: sortBy[0].key, order: sortBy[0].order }, !this.dense && !!this.withCount) :
-                    this.address ?
-                        this.$server.getAddressTransactions(this.address, { page, itemsPerPage, orderBy: sortBy[0].key, order: sortBy[0].order }, !this.dense && !!this.withCount) :
-                        this.$server.getTransactions({ page, itemsPerPage, orderBy: sortBy[0].key, order: sortBy[0].order }, !this.dense && !!this.withCount);
-
-            query.then(({ data }) => {
-                this.transactions = data.items;
-                if (data.total)
-                    this.transactionCount = data.total;
-                else
-                    this.transactionCount = data.items.length == this.currentOptions.itemsPerPage ?
-                        (this.currentOptions.page * data.items.length) + 1 :
-                        this.currentOptions.page * data.items.length;
-
-                        this.$emit('listUpdated');
-            })
-            .catch(console.log)
-            .finally(() => this.loading = false);
-        },
-        getMethodName(transaction) {
-            if (!transaction.methodDetails) return this.getSighash(transaction);
-            return transaction.methodDetails.name ? transaction.methodDetails.name : this.getSighash(transaction);
-        },
-        getMethodLabel(methodDetails) {
-            if (!methodDetails) return null;
-            return methodDetails.label ? methodDetails.label : null;
-        },
-        getSighash(transaction) {
-            return transaction.data && transaction.data != '0x' ? transaction.data.slice(0, 10) : null;
         }
-    },
-    computed: {
-        ...mapStores(useCurrentWorkspaceStore)
+        else if (props.address) {
+            if (transaction.from == props.address || transaction.to == props.address) {
+                getTransactions(currentOptions.value);
+            }
+        }
+        else {
+            getTransactions(currentOptions.value);
+        }
+    }, props.address);
+});
+
+onUnmounted(() => {
+    if (pusherUnsubscribe.value) {
+        pusherUnsubscribe.value();
+        pusherUnsubscribe.value = null;
     }
-}
+});
+
 </script>
 <style scoped>
 /deep/ .isSyncing {

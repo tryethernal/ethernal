@@ -1,5 +1,5 @@
 import 'vuetify/styles'
-import { createApp } from 'vue';
+import { createApp } from 'vue/dist/vue.esm-bundler';
 import * as Sentry from "@sentry/vue";
 
 import vuetify from './plugins/vuetify';

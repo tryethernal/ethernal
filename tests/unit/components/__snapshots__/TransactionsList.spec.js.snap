@@ -1,7 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`TransactionsList.vue > Should display a message if no transactions 1`] = `
-"<div data-v-40c8aafa="" class="v-table v-table--has-top v-table--has-bottom v-theme--light v-table--density-default v-data-table hide-table-count" item-key="hash">
+"<div data-v-40c8aafa="" class="v-table v-table--has-top v-table--has-bottom v-theme--light v-table--density-default v-data-table hide-table-count" dense="false" item-key="hash">
   <!---->
   <div class="v-table__wrapper">
     <table>
@@ -19,13 +19,13 @@ exports[`TransactionsList.vue > Should display a message if no transactions 1`] 
               <!---->
             </div>
           </th>
-          <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th" colspan="1" rowspan="1">
-            <div class="v-data-table-header__content"><span>Block</span><i class="mdi-arrow-up mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
+          <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th--sorted v-data-table__th" colspan="1" rowspan="1">
+            <div class="v-data-table-header__content"><span>Block</span><i class="mdi-arrow-down mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
               <!---->
             </div>
           </th>
-          <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th--sorted v-data-table__th" colspan="1" rowspan="1">
-            <div class="v-data-table-header__content"><span>Mined On</span><i class="mdi-arrow-down mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
+          <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th" colspan="1" rowspan="1">
+            <div class="v-data-table-header__content"><span>Mined On</span><i class="mdi-arrow-up mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
               <!---->
             </div>
           </th>
@@ -151,7 +151,7 @@ exports[`TransactionsList.vue > Should display a message if no transactions 1`] 
 `;
 
 exports[`TransactionsList.vue > Should display the list 1`] = `
-"<div data-v-40c8aafa="" class="v-table v-table--has-top v-table--has-bottom v-theme--light v-table--density-default v-data-table hide-table-count" item-key="hash" transactions="[object Object],[object Object]">
+"<div data-v-40c8aafa="" class="v-table v-table--has-top v-table--has-bottom v-theme--light v-table--density-default v-data-table hide-table-count" dense="false" item-key="hash" transactions="[object Object],[object Object]">
   <!---->
   <div class="v-table__wrapper">
     <table>
@@ -169,13 +169,13 @@ exports[`TransactionsList.vue > Should display the list 1`] = `
               <!---->
             </div>
           </th>
-          <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th" colspan="1" rowspan="1">
-            <div class="v-data-table-header__content"><span>Block</span><i class="mdi-arrow-up mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
+          <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th--sorted v-data-table__th" colspan="1" rowspan="1">
+            <div class="v-data-table-header__content"><span>Block</span><i class="mdi-arrow-down mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
               <!---->
             </div>
           </th>
-          <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th--sorted v-data-table__th" colspan="1" rowspan="1">
-            <div class="v-data-table-header__content"><span>Mined On</span><i class="mdi-arrow-down mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
+          <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th" colspan="1" rowspan="1">
+            <div class="v-data-table-header__content"><span>Mined On</span><i class="mdi-arrow-up mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
               <!---->
             </div>
           </th>
