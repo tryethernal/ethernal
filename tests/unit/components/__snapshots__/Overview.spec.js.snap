@@ -91,7 +91,7 @@ exports[`Overview.vue > Should load the overview page 1`] = `
           <!---->
         </div>
         <!---->
-        <transactions-list-stub dense="true" class="px-4 pb-4"></transactions-list-stub>
+        <transactions-list-stub dense="true" withcount="false" class="px-4 pb-4"></transactions-list-stub>
         <!---->
         <!----><span class="v-card__underlay"></span>
       </div>

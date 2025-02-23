@@ -2,6 +2,6 @@
 
 exports[`AddressTransactionsList.vue > Should display the list 1`] = `
 "<div class="v-container v-container--fluid v-locale--is-ltr">
-  <transactions-list-stub address="0x123" currentaddress="0x123"></transactions-list-stub>
+  <transactions-list-stub address="0x123" currentaddress="0x123" dense="false" withcount="false"></transactions-list-stub>
 </div>"
 `;

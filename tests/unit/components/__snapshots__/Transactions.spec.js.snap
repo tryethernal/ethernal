@@ -21,7 +21,7 @@ exports[`Transactions.vue > Should display the list 1`] = `
     <!---->
     <!---->
     <div class="v-card-text">
-      <transactions-list-stub></transactions-list-stub>
+      <transactions-list-stub dense="false" withcount="false"></transactions-list-stub>
     </div>
     <!---->
     <!----><span class="v-card__underlay"></span>

@@ -72,7 +72,8 @@ export default {
         this.headers.push({ title: 'Transaction Count', key: 'transactionNumber', sortable: false });
     },
     destroyed() {
-        this.pusherChannelHandler.unbind(null, null, this);
+        this.pusherChannelHandler.unbind();
+        this.pusherChannelHandler = null;
     },
     methods: {
         commify: ethers.utils.commify,

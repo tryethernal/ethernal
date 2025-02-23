@@ -132,5 +132,6 @@ export default {
         }
 
         app.config.globalProperties.$pusher = $pusher;
+        app.provide('$pusher', $pusher);
     }
 };
