@@ -324,11 +324,12 @@ describe(`POST ${BASE_URL}/migrateExplorer`, () => {
 
 describe(`POST ${BASE_URL}/explorers`, () => {
     mockAxiosGet.mockResolvedValueOnce({ data: 'export default { "1": "ethereum" }' });
-    ProviderConnector.mockImplementationOnce(() => ({
-        fetchNetworkId: jest.fn().mockResolvedValueOnce(1)
-    }));
 
     it('Should return an error if trying to create an explorer for a forbidden network id', (done) => {
+        ProviderConnector.mockImplementationOnce(() => ({
+            fetchNetworkId: jest.fn().mockResolvedValueOnce(1)
+        }));
+
         request.post(`${BASE_URL}/explorers`)
             .send({ name: 'demo', rpcServer: 'rpc.demo', nativeToken: 'token' })
             .expect(400)
@@ -356,6 +357,9 @@ describe(`POST ${BASE_URL}/explorers`, () => {
         jest.spyOn(db, 'getUserById').mockResolvedValueOnce({ id: 123 });
         jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ id: 1 });
         jest.spyOn(db, 'createExplorerFromOptions').mockResolvedValueOnce(null);
+        ProviderConnector.mockImplementationOnce(() => ({
+            fetchNetworkId: jest.fn().mockResolvedValueOnce(1)
+        }));
 
         request.post(`${BASE_URL}/explorers`)
             .send({ name: 'demo', rpcServer: 'rpc.demo', nativeToken: 'token' })
@@ -369,6 +373,9 @@ describe(`POST ${BASE_URL}/explorers`, () => {
     it('Should return an error if the plan is invalid', (done) => {
         jest.spyOn(db, 'getUserById').mockResolvedValueOnce({ id: 123 });
         jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce(null);
+        ProviderConnector.mockImplementationOnce(() => ({
+            fetchNetworkId: jest.fn().mockResolvedValueOnce(1)
+        }));
 
         request.post(`${BASE_URL}/explorers`)
             .send({ name: 'demo', rpcServer: 'rpc.demo', nativeToken: 'token' })
@@ -402,7 +409,7 @@ describe(`POST ${BASE_URL}/explorers`, () => {
         jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ id: 1 });
         jest.spyOn(db, 'createExplorerFromOptions').mockResolvedValueOnce({ id: 1, slug: 'slug' });
         ProviderConnector.mockImplementationOnce(() => ({
-            fetchNetworkId: jest.fn().mockResolvedValueOnce(54321)
+            fetchNetworkId: jest.fn().mockResolvedValueOnce(31337)
         }));
 
         request.post(`${BASE_URL}/explorers`)
@@ -418,6 +425,9 @@ describe(`POST ${BASE_URL}/explorers`, () => {
         jest.spyOn(db, 'getUserById').mockResolvedValueOnce({ id: 123 });
         jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ id: 1 });
         jest.spyOn(db, 'createExplorerFromOptions').mockResolvedValueOnce({ id: 1, slug: 'slug' });
+        ProviderConnector.mockImplementationOnce(() => ({
+            fetchNetworkId: jest.fn().mockResolvedValueOnce(1)
+        }));
         mockGetCount.mockResolvedValueOnce(0);
 
         request.post(`${BASE_URL}/explorers`)
