@@ -16,6 +16,12 @@ const mockAxiosGet = jest.fn().mockResolvedValue({ data: 'export default {}' });
 jest.mock('axios', () => ({
     get: mockAxiosGet
 }));
+const mockCountUp = jest.fn();
+const mockGetCount = jest.fn();
+jest.mock('../../lib/counter', () => ({
+    countUp: mockCountUp,
+    getCount: mockGetCount
+}));
 require('../mocks/models');
 require('../mocks/lib/queue');
 require('../mocks/lib/flags');
@@ -373,10 +379,46 @@ describe(`POST ${BASE_URL}/explorers`, () => {
             });
     });
 
+    it('Should return an error if too many demo explorers are created with the same network id', (done) => {
+        jest.spyOn(db, 'getUserById').mockResolvedValueOnce({ id: 123 });
+        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ id: 1 });
+        jest.spyOn(db, 'createExplorerFromOptions').mockResolvedValueOnce({ id: 1, slug: 'slug' });
+        ProviderConnector.mockImplementationOnce(() => ({
+            fetchNetworkId: jest.fn().mockResolvedValueOnce(54321)
+        }));
+        mockGetCount.mockResolvedValueOnce(3);
+
+        request.post(`${BASE_URL}/explorers`)
+            .send({ name: 'demo', rpcServer: 'rpc.demo', nativeToken: 'token' })
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual(`You've reached the limit of demo explorers for this chain (networkId: 54321). Please subscribe to a plan or reach out to contact@tryethernal.com for an extended trial.`);
+                done();
+            });
+    });
+
+    it('Should not use the counter if the network is whitelisted', (done) => {
+        jest.spyOn(db, 'getUserById').mockResolvedValueOnce({ id: 123 });
+        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ id: 1 });
+        jest.spyOn(db, 'createExplorerFromOptions').mockResolvedValueOnce({ id: 1, slug: 'slug' });
+        ProviderConnector.mockImplementationOnce(() => ({
+            fetchNetworkId: jest.fn().mockResolvedValueOnce(54321)
+        }));
+
+        request.post(`${BASE_URL}/explorers`)
+            .send({ name: 'demo', rpcServer: 'rpc.demo', nativeToken: 'token' })
+            .expect(200)
+            .then(() => {
+                expect(mockGetCount).not.toHaveBeenCalled();
+                done();
+            });
+    });
+
     it('Should create the demo explorer', (done) => {
         jest.spyOn(db, 'getUserById').mockResolvedValueOnce({ id: 123 });
         jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ id: 1 });
         jest.spyOn(db, 'createExplorerFromOptions').mockResolvedValueOnce({ id: 1, slug: 'slug' });
+        mockGetCount.mockResolvedValueOnce(0);
 
         request.post(`${BASE_URL}/explorers`)
             .send({ name: 'demo', rpcServer: 'rpc.demo', nativeToken: 'token' })
