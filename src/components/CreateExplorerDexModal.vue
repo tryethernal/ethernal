@@ -6,7 +6,7 @@
                 <v-btn color="grey" variant="text" icon="mdi-close" @click="close(false)"></v-btn>
             </v-card-title>
             <v-card-text>
-                <v-alert text density="compact" type="error" v-if="errorMessage">{{ errorMessage }}</v-alert>
+                <v-alert class="mb-3" text density="compact" type="error" v-if="errorMessage">{{ errorMessage }}</v-alert>
                 Enter your router address. From there, we'll be able to fetch the factory, and all created token pairs, in order to generate your dex UI.
                 <v-form class="mt-3" @submit.prevent="create" v-model="valid">
                     <v-row>
@@ -79,17 +79,18 @@ export default {
         },
         create() {
             this.loading = true;
-            this.$server.createExplorerV2Dex(this.options.explorerId, this.routerAddress, this.wrappedNativeTokenAddress)
-                .then(() => this.close(true))
+            const fn = this.options.isDemo ? this.$server.createExplorerV2DexDemo : this.$server.createExplorerV2Dex;
+            fn(this.options.explorerId, this.routerAddress, this.wrappedNativeTokenAddress)
+                .then(({ data }) => this.close(data))
                 .catch(error => {
                     this.loading = false;
                     this.errorMessage = error.response && error.response.data || 'Error while creating dex. Please retry.';
                 });
         },
-        close(dexCreated = false) {
+        close(v2Dex) {
             const resolve = this.resolve;
             this.reset();
-            resolve(dexCreated);
+            resolve(v2Dex);
         },
         reset() {
             this.dialog = false;

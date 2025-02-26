@@ -361,12 +361,18 @@ const getExplorerV2Dex = (v2DexId) => {
             {
                 model: Explorer,
                 as: 'explorer',
-                attrbutes: ['id'],
-                include: {
-                    model: Workspace,
-                    as: 'workspace',
-                    attributes: ['rpcServer', 'networkId']
-                }
+                attrbutes: ['id', 'isDemo'],
+                include: [
+                    {
+                        model: Workspace,
+                        as: 'workspace',
+                        attributes: ['rpcServer', 'networkId']
+                    }, {
+                        model: StripeSubscription,
+                        as: 'stripeSubscription',
+                        attributes: ['status']
+                    }
+                ]
             }
         ]
     });

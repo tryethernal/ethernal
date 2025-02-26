@@ -16,7 +16,7 @@ router.post('/feedback', async (req, res, next) => {
 
 ${data.message}
         `;
-
+        console.log(content);
         await withTimeout(axios.post(getDiscordFeedbackChannelWebhook(), { content }));
 
         res.sendStatus(200);

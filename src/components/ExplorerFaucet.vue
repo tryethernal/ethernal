@@ -9,6 +9,12 @@
             <v-row justify="center" align="center" class="mb-10 my-0">
                 <v-col md="6" sm="12">
                     <v-card class="rounded-card rounded-xl pa-12" v-if="faucet">
+                        <v-alert v-if="isFaucetEmpty" density="compact" text type="warning" class="mb-4">
+                            Faucet is empty! Send tokens to {{ faucet.address }} to start using it.
+                        </v-alert>
+                        <v-alert v-else-if="isFaucetAlmostEmpty" density="compact" text type="warning" class="mb-4">
+                            Faucet is almost empty! Send tokens to {{ faucet.address }} to start using it.
+                        </v-alert>
                         <v-card-title class="text-primary d-flex justify-center align-center">{{ explorerStore.name }} Faucet - Get {{ tokenSymbol }} Tokens</v-card-title>
                         <v-card-text class="pb-0">
                             <v-alert text type="error" v-if="errorMessage" v-html="errorMessage"></v-alert>
@@ -71,6 +77,37 @@
                 </v-col>
             </v-row>
         </template>
+        <template v-else-if="isAdmin">
+            <v-card>
+                <Create-Explorer-Faucet-Modal ref="createExplorerFaucetModal" />
+                <v-card-text>
+                    <v-row>
+                        <v-col align="center">
+                            <v-icon style="opacity: 0.25;" size="200" color="primary-lighten-1">mdi-faucet</v-icon>
+                        </v-col>
+                    </v-row>
+                    <v-row>
+                        <v-spacer></v-spacer>
+                        <v-col cols="6" class="text-body-1">
+                            Setup your faucet in two easy steps:
+                            <ol>
+                                <li>Enter the drip amount, and the interval between requests.</li>
+                                <li>Top-up your assigned faucet address with test tokens.</li>
+                            </ol>
+                            <br>
+                            Having a faucet integrated in your explorer will make it easier for your users to
+                            request test tokens, and save you time by having one less tool to build & maintain.
+                        </v-col>
+                        <v-spacer></v-spacer>
+                    </v-row>
+                </v-card-text>
+                <v-card-actions class="mb-4">
+                    <v-spacer></v-spacer>
+                    <v-btn variant="flat" :loading="loading" color="primary" @click="openCreateExplorerFaucetModal">Setup your Faucet</v-btn>
+                    <v-spacer></v-spacer>
+                </v-card-actions>
+            </v-card>
+        </template>
         <template v-else>
             <v-card>
                 <v-card-text>
@@ -99,9 +136,10 @@ import * as ethers from 'ethers';
 const moment = require('moment');
 import { mapStores, storeToRefs } from 'pinia';
 import { useExplorerStore } from '../stores/explorer';
-
+import { useEnvStore } from '../stores/env';
 import ExplorerFaucetAnalytics from './ExplorerFaucetAnalytics.vue';
 import ExplorerFaucetTransactionHistory from './ExplorerFaucetTransactionHistory.vue';
+import CreateExplorerFaucetModal from './CreateExplorerFaucetModal.vue';
 import HashLink from './HashLink.vue';
 
 export default{
@@ -109,7 +147,8 @@ export default{
     components: {
         HashLink,
         ExplorerFaucetAnalytics,
-        ExplorerFaucetTransactionHistory
+        ExplorerFaucetTransactionHistory,
+        CreateExplorerFaucetModal
     },
     data: () => ({
         loading: false,
@@ -124,28 +163,50 @@ export default{
     }),
     setup() {
         const explorerStore = useExplorerStore();
-        const { faucet } = storeToRefs(explorerStore);
+        const envStore = useEnvStore();
 
-        return { faucet };
+        const { id, faucet, token } = storeToRefs(explorerStore);
+        const { isAdmin } = storeToRefs(envStore);
+
+        return { faucet, isAdmin, explorerToken: token, explorerId: id };
     },
     mounted() {
         if (!this.faucet)
             return;
 
-        this.refreshFaucetBalance();
-        this.pusherUnsubscribe = this.$pusher.onNewTransaction(data => {
-            if (data.from == this.faucet.address || data.to == this.faucet.address)
-                this.refreshFaucetBalance();
-        }, this);
-        this.initializeRequests();
-        if (this.orderedRequests.length)
-            this.address = this.orderedRequests[this.orderedRequests.length - 1].address;
+        this.initializeFaucet();
     },
     destroyed() {
         if (this.pusherUnsubscribe)
             this.pusherUnsubscribe();
     },
     methods: {
+        initializeFaucet() {
+            this.refreshFaucetBalance();
+
+            this.pusherUnsubscribe = this.$pusher.onNewTransaction(data => {
+                if (data.from == this.faucet.address || data.to == this.faucet.address)
+                    this.refreshFaucetBalance();
+            }, this);
+
+            this.initializeRequests();
+            if (this.orderedRequests.length)
+                this.address = this.orderedRequests[this.orderedRequests.length - 1].address;
+        },
+        openCreateExplorerFaucetModal() {
+            this.$refs.createExplorerFaucetModal.open({
+                explorerId: this.explorerId,
+                token: this.explorerToken || 'ETH'
+            })
+            .then(faucet => {
+                if (faucet) {
+                    const explorerStore = useExplorerStore();
+                    explorerStore.updateExplorer({ faucet });
+                    this.faucet = faucet;
+                    this.initializeFaucet();
+                }
+            })
+        },
         requestFor(address) {
             this.address = address;
             this.requestTokens();
@@ -202,7 +263,19 @@ export default{
         }
     },
     computed: {
-        ...mapStores(useExplorerStore),
+        ...mapStores(useExplorerStore, useEnvStore),
+        isFaucetEmpty() {
+            if (!this.balance)
+                return null;
+
+            return ethers.BigNumber.from(this.balance).isZero();
+        },
+        isFaucetAlmostEmpty() {
+            if (!this.balance)
+                return null;
+
+            return !this.isFaucetEmpty && ethers.BigNumber.from(this.balance).lt(ethers.BigNumber.from(this.faucet.amount));
+        },
         slicedRequests() {
             return this.showAllRequests ? this.orderedRequests : this.orderedRequests.slice(0, 5);
         },

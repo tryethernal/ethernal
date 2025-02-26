@@ -41,9 +41,9 @@
                 <v-list-item prepend-icon="mdi-alpha-c-circle" title="ERC-20 Tokens" link :to="'/tokens'"></v-list-item>
                 <v-list-item prepend-icon="mdi-palette-advanced" title="ERC-721 Tokens" link :to="'/nfts'"></v-list-item>
                 <v-list-item prepend-icon="mdi-chart-box" title="Analytics" link :to="'/analytics'" v-if="currentWorkspaceStore.public"></v-list-item>
-                <v-list-item prepend-icon="mdi-faucet" title="Faucet" link :to="'/faucet'" v-if="explorerStore.faucet"></v-list-item>
-                <v-list-item prepend-icon="mdi-swap-horizontal" title="Dex" link :to="'/dex'" v-if="explorerStore.v2Dex"></v-list-item>
-                <v-list-item prepend-icon="mdi-heart-circle" title="Status" link :to="'/status'" v-if="(isUserAdmin && currentWorkspaceStore.public) || currentWorkspaceStore.statusPageEnabled"></v-list-item>
+                <v-list-item prepend-icon="mdi-faucet" title="Faucet" link :to="'/faucet'" v-if="explorerStore.isDemo || explorerStore.faucet || (envStore.isAdmin && currentWorkspaceStore.public)"></v-list-item>
+                <v-list-item prepend-icon="mdi-swap-horizontal" title="Dex" link :to="'/dex'" v-if="explorerStore.isDemo || explorerStore.v2Dex || (envStore.isAdmin && currentWorkspaceStore.public)"></v-list-item>
+                <v-list-item prepend-icon="mdi-bridge" title="Bridge" link :to="'/bridge'" v-if="explorerStore.isDemo || (envStore.isAdmin && currentWorkspaceStore.public)"></v-list-item>
                 <template v-if="envStore.isAdmin">
                     <v-divider class="my-4"></v-divider>
                     <v-list-item prepend-icon="mdi-earth" title="Public Explorers" link :to="'/explorers'"></v-list-item>

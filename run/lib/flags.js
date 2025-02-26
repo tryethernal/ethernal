@@ -1,7 +1,7 @@
 module.exports = {
     isPusherEnabled: () => !!process.env.SOKETI_DEFAULT_APP_ID && !!process.env.SOKETI_DEFAULT_APP_KEY && !!process.env.SOKETI_DEFAULT_APP_SECRET && !!process.env.SOKETI_HOST && !!process.env.SOKETI_PORT,
     isStripeEnabled: () => process.env.STRIPE_WEBHOOK_SECRET && process.env.STRIPE_SECRET_KEY,
-    isMarketingEnabled: () => process.env.ENABLE_MARKETING,
+    isMarketingEnabled: () => true,
     isSendgridEnabled: () => process.env.SENDGRID_API_KEY && process.env.SENDGRID_SENDER,
     isFirebaseAuthEnabled: () => !!process.env.ENABLE_FIREBASE_AUTH,
     isGoogleApiEnabled: () => !!process.env.GOOGLE_API_KEY,
