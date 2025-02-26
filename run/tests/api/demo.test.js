@@ -393,7 +393,7 @@ describe(`POST ${BASE_URL}/explorers`, () => {
         ProviderConnector.mockImplementationOnce(() => ({
             fetchNetworkId: jest.fn().mockResolvedValueOnce(54321)
         }));
-        mockGetCount.mockResolvedValueOnce(3);
+        mockCountUp.mockResolvedValueOnce(4);
 
         request.post(`${BASE_URL}/explorers`)
             .send({ name: 'demo', rpcServer: 'rpc.demo', nativeToken: 'token' })
@@ -416,7 +416,7 @@ describe(`POST ${BASE_URL}/explorers`, () => {
             .send({ name: 'demo', rpcServer: 'rpc.demo', nativeToken: 'token' })
             .expect(200)
             .then(() => {
-                expect(mockGetCount).not.toHaveBeenCalled();
+                expect(mockCountUp).not.toHaveBeenCalled();
                 done();
             });
     });

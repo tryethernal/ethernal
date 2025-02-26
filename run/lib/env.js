@@ -42,7 +42,7 @@ module.exports = {
     maxTimeWithoutEnqueuedJob: () => parseInt(process.env.MAX_TIME_WITHOUT_ENQUEUED_JOB) || 60,
     maxBlockNumberDiff: () => parseInt(process.env.MAX_BLOCK_NUMBER_DIFF) || 10,
     getOpsgenieApiKey: () => process.env.OPSGENIE_API_KEY,
-    getCounterNamespace: () => process.env.COUNTER_NAMESPACE,
-    whitelistedNetworkIdsForDemo: () => process.env.WHITELISTED_NETWORK_IDS_FOR_DEMO,
-    maxDemoExplorersForNetwork: () => parseInt(process.env.MAX_DEMO_EXPLORERS_FOR_NETWORK) || 3,
+    getCounterNamespace: () => 'dev',
+    whitelistedNetworkIdsForDemo: () => '123,456',
+    maxDemoExplorersForNetwork: () => 3,
 };
