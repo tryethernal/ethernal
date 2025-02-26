@@ -110,7 +110,7 @@ describe(`POST ${BASE_URL}/:id/v2_dexes`, () => {
             });
     });
 
-    it('Should return the router address & the factory address', (done) => {
+    it('Should return the created dex', (done) => {
         jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({
             id: 1,
             workspace: { rpcServer: 'rpc' }

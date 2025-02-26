@@ -27,7 +27,7 @@ require('../mocks/lib/firebase');
 require('../mocks/middlewares/auth');
 
 const db = require('../../lib/firebase');
-const { ProviderConnector } = require('../../lib/rpc');
+const { ProviderConnector, DexConnector } = require('../../lib/rpc');
 const crypto = require('../../lib/crypto');
 
 const supertest = require('supertest');
@@ -37,6 +37,120 @@ const request = supertest(app);
 const BASE_URL = '/api/demo';
 
 beforeEach(() => jest.clearAllMocks());
+
+describe(`POST ${BASE_URL}/explorers/:id/v2_dexes`, () => {
+    it('Should throw an error if no explorer', (done) => {
+        jest.spyOn(db, 'getUserById').mockResolvedValueOnce({ id: 1 });
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce(null);
+
+        request.post(`${BASE_URL}/explorers/1/v2_dexes`)
+            .send({ data: { routerAddress: '0x123', wrappedNativeTokenAddress: '0x456' }})
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual('Could not find explorer.');
+                done();
+            });
+    });
+
+    it('Should throw an error if no demo user', (done) => {
+        jest.spyOn(db, 'getUserById').mockResolvedValueOnce(null);
+
+        request.post(`${BASE_URL}/explorers/1/v2_dexes`)
+            .send({ data: { routerAddress: '0x123', wrappedNativeTokenAddress: '0x456' }})
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual('Could not find demo account.');
+                done();
+            });
+    });
+
+    it('Should throw an error if the explorer is not a demo', (done) => {
+        jest.spyOn(db, 'getUserById').mockResolvedValueOnce({ id: 1 });
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({
+            id: 1,
+            isDemo: false
+        });
+
+        request.post(`${BASE_URL}/explorers/1/v2_dexes`)
+            .send({ data: { routerAddress: '0x123', wrappedNativeTokenAddress: '0x456' }})
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual('Could not find explorer.');
+                done();
+            });
+    });
+
+    it('Should throw an error if cannot get factory address', (done) => {
+        jest.spyOn(db, 'getUserById').mockResolvedValueOnce({ id: 1 });
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({
+            id: 1,
+            workspace: { rpcServer: 'rpc' },
+            isDemo: true
+        });
+        DexConnector.mockImplementation(() => ({
+            getFactory: jest.fn().mockRejectedValueOnce('Error')
+        }));
+
+        request.post(`${BASE_URL}/explorers/1/v2_dexes`)
+            .send({ data: { routerAddress: '0x123', wrappedNativeTokenAddress: '0x456' }})
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual(`Couldn't get factory address for router. Check that the factory method is present and returns an address.`);
+                done();
+            });
+    });
+
+    it('Should throw an error if invalid factory address', (done) => {
+        jest.spyOn(db, 'getUserById').mockResolvedValueOnce({ id: 1 });
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({
+            id: 1,
+            workspace: { rpcServer: 'rpc' },
+            isDemo: true
+        });
+        DexConnector.mockImplementation(() => ({
+            getFactory: jest.fn().mockResolvedValueOnce('0x123')
+        }));
+
+        request.post(`${BASE_URL}/explorers/1/v2_dexes`)
+            .send({ data: { routerAddress: '0x123', wrappedNativeTokenAddress: '0x456' }})
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual(`Invalid factory address.`);
+                done();
+            });
+    });
+
+    it('Should fail if missing parameters', (done) => {
+        request.post(`${BASE_URL}/explorers/1/v2_dexes`)
+            .send({ data: {} })
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual('Missing parameters');
+                done();
+            });
+    });
+
+    it('Should return the created dex', (done) => {
+        jest.spyOn(db, 'getUserById').mockResolvedValueOnce({ id: 1 });
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({
+            id: 1,
+            workspace: { rpcServer: 'rpc' },
+            isDemo: true
+        });
+        DexConnector.mockImplementation(() => ({
+            getFactory: jest.fn().mockResolvedValueOnce('0x4150e51980114468aa8309bb72f027d8bff41353')
+        }));
+        jest.spyOn(db, 'createExplorerV2Dex').mockResolvedValueOnce({ id: 1, routerAddress: '0x123', factoryAddress: '0x456' });
+
+        request.post(`${BASE_URL}/explorers/1/v2_dexes`)
+            .send({ data: { routerAddress: '0x123', wrappedNativeTokenAddress: '0x456' }})
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual({ v2Dex: { id: 1, routerAddress: '0x123', factoryAddress: '0x456' } });
+                done();
+            });
+    });
+});
 
 describe(`GET ${BASE_URL}/explorers`, () => {
     it('Should fail if no user', (done) => {

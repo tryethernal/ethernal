@@ -18,9 +18,9 @@ router.get('/:id/status', authMiddleware, async (req, res, next) => {
         const dexFactoryConnector = new DexFactoryConnector(dex.explorer.workspace.rpcServer, dex.factoryAddress);
         const totalPairs = parseInt((await dexFactoryConnector.allPairsLength()).toString());
 
-        const maxPairs = dex.explorer.isDemo || dex.explorer.stripeSubscription.status.startsWith('trial') ? envStore.getMaxV2DexPairsForTrial() : totalPairs;
+        const maxPairs = dex.explorer.isDemo || dex.explorer.stripeSubscription.isTrialing ? getMaxV2DexPairsForTrial() : totalPairs;
 
-        res.status(200).json({ pairCount, totalPairs, maxPairs });
+        res.status(200).json({ pairCount, totalPairs: maxPairs });
     } catch(error) {
         unmanagedError(error, req, next);
     }

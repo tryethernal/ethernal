@@ -11,6 +11,15 @@ const authMiddleware = require('../middlewares/auth');
 const db = require('../lib/firebase');
 const { managedError, unmanagedError } = require('../lib/errors');
 
+/*
+    Creates a uniswap v2 dex for a demo explorer
+    The created dex will be limited as it will only have access to tokens
+    from liquidity pools deployed after the explorer setup.
+    This is good enough for now to show what the dex looks like.
+    @param {string} routerAddress - The router address to use for the dex
+    @param {string} wrappedNativeTokenAddress - The wrapped native token address to use for the dex
+    @returns {object} - The v2 dex object
+*/
 router.post('/explorers/:id/v2_dexes', async (req, res, next) => {
     const data = req.body.data;
 
@@ -23,7 +32,7 @@ router.post('/explorers/:id/v2_dexes', async (req, res, next) => {
             return managedError(new Error('Could not find demo account.'), req, res);
 
         const explorer = await db.getExplorerById(user.id, req.params.id);
-        if (!explorer || !explorer.workspace)
+        if (!explorer || !explorer.workspace || !explorer.isDemo)
             return managedError(new Error('Could not find explorer.'), req, res);
 
         let routerFactoryAddress;
