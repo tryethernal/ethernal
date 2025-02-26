@@ -1,5 +1,50 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`ExplorerDex.vue > Should display a button to create a dex 1`] = `
+"<div data-v-dcab24f1="" class="v-container v-container--fluid v-locale--is-ltr">
+  <create-explorer-dex-modal-stub data-v-dcab24f1=""></create-explorer-dex-modal-stub>
+  <div data-v-dcab24f1="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-dcab24f1="" class="v-card-text">
+      <div data-v-dcab24f1="" class="v-row">
+        <div data-v-dcab24f1="" class="v-col" align="center"><i data-v-dcab24f1="" class="mdi-swap-horizontal mdi v-icon notranslate v-theme--light text-primary-lighten-1" style="font-size: 200px; height: 200px; width: 200px; opacity: 0.25;" aria-hidden="true"></i></div>
+      </div>
+      <div data-v-dcab24f1="" class="v-row">
+        <div data-v-dcab24f1="" class="v-spacer"></div>
+        <div data-v-dcab24f1="" class="v-col v-col-6 text-body-1"> Ethernal comes with a built-in dex UI.<br data-v-dcab24f1=""> Before setting it up, make sure you've already deployed the UniswapV2Router02 contract.<br data-v-dcab24f1=""> Once it's done, you'll just need the contract address to continue. <br data-v-dcab24f1=""><br data-v-dcab24f1=""> By using this integrated dex, you won't have to build another UI from scratch, your token list will always be synchronized, you'll have access to pool analytics right away, and your users will have everything they need to interact with your chain in the same place. </div>
+        <div data-v-dcab24f1="" class="v-spacer"></div>
+      </div>
+      <div data-v-dcab24f1="" class="v-card-actions mb-4">
+        <div data-v-dcab24f1="" class="v-spacer"></div><button data-v-dcab24f1="" type="button" class="v-btn v-btn--slim v-theme--light bg-primary v-btn--density-default v-btn--size-default v-btn--variant-flat"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+          <!----><span class="v-btn__content" data-no-activator="">Setup Now</span>
+          <!---->
+          <!---->
+        </button>
+        <div data-v-dcab24f1="" class="v-spacer"></div>
+      </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+</div>"
+`;
+
 exports[`ExplorerDex.vue > Should display approval & swap button if not enough approval 1`] = `
 "<div data-v-dcab24f1="" class="v-container v-container--fluid v-locale--is-ltr">
   <dex-token-selection-modal-stub data-v-dcab24f1=""></dex-token-selection-modal-stub>
@@ -167,6 +212,8 @@ exports[`ExplorerDex.vue > Should display approval & swap button if not enough a
             <!---->
             <!---->
           </button></div>
+        <!--v-if-->
+        <!--v-if-->
         <div data-v-dcab24f1="" class="pa-12 pt-0">
           <div data-v-dcab24f1="" class="v-card-title text-primary d-flex justify-center align-center"> DEX</div>
           <div data-v-dcab24f1="" class="v-card-text pb-0">
@@ -294,6 +341,315 @@ exports[`ExplorerDex.vue > Should display approval & swap button if not enough a
               <div data-v-dcab24f1="" class="d-flex justify-space-between"><span data-v-dcab24f1="">Liquidity Provider Fee:</span><span data-v-dcab24f1="" class="swap-extra-info">0.059 ETL</span></div>
               <div data-v-dcab24f1="" class="d-flex justify-space-between"><span data-v-dcab24f1="">Route:</span><span data-v-dcab24f1=""><span data-v-dcab24f1="" class="swap-extra-info">minion <i data-v-dcab24f1="" class="mdi-chevron-right mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span><span data-v-dcab24f1="" class="swap-extra-info">wCAGA <i data-v-dcab24f1="" class="mdi-chevron-right mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span><span data-v-dcab24f1="" class="swap-extra-info">USDT <!--v-if--></span></span></div>
             </div>
+            <!--v-if-->
+          </div>
+        </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
+      </div>
+    </div>
+  </div>
+</div>"
+`;
+
+exports[`ExplorerDex.vue > Should display demo message 1`] = `
+"<div data-v-dcab24f1="" class="v-container v-container--fluid v-locale--is-ltr">
+  <dex-token-selection-modal-stub data-v-dcab24f1=""></dex-token-selection-modal-stub>
+  <div data-v-26514292="" data-v-dcab24f1="" class="v-dialog-stub" max-width="350">
+    <div data-v-26514292="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+      <!---->
+      <div class="v-card__loader">
+        <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+          <!---->
+          <div class="v-progress-linear__background"></div>
+          <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+          <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+            <div class="v-progress-linear__indeterminate">
+              <div class="v-progress-linear__indeterminate long"></div>
+              <div class="v-progress-linear__indeterminate short"></div>
+            </div>
+          </transition-stub>
+          <!---->
+        </div>
+      </div>
+      <!---->
+      <!---->
+      <div data-v-26514292="" class="v-card-title d-flex justify-space-between"> Transaction Settings <button data-v-26514292="" type="button" class="v-btn v-btn--icon v-theme--light text-grey v-btn--density-default v-btn--size-small v-btn--variant-text"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+          <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-close mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+          <!---->
+          <!---->
+        </button></div>
+      <div data-v-26514292="" class="v-card-text"> Slippage tolerance <div data-v-26514292="" class="d-flex">
+          <div data-v-26514292="" class="v-slide-group v-slide-group--mobile v-chip-group v-theme--light" tabindex="0">
+            <!---->
+            <div class="v-slide-group__container">
+              <div class="v-slide-group__content"><span data-v-26514292="" class="v-chip v-chip--link v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal" draggable="false" tabindex="0"><span class="v-chip__overlay"></span><span class="v-chip__underlay"></span>
+                <!---->
+                <!---->
+                <div class="v-chip__content" data-no-activator="">0.1%</div>
+                <!---->
+                <!----></span><span data-v-26514292="" class="v-chip v-chip--link v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal" draggable="false" tabindex="0"><span class="v-chip__overlay"></span><span class="v-chip__underlay"></span>
+                <!---->
+                <!---->
+                <div class="v-chip__content" data-no-activator="">0.5%</div>
+                <!---->
+                <!----></span><span data-v-26514292="" class="v-chip v-chip--link v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal" draggable="false" tabindex="0"><span class="v-chip__overlay"></span><span class="v-chip__underlay"></span>
+                <!---->
+                <!---->
+                <div class="v-chip__content" data-no-activator="">1%</div>
+                <!---->
+                <!----></span>
+              </div>
+            </div>
+            <!---->
+          </div>
+          <div data-v-26514292="" class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field ml-5" style="max-width: 80px;">
+            <!---->
+            <div class="v-input__control">
+              <div class="v-field v-field--appended v-field--center-affix v-field--reverse v-field--no-label v-field--variant-outlined v-theme--light rounded-xl v-locale--is-ltr">
+                <div class="v-field__overlay"></div>
+                <div class="v-field__loader">
+                  <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                    <!---->
+                    <div class="v-progress-linear__background"></div>
+                    <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                    <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                      <div class="v-progress-linear__indeterminate">
+                        <div class="v-progress-linear__indeterminate long"></div>
+                        <div class="v-progress-linear__indeterminate short"></div>
+                      </div>
+                    </transition-stub>
+                    <!---->
+                  </div>
+                </div>
+                <!---->
+                <div class="v-field__field" data-no-activator="">
+                  <!---->
+                  <!---->
+                  <!----><input size="1" type="text" id="input-4" aria-describedby="input-4-messages" class="v-field__input" value="">
+                  <!---->
+                </div>
+                <!---->
+                <div class="v-field__append-inner"><span data-v-26514292="" class="mr-2 text-grey">%</span>
+                  <!---->
+                </div>
+                <div class="v-field__outline">
+                  <div class="v-field__outline__start"></div>
+                  <!---->
+                  <div class="v-field__outline__end"></div>
+                  <!---->
+                </div>
+              </div>
+            </div>
+            <!---->
+            <!---->
+          </div>
+        </div>
+        <hr data-v-26514292="" class="v-divider v-theme--light my-3" aria-orientation="horizontal" role="separator"> Transaction deadline <div data-v-26514292="" class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field rounded-xl mt-1" style="max-width: 140px;">
+          <!---->
+          <div class="v-input__control">
+            <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--reverse v-field--no-label v-field--variant-outlined v-theme--light v-locale--is-ltr">
+              <div class="v-field__overlay"></div>
+              <div class="v-field__loader">
+                <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                  <!---->
+                  <div class="v-progress-linear__background"></div>
+                  <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                  <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                    <div class="v-progress-linear__indeterminate">
+                      <div class="v-progress-linear__indeterminate long"></div>
+                      <div class="v-progress-linear__indeterminate short"></div>
+                    </div>
+                  </transition-stub>
+                  <!---->
+                </div>
+              </div>
+              <!---->
+              <div class="v-field__field" data-no-activator="">
+                <!---->
+                <!---->
+                <!----><input size="1" type="number" id="input-6" aria-describedby="input-6-messages" class="v-field__input" value="0">
+                <!---->
+              </div>
+              <!---->
+              <div class="v-field__append-inner"><span data-v-26514292="" class="mr-2 text-grey">minutes</span>
+                <!---->
+              </div>
+              <div class="v-field__outline">
+                <div class="v-field__outline__start"></div>
+                <!---->
+                <div class="v-field__outline__end"></div>
+                <!---->
+              </div>
+            </div>
+          </div>
+          <!---->
+          <!---->
+        </div>
+      </div>
+      <!---->
+      <!----><span class="v-card__underlay"></span>
+    </div>
+  </div>
+  <div data-v-dcab24f1="" class="v-row">
+    <div data-v-dcab24f1="" class="v-col" align="center"><i data-v-dcab24f1="" class="mdi-swap-horizontal mdi v-icon notranslate v-theme--light text-primary-lighten-1" style="font-size: 150px; height: 150px; width: 150px; opacity: 0.25;" aria-hidden="true"></i></div>
+  </div>
+  <div data-v-dcab24f1="" class="v-row align-center justify-center mb-10 my-0">
+    <div data-v-dcab24f1="" class="v-col-sm-12 v-col-md-6 v-col">
+      <div data-v-dcab24f1="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated rounded-card rounded-xl">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!---->
+        <div data-v-dcab24f1="" class="mb-5 mt-1 mx-5 d-flex justify-space-between align-center"><small data-v-dcab24f1="">Connected Account: <hash-link-stub data-v-dcab24f1="" withname="false" type="address" hash="0x1bF85ED48fcda98e2c7d08E4F2A8083fb18792AA"></hash-link-stub></small><button data-v-dcab24f1="" type="button" class="v-btn v-btn--icon v-theme--light v-btn--density-default v-btn--size-small v-btn--variant-text"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+            <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-cog mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+            <!---->
+            <!---->
+          </button></div>
+        <div data-v-dcab24f1="" class="v-alert v-theme--light bg-warning v-alert--density-compact v-alert--variant-flat mx-5 mb-3" role="alert">
+          <!----><span class="v-alert__underlay"></span>
+          <!---->
+          <div class="v-alert__prepend"><i class="mdi-alert-circle mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="compact"></i></div>
+          <div class="v-alert__content">
+            <!---->
+            <!----> This is a demo dex. Only tokens from liquidity pools deployed <b data-v-dcab24f1="">after</b> creating this explorer will be available. If you want to add existing liquidity pools &amp; tokens, either subscribe to a plan or reach out to us.
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!--v-if-->
+        <div data-v-dcab24f1="" class="pa-12 pt-0">
+          <div data-v-dcab24f1="" class="v-card-title text-primary d-flex justify-center align-center"> DEX</div>
+          <div data-v-dcab24f1="" class="v-card-text pb-0">
+            <!--v-if-->
+            <div data-v-dcab24f1="" align="center">
+              <div data-v-dcab24f1="" class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field large-text">
+                <!---->
+                <div class="v-input__control">
+                  <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--variant-outlined v-theme--light rounded-xl v-locale--is-ltr">
+                    <div class="v-field__overlay"></div>
+                    <div class="v-field__loader">
+                      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                        <!---->
+                        <div class="v-progress-linear__background"></div>
+                        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                          <div class="v-progress-linear__indeterminate">
+                            <div class="v-progress-linear__indeterminate long"></div>
+                            <div class="v-progress-linear__indeterminate short"></div>
+                          </div>
+                        </transition-stub>
+                        <!---->
+                      </div>
+                    </div>
+                    <!---->
+                    <div class="v-field__field" data-no-activator="">
+                      <!----><label class="v-label v-field-label" for="input-9">
+                        <!---->Sell
+                      </label>
+                      <!----><input placeholder="0.0" size="1" type="text" id="input-9" aria-describedby="input-9-messages" class="v-field__input">
+                      <!---->
+                    </div>
+                    <!---->
+                    <div class="v-field__append-inner">
+                      <div data-v-dcab24f1="" class="pl-4 py-1 mt-1 mb-3 d-flex flex-column text-right"><small data-v-dcab24f1="" class="pr-1 balance"> Balance: <a data-v-dcab24f1="" style="text-decoration: none;" href="#">10</a></small><button data-v-dcab24f1="" type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-outlined mt-3 text-primary text-no-wrap tokenSelector rounded-pill"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                          <!----><span class="v-btn__content" data-no-activator="">ETH <i data-v-dcab24f1="" class="mdi-chevron-down mdi v-icon notranslate v-theme--light v-icon--size-default text-primary" aria-hidden="true"></i></span>
+                          <!---->
+                          <!---->
+                        </button></div>
+                      <!---->
+                    </div>
+                    <div class="v-field__outline">
+                      <div class="v-field__outline__start"></div>
+                      <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-9">
+                          <!---->Sell
+                        </label></div>
+                      <div class="v-field__outline__end"></div>
+                      <!---->
+                    </div>
+                  </div>
+                </div>
+                <!---->
+                <!---->
+              </div><button data-v-dcab24f1="" type="button" class="v-btn v-btn--icon v-theme--light text-primary v-btn--density-default v-btn--size-small v-btn--variant-outlined my-3"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-swap-vertical mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+                <!---->
+                <!---->
+              </button>
+              <div data-v-dcab24f1="" class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field large-text">
+                <!---->
+                <div class="v-input__control">
+                  <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--variant-outlined v-theme--light rounded-xl v-locale--is-ltr">
+                    <div class="v-field__overlay"></div>
+                    <div class="v-field__loader">
+                      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                        <!---->
+                        <div class="v-progress-linear__background"></div>
+                        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                          <div class="v-progress-linear__indeterminate">
+                            <div class="v-progress-linear__indeterminate long"></div>
+                            <div class="v-progress-linear__indeterminate short"></div>
+                          </div>
+                        </transition-stub>
+                        <!---->
+                      </div>
+                    </div>
+                    <!---->
+                    <div class="v-field__field" data-no-activator="">
+                      <!----><label class="v-label v-field-label" for="input-13">
+                        <!---->Buy
+                      </label>
+                      <!----><input placeholder="0.0" size="1" type="text" id="input-13" aria-describedby="input-13-messages" class="v-field__input">
+                      <!---->
+                    </div>
+                    <!---->
+                    <div class="v-field__append-inner">
+                      <div data-v-dcab24f1="" class="pl-4 py-1 mt-1 mb-3 d-flex flex-column text-right"><small data-v-dcab24f1="" class="pr-1 balance">Balance: -</small><button data-v-dcab24f1="" type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-outlined mt-3 text-primary text-no-wrap tokenSelector rounded-pill"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                          <!----><span class="v-btn__content" data-no-activator="">Select a token <i data-v-dcab24f1="" class="mdi-chevron-down mdi v-icon notranslate v-theme--light v-icon--size-default text-primary" aria-hidden="true"></i></span>
+                          <!---->
+                          <!---->
+                        </button></div>
+                      <!---->
+                    </div>
+                    <div class="v-field__outline">
+                      <div class="v-field__outline__start"></div>
+                      <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-13">
+                          <!---->Buy
+                        </label></div>
+                      <div class="v-field__outline__end"></div>
+                      <!---->
+                    </div>
+                  </div>
+                </div>
+                <!---->
+                <!---->
+              </div>
+              <div data-v-dcab24f1="" class="mt-3 mb-4">
+                <!--v-if-->
+                <div data-v-dcab24f1="" class="d-flex">
+                  <!--v-if--><button data-v-dcab24f1="" type="button" class="v-btn v-btn--disabled v-theme--light bg-primary v-btn--density-default v-btn--size-large v-btn--variant-elevated flex-grow-1" disabled=""><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                    <!----><span class="v-btn__content" data-no-activator="">Enter an amount</span>
+                    <!---->
+                    <!---->
+                  </button>
+                </div>
+              </div>
+            </div>
+            <!--v-if-->
             <!--v-if-->
           </div>
         </div>
@@ -472,6 +828,8 @@ exports[`ExplorerDex.vue > Should display error message 1`] = `
             <!---->
             <!---->
           </button></div>
+        <!--v-if-->
+        <!--v-if-->
         <div data-v-dcab24f1="" class="pa-12 pt-0">
           <div data-v-dcab24f1="" class="v-card-title text-primary d-flex justify-center align-center"> DEX</div>
           <div data-v-dcab24f1="" class="v-card-text pb-0">
@@ -775,6 +1133,8 @@ exports[`ExplorerDex.vue > Should display failed transaction message 1`] = `
             <!---->
             <!---->
           </button></div>
+        <!--v-if-->
+        <!--v-if-->
         <div data-v-dcab24f1="" class="pa-12 pt-0">
           <div data-v-dcab24f1="" class="v-card-title text-primary d-flex justify-center align-center"> DEX</div>
           <div data-v-dcab24f1="" class="v-card-text pb-0">
@@ -1082,6 +1442,8 @@ exports[`ExplorerDex.vue > Should display initial state with no wallet connected
             <!---->
           </button>
         </div>
+        <!--v-if-->
+        <!--v-if-->
         <div data-v-dcab24f1="" class="pa-12 pt-0">
           <div data-v-dcab24f1="" class="v-card-title text-primary d-flex justify-center align-center"> DEX</div>
           <div data-v-dcab24f1="" class="v-card-text pb-0">
@@ -1370,6 +1732,8 @@ exports[`ExplorerDex.vue > Should display initial state with wallet connected 1`
             <!---->
             <!---->
           </button></div>
+        <!--v-if-->
+        <!--v-if-->
         <div data-v-dcab24f1="" class="pa-12 pt-0">
           <div data-v-dcab24f1="" class="v-card-title text-primary d-flex justify-center align-center"> DEX</div>
           <div data-v-dcab24f1="" class="v-card-text pb-0">
@@ -1667,6 +2031,8 @@ exports[`ExplorerDex.vue > Should display insufficient balance warning 1`] = `
             <!---->
             <!---->
           </button></div>
+        <!--v-if-->
+        <!--v-if-->
         <div data-v-dcab24f1="" class="pa-12 pt-0">
           <div data-v-dcab24f1="" class="v-card-title text-primary d-flex justify-center align-center"> DEX</div>
           <div data-v-dcab24f1="" class="v-card-text pb-0">
@@ -2000,6 +2366,8 @@ exports[`ExplorerDex.vue > Should display successful transaction message 1`] = `
             <!---->
             <!---->
           </button></div>
+        <!--v-if-->
+        <!--v-if-->
         <div data-v-dcab24f1="" class="pa-12 pt-0">
           <div data-v-dcab24f1="" class="v-card-title text-primary d-flex justify-center align-center"> DEX</div>
           <div data-v-dcab24f1="" class="v-card-text pb-0">
@@ -2305,6 +2673,8 @@ exports[`ExplorerDex.vue > Should display swap button and quote 1`] = `
             <!---->
             <!---->
           </button></div>
+        <!--v-if-->
+        <!--v-if-->
         <div data-v-dcab24f1="" class="pa-12 pt-0">
           <div data-v-dcab24f1="" class="v-card-title text-primary d-flex justify-center align-center"> DEX</div>
           <div data-v-dcab24f1="" class="v-card-text pb-0">
@@ -2608,6 +2978,8 @@ exports[`ExplorerDex.vue > Should display token selection message 1`] = `
             <!---->
             <!---->
           </button></div>
+        <!--v-if-->
+        <!--v-if-->
         <div data-v-dcab24f1="" class="pa-12 pt-0">
           <div data-v-dcab24f1="" class="v-card-title text-primary d-flex justify-center align-center"> DEX</div>
           <div data-v-dcab24f1="" class="v-card-text pb-0">

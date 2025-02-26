@@ -38,9 +38,9 @@ router.post('/:id/v2_dexes', authMiddleware, async (req, res, next) => {
         if (!routerFactoryAddress || typeof routerFactoryAddress != 'string' || routerFactoryAddress.length != 42 || !routerFactoryAddress.startsWith('0x'))
             return managedError(new Error(`Invalid factory address.`), req, res);
 
-        const { id, routerAddress, factoryAddress } = await db.createExplorerV2Dex(data.uid, req.params.id, data.routerAddress, routerFactoryAddress, data.wrappedNativeTokenAddress);
+        const v2Dex = await db.createExplorerV2Dex(data.uid, req.params.id, data.routerAddress, routerFactoryAddress, data.wrappedNativeTokenAddress);
 
-        res.status(200).json({ id, routerAddress, factoryAddress });
+        res.status(200).json({ v2Dex });
     } catch(error) {
         unmanagedError(error, req, next);
     }
@@ -57,9 +57,15 @@ router.post('/:id/faucets', authMiddleware, async (req, res, next) => {
         if (isNaN(parseFloat(data.interval)) || parseFloat(data.interval) <= 0)
             return managedError(new Error('Interval must be greater than 0.'), req, res);
 
-        const { id, address } = await db.createFaucet(data.uid, req.params.id, data.amount, data.interval);
+        const faucet = await db.createFaucet(data.uid, req.params.id, data.amount, data.interval);
 
-        res.status(200).json({ id, address });
+        res.status(200).json({
+            id: faucet.id,
+            active: faucet.active,
+            address: faucet.address,
+            amount: faucet.amount,
+            interval: faucet.interval
+        });
     } catch(error) {
         unmanagedError(error, req, next);
     }
@@ -793,7 +799,8 @@ router.get('/search', async (req, res, next) => {
             slug: explorer.slug,
             admin: explorer.admin,
             workspace: explorer.workspace,
-            gasAnalyticsEnabled: explorer.gasAnalyticsEnabled
+            gasAnalyticsEnabled: explorer.gasAnalyticsEnabled,
+            isDemo: explorer.isDemo
         };
 
         fields['token'] = capabilities.nativeToken ? explorer.token : 'ether';

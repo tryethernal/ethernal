@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../lib/firebase');
+const { getMaxV2DexPairsForTrial } = require('../lib/env');
 const { DexFactoryConnector } = require('../lib/rpc');
 const authMiddleware = require('../middlewares/auth');
 const { managedError, unmanagedError } = require('../lib/errors');
@@ -15,9 +16,11 @@ router.get('/:id/status', authMiddleware, async (req, res, next) => {
 
         const pairCount = await db.getV2DexPairCount(data.user.id, req.params.id);
         const dexFactoryConnector = new DexFactoryConnector(dex.explorer.workspace.rpcServer, dex.factoryAddress);
-        const totalPairs = await dexFactoryConnector.allPairsLength();
+        const totalPairs = parseInt((await dexFactoryConnector.allPairsLength()).toString());
 
-        res.status(200).json({ pairCount, totalPairs: parseInt(totalPairs.toString()) });
+        const maxPairs = dex.explorer.isDemo || dex.explorer.stripeSubscription.isTrialing ? getMaxV2DexPairsForTrial() : totalPairs;
+
+        res.status(200).json({ pairCount, totalPairs: maxPairs });
     } catch(error) {
         unmanagedError(error, req, next);
     }

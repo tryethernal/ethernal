@@ -110,7 +110,23 @@ const quote = {
 };
 
 describe('ExplorerDex.vue', () => {
-    const stubs = ['WalletConnector', 'WalletConnectorMirror', 'Hash-Link', 'Dex-Token-Selection-Modal', 'Explorer-Dex-Parameter-Modal'];
+    const stubs = ['WalletConnector', 'WalletConnectorMirror', 'Hash-Link', 'Dex-Token-Selection-Modal', 'Explorer-Dex-Parameter-Modal', 'Create-Explorer-Dex-Modal'];
+
+    it('Should display a button to create a dex', async () => {
+        const wrapper = mount(ExplorerDex, {
+            global: {
+                stubs,
+                plugins: [createTestingPinia({ initialState: {
+                    env: { isAdmin: true },
+                    explorer: { v2Dex: null },
+                } })]
+            }
+        });
+
+        await flushPromises();
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
 
     it('Should display no dex message', async () => {
         const wrapper = mount(ExplorerDex, {
@@ -134,6 +150,28 @@ describe('ExplorerDex.vue', () => {
             }
         });
 
+        await flushPromises();
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
+    it('Should display demo message', async () => {
+        ERC20Connector.mockImplementationOnce(() => ({
+            allowance: vi.fn().mockResolvedValue('0')
+        }));
+        vi.spyOn(server, 'getV2DexTokens').mockResolvedValueOnce({ data: { tokens }});
+        vi.spyOn(server, 'getTokenBalances').mockResolvedValueOnce({ data: balances });
+        vi.spyOn(server, 'getNativeTokenBalance').mockResolvedValueOnce({ data: { balance: '10000000000000000000' }});
+        const wrapper = mount(ExplorerDex, {
+            global: {
+                stubs,
+                plugins: [createTestingPinia({ initialState: {
+                    explorer: { isDemo: true, v2Dex: { routerAddress: '0x123' }},
+                    wallet: { connectedAddress: '0x1bF85ED48fcda98e2c7d08E4F2A8083fb18792AA' }
+                }})]
+            }
+        });
+        wrapper.vm.onRpcConnectionStatusChanged({ account: '0x1bF85ED48fcda98e2c7d08E4F2A8083fb18792AA' })
         await flushPromises();
 
         expect(wrapper.html()).toMatchSnapshot();

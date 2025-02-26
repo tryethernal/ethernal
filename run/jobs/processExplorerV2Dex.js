@@ -29,7 +29,7 @@ module.exports = async job => {
     const pairLength = await dexFactoryConnector.allPairsLength();
 
     const pairsToProcess = subscription ? 
-        (subscription.isTrialing || dex.explorer.isDemo ? getMaxV2DexPairsForTrial() : pairLength) :
+        (subscription.isTrialing || dex.explorer.isDemo ? Math.min(getMaxV2DexPairsForTrial(), pairLength) : pairLength) :
         0;
 
     const currentPairCount = await dex.countPairs();
