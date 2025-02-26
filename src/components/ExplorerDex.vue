@@ -154,7 +154,7 @@
                 </v-col>
             </v-row>
         </template>
-        <template v-else-if="isAdmin">
+        <template v-else-if="isAdmin || isDemo">
             <Create-Explorer-Dex-Modal ref="createExplorerDexModal" />
             <v-card>
                 <v-card-text>
@@ -325,7 +325,8 @@ export default{
                 if (v2Dex) {
                     const explorerStore = useExplorerStore();
                     explorerStore.updateExplorer({ v2Dex });
-                    this.loadStatus();
+                    if (!this.isDemo)
+                        this.loadStatus();
                     this.initializeDexParameters();
                 }
             })

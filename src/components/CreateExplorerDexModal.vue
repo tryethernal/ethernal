@@ -81,7 +81,7 @@ export default {
             this.loading = true;
             const fn = this.options.isDemo ? this.$server.createExplorerV2DexDemo : this.$server.createExplorerV2Dex;
             fn(this.options.explorerId, this.routerAddress, this.wrappedNativeTokenAddress)
-                .then(({ data }) => this.close(data))
+                .then(({ data }) => this.close(data.v2Dex))
                 .catch(error => {
                     this.loading = false;
                     this.errorMessage = error.response && error.response.data || 'Error while creating dex. Please retry.';
