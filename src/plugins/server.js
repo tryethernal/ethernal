@@ -352,6 +352,16 @@ export default {
         );
 
         const $server = {
+            submitFeedback(feedbackType, from, message) {
+                const resource = `${envStore.apiRoot}/api/marketing/feedback`;
+                return axios.post(resource, { feedbackType, email: from, message });
+            },
+
+            createExplorerV2DexDemo(explorerId, routerAddress, wrappedNativeTokenAddress) {
+                const resource = `${envStore.apiRoot}/api/demo/explorers/${explorerId}/v2_dexes`;
+                return axios.post(resource, { data: { routerAddress, wrappedNativeTokenAddress }});
+            },
+
             getBlockSizeHistory(from, to) {
                 const params = {
                     firebaseUserId: firebaseUserId.value,

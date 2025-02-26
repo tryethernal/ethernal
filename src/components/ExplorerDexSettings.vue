@@ -132,8 +132,8 @@ export default {
             this.$refs.createExplorerDexModal.open({
                 explorerId: this.explorerId,
             })
-            .then(updated => {
-                if (updated) {
+            .then(v2Dex => {
+                if (!!v2Dex) {
                     this.explorer = null;
                     this.loadExplorer();
                 }

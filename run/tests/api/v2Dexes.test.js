@@ -1,6 +1,7 @@
 require('../mocks/lib/queue');
 require('../mocks/lib/rpc');
 require('../mocks/lib/utils');
+require('../mocks/lib/env');
 require('../mocks/models');
 require('../mocks/lib/firebase');
 require('../mocks/middlewares/auth');
@@ -22,7 +23,10 @@ describe(`GET ${BASE_URL}/:id/status`, () => {
     it('Should return pairs sync status', (done) => {
         jest.spyOn(db, 'getExplorerV2Dex').mockResolvedValueOnce({
             id: 1,
-            explorer: { workspace: { rpcServer: 'server' }}
+            explorer: {
+                workspace: { rpcServer: 'server' },
+                stripeSubscription: { status: 'active' }
+            }
         });
         jest.spyOn(db, 'getV2DexPairCount').mockResolvedValueOnce(1);
         DexFactoryConnector.mockImplementation(() => ({
@@ -33,6 +37,27 @@ describe(`GET ${BASE_URL}/:id/status`, () => {
             .expect(200)
             .then(({ body }) => {
                 expect(body).toEqual({ pairCount: 1, totalPairs: 10 });
+                done();
+            });
+    });
+
+    it('Should return pairs sync status for a trial', (done) => {
+        jest.spyOn(db, 'getExplorerV2Dex').mockResolvedValueOnce({
+            id: 1,
+            explorer: {
+                workspace: { rpcServer: 'server' },
+                stripeSubscription: { isTrialing: true }
+            }
+        });
+        jest.spyOn(db, 'getV2DexPairCount').mockResolvedValueOnce(1);
+        DexFactoryConnector.mockImplementation(() => ({
+            allPairsLength: jest.fn().mockResolvedValueOnce('10000')
+        }));
+
+        request.get(`${BASE_URL}/1/status`)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual({ pairCount: 1, totalPairs: 100 });
                 done();
             });
     });
