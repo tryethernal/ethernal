@@ -305,7 +305,7 @@ export default{
             this.$server.getV2DexStatus(this.v2Dex.id)
                 .then(({ data }) => {
                     this.pairCount = data.pairCount;
-                    this.totalPairs = Math.min(data.totalPairs, data.maxPairs);
+                    this.totalPairs = data.totalPairs;
                     if (this.pairCount < this.totalPairs) {
                         this.statusLoadingInterval = setTimeout(() => this.loadStatus(), 3000);
                     }
