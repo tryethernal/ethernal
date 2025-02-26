@@ -38,9 +38,9 @@ router.post('/:id/v2_dexes', authMiddleware, async (req, res, next) => {
         if (!routerFactoryAddress || typeof routerFactoryAddress != 'string' || routerFactoryAddress.length != 42 || !routerFactoryAddress.startsWith('0x'))
             return managedError(new Error(`Invalid factory address.`), req, res);
 
-        const { id, routerAddress, factoryAddress } = await db.createExplorerV2Dex(data.uid, req.params.id, data.routerAddress, routerFactoryAddress, data.wrappedNativeTokenAddress);
+        const v2Dex = await db.createExplorerV2Dex(data.uid, req.params.id, data.routerAddress, routerFactoryAddress, data.wrappedNativeTokenAddress);
 
-        res.status(200).json({ id, routerAddress, factoryAddress });
+        res.status(200).json({ v2Dex });
     } catch(error) {
         unmanagedError(error, req, next);
     }

@@ -124,7 +124,7 @@ describe(`POST ${BASE_URL}/:id/v2_dexes`, () => {
             .send({ data: { routerAddress: '0x123', wrappedNativeTokenAddress: '0x456' }})
             .expect(200)
             .then(({ body }) => {
-                expect(body).toEqual({ id: 1, routerAddress: '0x123', factoryAddress: '0x456' });
+                expect(body).toEqual({ v2Dex: { id: 1, routerAddress: '0x123', factoryAddress: '0x456' }});
                 done();
             });
     });
