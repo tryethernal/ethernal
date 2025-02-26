@@ -1,9 +1,10 @@
 const express = require('express');
 const axios = require('axios');
-const { getDemoUserId, getDefaultPlanSlug, getAppDomain, getDemoTrialSlug, getStripeSecretKey, getDefaultExplorerTrialDays } = require('../lib/env');
+const { getDemoUserId, getDefaultPlanSlug, getAppDomain, getDemoTrialSlug, getStripeSecretKey, getDefaultExplorerTrialDays, whitelistedNetworkIdsForDemo, maxDemoExplorersForNetwork } = require('../lib/env');
 const stripe = require('stripe')(getStripeSecretKey());
 const { generateSlug } = require('random-word-slugs');
 const router = express.Router();
+const { countUp, getCount } = require('../lib/counter');
 const { ProviderConnector, DexConnector } = require('../lib/rpc');
 const { encode, decode } = require('../lib/crypto');
 const { withTimeout, sanitize } = require('../lib/utils');
@@ -163,6 +164,9 @@ router.post('/explorers', async (req, res, next) => {
             networkId = null;
         }
 
+        if (!networkId)
+            return managedError(new Error(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`), req, res);
+
         const response = await axios.get('https://raw.githubusercontent.com/tryethernal/chainlist/refs/heads/main/constants/chainIds.js', {
             responseType: 'text',
             headers: { 'Cache-Control': 'no-cache' }
@@ -173,8 +177,13 @@ router.post('/explorers', async (req, res, next) => {
         if (forbiddenChains[networkId])
             return managedError(new Error(`You can't create a demo with this network id (${networkId} - ${forbiddenChains[networkId]}). If you'd still like an explorer for this chain. Please reach out to contact@tryethernal.com, and we'll set one up for you.`), req, res);
 
-        if (!networkId)
-            return managedError(new Error(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`), req, res);
+        if (whitelistedNetworkIdsForDemo().split(',').indexOf(String(networkId)) == -1) {
+            const count = await getCount(networkId);
+            if (count >= maxDemoExplorersForNetwork())
+                return managedError(new Error(`You've reached the limit of demo explorers for this chain (networkId: ${networkId}). Please subscribe to a plan or reach out to contact@tryethernal.com for an extended trial.`), req, res);
+            else
+                await countUp(networkId);
+        }
 
         const user = await db.getUserById(getDemoUserId());
 
@@ -206,7 +215,7 @@ router.post('/explorers', async (req, res, next) => {
         } catch(error) {
             const err = new Error(error);
             if (err.message.includes('workspace with this name'))
-                return managedError(new Error('This explorername is already taken. Please choose a different name.'), req, res);
+                return managedError(new Error('This explorer name is already taken. Please choose a different name.'), req, res);
             return managedError(new Error(error), req, res);
         }
 
