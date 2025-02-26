@@ -46,6 +46,6 @@ jest.mock('../../../lib/env', () => ({
     maxBlockNumberDiff: jest.fn(() => 10),
     getOpsgenieApiKey: jest.fn(() => 'a'),
     getCounterNamespace: jest.fn(() => 'dev'),
-    whitelistedNetworkIdsForDemo: jest.fn(() => '31337,54321'),
+    whitelistedNetworkIdsForDemo: jest.fn(() => '31337,99999'),
     maxDemoExplorersForNetwork: jest.fn(() => 3),
 }));
