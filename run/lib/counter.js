@@ -2,15 +2,8 @@ const axios = require('axios');
 const { getCounterNamespace } = require('./env');
 
 module.exports = {
-    countUp(key) {
-        return axios.get(`https://api.counterapi.dev/v1/${getCounterNamespace()}/${key}/up`);
+    async countUp(key) {
+        const response = await axios.get(`https://api.counterapi.dev/v1/${getCounterNamespace()}/${key}/up`);
+        return response.data.count;
     },
-    async getCount(key) {
-        try {
-            const response = await axios.get(`https://api.counterapi.dev/v1/${getCounterNamespace()}/${key}/`);
-            return response.data.count;
-        } catch(error) {
-            return 0;
-        }
-    }
 };
