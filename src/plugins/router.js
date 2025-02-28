@@ -36,7 +36,7 @@ const isPublic = () => {
 const redirectIfLoggedIn = function (to, from, next) {
     if (isLoggedIn() || isPublic()) {
         if (to.path == '/auth')
-            next({ path: '/transactions', query: to.query });
+            next({ path: to.query.path || '/transactions', query: to.query });
         else
             next(to || { path: '/transactions', query: to.query });
     } else

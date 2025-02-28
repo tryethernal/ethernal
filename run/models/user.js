@@ -253,7 +253,7 @@ module.exports = (sequelize, DataTypes) => {
             if (isDemo) {
                 const jwtToken = encode({ explorerId: explorer.id });
                 updatedBranding = {
-                    banner: `This is a demo explorer that will expire after 24 hours and is limited to 5,000 txs. To remove the limit & set it up permanently,&nbsp;<a id="migrate-explorer-link" href="//app.${getAppDomain()}/transactions?explorerToken=${jwtToken}" target="_blank">click here</a>.`
+                    banner: `This is a demo explorer that will expire after 24 hours and is limited to 5,000 txs. To remove the limit & set it up permanently,&nbsp;<a data-vue-action="openMigrationModal" data-jwt="${jwtToken}" href="#">click here</a>.`
                 };
             }
 

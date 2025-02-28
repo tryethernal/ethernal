@@ -74,6 +74,7 @@
         </v-navigation-drawer>
 
         <Migrate-Explorer-Modal ref="migrateExplorerModal" v-if="explorerToken || justMigrated" />
+        <Demo-Explorer-Migration-Modal ref="demoExplorerMigrationModal" />
         <Onboarding-Modal ref="onboardingModal" />
         <Browser-Sync-Explainer-Modal ref="browserSyncExplainerModal" v-if="currentWorkspaceStore.browserSyncEnabled" />
 
@@ -102,6 +103,7 @@ import RpcConnector from './components/RpcConnector';
 import OnboardingModal from './components/OnboardingModal';
 import BrowserSyncExplainerModal from './components/BrowserSyncExplainerModal';
 import MigrateExplorerModal from './components/MigrateExplorerModal';
+import DemoExplorerMigrationModal from './components/DemoExplorerMigrationModal';
 
 export default {
     name: 'App',
@@ -109,7 +111,8 @@ export default {
         RpcConnector,
         OnboardingModal,
         BrowserSyncExplainerModal,
-        MigrateExplorerModal
+        MigrateExplorerModal,
+        DemoExplorerMigrationModal
     },
     data: () => ({
         routerComponent: shallowRef(defineComponent({
@@ -133,7 +136,12 @@ export default {
         const theme = useTheme();
         return { theme };
     },
+    beforeUnmount() {
+        document.removeEventListener('click', this.handleClickEvent);
+    },
     mounted() {
+        document.addEventListener('click', this.handleClickEvent);
+
         detectEthereumProvider().then(provider => {
             if (!provider || provider !== window.ethereum) return;
             this.ethereum = provider;
@@ -156,6 +164,12 @@ export default {
             });
     },
     methods: {
+        handleClickEvent(event) {
+            if (event.target.matches('a[data-vue-action="openMigrationModal"]')) {
+                const jwtToken = event.target.getAttribute('data-jwt');
+                this.$refs.demoExplorerMigrationModal.open(jwtToken);
+            }
+        },
         setupPrivateExplorer() {
             this.$server.getCurrentUser()
                 .then(({ data }) => {
