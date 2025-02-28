@@ -31,6 +31,27 @@ const findUser = async (email, nextPageToken) => {
     return result;    
 };
 
+/*
+    This endpoint is used to check if an email is present.
+    We use it during the demo explorer migration process
+    to either ask the user to sign in or to ask them to sign up.
+    @param email: the email to check
+    @returns 200 if the user exists, 404 if the user does not exist
+*/
+router.get('/checkEmail', async (req, res, next) => {
+    const data = req.query;
+
+    try {
+        const user = await db.getUserByEmail(data.email);
+        if (!user)
+            return res.sendStatus(404);
+
+        res.sendStatus(200);
+    } catch(error) {
+        unmanagedError(error, req, next);
+    }
+});
+
 router.post('/resetPassword', async (req, res, next) => {
     const data = req.body;
 
@@ -111,6 +132,10 @@ router.post('/signup', async (req, res, next) => {
     try {
         if (!data.email || !data.password)
             return managedError(new Error('Missing parameter.'), req, res);
+
+        const existingUser = await db.getUserByEmail(data.email);
+        if (existingUser)
+            return managedError(new Error('This email is already in use.'), req, res);
 
         const apiKey = uuidAPIKey.create().apiKey;
         const encryptedKey = encrypt(apiKey);

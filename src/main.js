@@ -60,6 +60,7 @@ const createVueApp = (rootComponent, options) => {
     app.config.globalProperties.$fromWei = FromWei;
 
     app.provide('$fromWei', FromWei);
+    app.provide('$router', router);
 
     return app;
 }

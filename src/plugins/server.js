@@ -352,6 +352,11 @@ export default {
         );
 
         const $server = {
+            checkEmail(email) {
+                const resource = `${envStore.apiRoot}/api/users/checkEmail`;
+                return axios.get(resource, { params: { email }});
+            },
+
             submitFeedback(feedbackType, from, message) {
                 const resource = `${envStore.apiRoot}/api/marketing/feedback`;
                 return axios.post(resource, { feedbackType, email: from, message });
