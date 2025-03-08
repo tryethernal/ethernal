@@ -93,6 +93,52 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     /*
+        This method is used to replace a workspace with a new empty one.
+        We use this when we want to reset an explorer.
+        Waiting for the data to be deleted can take a long time,
+        so we replace the workspace with a new one, and delete the old one in the background.
+        We make sure the workspace has been marked for deletion first, in order to avoid
+        accidental deletions.
+
+        @returns {object} - The duplicated (new) workspace
+    */
+    async replace() {
+        if (!this.pendingDeletion)
+            throw new Error('You can only replace a workspace that needs to be deleted');
+
+        const explorer = await this.getExplorer();
+        const user = await this.getUser();
+
+        return sequelize.transaction(async (transaction) => {
+            const duplicatedWorkspace = await user.safeCreateWorkspace({ ...this.get() }, transaction);
+
+            await duplicatedWorkspace.update({
+                storageEnabled: this.storageEnabled,
+                erc721LoadingEnabled: this.erc721LoadingEnabled,
+                browserSyncEnabled: this.browserSyncEnabled,
+                rpcHealthCheckEnabled: this.rpcHealthCheckEnabled,
+                statusPageEnabled: this.statusPageEnabled,
+                pollingInterval: this.pollingInterval,
+                emitMissedBlocks: this.emitMissedBlocks,
+                skipFirstBlock: this.skipFirstBlock,
+                rateLimitInterval: this.rateLimitInterval,
+                rateLimitMaxInInterval: this.rateLimitMaxInInterval
+            }, { transaction });
+
+            if (explorer)
+                await explorer.update({ workspaceId: duplicatedWorkspace.id }, { transaction });
+
+            if (user.currentWorkspaceId == this.id)
+                await user.update({ currentWorkspaceId: duplicatedWorkspace.id }, { transaction });
+
+            const newName = `Pending deletion - (Previously ${this.name} - #${this.id})`;
+            await this.update({ name: newName }, { transaction });
+
+            return duplicatedWorkspace;
+        });
+    }
+
+    /*
         This method is used to get the block size history for a workspace.
 
         @param {string} from - The start date of the block size history

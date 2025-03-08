@@ -78,7 +78,10 @@ describe(`POST ${BASE_URL}/reset`, () => {
             .send({ data: { workspace: 'My Workspace' }})
             .expect(200)
             .then(({ body }) => {
+                expect(db.markWorkspaceForDeletion).toHaveBeenCalledWith(1, 1);
+                expect(db.replaceWorkspace).toHaveBeenCalledWith(1, 1);
                 expect(enqueue).toHaveBeenCalledWith('workspaceReset', 'workspaceReset-1', { workspaceId: 1, from: new Date(0), to: expect.anything() });
+                expect(enqueue).toHaveBeenCalledWith('deleteWorkspace', 'deleteWorkspace-1', { workspaceId: 1 });
                 expect(body).toEqual({ needsBatchReset: true });
                 done();
             });

@@ -53,7 +53,10 @@ module.exports = (sequelize, DataTypes) => {
                 {
                     model: sequelize.models.Workspace,
                     as: 'workspaces',
-                    include: 'explorer'
+                    include: 'explorer',
+                    where: {
+                        pendingDeletion: false
+                    }
                 },
                 {
                     model: sequelize.models.Workspace,
@@ -119,7 +122,8 @@ module.exports = (sequelize, DataTypes) => {
                     model: Workspace,
                     as: 'workspaces',
                     where: {
-                        name: workspaceName
+                        name: workspaceName,
+                        pendingDeletion: false
                     },
                     include: [
                         {
@@ -323,17 +327,21 @@ module.exports = (sequelize, DataTypes) => {
         });
     };
 
-    async safeCreateWorkspace(data) {
-        const existingWorkspace = await this.getWorkspaces({
-            where: {
-                name: data.name
-            }
-        });
+    async safeCreateWorkspace(data, transaction) {
+        const fn = async transaction => {
+            const existingWorkspace = await sequelize.models.Workspace.findOne({
+                where: {
+                    userId: this.id,
+                    name: data.name,
+                    pendingDeletion: false
+                }
+            });
 
-        if (existingWorkspace.length > 0)
-            throw new Error('A workspace with this name already exists.');
+            console.log(existingWorkspace);
 
-        return sequelize.transaction(async transaction => {
+            if (existingWorkspace)
+                throw new Error('A workspace with this name already exists.');
+
             const workspace = await this.createWorkspace(sanitize({
                 name: data.name,
                 public: data.public,
@@ -356,7 +364,9 @@ module.exports = (sequelize, DataTypes) => {
                     attributes: ['id']
                 }
             });
-        });
+        };
+
+        return transaction ? fn(transaction) : sequelize.transaction(fn);
     }
   }
   User.init({
