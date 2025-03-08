@@ -940,7 +940,7 @@ describe(`DELETE ${BASE_URL}/:id`, () => {
             .then(() => {
                 expect(db.deleteExplorerSubscription).toHaveBeenCalledWith(1, 1);
                 expect(db.deleteExplorer).toHaveBeenCalledWith(1, 1);
-                expect(db.markWorkspaceForDeletion).toHaveBeenCalledWith(1);
+                expect(db.markWorkspaceForDeletion).toHaveBeenCalledWith(1, 1);
                 expect(enqueue).toHaveBeenCalledWith('workspaceReset', 'workspaceReset-1', {
                     workspaceId: 1,
                     from: expect.any(Date),

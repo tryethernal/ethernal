@@ -33,6 +33,36 @@ const ExplorerV2Dex = models.ExplorerV2Dex;
 const V2DexPair = models.V2DexPair;
 
 /*
+    workspace.replace() is used to replace a workspace.
+    We use this when we want to reset an explorer.
+    Waiting for the data to be deleted can take a long time,
+    so we replace the workspace with a new one, and delete the old one in the background.
+
+    This method safely calls workspace.replace() by making sure
+    the user is the owner of the workspace.
+
+    @param {number} userId - The ID of the user
+    @param {number} workspaceId - The ID of the workspace
+    @returns {object} - The duplicated (new) workspace
+*/
+const replaceWorkspace = async (userId, workspaceId) => {
+    if (!userId || !workspaceId)
+        throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findOne({
+        where: {
+            id: workspaceId,
+            userId
+        }
+    });
+
+    if (!workspace)
+        throw new Error('Could not find workspace');
+
+    return workspace.replace();
+}
+
+/*
     This method is used to get the block size history for a workspace.
 
     @param {number} workspaceId - The ID of the workspace
@@ -701,11 +731,17 @@ const getTransactionLogs = async (workspaceId, hash, page, itemsPerPage) => {
     return { count, logs };
 };
 
-const markWorkspaceForDeletion = async (workspaceId) => {
-    if (!workspaceId)
+const markWorkspaceForDeletion = async (userId, workspaceId) => {
+    if (!userId || !workspaceId)
         throw new Error('Missing parameter');
+    
+    const workspace = await Workspace.findOne({
+        where: {
+            id: workspaceId,
+            userId
+        }
+    });
 
-    const workspace = await Workspace.findByPk(workspaceId);
     if (!workspace)
         throw new Error('Could not find workspace');
 
@@ -1354,7 +1390,6 @@ const updateWorkspaceIntegrityCheck = async (workspaceId, { blockId, status }) =
     if (!workspaceId || (!blockId && !status)) throw new Error('Missing parameter');
 
     const workspace = await Workspace.findByPk(workspaceId);
-
     if (!workspace)
         throw new Error('Cannot find workspace');
 
@@ -2701,5 +2736,6 @@ module.exports = {
     getLatestGasConsumers: getLatestGasConsumers,
     getLatestGasSpenders: getLatestGasSpenders,
     getBlockTimeHistory: getBlockTimeHistory,
-    getBlockSizeHistory: getBlockSizeHistory
+    getBlockSizeHistory: getBlockSizeHistory,
+    replaceWorkspace: replaceWorkspace
 };

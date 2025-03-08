@@ -180,6 +180,12 @@ router.post('/setCurrent', authMiddleware, async (req, res, next) => {
     }
 });
 
+/*
+    This endpoint is used to reset a workspace.
+    If the workspace doesn't have to much data, it will be reset synchronously.
+    Otherwise, it will be marked for deletion, and a new empty workspace will be created in its place.
+    The old workspace will be deleted in the background.
+*/
 router.post('/reset', authMiddleware, async (req, res, next) => {
     const data = req.body.data;
 
@@ -193,12 +199,16 @@ router.post('/reset', authMiddleware, async (req, res, next) => {
             return managedError(new Error('Could not find workspace.'), req, res);
 
         const needsBatchReset = await db.workspaceNeedsBatchReset(data.uid, workspace.id);
-        if (needsBatchReset)
+        if (needsBatchReset) {
+            await db.markWorkspaceForDeletion(data.user.id, workspace.id);
+            await db.replaceWorkspace(data.user.id, workspace.id);
             await enqueue('workspaceReset', `workspaceReset-${workspace.id}`, {
                 workspaceId: workspace.id,
                 from: new Date(0),
                 to: new Date()
             });
+            await enqueue('deleteWorkspace', `deleteWorkspace-${workspace.id}`, { workspaceId: workspace.id });
+        }
         else
             await db.resetWorkspace(data.uid, data.workspace);
 
