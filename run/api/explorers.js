@@ -499,7 +499,7 @@ router.delete('/:id', authMiddleware, async (req, res, next) => {
         await db.deleteExplorer(data.user.id, explorer.id);
 
         if (data.deleteWorkspace)
-            await db.markWorkspaceForDeletion(explorer.workspaceId);
+            await db.markWorkspaceForDeletion(data.user.id, explorer.workspaceId);
             await enqueue('workspaceReset', `workspaceReset-${explorer.workspaceId}`, {
                 workspaceId: explorer.workspaceId,
                 from: new Date(0),
