@@ -707,8 +707,8 @@ describe('getTransactionLogs', () => {
 
 describe('markWorkspaceForDeletion', () => {
     it('Should throw an error if no workspace', (done) => {
-        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce(null);
-        db.markWorkspaceForDeletion(1)
+        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce(null);
+        db.markWorkspaceForDeletion(1, 1)
             .catch(error => {
                 expect(error).toEqual(new Error('Could not find workspace'));
                 done();
@@ -717,8 +717,8 @@ describe('markWorkspaceForDeletion', () => {
 
     it('Should update the workspace', (done) => {
         const update = jest.fn();
-        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({ update });
-        db.markWorkspaceForDeletion(1)
+        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({ update });
+        db.markWorkspaceForDeletion(1, 1)
             .then(() => {
                 expect(update).toHaveBeenCalledWith({ pendingDeletion: true, public: false });
                 done();

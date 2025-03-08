@@ -1390,7 +1390,6 @@ const updateWorkspaceIntegrityCheck = async (workspaceId, { blockId, status }) =
     if (!workspaceId || (!blockId && !status)) throw new Error('Missing parameter');
 
     const workspace = await Workspace.findByPk(workspaceId);
-
     if (!workspace)
         throw new Error('Cannot find workspace');
 
