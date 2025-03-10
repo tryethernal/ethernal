@@ -56,7 +56,8 @@ module.exports = (sequelize, DataTypes) => {
                     include: 'explorer',
                     where: {
                         pendingDeletion: false
-                    }
+                    },
+                    required: false
                 },
                 {
                     model: sequelize.models.Workspace,
