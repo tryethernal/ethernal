@@ -73,61 +73,71 @@
     </v-container>
 </template>
 
-<script>
-const ethers = require('ethers');
-
-import { mapStores } from 'pinia';
+<script setup>
+import { ref, computed, watch, onMounted, onBeforeUnmount, getCurrentInstance } from 'vue';
 import { useExplorerStore } from '../stores/explorer';
 import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
-
+import { utils } from 'ethers';
 import TransactionsList from './TransactionsList.vue';
 
-export default {
-    name: 'Block',
-    props: ['number'],
-    components: {
-        TransactionsList
-    },
-    data: () => ({
-        block: null,
-        pusherChannelHandler: null,
-        loading: true
-    }),
-    mounted() {
-        this.pusherChannelHandler = this.$pusher.onNewBlock(data => {
-            if (data.number == this.number)
-                this.loadBlock(this.number);
-        }, this);
-    },
-    destroy() {
-        this.pusherChannelHandler.unbind(null, null, this);
-    },
-    methods: {
-        commify: ethers.utils.commify,
-        loadBlock(number) {
-            this.loading = true;
-            this.$server.getBlock(number)
-                .then(({ data }) => this.block = data)
-                .catch(console.log)
-                .finally(() => this.loading = false);
-        },
-        listUpdated(number) {
-            this.$server.getBlock(number)
-                .then(({ data }) => this.block = data)
-                .catch(console.log);
-        }
-    },
-    computed: {
-        ...mapStores(useExplorerStore, useCurrentWorkspaceStore),
-        syncing() {
-            return this.block && this.block.syncedTransactionCount < this.block.transactionsCount;
-        }
-    },
-    watch: {
-        number: {
-            immediate: true,
-            handler(number) { this.loadBlock(number); }
-        }
+// Get Vue instance to access global properties
+const { proxy } = getCurrentInstance();
+
+// Props
+const props = defineProps({
+    number: {
+        type: [String, Number],
+        required: true
     }
-}
+});
+
+// Stores
+const explorerStore = useExplorerStore();
+const currentWorkspaceStore = useCurrentWorkspaceStore();
+
+// Reactive state
+const block = ref(null);
+const pusherChannelHandler = ref(null);
+const loading = ref(true);
+
+// Methods
+const commify = utils.commify;
+
+const loadBlock = (number) => {
+    loading.value = true;
+    proxy.$server.getBlock(number)
+        .then(({ data }) => block.value = data)
+        .catch(console.log)
+        .finally(() => loading.value = false);
+};
+
+const listUpdated = (number) => {
+    proxy.$server.getBlock(number)
+        .then(({ data }) => block.value = data)
+        .catch(console.log);
+};
+
+// Computed properties
+const syncing = computed(() => {
+    return block.value && block.value.syncedTransactionCount < block.value.transactionsCount;
+});
+
+// Lifecycle hooks
+onMounted(() => {
+    pusherChannelHandler.value = proxy.$pusher.onNewBlock(data => {
+        if (data.number == props.number)
+            loadBlock(props.number);
+    });
+});
+
+onBeforeUnmount(() => {
+    if (pusherChannelHandler.value) {
+        pusherChannelHandler.value.unbind(null, null);
+    }
+});
+
+// Watch for changes to the number prop
+watch(() => props.number, (newNumber) => {
+    loadBlock(newNumber);
+}, { immediate: true });
 </script>

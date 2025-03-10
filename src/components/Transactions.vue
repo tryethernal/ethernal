@@ -8,13 +8,6 @@
     </v-container>
 </template>
 
-<script>
+<script setup>
 import TransactionsList from './TransactionsList.vue';
-
-export default {
-    name: 'Transactions',
-    components: {
-        TransactionsList
-    }
-}
 </script>

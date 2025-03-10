@@ -24,11 +24,11 @@
 
         <v-row>
             <v-col cols="12" md="6">
-                <LineChart :title="'Transaction Volume'" :xLabels="charts['transactionVolume'].xLabels" :data="charts['transactionVolume'].data" :tooltipUnit="'transaction'" :index="0" />
+                <LineChart :title="'Transaction Volume'" :xLabels="charts.transactionVolume.xLabels" :data="charts.transactionVolume.data" :tooltipUnit="'transaction'" :index="0" />
             </v-col>
 
             <v-col cols="12" md="6">
-                <LineChart :title="'Active Wallets Count'" :xLabels="charts['uniqueWalletCount'].xLabels" :data="charts['uniqueWalletCount'].data" :tooltipUnit="'wallet'" :index="4" />
+                <LineChart :title="'Active Wallets Count'" :xLabels="charts.uniqueWalletCount.xLabels" :data="charts.uniqueWalletCount.data" :tooltipUnit="'wallet'" :index="4" />
             </v-col>
         </v-row>
 
@@ -54,12 +54,9 @@
     </v-container>
 </template>
 
-<script>
-const ethers = require('ethers');
-const formatUnits = ethers.utils.formatUnits;
-const BigNumber = ethers.BigNumber;
-import { mapStores } from 'pinia';
-
+<script setup>
+import { ref, computed, onMounted, inject } from 'vue';
+import { ethers } from 'ethers';
 import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
 import { useExplorerStore } from '../stores/explorer';
 
@@ -68,86 +65,88 @@ import BlockList from './BlockList.vue';
 import LineChart from './LineChart.vue';
 import StatNumber from './StatNumber.vue';
 
-export default {
-    name: 'Overview',
-    components: {
-        TransactionsList,
-        BlockList,
-        LineChart,
-        StatNumber
-    },
-    data: () => ({
-        activeWalletCountLoading: false,
-        txCountTotalLoading: false,
-        txCount24hLoading: false,
-        transactionListLoading: false,
-        txCount24h: 0,
-        txCountTotal: 0,
-        activeWalletCount: 0,
-        charts: {
-            transactionVolume: {},
-            uniqueWalletCount: {}
-        },
-        pusherHandler: null,
-        from: new Date(new Date() - 14 * 24 * 3600 * 1000),
-        to: new Date()
-    }),
-    mounted() {
-        this.getActiveWalletCount();
-        this.getTxCountTotal();
-        this.getTxCount24h();
-        this.getTransactionVolume();
-        this.getWalletVolume();
-        this.chart = this.$refs.chart;
-    },
-    methods: {
-        getActiveWalletCount() {
-            this.activeWalletCountLoading = true;
-            this.$server.getActiveWalletCount()
-                .then(({ data: { count }}) => this.activeWalletCount = count)
-                .catch(console.log)
-                .finally(() => this.activeWalletCountLoading = false);
-        },
-        getTxCountTotal() {
-            this.txCountTotalLoading = true;
-            this.$server.getTxCountTotal()
-                .then(({ data: { count }}) => this.txCountTotal = count)
-                .catch(console.log)
-                .finally(() => this.txCountTotalLoading = false);
-        },
-        getTxCount24h() {
-            this.txCount24hLoading = true;
-            this.$server.getTxCount24h()
-                .then(({ data: { count }}) => this.txCount24h = count)
-                .catch(console.log)
-                .finally(() => this.txCount24hLoading = false);
-        },
-        getTransactionVolume() {
-            this.$server.getTransactionVolume(this.from, this.to)
-                .then(({ data }) => {
-                    this.charts['transactionVolume'] = {
-                        xLabels: data.map(t => t.date),
-                        data: data.map(t => parseInt(t.count))
-                    };
-                })
-                .catch(console.log);
-        },
-        getWalletVolume() {
-            this.$server.getUniqueWalletCount(this.from, this.to)
-                .then(({ data }) => {
-                    this.charts['uniqueWalletCount'] = {
-                        xLabels: data.map(t => t.date),
-                        data: data.map(t => parseInt(t.count))
-                    };
-                })
-                .catch(console.log);
-        },
-    },
-    computed: {
-        ...mapStores(useCurrentWorkspaceStore, useExplorerStore),
-        formattedTotalSupply() {
-            return formatUnits(BigNumber.from(this.explorerStore.totalSupply), 18).split('.')[0];
-        }
-    }
-}
+const formatUnits = ethers.utils.formatUnits;
+const BigNumber = ethers.BigNumber;
+
+// Stores
+const currentWorkspaceStore = useCurrentWorkspaceStore();
+const explorerStore = useExplorerStore();
+
+// Inject server
+const $server = inject('$server');
+
+// Reactive state
+const activeWalletCountLoading = ref(false);
+const txCountTotalLoading = ref(false);
+const txCount24hLoading = ref(false);
+const txCount24h = ref(0);
+const txCountTotal = ref(0);
+const activeWalletCount = ref(0);
+const charts = ref({
+    transactionVolume: { xLabels: [], data: [] },
+    uniqueWalletCount: { xLabels: [], data: [] }
+});
+const from = ref(new Date(new Date() - 14 * 24 * 3600 * 1000));
+const to = ref(new Date());
+
+// Computed properties
+const formattedTotalSupply = computed(() => {
+    return formatUnits(BigNumber.from(explorerStore.totalSupply), 18).split('.')[0];
+});
+
+// Methods
+const getActiveWalletCount = () => {
+    activeWalletCountLoading.value = true;
+    $server.getActiveWalletCount()
+        .then(({ data: { count }}) => activeWalletCount.value = count)
+        .catch(console.log)
+        .finally(() => activeWalletCountLoading.value = false);
+};
+
+const getTxCountTotal = () => {
+    txCountTotalLoading.value = true;
+    $server.getTxCountTotal()
+        .then(({ data: { count }}) => txCountTotal.value = count)
+        .catch(console.log)
+        .finally(() => txCountTotalLoading.value = false);
+};
+
+const getTxCount24h = () => {
+    txCount24hLoading.value = true;
+    $server.getTxCount24h()
+        .then(({ data: { count }}) => txCount24h.value = count)
+        .catch(console.log)
+        .finally(() => txCount24hLoading.value = false);
+};
+
+const getTransactionVolume = () => {
+    $server.getTransactionVolume(from.value, to.value)
+        .then(({ data }) => {
+            charts.value.transactionVolume = {
+                xLabels: data.map(t => t.date),
+                data: data.map(t => parseInt(t.count))
+            };
+        })
+        .catch(console.log);
+};
+
+const getWalletVolume = () => {
+    $server.getUniqueWalletCount(from.value, to.value)
+        .then(({ data }) => {
+            charts.value.uniqueWalletCount = {
+                xLabels: data.map(t => t.date),
+                data: data.map(t => parseInt(t.count))
+            };
+        })
+        .catch(console.log);
+};
+
+// Lifecycle hooks
+onMounted(() => {
+    getActiveWalletCount();
+    getTxCountTotal();
+    getTxCount24h();
+    getTransactionVolume();
+    getWalletVolume();
+});
 </script>

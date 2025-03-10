@@ -18,3 +18,6 @@ DO NOT GIVE ME HIGH LEVEL SHIT, IF I ASK FOR FIX OR EXPLANATION, I WANT ACTUAL C
 - Please respect all code comments, they're usually there for a reason. Remove them ONLY if they're completely irrelevant after a code change. if unsure, do not remove the comment.
 - Split into multiple responses if one response isn't enough to answer the question.
 - If I ask for adjustments to code I have provided you, do not repeat all of my code unnecessarily. Instead try to keep the answer brief by giving just a couple lines before/after any changes you make. Multiple code blocks are ok.
+- The docs/ folder contains sourced material that you should use to answer questions.
+- The "docs/User Experience" folder contains user experience pdf books that are known to have great content. Try to apply those principles as much as possible. When you do, mention it at the end of your answer.
+- This project is a Vue 3 project, using Vuetify. Use vuetify components as much as possible. Use vuetify classes as much possible. Minimize the number of custom classes. Use themes colors with their variations as much as possible. Minimize the use of hardcoded colors.

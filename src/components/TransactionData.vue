@@ -1,6 +1,6 @@
 <template>
     <div v-if="transaction && transaction.hash">
-        <div class="text-right" v-if="!withoutStorageHeader">
+        <div class="text-right" v-if="!withoutStorageHeader && false">
             <router-link :to="`/transaction/${transaction.hash}`">{{ transaction.hash.slice(0, 15) }}...</router-link>
             <v-divider vertical class="mx-2"></v-divider>
             <router-link :to="`/block/${transaction.blockNumber}`">{{ transaction.blockNumber }}</router-link>

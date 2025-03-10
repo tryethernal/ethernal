@@ -239,7 +239,7 @@ onUnmounted(() => {
 
 </script>
 <style scoped>
-/deep/ .isSyncing {
+:deep(.isSyncing) {
     font-style: italic;
     opacity: 0.7;
 }
