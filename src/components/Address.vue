@@ -1,5 +1,9 @@
 <template>
     <v-container fluid>
+        <h2 class="text-h6 font-weight-medium">
+            Address <span class="text-body-1 text-medium-emphasis">{{ address }}</span>
+        </h2>
+        <v-divider class="my-4"></v-divider>
         <v-card v-if="loadingContract" border>
             <v-card-text>
                 <v-row>
@@ -16,7 +20,42 @@
         </v-card>
         <template v-else>
             <v-row class="mb-1">
-                <v-col cols="12" lg="5" v-if="contract">
+                <v-col cols="12" sm="6" lg="3">
+                    <v-card :loading="loadingBalance">
+                        <v-card-text>
+                            <h3 class="mb-3 font-weight-medium">Overview</h3>
+
+                            <h4 class="text-uppercase text-caption text-medium-emphasis">{{ currentWorkspaceStore.chain.token }} Balance</h4>
+                            {{ fromWei(balance, 'ether', currentWorkspaceStore.chain.token) }}
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+                <v-col cols="12" sm="6" lg="3">
+                    <v-card :loading="loadingStats">
+                        <v-card-text>
+                            <h3 class="mb-3 font-weight-medium">More Info</h3>
+
+                            <h4 class="text-uppercase text-caption text-medium-emphasis">Transactions Sent</h4>
+                            Latest:
+                            <span class="font-weight-medium mr-3">
+                                <router-link v-if="addressTransactionStats.last_transaction_hash" class="no-decoration" :to="`/transaction/${addressTransactionStats.last_transaction_hash}`">
+                                    {{ dt.fromNow(addressTransactionStats.last_transaction_timestamp) }}
+                                    <sup><v-icon size="small" icon="mdi-arrow-top-right"></v-icon></sup>
+                                </router-link>
+                                <span v-else>N/A</span>
+                            </span>
+                            First:
+                            <span class="font-weight-medium">
+                                <router-link v-if="addressTransactionStats.first_transaction_hash" class="no-decoration" :to="`/transaction/${addressTransactionStats.first_transaction_hash}`">
+                                    {{ dt.fromNow(addressTransactionStats.first_transaction_timestamp) }}
+                                    <sup><v-icon size="small" icon="mdi-arrow-top-right"></v-icon></sup>
+                                </router-link>
+                                <span v-else>N/A</span>
+                            </span>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+                <v-col cols="12" sm="6" lg="3" v-if="contract">
                     <v-card style="height: 100%">
                         <v-card-title v-if="contract.name">{{ contract.name }}</v-card-title>
                         <v-card-subtitle v-if="contract.patterns.length > 0" class="mt-2">
@@ -57,209 +96,197 @@
                         </v-card-text>
                     </v-card>
                 </v-col>
-
-                <v-col cols="12" lg="7">
-                    <v-row>
-                        <v-col cols="12">
-                            <v-card :loading="loadingStats">
-                                <template v-slot:subtitle>
-                                    Balance
-                                </template>
-                                <v-card-text class="text-h4 text-medium-emphasis" align="center">
-                                    {{ $fromWei(balance, 'ether', currentWorkspaceStore.chain.token) }}
-                                </v-card-text>
-                            </v-card>
-                        </v-col>
-                    </v-row>
-
-                    <v-row>
-                        <v-col cols="12" lg="6">
-                            <v-card style="height: 100%;" :loading="loadingStats">
-                                <template v-slot:subtitle>
-                                    Transactions
-                                </template>
-                                <v-card-text class="text-h4 text-medium-emphasis" align="center">
-                                    <template v-if="!contract">
-                                        {{ sentTransactionCount }}<v-icon size="x-small">mdi-arrow-up-thin</v-icon>
-                                        <v-divider vertical class="mx-4"></v-divider>
-                                    </template>
-                                    {{ receivedTransactionCount }}<v-icon size="x-small" v-if="!contract">mdi-arrow-down-thin</v-icon>
-                                </v-card-text>
-                            </v-card>
-                        </v-col>
-
-                        <v-col cols="12" lg="6">
-                            <v-card style="height: 100%;" :loading="loadingStats">
-                                <template v-slot:subtitle>
-                                    ERC-20 Transfers
-                                </template>
-                                <v-card-text class="text-h4 text-medium-emphasis" align="center">
-                                    {{ sentErc20TokenTransferCount }}<v-icon size="x-small">mdi-arrow-up-thin</v-icon><v-divider vertical class="mx-4"></v-divider> {{ receivedErc20TokenTransferCount }}<v-icon size="x-small">mdi-arrow-down-thin</v-icon>
-                                </v-card-text>
-                            </v-card>
-                        </v-col>
-                    </v-row>
-                </v-col>
             </v-row>
 
-            <v-tabs v-model="tab">
-                <v-tab class="text-medium-emphasis" color="primary" id="transactionsTab" value="transactions">Transactions</v-tab>
-                <v-tab class="text-medium-emphasis" color="primary" id="transfersTab" value="transfers">Transfers</v-tab>
-                <v-tab class="text-medium-emphasis" color="primary" id="erc20BalancesTab" value="erc20Balances">ERC-20 Tokens</v-tab>
-                <v-tab class="text-medium-emphasis" color="primary" id="erc721BalancesTab" value="erc721Balances">ERC-721 Tokens</v-tab>
-                <v-tab class="text-medium-emphasis" color="primary" v-if="contract" id="interactionsTab" value="interactions">Read / Write</v-tab>
-                <v-tab class="text-medium-emphasis" color="primary" v-if="contract" id="codeTab" value="code">Code</v-tab>
-                <v-tab class="text-medium-emphasis" color="primary" v-if="contract" id="logsTab" value="logs">Logs</v-tab>
-            </v-tabs>
+            <v-chip-group :selected-class="`text-${contrastingColor}`" v-model="tabModel">
+                <v-chip size="small" value="transactions">
+                    Transactions 
+                    <template v-if="!loadingStats">({{ totalTransactions }})</template>
+                </v-chip>
+                <v-chip size="small" value="internaltx">
+                    Internal Transactions
+                    <template v-if="!loadingStats">({{ addressTransactionStats.internalTransactionCount }})</template>
+                </v-chip>
+                <v-chip size="small" value="transfers">
+                    Token Transfers 
+                    <template v-if="!loadingStats">({{ totalTokenTransfers }})</template>
+                </v-chip>
+                <v-chip size="small" value="erc20Balances">ERC-20 Tokens</v-chip>
+                <v-chip size="small" value="erc721Balances">ERC-721 Tokens</v-chip>
+                <v-chip size="small" value="interactions" v-if="contract">Read / Write</v-chip>
+                <v-chip size="small" value="code" v-if="contract">Code</v-chip>
+                <v-chip size="small" value="logs" v-if="contract">Logs</v-chip>
+            </v-chip-group>
 
-            <v-tabs-window v-model="tab">
-                <v-tabs-window-item value="transactions">
-                    <v-card class="mt-3">
+            <div v-show="tab === 'transactions'">
+                <v-card>
+                    <Address-Transactions-List :address="address" :key="address" />
+                </v-card>
+            </div>
+
+            <div v-show="tab === 'internaltx'">
+                <v-card>
+                    <AddressTraceSteps :address="address" :key="address" />
+                </v-card>
+            </div>
+
+            <div v-show="tab === 'transfers'">
+                <v-card>
+                    <Address-Token-Transfers
+                        :address="address"
+                        :key="address" 
+                        :erc20-count="patternCount.erc20"
+                        :erc721-count="patternCount.erc721"
+                        :erc1155-count="patternCount.erc1155"
+                    />
+                </v-card>
+            </div>
+
+            <div v-show="tab === 'erc20Balances'">
+                <Token-Balances :address="address" :patterns="['erc20']" :key="address" />
+            </div>
+
+            <div v-show="tab === 'erc721Balances'">
+                <Token-Balances :address="address" :patterns="['erc721']" :dense="true" :key="address" />
+            </div>
+
+            <template v-if="contract">
+                <div v-show="tab === 'interactions'">
+                    <Contract-Interaction :address="address" :key="address" />
+                </div>
+
+                <div v-show="tab === 'code'">
+                    <Contract-Code v-if="contract" :contract="contract" :key="address" />
+                </div>
+
+                <div v-show="tab === 'logs'">
+                    <v-card>
                         <v-card-text>
-                            <Address-Transactions-List :address="address" :key="address" />
+                            <Contract-Logs :address="address" :key="address" />
                         </v-card-text>
                     </v-card>
-                </v-tabs-window-item>
-
-                <v-tabs-window-item value="transfers">
-                    <v-card class="mt-3">
-                        <v-card-text>
-                            <Address-Token-Transfers :address="address" :key="address" />
-                        </v-card-text>
-                    </v-card>
-                </v-tabs-window-item>
-
-                <v-tabs-window-item value="erc20Balances">
-                    <div class="mt-3">
-                        <Token-Balances :address="address" :patterns="['erc20']" :key="address" />
-                    </div>
-                </v-tabs-window-item>
-
-                <v-tabs-window-item value="erc721Balances">
-                    <div class="mt-3">
-                        <Token-Balances :address="address" :patterns="['erc721']" :dense="true" :key="address" />
-                    </div>
-                </v-tabs-window-item>
-
-                <template v-if="contract">
-                    <v-tabs-window-item value="interactions">
-                        <Contract-Interaction :address="address" :key="address" />
-                    </v-tabs-window-item>
-
-                    <v-tabs-window-item value="code">
-                        <div class="mt-3">
-                            <Contract-Code v-if="contract" :contract="contract" :key="address" />
-                        </div>
-                    </v-tabs-window-item>
-
-                    <v-tabs-window-item value="logs">
-                        <v-card class="mt-3">
-                            <v-card-text>
-                                <Contract-Logs :address="address" :key="address" />
-                            </v-card-text>
-                        </v-card>
-                    </v-tabs-window-item>
-                </template>
-            </v-tabs-window>
+                </div>
+            </template>
         </template>
     </v-container>
 </template>
 
-<script>
-import { formatContractPattern } from '../lib/utils';
-
-import { mapStores } from 'pinia';
+<script setup>
+import { ref, computed, watch, onMounted, inject } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { formatContractPattern, getBestContrastingColor, formatNumber } from '../lib/utils';
 import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
+import { useTheme } from 'vuetify';
 
 import AddressTransactionsList from './AddressTransactionsList.vue';
 import AddressTokenTransfers from './AddressTokenTransfers.vue';
+import AddressTraceSteps from './AddressTraceSteps.vue';
 import TokenBalances from './TokenBalances.vue';
 import ContractInteraction from './ContractInteraction.vue';
 import ContractCode from './ContractCode.vue';
 import ContractLogs from './ContractLogs.vue';
 import HashLink from './HashLink.vue';
 
-export default {
-    name: 'Address',
-    props: ['address'],
-    components: {
-        AddressTransactionsList,
-        AddressTokenTransfers,
-        TokenBalances,
-        ContractInteraction,
-        ContractCode,
-        ContractLogs,
-        HashLink
-    },
-    data: () => ({
-        balance: 0,
-        loadingContract: true,
-        loadingStats: true,
-        contract: null,
-        sentTransactionCount: null,
-        receivedTransactionCount: null,
-        sentErc20TokenTransferCount: null,
-        receivedErc20TokenTransferCount: null
-    }),
-    mounted() {
-        this.$server.getNativeTokenBalance(this.address).then(({ data: { balance }}) => this.balance = balance || 0);
-    },
-    methods: {
-        formatContractPattern
-    },
-    watch: {
-        address: {
-            immediate: true,
-            handler(address) {
-                this.$server.getContract(address)
-                    .then(({ data }) => this.contract = data)
-                    .catch(console.log)
-                    .finally(() => this.loadingContract = false);
+// Props
+const props = defineProps(['address']);
 
-                this.$server.getAddressStats(address)
-                    .then(({ data }) => {
-                        this.sentTransactionCount = data.sentTransactionCount;
-                        this.receivedTransactionCount = data.receivedTransactionCount;
-                        this.sentErc20TokenTransferCount = data.sentErc20TokenTransferCount;
-                        this.receivedErc20TokenTransferCount = data.receivedErc20TokenTransferCount;
-                    })
-                    .catch(console.log)
-                    .finally(() => this.loadingStats = false);
-            }
-        }
-    },
-    computed: {
-        ...mapStores(useCurrentWorkspaceStore),
-        isErc20() {
-            return this.contract &&
-                this.contract.patterns &&
-                this.contract.patterns.indexOf('erc20') > -1;
-        },
-        isErc721() {
-            return this.contract &&
-                this.contract.patterns &&
-                this.contract.patterns.indexOf('erc721') > -1;
-        },
-        isContract: function() {
-            return this.contract && this.contract.address;
-        },
-        tab: {
-            set(tab) {
-                this.$router.replace({ query: { ...this.$route.query, tab } }).catch(()=>{});
-            },
-            get() {
-                return this.$route.query.tab;
-            }
-        },
+// Injected services
+const server = inject('$server');
+const fromWei = inject('$fromWei');
+const dt = inject('$dt');
+// Router
+const route = useRoute();
+const router = useRouter();
+
+// Store
+const currentWorkspaceStore = useCurrentWorkspaceStore();
+
+// Reactive state
+const balance = ref(0);
+const loadingBalance = ref(true);
+const loadingContract = ref(true);
+const loadingStats = ref(true);
+const contract = ref(null);
+const addressTransactionStats = ref({});
+
+// Computed properties
+const isErc20 = computed(() => 
+    contract.value && 
+    contract.value.patterns && 
+    contract.value.patterns.indexOf('erc20') > -1
+);
+
+const isErc721 = computed(() => 
+    contract.value && 
+    contract.value.patterns && 
+    contract.value.patterns.indexOf('erc721') > -1
+);
+
+const totalTransactions = computed(() => {
+    if (!addressTransactionStats.value.sent && !addressTransactionStats.value.received) return 0;
+    return formatNumber(addressTransactionStats.value.sent + addressTransactionStats.value.received, { short: true });
+});
+
+const totalTokenTransfers = computed(() => {
+    if (!addressTransactionStats.value.tokenTransferCount) return 0;
+    return formatNumber(addressTransactionStats.value.tokenTransferCount, { short: true });
+});
+
+const patternCount = computed(() => {
+    return {
+        erc20: addressTransactionStats.value ? addressTransactionStats.value.erc20_sent + addressTransactionStats.value.erc20_received : 0,
+        erc721: addressTransactionStats.value ? addressTransactionStats.value.erc721_sent + addressTransactionStats.value.erc721_received : 0,
+        erc1155: addressTransactionStats.value ? addressTransactionStats.value.erc1155_sent + addressTransactionStats.value.erc1155_received : 0
     }
-}
-</script>
-<style scoped>
-.v-window {
-    overflow: visible;
-}
+});
 
-.v-card-subtitle {
-    opacity: 1;
-}
-</style>
+const tab = computed({
+    get() {
+        return route.query.tab;
+    },
+    set(value) {
+        router.replace({ query: { ...route.query, tab: value } }).catch(() => {});
+    }
+});
+
+// Add for chip group styling
+const contrastingColor = computed(() => {
+    const theme = useTheme();
+    return getBestContrastingColor('#4242421f', theme.current.value.colors);
+});
+
+// Add tabModel for v-chip-group that syncs with tab computed property
+const tabModel = computed({
+    get() {
+        return tab.value || 'transactions';
+    },
+    set(value) {
+        tab.value = value;
+    }
+});
+
+// Methods
+const loadContractData = (address) => {
+    server.getContract(address)
+        .then(({ data }) => contract.value = data)
+        .catch(console.log)
+        .finally(() => loadingContract.value = false);
+
+    server.getAddressStats(address)
+        .then(({ data }) => addressTransactionStats.value = data || {})
+        .catch(console.log)
+        .finally(() => loadingStats.value = false);
+};
+
+// Lifecycle hooks
+onMounted(() => {
+    server.getNativeTokenBalance(props.address)
+        .then(({ data: { balance: balanceValue }}) => balance.value = balanceValue || 0)
+        .finally(() => loadingBalance.value = false);
+});
+
+// Watchers
+watch(() => props.address, (address) => {
+    loadContractData(address);
+}, { immediate: true });
+</script>

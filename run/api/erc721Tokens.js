@@ -71,9 +71,10 @@ router.get('/:address/tokenIndex/:tokenIndex', workspaceAuthMiddleware, async (r
 
         if (URI) {
             const axiosableURI = URI.startsWith('ipfs://') ?
-                `https://ipfs.io/ipfs/${URI.slice(7, URI.length)}` : URI;
+                `https://gateway.pinata.cloud/ipfs/${URI.slice(7, URI.length)}` : URI;
             try {
-                metadata = (await axios.get(axiosableURI)).data;
+                const response = await axios.get(axiosableURI);
+                metadata = response.data;
             } catch(error) {
                 metadata = {};
             }
@@ -120,9 +121,10 @@ router.get('/:address/:tokenId', workspaceAuthMiddleware, async (req, res, next)
 
         if (URI) {
             const axiosableURI = URI.startsWith('ipfs://') ?
-                `https://ipfs.io/ipfs/${URI.slice(7, URI.length)}` : URI;
+            `https://gateway.pinata.cloud/ipfs/${URI.slice(7, URI.length)}` : URI;
             try {
-                metadata = (await axios.get(axiosableURI)).data;
+                const response = await axios.get(axiosableURI);
+                metadata = response.data;
             } catch(error) {
                 metadata = {};
             }

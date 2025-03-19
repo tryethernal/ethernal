@@ -1,87 +1,69 @@
 <template>
-    <v-container fluid v-if="!loading">
-        <template v-if="block">
-            <v-row>
-                <v-col cols="6">
-                    <v-alert density="compact" text type="warning" class="my-2" v-show="syncing">
-                        Some transactions in this block are still being processed ({{ block.syncedTransactionCount }} / {{ block.transactionsCount }}).
-                    </v-alert>
-                    <h2>Block {{ block.number && commify(block.number) }}</h2>
-                </v-col>
-            </v-row>
-            <v-row class="mb-4">
-                <v-col lg="2" md="12" sm="12">
-                    <v-list-subheader class="text-overline">Gas Limit</v-list-subheader>
-                    {{ parseInt(block.gasLimit).toLocaleString() }}
-                </v-col>
-                <v-divider vertical></v-divider>
-                <v-col lg="2" md="12" sm="12">
-                    <v-list-subheader class="text-overline">Mined On</v-list-subheader>
-                    {{ $dt.shortDate(block.timestamp) }}<br>
-                    <small>{{ $dt.fromNow(block.timestamp) }}</small>
-                </v-col>
-                <v-divider vertical></v-divider>
-                <v-col lg="4" md="12" sm="12">
-                    <v-list-subheader class="text-overline">Hash</v-list-subheader>
-                    <span style="overflow-wrap: break-word;">{{ block.hash }}</span>
-                </v-col>
-                <template v-if="explorerStore.l1Explorer && block.l1BlockNumber">
-                    <v-divider vertical></v-divider>
-                    <v-col lg="2" md="12" sm="12">
-                        <v-list-subheader class="text-overline">L1 Block</v-list-subheader>
-                        <a style="text-decoration: none;" :href="`${explorerStore.l1Explorer}/block/${block.l1BlockNumber}`" target="_blank">{{ commify(block.l1BlockNumber) }}</a>
-                    </v-col>
-                </template>
-            </v-row>
-            <h4>Transactions</h4>
+    <v-container fluid>
+        <h2 class="text-h6 font-weight-medium">Block <span class="text-grey-darken-1">#{{ props.number }}</span></h2>
+        <v-alert density="compact" variant="tonal" type="info" class="mt-2 mb-4" v-if="block && block.syncedTransactionCount < block.transactionsCount">
+            Some transactions in this block are still being processed ({{ block.syncedTransactionCount }} / {{ block.transactionsCount }}).
+        </v-alert>
+        <v-divider class="my-4"></v-divider>
+        <template v-if="loading">
             <v-card>
-                <Transactions-List @listUpdated="listUpdated(number)" :blockNumber="number" :withCount="true" />
+                <v-card-text>
+                    <v-skeleton-loader type="list-item-three-line"></v-skeleton-loader>
+                    <v-skeleton-loader type="list-item-three-line"></v-skeleton-loader>
+                    <v-skeleton-loader type="list-item-three-line"></v-skeleton-loader>
+                </v-card-text>
             </v-card>
+        </template>
+        <template v-else-if="block">
+            <!-- Navigation Tabs -->
+            <v-chip-group :selected-class="`text-${contrastingColor}`" v-model="selectedTab">
+                <v-chip size="small" value="overview">Overview</v-chip>
+                <v-chip size="small" value="transactions">Transactions ({{ block.transactionsCount || 0 }})</v-chip>
+            </v-chip-group>
+
+            <!-- Tab Content -->
+            <template v-if="selectedTab === 'overview'">
+                <Block-Overview 
+                    :block="block" 
+                    @change-tab="selectedTab = $event"
+                />
+            </template>
+
+            <template v-if="selectedTab === 'transactions'">
+                <Block-Transaction-List 
+                    :blockNumber="number" 
+                    @list-updated="listUpdated(number)"
+                />
+            </template>
         </template>
         <template v-else>
             <v-card>
                 <v-card-text>
-                    <v-row>
-                        <v-col align="center">
-                            <v-icon style="opacity: 0.25;" size="200" color="primary-lighten-1">mdi-cube-outline</v-icon>
-                        </v-col>
-                    </v-row>
-                    <v-row>
-                        <v-col class="text-body-1 text-center">
+                    <div class="d-flex align-center justify-center py-8">
+                        <v-icon size="large" color="grey-lighten-1" class="mr-4">mdi-cube-outline</v-icon>
+                        <span class="text-body-1">
                             This block has not been mined. Current block: <router-link style="text-decoration: none;" :to="'/block/' + currentWorkspaceStore.currentBlock.number">{{ currentWorkspaceStore.currentBlock.number && commify(currentWorkspaceStore.currentBlock.number) }}</router-link>
-                        </v-col>
-                    </v-row>
+                        </span>
+                    </div>
                 </v-card-text>
             </v-card>
         </template>
     </v-container>
-    <v-container fluid v-else>
-        <v-card>
-            <v-card-text>
-                <v-row>
-                    <v-col cols="2"><v-skeleton-loader type="list-item-three-line"></v-skeleton-loader></v-col>
-                    <v-col cols="2"><v-skeleton-loader type="list-item-three-line"></v-skeleton-loader></v-col>
-                    <v-col cols="2"><v-skeleton-loader type="list-item-three-line"></v-skeleton-loader></v-col>
-                </v-row>
-                <v-row>
-                    <v-col>
-                        <v-skeleton-loader type="table"></v-skeleton-loader>
-                    </v-col>
-                </v-row>
-            </v-card-text>
-        </v-card>
-    </v-container>
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted, onBeforeUnmount, getCurrentInstance } from 'vue';
+import { ref, computed, watch, onMounted, onBeforeUnmount, inject } from 'vue';
 import { useExplorerStore } from '../stores/explorer';
 import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
 import { utils } from 'ethers';
-import TransactionsList from './TransactionsList.vue';
+import { useTheme } from 'vuetify';
+import { getBestContrastingColor } from '../lib/utils';
+import BlockOverview from './BlockOverview.vue';
+import BlockTransactionList from './BlockTransactionList.vue';
 
 // Get Vue instance to access global properties
-const { proxy } = getCurrentInstance();
+const $server = inject('$server');
+const $pusher = inject('$pusher');
 
 // Props
 const props = defineProps({
@@ -99,38 +81,70 @@ const currentWorkspaceStore = useCurrentWorkspaceStore();
 const block = ref(null);
 const pusherChannelHandler = ref(null);
 const loading = ref(true);
+const selectedTab = ref('overview');
 
 // Methods
 const commify = utils.commify;
 
 const loadBlock = (number) => {
     loading.value = true;
-    proxy.$server.getBlock(number)
+    $server.getBlock(number)
         .then(({ data }) => block.value = data)
         .catch(console.log)
         .finally(() => loading.value = false);
 };
 
 const listUpdated = (number) => {
-    proxy.$server.getBlock(number)
+    $server.getBlock(number)
         .then(({ data }) => block.value = data)
         .catch(console.log);
 };
 
+// Update URL hash when tab changes
+const updateUrlHash = (tab) => {
+    if (tab === 'overview') {
+        if (window.location.hash) {
+            history.pushState(null, null, window.location.pathname);
+        }
+    } else {
+        history.pushState(null, null, `#${tab}`);
+    }
+};
+
+// Handle hash changes
+const handleHashChange = () => {
+    const hash = window.location.hash.substring(1);
+    if (hash === 'transactions') {
+        selectedTab.value = 'transactions';
+    } else if (hash === '') {
+        selectedTab.value = 'overview';
+    }
+};
+
 // Computed properties
-const syncing = computed(() => {
-    return block.value && block.value.syncedTransactionCount < block.value.transactionsCount;
+const contrastingColor = computed(() => {
+    const theme = useTheme();
+    return getBestContrastingColor('#4242421f', theme.current.value.colors);
 });
 
 // Lifecycle hooks
 onMounted(() => {
-    pusherChannelHandler.value = proxy.$pusher.onNewBlock(data => {
+    // Check for hash in URL on initial load
+    handleHashChange();
+    
+    // Listen for hash changes
+    window.addEventListener('hashchange', handleHashChange);
+    
+    pusherChannelHandler.value = $pusher.onNewBlock(data => {
         if (data.number == props.number)
             loadBlock(props.number);
     });
 });
 
 onBeforeUnmount(() => {
+    // Remove hash change listener
+    window.removeEventListener('hashchange', handleHashChange);
+    
     if (pusherChannelHandler.value) {
         pusherChannelHandler.value.unbind(null, null);
     }
@@ -140,4 +154,17 @@ onBeforeUnmount(() => {
 watch(() => props.number, (newNumber) => {
     loadBlock(newNumber);
 }, { immediate: true });
+
+// Watch for tab changes to update URL hash
+watch(() => selectedTab.value, (newTab) => {
+    updateUrlHash(newTab);
+});
 </script>
+
+<style scoped>
+/* Remove margin-top from the overview card to eliminate spacing after chips */
+.v-chip-group + template > .v-alert,
+.v-chip-group + template > .v-card {
+  margin-top: 0;
+}
+</style>

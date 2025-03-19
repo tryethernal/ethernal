@@ -54,7 +54,7 @@ export default createVuetify({
         VCombobox: { color: 'primary', variant: 'outlined' },
         VFileInput: { color: 'primary', variant: 'outlined' },
         VSlider: { color: 'primary', variant: 'outlined' },
-        VCard: { border: 'primary thin', flat: true },
+        VCard: { border: 'primary thin', flat: true, rounded: 'lg' },
 
         VProgressLinear: { color: 'primary' },
 

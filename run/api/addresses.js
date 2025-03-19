@@ -5,6 +5,28 @@ const { ProviderConnector } = require('../lib/rpc');
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const { managedError, unmanagedError } = require('../lib/errors');
 
+/*
+    Returns all internal transactions involving the specified address.
+
+    @param {string} address (mandatory) - The address to get the internal transactions for
+    @param {number} page (optional) - The page number
+    @param {number} itemsPerPage (optional) - The number of items per page
+*/
+router.get('/:address/internalTransactions', workspaceAuthMiddleware, async (req, res, next) => {
+    const data = req.query;
+
+    try {
+        if (!req.params.address)
+            return managedError(new Error('[GET /:address/internalTransactions] Missing parameter'), req, res);
+
+        const items = await db.getAddressTransactionTraceSteps(data.workspace.id, req.params.address, data.page, data.itemsPerPage);
+
+        res.status(200).json({ items });
+    } catch(error) {
+        unmanagedError(error, req, next);
+    }
+});
+
 router.get('/:address/tokenTransfers', workspaceAuthMiddleware, async (req, res, next) => {
     const data = req.query;
 
@@ -12,7 +34,7 @@ router.get('/:address/tokenTransfers', workspaceAuthMiddleware, async (req, res,
         if (!req.params.address)
             return managedError(new Error('[GET /:address/tokenTransfers] Missing parameter'), req, res);
 
-        const result = await db.getAddressTokenTransfers(data.workspace.id, req.params.address, data.page, data.itemsPerPage, data.orderBy, data.order);
+        const result = await db.getAddressTokenTransfers(data.workspace.id, req.params.address, data.page, data.itemsPerPage, data.orderBy, data.order, data.tokenTypes);
 
         res.status(200).json(result);
     } catch(error) {
@@ -27,7 +49,7 @@ router.get('/:address/stats', workspaceAuthMiddleware, async (req, res, next) =>
         if (!req.params.address)
             return managedError(new Error('[GET /:address/stats] Missing parameter'), req, res);
 
-        const stats = await db.getAddressStats(data.workspace.id, req.params.address);
+        const stats = await db.getAddressTransactionStats(data.workspace.id, req.params.address);
 
         res.status(200).json(stats);
     } catch(error) {

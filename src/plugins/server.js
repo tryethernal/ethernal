@@ -352,6 +352,74 @@ export default {
         );
 
         const $server = {
+            getAddressInternalTransactions(address, page, itemsPerPage) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    address,
+                    page,
+                    itemsPerPage
+                };
+                const resource = `${envStore.apiRoot}/api/addresses/${address}/internalTransactions`;
+                return axios.get(resource, { params });
+            },
+
+            getLast24hBurntFees() {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                };
+                const resource = `${envStore.apiRoot}/api/stats/last24hBurntFees`;
+                return axios.get(resource, { params });
+            },
+
+            getLast24hTotalGasUsed() {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                };
+                const resource = `${envStore.apiRoot}/api/stats/last24hTotalGasUsed`;
+                return axios.get(resource, { params });
+            },
+
+            getLast24hGasUtilisationRatio() {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                };
+                const resource = `${envStore.apiRoot}/api/stats/gasUtilisationRatio24h`;
+                return axios.get(resource, { params });
+            },
+
+            getLast24hAverageTransactionFee() {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                };
+                const resource = `${envStore.apiRoot}/api/stats/averageTransactionFee24h`;
+                return axios.get(resource, { params });
+            },
+
+            getLast24hTransactionFee() {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                };
+                const resource = `${envStore.apiRoot}/api/stats/transactionFee24h`;
+                return axios.get(resource, { params });
+            },
+
+            getTransactionFeeHistory(from, to) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    from,
+                    to
+                };
+                const resource = `${envStore.apiRoot}/api/stats/transactionFeeHistory`;
+                return axios.get(resource, { params });
+            },
+
             checkEmail(email) {
                 const resource = `${envStore.apiRoot}/api/users/checkEmail`;
                 return axios.get(resource, { params: { email }});
@@ -949,6 +1017,7 @@ export default {
             },
 
             getErc721TokenById(contractAddress, tokenId) {
+                console.log(tokenId);
                 if (!explorerStore.id) {
                     const erc721Connector = new ERC721Connector(currentWorkspaceStore.rpcServer, contractAddress, { metadata: true, enumerable: true });
                     return new Promise((resolve, reject) => {

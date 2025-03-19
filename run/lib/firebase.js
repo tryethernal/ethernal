@@ -33,6 +33,134 @@ const ExplorerV2Dex = models.ExplorerV2Dex;
 const V2DexPair = models.V2DexPair;
 
 /*
+    Returns the number of transaction steps for an address.
+
+    @param {number} workspaceId (mandatory) - The ID of the workspace
+    @param {string} address (mandatory) - The address to get the number of transaction steps for
+    @returns {number} - The number of transaction steps for the address
+*/
+const countAddressTransactionTraceSteps = async (workspaceId, address) => {
+    if (!workspaceId || !address)
+        throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+    if (!workspace)
+        throw new Error('Could not find workspace');
+
+    return workspace.countAddressTransactionTraceSteps(address);
+};
+
+/*
+    Returns all internal transactions involving an address. 
+
+    @param {number} workspaceId (mandatory) - The ID of the workspace
+    @param {string} address (mandatory) - The address to get the internal transactions for
+    @param {number} page (optional) - The page number
+    @param {number} itemsPerPage (optional) - The number of items per page
+*/
+const getAddressTransactionTraceSteps = async (workspaceId, address, page, itemsPerPage) => {
+    if (!workspaceId || !address)
+        throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+    if (!workspace)
+        throw new Error('Could not find workspace');
+
+    return workspace.getAddressTransactionTraceSteps(address, page, itemsPerPage);
+};
+
+/*
+    This method is used to get the burnt fees for the last 24 hours for a workspace.
+
+    @param {number} workspaceId - The ID of the workspace
+    @returns {number} - The burnt fees for the last 24 hours
+*/
+const getLast24hBurntFees = async (workspaceId) => {
+    const workspace = await Workspace.findByPk(workspaceId);
+    if (!workspace)
+        throw new Error('Could not find workspace');
+
+    return workspace.getLast24hBurntFees();
+};
+
+/*
+    This method is used to get the total gas used for the last 24 hours for a workspace.
+
+    @param {number} workspaceId - The ID of the workspace
+    @returns {number} - The total gas used for the last 24 hours
+*/
+const getLast24hTotalGasUsed = async (workspaceId) => {
+    const workspace = await Workspace.findByPk(workspaceId);
+    if (!workspace)
+        throw new Error('Could not find workspace');
+
+    return workspace.getLast24TotalGasUsed();
+};
+
+/*
+    This method is used to get the gas utilization ratio for the last 24 hours for a workspace.
+
+    @param {number} workspaceId - The ID of the workspace
+    @returns {number} - The gas utilization ratio for the last 24 hours
+*/
+const getLast24hGasUtilisationRatio = async (workspaceId) => {
+    const workspace = await Workspace.findByPk(workspaceId);
+    if (!workspace)
+        throw new Error('Could not find workspace');
+
+    return workspace.getLast24hGasUtilisationRatio();
+};
+
+/*
+    This method is used to get the average transaction fee for the last 24 hours for a workspace.
+
+    @param {number} workspaceId - The ID of the workspace
+    @returns {number} - The average transaction fee for the last 24 hours
+*/
+const getLast24hAverageTransactionFee = async (workspaceId) => {
+    const workspace = await Workspace.findByPk(workspaceId);
+    if (!workspace)
+        throw new Error('Could not find workspace');
+
+    return workspace.getLast24hAverageTransactionFee();
+};
+
+/*
+    This method is used to get the total transaction fees for the last 24 hours for a workspace.
+
+    @param {number} workspaceId - The ID of the workspace
+    @returns {number} - The total transaction fees for the last 24 hours
+*/
+const getLast24hTransactionFees = async (workspaceId) => {
+    const workspace = await Workspace.findByPk(workspaceId);
+    if (!workspace)
+        throw new Error('Could not find workspace');
+
+    return workspace.getLast24hTransactionFees();
+};
+
+/*
+    This method is used to get the total transaction fees for a workspace.
+
+    @param {number} workspaceId - The ID of the workspace
+    @param {string} from - Start day
+    @param {string} to - End day
+    @returns {array} - The transaction fees
+        - day: The day of the transaction fees
+        - transactionFees: The total transaction fees for the day
+*/
+const getTransactionFeeHistory = async (workspaceId, from, to) => {
+    if (!workspaceId || !from || !to)
+        throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+    if (!workspace)
+        throw new Error('Could not find workspace');
+
+    return workspace.getTransactionFeeHistory(from, to);
+};
+
+/*
     workspace.replace() is used to replace a workspace.
     We use this when we want to reset an explorer.
     Waiting for the data to be deleted can take a long time,
@@ -1551,13 +1679,15 @@ const getCustomTransactionFunction = async (workspaceId) => {
     return await workspace.getCustomTransactionFunction();
 };
 
-const getAddressTokenTransfers = async (workspaceId, address, page, itemsPerPage, order, orderBy) => {
+const getAddressTokenTransfers = async (workspaceId, address, page, itemsPerPage, order, orderBy, tokenTypes) => {
     if (!workspaceId || !address) throw new Error('Missing parameter');
 
     const workspace = await Workspace.findByPk(workspaceId);
+    if (!workspace)
+        throw new Error('Cannot find workspace');
 
-    const transfers = await workspace.getFilteredAddressTokenTransfers(address, page, itemsPerPage, order, orderBy);
-    const transferCount = await workspace.countAddressTokenTransfers(address);
+    const transfers = await workspace.getFilteredAddressTokenTransfers(address, page, itemsPerPage, order, orderBy, tokenTypes);
+    const transferCount = await workspace.countAddressTokenTransfers(address, tokenTypes);
 
     return {
         items: transfers.map(t => t.toJSON()),
@@ -1565,22 +1695,21 @@ const getAddressTokenTransfers = async (workspaceId, address, page, itemsPerPage
     };
 };
 
-const getAddressStats = async (workspaceId, address) => {
+const getAddressTransactionStats = async (workspaceId, address) => {
     if (!workspaceId || !address) throw new Error('Missing parameter');
 
     const workspace = await Workspace.findByPk(workspaceId);
+    if (!workspace)
+        throw new Error('Cannot find workspace');
 
-    const sentTransactionCount = await workspace.countAddressSentTransactions(address);
-    const receivedTransactionCount = await workspace.countAddressReceivedTransactions(address);
-    const sentErc20TokenTransferCount = await workspace.countAddressSentErc20TokenTransfers(address);
-    const receivedErc20TokenTransferCount = await workspace.countAddressReceivedErc20TokenTransfers(address);
+    let stats = await workspace.getAddressTransactionStats(address) || {};
+    stats.tokenTransferCount = await workspace.countAddressTokenTransfers(address);
+    if (workspace.tracing) {
+        const traceStepCount = await workspace.countAddressTransactionTraceSteps(address);
+        stats.internalTransactionCount = traceStepCount;
+    }
 
-    return {
-        sentTransactionCount: sentTransactionCount,
-        receivedTransactionCount: receivedTransactionCount,
-        sentErc20TokenTransferCount: sentErc20TokenTransferCount,
-        receivedErc20TokenTransferCount: receivedErc20TokenTransferCount
-    };
+    return stats;
 };
 
 const getTransactionTokenTransfers = async (workspaceId, transactionHash, page, itemsPerPage, order, orderBy) => {
@@ -2016,7 +2145,7 @@ const getWorkspaceBlock = async (workspaceId, number) => {
     });
 
     const attributes = [
-        'id', 'number', 'timestamp', 'gasUsed', 'transactionsCount', 'gasLimit', 'hash',
+        'id', 'number', 'timestamp', 'baseFeePerGas', 'gasUsed', 'transactionsCount', 'gasLimit', 'hash', 'miner', 'extraData', 'difficulty', 'raw', 'parentHash',
         [
             Sequelize.literal(`(
                 SELECT COUNT(*)::INTEGER
@@ -2638,7 +2767,7 @@ module.exports = {
     getTokenHolderHistory: getTokenHolderHistory,
     getTokenTransferForProcessing: getTokenTransferForProcessing,
     getTransactionTokenTransfers: getTransactionTokenTransfers,
-    getAddressStats: getAddressStats,
+    getAddressTransactionStats: getAddressTransactionStats,
     getAddressTokenTransfers: getAddressTokenTransfers,
     getCustomTransactionFunction: getCustomTransactionFunction,
     getUserByEmail: getUserByEmail,
@@ -2737,5 +2866,13 @@ module.exports = {
     getLatestGasSpenders: getLatestGasSpenders,
     getBlockTimeHistory: getBlockTimeHistory,
     getBlockSizeHistory: getBlockSizeHistory,
-    replaceWorkspace: replaceWorkspace
+    replaceWorkspace: replaceWorkspace,
+    getTransactionFeeHistory: getTransactionFeeHistory,
+    getLast24hAverageTransactionFee: getLast24hAverageTransactionFee,
+    getLast24hTransactionFees: getLast24hTransactionFees,
+    getLast24hGasUtilisationRatio: getLast24hGasUtilisationRatio,
+    getLast24hTotalGasUsed: getLast24hTotalGasUsed,
+    getLast24hBurntFees: getLast24hBurntFees,
+    getAddressTransactionTraceSteps: getAddressTransactionTraceSteps,
+    countAddressTransactionTraceSteps: countAddressTransactionTraceSteps
 };

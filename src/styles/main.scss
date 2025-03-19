@@ -62,3 +62,7 @@ a.underlined {
     --onboard-modal-backdrop: rgb(var(--v-theme-primary), 0.2);
     --onboard-modal-z-index: 10000;
 }
+
+.no-decoration {
+    text-decoration: none;
+}

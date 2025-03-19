@@ -7,12 +7,12 @@
             Verified contract.
         </v-tooltip>
         <template v-if="hash && !unlink">
-            <a v-if="embedded" :href="externalLink" target="_blank">{{ name }}</a>
-            <router-link v-else :to="link">{{ name }}</router-link>
+            <a style="text-decoration: none;" v-if="embedded" :href="externalLink" target="_blank">{{ name }}</a>
+            <router-link style="text-decoration: none;" v-else :to="link">{{ name }}</router-link>
         </template>
         <template v-else>{{ name }}</template>
         <span v-if="tokenId">
-            &nbsp;(<router-link :to="`/address/${hash}/${tokenId}`">#{{ tokenId }}</router-link>)
+            &nbsp;(<router-link style="text-decoration: none;" :to="`/address/${hash}/${tokenId}`">#{{ tokenId }}</router-link>)
         </span>
         <span v-if="hash && !copied && !notCopiable">
             &nbsp;<v-icon class="text-medium-emphasis" @click="copyHash()" size="x-small">mdi-content-copy</v-icon><input type="hidden" :id="`copyElement-${hash}`" :value="alternateLink && showAlternateLink ? alternateLink : hash">
@@ -139,6 +139,11 @@ export default {
         },
         copyHash() {
             const webhookField = document.querySelector(`#copyElement-${this.hash}`);
+            if (!webhookField) {
+                console.warn(`Could not find element with id: copyElement-${this.hash}`);
+                return;
+            }
+
             webhookField.setAttribute('type', 'text');
             webhookField.select();
 
@@ -147,6 +152,7 @@ export default {
                 this.copied = true;
                 setTimeout(() => this.copied = false, 1000);
             } catch(error) {
+                console.error(`Couldn't copy hash: ${error}`);
                 alert(`Couldn't copy hash`);
             } finally {
                 webhookField.setAttribute('type', 'hidden');

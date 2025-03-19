@@ -6,8 +6,6 @@
             :loading="loading"
             :sort-by="currentOptions.sortBy"
             :count="transferCount"
-            :withTransactionData="true"
-            :withTokenData="true"
             @pagination="getTransfers"
             @update:options="getTransfers" />
     </v-container>
@@ -28,12 +26,14 @@ export default {
         transfers: [],
         transferCount: 0,
         headers: [
-            { title: 'Mined On', key: 'timestamp' },
             { title: 'Transaction', key: 'transactionHash', sortable: false },
+            { title: 'Method', key: 'method', sortable: false },
             { title: 'Block', key: 'blockNumber' },
+            { title: 'Mined On', key: 'timestamp' },
             { title: 'From', key: 'src' },
             { title: 'To', key: 'dst' },
-            { title: 'Amount', key: 'amount' }
+            { title: 'Amount', key: 'amount' },
+            { title: 'Token', key: 'token', sortable: false }
         ],
         currentOptions: { page: 1, itemsPerPage: 10, sortBy: [{ key: 'blockNumber', order: 'desc' }] }
     }),

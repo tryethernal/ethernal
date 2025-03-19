@@ -5,6 +5,111 @@ const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const { managedError, unmanagedError } = require('../lib/errors');
 
 /*
+    This endpoint is used to get the burnt fees for the last 24 hours for a workspace.
+
+    @param {string} workspaceId - The ID of the workspace
+    @returns {number} - The burnt fees for the last 24 hours
+*/
+router.get('/last24hBurntFees', workspaceAuthMiddleware, async (req, res, next) => {
+    const data = req.query;
+    try {
+        const burntFees = await db.getLast24hBurntFees(data.workspace.id);
+
+        res.status(200).json({ burntFees });
+    } catch(error) {
+        unmanagedError(error, req, next);
+    }
+});
+
+/*
+    This endpoint is used to get the total gas used for the last 24 hours for a workspace.
+
+    @param {string} workspaceId - The ID of the workspace
+    @returns {number} - The total gas used for the last 24 hours
+*/
+router.get('/last24hTotalGasUsed', workspaceAuthMiddleware, async (req, res, next) => {
+    const data = req.query;
+    try {
+        const totalGasUsed = await db.getLast24hTotalGasUsed(data.workspace.id);
+
+        res.status(200).json({ totalGasUsed });
+    } catch(error) {
+        unmanagedError(error, req, next);
+    }
+});
+
+/*
+    This endpoint is used to get the gas utilization ratio for the last 24 hours for a workspace.
+
+    @param {string} workspaceId - The ID of the workspace
+    @returns {number} - The gas utilization ratio for the last 24 hours
+*/
+router.get('/gasUtilisationRatio24h', workspaceAuthMiddleware, async (req, res, next) => {
+    const data = req.query;
+    try {
+        const gasUtilisationRatio24h = await db.getLast24hGasUtilisationRatio(data.workspace.id);
+
+        res.status(200).json({ gasUtilisationRatio24h });
+    } catch(error) {
+        unmanagedError(error, req, next);
+    }
+});
+
+/*
+    This endpoint is used to get the average transaction fee for the last 24 hours for a workspace.
+
+    @param {string} workspaceId - The ID of the workspace
+    @returns {number} - The average transaction fee for the last 24 hours
+*/
+router.get('/averageTransactionFee24h', workspaceAuthMiddleware, async (req, res, next) => {
+    const data = req.query;
+    try {
+        const avgTransactionFee24h = await db.getLast24hAverageTransactionFee(data.workspace.id);
+
+        res.status(200).json({ avgTransactionFee24h });
+    } catch(error) {
+        unmanagedError(error, req, next);
+    }
+});
+
+/*
+    This endpoint is used to get the total of transaction fees for the last 24 hours for a workspace.
+
+    @param {string} workspaceId - The ID of the workspace
+    @returns {number} - The average transaction fee for the last 24 hours
+*/
+router.get('/transactionFee24h', workspaceAuthMiddleware, async (req, res, next) => {
+    const data = req.query;
+    try {
+        const transactionFee24h = await db.getLast24hTransactionFees(data.workspace.id);
+
+        res.status(200).json({ transactionFee24h });
+    } catch(error) {
+        unmanagedError(error, req, next);
+    }
+});
+
+/*
+    This endpoint is used to get the daily average transaction fees for a workspace.
+
+    @param {string} from - Start day
+    @param {string} to - End day
+    @returns {array} - The transaction fees
+        - day: The day of the transaction fees
+        - transactionFees: The average transaction fees for the day
+*/
+router.get('/transactionFeeHistory', workspaceAuthMiddleware, async (req, res, next) => {
+    const data = req.query;
+    try {
+        const transactionFeeHistory = await db.getTransactionFeeHistory(data.workspace.id, data.from, data.to);
+
+        res.status(200).json(transactionFeeHistory);
+    } catch(error) {
+        unmanagedError(error, req, next);
+    }
+});
+
+/*
     This endpoint is used to get the block size history for a workspace.
 
     @param {string} from - The start date of the block size history

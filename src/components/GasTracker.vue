@@ -93,7 +93,7 @@
                                             <template #title>
                                                 <div class="d-flex flex-column">
                                                     <span class="text-caption">AVG UTILIZATION</span>
-                                                    <small>{{ formattedUtilization }}</small>
+                                                    <small>{{ displayPercentage(gasStats.averageUtilization) }}</small>
                                                 </div>
                                             </template>
                                         </v-card>
@@ -137,7 +137,7 @@ import { onMounted, onUnmounted, inject, ref, computed } from 'vue';
 import { useTheme } from 'vuetify';
 import { formatGwei } from 'viem';
 import { useExplorerStore } from '../stores/explorer';
-import { getBestContrastingColor } from '../lib/utils';
+import { getBestContrastingColor, displayPercentage } from '../lib/utils';
 
 import MultiLineChart from './MultiLineChart.vue';
 import LineChart from './LineChart.vue';
@@ -172,17 +172,6 @@ const formatGweiAmount = (amount) => {
     else
         return fromWei(amount, 'gwei', ' ', false, 2);
 };
-
-const formattedUtilization = computed(() => {
-    if (gasStats.value.averageUtilization === null || gasStats.value.averageUtilization === undefined)
-        return null;
-    else if (gasStats.value.averageUtilization == 0)
-        return '0%';
-    else if (gasStats.value.averageUtilization < 0.0001)
-        return '<0.01%';
-    else
-        return `${(gasStats.value.averageUtilization * 100).toFixed(2)}%`;
-});
 
 const formattedBlockTime = computed(() => {
     return gasStats.value.averageBlockTime !== null && gasStats.value.averageBlockTime !== undefined ? `${Math.round(gasStats.value.averageBlockTime * 100) / 100}s` : null;

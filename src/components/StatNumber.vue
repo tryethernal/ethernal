@@ -1,26 +1,22 @@
 <template>
     <v-card :loading="loading">
-        <template v-slot:subtitle>
-            <div :class="{ absolute: infoTooltip }">{{ title }}</div>
-            <div class="text-right" v-if="infoTooltip">
-                <v-tooltip location="left">
-                    <template v-slot:activator="{ props }">
-                        <v-icon v-bind="props" size="small">mdi-information</v-icon>
-                    </template>
-                    {{ infoTooltip }}
-                </v-tooltip>
-            </div>
-        </template>
         <v-card-text v-if="loading">
             <v-skeleton-loader type="list-item"></v-skeleton-loader>
         </v-card-text>
-        <v-card-text class="text-h3 text-medium-emphasis" align="center" v-else>
-            <template v-if="isValueDefined">
+        <v-card-text class="pa-3" v-else>
+            <h6 class="text-medium-emphasis text-uppercase text-caption">{{ title }}</h6>
+            <div class="text-right" v-if="infoTooltip">
+                <v-icon v-tooltip="infoTooltip" size="small">mdi-information</v-icon>
+            </div>
+            <div class="text-h6 text-high-emphasis " v-if="isValueDefined">
                 <router-link v-if="type == 'link'" style="text-decoration: none;" :to="href">{{ commify(value) }}</router-link>
+                <span v-if="raw">
+                    {{ value }}
+                </span>
                 <span v-else>
                     {{ formatNumber(value, { short: !long, decimals: realDecimals }) }}
                 </span>
-            </template>
+            </div>
             <template v-else>
                 N/A
             </template>
@@ -34,7 +30,7 @@ import { formatNumber } from '@/lib/utils';
 
 export default {
     name: 'StatNumber',
-    props: ['type', 'title', 'value', 'loading', 'href', 'infoTooltip', 'decimals', 'long', 'tokenType'],
+    props: ['type', 'title', 'value', 'loading', 'href', 'infoTooltip', 'decimals', 'long', 'tokenType', 'raw'],
     methods: {
         commify: ethers.utils.commify,
         formatNumber: formatNumber

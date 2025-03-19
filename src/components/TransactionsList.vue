@@ -53,7 +53,7 @@
         <template v-slot:item.timestamp="{ item }">
             <div class="my-2 text-left">
                 {{ $dt.shortDate(item.timestamp) }}<br>
-                <small>{{ $dt.fromNow(item.timestamp) }}</small>
+                <small class="text-caption text-medium-emphasis">{{ $dt.fromNow(item.timestamp) }}</small>
             </div>
         </template>
         <template v-slot:item.from="{ item }">
@@ -98,7 +98,8 @@ const props = defineProps({
     dense: Boolean,
     blockNumber: String,
     address: String,
-    withCount: Boolean
+    withCount: Boolean,
+    totalCount: Number
 });
 const emit = defineEmits(['listUpdated']);
 
