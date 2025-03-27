@@ -183,6 +183,7 @@ onBeforeUnmount(() => {
 
 .gas-used-cell {
     max-width: fit-content;
+    min-width: 100px;
     white-space: nowrap;
 }
 </style>

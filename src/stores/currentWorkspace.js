@@ -1,6 +1,6 @@
 import * as Sentry from "@sentry/vue";
 import { defineStore } from 'pinia';
-
+import { createWalletClient, http, webSocket, defineChain, createPublicClient, custom } from 'viem';
 import { useExplorerStore } from './explorer';
 import { useUserStore } from './user';
 import { useEnvStore } from './env';
@@ -131,6 +131,61 @@ export const useCurrentWorkspaceStore = defineStore('currentWorkspace', {
         chain(state) {
             const hasExplorer = useExplorerStore().id;
             return hasExplorer ? useExplorerStore() : useEnvStore().chains[state.chainSlug || 'ethereum'];
+        },
+
+        viemTransportConfig() {
+            return this.rpcServer.startsWith('http') ?
+                http(this.rpcServer) :
+                webSocket(this.rpcServer)
+        },
+
+        viemChainConfig() {
+            const envStore = useEnvStore();
+            const hasExplorer = useExplorerStore().id;
+            const rpcServer = hasExplorer ? useExplorerStore().rpcServer : this.rpcServer;
+
+            return defineChain({
+                id: this.networkId,
+                name: hasExplorer ? useExplorerStore().name : this.name,
+                nativeCurrency: {
+                    name: hasExplorer ? useExplorerStore().name : this.chain.name,
+                    symbol: hasExplorer ? useExplorerStore().token : this.chain.token,
+                    decimals: 18
+                },
+                rpcUrls: {
+                    default: {
+                        http: rpcServer.startsWith('http') ? [rpcServer] : [],
+                        webSocket: rpcServer.startsWith('ws') ? [rpcServer] : []
+                    }
+                },
+                blockExplorerUrls: {
+                    default: {
+                        name: hasExplorer ? useExplorerStore().name : 'Ethernal',
+                        url: hasExplorer ? useExplorerStore().mainDomain : envStore.mainDomain
+                    }
+                }
+            });
+        },
+
+        getViemWalletClient() {
+            return createWalletClient({
+                chain: this.viemChainConfig,
+                transport: this.viemTransportConfig
+            })
+        },
+
+        getViemBrowserClient() {
+            return createWalletClient({
+                chain: this.viemChainConfig,
+                transport: custom(window.ethereum)
+            })
+        },
+
+        getViemPublicClient() {
+            return createPublicClient({
+                chain: this.viemChainConfig,
+                transport: this.viemTransportConfig
+            })
         }
     }
 });

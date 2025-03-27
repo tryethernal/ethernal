@@ -105,43 +105,19 @@
               <template v-slot:prepend>
                 <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">
                   <v-icon size="small" color="grey" class="mr-1" v-tooltip="'Tokens transferred in this transaction'">mdi-help-circle-outline</v-icon>
-                  Token Transfers:
+                  Token Transfers ({{ transaction.tokenTransferCount }}):
                 </div>
               </template>
               <v-list-item-title class="text-body-2 token-activity-container">
                 <div class="token-transfers-wrapper">
                   <!-- Token Transfers -->
-                  <Compact-Transaction-Token-Transfers 
+                  <Compact-Transaction-Token-Transfers
                     :hash="transaction.hash" 
                     :withTokenData="true"
                     :address="transaction.from"
                     :embedded="true"
+                    :totalTransfers="transaction.tokenTransferCount"
                   />
-                </div>
-              </v-list-item-title>
-            </v-list-item>
-            <v-divider class="mx-4"></v-divider>
-          </template>
-
-          <!-- Balance Changes Section (if any) -->
-          <template v-if="transaction.formattedBalanceChanges && Object.keys(transaction.formattedBalanceChanges).length > 0">
-            <v-list-item class="balance-changes-item">
-              <template v-slot:prepend>
-                <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">
-                  <v-icon size="small" color="grey" class="mr-1" v-tooltip="'Token balance changes resulting from this transaction'">mdi-help-circle-outline</v-icon>
-                  Balance Changes:
-                </div>
-              </template>
-              <v-list-item-title class="text-body-2 token-activity-container">
-                <div class="integrated-balance-changes">
-                  <Tokens-Balance-Diff
-                    :balanceChanges="Object.entries(transaction.formattedBalanceChanges || {}).reduce((acc, [token, changes]) => {
-                      return acc.concat(changes.map(change => ({...change, token})))
-                    }, [])"
-                    :blockNumber="transaction.blockNumber" 
-                    :embedded="true"
-                    :showAll="showAllBalanceChanges"
-                    @view-all="showAllBalanceChanges = true"/>
                 </div>
               </v-list-item-title>
             </v-list-item>
@@ -402,14 +378,12 @@
 </template>
 
 <script setup>
-import { ref, computed, inject, onErrorCaptured } from 'vue';
+import { computed, inject, onErrorCaptured } from 'vue';
 import * as ethers from 'ethers';
-import { storeToRefs } from 'pinia';
 import { useExplorerStore } from '../stores/explorer';
 import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
 import { getGasPriceFromTransaction } from '../lib/utils';
 import HashLink from './HashLink.vue';
-import TokensBalanceDiff from './TokensBalanceDiff.vue';
 import CustomField from './CustomField.vue';
 import CompactTransactionTokenTransfers from './CompactTransactionTokenTransfers.vue';
 import TransactionFunctionCall from './TransactionFunctionCall.vue';
@@ -432,9 +406,6 @@ const $dt = inject('$dt');
 // Stores
 const explorerStore = useExplorerStore();
 const currentWorkspaceStore = useCurrentWorkspaceStore();
-
-// Reactive state
-const showAllBalanceChanges = ref(false);
 
 // Cache frequently accessed values
 const cachedGasPrices = new Map();
@@ -570,25 +541,6 @@ const getTxnTypeName = (type) => txTypeNames[type] || 'Unknown';
 /* Contract creation data styling */
 :deep(.contract-creation .v-textarea) {
   margin: 0 !important;
-}
-
-/* Integrated Token Transfers & Balance Changes */
-.integrated-balance-changes {
-  padding-left: 0;
-  width: 100%;
-}
-
-.integrated-balance-changes :deep(.embedded-balance-diff) {
-  border: none !important;
-  background: transparent !important;
-  padding: 0 !important;
-  margin: 0 !important;
-}
-
-.integrated-balance-changes :deep(.token-name-container) {
-  padding-bottom: 2px;
-  padding-left: 0;
-  margin-bottom: 4px;
 }
 
 :deep(.embedded-transfers) {

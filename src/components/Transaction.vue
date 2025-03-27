@@ -31,10 +31,11 @@
             </v-row>
 
             <!-- Navigation Tabs -->
-            <v-chip-group :selected-class="`text-${contrastingColor}`" v-model="selectedTab">
-                <v-chip size="small" value="overview">Overview</v-chip>
-                <v-chip size="small" value="internal" v-if="hasInternalTxns">Internal Transactions ({{ transaction.traceSteps.length }})</v-chip>
-                <v-chip v-if="hasLogs" size="small" value="logs">Logs ({{ logCount }})</v-chip>
+            <v-chip-group mandatory :selected-class="`text-${contrastingColor}`" v-model="selectedTab">
+                <v-chip label size="small" value="overview">Overview</v-chip>
+                <v-chip label size="small" value="internal" v-if="hasInternalTxns">Internal Transactions ({{ transaction.internalTransactionCount }})</v-chip>
+                <v-chip label v-if="hasLogs" size="small" value="logs">Logs ({{ logCount }})</v-chip>
+                <v-chip label size="small" value="statechange" v-if="transaction.tokenBalanceChangeCount > 0">State Changes ({{ transaction.tokenBalanceChangeCount }})</v-chip>
             </v-chip-group>
 
             <!-- Tab Content -->
@@ -54,6 +55,11 @@
                 v-if="hasLogs && selectedTab === 'logs'"
                 :hash="transaction.hash"
                 ref="logsComponent"
+            />
+
+            <Transaction-State
+                v-if="transaction.tokenBalanceChangeCount > 0 && selectedTab === 'statechange'"
+                :transaction="transaction"
             />
         </template>
         <template v-else>
@@ -75,8 +81,6 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted, watch, inject, nextTick } from 'vue';
 import { useTheme } from 'vuetify';
-import * as ethers from 'ethers';
-import { storeToRefs } from 'pinia';
 import { useExplorerStore } from '../stores/explorer';
 import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
 import { getBestContrastingColor } from '../lib/utils';
@@ -84,16 +88,13 @@ import { useRouter, useRoute } from 'vue-router';
 import TransactionOverview from './TransactionOverview.vue';
 import TransactionLogs from './TransactionLogs.vue';
 import TransactionInternalTxns from './TransactionInternalTxns.vue';
+import TransactionState from './TransactionState.vue';
 
 const props = defineProps(['hash']);
 
 // Inject all required globals
 const $server = inject('$server');
 const $pusher = inject('$pusher');
-
-// Vue Router
-const router = useRouter();
-const route = useRoute();
 
 // Stores
 const explorerStore = useExplorerStore();
@@ -123,7 +124,7 @@ let pusherUnsubscribe = null;
 // Computed properties for improved null safety
 const hasLogs = computed(() => transaction.value.receipt && transaction.value.receipt.logCount > 0);
 const logCount = computed(() => transaction.value.receipt ? transaction.value.receipt.logCount : 0);
-const hasInternalTxns = computed(() => transaction.value.traceSteps && transaction.value.traceSteps.length > 0);
+const hasInternalTxns = computed(() => transaction.value.internalTransactionCount && transaction.value.internalTransactionCount > 0);
 
 // Initialize empty transaction with safe defaults
 const resetTransaction = () => {
@@ -148,6 +149,8 @@ const checkUrlHash = () => {
         selectedTab.value = 'logs';
     } else if (window.location.hash === '#internal') {
         selectedTab.value = 'internal';
+    } else if (window.location.hash === '#statechange') {
+        selectedTab.value = 'statechange';
     } else {
         selectedTab.value = 'overview';
     }
@@ -250,8 +253,10 @@ watch(() => selectedTab.value, (newTab) => {
         window.location.hash = 'eventlogs';
     } else if (newTab === 'internal') {
         window.location.hash = 'internal';
+    } else if (newTab === 'statechange') {
+        window.location.hash = 'statechange';
     } else {
-        if (window.location.hash === '#eventlogs' || window.location.hash === '#internal') {
+        if (window.location.hash === '#eventlogs' || window.location.hash === '#internal' || window.location.hash === '#statechange') {
             window.history.replaceState(null, null, ' ');
         }
     }
@@ -263,7 +268,3 @@ const handleComponentError = (error) => {
     return false; // prevent propagation
 };
 </script>
-
-<style scoped>
-/* Keep only shared/essential styles, as component-specific styles are now in their respective components */
-</style>

@@ -323,7 +323,8 @@ export default {
                 gasPrice: explorer.workspace.gasPrice,
                 gasLimit: explorer.workspace.gasLimit,
                 functions: explorer.workspace.functions,
-                packages: explorer.workspace.packages
+                packages: explorer.workspace.packages,
+                tracing: explorer.workspace.tracing
             });
         },
         initWorkspace(workspace) {

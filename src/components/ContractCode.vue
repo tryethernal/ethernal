@@ -12,28 +12,47 @@
                 <Contract-Verification @contractVerified="onContractVerified" v-else :address="contract.address" />
             </template>
 
-            <v-card class="mb-6">
-                <v-card-title>Bytecode</v-card-title>
-                <v-card-text v-if="contract.bytecode">
-                    <v-textarea class="text-medium-emphasis" density="compact" variant="outlined" readonly :model-value="contract.bytecode">
-                        <template v-slot:append-inner>
-                            <v-btn variant="text" density="compact" icon="mdi-content-copy" @click="copyBytecode()"></v-btn>
-                        </template>
-                    </v-textarea>
-                    <input type="hidden" id="copyBytecode" :value="contract.bytecode">
-                </v-card-text>
-                <v-card-text v-else>
-                    No bytecode for this contract. Redeploy to upload it.
-                </v-card-text>
-            </v-card>
+            <template v-if="contract.abi">
+                <h4 class="mb-1">ABI</h4>
+                <v-card class="mb-6">
+                    <v-card-text class="text-medium-emphasis bg-grey-lighten-4">
+                        <Expandable-Text :pre="true" :maxChars="100" :text="JSON.stringify(contract.abi, null, 2)" />
+                    </v-card-text>
+                </v-card>
+            </template>
 
-            <v-card>
-                <v-card-title>Assembly</v-card-title>
-                <v-card-text>
-                    <div v-if="highlightedAsm" class="hljs" v-html="highlightedAsm"></div>
-                    <span v-else>No assembly for this contract. Redeploy to upload it.</span>
-                </v-card-text>
-            </v-card>
+            <template v-if="contract.bytecode">
+                <h4 class="mb-1">Bytecode</h4>
+                <v-card class="mb-6">
+                    <v-card-text class="text-medium-emphasis bg-grey-lighten-4">
+                        <Expandable-Text :pre="true" :maxChars="400" :text="contract.bytecode" />
+                    </v-card-text>
+                </v-card>
+            </template>
+            <template v-else>
+                <v-card class="mb-6">
+                    <v-card-text>   
+                        No bytecode for this contract. Redeploy to upload it.
+                    </v-card-text>
+                </v-card>
+            </template>
+
+            <template v-if="highlightedAsm">
+                <h4 class="mb-1">Assembly</h4>
+                <v-card>
+                    <v-card-text>
+                        <div v-if="highlightedAsm" class="hljs" v-html="highlightedAsm"></div>
+                        <span v-else>No assembly for this contract. Redeploy to upload it.</span>
+                    </v-card-text>
+                </v-card>
+            </template>
+            <template v-else>
+                <v-card class="mb-6">
+                    <v-card-text>
+                        No assembly for this contract. Redeploy to upload it.
+                    </v-card-text>
+                </v-card>
+            </template>
         </template>
     </div>
 </template>
@@ -45,13 +64,15 @@ import { mapStores } from 'pinia';
 import { useExplorerStore } from '../stores/explorer';
 import ContractVerification from './ContractVerification.vue';
 import ContractVerificationInfo from './ContractVerificationInfo.vue';
+import ExpandableText from './ExpandableText.vue';
 
 export default {
     name: 'ContractCode',
     props: ['contract'],
     components: {
         ContractVerification,
-        ContractVerificationInfo
+        ContractVerificationInfo,
+        ExpandableText
     },
     data: () => ({
         loading: false,
@@ -68,22 +89,6 @@ export default {
 
             this.verificationData = verificationData;
             this.justVerified = true;
-        },
-        copyBytecode() {
-            const webhookField = document.querySelector('#copyBytecode');
-            webhookField.setAttribute('type', 'text');
-            webhookField.select();
-
-            try {
-                const copied = document.execCommand('copy');
-                const message = copied ? 'Bytecode copied!' : `Couldn't copy bytecode`;
-                alert(message);
-            } catch(error) {
-                alert(`Couldn't copy bytecode`);
-            } finally {
-                webhookField.setAttribute('type', 'hidden');
-                window.getSelection().removeAllRanges();
-            }
         }
     },
     computed: {

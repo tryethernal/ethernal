@@ -67,6 +67,7 @@
     "stripe": "^8.176.0",
     "util": "^0.12.5",
     "v-stripe-elements": "^1.2.0",
+    "viem": "^2.23.13",
     "vue": "^3.5.1",
     "vue-chartjs": "^5.3.2",
     "vue-json-pretty": "^2.2.4",

@@ -40,8 +40,17 @@
         </template>
 
         <template v-slot:item.tokenType="{ item }">
-            <v-chip v-for="pattern in item.contract.patterns.filter(p => p !== 'proxy')" :key="pattern" color="success" size="x-small" variant="flat">
-                {{ formatContractPattern(pattern) }}
+            <v-chip v-if="isERC20(item)" color="success" size="x-small" variant="flat">
+                ERC-20
+            </v-chip>
+            <v-chip v-else-if="item.contract.patterns.includes('erc721')" color="success" size="x-small" variant="flat">
+                ERC-721
+            </v-chip>
+            <v-chip v-else-if="item.contract.patterns.includes('erc1155')" color="success" size="x-small" variant="flat">
+                ERC-1155
+            </v-chip>
+            <v-chip color="grey-lighten-1" v-else size="x-small" variant="flat">
+                Unknown
             </v-chip>
         </template>
         
@@ -68,7 +77,7 @@
             <div class="d-flex align-center">
                 <v-chip
                     size="x-small"
-                    color="primary"
+                    color="grey-lighten-1"
                     variant="flat"
                     class="mr-2"
                     v-if="item.src === address"
@@ -90,7 +99,7 @@
             <div class="d-flex align-center">
                 <v-chip
                     size="x-small"
-                    color="primary"
+                    color="grey-lighten-1"
                     variant="flat"
                     class="mr-2"
                     v-if="item.dst === address"
@@ -124,11 +133,32 @@
                 </span>
             </div>
             <template v-else-if="isNFT(item)">
-                <div class="d-flex flex-row align-center">
-                    <div class="px-2 pt-2" v-html="getImageTag(tokenMetadata[item.token] && tokenMetadata[item.token][item.tokenId] ? tokenMetadata[item.token][item.tokenId].metadata.image : null)"></div>
-                    <div class="d-flex flex-column" v-if="item.contract?.tokenName">
-                        {{ item.contract.tokenName }}
-                        <span class="text-caption text-medium-emphasis" v-if="item.contract?.tokenName && item.contract?.tokenSymbol">
+                <div class="d-flex flex-row align-center py-2">
+                    <v-img v-if="!imageData(item)"
+                        max-height="50"
+                        max-width="50"
+                        rounded="lg"
+                        class="bg-grey-lighten-4"
+                        cover>
+                        <template v-slot:default>
+                            <div class="d-flex align-center justify-center fill-height">
+                                <v-icon size="50" color="grey-lighten-1">mdi-image-outline</v-icon>
+                            </div>
+                        </template>
+                    </v-img>
+                    <v-img v-else-if="!imageData(item).startsWith('<img')"
+                        :src="getImageTag(imageData(item))"
+                        rounded="lg"
+                        max-height="50"
+                        max-width="50"
+                        cover>
+                    </v-img>
+                    <div v-else class="image-container">
+                        <span v-html="getImageTag(imageData(item))"></span>
+                    </div>
+                    <div class="ml-2 d-flex flex-column">
+                        {{ item.contract.tokenName || '-' }}
+                        <span class="text-caption text-medium-emphasis" v-if="item.contract?.tokenSymbol">
                             {{ item.contract.tokenSymbol }}
                         </span>
                     </div>
@@ -168,7 +198,7 @@
                     color="primary"
                     class="mr-3"
                 ></v-progress-circular>
-                <span>Loading token transfers...</span>
+                Loading token transfers...
             </div>
         </template>
     </v-data-table-server>
@@ -177,7 +207,6 @@
 <script setup>
 import { ref, computed, watch, inject } from 'vue';
 import HashLink from './HashLink.vue';
-import { formatContractPattern } from '@/lib/utils';
 
 // Component props
 const props = defineProps({
@@ -245,21 +274,20 @@ const isNFT = (item) => {
     return item.contract && item.contract.patterns && (item.contract.patterns.includes('erc721') || item.contract.patterns.includes('erc1155'));
 };
 
+const imageData = (item) => {
+    return tokenMetadata.value[item.token] && tokenMetadata.value[item.token][item.tokenId] ? tokenMetadata.value[item.token][item.tokenId].metadata.image : null;
+};
+
 const getImageTag = (image) => {
     if (!image)
-        return `
-            <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="50" height="50" rx="8" fill="#F3F4F6" stroke="#D1D5DB" stroke-width="2"/>
-            <rect x="8" y="8" width="34" height="34" rx="6" fill="none" stroke="#9CA3AF" stroke-width="2" stroke-dasharray="4"/>
-            <text x="50%" y="55%" font-size="12" font-family="Arial, sans-serif" fill="#6B7280" text-anchor="middle" dominant-baseline="middle">
-                NFT
-            </text>
-            </svg>
-        `;
+        return null;
     else if (image.startsWith('ipfs://')) {
-        return `<img width="50" height="50" src="https://gateway.pinata.cloud/ipfs/${image.slice(7, image.length)}" />`;
+        return `https://gateway.pinata.cloud/ipfs/${image.slice(7, image.length)}`;
     }
     else if (image.startsWith('<img')) {
+        return image;
+    }
+    else if (image.startsWith('http')) {
         return image;
     }
     return `<img width="50" height="50" src="${image}" />`;
@@ -301,5 +329,21 @@ watch(() => props.transfers, (newVal) => {
 /* Improve spacing in cells for better readability */
 :deep(.v-data-table__td) {
     padding: 8px 16px;
+}
+
+.image-container {
+    width: 150px;
+    height: 150px;
+    overflow: hidden;
+    position: relative;
+}
+
+.image-container :deep(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 </style>

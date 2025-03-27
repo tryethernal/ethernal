@@ -6,6 +6,75 @@ const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const { managedError, unmanagedError } = require('../lib/errors');
 
 /*
+    Returns the number of token transfers for an address in a given time range.
+
+    @param {string} address (mandatory) - The address to get the token transfer history for
+    @param {string} from (mandatory) - The start date
+    @param {string} to (mandatory) - The end date
+    @returns {Array} - The number of token transfers for the address in the given time range
+*/
+router.get('/:address/tokenTransferHistory', workspaceAuthMiddleware, async (req, res, next) => {
+    const data = req.query;
+
+    try {
+        if (!req.params.address || !data.from || !data.to)
+            return managedError(new Error('Missing parameter'), req, res);
+
+        const result = await db.getAddressTokenTransferHistory(data.workspace.id, req.params.address, data.from, data.to);
+
+        res.status(200).json(result);
+    } catch(error) {
+        unmanagedError(error, req, next);
+    }
+});
+
+/*
+    Returns the amount of transaction fees spent by an address in a given time range.
+
+    @param {string} address (mandatory) - The address to get the transaction fees for
+    @param {string} from (mandatory) - The start date
+    @param {string} to (mandatory) - The end date
+    @returns {Array} - The amount of transaction fees spent by the address in the given time range
+*/
+router.get('/:address/spentTransactionFeeHistory', workspaceAuthMiddleware, async (req, res, next) => {
+    const data = req.query;
+
+    try {
+        if (!req.params.address || !data.from || !data.to)
+            return managedError(new Error('Missing parameter'), req, res);
+
+        const result = await db.getAddressSpentTransactionFeeHistory(data.workspace.id, req.params.address, data.from, data.to);
+
+        res.status(200).json(result);
+    } catch(error) {
+        unmanagedError(error, req, next);
+    }
+});
+
+/*
+    Returns the number of transactions for an address in a given time range.
+
+    @param {string} address (mandatory) - The address to get the number of transactions for
+    @param {string} from (mandatory) - The start date
+    @param {string} to (mandatory) - The end date
+    @returns {Array} - The number of transactions for the address in the given time range
+*/
+router.get('/:address/transactionHistory', workspaceAuthMiddleware, async (req, res, next) => {
+    const data = req.query;
+
+    try {
+        if (!req.params.address || !data.from || !data.to)
+            return managedError(new Error('Missing parameter'), req, res);
+
+        const result = await db.getAddressTransactionHistory(data.workspace.id, req.params.address, data.from, data.to);
+
+        res.status(200).json(result);
+    } catch(error) {
+        unmanagedError(error, req, next);
+    }
+});
+
+/*
     Returns all internal transactions involving the specified address.
 
     @param {string} address (mandatory) - The address to get the internal transactions for

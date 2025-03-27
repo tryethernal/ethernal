@@ -1,7 +1,12 @@
 <template>
   <div class="expandable-text">
       <div class="d-block overflow-auto pr-10" style="white-space: pre-wrap;">
+        <template v-if="pre">
+          <pre style="white-space: pre-wrap;">{{ displayText }}</pre>
+        </template>
+        <template v-else>
           {{ displayText }}
+        </template>
       </div>
       <div class="copy-btn-container">
         <v-btn
@@ -39,6 +44,10 @@ const props = defineProps({
     type: Number,
     default: 500
   },
+  pre: {
+    type: Boolean,
+    default: false
+  }
 });
 
 // Emit events when expansion state changes

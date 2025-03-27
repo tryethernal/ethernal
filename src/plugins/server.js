@@ -352,6 +352,67 @@ export default {
         );
 
         const $server = {
+            getTopErc20ByHolders(options) {
+                const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, ...options };
+                const resource = `${envStore.apiRoot}/api/stats/topErc20ByHolders`;
+                return axios.get(resource, { params });
+            },
+
+            getWorkspaceContractStats() {
+                const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value };
+                const resource = `${envStore.apiRoot}/api/stats/contracts`;
+                return axios.get(resource, { params });
+            },
+
+            getWorkspaceVerifiedContracts(options) {
+                const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, ...options };
+                const resource = `${envStore.apiRoot}/api/contracts/verified`;
+                return axios.get(resource, { params });
+            },
+
+            getWorkspaceTransactionTraceSteps(options) {
+                const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, ...options };
+                const resource = `${envStore.apiRoot}/api/transactionTraceSteps`;
+                return axios.get(resource, { params });
+            },
+
+            getAddressTokenTransferHistory(address, from, to) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    address,
+                    from,
+                    to
+                };
+                const resource = `${envStore.apiRoot}/api/addresses/${address}/tokenTransferHistory`;
+                return axios.get(resource, { params });
+            },
+
+            getAddressSpentTransactionFeeHistory(address, from, to) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    address,
+                    from,
+                    to
+                };
+
+                const resource = `${envStore.apiRoot}/api/addresses/${address}/spentTransactionFeeHistory`;
+                return axios.get(resource, { params });
+            },
+
+            getAddressTransactionHistory(address, from, to) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    address,
+                    from,
+                    to
+                };
+                const resource = `${envStore.apiRoot}/api/addresses/${address}/transactionHistory`;
+                return axios.get(resource, { params });
+            },
+
             getAddressInternalTransactions(address, page, itemsPerPage) {
                 const params = {
                     firebaseUserId: firebaseUserId.value,
@@ -862,6 +923,13 @@ export default {
                 return axios.get(resource, { params });
             },
 
+            getTransactionTraceSteps(transactionHash) {
+                const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value };
+
+                const resource = `${envStore.apiRoot}/api/transactions/${transactionHash}/traceSteps`;
+                return axios.get(resource, { params });
+            },
+
             getTransactionTokenBalanceChanges(transactionHash, options) {
                 const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, ...options };
 
@@ -1017,7 +1085,6 @@ export default {
             },
 
             getErc721TokenById(contractAddress, tokenId) {
-                console.log(tokenId);
                 if (!explorerStore.id) {
                     const erc721Connector = new ERC721Connector(currentWorkspaceStore.rpcServer, contractAddress, { metadata: true, enumerable: true });
                     return new Promise((resolve, reject) => {

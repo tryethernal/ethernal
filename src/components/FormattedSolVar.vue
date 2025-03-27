@@ -150,6 +150,5 @@ export default {
 <style scoped>
 /deep/ span.notInteractive a {
     text-decoration: none;
-    color: white !important;
 }
 </style>

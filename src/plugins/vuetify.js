@@ -3,6 +3,7 @@ import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import { VStepperVertical, VStepperVerticalItem } from 'vuetify/labs/VStepperVertical'
+import { VTreeview } from 'vuetify/labs/VTreeview'
 import { iconify } from './iconify';
 
 const ethernal = {
@@ -23,7 +24,8 @@ export default createVuetify({
     components: {
         ...components,
         VStepperVertical,
-        VStepperVerticalItem
+        VStepperVerticalItem,
+        VTreeview
     },
     icons: {
         sets: {

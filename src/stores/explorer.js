@@ -26,6 +26,12 @@ export const useExplorerStore = defineStore('explorer', {
 
             this.$patch(explorer);
         }
+    },
+
+    getters: {
+        mainDomain() {
+            return this.domains.length ? this.domains[0] : this.domain;
+        }
     }
 });
 

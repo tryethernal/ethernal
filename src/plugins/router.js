@@ -2,6 +2,7 @@ import { createWebHistory, createRouter } from 'vue-router';
 import Blocks from '../components/Blocks.vue';
 import Block from '../components/Block.vue';
 import Transactions from '../components/Transactions.vue';
+import InternalTransactions from '../components/InternalTransactions.vue';
 import Accounts from '../components/Accounts.vue';
 import Transaction from '../components/Transaction.vue';
 import Address from '../components/Address.vue';
@@ -22,7 +23,9 @@ import ExplorerFaucet from '../components/ExplorerFaucet.vue';
 import ExplorerDex from '../components/ExplorerDex.vue';
 import GasTracker from '../components/GasTracker.vue';
 import ExplorerBridge from '../components/ExplorerBridge.vue';
+import TopERC20Tokens from '../components/TopERC20Tokens.vue';
 import { useEnvStore } from '../stores/env';
+import VerifiedContracts from '@/components/VerifiedContracts.vue'
 
 const isLoggedIn = () => {
     return localStorage.getItem('apiToken') !== null;
@@ -60,6 +63,7 @@ const routes = [
     { path: '/gas', component: GasTracker, beforeEnter: redirectIfLoggedOut },
     { path: '/gastracker', component: GasTracker, beforeEnter: redirectIfLoggedOut },
     { path: '/transactions', component: Transactions, beforeEnter: redirectIfLoggedOut },
+    { path: '/txsInternal', component: InternalTransactions, beforeEnter: redirectIfLoggedOut },
     { path: '/accounts', component: Accounts, beforeEnter: redirectIfLoggedOut },
     { path: '/transaction/:hash', component: Transaction, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/tx/:hash', component: Transaction, props: true, beforeEnter: redirectIfLoggedOut },
@@ -70,6 +74,7 @@ const routes = [
     { path: '/contract/:address', redirect: '/address/:address' },
     { path: '/contracts', component: Contracts, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/tokens', component: Tokens, props: true, beforeEnter: redirectIfLoggedOut },
+    { path: '/toptokens', component: TopERC20Tokens, beforeEnter: redirectIfLoggedOut },
     { path: '/nfts', component: ERC721Collections, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/nft/:address', component: ERC721Collection, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/settings', component: Settings, props: true, beforeEnter: redirectIfLoggedOut },
@@ -80,6 +85,15 @@ const routes = [
     { path: '/faucet', component: ExplorerFaucet, beforeEnter: redirectIfLoggedOut },
     { path: '/dex', component: ExplorerDex, beforeEnter: redirectIfLoggedOut },
     { path: '/bridge', component: ExplorerBridge, beforeEnter: redirectIfLoggedOut },
+    {
+        path: '/contractsverified',
+        name: 'contractsverified',
+        component: VerifiedContracts,
+        meta: {
+            requiresAuth: true,
+            title: 'Verified Contracts'
+        }
+    },
     { path: '/:pathMatch(.*)*', name: 'not-found', component: Overview, beforeEnter: redirectIfLoggedOut }
 ];
 

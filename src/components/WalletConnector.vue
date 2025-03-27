@@ -27,8 +27,8 @@ import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { init, useOnboard } from '@web3-onboard/vue'
 import wagmi from '@web3-onboard/wagmi'
-import { switchChain } from '@web3-onboard/wagmi'
-import { toHex } from 'viem'
+import { createConfig, switchChain } from '@web3-onboard/wagmi'
+import { createClient, toHex } from 'viem'
 import bus from '../plugins/bus';
 import { useCurrentWorkspaceStore } from '../stores/currentWorkspace'
 import { useExplorerStore } from '../stores/explorer'
@@ -47,6 +47,13 @@ export default {
         const explorerStore = useExplorerStore();
         const walletStore = useWalletStore();
 
+        currentWorkspaceStore.updateWagmiConfig(createConfig({
+            chains: [currentWorkspaceStore.viemChainConfig],
+            client({ chain }) {
+                return createClient({ chain, transport: currentWorkspaceStore.viemTransportConfig })
+            }
+        }));
+
         const onboard = init({
             wagmi,
             accountCenter: {
@@ -63,15 +70,14 @@ export default {
                 autoConnectAllPreviousWallet: true
             },
             wallets: [walletConnectModule({ dappUrl: document.location.origin, projectId: '8f6704ea1d97d675e4959e762a46c829' }), injectedModule(), bitgetWalletModule(), coinbaseWalletModule(), frameModule()],
-            chains: [
-                {
+            chains: [{
                     id: currentWorkspaceStore.networkId,
                     token: currentWorkspaceStore.chain.token || 'ETH',
                     label: explorerStore.name || currentWorkspaceStore.name,
                     rpcUrl: explorerStore.rpcServer || currentWorkspaceStore.rpcServer
                 }
             ]
-        });
+        })
 
         const { connectWallet, disconnectConnectedWallet, connectedWallet, alreadyConnectedWallets, connectingWallet, connectedChain } = useOnboard();
         const { isConnectorLoading, isChainIdCorrect, connectedAddress, formattedBalance, shortenedConnectedAddress, parsedChainId } = storeToRefs(walletStore);
@@ -103,8 +109,6 @@ export default {
             if (activeWallet) {
                 const { wagmiConnector } = activeWallet;
                 walletStore.updateWagmiConnector(wagmiConnector);
-                const wagmiConfig = onboard.state.get().wagmiConfig;
-                currentWorkspaceStore.updateWagmiConfig(wagmiConfig);
                 walletStore.updateIsConnectorLoading(false);
                 walletStore.updateConnectedAddress(activeWallet?.accounts[0]?.address);
                 walletStore.updateConnectedChainId(connectedChain.value?.id);

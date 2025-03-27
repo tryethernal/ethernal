@@ -1,60 +1,21 @@
 <template>
-    <!-- Standard view -->
-    <v-card class="my-2" v-if="!embedded">
-        <v-card-text>
-            <div style="height: 48px; font-size: 16px" class="d-flex justify-end mb-4">
-                <v-switch hide-details="auto" class="align-self-center" v-model="unformatted" label="Unformatted Amounts"></v-switch>
-            </div>
-            
-            <div v-for="(changes, address) in groupedBalanceChanges" :key="address" class="mb-4 pa-2 rounded-sm">
-                <div class="d-flex">
-                    <!-- Address cell -->
-                    <div style="min-width: 200px;">
-                        <span class="font-weight-medium">
-                            <Hash-Link
-                                :type="'address'"
-                                :hash="address"
-                                :withName="true"
-                            />
-                        </span>
-                    </div>
+    <div class="balance-diff pa-0 rounded">
+        <!-- Loading State -->
+        <div v-if="loading" class="loading-state d-flex justify-center align-center pa-4">
+            <v-progress-circular
+                indeterminate
+                color="primary"
+                class="mr-2"
+                size="16"
+                width="2"
+            ></v-progress-circular>
+            <span class="text-caption">Loading balance changes...</span>
+        </div>
 
-                    <!-- Balance changes cell -->
-                    <div class="flex-grow-1">
-                        <div v-for="(item, index) in changes" :key="item.id || index" class="d-flex align-center mb-1">
-                            <v-icon
-                                :color="changeDirection(item.diff) > 0 ? 'success' : (changeDirection(item.diff) < 0 ? 'error' : 'grey')"
-                                size="small"
-                                class="mr-2"
-                            >
-                                {{ changeDirection(item.diff) > 0 ? 'mdi-arrow-up-bold' : (changeDirection(item.diff) < 0 ? 'mdi-arrow-down-bold' : 'mdi-minus') }}
-                            </v-icon>
-                            
-                            <span :class="{
-                                'text-success font-weight-medium': changeDirection(item.diff) > 0,
-                                'text-error font-weight-medium': changeDirection(item.diff) < 0
-                            }">
-                                {{ changeDirection(item.diff) > 0 ? '+' : '' }}{{ $fromWei(item.diff, getTokenDecimals(item.token), getTokenSymbol(item.token), unformatted) }}
-                            </span>
-                            
-                            <span class="text-body-2 text-grey ml-4">
-                                {{ $fromWei(item.previousBalance, getTokenDecimals(item.token), getTokenSymbol(item.token), unformatted) }}
-                                <v-icon size="x-small" class="mx-1">mdi-arrow-right</v-icon>
-                                {{ $fromWei(item.currentBalance, getTokenDecimals(item.token), getTokenSymbol(item.token), unformatted) }}
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </v-card-text>
-    </v-card>
-    
-    <!-- Embedded compact view -->
-    <div v-else class="embedded-balance-diff pa-0 rounded">
         <!-- Balance Changes List -->
-        <div v-if="!loading" class="balance-changes-list">
-            <div v-for="(changes, address) in groupedDisplayedBalanceChanges" :key="address" 
-                class="embedded-balance-item px-0 rounded-sm mb-3">
+        <div v-else-if="Object.keys(groupedDisplayedBalanceChanges).length > 0" class="balance-changes-list">
+            <div v-for="(changes, address, idx) in groupedDisplayedBalanceChanges" :key="address" 
+                class="balance-item px-0 rounded-sm mb-3">
                 <div class="d-flex flex-justify-between">
                     <!-- Address cell -->
                     <div style="min-width: 200px;">
@@ -70,44 +31,74 @@
 
                     <!-- Balance changes cell -->
                     <div class="flex-grow-1">
-                        <div v-for="(item, index) in changes" :key="item.id || index" class="d-flex align-center mb-1">
-                            <v-icon 
-                                :color="changeDirection(item.diff) > 0 ? 'success' : (changeDirection(item.diff) < 0 ? 'error' : 'grey')"
-                                size="x-small"
-                                class="mr-2"
-                            >
-                                {{ changeDirection(item.diff) > 0 ? 'mdi-arrow-up-bold' : (changeDirection(item.diff) < 0 ? 'mdi-arrow-down-bold' : 'mdi-minus') }}
-                            </v-icon>
-                            
-                            <span :class="{'text-success font-weight-medium': changeDirection(item.diff) > 0, 'text-error font-weight-medium': changeDirection(item.diff) < 0}">
-                                {{ changeDirection(item.diff) > 0 ? '+' : '' }}{{ $fromWei(item.diff, getTokenDecimals(item.token), getTokenSymbol(item.token), unformatted) }}
-                            </span>
+                        <div v-for="(item, index) in changes" :key="item.id || index">
+                            <!-- Balance info row -->
+                            <div class="d-flex align-center mb-1">
+                                <v-icon 
+                                    :color="changeDirection(item.diff) > 0 ? 'success' : (changeDirection(item.diff) < 0 ? 'error' : 'grey')"
+                                    size="x-small"
+                                    class="mr-2"
+                                >
+                                    {{ changeDirection(item.diff) > 0 ? 'mdi-arrow-up-bold' : (changeDirection(item.diff) < 0 ? 'mdi-arrow-down-bold' : 'mdi-minus') }}
+                                </v-icon>
+                                
+                                <!-- Token amount change -->
+                                <span v-if="getTokenDecimals(item)" :class="{'text-success font-weight-medium': changeDirection(item.diff) > 0, 'text-error font-weight-medium': changeDirection(item.diff) < 0}">
+                                    {{ changeDirection(item.diff) > 0 ? '+' : '' }}{{ $fromWei(item.diff, getTokenDecimals(item), item.contract.tokenName, unformatted) }}
+                                </span>
+                                <template v-else>
+                                    <span :class="{'text-success font-weight-medium': changeDirection(item.diff) > 0, 'text-error font-weight-medium': changeDirection(item.diff) < 0}">
+                                        {{ changeDirection(item.diff) > 0 ? '+' : '' }}{{ item.diff }}
+                                    </span>
+                                </template>
+
+                                <!-- Token symbol/contract -->
+                                <span class="text-medium-emphasis ml-1">
+                                    <template v-if="item.contract.tokenSymbol">({{ item.contract.tokenSymbol }})</template>
+                                    <template v-else>
+                                        (<Hash-Link :notCopiable="!!item.contract.name" :contract="item.contract" :hash="item.token" :type="'address'" :withName="true" truncate="true" />)
+                                    </template>
+                                </span>
+
+                                <!-- Previous and current balance -->
+                                <v-tooltip location="end">
+                                    <template v-slot:activator="{ props }">
+                                        <v-btn
+                                            v-bind="props"
+                                            density="comfortable"
+                                            variant="text"
+                                            size="small"
+                                            class="ml-2 text-medium-emphasis"
+                                            icon="mdi-history"
+                                        ></v-btn>
+                                    </template>
+                                    <div class="pa-2">
+                                        <div class="mb-1">
+                                            <span>Previous Block (#{{ Math.max(props.blockNumber - 1, 0) }}):</span>
+                                            <span class="ml-1">{{ $fromWei(getPreviousBalance(item), getTokenDecimals(item), getTokenSymbol(item), unformatted) }}</span>
+                                        </div>
+                                        <div>
+                                            <span>Transaction Block (#{{ props.blockNumber }}):</span>
+                                            <span class="ml-1">{{ $fromWei(getCurrentBalance(item), getTokenDecimals(item), getTokenSymbol(item), unformatted) }}</span>
+                                        </div>
+                                    </div>
+                                </v-tooltip>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <v-divider v-if="idx < Object.keys(groupedDisplayedBalanceChanges).length - 1" class="my-2" />
             </div>
-        </div>
-        
-        <!-- Loading State -->
-        <div v-if="loading" class="loading-state d-flex justify-center align-center pa-4">
-            <v-progress-circular
-                indeterminate
-                color="primary"
-                class="mr-2"
-                size="16"
-                width="2"
-            ></v-progress-circular>
-            <span class="text-caption">Loading balance changes...</span>
         </div>
 
         <!-- Empty State -->
-        <div v-if="!loading && Object.keys(groupedDisplayedBalanceChanges).length === 0" class="empty-state pa-4 text-center">
+        <div v-else class="empty-state pa-4 text-center">
             <v-icon color="grey-lighten-1" size="24" class="mb-2">mdi-swap-horizontal-off</v-icon>
-            <div class="text-body-2 text-grey-darken-1">No balance changes found for this transaction</div>
+            <div class="text-body-2 text-grey-darken-1">No balance changes found</div>
         </div>
 
         <!-- Pagination -->
-        <div v-if="balanceChanges.length > itemsPerPage" class="text-center mt-2">
+        <div v-if="Object.keys(groupedDisplayedBalanceChanges).length > 0 && totalPages > 1" class="text-center mt-2">
             <v-pagination
                 v-model="currentPage"
                 :length="totalPages"
@@ -133,114 +124,52 @@ const props = defineProps({
         required: true
     },
     blockNumber: [Number, String],
-    embedded: {
-        type: Boolean,
-        default: false
-    },
-    showAll: {
-        type: Boolean,
-        default: false
+    itemsPerPage: {
+        type: Number,
+        default: 5
     }
 });
-
-const emit = defineEmits(['view-all']);
-
-// Inject server
-const $server = inject('$server');
 
 // Reactive state
 const unformatted = ref(false);
-const tokenData = ref({}); // Store token data by token address
 const currentPage = ref(1);
-const itemsPerPage = ref(5);
 const loading = ref(false);
 
-// Memoized computed properties
-const previousBlockNumber = computed(() => Math.max(0, parseInt(props.blockNumber) - 1));
-
-const tableHeaders = computed(() => [
-    { title: 'Address', key: 'address' },
-    { title: `Previous Block (#${previousBlockNumber.value})`, key: 'before' },
-    { title: `Tx Block (#${parseInt(props.blockNumber)})`, key: 'now' },
-    { title: 'Change', key: 'change' }
-]);
-
-// Process balance changes with memoization
-const groupedBalanceChanges = computed(() => {
-    // First, get unique addresses
-    const uniqueAddresses = [...new Set(props.balanceChanges.map(item => item.address))];
-    
-    // Then create groups with all changes for each address
-    return uniqueAddresses.reduce((acc, address) => {
-        acc[address] = props.balanceChanges.filter(item => item.address === address);
-        return acc;
-    }, {});
+// Handle pagination
+const totalPages = computed(() => {
+    const pages = Math.ceil(props.balanceChanges.length / props.itemsPerPage);
+    console.log('Total pages:', pages, 'Items per page:', props.itemsPerPage, 'Total items:', props.balanceChanges.length);
+    return pages;
 });
 
-// Handle pagination
-const totalPages = computed(() => Math.ceil(props.balanceChanges.length / itemsPerPage.value));
-
 const groupedDisplayedBalanceChanges = computed(() => {
+    console.log('Computing groupedDisplayedBalanceChanges. Current page:', currentPage.value);
     // Get the current page's items
-    const startIndex = (currentPage.value - 1) * itemsPerPage.value;
-    const endIndex = startIndex + itemsPerPage.value;
+    const startIndex = (currentPage.value - 1) * props.itemsPerPage;
+    const endIndex = startIndex + props.itemsPerPage;
     const paginatedBalanceChanges = props.balanceChanges.slice(startIndex, endIndex);
+    console.log('Paginated balance changes:', paginatedBalanceChanges);
     
     // Get unique addresses for the paginated items
     const uniqueAddresses = [...new Set(paginatedBalanceChanges.map(item => item.address))];
+    console.log('Unique addresses for current page:', uniqueAddresses);
     
     // Create groups with changes for each address
-    return uniqueAddresses.reduce((acc, address) => {
+    const result = uniqueAddresses.reduce((acc, address) => {
         acc[address] = paginatedBalanceChanges.filter(item => item.address === address);
         return acc;
     }, {});
+    console.log('Grouped displayed balance changes:', result);
+    return result;
 });
 
-// Token data loading with batching for efficiency
-async function loadContractData() {
-    // Extract unique tokens that we haven't loaded yet
-    const uniqueTokens = [...new Set(props.balanceChanges.map(item => item.token))];
-    const tokensToLoad = uniqueTokens.filter(token => !tokenData.value[token]);
-    
-    if (tokensToLoad.length === 0) return;
-    
-    // Batch load tokens (5 at a time to avoid too many concurrent requests)
-    const batchSize = 5;
-    const batches = [];
-    
-    for (let i = 0; i < tokensToLoad.length; i += batchSize) {
-        batches.push(tokensToLoad.slice(i, i + batchSize));
-    }
-    
-    // Process batches sequentially
-    for (const batch of batches) {
-        await Promise.all(batch.map(async (tokenAddress) => {
-            try {
-                const { data } = await $server.getContract(tokenAddress);
-                if (!data) return;
-                
-                // Update token data with new information
-                tokenData.value = {
-                    ...tokenData.value,
-                    [tokenAddress]: {
-                        decimals: data.tokenDecimals || 18,
-                        symbol: data.tokenSymbol || ''
-                    }
-                };
-            } catch (error) {
-                console.error(`Error loading token data for ${tokenAddress}:`, error);
-            }
-        }));
-    }
-}
-
 // Optimized functions
-function getTokenDecimals(tokenAddress) {
-    return tokenData.value[tokenAddress]?.decimals || 18;
+function getTokenDecimals(item) {
+    return item?.contract?.tokenDecimals ?? null;
 }
 
-function getTokenSymbol(tokenAddress) {
-    return tokenData.value[tokenAddress]?.symbol || '';
+function getTokenSymbol(item) {
+    return item?.contract?.tokenSymbol ?? ' ';
 }
 
 // Cache change direction results
@@ -274,31 +203,26 @@ function onPageChange(page) {
     currentPage.value = page;
 }
 
-// Watch for balance changes and load token data
-watch(() => props.balanceChanges, (newBalanceChanges, oldBalanceChanges) => {
-    // Only reload if we have new token addresses
-    const oldTokens = new Set((oldBalanceChanges || []).map(item => item.token));
-    const hasNewTokens = newBalanceChanges.some(item => !oldTokens.has(item.token));
-    
-    if (hasNewTokens) {
-        loadContractData();
-    }
-}, { immediate: true });
+function getPreviousBalance(item) {
+    if (!item || !item.diff) return '0';
+    const currentBalance = getCurrentBalance(item);
+    const diff = BigNumber.from(item.diff);
+    return BigNumber.from(currentBalance).sub(diff).toString();
+}
 
-// Initial load
-onMounted(() => {
-    loadContractData();
-});
+function getCurrentBalance(item) {
+    return item?.currentBalance || '0';
+}
 </script>
 
 <style scoped>
-.embedded-balance-diff {
+.balance-diff {
     width: 100%;
     border: none;
     background-color: transparent;
 }
 
-.embedded-balance-item {
+.balance-item {
     margin-bottom: 0;
     font-size: 0.875rem;
 }
@@ -345,7 +269,6 @@ onMounted(() => {
 }
 
 .balance-changes-list {
-    max-height: 300px;
     overflow-y: auto;
     padding-right: 4px;
 }

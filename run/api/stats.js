@@ -4,6 +4,44 @@ const db = require('../lib/firebase');
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const { managedError, unmanagedError } = require('../lib/errors');
 
+/**
+ * Retrieves the top ERC20 tokens by holders for a workspace
+ * @param {string} workspaceId - The workspace id
+ * @param {number} page - The page number
+ * @param {number} itemsPerPage - The number of items per page
+ * @returns {Array<Object>} - A list of top ERC20 tokens by holders
+ */
+router.get('/topErc20ByHolders', workspaceAuthMiddleware, async (req, res, next) => {
+    const data = req.query;
+    try {
+        const topErc20ByHolders = await db.getTopErc20ByHolders(data.workspace.id, data.page, data.itemsPerPage);
+
+        res.status(200).json({ items: topErc20ByHolders });
+    } catch(error) {
+        unmanagedError(error, req, next);
+    }
+});
+
+/**
+ * Retrieves contract stats for a workspace
+ * - totalContracts
+ * - contractsLast24Hours
+ * - verifiedContracts
+ * - verifiedContractsLast24Hours
+ * @param {string} workspaceId - The workspace id
+ * @returns {Object} - An object containing the contract stats
+ */
+router.get('/contracts', workspaceAuthMiddleware, async (req, res, next) => {
+    const data = req.query;
+    try {
+        const contractStats = await db.getWorkspaceContractStats(data.workspace.id);
+
+        res.status(200).json({ stats: contractStats });
+    } catch(error) {
+        unmanagedError(error, req, next);
+    }
+});
+
 /*
     This endpoint is used to get the burnt fees for the last 24 hours for a workspace.
 

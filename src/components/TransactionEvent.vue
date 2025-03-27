@@ -1,104 +1,131 @@
 <template>
-    <div v-if="rawMode" class="my-3 text-medium-emphasis">
-        <b>Emitter:</b> <Hash-Link :type="'address'" :hash="log.address" :contract="contract"></Hash-Link><br>
-        <b>Data:</b>
-        <Formatted-Sol-Var :input="{ type: 'string' }" :value="JSON.stringify(log.raw)" :notInteractive="true" :isArrayEl="true" class="ml-4" />
-    </div>
-    <div v-else-if="short" class="my-3 text-medium-emphasis">
-        <v-tooltip location="top" :open-delay="150" color="grey-darken-1" content-class="tooltip">
-            <template v-slot:activator="{ props }">
-                <v-chip class="bg-primary-lighten-1" v-bind="props" label size="small">
+    <div class="my-3 text-medium-emphasis">
+        <!-- Raw Mode Display -->
+        <div v-if="rawMode">
+            <TransactionEventRawInfo
+                :address="props.log.address"
+                :contract="contract"
+                :topics="[]"
+                :data="JSON.stringify(props.log.raw)"
+                :showEmitter="!props.self"
+                :isTooltip="false"
+            />
+        </div>
+
+        <!-- Short Mode Display -->
+        <v-tooltip 
+            v-else-if="props.label" 
+            location="top" 
+            :open-delay="150" 
+            color="grey-darken-1" 
+            content-class="tooltip"
+        >
+            <template v-slot:activator="{ props: tooltipProps }">
+                <v-chip 
+                    class="bg-primary-lighten-1" 
+                    v-bind="tooltipProps" 
+                    label 
+                    size="small"
+                >
                     <span class="color--text event-name">{{ eventLabel }}</span>
                 </v-chip>
             </template>
-            <span style="white-space: pre">
-                <template v-if="parsedLog">
-                    <span v-if="parsedLog.args.length > 0"><Hash-Link :type="'address'" :unlink="true" :notCopiable="true" :withTokenName="true" :withName="true" :hash="this.log.address" :contract="contract" />{{ `.${parsedLog.name}(\n` }}</span>
-                    <span v-else>{{ `${ contract.name }.${parsedLog.name}` }}()</span>
-                    <div style="white-space: pre;" v-for="(input, index) in parsedLog.eventFragment.inputs" :key="index">
-                        <Formatted-Sol-Var :notInteractive="true" :input="input" :value="parsedLog.args[index]" class="ml-4" />
-                    </div>
-                    <span v-if="parsedLog.args.length > 0">{{ ')' }}</span>
-                </template>
-                <template v-else>
-                    <b>Emitter:</b> <Hash-Link :unlink="true" :notCopiable="true" :type="'address'" :hash="log.address" :contract="contract"></Hash-Link><br>
-                    <b>Topics:</b>
-                    <ul>
-                        <li class="ml-6" v-for="(topic, idx) in log.topics" :key="idx">{{ topic }}</li>
-                    </ul>
-                    <div class="raw-input"><b>Data:</b> {{ log.data }}</div>
-                </template>
-            </span>
+            <LogDetails 
+                :parsedLog="parsedLog"
+                :log="props.log"
+                :contract="contract"
+                :self="props.self"
+                :isTooltip="true"
+                :unlink="true"
+                :short="props.short"
+            />
         </v-tooltip>
-    </div>
-    <div v-else class="my-3 text-medium-emphasis">
-        <template v-if="parsedLog">
-            <span v-if="parsedLog.args.length > 0"><Hash-Link :type="'address'" :notCopiable="true" :withTokenName="true" :withName="true" :hash="this.log.address" :contract="contract"/>{{ `.${parsedLog.name}(\n` }}</span>
-            <span v-else>{{ `${ contract.name }.${parsedLog.name}` }}()</span>
-            <div style="white-space: pre;" v-for="(input, index) in parsedLog.eventFragment.inputs" :key="index">
-                <Formatted-Sol-Var :input="input" :value="parsedLog.args[index]" class="ml-4" />
-            </div>
-            <span v-if="parsedLog.args.length > 0">{{ ')' }}</span>
-        </template>
-        <template v-else>
-            <b>Emitter:</b> <Hash-Link :type="'address'" :hash="log.address" :contract="contract"></Hash-Link><br>
-            <b>Topics:</b>
-            <ul>
-                <li class="ml-6" v-for="(topic, idx) in log.topics" :key="idx">{{ topic }}</li>
-            </ul>
-            <div class="log-data"><b>Data:</b> {{ log.data }}</div>
-        </template>
+
+        <!-- Full Mode Display -->
+        <LogDetails 
+            v-else
+            :parsedLog="parsedLog"
+            :log="props.log"
+            :contract="contract"
+            :self="props.self"
+            :isTooltip="false"
+            :short="props.short"
+        />
     </div>
 </template>
-<script>
+
+<script setup>
+import { ref, computed, onMounted, inject, defineAsyncComponent } from 'vue';
 import { findAbiForEvent, decodeLog } from '@/lib/abi';
-import FormattedSolVar from './FormattedSolVar.vue';
-import HashLink from './HashLink.vue';
 
-export default {
-    name: 'TransactionEvent',
-    props: ['log', 'short'],
-    components: {
-        FormattedSolVar,
-        HashLink
+// Lazy load components
+const LogDetails = defineAsyncComponent(() => import('./TransactionEventLogDetails.vue'));
+const TransactionEventRawInfo = defineAsyncComponent(() => import('./TransactionEventRawInfo.vue'));
+
+// Props definition
+const props = defineProps({
+    log: {
+        type: Object,
+        required: true
     },
-    data: () => ({
-        parsedLog: null,
-        contract: null,
-        rawMode: false
-    }),
-    mounted() {
-        if (!this.log.topics) return this.rawMode = true;
-
-        if (this.log.contract && this.log.contract.abi) {
-            this.parsedLog = decodeLog(this.log, this.log.contract.abi);
-        }
-        else if (this.log.topics) {
-            const abi = findAbiForEvent(this.log.topics[0]);
-            if (abi)
-                this.parsedLog = decodeLog(this.log, abi);
-        }
-
-        // if (this.parsedLog) return;
-
-        this.$server.getContract(this.log.address)
-            .then(({ data }) => {
-                if (data) {
-                    this.contract = data.proxyContract || data;
-                    if (this.contract && this.contract.abi) {
-                        this.parsedLog = decodeLog(this.log, this.contract.abi);
-                        return;
-                    }
-                }
-            });
+    short: {
+        type: Boolean,
+        default: false
     },
-    computed: {
-        eventLabel() {
-            return this.parsedLog && this.parsedLog.name || this.log.topics && this.log.topics[0];
+    self: {
+        type: Boolean,
+        default: false
+    },
+    label: {
+        type: Boolean,
+        default: false
+    }
+});
+
+// Inject server from app context
+const $server = inject('$server');
+
+// Reactive state
+const parsedLog = ref(null);
+const contract = ref(null);
+const rawMode = ref(false);
+
+// Computed property
+const eventLabel = computed(() => {
+    return parsedLog.value?.name || props.log.topics?.[0];
+});
+
+// Server interaction and log parsing
+onMounted(async () => {
+    if (!props.log.topics) {
+        rawMode.value = true;
+        return;
+    }
+
+    if (props.log.contract?.abi) {
+        parsedLog.value = decodeLog(props.log, props.log.contract.abi);
+    }
+    else if (props.log.topics) {
+        const abi = findAbiForEvent(props.log.topics[0]);
+        if (abi) {
+            parsedLog.value = decodeLog(props.log, abi);
         }
     }
-}
+
+    try {
+        const { data } = await $server.getContract(props.log.address);
+        if (data) {
+            contract.value = data.proxyContract || data;
+            if (contract.value?.abi) {
+                parsedLog.value = decodeLog(props.log, contract.value.abi);
+            }
+        }
+    } catch (error) {
+        console.error('Failed to fetch contract:', error);
+    }
+});
 </script>
+
 <style scoped>
 .event-name {
     display: block;

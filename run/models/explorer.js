@@ -71,7 +71,10 @@ module.exports = (sequelize, DataTypes) => {
                 },
                 {
                     model: sequelize.models.Workspace,
-                    attributes: ['id', 'name', 'storageEnabled', 'defaultAccount', 'gasPrice', 'gasLimit', 'erc721LoadingEnabled', 'statusPageEnabled', 'public'],
+                    attributes: [
+                        'id', 'name', 'storageEnabled', 'defaultAccount', 'gasPrice', 'gasLimit', 'erc721LoadingEnabled', 'statusPageEnabled', 'public',
+                        [sequelize.literal('CASE WHEN tracing IS NOT NULL THEN true ELSE false END'), 'tracing']
+                    ],
                     as: 'workspace',
                     include: [
                         {
@@ -130,7 +133,10 @@ module.exports = (sequelize, DataTypes) => {
                         },
                         {
                             model: sequelize.models.Workspace,
-                            attributes: ['id', 'name', 'storageEnabled', 'defaultAccount', 'gasPrice', 'gasLimit', 'erc721LoadingEnabled', 'statusPageEnabled', 'public'],
+                            attributes: [
+                                'id', 'name', 'storageEnabled', 'defaultAccount', 'gasPrice', 'gasLimit', 'erc721LoadingEnabled', 'statusPageEnabled', 'public',
+                                [sequelize.literal('CASE WHEN tracing IS NOT NULL THEN true ELSE false END'), 'tracing']
+                            ],
                             as: 'workspace',
                             include: [
                                 {
@@ -191,7 +197,10 @@ module.exports = (sequelize, DataTypes) => {
                     },
                     {
                         model: sequelize.models.Workspace,
-                        attributes: ['id', 'name', 'storageEnabled', 'defaultAccount', 'gasPrice', 'gasLimit', 'erc721LoadingEnabled', 'statusPageEnabled', 'public'],
+                        attributes: [
+                            'id', 'name', 'storageEnabled', 'defaultAccount', 'gasPrice', 'gasLimit', 'erc721LoadingEnabled', 'statusPageEnabled', 'public',
+                            [sequelize.literal('CASE WHEN tracing IS NOT NULL THEN true ELSE false END'), 'tracing']
+                        ],
                         as: 'workspace'
                     },
                     {

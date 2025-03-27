@@ -83,6 +83,7 @@ const ethers = require('ethers');
 import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
 import { useExplorerStore } from '../stores/explorer';
 import { useEnvStore } from '../stores/env';
+import { useUserStore } from '../stores/user';
 import { mapStores } from 'pinia';
 import { formatContractPattern, shortRpcUrl } from '@/lib/utils';
 import WalletConnector from './WalletConnector.vue';
@@ -112,8 +113,11 @@ export default {
                 this.currentWorkspaceStore.updateCurrentBlock(items[0]);
         });
 
-        if (!this.currentWorkspaceStore.public) {
+        if (this.userStore.isAdmin) {
             this.getAccounts();
+        }
+
+        if (!this.currentWorkspaceStore.public) {
             this.processContracts();
             this.processTransactions();
             this.processFailedTransactions();
@@ -230,7 +234,8 @@ export default {
         ...mapStores(
             useCurrentWorkspaceStore,
             useEnvStore,
-            useExplorerStore
+            useExplorerStore,
+            useUserStore
         ),
         isUserAdmin() {
             return this.envStore.isAdmin;

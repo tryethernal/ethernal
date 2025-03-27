@@ -301,7 +301,7 @@ module.exports = (sequelize, DataTypes) => {
         const filteredItemPerPage = itemsPerPage > 0 ? itemsPerPage : null;
         const offset = itemsPerPage > 0 ? (page - 1) * itemsPerPage : 0;
 
-        return sequelize.models.TokenTransfer.findAndCountAll({
+        return sequelize.models.TokenTransfer.findAll({
             where: {
                 workspaceId: this.workspaceId,
                 token: this.address,
@@ -312,7 +312,7 @@ module.exports = (sequelize, DataTypes) => {
                 {
                     model: sequelize.models.Transaction,
                     as: 'transaction',
-                    attributes: ['hash', 'blockNumber', 'timestamp'],
+                    attributes: ['blockNumber', 'data', 'hash', 'methodDetails', 'timestamp'],
                 },
                 {
                     model: sequelize.models.Contract,

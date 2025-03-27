@@ -1,30 +1,28 @@
 <template>
-    <v-container fluid>
-        <div class="d-flex justify-end mb-4">
-            <v-chip-group multiple v-model="tokenTypes" @update:model-value="getTransfers">
-                <v-chip color="primary" size="x-small" value="erc20">
-                    ERC-20
-                    <template v-if="erc20Count">({{ erc20Count }})</template>
-                </v-chip>
-                <v-chip color="primary" size="x-small" value="erc721">
-                    ERC-721
-                    <template v-if="erc721Count">({{ erc721Count }})</template>
-                </v-chip>
-                <v-chip color="primary" size="x-small" value="erc1155">
-                    ERC-1155
-                    <template v-if="erc1155Count">({{ erc1155Count }})</template>
-                </v-chip>
-            </v-chip-group>
-        </div>
-        <Token-Transfers
-            :transfers="transfers"
-            :headers="headers"
-            :loading="loading"
-            :sort-by="[{ key: currentOptions.orderBy, order: currentOptions.order }]"
-            :count="transferCount"
-            :address="address"
-            @update:options="getTransfers" />
-    </v-container>
+    <div class="d-flex justify-end mb-4">
+        <v-chip-group multiple v-model="tokenTypes" @update:model-value="getTransfers">
+            <v-chip color="primary" size="x-small" value="erc20">
+                ERC-20
+                <template v-if="erc20Count">({{ erc20Count }})</template>
+            </v-chip>
+            <v-chip color="primary" size="x-small" value="erc721">
+                ERC-721
+                <template v-if="erc721Count">({{ erc721Count }})</template>
+            </v-chip>
+            <v-chip color="primary" size="x-small" value="erc1155">
+                ERC-1155
+                <template v-if="erc1155Count">({{ erc1155Count }})</template>
+            </v-chip>
+        </v-chip-group>
+    </div>
+    <Token-Transfers
+        :transfers="transfers"
+        :headers="headers"
+        :loading="loading"
+        :sort-by="[{ key: currentOptions.orderBy, order: currentOptions.order }]"
+        :count="transferCount"
+        :address="address"
+        @update:options="getTransfers" />
 </template>
 
 <script setup>
