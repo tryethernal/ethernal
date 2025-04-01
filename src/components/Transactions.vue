@@ -1,5 +1,5 @@
 <template>
-    <v-container fluid>
+    <v-container>
         <h2 class="text-h6 font-weight-medium">Transactions</h2>
         <v-divider class="my-4"></v-divider>
         <v-row>

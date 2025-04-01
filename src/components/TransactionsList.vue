@@ -23,7 +23,7 @@
         @update:options="getTransactions">
         <template v-if="!withCount" v-slot:[`footer.page-text`]=""></template>
         <template v-slot:item.hash="{ item }">
-            <v-tooltip location="left">
+            <v-tooltip>
                 <template v-slot:activator="{ props }">
                     <v-icon v-bind="props" size="small" v-show="txStatus(item) == 'succeeded'" color="success-lighten-1" class="mr-2">mdi-check-circle</v-icon>
                     <v-icon v-bind="props" size="small" v-show="txStatus(item) == 'failed'" color="error-lighten-1" class="mr-2">mdi-alert-circle</v-icon>
@@ -38,7 +38,7 @@
             <Hash-Link :type="'transaction'" :hash="item.hash" :xsHash="true" />
         </template>
         <template v-slot:item.method="{ item }">
-            <v-tooltip v-if="item.methodDetails && Object.keys(item.methodDetails).length" location="top" :open-delay="150" color="grey-darken-1" content-class="tooltip">
+            <v-tooltip v-if="item.methodDetails?.name" location="top" :open-delay="150" color="grey-darken-1" content-class="tooltip">
                 <template v-slot:activator="{ props }">
                     <v-chip color="primary-lighten-1" label v-bind="props" size="small" variant="flat">
                         <span class="color--text methodName">{{ getMethodName(item) }}</span>
@@ -46,9 +46,7 @@
                 </template>
                 <span style="white-space: pre">{{ getMethodLabel(item.methodDetails) }}</span>
             </v-tooltip>
-            <span v-else>
-                <v-chip variant="flat" label size="small" color="primary-lighten-1" v-show="getMethodName(item)">{{ getMethodName(item) }}</v-chip>
-            </span>
+            <v-chip v-else variant="flat" label size="small" color="primary-lighten-1" v-show="getMethodName(item)">{{ getMethodName(item) }}</v-chip>
         </template>
         <template v-slot:item.timestamp="{ item }">
             <div class="my-2 text-left">

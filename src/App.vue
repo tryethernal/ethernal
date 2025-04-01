@@ -13,78 +13,27 @@
 
         <v-system-bar height="40" v-html="banner" v-if="banner" class="d-flex justify-start font-weight-bold" color="primary"></v-system-bar>
 
-        <v-navigation-drawer v-model="drawer" :style="styles" v-if="canDisplaySides">
-            <div class="custom-logo-wrapper" v-if="logo">
-                <img :src="logo" alt="logo" class="custom-logo" />
-            </div>
-            <v-list-item v-else>
-                <template v-slot:title>
-                    <span class="logo text-accent">{{ explorerStore.name || 'Ethernal' }}</span>
-                </template>
-                <template v-slot:subtitle>
-                    v{{ envStore.version }}
-                </template>
-            </v-list-item>
-            <v-list-item v-if="currentWorkspaceStore.browserSyncEnabled">
-                <v-alert text :icon="false" type="warning">
-                    <v-progress-circular bg-color="warning" color="white" size="16" width="2" indeterminate></v-progress-circular>
-                    <a href="#" class="text-white pl-2" @click.prevent="openBrowserSyncExplainerModal()">Browser Sync</a>
-                </v-alert>
-            </v-list-item>
+        <component :is="appBarComponent" :styles="styles" @toggleMenu="toggleMenu" v-if="canDisplaySides"></component>
 
-            <v-list density="compact" nav class="side--text">
-                <v-list-item prepend-icon="mdi-chart-box" title="Overview" link :to="'/overview'"></v-list-item>
-                <v-list-item prepend-icon="mdi-account-multiple" title="Accounts" link :to="'/accounts'" v-if="envStore.isAdmin"></v-list-item>
-                <v-list-item prepend-icon="mdi-view-dashboard" title="Blocks" link :to="'/blocks'"></v-list-item>
-                <v-list-item prepend-icon="mdi-arrow-left-right" title="Transactions" link :to="'/transactions'"></v-list-item>
-                <v-list-item prepend-icon="mdi-file" title="Contracts" link :to="'/contracts'"></v-list-item>
-                <v-list-item prepend-icon="mdi-alpha-c-circle" title="ERC-20 Tokens" link :to="'/tokens'"></v-list-item>
-                <v-list-item prepend-icon="mdi-palette-advanced" title="ERC-721 Tokens" link :to="'/nfts'"></v-list-item>
-                <v-list-item prepend-icon="mdi-chart-box" title="Analytics" link :to="'/analytics'" v-if="currentWorkspaceStore.public"></v-list-item>
-                <v-list-item prepend-icon="mdi-faucet" title="Faucet" link :to="'/faucet'" v-if="explorerStore.isDemo || explorerStore.faucet || (envStore.isAdmin && currentWorkspaceStore.public)"></v-list-item>
-                <v-list-item prepend-icon="mdi-swap-horizontal" title="Dex" link :to="'/dex'" v-if="explorerStore.isDemo || explorerStore.v2Dex || (envStore.isAdmin && currentWorkspaceStore.public)"></v-list-item>
-                <v-list-item prepend-icon="mdi-bridge" title="Bridge" link :to="'/bridge'" v-if="explorerStore.isDemo || (envStore.isAdmin && currentWorkspaceStore.public)"></v-list-item>
-                <template v-if="envStore.isAdmin">
-                    <v-divider class="my-4"></v-divider>
-                    <v-list-item prepend-icon="mdi-earth" title="Public Explorers" link :to="'/explorers'"></v-list-item>
-                    <v-list-item prepend-icon="mdi-cog" title="Settings" link :to="'/settings?tab=workspace'"></v-list-item>
-                </template>
-            </v-list>
-
-            <template v-slot:append>
-                <v-list density="compact" nav>
-                    <v-list-item prepend-icon="arcticons:metamask" title="Add To Metamask" link v-if="ethereum && hasNetworkInfo" @click="addNetworkToMetamask()"></v-list-item>
-
-                    <v-list-item v-for="(link, idx) in links" :prepend-icon="link.icon || 'mdi-open-in-new'" :title="link.name" target="_blank" :href="link.url" :key="idx"></v-list-item>
-                    <v-list-item prepend-icon="mdi-text-box-multiple" title="Documentation" target="_blank" :href="`https://doc.tryethernal.com`" v-if="envStore.isAdmin"></v-list-item>
-                    <v-list-item prepend-icon="mdi-forum" title="Discord" target="_blank" :href="`https://discord.gg/jEAprf45jj`" v-if="envStore.isAdmin"></v-list-item>
-                    <v-list-item prepend-icon="mdi-feature-search" title="Feature Requests" v-show="prAuthToken" target="_blank" :href="`https://ethernal.productroad.com/company/auth/?token=${prAuthToken}`"></v-list-item>
-
-                    <v-list-item class="text-error-darken-3" title="Log Out" link @click="logOut()" v-if="userStore.loggedIn">
-                        <template v-slot:prepend>
-                            <v-icon color="error-darken-3" icon="mdi-logout"></v-icon>
-                        </template>
-                    </v-list-item>
-
-                    <div class="text-caption text-center font-italic">
-                        Powered By <a href="https://tryethernal.com" target="_blank">Ethernal</a>
-                    </div>
-                </v-list>
-            </template>
-        </v-navigation-drawer>
+        <MainNavBar
+            v-if="canDisplaySides"
+            :styles="styles"
+            :logo="logo"
+            :ethereum="ethereum"
+            :links="links"
+            :prAuthToken="prAuthToken"
+        />
 
         <Migrate-Explorer-Modal ref="migrateExplorerModal" v-if="explorerToken || justMigrated" />
         <Demo-Explorer-Migration-Modal ref="demoExplorerMigrationModal" />
         <Onboarding-Modal ref="onboardingModal" />
         <Browser-Sync-Explainer-Modal ref="browserSyncExplainerModal" v-if="currentWorkspaceStore.browserSyncEnabled" />
 
-        <v-app-bar height="48" :style="styles" dense flat v-if="canDisplaySides">
-            <component @toggleMenu="toggleMenu" :is="appBarComponent"></component>
-        </v-app-bar>
-
         <v-main>
             <component :is="routerComponent"></component>
         </v-main>
+
+        <component :is="host.includes(`app.${envStore.mainDomain}`) ? 'PublicExplorerFooter' : 'PrivateExplorerFooter'" v-if="canDisplaySides" />
     </v-app>
 </template>
 
@@ -104,6 +53,9 @@ import OnboardingModal from './components/OnboardingModal';
 import BrowserSyncExplainerModal from './components/BrowserSyncExplainerModal';
 import MigrateExplorerModal from './components/MigrateExplorerModal';
 import DemoExplorerMigrationModal from './components/DemoExplorerMigrationModal';
+import MainNavBar from './components/MainNavBar';
+import PublicExplorerFooter from './components/PublicExplorerFooter';
+import PrivateExplorerFooter from './components/PrivateExplorerFooter';
 
 export default {
     name: 'App',
@@ -112,7 +64,10 @@ export default {
         OnboardingModal,
         BrowserSyncExplainerModal,
         MigrateExplorerModal,
-        DemoExplorerMigrationModal
+        DemoExplorerMigrationModal,
+        MainNavBar,
+        PublicExplorerFooter,
+        PrivateExplorerFooter
     },
     data: () => ({
         routerComponent: shallowRef(defineComponent({
@@ -344,6 +299,9 @@ export default {
             useUserStore,
             useCustomisationStore
         ),
+        host() {
+            return document.location.host;
+        },
         hasNetworkInfo() {
             return !!(this.explorerStore.name && this.explorerStore.domain && this.explorerStore.token && this.explorerStore.rpcServer);
         },
@@ -353,7 +311,8 @@ export default {
         isAuthPage() { return this.$route.path.indexOf('/auth') > -1 },
         canDisplaySides() { return (this.userStore.loggedIn || this.explorerStore.id) && !this.isAuthPage && !this.isOverlayActive },
         explorerToken() { return this.$route.query.explorerToken },
-        justMigrated() { return !!this.$route.query.justMigrated }
+        justMigrated() { return !!this.$route.query.justMigrated },
+        isPublicExplorer() { return this.explorerStore.id }
     }
 };
 </script>
@@ -367,6 +326,9 @@ a:not(.v-list-item) {
 .custom-logo-wrapper {
     text-align: center;
 }
+.v-container {
+    max-width: 1400px;
+}
 .custom-logo {
     padding-top: 10px;
     max-width: 250px;
@@ -374,5 +336,18 @@ a:not(.v-list-item) {
     text-align: center;
     vertical-align: middle;
     border: none;
+}
+.v-app-bar {
+    display: flex;
+    justify-content: center;
+    background-color: white !important;
+}
+.v-app-bar.top-bar {
+    border-bottom: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
+}
+.v-app-bar .v-container {
+    flex: none;
+    width: 100%;
+    padding: 0 16px;
 }
 </style>
