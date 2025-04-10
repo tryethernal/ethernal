@@ -15,8 +15,8 @@ ethernal-95a14-19f78a7e26cc.json
 run/logfile
 run/seeders/private/
 run/dump.rdb
-screenshots/
 docs/
+screenshots/
 
 functions/report*
 start_explorer.js

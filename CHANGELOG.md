@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.7.0] - 2025-03-10
+### Changed
+- Add ads file
+
+## [4.6.4] - 2025-03-10
+### Fixed
+- Significant digits
+
+## [4.6.3] - 2025-03-10
+### Fixed
+- Significant digits
+
+## [4.6.2] - 2025-03-10
+### Fixed
+- Reset password
+
+## [4.6.1] - 2025-03-10
+### Fixed
+- Bug preventing login when no workspaces setup
+
 ## [4.6.0] - 2025-03-08
 ### Changed
 - Resetting a workspace with a lot of data will now be done in the background + switch immediately to a new empty one

@@ -53,9 +53,16 @@ export default function (amount = 0, to, symbol = 'ether', unformatted = false, 
     let formatted = commified.endsWith('.0') ? commified.split('.')[0] : commified;
 
     if (significantDigits) {
-        const parsed = parseFloat(+formatted);
+        let parsed = parseFloat(+formatted);
+        try {
+            if (isNaN(parsed))
+                parsed = parseFloat(formatted.replace(/,/g, ''));
+        } catch(error) {
+            console.log('could not parse', formatted);
+        }
         const sigDigitsCount = Math.max(1, getSignificantDigitCount(eToNumber(parsed)));
         formatted = eToNumber(parsed.toPrecision(sigDigitsCount <= significantDigits ? sigDigitsCount : significantDigits));
+        formatted = commify(formatted);
     }
 
     if (!symbol)

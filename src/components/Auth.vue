@@ -148,6 +148,7 @@ export default {
         mode: 'signin',
         email: null,
         password: null,
+        resetPasswordToken: null,
     }),
     mounted() {
         if (this.$route.query.apiToken && this.$route.query.path) {
@@ -156,8 +157,10 @@ export default {
         }
         else if (this.explorerToken)
             this.mode = 'signup';
-        else if (this.$route.query.token)
+        else if (this.$route.query.token) {
             this.mode = 'resetPwd';
+            this.resetPasswordToken = this.$route.query.token;
+        }
     },
     methods: {
         switchMode(newMode) {
@@ -207,7 +210,7 @@ export default {
             this.loading = true;
             this.error = null;
             this.success = null;
-            this.$server.resetPassword(this.$route.query.token, this.password)
+            this.$server.resetPassword(this.resetPasswordToken, this.password)
                 .then(() => this.success = 'Your password has been reset successfully, you can now login.')
                 .catch(error => this.error = error.response.data)
                 .finally(() => this.loading = false);
