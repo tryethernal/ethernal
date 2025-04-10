@@ -336,7 +336,7 @@ export default {
         const userStore = useUserStore();
 
         const { firebaseUserId } = storeToRefs(userStore);
-        const { name: workspace } = storeToRefs(currentWorkspaceStore);
+        const { name: workspace, id: workspaceId } = storeToRefs(currentWorkspaceStore);
 
         const _rpcServer = function() {
             return storeToRefs(currentWorkspaceStore).rpcServer.value;
@@ -352,10 +352,24 @@ export default {
         );
 
         const $server = {
-            getTopErc20ByHolders(options) {
-                const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, ...options };
-                const resource = `${envStore.apiRoot}/api/stats/topErc20ByHolders`;
+            getWorkspaceTokenTransfers(options) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    ...options
+                };
+                const resource = `${envStore.apiRoot}/api/workspaces/${workspaceId.value}/tokenTransfers`;
                 return axios.get(resource, { params });
+            },
+
+            getTopTokensByHolders(options) {
+                const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, ...options };
+                const resource = `${envStore.apiRoot}/api/stats/topTokensByHolders`;
+                return axios.get(resource, { params });
+            },
+
+            getTopErc20ByHolders(options) {
+                return this.getTopTokensByHolders({ ...options, patterns: ['erc20'] });
             },
 
             getWorkspaceContractStats() {

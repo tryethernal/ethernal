@@ -2,6 +2,21 @@ const Web3 = require('web3');
 const ethers = require('ethers');
 // const BigNumber = ethers.BigNumber;
 
+const fromWei = require('../filters/FromWei');
+
+const MINIMUM_DISPLAY_GWEI = 10000000;
+
+export const displayGasPrice = (gasPrice) => {
+    if (gasPrice === null || gasPrice === undefined)
+        return null;
+    else if (gasPrice <= 0)
+        return '0 gwei';
+    else if (gasPrice < MINIMUM_DISPLAY_GWEI)
+        return '<0.01 gwei';
+    else
+        return fromWei(gasPrice, 'gwei', 'gwei', false, 2);
+};
+
 export const displayPercentage = (value) => {
     if (value === null || value === undefined)
         return null;

@@ -1,14 +1,15 @@
 <template>
     <!-- Main Data Table -->
     <v-data-table-server
+        class="hide-table-count"
         :loading="loading"
         :headers="visibleHeaders"
-        :density="density"
         :sort-by="currentOptions.sortBy"
         :must-sort="true"
+        items-per-page-text="Rows per page:"
         :items-length="count"
         :hide-default-header="isCompact"
-        no-data-text="No token transfers found"
+        :no-data-text="noDataText"
         last-icon=""
         first-icon=""
         :items-per-page-options="[
@@ -19,6 +20,7 @@
         item-key="id"
         :items="transfers"
         @update:options="updateOptions">
+        <template v-if="!withCount" v-slot:[`footer.page-text`]=""></template>
 
         <!-- Transaction Hash Column -->
         <template v-slot:item.transactionHash="{ item }">
@@ -40,16 +42,16 @@
         </template>
 
         <template v-slot:item.tokenType="{ item }">
-            <v-chip v-if="isERC20(item)" color="success" size="x-small" variant="flat">
+            <v-chip v-if="isERC20(item)" color="success" size="x-small">
                 ERC-20
             </v-chip>
-            <v-chip v-else-if="item.contract.patterns.includes('erc721')" color="success" size="x-small" variant="flat">
+            <v-chip v-else-if="item.contract.patterns.includes('erc721')" color="success" size="x-small">
                 ERC-721
             </v-chip>
-            <v-chip v-else-if="item.contract.patterns.includes('erc1155')" color="success" size="x-small" variant="flat">
+            <v-chip v-else-if="item.contract.patterns.includes('erc1155')" color="success" size="x-small">
                 ERC-1155
             </v-chip>
-            <v-chip color="grey-lighten-1" v-else size="x-small" variant="flat">
+            <v-chip color="grey-lighten-1" v-else size="x-small">
                 Unknown
             </v-chip>
         </template>
@@ -68,7 +70,7 @@
                 :to="'/block/' + item.transaction.blockNumber"
                 class="text-decoration-none"
             >
-                {{ item.transaction.blockNumber }}
+                {{ item.transaction.blockNumber.toLocaleString() }}
             </router-link>
         </template>
         
@@ -118,7 +120,7 @@
         
         <!-- Token Column -->
         <template v-slot:item.token="{ item }">
-            <div class="d-flex flex-column" v-if="isERC20(item)">
+            <div class="d-flex flex-column token-cell" v-if="isERC20(item)">
                 <Hash-Link
                     :type="'address'"
                     :xsHash="true"
@@ -133,38 +135,42 @@
                 </span>
             </div>
             <template v-else-if="isNFT(item)">
-                <div class="d-flex flex-row align-center py-2">
-                    <v-img v-if="!imageData(item)"
-                        max-height="50"
-                        max-width="50"
-                        rounded="lg"
-                        class="bg-grey-lighten-4"
-                        cover>
-                        <template v-slot:default>
-                            <div class="d-flex align-center justify-center fill-height">
-                                <v-icon size="50" color="grey-lighten-1">mdi-image-outline</v-icon>
-                            </div>
-                        </template>
-                    </v-img>
-                    <v-img v-else-if="!imageData(item).startsWith('<img')"
-                        :src="getImageTag(imageData(item))"
-                        rounded="lg"
-                        max-height="50"
-                        max-width="50"
-                        cover>
-                    </v-img>
-                    <div v-else class="image-container">
-                        <span v-html="getImageTag(imageData(item))"></span>
-                    </div>
-                    <div class="ml-2 d-flex flex-column">
-                        {{ item.contract.tokenName || '-' }}
-                        <span class="text-caption text-medium-emphasis" v-if="item.contract?.tokenSymbol">
-                            {{ item.contract.tokenSymbol }}
+                <div class="d-flex flex-row align-center py-2 token-cell">
+                    <router-link class="text-decoration-none" :to="`/token/${item.token}/${item.tokenId}`">
+                        <v-img v-if="!imageData(item)"
+                            max-height="50"
+                            max-width="50"
+                            rounded="lg"
+                            class="bg-grey-lighten-4"
+                            cover>
+                            <template v-slot:default>
+                                <div class="d-flex align-center justify-center fill-height">
+                                    <v-icon size="50" color="grey-lighten-1">mdi-image-outline</v-icon>
+                                </div>
+                            </template>
+                        </v-img>
+                        <v-img v-else-if="!imageData(item).startsWith('<img')"
+                            :src="getImageTag(imageData(item))"
+                            rounded="lg"
+                            max-height="50"
+                            max-width="50"
+                            cover>
+                        </v-img>
+                        <div v-else class="image-container">
+                            <span v-html="getImageTag(imageData(item))"></span>
+                        </div>
+                    </router-link>
+                    <div class="ml-2 d-flex flex-column text-truncate">
+                        <span v-tooltip="`${item.contract.tokenName || '- '} #${item.tokenId}`" class="text-truncate">
+                            {{ item.contract.tokenName || '-' }} <router-link class="text-decoration-none" :to="`/token/${item.token}/${item.tokenId}`">#{{ item.tokenId }}</router-link>
                         </span>
+                        <router-link v-tooltip="`${item.token} | ${item.contract.name}`" class="text-caption text-decoration-none text-truncate" :to="'/nft/' + item.token" v-if="item.contract?.name">
+                            {{ item.contract.name }}
+                        </router-link>
                     </div>
                 </div>
             </template>
-            <div v-else>
+            <div v-else class="token-cell">
                 <Hash-Link
                     :type="'address'"
                     :xsHash="true"
@@ -182,10 +188,21 @@
             </span>
         </template>
 
+        <template v-slot:item.type="{ item }">
+            <span v-for="pattern in item.contract.patterns" :key="pattern">
+              <v-chip
+                v-if="['erc721', 'erc1155'].includes(pattern.toLowerCase())"
+                color="success"
+                size="x-small"
+                class="mr-1">
+                {{ formatContractPattern(pattern) }}
+              </v-chip>
+            </span>
+        </template>
         <!-- Empty State -->
         <template v-slot:no-data>
             <div class="text-center py-4">
-                No token transfers found for this transaction
+                {{ noDataText }}
             </div>
         </template>
 
@@ -206,6 +223,7 @@
 
 <script setup>
 import { ref, computed, watch, inject } from 'vue';
+import { formatContractPattern } from '@/lib/utils';
 import HashLink from './HashLink.vue';
 
 // Component props
@@ -245,6 +263,14 @@ const props = defineProps({
     withTokenData: {
         type: Boolean,
         default: false
+    },
+    noDataText: {
+        type: String,
+        default: 'No token transfers found'
+    },
+    withCount: {
+        type: Boolean,
+        default: true
     }
 });
 
@@ -329,6 +355,17 @@ watch(() => props.transfers, (newVal) => {
 /* Improve spacing in cells for better readability */
 :deep(.v-data-table__td) {
     padding: 8px 16px;
+}
+
+.token-cell {
+    max-width: 200px;
+    overflow: hidden;
+}
+
+.text-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .image-container {

@@ -1,5 +1,5 @@
 <template>
-    <v-autocomplete hide-details="auto" class="mx-2"
+    <v-autocomplete hide-details="auto" class="mx-2 w-100"
         :class="props.compact ? 'compact' : ''"
         v-model="searchSelectedItem"
         @update:search="search"
@@ -257,14 +257,8 @@ watch(searchSelectedItem, (item) => {
     if (!item) return;
 
     switch(item.type) {
-        case 'contract':
-            if (item.key?.startsWith('tokens-') || item.key?.startsWith('nfts-')) {
-                router.push({ path: `/token/${item.data.address}` });
-            } else {
-                router.push({ path: `/address/${item.data.address}`, query: { tab: 'transactions' } });
-            }
-            break;
         case 'address':
+        case 'contract':
             router.push({ path: `/address/${item.data.address}`, query: { tab: 'transactions' } });
             break;
         case 'transaction':
@@ -280,7 +274,7 @@ watch(searchSelectedItem, (item) => {
 
 <style scoped>
 .compact {
-    width: 10%;
+    padding: 4px 0;
 }
 
 .compact:deep(.v-field) {
@@ -292,6 +286,7 @@ watch(searchSelectedItem, (item) => {
 .compact:deep(.v-field__input) {
     padding: 8px !important;
     min-height: 36px !important;
+    height: 36px !important;
     font-size: 0.875rem !important;
 }
 

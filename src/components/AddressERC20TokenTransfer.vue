@@ -6,7 +6,8 @@
         :sort-by="currentOptions.sortBy"
         :count="count"
         @pagination="getTransfers"
-        @update:options="getTransfers" />
+        @update:options="getTransfers"
+    />
 </template>
 
 <script setup>

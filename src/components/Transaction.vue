@@ -12,23 +12,6 @@
             </v-card>
         </template>
         <template v-else-if="transaction.hash && !loading">
-            <!-- Action button row -->
-            <v-row v-if="!explorerStore.id">
-                <v-spacer></v-spacer>
-                <v-col align="right">
-                    <v-progress-circular v-show="processing" indeterminate class="mr-2" size="16" width="2" color="primary"></v-progress-circular>
-                    <v-menu :location="true ? 'right' : undefined">
-                        <template v-slot:activator="{ props }">
-                            <v-btn icon v-bind="props">
-                                <v-icon>mdi-dots-vertical</v-icon>
-                            </v-btn>
-                        </template>
-                        <v-list>
-                            <v-list-item :disabled="!transaction.hash || processing" link @click="reprocessTransaction()">Reprocess Transaction</v-list-item>
-                        </v-list>
-                    </v-menu>
-                </v-col>
-            </v-row>
 
             <!-- Navigation Tabs -->
             <v-chip-group mandatory :selected-class="`text-${contrastingColor}`" v-model="selectedTab">

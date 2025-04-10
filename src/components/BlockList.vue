@@ -54,7 +54,7 @@
         </template>
         <template v-slot:item.transactionNumber="{ item }">
             <router-link style="text-decoration: none;" :to="'/block/' + item.number + '#transactions'">
-                {{ item.transactionsCount }}
+                {{ item.transactionsCount }} <template v-if="dense"> transaction<template v-if="item.transactionsCount != 1">s</template></template>
             </router-link>
         </template>
         <template v-slot:item.miner="{ item }">
@@ -153,11 +153,13 @@ onMounted(() => {
         { title: 'Block', key: 'number' },
         { title: 'Mined On', key: 'timestamp' },
         { title: 'Transaction Count', key: 'transactionNumber', sortable: false },
-        { title: 'Fee Recipient', key: 'miner', sortable: false }
     );
     
     if (!props.dense) {
-        headers.value.push({ title: 'Gas Used', key: 'gasUsed', sortable: false });
+        headers.value.push([
+            { title: 'Gas Used', key: 'gasUsed', sortable: false },
+            { title: 'Fee Recipient', key: 'miner', sortable: false }
+        ]);
     }
     
     // Set up Pusher channel handler

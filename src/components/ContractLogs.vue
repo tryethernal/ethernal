@@ -3,6 +3,7 @@
         class="hide-table-count"
         :loading="loading"
         :items="logs"
+        :items-length="logCount"
         :sort-by="[{ key: currentOptions.orderBy, order: currentOptions.order }]"
         :must-sort="true"
         :sort-desc="true"
@@ -73,7 +74,7 @@ const headers = [
 const $server = inject('$server');
 const $pusher = inject('$pusher');
 const $dt = inject('$dt');
-
+const logCount = ref(0);
 const currentOptions = ref({
     page: 1,
     itemsPerPage: 10,
@@ -96,7 +97,13 @@ const getContractLogs = ({ page, itemsPerPage, sortBy } = {}) => {
     };
 
     $server.getContractLogs(props.address, currentOptions.value)
-        .then(({ data }) => logs.value = data.items)
+        .then(({ data }) => {
+            logs.value = data.items;
+            const currentPageCount = currentOptions.value.page * data.items.length;
+            logCount.value = data.items.length === currentOptions.value.itemsPerPage ? 
+                Math.max(currentPageCount + 1, data.items.length) : 
+                Math.max(currentPageCount, data.items.length);
+        })
         .catch((error) => console.log(error))
         .finally(() => loading.value = false);
 };

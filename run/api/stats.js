@@ -5,16 +5,36 @@ const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const { managedError, unmanagedError } = require('../lib/errors');
 
 /**
- * Retrieves the top ERC20 tokens by holders for a workspace
+ * Retrieves the top tokens by holders for a workspace
  * @param {string} workspaceId - The workspace id
  * @param {number} page - The page number
  * @param {number} itemsPerPage - The number of items per page
- * @returns {Array<Object>} - A list of top ERC20 tokens by holders
+ * @param {string[]} patterns - Token patterns to filter by (erc20, erc721, erc1155)
+ * @returns {Array<Object>} - A list of top tokens by holders
+ */
+router.get('/topTokensByHolders', workspaceAuthMiddleware, async (req, res, next) => {
+    const data = req.query;
+    try {
+        // Convert patterns string to array if it exists, default to ['erc20']
+        const patterns = data.patterns ? 
+            (Array.isArray(data.patterns) ? data.patterns : data.patterns.split(',')) : 
+            ['erc20'];
+
+        const topTokens = await db.getTopTokensByHolders(data.workspace.id, data.page, data.itemsPerPage, patterns);
+
+        res.status(200).json({ items: topTokens });
+    } catch(error) {
+        unmanagedError(error, req, next);
+    }
+});
+
+/**
+ * @deprecated Use /topTokensByHolders instead
  */
 router.get('/topErc20ByHolders', workspaceAuthMiddleware, async (req, res, next) => {
     const data = req.query;
     try {
-        const topErc20ByHolders = await db.getTopErc20ByHolders(data.workspace.id, data.page, data.itemsPerPage);
+        const topErc20ByHolders = await db.getTopTokensByHolders(data.workspace.id, data.page, data.itemsPerPage, ['erc20']);
 
         res.status(200).json({ items: topErc20ByHolders });
     } catch(error) {

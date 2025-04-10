@@ -3,24 +3,35 @@
         <v-container class="d-flex align-center">
             <div class="d-flex align-center w-100">
                 <v-app-bar-nav-icon @click.stop="toggleMenu" v-if="$vuetify.display.mobile"></v-app-bar-nav-icon>
-                <template v-if="isUserAdmin && !currentWorkspaceStore.public">
-                    <span style="max-width: 50ch; text-overflow: ellipsis; overflow: hidden;">{{ shortRpcUrl(currentWorkspaceStore.rpcServer) }}</span>
-                    <v-divider vertical inset class="mx-2"></v-divider>
+                
+                <!-- Desktop Info Section -->
+                <template v-if="!$vuetify.display.mobile || !isNotOverviewPage">
+                    <template v-if="isUserAdmin && !currentWorkspaceStore.public">
+                        <span style="max-width: 50ch; text-overflow: ellipsis; overflow: hidden;">{{ shortRpcUrl(currentWorkspaceStore.rpcServer) }}</span>
+                        <v-divider vertical inset class="mx-2"></v-divider>
+                    </template>
+                    <template v-if="currentWorkspaceStore.currentBlock.number">
+                        Latest Block: <router-link class="text-decoration-none ml-1" :to="'/block/' + currentWorkspaceStore.currentBlock.number">{{ currentWorkspaceStore.currentBlock.number && commify(currentWorkspaceStore.currentBlock.number) }}</router-link>
+                    </template>
+                    <template v-if="explorerStore.id && explorerStore.gasAnalyticsEnabled && gasPrice">
+                        <v-divider vertical inset class="mx-2"></v-divider>
+                        Gas: <router-link class="text-decoration-none ml-1" :to="'/gas'">{{ gasPrice }}</router-link>
+                    </template>
+                    <div v-show="processingContracts">
+                        <v-divider vertical inset class="mx-2"></v-divider>
+                        <v-progress-circular indeterminate class="mr-2" size="16" width="2" color="primary"></v-progress-circular>Processing Contracts...
+                    </div>
                 </template>
-                <template v-if="currentWorkspaceStore.currentBlock.number">
-                    Latest Block: <router-link class="text-decoration-none ml-1" :to="'/block/' + currentWorkspaceStore.currentBlock.number">{{ currentWorkspaceStore.currentBlock.number && commify(currentWorkspaceStore.currentBlock.number) }}</router-link>
-                </template>
-                <template v-if="explorerStore.id && explorerStore.gasAnalyticsEnabled && gasPrice">
-                    <v-divider vertical inset class="mx-2"></v-divider>
-                    Gas: <router-link class="text-decoration-none ml-1" :to="'/gas'">{{ gasPrice }}</router-link>
-                </template>
-                <div v-show="processingContracts">
-                    <v-divider vertical inset class="mx-2"></v-divider>
-                    <v-progress-circular indeterminate class="mr-2" size="16" width="2" color="primary"></v-progress-circular>Processing Contracts...
-                </div>
+
+                <!-- Search Bar Section -->
                 <template v-if="isNotOverviewPage">
-                    <v-spacer></v-spacer>
-                    <SearchBar :compact="true" />
+                    <v-spacer v-if="!$vuetify.display.mobile"></v-spacer>
+                    <div :class="[
+                        'search-container',
+                        { 'search-container-mobile': $vuetify.display.mobile }
+                    ]">
+                        <SearchBar :compact="true" />
+                    </div>
                 </template>
             </div>
         </v-container>
@@ -190,5 +201,19 @@ onMounted(async () => {
     flex: none;
     width: 100%;
     padding: 0;
+}
+
+.search-container {
+    width: 500px;
+}
+
+/* Mobile specific styles */
+@media (max-width: 600px) {
+    .v-app-bar .v-container {
+        padding: 0 8px;
+    }
+    .search-container-mobile {
+        width: 100%;
+    }
 }
 </style>

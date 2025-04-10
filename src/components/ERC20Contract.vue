@@ -47,7 +47,7 @@
     <v-container v-else fluid>
         <h2 class="text-h6 font-weight-medium">
             Token
-            <span class="text-body-1 text-medium-emphasis">
+            <span class="text-body-2 text-medium-emphasis">
                 {{ contract.tokenName || contract.address }}{{ contract.tokenSymbol ? ` (${contract.tokenSymbol})` : '' }}
             </span>
         </h2>
@@ -92,7 +92,7 @@
         <div v-if="tab === 'transfers'">
             <v-card>
                 <v-card-text>
-                    <ERC-20-Token-Transfers :address="address" 
+                    <AddressERC20TokenTransfer :address="address"
                         :tokenDecimals="contract.tokenDecimals" 
                         :tokenSymbol="contract.tokenSymbol"
                         :count="contractStats.tokenTransferCount" />
@@ -103,7 +103,7 @@
         <div v-if="tab === 'holders'">
             <v-card>
                 <v-card-text>
-                    <ERC-20-Token-Holders :address="address" 
+                    <ERC-20-Token-Holders :address="address"
                         :tokenDecimals="contract.tokenDecimals" 
                         :tokenSymbol="contract.tokenSymbol" />
                 </v-card-text>
@@ -133,16 +133,21 @@ import BaseChipGroup from './base/BaseChipGroup.vue';
 import TokenHeader from './TokenHeader.vue';
 import ERC20TokenHolders from './ERC20TokenHolders.vue';
 import ERC20ContractAnalytics from './ERC20ContractAnalytics.vue';
-import ERC20TokenTransfers from './ERC20TokenTransfers.vue';
+import AddressERC20TokenTransfer from './AddressERC20TokenTransfer.vue';
 import ContractDetails from './ContractDetails.vue';
-
-// Inject server instance
-const $server = inject('$server');
 
 // Props
 const props = defineProps({
     address: {
         type: String,
+        required: true
+    },
+    contract: {
+        type: Object,
+        required: true
+    },
+    loadingContract: {
+        type: Boolean,
         required: true
     }
 });
@@ -151,17 +156,18 @@ const props = defineProps({
 const route = useRoute();
 const router = useRouter();
 
+// Inject server instance
+const $server = inject('$server');
+
 // Reactive state
-const loadingContract = ref(true);
 const loadingStats = ref(true);
-const contract = ref({});
 const contractStats = ref({});
-const notAContract = ref(false);
+const notAContract = computed(() => !props.contract || Object.keys(props.contract).length === 0);
 
 // Computed properties
 const tokenType = computed(() => {
-    if (contract.value && contract.value.patterns) {
-        return contract.value.patterns[0];
+    if (props.contract && props.contract.patterns) {
+        return props.contract.patterns[0];
     }
     return 'erc20';
 });
@@ -175,16 +181,6 @@ const tab = computed({
 
 // Watchers
 watch(() => props.address, (address) => {
-    $server.getContract(address)
-        .then(({ data }) => {
-            if (data) {
-                contract.value = data;
-            } else {
-                notAContract.value = true;
-            }
-        })
-        .finally(() => loadingContract.value = false);
-
     $server.getContractStats(address)
         .then(({ data }) => contractStats.value = data)
         .finally(() => loadingStats.value = false);

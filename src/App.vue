@@ -22,6 +22,8 @@
             :ethereum="ethereum"
             :links="links"
             :prAuthToken="prAuthToken"
+            :mobile="$vuetify.display.mobile"
+            v-model:drawer="drawer"
         />
 
         <Migrate-Explorer-Modal ref="migrateExplorerModal" v-if="explorerToken || justMigrated" />
@@ -85,7 +87,7 @@ export default {
         isOverlayActive: false,
         isWalletConnecting: false,
         ethereum: null,
-        drawer: null
+        drawer: false
     }),
     setup() {
         const theme = useTheme();

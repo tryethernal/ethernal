@@ -41,7 +41,7 @@
     <v-container v-else fluid>
         <h2 class="text-h6 font-weight-medium">
             {{ contract ? 'Contract' : 'Address' }}
-            <span class="text-body-1 text-medium-emphasis">{{ address }}</span>
+            <span class="text-body-2 text-medium-emphasis">{{ address }}</span>
         </h2>
         <v-divider class="my-4"></v-divider>
         <AddressHeader

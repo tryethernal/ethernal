@@ -2,8 +2,8 @@
     <v-footer class="footer">
         <v-container class="d-flex flex-column py-4">
             <!-- Links Columns Row -->
-            <div class="d-flex ga-16">
-                <div class="d-flex flex-column">
+            <div class="d-flex flex-column flex-sm-row ga-md-8 ga-sm-1">
+                <div class="d-flex flex-column mb-8">
                     <span class="text-body-2">
                         Block explorer & data analytics platform for evm chains.
                     </span>
@@ -19,25 +19,27 @@
                     </v-btn>
                 </div>
 
-                <div class="d-flex flex-column ga-2">
-                    <span class="text-subtitle-2">Resources</span>
-                    <a class="text-decoration-none text-body-2" v-for="link in resources" :key="link.name" :href="link.url" target="_blank">
-                        {{ link.name }}
-                    </a>
-                </div>
+                <div class="d-flex flex-wrap">
+                    <div class="d-flex flex-column ga-2 footer-links-section">
+                        <span class="text-subtitle-2">Resources</span>
+                        <a class="text-decoration-none text-body-2" v-for="link in resources" :key="link.name" :href="link.url" target="_blank">
+                            {{ link.name }}
+                        </a>
+                    </div>
 
-                <div class="d-flex flex-column ga-2">
-                    <span class="text-subtitle-2">Community</span>
-                    <a class="text-decoration-none text-body-2" v-for="link in community" :key="link.name" :href="link.url" target="_blank">
-                        {{ link.name }}
-                    </a>
-                </div>
+                    <div class="d-flex flex-column ga-2 footer-links-section">
+                        <span class="text-subtitle-2">Community</span>
+                        <a class="text-decoration-none text-body-2" v-for="link in community" :key="link.name" :href="link.url" target="_blank">
+                            {{ link.name }}
+                        </a>
+                    </div>
 
-                <div class="d-flex flex-column ga-2">
-                    <span class="text-subtitle-2">Company</span>
-                    <a class="text-decoration-none text-body-2" v-for="link in company" :key="link.name" :href="link.url" target="_blank">
-                        {{ link.name }}
-                    </a>
+                    <div class="d-flex flex-column ga-2 footer-links-section">
+                        <span class="text-subtitle-2">Company</span>
+                        <a class="text-decoration-none text-body-2" v-for="link in company" :key="link.name" :href="link.url" target="_blank">
+                            {{ link.name }}
+                        </a>
+                    </div>
                 </div>
             </div>
 
@@ -139,5 +141,31 @@ async function addToMetaMask() {
 
 .metamask-icon {
     vertical-align: middle;
+}
+
+.ga-8 {
+    gap: 8px;
+}
+
+.ga-2 {
+    gap: 8px;
+}
+
+.footer-links-section {
+    min-width: 150px;
+    margin-right: 24px;
+}
+
+@media (max-width: 600px) {
+    .footer-links-section {
+        min-width: calc(50% - 12px);
+        margin-right: 0;
+    }
+}
+
+@media (max-width: 400px) {
+    .footer-links-section {
+        min-width: 100%;
+    }
 }
 </style> 

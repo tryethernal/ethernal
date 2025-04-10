@@ -3,7 +3,7 @@
         <v-card>
             <v-card-text class="pa-0">
                 <v-list density="compact" class="block-list">
-                    <v-list-item>
+                    <v-list-item class="d-flex flex-column flex-sm-row">
                         <template v-slot:prepend>
                             <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;">
                                 <v-icon size="small" color="grey" class="mr-1" v-tooltip="'The block number in the blockchain'">mdi-help-circle-outline</v-icon>
@@ -15,14 +15,14 @@
                         </v-list-item-title>
                     </v-list-item>
 
-                    <v-list-item>
+                    <v-list-item class="d-flex flex-column flex-sm-row">
                         <template v-slot:prepend>
                             <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;">
                                 <v-icon size="small" color="grey" class="mr-1" v-tooltip="'The date and time at which this block was mined'">mdi-help-circle-outline</v-icon>
                                 Timestamp:
                             </div>
                         </template>
-                        <v-list-item-title class="text-body-2">
+                        <v-list-item-title class="text-body-2" style="word-break: break-word;">
                             <template v-if="block.timestamp">
                                 {{ `${$dt.shortDate(block.timestamp)}` }}<span class="text-medium-emphasis"> ({{ $dt.fromNow(block.timestamp) }})</span>
                             </template>
@@ -32,7 +32,7 @@
                         </v-list-item-title>
                     </v-list-item>
 
-                    <v-list-item>
+                    <v-list-item class="d-flex flex-column flex-sm-row">
                         <template v-slot:prepend>
                             <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;">
                                 <v-icon size="small" color="grey" class="mr-1" v-tooltip="'Number of transactions included in this block'">mdi-help-circle-outline</v-icon>
@@ -45,7 +45,7 @@
                     </v-list-item>
 
                     <v-divider class="mx-4"></v-divider>
-                    <v-list-item>
+                    <v-list-item class="d-flex flex-column flex-sm-row">
                         <template v-slot:prepend>
                             <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;">
                                 <v-icon size="small" color="grey" class="mr-1" v-tooltip="'The address of the miner who validated this block'">mdi-help-circle-outline</v-icon>
@@ -58,7 +58,7 @@
                         </v-list-item-title>
                     </v-list-item>
 
-                    <v-list-item>
+                    <v-list-item class="d-flex flex-column flex-sm-row">
                         <template v-slot:prepend>
                             <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;">
                                 <v-icon size="small" color="grey" class="mr-1" v-tooltip="'The amount of effort required to validate a new block'">mdi-help-circle-outline</v-icon>
@@ -70,7 +70,7 @@
                         </v-list-item-title>
                     </v-list-item>
 
-                    <v-list-item>
+                    <v-list-item class="d-flex flex-column flex-sm-row">
                         <template v-slot:prepend>
                             <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;">
                                 <v-icon size="small" color="grey" class="mr-1" v-tooltip="'Total difficulty of this chain until this block'">mdi-help-circle-outline</v-icon>
@@ -82,7 +82,7 @@
                         </v-list-item-title>
                     </v-list-item>
 
-                    <v-list-item>
+                    <v-list-item class="d-flex flex-column flex-sm-row">
                         <template v-slot:prepend>
                             <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;">
                                 <v-icon size="small" color="grey" class="mr-1" v-tooltip="'The size of the block data in bytes'">mdi-help-circle-outline</v-icon>
@@ -96,7 +96,7 @@
 
                     <v-divider class="mx-4"></v-divider>
 
-                    <v-list-item>
+                    <v-list-item class="d-flex flex-column flex-sm-row">
                         <template v-slot:prepend>
                             <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;">
                                 <v-icon size="small" color="grey" class="mr-1" v-tooltip="'The amount of gas used by all transactions in this block'">mdi-help-circle-outline</v-icon>
@@ -111,7 +111,7 @@
                         </v-list-item-title>
                     </v-list-item>
 
-                    <v-list-item>
+                    <v-list-item class="d-flex flex-column flex-sm-row">
                         <template v-slot:prepend>
                             <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;">
                                 <v-icon size="small" color="grey" class="mr-1" v-tooltip="'The maximum amount of gas allowed in this block'">mdi-help-circle-outline</v-icon>
@@ -123,14 +123,14 @@
                         </v-list-item-title>
                     </v-list-item>
 
-                    <v-list-item>
+                    <v-list-item class="d-flex flex-column flex-sm-row">
                         <template v-slot:prepend>
                             <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;">
                                 <v-icon size="small" color="grey" class="mr-1" v-tooltip="'The minimum price per unit of gas that transactions must pay to be included in this block'">mdi-help-circle-outline</v-icon>
                                 Base Fee Per Gas:
                             </div>
                         </template>
-                        <v-list-item-title class="text-body-2">
+                        <v-list-item-title class="text-body-2" style="word-break: break-word;">
                             {{ block.baseFeePerGas ? $fromWei(block.baseFeePerGas, 'ether', currentWorkspaceStore.chain.token) : '-' }}
                             <span v-if="block.baseFeePerGas" class="text-medium-emphasis">
                                 ({{ block.baseFeePerGas.toLocaleString() }} gwei)
@@ -138,7 +138,7 @@
                         </v-list-item-title>
                     </v-list-item>
 
-                    <v-list-item>
+                    <v-list-item class="d-flex flex-column flex-sm-row">
                         <template v-slot:prepend>
                             <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;">
                                 <v-icon size="small" color="grey" class="mr-1" v-tooltip="'This represent the part of the tx fee that is burnt (baseFeePerGas * gasUsed)'">mdi-help-circle-outline</v-icon>
@@ -152,7 +152,7 @@
                         </v-list-item-title>
                     </v-list-item>
 
-                    <v-list-item>
+                    <v-list-item class="d-flex flex-column flex-sm-row">
                         <template v-slot:prepend>
                             <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;">
                                 <v-icon size="small" color="grey" class="mr-1" v-tooltip="'Extra data included in the block'">mdi-help-circle-outline</v-icon>
@@ -160,12 +160,12 @@
                             </div>
                         </template>
                         <v-list-item-title class="text-body-2">
-                            <div v-if="block.extraData" class="d-flex flex-row extra-data-container" style="column-gap: 16px;">
-                                <v-card variant="outlined" class="pa-2 flex-grow-1 extra-data-card">
+                            <div v-if="block.extraData" class="d-flex flex-sm-row flex-column ga-1 extra-data-container" style="column-gap: 16px;">
+                                <v-card variant="outlined" class="pa-2 extra-data-card">
                                     <span class="font-weight-medium">UTF-8: </span>
                                     <ExpandableText :text="tryDecodeExtraData(block.extraData)" :maxChars="100" />
                                 </v-card>
-                                <v-card variant="outlined" class="pa-2 flex-grow-1 extra-data-card">
+                                <v-card variant="outlined" class="pa-2 extra-data-card">
                                     <span class="font-weight-medium">Hex: </span>
                                     <ExpandableText :text="block.extraData" :maxChars="100" />
                                 </v-card>
@@ -197,7 +197,7 @@
             <v-card-text class="pa-0">
                 <v-list density="compact" class="block-list">
                     <!-- Hash -->
-                    <v-list-item>
+                    <v-list-item class="d-flex flex-column flex-sm-row">
                         <template v-slot:prepend>
                             <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;">
                                 <v-icon size="small" color="grey" class="mr-1" v-tooltip="'The unique identifier hash for this block'">mdi-help-circle-outline</v-icon>
@@ -210,7 +210,7 @@
                     </v-list-item>
 
                     <!-- Parent Hash -->
-                    <v-list-item v-if="block.parentHash">
+                    <v-list-item v-if="block.parentHash" class="d-flex flex-column flex-sm-row">
                         <template v-slot:prepend>
                             <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;">
                                 <v-icon size="small" color="grey" class="mr-1" v-tooltip="'The hash of the parent block'">mdi-help-circle-outline</v-icon>
@@ -224,7 +224,7 @@
                     </v-list-item>
 
                     <!-- Sha3Uncles -->
-                    <v-list-item v-if="block.raw && block.raw.sha3Uncles">
+                    <v-list-item v-if="block.raw && block.raw.sha3Uncles" class="d-flex flex-column flex-sm-row">
                         <template v-slot:prepend>
                             <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;">
                                 <v-icon size="small" color="grey" class="mr-1" v-tooltip="'The SHA3 hash of the uncle blocks in this block'">mdi-help-circle-outline</v-icon>
@@ -237,7 +237,7 @@
                     </v-list-item>
 
                     <!-- State Root -->
-                    <v-list-item v-if="block.raw && block.raw.stateRoot">
+                    <v-list-item v-if="block.raw && block.raw.stateRoot" class="d-flex flex-column flex-sm-row">
                         <template v-slot:prepend>
                             <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;">
                                 <v-icon size="small" color="grey" class="mr-1" v-tooltip="'The root of the state trie after this block'">mdi-help-circle-outline</v-icon>
@@ -250,7 +250,7 @@
                     </v-list-item>
 
                     <!-- Withdrawal Root -->
-                    <v-list-item v-if="block.raw && block.raw.withdrawalsRoot">
+                    <v-list-item v-if="block.raw && block.raw.withdrawalsRoot" class="d-flex flex-column flex-sm-row">
                         <template v-slot:prepend>
                             <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;">
                                 <v-icon size="small" color="grey" class="mr-1" v-tooltip="'The root hash of the withdrawal tree for this block'">mdi-help-circle-outline</v-icon>
@@ -347,6 +347,20 @@ const tryDecodeExtraData = (hexData) => {
   border-bottom: none;
 }
 
+.block-list :deep(.v-list-item__prepend) {
+  align-self: start;
+}
+
+.block-list :deep(.v-list-item__content) {
+  align-self: start;
+}
+
+.block-list :deep(.v-list-item-title) {
+  word-break: break-all;
+  white-space: inherit !important;
+}
+
+
 .v-theme--dark .block-list :deep(.v-list-item) {
   border-bottom: none;
 }
@@ -357,7 +371,6 @@ const tryDecodeExtraData = (hexData) => {
 
 .extra-data-card {
   flex-grow: 1;
-  flex-basis: 0;
   min-width: 0;
   overflow: hidden;
 }

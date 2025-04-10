@@ -101,7 +101,7 @@ module.exports = (sequelize, DataTypes) => {
      * @param {number} itemsPerPage - The number of items per page to return.
      * @returns {Promise<Array>} - A list of top ERC20 tokens by holders.
      */
-    async getTopErc20ByHolders(page = 1, itemsPerPage = 10) {
+    async getTopNftsByHolders(page = 1, itemsPerPage = 10) {
         return sequelize.query(`
             SELECT
                 token,
@@ -117,6 +117,126 @@ module.exports = (sequelize, DataTypes) => {
             WHERE
                 token_balance_change_events."workspaceId" = :workspaceId
             GROUP BY token, c.name, c."tokenSymbol", c."tokenName"
+            ORDER BY holders DESC
+            LIMIT :itemsPerPage OFFSET :offset;
+        `, {
+            replacements: { workspaceId: this.id, itemsPerPage: itemsPerPage, offset: (page - 1) * itemsPerPage },
+            type: QueryTypes.SELECT,
+            nest: true
+        });
+    }
+
+    /**
+     * Returns a list of token transfers for a workspace.
+     * 
+     * @param {number} page - The page number to return.
+     * @param {number} itemsPerPage - The number of items per page to return.
+     * @param {string} orderBy - The field to order by.
+     * @param {string} order - The order to sort by.
+     * @param {Array} tokenTypes - The types of tokens to return.
+     * @returns {Promise<Array>} - A list of token transfers.
+     */
+    async getFilteredTokenTransfers(page = 1, itemsPerPage = 10, orderBy = 'timestamp', order = 'DESC', tokenTypes = []) {
+        const filteredTokenTypes = tokenTypes
+            .map(t => t.toLowerCase())
+            .filter(t => ['erc20', 'erc721', 'erc1155'].includes(t))
+            .map(t => `'${t}'`)
+            .join(',');
+
+        let sanitizedOrderBy = orderBy;
+        if (!['timestamp', 'amount', 'blockNumber'].includes(orderBy))
+            sanitizedOrderBy = ['timestamp'];
+
+        let sanitizedOrder = order;
+        if (sanitizedOrder.toLowerCase() !== 'asc' && sanitizedOrder.toLowerCase() !== 'desc')
+            sanitizedOrder = 'DESC';
+
+        switch(sanitizedOrderBy) {
+            case 'timestamp':
+                sanitizedOrderBy = `"t"."timestamp" ${sanitizedOrder}, "t"."transactionIndex" ${sanitizedOrder}`;
+                break;
+            case 'blockNumber':
+                sanitizedOrderBy = `"t"."blockNumber" ${sanitizedOrder}, "t"."transactionIndex" ${sanitizedOrder}`;
+                break;
+            case 'amount':
+                sanitizedOrderBy = '"tte"."amount"::numeric';
+                break;
+            default:
+                sanitizedOrderBy = `"t"."timestamp" ${sanitizedOrder}, "t"."transactionIndex" ${sanitizedOrder}`;
+                break;
+        }
+
+        let query = `
+            SELECT
+                tte.*,
+                tt."tokenId" AS "tokenId",
+                c.name AS "contract.name",
+                c."tokenSymbol" AS "contract.tokenSymbol",
+                c."tokenName" AS "contract.tokenName",
+                c."tokenDecimals" AS "contract.tokenDecimals",
+                c.abi AS "contract.abi",
+                c.patterns AS "contract.patterns",
+                t.hash AS "transaction.hash",
+                t."blockNumber" AS "transaction.blockNumber",
+                t.timestamp AS "transaction.timestamp",
+                t."data" AS "transaction.data",
+                t."transactionIndex" AS "transaction.transactionIndex"
+            FROM token_transfer_events tte
+            LEFT JOIN contracts c ON c."address" = tte.token AND c."workspaceId" = :workspaceId
+            LEFT JOIN token_transfers tt ON tte."tokenTransferId" = tt.id 
+            LEFT JOIN transactions t ON tt."transactionId" = t.id
+            WHERE tte."workspaceId" = :workspaceId
+        `;
+
+        if (tokenTypes.length)
+            query += ` AND "tokenType" IN (${filteredTokenTypes})`;
+
+        query += ` ORDER BY ${sanitizedOrderBy} LIMIT :itemsPerPage OFFSET :offset;`;
+        const result = await sequelize.query(query, {
+            replacements: {
+                workspaceId: this.id,
+                itemsPerPage: itemsPerPage,
+                offset: (page - 1) * itemsPerPage
+            },
+            type: QueryTypes.SELECT,
+            nest: true
+        });
+
+        const processedResult = result.map(item => {
+            let itemCopy = { ...item };
+            if (itemCopy.contract && itemCopy.transaction && itemCopy.transaction.data && itemCopy.contract.abi)
+                itemCopy.transaction.methodDetails = getTransactionMethodDetails({ data: itemCopy.transaction.data }, itemCopy.contract.abi);
+            return itemCopy;
+        });
+
+        return processedResult;
+    }
+
+    /**
+     * Returns the top ERC20 tokens by holders for a workspace.
+     * 
+     * @param {number} page - The page number to return.
+     * @param {number} itemsPerPage - The number of items per page to return.
+     * @returns {Promise<Array>} - A list of top ERC20 tokens by holders.
+     */
+    async getTopErc20ByHolders(page = 1, itemsPerPage = 10) {
+        return sequelize.query(`
+            SELECT
+                token,
+                COUNT(DISTINCT token_balance_change_events."address") AS holders,
+                c.name AS "contract.name",
+                c."tokenSymbol" AS "contract.tokenSymbol",
+                c."tokenName" AS "contract.tokenName",
+                c."tokenTotalSupply" AS "contract.tokenTotalSupply"
+            FROM
+                token_balance_change_events
+            LEFT JOIN contracts c ON
+                c.address = token_balance_change_events."address"
+                AND c."workspaceId" = :workspaceId
+                AND c.patterns @> ARRAY['erc20']::varchar[]
+            WHERE
+                token_balance_change_events."workspaceId" = :workspaceId
+            GROUP BY token, c.name, c."tokenSymbol", c."tokenName", c."tokenTotalSupply"
             ORDER BY holders DESC
             LIMIT :itemsPerPage OFFSET :offset;
         `, {
@@ -3261,6 +3381,60 @@ module.exports = (sequelize, DataTypes) => {
             }, { transaction });
         }
         return transaction ? creationFn(transaction) : sequelize.transaction(creationFn);
+    }
+
+    /**
+     * Returns the top tokens by holders for a workspace filtered by token patterns.
+     * 
+     * @param {number} page - The page number to return.
+     * @param {number} itemsPerPage - The number of items per page to return.
+     * @param {string[]} patterns - Array of patterns to filter by. Valid values: 'erc20', 'erc721', 'erc1155'
+     * @returns {Promise<Array>} - A list of top tokens by holders.
+     * @throws {Error} - If invalid patterns are provided
+     */
+    async getTopTokensByHolders(page = 1, itemsPerPage = 10, patterns = []) {
+        const validPatterns = ['erc20', 'erc721', 'erc1155'];
+        const invalidPatterns = patterns.filter(p => !validPatterns.includes(p));
+        if (invalidPatterns.length > 0) {
+            throw new Error(`Invalid patterns provided: ${invalidPatterns.join(', ')}. Valid patterns are: ${validPatterns.join(', ')}`);
+        }
+
+        return sequelize.query(`
+            SELECT
+                token,
+                COUNT(DISTINCT token_balance_change_events."address") AS holders,
+                c.name AS "contract.name",
+                c."tokenSymbol" AS "contract.tokenSymbol",
+                c."tokenName" AS "contract.tokenName",
+                c."tokenTotalSupply" AS "contract.tokenTotalSupply",
+                c.patterns AS "contract.patterns",
+                c."workspaceId" AS "contract.workspaceId"
+            FROM
+                token_balance_change_events
+            LEFT JOIN contracts c ON
+                c.address = token_balance_change_events.token
+                AND token_balance_change_events."workspaceId" = :workspaceId
+            WHERE
+                (array_length(ARRAY[:patterns]::text[], 1) IS NULL OR 
+                EXISTS (
+                    SELECT 1 
+                    FROM unnest(c.patterns) pattern 
+                    WHERE LOWER(pattern) = ANY(ARRAY(SELECT LOWER(p) FROM unnest(ARRAY[:patterns]::text[]) p))
+                ))
+                AND c."workspaceId" = :workspaceId
+            GROUP BY token, c.name, c."tokenSymbol", c."tokenName", c."tokenTotalSupply", c.patterns, c."workspaceId"
+            ORDER BY holders DESC
+            LIMIT :itemsPerPage OFFSET :offset;
+        `, {
+            replacements: { 
+                workspaceId: this.id, 
+                itemsPerPage: itemsPerPage, 
+                offset: (page - 1) * itemsPerPage,
+                patterns: patterns
+            },
+            type: QueryTypes.SELECT,
+            nest: true
+        });
     }
   }
 

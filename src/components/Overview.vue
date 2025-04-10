@@ -8,17 +8,12 @@
         </div>
 
         <v-container fluid class="stats-container">
-            <v-row>
+            <v-row class="align-stretch">
                 <v-col cols="12" md="6">
-                    <v-card class="white-card">
-                        <LineChart :title="'Transaction Volume'" :xLabels="charts.transactionVolume.xLabels" :data="charts.transactionVolume.data" :tooltipUnit="'transaction'" :index="0" />
-                    </v-card>
+                    <OverviewStats />
                 </v-col>
-
                 <v-col cols="12" md="6">
-                    <v-card class="white-card">
-                        <LineChart :title="'Active Wallets Count'" :xLabels="charts.uniqueWalletCount.xLabels" :data="charts.uniqueWalletCount.data" :tooltipUnit="'wallet'" :index="4" />
-                    </v-card>
+                    <OverviewCharts />
                 </v-col>
             </v-row>
 
@@ -46,107 +41,22 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, inject } from 'vue';
-import { ethers } from 'ethers';
-import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
 import { useExplorerStore } from '../stores/explorer';
 
 import TransactionsList from './TransactionsList.vue';
 import BlockList from './BlockList.vue';
-import LineChart from './LineChart.vue';
-import StatNumber from './StatNumber.vue';
+import OverviewCharts from './OverviewCharts.vue';
 import SearchBar from './SearchBar.vue';
-const formatUnits = ethers.utils.formatUnits;
-const BigNumber = ethers.BigNumber;
+import OverviewStats from './OverviewStats.vue';
 
 // Stores
-const currentWorkspaceStore = useCurrentWorkspaceStore();
 const explorerStore = useExplorerStore();
-
-// Inject server
-const $server = inject('$server');
-
-// Reactive state
-const activeWalletCountLoading = ref(false);
-const txCountTotalLoading = ref(false);
-const txCount24hLoading = ref(false);
-const txCount24h = ref(0);
-const txCountTotal = ref(0);
-const activeWalletCount = ref(0);
-const charts = ref({
-    transactionVolume: { xLabels: [], data: [] },
-    uniqueWalletCount: { xLabels: [], data: [] }
-});
-const from = ref(new Date(new Date() - 14 * 24 * 3600 * 1000));
-const to = ref(new Date());
-
-// Computed properties
-const formattedTotalSupply = computed(() => {
-    return formatUnits(BigNumber.from(explorerStore.totalSupply), 18).split('.')[0];
-});
-
-// Methods
-const getActiveWalletCount = () => {
-    activeWalletCountLoading.value = true;
-    $server.getActiveWalletCount()
-        .then(({ data: { count }}) => activeWalletCount.value = count)
-        .catch(console.log)
-        .finally(() => activeWalletCountLoading.value = false);
-};
-
-const getTxCountTotal = () => {
-    txCountTotalLoading.value = true;
-    $server.getTxCountTotal()
-        .then(({ data: { count }}) => txCountTotal.value = count)
-        .catch(console.log)
-        .finally(() => txCountTotalLoading.value = false);
-};
-
-const getTxCount24h = () => {
-    txCount24hLoading.value = true;
-    $server.getTxCount24h()
-        .then(({ data: { count }}) => txCount24h.value = count)
-        .catch(console.log)
-        .finally(() => txCount24hLoading.value = false);
-};
-
-const getTransactionVolume = () => {
-    $server.getTransactionVolume(from.value, to.value)
-        .then(({ data }) => {
-            charts.value.transactionVolume = {
-                xLabels: data.map(t => t.date),
-                data: data.map(t => parseInt(t.count))
-            };
-        })
-        .catch(console.log);
-};
-
-const getWalletVolume = () => {
-    $server.getUniqueWalletCount(from.value, to.value)
-        .then(({ data }) => {
-            charts.value.uniqueWalletCount = {
-                xLabels: data.map(t => t.date),
-                data: data.map(t => parseInt(t.count))
-            };
-        })
-        .catch(console.log);
-};
-
-// Lifecycle hooks
-onMounted(() => {
-    getActiveWalletCount();
-    getTxCountTotal();
-    getTxCount24h();
-    getTransactionVolume();
-    getWalletVolume();
-});
 </script>
 
 <style scoped>
 .overview {
     position: relative;
-    margin: -16px -16px 0 -16px;
-    width: calc(100% + 32px);
+    width: 100%;
     min-height: 70vh;
     background: linear-gradient(to bottom, 
         rgba(var(--v-theme-primary), 0.95) 0%,
@@ -200,16 +110,20 @@ onMounted(() => {
 .search-container {
     max-width: 800px;
     margin: 0 auto;
-    padding: 0 1rem;
+    padding: 2rem 1rem;
     position: relative;
     z-index: 1;
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .search-container h1 {
-    margin-bottom: 1.5rem !important;
+    margin: 0 0 2rem !important;
     color: white;
     text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    width: 100%;
 }
 
 .stats-container {

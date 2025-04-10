@@ -5,7 +5,7 @@
       <v-card-text class="pa-0">
         <v-list density="compact" class="transaction-list">
           <!-- Transaction Hash -->
-          <v-list-item>
+          <v-list-item class="d-flex flex-column flex-sm-row">
             <template v-slot:prepend>
               <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">
                 <v-icon size="small" color="grey" class="mr-1" v-tooltip="'The unique identifier for this transaction'">mdi-help-circle-outline</v-icon>
@@ -19,7 +19,7 @@
           </v-list-item>
 
           <!-- Status -->
-          <v-list-item>
+          <v-list-item class="d-flex flex-column flex-sm-row">
             <template v-slot:prepend>
               <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">
                 <v-icon size="small" color="grey" class="mr-1" v-tooltip="'The status of the transaction: Success, Failed, or Unknown'">mdi-help-circle-outline</v-icon>
@@ -60,7 +60,7 @@
           </v-list-item>
 
           <!-- Block -->
-          <v-list-item>
+          <v-list-item class="d-flex flex-column flex-sm-row">
             <template v-slot:prepend>
               <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">
                 <v-icon size="small" color="grey" class="mr-1" v-tooltip="'The block number in which this transaction was included'">mdi-help-circle-outline</v-icon>
@@ -79,7 +79,7 @@
           </v-list-item>
 
           <!-- Timestamp -->
-          <v-list-item>
+          <v-list-item class="d-flex flex-column flex-sm-row">
             <template v-slot:prepend>
               <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">
                 <v-icon size="small" color="grey" class="mr-1" v-tooltip="'The date and time at which this transaction was mined'">mdi-help-circle-outline</v-icon>
@@ -101,7 +101,7 @@
 
           <!-- Token Transfers Section (if any) -->
           <template v-if="transaction.tokenTransferCount && transaction.tokenTransferCount > 0">
-            <v-list-item class="token-transfers-item">
+            <v-list-item class="token-transfers-item d-flex flex-column flex-sm-row">
               <template v-slot:prepend>
                 <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">
                   <v-icon size="small" color="grey" class="mr-1" v-tooltip="'Tokens transferred in this transaction'">mdi-help-circle-outline</v-icon>
@@ -125,7 +125,7 @@
           </template>
 
           <!-- From -->
-          <v-list-item>
+          <v-list-item class="d-flex flex-column flex-sm-row">
             <template v-slot:prepend>
               <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">
                 <v-icon size="small" color="grey" class="mr-1" v-tooltip="'The sending address of the transaction'">mdi-help-circle-outline</v-icon>
@@ -139,7 +139,7 @@
           </v-list-item>
 
           <!-- To / Contract Created -->
-          <v-list-item v-if="transaction.to">
+          <v-list-item v-if="transaction.to" class="d-flex flex-column flex-sm-row">
             <template v-slot:prepend>
               <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">
                 <v-icon size="small" color="grey" class="mr-1" v-tooltip="'The receiving address of the transaction'">mdi-help-circle-outline</v-icon>
@@ -150,7 +150,7 @@
               <Hash-Link :type="'address'" :hash="transaction.to" :fullHash="true" :withName="true" :contract="transaction.contract" />
             </v-list-item-title>
           </v-list-item>
-          <v-list-item v-else>
+          <v-list-item v-else class="d-flex flex-column flex-sm-row">
             <template v-slot:prepend>
               <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">
                 <v-icon size="small" color="grey" class="mr-1" v-tooltip="'The address of the contract created by this transaction'">mdi-help-circle-outline</v-icon>
@@ -167,7 +167,7 @@
           <v-divider class="mx-4"></v-divider>
 
           <!-- Value -->
-          <v-list-item>
+          <v-list-item class="d-flex flex-column flex-sm-row">
             <template v-slot:prepend>
               <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">
                 <v-icon size="small" color="grey" class="mr-1" v-tooltip="'The amount of native tokens transferred in this transaction'">mdi-help-circle-outline</v-icon>
@@ -180,7 +180,7 @@
           </v-list-item>
 
           <!-- Transaction Fee -->
-          <v-list-item v-if="transaction.receipt">
+          <v-list-item v-if="transaction.receipt" class="d-flex flex-column flex-sm-row">
             <template v-slot:prepend>
               <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">
                 <v-icon size="small" color="grey" class="mr-1" v-tooltip="'The fee paid for this transaction (Gas Used × Gas Price)'">mdi-help-circle-outline</v-icon>
@@ -193,7 +193,7 @@
           </v-list-item>
 
           <!-- Gas Price -->
-          <v-list-item>
+          <v-list-item v-if="transaction.receipt" class="d-flex flex-column flex-sm-row">
             <template v-slot:prepend>
               <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">
                 <v-icon size="small" color="grey" class="mr-1" v-tooltip="'The price per unit of gas specified for this transaction'">mdi-help-circle-outline</v-icon>
@@ -206,7 +206,7 @@
           </v-list-item>
 
           <!-- L1 Block if applicable -->
-          <v-list-item v-if="explorerStore.l1Explorer && transaction.block && transaction.block.l1BlockNumber">
+          <v-list-item v-if="explorerStore.l1Explorer && transaction.block && transaction.block.l1BlockNumber" class="d-flex flex-column flex-sm-row">
             <template v-slot:prepend>
               <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">
                 <v-icon size="small" color="grey" class="mr-1" v-tooltip="'The corresponding L1 block for this L2 transaction'">mdi-help-circle-outline</v-icon>
@@ -219,7 +219,7 @@
           </v-list-item>
 
           <!-- Fee Recipient -->
-          <v-list-item v-if="transaction.miner">
+          <v-list-item v-if="transaction.miner" class="d-flex flex-column flex-sm-row">
             <template v-slot:prepend>
               <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">
                 <v-icon size="small" color="grey" class="mr-1" v-tooltip="'The address that received the transaction fees.'">mdi-help-circle-outline</v-icon>
@@ -232,7 +232,7 @@
           </v-list-item>
 
           <!-- Extra Fields -->
-          <v-list-item v-for="(field, idx) in transaction.extraFields" :key="idx">
+          <v-list-item v-for="(field, idx) in transaction.extraFields" :key="idx" class="d-flex flex-column flex-sm-row">
             <template v-slot:prepend>
               <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">
                 <v-icon size="small" color="grey" class="mr-1" v-tooltip="field.title">mdi-help-circle-outline</v-icon>
@@ -253,7 +253,7 @@
       <v-card-text class="pa-0">
         <v-list density="compact" class="transaction-list">
           <!-- Gas Limit & Usage by Txn -->
-          <v-list-item>
+          <v-list-item class="d-flex flex-column flex-sm-row">
             <template v-slot:prepend>
               <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">
                 <v-icon size="small" color="grey" class="mr-1" v-tooltip="'Gas limit provided by the sender and amount of gas used by the transaction.'">mdi-help-circle-outline</v-icon>
@@ -275,14 +275,14 @@
           </v-list-item>
 
           <!-- Gas Fees -->
-          <v-list-item>
+          <v-list-item class="d-flex flex-column flex-sm-row">
             <template v-slot:prepend>
               <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">
                 <v-icon size="small" color="grey" class="mr-1" v-tooltip="'Base Fee refers to the network Base Fee at the time of the block. Max Fee & Max Priority Fee refer to the max amount a user is willing to pay for their tx & to give to the block producer respectively.'">mdi-help-circle-outline</v-icon>
                 Gas Fees:
               </div>
             </template>
-            <v-list-item-title class="text-body-2">
+            <v-list-item-title class="text-body-2" style="word-break: break-word;">
               Base: <span class="font-weight-bold">{{ transaction.baseFeePerGas ? $fromWei(transaction.baseFeePerGas, 'gwei', '') : transaction.receipt?.baseFeePerGas ? $fromWei(transaction.receipt.baseFeePerGas, 'gwei', '') : '0 gwei' }}</span> | 
               Max: <span class="font-weight-bold">{{ transaction.maxFeePerGas ? $fromWei(transaction.maxFeePerGas, 'gwei', '') : $fromWei(getGasPriceFromTx(transaction), 'gwei', '') }}</span> | 
               Max Priority: <span class="font-weight-bold">{{ transaction.maxPriorityFeePerGas ? $fromWei(transaction.maxPriorityFeePerGas, 'gwei', '') : '0 gwei' }}</span>
@@ -292,14 +292,14 @@
           <v-divider class="mx-4"></v-divider>
 
           <!-- Burnt & Txn Savings Fees -->
-          <v-list-item v-if="transaction.receipt">
+          <v-list-item v-if="transaction.receipt" class="d-flex flex-column flex-sm-row">
             <template v-slot:prepend>
               <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">
                 <v-icon size="small" color="grey" class="mr-1" v-tooltip="'Burnt fees are the amount of ETH burned (Base Fee × Gas Used) as part of EIP-1559. Txn Savings are the total fees saved from the amount the user was willing to pay.'">mdi-help-circle-outline</v-icon>
                 Burnt & Txn Savings Fees:
               </div>
             </template>
-            <v-list-item-title class="text-body-2">
+            <v-list-item-title class="text-body-2 d-flex flex-column flex-sm-row ga-1">
               <v-chip prepend-icon="mdi-fire" size="small" color="error" text-color="white" class="font-weight-medium mr-2" density="comfortable">
                 Burnt: {{ calculateBurntFees() }}
               </v-chip>
@@ -310,14 +310,14 @@
           </v-list-item>
 
           <!-- Other Attributes -->
-          <v-list-item>
+          <v-list-item class="d-flex flex-column flex-sm-row">
             <template v-slot:prepend>
               <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">
                 <v-icon size="small" color="grey" class="mr-1" v-tooltip="'Additional transaction attributes including transaction type, nonce, and position in block.'">mdi-help-circle-outline</v-icon>
                 Other Attributes:
               </div>
             </template>
-            <v-list-item-title class="text-body-2">
+            <v-list-item-title class="text-body-2 d-flex flex-column flex-sm-row ga-1">
               <v-chip
                 size="small"
                 color="grey-darken-2"
@@ -490,6 +490,19 @@ const getTxnTypeName = (type) => txTypeNames[type] || 'Unknown';
   padding-bottom: 8px;
   /* Remove the border from all items */
   border-bottom: none;
+}
+
+.transaction-list :deep(.v-list-item__prepend) {
+  align-self: start;
+}
+
+.transaction-list :deep(.v-list-item__content) {
+  align-self: start;
+}
+
+.transaction-list :deep(.v-list-item-title) {
+  word-break: break-all;
+  white-space: inherit !important;
 }
 
 .v-theme--dark .transaction-list :deep(.v-list-item) {

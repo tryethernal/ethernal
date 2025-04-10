@@ -1,6 +1,8 @@
 <template>
   <v-container fluid>
-    <h2 class="text-h6 font-weight-medium">Top ERC20 Tokens</h2>
+    <div class="d-flex align-center mb-4">
+      <h2 class="text-h6 font-weight-medium flex-grow-1">Token Tracker (ERC-20)</h2>
+    </div>
     <v-divider class="my-4"></v-divider>
     <v-card>
       <v-card-text>
@@ -41,7 +43,7 @@
 </template>
 
 <script setup>
-import { inject, ref, onMounted } from 'vue';
+import { inject, ref } from 'vue';
 import HashLink from '@/components/HashLink.vue';
 
 const $server = inject('$server');
@@ -57,23 +59,20 @@ const headers = [
   { title: 'Holder Count', key: 'holderCount', sortable: false }
 ];
 
-const fetchTokens = async (options) => {
+const fetchTokens = async (options = { page: 1, itemsPerPage: 10 }) => {
   loading.value = true;
   try {
-    const { data } = await $server.getTopErc20ByHolders(options);
-    console.log(data);
+    const { data } = await $server.getTopTokensByHolders({
+      ...options
+    });
     tokens.value = data.items;
     totalTokens.value = data.items.length == itemsPerPage.value ?
       (options.page * itemsPerPage.value) + 1 :
       options.page * itemsPerPage.value;
   } catch (error) {
-    console.error('Error fetching top ERC20 tokens:', error);
+    console.error('Error fetching top tokens:', error);
   } finally {
     loading.value = false;
   }
 };
-
-onMounted(() => {
-  fetchTokens();
-});
 </script> 

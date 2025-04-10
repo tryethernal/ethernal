@@ -1,8 +1,8 @@
 <template>
     <v-container fluid>
-        <DateRangeSelector @rangeUpdated="rangeUpdated" />
         <v-card style="height: 100%">
             <v-card-text>
+                <DateRangeSelector @rangeUpdated="rangeUpdated" />
                 <v-row>
                     <v-col cols="12" md="6">
                         <Line-Chart :title="'Transaction Volume'" :xLabels="charts['transactionVolume'].xLabels" :data="charts['transactionVolume'].data" :tooltipUnit="'transaction'" :index="0" />

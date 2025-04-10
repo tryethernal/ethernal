@@ -24,6 +24,10 @@ import ExplorerDex from '../components/ExplorerDex.vue';
 import GasTracker from '../components/GasTracker.vue';
 import ExplorerBridge from '../components/ExplorerBridge.vue';
 import TopERC20Tokens from '../components/TopERC20Tokens.vue';
+import TopNFT from '../components/TopNFT.vue';
+import WorkspaceTokenTransfer from '../components/WorkspaceTokenTransfer.vue';
+import WorkspaceNFTTransfer from '../components/WorkspaceNFTTransfer.vue';
+import TokenContract from '../components/TokenContract.vue';
 import { useEnvStore } from '../stores/env';
 import VerifiedContracts from '@/components/VerifiedContracts.vue'
 
@@ -55,26 +59,41 @@ const redirectIfLoggedOut = function (to, from, next) {
         next({ path: '/auth', query: to.query });
 };
 
+/**
+ * Etherscan routes for compatibility
+ */
+const ESRoutes = [
+    { path: '/gastracker', component: GasTracker, beforeEnter: redirectIfLoggedOut },
+    { path: '/txsInternal', component: InternalTransactions, beforeEnter: redirectIfLoggedOut },
+    { path: '/tokenstxn', component: WorkspaceTokenTransfer, beforeEnter: redirectIfLoggedOut },
+    { path: '/nft-transfers', component: WorkspaceNFTTransfer, beforeEnter: redirectIfLoggedOut },
+    { path: '/toptokens', component: TopERC20Tokens, beforeEnter: redirectIfLoggedOut },
+    { path: '/nft-top-contracts', component: TopNFT, beforeEnter: redirectIfLoggedOut },
+    { path: '/charts', component: ExplorerAnalytics, beforeEnter: redirectIfLoggedOut },
+    { path: '/contractsverified', component: VerifiedContracts, beforeEnter: redirectIfLoggedOut },
+    { path: '/tx/:hash', component: Transaction, props: true, beforeEnter: redirectIfLoggedOut },
+]
+
 const routes = [
     { path: '/auth', component: Auth, beforeEnter: redirectIfLoggedIn },
     { path: '/blocks', component: Blocks, beforeEnter: redirectIfLoggedOut },
     { path: '/overview', component: Overview, beforeEnter: redirectIfLoggedOut },
     { path: '/block/:number', component: Block, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/gas', component: GasTracker, beforeEnter: redirectIfLoggedOut },
-    { path: '/gastracker', component: GasTracker, beforeEnter: redirectIfLoggedOut },
     { path: '/transactions', component: Transactions, beforeEnter: redirectIfLoggedOut },
-    { path: '/txsInternal', component: InternalTransactions, beforeEnter: redirectIfLoggedOut },
+    { path: '/internal-transactions', component: InternalTransactions, beforeEnter: redirectIfLoggedOut },
+    { path: '/latest-erc20-transfers', component: WorkspaceTokenTransfer, beforeEnter: redirectIfLoggedOut },
+    { path: '/latest-nft-transfers', component: WorkspaceNFTTransfer, beforeEnter: redirectIfLoggedOut },
     { path: '/accounts', component: Accounts, beforeEnter: redirectIfLoggedOut },
     { path: '/transaction/:hash', component: Transaction, props: true, beforeEnter: redirectIfLoggedOut },
-    { path: '/tx/:hash', component: Transaction, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/address/:address', component: Address, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/address/:hash/:tokenId', component: ERC721Token, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/token/:hash/:tokenId', component: ERC721Token, props: true, beforeEnter: redirectIfLoggedOut },
-    { path: '/token/:address', component: ERC20Contract, props: true, beforeEnter: redirectIfLoggedOut },
+    { path: '/token/:address', component: TokenContract, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/contract/:address', redirect: '/address/:address' },
     { path: '/contracts', component: Contracts, props: true, beforeEnter: redirectIfLoggedOut },
+    { path: '/verified-contracts', component: VerifiedContracts, beforeEnter: redirectIfLoggedOut },
     { path: '/tokens', component: Tokens, props: true, beforeEnter: redirectIfLoggedOut },
-    { path: '/toptokens', component: TopERC20Tokens, beforeEnter: redirectIfLoggedOut },
     { path: '/nfts', component: ERC721Collections, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/nft/:address', component: ERC721Collection, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/settings', component: Settings, props: true, beforeEnter: redirectIfLoggedOut },
@@ -85,21 +104,12 @@ const routes = [
     { path: '/faucet', component: ExplorerFaucet, beforeEnter: redirectIfLoggedOut },
     { path: '/dex', component: ExplorerDex, beforeEnter: redirectIfLoggedOut },
     { path: '/bridge', component: ExplorerBridge, beforeEnter: redirectIfLoggedOut },
-    {
-        path: '/contractsverified',
-        name: 'contractsverified',
-        component: VerifiedContracts,
-        meta: {
-            requiresAuth: true,
-            title: 'Verified Contracts'
-        }
-    },
     { path: '/:pathMatch(.*)*', name: 'not-found', component: Overview, beforeEnter: redirectIfLoggedOut }
 ];
 
 const router = createRouter({
     history: createWebHistory(),
-    routes: routes
+    routes: ESRoutes.concat(routes)
 });
 
 export default router;

@@ -2,7 +2,7 @@
     <v-footer class="footer">
         <v-container class="d-flex flex-column py-4">
             <!-- Links Columns Row -->
-            <div class="d-flex ga-16">
+            <div class="d-flex flex-column flex-sm-row ga-lg-16 ga-5">
                 <div class="d-flex flex-column">
                     <span class="text-body-2">
                         Block explorer & data analytics platform for {{ explorerStore.name }}.
@@ -19,9 +19,12 @@
                     </v-btn>
                 </div>
 
-                <div class="d-flex flex-column" v-if="explorerStore.themes.links.length > 0">
-                    <a v-for="link in explorerStore.themes.links" :href="link.url" class="text-decoration-none mb-2">
-                        <v-icon size="small" :icon="link.icon" />
+                <div class="d-flex flex-column ga-2" v-if="explorerStore.themes?.links?.length > 0">
+                    <a v-for="link in explorerStore.themes.links" 
+                       :key="link.name"
+                       :href="link.url" 
+                       class="text-decoration-none">
+                        <v-icon size="small" :icon="link.icon" class="me-1" />
                         {{ link.name }}
                     </a>
                 </div>
@@ -32,7 +35,7 @@
             <!-- Copyright and Donation Row -->
             <div class="d-flex justify-space-between align-center">
                 <div class="text-caption">
-                    Powered by <a :href="`https://tryethernal.com?ref=${host}`" target="_blank">Ethernal</a> | v{{ env.version }} | Made with 🍷 in France
+                    Powered by <a :href="`https://${env.mainDomain}?ref=${host}`" target="_blank">Ethernal</a> | v{{ env.version }} | Made with 🍷 in France
                 </div>
             </div>
         </v-container>
@@ -92,4 +95,4 @@ async function addToMetaMask() {
 .metamask-icon {
     vertical-align: middle;
 }
-</style> 
+</style>

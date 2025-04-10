@@ -15,9 +15,10 @@
       :address="address"
       :key="`tokens-${address}`"
     />
-    <Address-NFT-Assets
+    <NFT-Gallery
       v-else-if="selectedFilter === 'asset-nft'"
       :address="address"
+      mode="address"
       :key="`nfts-${address}`"
     />
 </template>
@@ -27,7 +28,7 @@ import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
 import { useTheme } from 'vuetify';
 import { getBestContrastingColor } from '../lib/utils';
 import AddressTokenAssets from './AddressTokenAssets.vue';
-import AddressNFTAssets from './AddressNFTAssets.vue';
+import NFTGallery from './NFTGallery.vue';
 
 // Props
 const props = defineProps({

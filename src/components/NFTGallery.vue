@@ -27,10 +27,10 @@
         <v-col v-for="(nft, idx) in displayedNFTs" :key="idx" cols="6" sm="4" md="2">
           <ERC721TokenCard 
             :contract="nft.tokenContract || nft.contract" 
-            :contractAddress="nft.token || contractAddress" 
+            :contractAddress="nft.token || nft.contractAddress" 
             :tokenIndex="parseInt(nft.tokenId || nft.tokenTransfer?.tokenId)"
             :mode="mode"
-            :key="`${nft.token || contractAddress}-${nft.tokenId || nft.tokenTransfer?.tokenId}`" 
+            :key="`${nft.token || nft.contractAddress}-${nft.tokenId || nft.tokenTransfer?.tokenId}`" 
           />
         </v-col>
       </v-row>
@@ -52,26 +52,17 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, inject, onMounted } from 'vue';
 import ERC721TokenCard from './ERC721TokenCard.vue';
+
+// Inject server instance
+const $server = inject('$server');
 
 // Props
 const props = defineProps({
-  nfts: {
-    type: Array,
+  address: {
+    type: String,
     required: true
-  },
-  loading: {
-    type: Boolean,
-    default: false
-  },
-  contractAddress: {
-    type: String,
-    default: null
-  },
-  emptyMessage: {
-    type: String,
-    default: 'No NFTs found'
   },
   mode: {
     type: String,
@@ -84,21 +75,92 @@ const props = defineProps({
 const ITEMS_PER_PAGE = 12; // 2 rows of 6
 
 // Reactive state
+const loading = ref(true);
+const nfts = ref([]);
 const page = ref(1);
+const contract = ref(null);
 
 // Computed properties
 const totalPages = computed(() => {
-  return Math.ceil(props.nfts.length / ITEMS_PER_PAGE);
+  return Math.ceil(nfts.value.length / ITEMS_PER_PAGE);
 });
 
 const displayedNFTs = computed(() => {
   const start = (page.value - 1) * ITEMS_PER_PAGE;
   const end = start + ITEMS_PER_PAGE;
-  return props.nfts.slice(start, end);
+  return nfts.value.slice(start, end);
 });
 
+const emptyMessage = computed(() => {
+  if (props.mode === 'collection') {
+    return 'There are no tokens in this collection, or the contract is missing the totalSupply() method.';
+  }
+  return 'No NFTs found';
+});
+
+// Methods
+const loadCollectionTokens = async () => {
+  try {
+    // First get the contract details
+    const { data: contractData } = await $server.getContract(props.address);
+    if (!contractData) {
+      nfts.value = [];
+      return;
+    }
+    contract.value = contractData;
+
+    // Then get the total supply
+    const { data: { totalSupply } } = await $server.getErc721TotalSupply(props.address);
+    if (totalSupply) {
+      nfts.value = Array.from({ length: totalSupply }, (_, i) => ({
+        tokenId: i,
+        contractAddress: props.address,
+        tokenContract: contract.value
+      }));
+    } else {
+      nfts.value = [];
+    }
+  } catch (error) {
+    console.error('Error loading collection tokens:', error);
+    nfts.value = [];
+  }
+};
+
+const loadAddressTokens = async () => {
+  try {
+    const { data } = await $server.getTokenBalances(props.address, ['erc721', 'erc1155']);
+    nfts.value = data || [];
+  } catch (error) {
+    console.error('Error loading address tokens:', error);
+    nfts.value = [];
+  }
+};
+
+const fetchNFTs = async () => {
+  loading.value = true;
+  try {
+    if (props.mode === 'collection') {
+      await loadCollectionTokens();
+    } else {
+      await loadAddressTokens();
+    }
+  } finally {
+    loading.value = false;
+  }
+};
+
 // Reset page when nfts change
-watch(() => props.nfts, () => {
+watch(() => nfts.value, () => {
   page.value = 1;
+});
+
+// Watch for address changes
+watch(() => props.address, () => {
+  fetchNFTs();
+});
+
+// Lifecycle hooks
+onMounted(() => {
+  fetchNFTs();
 });
 </script>

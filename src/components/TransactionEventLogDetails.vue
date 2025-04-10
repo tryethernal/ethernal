@@ -20,8 +20,8 @@
             <!-- Show first item always -->
             <div 
                 v-if="parsedLog.eventFragment.inputs.length > 0"
-                :class="{ 'pre-wrap': true }" 
                 class="ml-4"
+                style="word-break: break-all;"
             >
                 <div
                     v-for="(input, index) in parsedLog.eventFragment.inputs.slice(0, maxShortLines)"
@@ -37,7 +37,6 @@
             <!-- Show remaining items if not short or if expanded -->
             <template v-if="(!short || isExpanded) && parsedLog.eventFragment.inputs.length > maxShortLines">
                 <div 
-                    :class="{ 'pre-wrap': true }" 
                     v-for="(input, index) in parsedLog.eventFragment.inputs.slice(maxShortLines)" 
                     :key="index"
                     class="ml-4 pt-0"

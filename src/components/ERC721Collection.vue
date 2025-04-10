@@ -44,7 +44,7 @@
     <v-container v-else fluid>
         <h2 class="text-h6 font-weight-medium">
             Token
-            <span class="text-body-1 text-medium-emphasis">
+            <span class="text-body-2 text-medium-emphasis">
                 {{ contract.tokenName || contract.address }}{{ contract.tokenSymbol ? ` (${contract.tokenSymbol})` : '' }}
             </span>
         </h2>
@@ -98,11 +98,8 @@
                 <v-card-text>
                     <NFTGallery 
                         :key="`inventory-${address}`"
-                        :loading="loadingTokens"
-                        :nfts="tokens"
-                        :contract-address="address"
-                        :mode="'collection'"
-                        empty-message="There are no tokens in this collection, or the contract is missing the totalSupply() method."
+                        :address="address"
+                        mode="collection"
                     />
                 </v-card-text>
             </v-card>
@@ -129,6 +126,14 @@ const props = defineProps({
     address: {
         type: String,
         required: true
+    },
+    contract: {
+        type: Object,
+        required: true
+    },
+    loadingContract: {
+        type: Boolean,
+        required: true
     }
 });
 
@@ -136,13 +141,9 @@ const props = defineProps({
 const $server = inject('$server');
 
 // Reactive state
-const loadingContract = ref(true);
 const loadingStats = ref(true);
-const loadingTokens = ref(true);
-const contract = ref({});
 const contractStats = ref({});
-const notAContract = ref(false);
-const tokens = ref([]);
+const notAContract = computed(() => !props.contract || Object.keys(props.contract).length === 0);
 const activeTab = ref('transfers');
 
 // Methods
@@ -157,39 +158,9 @@ const updateTabFromHash = () => {
     }
 };
 
-const loadTokens = async () => {
-    loadingTokens.value = true;
-    try {
-        const { data: { totalSupply } } = await $server.getErc721TotalSupply(props.address);
-        if (totalSupply) {
-            tokens.value = Array.from({ length: totalSupply }, (_, i) => ({
-                tokenId: i,
-                token: props.address,
-                tokenContract: contract.value
-            }));
-        }
-    } catch (error) {
-        console.error(error);
-    } finally {
-        loadingTokens.value = false;
-    }
-};
-
 // Watchers
 watch(() => props.address, (address) => {
-    loadingContract.value = true;
     loadingStats.value = true;
-
-    $server.getContract(address)
-        .then(({ data }) => {
-            if (data) {
-                contract.value = data;
-                loadTokens();
-            } else {
-                notAContract.value = true;
-            }
-        })
-        .finally(() => loadingContract.value = false);
 
     $server.getContractStats(address)
         .then(({ data }) => contractStats.value = data)

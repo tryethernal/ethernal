@@ -33,13 +33,16 @@ const ExplorerV2Dex = models.ExplorerV2Dex;
 const V2DexPair = models.V2DexPair;
 
 /**
- * Retrieves the top ERC20 tokens by holders for a workspace
+ * Retrieves a list of token transfers for a workspace
  * @param {string} workspaceId - The workspace id
  * @param {number} page - The page number
  * @param {number} itemsPerPage - The number of items per page
- * @returns {Promise<Array>} - A list of top ERC20 tokens by holders
+ * @param {string} orderBy - The field to order by
+ * @param {string} order - The order to sort by
+ * @param {Array} tokenTypes - The types of tokens to return
+ * @returns {Promise<Array>} - A list of token transfers
  */
-const getTopErc20ByHolders = async (workspaceId, page, itemsPerPage) => {
+const getWorkspaceTokenTransfers = async (workspaceId, page, itemsPerPage, orderBy, order, tokenTypes) => {
     if (!workspaceId)
         throw new Error('Missing parameter');
 
@@ -47,7 +50,26 @@ const getTopErc20ByHolders = async (workspaceId, page, itemsPerPage) => {
     if (!workspace)
         throw new Error('Could not find workspace');
 
-    return workspace.getTopErc20ByHolders(page, itemsPerPage);
+    return workspace.getFilteredTokenTransfers(page, itemsPerPage, orderBy, order, tokenTypes);
+};
+
+/**
+ * Retrieves the top tokens by holders for a workspace
+ * @param {string} workspaceId - The workspace id
+ * @param {number} page - The page number
+ * @param {number} itemsPerPage - The number of items per page
+ * @param {string[]} patterns - Token patterns to filter by (erc20, erc721, erc1155)
+ * @returns {Promise<Array>} - A list of top tokens by holders
+ */
+const getTopTokensByHolders = async (workspaceId, page, itemsPerPage, patterns = ['erc20']) => {
+    if (!workspaceId)
+        throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+    if (!workspace)
+        throw new Error('Could not find workspace');
+
+    return workspace.getTopTokensByHolders(page, itemsPerPage, patterns);
 };
 
 /**
@@ -2023,7 +2045,7 @@ const getTokenTransferForProcessing = async (tokenTransferId) => {
     return tokenTransfer ? tokenTransfer.toJSON() : null;
 }
 
-const getContractLogs = async (workspaceId, address, signature, page, itemsPerPage, orderBy, order) => {
+const getContractLogs = async (workspaceId, address, signature, page, itemsPerPage, orderBy, order) => {
     if (!workspaceId || !address) throw new Error('Missing parameter.');
 
     const workspace = await Workspace.findByPk(workspaceId);
@@ -2692,7 +2714,7 @@ const setCurrentWorkspace = async (userId, name) => {
     return user.toJSON();
 };
 
-const removeContract = async (userId, workspace, address) => {
+const removeContract = async (userId, workspace, address) => {
     if (!userId || !workspace || !address) throw new Error('Missing parameter.');
 
     const user = await User.findByAuthIdWithWorkspace(userId, workspace);
@@ -3055,5 +3077,6 @@ module.exports = {
     getTransactionTraceSteps: getTransactionTraceSteps,
     getVerifiedContracts: getVerifiedContracts,
     getWorkspaceContractStats: getWorkspaceContractStats,
-    getTopErc20ByHolders: getTopErc20ByHolders
+    getWorkspaceTokenTransfers: getWorkspaceTokenTransfers,
+    getTopTokensByHolders: getTopTokensByHolders
 };

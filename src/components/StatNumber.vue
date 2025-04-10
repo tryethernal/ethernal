@@ -4,10 +4,12 @@
             <v-skeleton-loader type="list-item"></v-skeleton-loader>
         </v-card-text>
         <v-card-text class="pa-3" v-else>
-            <h6 class="text-medium-emphasis text-uppercase text-caption">{{ title }}</h6>
-            <div class="text-right" v-if="infoTooltip">
-                <v-icon v-tooltip="infoTooltip" size="small">mdi-information</v-icon>
-            </div>
+            <h6 class="text-medium-emphasis text-uppercase text-caption">
+                {{ title }}
+                <div class="text-right float-right" v-if="infoTooltip">
+                    <v-icon v-tooltip="infoTooltip" size="small">mdi-information</v-icon>
+                </div>
+            </h6>
             <div class="text-h6 text-high-emphasis " v-if="isValueDefined">
                 <router-link v-if="type == 'link'" style="text-decoration: none;" :to="href">{{ commify(value) }}</router-link>
                 <span v-if="raw">
