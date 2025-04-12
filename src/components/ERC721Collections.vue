@@ -27,7 +27,7 @@
                     item-key="address"
                     @update:options="getTokens">
                     <template v-slot:item.address="{ item }">
-                        <Hash-Link :type="'nft'" :hash="item.address" :contract="item" />
+                        <Hash-Link :type="'token'" :hash="item.address" :contract="item" />
                     </template>
                     <template v-slot:item.tokenName="{ item }">
                         {{ item.tokenName }}
