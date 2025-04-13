@@ -2,7 +2,6 @@ const ethers = require('ethers');
 const db = require('../lib/firebase');
 const { sanitize } = require('../lib/utils');
 const { getProvider } = require('../lib/rpc');
-const { log } = require('winston');
 
 module.exports = async job => {
     const data = job.data;

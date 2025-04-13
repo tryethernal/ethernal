@@ -82,7 +82,6 @@ module.exports = (sequelize, DataTypes) => {
      * @returns {Promise<Array>} - An array of token balance changes
      */
     getTokenBalanceChanges(page = 1, itemsPerPage = 10) {
-        console.log(page)
         return sequelize.query(`
             SELECT
                 tbc.token,
@@ -99,15 +98,16 @@ module.exports = (sequelize, DataTypes) => {
                 tbc.token = c.address
                 AND tbc."workspaceId" = c."workspaceId"
             WHERE tbc."transactionId" = :transactionId
+            AND tbc."workspaceId" = :workspaceId
             ORDER BY tbc.id DESC
             LIMIT :itemsPerPage OFFSET :offset
         `, {
             replacements: {
                 transactionId: this.id,
+                workspaceId: this.workspaceId,
                 itemsPerPage: itemsPerPage,
                 offset: (Math.max(page, 1) - 1) * itemsPerPage
             },
-            logging: console.log,
             type: sequelize.QueryTypes.SELECT,
             nest: true
         });

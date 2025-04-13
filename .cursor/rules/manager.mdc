@@ -1,5 +1,5 @@
 ---
-description: Manger agent that is used to route requests between different rules
+description: Manager agent that is used to route requests between different rules
 globs: 
 alwaysApply: true
 ---
@@ -25,7 +25,7 @@ The user might request to find database objects such as (but not limited to):
 - workspaces
 - explorers
 - users
-If that's the case, it is very likely that the user wants something fetch from the database, so
+If that's the case, it is very likely that the user wants something fetched from the database, so
 you'll need to ask [database-admin.mdc](mdc:.cursor/rules/database-admin.mdc) to get it.
 
 ### Frontend developer

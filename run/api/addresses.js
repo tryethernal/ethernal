@@ -11,7 +11,7 @@ const { managedError, unmanagedError } = require('../lib/errors');
     @param {string} address (mandatory) - The address to get the token transfer history for
     @param {string} from (mandatory) - The start date
     @param {string} to (mandatory) - The end date
-    @returns {Array} - The number of token transfers for the address in the given time range
+    @returns {integer} - The number of token transfers for the address in the given time range
 */
 router.get('/:address/tokenTransferHistory', workspaceAuthMiddleware, async (req, res, next) => {
     const data = req.query;
@@ -34,7 +34,7 @@ router.get('/:address/tokenTransferHistory', workspaceAuthMiddleware, async (req
     @param {string} address (mandatory) - The address to get the transaction fees for
     @param {string} from (mandatory) - The start date
     @param {string} to (mandatory) - The end date
-    @returns {Array} - The amount of transaction fees spent by the address in the given time range
+    @returns {integer} - The amount of transaction fees spent by the address in the given time range
 */
 router.get('/:address/spentTransactionFeeHistory', workspaceAuthMiddleware, async (req, res, next) => {
     const data = req.query;
@@ -57,7 +57,7 @@ router.get('/:address/spentTransactionFeeHistory', workspaceAuthMiddleware, asyn
     @param {string} address (mandatory) - The address to get the number of transactions for
     @param {string} from (mandatory) - The start date
     @param {string} to (mandatory) - The end date
-    @returns {Array} - The number of transactions for the address in the given time range
+    @returns {integer} - The number of transactions for the address in the given time range
 */
 router.get('/:address/transactionHistory', workspaceAuthMiddleware, async (req, res, next) => {
     const data = req.query;
@@ -80,6 +80,7 @@ router.get('/:address/transactionHistory', workspaceAuthMiddleware, async (req, 
     @param {string} address (mandatory) - The address to get the internal transactions for
     @param {number} page (optional) - The page number
     @param {number} itemsPerPage (optional) - The number of items per page
+    @returns {Array} - The internal transactions for the address
 */
 router.get('/:address/internalTransactions', workspaceAuthMiddleware, async (req, res, next) => {
     const data = req.query;
