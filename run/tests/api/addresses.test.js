@@ -42,7 +42,7 @@ describe(`GET ${BASE_URL}/:address/tokenTransfers`, () => {
 
 describe(`GET ${BASE_URL}/:address/stats`, () => {
     it('Should return token stats', (done) => {
-        jest.spyOn(db, 'getAddressStats').mockResolvedValueOnce({ sentTransactionCount: 20 });
+        jest.spyOn(db, 'getAddressTransactionStats').mockResolvedValueOnce({ sentTransactionCount: 20 });
         request.get(`${BASE_URL}/0x123/stats`)
             .expect(200)
             .then(({ body }) => {

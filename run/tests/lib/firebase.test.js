@@ -1701,36 +1701,13 @@ describe('getAddressTokenTransfers', () => {
     });
 });
 
-
-describe('getAddressStats', () => {
-    it('Should return stats', (done) => {
-        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
-            countAddressSentTransactions: jest.fn().mockResolvedValueOnce(1),
-            countAddressReceivedTransactions: jest.fn().mockResolvedValueOnce(2),
-            countAddressSentErc20TokenTransfers: jest.fn().mockResolvedValueOnce(3),
-            countAddressReceivedErc20TokenTransfers: jest.fn().mockResolvedValueOnce(4)
-        });
-
-        db.getAddressStats(1, '0x123')
-            .then(res => {
-                expect(res).toEqual(
-                    {
-                        sentTransactionCount: 1,
-                        receivedTransactionCount: 2,
-                        sentErc20TokenTransferCount: 3,
-                        receivedErc20TokenTransferCount: 4
-                    }
-                );
-                done();
-            });
-    });
-});
-
-describe('getTokenHolders', () => {
+describe('getTransactionTokenTransfers', () => {
     it('Should return token transfers if transaction exists', (done) => {
         jest.spyOn(workspace, 'findTransaction').mockResolvedValueOnce({
-            getFilteredTokenTransfers: jest.fn().mockResolvedValueOnce([{ toJSON: () => ({ address: '0x123' }) }]),
-            countTokenTransfers: jest.fn().mockResolvedValueOnce(1)
+            getFilteredTokenTransfers: jest.fn().mockResolvedValueOnce({
+                rows: [{ toJSON: () => ({ address: '0x123' }) }],
+                count: 1
+            })
         });
 
         db.getTransactionTokenTransfers(1, '0x123')
@@ -1903,7 +1880,7 @@ describe('getTokenStats', () => {
 describe('getTokenTransfers', () => {
     it('Should return transfers if contract exists', (done) => {
         jest.spyOn(workspace, 'findContractByAddress').mockResolvedValueOnce({
-            getTokenTransfers: jest.fn().mockResolvedValueOnce({ count: 1 , rows: [{ toJSON: () => ({ address: '0x123' }) }]}),
+            getTokenTransfers: jest.fn().mockResolvedValueOnce([{ toJSON: () => ({ address: '0x123' }) }]),
             countTokenTransfers: jest.fn().mockResolvedValueOnce(1)
         });
 
@@ -1911,7 +1888,6 @@ describe('getTokenTransfers', () => {
             .then(res => {
                 expect(res).toEqual(
                     {
-                        total: 1,
                         items: [
                             { address: '0x123' }
                         ]
@@ -1937,7 +1913,6 @@ describe('getContractLogs', () => {
             .then(res => {
                 expect(res).toEqual(
                     {
-                        total: 1,
                         items: [
                             { address: '0x123' }
                         ]
@@ -2259,6 +2234,10 @@ describe('searchForAddress', () => {
 
 describe('searchForHash', () => {
     it('Should return transaction if hash matches', (done) => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
+            findTransaction: jest.fn().mockResolvedValueOnce({ toJSON: () => ({ hash: '0x123' }) })
+        });
+
         db.searchForHash(1, '0x123')
             .then(transactions => {
                 expect(transactions).toEqual([
@@ -2269,7 +2248,10 @@ describe('searchForHash', () => {
     });
 
     it('Should return block if hash matches', (done) => {
-        jest.spyOn(workspace, 'findTransaction').mockResolvedValueOnce(null);
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
+            findTransaction: jest.fn().mockResolvedValueOnce(null),
+            findBlockByHash: jest.fn().mockResolvedValueOnce({ toJSON: () => ({ number: 1 }) })
+        });
 
         db.searchForHash(1, '0x123')
             .then(blocks => {
@@ -2280,9 +2262,12 @@ describe('searchForHash', () => {
             });
     });
 
-    it('Should return an empty array if no match', (done) => {
-        jest.spyOn(workspace, 'findTransaction').mockResolvedValueOnce(null);
-        jest.spyOn(workspace, 'findBlockByHash').mockResolvedValueOnce(null);
+    it('Should return an empty array if no match', (done) => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
+            findTransaction: jest.fn().mockResolvedValueOnce(null),
+            findBlockByHash: jest.fn().mockResolvedValueOnce(null)
+        });
+
         db.searchForHash(1, '0x123')
             .then(blocks => {
                 expect(blocks).toEqual([]);
@@ -2383,6 +2368,10 @@ describe('getWorkspaceBlocks', () => {
 
 describe('getWorkspaceTransaction', () => {
     it('Should return the transaction', (done) => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
+            findTransaction: jest.fn().mockResolvedValueOnce({ toJSON: () => ({ hash: '0x123' }) })
+        });
+
         db.getWorkspaceTransaction(1, 'Ox123')
             .then(transaction => {
                 expect(transaction).toEqual({
@@ -2588,13 +2577,28 @@ describe('storeTransaction', () => {
 
 describe('storeTransactionTokenTransfers', () => {
     it('Should call the creation method for each transfer', async () => {
-        const transaction = await workspace.findTransaction(1);
+        const safeCreateTokenTransfer = jest.fn().mockResolvedValueOnce({});
+        jest.spyOn(User, 'findByAuthIdWithWorkspace').mockResolvedValueOnce({
+            workspaces: [
+                {
+                    findTransaction: jest.fn().mockResolvedValueOnce({
+                        safeCreateTokenTransfer: safeCreateTokenTransfer
+                    })
+                }
+            ]
+        });
         await db.storeTransactionTokenTransfers('123', 'My Workspace', '0x123', [{ token: '0xabc' }, { token: '0xdef' }]);
-        expect(transaction.safeCreateTokenTransfer).toHaveBeenCalledTimes(2);
+        expect(safeCreateTokenTransfer).toHaveBeenCalledTimes(2);
     });
 
     it('Should throw an error if the transaction does not exist', async () => {
-        jest.spyOn(workspace, 'findTransaction').mockResolvedValueOnce(null);
+        jest.spyOn(User, 'findByAuthIdWithWorkspace').mockResolvedValueOnce({
+            workspaces: [
+                {
+                    findTransaction: jest.fn().mockResolvedValueOnce(null)
+                }
+            ]
+        });
         await expect(db.storeTransactionTokenTransfers('123', 'My Workspace', '0x123', [{ token: '0xabc' }, { token: '0xdef' }]))
             .rejects.toThrow(`Couldn't find transaction`);
     });
