@@ -30,11 +30,14 @@ describe(`GET ${BASE_URL}/:address/:tokenId/transfers`, () => {
         request.get(`${BASE_URL}/0x123/0/transfers`)
             .expect(200)
             .then(({ body }) => {
-                expect(body).toEqual([{
-                    src: '0x123',
-                    dst: '0x456',
-                    tokenId: '1'
-                }]);
+                expect(body).toEqual({
+                    items: [{
+                        src: '0x123',
+                        dst: '0x456',
+                        tokenId: '1'
+                    }],
+                    total: 1
+                });
                 done();
             });
     });

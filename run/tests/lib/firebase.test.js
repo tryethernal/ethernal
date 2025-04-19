@@ -2358,8 +2358,7 @@ describe('getWorkspaceBlocks', () => {
         db.getWorkspaceBlocks(1)
             .then(result => {
                 expect(result).toEqual({
-                    items: [{ number: 1 }, { number: 2 }],
-                    total: 2
+                    items: [{ number: 1 }, { number: 2 }]
                 });
                 done();
             });
