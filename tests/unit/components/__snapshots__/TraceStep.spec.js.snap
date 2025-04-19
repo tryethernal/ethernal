@@ -1,10 +1,10 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`TraceStep.vue > Should display the formatted step 1`] = `
-"<div data-v-90e41081="" class="v-row">
+"<div data-v-90e41081="" class="v-row ma-1 pa-1 pb-0 mb-0">
   <!--v-if-->
-  <div data-v-90e41081="" class="v-col pb-0" style="overflow-y: auto;">
-    <div data-v-90e41081="" class="v-card v-card--flat v-theme--light v-card--density-default v-card--variant-elevated">
+  <div data-v-90e41081="" class="v-col py-0 my-0" style="overflow-y: auto;">
+    <div data-v-90e41081="" class="v-card v-theme--light border-false v-card--density-default v-card--variant-elevated">
       <!---->
       <div class="v-card__loader">
         <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
@@ -22,7 +22,8 @@ exports[`TraceStep.vue > Should display the formatted step 1`] = `
       </div>
       <!---->
       <!---->
-      <div data-v-90e41081="" class="v-card-text pa-0 ma-0"><span data-v-90e41081="" class="font-weight-black"> |<br data-v-90e41081=""> |--&gt; </span><span data-v-90e41081="" class="v-chip v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal bg-primary mr-2" draggable="false"><!----><span class="v-chip__underlay"></span>
+      <div data-v-90e41081="" class="v-card-text pa-0 ma-0">
+        <!--v-if--><span data-v-90e41081="" class="v-chip v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal bg-primary mr-2" draggable="false"><!----><span class="v-chip__underlay"></span>
         <!---->
         <!---->
         <div class="v-chip__content" data-no-activator="">call</div>
@@ -30,10 +31,12 @@ exports[`TraceStep.vue > Should display the formatted step 1`] = `
         <!----></span>
         <!--v-if-->
         <!--v-if-->
-        <hash-link-stub data-v-90e41081="" type="address" hash="0xab8e74017a8cc7c15ffccd726603790d26d7deca" notcopiable="true" fullhash="true" withname="true" contract="[object Object]"></hash-link-stub>
+        <hash-link-stub data-v-90e41081="" type="address" hash="0xab8e74017a8cc7c15ffccd726603790d26d7deca" contract="[object Object]" fullhash="true" withname="true" notcopiable="true" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
         <!--v-if-->
         <ul data-v-90e41081="">
-          <li data-v-90e41081="" class="raw-input"><b data-v-90e41081="" class="mr-2">Input:</b><a data-v-90e41081="">[ + ]</a> 0x379607f50000000000000000000000000000000000000000000000000000000000000002</li>
+          <li data-v-90e41081="" class="raw-input">
+            <!--v-if--> <b data-v-90e41081="" class="mr-2">Input:</b><a data-v-90e41081="" class="no-decoration" href="#">[ + ]</a> 0x379607f50000000000000000000000000000000000000000000000000000000000000002
+          </li>
           <!--v-if-->
         </ul>
       </div>

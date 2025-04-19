@@ -2,7 +2,90 @@
 
 exports[`ERC20Contract.vue > Should display a message if the address is not a contract 1`] = `
 "<div class="v-container v-container--fluid v-locale--is-ltr">
-  <div class="v-card v-theme--light v-card--border v-card--density-default v-card--variant-elevated">
+  <div class="v-row align-center justify-center" style="min-height: 400px;">
+    <div class="v-col-sm-8 v-col-md-6 v-col-lg-4 v-col-12 text-center"><i class="mdi-file mdi v-icon notranslate v-theme--light text-primary mb-4" style="font-size: 100px; height: 100px; width: 100px; opacity: 0.25;" aria-hidden="true"></i>
+      <div class="text-h6 mb-2">No Contract Found</div>
+      <div class="text-body-1 text-medium-emphasis">There doesn't seem to be a contract at this address.</div>
+    </div>
+  </div>
+</div>"
+`;
+
+exports[`ERC20Contract.vue > Should display contract info 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <h2 class="text-h6 font-weight-medium"> Token <span class="text-body-2 text-medium-emphasis">Amalfi</span></h2>
+  <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator"><!-- Skeleton loader for TokenHeader when loading -->
+  <!-- TokenHeader when data is loaded -->
+  <token-header-stub contract="[object Object]" stats="[object Object]" loading-contract="false"></token-header-stub><!-- Navigation Chips -->
+  <base-chip-group-stub backgroundcolor="#4242421f" modelvalue="transfers" mandatory=""></base-chip-group-stub><!-- Tab Content -->
+  <div>
+    <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+      <!---->
+      <div class="v-card__loader">
+        <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+          <!---->
+          <div class="v-progress-linear__background"></div>
+          <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+          <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+            <div class="v-progress-linear__indeterminate">
+              <div class="v-progress-linear__indeterminate long"></div>
+              <div class="v-progress-linear__indeterminate short"></div>
+            </div>
+          </transition-stub>
+          <!---->
+        </div>
+      </div>
+      <!---->
+      <!---->
+      <div class="v-card-text">
+        <address-e-r-c20-token-transfer-stub address="0x123" tokendecimals="2" count="2"></address-e-r-c20-token-transfer-stub>
+      </div>
+      <!---->
+      <!----><span class="v-card__underlay"></span>
+    </div>
+  </div>
+  <!--v-if-->
+  <!--v-if-->
+  <!--v-if-->
+</div>"
+`;
+
+exports[`ERC20Contract.vue > Should display placeholders 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <div class="v-skeleton-loader v-theme--light mb-4" style="max-width: 600px;" arialive="polite" arialabel="Loading..." role="alert">
+    <div class="v-skeleton-loader__bone v-skeleton-loader__text"></div>
+  </div>
+  <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator"><!-- Skeleton for token info cards -->
+  <div class="v-row mb-6">
+    <div class="v-col-lg-4 v-col-12">
+      <div class="v-skeleton-loader v-theme--light" style="height: 200px;" arialive="polite" arialabel="Loading..." role="alert">
+        <div class="v-skeleton-loader__bone v-skeleton-loader__card">
+          <div class="v-skeleton-loader__bone v-skeleton-loader__image"></div>
+          <div class="v-skeleton-loader__bone v-skeleton-loader__heading"></div>
+        </div>
+      </div>
+    </div>
+    <div class="v-col-lg-4 v-col-12">
+      <div class="v-skeleton-loader v-theme--light" style="height: 200px;" arialive="polite" arialabel="Loading..." role="alert">
+        <div class="v-skeleton-loader__bone v-skeleton-loader__card">
+          <div class="v-skeleton-loader__bone v-skeleton-loader__image"></div>
+          <div class="v-skeleton-loader__bone v-skeleton-loader__heading"></div>
+        </div>
+      </div>
+    </div>
+    <div class="v-col-lg-4 v-col-12">
+      <div class="v-skeleton-loader v-theme--light" style="height: 200px;" arialive="polite" arialabel="Loading..." role="alert">
+        <div class="v-skeleton-loader__bone v-skeleton-loader__card">
+          <div class="v-skeleton-loader__bone v-skeleton-loader__image"></div>
+          <div class="v-skeleton-loader__bone v-skeleton-loader__heading"></div>
+        </div>
+      </div>
+    </div>
+  </div><!-- Skeleton for tab chips -->
+  <div class="v-skeleton-loader v-theme--light mb-4" arialive="polite" arialabel="Loading..." role="alert">
+    <div class="v-skeleton-loader__bone v-skeleton-loader__chip"></div>
+  </div><!-- Skeleton for main content area -->
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
     <!---->
     <div class="v-card__loader">
       <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
@@ -21,285 +104,51 @@ exports[`ERC20Contract.vue > Should display a message if the address is not a co
     <!---->
     <!---->
     <div class="v-card-text">
-      <div class="v-row">
-        <div class="v-col" align="center"><i class="mdi-file mdi v-icon notranslate v-theme--light text-primary-lighten-1" style="font-size: 200px; height: 200px; width: 200px; opacity: 0.25;" aria-hidden="true"></i></div>
-      </div>
-      <div class="v-row">
-        <div class="v-col text-body-1 text-center"> There doesn't seem to be a contract at this address. </div>
+      <div class="v-skeleton-loader v-theme--light" arialive="polite" arialabel="Loading..." role="alert">
+        <div class="v-skeleton-loader__bone v-skeleton-loader__table-heading">
+          <div class="v-skeleton-loader__bone v-skeleton-loader__chip"></div>
+          <div class="v-skeleton-loader__bone v-skeleton-loader__text"></div>
+        </div>
+        <div class="v-skeleton-loader__bone v-skeleton-loader__divider"></div>
+        <div class="v-skeleton-loader__bone v-skeleton-loader__table-row-divider">
+          <div class="v-skeleton-loader__bone v-skeleton-loader__table-row">
+            <div class="v-skeleton-loader__bone v-skeleton-loader__text"></div>
+            <div class="v-skeleton-loader__bone v-skeleton-loader__text"></div>
+            <div class="v-skeleton-loader__bone v-skeleton-loader__text"></div>
+            <div class="v-skeleton-loader__bone v-skeleton-loader__text"></div>
+            <div class="v-skeleton-loader__bone v-skeleton-loader__text"></div>
+            <div class="v-skeleton-loader__bone v-skeleton-loader__text"></div>
+          </div>
+          <div class="v-skeleton-loader__bone v-skeleton-loader__divider"></div>
+        </div>
+        <div class="v-skeleton-loader__bone v-skeleton-loader__table-row">
+          <div class="v-skeleton-loader__bone v-skeleton-loader__text"></div>
+          <div class="v-skeleton-loader__bone v-skeleton-loader__text"></div>
+          <div class="v-skeleton-loader__bone v-skeleton-loader__text"></div>
+          <div class="v-skeleton-loader__bone v-skeleton-loader__text"></div>
+          <div class="v-skeleton-loader__bone v-skeleton-loader__text"></div>
+          <div class="v-skeleton-loader__bone v-skeleton-loader__text"></div>
+        </div>
+        <div class="v-skeleton-loader__bone v-skeleton-loader__table-row">
+          <div class="v-skeleton-loader__bone v-skeleton-loader__text"></div>
+          <div class="v-skeleton-loader__bone v-skeleton-loader__text"></div>
+          <div class="v-skeleton-loader__bone v-skeleton-loader__text"></div>
+          <div class="v-skeleton-loader__bone v-skeleton-loader__text"></div>
+          <div class="v-skeleton-loader__bone v-skeleton-loader__text"></div>
+          <div class="v-skeleton-loader__bone v-skeleton-loader__text"></div>
+        </div>
+        <div class="v-skeleton-loader__bone v-skeleton-loader__table-row">
+          <div class="v-skeleton-loader__bone v-skeleton-loader__text"></div>
+          <div class="v-skeleton-loader__bone v-skeleton-loader__text"></div>
+          <div class="v-skeleton-loader__bone v-skeleton-loader__text"></div>
+          <div class="v-skeleton-loader__bone v-skeleton-loader__text"></div>
+          <div class="v-skeleton-loader__bone v-skeleton-loader__text"></div>
+          <div class="v-skeleton-loader__bone v-skeleton-loader__text"></div>
+        </div>
       </div>
     </div>
     <!---->
     <!----><span class="v-card__underlay"></span>
-  </div>
-</div>"
-`;
-
-exports[`ERC20Contract.vue > Should display contract info 1`] = `
-"<div class="v-container v-container--fluid v-locale--is-ltr">
-  <div class="v-row mb-1">
-    <div class="v-col-lg-5 v-col-12">
-      <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated" style="height: 100%;">
-        <!---->
-        <div class="v-card__loader">
-          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
-            <!---->
-            <div class="v-progress-linear__background"></div>
-            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
-            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
-              <div class="v-progress-linear__indeterminate">
-                <div class="v-progress-linear__indeterminate long"></div>
-                <div class="v-progress-linear__indeterminate short"></div>
-              </div>
-            </transition-stub>
-            <!---->
-          </div>
-        </div>
-        <!---->
-        <!---->
-        <div class="v-card-title">
-          <!--v-if--> Amalfi
-        </div>
-        <div class="v-card-subtitle"><span class="v-chip v-theme--light v-chip--density-default v-chip--size-x-small v-chip--variant-tonal bg-success mr-2" draggable="false"><!----><span class="v-chip__underlay"></span>
-          <!---->
-          <!---->
-          <div class="v-chip__content" data-no-activator="">ERC 20</div>
-          <!---->
-          <!----></span>
-        </div>
-        <div class="v-card-text">
-          <div class="v-row">
-            <div class="v-col v-col-6"><small>Total Supply</small><br><span class="text-h6 ml-2">10,000,000 </span></div>
-            <div class="v-col v-col-6"><small>Decimals</small><br><span class="text-h6 ml-2">2</span></div>
-          </div>
-          <div class="v-row">
-            <div class="v-col v-col-6"><small>Address</small><br>
-              <hash-link-stub type="address" hash="0x123" class="ml-2"></hash-link-stub>
-            </div>
-            <div class="v-col v-col-6"><small>Contract Creation</small><br><span class="ml-2"><hash-link-stub type="transaction" hash="0xabc"></hash-link-stub></span></div>
-          </div>
-        </div>
-        <!---->
-        <!----><span class="v-card__underlay"></span>
-      </div>
-    </div>
-    <div class="v-col-lg-7 v-col-12">
-      <div class="v-row">
-        <div class="v-col-sm-6 v-col-lg-6 v-col-12">
-          <stat-number-stub loading="false" title="Holders" value="1"></stat-number-stub>
-        </div>
-        <div class="v-col-sm-6 v-col-lg-6 v-col-12">
-          <stat-number-stub loading="false" title="Transfers" value="2"></stat-number-stub>
-        </div>
-        <div class="v-col-sm-6 v-col-lg-6 v-col-12">
-          <stat-number-stub loading="false" title="Circulating Supply" decimals="2" infotooltip="Number of tokens currently in circulation" tokentype="erc20" value="1000000000"></stat-number-stub>
-        </div>
-        <div class="v-col-sm-6 v-col-lg-6 v-col-12">
-          <token-balance-card-stub contract="[object Object]"></token-balance-card-stub>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div>
-    <div class="v-slide-group v-slide-group--mobile v-tabs v-tabs--horizontal v-tabs--align-tabs-start v-tabs--density-default" tabindex="0" role="tablist">
-      <!---->
-      <div class="v-slide-group__container">
-        <div class="v-slide-group__content"><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab text-medium-emphasis" tabindex="-1" role="tab" aria-selected="false" id="transactionsTab" value="transactions"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-            <!----><span class="v-btn__content" data-no-activator="">Transactions<div class="v-tab__slider"></div></span>
-            <!---->
-            <!---->
-          </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab text-medium-emphasis" tabindex="-1" role="tab" aria-selected="false" id="transfersTab" value="transfers"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-            <!----><span class="v-btn__content" data-no-activator="">Transfers<div class="v-tab__slider"></div></span>
-            <!---->
-            <!---->
-          </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab text-medium-emphasis" tabindex="-1" role="tab" aria-selected="false" id="holdersTab" value="holders"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-            <!----><span class="v-btn__content" data-no-activator="">Holders<div class="v-tab__slider"></div></span>
-            <!---->
-            <!---->
-          </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab text-medium-emphasis" tabindex="-1" role="tab" aria-selected="false" id="interactionsTab" value="interactions"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-            <!----><span class="v-btn__content" data-no-activator="">Read / Write<div class="v-tab__slider"></div></span>
-            <!---->
-            <!---->
-          </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab text-medium-emphasis" tabindex="-1" role="tab" aria-selected="false" id="codeTab" value="code"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-            <!----><span class="v-btn__content" data-no-activator="">Code<div class="v-tab__slider"></div></span>
-            <!---->
-            <!---->
-          </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab text-medium-emphasis" tabindex="-1" role="tab" aria-selected="false" id="analyticsTab" value="analytics"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-            <!----><span class="v-btn__content" data-no-activator="">Analytics<div class="v-tab__slider"></div></span>
-            <!---->
-            <!---->
-          </button></div>
-      </div>
-      <!---->
-    </div>
-    <!---->
-    <div class="v-window v-theme--light v-tabs-window">
-      <div class="v-window__container">
-        <transition-stub appear="false" persisted="false" css="true" disabled="true">
-          <div class="v-window-item v-tabs-window-item" style="display: none;">
-            <!---->
-          </div>
-        </transition-stub>
-        <transition-stub appear="false" persisted="false" css="true" disabled="true">
-          <div class="v-window-item v-tabs-window-item" style="display: none;">
-            <!---->
-          </div>
-        </transition-stub>
-        <transition-stub appear="false" persisted="false" css="true" disabled="true">
-          <div class="v-window-item v-tabs-window-item" style="display: none;">
-            <!---->
-          </div>
-        </transition-stub>
-        <transition-stub appear="false" persisted="false" css="true" disabled="true">
-          <div class="v-window-item v-tabs-window-item" style="display: none;">
-            <!---->
-          </div>
-        </transition-stub>
-        <transition-stub appear="false" persisted="false" css="true" disabled="true">
-          <div class="v-window-item v-tabs-window-item" style="display: none;">
-            <!---->
-          </div>
-        </transition-stub>
-        <transition-stub appear="false" persisted="false" css="true" disabled="true">
-          <div class="v-window-item v-tabs-window-item" style="display: none;">
-            <!---->
-          </div>
-        </transition-stub>
-        <!---->
-      </div>
-      <!---->
-    </div>
-  </div>
-</div>"
-`;
-
-exports[`ERC20Contract.vue > Should display placeholders 1`] = `
-"<div class="v-container v-container--fluid v-locale--is-ltr">
-  <div class="v-row mb-1">
-    <div class="v-col-lg-5 v-col-12">
-      <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated" style="height: 100%;">
-        <!---->
-        <div class="v-card__loader">
-          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
-            <!---->
-            <div class="v-progress-linear__background"></div>
-            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
-            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
-              <div class="v-progress-linear__indeterminate">
-                <div class="v-progress-linear__indeterminate long"></div>
-                <div class="v-progress-linear__indeterminate short"></div>
-              </div>
-            </transition-stub>
-            <!---->
-          </div>
-        </div>
-        <!---->
-        <!---->
-        <div class="v-card-title">
-          <!--v-if-->
-        </div>
-        <div class="v-card-subtitle"></div>
-        <div class="v-card-text">
-          <div class="v-row">
-            <div class="v-col v-col-6"><small>Total Supply</small><br><span class="text-h6 ml-2">N/A</span></div>
-            <div class="v-col v-col-6"><small>Decimals</small><br><span class="text-h6 ml-2">N/A</span></div>
-          </div>
-          <div class="v-row">
-            <div class="v-col v-col-6"><small>Address</small><br>
-              <hash-link-stub type="address" hash="0x123" class="ml-2"></hash-link-stub>
-            </div>
-            <div class="v-col v-col-6"><small>Contract Creation</small><br><span class="ml-2"><hash-link-stub type="transaction" hash="0xabc"></hash-link-stub></span></div>
-          </div>
-        </div>
-        <!---->
-        <!----><span class="v-card__underlay"></span>
-      </div>
-    </div>
-    <div class="v-col-lg-7 v-col-12">
-      <div class="v-row">
-        <div class="v-col-sm-6 v-col-lg-6 v-col-12">
-          <stat-number-stub loading="false" title="Holders" value="0"></stat-number-stub>
-        </div>
-        <div class="v-col-sm-6 v-col-lg-6 v-col-12">
-          <stat-number-stub loading="false" title="Transfers" value="0"></stat-number-stub>
-        </div>
-        <div class="v-col-sm-6 v-col-lg-6 v-col-12">
-          <stat-number-stub loading="false" title="Circulating Supply" infotooltip="Number of tokens currently in circulation" value="0"></stat-number-stub>
-        </div>
-        <div class="v-col-sm-6 v-col-lg-6 v-col-12">
-          <token-balance-card-stub contract="[object Object]"></token-balance-card-stub>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div>
-    <div class="v-slide-group v-slide-group--mobile v-tabs v-tabs--horizontal v-tabs--align-tabs-start v-tabs--density-default" tabindex="0" role="tablist">
-      <!---->
-      <div class="v-slide-group__container">
-        <div class="v-slide-group__content"><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab text-medium-emphasis" tabindex="-1" role="tab" aria-selected="false" id="transactionsTab" value="transactions"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-            <!----><span class="v-btn__content" data-no-activator="">Transactions<div class="v-tab__slider"></div></span>
-            <!---->
-            <!---->
-          </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab text-medium-emphasis" tabindex="-1" role="tab" aria-selected="false" id="transfersTab" value="transfers"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-            <!----><span class="v-btn__content" data-no-activator="">Transfers<div class="v-tab__slider"></div></span>
-            <!---->
-            <!---->
-          </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab text-medium-emphasis" tabindex="-1" role="tab" aria-selected="false" id="holdersTab" value="holders"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-            <!----><span class="v-btn__content" data-no-activator="">Holders<div class="v-tab__slider"></div></span>
-            <!---->
-            <!---->
-          </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab text-medium-emphasis" tabindex="-1" role="tab" aria-selected="false" id="interactionsTab" value="interactions"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-            <!----><span class="v-btn__content" data-no-activator="">Read / Write<div class="v-tab__slider"></div></span>
-            <!---->
-            <!---->
-          </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab text-medium-emphasis" tabindex="-1" role="tab" aria-selected="false" id="codeTab" value="code"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-            <!----><span class="v-btn__content" data-no-activator="">Code<div class="v-tab__slider"></div></span>
-            <!---->
-            <!---->
-          </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab text-medium-emphasis" tabindex="-1" role="tab" aria-selected="false" id="analyticsTab" value="analytics"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-            <!----><span class="v-btn__content" data-no-activator="">Analytics<div class="v-tab__slider"></div></span>
-            <!---->
-            <!---->
-          </button></div>
-      </div>
-      <!---->
-    </div>
-    <!---->
-    <div class="v-window v-theme--light v-tabs-window">
-      <div class="v-window__container">
-        <transition-stub appear="false" persisted="false" css="true" disabled="true">
-          <div class="v-window-item v-tabs-window-item" style="display: none;">
-            <!---->
-          </div>
-        </transition-stub>
-        <transition-stub appear="false" persisted="false" css="true" disabled="true">
-          <div class="v-window-item v-tabs-window-item" style="display: none;">
-            <!---->
-          </div>
-        </transition-stub>
-        <transition-stub appear="false" persisted="false" css="true" disabled="true">
-          <div class="v-window-item v-tabs-window-item" style="display: none;">
-            <!---->
-          </div>
-        </transition-stub>
-        <transition-stub appear="false" persisted="false" css="true" disabled="true">
-          <div class="v-window-item v-tabs-window-item" style="display: none;">
-            <!---->
-          </div>
-        </transition-stub>
-        <transition-stub appear="false" persisted="false" css="true" disabled="true">
-          <div class="v-window-item v-tabs-window-item" style="display: none;">
-            <!---->
-          </div>
-        </transition-stub>
-        <transition-stub appear="false" persisted="false" css="true" disabled="true">
-          <div class="v-window-item v-tabs-window-item" style="display: none;">
-            <!---->
-          </div>
-        </transition-stub>
-        <!---->
-      </div>
-      <!---->
-    </div>
   </div>
 </div>"
 `;

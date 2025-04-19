@@ -121,20 +121,25 @@ const simulateTransaction = async (options) => {
 const sendWithMetamask = async () => {
     const browserClient = currentWorkspaceStore.getViemBrowserClient;
 
-    const options = sanitize({
-        address: props.contract.address,
-        abi: props.contract.abi,
-        functionName: props.method.name,
-        args: Object.values(processedParams.value),
-        chainId: parseInt(currentWorkspaceStore.networkId),
-        gas: currentWorkspaceStore.gasLimit ? BigInt(currentWorkspaceStore.gasLimit) : undefined,
-        gasPrice: currentWorkspaceStore.gasPrice ? BigInt(currentWorkspaceStore.gasPrice) : undefined,
-        value: parseEther(valueInEth.value.toString()),
-        connector: walletStore.wagmiConnector,
-        account: walletStore.connectedAddress
-    });
+    try {
+        const options = sanitize({
+            address: props.contract.address,
+            abi: props.contract.abi,
+            functionName: props.method.name,
+            args: Object.values(processedParams.value),
+            chainId: parseInt(currentWorkspaceStore.networkId),
+            gas: currentWorkspaceStore.gasLimit ? BigInt(currentWorkspaceStore.gasLimit) : undefined,
+            gasPrice: currentWorkspaceStore.gasPrice ? BigInt(currentWorkspaceStore.gasPrice) : undefined,
+            value: parseEther(valueInEth.value.toString()),
+            connector: walletStore.wagmiConnector,
+            account: walletStore.connectedAddress
+        });
 
-    sendTransaction(browserClient, options);
+        sendTransaction(browserClient, options);
+    } catch (error) {
+        console.log(error);
+        result.value.message = error.message || 'Error while sending the transaction';
+    }
 };
 
 const sendWithAccount = async () => {
@@ -144,17 +149,22 @@ const sendWithAccount = async () => {
     if (!props.options.gasLimit || parseInt(props.options.gasLimit) < 1)
         return result.value.message = 'You must set a gas limit';
 
-    const options = sanitize({
-        address: props.contract.address,
-        abi: props.contract.abi,
-        functionName: props.method.name,
-        args: Object.values(processedParams.value),
-        gasPrice: currentWorkspaceStore.gasPrice,
-        value: value.value,
-        account: props.options.from.privateKey ? privateKeyToAccount(props.options.from.privateKey) : props.options.from.address
-    });
+    try {
+        const options = sanitize({
+            address: props.contract.address,
+            abi: props.contract.abi,
+            functionName: props.method.name,
+            args: Object.values(processedParams.value),
+            gasPrice: currentWorkspaceStore.gasPrice,
+            value: value.value,
+            account: props.options.from.privateKey ? privateKeyToAccount(props.options.from.privateKey) : props.options.from.address
+        });
 
-    sendTransaction(currentWorkspaceStore.getViemWalletClient, options);
+        sendTransaction(currentWorkspaceStore.getViemWalletClient, options);
+    } catch (error) {
+        console.log(error);
+        result.value.message = error.message || 'Error while sending the transaction';
+    }
 };
 
 const sendTransaction = async (client, options) => {
@@ -191,6 +201,7 @@ const sendTransaction = async (client, options) => {
                 result.value.message = `Transaction failed without a message`; // Maybe there is a better way to handle that, but we shouldn't really get here...
         }
     } catch (error) {
+        console.log(error)
         if (error.message || error.reason)
             result.value.message = `Error: ${error.shortMessage || error.message || error.reason}`;
         else

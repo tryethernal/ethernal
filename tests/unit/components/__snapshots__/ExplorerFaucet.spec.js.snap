@@ -85,22 +85,22 @@ exports[`ExplorerFaucet.vue > Should display an active faucet 1`] = `
               </button></div>
           </form> Your Addresses: <ul>
             <li>
-              <hash-link-stub withname="false" type="address" hash="0x4150e51980114468aa8309bb72f027d8bff41353"></hash-link-stub> - <span>Request in 2 years</span>
+              <hash-link-stub type="address" hash="0x4150e51980114468aa8309bb72f027d8bff41353" fullhash="false" withname="false" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub> - <span>Request in 2 years</span>
             </li>
             <li>
-              <hash-link-stub withname="false" type="address" hash="0x4150e51980114468aa8309bb72f027d8bff41353"></hash-link-stub> - <span>Request in 2 years</span>
+              <hash-link-stub type="address" hash="0x4150e51980114468aa8309bb72f027d8bff41353" fullhash="false" withname="false" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub> - <span>Request in 2 years</span>
             </li>
             <li>
-              <hash-link-stub withname="false" type="address" hash="0x4150e51980114468aa8309bb72f027d8bff41353"></hash-link-stub> - <span>Request in 2 years</span>
+              <hash-link-stub type="address" hash="0x4150e51980114468aa8309bb72f027d8bff41353" fullhash="false" withname="false" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub> - <span>Request in 2 years</span>
             </li>
             <li>
-              <hash-link-stub withname="false" type="address" hash="0x4150e51980114468aa8309bb72f027d8bff41353"></hash-link-stub> - <span>Request in 2 years</span>
+              <hash-link-stub type="address" hash="0x4150e51980114468aa8309bb72f027d8bff41353" fullhash="false" withname="false" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub> - <span>Request in 2 years</span>
             </li>
             <li>
-              <hash-link-stub withname="false" type="address" hash="0x4150e51980114468aa8309bb72f027d8bff41353"></hash-link-stub> - <span>Request in 2 years</span>
+              <hash-link-stub type="address" hash="0x4150e51980114468aa8309bb72f027d8bff41353" fullhash="false" withname="false" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub> - <span>Request in 2 years</span>
             </li>
           </ul><small><a>[+] See More</a></small>
-          <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator"><small> Max Frequency: 1.0 ETL per address every day.<br> Faucet Balance: 2 ETL<br> Faucet Address: <hash-link-stub withname="false" type="address" hash="0x4150e51980114468aa8309bb72f027d8bff41353" fullhash="true"></hash-link-stub></small>
+          <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator"><small> Max Frequency: 1.0 ETL per address every day.<br> Faucet Balance: 2 ETL<br> Faucet Address: <hash-link-stub type="address" hash="0x4150e51980114468aa8309bb72f027d8bff41353" fullhash="true" withname="false" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub></small>
         </div>
         <!---->
         <!----><span class="v-card__underlay"></span>

@@ -1,6 +1,11 @@
 import flushPromises from 'flush-promises';
 
-vi.mock('@metamask/detect-provider');
+vi.mock('highlight.js', () => ({
+    default: {
+        highlight: vi.fn().mockReturnValue('highlighted')
+    }
+}));
+
 import ContractCode from '@/components/ContractCode.vue';
 
 const stubs = [

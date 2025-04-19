@@ -18,7 +18,6 @@
     <v-container v-else fluid>
         <ERC721-Token-Transfer-Modal ref="erc721TokenTransferModal" :address="hash" :token="token" />
 
-        <v-alert class="mb-3" density="compact" text v-if="metadataReloaded" type="success">A metadata reload for this token has been queued for processing. It will be updated soon.</v-alert>
         <v-row>
             <!-- Token Image -->
             <v-col cols="12" md="5" lg="4">
@@ -214,6 +213,18 @@
             </v-col>
         </v-row>
 
+        <!-- Transfers Section -->
+        <v-row>
+            <v-col>
+                <v-card>
+                    <v-card-title class="text-subtitle-1 font-weight-bold">Transfers</v-card-title>
+                    <v-card-text>
+                        <ERC721-Token-Transfers :address="hash" :tokenId="tokenId" :headers="transferHeaders" />
+                    </v-card-text>
+                </v-card>
+            </v-col>
+        </v-row>
+
         <v-expansion-panels class="mt-4" variant="accordion" flat>
             <v-expansion-panel>
                 <v-expansion-panel-title class="no-hover"><h3>Raw Metadata</h3></v-expansion-panel-title>
@@ -228,8 +239,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted, inject } from 'vue';
-import { useCurrentWorkspaceStore } from '@/stores/currentWorkspace';
+import { ref, computed, watch, inject, shallowRef } from 'vue';
 import moment from 'moment';
 
 import ERC721TokenTransfers from './ERC721TokenTransfers.vue';
@@ -252,24 +262,22 @@ const $server = inject('$server');
 // Refs
 const loading = ref(false);
 const notAToken = ref(false);
-const metadataReloaded = ref(false);
 const transfers = ref([]);
 const contract = ref({});
 const token = ref({
     metadata: {},
     attributes: { properties: [], levels: [], boosts: [], stats: [], dates: [] }
 });
+const transferHeaders = shallowRef([
+    { title: 'Transaction Hash', key: 'transactionHash', sortable: false },
+    { title: 'Block', key: 'blockNumber', sortable: true },
+    { title: 'Age', key: 'timestamp', sortable: true },
+    { title: 'From', key: 'src', sortable: false },
+    { title: 'To', key: 'dst', sortable: false },
+]);
 
 // Template refs
 const erc721TokenTransferModal = ref(null);
-
-// Store
-const currentWorkspaceStore = useCurrentWorkspaceStore();
-
-// Methods
-const copyToClipboard = (text) => {
-    navigator.clipboard.writeText(text);
-};
 
 const tokenStandard = computed(() => {
     if (!contract.value.patterns) return 'N/A';
@@ -288,13 +296,6 @@ const hasAnyAttributes = computed(() => {
     );
 });
 
-const reloadMetadata = () => {
-    metadataReloaded.value = false;
-    $server.reloadErc721Token(props.hash, props.tokenId)
-        .then(() => metadataReloaded.value = true)
-        .catch(console.log);
-};
-
 const getErc721Token = () => {
     loading.value = true;
     $server.getErc721TokenById(props.hash, props.tokenId)
@@ -306,17 +307,9 @@ const getErc721Token = () => {
                 contract.value = token.value.contract;
             else
                 getContract();
-
-            getErc721TokenTransfers();
         })
         .catch(console.log)
         .finally(() => loading.value = false);
-};
-
-const getErc721TokenTransfers = () => {
-    $server.getErc721TokenTransfers(props.hash, token.value.tokenId)
-        .then(({ data }) => transfers.value = data)
-        .catch(console.log);
 };
 
 const getContract = () => {

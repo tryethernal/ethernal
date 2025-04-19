@@ -2362,16 +2362,12 @@ const getWorkspaceBlock = async (workspaceId, number) => {
     return block ? block.toJSON() : null;
 };
 
-const getWorkspaceBlocks = async (workspaceId, page = 1, itemsPerPage = 10, order = 'DESC', withCount = 'true') => {
+const getWorkspaceBlocks = async (workspaceId, page = 1, itemsPerPage = 10, order = 'DESC') => {
     const workspace = await Workspace.findByPk(workspaceId);
     const blocks = await workspace.getFilteredBlocks(page, itemsPerPage, order);
-    let totalBlockCount;
-    if (withCount == 'true')
-        totalBlockCount = await workspace.countBlocks();
 
     return {
-        items: blocks.map(b => b.toJSON()),
-        total: totalBlockCount
+        items: blocks.map(b => b.toJSON())
     };
 };
 

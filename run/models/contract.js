@@ -247,6 +247,7 @@ module.exports = (sequelize, DataTypes) => {
             )
             SELECT balances.address, balances.cb AS amount, balances.cb::float / supply.value::float AS share
             FROM balances, supply
+            WHERE balances.cb > 0
             ORDER BY ${sanitizedOrderBy} ${sanitizedOrder} LIMIT :itemsPerPage OFFSET :offset;
         `, {
             replacements: {

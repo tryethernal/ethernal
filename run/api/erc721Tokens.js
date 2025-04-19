@@ -14,7 +14,7 @@ router.get('/:address/:tokenId/transfers', workspaceAuthMiddleware, async (req, 
     try {
         const transfers = await db.getErc721TokenTransfers(data.workspace.id, req.params.address, req.params.tokenId);
 
-        res.status(200).json(transfers);
+        res.status(200).json({ items: transfers, total: transfers.length });
     } catch(error) {
         unmanagedError(error, req, next);
     }

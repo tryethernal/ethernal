@@ -112,6 +112,10 @@ onMounted(async () => {
         }
     }
 
+    if (parsedLog.value) {
+        return;
+    }
+
     try {
         const { data } = await $server.getContract(props.log.address);
         if (data) {

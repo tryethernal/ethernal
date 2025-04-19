@@ -1248,11 +1248,11 @@ export default {
                 return axios.get(resource, { params });
             },
 
-            getBlocks(options, withCount) {
+            getBlocks(options) {
                 const params = {
                     firebaseUserId: firebaseUserId.value,
                     workspace: workspace.value,
-                    ...options, withCount
+                    ...options
                 };
                 const resource = `${envStore.apiRoot}/api/blocks`;
                 return axios.get(resource, { params, cache: { ttl: CACHE_TTL }});

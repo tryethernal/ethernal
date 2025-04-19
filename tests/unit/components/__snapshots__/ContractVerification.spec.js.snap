@@ -268,7 +268,7 @@ exports[`ContractVerification.vue > Should load the UI & the Solidity releases 1
           </div>
           <div class="v-row mt-0">
             <div class="v-col v-col-2">
-              <div class="v-input v-input--horizontal v-input--center-affix v-input--density-default v-theme--light v-locale--is-ltr v-checkbox">
+              <div class="v-input v-input--horizontal v-input--center-affix v-input--density-default v-theme--light v-locale--is-ltr v-input--dirty v-checkbox">
                 <!---->
                 <div class="v-input__control">
                   <div class="v-selection-control v-selection-control--density-default v-checkbox-btn">

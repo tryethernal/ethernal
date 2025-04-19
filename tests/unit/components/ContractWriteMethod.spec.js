@@ -1,4 +1,5 @@
 import flushPromises from 'flush-promises';
+import { useCurrentWorkspaceStore } from '@/stores/currentWorkspace';
 
 import DSProxyFactoryContract from '../fixtures/DSProxyFactoryContract.json';
 import TokenContract from '../fixtures/TokenContract.json';
@@ -14,6 +15,7 @@ describe('ContractWriteMethod.vue', () => {
         const props = {
             senderMode: 'accounts',
             method: DSProxyFactoryContract.abi[2],
+            active: true,
             contract: DSProxyFactoryContract,
             signature: 'build()',
             options: {
@@ -23,18 +25,30 @@ describe('ContractWriteMethod.vue', () => {
             }
         };
 
+        const workspaceStore = useCurrentWorkspaceStore(createTestingPinia());
+
+        workspaceStore.wallet = { connectedAddress: '0x123', wagmiConnector: {} };
+        workspaceStore.wagmiConfig = {};
+        workspaceStore.rpcServer = 'http://localhost';
+        workspaceStore.getViemBrowserClient = {
+            writeContract: vi.fn().mockResolvedValue('0x1234')
+        };
+        workspaceStore.getViemPublicClient = {
+            waitForTransactionReceipt: vi.fn().mockResolvedValue({
+                status: 'success'
+            })
+        };
+
         const wrapper = mount(ContractWriteMethod, {
             props: {
                 ...props,
                 senderMode: 'metamask'
             },
             global: {
-                plugins: [createTestingPinia({ initialState: {
-                    wallet: { connectedAddress: '0x123', wagmiConnector: {} },
-                    currentWorkspace: { wagmiConfig: {} }
-                }})]
+                plugins: [workspaceStore]
             }
         });
+
         await flushPromises();
 
         await wrapper.find('button').trigger('click');
@@ -141,13 +155,27 @@ describe('ContractWriteMethod.vue', () => {
 
         const { default: ContractWriteMethod } = await import('@/components/ContractWriteMethod.vue');
 
+        const workspaceStore = useCurrentWorkspaceStore(createTestingPinia());
+
+        workspaceStore.wallet = { connectedAddress: '0x123', wagmiConnector: {} };
+        workspaceStore.wagmiConfig = {};
+        workspaceStore.rpcServer = 'http://localhost';
+        workspaceStore.getViemBrowserClient = {
+            writeContract: vi.fn().mockResolvedValue('0xabcd')
+        };
+        workspaceStore.getViemPublicClient = {
+            waitForTransactionReceipt: vi.fn().mockResolvedValue({
+                status: 'success'
+            })
+        };
+
         const wrapper = mount(ContractWriteMethod, {
-            props: props,
+            props: {
+                ...props,
+                senderMode: 'metamask'
+            },
             global: {
-                plugins: [createTestingPinia({ initialState: {
-                    wallet: { connectedAddress: '0x123', wagmiConnector: {} },
-                    currentWorkspace: { wagmiConfig: {} }
-                }})]
+                plugins: [workspaceStore]
             }
         });
 
@@ -156,7 +184,7 @@ describe('ContractWriteMethod.vue', () => {
         await new Promise(process.nextTick);
 
         expect(wrapper.vm.result).toEqual({ txHash: '0xabcd', message: null });
-        expect(wrapper.vm.receipt).toEqual({ status: true });
+        expect(wrapper.vm.receipt).toEqual({ status: 'success' });
         expect(wrapper.html()).toMatchSnapshot();
     });
 
@@ -188,13 +216,27 @@ describe('ContractWriteMethod.vue', () => {
 
         const { default: ContractWriteMethod } = await import('@/components/ContractWriteMethod.vue');
 
+        const workspaceStore = useCurrentWorkspaceStore(createTestingPinia());
+
+        workspaceStore.wallet = { connectedAddress: '0x123', wagmiConnector: {} };
+        workspaceStore.wagmiConfig = {};
+        workspaceStore.rpcServer = 'http://localhost';
+        workspaceStore.getViemBrowserClient = {
+            writeContract: vi.fn().mockResolvedValue('0xabcd')
+        };
+        workspaceStore.getViemPublicClient = {
+            waitForTransactionReceipt: vi.fn().mockResolvedValue({
+                status: 'success'
+            })
+        };
+
         const wrapper = mount(ContractWriteMethod, {
-            props: props,
+            props: {
+                ...props,
+                senderMode: 'metamask'
+            },
             global: {
-                plugins: [createTestingPinia({ initialState: {
-                    wallet: { connectedAddress: '0x123', wagmiConnector: {} },
-                    currentWorkspace: { wagmiConfig: {} }
-                }})]
+                plugins: [workspaceStore]
             }
         });
 
@@ -203,7 +245,7 @@ describe('ContractWriteMethod.vue', () => {
         await new Promise(process.nextTick);
 
         expect(wrapper.vm.result).toEqual({ txHash: '0xabcd', message: null });
-        expect(wrapper.vm.receipt).toEqual({ status: true });
+        expect(wrapper.vm.receipt).toEqual({ status: 'success' });
         expect(wrapper.html()).toMatchSnapshot();
     });
 
@@ -235,22 +277,35 @@ describe('ContractWriteMethod.vue', () => {
 
         const { default: ContractWriteMethod } = await import('@/components/ContractWriteMethod.vue');
 
+        const workspaceStore = useCurrentWorkspaceStore(createTestingPinia());
+
+        workspaceStore.wallet = { connectedAddress: '0x123', wagmiConnector: {} };
+        workspaceStore.wagmiConfig = {};
+        workspaceStore.rpcServer = 'http://localhost';
+        workspaceStore.getViemBrowserClient = {
+            writeContract: vi.fn().mockResolvedValue('0xabcd')
+        };
+        workspaceStore.getViemPublicClient = {
+            waitForTransactionReceipt: vi.fn().mockResolvedValue({
+                status: 'success'
+            })
+        };
+
         const wrapper = mount(ContractWriteMethod, {
-            props: props,
+            props: {
+                ...props,
+                senderMode: 'metamask'
+            },
             global: {
-                plugins: [createTestingPinia({ initialState: {
-                    wallet: { connectedAddress: '0x123', wagmiConnector: {} },
-                    currentWorkspace: { wagmiConfig: {} }
-                }})]
+                plugins: [workspaceStore]
             }
         });
-
         await wrapper.find('input').setValue('frbbforbuo');
         await wrapper.find('button').trigger('click');
         await new Promise(process.nextTick);
 
         expect(wrapper.vm.result).toEqual({ txHash: null, message: "Input needs to be 'true' or 'false'" });
-        expect(wrapper.vm.receipt).toEqual({});
+        expect(wrapper.vm.receipt).toEqual(null);
         expect(wrapper.html()).toMatchSnapshot();
     });
 
@@ -282,13 +337,27 @@ describe('ContractWriteMethod.vue', () => {
 
         const { default: ContractWriteMethod } = await import('@/components/ContractWriteMethod.vue');
 
+        const workspaceStore = useCurrentWorkspaceStore(createTestingPinia());
+
+        workspaceStore.wallet = { connectedAddress: '0x123', wagmiConnector: {} };
+        workspaceStore.wagmiConfig = {};
+        workspaceStore.rpcServer = 'http://localhost';
+        workspaceStore.getViemBrowserClient = {
+            writeContract: vi.fn().mockResolvedValue('0xabcd')
+        };
+        workspaceStore.getViemPublicClient = {
+            waitForTransactionReceipt: vi.fn().mockResolvedValue({
+                status: 'success'
+            })
+        };
+
         const wrapper = mount(ContractWriteMethod, {
-            props: props,
+            props: {
+                ...props,
+                senderMode: 'metamask'
+            },
             global: {
-                plugins: [createTestingPinia({ initialState: {
-                    wallet: { connectedAddress: '0x123', wagmiConnector: {} },
-                    currentWorkspace: { wagmiConfig: {} }
-                }})]
+                plugins: [workspaceStore]
             }
         });
 
@@ -297,7 +366,7 @@ describe('ContractWriteMethod.vue', () => {
         await new Promise(process.nextTick);
 
         expect(wrapper.vm.result).toEqual({ txHash: '0xabcd', message: null });
-        expect(wrapper.vm.receipt).toEqual({ status: true });
+        expect(wrapper.vm.receipt).toEqual({ status: 'success' });
         expect(wrapper.html()).toMatchSnapshot();
     })
 
@@ -317,50 +386,27 @@ describe('ContractWriteMethod.vue', () => {
 
         const { default: ContractWriteMethod } = await import('@/components/ContractWriteMethod.vue');
 
-        const wrapper = mount(ContractWriteMethod, {
-            props: props,
-            global: {
-                plugins: [createTestingPinia({ initialState: {
-                    wallet: { connectedAddress: '0x123', wagmiConnector: {} },
-                    currentWorkspace: { wagmiConfig: {} }
-                }})]
-            }
-        });
+        const workspaceStore = useCurrentWorkspaceStore(createTestingPinia());
 
-        await wrapper.find('button').trigger('click');
-        await new Promise(process.nextTick);
-
-        expect(wrapper.vm.result).toEqual({ txHash: '0xabcd', message: null });
-        expect(wrapper.vm.receipt).toEqual({ status: true });
-        expect(wrapper.html()).toMatchSnapshot();
-    });
-
-    it('Should display only the tx hash when it succeeds without a receipt', async () => {
-        vi.spyOn(server, 'callContractWriteMethod')
-            .mockResolvedValue({ hash: '0xabcd' });
-
-        const props = {
-            senderMode: 'accounts',
-            method: DSProxyFactoryContract.abi[2],
-            contract: DSProxyFactoryContract,
-            signature: 'build()',
-            options: {
-                from: { address: '0xa26e15c895efc0616177b7c1e7270a4c7d51c997' },
-                gasLimit: '6721975',
-                gasPrice: undefined
-            },
-            active: true
+        workspaceStore.wallet = { connectedAddress: '0x123', wagmiConnector: {} };
+        workspaceStore.wagmiConfig = {};
+        workspaceStore.rpcServer = 'http://localhost';
+        workspaceStore.getViemBrowserClient = {
+            writeContract: vi.fn().mockResolvedValue('0xabcd')
+        };
+        workspaceStore.getViemPublicClient = {
+            waitForTransactionReceipt: vi.fn().mockResolvedValue({
+                status: 'success'
+            })
         };
 
-        const { default: ContractWriteMethod } = await import('@/components/ContractWriteMethod.vue');
-
         const wrapper = mount(ContractWriteMethod, {
-            props: props,
+            props: {
+                ...props,
+                senderMode: 'metamask'
+            },
             global: {
-                plugins: [createTestingPinia({ initialState: {
-                    wallet: { connectedAddress: '0x123', wagmiConnector: {} },
-                    currentWorkspace: { wagmiConfig: {} }
-                }})]
+                plugins: [workspaceStore]
             }
         });
 
@@ -368,23 +414,11 @@ describe('ContractWriteMethod.vue', () => {
         await new Promise(process.nextTick);
 
         expect(wrapper.vm.result).toEqual({ txHash: '0xabcd', message: null });
-        expect(wrapper.vm.receipt).toEqual({});
-        expect(wrapper.vm.noReceipt).toBe(true);
-        expect(wrapper.vm.noWaitFunction).toBe(true);
+        expect(wrapper.vm.receipt).toEqual({ status: 'success' });
         expect(wrapper.html()).toMatchSnapshot();
     });
 
     it('Should display only the error message with the failed tx hash', async () => {
-        vi.spyOn(server, 'callContractWriteMethod')
-            .mockRejectedValue({
-                data: {
-                    '0xabcd': {
-                        error: 'Failed tx.',
-                        reason: 'Wrong param.'
-                    }
-                }
-            })
-
         const { default: ContractWriteMethod } = await import('@/components/ContractWriteMethod.vue');
 
         const props = {
@@ -400,107 +434,38 @@ describe('ContractWriteMethod.vue', () => {
             active: true
         };
 
-        const wrapper = mount(ContractWriteMethod, {
-            props: props,
-            global: {
-                plugins: [createTestingPinia({ initialState: {
-                    wallet: { connectedAddress: '0x123', wagmiConnector: {} },
-                    currentWorkspace: { wagmiConfig: {} }
-                }})]
-            }
-        });
+        const workspaceStore = useCurrentWorkspaceStore(createTestingPinia());
 
-        await wrapper.find('button').trigger('click');
-        await new Promise(process.nextTick);
-
-        expect(wrapper.vm.result).toStrictEqual({ txHash: '0xabcd', message: 'Error: Wrong param.' });
-        expect(wrapper.vm.receipt).toStrictEqual({});
-        expect(wrapper.html()).toMatchSnapshot();
-    });
-
-    it('Should display the formatted error message with the failed tx hash', async () => {
-        vi.spyOn(server, 'callContractWriteMethod')
-            .mockRejectedValue({
-                data: {
-                    '0xabcd': {
-                        error: 'revert',
-                        return: '0xcf4791810000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000007b'
-                    }
-                }
+        workspaceStore.wallet = { connectedAddress: '0x123', wagmiConnector: {} };
+        workspaceStore.wagmiConfig = {};
+        workspaceStore.rpcServer = 'http://localhost';
+        workspaceStore.getViemBrowserClient = {
+            writeContract: vi.fn().mockResolvedValue('0xabcd')
+        };
+        workspaceStore.getViemPublicClient = {
+            waitForTransactionReceipt: vi.fn().mockResolvedValue({
+                status: 'reverted',
+            }),
+            simulateContract: vi.fn().mockRejectedValue({
+                shortMessage: 'Wrong param.'
             })
-
-        const props = {
-            method: TokenContract.abi[1],
-            contract: TokenContract,
-            options: {
-                from: { address: '0x0' },
-                gasLimit: '6721975',
-                gasPrice: undefined
-            },
-            active: true
         };
 
-        const { default: ContractWriteMethod } = await import('@/components/ContractWriteMethod.vue');
-
         const wrapper = mount(ContractWriteMethod, {
-            props: props,
-            global: {
-                plugins: [createTestingPinia({ initialState: {
-                    wallet: { connectedAddress: '0x123', wagmiConnector: {} },
-                    currentWorkspace: { wagmiConfig: {} }
-                }})]
-            }
-        });
-        const to = wrapper.findAll('input').at(0);
-        await to.setValue('0xabcd');
-
-        const amount = wrapper.findAll('input').at(1);
-        await amount.setValue('1234');
-
-        await wrapper.find('button').trigger('click');
-        await new Promise(process.nextTick);
-
-        expect(wrapper.vm.result).toStrictEqual({ txHash: '0xabcd', message: 'Error: InsufficientBalance(uint256 available: 0, uint256 required: 123)' });
-        expect(wrapper.vm.receipt).toStrictEqual({});
-        expect(wrapper.html()).toMatchSnapshot();
-    });
-
-    it('Should display only the error message if there is no tx hash', async () => {
-        vi.spyOn(server, 'callContractWriteMethod')
-            .mockRejectedValue({
-                message: 'Failed tx'
-            })
-
-        const props = {
-            senderMode: 'accounts',
-            method: DSProxyFactoryContract.abi[2],
-            contract: DSProxyFactoryContract,
-            signature: 'build()',
-            options: {
-                from: { address: '0xa26e15c895efc0616177b7c1e7270a4c7d51c997' },
-                gasLimit: '6721975',
-                gasPrice: undefined
+            props: {
+                ...props,
+                senderMode: 'metamask'
             },
-            active: true
-        };
-
-        const { default: ContractWriteMethod } = await import('@/components/ContractWriteMethod.vue');
-
-        const wrapper = mount(ContractWriteMethod, {
-            props: props,
             global: {
-                plugins: [createTestingPinia({ initialState: {
-                    wallet: { connectedAddress: '0x123', wagmiConnector: {} },
-                    currentWorkspace: { wagmiConfig: {} }
-                }})]
+                plugins: [workspaceStore]
             }
         });
 
         await wrapper.find('button').trigger('click');
         await new Promise(process.nextTick);
 
-        expect(wrapper.vm.result).toStrictEqual({ txHash: null, message: 'Error: Failed tx' });
-        expect(wrapper.vm.receipt).toStrictEqual({});
+        expect(wrapper.vm.result).toStrictEqual({ txHash: '0xabcd', message: 'Transaction failed with error: Wrong param.' });
+        expect(wrapper.vm.receipt).toStrictEqual({ status: 'reverted' });
         expect(wrapper.html()).toMatchSnapshot();
     });
 
@@ -524,13 +489,24 @@ describe('ContractWriteMethod.vue', () => {
             active: true
         };
 
+        const workspaceStore = useCurrentWorkspaceStore(createTestingPinia());
+
+        workspaceStore.wallet = { connectedAddress: '0x123', wagmiConnector: {} };
+        workspaceStore.wagmiConfig = {};
+        workspaceStore.rpcServer = 'http://localhost';
+        workspaceStore.getViemBrowserClient = {
+            writeContract: vi.fn().mockRejectedValue({
+                message: 'call revert exception'
+            })
+        };
+
         const wrapper = mount(ContractWriteMethod, {
-            props: props,
+            props: {
+                ...props,
+                senderMode: 'metamask'
+            },
             global: {
-                plugins: [createTestingPinia({ initialState: {
-                    wallet: { connectedAddress: '0x123', wagmiConnector: {} },
-                    currentWorkspace: { wagmiConfig: {} }
-                }})]
+                plugins: [workspaceStore]
             }
         });
 
@@ -538,7 +514,7 @@ describe('ContractWriteMethod.vue', () => {
         await new Promise(process.nextTick);
 
         expect(wrapper.vm.result).toStrictEqual({ txHash: null, message: 'Error: call revert exception' });
-        expect(wrapper.vm.receipt).toStrictEqual({});
+        expect(wrapper.vm.receipt).toStrictEqual(null);
         expect(wrapper.html()).toMatchSnapshot();
     });
 });

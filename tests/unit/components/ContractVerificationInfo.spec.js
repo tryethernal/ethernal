@@ -4,7 +4,8 @@ vi.mock('@metamask/detect-provider');
 import ContractVerificationInfo from '@/components/ContractVerificationInfo.vue';
 
 const stubs = [
-    'Formatted-Sol-Var'
+    'Formatted-Sol-Var',
+    'Contract-Code-Editor'
 ];
 
 describe('ContractVerificationInfo.vue', () => {

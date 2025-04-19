@@ -11,7 +11,7 @@
                 </div>
             </h6>
             <div class="text-h6 text-high-emphasis " v-if="isValueDefined">
-                <router-link v-if="type == 'link'" style="text-decoration: none;" :to="href">{{ commify(value) }}</router-link>
+                <router-link v-if="type === 'link'" style="text-decoration: none;" :to="href">{{ commify(value) }}</router-link>
                 <span v-if="raw">
                     {{ value }}
                 </span>
@@ -26,26 +26,33 @@
     </v-card>
 </template>
 
-<script>
-const ethers = require('ethers');
+<script setup>
+import { computed } from 'vue';
+import { ethers } from 'ethers';
 import { formatNumber } from '@/lib/utils';
 
-export default {
-    name: 'StatNumber',
-    props: ['type', 'title', 'value', 'loading', 'href', 'infoTooltip', 'decimals', 'long', 'tokenType', 'raw'],
-    methods: {
-        commify: ethers.utils.commify,
-        formatNumber: formatNumber
-    },
-    computed: {
-        isValueDefined() {
-            return this.value !== undefined && this.value !== null;
-        },
-        realDecimals() {
-            return this.tokenType == 'erc20' ? this.decimals : 0;
-        }
-    }
-}
+const props = defineProps({
+    type: String,
+    title: String,
+    value: [String, Number],
+    loading: Boolean,
+    href: String,
+    infoTooltip: String,
+    decimals: Number,
+    long: Boolean,
+    tokenType: String,
+    raw: Boolean
+});
+
+const commify = ethers.utils.commify;
+
+const isValueDefined = computed(() => {
+    return props.value !== undefined && props.value !== null;
+});
+
+const realDecimals = computed(() => {
+    return props.tokenType === 'erc20' ? props.decimals : 0;
+});
 </script>
 
 <style scoped>

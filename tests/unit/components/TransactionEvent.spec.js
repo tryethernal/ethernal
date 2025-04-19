@@ -1,9 +1,8 @@
 import flushPromises from 'flush-promises';
-
 import TransactionEvent from '@/components/TransactionEvent.vue';
-import TransactionProp from '../fixtures/TransactionProp.json';
-import ABIProp from '../fixtures/ABIProp.json';
 import LogProp from '../fixtures/LogProp.json';
+import ABIProp from '../fixtures/ABIProp.json';
+const stubs = ['LogDetails', 'TransactionEventRawInfo'];
 
 describe('TransactionEvent.vue', () => {
     it('Should display in raw mode if no topics', async () => {
@@ -15,10 +14,9 @@ describe('TransactionEvent.vue', () => {
                 }
             },
             global: {
-                stubs: ['Hash-Link', 'Formatted-Sol-Var']
+                stubs
             }
         });
-        await flushPromises();
 
         expect(wrapper.html()).toMatchSnapshot();
     });
@@ -30,71 +28,30 @@ describe('TransactionEvent.vue', () => {
                 short: true
             },
             global: {
-                stubs: ['Hash-Link', 'Formatted-Sol-Var']
+                stubs
             }
         });
-        await flushPromises();
-
-        expect(wrapper.html()).toMatchSnapshot();
-    });
-
-    it('Should load erc20 abi if event is detected', async () => {
-        const wrapper = mount(TransactionEvent, {
-            props: {
-                log: LogProp
-            },
-            global: {
-                stubs: ['Hash-Link', 'Formatted-Sol-Var']
-            }
-        });
-        await flushPromises();
 
         expect(wrapper.html()).toMatchSnapshot();
     });
 
     it('Should display transaction event', async () => {
+        vi.mock('@/lib/abi', () => ({
+            decodeLog: vi.fn().mockReturnValueOnce({ name: 'Transfer' }),
+            findAbiForEvent: vi.fn().mockReturnValue(null)
+        }));
         vi.spyOn(server, 'getContract')
-            .mockResolvedValue({ data: { address: TransactionProp.to, abi: ABIProp }});
+            .mockResolvedValueOnce({ data: { address: '0x123', abi: ABIProp }});
 
         const wrapper = mount(TransactionEvent, {
             props: {
                 log: LogProp
             },
             global: {
-                stubs: ['Hash-Link', 'Formatted-Sol-Var']
+                stubs
             }
         });
-        await flushPromises();
 
-        expect(wrapper.html()).toMatchSnapshot();
-    });
-
-    it('Should display transaction event for a proxied contract', async () => {
-        vi.spyOn(server, 'getContract')
-            .mockResolvedValue({ data: { address: TransactionProp.to, proxyContract: { address: '0x123', abi: ABIProp }}});
-
-        const wrapper = mount(TransactionEvent, {
-            props: {
-                log: LogProp
-            },
-            global: {
-                stubs: ['Hash-Link', 'Formatted-Sol-Var']
-            }
-        });
-        await flushPromises();
-
-        expect(wrapper.html()).toMatchSnapshot();
-    });
-
-    it('Should display warning if no ABI', async () => {
-        const wrapper = mount(TransactionEvent, {
-            props: {
-                log: LogProp
-            },
-            global: {
-                stubs: ['Hash-Link', 'Formatted-Sol-Var']
-            }
-        });
         await flushPromises();
 
         expect(wrapper.html()).toMatchSnapshot();

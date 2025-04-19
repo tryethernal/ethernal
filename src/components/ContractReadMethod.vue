@@ -97,9 +97,9 @@ const callMethod = async () => {
 
         results.value = Array.isArray(res) ? processResult(res) : processResult([res]);
     } catch (err) {
-        console.log('Error:', err);
         console.log(JSON.stringify(err, null, 2));
-        error.value = `Error: ${err.shortMessage || err.message || err.reason || 'while calling the method'}`;
+        const message = err.shortMessage || err.message || err.reason;
+        error.value = message ? `Error: ${message}` : 'Error while calling the method';
     } finally {
         loading.value = false;
     }

@@ -21,7 +21,7 @@
         ]"
         :headers="headers"
         @update:options="getBlocks">
-        <template v-if="!withCount" v-slot:[`footer.page-text`]=""></template>
+        <template v-slot:[`footer.page-text`]=""></template>
         <template v-slot:item.number="{ item }">
             <v-tooltip location="top">
                 <template v-slot:activator="{ props }">
@@ -70,7 +70,6 @@ import { ref, reactive, onMounted, onBeforeUnmount, inject } from 'vue';
 
 const props = defineProps({
     dense: Boolean,
-    withCount: Boolean
 });
 
 // Import ethers directly
@@ -135,15 +134,14 @@ const getBlocks = ({ page, itemsPerPage, sortBy } = {}) => {
         itemsPerPage, 
         orderBy: sortBy[0].key, 
         order: sortBy[0].order 
-    }, !props.dense && !!props.withCount)
-        .then(({ data }) => {
-            blocks.value = data.items;
-            blockCount.value = data.items.length == currentOptions.itemsPerPage ?
-                (currentOptions.page * data.items.length) + 1 :
-                currentOptions.page * data.items.length;
-        })
-        .catch(console.log)
-        .finally(() => loading.value = false);
+    }).then(({ data }) => {
+        blocks.value = data.items;
+        blockCount.value = data.items.length == currentOptions.itemsPerPage ?
+            (currentOptions.page * data.items.length) + 1 :
+            currentOptions.page * data.items.length;
+    })
+    .catch(console.log)
+    .finally(() => loading.value = false);
 };
 
 // Setup component on mount
@@ -156,12 +154,12 @@ onMounted(() => {
     );
     
     if (!props.dense) {
-        headers.value.push([
+        headers.value.push(
             { title: 'Gas Used', key: 'gasUsed', sortable: false },
             { title: 'Fee Recipient', key: 'miner', sortable: false }
-        ]);
+        );
     }
-    
+
     // Set up Pusher channel handler
     if ($pusher) {
         pusherChannelHandler = $pusher.onNewBlock(() => getBlocks(currentOptions));

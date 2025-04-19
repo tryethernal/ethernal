@@ -26,28 +26,35 @@
     </v-container>
 </template>
 
-<script>
+<script setup>
+import { computed } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import ExplorerGeneral from './ExplorerGeneral.vue';
 import ExplorerFaucetSettings from './ExplorerFaucetSettings.vue';
 import ExplorerDexSettings from './ExplorerDexSettings.vue';
 
-export default {
-    name: 'Explorer',
-    props: ['id', 'sso'],
-    components: {
-        ExplorerGeneral,
-        ExplorerFaucetSettings,
-        ExplorerDexSettings
+// Define props
+const props = defineProps({
+    id: {
+        type: [String, Number],
+        required: true
     },
-    computed: {
-        tab: {
-            set(tab) {
-                this.$router.replace({ query: { ...this.$route.query, tab } }).catch(()=>{});
-            },
-            get() {
-                return this.$route.query.tab;
-            }
-        }
+    sso: {
+        type: Boolean,
+        default: false
     }
-}
+});
+
+const route = useRoute();
+const router = useRouter();
+
+// Computed property for tab management
+const tab = computed({
+    get: () => route.query.tab,
+    set: (newTab) => {
+        router.replace({ 
+            query: { ...route.query, tab: newTab }
+        }).catch(() => {});
+    }
+});
 </script>

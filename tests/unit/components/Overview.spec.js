@@ -11,7 +11,7 @@ describe('Overview.vue', () => {
 
         const wrapper = mount(Overview, {
             global: {
-                stubs: ['TransactionsList', 'BlockList', 'LineChart', 'StatNumber', 'HashLink'],
+                stubs: ['TransactionsList', 'BlockList', 'OverviewCharts', 'SearchBar', 'OverviewStats'],
                 plugins: [createTestingPinia()],
             }
         });

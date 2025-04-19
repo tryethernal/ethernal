@@ -3,7 +3,7 @@
     <v-data-table-server
         class="hide-table-count"
         :loading="loading"
-        :headers="visibleHeaders"
+        :headers="props.headers"
         :sort-by="currentOptions.sortBy"
         :must-sort="true"
         items-per-page-text="Rows per page:"
@@ -55,7 +55,7 @@
                 Unknown
             </v-chip>
         </template>
-        
+
         <!-- Timestamp Column -->
         <template v-slot:item.timestamp="{ item }">
             <div class="d-flex flex-column">
@@ -63,17 +63,17 @@
                 <small class="text-caption text-medium-emphasis">{{ $dt.fromNow(item.transaction.timestamp) }}</small>
             </div>
         </template>
-        
+
         <!-- Block Number Column -->
         <template v-slot:item.blockNumber="{ item }">
-            <router-link 
+            <router-link
                 :to="'/block/' + item.transaction.blockNumber"
                 class="text-decoration-none"
             >
                 {{ item.transaction.blockNumber.toLocaleString() }}
             </router-link>
         </template>
-        
+
         <!-- Source Address Column -->
         <template v-slot:item.src="{ item }">
             <div class="d-flex align-center">
@@ -95,7 +95,7 @@
                 />
             </div>
         </template>
-        
+
         <!-- Destination Address Column -->
         <template v-slot:item.dst="{ item }">
             <div class="d-flex align-center">
@@ -117,7 +117,7 @@
                 />
             </div>
         </template>
-        
+
         <!-- Token Column -->
         <template v-slot:item.token="{ item }">
             <div class="d-flex flex-column token-cell" v-if="isERC20(item)">
@@ -180,24 +180,26 @@
                 />
             </div>
         </template>
-        
+
         <!-- Amount Column -->
         <template v-slot:item.amount="{ item }">
-            <span v-tooltip="item.amount">
+            <span v-tooltip="String(item.amount)">
                 {{ $fromWei(item.amount, item.contract?.tokenDecimals, ' ') }}
             </span>
         </template>
 
         <template v-slot:item.type="{ item }">
-            <span v-for="pattern in item.contract.patterns" :key="pattern">
-              <v-chip
-                v-if="['erc721', 'erc1155'].includes(pattern.toLowerCase())"
-                color="success"
-                size="x-small"
-                class="mr-1">
-                {{ formatContractPattern(pattern) }}
-              </v-chip>
-            </span>
+            <template v-if="item.contract && item.contract.patterns">
+                <span v-for="pattern in item.contract.patterns" :key="pattern">
+                  <v-chip
+                    v-if="['erc721', 'erc1155'].includes(pattern.toLowerCase())"
+                    color="success"
+                    size="x-small"
+                    class="mr-1">
+                    {{ formatContractPattern(pattern) }}
+                  </v-chip>
+                </span>
+            </template>
         </template>
         <!-- Empty State -->
         <template v-slot:no-data>
@@ -286,11 +288,6 @@ const currentOptions = ref({ page: 1, itemsPerPage: 10, sortBy: [{ key: 'timesta
 
 // Computed properties
 const isCompact = computed(() => props.density === 'compact');
-
-const visibleHeaders = computed(() => {
-    if (isCompact.value) return props.headers;
-    return props.headers.filter(header => true);
-});
 
 const isERC20 = (item) => {
     return item.contract && item.contract.patterns && item.contract.patterns.includes('erc20');

@@ -22,6 +22,19 @@ const props = defineProps({
     tokenId: {
         type: String,
         default: null
+    },
+    headers: {
+        type: Array,
+        default: () => [
+            { title: 'Transaction Hash', key: 'transactionHash', sortable: false },
+            { title: 'Method', key: 'methodDetails', sortable: false },
+            { title: 'Block', key: 'blockNumber', sortable: true },
+            { title: 'Age', key: 'timestamp', sortable: true },
+            { title: 'From', key: 'src', sortable: false },
+            { title: 'To', key: 'dst', sortable: false },
+            { title: 'Token', key: 'token', sortable: false },
+            { title: 'Amount', key: 'amount', sortable: false }
+        ]
     }
 });
 
@@ -33,18 +46,6 @@ const loading = ref(false);
 const transfers = ref([]);
 const transferCount = ref(0);
 
-// Headers configuration
-const headers = [
-    { title: 'Transaction Hash', key: 'transactionHash', sortable: false },
-    { title: 'Method', key: 'methodDetails', sortable: false },
-    { title: 'Block', key: 'blockNumber', sortable: true },
-    { title: 'Age', key: 'timestamp', sortable: true },
-    { title: 'From', key: 'src', sortable: false },
-    { title: 'To', key: 'dst', sortable: false },
-    { title: 'Token', key: 'token', sortable: false },
-    { title: 'Amount', key: 'amount', sortable: false }
-];
-
 // Methods
 const getTransfers = async ({ page, itemsPerPage, sortBy } = {}) => {
     if (!page || !itemsPerPage || !sortBy || !sortBy.length) {
@@ -53,16 +54,21 @@ const getTransfers = async ({ page, itemsPerPage, sortBy } = {}) => {
 
     loading.value = true;
     try {
-        const { data } = await $server.getTokenTransfers(
-            props.address,
-            {
-                page,
-                itemsPerPage,
-                orderBy: sortBy[0].key,
-                order: sortBy[0].order
-            }
-        );
-        
+        const { data } = props.tokenId ?
+            await $server.getErc721TokenTransfers(
+                props.address,
+                props.tokenId
+            ) :
+            await $server.getTokenTransfers(
+                props.address,
+                {
+                    page,
+                    itemsPerPage,
+                    orderBy: sortBy[0].key,
+                    order: sortBy[0].order
+                }
+            );
+
         transfers.value = data.items || [];
         transferCount.value = data.total || 0;
     } catch (error) {

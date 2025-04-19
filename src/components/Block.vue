@@ -53,7 +53,6 @@
 
 <script setup>
 import { ref, computed, watch, onMounted, onBeforeUnmount, inject } from 'vue';
-import { useExplorerStore } from '../stores/explorer';
 import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
 import { utils } from 'ethers';
 import { useTheme } from 'vuetify';
@@ -74,7 +73,6 @@ const props = defineProps({
 });
 
 // Stores
-const explorerStore = useExplorerStore();
 const currentWorkspaceStore = useCurrentWorkspaceStore();
 
 // Reactive state

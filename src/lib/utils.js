@@ -2,7 +2,7 @@ const Web3 = require('web3');
 const ethers = require('ethers');
 // const BigNumber = ethers.BigNumber;
 
-const fromWei = require('../filters/FromWei');
+import fromWei from '../filters/FromWei';
 
 const MINIMUM_DISPLAY_GWEI = 10000000;
 

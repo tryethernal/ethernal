@@ -73,7 +73,7 @@ exports[`DexTokenSelectionModal.vue > Should show token selection modal 1`] = `
         <div class="v-list-item__content" data-no-activator="">
           <div class="v-list-item-title">USDC <span data-v-70f65295="" class="float-right">224</span></div>
           <div class="v-list-item-subtitle">
-            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0xc9e8634d0ec6e3cb049b7d043a910d4830315ef3" notcopiable="true" unlink="true"></hash-link-stub>
+            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0xc9e8634d0ec6e3cb049b7d043a910d4830315ef3" fullhash="false" withname="true" notcopiable="true" withtokenname="false" xshash="false" unlink="true" loadcontract="false"></hash-link-stub>
           </div>
           <!---->
         </div>
@@ -87,7 +87,7 @@ exports[`DexTokenSelectionModal.vue > Should show token selection modal 1`] = `
         <div class="v-list-item__content" data-no-activator="">
           <div class="v-list-item-title">USDT <span data-v-70f65295="" class="float-right">104.4</span></div>
           <div class="v-list-item-subtitle">
-            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0x99d46f7e4eff4b322bd3f0387aeb82e66bf03db0" notcopiable="true" unlink="true"></hash-link-stub>
+            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0x99d46f7e4eff4b322bd3f0387aeb82e66bf03db0" fullhash="false" withname="true" notcopiable="true" withtokenname="false" xshash="false" unlink="true" loadcontract="false"></hash-link-stub>
           </div>
           <!---->
         </div>
@@ -101,7 +101,7 @@ exports[`DexTokenSelectionModal.vue > Should show token selection modal 1`] = `
         <div class="v-list-item__content" data-no-activator="">
           <div class="v-list-item-title">CAGA <span data-v-70f65295="" class="float-right">0.1133</span></div>
           <div class="v-list-item-subtitle">
-            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" notcopiable="true" unlink="true"></hash-link-stub>
+            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" fullhash="false" withname="true" notcopiable="true" withtokenname="false" xshash="false" unlink="true" loadcontract="false"></hash-link-stub>
           </div>
           <!---->
         </div>
@@ -115,7 +115,7 @@ exports[`DexTokenSelectionModal.vue > Should show token selection modal 1`] = `
         <div class="v-list-item__content" data-no-activator="">
           <div class="v-list-item-title">CTT <span data-v-70f65295="" class="float-right">0.004</span></div>
           <div class="v-list-item-subtitle">
-            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0x47e405b514068e1963fbf84006009bea4edd26b2" notcopiable="true" unlink="true"></hash-link-stub>
+            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0x47e405b514068e1963fbf84006009bea4edd26b2" fullhash="false" withname="true" notcopiable="true" withtokenname="false" xshash="false" unlink="true" loadcontract="false"></hash-link-stub>
           </div>
           <!---->
         </div>
@@ -129,7 +129,7 @@ exports[`DexTokenSelectionModal.vue > Should show token selection modal 1`] = `
         <div class="v-list-item__content" data-no-activator="">
           <div class="v-list-item-title">wCAGA <span data-v-70f65295="" class="float-right"></span></div>
           <div class="v-list-item-subtitle">
-            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0xf22d0f6ed0c214e9e4a14eeb1fbabbbb3567d7af" notcopiable="true" unlink="true"></hash-link-stub>
+            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0xf22d0f6ed0c214e9e4a14eeb1fbabbbb3567d7af" fullhash="false" withname="true" notcopiable="true" withtokenname="false" xshash="false" unlink="true" loadcontract="false"></hash-link-stub>
           </div>
           <!---->
         </div>
@@ -143,7 +143,7 @@ exports[`DexTokenSelectionModal.vue > Should show token selection modal 1`] = `
         <div class="v-list-item__content" data-no-activator="">
           <div class="v-list-item-title">Testt <span data-v-70f65295="" class="float-right"></span></div>
           <div class="v-list-item-subtitle">
-            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0x857091395675228d991b571fae96c1e09e25fb54" notcopiable="true" unlink="true"></hash-link-stub>
+            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0x857091395675228d991b571fae96c1e09e25fb54" fullhash="false" withname="true" notcopiable="true" withtokenname="false" xshash="false" unlink="true" loadcontract="false"></hash-link-stub>
           </div>
           <!---->
         </div>
@@ -157,7 +157,7 @@ exports[`DexTokenSelectionModal.vue > Should show token selection modal 1`] = `
         <div class="v-list-item__content" data-no-activator="">
           <div class="v-list-item-title">test_1_wcaga <span data-v-70f65295="" class="float-right"></span></div>
           <div class="v-list-item-subtitle">
-            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0xefbb39ae7ba5b84e970f6ad1d8fa689341445962" notcopiable="true" unlink="true"></hash-link-stub>
+            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0xefbb39ae7ba5b84e970f6ad1d8fa689341445962" fullhash="false" withname="true" notcopiable="true" withtokenname="false" xshash="false" unlink="true" loadcontract="false"></hash-link-stub>
           </div>
           <!---->
         </div>
@@ -171,7 +171,7 @@ exports[`DexTokenSelectionModal.vue > Should show token selection modal 1`] = `
         <div class="v-list-item__content" data-no-activator="">
           <div class="v-list-item-title">Dadang1 <span data-v-70f65295="" class="float-right"></span></div>
           <div class="v-list-item-subtitle">
-            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0x19295bd9cb3a6db1b7b80ad260924391fb883416" notcopiable="true" unlink="true"></hash-link-stub>
+            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0x19295bd9cb3a6db1b7b80ad260924391fb883416" fullhash="false" withname="true" notcopiable="true" withtokenname="false" xshash="false" unlink="true" loadcontract="false"></hash-link-stub>
           </div>
           <!---->
         </div>
@@ -185,7 +185,7 @@ exports[`DexTokenSelectionModal.vue > Should show token selection modal 1`] = `
         <div class="v-list-item__content" data-no-activator="">
           <div class="v-list-item-title">WBTC <span data-v-70f65295="" class="float-right">0</span></div>
           <div class="v-list-item-subtitle">
-            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0x7a85870aff6577d89a4906b48b966262a58e0d90" notcopiable="true" unlink="true"></hash-link-stub>
+            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0x7a85870aff6577d89a4906b48b966262a58e0d90" fullhash="false" withname="true" notcopiable="true" withtokenname="false" xshash="false" unlink="true" loadcontract="false"></hash-link-stub>
           </div>
           <!---->
         </div>
@@ -199,7 +199,7 @@ exports[`DexTokenSelectionModal.vue > Should show token selection modal 1`] = `
         <div class="v-list-item__content" data-no-activator="">
           <div class="v-list-item-title">CNT <span data-v-70f65295="" class="float-right"></span></div>
           <div class="v-list-item-subtitle">
-            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0xf939ba0b971352168c270abe9b9f4ad4c86d81e2" notcopiable="true" unlink="true"></hash-link-stub>
+            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0xf939ba0b971352168c270abe9b9f4ad4c86d81e2" fullhash="false" withname="true" notcopiable="true" withtokenname="false" xshash="false" unlink="true" loadcontract="false"></hash-link-stub>
           </div>
           <!---->
         </div>
@@ -213,7 +213,7 @@ exports[`DexTokenSelectionModal.vue > Should show token selection modal 1`] = `
         <div class="v-list-item__content" data-no-activator="">
           <div class="v-list-item-title">catcat2 <span data-v-70f65295="" class="float-right"></span></div>
           <div class="v-list-item-subtitle">
-            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0x23867645eae95f649e9e5528125530ab1091b74f" notcopiable="true" unlink="true"></hash-link-stub>
+            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0x23867645eae95f649e9e5528125530ab1091b74f" fullhash="false" withname="true" notcopiable="true" withtokenname="false" xshash="false" unlink="true" loadcontract="false"></hash-link-stub>
           </div>
           <!---->
         </div>
@@ -227,7 +227,7 @@ exports[`DexTokenSelectionModal.vue > Should show token selection modal 1`] = `
         <div class="v-list-item__content" data-no-activator="">
           <div class="v-list-item-title">instant_king1 <span data-v-70f65295="" class="float-right"></span></div>
           <div class="v-list-item-subtitle">
-            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0x059ee61ef0126db8f01a5f19b5615d529aeb638e" notcopiable="true" unlink="true"></hash-link-stub>
+            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0x059ee61ef0126db8f01a5f19b5615d529aeb638e" fullhash="false" withname="true" notcopiable="true" withtokenname="false" xshash="false" unlink="true" loadcontract="false"></hash-link-stub>
           </div>
           <!---->
         </div>
@@ -241,7 +241,7 @@ exports[`DexTokenSelectionModal.vue > Should show token selection modal 1`] = `
         <div class="v-list-item__content" data-no-activator="">
           <div class="v-list-item-title">tate <span data-v-70f65295="" class="float-right"></span></div>
           <div class="v-list-item-subtitle">
-            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0xc6032722b5e79f1f26390679848b719a5648e5b7" notcopiable="true" unlink="true"></hash-link-stub>
+            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0xc6032722b5e79f1f26390679848b719a5648e5b7" fullhash="false" withname="true" notcopiable="true" withtokenname="false" xshash="false" unlink="true" loadcontract="false"></hash-link-stub>
           </div>
           <!---->
         </div>
@@ -255,7 +255,7 @@ exports[`DexTokenSelectionModal.vue > Should show token selection modal 1`] = `
         <div class="v-list-item__content" data-no-activator="">
           <div class="v-list-item-title">dontbuy <span data-v-70f65295="" class="float-right"></span></div>
           <div class="v-list-item-subtitle">
-            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0x71f33e30896495a1210ead715d6b130d88848145" notcopiable="true" unlink="true"></hash-link-stub>
+            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0x71f33e30896495a1210ead715d6b130d88848145" fullhash="false" withname="true" notcopiable="true" withtokenname="false" xshash="false" unlink="true" loadcontract="false"></hash-link-stub>
           </div>
           <!---->
         </div>
@@ -269,7 +269,7 @@ exports[`DexTokenSelectionModal.vue > Should show token selection modal 1`] = `
         <div class="v-list-item__content" data-no-activator="">
           <div class="v-list-item-title">wCAGA <span data-v-70f65295="" class="float-right"></span></div>
           <div class="v-list-item-subtitle">
-            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0x1f4682f0015a20557f61101268f8e3d2ddb9df59" notcopiable="true" unlink="true"></hash-link-stub>
+            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0x1f4682f0015a20557f61101268f8e3d2ddb9df59" fullhash="false" withname="true" notcopiable="true" withtokenname="false" xshash="false" unlink="true" loadcontract="false"></hash-link-stub>
           </div>
           <!---->
         </div>
@@ -283,7 +283,7 @@ exports[`DexTokenSelectionModal.vue > Should show token selection modal 1`] = `
         <div class="v-list-item__content" data-no-activator="">
           <div class="v-list-item-title">UniToken <span data-v-70f65295="" class="float-right"></span></div>
           <div class="v-list-item-subtitle">
-            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0x2b53f065a947a702e06e4601b64dc6850aa58dcf" notcopiable="true" unlink="true"></hash-link-stub>
+            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0x2b53f065a947a702e06e4601b64dc6850aa58dcf" fullhash="false" withname="true" notcopiable="true" withtokenname="false" xshash="false" unlink="true" loadcontract="false"></hash-link-stub>
           </div>
           <!---->
         </div>
@@ -297,7 +297,7 @@ exports[`DexTokenSelectionModal.vue > Should show token selection modal 1`] = `
         <div class="v-list-item__content" data-no-activator="">
           <div class="v-list-item-title">Dadada <span data-v-70f65295="" class="float-right"></span></div>
           <div class="v-list-item-subtitle">
-            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0x683699f719d2cf3c5836a490606f879b3dd008e4" notcopiable="true" unlink="true"></hash-link-stub>
+            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0x683699f719d2cf3c5836a490606f879b3dd008e4" fullhash="false" withname="true" notcopiable="true" withtokenname="false" xshash="false" unlink="true" loadcontract="false"></hash-link-stub>
           </div>
           <!---->
         </div>
@@ -311,7 +311,7 @@ exports[`DexTokenSelectionModal.vue > Should show token selection modal 1`] = `
         <div class="v-list-item__content" data-no-activator="">
           <div class="v-list-item-title">calc <span data-v-70f65295="" class="float-right"></span></div>
           <div class="v-list-item-subtitle">
-            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0x1102d33f0ae163f7c977bbd7fe54546ec1463045" notcopiable="true" unlink="true"></hash-link-stub>
+            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0x1102d33f0ae163f7c977bbd7fe54546ec1463045" fullhash="false" withname="true" notcopiable="true" withtokenname="false" xshash="false" unlink="true" loadcontract="false"></hash-link-stub>
           </div>
           <!---->
         </div>
@@ -325,7 +325,7 @@ exports[`DexTokenSelectionModal.vue > Should show token selection modal 1`] = `
         <div class="v-list-item__content" data-no-activator="">
           <div class="v-list-item-title">hawktuah <span data-v-70f65295="" class="float-right"></span></div>
           <div class="v-list-item-subtitle">
-            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0x060d05d5ec86ec9079e93b161bdb1326179f4c26" notcopiable="true" unlink="true"></hash-link-stub>
+            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0x060d05d5ec86ec9079e93b161bdb1326179f4c26" fullhash="false" withname="true" notcopiable="true" withtokenname="false" xshash="false" unlink="true" loadcontract="false"></hash-link-stub>
           </div>
           <!---->
         </div>
@@ -339,7 +339,7 @@ exports[`DexTokenSelectionModal.vue > Should show token selection modal 1`] = `
         <div class="v-list-item__content" data-no-activator="">
           <div class="v-list-item-title">DOGBEE 3 <span data-v-70f65295="" class="float-right"></span></div>
           <div class="v-list-item-subtitle">
-            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0x3b7a4b48a88e511d0064b20e3ba8166ff29751f0" notcopiable="true" unlink="true"></hash-link-stub>
+            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0x3b7a4b48a88e511d0064b20e3ba8166ff29751f0" fullhash="false" withname="true" notcopiable="true" withtokenname="false" xshash="false" unlink="true" loadcontract="false"></hash-link-stub>
           </div>
           <!---->
         </div>
@@ -353,7 +353,7 @@ exports[`DexTokenSelectionModal.vue > Should show token selection modal 1`] = `
         <div class="v-list-item__content" data-no-activator="">
           <div class="v-list-item-title">CTT <span data-v-70f65295="" class="float-right"></span></div>
           <div class="v-list-item-subtitle">
-            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0x4bb796b90e3bafef741826822ee85a80b22a8a21" notcopiable="true" unlink="true"></hash-link-stub>
+            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0x4bb796b90e3bafef741826822ee85a80b22a8a21" fullhash="false" withname="true" notcopiable="true" withtokenname="false" xshash="false" unlink="true" loadcontract="false"></hash-link-stub>
           </div>
           <!---->
         </div>
@@ -367,7 +367,7 @@ exports[`DexTokenSelectionModal.vue > Should show token selection modal 1`] = `
         <div class="v-list-item__content" data-no-activator="">
           <div class="v-list-item-title">Yyhh <span data-v-70f65295="" class="float-right"></span></div>
           <div class="v-list-item-subtitle">
-            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0xa56c95463783db23d4e06090e9fe41272dd93a70" notcopiable="true" unlink="true"></hash-link-stub>
+            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0xa56c95463783db23d4e06090e9fe41272dd93a70" fullhash="false" withname="true" notcopiable="true" withtokenname="false" xshash="false" unlink="true" loadcontract="false"></hash-link-stub>
           </div>
           <!---->
         </div>
@@ -381,7 +381,7 @@ exports[`DexTokenSelectionModal.vue > Should show token selection modal 1`] = `
         <div class="v-list-item__content" data-no-activator="">
           <div class="v-list-item-title">VV Balance <span data-v-70f65295="" class="float-right"></span></div>
           <div class="v-list-item-subtitle">
-            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0xc98edd6b1300b968eb0557f026b7b37c20c86861" notcopiable="true" unlink="true"></hash-link-stub>
+            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0xc98edd6b1300b968eb0557f026b7b37c20c86861" fullhash="false" withname="true" notcopiable="true" withtokenname="false" xshash="false" unlink="true" loadcontract="false"></hash-link-stub>
           </div>
           <!---->
         </div>
@@ -395,7 +395,7 @@ exports[`DexTokenSelectionModal.vue > Should show token selection modal 1`] = `
         <div class="v-list-item__content" data-no-activator="">
           <div class="v-list-item-title">Dadada2 <span data-v-70f65295="" class="float-right"></span></div>
           <div class="v-list-item-subtitle">
-            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0xdef504b3714c3ce69215fe0983c9e062797d3012" notcopiable="true" unlink="true"></hash-link-stub>
+            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0xdef504b3714c3ce69215fe0983c9e062797d3012" fullhash="false" withname="true" notcopiable="true" withtokenname="false" xshash="false" unlink="true" loadcontract="false"></hash-link-stub>
           </div>
           <!---->
         </div>
@@ -409,7 +409,7 @@ exports[`DexTokenSelectionModal.vue > Should show token selection modal 1`] = `
         <div class="v-list-item__content" data-no-activator="">
           <div class="v-list-item-title">testing2 <span data-v-70f65295="" class="float-right"></span></div>
           <div class="v-list-item-subtitle">
-            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0x26b4adc514c18ba212b89c3e9444644af02751b1" notcopiable="true" unlink="true"></hash-link-stub>
+            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0x26b4adc514c18ba212b89c3e9444644af02751b1" fullhash="false" withname="true" notcopiable="true" withtokenname="false" xshash="false" unlink="true" loadcontract="false"></hash-link-stub>
           </div>
           <!---->
         </div>
@@ -423,7 +423,7 @@ exports[`DexTokenSelectionModal.vue > Should show token selection modal 1`] = `
         <div class="v-list-item__content" data-no-activator="">
           <div class="v-list-item-title">Dadada <span data-v-70f65295="" class="float-right"></span></div>
           <div class="v-list-item-subtitle">
-            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0xda271b712f71219f313f2611695e7ff65d180bb8" notcopiable="true" unlink="true"></hash-link-stub>
+            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0xda271b712f71219f313f2611695e7ff65d180bb8" fullhash="false" withname="true" notcopiable="true" withtokenname="false" xshash="false" unlink="true" loadcontract="false"></hash-link-stub>
           </div>
           <!---->
         </div>
@@ -437,7 +437,7 @@ exports[`DexTokenSelectionModal.vue > Should show token selection modal 1`] = `
         <div class="v-list-item__content" data-no-activator="">
           <div class="v-list-item-title">test2 <span data-v-70f65295="" class="float-right"></span></div>
           <div class="v-list-item-subtitle">
-            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0xa85ab9af607a3ae5498089057a59fc2b9399425d" notcopiable="true" unlink="true"></hash-link-stub>
+            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0xa85ab9af607a3ae5498089057a59fc2b9399425d" fullhash="false" withname="true" notcopiable="true" withtokenname="false" xshash="false" unlink="true" loadcontract="false"></hash-link-stub>
           </div>
           <!---->
         </div>
@@ -451,7 +451,7 @@ exports[`DexTokenSelectionModal.vue > Should show token selection modal 1`] = `
         <div class="v-list-item__content" data-no-activator="">
           <div class="v-list-item-title">DOGE <span data-v-70f65295="" class="float-right"></span></div>
           <div class="v-list-item-subtitle">
-            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0x564102ba730896f15f9220fead32e372a665b75e" notcopiable="true" unlink="true"></hash-link-stub>
+            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0x564102ba730896f15f9220fead32e372a665b75e" fullhash="false" withname="true" notcopiable="true" withtokenname="false" xshash="false" unlink="true" loadcontract="false"></hash-link-stub>
           </div>
           <!---->
         </div>
@@ -465,7 +465,7 @@ exports[`DexTokenSelectionModal.vue > Should show token selection modal 1`] = `
         <div class="v-list-item__content" data-no-activator="">
           <div class="v-list-item-title">TTT <span data-v-70f65295="" class="float-right"></span></div>
           <div class="v-list-item-subtitle">
-            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0x5a861d0a28e7a14413b75bb4d6de62f863dab025" notcopiable="true" unlink="true"></hash-link-stub>
+            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0x5a861d0a28e7a14413b75bb4d6de62f863dab025" fullhash="false" withname="true" notcopiable="true" withtokenname="false" xshash="false" unlink="true" loadcontract="false"></hash-link-stub>
           </div>
           <!---->
         </div>
@@ -479,7 +479,7 @@ exports[`DexTokenSelectionModal.vue > Should show token selection modal 1`] = `
         <div class="v-list-item__content" data-no-activator="">
           <div class="v-list-item-title">SPD6 <span data-v-70f65295="" class="float-right"></span></div>
           <div class="v-list-item-subtitle">
-            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0xe3411e3adea6bd00f8182e8fa24ca2b2c9a5dc63" notcopiable="true" unlink="true"></hash-link-stub>
+            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0xe3411e3adea6bd00f8182e8fa24ca2b2c9a5dc63" fullhash="false" withname="true" notcopiable="true" withtokenname="false" xshash="false" unlink="true" loadcontract="false"></hash-link-stub>
           </div>
           <!---->
         </div>
@@ -493,7 +493,7 @@ exports[`DexTokenSelectionModal.vue > Should show token selection modal 1`] = `
         <div class="v-list-item__content" data-no-activator="">
           <div class="v-list-item-title">DOGBEE <span data-v-70f65295="" class="float-right"></span></div>
           <div class="v-list-item-subtitle">
-            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0x10b5c301df60467f6e88930cd0910ecf71940920" notcopiable="true" unlink="true"></hash-link-stub>
+            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0x10b5c301df60467f6e88930cd0910ecf71940920" fullhash="false" withname="true" notcopiable="true" withtokenname="false" xshash="false" unlink="true" loadcontract="false"></hash-link-stub>
           </div>
           <!---->
         </div>
@@ -507,7 +507,7 @@ exports[`DexTokenSelectionModal.vue > Should show token selection modal 1`] = `
         <div class="v-list-item__content" data-no-activator="">
           <div class="v-list-item-title">test4 <span data-v-70f65295="" class="float-right"></span></div>
           <div class="v-list-item-subtitle">
-            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0x4cbd9de7136f38375f9315542bb613625c4a9f4b" notcopiable="true" unlink="true"></hash-link-stub>
+            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0x4cbd9de7136f38375f9315542bb613625c4a9f4b" fullhash="false" withname="true" notcopiable="true" withtokenname="false" xshash="false" unlink="true" loadcontract="false"></hash-link-stub>
           </div>
           <!---->
         </div>
@@ -521,7 +521,7 @@ exports[`DexTokenSelectionModal.vue > Should show token selection modal 1`] = `
         <div class="v-list-item__content" data-no-activator="">
           <div class="v-list-item-title">testcat <span data-v-70f65295="" class="float-right"></span></div>
           <div class="v-list-item-subtitle">
-            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0xe9b31e412925928136a086f151545b9dd36e6054" notcopiable="true" unlink="true"></hash-link-stub>
+            <hash-link-stub data-v-70f65295="" contract="[object Object]" type="address" hash="0xe9b31e412925928136a086f151545b9dd36e6054" fullhash="false" withname="true" notcopiable="true" withtokenname="false" xshash="false" unlink="true" loadcontract="false"></hash-link-stub>
           </div>
           <!---->
         </div>

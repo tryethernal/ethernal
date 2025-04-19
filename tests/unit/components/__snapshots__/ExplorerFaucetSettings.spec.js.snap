@@ -54,7 +54,7 @@ exports[`ExplorerFaucetSettings.vue > SHould display inactive faucet UI 1`] = `
               <!---->
             </div>
           </div><strong>URL:</strong> <a href="//ethernal.com/faucet" target="_blank">https://ethernal.com/faucet</a><br><strong>Address:</strong>
-          <hash-link-stub type="address" hash="0x4150e51980114468aa8309bb72f027d8bff41353" fullhash="true" withname="false"></hash-link-stub><br><strong>Balance:</strong>&nbsp; 0.09 ETL
+          <hash-link-stub type="address" hash="0x4150e51980114468aa8309bb72f027d8bff41353" fullhash="true" withname="false" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub><br><strong>Balance:</strong>&nbsp; 0.09 ETL
           <hr class="v-divider v-theme--light mt-4 mb-6" aria-orientation="horizontal" role="separator">
           <form class="v-form" novalidate="">
             <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-input--disabled v-text-field v-text-field--suffixed">
@@ -222,7 +222,7 @@ exports[`ExplorerFaucetSettings.vue > Should display active faucet UI 1`] = `
               <!---->
             </div>
           </div><strong>URL:</strong> <a href="//ethernal.com/faucet" target="_blank">https://ethernal.com/faucet</a><br><strong>Address:</strong>
-          <hash-link-stub type="address" hash="0x4150e51980114468aa8309bb72f027d8bff41353" fullhash="true" withname="false"></hash-link-stub><br><strong>Balance:</strong>&nbsp; 0.09 ETL
+          <hash-link-stub type="address" hash="0x4150e51980114468aa8309bb72f027d8bff41353" fullhash="true" withname="false" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub><br><strong>Balance:</strong>&nbsp; 0.09 ETL
           <hr class="v-divider v-theme--light mt-4 mb-6" aria-orientation="horizontal" role="separator">
           <form class="v-form" novalidate="">
             <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field v-text-field--suffixed">

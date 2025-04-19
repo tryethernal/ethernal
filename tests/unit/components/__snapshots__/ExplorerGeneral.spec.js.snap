@@ -1,184 +1,174 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`ExplorerGeneral.vue > Should display inactive subscription message 1`] = `
-"<div class="v-container v-container--fluid v-locale--is-ltr">
-  <!--v-if-->
-  <div class="v-alert v-theme--light bg-error v-alert--density-default v-alert--variant-flat" role="alert">
-    <!----><span class="v-alert__underlay"></span>
-    <!---->
-    <div class="v-alert__prepend"><i class="mdi-close-circle mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="default"></i></div>
-    <div class="v-alert__content">
-      <!---->This explorer is not active. To activate it, start a subscription.
-    </div>
-    <!---->
-    <!---->
+"<!--v-if-->
+<div class="v-alert v-theme--light bg-error v-alert--density-default v-alert--variant-flat" role="alert">
+  <!----><span class="v-alert__underlay"></span>
+  <!---->
+  <div class="v-alert__prepend"><i class="mdi-close-circle mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="default"></i></div>
+  <div class="v-alert__content">
+    <!---->This explorer is not active. To activate it, start a subscription.
   </div>
-  <h2> <span class="text-caption">- (<a href="//test.ethernal.local:8080" target="_blank">test.ethernal.local:8080</a>)</span></h2>
-  <div class="v-row mt-2">
-    <div class="v-col v-col-6">
-      <h4>Settings</h4>
-      <explorer-settings-stub explorer="[object Object]" workspaces="[object Object]"></explorer-settings-stub>
-    </div>
-    <div class="v-col v-col-6">
-      <h4>Sync</h4>
-      <explorer-sync-stub explorer="[object Object]"></explorer-sync-stub>
-      <h4 class="mt-2">Billing</h4>
-      <explorer-billing-stub explorer="[object Object]"></explorer-billing-stub>
-      <h4 class="mt-2">Domain Aliases</h4>
-      <explorer-domains-list-stub explorer="[object Object]" disabled="true"></explorer-domains-list-stub>
-    </div>
+  <!---->
+  <!---->
+</div>
+<div class="text-body-2 mt-4"><span class="text-caption">Explorer URL: <a href="//test.ethernal.local:8080" target="_blank">test.ethernal.local:8080</a></span></div>
+<div class="v-row mt-2">
+  <div class="v-col v-col-6">
+    <h4>Settings</h4>
+    <explorer-settings-stub explorer="[object Object]" workspaces="[object Object]"></explorer-settings-stub>
   </div>
-  <div class="v-row">
-    <div class="v-col">
-      <h4>Branding</h4>
-      <explorer-branding-stub explorer="[object Object]" disabled="true"></explorer-branding-stub>
-    </div>
+  <div class="v-col v-col-6">
+    <h4>Sync</h4>
+    <explorer-sync-stub explorer="[object Object]"></explorer-sync-stub>
+    <h4 class="mt-2">Billing</h4>
+    <explorer-billing-stub explorer="[object Object]"></explorer-billing-stub>
+    <h4 class="mt-2">Domain Aliases</h4>
+    <explorer-domains-list-stub explorer="[object Object]" disabled="true"></explorer-domains-list-stub>
   </div>
-  <div class="v-row">
-    <div class="v-col v-col-6">
-      <h4 class="text-error">Danger Zone</h4>
-      <explorer-danger-zone-stub explorer="[object Object]"></explorer-danger-zone-stub>
-    </div>
+</div>
+<div class="v-row">
+  <div class="v-col">
+    <h4>Branding</h4>
+    <explorer-branding-stub explorer="[object Object]" disabled="true"></explorer-branding-stub>
+  </div>
+</div>
+<div class="v-row">
+  <div class="v-col v-col-6">
+    <h4 class="text-error">Danger Zone</h4>
+    <explorer-danger-zone-stub explorer="[object Object]"></explorer-danger-zone-stub>
   </div>
 </div>"
 `;
 
 exports[`ExplorerGeneral.vue > Should display loading 1`] = `
-"<div class="v-container v-container--fluid v-locale--is-ltr">
-  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
-    <!---->
-    <div class="v-card__loader">
-      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
-        <!---->
-        <div class="v-progress-linear__background"></div>
-        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
-        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
-          <div class="v-progress-linear__indeterminate">
-            <div class="v-progress-linear__indeterminate long"></div>
-            <div class="v-progress-linear__indeterminate short"></div>
-          </div>
-        </transition-stub>
-        <!---->
-      </div>
+"<div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
+        </div>
+      </transition-stub>
+      <!---->
     </div>
-    <!---->
-    <!---->
-    <div class="v-card-text">
-      <div class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
-          <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
-          <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
-        </svg>
-        <!---->
-      </div> Your subscripion is being activated. The explorer will be ready soon.
-    </div>
-    <!---->
-    <!----><span class="v-card__underlay"></span>
   </div>
+  <!---->
+  <!---->
+  <div class="v-card-text">
+    <div class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
+        <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
+        <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
+      </svg>
+      <!---->
+    </div> Your subscripion is being activated. The explorer will be ready soon.
+  </div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
 </div>"
 `;
 
 exports[`ExplorerGeneral.vue > Should display the explorer page 1`] = `
-"<div class="v-container v-container--fluid v-locale--is-ltr">
-  <!--v-if-->
-  <!--v-if-->
-  <h2> <span class="text-caption">- (<a href="//a.test.com" target="_blank">a.test.com</a>)</span></h2>
-  <div class="v-row mt-2">
-    <div class="v-col v-col-6">
-      <h4>Settings</h4>
-      <explorer-settings-stub explorer="[object Object]" workspaces="[object Object]"></explorer-settings-stub>
-    </div>
-    <div class="v-col v-col-6">
-      <h4>Sync</h4>
-      <explorer-sync-stub explorer="[object Object]"></explorer-sync-stub>
-      <h4 class="mt-2">Billing</h4>
-      <explorer-billing-stub explorer="[object Object]"></explorer-billing-stub>
-      <h4 class="mt-2">Domain Aliases</h4>
-      <explorer-domains-list-stub explorer="[object Object]" disabled="true"></explorer-domains-list-stub>
-    </div>
+"<!--v-if-->
+<!--v-if-->
+<div class="text-body-2 mt-4"><span class="text-caption">Explorer URL: <a href="//a.test.com" target="_blank">a.test.com</a></span></div>
+<div class="v-row mt-2">
+  <div class="v-col v-col-6">
+    <h4>Settings</h4>
+    <explorer-settings-stub explorer="[object Object]" workspaces="[object Object]"></explorer-settings-stub>
   </div>
-  <div class="v-row">
-    <div class="v-col">
-      <h4>Branding</h4>
-      <explorer-branding-stub explorer="[object Object]" disabled="true"></explorer-branding-stub>
-    </div>
+  <div class="v-col v-col-6">
+    <h4>Sync</h4>
+    <explorer-sync-stub explorer="[object Object]"></explorer-sync-stub>
+    <h4 class="mt-2">Billing</h4>
+    <explorer-billing-stub explorer="[object Object]"></explorer-billing-stub>
+    <h4 class="mt-2">Domain Aliases</h4>
+    <explorer-domains-list-stub explorer="[object Object]" disabled="true"></explorer-domains-list-stub>
   </div>
-  <div class="v-row">
-    <div class="v-col v-col-6">
-      <h4 class="text-error">Danger Zone</h4>
-      <explorer-danger-zone-stub explorer="[object Object]"></explorer-danger-zone-stub>
-    </div>
+</div>
+<div class="v-row">
+  <div class="v-col">
+    <h4>Branding</h4>
+    <explorer-branding-stub explorer="[object Object]" disabled="true"></explorer-branding-stub>
+  </div>
+</div>
+<div class="v-row">
+  <div class="v-col v-col-6">
+    <h4 class="text-error">Danger Zone</h4>
+    <explorer-danger-zone-stub explorer="[object Object]"></explorer-danger-zone-stub>
   </div>
 </div>"
 `;
 
 exports[`ExplorerGeneral.vue > Should display trial message 1`] = `
-"<div class="v-container v-container--fluid v-locale--is-ltr">
-  <div class="v-alert v-theme--light bg-warning v-alert--density-default v-alert--variant-flat mb-2" role="alert">
-    <!----><span class="v-alert__underlay"></span>
-    <!---->
-    <div class="v-alert__prepend"><i class="mdi-alert-circle mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="default"></i></div>
-    <div class="v-alert__content">
-      <!----> This explorer is on a free trial plan. To keep it running once it's over, add a payment method.
-    </div>
-    <!---->
-    <!---->
+"<div class="v-alert v-theme--light bg-warning v-alert--density-default v-alert--variant-flat mb-2" role="alert">
+  <!----><span class="v-alert__underlay"></span>
+  <!---->
+  <div class="v-alert__prepend"><i class="mdi-alert-circle mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="default"></i></div>
+  <div class="v-alert__content">
+    <!----> This explorer is on a free trial plan. To keep it running once it's over, add a payment method.
   </div>
-  <!--v-if-->
-  <h2> <span class="text-caption">- (<a href="//test.ethernal.local:8080" target="_blank">test.ethernal.local:8080</a>)</span></h2>
-  <div class="v-row mt-2">
-    <div class="v-col v-col-6">
-      <h4>Settings</h4>
-      <explorer-settings-stub explorer="[object Object]" workspaces="[object Object]"></explorer-settings-stub>
-    </div>
-    <div class="v-col v-col-6">
-      <h4>Sync</h4>
-      <explorer-sync-stub explorer="[object Object]"></explorer-sync-stub>
-      <h4 class="mt-2">Billing</h4>
-      <explorer-billing-stub explorer="[object Object]"></explorer-billing-stub>
-      <h4 class="mt-2">Domain Aliases</h4>
-      <explorer-domains-list-stub explorer="[object Object]" disabled="true"></explorer-domains-list-stub>
-    </div>
+  <!---->
+  <!---->
+</div>
+<!--v-if-->
+<div class="text-body-2 mt-4"><span class="text-caption">Explorer URL: <a href="//test.ethernal.local:8080" target="_blank">test.ethernal.local:8080</a></span></div>
+<div class="v-row mt-2">
+  <div class="v-col v-col-6">
+    <h4>Settings</h4>
+    <explorer-settings-stub explorer="[object Object]" workspaces="[object Object]"></explorer-settings-stub>
   </div>
-  <div class="v-row">
-    <div class="v-col">
-      <h4>Branding</h4>
-      <explorer-branding-stub explorer="[object Object]" disabled="true"></explorer-branding-stub>
-    </div>
+  <div class="v-col v-col-6">
+    <h4>Sync</h4>
+    <explorer-sync-stub explorer="[object Object]"></explorer-sync-stub>
+    <h4 class="mt-2">Billing</h4>
+    <explorer-billing-stub explorer="[object Object]"></explorer-billing-stub>
+    <h4 class="mt-2">Domain Aliases</h4>
+    <explorer-domains-list-stub explorer="[object Object]" disabled="true"></explorer-domains-list-stub>
   </div>
-  <div class="v-row">
-    <div class="v-col v-col-6">
-      <h4 class="text-error">Danger Zone</h4>
-      <explorer-danger-zone-stub explorer="[object Object]"></explorer-danger-zone-stub>
-    </div>
+</div>
+<div class="v-row">
+  <div class="v-col">
+    <h4>Branding</h4>
+    <explorer-branding-stub explorer="[object Object]" disabled="true"></explorer-branding-stub>
+  </div>
+</div>
+<div class="v-row">
+  <div class="v-col v-col-6">
+    <h4 class="text-error">Danger Zone</h4>
+    <explorer-danger-zone-stub explorer="[object Object]"></explorer-danger-zone-stub>
   </div>
 </div>"
 `;
 
 exports[`ExplorerGeneral.vue > Should not display danger zone if SSO 1`] = `
-"<div class="v-container v-container--fluid v-locale--is-ltr">
-  <!--v-if-->
-  <!--v-if-->
-  <h2> <span class="text-caption">- (<a href="//a.test.com" target="_blank">a.test.com</a>)</span></h2>
-  <div class="v-row mt-2">
-    <div class="v-col v-col-6">
-      <h4>Settings</h4>
-      <explorer-settings-stub explorer="[object Object]" workspaces="[object Object]"></explorer-settings-stub>
-    </div>
-    <div class="v-col v-col-6">
-      <h4>Sync</h4>
-      <explorer-sync-stub explorer="[object Object]"></explorer-sync-stub>
-      <h4 class="mt-2">Billing</h4>
-      <explorer-billing-stub explorer="[object Object]" sso="true"></explorer-billing-stub>
-      <h4 class="mt-2">Domain Aliases</h4>
-      <explorer-domains-list-stub explorer="[object Object]" disabled="true"></explorer-domains-list-stub>
-    </div>
+"<!--v-if-->
+<!--v-if-->
+<div class="text-body-2 mt-4"><span class="text-caption">Explorer URL: <a href="//a.test.com" target="_blank">a.test.com</a></span></div>
+<div class="v-row mt-2">
+  <div class="v-col v-col-6">
+    <h4>Settings</h4>
+    <explorer-settings-stub explorer="[object Object]" workspaces="[object Object]"></explorer-settings-stub>
   </div>
-  <div class="v-row">
-    <div class="v-col">
-      <h4>Branding</h4>
-      <explorer-branding-stub explorer="[object Object]" disabled="true"></explorer-branding-stub>
-    </div>
+  <div class="v-col v-col-6">
+    <h4>Sync</h4>
+    <explorer-sync-stub explorer="[object Object]"></explorer-sync-stub>
+    <h4 class="mt-2">Billing</h4>
+    <explorer-billing-stub explorer="[object Object]" sso="true"></explorer-billing-stub>
+    <h4 class="mt-2">Domain Aliases</h4>
+    <explorer-domains-list-stub explorer="[object Object]" disabled="true"></explorer-domains-list-stub>
   </div>
-  <!--v-if-->
-</div>"
+</div>
+<div class="v-row">
+  <div class="v-col">
+    <h4>Branding</h4>
+    <explorer-branding-stub explorer="[object Object]" disabled="true"></explorer-branding-stub>
+  </div>
+</div>
+<!--v-if-->"
 `;

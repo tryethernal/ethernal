@@ -8,24 +8,24 @@
         </v-card>
         <template v-else>
             <template v-if="explorerStore.id">
-                <Contract-Verification-Info v-if="!!verificationData" :contract="{ ...contract, verification: verificationData }" />
-                <Contract-Verification @contractVerified="onContractVerified" v-else :address="contract.address" />
+                <Contract-Verification-Info v-if="!!verificationData" :contract="{ ...props.contract, verification: verificationData }" />
+                <Contract-Verification @contractVerified="onContractVerified" v-else :address="props.contract.address" />
             </template>
 
-            <template v-if="contract.abi">
+            <template v-if="props.contract.abi">
                 <h4 class="mb-1">ABI</h4>
                 <v-card class="mb-6">
                     <v-card-text class="text-medium-emphasis bg-grey-lighten-4">
-                        <Expandable-Text :pre="true" :maxChars="100" :text="JSON.stringify(contract.abi, null, 2)" />
+                        <Expandable-Text :pre="true" :maxChars="100" :text="JSON.stringify(props.contract.abi, null, 2)" />
                     </v-card-text>
                 </v-card>
             </template>
 
-            <template v-if="contract.bytecode">
+            <template v-if="props.contract.bytecode">
                 <h4 class="mb-1">Bytecode</h4>
                 <v-card class="mb-6">
                     <v-card-text class="text-medium-emphasis bg-grey-lighten-4">
-                        <Expandable-Text :pre="true" :maxChars="400" :text="contract.bytecode" />
+                        <Expandable-Text :pre="true" :maxChars="400" :text="props.contract.bytecode" />
                     </v-card-text>
                 </v-card>
             </template>
@@ -57,48 +57,44 @@
     </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, onMounted } from 'vue';
 import 'highlight.js/styles/vs2015.css';
 import hljs from 'highlight.js';
-import { mapStores } from 'pinia';
 import { useExplorerStore } from '../stores/explorer';
 import ContractVerification from './ContractVerification.vue';
 import ContractVerificationInfo from './ContractVerificationInfo.vue';
 import ExpandableText from './ExpandableText.vue';
 
-export default {
-    name: 'ContractCode',
-    props: ['contract'],
-    components: {
-        ContractVerification,
-        ContractVerificationInfo,
-        ExpandableText
-    },
-    data: () => ({
-        loading: false,
-        verificationData: null,
-        justVerified: false
-    }),
-    mounted() {
-        this.verificationData = this.contract.verification;
-    },
-    methods: {
-        onContractVerified(verificationData) {
-            if (!verificationData)
-                return;
-
-            this.verificationData = verificationData;
-            this.justVerified = true;
-        }
-    },
-    computed: {
-        ...mapStores(useExplorerStore),
-        highlightedAsm() {
-            return this.contract.asm && hljs.highlight(this.contract.asm, { language: 'x86asm' }).value
-        }
+const props = defineProps({
+    contract: {
+        type: Object,
+        required: true
     }
-}
+});
+
+const loading = ref(false);
+const verificationData = ref(null);
+const justVerified = ref(false);
+
+const explorerStore = useExplorerStore();
+
+onMounted(() => {
+    verificationData.value = props.contract.verification;
+});
+
+const onContractVerified = (newVerificationData) => {
+    if (!newVerificationData) return;
+    
+    verificationData.value = newVerificationData;
+    justVerified.value = true;
+};
+
+const highlightedAsm = computed(() => {
+    return props.contract.asm && hljs.highlight(props.contract.asm, { language: 'x86asm' });
+});
 </script>
+
 <style scoped>
 .hljs {
     border: 1px solid gray;

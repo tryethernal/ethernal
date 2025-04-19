@@ -14,7 +14,7 @@
 
         <!-- Balance Changes List -->
         <div v-else-if="Object.keys(groupedDisplayedBalanceChanges).length > 0" class="balance-changes-list">
-            <div v-for="(changes, address, idx) in groupedDisplayedBalanceChanges" :key="address" 
+            <div v-for="(changes, address, idx) in groupedDisplayedBalanceChanges" :key="address"
                 class="balance-item px-0 rounded-sm mb-3">
                 <div class="d-flex flex-justify-between">
                     <!-- Address cell -->
@@ -34,17 +34,17 @@
                         <div v-for="(item, index) in changes" :key="item.id || index">
                             <!-- Balance info row -->
                             <div class="d-flex align-center mb-1">
-                                <v-icon 
+                                <v-icon
                                     :color="changeDirection(item.diff) > 0 ? 'success' : (changeDirection(item.diff) < 0 ? 'error' : 'grey')"
                                     size="x-small"
                                     class="mr-2"
                                 >
                                     {{ changeDirection(item.diff) > 0 ? 'mdi-arrow-up-bold' : (changeDirection(item.diff) < 0 ? 'mdi-arrow-down-bold' : 'mdi-minus') }}
                                 </v-icon>
-                                
+
                                 <!-- Token amount change -->
                                 <span v-if="getTokenDecimals(item)" :class="{'text-success font-weight-medium': changeDirection(item.diff) > 0, 'text-error font-weight-medium': changeDirection(item.diff) < 0}">
-                                    {{ changeDirection(item.diff) > 0 ? '+' : '' }}{{ $fromWei(item.diff, getTokenDecimals(item), item.contract.tokenName, unformatted) }}
+                                    {{ changeDirection(item.diff) > 0 ? '+' : '' }}{{ $fromWei(item.diff, getTokenDecimals(item), item.contract && item.contract.tokenName, unformatted) }}
                                 </span>
                                 <template v-else>
                                     <span :class="{'text-success font-weight-medium': changeDirection(item.diff) > 0, 'text-error font-weight-medium': changeDirection(item.diff) < 0}">
@@ -53,7 +53,7 @@
                                 </template>
 
                                 <!-- Token symbol/contract -->
-                                <span class="text-medium-emphasis ml-1">
+                                <span v-if="item.contract" class="text-medium-emphasis ml-1">
                                     <template v-if="item.contract.tokenSymbol">({{ item.contract.tokenSymbol }})</template>
                                     <template v-else>
                                         (<Hash-Link :notCopiable="!!item.contract.name" :contract="item.contract" :hash="item.token" :type="'address'" :withName="true" truncate="true" />)
@@ -114,7 +114,7 @@
     </div>
 </template>
 <script setup>
-import { ref, computed, watch, onMounted, inject } from 'vue';
+import { ref, computed } from 'vue';
 import { BigNumber } from 'ethers';
 import HashLink from './HashLink.vue';
 
@@ -138,28 +138,23 @@ const loading = ref(false);
 // Handle pagination
 const totalPages = computed(() => {
     const pages = Math.ceil(props.balanceChanges.length / props.itemsPerPage);
-    console.log('Total pages:', pages, 'Items per page:', props.itemsPerPage, 'Total items:', props.balanceChanges.length);
     return pages;
 });
 
 const groupedDisplayedBalanceChanges = computed(() => {
-    console.log('Computing groupedDisplayedBalanceChanges. Current page:', currentPage.value);
     // Get the current page's items
     const startIndex = (currentPage.value - 1) * props.itemsPerPage;
     const endIndex = startIndex + props.itemsPerPage;
     const paginatedBalanceChanges = props.balanceChanges.slice(startIndex, endIndex);
-    console.log('Paginated balance changes:', paginatedBalanceChanges);
-    
+
     // Get unique addresses for the paginated items
     const uniqueAddresses = [...new Set(paginatedBalanceChanges.map(item => item.address))];
-    console.log('Unique addresses for current page:', uniqueAddresses);
-    
+
     // Create groups with changes for each address
     const result = uniqueAddresses.reduce((acc, address) => {
         acc[address] = paginatedBalanceChanges.filter(item => item.address === address);
         return acc;
     }, {});
-    console.log('Grouped displayed balance changes:', result);
     return result;
 });
 
@@ -176,17 +171,17 @@ function getTokenSymbol(item) {
 const diffCache = new Map();
 function changeDirection(diff) {
     if (!diff) return 0;
-    
+
     // Use cache if available
     const cacheKey = diff.toString();
     if (diffCache.has(cacheKey)) {
         return diffCache.get(cacheKey);
     }
-    
+
     // Calculate and cache the result
     const bigDiff = BigNumber.from(diff);
     let result;
-    
+
     if (bigDiff.gt('0')) {
         result = 1;
     } else if (bigDiff.eq('0')) {
@@ -194,7 +189,7 @@ function changeDirection(diff) {
     } else {
         result = -1;
     }
-    
+
     diffCache.set(cacheKey, result);
     return result;
 }

@@ -128,8 +128,8 @@
 import { ref, computed, watch, inject } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { formatNumber, formatContractPattern } from '@/lib/utils';
-import BaseChipGroup from './base/BaseChipGroup.vue';
 
+import BaseChipGroup from './base/BaseChipGroup.vue';
 import TokenHeader from './TokenHeader.vue';
 import ERC20TokenHolders from './ERC20TokenHolders.vue';
 import ERC20ContractAnalytics from './ERC20ContractAnalytics.vue';

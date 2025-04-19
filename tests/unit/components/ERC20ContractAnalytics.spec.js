@@ -3,10 +3,10 @@ import ERC20ContractAnalytics from '@/components/ERC20ContractAnalytics.vue';
 
 const stubs = [
     'Line-Chart',
+    'Date-Range-Selector'
 ];
 
 describe('ERC20ContractAnalytics.vue', () => {
-
     it('Should display contract analytics with bignumber formatted amounts', async () => {
         vi.spyOn(server, 'getTokenTransferVolume')
             .mockResolvedValueOnce({ data: [
@@ -37,6 +37,8 @@ describe('ERC20ContractAnalytics.vue', () => {
                 stubs
             }
         });
+
+        wrapper.vm.updateCharts({ from: new Date('2024-01-01'), to: new Date('2024-01-02') });
 
         await flushPromises();
         expect(wrapper.html()).toMatchSnapshot();
@@ -72,6 +74,8 @@ describe('ERC20ContractAnalytics.vue', () => {
                 stubs
             }
         });
+
+        wrapper.vm.updateCharts({ from: new Date('2024-01-01'), to: new Date('2024-01-02') });
 
         await flushPromises();
         expect(wrapper.html()).toMatchSnapshot();

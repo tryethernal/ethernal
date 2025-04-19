@@ -167,6 +167,9 @@ onMounted(() => {
     loading.value = true;
     $server.getErc721TokenByIndex(props.contractAddress, props.tokenIndex)
         .then(({ data }) => {
+            if (!data)
+                return;
+
             tokenId.value = data.tokenId;
             owner.value = data.owner;
 

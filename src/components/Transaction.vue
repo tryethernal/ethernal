@@ -12,7 +12,6 @@
             </v-card>
         </template>
         <template v-else-if="transaction.hash && !loading">
-
             <!-- Navigation Tabs -->
             <v-chip-group mandatory :selected-class="`text-${contrastingColor}`" v-model="selectedTab">
                 <v-chip label size="small" value="overview">Overview</v-chip>
@@ -64,10 +63,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted, watch, inject, nextTick } from 'vue';
 import { useTheme } from 'vuetify';
-import { useExplorerStore } from '../stores/explorer';
-import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
 import { getBestContrastingColor } from '../lib/utils';
-import { useRouter, useRoute } from 'vue-router';
 import TransactionOverview from './TransactionOverview.vue';
 import TransactionLogs from './TransactionLogs.vue';
 import TransactionInternalTxns from './TransactionInternalTxns.vue';
@@ -78,10 +74,6 @@ const props = defineProps(['hash']);
 // Inject all required globals
 const $server = inject('$server');
 const $pusher = inject('$pusher');
-
-// Stores
-const explorerStore = useExplorerStore();
-const currentWorkspaceStore = useCurrentWorkspaceStore();
 
 // Reactive state with optimized defaults
 const transaction = ref({
@@ -97,11 +89,9 @@ const transaction = ref({
     contract: {},
     traceSteps: []
 });
-const processing = ref(false);
 const loading = ref(false);
 const selectedTab = ref('overview');
 const logsComponent = ref(null);
-const overviewError = ref(false);
 let pusherUnsubscribe = null;
 
 // Computed properties for improved null safety
@@ -147,7 +137,7 @@ const contrastingColor = computed(() => {
 // Methods
 const loadTransaction = async (hash) => {
     if (!hash) return;
-    
+
     loading.value = true;
     try {
         const { data } = await $server.getTransaction(hash);
@@ -170,29 +160,6 @@ const loadTransaction = async (hash) => {
         // Keep the current transaction state but mark as not loading
     } finally {
         loading.value = false;
-    }
-};
-
-const reprocessTransaction = async () => {
-    if (processing.value) return;
-    
-    processing.value = true;
-    try {
-        await $server.reprocessTransaction(props.hash);
-        if (!explorerStore.id) {
-            await $server.processTransaction(currentWorkspaceStore, transaction.value);
-        }
-        // Reload after reprocessing
-        await nextTick();
-        loadTransaction(props.hash);
-        // Also reload logs if we're on the logs tab
-        if (selectedTab.value === 'logs' && logsComponent.value) {
-            logsComponent.value.reloadLogs();
-        }
-    } catch (error) {
-        console.error('Error reprocessing:', error);
-    } finally {
-        processing.value = false;
     }
 };
 

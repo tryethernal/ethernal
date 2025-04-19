@@ -1,4 +1,3 @@
-import { mount } from '@vue/test-utils';
 import flushPromises from 'flush-promises';
 import TokensBalanceDiff from '@/components/TokensBalanceDiff.vue';
 

@@ -3,9 +3,9 @@
         <v-container class="d-flex align-center">
             <div class="d-flex align-center w-100">
                 <v-app-bar-nav-icon @click.stop="toggleMenu" v-if="$vuetify.display.mobile"></v-app-bar-nav-icon>
-                
+
                 <!-- Desktop Info Section -->
-                <template v-if="!$vuetify.display.mobile || !isNotOverviewPage">
+                <template v-if="!$vuetify.display.mobile">
                     <template v-if="isUserAdmin && !currentWorkspaceStore.public">
                         <span style="max-width: 50ch; text-overflow: ellipsis; overflow: hidden;">{{ shortRpcUrl(currentWorkspaceStore.rpcServer) }}</span>
                         <v-divider vertical inset class="mx-2"></v-divider>
@@ -136,7 +136,6 @@ const getAccounts = async () => {
 // Lifecycle hooks and initialization
 onMounted(async () => {
     page.value = route.path;
-
     try {
         const { data: { items } } = await $server.getBlocks({ page: 1, itemsPerPage: 1 }, false);
         if (items.length) {
@@ -176,6 +175,7 @@ onMounted(async () => {
 
     if (explorerStore.id && explorerStore.gasAnalyticsEnabled) {
         $pusher.onNewBlockEvent(blockEvent => {
+            console.log(blockEvent);
             if (blockEvent.gasPrice < 0) {
                 gasPrice.value = '0 gwei';
             } else if (blockEvent.gasPrice < MINIMUM_DISPLAY_GWEI) {

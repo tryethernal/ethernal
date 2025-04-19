@@ -1,5 +1,19 @@
 import { useWalletStore } from '@/stores/walletStore';
 
+vi.mock('@/stores/currentWorkspace', () => ({
+    useCurrentWorkspaceStore: vi.fn().mockReturnValue({
+        updateWagmiConfig: vi.fn(),
+        viemChainConfig: vi.fn(),
+        getViemWalletClient: vi.fn(),
+        getViemBrowserClient: vi.fn(),
+        getViemPublicClient: vi.fn(),
+        chain: {
+            name: 'Ethereum',
+            token: 'ETH'
+        }
+    })
+}));
+
 describe('WalletConnector.vue', () => {
     it('Should wallet connection button', async () => {
         vi.doMock('@web3-onboard/vue', () => ({

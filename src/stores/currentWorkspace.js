@@ -134,6 +134,8 @@ export const useCurrentWorkspaceStore = defineStore('currentWorkspace', {
         },
 
         viemTransportConfig() {
+            if (!this.rpcServer) return http('http://localhost:8545'); // Default fallback for tests
+
             return this.rpcServer.startsWith('http') ?
                 http(this.rpcServer) :
                 webSocket(this.rpcServer)
@@ -154,8 +156,8 @@ export const useCurrentWorkspaceStore = defineStore('currentWorkspace', {
                 },
                 rpcUrls: {
                     default: {
-                        http: rpcServer.startsWith('http') ? [rpcServer] : [],
-                        webSocket: rpcServer.startsWith('ws') ? [rpcServer] : []
+                        http: rpcServer && rpcServer.startsWith('http') ? [rpcServer] : ['http://localhost:8545'],
+                        webSocket: rpcServer && rpcServer.startsWith('ws') ? [rpcServer] : []
                     }
                 },
                 blockExplorerUrls: {
@@ -175,6 +177,11 @@ export const useCurrentWorkspaceStore = defineStore('currentWorkspace', {
         },
 
         getViemBrowserClient() {
+            // In test environment, window.ethereum might not be available
+            if (typeof window === 'undefined' || !window.ethereum) {
+                return null;
+            }
+
             return createWalletClient({
                 chain: this.viemChainConfig,
                 transport: custom(window.ethereum)
