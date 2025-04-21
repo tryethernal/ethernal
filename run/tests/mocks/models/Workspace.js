@@ -107,7 +107,10 @@ const workspace = {
     safeCreateOrUpdateRpcHealthCheck: jest.fn(),
     getTokenTransferVolume: jest.fn(),
     safeDeleteIntegrityCheck: jest.fn(),
-    safeDelete: jest.fn()
+    safeDelete: jest.fn(),
+    getAddressTransactionStats: jest.fn(),
+    countAddressTokenTransfers: jest.fn(),
+    countAddressTransactionTraceSteps: jest.fn()
 };
 
 const Workspace = {

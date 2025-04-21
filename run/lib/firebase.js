@@ -212,6 +212,7 @@ const getAddressSpentTransactionFeeHistory = async (workspaceId, address, from, 
 
     return workspace.getAddressSpentTransactionFeeHistory(address, from, to);
 };
+
 /*
     Returns the number of transactions for an address in a given time range.
 
@@ -294,7 +295,7 @@ const getLast24hTotalGasUsed = async (workspaceId) => {
     if (!workspace)
         throw new Error('Could not find workspace');
 
-    return workspace.getLast24TotalGasUsed();
+    return workspace.getLast24hTotalGasUsed();
 };
 
 /*

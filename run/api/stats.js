@@ -29,20 +29,6 @@ router.get('/topTokensByHolders', workspaceAuthMiddleware, async (req, res, next
 });
 
 /**
- * @deprecated Use /topTokensByHolders instead
- */
-router.get('/topErc20ByHolders', workspaceAuthMiddleware, async (req, res, next) => {
-    const data = req.query;
-    try {
-        const topErc20ByHolders = await db.getTopTokensByHolders(data.workspace.id, data.page, data.itemsPerPage, ['erc20']);
-
-        res.status(200).json({ items: topErc20ByHolders });
-    } catch(error) {
-        unmanagedError(error, req, next);
-    }
-});
-
-/**
  * Retrieves contract stats for a workspace
  * - totalContracts
  * - contractsLast24Hours

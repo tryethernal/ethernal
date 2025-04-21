@@ -213,40 +213,6 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     /**
-     * Returns the top ERC20 tokens by holders for a workspace.
-     * 
-     * @param {number} page - The page number to return.
-     * @param {number} itemsPerPage - The number of items per page to return.
-     * @returns {Promise<Array>} - A list of top ERC20 tokens by holders.
-     */
-    async getTopErc20ByHolders(page = 1, itemsPerPage = 10) {
-        return sequelize.query(`
-            SELECT
-                token,
-                COUNT(DISTINCT token_balance_change_events."address") AS holders,
-                c.name AS "contract.name",
-                c."tokenSymbol" AS "contract.tokenSymbol",
-                c."tokenName" AS "contract.tokenName",
-                c."tokenTotalSupply" AS "contract.tokenTotalSupply"
-            FROM
-                token_balance_change_events
-            LEFT JOIN contracts c ON
-                c.address = token_balance_change_events."address"
-                AND c."workspaceId" = :workspaceId
-                AND c.patterns @> ARRAY['erc20']::varchar[]
-            WHERE
-                token_balance_change_events."workspaceId" = :workspaceId
-            GROUP BY token, c.name, c."tokenSymbol", c."tokenName", c."tokenTotalSupply"
-            ORDER BY holders DESC
-            LIMIT :itemsPerPage OFFSET :offset;
-        `, {
-            replacements: { workspaceId: this.id, itemsPerPage: itemsPerPage, offset: (page - 1) * itemsPerPage },
-            type: QueryTypes.SELECT,
-            nest: true
-        });
-    }
-
-    /**
      * Returns contract stats for a workspace (displayed on the /contractsVerified page).
      * - Total contracts
      * - Contracts created in the last 24 hours
@@ -962,7 +928,7 @@ module.exports = (sequelize, DataTypes) => {
 
         @returns {number} - The total gas used for the last 24 hours
     */
-    async getLast24TotalGasUsed() {
+    async getLast24hTotalGasUsed() {
         const [queryResult] = await sequelize.query(`
             SELECT
                 sum("gasUsed"::numeric) as "totalGasUsed"

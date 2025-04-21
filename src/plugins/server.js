@@ -368,10 +368,6 @@ export default {
                 return axios.get(resource, { params });
             },
 
-            getTopErc20ByHolders(options) {
-                return this.getTopTokensByHolders({ ...options, patterns: ['erc20'] });
-            },
-
             getWorkspaceContractStats() {
                 const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value };
                 const resource = `${envStore.apiRoot}/api/stats/contracts`;
