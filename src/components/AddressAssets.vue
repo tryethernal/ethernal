@@ -1,13 +1,12 @@
 <template>
   <div class="d-flex justify-end">
-    <v-chip-group
+    <BaseChipGroup
       v-model="selectedFilter"
-      :selected-class="`text-${contrastingColor}`"
       mandatory
-  >
+    >
       <v-chip size="x-small" value="asset-tokens">Tokens</v-chip>
       <v-chip size="x-small" value="asset-nft">NFTs</v-chip>
-    </v-chip-group>
+    </BaseChipGroup>
   </div>
 
     <Address-Token-Assets
@@ -24,11 +23,10 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
-import { useTheme } from 'vuetify';
-import { getBestContrastingColor } from '../lib/utils';
+import { ref, watch, onMounted, onUnmounted } from 'vue';
 import AddressTokenAssets from './AddressTokenAssets.vue';
 import NFTGallery from './NFTGallery.vue';
+import BaseChipGroup from './base/BaseChipGroup.vue';
 
 // Props
 const props = defineProps({
@@ -67,11 +65,5 @@ onMounted(() => {
 
 onUnmounted(() => {
   window.removeEventListener('hashchange', updateFromHash);
-});
-
-// Computed properties for styling
-const contrastingColor = computed(() => {
-  const theme = useTheme();
-  return getBestContrastingColor('#4242421f', theme.current.value.colors);
 });
 </script> 

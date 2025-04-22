@@ -84,7 +84,7 @@
 </template>
 <script setup>
 import { ethers } from 'ethers';
-import { defineProps, shallowRef, ref, onMounted, onUnmounted, inject, defineEmits, watch } from 'vue';
+import { shallowRef, ref, onMounted, onUnmounted, inject, defineEmits, watch } from 'vue';
 
 import HashLink from './HashLink.vue';
 

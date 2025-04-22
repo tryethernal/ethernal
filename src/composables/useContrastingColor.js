@@ -12,4 +12,4 @@ export function useContrastingColor(backgroundColor = '#4242421f') {
     return {
         contrastingColor
     };
-} 
+}

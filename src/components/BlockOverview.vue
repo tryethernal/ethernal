@@ -268,7 +268,7 @@
 </template>
 
 <script setup>
-import { computed, inject } from 'vue';
+import { inject } from 'vue';
 import { useExplorerStore } from '../stores/explorer';
 import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
 import { utils } from 'ethers';
@@ -379,4 +379,4 @@ const tryDecodeExtraData = (hexData) => {
   width: 100%;
   overflow: hidden;
 }
-</style> 
+</style>

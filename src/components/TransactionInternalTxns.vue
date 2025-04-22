@@ -96,9 +96,3 @@ onMounted(() => {
   fetchTraceSteps();
 });
 </script>
-
-<style scoped>
-.internal-txns-tab-content {
-  /* Any specific styling needed */
-}
-</style> 

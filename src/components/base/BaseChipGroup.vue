@@ -10,7 +10,7 @@
 <script setup>
 import { useContrastingColor } from '@/composables/useContrastingColor';
 
-const props = defineProps({
+const props = defineProps({ 
     backgroundColor: {
         type: String,
         default: '#4242421f'
@@ -18,4 +18,4 @@ const props = defineProps({
 });
 
 const { contrastingColor } = useContrastingColor(props.backgroundColor);
-</script> 
+</script>

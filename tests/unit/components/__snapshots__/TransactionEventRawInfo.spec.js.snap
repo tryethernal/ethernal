@@ -1,0 +1,42 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`TransactionEventRawInfo.vue > Should render as tooltip 1`] = `
+"<div><b>Emitter:</b>&nbsp; <hash-link-stub type="address" hash="0x123" contract="[object Object]" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub><br><b>Topics:</b>
+  <ul>
+    <li class="ml-6">topic1</li>
+    <li class="ml-6">topic2</li>
+  </ul>
+  <div class="raw-input"><b>Data:</b> 0xabcdef</div>
+</div>"
+`;
+
+exports[`TransactionEventRawInfo.vue > Should render with all props 1`] = `
+"<div><b>Emitter:</b>&nbsp; <hash-link-stub type="address" hash="0x123" contract="[object Object]" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub><br><b>Topics:</b>
+  <ul>
+    <li class="ml-6">topic1</li>
+    <li class="ml-6">topic2</li>
+  </ul>
+  <div class="log-data"><b>Data:</b> 0xabcdef</div>
+</div>"
+`;
+
+exports[`TransactionEventRawInfo.vue > Should render without contract 1`] = `
+"<div><b>Emitter:</b>&nbsp; <hash-link-stub type="address" hash="0x123" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub><br><b>Topics:</b>
+  <ul>
+    <li class="ml-6">topic1</li>
+    <li class="ml-6">topic2</li>
+  </ul>
+  <div class="log-data"><b>Data:</b> 0xabcdef</div>
+</div>"
+`;
+
+exports[`TransactionEventRawInfo.vue > Should render without emitter 1`] = `
+"<div>
+  <!--v-if--><b>Topics:</b>
+  <ul>
+    <li class="ml-6">topic1</li>
+    <li class="ml-6">topic2</li>
+  </ul>
+  <div class="log-data"><b>Data:</b> 0xabcdef</div>
+</div>"
+`;

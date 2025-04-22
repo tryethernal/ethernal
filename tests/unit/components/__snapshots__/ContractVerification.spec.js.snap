@@ -1,6 +1,548 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ContractVerification.vue > Should load the UI & the Solidity releases 1`] = `
+exports[`ContractVerification.vue > Should handle contract verification error 1`] = `
+"<div class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-6">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
+        </div>
+      </transition-stub>
+      <!---->
+    </div>
+  </div>
+  <!---->
+  <!---->
+  <div class="v-card-title">Contract Verification</div>
+  <div class="v-card-text">
+    <div class="v-alert v-theme--light bg-error v-alert--density-compact v-alert--variant-flat mb-2" role="alert">
+      <!----><span class="v-alert__underlay"></span>
+      <!---->
+      <div class="v-alert__prepend"><i class="mdi-close-circle mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="compact"></i></div>
+      <div class="v-alert__content">
+        <!---->Verification failed. Verification failed
+      </div>
+      <!---->
+      <!---->
+    </div>
+    <form class="v-form" novalidate="">
+      <h4>Compiler Settings</h4>
+      <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-2">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!---->
+        <div class="v-card-text">
+          <div class="v-row">
+            <div class="v-col v-col-4">
+              <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field v-select v-select--single v-select--selected">
+                <!---->
+                <div class="v-input__control">
+                  <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="v-menu-2">
+                    <div class="v-field__overlay"></div>
+                    <div class="v-field__loader">
+                      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                        <!---->
+                        <div class="v-progress-linear__background"></div>
+                        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                          <div class="v-progress-linear__indeterminate">
+                            <div class="v-progress-linear__indeterminate long"></div>
+                            <div class="v-progress-linear__indeterminate short"></div>
+                          </div>
+                        </transition-stub>
+                        <!---->
+                      </div>
+                    </div>
+                    <!---->
+                    <div class="v-field__field" data-no-activator="">
+                      <!----><label class="v-label v-field-label" for="input-0">
+                        <!---->Compiler Version *
+                      </label>
+                      <!---->
+                      <div class="v-field__input" data-no-activator="">
+                        <!---->
+                        <!---->
+                        <div class="v-select__selection"><span class="v-select__selection-text">v0.7.0<!----></span></div><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" inputmode="none" aria-label="Open" title="Open" value="v0.7.0">
+                      </div>
+                      <!---->
+                    </div>
+                    <!---->
+                    <div class="v-field__append-inner">
+                      <!----><i class="mdi-menu-down mdi v-icon notranslate v-theme--light v-icon--size-default v-select__menu-icon" aria-hidden="true"></i>
+                      <!---->
+                    </div>
+                    <div class="v-field__outline">
+                      <div class="v-field__outline__start"></div>
+                      <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
+                          <!---->Compiler Version *
+                        </label></div>
+                      <div class="v-field__outline__end"></div>
+                      <!---->
+                    </div>
+                  </div>
+                </div>
+                <!---->
+                <!---->
+              </div>
+            </div>
+            <div class="v-col v-col-3">
+              <div class="v-input v-input--horizontal v-input--center-affix v-input--density-default v-theme--light v-locale--is-ltr v-input--dirty v-checkbox">
+                <!---->
+                <div class="v-input__control">
+                  <div class="v-selection-control v-selection-control--density-default v-checkbox-btn">
+                    <div class="v-selection-control__wrapper">
+                      <!---->
+                      <div class="v-selection-control__input"><i class="mdi-checkbox-blank-outline mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i><input id="checkbox-3" aria-disabled="false" aria-label="Show nightly builds" type="checkbox" aria-describedby="checkbox-3-messages" value="true"></div>
+                    </div><label class="v-label v-label--clickable" for="checkbox-3">
+                      <!---->Show nightly builds
+                    </label>
+                  </div>
+                </div>
+                <!---->
+                <!---->
+              </div>
+            </div>
+          </div>
+          <div class="v-row">
+            <div class="v-col v-col-4">
+              <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field v-select v-select--single v-select--selected">
+                <!---->
+                <div class="v-input__control">
+                  <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="v-menu-8">
+                    <div class="v-field__overlay"></div>
+                    <div class="v-field__loader">
+                      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                        <!---->
+                        <div class="v-progress-linear__background"></div>
+                        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                          <div class="v-progress-linear__indeterminate">
+                            <div class="v-progress-linear__indeterminate long"></div>
+                            <div class="v-progress-linear__indeterminate short"></div>
+                          </div>
+                        </transition-stub>
+                        <!---->
+                      </div>
+                    </div>
+                    <!---->
+                    <div class="v-field__field" data-no-activator="">
+                      <!----><label class="v-label v-field-label" for="input-6">
+                        <!---->EVM Version *
+                      </label>
+                      <!---->
+                      <div class="v-field__input" data-no-activator="">
+                        <!---->
+                        <!---->
+                        <div class="v-select__selection"><span class="v-select__selection-text">default (compiler default)<!----></span></div><input size="1" type="text" id="input-6" aria-describedby="input-6-messages" inputmode="none" aria-label="Open" title="Open" value="">
+                      </div>
+                      <!---->
+                    </div>
+                    <!---->
+                    <div class="v-field__append-inner">
+                      <!----><i class="mdi-menu-down mdi v-icon notranslate v-theme--light v-icon--size-default v-select__menu-icon" aria-hidden="true"></i>
+                      <!---->
+                    </div>
+                    <div class="v-field__outline">
+                      <div class="v-field__outline__start"></div>
+                      <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-6">
+                          <!---->EVM Version *
+                        </label></div>
+                      <div class="v-field__outline__end"></div>
+                      <!---->
+                    </div>
+                  </div>
+                </div>
+                <!---->
+                <!---->
+              </div>
+            </div>
+          </div>
+          <div class="v-row">
+            <div class="v-col v-col-2">
+              <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field v-select v-select--single v-select--selected">
+                <!---->
+                <div class="v-input__control">
+                  <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="v-menu-11">
+                    <div class="v-field__overlay"></div>
+                    <div class="v-field__loader">
+                      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                        <!---->
+                        <div class="v-progress-linear__background"></div>
+                        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                          <div class="v-progress-linear__indeterminate">
+                            <div class="v-progress-linear__indeterminate long"></div>
+                            <div class="v-progress-linear__indeterminate short"></div>
+                          </div>
+                        </transition-stub>
+                        <!---->
+                      </div>
+                    </div>
+                    <!---->
+                    <div class="v-field__field" data-no-activator="">
+                      <!----><label class="v-label v-field-label" for="input-9">
+                        <!---->Optimization *
+                      </label>
+                      <!---->
+                      <div class="v-field__input" data-no-activator="">
+                        <!---->
+                        <!---->
+                        <div class="v-select__selection"><span class="v-select__selection-text">No<!----></span></div><input size="1" type="text" id="input-9" aria-describedby="input-9-messages" inputmode="none" aria-label="Open" title="Open" value="false">
+                      </div>
+                      <!---->
+                    </div>
+                    <!---->
+                    <div class="v-field__append-inner">
+                      <!----><i class="mdi-menu-down mdi v-icon notranslate v-theme--light v-icon--size-default v-select__menu-icon" aria-hidden="true"></i>
+                      <!---->
+                    </div>
+                    <div class="v-field__outline">
+                      <div class="v-field__outline__start"></div>
+                      <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-9">
+                          <!---->Optimization *
+                        </label></div>
+                      <div class="v-field__outline__end"></div>
+                      <!---->
+                    </div>
+                  </div>
+                </div>
+                <!---->
+                <!---->
+              </div>
+            </div>
+            <div class="v-col v-col-2">
+              <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field" style="display: none;">
+                <!---->
+                <div class="v-input__control">
+                  <div class="v-field v-field--center-affix v-field--variant-outlined v-theme--light v-locale--is-ltr">
+                    <div class="v-field__overlay"></div>
+                    <div class="v-field__loader">
+                      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                        <!---->
+                        <div class="v-progress-linear__background"></div>
+                        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                          <div class="v-progress-linear__indeterminate">
+                            <div class="v-progress-linear__indeterminate long"></div>
+                            <div class="v-progress-linear__indeterminate short"></div>
+                          </div>
+                        </transition-stub>
+                        <!---->
+                      </div>
+                    </div>
+                    <!---->
+                    <div class="v-field__field" data-no-activator="">
+                      <!----><label class="v-label v-field-label" for="input-12">
+                        <!---->Runs *
+                      </label>
+                      <!----><input size="1" type="number" id="input-12" aria-describedby="input-12-messages" small="" class="v-field__input">
+                      <!---->
+                    </div>
+                    <!---->
+                    <!---->
+                    <div class="v-field__outline">
+                      <div class="v-field__outline__start"></div>
+                      <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-12">
+                          <!---->Runs *
+                        </label></div>
+                      <div class="v-field__outline__end"></div>
+                      <!---->
+                    </div>
+                  </div>
+                </div>
+                <!---->
+                <!---->
+              </div>
+            </div>
+          </div>
+          <div class="v-row mt-0">
+            <div class="v-col v-col-2">
+              <div class="v-input v-input--horizontal v-input--center-affix v-input--density-default v-theme--light v-locale--is-ltr v-input--dirty v-checkbox">
+                <!---->
+                <div class="v-input__control">
+                  <div class="v-selection-control v-selection-control--density-default v-checkbox-btn">
+                    <div class="v-selection-control__wrapper">
+                      <!---->
+                      <div class="v-selection-control__input"><i class="mdi-checkbox-blank-outline mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i><input id="checkbox-14" aria-disabled="false" aria-label="Via IR" type="checkbox" aria-describedby="checkbox-14-messages" value="true"></div>
+                    </div><label class="v-label v-label--clickable" for="checkbox-14">
+                      <!---->Via IR
+                    </label>
+                  </div>
+                </div>
+                <!---->
+                <!---->
+              </div>
+            </div>
+          </div>
+        </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
+      </div>
+      <h4>Contract</h4>
+      <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-2">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!---->
+        <div class="v-card-text">
+          <div class="v-row">
+            <div class="v-col v-col-4 pb-0">
+              <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field">
+                <!---->
+                <div class="v-input__control">
+                  <div class="v-field v-field--center-affix v-field--variant-outlined v-theme--light v-locale--is-ltr">
+                    <div class="v-field__overlay"></div>
+                    <div class="v-field__loader">
+                      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                        <!---->
+                        <div class="v-progress-linear__background"></div>
+                        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                          <div class="v-progress-linear__indeterminate">
+                            <div class="v-progress-linear__indeterminate long"></div>
+                            <div class="v-progress-linear__indeterminate short"></div>
+                          </div>
+                        </transition-stub>
+                        <!---->
+                      </div>
+                    </div>
+                    <!---->
+                    <div class="v-field__field" data-no-activator="">
+                      <!----><label class="v-label v-field-label" for="input-17">
+                        <!---->Contract Name *
+                      </label>
+                      <!----><input size="1" type="text" id="input-17" aria-describedby="input-17-messages" small="" class="v-field__input">
+                      <!---->
+                    </div>
+                    <!---->
+                    <!---->
+                    <div class="v-field__outline">
+                      <div class="v-field__outline__start"></div>
+                      <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-17">
+                          <!---->Contract Name *
+                        </label></div>
+                      <div class="v-field__outline__end"></div>
+                      <!---->
+                    </div>
+                  </div>
+                </div>
+                <!---->
+                <div id="input-17-messages" class="v-input__details" role="alert" aria-live="polite">
+                  <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
+                    <!---->
+                  </transition-group-stub>
+                  <!---->
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="v-row">
+            <div class="v-col v-col-6 pt-0">
+              <div class="v-input v-input--horizontal v-input--center-affix v-input--density-default v-theme--light v-locale--is-ltr v-input--dirty v-file-input">
+                <!---->
+                <div class="v-input__control">
+                  <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--prepended v-field--variant-outlined v-theme--light v-locale--is-ltr" prepend-icon="">
+                    <div class="v-field__overlay"></div>
+                    <div class="v-field__loader">
+                      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                        <!---->
+                        <div class="v-progress-linear__background"></div>
+                        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                          <div class="v-progress-linear__indeterminate">
+                            <div class="v-progress-linear__indeterminate long"></div>
+                            <div class="v-progress-linear__indeterminate short"></div>
+                          </div>
+                        </transition-stub>
+                        <!---->
+                      </div>
+                    </div>
+                    <div class="v-field__prepend-inner"><i class="mdi-paperclip mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i>
+                      <!---->
+                    </div>
+                    <div class="v-field__field" data-no-activator="">
+                      <!----><label class="v-label v-field-label" for="input-19">
+                        <!---->Contract Files *
+                      </label><input type="file" multiple="" id="input-19" aria-describedby="input-19-messages" accept=".sol" small-chips="">
+                      <div class="v-field__input">Test.sol (16 B)</div>
+                    </div>
+                    <transition-stub name="expand-x-transition" appear="false" persisted="false" css="true">
+                      <div class="v-field__clearable" style=""><i class="mdi-close-circle mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--clickable" role="button" aria-hidden="false" tabindex="0" aria-label="Clear Contract Files *"></i></div>
+                    </transition-stub>
+                    <div class="v-field__append-inner">
+                      <!---->
+                      <!---->
+                    </div>
+                    <div class="v-field__outline">
+                      <div class="v-field__outline__start"></div>
+                      <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-19">
+                          <!---->Contract Files *
+                        </label></div>
+                      <div class="v-field__outline__end"></div>
+                      <!---->
+                    </div>
+                  </div>
+                </div>
+                <!---->
+                <div id="input-19-messages" class="v-input__details" role="alert" aria-live="polite">
+                  <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
+                    <div class="v-messages__message">To add multiple files, select them all at once.</div>
+                  </transition-group-stub>
+                  <!----><span></span>
+                  <transition-stub name="slide-y-transition" appear="false" persisted="false" css="true">
+                    <div class="v-counter" style="">1 files (16 B in total)</div>
+                  </transition-stub>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
+      </div>
+      <h4>Libraries Linking</h4>
+      <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-2">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!---->
+        <div class="v-card-text">
+          <div class="v-row">
+            <div class="v-col v-col-2"><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat bg-primary"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator="">Add Library</span>
+                <!---->
+                <!---->
+              </button></div>
+          </div>
+        </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
+      </div>
+      <h4>Constructor Arguments</h4>
+      <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-2">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!---->
+        <div class="v-card-text">
+          <div class="v-input v-input--horizontal v-input--density-compact v-theme--light v-locale--is-ltr v-textarea v-text-field">
+            <!---->
+            <div class="v-input__control">
+              <div class="v-field v-field--variant-outlined v-theme--light v-locale--is-ltr">
+                <div class="v-field__overlay"></div>
+                <div class="v-field__loader">
+                  <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                    <!---->
+                    <div class="v-progress-linear__background"></div>
+                    <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                    <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                      <div class="v-progress-linear__indeterminate">
+                        <div class="v-progress-linear__indeterminate long"></div>
+                        <div class="v-progress-linear__indeterminate short"></div>
+                      </div>
+                    </transition-stub>
+                    <!---->
+                  </div>
+                </div>
+                <!---->
+                <div class="v-field__field" data-no-activator="">
+                  <!----><label class="v-label v-field-label" for="input-22">
+                    <!---->Constructor Arguments (ABI Encoded)
+                  </label>
+                  <!----><textarea class="v-field__input" rows="3" id="input-22" aria-describedby="input-22-messages" primary=""></textarea>
+                  <!---->
+                  <!---->
+                </div>
+                <!---->
+                <!---->
+                <div class="v-field__outline">
+                  <div class="v-field__outline__start"></div>
+                  <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-22">
+                      <!---->Constructor Arguments (ABI Encoded)
+                    </label></div>
+                  <div class="v-field__outline__end"></div>
+                  <!---->
+                </div>
+              </div>
+            </div>
+            <!---->
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
+      </div>
+    </form><button type="button" class="v-btn v-btn--disabled v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat bg-primary" disabled=""><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+      <!----><span class="v-btn__content" data-no-activator="">Verify</span>
+      <!---->
+      <!---->
+    </button>
+  </div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
+`;
+
+exports[`ContractVerification.vue > Should handle contract verification success 1`] = `
 "<div class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-6">
   <!---->
   <div class="v-card__loader">
@@ -73,7 +615,1708 @@ exports[`ContractVerification.vue > Should load the UI & the Solidity releases 1
                       <div class="v-field__input" data-no-activator="">
                         <!---->
                         <!---->
-                        <div class="v-select__selection"><span class="v-select__selection-text">v0.1.2<!----></span></div><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" inputmode="none" aria-label="Open" title="Open" value="v0.1.2">
+                        <div class="v-select__selection"><span class="v-select__selection-text">v0.7.0<!----></span></div><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" inputmode="none" aria-label="Open" title="Open" value="v0.7.0">
+                      </div>
+                      <!---->
+                    </div>
+                    <!---->
+                    <div class="v-field__append-inner">
+                      <!----><i class="mdi-menu-down mdi v-icon notranslate v-theme--light v-icon--size-default v-select__menu-icon" aria-hidden="true"></i>
+                      <!---->
+                    </div>
+                    <div class="v-field__outline">
+                      <div class="v-field__outline__start"></div>
+                      <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
+                          <!---->Compiler Version *
+                        </label></div>
+                      <div class="v-field__outline__end"></div>
+                      <!---->
+                    </div>
+                  </div>
+                </div>
+                <!---->
+                <!---->
+              </div>
+            </div>
+            <div class="v-col v-col-3">
+              <div class="v-input v-input--horizontal v-input--center-affix v-input--density-default v-theme--light v-locale--is-ltr v-input--dirty v-checkbox">
+                <!---->
+                <div class="v-input__control">
+                  <div class="v-selection-control v-selection-control--density-default v-checkbox-btn">
+                    <div class="v-selection-control__wrapper">
+                      <!---->
+                      <div class="v-selection-control__input"><i class="mdi-checkbox-blank-outline mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i><input id="checkbox-3" aria-disabled="false" aria-label="Show nightly builds" type="checkbox" aria-describedby="checkbox-3-messages" value="true"></div>
+                    </div><label class="v-label v-label--clickable" for="checkbox-3">
+                      <!---->Show nightly builds
+                    </label>
+                  </div>
+                </div>
+                <!---->
+                <!---->
+              </div>
+            </div>
+          </div>
+          <div class="v-row">
+            <div class="v-col v-col-4">
+              <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field v-select v-select--single v-select--selected">
+                <!---->
+                <div class="v-input__control">
+                  <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="v-menu-8">
+                    <div class="v-field__overlay"></div>
+                    <div class="v-field__loader">
+                      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                        <!---->
+                        <div class="v-progress-linear__background"></div>
+                        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                          <div class="v-progress-linear__indeterminate">
+                            <div class="v-progress-linear__indeterminate long"></div>
+                            <div class="v-progress-linear__indeterminate short"></div>
+                          </div>
+                        </transition-stub>
+                        <!---->
+                      </div>
+                    </div>
+                    <!---->
+                    <div class="v-field__field" data-no-activator="">
+                      <!----><label class="v-label v-field-label" for="input-6">
+                        <!---->EVM Version *
+                      </label>
+                      <!---->
+                      <div class="v-field__input" data-no-activator="">
+                        <!---->
+                        <!---->
+                        <div class="v-select__selection"><span class="v-select__selection-text">default (compiler default)<!----></span></div><input size="1" type="text" id="input-6" aria-describedby="input-6-messages" inputmode="none" aria-label="Open" title="Open" value="">
+                      </div>
+                      <!---->
+                    </div>
+                    <!---->
+                    <div class="v-field__append-inner">
+                      <!----><i class="mdi-menu-down mdi v-icon notranslate v-theme--light v-icon--size-default v-select__menu-icon" aria-hidden="true"></i>
+                      <!---->
+                    </div>
+                    <div class="v-field__outline">
+                      <div class="v-field__outline__start"></div>
+                      <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-6">
+                          <!---->EVM Version *
+                        </label></div>
+                      <div class="v-field__outline__end"></div>
+                      <!---->
+                    </div>
+                  </div>
+                </div>
+                <!---->
+                <!---->
+              </div>
+            </div>
+          </div>
+          <div class="v-row">
+            <div class="v-col v-col-2">
+              <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field v-select v-select--single v-select--selected">
+                <!---->
+                <div class="v-input__control">
+                  <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="v-menu-11">
+                    <div class="v-field__overlay"></div>
+                    <div class="v-field__loader">
+                      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                        <!---->
+                        <div class="v-progress-linear__background"></div>
+                        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                          <div class="v-progress-linear__indeterminate">
+                            <div class="v-progress-linear__indeterminate long"></div>
+                            <div class="v-progress-linear__indeterminate short"></div>
+                          </div>
+                        </transition-stub>
+                        <!---->
+                      </div>
+                    </div>
+                    <!---->
+                    <div class="v-field__field" data-no-activator="">
+                      <!----><label class="v-label v-field-label" for="input-9">
+                        <!---->Optimization *
+                      </label>
+                      <!---->
+                      <div class="v-field__input" data-no-activator="">
+                        <!---->
+                        <!---->
+                        <div class="v-select__selection"><span class="v-select__selection-text">No<!----></span></div><input size="1" type="text" id="input-9" aria-describedby="input-9-messages" inputmode="none" aria-label="Open" title="Open" value="false">
+                      </div>
+                      <!---->
+                    </div>
+                    <!---->
+                    <div class="v-field__append-inner">
+                      <!----><i class="mdi-menu-down mdi v-icon notranslate v-theme--light v-icon--size-default v-select__menu-icon" aria-hidden="true"></i>
+                      <!---->
+                    </div>
+                    <div class="v-field__outline">
+                      <div class="v-field__outline__start"></div>
+                      <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-9">
+                          <!---->Optimization *
+                        </label></div>
+                      <div class="v-field__outline__end"></div>
+                      <!---->
+                    </div>
+                  </div>
+                </div>
+                <!---->
+                <!---->
+              </div>
+            </div>
+            <div class="v-col v-col-2">
+              <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field" style="display: none;">
+                <!---->
+                <div class="v-input__control">
+                  <div class="v-field v-field--center-affix v-field--variant-outlined v-theme--light v-locale--is-ltr">
+                    <div class="v-field__overlay"></div>
+                    <div class="v-field__loader">
+                      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                        <!---->
+                        <div class="v-progress-linear__background"></div>
+                        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                          <div class="v-progress-linear__indeterminate">
+                            <div class="v-progress-linear__indeterminate long"></div>
+                            <div class="v-progress-linear__indeterminate short"></div>
+                          </div>
+                        </transition-stub>
+                        <!---->
+                      </div>
+                    </div>
+                    <!---->
+                    <div class="v-field__field" data-no-activator="">
+                      <!----><label class="v-label v-field-label" for="input-12">
+                        <!---->Runs *
+                      </label>
+                      <!----><input size="1" type="number" id="input-12" aria-describedby="input-12-messages" small="" class="v-field__input">
+                      <!---->
+                    </div>
+                    <!---->
+                    <!---->
+                    <div class="v-field__outline">
+                      <div class="v-field__outline__start"></div>
+                      <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-12">
+                          <!---->Runs *
+                        </label></div>
+                      <div class="v-field__outline__end"></div>
+                      <!---->
+                    </div>
+                  </div>
+                </div>
+                <!---->
+                <!---->
+              </div>
+            </div>
+          </div>
+          <div class="v-row mt-0">
+            <div class="v-col v-col-2">
+              <div class="v-input v-input--horizontal v-input--center-affix v-input--density-default v-theme--light v-locale--is-ltr v-input--dirty v-checkbox">
+                <!---->
+                <div class="v-input__control">
+                  <div class="v-selection-control v-selection-control--density-default v-checkbox-btn">
+                    <div class="v-selection-control__wrapper">
+                      <!---->
+                      <div class="v-selection-control__input"><i class="mdi-checkbox-blank-outline mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i><input id="checkbox-14" aria-disabled="false" aria-label="Via IR" type="checkbox" aria-describedby="checkbox-14-messages" value="true"></div>
+                    </div><label class="v-label v-label--clickable" for="checkbox-14">
+                      <!---->Via IR
+                    </label>
+                  </div>
+                </div>
+                <!---->
+                <!---->
+              </div>
+            </div>
+          </div>
+        </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
+      </div>
+      <h4>Contract</h4>
+      <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-2">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!---->
+        <div class="v-card-text">
+          <div class="v-row">
+            <div class="v-col v-col-4 pb-0">
+              <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field">
+                <!---->
+                <div class="v-input__control">
+                  <div class="v-field v-field--center-affix v-field--variant-outlined v-theme--light v-locale--is-ltr">
+                    <div class="v-field__overlay"></div>
+                    <div class="v-field__loader">
+                      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                        <!---->
+                        <div class="v-progress-linear__background"></div>
+                        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                          <div class="v-progress-linear__indeterminate">
+                            <div class="v-progress-linear__indeterminate long"></div>
+                            <div class="v-progress-linear__indeterminate short"></div>
+                          </div>
+                        </transition-stub>
+                        <!---->
+                      </div>
+                    </div>
+                    <!---->
+                    <div class="v-field__field" data-no-activator="">
+                      <!----><label class="v-label v-field-label" for="input-17">
+                        <!---->Contract Name *
+                      </label>
+                      <!----><input size="1" type="text" id="input-17" aria-describedby="input-17-messages" small="" class="v-field__input">
+                      <!---->
+                    </div>
+                    <!---->
+                    <!---->
+                    <div class="v-field__outline">
+                      <div class="v-field__outline__start"></div>
+                      <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-17">
+                          <!---->Contract Name *
+                        </label></div>
+                      <div class="v-field__outline__end"></div>
+                      <!---->
+                    </div>
+                  </div>
+                </div>
+                <!---->
+                <div id="input-17-messages" class="v-input__details" role="alert" aria-live="polite">
+                  <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
+                    <!---->
+                  </transition-group-stub>
+                  <!---->
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="v-row">
+            <div class="v-col v-col-6 pt-0">
+              <div class="v-input v-input--horizontal v-input--center-affix v-input--density-default v-theme--light v-locale--is-ltr v-input--dirty v-file-input">
+                <!---->
+                <div class="v-input__control">
+                  <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--prepended v-field--variant-outlined v-theme--light v-locale--is-ltr" prepend-icon="">
+                    <div class="v-field__overlay"></div>
+                    <div class="v-field__loader">
+                      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                        <!---->
+                        <div class="v-progress-linear__background"></div>
+                        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                          <div class="v-progress-linear__indeterminate">
+                            <div class="v-progress-linear__indeterminate long"></div>
+                            <div class="v-progress-linear__indeterminate short"></div>
+                          </div>
+                        </transition-stub>
+                        <!---->
+                      </div>
+                    </div>
+                    <div class="v-field__prepend-inner"><i class="mdi-paperclip mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i>
+                      <!---->
+                    </div>
+                    <div class="v-field__field" data-no-activator="">
+                      <!----><label class="v-label v-field-label" for="input-19">
+                        <!---->Contract Files *
+                      </label><input type="file" multiple="" id="input-19" aria-describedby="input-19-messages" accept=".sol" small-chips="">
+                      <div class="v-field__input">Test.sol (16 B)</div>
+                    </div>
+                    <transition-stub name="expand-x-transition" appear="false" persisted="false" css="true">
+                      <div class="v-field__clearable" style=""><i class="mdi-close-circle mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--clickable" role="button" aria-hidden="false" tabindex="0" aria-label="Clear Contract Files *"></i></div>
+                    </transition-stub>
+                    <div class="v-field__append-inner">
+                      <!---->
+                      <!---->
+                    </div>
+                    <div class="v-field__outline">
+                      <div class="v-field__outline__start"></div>
+                      <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-19">
+                          <!---->Contract Files *
+                        </label></div>
+                      <div class="v-field__outline__end"></div>
+                      <!---->
+                    </div>
+                  </div>
+                </div>
+                <!---->
+                <div id="input-19-messages" class="v-input__details" role="alert" aria-live="polite">
+                  <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
+                    <div class="v-messages__message">To add multiple files, select them all at once.</div>
+                  </transition-group-stub>
+                  <!----><span></span>
+                  <transition-stub name="slide-y-transition" appear="false" persisted="false" css="true">
+                    <div class="v-counter" style="">1 files (16 B in total)</div>
+                  </transition-stub>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
+      </div>
+      <h4>Libraries Linking</h4>
+      <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-2">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!---->
+        <div class="v-card-text">
+          <div class="v-row">
+            <div class="v-col v-col-2"><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat bg-primary"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator="">Add Library</span>
+                <!---->
+                <!---->
+              </button></div>
+          </div>
+        </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
+      </div>
+      <h4>Constructor Arguments</h4>
+      <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-2">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!---->
+        <div class="v-card-text">
+          <div class="v-input v-input--horizontal v-input--density-compact v-theme--light v-locale--is-ltr v-textarea v-text-field">
+            <!---->
+            <div class="v-input__control">
+              <div class="v-field v-field--variant-outlined v-theme--light v-locale--is-ltr">
+                <div class="v-field__overlay"></div>
+                <div class="v-field__loader">
+                  <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                    <!---->
+                    <div class="v-progress-linear__background"></div>
+                    <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                    <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                      <div class="v-progress-linear__indeterminate">
+                        <div class="v-progress-linear__indeterminate long"></div>
+                        <div class="v-progress-linear__indeterminate short"></div>
+                      </div>
+                    </transition-stub>
+                    <!---->
+                  </div>
+                </div>
+                <!---->
+                <div class="v-field__field" data-no-activator="">
+                  <!----><label class="v-label v-field-label" for="input-22">
+                    <!---->Constructor Arguments (ABI Encoded)
+                  </label>
+                  <!----><textarea class="v-field__input" rows="3" id="input-22" aria-describedby="input-22-messages" primary=""></textarea>
+                  <!---->
+                  <!---->
+                </div>
+                <!---->
+                <!---->
+                <div class="v-field__outline">
+                  <div class="v-field__outline__start"></div>
+                  <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-22">
+                      <!---->Constructor Arguments (ABI Encoded)
+                    </label></div>
+                  <div class="v-field__outline__end"></div>
+                  <!---->
+                </div>
+              </div>
+            </div>
+            <!---->
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
+      </div>
+    </form><button type="button" class="v-btn v-btn--disabled v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat bg-primary" disabled=""><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+      <!----><span class="v-btn__content" data-no-activator="">Verify</span>
+      <!---->
+      <!---->
+    </button>
+  </div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
+`;
+
+exports[`ContractVerification.vue > Should handle file upload 1`] = `
+"<div class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-6">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
+        </div>
+      </transition-stub>
+      <!---->
+    </div>
+  </div>
+  <!---->
+  <!---->
+  <div class="v-card-title">Contract Verification</div>
+  <div class="v-card-text">
+    <!--v-if-->
+    <form class="v-form" novalidate="">
+      <h4>Compiler Settings</h4>
+      <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-2">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!---->
+        <div class="v-card-text">
+          <div class="v-row">
+            <div class="v-col v-col-4">
+              <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field v-select v-select--single v-select--selected">
+                <!---->
+                <div class="v-input__control">
+                  <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="v-menu-2">
+                    <div class="v-field__overlay"></div>
+                    <div class="v-field__loader">
+                      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                        <!---->
+                        <div class="v-progress-linear__background"></div>
+                        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                          <div class="v-progress-linear__indeterminate">
+                            <div class="v-progress-linear__indeterminate long"></div>
+                            <div class="v-progress-linear__indeterminate short"></div>
+                          </div>
+                        </transition-stub>
+                        <!---->
+                      </div>
+                    </div>
+                    <!---->
+                    <div class="v-field__field" data-no-activator="">
+                      <!----><label class="v-label v-field-label" for="input-0">
+                        <!---->Compiler Version *
+                      </label>
+                      <!---->
+                      <div class="v-field__input" data-no-activator="">
+                        <!---->
+                        <!---->
+                        <div class="v-select__selection"><span class="v-select__selection-text">v0.7.0<!----></span></div><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" inputmode="none" aria-label="Open" title="Open" value="v0.7.0">
+                      </div>
+                      <!---->
+                    </div>
+                    <!---->
+                    <div class="v-field__append-inner">
+                      <!----><i class="mdi-menu-down mdi v-icon notranslate v-theme--light v-icon--size-default v-select__menu-icon" aria-hidden="true"></i>
+                      <!---->
+                    </div>
+                    <div class="v-field__outline">
+                      <div class="v-field__outline__start"></div>
+                      <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
+                          <!---->Compiler Version *
+                        </label></div>
+                      <div class="v-field__outline__end"></div>
+                      <!---->
+                    </div>
+                  </div>
+                </div>
+                <!---->
+                <!---->
+              </div>
+            </div>
+            <div class="v-col v-col-3">
+              <div class="v-input v-input--horizontal v-input--center-affix v-input--density-default v-theme--light v-locale--is-ltr v-input--dirty v-checkbox">
+                <!---->
+                <div class="v-input__control">
+                  <div class="v-selection-control v-selection-control--density-default v-checkbox-btn">
+                    <div class="v-selection-control__wrapper">
+                      <!---->
+                      <div class="v-selection-control__input"><i class="mdi-checkbox-blank-outline mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i><input id="checkbox-3" aria-disabled="false" aria-label="Show nightly builds" type="checkbox" aria-describedby="checkbox-3-messages" value="true"></div>
+                    </div><label class="v-label v-label--clickable" for="checkbox-3">
+                      <!---->Show nightly builds
+                    </label>
+                  </div>
+                </div>
+                <!---->
+                <!---->
+              </div>
+            </div>
+          </div>
+          <div class="v-row">
+            <div class="v-col v-col-4">
+              <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field v-select v-select--single v-select--selected">
+                <!---->
+                <div class="v-input__control">
+                  <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="v-menu-8">
+                    <div class="v-field__overlay"></div>
+                    <div class="v-field__loader">
+                      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                        <!---->
+                        <div class="v-progress-linear__background"></div>
+                        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                          <div class="v-progress-linear__indeterminate">
+                            <div class="v-progress-linear__indeterminate long"></div>
+                            <div class="v-progress-linear__indeterminate short"></div>
+                          </div>
+                        </transition-stub>
+                        <!---->
+                      </div>
+                    </div>
+                    <!---->
+                    <div class="v-field__field" data-no-activator="">
+                      <!----><label class="v-label v-field-label" for="input-6">
+                        <!---->EVM Version *
+                      </label>
+                      <!---->
+                      <div class="v-field__input" data-no-activator="">
+                        <!---->
+                        <!---->
+                        <div class="v-select__selection"><span class="v-select__selection-text">default (compiler default)<!----></span></div><input size="1" type="text" id="input-6" aria-describedby="input-6-messages" inputmode="none" aria-label="Open" title="Open" value="">
+                      </div>
+                      <!---->
+                    </div>
+                    <!---->
+                    <div class="v-field__append-inner">
+                      <!----><i class="mdi-menu-down mdi v-icon notranslate v-theme--light v-icon--size-default v-select__menu-icon" aria-hidden="true"></i>
+                      <!---->
+                    </div>
+                    <div class="v-field__outline">
+                      <div class="v-field__outline__start"></div>
+                      <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-6">
+                          <!---->EVM Version *
+                        </label></div>
+                      <div class="v-field__outline__end"></div>
+                      <!---->
+                    </div>
+                  </div>
+                </div>
+                <!---->
+                <!---->
+              </div>
+            </div>
+          </div>
+          <div class="v-row">
+            <div class="v-col v-col-2">
+              <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field v-select v-select--single v-select--selected">
+                <!---->
+                <div class="v-input__control">
+                  <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="v-menu-11">
+                    <div class="v-field__overlay"></div>
+                    <div class="v-field__loader">
+                      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                        <!---->
+                        <div class="v-progress-linear__background"></div>
+                        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                          <div class="v-progress-linear__indeterminate">
+                            <div class="v-progress-linear__indeterminate long"></div>
+                            <div class="v-progress-linear__indeterminate short"></div>
+                          </div>
+                        </transition-stub>
+                        <!---->
+                      </div>
+                    </div>
+                    <!---->
+                    <div class="v-field__field" data-no-activator="">
+                      <!----><label class="v-label v-field-label" for="input-9">
+                        <!---->Optimization *
+                      </label>
+                      <!---->
+                      <div class="v-field__input" data-no-activator="">
+                        <!---->
+                        <!---->
+                        <div class="v-select__selection"><span class="v-select__selection-text">No<!----></span></div><input size="1" type="text" id="input-9" aria-describedby="input-9-messages" inputmode="none" aria-label="Open" title="Open" value="false">
+                      </div>
+                      <!---->
+                    </div>
+                    <!---->
+                    <div class="v-field__append-inner">
+                      <!----><i class="mdi-menu-down mdi v-icon notranslate v-theme--light v-icon--size-default v-select__menu-icon" aria-hidden="true"></i>
+                      <!---->
+                    </div>
+                    <div class="v-field__outline">
+                      <div class="v-field__outline__start"></div>
+                      <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-9">
+                          <!---->Optimization *
+                        </label></div>
+                      <div class="v-field__outline__end"></div>
+                      <!---->
+                    </div>
+                  </div>
+                </div>
+                <!---->
+                <!---->
+              </div>
+            </div>
+            <div class="v-col v-col-2">
+              <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field" style="display: none;">
+                <!---->
+                <div class="v-input__control">
+                  <div class="v-field v-field--center-affix v-field--variant-outlined v-theme--light v-locale--is-ltr">
+                    <div class="v-field__overlay"></div>
+                    <div class="v-field__loader">
+                      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                        <!---->
+                        <div class="v-progress-linear__background"></div>
+                        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                          <div class="v-progress-linear__indeterminate">
+                            <div class="v-progress-linear__indeterminate long"></div>
+                            <div class="v-progress-linear__indeterminate short"></div>
+                          </div>
+                        </transition-stub>
+                        <!---->
+                      </div>
+                    </div>
+                    <!---->
+                    <div class="v-field__field" data-no-activator="">
+                      <!----><label class="v-label v-field-label" for="input-12">
+                        <!---->Runs *
+                      </label>
+                      <!----><input size="1" type="number" id="input-12" aria-describedby="input-12-messages" small="" class="v-field__input">
+                      <!---->
+                    </div>
+                    <!---->
+                    <!---->
+                    <div class="v-field__outline">
+                      <div class="v-field__outline__start"></div>
+                      <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-12">
+                          <!---->Runs *
+                        </label></div>
+                      <div class="v-field__outline__end"></div>
+                      <!---->
+                    </div>
+                  </div>
+                </div>
+                <!---->
+                <!---->
+              </div>
+            </div>
+          </div>
+          <div class="v-row mt-0">
+            <div class="v-col v-col-2">
+              <div class="v-input v-input--horizontal v-input--center-affix v-input--density-default v-theme--light v-locale--is-ltr v-input--dirty v-checkbox">
+                <!---->
+                <div class="v-input__control">
+                  <div class="v-selection-control v-selection-control--density-default v-checkbox-btn">
+                    <div class="v-selection-control__wrapper">
+                      <!---->
+                      <div class="v-selection-control__input"><i class="mdi-checkbox-blank-outline mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i><input id="checkbox-14" aria-disabled="false" aria-label="Via IR" type="checkbox" aria-describedby="checkbox-14-messages" value="true"></div>
+                    </div><label class="v-label v-label--clickable" for="checkbox-14">
+                      <!---->Via IR
+                    </label>
+                  </div>
+                </div>
+                <!---->
+                <!---->
+              </div>
+            </div>
+          </div>
+        </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
+      </div>
+      <h4>Contract</h4>
+      <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-2">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!---->
+        <div class="v-card-text">
+          <div class="v-row">
+            <div class="v-col v-col-4 pb-0">
+              <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field">
+                <!---->
+                <div class="v-input__control">
+                  <div class="v-field v-field--center-affix v-field--variant-outlined v-theme--light v-locale--is-ltr">
+                    <div class="v-field__overlay"></div>
+                    <div class="v-field__loader">
+                      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                        <!---->
+                        <div class="v-progress-linear__background"></div>
+                        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                          <div class="v-progress-linear__indeterminate">
+                            <div class="v-progress-linear__indeterminate long"></div>
+                            <div class="v-progress-linear__indeterminate short"></div>
+                          </div>
+                        </transition-stub>
+                        <!---->
+                      </div>
+                    </div>
+                    <!---->
+                    <div class="v-field__field" data-no-activator="">
+                      <!----><label class="v-label v-field-label" for="input-17">
+                        <!---->Contract Name *
+                      </label>
+                      <!----><input size="1" type="text" id="input-17" aria-describedby="input-17-messages" small="" class="v-field__input">
+                      <!---->
+                    </div>
+                    <!---->
+                    <!---->
+                    <div class="v-field__outline">
+                      <div class="v-field__outline__start"></div>
+                      <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-17">
+                          <!---->Contract Name *
+                        </label></div>
+                      <div class="v-field__outline__end"></div>
+                      <!---->
+                    </div>
+                  </div>
+                </div>
+                <!---->
+                <div id="input-17-messages" class="v-input__details" role="alert" aria-live="polite">
+                  <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
+                    <!---->
+                  </transition-group-stub>
+                  <!---->
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="v-row">
+            <div class="v-col v-col-6 pt-0">
+              <div class="v-input v-input--horizontal v-input--center-affix v-input--density-default v-theme--light v-locale--is-ltr v-input--dirty v-file-input">
+                <!---->
+                <div class="v-input__control">
+                  <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--prepended v-field--variant-outlined v-theme--light v-locale--is-ltr" prepend-icon="">
+                    <div class="v-field__overlay"></div>
+                    <div class="v-field__loader">
+                      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                        <!---->
+                        <div class="v-progress-linear__background"></div>
+                        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                          <div class="v-progress-linear__indeterminate">
+                            <div class="v-progress-linear__indeterminate long"></div>
+                            <div class="v-progress-linear__indeterminate short"></div>
+                          </div>
+                        </transition-stub>
+                        <!---->
+                      </div>
+                    </div>
+                    <div class="v-field__prepend-inner"><i class="mdi-paperclip mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i>
+                      <!---->
+                    </div>
+                    <div class="v-field__field" data-no-activator="">
+                      <!----><label class="v-label v-field-label" for="input-19">
+                        <!---->Contract Files *
+                      </label><input type="file" multiple="" id="input-19" aria-describedby="input-19-messages" accept=".sol" small-chips="">
+                      <div class="v-field__input">Test.sol (16 B)</div>
+                    </div>
+                    <transition-stub name="expand-x-transition" appear="false" persisted="false" css="true">
+                      <div class="v-field__clearable" style=""><i class="mdi-close-circle mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--clickable" role="button" aria-hidden="false" tabindex="0" aria-label="Clear Contract Files *"></i></div>
+                    </transition-stub>
+                    <div class="v-field__append-inner">
+                      <!---->
+                      <!---->
+                    </div>
+                    <div class="v-field__outline">
+                      <div class="v-field__outline__start"></div>
+                      <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-19">
+                          <!---->Contract Files *
+                        </label></div>
+                      <div class="v-field__outline__end"></div>
+                      <!---->
+                    </div>
+                  </div>
+                </div>
+                <!---->
+                <div id="input-19-messages" class="v-input__details" role="alert" aria-live="polite">
+                  <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
+                    <div class="v-messages__message">To add multiple files, select them all at once.</div>
+                  </transition-group-stub>
+                  <!----><span></span>
+                  <transition-stub name="slide-y-transition" appear="false" persisted="false" css="true">
+                    <div class="v-counter" style="">1 files (16 B in total)</div>
+                  </transition-stub>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
+      </div>
+      <h4>Libraries Linking</h4>
+      <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-2">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!---->
+        <div class="v-card-text">
+          <div class="v-row">
+            <div class="v-col v-col-2"><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat bg-primary"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator="">Add Library</span>
+                <!---->
+                <!---->
+              </button></div>
+          </div>
+        </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
+      </div>
+      <h4>Constructor Arguments</h4>
+      <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-2">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!---->
+        <div class="v-card-text">
+          <div class="v-input v-input--horizontal v-input--density-compact v-theme--light v-locale--is-ltr v-textarea v-text-field">
+            <!---->
+            <div class="v-input__control">
+              <div class="v-field v-field--variant-outlined v-theme--light v-locale--is-ltr">
+                <div class="v-field__overlay"></div>
+                <div class="v-field__loader">
+                  <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                    <!---->
+                    <div class="v-progress-linear__background"></div>
+                    <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                    <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                      <div class="v-progress-linear__indeterminate">
+                        <div class="v-progress-linear__indeterminate long"></div>
+                        <div class="v-progress-linear__indeterminate short"></div>
+                      </div>
+                    </transition-stub>
+                    <!---->
+                  </div>
+                </div>
+                <!---->
+                <div class="v-field__field" data-no-activator="">
+                  <!----><label class="v-label v-field-label" for="input-22">
+                    <!---->Constructor Arguments (ABI Encoded)
+                  </label>
+                  <!----><textarea class="v-field__input" rows="3" id="input-22" aria-describedby="input-22-messages" primary=""></textarea>
+                  <!---->
+                  <!---->
+                </div>
+                <!---->
+                <!---->
+                <div class="v-field__outline">
+                  <div class="v-field__outline__start"></div>
+                  <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-22">
+                      <!---->Constructor Arguments (ABI Encoded)
+                    </label></div>
+                  <div class="v-field__outline__end"></div>
+                  <!---->
+                </div>
+              </div>
+            </div>
+            <!---->
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
+      </div>
+    </form><button type="button" class="v-btn v-btn--disabled v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat bg-primary" disabled=""><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+      <!----><span class="v-btn__content" data-no-activator="">Verify</span>
+      <!---->
+      <!---->
+    </button>
+  </div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
+`;
+
+exports[`ContractVerification.vue > Should handle library management 1`] = `
+"<div class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-6">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
+        </div>
+      </transition-stub>
+      <!---->
+    </div>
+  </div>
+  <!---->
+  <!---->
+  <div class="v-card-title">Contract Verification</div>
+  <div class="v-card-text">
+    <!--v-if-->
+    <form class="v-form" novalidate="">
+      <h4>Compiler Settings</h4>
+      <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-2">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!---->
+        <div class="v-card-text">
+          <div class="v-row">
+            <div class="v-col v-col-4">
+              <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field v-select v-select--single v-select--selected">
+                <!---->
+                <div class="v-input__control">
+                  <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="v-menu-2">
+                    <div class="v-field__overlay"></div>
+                    <div class="v-field__loader">
+                      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                        <!---->
+                        <div class="v-progress-linear__background"></div>
+                        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                          <div class="v-progress-linear__indeterminate">
+                            <div class="v-progress-linear__indeterminate long"></div>
+                            <div class="v-progress-linear__indeterminate short"></div>
+                          </div>
+                        </transition-stub>
+                        <!---->
+                      </div>
+                    </div>
+                    <!---->
+                    <div class="v-field__field" data-no-activator="">
+                      <!----><label class="v-label v-field-label" for="input-0">
+                        <!---->Compiler Version *
+                      </label>
+                      <!---->
+                      <div class="v-field__input" data-no-activator="">
+                        <!---->
+                        <!---->
+                        <div class="v-select__selection"><span class="v-select__selection-text">v0.7.0<!----></span></div><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" inputmode="none" aria-label="Open" title="Open" value="v0.7.0">
+                      </div>
+                      <!---->
+                    </div>
+                    <!---->
+                    <div class="v-field__append-inner">
+                      <!----><i class="mdi-menu-down mdi v-icon notranslate v-theme--light v-icon--size-default v-select__menu-icon" aria-hidden="true"></i>
+                      <!---->
+                    </div>
+                    <div class="v-field__outline">
+                      <div class="v-field__outline__start"></div>
+                      <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
+                          <!---->Compiler Version *
+                        </label></div>
+                      <div class="v-field__outline__end"></div>
+                      <!---->
+                    </div>
+                  </div>
+                </div>
+                <!---->
+                <!---->
+              </div>
+            </div>
+            <div class="v-col v-col-3">
+              <div class="v-input v-input--horizontal v-input--center-affix v-input--density-default v-theme--light v-locale--is-ltr v-input--dirty v-checkbox">
+                <!---->
+                <div class="v-input__control">
+                  <div class="v-selection-control v-selection-control--density-default v-checkbox-btn">
+                    <div class="v-selection-control__wrapper">
+                      <!---->
+                      <div class="v-selection-control__input"><i class="mdi-checkbox-blank-outline mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i><input id="checkbox-3" aria-disabled="false" aria-label="Show nightly builds" type="checkbox" aria-describedby="checkbox-3-messages" value="true"></div>
+                    </div><label class="v-label v-label--clickable" for="checkbox-3">
+                      <!---->Show nightly builds
+                    </label>
+                  </div>
+                </div>
+                <!---->
+                <!---->
+              </div>
+            </div>
+          </div>
+          <div class="v-row">
+            <div class="v-col v-col-4">
+              <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field v-select v-select--single v-select--selected">
+                <!---->
+                <div class="v-input__control">
+                  <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="v-menu-8">
+                    <div class="v-field__overlay"></div>
+                    <div class="v-field__loader">
+                      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                        <!---->
+                        <div class="v-progress-linear__background"></div>
+                        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                          <div class="v-progress-linear__indeterminate">
+                            <div class="v-progress-linear__indeterminate long"></div>
+                            <div class="v-progress-linear__indeterminate short"></div>
+                          </div>
+                        </transition-stub>
+                        <!---->
+                      </div>
+                    </div>
+                    <!---->
+                    <div class="v-field__field" data-no-activator="">
+                      <!----><label class="v-label v-field-label" for="input-6">
+                        <!---->EVM Version *
+                      </label>
+                      <!---->
+                      <div class="v-field__input" data-no-activator="">
+                        <!---->
+                        <!---->
+                        <div class="v-select__selection"><span class="v-select__selection-text">default (compiler default)<!----></span></div><input size="1" type="text" id="input-6" aria-describedby="input-6-messages" inputmode="none" aria-label="Open" title="Open" value="">
+                      </div>
+                      <!---->
+                    </div>
+                    <!---->
+                    <div class="v-field__append-inner">
+                      <!----><i class="mdi-menu-down mdi v-icon notranslate v-theme--light v-icon--size-default v-select__menu-icon" aria-hidden="true"></i>
+                      <!---->
+                    </div>
+                    <div class="v-field__outline">
+                      <div class="v-field__outline__start"></div>
+                      <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-6">
+                          <!---->EVM Version *
+                        </label></div>
+                      <div class="v-field__outline__end"></div>
+                      <!---->
+                    </div>
+                  </div>
+                </div>
+                <!---->
+                <!---->
+              </div>
+            </div>
+          </div>
+          <div class="v-row">
+            <div class="v-col v-col-2">
+              <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field v-select v-select--single v-select--selected">
+                <!---->
+                <div class="v-input__control">
+                  <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="v-menu-11">
+                    <div class="v-field__overlay"></div>
+                    <div class="v-field__loader">
+                      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                        <!---->
+                        <div class="v-progress-linear__background"></div>
+                        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                          <div class="v-progress-linear__indeterminate">
+                            <div class="v-progress-linear__indeterminate long"></div>
+                            <div class="v-progress-linear__indeterminate short"></div>
+                          </div>
+                        </transition-stub>
+                        <!---->
+                      </div>
+                    </div>
+                    <!---->
+                    <div class="v-field__field" data-no-activator="">
+                      <!----><label class="v-label v-field-label" for="input-9">
+                        <!---->Optimization *
+                      </label>
+                      <!---->
+                      <div class="v-field__input" data-no-activator="">
+                        <!---->
+                        <!---->
+                        <div class="v-select__selection"><span class="v-select__selection-text">No<!----></span></div><input size="1" type="text" id="input-9" aria-describedby="input-9-messages" inputmode="none" aria-label="Open" title="Open" value="false">
+                      </div>
+                      <!---->
+                    </div>
+                    <!---->
+                    <div class="v-field__append-inner">
+                      <!----><i class="mdi-menu-down mdi v-icon notranslate v-theme--light v-icon--size-default v-select__menu-icon" aria-hidden="true"></i>
+                      <!---->
+                    </div>
+                    <div class="v-field__outline">
+                      <div class="v-field__outline__start"></div>
+                      <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-9">
+                          <!---->Optimization *
+                        </label></div>
+                      <div class="v-field__outline__end"></div>
+                      <!---->
+                    </div>
+                  </div>
+                </div>
+                <!---->
+                <!---->
+              </div>
+            </div>
+            <div class="v-col v-col-2">
+              <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field" style="display: none;">
+                <!---->
+                <div class="v-input__control">
+                  <div class="v-field v-field--center-affix v-field--variant-outlined v-theme--light v-locale--is-ltr">
+                    <div class="v-field__overlay"></div>
+                    <div class="v-field__loader">
+                      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                        <!---->
+                        <div class="v-progress-linear__background"></div>
+                        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                          <div class="v-progress-linear__indeterminate">
+                            <div class="v-progress-linear__indeterminate long"></div>
+                            <div class="v-progress-linear__indeterminate short"></div>
+                          </div>
+                        </transition-stub>
+                        <!---->
+                      </div>
+                    </div>
+                    <!---->
+                    <div class="v-field__field" data-no-activator="">
+                      <!----><label class="v-label v-field-label" for="input-12">
+                        <!---->Runs *
+                      </label>
+                      <!----><input size="1" type="number" id="input-12" aria-describedby="input-12-messages" small="" class="v-field__input">
+                      <!---->
+                    </div>
+                    <!---->
+                    <!---->
+                    <div class="v-field__outline">
+                      <div class="v-field__outline__start"></div>
+                      <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-12">
+                          <!---->Runs *
+                        </label></div>
+                      <div class="v-field__outline__end"></div>
+                      <!---->
+                    </div>
+                  </div>
+                </div>
+                <!---->
+                <!---->
+              </div>
+            </div>
+          </div>
+          <div class="v-row mt-0">
+            <div class="v-col v-col-2">
+              <div class="v-input v-input--horizontal v-input--center-affix v-input--density-default v-theme--light v-locale--is-ltr v-input--dirty v-checkbox">
+                <!---->
+                <div class="v-input__control">
+                  <div class="v-selection-control v-selection-control--density-default v-checkbox-btn">
+                    <div class="v-selection-control__wrapper">
+                      <!---->
+                      <div class="v-selection-control__input"><i class="mdi-checkbox-blank-outline mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i><input id="checkbox-14" aria-disabled="false" aria-label="Via IR" type="checkbox" aria-describedby="checkbox-14-messages" value="true"></div>
+                    </div><label class="v-label v-label--clickable" for="checkbox-14">
+                      <!---->Via IR
+                    </label>
+                  </div>
+                </div>
+                <!---->
+                <!---->
+              </div>
+            </div>
+          </div>
+        </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
+      </div>
+      <h4>Contract</h4>
+      <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-2">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!---->
+        <div class="v-card-text">
+          <div class="v-row">
+            <div class="v-col v-col-4 pb-0">
+              <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field">
+                <!---->
+                <div class="v-input__control">
+                  <div class="v-field v-field--center-affix v-field--variant-outlined v-theme--light v-locale--is-ltr">
+                    <div class="v-field__overlay"></div>
+                    <div class="v-field__loader">
+                      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                        <!---->
+                        <div class="v-progress-linear__background"></div>
+                        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                          <div class="v-progress-linear__indeterminate">
+                            <div class="v-progress-linear__indeterminate long"></div>
+                            <div class="v-progress-linear__indeterminate short"></div>
+                          </div>
+                        </transition-stub>
+                        <!---->
+                      </div>
+                    </div>
+                    <!---->
+                    <div class="v-field__field" data-no-activator="">
+                      <!----><label class="v-label v-field-label" for="input-17">
+                        <!---->Contract Name *
+                      </label>
+                      <!----><input size="1" type="text" id="input-17" aria-describedby="input-17-messages" small="" class="v-field__input">
+                      <!---->
+                    </div>
+                    <!---->
+                    <!---->
+                    <div class="v-field__outline">
+                      <div class="v-field__outline__start"></div>
+                      <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-17">
+                          <!---->Contract Name *
+                        </label></div>
+                      <div class="v-field__outline__end"></div>
+                      <!---->
+                    </div>
+                  </div>
+                </div>
+                <!---->
+                <div id="input-17-messages" class="v-input__details" role="alert" aria-live="polite">
+                  <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
+                    <!---->
+                  </transition-group-stub>
+                  <!---->
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="v-row">
+            <div class="v-col v-col-6 pt-0">
+              <div class="v-input v-input--horizontal v-input--center-affix v-input--density-default v-theme--light v-locale--is-ltr v-file-input">
+                <!---->
+                <div class="v-input__control">
+                  <div class="v-field v-field--appended v-field--center-affix v-field--prepended v-field--variant-outlined v-theme--light v-locale--is-ltr" prepend-icon="">
+                    <div class="v-field__overlay"></div>
+                    <div class="v-field__loader">
+                      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                        <!---->
+                        <div class="v-progress-linear__background"></div>
+                        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                          <div class="v-progress-linear__indeterminate">
+                            <div class="v-progress-linear__indeterminate long"></div>
+                            <div class="v-progress-linear__indeterminate short"></div>
+                          </div>
+                        </transition-stub>
+                        <!---->
+                      </div>
+                    </div>
+                    <div class="v-field__prepend-inner"><i class="mdi-paperclip mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i>
+                      <!---->
+                    </div>
+                    <div class="v-field__field" data-no-activator="">
+                      <!----><label class="v-label v-field-label" for="input-19">
+                        <!---->Contract Files *
+                      </label><input type="file" multiple="" id="input-19" aria-describedby="input-19-messages" accept=".sol" small-chips="">
+                      <div class="v-field__input">
+                        <!---->
+                      </div>
+                    </div>
+                    <transition-stub name="expand-x-transition" appear="false" persisted="false" css="true">
+                      <div class="v-field__clearable" style="display: none;"><i class="mdi-close-circle mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--clickable" role="button" aria-hidden="false" tabindex="0" aria-label="Clear Contract Files *"></i></div>
+                    </transition-stub>
+                    <div class="v-field__append-inner">
+                      <!---->
+                      <!---->
+                    </div>
+                    <div class="v-field__outline">
+                      <div class="v-field__outline__start"></div>
+                      <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-19">
+                          <!---->Contract Files *
+                        </label></div>
+                      <div class="v-field__outline__end"></div>
+                      <!---->
+                    </div>
+                  </div>
+                </div>
+                <!---->
+                <div id="input-19-messages" class="v-input__details" role="alert" aria-live="polite">
+                  <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
+                    <div class="v-messages__message">To add multiple files, select them all at once.</div>
+                  </transition-group-stub>
+                  <!----><span></span>
+                  <transition-stub name="slide-y-transition" appear="false" persisted="false" css="true">
+                    <div class="v-counter" style="display: none;">0 files (0 B in total)</div>
+                  </transition-stub>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
+      </div>
+      <h4>Libraries Linking</h4>
+      <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-2">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!---->
+        <div class="v-card-text">
+          <div class="v-row align-center">
+            <div class="v-col v-col-3 pb-1">
+              <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field">
+                <!---->
+                <div class="v-input__control">
+                  <div class="v-field v-field--center-affix v-field--variant-outlined v-theme--light v-locale--is-ltr">
+                    <div class="v-field__overlay"></div>
+                    <div class="v-field__loader">
+                      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                        <!---->
+                        <div class="v-progress-linear__background"></div>
+                        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                          <div class="v-progress-linear__indeterminate">
+                            <div class="v-progress-linear__indeterminate long"></div>
+                            <div class="v-progress-linear__indeterminate short"></div>
+                          </div>
+                        </transition-stub>
+                        <!---->
+                      </div>
+                    </div>
+                    <!---->
+                    <div class="v-field__field" data-no-activator="">
+                      <!----><label class="v-label v-field-label" for="input-25">
+                        <!---->Library Name *
+                      </label>
+                      <!----><input size="1" type="text" id="input-25" aria-describedby="input-25-messages" small="" class="v-field__input">
+                      <!---->
+                    </div>
+                    <!---->
+                    <!---->
+                    <div class="v-field__outline">
+                      <div class="v-field__outline__start"></div>
+                      <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-25">
+                          <!---->Library Name *
+                        </label></div>
+                      <div class="v-field__outline__end"></div>
+                      <!---->
+                    </div>
+                  </div>
+                </div>
+                <!---->
+                <div id="input-25-messages" class="v-input__details" role="alert" aria-live="polite">
+                  <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
+                    <div class="v-messages__message">Format: MyFile.sol:LibraryName</div>
+                  </transition-group-stub>
+                  <!---->
+                </div>
+              </div>
+            </div>
+            <div class="v-col v-col-4 pb-1">
+              <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field">
+                <!---->
+                <div class="v-input__control">
+                  <div class="v-field v-field--center-affix v-field--variant-outlined v-theme--light v-locale--is-ltr">
+                    <div class="v-field__overlay"></div>
+                    <div class="v-field__loader">
+                      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                        <!---->
+                        <div class="v-progress-linear__background"></div>
+                        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                          <div class="v-progress-linear__indeterminate">
+                            <div class="v-progress-linear__indeterminate long"></div>
+                            <div class="v-progress-linear__indeterminate short"></div>
+                          </div>
+                        </transition-stub>
+                        <!---->
+                      </div>
+                    </div>
+                    <!---->
+                    <div class="v-field__field" data-no-activator="">
+                      <!----><label class="v-label v-field-label" for="input-27">
+                        <!---->Library Address *
+                      </label>
+                      <!----><input size="1" type="text" id="input-27" aria-describedby="input-27-messages" small="" class="v-field__input">
+                      <!---->
+                    </div>
+                    <!---->
+                    <!---->
+                    <div class="v-field__outline">
+                      <div class="v-field__outline__start"></div>
+                      <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-27">
+                          <!---->Library Address *
+                        </label></div>
+                      <div class="v-field__outline__end"></div>
+                      <!---->
+                    </div>
+                  </div>
+                </div>
+                <!---->
+                <div id="input-27-messages" class="v-input__details" role="alert" aria-live="polite">
+                  <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
+                    <!---->
+                  </transition-group-stub>
+                  <!---->
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="v-row">
+            <div class="v-col v-col-2"><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat bg-primary"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator="">Add Library</span>
+                <!---->
+                <!---->
+              </button></div>
+          </div>
+        </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
+      </div>
+      <h4>Constructor Arguments</h4>
+      <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-2">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!---->
+        <div class="v-card-text">
+          <div class="v-input v-input--horizontal v-input--density-compact v-theme--light v-locale--is-ltr v-textarea v-text-field">
+            <!---->
+            <div class="v-input__control">
+              <div class="v-field v-field--variant-outlined v-theme--light v-locale--is-ltr">
+                <div class="v-field__overlay"></div>
+                <div class="v-field__loader">
+                  <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                    <!---->
+                    <div class="v-progress-linear__background"></div>
+                    <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                    <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                      <div class="v-progress-linear__indeterminate">
+                        <div class="v-progress-linear__indeterminate long"></div>
+                        <div class="v-progress-linear__indeterminate short"></div>
+                      </div>
+                    </transition-stub>
+                    <!---->
+                  </div>
+                </div>
+                <!---->
+                <div class="v-field__field" data-no-activator="">
+                  <!----><label class="v-label v-field-label" for="input-22">
+                    <!---->Constructor Arguments (ABI Encoded)
+                  </label>
+                  <!----><textarea class="v-field__input" rows="3" id="input-22" aria-describedby="input-22-messages" primary=""></textarea>
+                  <!---->
+                  <!---->
+                </div>
+                <!---->
+                <!---->
+                <div class="v-field__outline">
+                  <div class="v-field__outline__start"></div>
+                  <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-22">
+                      <!---->Constructor Arguments (ABI Encoded)
+                    </label></div>
+                  <div class="v-field__outline__end"></div>
+                  <!---->
+                </div>
+              </div>
+            </div>
+            <!---->
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
+      </div>
+    </form><button type="button" class="v-btn v-btn--disabled v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat bg-primary" disabled=""><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+      <!----><span class="v-btn__content" data-no-activator="">Verify</span>
+      <!---->
+      <!---->
+    </button>
+  </div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
+`;
+
+exports[`ContractVerification.vue > Should load the UI with compiler versions 1`] = `
+"<div class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-6">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
+        </div>
+      </transition-stub>
+      <!---->
+    </div>
+  </div>
+  <!---->
+  <!---->
+  <div class="v-card-title">Contract Verification</div>
+  <div class="v-card-text">
+    <!--v-if-->
+    <form class="v-form" novalidate="">
+      <h4>Compiler Settings</h4>
+      <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-2">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!---->
+        <div class="v-card-text">
+          <div class="v-row">
+            <div class="v-col v-col-4">
+              <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field v-select v-select--single v-select--selected">
+                <!---->
+                <div class="v-input__control">
+                  <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="v-menu-2">
+                    <div class="v-field__overlay"></div>
+                    <div class="v-field__loader">
+                      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                        <!---->
+                        <div class="v-progress-linear__background"></div>
+                        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                          <div class="v-progress-linear__indeterminate">
+                            <div class="v-progress-linear__indeterminate long"></div>
+                            <div class="v-progress-linear__indeterminate short"></div>
+                          </div>
+                        </transition-stub>
+                        <!---->
+                      </div>
+                    </div>
+                    <!---->
+                    <div class="v-field__field" data-no-activator="">
+                      <!----><label class="v-label v-field-label" for="input-0">
+                        <!---->Compiler Version *
+                      </label>
+                      <!---->
+                      <div class="v-field__input" data-no-activator="">
+                        <!---->
+                        <!---->
+                        <div class="v-select__selection"><span class="v-select__selection-text">v0.7.0<!----></span></div><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" inputmode="none" aria-label="Open" title="Open" value="v0.7.0">
                       </div>
                       <!---->
                     </div>

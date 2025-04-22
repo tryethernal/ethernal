@@ -10,7 +10,6 @@
         :headers="headers"
         :hide-default-footer="dense"
         :hide-default-header="dense"
-        :row-props="rowClasses"
         no-data-text="No internal transactions indexed yet"
         last-icon=""
         first-icon=""
@@ -77,7 +76,7 @@
 </template>
 
 <script setup>
-import { defineProps, inject } from 'vue';
+import { inject } from 'vue';
 import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
 import HashLink from './HashLink.vue';
 
@@ -125,17 +124,4 @@ const onUpdateOptions = (options) => {
     emit('update:options', options);
 };
 
-const rowClasses = (item) => {
-    if (item && item.state === 'syncing') {
-        return 'isSyncing';
-    }
-    return '';
-};
 </script>
-
-<style scoped>
-:deep(.isSyncing) {
-    font-style: italic;
-    opacity: 0.7;
-}
-</style> 

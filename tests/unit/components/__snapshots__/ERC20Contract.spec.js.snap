@@ -38,7 +38,7 @@ exports[`ERC20Contract.vue > Should display contract info 1`] = `
       <!---->
       <!---->
       <div class="v-card-text">
-        <address-e-r-c20-token-transfer-stub address="0x123" tokendecimals="2" count="2"></address-e-r-c20-token-transfer-stub>
+        <address-e-r-c20-token-transfer-stub address="0x123" count="2"></address-e-r-c20-token-transfer-stub>
       </div>
       <!---->
       <!----><span class="v-card__underlay"></span>

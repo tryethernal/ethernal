@@ -1,0 +1,25 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`PublicExplorerFooter.vue > Should show the component 1`] = `
+"<footer data-v-2d6ebdb3="" class="v-footer v-theme--light footer" style="height: auto;">
+  <div data-v-2d6ebdb3="" class="v-container v-locale--is-ltr d-flex flex-column py-4">
+    <!-- Links Columns Row -->
+    <div data-v-2d6ebdb3="" class="d-flex flex-column flex-sm-row ga-md-8 ga-sm-1">
+      <div data-v-2d6ebdb3="" class="d-flex flex-column mb-8"><span data-v-2d6ebdb3="" class="text-body-2"> Block explorer &amp; data analytics platform for evm chains. </span><button data-v-2d6ebdb3="" type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-small v-btn--variant-outlined mt-2 px-2" style="max-width: 180px;" title="Add to MetaMask"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+          <!----><span class="v-btn__content" data-no-activator=""><img data-v-2d6ebdb3="" src="/src/assets/metamask-fox.svg" class="metamask-icon mr-2" width="20" height="20" alt="MetaMask"><span data-v-2d6ebdb3="" class="text-body-2">Add to Metamask</span></span>
+          <!---->
+          <!---->
+        </button></div>
+      <div data-v-2d6ebdb3="" class="d-flex flex-wrap">
+        <div data-v-2d6ebdb3="" class="d-flex flex-column ga-2 footer-links-section"><span data-v-2d6ebdb3="" class="text-subtitle-2">Resources</span><a data-v-2d6ebdb3="" class="text-decoration-none text-body-2" href="https://doc.tryethernal.com" target="_blank">Documentation</a><a data-v-2d6ebdb3="" class="text-decoration-none text-body-2" href="https://github.com/tryethernal" target="_blank">Github</a></div>
+        <div data-v-2d6ebdb3="" class="d-flex flex-column ga-2 footer-links-section"><span data-v-2d6ebdb3="" class="text-subtitle-2">Community</span><a data-v-2d6ebdb3="" class="text-decoration-none text-body-2" href="https://x.com/tryethernal" target="_blank">Twitter / X</a><a data-v-2d6ebdb3="" class="text-decoration-none text-body-2" href="https://discord.gg/jEAprf45jj" target="_blank">Discord</a><a data-v-2d6ebdb3="" class="text-decoration-none text-body-2" href="https://t.me/antoinedc" target="_blank">Telegram</a></div>
+        <div data-v-2d6ebdb3="" class="d-flex flex-column ga-2 footer-links-section"><span data-v-2d6ebdb3="" class="text-subtitle-2">Company</span><a data-v-2d6ebdb3="" class="text-decoration-none text-body-2" href="https://tryethernal.com" target="_blank">Home</a><a data-v-2d6ebdb3="" class="text-decoration-none text-body-2" href="https://tryethernal.com/contact-us" target="_blank">Contact Us</a><a data-v-2d6ebdb3="" class="text-decoration-none text-body-2" href="https://tryethernal.com/terms" target="_blank">Terms of Service</a><a data-v-2d6ebdb3="" class="text-decoration-none text-body-2" href="https://tryethernal.com/privacy" target="_blank">Privacy Policy</a></div>
+      </div>
+    </div>
+    <hr data-v-2d6ebdb3="" class="v-divider v-theme--light my-6" aria-orientation="horizontal" role="separator"><!-- Copyright and Donation Row -->
+    <div data-v-2d6ebdb3="" class="d-flex justify-space-between align-center">
+      <div data-v-2d6ebdb3="" class="text-caption"> Powered by <a data-v-2d6ebdb3="" href="https://tryethernal.com?ref=localhost:3000" target="_blank">Ethernal</a> | v1.2.3 | Made with 🍷 in France </div>
+    </div>
+  </div>
+</footer>"
+`;

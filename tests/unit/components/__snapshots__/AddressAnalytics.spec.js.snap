@@ -1,0 +1,43 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`AddressAnalytics.vue > Should load address analytics 1`] = `
+"<div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
+        </div>
+      </transition-stub>
+      <!---->
+    </div>
+  </div>
+  <!---->
+  <!---->
+  <div class="v-card-text pt-2">
+    <div class="v-row">
+      <div class="v-col v-col-12 d-flex justify-end ma-0 pb-0">
+        <date-range-selector-stub initialrange="30"></date-range-selector-stub>
+      </div>
+    </div>
+    <div class="v-row mt-0">
+      <div class="v-col-md-6 v-col-12">
+        <line-chart-stub title="Transactions" data="1" xlabels="2021-01-01" tooltipunit="Transaction"></line-chart-stub>
+      </div>
+      <div class="v-col-md-6 v-col-12">
+        <line-chart-stub title="Transaction Fees" data="1e-18" xlabels="2021-01-01" tokensymbol="ETH" floating=""></line-chart-stub>
+      </div>
+      <div class="v-col-md-6 v-col-12">
+        <multi-line-chart-stub title="Token Transfers" data="[object Object],[object Object]" xlabels="2021-01-01" tooltipunit="transfer"></multi-line-chart-stub>
+      </div>
+    </div>
+  </div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
+`;

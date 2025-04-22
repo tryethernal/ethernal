@@ -18,11 +18,11 @@
         item-key="address"
         @update:options="getHolders">
         <template v-slot:item.address="{ item }">
-            <Hash-Link :type="'address'" :hash="item.address" withName="true" :withTokenName="true" />
+            <Hash-Link :type="'address'" :hash="item.address" :withName="true" :withTokenName="true" />
         </template>
         <template v-slot:item.amount="{ item }">
             <span v-tooltip="item.amount">
-                {{ $fromWei(item.amount, tokenDecimals, tokenSymbol) }}
+                {{ fromWei(item.amount, tokenDecimals, tokenSymbol) }}
             </span>
         </template>
         <template v-slot:item.share="{ item }">
@@ -42,51 +42,80 @@
     </v-data-table-server>
 </template>
 
-<script>
+<script setup>
+import { ref, inject } from 'vue';
 import HashLink from './HashLink.vue';
 
-export default {
-    name: 'ERC20TokenHolders',
-    props: ['address', 'tokenDecimals', 'tokenSymbol'],
-    components: {
-        HashLink
+const props = defineProps({
+    address: {
+        type: String,
+        required: true
     },
-    data: () => ({
-        loading: true,
-        holders: [],
-        holderCount: 0,
-        headers: [
-            { title: 'Address', key: 'address' },
-            { title: 'Quantity', key: 'amount'},
-            { title: 'Percentage', key: 'share'}
-        ],
-        currentOptions: { page: 1, itemsPerPage: 10, sortBy: [{ key: 'amount', order: 'desc' }] }
-    }),
-    methods: {
-        getHolders({ page, itemsPerPage, sortBy } = {}) {
-            this.loading = true;
-
-            if (!page || !itemsPerPage || !sortBy || !sortBy.length)
-                return this.loading = false;
-
-            this.currentOptions = { page, itemsPerPage, sortBy };
-
-            this.$server.getTokenHolders(this.address, { page, itemsPerPage, orderBy: sortBy[0].key, order: sortBy[0].order })
-                .then(({ data }) => {
-                    this.holders = data.items;
-                    this.holderCount = data.total;
-                })
-                .catch(console.log)
-                .finally(() => this.loading = false);
-        },
-        formatShare(share) {
-            if (share > 0 && share < 0.0001) {
-                return '<0.01%';
-            }
-            return new Intl.NumberFormat('en-US', { style: 'percent', maximumFractionDigits: 2 }).format(share);
-        }
+    tokenDecimals: {
+        type: [String, Number],
+        required: true
+    },
+    tokenSymbol: {
+        type: String,
+        required: true
     }
-}
+});
+
+// Inject global properties
+const server = inject('$server');
+const fromWei = inject('$fromWei');
+
+const loading = ref(true);
+const holders = ref([]);
+const holderCount = ref(0);
+const currentOptions = ref({
+    page: 1,
+    itemsPerPage: 10,
+    sortBy: [{ key: 'amount', order: 'desc' }]
+});
+
+const headers = [
+    { title: 'Address', key: 'address' },
+    { title: 'Quantity', key: 'amount'},
+    { title: 'Percentage', key: 'share'}
+];
+
+const getHolders = async ({ page, itemsPerPage, sortBy } = {}) => {
+    loading.value = true;
+
+    if (!page || !itemsPerPage || !sortBy || !sortBy.length) {
+        loading.value = false;
+        return;
+    }
+
+    currentOptions.value = { page, itemsPerPage, sortBy };
+
+    try {
+        const { data } = await server.getTokenHolders(props.address, {
+            page,
+            itemsPerPage,
+            orderBy: sortBy[0].key,
+            order: sortBy[0].order
+        });
+        
+        holders.value = data.items;
+        holderCount.value = data.total;
+    } catch (error) {
+        console.log(error);
+    } finally {
+        loading.value = false;
+    }
+};
+
+const formatShare = (share) => {
+    if (share > 0 && share < 0.0001) {
+        return '<0.01%';
+    }
+    return new Intl.NumberFormat('en-US', {
+        style: 'percent',
+        maximumFractionDigits: 2
+    }).format(share);
+};
 </script>
 
 <style>

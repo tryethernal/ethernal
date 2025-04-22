@@ -105,7 +105,6 @@ vi.stubGlobal('pusher', $pusher);
 vi.stubGlobal('router', $router);
 vi.stubGlobal('fromWei', FromWei);
 vi.stubGlobal('mount', customMount);
-vi.stubGlobal('createTestingPinia', createTestingPinia);
 vi.stubGlobal('flushPromises', flushPromises);
 vi.stubGlobal('createTestingPinia', createTestingPinia);
 vi.useFakeTimers();

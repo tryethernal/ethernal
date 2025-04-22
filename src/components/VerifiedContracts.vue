@@ -143,4 +143,4 @@ onMounted(() => {
         .catch(error => console.error(error))
         .finally(() => loadingContractStats.value = false)
 })
-</script> 
+</script>

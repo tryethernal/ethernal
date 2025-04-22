@@ -1,6 +1,6 @@
 <template>
     <div class="d-flex justify-end mb-4">
-        <v-chip-group multiple v-model="tokenTypes" @update:model-value="getTransfers">
+        <BaseChipGroup multiple v-model="tokenTypes" @update:model-value="getTransfers">
             <v-chip color="primary" size="x-small" value="erc20">
                 ERC-20
                 <template v-if="erc20Count">({{ erc20Count }})</template>
@@ -13,7 +13,7 @@
                 ERC-1155
                 <template v-if="erc1155Count">({{ erc1155Count }})</template>
             </v-chip>
-        </v-chip-group>
+        </BaseChipGroup>
     </div>
     <Token-Transfers
         :transfers="transfers"
@@ -28,6 +28,7 @@
 <script setup>
 import { ref, onMounted, inject, watch } from 'vue';
 import TokenTransfers from './TokenTransfers.vue';
+import BaseChipGroup from './base/BaseChipGroup.vue';
 
 const props = defineProps({
     address: {

@@ -20,7 +20,7 @@
 </template>
 
 <script setup>
-import { ref, defineProps, computed, watch } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { readContract } from '@web3-onboard/wagmi';
 import { formatNumber } from '@/lib/utils';
 import { storeToRefs } from 'pinia';

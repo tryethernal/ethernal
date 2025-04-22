@@ -28,7 +28,7 @@
           <ERC721TokenCard 
             :contract="nft.tokenContract || nft.contract" 
             :contractAddress="nft.token || nft.contractAddress" 
-            :tokenIndex="parseInt(nft.tokenId || nft.tokenTransfer?.tokenId)"
+            :tokenIndex="Number(nft.tokenId || nft.tokenTransfer?.tokenId)"
             :mode="mode"
             :key="`${nft.token || nft.contractAddress}-${nft.tokenId || nft.tokenTransfer?.tokenId}`" 
           />
@@ -113,7 +113,7 @@ const loadCollectionTokens = async () => {
     const { data: { totalSupply } } = await $server.getErc721TotalSupply(props.address);
     if (totalSupply) {
       nfts.value = Array.from({ length: totalSupply }, (_, i) => ({
-        tokenId: i,
+        tokenId: i.toString(),
         contractAddress: props.address,
         tokenContract: contract.value
       }));

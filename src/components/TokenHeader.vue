@@ -51,7 +51,7 @@
 </template>
 
 <script setup>
-import { formatNumber, formatContractPattern } from '@/lib/utils';
+import { formatNumber } from '@/lib/utils';
 import HashLink from './HashLink.vue';
 
 defineProps({
@@ -70,4 +70,4 @@ defineProps({
 .ga-3 {
     gap: 12px;
 }
-</style> 
+</style>

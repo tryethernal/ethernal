@@ -24,24 +24,7 @@ exports[`ContractCode.vue > Should display contract verification info if public 
     <!---->
     <!---->
     <div data-v-39109da1="" class="v-card-text text-medium-emphasis bg-grey-lighten-4">
-      <div data-v-130fe57e="" data-v-39109da1="" class="expandable-text">
-        <div data-v-130fe57e="" class="d-block overflow-auto pr-10" style="white-space: pre-wrap;"><pre data-v-130fe57e="" style="white-space: pre-wrap;">[
-  {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "baseURI",
-        "...</pre>
-        </div>
-        <div data-v-130fe57e="" class="copy-btn-container"><button data-v-130fe57e="" type="button" class="v-btn v-theme--light text-primary v-btn--density-default v-btn--size-small v-btn--variant-text" aria-describedby="v-tooltip-2"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-            <!----><span class="v-btn__content" data-no-activator=""><i data-v-130fe57e="" class="mdi-content-copy mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
-            <!---->
-            <!---->
-            <!---->
-            <!--teleport start-->
-            <!--teleport end-->
-          </button></div><!-- Toggle button -->
-        <div data-v-130fe57e="" class="text-center mt-2"><a data-v-130fe57e="" href="#" class="no-decoration text-uppercase d-flex align-center justify-center"><i data-v-130fe57e="" class="mdi-eye mdi v-icon notranslate v-theme--light v-icon--size-small mr-1" aria-hidden="true"></i> VIEW ALL</a></div><!-- Hidden input for fallback copy method --><input data-v-130fe57e="" type="hidden" value="[
+      <expandable-text-stub data-v-39109da1="" text="[
   {
     &quot;inputs&quot;: [
       {
@@ -642,8 +625,7 @@ exports[`ContractCode.vue > Should display contract verification info if public 
     &quot;stateMutability&quot;: &quot;payable&quot;,
     &quot;type&quot;: &quot;function&quot;
   }
-]">
-      </div>
+]" maxchars="100" pre="true"></expandable-text-stub>
     </div>
     <!---->
     <!----><span class="v-card__underlay"></span>
@@ -668,20 +650,7 @@ exports[`ContractCode.vue > Should display contract verification info if public 
     <!---->
     <!---->
     <div data-v-39109da1="" class="v-card-text text-medium-emphasis bg-grey-lighten-4">
-      <div data-v-130fe57e="" data-v-39109da1="" class="expandable-text">
-        <div data-v-130fe57e="" class="d-block overflow-auto pr-10" style="white-space: pre-wrap;"><pre data-v-130fe57e="" style="white-space: pre-wrap;">0x60</pre>
-        </div>
-        <div data-v-130fe57e="" class="copy-btn-container"><button data-v-130fe57e="" type="button" class="v-btn v-theme--light text-primary v-btn--density-default v-btn--size-small v-btn--variant-text" aria-describedby="v-tooltip-3"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-            <!----><span class="v-btn__content" data-no-activator=""><i data-v-130fe57e="" class="mdi-content-copy mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
-            <!---->
-            <!---->
-            <!---->
-            <!--teleport start-->
-            <!--teleport end-->
-          </button></div><!-- Toggle button -->
-        <!--v-if-->
-        <!-- Hidden input for fallback copy method --><input data-v-130fe57e="" type="hidden" value="0x60">
-      </div>
+      <expandable-text-stub data-v-39109da1="" text="0x60" maxchars="400" pre="true"></expandable-text-stub>
     </div>
     <!---->
     <!----><span class="v-card__underlay"></span>
@@ -706,7 +675,7 @@ exports[`ContractCode.vue > Should display contract verification info if public 
     <!---->
     <!---->
     <div data-v-39109da1="" class="v-card-text">
-      <div data-v-39109da1="" class="hljs">highlighted</div>
+      <div data-v-39109da1="" class="hljs">[object Object]</div>
     </div>
     <!---->
     <!----><span class="v-card__underlay"></span>
@@ -739,20 +708,7 @@ exports[`ContractCode.vue > Should display the contract verification panel for p
     <!---->
     <!---->
     <div data-v-39109da1="" class="v-card-text text-medium-emphasis bg-grey-lighten-4">
-      <div data-v-130fe57e="" data-v-39109da1="" class="expandable-text">
-        <div data-v-130fe57e="" class="d-block overflow-auto pr-10" style="white-space: pre-wrap;"><pre data-v-130fe57e="" style="white-space: pre-wrap;">0x60</pre>
-        </div>
-        <div data-v-130fe57e="" class="copy-btn-container"><button data-v-130fe57e="" type="button" class="v-btn v-theme--light text-primary v-btn--density-default v-btn--size-small v-btn--variant-text" aria-describedby="v-tooltip-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-            <!----><span class="v-btn__content" data-no-activator=""><i data-v-130fe57e="" class="mdi-content-copy mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
-            <!---->
-            <!---->
-            <!---->
-            <!--teleport start-->
-            <!--teleport end-->
-          </button></div><!-- Toggle button -->
-        <!--v-if-->
-        <!-- Hidden input for fallback copy method --><input data-v-130fe57e="" type="hidden" value="0x60">
-      </div>
+      <expandable-text-stub data-v-39109da1="" text="0x60" maxchars="400" pre="true"></expandable-text-stub>
     </div>
     <!---->
     <!----><span class="v-card__underlay"></span>
@@ -777,7 +733,7 @@ exports[`ContractCode.vue > Should display the contract verification panel for p
     <!---->
     <!---->
     <div data-v-39109da1="" class="v-card-text">
-      <div data-v-39109da1="" class="hljs">highlighted</div>
+      <div data-v-39109da1="" class="hljs">[object Object]</div>
     </div>
     <!---->
     <!----><span class="v-card__underlay"></span>
@@ -831,6 +787,241 @@ exports[`ContractCode.vue > Should not display the contract verification panel i
     <!---->
     <!---->
     <div data-v-39109da1="" class="v-card-text"> No assembly for this contract. Redeploy to upload it. </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+</div>"
+`;
+
+exports[`ContractCode.vue > Should show appropriate message when no assembly is present 1`] = `
+"<div data-v-39109da1="">
+  <!--v-if-->
+  <!--v-if-->
+  <!--v-if-->
+  <h4 data-v-39109da1="" class="mb-1">Bytecode</h4>
+  <div data-v-39109da1="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-6">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-39109da1="" class="v-card-text text-medium-emphasis bg-grey-lighten-4">
+      <expandable-text-stub data-v-39109da1="" text="0x60" maxchars="400" pre="true"></expandable-text-stub>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+  <div data-v-39109da1="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-6">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-39109da1="" class="v-card-text"> No assembly for this contract. Redeploy to upload it. </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+</div>"
+`;
+
+exports[`ContractCode.vue > Should show appropriate message when no bytecode is present 1`] = `
+"<div data-v-39109da1="">
+  <!--v-if-->
+  <!--v-if-->
+  <!--v-if-->
+  <div data-v-39109da1="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-6">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-39109da1="" class="v-card-text"> No bytecode for this contract. Redeploy to upload it. </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+  <h4 data-v-39109da1="" class="mb-1">Assembly</h4>
+  <div data-v-39109da1="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-39109da1="" class="v-card-text">
+      <div data-v-39109da1="" class="hljs">[object Object]</div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+</div>"
+`;
+
+exports[`ContractCode.vue > Should show loading state initially 1`] = `
+"<div data-v-39109da1="">
+  <!--v-if-->
+  <!--v-if-->
+  <!--v-if-->
+  <h4 data-v-39109da1="" class="mb-1">Bytecode</h4>
+  <div data-v-39109da1="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-6">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-39109da1="" class="v-card-text text-medium-emphasis bg-grey-lighten-4">
+      <expandable-text-stub data-v-39109da1="" text="0x60" maxchars="400" pre="true"></expandable-text-stub>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+  <h4 data-v-39109da1="" class="mb-1">Assembly</h4>
+  <div data-v-39109da1="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-39109da1="" class="v-card-text">
+      <div data-v-39109da1="" class="hljs">[object Object]</div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+</div>"
+`;
+
+exports[`ContractCode.vue > Should show success alert when contract is just verified 1`] = `
+"<div data-v-39109da1="">
+  <div data-v-39109da1="" class="v-alert v-theme--light bg-success v-alert--density-compact v-alert--variant-flat mb-2" role="alert">
+    <!----><span class="v-alert__underlay"></span>
+    <!---->
+    <div class="v-alert__prepend"><i class="mdi-check-circle mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="compact"></i></div>
+    <div class="v-alert__content">
+      <!---->Contract has been verified successfully!
+    </div>
+    <!---->
+    <!---->
+  </div>
+  <contract-verification-info-stub data-v-39109da1="" contract="[object Object]"></contract-verification-info-stub>
+  <!--v-if-->
+  <h4 data-v-39109da1="" class="mb-1">Bytecode</h4>
+  <div data-v-39109da1="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-6">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-39109da1="" class="v-card-text text-medium-emphasis bg-grey-lighten-4">
+      <expandable-text-stub data-v-39109da1="" text="0x60" maxchars="400" pre="true"></expandable-text-stub>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+  <h4 data-v-39109da1="" class="mb-1">Assembly</h4>
+  <div data-v-39109da1="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-39109da1="" class="v-card-text">
+      <div data-v-39109da1="" class="hljs">[object Object]</div>
+    </div>
     <!---->
     <!----><span class="v-card__underlay"></span>
   </div>

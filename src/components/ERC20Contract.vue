@@ -92,10 +92,7 @@
         <div v-if="tab === 'transfers'">
             <v-card>
                 <v-card-text>
-                    <AddressERC20TokenTransfer :address="address"
-                        :tokenDecimals="contract.tokenDecimals" 
-                        :tokenSymbol="contract.tokenSymbol"
-                        :count="contractStats.tokenTransferCount" />
+                    <Address-ERC20-Token-Transfer :address="address" :count="contractStats.tokenTransferCount" />
                 </v-card-text>
             </v-card>
         </div>

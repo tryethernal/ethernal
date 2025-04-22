@@ -50,7 +50,7 @@
 </template>
 
 <script setup>
-import { defineProps, ref, computed, watch } from 'vue';
+import { ref, computed, watch } from 'vue';
 
 import ContractCallOptions from './ContractCallOptions.vue';
 import ContractReadMethod from './ContractReadMethod.vue';

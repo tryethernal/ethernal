@@ -17,7 +17,7 @@
 
 <script setup>
 import { ref } from 'vue';
-import { defineProps, inject } from 'vue';
+import { inject } from 'vue';
 import TraceStepsTable from './TraceStepsTable.vue';
 
 const props = defineProps({

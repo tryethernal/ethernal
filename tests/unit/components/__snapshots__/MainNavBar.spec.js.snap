@@ -1,0 +1,473 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`MainNavBar.vue > Should show admin menu items when user is admin 1`] = `
+"<div class="v-application v-theme--light v-layout v-layout--full-height v-locale--is-ltr">
+  <div class="v-application__wrap">
+    <div>
+      <!-- Mobile Navigation Drawer -->
+      <!--v-if-->
+      <!-- Desktop Navigation Bar -->
+      <header class="v-toolbar v-toolbar--flat v-toolbar--density-default v-theme--light v-locale--is-ltr v-app-bar main-bar" style="top: 0px; z-index: 1004; transform: translateY(0px); position: fixed; transition: none; left: 0px; width: calc(100% - 0px - 0px);">
+        <!---->
+        <div class="v-toolbar__content" style="height: 64px;">
+          <!---->
+          <!---->
+          <div class="v-container v-locale--is-ltr d-flex align-center fill-height">
+            <div class="d-flex align-center">
+              <div class="text-h6 text-accent"><a class="text-decoration-none text-primary">Ethernal</a></div>
+            </div>
+            <div class="v-spacer"></div>
+            <div class="d-flex align-center fill-height"><button type="button" class="v-btn v-theme--light text-black v-btn--density-default v-btn--size-default v-btn--variant-plain d-flex align-center opacity-80 fill-height" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator=""> Blockchain <i class="mdi-chevron-down mdi v-icon notranslate v-theme--light v-icon--size-default ml-1" aria-hidden="true"></i></span>
+                <!---->
+                <!---->
+              </button>
+              <!----><button type="button" class="v-btn v-theme--light text-black v-btn--density-default v-btn--size-default v-btn--variant-plain d-flex align-center opacity-80 fill-height" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-3"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator=""> Tokens <i class="mdi-chevron-down mdi v-icon notranslate v-theme--light v-icon--size-default ml-1" aria-hidden="true"></i></span>
+                <!---->
+                <!---->
+              </button>
+              <!----><a class="v-btn v-theme--light text-black v-btn--density-default v-btn--size-default v-btn--variant-plain text-default opacity-80 fill-height" href="/analytics"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator="">Charts</span>
+                <!---->
+                <!---->
+              </a><!-- Faucet Link -->
+              <!--v-if-->
+              <!-- DEX Link -->
+              <!--v-if-->
+              <!-- Bridge Link -->
+              <!--v-if-->
+              <!-- Admin Links -->
+              <hr class="v-divider v-divider--vertical v-theme--light my-2" aria-orientation="vertical" role="separator"><a class="v-btn v-theme--light text-black v-btn--density-default v-btn--size-default v-btn--variant-plain text-default opacity-80 fill-height" href="/explorers"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator="">Public Explorers</span>
+                <!---->
+                <!---->
+              </a><a class="v-btn v-theme--light text-black v-btn--density-default v-btn--size-default v-btn--variant-plain text-default opacity-80 fill-height" href="/settings?tab=workspace"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator="">Settings</span>
+                <!---->
+                <!---->
+              </a>
+              <hr class="v-divider v-divider--vertical v-theme--light my-4 mr-4" aria-orientation="vertical" role="separator">
+              <!--v-if-->
+            </div>
+          </div>
+          <!---->
+        </div>
+        <transition-stub name="expand-transition" appear="false" persisted="false" css="true">
+          <!---->
+        </transition-stub>
+      </header>
+    </div>
+  </div>
+</div>"
+`;
+
+exports[`MainNavBar.vue > Should show desktop navigation bar when mobile prop is false 1`] = `
+"<div class="v-application v-theme--light v-layout v-layout--full-height v-locale--is-ltr">
+  <div class="v-application__wrap">
+    <div>
+      <!-- Mobile Navigation Drawer -->
+      <!--v-if-->
+      <!-- Desktop Navigation Bar -->
+      <header class="v-toolbar v-toolbar--flat v-toolbar--density-default v-theme--light v-locale--is-ltr v-app-bar main-bar" style="top: 0px; z-index: 1004; transform: translateY(0px); position: fixed; transition: none; left: 0px; width: calc(100% - 0px - 0px);">
+        <!---->
+        <div class="v-toolbar__content" style="height: 64px;">
+          <!---->
+          <!---->
+          <div class="v-container v-locale--is-ltr d-flex align-center fill-height">
+            <div class="d-flex align-center">
+              <div class="text-h6 text-accent"><a class="text-decoration-none text-primary">Ethernal</a></div>
+            </div>
+            <div class="v-spacer"></div>
+            <div class="d-flex align-center fill-height"><button type="button" class="v-btn v-theme--light text-black v-btn--density-default v-btn--size-default v-btn--variant-plain d-flex align-center opacity-80 fill-height" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator=""> Blockchain <i class="mdi-chevron-down mdi v-icon notranslate v-theme--light v-icon--size-default ml-1" aria-hidden="true"></i></span>
+                <!---->
+                <!---->
+              </button>
+              <!----><button type="button" class="v-btn v-theme--light text-black v-btn--density-default v-btn--size-default v-btn--variant-plain d-flex align-center opacity-80 fill-height" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-3"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator=""> Tokens <i class="mdi-chevron-down mdi v-icon notranslate v-theme--light v-icon--size-default ml-1" aria-hidden="true"></i></span>
+                <!---->
+                <!---->
+              </button>
+              <!----><a class="v-btn v-theme--light text-black v-btn--density-default v-btn--size-default v-btn--variant-plain text-default opacity-80 fill-height" href="/analytics"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator="">Charts</span>
+                <!---->
+                <!---->
+              </a><!-- Faucet Link -->
+              <!--v-if-->
+              <!-- DEX Link -->
+              <!--v-if-->
+              <!-- Bridge Link -->
+              <!--v-if-->
+              <!-- Admin Links -->
+              <!--v-if-->
+              <hr class="v-divider v-divider--vertical v-theme--light my-4 mr-4" aria-orientation="vertical" role="separator">
+              <!--v-if-->
+            </div>
+          </div>
+          <!---->
+        </div>
+        <transition-stub name="expand-transition" appear="false" persisted="false" css="true">
+          <!---->
+        </transition-stub>
+      </header>
+    </div>
+  </div>
+</div>"
+`;
+
+exports[`MainNavBar.vue > Should show faucet and dex when explorer is demo 1`] = `
+"<div class="v-application v-theme--light v-layout v-layout--full-height v-locale--is-ltr">
+  <div class="v-application__wrap">
+    <div>
+      <!-- Mobile Navigation Drawer -->
+      <!--v-if-->
+      <!-- Desktop Navigation Bar -->
+      <header class="v-toolbar v-toolbar--flat v-toolbar--density-default v-theme--light v-locale--is-ltr v-app-bar main-bar" style="top: 0px; z-index: 1004; transform: translateY(0px); position: fixed; transition: none; left: 0px; width: calc(100% - 0px - 0px);">
+        <!---->
+        <div class="v-toolbar__content" style="height: 64px;">
+          <!---->
+          <!---->
+          <div class="v-container v-locale--is-ltr d-flex align-center fill-height">
+            <div class="d-flex align-center">
+              <div class="text-h6 text-accent"><a class="text-decoration-none text-primary">Ethernal</a></div>
+            </div>
+            <div class="v-spacer"></div>
+            <div class="d-flex align-center fill-height"><button type="button" class="v-btn v-theme--light text-black v-btn--density-default v-btn--size-default v-btn--variant-plain d-flex align-center opacity-80 fill-height" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator=""> Blockchain <i class="mdi-chevron-down mdi v-icon notranslate v-theme--light v-icon--size-default ml-1" aria-hidden="true"></i></span>
+                <!---->
+                <!---->
+              </button>
+              <!----><button type="button" class="v-btn v-theme--light text-black v-btn--density-default v-btn--size-default v-btn--variant-plain d-flex align-center opacity-80 fill-height" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-3"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator=""> Tokens <i class="mdi-chevron-down mdi v-icon notranslate v-theme--light v-icon--size-default ml-1" aria-hidden="true"></i></span>
+                <!---->
+                <!---->
+              </button>
+              <!----><a class="v-btn v-theme--light text-black v-btn--density-default v-btn--size-default v-btn--variant-plain text-default opacity-80 fill-height" href="/analytics"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator="">Charts</span>
+                <!---->
+                <!---->
+              </a><!-- Faucet Link --><a class="v-btn v-theme--light text-black v-btn--density-default v-btn--size-default v-btn--variant-plain text-default opacity-80 fill-height" href="/faucet"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator="">Faucet</span>
+                <!---->
+                <!---->
+              </a><!-- DEX Link --><a class="v-btn v-theme--light text-black v-btn--density-default v-btn--size-default v-btn--variant-plain text-default opacity-80 fill-height" href="/dex"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator="">DEX</span>
+                <!---->
+                <!---->
+              </a><!-- Bridge Link --><a class="v-btn v-theme--light text-black v-btn--density-default v-btn--size-default v-btn--variant-plain text-default opacity-80 fill-height" href="/bridge"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator="">Bridge</span>
+                <!---->
+                <!---->
+              </a><!-- Admin Links -->
+              <!--v-if-->
+              <hr class="v-divider v-divider--vertical v-theme--light my-4 mr-4" aria-orientation="vertical" role="separator">
+              <!--v-if-->
+            </div>
+          </div>
+          <!---->
+        </div>
+        <transition-stub name="expand-transition" appear="false" persisted="false" css="true">
+          <!---->
+        </transition-stub>
+      </header>
+    </div>
+  </div>
+</div>"
+`;
+
+exports[`MainNavBar.vue > Should show logo when provided 1`] = `
+"<div class="v-application v-theme--light v-layout v-layout--full-height v-locale--is-ltr">
+  <div class="v-application__wrap">
+    <div>
+      <!-- Mobile Navigation Drawer -->
+      <!--v-if-->
+      <!-- Desktop Navigation Bar -->
+      <header class="v-toolbar v-toolbar--flat v-toolbar--density-default v-theme--light v-locale--is-ltr v-app-bar main-bar" style="top: 0px; z-index: 1004; transform: translateY(0px); position: fixed; transition: none; left: 0px; width: calc(100% - 0px - 0px);">
+        <!---->
+        <div class="v-toolbar__content" style="height: 64px;">
+          <!---->
+          <!---->
+          <div class="v-container v-locale--is-ltr d-flex align-center fill-height">
+            <div class="d-flex align-center">
+              <div class="custom-logo-wrapper mr-4"><a class="text-decoration-none"><img src="test-logo.png" alt="logo" class="custom-logo"></a></div>
+            </div>
+            <div class="v-spacer"></div>
+            <div class="d-flex align-center fill-height"><button type="button" class="v-btn v-theme--light text-black v-btn--density-default v-btn--size-default v-btn--variant-plain d-flex align-center opacity-80 fill-height" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator=""> Blockchain <i class="mdi-chevron-down mdi v-icon notranslate v-theme--light v-icon--size-default ml-1" aria-hidden="true"></i></span>
+                <!---->
+                <!---->
+              </button>
+              <!----><button type="button" class="v-btn v-theme--light text-black v-btn--density-default v-btn--size-default v-btn--variant-plain d-flex align-center opacity-80 fill-height" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-3"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator=""> Tokens <i class="mdi-chevron-down mdi v-icon notranslate v-theme--light v-icon--size-default ml-1" aria-hidden="true"></i></span>
+                <!---->
+                <!---->
+              </button>
+              <!----><a class="v-btn v-theme--light text-black v-btn--density-default v-btn--size-default v-btn--variant-plain text-default opacity-80 fill-height" href="/analytics"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator="">Charts</span>
+                <!---->
+                <!---->
+              </a><!-- Faucet Link -->
+              <!--v-if-->
+              <!-- DEX Link -->
+              <!--v-if-->
+              <!-- Bridge Link -->
+              <!--v-if-->
+              <!-- Admin Links -->
+              <!--v-if-->
+              <hr class="v-divider v-divider--vertical v-theme--light my-4 mr-4" aria-orientation="vertical" role="separator">
+              <!--v-if-->
+            </div>
+          </div>
+          <!---->
+        </div>
+        <transition-stub name="expand-transition" appear="false" persisted="false" css="true">
+          <!---->
+        </transition-stub>
+      </header>
+    </div>
+  </div>
+</div>"
+`;
+
+exports[`MainNavBar.vue > Should show mobile navigation drawer when mobile prop is true 1`] = `
+"<div class="v-application v-theme--light v-layout v-layout--full-height v-locale--is-ltr">
+  <div class="v-application__wrap">
+    <div>
+      <!-- Mobile Navigation Drawer -->
+      <nav class="v-navigation-drawer v-navigation-drawer--left v-navigation-drawer--temporary v-navigation-drawer--active v-theme--light" style="left: 0px; z-index: 1004; transform: translateX(0px); position: fixed; transition: none; height: calc(100% - 0px - 0px); top: 0px; bottom: 0px; width: 300px;">
+        <!---->
+        <!---->
+        <div class="v-navigation-drawer__content">
+          <div class="v-list v-theme--light bg-transparent v-list--density-default v-list--one-line" tabindex="0" role="listbox">
+            <div class="v-list-item v-theme--light v-list-item--density-default v-list-item--one-line rounded-0 v-list-item--variant-text">
+              <!----><span class="v-list-item__underlay"></span>
+              <!---->
+              <div class="v-list-item__content" data-no-activator="">
+                <!---->
+                <!---->
+                <div class="text-h6 text-accent"><a class="text-decoration-none text-primary">Ethernal</a></div>
+              </div>
+              <!---->
+            </div>
+            <hr class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator"><!-- Blockchain Section -->
+            <div class="v-list-group">
+              <div class="v-list-item v-list-item--link v-theme--light v-list-item--density-default v-list-item--one-line rounded-0 v-list-item--variant-text v-list-group__header" tabindex="-2" aria-selected="false" id="v-list-group--id-blockchain"><span class="v-list-item__overlay"></span><span class="v-list-item__underlay"></span>
+                <!---->
+                <div class="v-list-item__content" data-no-activator="">
+                  <div class="v-list-item-title"><span class="text-body-1">Blockchain</span></div>
+                  <!---->
+                  <!---->
+                </div>
+                <div class="v-list-item__append"><i class="mdi-chevron-down mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true" density="default"></i>
+                  <!---->
+                  <div class="v-list-item__spacer"></div>
+                </div>
+              </div>
+              <transition-stub name="" appear="false" persisted="false" css="false">
+                <div class="v-list-group__items" role="group" aria-labelledby="v-list-group--id-blockchain" style="display: none;"><a class="v-list-item v-list-item--link v-theme--light v-list-item--density-default v-list-item--one-line rounded-0 v-list-item--variant-text" tabindex="-2" href="/transactions"><span class="v-list-item__overlay"></span><span class="v-list-item__underlay"></span>
+                    <!---->
+                    <div class="v-list-item__content" data-no-activator="">
+                      <div class="v-list-item-title"><span class="text-body-2">Transactions</span></div>
+                      <!---->
+                      <!---->
+                    </div>
+                    <!---->
+                  </a><a class="v-list-item v-list-item--link v-theme--light v-list-item--density-default v-list-item--one-line rounded-0 v-list-item--variant-text" tabindex="-2" href="/txsInternal"><span class="v-list-item__overlay"></span><span class="v-list-item__underlay"></span>
+                    <!---->
+                    <div class="v-list-item__content" data-no-activator="">
+                      <div class="v-list-item-title"><span class="text-body-2">Internal Transactions</span></div>
+                      <!---->
+                      <!---->
+                    </div>
+                    <!---->
+                  </a><a class="v-list-item v-list-item--link v-theme--light v-list-item--density-default v-list-item--one-line rounded-0 v-list-item--variant-text" tabindex="-2" href="/blocks"><span class="v-list-item__overlay"></span><span class="v-list-item__underlay"></span>
+                    <!---->
+                    <div class="v-list-item__content" data-no-activator="">
+                      <div class="v-list-item-title"><span class="text-body-2">Blocks</span></div>
+                      <!---->
+                      <!---->
+                    </div>
+                    <!---->
+                  </a><a class="v-list-item v-list-item--link v-theme--light v-list-item--density-default v-list-item--one-line rounded-0 v-list-item--variant-text" tabindex="-2" href="/contractsVerified"><span class="v-list-item__overlay"></span><span class="v-list-item__underlay"></span>
+                    <!---->
+                    <div class="v-list-item__content" data-no-activator="">
+                      <div class="v-list-item-title"><span class="text-body-2">Verified Contracts</span></div>
+                      <!---->
+                      <!---->
+                    </div>
+                    <!---->
+                  </a><a class="v-list-item v-list-item--link v-theme--light v-list-item--density-default v-list-item--one-line rounded-0 v-list-item--variant-text" tabindex="-2" href="/contracts"><span class="v-list-item__overlay"></span><span class="v-list-item__underlay"></span>
+                    <!---->
+                    <div class="v-list-item__content" data-no-activator="">
+                      <div class="v-list-item-title"><span class="text-body-2">All Contracts</span></div>
+                      <!---->
+                      <!---->
+                    </div>
+                    <!---->
+                  </a></div>
+              </transition-stub>
+            </div><!-- Tokens Section -->
+            <div class="v-list-group">
+              <div class="v-list-item v-list-item--link v-theme--light v-list-item--density-default v-list-item--one-line rounded-0 v-list-item--variant-text v-list-group__header" tabindex="-2" aria-selected="false" id="v-list-group--id-tokens"><span class="v-list-item__overlay"></span><span class="v-list-item__underlay"></span>
+                <!---->
+                <div class="v-list-item__content" data-no-activator="">
+                  <div class="v-list-item-title"><span class="text-body-1">Tokens</span></div>
+                  <!---->
+                  <!---->
+                </div>
+                <div class="v-list-item__append"><i class="mdi-chevron-down mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true" density="default"></i>
+                  <!---->
+                  <div class="v-list-item__spacer"></div>
+                </div>
+              </div>
+              <transition-stub name="" appear="false" persisted="false" css="false">
+                <div class="v-list-group__items" role="group" aria-labelledby="v-list-group--id-tokens" style="display: none;">
+                  <div class="v-list-subheader text-primary text-caption font-weight-medium">
+                    <div class="v-list-subheader__text">ERC-20</div>
+                  </div><a class="v-list-item v-list-item--link v-theme--light v-list-item--density-default v-list-item--one-line rounded-0 v-list-item--variant-text" tabindex="-2" href="/toptokens"><span class="v-list-item__overlay"></span><span class="v-list-item__underlay"></span>
+                    <!---->
+                    <div class="v-list-item__content" data-no-activator="">
+                      <div class="v-list-item-title"><span class="text-body-2">Top Tokens</span></div>
+                      <!---->
+                      <!---->
+                    </div>
+                    <!---->
+                  </a><a class="v-list-item v-list-item--link v-theme--light v-list-item--density-default v-list-item--one-line rounded-0 v-list-item--variant-text" tabindex="-2" href="/tokens"><span class="v-list-item__overlay"></span><span class="v-list-item__underlay"></span>
+                    <!---->
+                    <div class="v-list-item__content" data-no-activator="">
+                      <div class="v-list-item-title"><span class="text-body-2">All Tokens</span></div>
+                      <!---->
+                      <!---->
+                    </div>
+                    <!---->
+                  </a><a class="v-list-item v-list-item--link v-theme--light v-list-item--density-default v-list-item--one-line rounded-0 v-list-item--variant-text" tabindex="-2" href="/tokenstxn"><span class="v-list-item__overlay"></span><span class="v-list-item__underlay"></span>
+                    <!---->
+                    <div class="v-list-item__content" data-no-activator="">
+                      <div class="v-list-item-title"><span class="text-body-2">Latest Transfers</span></div>
+                      <!---->
+                      <!---->
+                    </div>
+                    <!---->
+                  </a>
+                  <hr class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator">
+                  <div class="v-list-subheader text-primary text-caption font-weight-medium">
+                    <div class="v-list-subheader__text">NFTs (ERC-721 &amp; ERC-1155)</div>
+                  </div><a class="v-list-item v-list-item--link v-theme--light v-list-item--density-default v-list-item--one-line rounded-0 v-list-item--variant-text" tabindex="-2" href="/nft-top-contracts"><span class="v-list-item__overlay"></span><span class="v-list-item__underlay"></span>
+                    <!---->
+                    <div class="v-list-item__content" data-no-activator="">
+                      <div class="v-list-item-title"><span class="text-body-2">Top Tokens</span></div>
+                      <!---->
+                      <!---->
+                    </div>
+                    <!---->
+                  </a><a class="v-list-item v-list-item--link v-theme--light v-list-item--density-default v-list-item--one-line rounded-0 v-list-item--variant-text" tabindex="-2" href="/nfts"><span class="v-list-item__overlay"></span><span class="v-list-item__underlay"></span>
+                    <!---->
+                    <div class="v-list-item__content" data-no-activator="">
+                      <div class="v-list-item-title"><span class="text-body-2">All Tokens</span></div>
+                      <!---->
+                      <!---->
+                    </div>
+                    <!---->
+                  </a><a class="v-list-item v-list-item--link v-theme--light v-list-item--density-default v-list-item--one-line rounded-0 v-list-item--variant-text" tabindex="-2" href="/nft-transfers"><span class="v-list-item__overlay"></span><span class="v-list-item__underlay"></span>
+                    <!---->
+                    <div class="v-list-item__content" data-no-activator="">
+                      <div class="v-list-item-title"><span class="text-body-2">Latest Transfers</span></div>
+                      <!---->
+                      <!---->
+                    </div>
+                    <!---->
+                  </a>
+                </div>
+              </transition-stub>
+            </div><a class="v-list-item v-list-item--link v-theme--light v-list-item--density-default v-list-item--one-line rounded-0 v-list-item--variant-text" tabindex="-2" href="/analytics"><span class="v-list-item__overlay"></span><span class="v-list-item__underlay"></span>
+              <!---->
+              <div class="v-list-item__content" data-no-activator="">
+                <div class="v-list-item-title"><span class="text-body-1">Charts</span></div>
+                <!---->
+                <!---->
+              </div>
+              <!---->
+            </a><!-- Conditional Items -->
+            <!--v-if-->
+            <!--v-if-->
+            <!--v-if-->
+            <!-- Admin Section -->
+            <!--v-if-->
+            <hr class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator"><!-- Wallet Section -->
+            <div class="v-list-item v-theme--light v-list-item--density-default v-list-item--one-line rounded-0 v-list-item--variant-text">
+              <!----><span class="v-list-item__underlay"></span>
+              <!---->
+              <div class="v-list-item__content" data-no-activator="">
+                <!---->
+                <!---->
+                <!--v-if-->
+              </div>
+              <!---->
+            </div>
+          </div>
+        </div>
+        <!---->
+      </nav>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-navigation-drawer__scrim" style="z-index: 1003;"></div>
+      </transition-stub><!-- Desktop Navigation Bar -->
+      <!--v-if-->
+    </div>
+  </div>
+</div>"
+`;
+
+exports[`MainNavBar.vue > Should show workspace name when no logo is provided 1`] = `
+"<div class="v-application v-theme--light v-layout v-layout--full-height v-locale--is-ltr">
+  <div class="v-application__wrap">
+    <div>
+      <!-- Mobile Navigation Drawer -->
+      <!--v-if-->
+      <!-- Desktop Navigation Bar -->
+      <header class="v-toolbar v-toolbar--flat v-toolbar--density-default v-theme--light v-locale--is-ltr v-app-bar main-bar" style="top: 0px; z-index: 1004; transform: translateY(0px); position: fixed; transition: none; left: 0px; width: calc(100% - 0px - 0px);">
+        <!---->
+        <div class="v-toolbar__content" style="height: 64px;">
+          <!---->
+          <!---->
+          <div class="v-container v-locale--is-ltr d-flex align-center fill-height">
+            <div class="d-flex align-center">
+              <div class="text-h6 text-accent"><a class="text-decoration-none text-primary">Test Workspace</a></div>
+            </div>
+            <div class="v-spacer"></div>
+            <div class="d-flex align-center fill-height"><button type="button" class="v-btn v-theme--light text-black v-btn--density-default v-btn--size-default v-btn--variant-plain d-flex align-center opacity-80 fill-height" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator=""> Blockchain <i class="mdi-chevron-down mdi v-icon notranslate v-theme--light v-icon--size-default ml-1" aria-hidden="true"></i></span>
+                <!---->
+                <!---->
+              </button>
+              <!----><button type="button" class="v-btn v-theme--light text-black v-btn--density-default v-btn--size-default v-btn--variant-plain d-flex align-center opacity-80 fill-height" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-3"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator=""> Tokens <i class="mdi-chevron-down mdi v-icon notranslate v-theme--light v-icon--size-default ml-1" aria-hidden="true"></i></span>
+                <!---->
+                <!---->
+              </button>
+              <!----><a class="v-btn v-theme--light text-black v-btn--density-default v-btn--size-default v-btn--variant-plain text-default opacity-80 fill-height" href="/analytics"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator="">Charts</span>
+                <!---->
+                <!---->
+              </a><!-- Faucet Link -->
+              <!--v-if-->
+              <!-- DEX Link -->
+              <!--v-if-->
+              <!-- Bridge Link -->
+              <!--v-if-->
+              <!-- Admin Links -->
+              <!--v-if-->
+              <hr class="v-divider v-divider--vertical v-theme--light my-4 mr-4" aria-orientation="vertical" role="separator">
+              <!--v-if-->
+            </div>
+          </div>
+          <!---->
+        </div>
+        <transition-stub name="expand-transition" appear="false" persisted="false" css="true">
+          <!---->
+        </transition-stub>
+      </header>
+    </div>
+  </div>
+</div>"
+`;

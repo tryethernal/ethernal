@@ -105,7 +105,6 @@
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue';
 import HashLink from './HashLink.vue';
-import { formatContractPattern } from '@/lib/utils';
 
 const props = defineProps({
   transfers: Array,

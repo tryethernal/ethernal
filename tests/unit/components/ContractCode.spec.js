@@ -2,7 +2,7 @@ import flushPromises from 'flush-promises';
 
 vi.mock('highlight.js', () => ({
     default: {
-        highlight: vi.fn().mockReturnValue('highlighted')
+        highlight: vi.fn().mockReturnValue({ value: 'highlighted code' })
     }
 }));
 
@@ -10,10 +10,27 @@ import ContractCode from '@/components/ContractCode.vue';
 
 const stubs = [
     'Contract-Verification',
-    'Contract-Verification-Info'
+    'Contract-Verification-Info',
+    'Expandable-Text'
 ];
 
 describe('ContractCode.vue', () => {
+    it('Should show loading state initially', async () => {
+        const wrapper = mount(ContractCode, {
+            props: {
+                contract: {
+                    bytecode: '0x60',
+                    asm: 'abc'
+                }
+            },
+            global: {
+                stubs
+            }
+        });
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
     it('Should display contract verification info if public explorer and verified', async () => {
         const wrapper = mount(ContractCode, {
             props: {
@@ -66,6 +83,57 @@ describe('ContractCode.vue', () => {
                     patterns: [],
                     address: '0x123',
                     creationTransaction: '0xabc'
+                }
+            },
+            global: {
+                stubs
+            }
+        });
+
+        await flushPromises();
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
+    it('Should show success alert when contract is just verified', async () => {
+        const wrapper = mount(ContractCode, {
+            props: {
+                contract: {
+                    bytecode: '0x60',
+                    asm: 'abc'
+                }
+            },
+            global: {
+                stubs,
+                plugins: [createTestingPinia({ initialState: { explorer: { id: 1 } } })]
+            }
+        });
+
+        await wrapper.vm.onContractVerified({ someData: 'test' });
+        await flushPromises();
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
+    it('Should show appropriate message when no bytecode is present', async () => {
+        const wrapper = mount(ContractCode, {
+            props: {
+                contract: {
+                    asm: 'abc'
+                }
+            },
+            global: {
+                stubs
+            }
+        });
+
+        await flushPromises();
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
+    it('Should show appropriate message when no assembly is present', async () => {
+        const wrapper = mount(ContractCode, {
+            props: {
+                contract: {
+                    bytecode: '0x60'
                 }
             },
             global: {

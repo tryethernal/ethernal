@@ -20,8 +20,6 @@ const props = defineProps({
         type: String,
         required: true
     },
-    tokenDecimals: [Number, String],
-    tokenSymbol: String,
     count: Number
 });
 

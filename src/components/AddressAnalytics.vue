@@ -46,7 +46,7 @@
 </template>
 
 <script setup>
-import { ref, inject, onMounted } from 'vue';
+import { ref, inject } from 'vue';
 import { ethers } from 'ethers';
 import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
 import DateRangeSelector from './DateRangeSelector.vue';
@@ -129,17 +129,4 @@ const updateCharts = (range) => {
     fetchTransactionFees(range.from, range.to);
     fetchTokenTransfers(range.from, range.to);
 };
-
-// Initialize with last 30 days of data
-const initializeCharts = () => {
-    const to = new Date();
-    const from = new Date();
-    from.setDate(from.getDate() - 30);
-    updateCharts({ from: from.toISOString(), to: to.toISOString() });
-};
-
-// Initialize on component mount
-onMounted(() => {
-    // No need to call initializeCharts here as DateRangeSelector will trigger it
-});
 </script> 

@@ -32,7 +32,7 @@
 
 <script setup>
 import { DateTime } from 'luxon';
-import { ref, watch, defineEmits, defineProps, onMounted, computed } from 'vue';
+import { ref, watch, onMounted, computed } from 'vue';
 import { useTheme } from 'vuetify';
 import { getBestContrastingColor } from '@/lib/utils';
 

@@ -75,4 +75,4 @@ const fetchTransfers = (options = defaultOptions) => {
             loading.value = false;
         });
 };
-</script> 
+</script>

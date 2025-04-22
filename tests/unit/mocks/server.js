@@ -1,7 +1,9 @@
+import { vi } from "vitest";
+
 export default {
     processFailedTransactions: vi.fn,
     getRpcAccounts: vi.fn(),
-    getAccounts: vi.fn().mockResolvedValue({ data: { items: [] }}),
+    getAccounts: vi.fn().mockResolvedValue({ data: { items: [] }}),
     getAccountBalance: vi.fn().mockResolvedValue('10000'),
     getContract: vi.fn().mockResolvedValue({ data: {} }),
     storeAccountPrivateKey: vi.fn().mockResolvedValue(),
@@ -101,6 +103,24 @@ export default {
     getLast24hGasUtilisationRatio: vi.fn(),
     getLast24hTotalGasUsed: vi.fn(),
     getLast24hBurntFees: vi.fn(),
+    getAddressTransactionHistory: vi.fn(),
+    getAddressSpentTransactionFeeHistory: vi.fn(),
+    getAddressTokenTransferHistory: vi.fn(),
+    getAddressTokenTransfers: vi.fn(),
+    getAddressInternalTransactions: vi.fn(),
+    getTransactionTokenTransfers: vi.fn(),
+    getContractLogs: vi.fn(),
+    verifyContract: vi.fn(),
+    getTokenHolders: vi.fn(),
+    getWorkspaceTransactionTraceSteps: vi.fn(),
+    getWorkspace: vi.fn(),
+    search: vi.fn(),
+    getTopTokensByHolders: vi.fn(),
+    getTransactionTraceSteps: vi.fn(),
+    getTransactionTokenBalanceChanges: vi.fn(),
+    getWorkspaceContractStats: vi.fn(),
+    getWorkspaceVerifiedContracts: vi.fn(),
+    getWorkspaceTokenTransfers: vi.fn(),
 
     syncTransactionData: function() {
         return new Promise((resolve) => resolve(true))

@@ -311,7 +311,7 @@ const submit = async () => {
             viaIR: parameters.viaIR
         });
 
-        const { data: responseData } = await window.$server.verifyContract(props.address, data);
+        const { data: responseData } = await $server.verifyContract(props.address, data);
         verificationSuccess.value = true;
         emit('contractVerified', responseData);
     } catch (error) {

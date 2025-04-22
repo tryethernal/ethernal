@@ -93,3 +93,216 @@ exports[`ContractVerificationInfo.vue > Should display code / constructor argume
   </div>
 </div>"
 `;
+
+exports[`ContractVerificationInfo.vue > Should display without constructor arguments 1`] = `
+"<div data-v-b0f0cc28="">
+  <div data-v-b0f0cc28="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-4">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-b0f0cc28="" class="v-card-text"><i data-v-b0f0cc28="" class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success mr-1" aria-hidden="true"></i><span data-v-b0f0cc28="" class="font-weight-bold" aria-describedby="v-tooltip-0">Contract Source Code Verified<!----><!--teleport start--><!--teleport end--></span>
+      <div data-v-b0f0cc28="" class="v-row mt-3">
+        <div data-v-b0f0cc28="" class="v-col v-col-6"><b data-v-b0f0cc28="">Contract Name:</b> My Contract</div>
+        <div data-v-b0f0cc28="" class="v-col v-col-6"><b data-v-b0f0cc28="">Optimizer:</b> <span data-v-b0f0cc28=""><b data-v-b0f0cc28="">Yes</b> with <b data-v-b0f0cc28="">200</b> runs</span></div>
+      </div>
+      <div data-v-b0f0cc28="" class="v-row">
+        <div data-v-b0f0cc28="" class="v-col v-col-6"><b data-v-b0f0cc28="">Compiler Version:</b> compiler</div>
+        <div data-v-b0f0cc28="" class="v-col v-col-6"><b data-v-b0f0cc28="">EVM Version:</b> london</div>
+      </div>
+      <hr data-v-b0f0cc28="" class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator">
+      <contract-code-editor-stub data-v-b0f0cc28="" sources="[object Object]" selectedfile=""></contract-code-editor-stub>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+  <!--v-if-->
+  <!--v-if-->
+</div>"
+`;
+
+exports[`ContractVerificationInfo.vue > Should display without optimizer runs 1`] = `
+"<div data-v-b0f0cc28="">
+  <div data-v-b0f0cc28="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-4">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-b0f0cc28="" class="v-card-text"><i data-v-b0f0cc28="" class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success mr-1" aria-hidden="true"></i><span data-v-b0f0cc28="" class="font-weight-bold" aria-describedby="v-tooltip-0">Contract Source Code Verified<!----><!--teleport start--><!--teleport end--></span>
+      <div data-v-b0f0cc28="" class="v-row mt-3">
+        <div data-v-b0f0cc28="" class="v-col v-col-6"><b data-v-b0f0cc28="">Contract Name:</b> My Contract</div>
+        <div data-v-b0f0cc28="" class="v-col v-col-6"><b data-v-b0f0cc28="">Optimizer:</b> <span data-v-b0f0cc28="">No</span></div>
+      </div>
+      <div data-v-b0f0cc28="" class="v-row">
+        <div data-v-b0f0cc28="" class="v-col v-col-6"><b data-v-b0f0cc28="">Compiler Version:</b> compiler</div>
+        <div data-v-b0f0cc28="" class="v-col v-col-6"><b data-v-b0f0cc28="">EVM Version:</b> london</div>
+      </div>
+      <hr data-v-b0f0cc28="" class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator">
+      <contract-code-editor-stub data-v-b0f0cc28="" sources="[object Object]" selectedfile=""></contract-code-editor-stub>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+  <!--v-if-->
+  <!--v-if-->
+</div>"
+`;
+
+exports[`ContractVerificationInfo.vue > Should toggle constructor arguments format 1`] = `
+"<div data-v-b0f0cc28="">
+  <div data-v-b0f0cc28="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-4">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-b0f0cc28="" class="v-card-text"><i data-v-b0f0cc28="" class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success mr-1" aria-hidden="true"></i><span data-v-b0f0cc28="" class="font-weight-bold" aria-describedby="v-tooltip-0">Contract Source Code Verified<!----><!--teleport start--><!--teleport end--></span>
+      <div data-v-b0f0cc28="" class="v-row mt-3">
+        <div data-v-b0f0cc28="" class="v-col v-col-6"><b data-v-b0f0cc28="">Contract Name:</b> My Contract</div>
+        <div data-v-b0f0cc28="" class="v-col v-col-6"><b data-v-b0f0cc28="">Optimizer:</b> <span data-v-b0f0cc28=""><b data-v-b0f0cc28="">Yes</b> with <b data-v-b0f0cc28="">200</b> runs</span></div>
+      </div>
+      <div data-v-b0f0cc28="" class="v-row">
+        <div data-v-b0f0cc28="" class="v-col v-col-6"><b data-v-b0f0cc28="">Compiler Version:</b> compiler</div>
+        <div data-v-b0f0cc28="" class="v-col v-col-6"><b data-v-b0f0cc28="">EVM Version:</b> london</div>
+      </div>
+      <hr data-v-b0f0cc28="" class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator">
+      <contract-code-editor-stub data-v-b0f0cc28="" sources="[object Object]" selectedfile=""></contract-code-editor-stub>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+  <h4 data-v-b0f0cc28="">Constructor Arguments</h4>
+  <div data-v-b0f0cc28="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-6">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-b0f0cc28="" class="v-card-title"><span data-v-b0f0cc28="" class="text-caption"><a data-v-b0f0cc28="" class="">Formatted</a> | <a data-v-b0f0cc28="" class="underlined">Raw</a></span></div>
+    <div data-v-b0f0cc28="" class="v-card-text">
+      <div data-v-b0f0cc28="" style="white-space: pre;">
+        <formatted-sol-var-stub data-v-b0f0cc28="" input="[object Object]" value="abcd"></formatted-sol-var-stub>
+      </div>
+      <div data-v-b0f0cc28="" style="white-space: pre;">
+        <formatted-sol-var-stub data-v-b0f0cc28="" input="[object Object]" value="abcd,a,b,true,5"></formatted-sol-var-stub>
+      </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+  <!--v-if-->
+</div>"
+`;
+
+exports[`ContractVerificationInfo.vue > Should toggle constructor arguments format 2`] = `
+"<div data-v-b0f0cc28="">
+  <div data-v-b0f0cc28="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-4">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-b0f0cc28="" class="v-card-text"><i data-v-b0f0cc28="" class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success mr-1" aria-hidden="true"></i><span data-v-b0f0cc28="" class="font-weight-bold" aria-describedby="v-tooltip-0">Contract Source Code Verified<!----><!--teleport start--><!--teleport end--></span>
+      <div data-v-b0f0cc28="" class="v-row mt-3">
+        <div data-v-b0f0cc28="" class="v-col v-col-6"><b data-v-b0f0cc28="">Contract Name:</b> My Contract</div>
+        <div data-v-b0f0cc28="" class="v-col v-col-6"><b data-v-b0f0cc28="">Optimizer:</b> <span data-v-b0f0cc28=""><b data-v-b0f0cc28="">Yes</b> with <b data-v-b0f0cc28="">200</b> runs</span></div>
+      </div>
+      <div data-v-b0f0cc28="" class="v-row">
+        <div data-v-b0f0cc28="" class="v-col v-col-6"><b data-v-b0f0cc28="">Compiler Version:</b> compiler</div>
+        <div data-v-b0f0cc28="" class="v-col v-col-6"><b data-v-b0f0cc28="">EVM Version:</b> london</div>
+      </div>
+      <hr data-v-b0f0cc28="" class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator">
+      <contract-code-editor-stub data-v-b0f0cc28="" sources="[object Object]" selectedfile=""></contract-code-editor-stub>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+  <h4 data-v-b0f0cc28="">Constructor Arguments</h4>
+  <div data-v-b0f0cc28="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-6">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-b0f0cc28="" class="v-card-title"><span data-v-b0f0cc28="" class="text-caption"><a data-v-b0f0cc28="" class="underlined">Formatted</a> | <a data-v-b0f0cc28="" class="">Raw</a></span></div>
+    <div data-v-b0f0cc28="" class="v-card-text"><span data-v-b0f0cc28="">0x0000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000046162636400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000c000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000005000000000000000000000000000000000000000000000000000000000000000461626364000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000001610000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000016200000000000000000000000000000000000000000000000000000000000000</span></div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+  <!--v-if-->
+</div>"
+`;

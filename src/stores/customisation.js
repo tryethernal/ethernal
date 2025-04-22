@@ -29,4 +29,3 @@ export const useCustomisationStore = defineStore('customisation', {
         }
     }
 });
-

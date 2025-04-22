@@ -23,4 +23,4 @@ const props = defineProps({
 
 // Emits
 const emit = defineEmits(['list-updated']);
-</script> 
+</script>

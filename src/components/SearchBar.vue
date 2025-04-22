@@ -86,7 +86,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, inject, defineProps } from 'vue';
+import { ref, computed, watch, inject } from 'vue';
 import { useRouter } from 'vue-router';
 
 const props = defineProps({

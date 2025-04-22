@@ -658,7 +658,7 @@ exports[`ContractWriteMethod.vue > Should handle array input properly 1`] = `
 </div>"
 `;
 
-exports[`ContractWriteMethod.vue > Should make the UI unavailable if not account connected flag 1`] = `
+exports[`ContractWriteMethod.vue > Should make the UI unavailable if not active 1`] = `
 "<div>
   <div class="font-weight-bold">reproWriteBug</div>
   <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--disabled v-text-field py-1">
@@ -852,51 +852,9 @@ exports[`ContractWriteMethod.vue > Should send the transaction with Metamask if 
 </div>"
 `;
 
-exports[`ContractWriteMethod.vue > Should throw an error for bool type if input is not true or false 1`] = `
+exports[`ContractWriteMethod.vue > Should simulate the transaction before sending if simulate is checked 1`] = `
 "<div>
-  <div class="font-weight-bold">boolFun</div>
-  <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field py-1">
-    <!---->
-    <div class="v-input__control">
-      <div class="v-field v-field--active v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr">
-        <div class="v-field__overlay"></div>
-        <div class="v-field__loader">
-          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
-            <!---->
-            <div class="v-progress-linear__background"></div>
-            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
-            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
-              <div class="v-progress-linear__indeterminate">
-                <div class="v-progress-linear__indeterminate long"></div>
-                <div class="v-progress-linear__indeterminate short"></div>
-              </div>
-            </transition-stub>
-            <!---->
-          </div>
-        </div>
-        <!---->
-        <div class="v-field__field" data-no-activator="">
-          <!----><label class="v-label v-field-label" for="input-0">
-            <!---->bool boolInp
-          </label>
-          <!----><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" class="v-field__input" value="frbbforbuo">
-          <!---->
-        </div>
-        <!---->
-        <!---->
-        <div class="v-field__outline">
-          <div class="v-field__outline__start"></div>
-          <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
-              <!---->bool boolInp
-            </label></div>
-          <div class="v-field__outline__end"></div>
-          <!---->
-        </div>
-      </div>
-    </div>
-    <!---->
-    <!---->
-  </div>
+  <div class="font-weight-bold">build</div>
   <div class="col-4 px-0 py-1">
     <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field">
       <!---->
@@ -919,17 +877,17 @@ exports[`ContractWriteMethod.vue > Should throw an error for bool type if input 
           </div>
           <!---->
           <div class="v-field__field" data-no-activator="">
-            <!----><label class="v-label v-field-label" for="input-2">
+            <!----><label class="v-label v-field-label" for="input-0">
               <!---->Value (in ETH)
             </label>
-            <!----><input size="1" type="number" id="input-2" aria-describedby="input-2-messages" small="" class="v-field__input" value="0">
+            <!----><input size="1" type="number" id="input-0" aria-describedby="input-0-messages" small="" class="v-field__input" value="0">
             <!---->
           </div>
           <!---->
           <!---->
           <div class="v-field__outline">
             <div class="v-field__outline__start"></div>
-            <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-2">
+            <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
                 <!---->Value (in ETH)
               </label></div>
             <div class="v-field__outline__end"></div>
@@ -942,8 +900,8 @@ exports[`ContractWriteMethod.vue > Should throw an error for bool type if input 
     </div>
   </div>
   <div class="bg-grey-lighten-3 pa-2 mt-1" style="">
-    <div style="display: none;"> Tx: <a href="/transaction/null" target="_blank"></a></div>
-    <div>Input needs to be 'true' or 'false'</div>
+    <div style=""> Tx: <a href="/transaction/0xabcd" target="_blank">0xabcd</a></div>
+    <div class="mt-1"><i class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success-lighten-1" aria-hidden="true"></i> Transaction successful </div>
   </div>
   <hr class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator">
   <div class="d-flex align-center"><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-flat mt-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
@@ -954,11 +912,11 @@ exports[`ContractWriteMethod.vue > Should throw an error for bool type if input 
     <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-checkbox ml-2">
       <!---->
       <div class="v-input__control">
-        <div class="v-selection-control v-selection-control--density-compact v-checkbox-btn">
+        <div class="v-selection-control v-selection-control--dirty v-selection-control--density-compact v-checkbox-btn">
           <div class="v-selection-control__wrapper">
             <!---->
-            <div class="v-selection-control__input"><i class="mdi-checkbox-blank-outline mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i><input id="checkbox-5" aria-disabled="false" aria-label="Simulate before sending" type="checkbox" aria-describedby="checkbox-5-messages" value="true"></div>
-          </div><label class="v-label v-label--clickable" for="checkbox-5">
+            <div class="v-selection-control__input"><i class="mdi-checkbox-marked mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i><input id="checkbox-3" aria-disabled="false" aria-label="Simulate before sending" type="checkbox" aria-describedby="checkbox-3-messages" value="true" checked=""></div>
+          </div><label class="v-label v-label--clickable" for="checkbox-3">
             <!---->Simulate before sending
           </label>
         </div>
