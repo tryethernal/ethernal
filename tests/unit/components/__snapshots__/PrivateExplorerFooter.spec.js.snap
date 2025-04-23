@@ -6,7 +6,7 @@ exports[`PrivateExplorerFooter.vue > Should render the footer with explorer info
     <!-- Links Columns Row -->
     <div data-v-eccf9220="" class="d-flex flex-column flex-sm-row ga-lg-16 ga-5">
       <div data-v-eccf9220="" class="d-flex flex-column"><span data-v-eccf9220="" class="text-body-2"> Block explorer &amp; data analytics platform for Test Chain. </span><button data-v-eccf9220="" class="v-btn mt-2 px-2" variant="outlined" max-width="180px" size="small" title="Add to MetaMask"><img data-v-eccf9220="" src="/src/assets/metamask-fox.svg" class="metamask-icon mr-2" width="20" height="20" alt="MetaMask"><span data-v-eccf9220="" class="text-body-2">Add to Metamask</span></button></div>
-      <div data-v-eccf9220="" class="d-flex flex-column ga-2"><a data-v-eccf9220="" href="https://test.com" class="text-decoration-none"><span data-v-eccf9220="" class="v-icon me-1" size="small" icon="mdi-test"></span> Test Link</a></div>
+      <div data-v-eccf9220="" class="d-flex flex-column ga-2"><span data-v-eccf9220="" class="text-subtitle-2">Resources</span><a data-v-eccf9220="" href="https://test.com" class="text-decoration-none text-body-2"><span data-v-eccf9220="" class="v-icon me-1" size="small" icon="mdi-test"></span> Test Link</a></div>
     </div>
     <hr data-v-eccf9220="" class="v-divider my-6"><!-- Copyright and Donation Row -->
     <div data-v-eccf9220="" class="d-flex justify-space-between align-center">

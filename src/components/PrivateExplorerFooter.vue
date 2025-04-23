@@ -20,10 +20,11 @@
                 </div>
 
                 <div class="d-flex flex-column ga-2" v-if="explorerStore.themes?.links?.length > 0">
+                    <span class="text-subtitle-2">Resources</span>
                     <a v-for="link in explorerStore.themes.links" 
                        :key="link.name"
                        :href="link.url" 
-                       class="text-decoration-none">
+                       class="text-decoration-none text-body-2">
                         <v-icon size="small" :icon="link.icon" class="me-1" />
                         {{ link.name }}
                     </a>

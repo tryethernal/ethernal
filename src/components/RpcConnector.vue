@@ -10,7 +10,7 @@
                         <span style="max-width: 50ch; text-overflow: ellipsis; overflow: hidden;">{{ shortRpcUrl(currentWorkspaceStore.rpcServer) }}</span>
                         <v-divider vertical inset class="mx-2"></v-divider>
                     </template>
-                    <template v-if="currentWorkspaceStore.currentBlock.number">
+                    <template v-if="currentWorkspaceStore.currentBlock.number !== null && currentWorkspaceStore.currentBlock.number !== undefined">
                         Latest Block: <router-link class="text-decoration-none ml-1" :to="'/block/' + currentWorkspaceStore.currentBlock.number">{{ currentWorkspaceStore.currentBlock.number && commify(currentWorkspaceStore.currentBlock.number) }}</router-link>
                     </template>
                     <template v-if="explorerStore.id && explorerStore.gasAnalyticsEnabled && gasPrice">

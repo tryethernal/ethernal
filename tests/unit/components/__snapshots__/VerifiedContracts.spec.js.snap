@@ -6,16 +6,16 @@ exports[`VerifiedContracts.vue > Should handle loading states 1`] = `
   <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator">
   <div class="v-row">
     <div class="v-col-sm-6 v-col-lg-3 v-col-12">
-      <stat-number-stub title="Contracts Deployed (total)" loading="false" long="false" raw="true"></stat-number-stub>
+      <stat-number-stub title="Contracts Deployed (total)" loading="false" long="false" raw="true" border="true"></stat-number-stub>
     </div>
     <div class="v-col-sm-6 v-col-lg-3 v-col-12">
-      <stat-number-stub title="Contracts Deployed (24h)" loading="false" long="false" raw="true"></stat-number-stub>
+      <stat-number-stub title="Contracts Deployed (24h)" loading="false" long="false" raw="true" border="true"></stat-number-stub>
     </div>
     <div class="v-col-sm-6 v-col-lg-3 v-col-12">
-      <stat-number-stub title="Contracts Verified (Total)" loading="false" long="false" raw="false"></stat-number-stub>
+      <stat-number-stub title="Contracts Verified (Total)" loading="false" long="false" raw="false" border="true"></stat-number-stub>
     </div>
     <div class="v-col-sm-6 v-col-lg-3 v-col-12">
-      <stat-number-stub title="Contracts Verified (24h)" loading="false" long="false" raw="true"></stat-number-stub>
+      <stat-number-stub title="Contracts Verified (24h)" loading="false" long="false" raw="true" border="true"></stat-number-stub>
     </div>
   </div>
   <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated mt-4">
@@ -197,16 +197,16 @@ exports[`VerifiedContracts.vue > Should handle pagination updates 1`] = `
   <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator">
   <div class="v-row">
     <div class="v-col-sm-6 v-col-lg-3 v-col-12">
-      <stat-number-stub title="Contracts Deployed (total)" loading="false" long="false" raw="true" value="100"></stat-number-stub>
+      <stat-number-stub title="Contracts Deployed (total)" loading="false" long="false" raw="true" border="true" value="100"></stat-number-stub>
     </div>
     <div class="v-col-sm-6 v-col-lg-3 v-col-12">
-      <stat-number-stub title="Contracts Deployed (24h)" loading="false" long="false" raw="true" value="5"></stat-number-stub>
+      <stat-number-stub title="Contracts Deployed (24h)" loading="false" long="false" raw="true" border="true" value="5"></stat-number-stub>
     </div>
     <div class="v-col-sm-6 v-col-lg-3 v-col-12">
-      <stat-number-stub title="Contracts Verified (Total)" loading="false" long="false" raw="false" value="50"></stat-number-stub>
+      <stat-number-stub title="Contracts Verified (Total)" loading="false" long="false" raw="false" border="true" value="50"></stat-number-stub>
     </div>
     <div class="v-col-sm-6 v-col-lg-3 v-col-12">
-      <stat-number-stub title="Contracts Verified (24h)" loading="false" long="false" raw="true" value="2"></stat-number-stub>
+      <stat-number-stub title="Contracts Verified (24h)" loading="false" long="false" raw="true" border="true" value="2"></stat-number-stub>
     </div>
   </div>
   <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated mt-4">
@@ -410,16 +410,16 @@ exports[`VerifiedContracts.vue > Should show verified contracts with stats and t
   <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator">
   <div class="v-row">
     <div class="v-col-sm-6 v-col-lg-3 v-col-12">
-      <stat-number-stub title="Contracts Deployed (total)" loading="false" long="false" raw="true" value="100"></stat-number-stub>
+      <stat-number-stub title="Contracts Deployed (total)" loading="false" long="false" raw="true" border="true" value="100"></stat-number-stub>
     </div>
     <div class="v-col-sm-6 v-col-lg-3 v-col-12">
-      <stat-number-stub title="Contracts Deployed (24h)" loading="false" long="false" raw="true" value="5"></stat-number-stub>
+      <stat-number-stub title="Contracts Deployed (24h)" loading="false" long="false" raw="true" border="true" value="5"></stat-number-stub>
     </div>
     <div class="v-col-sm-6 v-col-lg-3 v-col-12">
-      <stat-number-stub title="Contracts Verified (Total)" loading="false" long="false" raw="false" value="50"></stat-number-stub>
+      <stat-number-stub title="Contracts Verified (Total)" loading="false" long="false" raw="false" border="true" value="50"></stat-number-stub>
     </div>
     <div class="v-col-sm-6 v-col-lg-3 v-col-12">
-      <stat-number-stub title="Contracts Verified (24h)" loading="false" long="false" raw="true" value="2"></stat-number-stub>
+      <stat-number-stub title="Contracts Verified (24h)" loading="false" long="false" raw="true" border="true" value="2"></stat-number-stub>
     </div>
   </div>
   <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated mt-4">

@@ -6,13 +6,13 @@ exports[`Blocks.vue > Should show the blocks list 1`] = `
   <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator">
   <div class="v-row">
     <div class="v-col-sm-6 v-col-lg-3 v-col-12">
-      <stat-number-stub title="Network Utilization (24h)" loading="false" long="false" raw="true" value="50.00%"></stat-number-stub>
+      <stat-number-stub title="Network Utilization (24h)" loading="false" long="false" raw="true" border="true" value="50.00%"></stat-number-stub>
     </div>
     <div class="v-col-sm-6 v-col-lg-3 v-col-12">
-      <stat-number-stub title="Total Gas Used (24h)" loading="false" long="false" raw="false" value="1000000"></stat-number-stub>
+      <stat-number-stub title="Total Gas Used (24h)" loading="false" long="false" raw="false" border="true" value="1000000"></stat-number-stub>
     </div>
     <div class="v-col-sm-6 v-col-lg-3 v-col-12">
-      <stat-number-stub title="Burnt Fees (24h)" loading="false" long="false" raw="true" value="10 ETH"></stat-number-stub>
+      <stat-number-stub title="Burnt Fees (24h)" loading="false" long="false" raw="true" border="true" value="10 ETH"></stat-number-stub>
     </div>
   </div>
   <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated mt-4">

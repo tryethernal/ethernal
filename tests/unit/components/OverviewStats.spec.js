@@ -53,7 +53,7 @@ describe('OverviewStats.vue', () => {
                     initialState: {
                         currentWorkspace: {
                             currentBlock: {
-                                number: 0
+                                number: null
                             }
                         },
                         explorer: {
@@ -150,6 +150,37 @@ describe('OverviewStats.vue', () => {
                         currentWorkspace: {
                             currentBlock: {
                                 number: 12345
+                            }
+                        },
+                        explorer: {
+                            totalSupply: '1000000000000000000',
+                            token: {
+                                symbol: 'ETH',
+                                decimals: 18
+                            }
+                        }
+                    }
+                })]
+            }
+        });
+        await flushPromises();
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
+    it('Should show block number when it is 0', async () => {
+        const fromWei = vi.fn().mockReturnValue('1.0 ETH');
+        const wrapper = mount(OverviewStats, {
+            global: {
+                stubs,
+                provide: {
+                    $fromWei: fromWei
+                },
+                plugins: [createTestingPinia({
+                    initialState: {
+                        currentWorkspace: {
+                            currentBlock: {
+                                number: 0
                             }
                         },
                         explorer: {

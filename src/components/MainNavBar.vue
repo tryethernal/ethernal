@@ -152,7 +152,7 @@
                             <span class="text-body-1">Settings</span>
                         </template>
                     </v-list-item>
-                    <v-list-item :to="'/logout'" title="Logout">
+                    <v-list-item @click="logOut" title="Logout">
                         <template v-slot:title>
                             <span class="text-body-1">Logout</span>
                         </template>
@@ -350,6 +350,12 @@
                                 <v-btn :color="isHovering || route.path === '/settings' ? 'primary' : 'black'" variant="plain" v-bind="props" :to="'/settings?tab=workspace'" :class="`text-default opacity-${isHovering || route.path === '/settings' ? '100' : '80'} fill-height`">Settings</v-btn>
                             </template>
                         </v-hover>
+
+                        <v-hover>
+                            <template v-slot:default="{ isHovering, props }">
+                                <v-btn @click="logOut" variant="plain" v-bind="props" :to="'/logout'" :class="`text-error opacity-${isHovering ? '100' : '80'} fill-height`">Logout</v-btn>
+                            </template>
+                        </v-hover>
                     </template>
 
                     <v-divider vertical class="my-4 mr-4"></v-divider>
@@ -434,48 +440,6 @@ const isTokensActive = computed(() => {
     ];
     return tokenRoutes.includes(route.path);
 });
-
-const isResourcesActive = computed(() => {
-    const resourceRoutes = ['/faucet', '/dex', '/bridge'];
-    return resourceRoutes.includes(route.path);
-});
-
-const isMoreActive = computed(() => {
-    const moreRoutes = ['/explorers', '/settings'];
-    return moreRoutes.includes(route.path);
-});
-
-// Computed properties
-const hasNetworkInfo = computed(() => {
-    return !!(explorerStore.name && explorerStore.domain && explorerStore.token && explorerStore.rpcServer);
-});
-
-// Methods
-const addNetworkToMetamask = () => {
-    if (!props.ethereum) return;
-
-    let domain = explorerStore.domain;
-    if (explorerStore.domains && explorerStore.domains.length) {
-        domain = explorerStore.domains[0].domain;
-    }
-
-    props.ethereum.request({
-        method: 'wallet_addEthereumChain',
-        params: [
-            {
-                chainId: `0x${parseInt(currentWorkspaceStore.networkId).toString(16)}`,
-                chainName: explorerStore.name,
-                rpcUrls: [explorerStore.rpcServer],
-                blockExplorerUrls: [`https://${domain}`],
-                nativeCurrency: {
-                    name: explorerStore.token,
-                    symbol: explorerStore.token,
-                    decimals: 18
-                }
-            }
-        ]
-    }).catch(console.log);
-};
 
 const logOut = () => {
     userStore.updateUser(null);

@@ -5,9 +5,9 @@
                 <v-col cols="12" sm="6" class="stat-item d-flex flex-column">
                     <StatNumber
                         title="Latest Block"
-                        :value="currentWorkspaceStore.currentBlock.number.toLocaleString()"
+                        :value="currentWorkspaceStore.currentBlock.number !== null && currentWorkspaceStore.currentBlock.number !== undefined ? currentWorkspaceStore.currentBlock.number.toLocaleString() : ''"
                         :raw="true"
-                        :loading="!currentWorkspaceStore.currentBlock.number"
+                        :loading="currentWorkspaceStore.currentBlock.number === undefined || currentWorkspaceStore.currentBlock.number === null"
                         icon="mdi-cube-outline"
                         :border="false"
                     />

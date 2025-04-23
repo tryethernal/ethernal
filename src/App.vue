@@ -193,10 +193,6 @@ export default {
         openBrowserSyncExplainerModal() {
             this.$refs.browserSyncExplainerModal.open();
         },
-        logOut() {
-            this.userStore.updateUser(null);
-            document.location.reload();
-        },
         launchOnboarding() {
             this.isOverlayActive = false;
             this.$refs.onboardingModal.open();
