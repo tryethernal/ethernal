@@ -2,43 +2,52 @@
     <v-card class="white-card" height="100%">
         <v-card-text>
             <v-row class="stats-grid">
-                <v-col cols="12" sm="6" class="stat-item">
+                <v-col cols="12" sm="6" class="stat-item d-flex flex-column">
                     <StatNumber
                         title="Latest Block"
                         :value="currentWorkspaceStore.currentBlock.number.toLocaleString()"
                         :raw="true"
                         :loading="!currentWorkspaceStore.currentBlock.number"
                         icon="mdi-cube-outline"
+                        :border="false"
                     />
+                    <v-divider class="mt-5" width="90%"></v-divider>
                 </v-col>
-                <v-col cols="12" sm="6" class="stat-item">
+                <v-col cols="12" sm="6" class="stat-item d-flex flex-column">
                     <StatNumber
                         title="Total Tx Count"
                         :value="txCountTotal"
                         :loading="txCountTotalLoading"
+                        :border="false"
                     />
+                    <v-divider class="mt-5" width="90%"></v-divider>
                 </v-col>
-                <v-col cols="12" sm="6" class="stat-item">
+                <v-col cols="12" sm="6" class="stat-item d-flex flex-column">
                     <StatNumber
                         title="24h Tx Count"
                         :value="txCount24h"
                         :loading="txCount24hLoading"
+                        :border="false"
                     />
+                    <v-divider class="mt-5" width="90%"></v-divider>
                 </v-col>
-                <v-col cols="12" sm="6" class="stat-item">
+                <v-col cols="12" sm="6" class="stat-item d-flex flex-column">
                     <StatNumber
                         title="Total Active Wallets Count"
                         infoTooltip="An active wallet is an address that has sent at least one transaction."
                         :value="activeWalletCount"
                         :loading="activeWalletCountLoading"
+                        :border="false"
                     />
+                    <v-divider class="mt-5" width="90%"></v-divider>
                 </v-col>
-                <v-col cols="12" sm="6" class="stat-item" v-if="explorerStore.totalSupply">
+                <v-col cols="12" sm="6" class="stat-item d-flex flex-column" v-if="explorerStore.totalSupply">
                     <StatNumber
                         title="Total Supply"
                         :raw="true"
                         :value="formattedTotalSupply"
                         :loading="!formattedTotalSupply"
+                        :border="false"
                     />
                 </v-col>
             </v-row>
@@ -128,11 +137,22 @@ onMounted(() => {
 
 .stat-item :deep(.v-card) {
     width: 100%;
-    transition: transform 0.2s ease-in-out;
 }
 
-.stat-item :deep(.v-card:hover) {
-    transform: translateY(-2px);
+/* Hide dividers for last row */
+@media (min-width: 600px) {
+    /* On 2-column layout, hide last 2 items' dividers */
+    .stat-item:nth-last-child(1) .v-divider,
+    .stat-item:nth-last-child(2) .v-divider {
+        display: none;
+    }
+}
+
+@media (max-width: 599px) {
+    /* On mobile, only hide last item's divider */
+    .stat-item:last-child .v-divider {
+        display: none;
+    }
 }
 
 .white-card {

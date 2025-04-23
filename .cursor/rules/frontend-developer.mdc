@@ -1,6 +1,6 @@
 ---
 description: 
-globs: 
+globs: *.vue,*.js
 alwaysApply: false
 ---
 # Frontend Vue.js Developer Agent

@@ -136,4 +136,35 @@ describe('OverviewStats.vue', () => {
 
         expect(wrapper.html()).toMatchSnapshot();
     });
+
+    it('Should hide dividers correctly on different screen sizes', async () => {
+        const fromWei = vi.fn().mockReturnValue('1.0 ETH');
+        const wrapper = mount(OverviewStats, {
+            global: {
+                stubs,
+                provide: {
+                    $fromWei: fromWei
+                },
+                plugins: [createTestingPinia({
+                    initialState: {
+                        currentWorkspace: {
+                            currentBlock: {
+                                number: 12345
+                            }
+                        },
+                        explorer: {
+                            totalSupply: '1000000000000000000',
+                            token: {
+                                symbol: 'ETH',
+                                decimals: 18
+                            }
+                        }
+                    }
+                })]
+            }
+        });
+        await flushPromises();
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
 }); 

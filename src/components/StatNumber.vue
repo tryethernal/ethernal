@@ -1,5 +1,5 @@
 <template>
-    <v-card :loading="loading">
+    <v-card :loading="loading" :border="border ? 'primary thin' : false">
         <v-card-text v-if="loading">
             <v-skeleton-loader type="list-item"></v-skeleton-loader>
         </v-card-text>
@@ -41,7 +41,11 @@ const props = defineProps({
     decimals: Number,
     long: Boolean,
     tokenType: String,
-    raw: Boolean
+    raw: Boolean,
+    border: {
+        type: Boolean,
+        default: true
+    }
 });
 
 const commify = ethers.utils.commify;

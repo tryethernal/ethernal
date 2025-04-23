@@ -46,7 +46,7 @@ module.exports = (sequelize, DataTypes) => {
 
     static findBySlug(slug) {
         return Explorer.findOne({
-            attributes: ['id', 'chainId', 'domain', 'l1Explorer', 'name', 'rpcServer', 'slug', 'token', 'themes', 'userId', 'workspaceId', 'gasAnalyticsEnabled', 'isDemo'],
+            attributes: ['id', 'chainId', 'domain', 'l1Explorer', 'name', 'rpcServer', 'slug', 'token', 'themes', 'userId', 'workspaceId', 'gasAnalyticsEnabled', 'isDemo', 'totalSupply'],
             where: { slug },
             include: [
                 {
@@ -114,7 +114,7 @@ module.exports = (sequelize, DataTypes) => {
                 {
                     model: Explorer,
                     as: 'explorer',
-                    attributes: ['id', 'chainId', 'domain', 'l1Explorer', 'name', 'rpcServer', 'slug', 'token', 'themes', 'userId', 'workspaceId', 'gasAnalyticsEnabled', 'isDemo'],
+                    attributes: ['id', 'chainId', 'domain', 'l1Explorer', 'name', 'rpcServer', 'slug', 'token', 'themes', 'userId', 'workspaceId', 'gasAnalyticsEnabled', 'isDemo', 'totalSupply'],
                     include: [
                         {
                             model: sequelize.models.StripeSubscription,
@@ -177,7 +177,7 @@ module.exports = (sequelize, DataTypes) => {
             return explorer.stripeSubscription && explorer.stripeSubscription.stripePlan.capabilities.customDomain ? explorer : null;
         else
             return Explorer.findOne({
-                attributes: ['id', 'chainId', 'domain', 'l1Explorer', 'name', 'rpcServer', 'slug', 'token', 'themes'],
+                attributes: ['id', 'chainId', 'domain', 'l1Explorer', 'name', 'rpcServer', 'slug', 'token', 'themes', 'totalSupply'],
                 where: { domain: domain },
                 include: [
                     {
