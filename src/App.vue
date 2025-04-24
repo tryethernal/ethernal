@@ -35,7 +35,7 @@
             <component :is="routerComponent"></component>
         </v-main>
 
-        <component :is="host.includes(`app.${envStore.mainDomain}`) ? 'PublicExplorerFooter' : 'PrivateExplorerFooter'" v-if="canDisplaySides" />
+        <component :is="host.includes(`app.${envStore.mainDomain}`) ? 'PrivateExplorerFooter' : 'PublicExplorerFooter'" v-if="canDisplaySides" />
     </v-app>
 </template>
 
@@ -56,8 +56,8 @@ import BrowserSyncExplainerModal from './components/BrowserSyncExplainerModal';
 import MigrateExplorerModal from './components/MigrateExplorerModal';
 import DemoExplorerMigrationModal from './components/DemoExplorerMigrationModal';
 import MainNavBar from './components/MainNavBar';
-import PublicExplorerFooter from './components/PublicExplorerFooter';
 import PrivateExplorerFooter from './components/PrivateExplorerFooter';
+import PublicExplorerFooter from './components/PublicExplorerFooter';
 
 export default {
     name: 'App',
@@ -68,8 +68,8 @@ export default {
         MigrateExplorerModal,
         DemoExplorerMigrationModal,
         MainNavBar,
-        PublicExplorerFooter,
-        PrivateExplorerFooter
+        PrivateExplorerFooter,
+        PublicExplorerFooter
     },
     data: () => ({
         routerComponent: shallowRef(defineComponent({

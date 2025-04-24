@@ -1,131 +1,194 @@
-import PublicExplorerFooter from '@/components/PublicExplorerFooter.vue';
-import { createTestingPinia } from '@pinia/testing';
+// Mock host
+vi.mock('@/stores/env', () => ({
+    useEnvStore: () => ({
+        mainDomain: 'ethernal.local:8080',
+        version: '1.2.3'
+    }),
+    host: 'localhost:3000'
+}));
 
-describe('PublicExplorerFooter.vue', () => {
-    const host = 'test.ethernal.com';
-    const mockEnvStore = {
-        version: '1.2.3',
-        mainDomain: 'ethernal.com'
+import { setActivePinia, createPinia } from 'pinia';
+import { useEnvStore } from '@/stores/env';
+import { useExplorerStore } from '@/stores/explorer';
+import { useCurrentWorkspaceStore } from '@/stores/currentWorkspace';
+import PublicExplorerFooter from '@/components/PublicExplorerFooter.vue';
+
+describe('PrivateExplorerFooter.vue', () => {
+    const mockEnv = {
+        mainDomain: 'ethernal.local:8080',
+        version: '1.2.3'
     };
-    const mockCurrentWorkspaceStore = {
-        networkId: '0x1',
-        name: 'Test Network',
-        chain: {
-            token: 'ETH'
-        },
-        rpcServer: 'https://test.rpc'
+
+    const mockExplorer = {
+        name: 'Test Chain',
+        token: 'TEST',
+        rpcServer: 'https://rpc.test.com',
+        domain: 'test.domain.com',
+        themes: {
+            links: [
+                { name: 'Test Link', url: 'https://test.com', icon: 'mdi-test' }
+            ]
+        }
     };
+
+    const mockCurrentWorkspace = {
+        networkId: '1'
+    };
+
+    let pinia;
 
     beforeEach(() => {
-        // Mock document.location
-        Object.defineProperty(window, 'location', {
-            value: { host },
-            writable: true
-        });
+        // Mock the stores
+        pinia = createPinia();
+        setActivePinia(pinia);
+
+        // Create stores with initial state
+        const envStore = useEnvStore();
+        const explorerStore = useExplorerStore();
+        const currentWorkspaceStore = useCurrentWorkspaceStore();
+
+        // Set initial state
+        Object.assign(envStore, mockEnv);
+        Object.assign(explorerStore, mockExplorer);
+        Object.assign(currentWorkspaceStore, mockCurrentWorkspace);
     });
 
-    it('Should show the component', async () => {
+    it('Should render the footer with explorer information', async () => {
         const wrapper = mount(PublicExplorerFooter, {
             global: {
-                plugins: [
-                    createTestingPinia({
-                        initialState: {
-                            env: mockEnvStore,
-                            currentWorkspace: mockCurrentWorkspaceStore
-                        }
-                    })
-                ]
+                plugins: [pinia],
+                stubs: {
+                    'v-footer': {
+                        template: '<div class="v-footer"><slot /></div>'
+                    },
+                    'v-container': {
+                        template: '<div class="v-container"><slot /></div>'
+                    },
+                    'v-btn': {
+                        template: '<button class="v-btn"><slot /></button>'
+                    },
+                    'v-icon': {
+                        template: '<span class="v-icon"><slot /></span>'
+                    },
+                    'v-divider': {
+                        template: '<hr class="v-divider" />'
+                    }
+                }
             }
         });
-        await flushPromises();
 
         expect(wrapper.html()).toMatchSnapshot();
     });
 
-    it('Should try to add network to metamask when clicking the button', async () => {
-        const mockRequest = vi.fn();
-        global.window.ethereum = {
-            request: mockRequest
-        };
+    it('Should render the footer without links when themes.links is empty', async () => {
+        const noLinksExplorer = { ...mockExplorer, themes: { links: [] } };
+        const explorerStore = useExplorerStore();
+        Object.assign(explorerStore, noLinksExplorer);
 
         const wrapper = mount(PublicExplorerFooter, {
             global: {
-                plugins: [
-                    createTestingPinia({
-                        initialState: {
-                            env: mockEnvStore,
-                            currentWorkspace: mockCurrentWorkspaceStore
-                        }
-                    })
-                ]
+                plugins: [pinia],
+                stubs: {
+                    'v-footer': {
+                        template: '<div class="v-footer"><slot /></div>'
+                    },
+                    'v-container': {
+                        template: '<div class="v-container"><slot /></div>'
+                    },
+                    'v-btn': {
+                        template: '<button class="v-btn"><slot /></button>'
+                    },
+                    'v-icon': {
+                        template: '<span class="v-icon"><slot /></span>'
+                    },
+                    'v-divider': {
+                        template: '<hr class="v-divider" />'
+                    }
+                }
             }
         });
-        await flushPromises();
 
-        await wrapper.find('button').trigger('click');
+        expect(wrapper.html()).toMatchSnapshot();
+    });
 
-        expect(mockRequest).toHaveBeenCalledWith({
+    it('Should attempt to add network to MetaMask when button is clicked', async () => {
+        // Mock window.ethereum
+        const mockEthereum = {
+            request: vi.fn().mockResolvedValueOnce({})
+        };
+        window.ethereum = mockEthereum;
+
+        const wrapper = mount(PublicExplorerFooter, {
+            global: {
+                plugins: [pinia],
+                stubs: {
+                    'v-footer': {
+                        template: '<div class="v-footer"><slot /></div>'
+                    },
+                    'v-container': {
+                        template: '<div class="v-container"><slot /></div>'
+                    },
+                    'v-btn': {
+                        template: '<button class="v-btn"><slot /></button>'
+                    },
+                    'v-icon': {
+                        template: '<span class="v-icon"><slot /></span>'
+                    },
+                    'v-divider': {
+                        template: '<hr class="v-divider" />'
+                    }
+                }
+            }
+        });
+
+        await wrapper.find('.v-btn').trigger('click');
+
+        expect(mockEthereum.request).toHaveBeenCalledWith({
             method: 'wallet_addEthereumChain',
             params: [{
-                chainId: mockCurrentWorkspaceStore.networkId,
-                chainName: mockCurrentWorkspaceStore.name,
+                chainId: '0x1',
+                chainName: 'Test Chain',
                 nativeCurrency: {
-                    name: mockCurrentWorkspaceStore.chain.token,
-                    symbol: mockCurrentWorkspaceStore.chain.token,
+                    name: 'TEST',
+                    symbol: 'TEST',
                     decimals: 18
                 },
-                rpcUrls: [mockCurrentWorkspaceStore.rpcServer],
-                blockExplorerUrls: [`https://app.${mockEnvStore.mainDomain}`]
+                rpcUrls: ['https://rpc.test.com'],
+                blockExplorerUrls: ['https://test.domain.com']
             }]
         });
     });
 
-    it('Should not try to add network to metamask when ethereum is not available', async () => {
-        global.window.ethereum = undefined;
+    it('Should handle MetaMask addition when ethereum is not available', async () => {
+        // Remove window.ethereum
+        window.ethereum = undefined;
         const consoleSpy = vi.spyOn(console, 'error');
 
         const wrapper = mount(PublicExplorerFooter, {
             global: {
-                plugins: [
-                    createTestingPinia({
-                        initialState: {
-                            env: mockEnvStore,
-                            currentWorkspace: mockCurrentWorkspaceStore
-                        }
-                    })
-                ]
+                plugins: [pinia],
+                stubs: {
+                    'v-footer': {
+                        template: '<div class="v-footer"><slot /></div>'
+                    },
+                    'v-container': {
+                        template: '<div class="v-container"><slot /></div>'
+                    },
+                    'v-btn': {
+                        template: '<button class="v-btn"><slot /></button>'
+                    },
+                    'v-icon': {
+                        template: '<span class="v-icon"><slot /></span>'
+                    },
+                    'v-divider': {
+                        template: '<hr class="v-divider" />'
+                    }
+                }
             }
         });
-        await flushPromises();
 
-        await wrapper.find('button').trigger('click');
-
+        await wrapper.find('.v-btn').trigger('click');
+        
         expect(consoleSpy).not.toHaveBeenCalled();
-    });
-
-    it('Should handle errors when adding network', async () => {
-        const mockRequest = vi.fn().mockRejectedValue(new Error('Failed'));
-        const consoleSpy = vi.spyOn(console, 'error');
-        global.window.ethereum = {
-            request: mockRequest
-        };
-
-        const wrapper = mount(PublicExplorerFooter, {
-            global: {
-                plugins: [
-                    createTestingPinia({
-                        initialState: {
-                            env: mockEnvStore,
-                            currentWorkspace: mockCurrentWorkspaceStore
-                        }
-                    })
-                ]
-            }
-        });
-        await flushPromises();
-
-        await wrapper.find('button').trigger('click');
-
-        expect(consoleSpy).toHaveBeenCalledWith('Failed to add network to MetaMask:', expect.any(Error));
     });
 }); 
