@@ -91,7 +91,7 @@ const onContractVerified = (newVerificationData) => {
 };
 
 const highlightedAsm = computed(() => {
-    return props.contract.asm && hljs.highlight(props.contract.asm, { language: 'x86asm' });
+    return props.contract.asm && hljs.highlight(props.contract.asm, { language: 'x86asm' }).code;
 });
 </script>
 
