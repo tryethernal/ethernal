@@ -4,7 +4,7 @@ exports[`Overview.vue > Should load the overview page 1`] = `
 "<div data-v-55ca85f9="" class="overview">
   <div data-v-55ca85f9="" class="search-hero">
     <div data-v-55ca85f9="" class="search-container">
-      <h1 data-v-55ca85f9="" class="text-h5 text-center mb-4"> Explorer</h1>
+      <h1 data-v-55ca85f9="" class="text-h5 text-center mb-4">Ethernal Explorer</h1>
       <search-bar-stub data-v-55ca85f9="" compact="false"></search-bar-stub>
     </div>
   </div>

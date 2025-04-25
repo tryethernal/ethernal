@@ -16,11 +16,9 @@
                             <img :src="logo" alt="logo" class="custom-logo" />
                         </router-link>
                     </div>
-                    <div v-else class="text-h6">
-                        <router-link class="text-decoration-none" :to="'/overview'">
-                            {{ currentWorkspaceStore.name || 'Ethernal' }}
-                        </router-link>
-                    </div>
+                    <router-link v-else class="text-decoration-none text-h6 text-primary" :to="'/overview'">
+                        {{ currentWorkspaceStore.name || 'Ethernal' }}
+                    </router-link>
                 </v-list-item>
 
                 <v-divider class="my-2"></v-divider>
@@ -154,7 +152,7 @@
                     </v-list-item>
                     <v-list-item @click="logOut" title="Logout">
                         <template v-slot:title>
-                            <span class="text-body-1">Logout</span>
+                            <span class="text-body-1 text-error">Logout</span>
                         </template>
                     </v-list-item>
                 </template>

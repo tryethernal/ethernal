@@ -1,5 +1,59 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`Transaction.vue > Should display parsed error messages 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <h2 class="text-h5 font-weight-medium">Transaction Details</h2>
+  <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator"><!-- Navigation Tabs -->
+  <div class="v-slide-group v-chip-group v-theme--light" tabindex="0">
+    <!---->
+    <div class="v-slide-group__container">
+      <div class="v-slide-group__content"><span class="v-chip v-chip--label v-chip--link v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal text-primary" draggable="false" tabindex="0"><span class="v-chip__overlay"></span><span class="v-chip__underlay"></span>
+        <!---->
+        <!---->
+        <div class="v-chip__content" data-no-activator="">Overview</div>
+        <!---->
+        <!----></span>
+        <!--v-if-->
+        <!--v-if-->
+        <!--v-if-->
+      </div>
+    </div>
+    <!---->
+  </div><!-- Tab Content -->
+  <transaction-overview-stub transaction="[object Object]"></transaction-overview-stub>
+  <!--v-if-->
+  <!--v-if-->
+  <!--v-if-->
+</div>"
+`;
+
+exports[`Transaction.vue > Should display raw error messages 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <h2 class="text-h5 font-weight-medium">Transaction Details</h2>
+  <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator"><!-- Navigation Tabs -->
+  <div class="v-slide-group v-chip-group v-theme--light" tabindex="0">
+    <!---->
+    <div class="v-slide-group__container">
+      <div class="v-slide-group__content"><span class="v-chip v-chip--label v-chip--link v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal text-primary" draggable="false" tabindex="0"><span class="v-chip__overlay"></span><span class="v-chip__underlay"></span>
+        <!---->
+        <!---->
+        <div class="v-chip__content" data-no-activator="">Overview</div>
+        <!---->
+        <!----></span>
+        <!--v-if-->
+        <!--v-if-->
+        <!--v-if-->
+      </div>
+    </div>
+    <!---->
+  </div><!-- Tab Content -->
+  <transaction-overview-stub transaction="[object Object]"></transaction-overview-stub>
+  <!--v-if-->
+  <!--v-if-->
+  <!--v-if-->
+</div>"
+`;
+
 exports[`Transaction.vue > Should display skeleton loaders 1`] = `
 "<div class="v-container v-container--fluid v-locale--is-ltr">
   <h2 class="text-h5 font-weight-medium">Transaction Details</h2>
@@ -96,6 +150,33 @@ exports[`Transaction.vue > Should display the transaction page 1`] = `
 </div>"
 `;
 
+exports[`Transaction.vue > Should display the transaction when the receipt is not synced yet 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <h2 class="text-h5 font-weight-medium">Transaction Details</h2>
+  <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator"><!-- Navigation Tabs -->
+  <div class="v-slide-group v-chip-group v-theme--light" tabindex="0">
+    <!---->
+    <div class="v-slide-group__container">
+      <div class="v-slide-group__content"><span class="v-chip v-chip--label v-chip--link v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal text-primary" draggable="false" tabindex="0"><span class="v-chip__overlay"></span><span class="v-chip__underlay"></span>
+        <!---->
+        <!---->
+        <div class="v-chip__content" data-no-activator="">Overview</div>
+        <!---->
+        <!----></span>
+        <!--v-if-->
+        <!--v-if-->
+        <!--v-if-->
+      </div>
+    </div>
+    <!---->
+  </div><!-- Tab Content -->
+  <transaction-overview-stub transaction="[object Object]"></transaction-overview-stub>
+  <!--v-if-->
+  <!--v-if-->
+  <!--v-if-->
+</div>"
+`;
+
 exports[`Transaction.vue > Should display waiting message 1`] = `
 "<div class="v-container v-container--fluid v-locale--is-ltr">
   <h2 class="text-h5 font-weight-medium">Transaction Details</h2>
@@ -124,5 +205,32 @@ exports[`Transaction.vue > Should display waiting message 1`] = `
     <!---->
     <!----><span class="v-card__underlay"></span>
   </div>
+</div>"
+`;
+
+exports[`Transaction.vue > Should not display the menu if public explorer 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <h2 class="text-h5 font-weight-medium">Transaction Details</h2>
+  <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator"><!-- Navigation Tabs -->
+  <div class="v-slide-group v-chip-group v-theme--light" tabindex="0">
+    <!---->
+    <div class="v-slide-group__container">
+      <div class="v-slide-group__content"><span class="v-chip v-chip--label v-chip--link v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal text-primary" draggable="false" tabindex="0"><span class="v-chip__overlay"></span><span class="v-chip__underlay"></span>
+        <!---->
+        <!---->
+        <div class="v-chip__content" data-no-activator="">Overview</div>
+        <!---->
+        <!----></span>
+        <!--v-if-->
+        <!--v-if-->
+        <!--v-if-->
+      </div>
+    </div>
+    <!---->
+  </div><!-- Tab Content -->
+  <transaction-overview-stub transaction="[object Object]"></transaction-overview-stub>
+  <!--v-if-->
+  <!--v-if-->
+  <!--v-if-->
 </div>"
 `;

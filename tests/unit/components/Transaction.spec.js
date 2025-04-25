@@ -1,7 +1,12 @@
-import flushPromises from 'flush-promises';
-
 import Transaction from '@/components/Transaction.vue';
 import USDCTransferTx from '../fixtures/USDCTransferTx.json';
+import { createRouter, createWebHistory } from 'vue-router';
+import { createTestingPinia } from '@pinia/testing';
+
+const router = createRouter({
+    history: createWebHistory(),
+    routes: []
+});
 
 const stubs = [
     'TransactionOverview',
@@ -21,7 +26,8 @@ describe('Transaction.vue', () => {
                 hash: '0x05d709954d59bfaa43bcf629b0a415d30e56ab1400d96dc7bd0ed1664a702759'
             },
             global: {
-                stubs
+                stubs,
+                plugins: [router]
             }
         });
         expect(wrapper.html()).toMatchSnapshot();
@@ -37,7 +43,8 @@ describe('Transaction.vue', () => {
                 hash: '0x05d709954d59bfaa43bcf629b0a415d30e56ab1400d96dc7bd0ed1664a702759'
             },
             global: {
-                stubs
+                stubs,
+                plugins: [router]
             }
         });
         await flushPromises();
@@ -61,116 +68,121 @@ describe('Transaction.vue', () => {
                 hash: '0x05d709954d59bfaa43bcf629b0a415d30e56ab1400d96dc7bd0ed1664a702759'
             },
             global: {
-                stubs
+                stubs,
+                plugins: [router]
             }
         });
         await flushPromises();
 
         expect(wrapper.html()).toMatchSnapshot();
     });
-    // it('Should display the transaction when the receipt is not synced yet', async () => {
-    //     vi.spyOn(server, 'getTransaction')
-    //         .mockResolvedValue({ data: {
-    //             ...USDCTransferTx,
-    //             receipt: null,
-    //             block: { gasLimit: '1000' },
-    //             traceSteps: [],
-    //             formattedBalanceChanges: {},
-    //             tokenTransferCount: 0,
-    //             state: 'syncing'
-    //         }});
 
-    //     const wrapper = mount(Transaction, {
-    //         props: {
-    //             hash: '0x05d709954d59bfaa43bcf629b0a415d30e56ab1400d96dc7bd0ed1664a702759'
-    //         },
-    //         global: {
-    //             stubs
-    //         }
-    //     });
-    //     await flushPromises();
+    it('Should display the transaction when the receipt is not synced yet', async () => {
+        vi.spyOn(server, 'getTransaction')
+            .mockResolvedValue({ data: {
+                ...USDCTransferTx,
+                receipt: null,
+                block: { gasLimit: '1000' },
+                traceSteps: [],
+                formattedBalanceChanges: {},
+                tokenTransferCount: 0,
+                state: 'syncing'
+            }});
 
-    //     expect(wrapper.html()).toMatchSnapshot();
-    // });
+        const wrapper = mount(Transaction, {
+            props: {
+                hash: '0x05d709954d59bfaa43bcf629b0a415d30e56ab1400d96dc7bd0ed1664a702759'
+            },
+            global: {
+                stubs,
+                plugins: [router]
+            }
+        });
+        await flushPromises();
 
-    // it('Should display parsed error messages', async () => {
-    //     vi.spyOn(server, 'getTransaction')
-    //         .mockResolvedValue({ data: {
-    //             ...USDCTransferTx,
-    //             block: { gasLimit: '1000' },
-    //             traceSteps: [],
-    //             receipt: { ...USDCTransferTx.receipt, status: 0 },
-    //             formattedBalanceChanges: {},
-    //             tokenTransferCount: 0,
-    //             parsedError: 'Error',
-    //             rawError: null
-    //         }});
+        expect(wrapper.html()).toMatchSnapshot();
+    });
 
-    //     const wrapper = mount(Transaction, {
-    //         props: {
-    //             hash: '0x05d709954d59bfaa43bcf629b0a415d30e56ab1400d96dc7bd0ed1664a702759'
-    //         },
-    //         global: {
-    //             stubs
-    //         }
-    //     });
-    //     await flushPromises();
+    it('Should display parsed error messages', async () => {
+        vi.spyOn(server, 'getTransaction')
+            .mockResolvedValue({ data: {
+                ...USDCTransferTx,
+                block: { gasLimit: '1000' },
+                traceSteps: [],
+                receipt: { ...USDCTransferTx.receipt, status: 0 },
+                formattedBalanceChanges: {},
+                tokenTransferCount: 0,
+                parsedError: 'Error',
+                rawError: null
+            }});
 
-    //     expect(wrapper.html()).toMatchSnapshot();
-    // });
+        const wrapper = mount(Transaction, {
+            props: {
+                hash: '0x05d709954d59bfaa43bcf629b0a415d30e56ab1400d96dc7bd0ed1664a702759'
+            },
+            global: {
+                stubs,
+                plugins: [router]
+            }
+        });
+        await flushPromises();
 
-    // it.only('Should display raw error messages', async () => {
-    //     vi.spyOn(server, 'getTransaction')
-    //         .mockResolvedValue({ data: {
-    //             ...USDCTransferTx,
-    //             block: { gasLimit: '1000' },
-    //             traceSteps: [],
-    //             formattedBalanceChanges: {},
-    //             tokenTransferCount: 0,
-    //             receipt: { ...USDCTransferTx.receipt, status: 0 },
-    //             parsedError: null,
-    //             rawError: JSON.stringify({ message: 'this is an error'})
-    //         }});
+        expect(wrapper.html()).toMatchSnapshot();
+    });
 
-    //     const wrapper = mount(Transaction, {
-    //         props: {
-    //             hash: '0x05d709954d59bfaa43bcf629b0a415d30e56ab1400d96dc7bd0ed1664a702759'
-    //         },
-    //         global: {
-    //             stubs
-    //         }
-    //     });
-    //     await flushPromises();
+    it('Should display raw error messages', async () => {
+        vi.spyOn(server, 'getTransaction')
+            .mockResolvedValue({ data: {
+                ...USDCTransferTx,
+                block: { gasLimit: '1000' },
+                traceSteps: [],
+                formattedBalanceChanges: {},
+                tokenTransferCount: 0,
+                receipt: { ...USDCTransferTx.receipt, status: 0 },
+                parsedError: null,
+                rawError: JSON.stringify({ message: 'this is an error'})
+            }});
 
-    //     expect(wrapper.html()).toMatchSnapshot();
-    // });
+        const wrapper = mount(Transaction, {
+            props: {
+                hash: '0x05d709954d59bfaa43bcf629b0a415d30e56ab1400d96dc7bd0ed1664a702759'
+            },
+            global: {
+                stubs,
+                plugins: [router]
+            }
+        });
+        await flushPromises();
 
-    // it('Should not display the menu if public explorer', async () => {
-    //     vi.spyOn(server, 'getTransaction')
-    //         .mockResolvedValue({ data: {
-    //             ...USDCTransferTx,
-    //             block: { gasLimit: '1000' },
-    //             traceSteps: [],
-    //             formattedBalanceChanges: {},
-    //             tokenTransferCount: 2,
-    //             receipt: { ...USDCTransferTx.receipt, status: 1 },
-    //         }});
+        expect(wrapper.html()).toMatchSnapshot();
+    });
 
-    //     const wrapper = mount(Transaction, {
-    //         props: {
-    //             hash: '0x05d709954d59bfaa43bcf629b0a415d30e56ab1400d96dc7bd0ed1664a702759'
-    //         },
-    //         global: {
-    //             stubs,
-    //             plugins: [createTestingPinia({
-    //                 initialState: {
-    //                     explorer: { id: 1, token: 'ETL' }
-    //                 }
-    //             })]
-    //         }
-    //     });
-    //     await flushPromises();
+    it('Should not display the menu if public explorer', async () => {
+        vi.spyOn(server, 'getTransaction')
+            .mockResolvedValue({ data: {
+                ...USDCTransferTx,
+                block: { gasLimit: '1000' },
+                traceSteps: [],
+                formattedBalanceChanges: {},
+                tokenTransferCount: 2,
+                receipt: { ...USDCTransferTx.receipt, status: 1 },
+            }});
 
-    //     expect(wrapper.html()).toMatchSnapshot();
-    // });
+        const wrapper = mount(Transaction, {
+            props: {
+                hash: '0x05d709954d59bfaa43bcf629b0a415d30e56ab1400d96dc7bd0ed1664a702759'
+            },
+            global: {
+                stubs,
+                plugins: [router, createTestingPinia({
+                    initialState: {
+                        explorer: { id: 1, token: 'ETL' }
+                    }
+                })]
+            }
+        });
+        await flushPromises();
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
 });

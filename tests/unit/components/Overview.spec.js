@@ -1,4 +1,13 @@
 import Overview from '@/components/Overview.vue';
+import { createTestingPinia } from '@pinia/testing';
+
+const stubs = [
+    'TransactionsList',
+    'BlockList',
+    'OverviewCharts',
+    'SearchBar',
+    'OverviewStats'
+];
 
 describe('Overview.vue', () => {
     it('Should load the overview page', async () => {
@@ -11,8 +20,8 @@ describe('Overview.vue', () => {
 
         const wrapper = mount(Overview, {
             global: {
-                stubs: ['TransactionsList', 'BlockList', 'OverviewCharts', 'SearchBar', 'OverviewStats'],
-                plugins: [createTestingPinia()],
+                stubs,
+                plugins: [createTestingPinia()]
             }
         });
         await flushPromises();
