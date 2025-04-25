@@ -675,7 +675,7 @@ exports[`ContractCode.vue > Should display contract verification info if public 
     <!---->
     <!---->
     <div data-v-39109da1="" class="v-card-text">
-      <div data-v-39109da1="" class="hljs">[object Object]</div>
+      <div data-v-39109da1="" class="hljs">highlighted code</div>
     </div>
     <!---->
     <!----><span class="v-card__underlay"></span>
@@ -733,7 +733,7 @@ exports[`ContractCode.vue > Should display the contract verification panel for p
     <!---->
     <!---->
     <div data-v-39109da1="" class="v-card-text">
-      <div data-v-39109da1="" class="hljs">[object Object]</div>
+      <div data-v-39109da1="" class="hljs">highlighted code</div>
     </div>
     <!---->
     <!----><span class="v-card__underlay"></span>
@@ -895,7 +895,7 @@ exports[`ContractCode.vue > Should show appropriate message when no bytecode is 
     <!---->
     <!---->
     <div data-v-39109da1="" class="v-card-text">
-      <div data-v-39109da1="" class="hljs">[object Object]</div>
+      <div data-v-39109da1="" class="hljs">highlighted code</div>
     </div>
     <!---->
     <!----><span class="v-card__underlay"></span>
@@ -953,7 +953,7 @@ exports[`ContractCode.vue > Should show loading state initially 1`] = `
     <!---->
     <!---->
     <div data-v-39109da1="" class="v-card-text">
-      <div data-v-39109da1="" class="hljs">[object Object]</div>
+      <div data-v-39109da1="" class="hljs">highlighted code</div>
     </div>
     <!---->
     <!----><span class="v-card__underlay"></span>
@@ -1020,7 +1020,7 @@ exports[`ContractCode.vue > Should show success alert when contract is just veri
     <!---->
     <!---->
     <div data-v-39109da1="" class="v-card-text">
-      <div data-v-39109da1="" class="hljs">[object Object]</div>
+      <div data-v-39109da1="" class="hljs">highlighted code</div>
     </div>
     <!---->
     <!----><span class="v-card__underlay"></span>

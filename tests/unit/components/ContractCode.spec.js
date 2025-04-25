@@ -1,13 +1,15 @@
 import flushPromises from 'flush-promises';
 
+// Mock highlight.js to avoid actual highlighting during tests
 vi.mock('highlight.js', () => ({
     default: {
-        highlight: vi.fn().mockReturnValue({ value: 'highlighted code' })
+        highlight: vi.fn().mockReturnValue({ code: 'highlighted code' })
     }
 }));
 
 import ContractCode from '@/components/ContractCode.vue';
 
+// Stub child components to isolate ContractCode.vue testing
 const stubs = [
     'Contract-Verification',
     'Contract-Verification-Info',
@@ -28,6 +30,7 @@ describe('ContractCode.vue', () => {
             }
         });
 
+        await flushPromises();
         expect(wrapper.html()).toMatchSnapshot();
     });
 
