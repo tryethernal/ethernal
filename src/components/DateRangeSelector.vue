@@ -51,6 +51,14 @@ const props = defineProps({
     }
 });
 
+const validateDate = (dates) => {
+    // If we have exactly 2 dates, sort them to ensure correct order
+    if (dates.length === 2) {
+        const sortedDates = [...dates].sort((a, b) => a - b);
+        pickerRange.value = sortedDates;
+    }
+};
+
 const contrastingColor = computed(() => {
     const theme = useTheme();
     return getBestContrastingColor('#4242421f', theme.current.value.colors);
