@@ -160,7 +160,7 @@
                             </div>
                         </template>
                         <v-list-item-title class="text-body-2">
-                            <div v-if="block.extraData" class="d-flex flex-sm-row flex-column ga-1 extra-data-container" style="column-gap: 16px;">
+                            <div v-if="block.extraData && block.extraData.length > 2" class="d-flex flex-sm-row flex-column ga-1 extra-data-container" style="column-gap: 16px;">
                                 <v-card variant="outlined" class="pa-2 extra-data-card">
                                     <span class="font-weight-medium">UTF-8: </span>
                                     <ExpandableText :text="tryDecodeExtraData(block.extraData)" :maxChars="100" />
