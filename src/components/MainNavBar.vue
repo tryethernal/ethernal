@@ -16,8 +16,8 @@
                             <img :src="logo" alt="logo" class="custom-logo" />
                         </router-link>
                     </div>
-                    <div v-else class="text-h6 text-accent">
-                        <router-link class="text-decoration-none text-primary" :to="'/overview'">
+                    <div v-else class="text-h6">
+                        <router-link class="text-decoration-none" :to="'/overview'">
                             {{ currentWorkspaceStore.name || 'Ethernal' }}
                         </router-link>
                     </div>
@@ -176,11 +176,9 @@
                             <img :src="logo" alt="logo" class="custom-logo" />
                         </router-link>
                     </div>
-                    <div v-else class="text-h6 text-accent">
-                        <router-link class="text-decoration-none text-primary" :to="'/overview'">
-                            {{ currentWorkspaceStore.name || 'Ethernal' }}
-                        </router-link>
-                    </div>
+                    <router-link v-else class="text-decoration-none text-h6 text-primary" :to="'/overview'">
+                        {{ currentWorkspaceStore.name || 'Ethernal' }}
+                    </router-link>
                 </div>
 
                 <v-spacer></v-spacer>
@@ -558,4 +556,4 @@ const logOut = () => {
     min-height: 36px;
     padding: 0 16px;
 }
-</style> 
+</style>

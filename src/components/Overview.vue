@@ -2,7 +2,7 @@
     <div class="overview">
         <div class="search-hero">
             <div class="search-container">
-                <h1 class="text-h5 text-center mb-4">{{ explorerStore.name }} Explorer</h1>
+                <h1 class="text-h5 text-center mb-4">{{ explorerStore.name || 'Ethernal' }} Explorer</h1>
                 <SearchBar />
             </div>
         </div>

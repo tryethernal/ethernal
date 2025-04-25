@@ -63,6 +63,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted, watch, inject, nextTick } from 'vue';
 import { useTheme } from 'vuetify';
+import { useRouter } from 'vue-router';
 import { getBestContrastingColor } from '../lib/utils';
 import TransactionOverview from './TransactionOverview.vue';
 import TransactionLogs from './TransactionLogs.vue';
@@ -115,6 +116,8 @@ const resetTransaction = () => {
         traceSteps: []
     };
 };
+
+const router = useRouter();
 
 // Check URL hash for initial tab
 const checkUrlHash = () => {
@@ -174,17 +177,16 @@ onMounted(() => {
     // Check URL hash on mount
     checkUrlHash();
 
-    // Listen for hash changes
-    window.addEventListener('hashchange', checkUrlHash);
+    // Listen for route changes
+    router.afterEach(() => {
+        checkUrlHash();
+    });
 });
 
 onUnmounted(() => {
     if (pusherUnsubscribe) {
         pusherUnsubscribe();
     }
-    
-    // Remove event listener
-    window.removeEventListener('hashchange', checkUrlHash);
 });
 
 // Watch with optimization
@@ -199,17 +201,18 @@ watch(() => props.hash, (hash) => {
 
 // Update URL hash when tab changes
 watch(() => selectedTab.value, (newTab) => {
+    const currentPath = router.currentRoute.value.fullPath.split('#')[0];
+    let hash = '';
+    
     if (newTab === 'logs') {
-        window.location.hash = 'eventlogs';
+        hash = '#eventlogs';
     } else if (newTab === 'internal') {
-        window.location.hash = 'internal';
+        hash = '#internal';
     } else if (newTab === 'statechange') {
-        window.location.hash = 'statechange';
-    } else {
-        if (window.location.hash === '#eventlogs' || window.location.hash === '#internal' || window.location.hash === '#statechange') {
-            window.history.replaceState(null, null, ' ');
-        }
+        hash = '#statechange';
     }
+    
+    router.replace(currentPath + hash);
 });
 
 // Error handling

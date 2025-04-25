@@ -67,10 +67,7 @@ const fetchBalanceChanges = async () => {
                 itemsPerPage: itemsPerPage.value
             }
         );
-        console.log('Fetched balance changes:', data);
-        console.log('Balance changes length:', data ? data.length : 0);
         balanceChanges.value = data || [];
-        console.log('Updated balanceChanges ref:', balanceChanges.value);
     } catch (error) {
         console.error('Error fetching balance changes:', error);
         balanceChanges.value = [];
