@@ -23,7 +23,7 @@
 
                     <v-divider class="my-4"></v-divider>
 
-                    <v-row v-for="method in filteredMethods" :key="method.name" class="pb-4">
+                    <v-row v-for="method in filteredMethods" :key="`${method.name}-${method.inputs?.map(i => i.type).join('-') || ''}`" class="pb-4">
                         <v-col lg="6" md="6" sm="12">
                             <template v-if="forceTab === 'read'">
                                 <Contract-Read-Method
