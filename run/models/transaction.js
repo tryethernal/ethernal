@@ -60,7 +60,8 @@ module.exports = (sequelize, DataTypes) => {
                 c."tokenSymbol" AS "contract.tokenSymbol",
                 c."tokenName" AS "contract.tokenName",
                 c."tokenDecimals" AS "contract.tokenDecimals",
-                c."name" AS "contract.name"
+                c."name" AS "contract.name",
+                c."abi" AS "contract.abi"
             FROM transaction_trace_steps tts
             LEFT JOIN contracts c ON
                 tts.address = c.address

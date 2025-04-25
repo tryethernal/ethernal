@@ -54,80 +54,109 @@
         </v-col>
     </v-row>
 </template>
-<script>
+
+<script setup>
+import { ref, computed, watch } from 'vue';
 import { ethers } from 'ethers';
 import { storeToRefs } from 'pinia';
-
 import { useExplorerStore } from '../stores/explorer';
-
 import HashLink from './HashLink.vue';
 import FormattedSolVar from './FormattedSolVar.vue';
+import ERC20_ABI from '../abis/erc20.json';
+import ERC721_ABI from '../abis/erc721.json';
+import SELECTORS from '../abis/selectors.json';
 
-export default {
-    name: 'TraceStep',
-    components: {
-        HashLink,
-        FormattedSolVar
-    },
-    props: ['step'],
-    data: () => ({
-        transactionDescription: null,
-        outputs: null,
-        calledContract: null,
-        proxyContract: null,
-        expandInput: false,
-        expandOutput: false
-    }),
-    setup() {
-        const { token } = storeToRefs(useExplorerStore());
-        return { token };
-    },
-    methods: {
-        zeroXify(input) { 
-            if (!input) return '0x';
-            return input.startsWith('0x') ? input : `0x${input}`;
-        },
-        decodeOutput(index) {
-            try {
-                if (!this.step.returnData || !this.transactionDescription || !this.transactionDescription.functionFragment) return '';
-                if (!this.jsonInterface) return '';
-                return this.jsonInterface.decodeFunctionResult(this.transactionDescription.functionFragment, this.zeroXify(this.step.returnData))[index];
-            } catch (error) {
-                console.error('Error decoding output:', error);
-                return '';
-            }
-        }
-    },
-    computed: {
-        jsonInterface() {
-            try {
-                if (!this.step || !this.step.contract) return null;
-                const contract = this.step.contract.proxyContract ? this.step.contract.proxyContract : this.step.contract;
-                if (!contract || !contract.abi) return null;
+// Props
+const props = defineProps(['step']);
+
+// Store
+const { token } = storeToRefs(useExplorerStore());
+
+// Reactive state
+const transactionDescription = ref(null);
+const expandInput = ref(false);
+const expandOutput = ref(false);
+
+// Helper functions
+const zeroXify = (input) => {
+    if (!input) return '0x';
+    return input.startsWith('0x') ? input : `0x${input}`;
+};
+
+const getMethodSignature = (input) => {
+    if (!input || input.length < 10) return null;
+    return input.slice(0, 10).toLowerCase(); // Get first 4 bytes + 0x
+};
+
+// Computed
+const jsonInterface = computed(() => {
+    try {
+        if (!props.step) return null;
+        
+        // If we have a contract with ABI, use it
+        if (props.step.contract) {
+            const contract = props.step.contract.proxyContract ? props.step.contract.proxyContract : props.step.contract;
+            if (contract && contract.abi) {
                 return new ethers.utils.Interface(contract.abi);
-            } catch (error) {
-                console.error('Error creating interface:', error);
-                return null;
             }
         }
-    },
-    watch: {
-        'step.contract': {
-            immediate: true,
-            handler() {
-                if (!this.step.contract) return;
-                if (this.step.input && this.step.contract.abi) {
-                    try {
-                        this.jsonInterface.parseTransaction({ data: this.zeroXify(this.step.input) });
-                    } catch(_error) {
-                        console.log(_error)
-                    }
-                }
+
+        // If no ABI but we have input, check against known selectors
+        if (props.step.input) {
+            const methodSig = getMethodSignature(props.step.input);
+            if (!methodSig) return null;
+
+            // Check if it's an ERC20 function
+            if (SELECTORS.erc20.functions.includes(methodSig)) {
+                return new ethers.utils.Interface(ERC20_ABI);
+            }
+
+            // Check if it's an ERC721 function
+            if (SELECTORS.erc721.functions.includes(methodSig)) {
+                return new ethers.utils.Interface(ERC721_ABI);
             }
         }
+        
+        return null;
+    } catch (error) {
+        console.error('Error creating interface:', error);
+        return null;
+    }
+});
+
+// Methods
+const decodeOutput = (index) => {
+    try {
+        if (!props.step.returnData || !transactionDescription.value || !transactionDescription.value.functionFragment) return '';
+        if (!jsonInterface.value) return '';
+        const decodedData = jsonInterface.value.decodeFunctionResult(
+            transactionDescription.value.functionFragment,
+            zeroXify(props.step.returnData)
+        );
+        // Handle both array and single return value cases
+        return Array.isArray(decodedData) ? decodedData[index] : decodedData;
+    } catch (error) {
+        console.error('Error decoding output:', error);
+        return '';
     }
 };
+
+// Watch
+watch(() => [props.step.contract, props.step.input], ([newContract, newInput]) => {
+    if (!newInput) return;
+    
+    if (jsonInterface.value) {
+        try {
+            // Store the parsed transaction in transactionDescription
+            transactionDescription.value = jsonInterface.value.parseTransaction({ data: zeroXify(newInput) });
+        } catch(_error) {
+            console.log('Error parsing transaction:', _error);
+            transactionDescription.value = null;
+        }
+    }
+}, { immediate: true });
 </script>
+
 <style scoped>
 li {
     list-style-type: none;
