@@ -1,8 +1,8 @@
 <template>
     <v-main>
-        <v-container fluid>
+        <v-container fluid style="max-width: inherit" class="pa-0">
             <v-row class="bg-primary">
-                <v-col cols="12" class="logo-white"><h2>Ethernal</h2></v-col>
+                <v-col cols="12" class="logo-white ml-2 mt-2"><h2>Ethernal</h2></v-col>
             </v-row>
             <v-row justify="center" align="center">
                 <v-col cols="12" lg="5">
@@ -41,10 +41,10 @@
                             <v-form @submit.prevent="submit" v-model="valid" class="bg-white pa-5">
                                 <v-text-field
                                     :rules="[v => !!v || 'Name is required']"
-                                    variant="outlined" v-model="name" label="Explorer Name" placeholder="My Explorer Name" class="mb-2" required></v-text-field>
+                                    variant="outlined" v-model="explorerName" label="Explorer Name" placeholder="My Explorer Name" class="mb-2" required></v-text-field>
                                 <v-text-field
                                     :rules="[
-                                        v => this.isUrlValid(v) || 'RPC needs to be a valid URL',
+                                        v => isUrlValid(v) || 'RPC needs to be a valid URL',
                                         v => !!v || 'RPC server is required'
                                     ]"
                                     variant="outlined" v-model="rpcServer" label="RPC URL" placeholder="https://my.rpc.com:8545" class="mb-2" required></v-text-field>
@@ -116,57 +116,63 @@
     </v-main>
 </template>
 
-<script>
+<script setup>
+import { ref, onMounted, inject } from 'vue';
 import { useUserStore } from '../stores/user';
 
-export default {
-    name: 'DemoExplorerSetup',
-    data: () => ({
-        valid: false,
-        name: null,
-        rpcServer: null,
-        loading: false,
-        nativeToken: 'ether',
-        errorMessage: null,
-        domain: null
-    }),
-    mounted() {
-        const userStore = useUserStore();
-        this.$server.getCurrentUser()
-            .then(({ data }) => userStore.updateUser(data))
-            .catch(() => userStore.updateUser(null));
-    },
-    methods: {
-        submit() {
-            this.loading = true;
-            this.errorMessage = null;
-            this.domain = null;
-            this.$server.createDemoExplorer(this.name, this.rpcServer, this.nativeToken)
-                .then(({ data }) => {
-                    this.domain = data.domain;
-                    this.$posthog.capture('explorer:explorer_create', {
-                        source: 'demo',
-                        is_demo: true
-                    });
-                })
-                .catch(error => {
-                    console.log(error)
-                    this.errorMessage = error.response && error.response.data || 'Error while creating explorer. Please retry.'
-                })
-                .finally(() => this.loading = false);
-        },
-        isUrlValid(url) {
-            try {
-                new URL(url);
-                return true;
-            } catch(error) {
-                return false;
-            }
-        },
+// Reactive state
+const valid = ref(false);
+const explorerName = ref(null);
+const rpcServer = ref(null);
+const loading = ref(false);
+const nativeToken = ref('ether');
+const errorMessage = ref(null);
+const domain = ref(null);
+
+// Inject server service
+const $server = inject('$server');
+const $posthog = inject('$posthog');
+
+// Methods
+const isUrlValid = (url) => {
+    try {
+        new URL(url);
+        return true;
+    } catch(error) {
+        return false;
     }
 };
+
+const submit = () => {
+    loading.value = true;
+    errorMessage.value = null;
+    domain.value = null;
+    
+    $server.createDemoExplorer(explorerName.value, rpcServer.value, nativeToken.value)
+        .then(({ data }) => {
+            domain.value = data.domain;
+            $posthog.capture('explorer:explorer_create', {
+                source: 'demo',
+                is_demo: true
+            });
+        })
+        .catch(error => {
+            console.log(error);
+            errorMessage.value = error.response && error.response.data || 'Error while creating explorer. Please retry.';
+        })
+        .finally(() => loading.value = false);
+};
+
+// Lifecycle hooks
+onMounted(() => {
+    const userStore = useUserStore();
+    $server.getCurrentUser()
+        .then(({ data }) => userStore.updateUser(data))
+        .catch(() => userStore.updateUser(null));
+});
 </script>
-<style lang="scss" scoped>
+
+<style scoped>
 .v-application {
     background: #f7f7f7 !important;
 }

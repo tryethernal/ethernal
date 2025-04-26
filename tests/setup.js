@@ -8,6 +8,7 @@ import * as directives from 'vuetify/directives'
 import { VStepperVertical, VStepperVerticalItem } from 'vuetify/labs/VStepperVertical'
 
 import $server from './unit/mocks/server';
+import $posthog from './unit/mocks/posthog';
 import FromWei from '@/filters/FromWei';
 import dt from '@/filters/dt';
 import { vi } from 'vitest';
@@ -71,6 +72,7 @@ const customMount = (component, options = {}) => {
     global.stubs = stubs;
     global.provide = {
         $server,
+        $posthog,
         $fromWei: FromWei,
         $dt: dt,
         $pusher,
@@ -103,6 +105,7 @@ const $pusher = {
 vi.stubGlobal('server', $server);
 vi.stubGlobal('pusher', $pusher);
 vi.stubGlobal('router', $router);
+vi.stubGlobal('posthog', $posthog);
 vi.stubGlobal('fromWei', FromWei);
 vi.stubGlobal('mount', customMount);
 vi.stubGlobal('flushPromises', flushPromises);

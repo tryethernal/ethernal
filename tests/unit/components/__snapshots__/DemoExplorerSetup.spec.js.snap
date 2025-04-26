@@ -4,9 +4,9 @@ exports[`DemoExplorerSetup.vue > Should display demo explorer setup page 1`] = `
 "<div class="v-application v-theme--light v-layout v-layout--full-height v-locale--is-ltr">
   <div class="v-application__wrap">
     <main data-v-45ff8bbb="" class="v-main" style="--v-layout-left: 0px; --v-layout-right: 0px; --v-layout-top: 0px; --v-layout-bottom: 0px; transition: none;">
-      <div data-v-45ff8bbb="" class="v-container v-container--fluid v-locale--is-ltr">
+      <div data-v-45ff8bbb="" class="v-container v-container--fluid v-locale--is-ltr pa-0" style="max-width: inherit;">
         <div data-v-45ff8bbb="" class="v-row bg-primary">
-          <div data-v-45ff8bbb="" class="v-col v-col-12 logo-white">
+          <div data-v-45ff8bbb="" class="v-col v-col-12 logo-white ml-2">
             <h2 data-v-45ff8bbb="">Ethernal</h2>
           </div>
         </div>
