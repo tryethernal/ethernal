@@ -17,7 +17,8 @@ export const useExplorerStore = defineStore('explorer', {
         v2Dex: null,
         gasAnalyticsEnabled: null,
         isDemo: false,
-        totalSupply: null
+        totalSupply: null,
+        adsEnabled: null
     }),
 
     actions: {

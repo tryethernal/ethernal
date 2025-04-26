@@ -806,6 +806,7 @@ router.get('/search', async (req, res, next) => {
         fields['token'] = capabilities.nativeToken ? explorer.token : 'ether';
         fields['themes'] = capabilities.branding ? explorer.themes : { 'light': {}};
         fields['totalSupply'] = capabilities.totalSupply ? explorer.totalSupply : null;
+        fields['adsEnabled'] = capabilities.adsEnabled == undefined || capabilities.adsEnabled == null ? true : capabilities.adsEnabled;
 
         if (explorer.faucet && explorer.faucet.active)
             fields['faucet'] = {

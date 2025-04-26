@@ -6,15 +6,18 @@ vi.mock('@/stores/explorer', () => ({
     }))
 }));
 
+const mockCurrentWorkspaceStore = {
+    chain: {
+        token: 'ETH'
+    },
+    currentBlock: {
+        number: 105
+    },
+    displayAds: true
+};
+
 vi.mock('@/stores/currentWorkspace', () => ({
-    useCurrentWorkspaceStore: vi.fn(() => ({
-        chain: {
-            token: 'ETH'
-        },
-        currentBlock: {
-            number: 105
-        }
-    }))
+    useCurrentWorkspaceStore: vi.fn(() => mockCurrentWorkspaceStore)
 }));
 
 describe('TransactionOverview.vue', () => {
@@ -23,7 +26,8 @@ describe('TransactionOverview.vue', () => {
         'Expandable-Text',
         'Custom-Field',
         'Compact-Transaction-Token-Transfers',
-        'Transaction-Function-Call'
+        'Transaction-Function-Call',
+        'AdBanner'
     ];
 
     const mockTransaction = {
@@ -67,6 +71,8 @@ describe('TransactionOverview.vue', () => {
 
     beforeEach(() => {
         vi.clearAllMocks();
+        // Reset the mock store to default values before each test
+        mockCurrentWorkspaceStore.displayAds = true;
     });
 
     it('Should render successful transaction', async () => {
@@ -206,4 +212,48 @@ describe('TransactionOverview.vue', () => {
 
         expect(wrapper.emitted().error).toBeTruthy();
     });
-}); 
+
+    it('Should show ad banner when displayAds is true', async () => {
+        mockCurrentWorkspaceStore.displayAds = true;
+        const wrapper = mount(TransactionOverview, {
+            props: {
+                transaction: mockTransaction
+            },
+            global: {
+                stubs,
+                provide: {
+                    $fromWei: mockFromWei,
+                    $dt: {
+                        shortDate: vi.fn().mockReturnValue('2024-03-21'),
+                        fromNow: vi.fn().mockReturnValue('a few seconds ago')
+                    }
+                }
+            }
+        });
+        await flushPromises();
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
+    it('Should not show ad banner when displayAds is false', async () => {
+        mockCurrentWorkspaceStore.displayAds = false;
+        const wrapper = mount(TransactionOverview, {
+            props: {
+                transaction: mockTransaction
+            },
+            global: {
+                stubs,
+                provide: {
+                    $fromWei: mockFromWei,
+                    $dt: {
+                        shortDate: vi.fn().mockReturnValue('2024-03-21'),
+                        fromNow: vi.fn().mockReturnValue('a few seconds ago')
+                    }
+                }
+            }
+        });
+        await flushPromises();
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+});

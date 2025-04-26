@@ -128,6 +128,16 @@ export const useCurrentWorkspaceStore = defineStore('currentWorkspace', {
     },
 
     getters: {
+        displayAds() {
+            const explorer = useExplorerStore();
+
+            if (!explorer.id) return true;
+
+            if (!explorer.adsEnabled) return false;
+
+            return true;
+        },
+
         chain(state) {
             const hasExplorer = useExplorerStore().id;
             return hasExplorer ? useExplorerStore() : useEnvStore().chains[state.chainSlug || 'ethereum'];
