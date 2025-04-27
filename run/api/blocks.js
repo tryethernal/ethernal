@@ -53,7 +53,7 @@ router.get('/', workspaceAuthMiddleware, async (req, res, next) => {
     const data = { ...req.query, ...req.params };
 
     try {
-        const blocks = await db.getWorkspaceBlocks(data.workspace.id, data.page, data.itemsPerPage, data.order, data.withCount);
+        const blocks = await db.getWorkspaceBlocks(data.workspace.id, data.page, data.itemsPerPage, data.order);
 
         res.status(200).json(blocks);
     } catch(error) {

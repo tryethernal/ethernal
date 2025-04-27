@@ -1,33 +1,9 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`TokenTransfers.vue > Should display erc721 token transfers 1`] = `
-"<div class="v-table v-table--has-top v-table--has-bottom v-theme--light v-table--density-default v-data-table" item-key="id">
-  <div class="d-flex justify-end">
-    <div class="v-input v-input--horizontal v-input--center-affix v-input--density-default v-theme--light v-locale--is-ltr v-input--dirty v-switch">
-      <!---->
-      <div class="v-input__control">
-        <div class="v-selection-control v-selection-control--density-default">
-          <div class="v-selection-control__wrapper">
-            <div class="v-switch__track">
-              <!---->
-              <!---->
-            </div>
-            <div class="v-selection-control__input"><input id="switch-0" aria-disabled="false" aria-label="Unformatted Amounts" type="checkbox" aria-describedby="switch-0-messages" value="true">
-              <div class="v-switch__thumb">
-                <transition-stub name="scale-transition" appear="false" persisted="false" css="true">
-                  <!---->
-                </transition-stub>
-              </div>
-            </div>
-          </div><label class="v-label v-label--clickable" for="switch-0">
-            <!---->Unformatted Amounts
-          </label>
-        </div>
-      </div>
-      <!---->
-      <!---->
-    </div>
-  </div>
+"<!-- Main Data Table -->
+<div data-v-4ac12869="" class="v-table v-table--has-top v-table--has-bottom v-theme--light v-table--density-default v-data-table hide-table-count" item-key="id">
+  <!---->
   <div class="v-table__wrapper">
     <table>
       <!---->
@@ -65,35 +41,51 @@ exports[`TokenTransfers.vue > Should display erc721 token transfers 1`] = `
       <tbody class="v-data-table__tbody" role="rowgroup">
         <!---->
         <tr class="v-data-table__tr">
-          <td class="v-data-table__td v-data-table-column--align-start"><span>N/A</span></td>
           <td class="v-data-table__td v-data-table-column--align-start">
             <!--v-if-->
-            <hash-link-stub type="address" hash="0xC056255e6B1E6001852f9f20587A964cb89418e7" fullhash="true" withname="true" withtokenname="true"></hash-link-stub>
           </td>
           <td class="v-data-table__td v-data-table-column--align-start">
-            <!--v-if-->
-            <hash-link-stub type="address" hash="0x4f6742bADB049791CD9A37ea913f2BAC38d01279" fullhash="true" withname="true" withtokenname="true"></hash-link-stub>
+            <div data-v-4ac12869="" class="d-flex align-center">
+              <!--v-if-->
+              <hash-link-stub data-v-4ac12869="" type="address" hash="0xC056255e6B1E6001852f9f20587A964cb89418e7" fullhash="false" withname="true" notcopiable="false" withtokenname="true" xshash="true" unlink="false" loadcontract="false"></hash-link-stub>
+            </div>
           </td>
           <td class="v-data-table__td v-data-table-column--align-start">
-            <hash-link-stub type="address" hash="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48" withname="true" withtokenname="true" tokenid="1"></hash-link-stub>
+            <div data-v-4ac12869="" class="d-flex align-center">
+              <!--v-if-->
+              <hash-link-stub data-v-4ac12869="" type="address" hash="0x4f6742bADB049791CD9A37ea913f2BAC38d01279" fullhash="false" withname="true" notcopiable="false" withtokenname="true" xshash="true" unlink="false" loadcontract="false"></hash-link-stub>
+            </div>
           </td>
-          <td class="v-data-table__td v-data-table-column--align-start">1</td>
+          <td class="v-data-table__td v-data-table-column--align-start">
+            <div data-v-4ac12869="" class="token-cell">
+              <hash-link-stub data-v-4ac12869="" type="address" hash="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48" fullhash="false" withname="true" notcopiable="false" withtokenname="true" xshash="true" unlink="false" loadcontract="false"></hash-link-stub>
+            </div>
+          </td>
+          <td class="v-data-table__td v-data-table-column--align-start"><span data-v-4ac12869="" aria-describedby="v-tooltip-7">1<!----><!--teleport start--><!--teleport end--></span></td>
         </tr>
         <!---->
         <tr class="v-data-table__tr">
-          <td class="v-data-table__td v-data-table-column--align-start"><span>N/A</span></td>
           <td class="v-data-table__td v-data-table-column--align-start">
             <!--v-if-->
-            <hash-link-stub type="address" hash="0xC056255e6B1E6001852f9f20587A964cb89418e7" fullhash="true" withname="true" withtokenname="true"></hash-link-stub>
           </td>
           <td class="v-data-table__td v-data-table-column--align-start">
-            <!--v-if-->
-            <hash-link-stub type="address" hash="0x4f6742bADB049791CD9A37ea913f2BAC38d01279" fullhash="true" withname="true" withtokenname="true"></hash-link-stub>
+            <div data-v-4ac12869="" class="d-flex align-center">
+              <!--v-if-->
+              <hash-link-stub data-v-4ac12869="" type="address" hash="0xC056255e6B1E6001852f9f20587A964cb89418e7" fullhash="false" withname="true" notcopiable="false" withtokenname="true" xshash="true" unlink="false" loadcontract="false"></hash-link-stub>
+            </div>
           </td>
           <td class="v-data-table__td v-data-table-column--align-start">
-            <hash-link-stub type="address" hash="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48" withname="true" withtokenname="true" tokenid="2"></hash-link-stub>
+            <div data-v-4ac12869="" class="d-flex align-center">
+              <!--v-if-->
+              <hash-link-stub data-v-4ac12869="" type="address" hash="0x4f6742bADB049791CD9A37ea913f2BAC38d01279" fullhash="false" withname="true" notcopiable="false" withtokenname="true" xshash="true" unlink="false" loadcontract="false"></hash-link-stub>
+            </div>
           </td>
-          <td class="v-data-table__td v-data-table-column--align-start">1</td>
+          <td class="v-data-table__td v-data-table-column--align-start">
+            <div data-v-4ac12869="" class="token-cell">
+              <hash-link-stub data-v-4ac12869="" type="address" hash="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48" fullhash="false" withname="true" notcopiable="false" withtokenname="true" xshash="true" unlink="false" loadcontract="false"></hash-link-stub>
+            </div>
+          </td>
+          <td class="v-data-table__td v-data-table-column--align-start"><span data-v-4ac12869="" aria-describedby="v-tooltip-8">1<!----><!--teleport start--><!--teleport end--></span></td>
         </tr>
         <!---->
         <!---->
@@ -109,7 +101,7 @@ exports[`TokenTransfers.vue > Should display erc721 token transfers 1`] = `
       <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field v-select v-select--single v-select--selected">
         <!---->
         <div class="v-input__control">
-          <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--no-label v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="v-menu-5">
+          <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--no-label v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="v-menu-2">
             <div class="v-field__overlay"></div>
             <div class="v-field__loader">
               <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
@@ -133,7 +125,7 @@ exports[`TokenTransfers.vue > Should display erc721 token transfers 1`] = `
               <div class="v-field__input" data-no-activator="">
                 <!---->
                 <!---->
-                <div class="v-select__selection"><span class="v-select__selection-text">10<!----></span></div><input size="1" type="text" id="input-3" aria-describedby="input-3-messages" inputmode="none" aria-label="Open" title="Open" value="10">
+                <div class="v-select__selection"><span class="v-select__selection-text">10<!----></span></div><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" inputmode="none" aria-label="Open" title="Open" value="10">
               </div>
               <!---->
             </div>
@@ -188,33 +180,9 @@ exports[`TokenTransfers.vue > Should display erc721 token transfers 1`] = `
 `;
 
 exports[`TokenTransfers.vue > Should display fomatted amounts if info is present on token contract 1`] = `
-"<div class="v-table v-table--has-top v-table--has-bottom v-theme--light v-table--density-default v-data-table" item-key="id">
-  <div class="d-flex justify-end">
-    <div class="v-input v-input--horizontal v-input--center-affix v-input--density-default v-theme--light v-locale--is-ltr v-input--dirty v-switch">
-      <!---->
-      <div class="v-input__control">
-        <div class="v-selection-control v-selection-control--density-default">
-          <div class="v-selection-control__wrapper">
-            <div class="v-switch__track">
-              <!---->
-              <!---->
-            </div>
-            <div class="v-selection-control__input"><input id="switch-0" aria-disabled="false" aria-label="Unformatted Amounts" type="checkbox" aria-describedby="switch-0-messages" value="true">
-              <div class="v-switch__thumb">
-                <transition-stub name="scale-transition" appear="false" persisted="false" css="true">
-                  <!---->
-                </transition-stub>
-              </div>
-            </div>
-          </div><label class="v-label v-label--clickable" for="switch-0">
-            <!---->Unformatted Amounts
-          </label>
-        </div>
-      </div>
-      <!---->
-      <!---->
-    </div>
-  </div>
+"<!-- Main Data Table -->
+<div data-v-4ac12869="" class="v-table v-table--has-top v-table--has-bottom v-theme--light v-table--density-default v-data-table hide-table-count" item-key="id">
+  <!---->
   <div class="v-table__wrapper">
     <table>
       <!---->
@@ -243,26 +211,34 @@ exports[`TokenTransfers.vue > Should display fomatted amounts if info is present
         <!---->
         <tr class="v-data-table__tr">
           <td class="v-data-table__td v-data-table-column--align-start">
-            <!--v-if-->
-            <hash-link-stub type="address" hash="0xC056255e6B1E6001852f9f20587A964cb89418e7" fullhash="true" withname="true" withtokenname="true"></hash-link-stub>
+            <div data-v-4ac12869="" class="d-flex align-center">
+              <!--v-if-->
+              <hash-link-stub data-v-4ac12869="" type="address" hash="0xC056255e6B1E6001852f9f20587A964cb89418e7" fullhash="false" withname="true" notcopiable="false" withtokenname="true" xshash="true" unlink="false" loadcontract="false"></hash-link-stub>
+            </div>
           </td>
           <td class="v-data-table__td v-data-table-column--align-start">
-            <!--v-if-->
-            <hash-link-stub type="address" hash="0x4f6742bADB049791CD9A37ea913f2BAC38d01279" fullhash="true" withname="true" withtokenname="true"></hash-link-stub>
+            <div data-v-4ac12869="" class="d-flex align-center">
+              <!--v-if-->
+              <hash-link-stub data-v-4ac12869="" type="address" hash="0x4f6742bADB049791CD9A37ea913f2BAC38d01279" fullhash="false" withname="true" notcopiable="false" withtokenname="true" xshash="true" unlink="false" loadcontract="false"></hash-link-stub>
+            </div>
           </td>
-          <td class="v-data-table__td v-data-table-column--align-start">0.1 ETL</td>
+          <td class="v-data-table__td v-data-table-column--align-start"><span data-v-4ac12869="" aria-describedby="v-tooltip-7">0.1  <!----><!--teleport start--><!--teleport end--></span></td>
         </tr>
         <!---->
         <tr class="v-data-table__tr">
           <td class="v-data-table__td v-data-table-column--align-start">
-            <!--v-if-->
-            <hash-link-stub type="address" hash="0xC056255e6B1E6001852f9f20587A964cb89418e7" fullhash="true" withname="true" withtokenname="true"></hash-link-stub>
+            <div data-v-4ac12869="" class="d-flex align-center">
+              <!--v-if-->
+              <hash-link-stub data-v-4ac12869="" type="address" hash="0xC056255e6B1E6001852f9f20587A964cb89418e7" fullhash="false" withname="true" notcopiable="false" withtokenname="true" xshash="true" unlink="false" loadcontract="false"></hash-link-stub>
+            </div>
           </td>
           <td class="v-data-table__td v-data-table-column--align-start">
-            <!--v-if-->
-            <hash-link-stub type="address" hash="0x4f6742bADB049791CD9A37ea913f2BAC38d01279" fullhash="true" withname="true" withtokenname="true"></hash-link-stub>
+            <div data-v-4ac12869="" class="d-flex align-center">
+              <!--v-if-->
+              <hash-link-stub data-v-4ac12869="" type="address" hash="0x4f6742bADB049791CD9A37ea913f2BAC38d01279" fullhash="false" withname="true" notcopiable="false" withtokenname="true" xshash="true" unlink="false" loadcontract="false"></hash-link-stub>
+            </div>
           </td>
-          <td class="v-data-table__td v-data-table-column--align-start">0.1 ETL</td>
+          <td class="v-data-table__td v-data-table-column--align-start"><span data-v-4ac12869="" aria-describedby="v-tooltip-8">0.1  <!----><!--teleport start--><!--teleport end--></span></td>
         </tr>
         <!---->
         <!---->
@@ -278,7 +254,7 @@ exports[`TokenTransfers.vue > Should display fomatted amounts if info is present
       <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field v-select v-select--single v-select--selected">
         <!---->
         <div class="v-input__control">
-          <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--no-label v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="v-menu-5">
+          <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--no-label v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="v-menu-2">
             <div class="v-field__overlay"></div>
             <div class="v-field__loader">
               <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
@@ -302,7 +278,7 @@ exports[`TokenTransfers.vue > Should display fomatted amounts if info is present
               <div class="v-field__input" data-no-activator="">
                 <!---->
                 <!---->
-                <div class="v-select__selection"><span class="v-select__selection-text">10<!----></span></div><input size="1" type="text" id="input-3" aria-describedby="input-3-messages" inputmode="none" aria-label="Open" title="Open" value="10">
+                <div class="v-select__selection"><span class="v-select__selection-text">10<!----></span></div><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" inputmode="none" aria-label="Open" title="Open" value="10">
               </div>
               <!---->
             </div>

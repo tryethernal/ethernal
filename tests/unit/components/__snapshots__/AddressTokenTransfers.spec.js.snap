@@ -1,0 +1,8 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`AddressTokenTransfers.vue > Should load address token transfers 1`] = `
+"<div class="d-flex justify-end mb-4">
+  <base-chip-group-stub backgroundcolor="#4242421f" multiple="" modelvalue=""></base-chip-group-stub>
+</div>
+<token-transfers-stub transfers="[object Object]" headers="[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]" loading="false" sortby="[object Object]" count="1" address="0x1234567890123456789012345678901234567890" density="default" withtransactiondata="false" withtokendata="false" nodatatext="No token transfers found" withcount="true"></token-transfers-stub>"
+`;

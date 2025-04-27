@@ -11,5 +11,6 @@ export default {
             { capture: () => {}, reset: () => {}, identify: () => {} }
 
         app.config.globalProperties.$posthog = $posthog;
+        app.provide('$posthog', $posthog);
     }
 };

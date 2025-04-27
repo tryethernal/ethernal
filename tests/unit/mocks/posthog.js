@@ -1,4 +1,4 @@
-jest.mock('@/plugins/posthog', () => ({
+vi.mock('@/plugins/posthog', () => ({
     posthogPlugin: {
         install(Vue) {
             Vue.prototype.$posthog = {

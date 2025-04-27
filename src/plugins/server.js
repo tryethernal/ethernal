@@ -336,7 +336,7 @@ export default {
         const userStore = useUserStore();
 
         const { firebaseUserId } = storeToRefs(userStore);
-        const { name: workspace } = storeToRefs(currentWorkspaceStore);
+        const { name: workspace, id: workspaceId } = storeToRefs(currentWorkspaceStore);
 
         const _rpcServer = function() {
             return storeToRefs(currentWorkspaceStore).rpcServer.value;
@@ -352,6 +352,145 @@ export default {
         );
 
         const $server = {
+            getWorkspaceTokenTransfers(options) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    ...options
+                };
+                const resource = `${envStore.apiRoot}/api/workspaces/${workspaceId.value}/tokenTransfers`;
+                return axios.get(resource, { params });
+            },
+
+            getTopTokensByHolders(options) {
+                const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, ...options };
+                const resource = `${envStore.apiRoot}/api/stats/topTokensByHolders`;
+                return axios.get(resource, { params });
+            },
+
+            getWorkspaceContractStats() {
+                const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value };
+                const resource = `${envStore.apiRoot}/api/stats/contracts`;
+                return axios.get(resource, { params });
+            },
+
+            getWorkspaceVerifiedContracts(options) {
+                const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, ...options };
+                const resource = `${envStore.apiRoot}/api/contracts/verified`;
+                return axios.get(resource, { params });
+            },
+
+            getWorkspaceTransactionTraceSteps(options) {
+                const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, ...options };
+                const resource = `${envStore.apiRoot}/api/transactionTraceSteps`;
+                return axios.get(resource, { params });
+            },
+
+            getAddressTokenTransferHistory(address, from, to) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    address,
+                    from,
+                    to
+                };
+                const resource = `${envStore.apiRoot}/api/addresses/${address}/tokenTransferHistory`;
+                return axios.get(resource, { params });
+            },
+
+            getAddressSpentTransactionFeeHistory(address, from, to) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    address,
+                    from,
+                    to
+                };
+
+                const resource = `${envStore.apiRoot}/api/addresses/${address}/spentTransactionFeeHistory`;
+                return axios.get(resource, { params });
+            },
+
+            getAddressTransactionHistory(address, from, to) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    address,
+                    from,
+                    to
+                };
+                const resource = `${envStore.apiRoot}/api/addresses/${address}/transactionHistory`;
+                return axios.get(resource, { params });
+            },
+
+            getAddressInternalTransactions(address, page, itemsPerPage) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    address,
+                    page,
+                    itemsPerPage
+                };
+                const resource = `${envStore.apiRoot}/api/addresses/${address}/internalTransactions`;
+                return axios.get(resource, { params });
+            },
+
+            getLast24hBurntFees() {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                };
+                const resource = `${envStore.apiRoot}/api/stats/last24hBurntFees`;
+                return axios.get(resource, { params });
+            },
+
+            getLast24hTotalGasUsed() {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                };
+                const resource = `${envStore.apiRoot}/api/stats/last24hTotalGasUsed`;
+                return axios.get(resource, { params });
+            },
+
+            getLast24hGasUtilisationRatio() {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                };
+                const resource = `${envStore.apiRoot}/api/stats/gasUtilisationRatio24h`;
+                return axios.get(resource, { params });
+            },
+
+            getLast24hAverageTransactionFee() {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                };
+                const resource = `${envStore.apiRoot}/api/stats/averageTransactionFee24h`;
+                return axios.get(resource, { params });
+            },
+
+            getLast24hTransactionFee() {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                };
+                const resource = `${envStore.apiRoot}/api/stats/transactionFee24h`;
+                return axios.get(resource, { params });
+            },
+
+            getTransactionFeeHistory(from, to) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    from,
+                    to
+                };
+                const resource = `${envStore.apiRoot}/api/stats/transactionFeeHistory`;
+                return axios.get(resource, { params });
+            },
+
             checkEmail(email) {
                 const resource = `${envStore.apiRoot}/api/users/checkEmail`;
                 return axios.get(resource, { params: { email }});
@@ -794,6 +933,13 @@ export default {
                 return axios.get(resource, { params });
             },
 
+            getTransactionTraceSteps(transactionHash) {
+                const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value };
+
+                const resource = `${envStore.apiRoot}/api/transactions/${transactionHash}/traceSteps`;
+                return axios.get(resource, { params });
+            },
+
             getTransactionTokenBalanceChanges(transactionHash, options) {
                 const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, ...options };
 
@@ -1098,11 +1244,11 @@ export default {
                 return axios.get(resource, { params });
             },
 
-            getBlocks(options, withCount) {
+            getBlocks(options) {
                 const params = {
                     firebaseUserId: firebaseUserId.value,
                     workspace: workspace.value,
-                    ...options, withCount
+                    ...options
                 };
                 const resource = `${envStore.apiRoot}/api/blocks`;
                 return axios.get(resource, { params, cache: { ttl: CACHE_TTL }});

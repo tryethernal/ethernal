@@ -10,7 +10,7 @@ describe('Block.vue', () => {
         const wrapper = mount(Block, {
             props: { number: 1 },
             global: {
-                stubs: ['Transactions-List']
+                stubs: ['Transactions-List', 'Block-Overview']
             }
         });
         await flushPromises();
@@ -35,7 +35,7 @@ describe('Block.vue', () => {
         const wrapper = mount(Block, {
             props: { number: 1 },
             global: {
-                stubs: ['Transactions-List']
+                stubs: ['Transactions-List', 'Block-Overview']
             }
         });
         await flushPromises();
@@ -60,7 +60,7 @@ describe('Block.vue', () => {
         const wrapper = mount(Block, {
             props: { number: 1 },
             global: {
-                stubs: ['Transactions-List']
+                stubs: ['Transactions-List', 'Block-Overview']
             }
         });
         await flushPromises();

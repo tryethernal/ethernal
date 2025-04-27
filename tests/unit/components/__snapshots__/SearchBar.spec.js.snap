@@ -1,0 +1,344 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`SearchBar.vue > Should handle address search 1`] = `
+"<div data-v-6ab8b910="" class="v-input v-input--horizontal v-input--center-affix v-input--density-default v-theme--light v-locale--is-ltr v-text-field v-autocomplete v-autocomplete--single v-autocomplete--selection-slot mx-2 w-100">
+  <!---->
+  <div class="v-input__control">
+    <div class="v-field v-field--appended v-field--center-affix v-field--prepended v-field--no-label v-field--variant-filled v-theme--light rounded-lg v-locale--is-ltr" role="combobox" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-2">
+      <div class="v-field__overlay"></div>
+      <div class="v-field__loader">
+        <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+          <!---->
+          <div class="v-progress-linear__background"></div>
+          <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+          <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+            <div class="v-progress-linear__indeterminate">
+              <div class="v-progress-linear__indeterminate long"></div>
+              <div class="v-progress-linear__indeterminate short"></div>
+            </div>
+          </transition-stub>
+          <!---->
+        </div>
+      </div>
+      <div class="v-field__prepend-inner">
+        <!----><i data-v-6ab8b910="" class="mdi-magnify mdi v-icon notranslate v-theme--light v-icon--size-default text-primary search-icon" aria-hidden="true"></i>
+      </div>
+      <div class="v-field__field" data-no-activator="">
+        <!---->
+        <!---->
+        <!---->
+        <div class="v-field__input" data-no-activator="">
+          <!---->
+          <!----><input placeholder="Search by Address / Transaction Hash / Block Number / Token..." size="1" type="text" id="input-0" aria-describedby="input-0-messages" value="">
+        </div>
+        <!---->
+      </div>
+      <!---->
+      <div class="v-field__append-inner">
+        <!----><i class="mdi-menu-down mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--clickable v-autocomplete__menu-icon" role="button" aria-hidden="false" tabindex="-1" aria-label="Open" title="Open"></i>
+        <!---->
+      </div>
+      <div class="v-field__outline">
+        <!---->
+        <!---->
+      </div>
+    </div>
+  </div>
+  <!---->
+  <!---->
+</div>"
+`;
+
+exports[`SearchBar.vue > Should handle block search 1`] = `
+"<div data-v-6ab8b910="" class="v-input v-input--horizontal v-input--center-affix v-input--density-default v-theme--light v-locale--is-ltr v-text-field v-autocomplete v-autocomplete--single v-autocomplete--selection-slot mx-2 w-100">
+  <!---->
+  <div class="v-input__control">
+    <div class="v-field v-field--appended v-field--center-affix v-field--prepended v-field--no-label v-field--variant-filled v-theme--light rounded-lg v-locale--is-ltr" role="combobox" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-2">
+      <div class="v-field__overlay"></div>
+      <div class="v-field__loader">
+        <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+          <!---->
+          <div class="v-progress-linear__background"></div>
+          <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+          <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+            <div class="v-progress-linear__indeterminate">
+              <div class="v-progress-linear__indeterminate long"></div>
+              <div class="v-progress-linear__indeterminate short"></div>
+            </div>
+          </transition-stub>
+          <!---->
+        </div>
+      </div>
+      <div class="v-field__prepend-inner">
+        <!----><i data-v-6ab8b910="" class="mdi-magnify mdi v-icon notranslate v-theme--light v-icon--size-default text-primary search-icon" aria-hidden="true"></i>
+      </div>
+      <div class="v-field__field" data-no-activator="">
+        <!---->
+        <!---->
+        <!---->
+        <div class="v-field__input" data-no-activator="">
+          <!---->
+          <!----><input placeholder="Search by Address / Transaction Hash / Block Number / Token..." size="1" type="text" id="input-0" aria-describedby="input-0-messages" value="">
+        </div>
+        <!---->
+      </div>
+      <!---->
+      <div class="v-field__append-inner">
+        <!----><i class="mdi-menu-down mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--clickable v-autocomplete__menu-icon" role="button" aria-hidden="false" tabindex="-1" aria-label="Open" title="Open"></i>
+        <!---->
+      </div>
+      <div class="v-field__outline">
+        <!---->
+        <!---->
+      </div>
+    </div>
+  </div>
+  <!---->
+  <!---->
+</div>"
+`;
+
+exports[`SearchBar.vue > Should handle contract search 1`] = `
+"<div data-v-6ab8b910="" class="v-input v-input--horizontal v-input--center-affix v-input--density-default v-theme--light v-locale--is-ltr v-text-field v-autocomplete v-autocomplete--single v-autocomplete--selection-slot mx-2 w-100">
+  <!---->
+  <div class="v-input__control">
+    <div class="v-field v-field--appended v-field--center-affix v-field--prepended v-field--no-label v-field--variant-filled v-theme--light rounded-lg v-locale--is-ltr" role="combobox" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-2">
+      <div class="v-field__overlay"></div>
+      <div class="v-field__loader">
+        <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+          <!---->
+          <div class="v-progress-linear__background"></div>
+          <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+          <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+            <div class="v-progress-linear__indeterminate">
+              <div class="v-progress-linear__indeterminate long"></div>
+              <div class="v-progress-linear__indeterminate short"></div>
+            </div>
+          </transition-stub>
+          <!---->
+        </div>
+      </div>
+      <div class="v-field__prepend-inner">
+        <!----><i data-v-6ab8b910="" class="mdi-magnify mdi v-icon notranslate v-theme--light v-icon--size-default text-primary search-icon" aria-hidden="true"></i>
+      </div>
+      <div class="v-field__field" data-no-activator="">
+        <!---->
+        <!---->
+        <!---->
+        <div class="v-field__input" data-no-activator="">
+          <!---->
+          <!----><input placeholder="Search by Address / Transaction Hash / Block Number / Token..." size="1" type="text" id="input-0" aria-describedby="input-0-messages" value="">
+        </div>
+        <!---->
+      </div>
+      <!---->
+      <div class="v-field__append-inner">
+        <!----><i class="mdi-menu-down mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--clickable v-autocomplete__menu-icon" role="button" aria-hidden="false" tabindex="-1" aria-label="Open" title="Open"></i>
+        <!---->
+      </div>
+      <div class="v-field__outline">
+        <!---->
+        <!---->
+      </div>
+    </div>
+  </div>
+  <!---->
+  <!---->
+</div>"
+`;
+
+exports[`SearchBar.vue > Should handle transaction search 1`] = `
+"<div data-v-6ab8b910="" class="v-input v-input--horizontal v-input--center-affix v-input--density-default v-theme--light v-locale--is-ltr v-text-field v-autocomplete v-autocomplete--single v-autocomplete--selection-slot mx-2 w-100">
+  <!---->
+  <div class="v-input__control">
+    <div class="v-field v-field--appended v-field--center-affix v-field--prepended v-field--no-label v-field--variant-filled v-theme--light rounded-lg v-locale--is-ltr" role="combobox" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-2">
+      <div class="v-field__overlay"></div>
+      <div class="v-field__loader">
+        <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+          <!---->
+          <div class="v-progress-linear__background"></div>
+          <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+          <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+            <div class="v-progress-linear__indeterminate">
+              <div class="v-progress-linear__indeterminate long"></div>
+              <div class="v-progress-linear__indeterminate short"></div>
+            </div>
+          </transition-stub>
+          <!---->
+        </div>
+      </div>
+      <div class="v-field__prepend-inner">
+        <!----><i data-v-6ab8b910="" class="mdi-magnify mdi v-icon notranslate v-theme--light v-icon--size-default text-primary search-icon" aria-hidden="true"></i>
+      </div>
+      <div class="v-field__field" data-no-activator="">
+        <!---->
+        <!---->
+        <!---->
+        <div class="v-field__input" data-no-activator="">
+          <!---->
+          <!----><input placeholder="Search by Address / Transaction Hash / Block Number / Token..." size="1" type="text" id="input-0" aria-describedby="input-0-messages" value="">
+        </div>
+        <!---->
+      </div>
+      <!---->
+      <div class="v-field__append-inner">
+        <!----><i class="mdi-menu-down mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--clickable v-autocomplete__menu-icon" role="button" aria-hidden="false" tabindex="-1" aria-label="Open" title="Open"></i>
+        <!---->
+      </div>
+      <div class="v-field__outline">
+        <!---->
+        <!---->
+      </div>
+    </div>
+  </div>
+  <!---->
+  <!---->
+</div>"
+`;
+
+exports[`SearchBar.vue > Should show compact search bar 1`] = `
+"<div data-v-6ab8b910="" class="v-input v-input--horizontal v-input--center-affix v-input--density-default v-theme--light v-locale--is-ltr v-text-field v-autocomplete v-autocomplete--single v-autocomplete--selection-slot mx-2 w-100 compact">
+  <!---->
+  <div class="v-input__control">
+    <div class="v-field v-field--appended v-field--center-affix v-field--prepended v-field--no-label v-field--variant-filled v-theme--light rounded-lg v-locale--is-ltr" role="combobox">
+      <div class="v-field__overlay"></div>
+      <div class="v-field__loader">
+        <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+          <!---->
+          <div class="v-progress-linear__background"></div>
+          <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+          <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+            <div class="v-progress-linear__indeterminate">
+              <div class="v-progress-linear__indeterminate long"></div>
+              <div class="v-progress-linear__indeterminate short"></div>
+            </div>
+          </transition-stub>
+          <!---->
+        </div>
+      </div>
+      <div class="v-field__prepend-inner">
+        <!----><i data-v-6ab8b910="" class="mdi-magnify mdi v-icon notranslate v-theme--light v-icon--size-default text-primary search-icon" aria-hidden="true"></i>
+      </div>
+      <div class="v-field__field" data-no-activator="">
+        <!---->
+        <!---->
+        <!---->
+        <div class="v-field__input" data-no-activator="">
+          <!---->
+          <!----><input placeholder="Search by Address / Transaction Hash / Block Number / Token..." size="1" type="text" id="input-0" aria-describedby="input-0-messages" value="">
+        </div>
+        <!---->
+      </div>
+      <!---->
+      <div class="v-field__append-inner">
+        <!----><i class="mdi-menu-down mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--clickable v-autocomplete__menu-icon" role="button" aria-hidden="false" tabindex="-1" aria-label="Open" title="Open"></i>
+        <!---->
+      </div>
+      <div class="v-field__outline">
+        <!---->
+        <!---->
+      </div>
+    </div>
+  </div>
+  <!---->
+  <!---->
+</div>"
+`;
+
+exports[`SearchBar.vue > Should show empty search bar 1`] = `
+"<div data-v-6ab8b910="" class="v-input v-input--horizontal v-input--center-affix v-input--density-default v-theme--light v-locale--is-ltr v-text-field v-autocomplete v-autocomplete--single v-autocomplete--selection-slot mx-2 w-100">
+  <!---->
+  <div class="v-input__control">
+    <div class="v-field v-field--appended v-field--center-affix v-field--prepended v-field--no-label v-field--variant-filled v-theme--light rounded-lg v-locale--is-ltr" role="combobox">
+      <div class="v-field__overlay"></div>
+      <div class="v-field__loader">
+        <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+          <!---->
+          <div class="v-progress-linear__background"></div>
+          <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+          <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+            <div class="v-progress-linear__indeterminate">
+              <div class="v-progress-linear__indeterminate long"></div>
+              <div class="v-progress-linear__indeterminate short"></div>
+            </div>
+          </transition-stub>
+          <!---->
+        </div>
+      </div>
+      <div class="v-field__prepend-inner">
+        <!----><i data-v-6ab8b910="" class="mdi-magnify mdi v-icon notranslate v-theme--light v-icon--size-default text-primary search-icon" aria-hidden="true"></i>
+      </div>
+      <div class="v-field__field" data-no-activator="">
+        <!---->
+        <!---->
+        <!---->
+        <div class="v-field__input" data-no-activator="">
+          <!---->
+          <!----><input placeholder="Search by Address / Transaction Hash / Block Number / Token..." size="1" type="text" id="input-0" aria-describedby="input-0-messages" value="">
+        </div>
+        <!---->
+      </div>
+      <!---->
+      <div class="v-field__append-inner">
+        <!----><i class="mdi-menu-down mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--clickable v-autocomplete__menu-icon" role="button" aria-hidden="false" tabindex="-1" aria-label="Open" title="Open"></i>
+        <!---->
+      </div>
+      <div class="v-field__outline">
+        <!---->
+        <!---->
+      </div>
+    </div>
+  </div>
+  <!---->
+  <!---->
+</div>"
+`;
+
+exports[`SearchBar.vue > Should show loading state while searching 1`] = `
+"<div data-v-6ab8b910="" class="v-input v-input--horizontal v-input--center-affix v-input--density-default v-theme--light v-locale--is-ltr v-text-field v-autocomplete v-autocomplete--single v-autocomplete--selection-slot mx-2 w-100">
+  <!---->
+  <div class="v-input__control">
+    <div class="v-field v-field--appended v-field--center-affix v-field--prepended v-field--no-label v-field--variant-filled v-theme--light rounded-lg v-locale--is-ltr" role="combobox" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-2">
+      <div class="v-field__overlay"></div>
+      <div class="v-field__loader">
+        <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+          <!---->
+          <div class="v-progress-linear__background"></div>
+          <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+          <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+            <div class="v-progress-linear__indeterminate">
+              <div class="v-progress-linear__indeterminate long"></div>
+              <div class="v-progress-linear__indeterminate short"></div>
+            </div>
+          </transition-stub>
+          <!---->
+        </div>
+      </div>
+      <div class="v-field__prepend-inner">
+        <!----><i data-v-6ab8b910="" class="mdi-magnify mdi v-icon notranslate v-theme--light v-icon--size-default text-primary search-icon" aria-hidden="true"></i>
+      </div>
+      <div class="v-field__field" data-no-activator="">
+        <!---->
+        <!---->
+        <!---->
+        <div class="v-field__input" data-no-activator="">
+          <!---->
+          <!----><input placeholder="Search by Address / Transaction Hash / Block Number / Token..." size="1" type="text" id="input-0" aria-describedby="input-0-messages" value="">
+        </div>
+        <!---->
+      </div>
+      <!---->
+      <div class="v-field__append-inner">
+        <!----><i class="mdi-menu-down mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--clickable v-autocomplete__menu-icon" role="button" aria-hidden="false" tabindex="-1" aria-label="Open" title="Open"></i>
+        <!---->
+      </div>
+      <div class="v-field__outline">
+        <!---->
+        <!---->
+      </div>
+    </div>
+  </div>
+  <!---->
+  <!---->
+</div>"
+`;

@@ -57,6 +57,12 @@ describe('getTokenTransfer', () => {
 });
 
 describe('getTransactionMethodDetails', () => {
+    it('Should return a sighash if there is data but no contract abi', () => {
+        expect(getTransactionMethodDetails({ data: '0x12345678910' }, null)).toEqual({
+            sighash: '0x12345678'
+        });
+    });
+
     it('Should return erc20 abi if the tx called one', () => {
         expect(getTransactionMethodDetails(TransactionTransfer)).toEqual({
             label: `transfer(\n\taddress dst: 0x0f71271b3611f99B6867B95eDA4d203F0a913972,\n\tuint256 rawAmount: 2274999999652000020000\n)`,

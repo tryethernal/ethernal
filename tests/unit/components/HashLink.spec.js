@@ -21,6 +21,7 @@ describe('HashLink.vue', () => {
         });
 
         const wrapper = mount(HashLink, {
+            attachTo: document.body,
             props: {
                 type: 'address',
                 hash: '0xed5af388653567af2f388e6224dc7c4b3241c544'
@@ -48,6 +49,7 @@ describe('HashLink.vue', () => {
         });
 
         const wrapper = mount(HashLink, {
+            attachTo: document.body,
             props: {
                 type: 'address',
                 hash: '0xed5af388653567af2f388e6224dc7c4b3241c544',
@@ -66,6 +68,7 @@ describe('HashLink.vue', () => {
         const pinia = getPiniaInstance();
 
         const wrapper = mount(HashLink, {
+            attachTo: document.body,
             global: {
                 plugins: [pinia]
             },
@@ -84,6 +87,7 @@ describe('HashLink.vue', () => {
         const pinia = getPiniaInstance();
 
         const wrapper = mount(HashLink, {
+            attachTo: document.body,
             global: {
                 plugins: [pinia]
             },
@@ -105,6 +109,7 @@ describe('HashLink.vue', () => {
         const pinia = getPiniaInstance();
 
         const wrapper = mount(HashLink, {
+            attachTo: document.body,
             global: {
                 plugins: [pinia]
             },
@@ -124,6 +129,7 @@ describe('HashLink.vue', () => {
         const pinia = getPiniaInstance();
 
         const wrapper = mount(HashLink, {
+            attachTo: document.body,
             global: {
                 plugins: [pinia]
             },
@@ -145,6 +151,7 @@ describe('HashLink.vue', () => {
         const pinia = getPiniaInstance();
 
         const wrapper = mount(HashLink, {
+            attachTo: document.body,
             global: {
                 plugins: [pinia]
             },
@@ -165,6 +172,7 @@ describe('HashLink.vue', () => {
         const pinia = getPiniaInstance();
 
         const wrapper = mount(HashLink, {
+            attachTo: document.body,
             global: {
                 plugins: [pinia]
             },
@@ -183,6 +191,7 @@ describe('HashLink.vue', () => {
         const pinia = getPiniaInstance();
 
         const wrapper = mount(HashLink, {
+            attachTo: document.body,
             global: {
                 plugins: [pinia]
             },
@@ -202,6 +211,7 @@ describe('HashLink.vue', () => {
         const pinia = getPiniaInstance();
 
         const wrapper = mount(HashLink, {
+            attachTo: document.body,
             global: {
                 plugins: [pinia]
             },
@@ -221,6 +231,7 @@ describe('HashLink.vue', () => {
         const pinia = getPiniaInstance();
 
         const wrapper = mount(HashLink, {
+            attachTo: document.body,
             global: {
                 plugins: [pinia]
             },
@@ -238,6 +249,7 @@ describe('HashLink.vue', () => {
         const pinia = getPiniaInstance();
 
         const wrapper = mount(HashLink, {
+            attachTo: document.body,
             global: {
                 plugins: [pinia]
             },
@@ -256,6 +268,7 @@ describe('HashLink.vue', () => {
         const pinia = getPiniaInstance();
 
         const wrapper = mount(HashLink, {
+            attachTo: document.body,
             global: {
                 plugins: [pinia]
             },
@@ -274,6 +287,7 @@ describe('HashLink.vue', () => {
         const pinia = getPiniaInstance();
 
         const wrapper = mount(HashLink, {
+            attachTo: document.body,
             global: {
                 plugins: [pinia]
             },
@@ -292,6 +306,7 @@ describe('HashLink.vue', () => {
         const pinia = getPiniaInstance();
 
         const wrapper = mount(HashLink, {
+            attachTo: document.body,
             global: {
                 plugins: [pinia]
             },
@@ -311,6 +326,7 @@ describe('HashLink.vue', () => {
         });
 
         const wrapper = mount(HashLink, {
+            attachTo: document.body,
             global: {
                 plugins: [pinia]
             },
@@ -323,5 +339,45 @@ describe('HashLink.vue', () => {
         await flushPromises();
 
         expect(wrapper.html()).toMatchSnapshot();
+    });
+
+    it('should handle embedded mode correctly', () => {
+        const wrapper = mount(HashLink, {
+            attachTo: document.body,
+            props: {
+                hash: '0x123',
+                type: 'address'
+            },
+            global: {
+                provide: {
+                    isEmbedded: true
+                }
+            }
+        });
+
+        // Access the exposed embedded value
+        expect(wrapper.vm.embedded).toBe(true);
+
+        // Check if the link is rendered as an external link
+        expect(wrapper.find('a').exists()).toBe(true);
+        expect(wrapper.find('router-link').exists()).toBe(false);
+    });
+
+    it('should handle non-embedded mode correctly', () => {
+        const wrapper = mount(HashLink, {
+            attachTo: document.body,
+            props: {
+                hash: '0x123',
+                type: 'address'
+            },
+            global: {
+                provide: {
+                    isEmbedded: false
+                }
+            }
+        });
+
+        // Access the exposed embedded value
+        expect(wrapper.vm.embedded).toBe(false);
     });
 });

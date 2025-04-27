@@ -1,0 +1,258 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`TokenHeader.vue > Should show N/A when no total supply 1`] = `
+"<div data-v-fe3719f4="" class="v-row mb-1 align-stretch">
+  <div data-v-fe3719f4="" class="v-col-sm-6 v-col-lg-4 v-col-12">
+    <div data-v-fe3719f4="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated h-100">
+      <!---->
+      <div class="v-card__loader">
+        <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+          <!---->
+          <div class="v-progress-linear__background"></div>
+          <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+          <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+            <div class="v-progress-linear__indeterminate">
+              <div class="v-progress-linear__indeterminate long"></div>
+              <div class="v-progress-linear__indeterminate short"></div>
+            </div>
+          </transition-stub>
+          <!---->
+        </div>
+      </div>
+      <!---->
+      <!---->
+      <div data-v-fe3719f4="" class="v-card-text d-flex flex-column ga-3">
+        <h3 data-v-fe3719f4="" class="font-weight-medium">Overview</h3><span data-v-fe3719f4=""><h4 data-v-fe3719f4="" class="text-uppercase text-caption text-medium-emphasis">Max Total Supply</h4><span data-v-fe3719f4="">N/A</span></span><span data-v-fe3719f4=""><h4 data-v-fe3719f4="" class="text-uppercase text-caption text-medium-emphasis">Holders</h4> 100</span><span data-v-fe3719f4=""><h4 data-v-fe3719f4="" class="text-uppercase text-caption text-medium-emphasis">Total Transfers</h4> 500</span>
+      </div>
+      <!---->
+      <!----><span class="v-card__underlay"></span>
+    </div>
+  </div>
+  <div data-v-fe3719f4="" class="v-col-sm-6 v-col-lg-4 v-col-12">
+    <div data-v-fe3719f4="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated h-100">
+      <!---->
+      <div class="v-card__loader">
+        <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+          <!---->
+          <div class="v-progress-linear__background"></div>
+          <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+          <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+            <div class="v-progress-linear__indeterminate">
+              <div class="v-progress-linear__indeterminate long"></div>
+              <div class="v-progress-linear__indeterminate short"></div>
+            </div>
+          </transition-stub>
+          <!---->
+        </div>
+      </div>
+      <!---->
+      <!---->
+      <div data-v-fe3719f4="" class="v-card-text d-flex flex-column ga-3">
+        <h3 data-v-fe3719f4="" class="font-weight-medium">Other Info</h3>
+        <div data-v-fe3719f4="">
+          <h4 data-v-fe3719f4="" class="text-uppercase text-caption text-medium-emphasis"> Token Contract<span data-v-fe3719f4=""> (with <span data-v-fe3719f4="" class="text-high-emphasis">18</span> decimals) </span></h4>
+          <div data-v-fe3719f4="" class="d-flex align-center">
+            <hash-link-stub data-v-fe3719f4="" type="address" hash="0x123" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
+          </div>
+          <!--v-if-->
+        </div>
+      </div>
+      <!---->
+      <!----><span class="v-card__underlay"></span>
+    </div>
+  </div>
+</div>"
+`;
+
+exports[`TokenHeader.vue > Should show component without creation transaction 1`] = `
+"<div data-v-fe3719f4="" class="v-row mb-1 align-stretch">
+  <div data-v-fe3719f4="" class="v-col-sm-6 v-col-lg-4 v-col-12">
+    <div data-v-fe3719f4="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated h-100">
+      <!---->
+      <div class="v-card__loader">
+        <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+          <!---->
+          <div class="v-progress-linear__background"></div>
+          <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+          <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+            <div class="v-progress-linear__indeterminate">
+              <div class="v-progress-linear__indeterminate long"></div>
+              <div class="v-progress-linear__indeterminate short"></div>
+            </div>
+          </transition-stub>
+          <!---->
+        </div>
+      </div>
+      <!---->
+      <!---->
+      <div data-v-fe3719f4="" class="v-card-text d-flex flex-column ga-3">
+        <h3 data-v-fe3719f4="" class="font-weight-medium">Overview</h3><span data-v-fe3719f4=""><h4 data-v-fe3719f4="" class="text-uppercase text-caption text-medium-emphasis">Max Total Supply</h4><span data-v-fe3719f4="">1 TEST</span></span><span data-v-fe3719f4=""><h4 data-v-fe3719f4="" class="text-uppercase text-caption text-medium-emphasis">Holders</h4> 100</span><span data-v-fe3719f4=""><h4 data-v-fe3719f4="" class="text-uppercase text-caption text-medium-emphasis">Total Transfers</h4> 500</span>
+      </div>
+      <!---->
+      <!----><span class="v-card__underlay"></span>
+    </div>
+  </div>
+  <div data-v-fe3719f4="" class="v-col-sm-6 v-col-lg-4 v-col-12">
+    <div data-v-fe3719f4="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated h-100">
+      <!---->
+      <div class="v-card__loader">
+        <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+          <!---->
+          <div class="v-progress-linear__background"></div>
+          <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+          <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+            <div class="v-progress-linear__indeterminate">
+              <div class="v-progress-linear__indeterminate long"></div>
+              <div class="v-progress-linear__indeterminate short"></div>
+            </div>
+          </transition-stub>
+          <!---->
+        </div>
+      </div>
+      <!---->
+      <!---->
+      <div data-v-fe3719f4="" class="v-card-text d-flex flex-column ga-3">
+        <h3 data-v-fe3719f4="" class="font-weight-medium">Other Info</h3>
+        <div data-v-fe3719f4="">
+          <h4 data-v-fe3719f4="" class="text-uppercase text-caption text-medium-emphasis"> Token Contract<span data-v-fe3719f4=""> (with <span data-v-fe3719f4="" class="text-high-emphasis">18</span> decimals) </span></h4>
+          <div data-v-fe3719f4="" class="d-flex align-center">
+            <hash-link-stub data-v-fe3719f4="" type="address" hash="0x123" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
+          </div>
+          <!--v-if-->
+        </div>
+      </div>
+      <!---->
+      <!----><span class="v-card__underlay"></span>
+    </div>
+  </div>
+</div>"
+`;
+
+exports[`TokenHeader.vue > Should show the component with all data 1`] = `
+"<div data-v-fe3719f4="" class="v-row mb-1 align-stretch">
+  <div data-v-fe3719f4="" class="v-col-sm-6 v-col-lg-4 v-col-12">
+    <div data-v-fe3719f4="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated h-100">
+      <!---->
+      <div class="v-card__loader">
+        <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+          <!---->
+          <div class="v-progress-linear__background"></div>
+          <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+          <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+            <div class="v-progress-linear__indeterminate">
+              <div class="v-progress-linear__indeterminate long"></div>
+              <div class="v-progress-linear__indeterminate short"></div>
+            </div>
+          </transition-stub>
+          <!---->
+        </div>
+      </div>
+      <!---->
+      <!---->
+      <div data-v-fe3719f4="" class="v-card-text d-flex flex-column ga-3">
+        <h3 data-v-fe3719f4="" class="font-weight-medium">Overview</h3><span data-v-fe3719f4=""><h4 data-v-fe3719f4="" class="text-uppercase text-caption text-medium-emphasis">Max Total Supply</h4><span data-v-fe3719f4="">1 TEST</span></span><span data-v-fe3719f4=""><h4 data-v-fe3719f4="" class="text-uppercase text-caption text-medium-emphasis">Holders</h4> 100</span><span data-v-fe3719f4=""><h4 data-v-fe3719f4="" class="text-uppercase text-caption text-medium-emphasis">Total Transfers</h4> 500</span>
+      </div>
+      <!---->
+      <!----><span class="v-card__underlay"></span>
+    </div>
+  </div>
+  <div data-v-fe3719f4="" class="v-col-sm-6 v-col-lg-4 v-col-12">
+    <div data-v-fe3719f4="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated h-100">
+      <!---->
+      <div class="v-card__loader">
+        <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+          <!---->
+          <div class="v-progress-linear__background"></div>
+          <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+          <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+            <div class="v-progress-linear__indeterminate">
+              <div class="v-progress-linear__indeterminate long"></div>
+              <div class="v-progress-linear__indeterminate short"></div>
+            </div>
+          </transition-stub>
+          <!---->
+        </div>
+      </div>
+      <!---->
+      <!---->
+      <div data-v-fe3719f4="" class="v-card-text d-flex flex-column ga-3">
+        <h3 data-v-fe3719f4="" class="font-weight-medium">Other Info</h3>
+        <div data-v-fe3719f4="">
+          <h4 data-v-fe3719f4="" class="text-uppercase text-caption text-medium-emphasis"> Token Contract<span data-v-fe3719f4=""> (with <span data-v-fe3719f4="" class="text-high-emphasis">18</span> decimals) </span></h4>
+          <div data-v-fe3719f4="" class="d-flex align-center">
+            <hash-link-stub data-v-fe3719f4="" type="address" hash="0x123" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
+          </div>
+          <div data-v-fe3719f4="" class="text-caption text-medium-emphasis mt-1"> Created in tx <hash-link-stub data-v-fe3719f4="" type="transaction" hash="0xabc" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
+          </div>
+        </div>
+      </div>
+      <!---->
+      <!----><span class="v-card__underlay"></span>
+    </div>
+  </div>
+</div>"
+`;
+
+exports[`TokenHeader.vue > Should show zero values when stats are empty 1`] = `
+"<div data-v-fe3719f4="" class="v-row mb-1 align-stretch">
+  <div data-v-fe3719f4="" class="v-col-sm-6 v-col-lg-4 v-col-12">
+    <div data-v-fe3719f4="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated h-100">
+      <!---->
+      <div class="v-card__loader">
+        <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+          <!---->
+          <div class="v-progress-linear__background"></div>
+          <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+          <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+            <div class="v-progress-linear__indeterminate">
+              <div class="v-progress-linear__indeterminate long"></div>
+              <div class="v-progress-linear__indeterminate short"></div>
+            </div>
+          </transition-stub>
+          <!---->
+        </div>
+      </div>
+      <!---->
+      <!---->
+      <div data-v-fe3719f4="" class="v-card-text d-flex flex-column ga-3">
+        <h3 data-v-fe3719f4="" class="font-weight-medium">Overview</h3><span data-v-fe3719f4=""><h4 data-v-fe3719f4="" class="text-uppercase text-caption text-medium-emphasis">Max Total Supply</h4><span data-v-fe3719f4="">1 TEST</span></span><span data-v-fe3719f4=""><h4 data-v-fe3719f4="" class="text-uppercase text-caption text-medium-emphasis">Holders</h4> 0</span><span data-v-fe3719f4=""><h4 data-v-fe3719f4="" class="text-uppercase text-caption text-medium-emphasis">Total Transfers</h4> 0</span>
+      </div>
+      <!---->
+      <!----><span class="v-card__underlay"></span>
+    </div>
+  </div>
+  <div data-v-fe3719f4="" class="v-col-sm-6 v-col-lg-4 v-col-12">
+    <div data-v-fe3719f4="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated h-100">
+      <!---->
+      <div class="v-card__loader">
+        <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+          <!---->
+          <div class="v-progress-linear__background"></div>
+          <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+          <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+            <div class="v-progress-linear__indeterminate">
+              <div class="v-progress-linear__indeterminate long"></div>
+              <div class="v-progress-linear__indeterminate short"></div>
+            </div>
+          </transition-stub>
+          <!---->
+        </div>
+      </div>
+      <!---->
+      <!---->
+      <div data-v-fe3719f4="" class="v-card-text d-flex flex-column ga-3">
+        <h3 data-v-fe3719f4="" class="font-weight-medium">Other Info</h3>
+        <div data-v-fe3719f4="">
+          <h4 data-v-fe3719f4="" class="text-uppercase text-caption text-medium-emphasis"> Token Contract<span data-v-fe3719f4=""> (with <span data-v-fe3719f4="" class="text-high-emphasis">18</span> decimals) </span></h4>
+          <div data-v-fe3719f4="" class="d-flex align-center">
+            <hash-link-stub data-v-fe3719f4="" type="address" hash="0x123" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
+          </div>
+          <!--v-if-->
+        </div>
+      </div>
+      <!---->
+      <!----><span class="v-card__underlay"></span>
+    </div>
+  </div>
+</div>"
+`;

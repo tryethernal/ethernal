@@ -394,7 +394,7 @@ exports[`ContractReadMethod.vue > Should return the result when interacting with
 `;
 
 exports[`ContractReadMethod.vue > Should work when input is any array 1`] = `
-"<div>
+"<div signature="test">
   <div class="pb-1 font-weight-bold">reproBug</div>
   <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field py-1 col-3" style="width: 50%;">
     <!---->

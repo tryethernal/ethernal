@@ -9,7 +9,7 @@ describe('ERC721Collections.vue', () => {
 
         const wrapper = mount(ERC721Collections, {
             global: {
-                stubs: ['Hash-Link']
+                stubs: ['Base-Chip-Group', 'Token-Header', 'ERC20-Token-Holders', 'ERC721-Token-Transfers', 'Contract-Details', 'NFT-Gallery']
             }
         });
         await flushPromises();

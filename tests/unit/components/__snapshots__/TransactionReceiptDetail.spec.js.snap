@@ -1,0 +1,300 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`TransactionReceiptDetail.vue > Should display transaction receipt details 1`] = `
+"<div data-v-5a38f98c="" class="receipt-tab-content">
+  <div data-v-5a38f98c="" class="v-card v-theme--light v-card--density-default v-card--variant-outlined">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-5a38f98c="" class="v-card-item">
+      <!---->
+      <div class="v-card-item__content">
+        <!---->
+        <!---->
+        <div data-v-5a38f98c="" class="v-card-title text-subtitle-1 font-weight-bold">Transaction Receipt</div>
+      </div>
+      <!---->
+    </div>
+    <div data-v-5a38f98c="" class="v-card-text pa-0">
+      <div data-v-5a38f98c="" class="v-list v-theme--light v-list--density-compact v-list--one-line" tabindex="0" role="listbox">
+        <div data-v-5a38f98c="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5a38f98c="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">Block Hash: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5a38f98c="" class="v-list-item-title text-body-2">4886718345</div>
+          </div>
+          <!---->
+        </div>
+        <div data-v-5a38f98c="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5a38f98c="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">Block Number: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5a38f98c="" class="v-list-item-title text-body-2">12,345</div>
+          </div>
+          <!---->
+        </div>
+        <div data-v-5a38f98c="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5a38f98c="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">Transaction Hash: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5a38f98c="" class="v-list-item-title text-body-2">40926266145</div>
+          </div>
+          <!---->
+        </div>
+        <div data-v-5a38f98c="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5a38f98c="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">Status: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5a38f98c="" class="v-list-item-title text-body-2">Yes</div>
+          </div>
+          <!---->
+        </div>
+        <div data-v-5a38f98c="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5a38f98c="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">Gas Used: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5a38f98c="" class="v-list-item-title text-body-2">21,000</div>
+          </div>
+          <!---->
+        </div>
+        <div data-v-5a38f98c="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5a38f98c="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">Effective Gas Price: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5a38f98c="" class="v-list-item-title text-body-2">4660</div>
+          </div>
+          <!---->
+        </div>
+        <div data-v-5a38f98c="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5a38f98c="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">Cumulative Gas Used: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5a38f98c="" class="v-list-item-title text-body-2">50,000</div>
+          </div>
+          <!---->
+        </div>
+        <div data-v-5a38f98c="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5a38f98c="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">From: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5a38f98c="" class="v-list-item-title text-body-2">188900967593046</div>
+          </div>
+          <!---->
+        </div>
+        <div data-v-5a38f98c="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5a38f98c="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">To: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5a38f98c="" class="v-list-item-title text-body-2">111339007564986</div>
+          </div>
+          <!---->
+        </div>
+      </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+</div>"
+`;
+
+exports[`TransactionReceiptDetail.vue > Should format large hex numbers 1`] = `
+"<div data-v-5a38f98c="" class="receipt-tab-content">
+  <div data-v-5a38f98c="" class="v-card v-theme--light v-card--density-default v-card--variant-outlined">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-5a38f98c="" class="v-card-item">
+      <!---->
+      <div class="v-card-item__content">
+        <!---->
+        <!---->
+        <div data-v-5a38f98c="" class="v-card-title text-subtitle-1 font-weight-bold">Transaction Receipt</div>
+      </div>
+      <!---->
+    </div>
+    <div data-v-5a38f98c="" class="v-card-text pa-0">
+      <div data-v-5a38f98c="" class="v-list v-theme--light v-list--density-compact v-list--one-line" tabindex="0" role="listbox">
+        <div data-v-5a38f98c="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5a38f98c="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">Value: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5a38f98c="" class="v-list-item-title text-body-2">0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef</div>
+          </div>
+          <!---->
+        </div>
+      </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+</div>"
+`;
+
+exports[`TransactionReceiptDetail.vue > Should handle empty or null values 1`] = `
+"<div data-v-5a38f98c="" class="receipt-tab-content">
+  <div data-v-5a38f98c="" class="v-card v-theme--light v-card--density-default v-card--variant-outlined">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-5a38f98c="" class="v-card-item">
+      <!---->
+      <div class="v-card-item__content">
+        <!---->
+        <!---->
+        <div data-v-5a38f98c="" class="v-card-title text-subtitle-1 font-weight-bold">Transaction Receipt</div>
+      </div>
+      <!---->
+    </div>
+    <div data-v-5a38f98c="" class="v-card-text pa-0">
+      <div data-v-5a38f98c="" class="v-list v-theme--light v-list--density-compact v-list--one-line" tabindex="0" role="listbox">
+        <div data-v-5a38f98c="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5a38f98c="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">Block Hash: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5a38f98c="" class="v-list-item-title text-body-2">-</div>
+          </div>
+          <!---->
+        </div>
+        <div data-v-5a38f98c="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5a38f98c="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">Block Number: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5a38f98c="" class="v-list-item-title text-body-2">-</div>
+          </div>
+          <!---->
+        </div>
+        <div data-v-5a38f98c="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5a38f98c="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">Transaction Hash: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5a38f98c="" class="v-list-item-title text-body-2">40926266145</div>
+          </div>
+          <!---->
+        </div>
+        <div data-v-5a38f98c="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5a38f98c="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">Status: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5a38f98c="" class="v-list-item-title text-body-2">No</div>
+          </div>
+          <!---->
+        </div>
+      </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+</div>"
+`;

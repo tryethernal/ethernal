@@ -1,0 +1,3 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`AddressERC20TokenTransfer.vue > Should load address erc20 token transfers 1`] = `"<token-transfers-stub transfers="[object Object]" headers="[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]" loading="false" sortby="[object Object]" count="0" address="" density="default" withtransactiondata="false" withtokendata="false" nodatatext="No token transfers found" withcount="true"></token-transfers-stub>"`;

@@ -155,6 +155,8 @@ export default {
                         callbacks: {
                             title() { return '' },
                             label: (context) => {
+                                if (!context.dataset.min)
+                                    return context.parsed.y;
                                 const avgValue = context.parsed.y < 1 ? context.parsed.y : ethers.utils.commify(context.parsed.y);
                                 const minValue = context.dataset.min[context.dataIndex] < 1 ? context.dataset.min[context.dataIndex] : ethers.utils.commify(context.dataset.min[context.dataIndex]);
                                 const maxValue = context.dataset.max[context.dataIndex] < 1 ? context.dataset.max[context.dataIndex] : ethers.utils.commify(context.dataset.max[context.dataIndex]);

@@ -1,0 +1,97 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ContractCodeEditor.vue > Should show the component with file explorer 1`] = `
+"<div data-v-9cd1cdb7="">
+  <div data-v-9cd1cdb7="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated" style="height: 600px;">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-9cd1cdb7="" class="v-card-text pa-0 fill-height">
+      <div data-v-9cd1cdb7="" class="v-row v-row--no-gutters fill-height">
+        <div data-v-9cd1cdb7="" class="v-col v-col-9 d-flex flex-column">
+          <div data-v-9cd1cdb7="" class="text-subtitle-1 py-2 bg-grey-lighten-4">
+            <div class="v-slide-group v-tabs v-tabs--horizontal v-tabs--align-tabs-start v-tabs--density-compact" tabindex="-1" role="tablist" data-v-9cd1cdb7="">
+              <!---->
+              <div class="v-slide-group__container">
+                <div class="v-slide-group__content"><button data-v-9cd1cdb7="" type="button" class="v-btn v-tab-item--selected v-tab--selected v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab pr-1" tabindex="0" role="tab" aria-selected="true" value="Contract.sol"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                    <!----><span class="v-btn__content" data-no-activator=""><span data-v-9cd1cdb7="" class="mr-2">Contract.sol</span><button data-v-9cd1cdb7="" type="button" class="v-btn v-btn--icon v-theme--light v-btn--density-default v-btn--size-x-small v-btn--variant-text ml-1 mr-n2"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                      <!----><span class="v-btn__content" data-no-activator=""><i data-v-9cd1cdb7="" class="mdi-close mdi v-icon notranslate v-theme--light v-icon--size-small" aria-hidden="true"></i></span>
+                      <!---->
+                      <!---->
+                    </button>
+                    <div class="v-tab__slider"></div></span>
+                    <!---->
+                    <!---->
+                  </button></div>
+              </div>
+              <!---->
+            </div>
+            <!---->
+          </div>
+          <div data-v-9cd1cdb7="" class="flex-grow-1 d-flex overflow-hidden">
+            <div data-v-9cd1cdb7="" showprintmargin="false" useworker="false" class="flex-grow-1 editor-container ace_editor ace_hidpi ace-tm"><textarea class="ace_text-input" wrap="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="opacity: 0; font-size: 1px;" aria-haspopup="false" aria-autocomplete="both" role="textbox" aria-label="Cursor at row 1" readonly=""></textarea>
+              <div class="ace_gutter" aria-hidden="true">
+                <div class="ace_layer ace_gutter-layer ace_folding-enabled" style="height: 1000000px;"></div>
+              </div>
+              <div class="ace_scroller" style="line-height: 0px;">
+                <div class="ace_content">
+                  <div class="ace_layer ace_print-margin-layer">
+                    <div class="ace_print-margin" style="left: 4px; visibility: visible;"></div>
+                  </div>
+                  <div class="ace_layer ace_marker-layer"></div>
+                  <div class="ace_layer ace_text-layer" style="height: 1000000px; margin: 0px 4px;"></div>
+                  <div class="ace_layer ace_marker-layer"></div>
+                  <div class="ace_layer ace_cursor-layer ace_hidden-cursors">
+                    <div class="ace_cursor"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="ace_scrollbar ace_scrollbar-v" style="display: none; width: 20px;">
+                <div class="ace_scrollbar-inner" style="width: 20px;">&nbsp;</div>
+              </div>
+              <div class="ace_scrollbar ace_scrollbar-h" style="display: none; height: 20px;">
+                <div class="ace_scrollbar-inner" style="height: 20px;">&nbsp;</div>
+              </div>
+              <div style="height: auto; width: auto; top: 0px; left: 0px; visibility: hidden; position: absolute; white-space: pre; overflow: hidden;">
+                <div style="height: auto; width: auto; top: 0px; left: 0px; visibility: hidden; position: absolute; white-space: pre; overflow: visible;"></div>
+                <div style="height: auto; width: auto; top: 0px; left: 0px; visibility: hidden; position: absolute; white-space: pre; overflow: visible;">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div data-v-9cd1cdb7="" class="v-col v-col-3 border-l bg-grey-lighten-4 d-flex flex-column overflow-hidden">
+          <div data-v-9cd1cdb7="" class="pa-2 flex-grow-1 d-flex flex-column">
+            <div data-v-9cd1cdb7="" class="d-flex align-center justify-space-between mb-2">
+              <div data-v-9cd1cdb7="" class="text-subtitle-2">File Explorer</div><button data-v-9cd1cdb7="" type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-x-small v-btn--variant-text"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator="">Expand All</span>
+                <!---->
+                <!---->
+              </button>
+            </div>
+            <hr data-v-9cd1cdb7="" class="v-divider v-theme--light mb-2" aria-orientation="horizontal" role="separator">
+            <div data-v-9cd1cdb7="" class="flex-grow-1 file-explorer-container">
+              <contract-file-explorer-stub data-v-9cd1cdb7="" sources="[object Object],[object Object]" selectedfile=""></contract-file-explorer-stub>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+</div>"
+`;

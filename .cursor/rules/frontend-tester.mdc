@@ -1,0 +1,253 @@
+---
+description: 
+globs: *.spec.js
+alwaysApply: false
+---
+This rule should be used when writing frontend tests.
+
+Vue tests are setup using [setup.js](mdc:tests/setup.js), check this file to see what is globally available.
+The linter for tests is tests/.eslintrc.js
+
+# General rules (IMPORTANT)
+- Frontend tests files are located in tests/units
+    - Components test files are located in tests/units/components
+    - Components test files should follow the naming pattern MyComponent.spec.js
+- When you create or update a test file always run the test command automatically after
+- When you create or update snapshots, always analyze them following instructions in the "Snapshots" sections of this file
+- Indent with 4 spaces
+- Make sure all imports are used. Remove unused ones.
+
+# Imports
+- Never import mount, vi, createTestingPinia, flushPromises
+NOT GOOD:
+```javascript
+import MyComponent from '@/components/MyComponent.vue';
+import { vi } from 'vitest';
+import flushPromises from 'flush-promises';
+import { createTestingPinia } from '@pinia/testing';
+import { mount } from '@vue/test-utils';
+
+describe('MyComponent.vue', () => {
+    it('Should show the component', async () => {
+        const wrapper = mount(MyComponent, {
+            global: {
+                stubs: ['Block-List', 'Stat-Number']
+            }
+        });
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+});
+```
+GOOD:
+```javascript
+import MyComponent from '@/components/MyComponent.vue';
+
+describe('MyComponent.vue', () => {
+    it('Should show the component', async () => {
+        const wrapper = mount(MyComponent, {
+            global: {
+                stubs: ['Block-List', 'Stat-Number']
+            }
+        });
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+});
+```
+
+# Mocking server functions
+- If you encounter a function with this pattern: `$server.getData()`, it is available & mocked globally.
+You should mock them using the following syntax:
+```javascript
+vi.spyOn(server, 'myServerFunction').mockResolvedValueOnce()
+```
+If it is not found on server, you need to edit [server.js](mdc:tests/unit/mocks/server.js) to included it with this syntax:
+```javascript
+{ myServerFuntion: vi.fn() }
+```
+
+# Component with network requests
+- If the component makes network requests, mock them with vi.spyOn.
+- Always call flushPromises after mounting a component that makes network requests
+- Always use mockResolvedValueOnce over mockResolvedValue when possible.
+EXAMPLE:
+```javascript
+import MyComponent from '@/components/MyComponent.vue';
+
+describe('MyComponent.vue', () => {
+    vi.spyOn(server, 'getData').mockResolvedValueOnce({ data: {} });
+    it('Should show the component', async () => {
+        const wrapper = mount(MyComponent, {
+            global: {
+                stubs: ['Block-List', 'Stat-Number']
+            }
+        });
+        await flushPromises();
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+});
+```
+
+# Component stubbing
+- You should ONLY test the behavior of the current component, NEVER test the behavior of imported component.
+- Imported component should always be mocked.
+EXAMPLE:
+Assuming the following:
+MySubComponent.vue
+```javascript
+<template>
+    <a>My Sub Component</a>
+</template>
+<script setup>
+</script>
+```
+MyComponent.vue:
+```javascript
+<template>
+    My Component is here
+    <My-Sub-Component />
+</template>
+<script setup>
+import MySubComponent from '@/components/MySubComponent.vue';
+</script>
+```
+BAD:
+```javascript
+import MyComponent from '@/components/MyComponent.vue';
+
+describe('MyComponent.vue', () => {
+    it('Should show the component', async () => {
+        const wrapper = mount(MyComponent);
+
+        const field = wrapper.find('a');
+        expect(field.exists()).toBe(true);
+    });
+});
+```
+BAD:
+```javascript
+import MyComponent from '@/components/MyComponent.vue';
+
+describe('MyComponent.vue', () => {
+    it('Should show the component', async () => {
+        const wrapper = mount(MyComponent);
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+});
+```
+GOOD:
+```javascript
+import MyComponent from '@/components/MyComponent.vue';
+
+const stubs = ['MySubComponent']
+
+describe('MyComponent.vue', () => {
+    it('Should show the component', async () => {
+        const wrapper = mount(MyComponent, {
+            global: {
+                stubs
+            }
+        });
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+});
+```
+- Only stub components that are defined by this project. Never stub components that belong to third party library or framework (like Vuetify). If this causes an issue, ask me what to do.
+BAD:
+```javascript
+import MyComponent from '@/components/MyComponent.vue';
+
+const stubs = ['v-card', 'VChip']
+
+describe('MyComponent.vue', () => {
+    it('Should show the component', async () => {
+        const wrapper = mount(MyComponent, {
+            global: {
+                stubs
+            }
+        });
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+});
+```
+GOOD:
+```javascript
+import MyComponent from '@/components/MyComponent.vue';
+
+const stubs = ['MySubComponent']
+
+describe('MyComponent.vue', () => {
+    it('Should show the component', async () => {
+        const wrapper = mount(MyComponent, {
+            global: {
+                stubs
+            }
+        });
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+});
+```
+
+# Test UI
+- Always test the UI using snapshot, do not test fields individually for values
+BAD:
+```javascript
+import MyComponent from '@/components/MyComponent.vue';
+
+describe('MyComponent.vue', () => {
+    vi.spyOn(server, 'getData').mockResolvedValueOnce({ data: {} });
+    it('Should show the component', async () => {
+        const wrapper = mount(MyComponent, {
+            global: {
+                stubs: ['Block-List', 'Stat-Number']
+            }
+        });
+        await flushPromises();
+
+        const field = wrapper.find('HashLink');
+        expect(field.exists()).toBe(true);
+    });
+});
+```
+GOOD:
+```javascript
+import MyComponent from '@/components/MyComponent.vue';
+
+describe('MyComponent.vue', () => {
+    vi.spyOn(server, 'getData').mockResolvedValueOnce({ data: {} });
+    it('Should show the component', async () => {
+        const wrapper = mount(MyComponent, {
+            global: {
+                stubs: ['Block-List', 'Stat-Number']
+            }
+        });
+        await flushPromises();
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+});
+```
+- After you are done writing a test always run the test to generate the snapshot.
+Command example: `npm run test tests/unit/components/MyComponent.spec.js` (assuming you are in the project root directory)
+- You'll find snapshots under the tests/unit/components/__snapshots__ directory
+
+# Snapshot verification (IMPORTANT)
+- Always take a look at the generated snapshot file to make sure values there match the spec file. Look for "undefined", "null", "NaN" etc... values, and error messages. If you find those, double check that it's expected (it's probably not expected).
+- If you find an issue with the snapshot file, here is the process to follow:
+  1. Edit the spec file to fix the issue
+  2. Run the test command again
+  3. Look at the diff generated by the command
+    3.1. If the new version is fixing the issue run the update command. Example update command: `npm run test:update tests/unit/component/MyComponent.spec.js`
+    3.2. if it doesn't, go back to step 1 and repeat.
+- EVERY TIME you run the command `npm run test:update`, check the updated snapshot to make sure the content is ok
+- Once you've reviewed the snapshot, confirm that you did, with your conclusion. Do not stop the process until you've given me your conclusions.
+
+# Vuetify component import
+- If you need to interact with a native Vuetify component using findComponent(VComponent) syntax, make sure to import the component using the following syntax:
+`import { VComponent } from 'vuetify/components'`

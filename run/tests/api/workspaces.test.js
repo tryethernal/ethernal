@@ -14,6 +14,7 @@ require('../mocks/models');
 require('../mocks/lib/firebase');
 require('../mocks/lib/crypto');
 require('../mocks/middlewares/auth');
+require('../mocks/middlewares/workspaceAuth');
 require('../mocks/lib/queue');
 const db = require('../../lib/firebase');
 const { ProviderConnector } = require('../../lib/rpc');
@@ -24,6 +25,19 @@ const app = require('../../app');
 const request = supertest(app);
 
 const BASE_URL = '/api/workspaces';
+
+describe(`GET ${BASE_URL}/:id/tokenTransfers`, () => {
+    it('Should return token transfers', (done) => {
+        jest.spyOn(db, 'getWorkspaceTokenTransfers').mockResolvedValueOnce([{ hash: '0x123' }]);
+
+        request.get(`${BASE_URL}/:id/tokenTransfers`)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual({ items: [{ hash: '0x123' }] });
+                done();
+            });
+    });
+});
 
 describe(`DELETE ${BASE_URL}/:id`, () => {
     beforeEach(() => jest.clearAllMocks());

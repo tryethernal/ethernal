@@ -1,0 +1,186 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`AddressHeader.vue > Should display address info 1`] = `
+"<div class="v-row mb-1 align-stretch">
+  <div class="v-col-sm-6 v-col-lg-4 v-col-12">
+    <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated h-100">
+      <!---->
+      <div class="v-card__loader">
+        <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+          <!---->
+          <div class="v-progress-linear__background"></div>
+          <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+          <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+            <div class="v-progress-linear__indeterminate">
+              <div class="v-progress-linear__indeterminate long"></div>
+              <div class="v-progress-linear__indeterminate short"></div>
+            </div>
+          </transition-stub>
+          <!---->
+        </div>
+      </div>
+      <!---->
+      <!---->
+      <div class="v-card-text d-flex flex-column ga-3">
+        <h3 class="font-weight-medium">Overview</h3>
+        <!--v-if--><span><h4 class="text-uppercase text-caption text-medium-emphasis">ETH Balance</h4> 1 ETH</span>
+      </div>
+      <!---->
+      <!----><span class="v-card__underlay"></span>
+    </div>
+  </div>
+  <div class="v-col-sm-6 v-col-lg-4 v-col-12">
+    <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated h-100">
+      <!---->
+      <div class="v-card__loader">
+        <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+          <!---->
+          <div class="v-progress-linear__background"></div>
+          <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+          <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+            <div class="v-progress-linear__indeterminate">
+              <div class="v-progress-linear__indeterminate long"></div>
+              <div class="v-progress-linear__indeterminate short"></div>
+            </div>
+          </transition-stub>
+          <!---->
+        </div>
+      </div>
+      <!---->
+      <!---->
+      <div class="v-card-text d-flex flex-column ga-4">
+        <h3 class="font-weight-medium">More Info</h3>
+        <div>
+          <h4 class="text-uppercase text-caption text-medium-emphasis">Transactions</h4> Latest: <span class="font-weight-medium mr-3"><a class="no-decoration">1 year ago <sup><i class="mdi-arrow-top-right mdi v-icon notranslate v-theme--light v-icon--size-small" aria-hidden="true"></i></sup></a></span> First: <span class="font-weight-medium"><a class="no-decoration">1 year ago <sup><i class="mdi-arrow-top-right mdi v-icon notranslate v-theme--light v-icon--size-small" aria-hidden="true"></i></sup></a></span>
+        </div>
+      </div>
+      <!---->
+      <!----><span class="v-card__underlay"></span>
+    </div>
+  </div>
+</div>"
+`;
+
+exports[`AddressHeader.vue > Should display contract info 1`] = `
+"<div class="v-row mb-1 align-stretch">
+  <div class="v-col-sm-6 v-col-lg-4 v-col-12">
+    <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated h-100">
+      <!---->
+      <div class="v-card__loader">
+        <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+          <!---->
+          <div class="v-progress-linear__background"></div>
+          <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+          <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+            <div class="v-progress-linear__indeterminate">
+              <div class="v-progress-linear__indeterminate long"></div>
+              <div class="v-progress-linear__indeterminate short"></div>
+            </div>
+          </transition-stub>
+          <!---->
+        </div>
+      </div>
+      <!---->
+      <!---->
+      <div class="v-card-text d-flex flex-column ga-3">
+        <h3 class="font-weight-medium">Overview</h3><span><h4 class="text-uppercase text-caption text-medium-emphasis">Contract Name</h4><span>Test Contract</span></span><span><h4 class="text-uppercase text-caption text-medium-emphasis">ETH Balance</h4> 1 ETH</span>
+      </div>
+      <!---->
+      <!----><span class="v-card__underlay"></span>
+    </div>
+  </div>
+  <div class="v-col-sm-6 v-col-lg-4 v-col-12">
+    <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated h-100">
+      <!---->
+      <div class="v-card__loader">
+        <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+          <!---->
+          <div class="v-progress-linear__background"></div>
+          <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+          <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+            <div class="v-progress-linear__indeterminate">
+              <div class="v-progress-linear__indeterminate long"></div>
+              <div class="v-progress-linear__indeterminate short"></div>
+            </div>
+          </transition-stub>
+          <!---->
+        </div>
+      </div>
+      <!---->
+      <!---->
+      <div class="v-card-text d-flex flex-column ga-4">
+        <h3 class="font-weight-medium">More Info</h3>
+        <div>
+          <h4 class="text-uppercase text-caption text-medium-emphasis">Contract Creator</h4><span><hash-link-stub type="address" hash="0x1234567890123456789012345678901234567890" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub> at txn <hash-link-stub type="transaction" hash="0x1234567890123456789012345678901234567890" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub></span>
+        </div>
+        <div>
+          <h4 class="text-uppercase text-caption text-medium-emphasis">Token Tracker</h4><a class="text-decoration-none">Test Token <span class="text-caption text-medium-emphasis">(TEST)</span></a>
+        </div>
+      </div>
+      <!---->
+      <!----><span class="v-card__underlay"></span>
+    </div>
+  </div>
+</div>"
+`;
+
+exports[`AddressHeader.vue > Should show loading state 1`] = `
+"<div class="v-row mb-1 align-stretch">
+  <div class="v-col-sm-6 v-col-lg-4 v-col-12">
+    <div class="v-card v-theme--light v-card--density-default v-card--loading v-card--variant-elevated h-100">
+      <!---->
+      <div class="v-card__loader">
+        <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 2px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="false" aria-valuemin="0" aria-valuemax="100">
+          <!---->
+          <div class="v-progress-linear__background"></div>
+          <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+          <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+            <div class="v-progress-linear__indeterminate">
+              <div class="v-progress-linear__indeterminate long"></div>
+              <div class="v-progress-linear__indeterminate short"></div>
+            </div>
+          </transition-stub>
+          <!---->
+        </div>
+      </div>
+      <!---->
+      <!---->
+      <div class="v-card-text d-flex flex-column ga-3">
+        <h3 class="font-weight-medium">Overview</h3>
+        <!--v-if--><span><h4 class="text-uppercase text-caption text-medium-emphasis">ETH Balance</h4> 0 ETH</span>
+      </div>
+      <!---->
+      <!----><span class="v-card__underlay"></span>
+    </div>
+  </div>
+  <div class="v-col-sm-6 v-col-lg-4 v-col-12">
+    <div class="v-card v-theme--light v-card--density-default v-card--loading v-card--variant-elevated h-100">
+      <!---->
+      <div class="v-card__loader">
+        <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 2px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="false" aria-valuemin="0" aria-valuemax="100">
+          <!---->
+          <div class="v-progress-linear__background"></div>
+          <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+          <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+            <div class="v-progress-linear__indeterminate">
+              <div class="v-progress-linear__indeterminate long"></div>
+              <div class="v-progress-linear__indeterminate short"></div>
+            </div>
+          </transition-stub>
+          <!---->
+        </div>
+      </div>
+      <!---->
+      <!---->
+      <div class="v-card-text d-flex flex-column ga-4">
+        <h3 class="font-weight-medium">More Info</h3>
+        <div>
+          <h4 class="text-uppercase text-caption text-medium-emphasis">Transactions</h4> Latest: <span class="font-weight-medium mr-3"><span>N/A</span></span> First: <span class="font-weight-medium"><span>N/A</span></span>
+        </div>
+      </div>
+      <!---->
+      <!----><span class="v-card__underlay"></span>
+    </div>
+  </div>
+</div>"
+`;
