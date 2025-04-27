@@ -79,34 +79,34 @@
             <v-row justify="center" align="center" class="mx-sm-6">
                 <v-col cols="12" lg="4">
                     <h4 class="mb-2 text-primary">Transactions List</h4>
-                    <v-img src="../assets/transactions.webp"></v-img>
+                    <v-img :src="transactions"></v-img>
                 </v-col>
 
                 <v-col cols="12" lg="4">
                     <h4 class="mb-2 text-primary">Processed Token Transfers</h4>
-                    <v-img src="../assets/transfers.webp"></v-img>
+                    <v-img :src="transfers"></v-img>
                 </v-col>
 
                 <v-col cols="12" lg="4">
                     <h4 class="mb-2 text-primary">Analytics</h4>
-                    <v-img src="../assets/analytics.webp"></v-img>
+                    <v-img :src="analytics"></v-img>
                 </v-col>
             </v-row>
 
             <v-row justify="center" align="center" class="mx-md-6">
                 <v-col cols="12" lg="4">
                     <h4 class="mb-2 text-primary">Contract Interaction</h4>
-                    <v-img src="../assets/contract.webp"></v-img>
+                    <v-img :src="contract"></v-img>
                 </v-col>
 
                 <v-col cols="12" lg="4">
                     <h4 class="mb-2 text-primary">NFT Gallery</h4>
-                    <v-img src="../assets/gallery.webp"></v-img>
+                    <v-img :src="gallery"></v-img>
                 </v-col>
 
                 <v-col cols="12" lg="4">
                     <h4 class="mb-2 text-primary">Contract Verification</h4>
-                    <v-img src="../assets/verification.webp"></v-img>
+                    <v-img :src="verification"></v-img>
                 </v-col>
             </v-row>
             <v-row justify="center" align="center" class="mt-4 mb-10">
@@ -119,6 +119,13 @@
 <script setup>
 import { ref, onMounted, inject } from 'vue';
 import { useUserStore } from '../stores/user';
+
+import transactions from '../assets/transactions.webp';
+import transfers from '../assets/transfers.webp';
+import analytics from '../assets/analytics.webp';
+import contract from '../assets/contract.webp';
+import gallery from '../assets/gallery.webp';
+import verification from '../assets/verification.webp';
 
 // Reactive state
 const valid = ref(false);
