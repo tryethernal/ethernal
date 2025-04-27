@@ -6,7 +6,7 @@ exports[`DemoExplorerSetup.vue > Should display demo explorer setup page 1`] = `
     <main data-v-45ff8bbb="" class="v-main" style="--v-layout-left: 0px; --v-layout-right: 0px; --v-layout-top: 0px; --v-layout-bottom: 0px; transition: none;">
       <div data-v-45ff8bbb="" class="v-container v-container--fluid v-locale--is-ltr pa-0" style="max-width: inherit;">
         <div data-v-45ff8bbb="" class="v-row bg-primary">
-          <div data-v-45ff8bbb="" class="v-col v-col-12 logo-white ml-2">
+          <div data-v-45ff8bbb="" class="v-col v-col-12 logo-white ml-2 mt-2">
             <h2 data-v-45ff8bbb="">Ethernal</h2>
           </div>
         </div>
@@ -213,7 +213,7 @@ exports[`DemoExplorerSetup.vue > Should display demo explorer setup page 1`] = `
             <h4 data-v-45ff8bbb="" class="mb-2 text-primary">Transactions List</h4>
             <div data-v-45ff8bbb="" class="v-responsive v-img v-img--booting">
               <div class="v-responsive__sizer"></div>
-              <transition-stub name="fade-transition" appear="true" persisted="false" css="true"><img class="v-img__img v-img__img--contain" src="../assets/transactions.webp" style="display: none;"></transition-stub>
+              <transition-stub name="fade-transition" appear="true" persisted="false" css="true"><img class="v-img__img v-img__img--contain" src="/src/assets/transactions.webp" style="display: none;"></transition-stub>
               <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
                 <!---->
               </transition-stub>
@@ -227,7 +227,7 @@ exports[`DemoExplorerSetup.vue > Should display demo explorer setup page 1`] = `
             <h4 data-v-45ff8bbb="" class="mb-2 text-primary">Processed Token Transfers</h4>
             <div data-v-45ff8bbb="" class="v-responsive v-img v-img--booting">
               <div class="v-responsive__sizer"></div>
-              <transition-stub name="fade-transition" appear="true" persisted="false" css="true"><img class="v-img__img v-img__img--contain" src="../assets/transfers.webp" style="display: none;"></transition-stub>
+              <transition-stub name="fade-transition" appear="true" persisted="false" css="true"><img class="v-img__img v-img__img--contain" src="/src/assets/transfers.webp" style="display: none;"></transition-stub>
               <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
                 <!---->
               </transition-stub>
@@ -241,7 +241,7 @@ exports[`DemoExplorerSetup.vue > Should display demo explorer setup page 1`] = `
             <h4 data-v-45ff8bbb="" class="mb-2 text-primary">Analytics</h4>
             <div data-v-45ff8bbb="" class="v-responsive v-img v-img--booting">
               <div class="v-responsive__sizer"></div>
-              <transition-stub name="fade-transition" appear="true" persisted="false" css="true"><img class="v-img__img v-img__img--contain" src="../assets/analytics.webp" style="display: none;"></transition-stub>
+              <transition-stub name="fade-transition" appear="true" persisted="false" css="true"><img class="v-img__img v-img__img--contain" src="/src/assets/analytics.webp" style="display: none;"></transition-stub>
               <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
                 <!---->
               </transition-stub>
@@ -257,7 +257,7 @@ exports[`DemoExplorerSetup.vue > Should display demo explorer setup page 1`] = `
             <h4 data-v-45ff8bbb="" class="mb-2 text-primary">Contract Interaction</h4>
             <div data-v-45ff8bbb="" class="v-responsive v-img v-img--booting">
               <div class="v-responsive__sizer"></div>
-              <transition-stub name="fade-transition" appear="true" persisted="false" css="true"><img class="v-img__img v-img__img--contain" src="../assets/contract.webp" style="display: none;"></transition-stub>
+              <transition-stub name="fade-transition" appear="true" persisted="false" css="true"><img class="v-img__img v-img__img--contain" src="/src/assets/contract.webp" style="display: none;"></transition-stub>
               <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
                 <!---->
               </transition-stub>
@@ -271,7 +271,7 @@ exports[`DemoExplorerSetup.vue > Should display demo explorer setup page 1`] = `
             <h4 data-v-45ff8bbb="" class="mb-2 text-primary">NFT Gallery</h4>
             <div data-v-45ff8bbb="" class="v-responsive v-img v-img--booting">
               <div class="v-responsive__sizer"></div>
-              <transition-stub name="fade-transition" appear="true" persisted="false" css="true"><img class="v-img__img v-img__img--contain" src="../assets/gallery.webp" style="display: none;"></transition-stub>
+              <transition-stub name="fade-transition" appear="true" persisted="false" css="true"><img class="v-img__img v-img__img--contain" src="/src/assets/gallery.webp" style="display: none;"></transition-stub>
               <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
                 <!---->
               </transition-stub>
@@ -285,7 +285,7 @@ exports[`DemoExplorerSetup.vue > Should display demo explorer setup page 1`] = `
             <h4 data-v-45ff8bbb="" class="mb-2 text-primary">Contract Verification</h4>
             <div data-v-45ff8bbb="" class="v-responsive v-img v-img--booting">
               <div class="v-responsive__sizer"></div>
-              <transition-stub name="fade-transition" appear="true" persisted="false" css="true"><img class="v-img__img v-img__img--contain" src="../assets/verification.webp" style="display: none;"></transition-stub>
+              <transition-stub name="fade-transition" appear="true" persisted="false" css="true"><img class="v-img__img v-img__img--contain" src="/src/assets/verification.webp" style="display: none;"></transition-stub>
               <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
                 <!---->
               </transition-stub>
