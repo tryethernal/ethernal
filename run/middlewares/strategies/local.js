@@ -15,7 +15,7 @@ module.exports = async (email, password, cb) => {
     if (!user)
         return cb(null, false, { message: 'Invalid email or password.' });
 
-    const isPasswordValid = firebaseVerify(password, user.passwordSalt, user.passwordHash);
+    const isPasswordValid = await firebaseVerify(password, user.passwordSalt, user.passwordHash);
 
     if (!isPasswordValid)
         return cb(null, false, { message: 'Invalid email or password.' });

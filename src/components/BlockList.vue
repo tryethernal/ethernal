@@ -21,7 +21,7 @@
         ]"
         :headers="headers"
         @update:options="getBlocks">
-        <template v-if="!withCount" v-slot:[`footer.page-text`]=""></template>
+        <template v-slot:[`footer.page-text`]=""></template>
         <template v-slot:item.number="{ item }">
             <v-tooltip location="top">
                 <template v-slot:activator="{ props }">
@@ -34,80 +34,156 @@
         <template v-slot:item.timestamp="{ item }">
             <div class="my-2 text-left">
                 {{ $dt.shortDate(item.timestamp) }}<br>
-                <small>{{ $dt.fromNow(item.timestamp) }}</small>
+                <small class="text-caption text-medium-emphasis">{{ $dt.fromNow(item.timestamp) }}</small>
             </div>
         </template>
         <template v-slot:item.gasUsed="{ item }">
-            {{ commify(item.gasUsed)  }}
+            <div class="gas-used-cell">
+                <div class="d-flex align-center">
+                    <span>{{ commify(item.gasUsed) }}</span>
+                    <span class="text-caption ml-1">({{ calculateGasPercentage(item) }}%)</span>
+                </div>
+                <v-progress-linear
+                    class="mt-1"
+                    :model-value="calculateGasPercentage(item)"
+                    height="2"
+                    color="primary"
+                    bg-color="primary-lighten-4"
+                ></v-progress-linear>
+            </div>
         </template>
         <template v-slot:item.transactionNumber="{ item }">
-            {{ item.transactionsCount  }} {{ item.transactionsCount != 1 ? 'transactions' : 'transaction' }}
+            <router-link style="text-decoration: none;" :to="'/block/' + item.number + '#transactions'">
+                {{ item.transactionsCount }} <template v-if="dense"> transaction<template v-if="item.transactionsCount != 1">s</template></template>
+            </router-link>
+        </template>
+        <template v-slot:item.miner="{ item }">
+            <router-link style="text-decoration: none;" :to="'/address/' + item.miner">
+                {{ item.miner ? item.miner.substring(0, 8) + '...' + item.miner.substring(item.miner.length - 6) : '' }}
+            </router-link>
         </template>
     </v-data-table-server>
 </template>
 
-<script>
+<script setup>
+import { ref, reactive, onMounted, onBeforeUnmount, inject } from 'vue';
+
+const props = defineProps({
+    dense: Boolean,
+});
+
+// Import ethers directly
 const ethers = require('ethers');
 
-export default {
-    name: 'BlockList',
-    props: ['dense', 'withCount'],
-    data: () => ({
-        blocks: [],
-        blockCount: 0,
-        headers: [],
-        loading: true,
-        currentOptions: { page: 1, itemsPerPage: 10, sortBy: [{ key: 'number', order: 'desc' }] },
-        pusherChannelHandler: null
-    }),
-    mounted() {
-        this.pusherChannelHandler = this.$pusher.onNewBlock(() => this.getBlocks(this.currentOptions), this);
+// State
+const blocks = ref([]);
+const blockCount = ref(0);
+const headers = ref([]);
+const loading = ref(true);
+const currentOptions = reactive({ 
+    page: 1, 
+    itemsPerPage: 10, 
+    sortBy: [{ key: 'number', order: 'desc' }] 
+});
+let pusherChannelHandler = null;
 
-        this.headers.push(
-            { title: 'Block', key: 'number' },
-            { title: 'Mined On', key: 'timestamp' }
-        );
-        if (!this.dense)
-            this.headers.push({ title: 'Gas Used', key: 'gasUsed', sortable: false });
-        this.headers.push({ title: 'Transaction Count', key: 'transactionNumber', sortable: false });
-    },
-    destroyed() {
-        this.pusherChannelHandler.unbind(null, null, this);
-    },
-    methods: {
-        commify: ethers.utils.commify,
-        rowClasses(item) {
-            if (item.state == 'syncing')
-                return 'isSyncing'
-        },
-        getBlocks({ page, itemsPerPage, sortBy } = {}) {
-            this.loading = true;
+// Directly inject the provided values
+const $dt = inject('$dt');
+const $server = inject('$server');
+const $pusher = inject('$pusher');
 
-            if (!page || !itemsPerPage || !sortBy || !sortBy.length)
-                return this.loading = false;
+// Methods
+const commify = ethers.utils.commify;
 
-            this.currentOptions = {
-                page,
-                itemsPerPage,
-                sortBy
-            };
+const rowClasses = (item) => {
+    if (item.state === 'syncing')
+        return 'isSyncing';
+};
 
-            this.$server.getBlocks({ page, itemsPerPage, orderBy: sortBy[0].key, order: sortBy[0].order }, !this.dense && !!this.withCount)
-                .then(({ data }) => {
-                    this.blocks = data.items;
-                    this.blockCount = data.items.length == this.currentOptions.itemsPerPage ?
-                        (this.currentOptions.page * data.items.length) + 1 :
-                        this.currentOptions.page * data.items.length;
-                })
-                .catch(console.log)
-                .finally(() => this.loading = false);
-        }
+const calculateGasPercentage = (item) => {
+    if (!item || !item.gasLimit || !item.gasUsed) return 0;
+    
+    // Handle cases where gasLimit or gasUsed might be strings (from API)
+    const gasUsed = typeof item.gasUsed === 'string' ? parseFloat(item.gasUsed) : item.gasUsed;
+    const gasLimit = typeof item.gasLimit === 'string' ? parseFloat(item.gasLimit) : item.gasLimit;
+    
+    if (isNaN(gasUsed) || isNaN(gasLimit) || gasLimit === 0) return 0;
+    
+    const percentage = (gasUsed / gasLimit) * 100;
+    return parseFloat(percentage.toFixed(2));
+};
+
+const getBlocks = ({ page, itemsPerPage, sortBy } = {}) => {
+    if (!$server) return;
+    loading.value = true;
+
+    if (!page || !itemsPerPage || !sortBy || !sortBy.length) {
+        loading.value = false;
+        return;
     }
-}
+
+    // Update current options
+    Object.assign(currentOptions, {
+        page,
+        itemsPerPage,
+        sortBy
+    });
+
+    $server.getBlocks({ 
+        page, 
+        itemsPerPage, 
+        orderBy: sortBy[0].key, 
+        order: sortBy[0].order 
+    }).then(({ data }) => {
+        blocks.value = data.items;
+        blockCount.value = data.items.length == currentOptions.itemsPerPage ?
+            (currentOptions.page * data.items.length) + 1 :
+            currentOptions.page * data.items.length;
+    })
+    .catch(console.log)
+    .finally(() => loading.value = false);
+};
+
+// Setup component on mount
+onMounted(() => {
+    // Initialize table headers
+    headers.value.push(
+        { title: 'Block', key: 'number' },
+        { title: 'Mined On', key: 'timestamp' },
+        { title: 'Transaction Count', key: 'transactionNumber', sortable: false },
+    );
+    
+    if (!props.dense) {
+        headers.value.push(
+            { title: 'Gas Used', key: 'gasUsed', sortable: false },
+            { title: 'Fee Recipient', key: 'miner', sortable: false }
+        );
+    }
+
+    // Set up Pusher channel handler
+    if ($pusher) {
+        pusherChannelHandler = $pusher.onNewBlock(() => getBlocks(currentOptions));
+    }
+});
+
+// Clean up on unmount
+onBeforeUnmount(() => {
+    if (pusherChannelHandler) {
+        pusherChannelHandler.unbind();
+        pusherChannelHandler = null;
+    }
+});
 </script>
+
 <style scoped>
-/deep/ .isSyncing {
+:deep(.isSyncing) {
     font-style: italic;
     opacity: 0.7;
+}
+
+.gas-used-cell {
+    max-width: fit-content;
+    min-width: 100px;
+    white-space: nowrap;
 }
 </style>

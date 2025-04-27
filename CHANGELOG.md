@@ -4,6 +4,74 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.0.0] - 2025-27-4
+### Changed
+- Massive redesign of the explorer
+- Updated a lot of component with Vue 3 composition API
+- Verified contract now have a file explorer
+- Search bar for read/write methods
+- License is changing from BSL to MIT. We really are open-source now 🚀
+
+### Added
+- Internal transactions page
+- Top tokens page (ERC20/721)
+- Token transfers page
+- Verified contracts page
+- Etherscan-like page structure
+- A lot more info is now displayed on the transaction/block pages
+
+## [4.7.0] - 2025-03-10
+### Changed
+- Add ads file
+
+## [4.6.4] - 2025-03-10
+### Fixed
+- Significant digits
+
+## [4.6.3] - 2025-03-10
+### Fixed
+- Significant digits
+
+## [4.6.2] - 2025-03-10
+### Fixed
+- Reset password
+
+## [4.6.1] - 2025-03-10
+### Fixed
+- Bug preventing login when no workspaces setup
+
+## [4.6.0] - 2025-03-08
+### Changed
+- Resetting a workspace with a lot of data will now be done in the background + switch immediately to a new empty one
+
+## [4.5.0] - 2025-02-28
+### Changed
+- Demo explorer migration modal
+
+## [4.4.8] - 2025-02-26
+### Fixed
+- Removed hardcoded dev values
+
+## [4.4.7] - 2025-02-26
+### Fixed
+- Avoid counter api cache
+
+## [4.4.5] - 2025-02-26
+### Added
+- Limit number of demo explorers for per network id
+
+## [4.4.4] - 2025-02-26
+### Added
+- Dex / Faucet / Bridge links in admin & demo explorers
+
+## [4.4.3] - 2025-02-23
+### Fixed
+- Performance issues on transactions list
+
+## [4.4.2] - 2025-02-22
+### Added
+- "All time" option for analytics
+
 ## [4.4.1] - 2025-02-21
 ### Fixed
 - Gas page link typo

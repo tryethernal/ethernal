@@ -179,136 +179,146 @@
     </v-card>
 </template>
 
-<script>
+<script setup>
+import { ref, reactive, onMounted , inject } from 'vue';
 import { sanitize } from '../lib/utils';
-import { mapStores } from 'pinia';
 import { useExplorerStore } from '../stores/explorer';
+import { storeToRefs } from 'pinia';
 
-export default {
-    name: 'ContractVerification',
-    props: ['address'],
-    emits: ['contractVerified'],
-    data: () => ({
-        files: [],
-        includeNightlyBuilds: false,
-        rawLibraries: [],
-        verificationSuccess: false,
-        verificationErrorMessage: null,
-        parameters: {
-            viaIr: false,
-            sources: {},
-            imports: {},
-            libraries: {},
-            name: null,
-            compiler: null,
-            address: null,
-            slug: null,
-            optimizer: false,
-            runs: null,
-            evmVersion: null,
-            constructorArguments: null
-        },
-        allCompilerVersions: [],
-        releasesCompilerVersions: [],
-        evmVersions: [
-            { value: null, text: 'default (compiler default)' },
-            { value: 'cancun', text: 'cancun (latest version)' },
-            { value: 'shanghai', text: 'shanghai' },
-            { value: 'paris', text: 'paris' },
-            { value: 'london', text: 'london' },
-            { value: 'berlin', text: 'berlin' },
-            { value: 'istanbul', text: 'istanbul' },
-            { value: 'petersburg', text: 'petersburg' },
-            { value: 'constantinople', text: 'constantinople' },
-            { value: 'byzantium', text: 'byzantium' },
-            { value: 'spuriousDragon', text: 'spuriousDragon' },
-            { value: 'tangerineWhistle', text: 'tangerineWhistle' },
-            { value: 'homestead', text: 'homestead (oldest version)' },
-        ],
-        canSubmit: false,
-        loading: false
-    }),
-    setup(props, { emit }) {
-        const emitContractVerified = (data) => emit('contractVerified', data);
+const props = defineProps(['address']);
+const emit = defineEmits(['contractVerified']);
+const $server = inject('$server');
 
-        return { emitContractVerified };
-    },
-    mounted() {
-        this.parameters.address = this.address;
-        this.parameters.slug = this.explorerStore.slug;
-        this.$server.getCompilerVersions()
-            .then(({ data }) => {
-                for (let i = 0; i < data.builds.length; i++) {
-                    this.allCompilerVersions.unshift(`v${data.builds[i].longVersion}`);
-                    if (!data.builds[i].prerelease)
-                        this.releasesCompilerVersions.unshift(`v${data.builds[i].longVersion}`);
-                    this.parameters.compiler = this.releasesCompilerVersions[0];
-                }
-            });
-    },
-    methods: {
-        addLibrary() {
-            this.rawLibraries.push({ name: null, address: null });
-        },
-        removeLibrary(index) {
-            this.rawLibraries.splice(index, 1);
-        },
-        onFileLoaded(_this, name) {
-            return function(data) {
-                _this.parameters.sources[name] = { content: data.target.result };
-            };
-        },
-        onFilesUploaded(files) {
-            this.parameters.sources = {};
-            files.forEach(file => {
-                const fileReader = new FileReader();
-                fileReader.onload = this.onFileLoaded(this, file.name);
-                fileReader.readAsText(file);
-            })
-        },
-        submit() {
-            this.loading = true;
-            this.verificationSuccess = false;
-            this.verificationErrorMessage = null;
+const form = ref(null);
+const files = ref([]);
+const includeNightlyBuilds = ref(false);
+const rawLibraries = ref([]);
+const verificationSuccess = ref(false);
+const verificationErrorMessage = ref(null);
+const canSubmit = ref(false);
+const loading = ref(false);
 
-            const libraries = {};
-            this.rawLibraries.forEach(l => {
-                if (l.name && l.name.split(':').length == 2 && l.address)
-                    libraries[l.name.split(':')[0]] = {
-                        [l.name.split(':')[1]]: l.address
-                    };
-            });
+const allCompilerVersions = ref([]);
+const releasesCompilerVersions = ref([]);
 
-            const data = sanitize({
-                explorerSlug: this.parameters.slug,
-                compilerVersion: this.parameters.compiler,
-                code: {
-                    sources: this.parameters.sources,
-                    imports: this.parameters.imports,
-                    libraries: libraries
-                },
-                contractName: this.parameters.name,
-                constructorArguments: this.parameters.constructorArguments,
-                evmVersion: this.parameters.evmVersion,
-                optimizer: this.parameters.optimizer,
-                runs: this.parameters.runs,
-                viaIR: this.parameters.viaIR
-            });
+const parameters = reactive({
+    viaIR: false,
+    sources: {},
+    imports: {},
+    libraries: {},
+    name: null,
+    compiler: null,
+    address: null,
+    slug: null,
+    optimizer: false,
+    runs: null,
+    evmVersion: null,
+    constructorArguments: null
+});
 
-            this.$server.verifyContract(this.address, data)
-                .then(({ data }) => {
-                    this.verificationSuccess = true;
-                    this.emitContractVerified(data);
-                })
-                .catch(({ response: { data }}) => this.verificationErrorMessage =`Verification failed. ${data}`)
-                .finally(() => {
-                    this.loading = false;
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                });
-        }
-    },
-    computed: {
-        ...mapStores(useExplorerStore)
+const evmVersions = [
+    { value: null, text: 'default (compiler default)' },
+    { value: 'cancun', text: 'cancun (latest version)' },
+    { value: 'shanghai', text: 'shanghai' },
+    { value: 'paris', text: 'paris' },
+    { value: 'london', text: 'london' },
+    { value: 'berlin', text: 'berlin' },
+    { value: 'istanbul', text: 'istanbul' },
+    { value: 'petersburg', text: 'petersburg' },
+    { value: 'constantinople', text: 'constantinople' },
+    { value: 'byzantium', text: 'byzantium' },
+    { value: 'spuriousDragon', text: 'spuriousDragon' },
+    { value: 'tangerineWhistle', text: 'tangerineWhistle' },
+    { value: 'homestead', text: 'homestead (oldest version)' },
+];
+
+const explorerStore = useExplorerStore();
+const { slug } = storeToRefs(explorerStore);
+
+onMounted(async () => {
+    parameters.address = props.address;
+    parameters.slug = slug.value;
+    
+    try {
+        const { data } = await $server.getCompilerVersions();
+        data.builds.forEach(build => {
+            const version = `v${build.longVersion}`;
+            allCompilerVersions.value.unshift(version);
+            if (!build.prerelease) {
+                releasesCompilerVersions.value.unshift(version);
+            }
+        });
+        parameters.compiler = releasesCompilerVersions.value[0];
+    } catch (error) {
+        console.error('Failed to fetch compiler versions:', error);
     }
-}
+});
+
+const addLibrary = () => {
+    rawLibraries.value.push({ name: null, address: null });
+};
+
+const removeLibrary = (index) => {
+    rawLibraries.value.splice(index, 1);
+};
+
+const onFileLoaded = (name) => {
+    return (event) => {
+        parameters.sources[name] = { content: event.target.result };
+    };
+};
+
+const onFilesUploaded = (newFiles) => {
+    parameters.sources = {};
+    if (!newFiles) return;
+    
+    newFiles.forEach(file => {
+        const fileReader = new FileReader();
+        fileReader.onload = onFileLoaded(file.name);
+        fileReader.readAsText(file);
+    });
+};
+
+const submit = async () => {
+    loading.value = true;
+    verificationSuccess.value = false;
+    verificationErrorMessage.value = null;
+
+    try {
+        const libraries = {};
+        rawLibraries.value.forEach(l => {
+            if (l.name && l.name.split(':').length == 2 && l.address) {
+                const [fileName, libName] = l.name.split(':');
+                libraries[fileName] = {
+                    [libName]: l.address
+                };
+            }
+        });
+
+        const data = sanitize({
+            explorerSlug: parameters.slug,
+            compilerVersion: parameters.compiler,
+            code: {
+                sources: parameters.sources,
+                imports: parameters.imports,
+                libraries: libraries
+            },
+            contractName: parameters.name,
+            constructorArguments: parameters.constructorArguments,
+            evmVersion: parameters.evmVersion,
+            optimizer: parameters.optimizer,
+            runs: parameters.runs,
+            viaIR: parameters.viaIR
+        });
+
+        const { data: responseData } = await $server.verifyContract(props.address, data);
+        verificationSuccess.value = true;
+        emit('contractVerified', responseData);
+    } catch (error) {
+        verificationErrorMessage.value = `Verification failed. ${error.response?.data || error.message}`;
+    } finally {
+        loading.value = false;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+};
 </script>

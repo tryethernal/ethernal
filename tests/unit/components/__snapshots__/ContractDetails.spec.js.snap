@@ -1,0 +1,307 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ContractDetails.vue > Should show import modal link for admin users 1`] = `
+"<import-artifact-modal-stub></import-artifact-modal-stub>
+<div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
+        </div>
+      </transition-stub>
+      <!---->
+    </div>
+  </div>
+  <!---->
+  <!---->
+  <div class="v-card-text">
+    <div class="v-slide-group v-chip-group v-theme--light" tabindex="0">
+      <!---->
+      <div class="v-slide-group__container">
+        <div class="v-slide-group__content"><span class="v-chip v-chip--label v-chip--link v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal text-primary" draggable="false" tabindex="0"><span class="v-chip__overlay"></span><span class="v-chip__underlay"></span>
+          <!---->
+          <!---->
+          <div class="v-chip__content" data-no-activator="">Code</div>
+          <!---->
+          <!----></span><span class="v-chip v-chip--label v-chip--link v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal" draggable="false" tabindex="0"><span class="v-chip__overlay"></span><span class="v-chip__underlay"></span>
+          <!---->
+          <!---->
+          <div class="v-chip__content" data-no-activator="">Read Contract (0)</div>
+          <!---->
+          <!----></span><span class="v-chip v-chip--label v-chip--link v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal" draggable="false" tabindex="0"><span class="v-chip__overlay"></span><span class="v-chip__underlay"></span>
+          <!---->
+          <!---->
+          <div class="v-chip__content" data-no-activator="">Write Contract (0)</div>
+          <!---->
+          <!----></span>
+        </div>
+      </div>
+      <!---->
+    </div>
+    <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated mt-2">
+      <!---->
+      <div class="v-card__loader">
+        <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+          <!---->
+          <div class="v-progress-linear__background"></div>
+          <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+          <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+            <div class="v-progress-linear__indeterminate">
+              <div class="v-progress-linear__indeterminate long"></div>
+              <div class="v-progress-linear__indeterminate short"></div>
+            </div>
+          </transition-stub>
+          <!---->
+        </div>
+      </div>
+      <!---->
+      <!---->
+      <div class="v-card-text"> Manually override contract name &amp; ABI <a href="#" class="text-primary text-decoration-none">here</a>. </div>
+      <!---->
+      <!----><span class="v-card__underlay"></span>
+    </div>
+    <div class="mt-4">
+      <contract-code-stub contract="[object Object]"></contract-code-stub>
+    </div>
+    <div class="mt-4" style="display: none;">
+      <contract-read-write-stub contract="[object Object]" forcetab="code"></contract-read-write-stub>
+    </div>
+  </div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
+`;
+
+exports[`ContractDetails.vue > Should show read contract tab when hash is readContract 1`] = `
+"<import-artifact-modal-stub></import-artifact-modal-stub>
+<div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
+        </div>
+      </transition-stub>
+      <!---->
+    </div>
+  </div>
+  <!---->
+  <!---->
+  <div class="v-card-text">
+    <div class="v-slide-group v-chip-group v-theme--light" tabindex="0">
+      <!---->
+      <div class="v-slide-group__container">
+        <div class="v-slide-group__content"><span class="v-chip v-chip--label v-chip--link v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal" draggable="false" tabindex="0"><span class="v-chip__overlay"></span><span class="v-chip__underlay"></span>
+          <!---->
+          <!---->
+          <div class="v-chip__content" data-no-activator="">Code</div>
+          <!---->
+          <!----></span><span class="v-chip v-chip--label v-chip--link v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal text-primary" draggable="false" tabindex="0"><span class="v-chip__overlay"></span><span class="v-chip__underlay"></span>
+          <!---->
+          <!---->
+          <div class="v-chip__content" data-no-activator="">Read Contract (0)</div>
+          <!---->
+          <!----></span><span class="v-chip v-chip--label v-chip--link v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal" draggable="false" tabindex="0"><span class="v-chip__overlay"></span><span class="v-chip__underlay"></span>
+          <!---->
+          <!---->
+          <div class="v-chip__content" data-no-activator="">Write Contract (0)</div>
+          <!---->
+          <!----></span>
+        </div>
+      </div>
+      <!---->
+    </div>
+    <!--v-if-->
+    <div class="mt-4" style="display: none;">
+      <contract-code-stub contract="[object Object]"></contract-code-stub>
+    </div>
+    <div class="mt-4" style="">
+      <contract-read-write-stub contract="[object Object]" forcetab="read"></contract-read-write-stub>
+    </div>
+  </div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
+`;
+
+exports[`ContractDetails.vue > Should show the component with code tab by default 1`] = `
+"<import-artifact-modal-stub></import-artifact-modal-stub>
+<div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
+        </div>
+      </transition-stub>
+      <!---->
+    </div>
+  </div>
+  <!---->
+  <!---->
+  <div class="v-card-text">
+    <div class="v-slide-group v-chip-group v-theme--light" tabindex="0">
+      <!---->
+      <div class="v-slide-group__container">
+        <div class="v-slide-group__content"><span class="v-chip v-chip--label v-chip--link v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal text-primary" draggable="false" tabindex="0"><span class="v-chip__overlay"></span><span class="v-chip__underlay"></span>
+          <!---->
+          <!---->
+          <div class="v-chip__content" data-no-activator="">Code</div>
+          <!---->
+          <!----></span><span class="v-chip v-chip--label v-chip--link v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal" draggable="false" tabindex="0"><span class="v-chip__overlay"></span><span class="v-chip__underlay"></span>
+          <!---->
+          <!---->
+          <div class="v-chip__content" data-no-activator="">Read Contract (0)</div>
+          <!---->
+          <!----></span><span class="v-chip v-chip--label v-chip--link v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal" draggable="false" tabindex="0"><span class="v-chip__overlay"></span><span class="v-chip__underlay"></span>
+          <!---->
+          <!---->
+          <div class="v-chip__content" data-no-activator="">Write Contract (0)</div>
+          <!---->
+          <!----></span>
+        </div>
+      </div>
+      <!---->
+    </div>
+    <!--v-if-->
+    <div class="mt-4">
+      <contract-code-stub contract="[object Object]"></contract-code-stub>
+    </div>
+    <div class="mt-4" style="display: none;">
+      <contract-read-write-stub contract="[object Object]" forcetab="code"></contract-read-write-stub>
+    </div>
+  </div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
+`;
+
+exports[`ContractDetails.vue > Should show write contract tab when hash is writeContract 1`] = `
+"<import-artifact-modal-stub></import-artifact-modal-stub>
+<div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
+        </div>
+      </transition-stub>
+      <!---->
+    </div>
+  </div>
+  <!---->
+  <!---->
+  <div class="v-card-text">
+    <div class="v-slide-group v-chip-group v-theme--light" tabindex="0">
+      <!---->
+      <div class="v-slide-group__container">
+        <div class="v-slide-group__content"><span class="v-chip v-chip--label v-chip--link v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal" draggable="false" tabindex="0"><span class="v-chip__overlay"></span><span class="v-chip__underlay"></span>
+          <!---->
+          <!---->
+          <div class="v-chip__content" data-no-activator="">Code</div>
+          <!---->
+          <!----></span><span class="v-chip v-chip--label v-chip--link v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal" draggable="false" tabindex="0"><span class="v-chip__overlay"></span><span class="v-chip__underlay"></span>
+          <!---->
+          <!---->
+          <div class="v-chip__content" data-no-activator="">Read Contract (0)</div>
+          <!---->
+          <!----></span><span class="v-chip v-chip--label v-chip--link v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal text-primary" draggable="false" tabindex="0"><span class="v-chip__overlay"></span><span class="v-chip__underlay"></span>
+          <!---->
+          <!---->
+          <div class="v-chip__content" data-no-activator="">Write Contract (0)</div>
+          <!---->
+          <!----></span>
+        </div>
+      </div>
+      <!---->
+    </div>
+    <!--v-if-->
+    <div class="mt-4" style="display: none;">
+      <contract-code-stub contract="[object Object]"></contract-code-stub>
+    </div>
+    <div class="mt-4" style="">
+      <contract-read-write-stub contract="[object Object]" forcetab="write"></contract-read-write-stub>
+    </div>
+  </div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
+`;
+
+exports[`ContractDetails.vue > Should update filtered counts when ContractReadWrite emits update 1`] = `
+"<import-artifact-modal-stub></import-artifact-modal-stub>
+<div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
+        </div>
+      </transition-stub>
+      <!---->
+    </div>
+  </div>
+  <!---->
+  <!---->
+  <div class="v-card-text">
+    <div class="v-slide-group v-chip-group v-theme--light" tabindex="0">
+      <!---->
+      <div class="v-slide-group__container">
+        <div class="v-slide-group__content"><span class="v-chip v-chip--label v-chip--link v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal text-primary" draggable="false" tabindex="0"><span class="v-chip__overlay"></span><span class="v-chip__underlay"></span>
+          <!---->
+          <!---->
+          <div class="v-chip__content" data-no-activator="">Code</div>
+          <!---->
+          <!----></span><span class="v-chip v-chip--label v-chip--link v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal" draggable="false" tabindex="0"><span class="v-chip__overlay"></span><span class="v-chip__underlay"></span>
+          <!---->
+          <!---->
+          <div class="v-chip__content" data-no-activator="">Read Contract (5)</div>
+          <!---->
+          <!----></span><span class="v-chip v-chip--label v-chip--link v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal" draggable="false" tabindex="0"><span class="v-chip__overlay"></span><span class="v-chip__underlay"></span>
+          <!---->
+          <!---->
+          <div class="v-chip__content" data-no-activator="">Write Contract (3)</div>
+          <!---->
+          <!----></span>
+        </div>
+      </div>
+      <!---->
+    </div>
+    <!--v-if-->
+    <div class="mt-4">
+      <contract-code-stub contract="[object Object]"></contract-code-stub>
+    </div>
+    <div class="mt-4" style="display: none;">
+      <contract-read-write-stub contract="[object Object]" forcetab="code"></contract-read-write-stub>
+    </div>
+  </div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
+`;

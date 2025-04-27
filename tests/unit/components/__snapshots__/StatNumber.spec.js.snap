@@ -1,6 +1,70 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`StatNumber.vue > Should show a link 1`] = `
+exports[`StatNumber.vue > Should display raw mode 1`] = `
+"<div data-v-db72b064="" class="v-card v-theme--light border-primary border-thin v-card--density-default v-card--variant-elevated">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
+        </div>
+      </transition-stub>
+      <!---->
+    </div>
+  </div>
+  <!---->
+  <!---->
+  <div data-v-db72b064="" class="v-card-text pa-3">
+    <h6 data-v-db72b064="" class="text-medium-emphasis text-uppercase text-caption">Stat
+      <!--v-if-->
+    </h6>
+    <div data-v-db72b064="" class="text-h6 text-high-emphasis">
+      <!--v-if--><span data-v-db72b064="">1234467689798</span>
+    </div>
+  </div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
+`;
+
+exports[`StatNumber.vue > Should display with border by default 1`] = `
+"<div data-v-db72b064="" class="v-card v-theme--light border-primary border-thin v-card--density-default v-card--variant-elevated">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
+        </div>
+      </transition-stub>
+      <!---->
+    </div>
+  </div>
+  <!---->
+  <!---->
+  <div data-v-db72b064="" class="v-card-text pa-3">
+    <h6 data-v-db72b064="" class="text-medium-emphasis text-uppercase text-caption">Stat
+      <!--v-if-->
+    </h6>
+    <div data-v-db72b064="" class="text-h6 text-high-emphasis">
+      <!--v-if--><span data-v-db72b064="">1.2345T</span>
+    </div>
+  </div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
+`;
+
+exports[`StatNumber.vue > Should display without border 1`] = `
 "<div data-v-db72b064="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
   <!---->
   <div class="v-card__loader">
@@ -17,27 +81,53 @@ exports[`StatNumber.vue > Should show a link 1`] = `
       <!---->
     </div>
   </div>
-  <div class="v-card-item">
-    <!---->
-    <div class="v-card-item__content">
-      <!---->
-      <div class="v-card-subtitle">
-        <div data-v-db72b064="" class="">Stat</div>
-        <!--v-if-->
-      </div>
-      <!---->
+  <!---->
+  <!---->
+  <div data-v-db72b064="" class="v-card-text pa-3">
+    <h6 data-v-db72b064="" class="text-medium-emphasis text-uppercase text-caption">Stat
+      <!--v-if-->
+    </h6>
+    <div data-v-db72b064="" class="text-h6 text-high-emphasis">
+      <!--v-if--><span data-v-db72b064="">1.2345T</span>
     </div>
-    <!---->
   </div>
   <!---->
-  <div data-v-db72b064="" class="v-card-text text-h3 text-medium-emphasis" align="center"><a data-v-db72b064="" style="text-decoration: none;">1</a></div>
+  <!----><span class="v-card__underlay"></span>
+</div>"
+`;
+
+exports[`StatNumber.vue > Should show a link 1`] = `
+"<div data-v-db72b064="" class="v-card v-theme--light border-primary border-thin v-card--density-default v-card--variant-elevated">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
+        </div>
+      </transition-stub>
+      <!---->
+    </div>
+  </div>
+  <!---->
+  <!---->
+  <div data-v-db72b064="" class="v-card-text pa-3">
+    <h6 data-v-db72b064="" class="text-medium-emphasis text-uppercase text-caption">Stat
+      <!--v-if-->
+    </h6>
+    <div data-v-db72b064="" class="text-h6 text-high-emphasis"><a data-v-db72b064="" style="text-decoration: none;">1</a><span data-v-db72b064="">1</span></div>
+  </div>
   <!---->
   <!----><span class="v-card__underlay"></span>
 </div>"
 `;
 
 exports[`StatNumber.vue > Should show a number 1`] = `
-"<div data-v-db72b064="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+"<div data-v-db72b064="" class="v-card v-theme--light border-primary border-thin v-card--density-default v-card--variant-elevated">
   <!---->
   <div class="v-card__loader">
     <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
@@ -53,27 +143,23 @@ exports[`StatNumber.vue > Should show a number 1`] = `
       <!---->
     </div>
   </div>
-  <div class="v-card-item">
-    <!---->
-    <div class="v-card-item__content">
-      <!---->
-      <div class="v-card-subtitle">
-        <div data-v-db72b064="" class="">Stat</div>
-        <!--v-if-->
-      </div>
-      <!---->
-    </div>
-    <!---->
-  </div>
   <!---->
-  <div data-v-db72b064="" class="v-card-text text-h3 text-medium-emphasis" align="center"><span data-v-db72b064="">1</span></div>
+  <!---->
+  <div data-v-db72b064="" class="v-card-text pa-3">
+    <h6 data-v-db72b064="" class="text-medium-emphasis text-uppercase text-caption">Stat
+      <!--v-if-->
+    </h6>
+    <div data-v-db72b064="" class="text-h6 text-high-emphasis">
+      <!--v-if--><span data-v-db72b064="">1</span>
+    </div>
+  </div>
   <!---->
   <!----><span class="v-card__underlay"></span>
 </div>"
 `;
 
 exports[`StatNumber.vue > Should show format if erc20 1`] = `
-"<div data-v-db72b064="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+"<div data-v-db72b064="" class="v-card v-theme--light border-primary border-thin v-card--density-default v-card--variant-elevated">
   <!---->
   <div class="v-card__loader">
     <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
@@ -89,27 +175,23 @@ exports[`StatNumber.vue > Should show format if erc20 1`] = `
       <!---->
     </div>
   </div>
-  <div class="v-card-item">
-    <!---->
-    <div class="v-card-item__content">
-      <!---->
-      <div class="v-card-subtitle">
-        <div data-v-db72b064="" class="">Stat</div>
-        <!--v-if-->
-      </div>
-      <!---->
-    </div>
-    <!---->
-  </div>
   <!---->
-  <div data-v-db72b064="" class="v-card-text text-h3 text-medium-emphasis" align="center"><span data-v-db72b064="">83,742,318</span></div>
+  <!---->
+  <div data-v-db72b064="" class="v-card-text pa-3">
+    <h6 data-v-db72b064="" class="text-medium-emphasis text-uppercase text-caption">Stat
+      <!--v-if-->
+    </h6>
+    <div data-v-db72b064="" class="text-h6 text-high-emphasis">
+      <!--v-if--><span data-v-db72b064="">83,742,318</span>
+    </div>
+  </div>
   <!---->
   <!----><span class="v-card__underlay"></span>
 </div>"
 `;
 
 exports[`StatNumber.vue > Should show the info tooltip 1`] = `
-"<div data-v-db72b064="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+"<div data-v-db72b064="" class="v-card v-theme--light border-primary border-thin v-card--density-default v-card--variant-elevated">
   <!---->
   <div class="v-card__loader">
     <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
@@ -125,23 +207,19 @@ exports[`StatNumber.vue > Should show the info tooltip 1`] = `
       <!---->
     </div>
   </div>
-  <div class="v-card-item">
-    <!---->
-    <div class="v-card-item__content">
-      <!---->
-      <div class="v-card-subtitle">
-        <div data-v-db72b064="" class="absolute">Stat</div>
-        <div data-v-db72b064="" class="text-right"><i data-v-db72b064="" class="mdi-information mdi v-icon notranslate v-theme--light v-icon--size-small" aria-hidden="true" aria-describedby="v-tooltip-0"></i>
+  <!---->
+  <!---->
+  <div data-v-db72b064="" class="v-card-text pa-3">
+    <h6 data-v-db72b064="" class="text-medium-emphasis text-uppercase text-caption">Stat <div data-v-db72b064="" class="text-right float-right"><i data-v-db72b064="" class="mdi-information mdi v-icon notranslate v-theme--light v-icon--size-small" aria-hidden="true">
+          <!---->
           <!--teleport start-->
           <!--teleport end-->
-        </div>
-      </div>
-      <!---->
+        </i></div>
+    </h6>
+    <div data-v-db72b064="" class="text-h6 text-high-emphasis">
+      <!--v-if--><span data-v-db72b064="">1</span>
     </div>
-    <!---->
   </div>
-  <!---->
-  <div data-v-db72b064="" class="v-card-text text-h3 text-medium-emphasis" align="center"><span data-v-db72b064="">1</span></div>
   <!---->
   <!----><span class="v-card__underlay"></span>
 </div>"

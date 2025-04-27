@@ -1,8 +1,8 @@
 <template>
     <v-container fluid>
-        <DateRangeSelector @rangeUpdated="rangeUpdated" />
         <v-card style="height: 100%">
             <v-card-text>
+                <DateRangeSelector @rangeUpdated="rangeUpdated" />
                 <v-row>
                     <v-col cols="12" md="6">
                         <Line-Chart :title="'Transaction Volume'" :xLabels="charts['transactionVolume'].xLabels" :data="charts['transactionVolume'].data" :tooltipUnit="'transaction'" :index="0" />
@@ -14,6 +14,10 @@
 
                     <v-col cols="12" md="6">
                         <Line-Chart :title="'Average Gas Price'" :xLabels="charts['averageGasPrice'].xLabels" :data="charts['averageGasPrice'].data" :tokenSymbol="'gwei'" :floating="true" :index="2" />
+                    </v-col>
+
+                    <v-col cols="12" md="6">
+                        <Line-Chart :title="'Transaction Fees'" :xLabels="charts['transactionFees'].xLabels" :data="charts['transactionFees'].data" :tokenSymbol="currentWorkspaceStore.chain.token || 'ETH'" :floating="true" :index="3" />
                     </v-col>
 
                     <v-col cols="12" md="6">
@@ -63,7 +67,7 @@
 const moment = require('moment');
 const ethers = require('ethers');
 import { useTheme } from 'vuetify';
-import { formatGwei } from 'viem';
+import { formatGwei, formatEther } from 'viem';
 import { mapStores } from 'pinia';
 import { useCurrentWorkspaceStore } from '@/stores/currentWorkspace';
 import { useExplorerStore } from '@/stores/explorer';
@@ -85,6 +89,7 @@ export default {
             erc20TransferVolume: {},
             averageGasPrice: {},
             averageTransactionFee: {},
+            transactionFees: {},
             uniqueWalletCount: {},
             cumulativeWalletCount: {},
             deployedContractCount: {},
@@ -112,6 +117,7 @@ export default {
                 erc20TransferVolume: {},
                 averageGasPrice: {},
                 averageTransactionFee: {},
+                transactionFees: {},
                 uniqueWalletCount: {},
                 deployedContractCount: {},
                 cumulativeDeployedContractCount: {},
@@ -125,6 +131,7 @@ export default {
             this.getErc20TransferVolume();
             this.getAverageGasPrice();
             this.getAverageTransactionFee();
+            this.getTransactionFees();
             this.getUniqueWalletCount();
             this.getDeployedContractCount();
             this.getCumulativeDeployedContractCount();
@@ -135,6 +142,16 @@ export default {
                 this.getBlockTimeHistory();
                 this.getBlockSizeHistory();
             }
+        },
+        getTransactionFees() {
+            this.$server.getTransactionFeeHistory(this.from, this.to)
+                .then(({ data }) => {
+                    this.charts['transactionFees'] = {
+                        xLabels: data.map(t => t.day),
+                        data: data.map(t => t.transactionFees ? formatEther(Number(t.transactionFees)) : null),
+                    };
+                })
+                .catch(console.log);
         },
         getBlockSizeHistory() {
             this.$server.getBlockSizeHistory(this.from, this.to)

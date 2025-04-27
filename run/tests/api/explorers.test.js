@@ -110,7 +110,7 @@ describe(`POST ${BASE_URL}/:id/v2_dexes`, () => {
             });
     });
 
-    it('Should return the router address & the factory address', (done) => {
+    it('Should return the created dex', (done) => {
         jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({
             id: 1,
             workspace: { rpcServer: 'rpc' }
@@ -124,7 +124,7 @@ describe(`POST ${BASE_URL}/:id/v2_dexes`, () => {
             .send({ data: { routerAddress: '0x123', wrappedNativeTokenAddress: '0x456' }})
             .expect(200)
             .then(({ body }) => {
-                expect(body).toEqual({ id: 1, routerAddress: '0x123', factoryAddress: '0x456' });
+                expect(body).toEqual({ v2Dex: { id: 1, routerAddress: '0x123', factoryAddress: '0x456' }});
                 done();
             });
     });
@@ -940,7 +940,7 @@ describe(`DELETE ${BASE_URL}/:id`, () => {
             .then(() => {
                 expect(db.deleteExplorerSubscription).toHaveBeenCalledWith(1, 1);
                 expect(db.deleteExplorer).toHaveBeenCalledWith(1, 1);
-                expect(db.markWorkspaceForDeletion).toHaveBeenCalledWith(1);
+                expect(db.markWorkspaceForDeletion).toHaveBeenCalledWith(1, 1);
                 expect(enqueue).toHaveBeenCalledWith('workspaceReset', 'workspaceReset-1', {
                     workspaceId: 1,
                     from: expect.any(Date),
@@ -1386,6 +1386,42 @@ describe(`GET ${BASE_URL}/search`, () => {
             .then(() => done());
     });
 
+    it('Should return adsEnabled at false if capabilities.adsEnabled is false', (done) => {
+        jest.spyOn(db, 'getPublicExplorerParamsBySlug').mockResolvedValueOnce({
+            stripeSubscription: { stripePlan: { capabilities: { adsEnabled: false }}},
+            slug: 'ethernal', name: 'Ethernal Explorer', themes: { light: {}}
+        });
+        request.get(`${BASE_URL}/search?domain=ethernal.ethernal.com`)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual({
+                    explorer: { token: 'ether', slug: 'ethernal', name: 'Ethernal Explorer', themes: { light: {}},
+                        adsEnabled: false,
+                        totalSupply: null
+                    }
+                });
+                done();
+            });
+    });
+
+    it('Should return totalSupply if capabilities.totalSupply is true', (done) => {
+        jest.spyOn(db, 'getPublicExplorerParamsBySlug').mockResolvedValueOnce({
+            stripeSubscription: { stripePlan: { capabilities: { totalSupply: true }}},
+            slug: 'ethernal', name: 'Ethernal Explorer', themes: { light: {}},
+            totalSupply: '1'
+        });
+        request.get(`${BASE_URL}/search?domain=ethernal.ethernal.com`)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual({
+                    explorer: { token: 'ether', totalSupply: '1', slug: 'ethernal', name: 'Ethernal Explorer', themes: { light: {}},
+                        adsEnabled: true
+                    }
+                });
+                done();
+            });
+    });
+
     it('Should return the correct explorer if this is a base subdomain', (done) => {
         jest.spyOn(db, 'getPublicExplorerParamsBySlug').mockResolvedValueOnce({
             stripeSubscription: { stripePlan: { capabilities: { nativeToken: true }}},
@@ -1396,7 +1432,8 @@ describe(`GET ${BASE_URL}/search`, () => {
             .then(({ body }) => {
                 expect(body).toEqual({
                     explorer: {
-                        slug: 'ethernal', name: 'Ethernal Explorer', themes: { light: {}}
+                        totalSupply: null, slug: 'ethernal', name: 'Ethernal Explorer', themes: { light: {}},
+                        adsEnabled: true
                     }
                 });
                 done();
@@ -1413,7 +1450,8 @@ describe(`GET ${BASE_URL}/search`, () => {
             .then(({ body }) => {
                 expect(body).toEqual({
                     explorer: {
-                        slug: 'ethernal', name: 'Ethernal Explorer', themes: { light: {}}
+                        slug: 'ethernal', name: 'Ethernal Explorer', themes: { light: {}},
+                        adsEnabled: true
                     }
                 });
                 done();

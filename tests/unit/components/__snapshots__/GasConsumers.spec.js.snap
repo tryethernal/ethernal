@@ -21,7 +21,7 @@ exports[`GasConsumers.vue > Should show gas consumers 1`] = `
   <!---->
   <div class="v-card-title">
     <div class="d-flex justify-space-between"><small class="text-primary">Top 50 Gas Consumers</small>
-      <div class="v-slide-group v-slide-group--mobile v-chip-group v-theme--light pt-0 mb-1" tabindex="0">
+      <div class="v-slide-group v-chip-group v-theme--light pt-0 mb-1" tabindex="0">
         <!---->
         <div class="v-slide-group__container">
           <div class="v-slide-group__content"><span class="v-chip v-chip--link v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal text-primary" draggable="false" tabindex="0"><span class="v-chip__overlay"></span><span class="v-chip__underlay"></span>
@@ -77,7 +77,7 @@ exports[`GasConsumers.vue > Should show gas consumers 1`] = `
             <!---->
             <tr class="v-data-table__tr">
               <td class="v-data-table__td v-data-table-column--align-start">
-                <hash-link-stub type="address" hash="0x1235" loadcontract="true" withname="true"></hash-link-stub>
+                <hash-link-stub type="address" hash="0x1235" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="true"></hash-link-stub>
               </td>
               <td class="v-data-table__td v-data-table-column--align-start">0.00000000003 ETH</td>
               <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-10">4.32% <!----><!--teleport start--><!--teleport end--></span></td>

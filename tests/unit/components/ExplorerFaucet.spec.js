@@ -6,6 +6,25 @@ import ExplorerFaucet from '@/components/ExplorerFaucet.vue';
 describe('ExplorerFaucet.vue', () => {
     const stubs = ['Hash-Link', 'Explorer-Faucet-Analytics', 'Explorer-Faucet-Transaction-History']
 
+    it('Should let admin create a faucet', async () => {
+        const wrapper = mount(ExplorerFaucet, {
+            global: {
+                stubs,
+                plugins: [createTestingPinia({
+                    initialState: {
+                        env: { isAdmin: true },
+                        explorer: {
+                            id: 1
+                        }
+                    }
+                })]
+            }
+        });
+        await flushPromises();
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
     it('Should display faucet intro', async () => {
         const wrapper = mount(ExplorerFaucet, {
             global: {

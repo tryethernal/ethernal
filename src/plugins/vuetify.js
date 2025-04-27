@@ -3,6 +3,7 @@ import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import { VStepperVertical, VStepperVerticalItem } from 'vuetify/labs/VStepperVertical'
+import { VTreeview } from 'vuetify/labs/VTreeview'
 import { iconify } from './iconify';
 
 const ethernal = {
@@ -23,7 +24,8 @@ export default createVuetify({
     components: {
         ...components,
         VStepperVertical,
-        VStepperVerticalItem
+        VStepperVerticalItem,
+        VTreeview
     },
     icons: {
         sets: {
@@ -54,7 +56,7 @@ export default createVuetify({
         VCombobox: { color: 'primary', variant: 'outlined' },
         VFileInput: { color: 'primary', variant: 'outlined' },
         VSlider: { color: 'primary', variant: 'outlined' },
-        VCard: { border: 'primary thin', flat: true },
+        VCard: { border: 'primary thin', flat: true, rounded: 'lg' },
 
         VProgressLinear: { color: 'primary' },
 

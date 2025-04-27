@@ -2,6 +2,8 @@
 
 Ethernal is a block explorer for EVM-based chains.
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 ## Hosted version
 
 You can sign-up and get started right away on https://app.tryethernal.com

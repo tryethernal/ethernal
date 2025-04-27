@@ -7,7 +7,6 @@ const avg = (arr) => {
     return Math.round(sum/arr.length);
 };
 
-
 const sleep = (ms) => {
     return new Promise((r) => setTimeout(r, ms))
 };

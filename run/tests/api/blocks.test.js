@@ -148,7 +148,7 @@ describe(`GET ${BASE_URL}`, () => {
                 expect(body).toEqual([
                     { number: 1234 }
                 ]);
-                expect(db.getWorkspaceBlocks).toHaveBeenCalledWith(1, undefined, undefined, undefined, undefined);
+                expect(db.getWorkspaceBlocks).toHaveBeenCalledWith(1, undefined, undefined, undefined);
                 done();
             });
     });

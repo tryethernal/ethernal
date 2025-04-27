@@ -4,6 +4,7 @@ exports[`ContractCode.vue > Should display contract verification info if public 
 "<div data-v-39109da1="">
   <!--v-if-->
   <contract-verification-info-stub data-v-39109da1="" contract="[object Object]"></contract-verification-info-stub>
+  <h4 data-v-39109da1="" class="mb-1">ABI</h4>
   <div data-v-39109da1="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-6">
     <!---->
     <div class="v-card__loader">
@@ -22,63 +23,639 @@ exports[`ContractCode.vue > Should display contract verification info if public 
     </div>
     <!---->
     <!---->
-    <div data-v-39109da1="" class="v-card-title">Bytecode</div>
-    <div data-v-39109da1="" class="v-card-text">
-      <div data-v-39109da1="" class="v-input v-input--horizontal v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-input--readonly v-textarea v-text-field text-medium-emphasis">
-        <!---->
-        <div class="v-input__control">
-          <div class="v-field v-field--active v-field--appended v-field--dirty v-field--no-label v-field--variant-outlined v-theme--light v-locale--is-ltr">
-            <div class="v-field__overlay"></div>
-            <div class="v-field__loader">
-              <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
-                <!---->
-                <div class="v-progress-linear__background"></div>
-                <div class="v-progress-linear__buffer" style="width: 0%;"></div>
-                <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
-                  <div class="v-progress-linear__indeterminate">
-                    <div class="v-progress-linear__indeterminate long"></div>
-                    <div class="v-progress-linear__indeterminate short"></div>
-                  </div>
-                </transition-stub>
-                <!---->
-              </div>
-            </div>
-            <!---->
-            <div class="v-field__field" data-no-activator="">
-              <!---->
-              <!---->
-              <!----><textarea class="v-field__input" readonly="" rows="5" id="input-0" aria-describedby="input-0-messages" value="0x60"></textarea>
-              <!---->
-              <!---->
-            </div>
-            <!---->
-            <div class="v-field__append-inner"><button data-v-39109da1="" type="button" class="v-btn v-btn--icon v-theme--light v-btn--density-compact v-btn--size-default v-btn--variant-text"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-                <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-content-copy mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
-                <!---->
-                <!---->
-              </button>
-              <!---->
-            </div>
-            <div class="v-field__outline">
-              <div class="v-field__outline__start"></div>
-              <!---->
-              <div class="v-field__outline__end"></div>
-              <!---->
-            </div>
-          </div>
-        </div>
-        <!---->
-        <div id="input-0-messages" class="v-input__details" role="alert" aria-live="polite">
-          <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
-            <!---->
-          </transition-group-stub>
-          <!---->
-        </div>
-      </div><input data-v-39109da1="" type="hidden" id="copyBytecode" value="0x60">
+    <div data-v-39109da1="" class="v-card-text text-medium-emphasis bg-grey-lighten-4">
+      <expandable-text-stub data-v-39109da1="" text="[
+  {
+    &quot;inputs&quot;: [
+      {
+        &quot;internalType&quot;: &quot;string&quot;,
+        &quot;name&quot;: &quot;baseURI&quot;,
+        &quot;type&quot;: &quot;string&quot;
+      },
+      {
+        &quot;components&quot;: [
+          {
+            &quot;internalType&quot;: &quot;string&quot;,
+            &quot;name&quot;: &quot;targetURI&quot;,
+            &quot;type&quot;: &quot;string&quot;
+          },
+          {
+            &quot;internalType&quot;: &quot;string[]&quot;,
+            &quot;name&quot;: &quot;tagStrings&quot;,
+            &quot;type&quot;: &quot;string[]&quot;
+          },
+          {
+            &quot;internalType&quot;: &quot;bool&quot;,
+            &quot;name&quot;: &quot;enrich&quot;,
+            &quot;type&quot;: &quot;bool&quot;
+          },
+          {
+            &quot;internalType&quot;: &quot;uint256&quot;,
+            &quot;name&quot;: &quot;number&quot;,
+            &quot;type&quot;: &quot;uint256&quot;
+          }
+        ],
+        &quot;internalType&quot;: &quot;struct NFTCollectible.jsonObject&quot;,
+        &quot;name&quot;: &quot;obj&quot;,
+        &quot;type&quot;: &quot;tuple&quot;
+      }
+    ],
+    &quot;stateMutability&quot;: &quot;nonpayable&quot;,
+    &quot;type&quot;: &quot;constructor&quot;
+  },
+  {
+    &quot;anonymous&quot;: false,
+    &quot;inputs&quot;: [
+      {
+        &quot;indexed&quot;: true,
+        &quot;internalType&quot;: &quot;address&quot;,
+        &quot;name&quot;: &quot;owner&quot;,
+        &quot;type&quot;: &quot;address&quot;
+      },
+      {
+        &quot;indexed&quot;: true,
+        &quot;internalType&quot;: &quot;address&quot;,
+        &quot;name&quot;: &quot;approved&quot;,
+        &quot;type&quot;: &quot;address&quot;
+      },
+      {
+        &quot;indexed&quot;: true,
+        &quot;internalType&quot;: &quot;uint256&quot;,
+        &quot;name&quot;: &quot;tokenId&quot;,
+        &quot;type&quot;: &quot;uint256&quot;
+      }
+    ],
+    &quot;name&quot;: &quot;Approval&quot;,
+    &quot;type&quot;: &quot;event&quot;
+  },
+  {
+    &quot;anonymous&quot;: false,
+    &quot;inputs&quot;: [
+      {
+        &quot;indexed&quot;: true,
+        &quot;internalType&quot;: &quot;address&quot;,
+        &quot;name&quot;: &quot;owner&quot;,
+        &quot;type&quot;: &quot;address&quot;
+      },
+      {
+        &quot;indexed&quot;: true,
+        &quot;internalType&quot;: &quot;address&quot;,
+        &quot;name&quot;: &quot;operator&quot;,
+        &quot;type&quot;: &quot;address&quot;
+      },
+      {
+        &quot;indexed&quot;: false,
+        &quot;internalType&quot;: &quot;bool&quot;,
+        &quot;name&quot;: &quot;approved&quot;,
+        &quot;type&quot;: &quot;bool&quot;
+      }
+    ],
+    &quot;name&quot;: &quot;ApprovalForAll&quot;,
+    &quot;type&quot;: &quot;event&quot;
+  },
+  {
+    &quot;anonymous&quot;: false,
+    &quot;inputs&quot;: [
+      {
+        &quot;indexed&quot;: true,
+        &quot;internalType&quot;: &quot;address&quot;,
+        &quot;name&quot;: &quot;previousOwner&quot;,
+        &quot;type&quot;: &quot;address&quot;
+      },
+      {
+        &quot;indexed&quot;: true,
+        &quot;internalType&quot;: &quot;address&quot;,
+        &quot;name&quot;: &quot;newOwner&quot;,
+        &quot;type&quot;: &quot;address&quot;
+      }
+    ],
+    &quot;name&quot;: &quot;OwnershipTransferred&quot;,
+    &quot;type&quot;: &quot;event&quot;
+  },
+  {
+    &quot;anonymous&quot;: false,
+    &quot;inputs&quot;: [
+      {
+        &quot;indexed&quot;: true,
+        &quot;internalType&quot;: &quot;address&quot;,
+        &quot;name&quot;: &quot;from&quot;,
+        &quot;type&quot;: &quot;address&quot;
+      },
+      {
+        &quot;indexed&quot;: true,
+        &quot;internalType&quot;: &quot;address&quot;,
+        &quot;name&quot;: &quot;to&quot;,
+        &quot;type&quot;: &quot;address&quot;
+      },
+      {
+        &quot;indexed&quot;: true,
+        &quot;internalType&quot;: &quot;uint256&quot;,
+        &quot;name&quot;: &quot;tokenId&quot;,
+        &quot;type&quot;: &quot;uint256&quot;
+      }
+    ],
+    &quot;name&quot;: &quot;Transfer&quot;,
+    &quot;type&quot;: &quot;event&quot;
+  },
+  {
+    &quot;inputs&quot;: [],
+    &quot;name&quot;: &quot;MAX_PER_MINT&quot;,
+    &quot;outputs&quot;: [
+      {
+        &quot;internalType&quot;: &quot;uint256&quot;,
+        &quot;name&quot;: &quot;&quot;,
+        &quot;type&quot;: &quot;uint256&quot;
+      }
+    ],
+    &quot;stateMutability&quot;: &quot;view&quot;,
+    &quot;type&quot;: &quot;function&quot;
+  },
+  {
+    &quot;inputs&quot;: [],
+    &quot;name&quot;: &quot;MAX_SUPPLY&quot;,
+    &quot;outputs&quot;: [
+      {
+        &quot;internalType&quot;: &quot;uint256&quot;,
+        &quot;name&quot;: &quot;&quot;,
+        &quot;type&quot;: &quot;uint256&quot;
+      }
+    ],
+    &quot;stateMutability&quot;: &quot;view&quot;,
+    &quot;type&quot;: &quot;function&quot;
+  },
+  {
+    &quot;inputs&quot;: [],
+    &quot;name&quot;: &quot;PRICE&quot;,
+    &quot;outputs&quot;: [
+      {
+        &quot;internalType&quot;: &quot;uint256&quot;,
+        &quot;name&quot;: &quot;&quot;,
+        &quot;type&quot;: &quot;uint256&quot;
+      }
+    ],
+    &quot;stateMutability&quot;: &quot;view&quot;,
+    &quot;type&quot;: &quot;function&quot;
+  },
+  {
+    &quot;inputs&quot;: [
+      {
+        &quot;internalType&quot;: &quot;address&quot;,
+        &quot;name&quot;: &quot;to&quot;,
+        &quot;type&quot;: &quot;address&quot;
+      },
+      {
+        &quot;internalType&quot;: &quot;uint256&quot;,
+        &quot;name&quot;: &quot;tokenId&quot;,
+        &quot;type&quot;: &quot;uint256&quot;
+      }
+    ],
+    &quot;name&quot;: &quot;approve&quot;,
+    &quot;outputs&quot;: [],
+    &quot;stateMutability&quot;: &quot;nonpayable&quot;,
+    &quot;type&quot;: &quot;function&quot;
+  },
+  {
+    &quot;inputs&quot;: [
+      {
+        &quot;internalType&quot;: &quot;address&quot;,
+        &quot;name&quot;: &quot;owner&quot;,
+        &quot;type&quot;: &quot;address&quot;
+      }
+    ],
+    &quot;name&quot;: &quot;balanceOf&quot;,
+    &quot;outputs&quot;: [
+      {
+        &quot;internalType&quot;: &quot;uint256&quot;,
+        &quot;name&quot;: &quot;&quot;,
+        &quot;type&quot;: &quot;uint256&quot;
+      }
+    ],
+    &quot;stateMutability&quot;: &quot;view&quot;,
+    &quot;type&quot;: &quot;function&quot;
+  },
+  {
+    &quot;inputs&quot;: [],
+    &quot;name&quot;: &quot;baseTokenURI&quot;,
+    &quot;outputs&quot;: [
+      {
+        &quot;internalType&quot;: &quot;string&quot;,
+        &quot;name&quot;: &quot;&quot;,
+        &quot;type&quot;: &quot;string&quot;
+      }
+    ],
+    &quot;stateMutability&quot;: &quot;view&quot;,
+    &quot;type&quot;: &quot;function&quot;
+  },
+  {
+    &quot;inputs&quot;: [],
+    &quot;name&quot;: &quot;defaultTokenURI&quot;,
+    &quot;outputs&quot;: [
+      {
+        &quot;internalType&quot;: &quot;string&quot;,
+        &quot;name&quot;: &quot;&quot;,
+        &quot;type&quot;: &quot;string&quot;
+      }
+    ],
+    &quot;stateMutability&quot;: &quot;view&quot;,
+    &quot;type&quot;: &quot;function&quot;
+  },
+  {
+    &quot;inputs&quot;: [
+      {
+        &quot;internalType&quot;: &quot;uint256&quot;,
+        &quot;name&quot;: &quot;tokenId&quot;,
+        &quot;type&quot;: &quot;uint256&quot;
+      }
+    ],
+    &quot;name&quot;: &quot;getApproved&quot;,
+    &quot;outputs&quot;: [
+      {
+        &quot;internalType&quot;: &quot;address&quot;,
+        &quot;name&quot;: &quot;&quot;,
+        &quot;type&quot;: &quot;address&quot;
+      }
+    ],
+    &quot;stateMutability&quot;: &quot;view&quot;,
+    &quot;type&quot;: &quot;function&quot;
+  },
+  {
+    &quot;inputs&quot;: [
+      {
+        &quot;internalType&quot;: &quot;address&quot;,
+        &quot;name&quot;: &quot;owner&quot;,
+        &quot;type&quot;: &quot;address&quot;
+      },
+      {
+        &quot;internalType&quot;: &quot;address&quot;,
+        &quot;name&quot;: &quot;operator&quot;,
+        &quot;type&quot;: &quot;address&quot;
+      }
+    ],
+    &quot;name&quot;: &quot;isApprovedForAll&quot;,
+    &quot;outputs&quot;: [
+      {
+        &quot;internalType&quot;: &quot;bool&quot;,
+        &quot;name&quot;: &quot;&quot;,
+        &quot;type&quot;: &quot;bool&quot;
+      }
+    ],
+    &quot;stateMutability&quot;: &quot;view&quot;,
+    &quot;type&quot;: &quot;function&quot;
+  },
+  {
+    &quot;inputs&quot;: [
+      {
+        &quot;internalType&quot;: &quot;uint256&quot;,
+        &quot;name&quot;: &quot;_count&quot;,
+        &quot;type&quot;: &quot;uint256&quot;
+      }
+    ],
+    &quot;name&quot;: &quot;mintNFTs&quot;,
+    &quot;outputs&quot;: [],
+    &quot;stateMutability&quot;: &quot;payable&quot;,
+    &quot;type&quot;: &quot;function&quot;
+  },
+  {
+    &quot;inputs&quot;: [],
+    &quot;name&quot;: &quot;name&quot;,
+    &quot;outputs&quot;: [
+      {
+        &quot;internalType&quot;: &quot;string&quot;,
+        &quot;name&quot;: &quot;&quot;,
+        &quot;type&quot;: &quot;string&quot;
+      }
+    ],
+    &quot;stateMutability&quot;: &quot;view&quot;,
+    &quot;type&quot;: &quot;function&quot;
+  },
+  {
+    &quot;inputs&quot;: [],
+    &quot;name&quot;: &quot;owner&quot;,
+    &quot;outputs&quot;: [
+      {
+        &quot;internalType&quot;: &quot;address&quot;,
+        &quot;name&quot;: &quot;&quot;,
+        &quot;type&quot;: &quot;address&quot;
+      }
+    ],
+    &quot;stateMutability&quot;: &quot;view&quot;,
+    &quot;type&quot;: &quot;function&quot;
+  },
+  {
+    &quot;inputs&quot;: [
+      {
+        &quot;internalType&quot;: &quot;uint256&quot;,
+        &quot;name&quot;: &quot;tokenId&quot;,
+        &quot;type&quot;: &quot;uint256&quot;
+      }
+    ],
+    &quot;name&quot;: &quot;ownerOf&quot;,
+    &quot;outputs&quot;: [
+      {
+        &quot;internalType&quot;: &quot;address&quot;,
+        &quot;name&quot;: &quot;&quot;,
+        &quot;type&quot;: &quot;address&quot;
+      }
+    ],
+    &quot;stateMutability&quot;: &quot;view&quot;,
+    &quot;type&quot;: &quot;function&quot;
+  },
+  {
+    &quot;inputs&quot;: [],
+    &quot;name&quot;: &quot;renounceOwnership&quot;,
+    &quot;outputs&quot;: [],
+    &quot;stateMutability&quot;: &quot;nonpayable&quot;,
+    &quot;type&quot;: &quot;function&quot;
+  },
+  {
+    &quot;inputs&quot;: [],
+    &quot;name&quot;: &quot;reserveNFTs&quot;,
+    &quot;outputs&quot;: [],
+    &quot;stateMutability&quot;: &quot;nonpayable&quot;,
+    &quot;type&quot;: &quot;function&quot;
+  },
+  {
+    &quot;inputs&quot;: [
+      {
+        &quot;internalType&quot;: &quot;address&quot;,
+        &quot;name&quot;: &quot;from&quot;,
+        &quot;type&quot;: &quot;address&quot;
+      },
+      {
+        &quot;internalType&quot;: &quot;address&quot;,
+        &quot;name&quot;: &quot;to&quot;,
+        &quot;type&quot;: &quot;address&quot;
+      },
+      {
+        &quot;internalType&quot;: &quot;uint256&quot;,
+        &quot;name&quot;: &quot;tokenId&quot;,
+        &quot;type&quot;: &quot;uint256&quot;
+      }
+    ],
+    &quot;name&quot;: &quot;safeTransferFrom&quot;,
+    &quot;outputs&quot;: [],
+    &quot;stateMutability&quot;: &quot;nonpayable&quot;,
+    &quot;type&quot;: &quot;function&quot;
+  },
+  {
+    &quot;inputs&quot;: [
+      {
+        &quot;internalType&quot;: &quot;address&quot;,
+        &quot;name&quot;: &quot;from&quot;,
+        &quot;type&quot;: &quot;address&quot;
+      },
+      {
+        &quot;internalType&quot;: &quot;address&quot;,
+        &quot;name&quot;: &quot;to&quot;,
+        &quot;type&quot;: &quot;address&quot;
+      },
+      {
+        &quot;internalType&quot;: &quot;uint256&quot;,
+        &quot;name&quot;: &quot;tokenId&quot;,
+        &quot;type&quot;: &quot;uint256&quot;
+      },
+      {
+        &quot;internalType&quot;: &quot;bytes&quot;,
+        &quot;name&quot;: &quot;data&quot;,
+        &quot;type&quot;: &quot;bytes&quot;
+      }
+    ],
+    &quot;name&quot;: &quot;safeTransferFrom&quot;,
+    &quot;outputs&quot;: [],
+    &quot;stateMutability&quot;: &quot;nonpayable&quot;,
+    &quot;type&quot;: &quot;function&quot;
+  },
+  {
+    &quot;inputs&quot;: [
+      {
+        &quot;internalType&quot;: &quot;address&quot;,
+        &quot;name&quot;: &quot;operator&quot;,
+        &quot;type&quot;: &quot;address&quot;
+      },
+      {
+        &quot;internalType&quot;: &quot;bool&quot;,
+        &quot;name&quot;: &quot;approved&quot;,
+        &quot;type&quot;: &quot;bool&quot;
+      }
+    ],
+    &quot;name&quot;: &quot;setApprovalForAll&quot;,
+    &quot;outputs&quot;: [],
+    &quot;stateMutability&quot;: &quot;nonpayable&quot;,
+    &quot;type&quot;: &quot;function&quot;
+  },
+  {
+    &quot;inputs&quot;: [
+      {
+        &quot;internalType&quot;: &quot;string&quot;,
+        &quot;name&quot;: &quot;_baseTokenURI&quot;,
+        &quot;type&quot;: &quot;string&quot;
+      }
+    ],
+    &quot;name&quot;: &quot;setBaseURI&quot;,
+    &quot;outputs&quot;: [],
+    &quot;stateMutability&quot;: &quot;nonpayable&quot;,
+    &quot;type&quot;: &quot;function&quot;
+  },
+  {
+    &quot;inputs&quot;: [
+      {
+        &quot;internalType&quot;: &quot;bytes4&quot;,
+        &quot;name&quot;: &quot;interfaceId&quot;,
+        &quot;type&quot;: &quot;bytes4&quot;
+      }
+    ],
+    &quot;name&quot;: &quot;supportsInterface&quot;,
+    &quot;outputs&quot;: [
+      {
+        &quot;internalType&quot;: &quot;bool&quot;,
+        &quot;name&quot;: &quot;&quot;,
+        &quot;type&quot;: &quot;bool&quot;
+      }
+    ],
+    &quot;stateMutability&quot;: &quot;view&quot;,
+    &quot;type&quot;: &quot;function&quot;
+  },
+  {
+    &quot;inputs&quot;: [],
+    &quot;name&quot;: &quot;symbol&quot;,
+    &quot;outputs&quot;: [
+      {
+        &quot;internalType&quot;: &quot;string&quot;,
+        &quot;name&quot;: &quot;&quot;,
+        &quot;type&quot;: &quot;string&quot;
+      }
+    ],
+    &quot;stateMutability&quot;: &quot;view&quot;,
+    &quot;type&quot;: &quot;function&quot;
+  },
+  {
+    &quot;inputs&quot;: [
+      {
+        &quot;internalType&quot;: &quot;uint256&quot;,
+        &quot;name&quot;: &quot;index&quot;,
+        &quot;type&quot;: &quot;uint256&quot;
+      }
+    ],
+    &quot;name&quot;: &quot;tokenByIndex&quot;,
+    &quot;outputs&quot;: [
+      {
+        &quot;internalType&quot;: &quot;uint256&quot;,
+        &quot;name&quot;: &quot;&quot;,
+        &quot;type&quot;: &quot;uint256&quot;
+      }
+    ],
+    &quot;stateMutability&quot;: &quot;view&quot;,
+    &quot;type&quot;: &quot;function&quot;
+  },
+  {
+    &quot;inputs&quot;: [
+      {
+        &quot;internalType&quot;: &quot;address&quot;,
+        &quot;name&quot;: &quot;owner&quot;,
+        &quot;type&quot;: &quot;address&quot;
+      },
+      {
+        &quot;internalType&quot;: &quot;uint256&quot;,
+        &quot;name&quot;: &quot;index&quot;,
+        &quot;type&quot;: &quot;uint256&quot;
+      }
+    ],
+    &quot;name&quot;: &quot;tokenOfOwnerByIndex&quot;,
+    &quot;outputs&quot;: [
+      {
+        &quot;internalType&quot;: &quot;uint256&quot;,
+        &quot;name&quot;: &quot;&quot;,
+        &quot;type&quot;: &quot;uint256&quot;
+      }
+    ],
+    &quot;stateMutability&quot;: &quot;view&quot;,
+    &quot;type&quot;: &quot;function&quot;
+  },
+  {
+    &quot;inputs&quot;: [
+      {
+        &quot;internalType&quot;: &quot;uint256&quot;,
+        &quot;name&quot;: &quot;tokenId&quot;,
+        &quot;type&quot;: &quot;uint256&quot;
+      }
+    ],
+    &quot;name&quot;: &quot;tokenURI&quot;,
+    &quot;outputs&quot;: [
+      {
+        &quot;internalType&quot;: &quot;string&quot;,
+        &quot;name&quot;: &quot;&quot;,
+        &quot;type&quot;: &quot;string&quot;
+      }
+    ],
+    &quot;stateMutability&quot;: &quot;view&quot;,
+    &quot;type&quot;: &quot;function&quot;
+  },
+  {
+    &quot;inputs&quot;: [
+      {
+        &quot;internalType&quot;: &quot;address&quot;,
+        &quot;name&quot;: &quot;_owner&quot;,
+        &quot;type&quot;: &quot;address&quot;
+      }
+    ],
+    &quot;name&quot;: &quot;tokensOfOwner&quot;,
+    &quot;outputs&quot;: [
+      {
+        &quot;internalType&quot;: &quot;uint256[]&quot;,
+        &quot;name&quot;: &quot;&quot;,
+        &quot;type&quot;: &quot;uint256[]&quot;
+      }
+    ],
+    &quot;stateMutability&quot;: &quot;view&quot;,
+    &quot;type&quot;: &quot;function&quot;
+  },
+  {
+    &quot;inputs&quot;: [],
+    &quot;name&quot;: &quot;totalSupply&quot;,
+    &quot;outputs&quot;: [
+      {
+        &quot;internalType&quot;: &quot;uint256&quot;,
+        &quot;name&quot;: &quot;&quot;,
+        &quot;type&quot;: &quot;uint256&quot;
+      }
+    ],
+    &quot;stateMutability&quot;: &quot;view&quot;,
+    &quot;type&quot;: &quot;function&quot;
+  },
+  {
+    &quot;inputs&quot;: [
+      {
+        &quot;internalType&quot;: &quot;address&quot;,
+        &quot;name&quot;: &quot;from&quot;,
+        &quot;type&quot;: &quot;address&quot;
+      },
+      {
+        &quot;internalType&quot;: &quot;address&quot;,
+        &quot;name&quot;: &quot;to&quot;,
+        &quot;type&quot;: &quot;address&quot;
+      },
+      {
+        &quot;internalType&quot;: &quot;uint256&quot;,
+        &quot;name&quot;: &quot;tokenId&quot;,
+        &quot;type&quot;: &quot;uint256&quot;
+      }
+    ],
+    &quot;name&quot;: &quot;transferFrom&quot;,
+    &quot;outputs&quot;: [],
+    &quot;stateMutability&quot;: &quot;nonpayable&quot;,
+    &quot;type&quot;: &quot;function&quot;
+  },
+  {
+    &quot;inputs&quot;: [
+      {
+        &quot;internalType&quot;: &quot;address&quot;,
+        &quot;name&quot;: &quot;newOwner&quot;,
+        &quot;type&quot;: &quot;address&quot;
+      }
+    ],
+    &quot;name&quot;: &quot;transferOwnership&quot;,
+    &quot;outputs&quot;: [],
+    &quot;stateMutability&quot;: &quot;nonpayable&quot;,
+    &quot;type&quot;: &quot;function&quot;
+  },
+  {
+    &quot;inputs&quot;: [],
+    &quot;name&quot;: &quot;withdraw&quot;,
+    &quot;outputs&quot;: [],
+    &quot;stateMutability&quot;: &quot;payable&quot;,
+    &quot;type&quot;: &quot;function&quot;
+  }
+]" maxchars="100" pre="true"></expandable-text-stub>
     </div>
     <!---->
     <!----><span class="v-card__underlay"></span>
   </div>
+  <h4 data-v-39109da1="" class="mb-1">Bytecode</h4>
+  <div data-v-39109da1="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-6">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-39109da1="" class="v-card-text text-medium-emphasis bg-grey-lighten-4">
+      <expandable-text-stub data-v-39109da1="" text="0x60" maxchars="400" pre="true"></expandable-text-stub>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+  <h4 data-v-39109da1="" class="mb-1">Assembly</h4>
   <div data-v-39109da1="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
     <!---->
     <div class="v-card__loader">
@@ -97,9 +674,8 @@ exports[`ContractCode.vue > Should display contract verification info if public 
     </div>
     <!---->
     <!---->
-    <div data-v-39109da1="" class="v-card-title">Assembly</div>
     <div data-v-39109da1="" class="v-card-text">
-      <div data-v-39109da1="" class="hljs">abc</div>
+      <div data-v-39109da1="" class="hljs">highlighted code</div>
     </div>
     <!---->
     <!----><span class="v-card__underlay"></span>
@@ -111,6 +687,8 @@ exports[`ContractCode.vue > Should display the contract verification panel for p
 "<div data-v-39109da1="">
   <!--v-if-->
   <contract-verification-stub data-v-39109da1=""></contract-verification-stub>
+  <!--v-if-->
+  <h4 data-v-39109da1="" class="mb-1">Bytecode</h4>
   <div data-v-39109da1="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-6">
     <!---->
     <div class="v-card__loader">
@@ -129,63 +707,13 @@ exports[`ContractCode.vue > Should display the contract verification panel for p
     </div>
     <!---->
     <!---->
-    <div data-v-39109da1="" class="v-card-title">Bytecode</div>
-    <div data-v-39109da1="" class="v-card-text">
-      <div data-v-39109da1="" class="v-input v-input--horizontal v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-input--readonly v-textarea v-text-field text-medium-emphasis">
-        <!---->
-        <div class="v-input__control">
-          <div class="v-field v-field--active v-field--appended v-field--dirty v-field--no-label v-field--variant-outlined v-theme--light v-locale--is-ltr">
-            <div class="v-field__overlay"></div>
-            <div class="v-field__loader">
-              <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
-                <!---->
-                <div class="v-progress-linear__background"></div>
-                <div class="v-progress-linear__buffer" style="width: 0%;"></div>
-                <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
-                  <div class="v-progress-linear__indeterminate">
-                    <div class="v-progress-linear__indeterminate long"></div>
-                    <div class="v-progress-linear__indeterminate short"></div>
-                  </div>
-                </transition-stub>
-                <!---->
-              </div>
-            </div>
-            <!---->
-            <div class="v-field__field" data-no-activator="">
-              <!---->
-              <!---->
-              <!----><textarea class="v-field__input" readonly="" rows="5" id="input-0" aria-describedby="input-0-messages" value="0x60"></textarea>
-              <!---->
-              <!---->
-            </div>
-            <!---->
-            <div class="v-field__append-inner"><button data-v-39109da1="" type="button" class="v-btn v-btn--icon v-theme--light v-btn--density-compact v-btn--size-default v-btn--variant-text"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-                <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-content-copy mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
-                <!---->
-                <!---->
-              </button>
-              <!---->
-            </div>
-            <div class="v-field__outline">
-              <div class="v-field__outline__start"></div>
-              <!---->
-              <div class="v-field__outline__end"></div>
-              <!---->
-            </div>
-          </div>
-        </div>
-        <!---->
-        <div id="input-0-messages" class="v-input__details" role="alert" aria-live="polite">
-          <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
-            <!---->
-          </transition-group-stub>
-          <!---->
-        </div>
-      </div><input data-v-39109da1="" type="hidden" id="copyBytecode" value="0x60">
+    <div data-v-39109da1="" class="v-card-text text-medium-emphasis bg-grey-lighten-4">
+      <expandable-text-stub data-v-39109da1="" text="0x60" maxchars="400" pre="true"></expandable-text-stub>
     </div>
     <!---->
     <!----><span class="v-card__underlay"></span>
   </div>
+  <h4 data-v-39109da1="" class="mb-1">Assembly</h4>
   <div data-v-39109da1="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
     <!---->
     <div class="v-card__loader">
@@ -204,9 +732,8 @@ exports[`ContractCode.vue > Should display the contract verification panel for p
     </div>
     <!---->
     <!---->
-    <div data-v-39109da1="" class="v-card-title">Assembly</div>
     <div data-v-39109da1="" class="v-card-text">
-      <div data-v-39109da1="" class="hljs">abc</div>
+      <div data-v-39109da1="" class="hljs">highlighted code</div>
     </div>
     <!---->
     <!----><span class="v-card__underlay"></span>
@@ -218,6 +745,7 @@ exports[`ContractCode.vue > Should not display the contract verification panel i
 "<div data-v-39109da1="">
   <!--v-if-->
   <!--v-if-->
+  <!--v-if-->
   <div data-v-39109da1="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-6">
     <!---->
     <div class="v-card__loader">
@@ -236,11 +764,118 @@ exports[`ContractCode.vue > Should not display the contract verification panel i
     </div>
     <!---->
     <!---->
-    <div data-v-39109da1="" class="v-card-title">Bytecode</div>
     <div data-v-39109da1="" class="v-card-text"> No bytecode for this contract. Redeploy to upload it. </div>
     <!---->
     <!----><span class="v-card__underlay"></span>
   </div>
+  <div data-v-39109da1="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-6">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-39109da1="" class="v-card-text"> No assembly for this contract. Redeploy to upload it. </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+</div>"
+`;
+
+exports[`ContractCode.vue > Should show appropriate message when no assembly is present 1`] = `
+"<div data-v-39109da1="">
+  <!--v-if-->
+  <!--v-if-->
+  <!--v-if-->
+  <h4 data-v-39109da1="" class="mb-1">Bytecode</h4>
+  <div data-v-39109da1="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-6">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-39109da1="" class="v-card-text text-medium-emphasis bg-grey-lighten-4">
+      <expandable-text-stub data-v-39109da1="" text="0x60" maxchars="400" pre="true"></expandable-text-stub>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+  <div data-v-39109da1="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-6">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-39109da1="" class="v-card-text"> No assembly for this contract. Redeploy to upload it. </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+</div>"
+`;
+
+exports[`ContractCode.vue > Should show appropriate message when no bytecode is present 1`] = `
+"<div data-v-39109da1="">
+  <!--v-if-->
+  <!--v-if-->
+  <!--v-if-->
+  <div data-v-39109da1="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-6">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-39109da1="" class="v-card-text"> No bytecode for this contract. Redeploy to upload it. </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+  <h4 data-v-39109da1="" class="mb-1">Assembly</h4>
   <div data-v-39109da1="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
     <!---->
     <div class="v-card__loader">
@@ -259,8 +894,134 @@ exports[`ContractCode.vue > Should not display the contract verification panel i
     </div>
     <!---->
     <!---->
-    <div data-v-39109da1="" class="v-card-title">Assembly</div>
-    <div data-v-39109da1="" class="v-card-text"><span data-v-39109da1="">No assembly for this contract. Redeploy to upload it.</span></div>
+    <div data-v-39109da1="" class="v-card-text">
+      <div data-v-39109da1="" class="hljs">highlighted code</div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+</div>"
+`;
+
+exports[`ContractCode.vue > Should show loading state initially 1`] = `
+"<div data-v-39109da1="">
+  <!--v-if-->
+  <!--v-if-->
+  <!--v-if-->
+  <h4 data-v-39109da1="" class="mb-1">Bytecode</h4>
+  <div data-v-39109da1="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-6">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-39109da1="" class="v-card-text text-medium-emphasis bg-grey-lighten-4">
+      <expandable-text-stub data-v-39109da1="" text="0x60" maxchars="400" pre="true"></expandable-text-stub>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+  <h4 data-v-39109da1="" class="mb-1">Assembly</h4>
+  <div data-v-39109da1="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-39109da1="" class="v-card-text">
+      <div data-v-39109da1="" class="hljs">highlighted code</div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+</div>"
+`;
+
+exports[`ContractCode.vue > Should show success alert when contract is just verified 1`] = `
+"<div data-v-39109da1="">
+  <div data-v-39109da1="" class="v-alert v-theme--light bg-success v-alert--density-compact v-alert--variant-flat mb-2" role="alert">
+    <!----><span class="v-alert__underlay"></span>
+    <!---->
+    <div class="v-alert__prepend"><i class="mdi-check-circle mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="compact"></i></div>
+    <div class="v-alert__content">
+      <!---->Contract has been verified successfully!
+    </div>
+    <!---->
+    <!---->
+  </div>
+  <contract-verification-info-stub data-v-39109da1="" contract="[object Object]"></contract-verification-info-stub>
+  <!--v-if-->
+  <h4 data-v-39109da1="" class="mb-1">Bytecode</h4>
+  <div data-v-39109da1="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-6">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-39109da1="" class="v-card-text text-medium-emphasis bg-grey-lighten-4">
+      <expandable-text-stub data-v-39109da1="" text="0x60" maxchars="400" pre="true"></expandable-text-stub>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+  <h4 data-v-39109da1="" class="mb-1">Assembly</h4>
+  <div data-v-39109da1="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-39109da1="" class="v-card-text">
+      <div data-v-39109da1="" class="hljs">highlighted code</div>
+    </div>
     <!---->
     <!----><span class="v-card__underlay"></span>
   </div>

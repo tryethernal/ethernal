@@ -52,9 +52,9 @@ exports[`ExplorerDexSettings.vue > Should display fully synced active dex settin
               <!---->
             </div>
           </div><strong>URL:</strong> <a href="//undefined/dex" target="_blank">https:///dex</a><br><strong>Router:</strong>
-          <hash-link-stub type="address" hash="0x123" fullhash="true" withname="false"></hash-link-stub><br><strong>Factory:</strong>
-          <hash-link-stub type="address" hash="0x456" fullhash="true" withname="false"></hash-link-stub><br><strong>Wrapped Native Token:</strong>
-          <hash-link-stub contract="[object Object]" type="address" hash="0x789" withtokenname="true" withname="true"></hash-link-stub><br>
+          <hash-link-stub type="address" hash="0x123" fullhash="true" withname="false" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub><br><strong>Factory:</strong>
+          <hash-link-stub type="address" hash="0x456" fullhash="true" withname="false" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub><br><strong>Wrapped Native Token:</strong>
+          <hash-link-stub contract="[object Object]" type="address" hash="0x789" fullhash="false" withname="true" notcopiable="false" withtokenname="true" xshash="false" unlink="false" loadcontract="false"></hash-link-stub><br>
           <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator"><strong>Pairs synchronization status:</strong>
           <div class="v-progress-linear v-progress-linear--rounded v-progress-linear--rounded v-theme--light v-locale--is-ltr" style="top: 0px; height: 20px; --v-progress-linear-height: 20px;" role="progressbar" aria-hidden="false" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100" query="false">
             <!---->
@@ -174,9 +174,9 @@ exports[`ExplorerDexSettings.vue > Should display limited sync 1`] = `
               <!---->
             </div>
           </div><strong>URL:</strong> <a href="//undefined/dex" target="_blank">https:///dex</a><br><strong>Router:</strong>
-          <hash-link-stub type="address" hash="0x123" fullhash="true" withname="false"></hash-link-stub><br><strong>Factory:</strong>
-          <hash-link-stub type="address" hash="0x456" fullhash="true" withname="false"></hash-link-stub><br><strong>Wrapped Native Token:</strong>
-          <hash-link-stub contract="[object Object]" type="address" hash="0x789" withtokenname="true" withname="true"></hash-link-stub><br>
+          <hash-link-stub type="address" hash="0x123" fullhash="true" withname="false" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub><br><strong>Factory:</strong>
+          <hash-link-stub type="address" hash="0x456" fullhash="true" withname="false" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub><br><strong>Wrapped Native Token:</strong>
+          <hash-link-stub contract="[object Object]" type="address" hash="0x789" fullhash="false" withname="true" notcopiable="false" withtokenname="true" xshash="false" unlink="false" loadcontract="false"></hash-link-stub><br>
           <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator"><strong>Pairs synchronization status:</strong>
           <div class="v-progress-linear v-progress-linear--rounded v-progress-linear--rounded v-theme--light v-locale--is-ltr" style="top: 0px; height: 20px; --v-progress-linear-height: 20px;" role="progressbar" aria-hidden="false" aria-valuemin="0" aria-valuemax="100" aria-valuenow="80" query="false">
             <!---->
@@ -250,9 +250,9 @@ exports[`ExplorerDexSettings.vue > Should display message if no subscription 1`]
               <!---->
             </div>
           </div><strong>URL:</strong> <a href="//undefined/dex" target="_blank">https:///dex</a><br><strong>Router:</strong>
-          <hash-link-stub type="address" hash="0x123" fullhash="true" withname="false"></hash-link-stub><br><strong>Factory:</strong>
-          <hash-link-stub type="address" hash="0x456" fullhash="true" withname="false"></hash-link-stub><br><strong>Wrapped Native Token:</strong>
-          <hash-link-stub contract="[object Object]" type="address" hash="0x789" withtokenname="true" withname="true"></hash-link-stub><br>
+          <hash-link-stub type="address" hash="0x123" fullhash="true" withname="false" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub><br><strong>Factory:</strong>
+          <hash-link-stub type="address" hash="0x456" fullhash="true" withname="false" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub><br><strong>Wrapped Native Token:</strong>
+          <hash-link-stub contract="[object Object]" type="address" hash="0x789" fullhash="false" withname="true" notcopiable="false" withtokenname="true" xshash="false" unlink="false" loadcontract="false"></hash-link-stub><br>
           <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator"><strong>Pairs synchronization status:</strong>
           <div class="v-progress-linear v-progress-linear--rounded v-progress-linear--rounded v-theme--light v-locale--is-ltr" style="top: 0px; height: 20px; --v-progress-linear-height: 20px;" role="progressbar" aria-hidden="false" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100" query="false">
             <!---->
@@ -326,9 +326,9 @@ exports[`ExplorerDexSettings.vue > Should display syncing dex 1`] = `
               <!---->
             </div>
           </div><strong>URL:</strong> <a href="//undefined/dex" target="_blank">https:///dex</a><br><strong>Router:</strong>
-          <hash-link-stub type="address" hash="0x123" fullhash="true" withname="false"></hash-link-stub><br><strong>Factory:</strong>
-          <hash-link-stub type="address" hash="0x456" fullhash="true" withname="false"></hash-link-stub><br><strong>Wrapped Native Token:</strong>
-          <hash-link-stub contract="[object Object]" type="address" hash="0x789" withtokenname="true" withname="true"></hash-link-stub><br>
+          <hash-link-stub type="address" hash="0x123" fullhash="true" withname="false" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub><br><strong>Factory:</strong>
+          <hash-link-stub type="address" hash="0x456" fullhash="true" withname="false" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub><br><strong>Wrapped Native Token:</strong>
+          <hash-link-stub contract="[object Object]" type="address" hash="0x789" fullhash="false" withname="true" notcopiable="false" withtokenname="true" xshash="false" unlink="false" loadcontract="false"></hash-link-stub><br>
           <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator"><strong>Pairs synchronization status:</strong>
           <div class="v-progress-linear v-progress-linear--rounded v-progress-linear--rounded v-theme--light v-locale--is-ltr" style="top: 0px; height: 20px; --v-progress-linear-height: 20px;" role="progressbar" aria-hidden="false" aria-valuemin="0" aria-valuemax="100" aria-valuenow="80" query="false">
             <!---->

@@ -1,0 +1,13 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`CompactTransactionTokenTransfers.vue > Should fetch and display token transfers 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr pa-0">
+  <compact-token-transfers-stub transfers="[object Object]" sortby="[object Object]" count="1" headers="[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]" loading="false" showall="false" itemsperpage="5"></compact-token-transfers-stub>
+</div>"
+`;
+
+exports[`CompactTransactionTokenTransfers.vue > Should show loading state 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr pa-0">
+  <compact-token-transfers-stub transfers="" sortby="[object Object]" count="0" headers="[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]" loading="false" showall="false" itemsperpage="5"></compact-token-transfers-stub>
+</div>"
+`;

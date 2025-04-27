@@ -294,10 +294,9 @@ export default {
                 this.resetWorkspaceLoading = true;
                 this.$server.resetWorkspace()
                     .then(({ data }) => {
+                        alert('Workspace reset finished!');
                         if (data.needsBatchReset)
-                            alert('Your workspace is being reset. It might take some time for all the data to be cleared.')
-                        else
-                            alert('Workspace reset finished!');
+                            document.location.reload();
                     })
                     .catch((error) => {
                         alert('Error while resetting the workspace, please retry');

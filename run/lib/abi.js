@@ -90,7 +90,9 @@ const getTransactionMethodDetails = (transaction, abi) => {
         const contractAbi = abi ? abi : findAbiForFunction(transaction.data.slice(0, 10))
 
         if (!contractAbi)
-            return {};
+            return transaction.data.length > 10 ? {
+                sighash: transaction.data.slice(0, 10)
+            } : {};
 
         const jsonInterface = new ethers.utils.Interface(contractAbi);
         const parsedTransactionData = jsonInterface.parseTransaction(transaction);
@@ -125,7 +127,9 @@ const getTransactionMethodDetails = (transaction, abi) => {
             signature: `${fragment.name}(` + fragment.inputs.map((input) => `${input.type} ${input.name}`).join(', ') + ')'
         };
     } catch(_error) {
-        return {};
+        return transaction.data.length > 10 ? {
+            sighash: transaction.data.slice(0, 10)
+        } : {};
     }
 };
 

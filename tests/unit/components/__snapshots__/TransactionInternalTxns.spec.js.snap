@@ -1,0 +1,182 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`TransactionInternalTxns.vue > Should not fetch data when transaction hash is missing 1`] = `
+"<div class="internal-txns-tab-content">
+  <!-- Trace Card -->
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated pb-2">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-text">
+      <div class="d-flex align-center justify-center py-8"><i class="mdi-information-outline mdi v-icon notranslate v-theme--light v-icon--size-large text-grey-lighten-1 mr-4" aria-hidden="true"></i><span class="text-body-1"> No internal transactions found for this transaction. </span></div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+</div>"
+`;
+
+exports[`TransactionInternalTxns.vue > Should show empty state when no trace steps are found 1`] = `
+"<div class="internal-txns-tab-content">
+  <!-- Trace Card -->
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated pb-2">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-text">
+      <div class="d-flex align-center justify-center py-8"><i class="mdi-information-outline mdi v-icon notranslate v-theme--light v-icon--size-large text-grey-lighten-1 mr-4" aria-hidden="true"></i><span class="text-body-1"> No internal transactions found for this transaction. </span></div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+</div>"
+`;
+
+exports[`TransactionInternalTxns.vue > Should show error state when API call fails 1`] = `
+"<div class="internal-txns-tab-content">
+  <!-- Trace Card -->
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated pb-2">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-text">
+      <div class="d-flex align-center justify-center py-8"><i class="mdi-alert-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-large text-error mr-4" aria-hidden="true"></i><span class="text-body-1 text-error">Failed to load internal transactions. Please try again later.</span></div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+</div>"
+`;
+
+exports[`TransactionInternalTxns.vue > Should show loading state 1`] = `
+"<div class="internal-txns-tab-content">
+  <!-- Trace Card -->
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated pb-2">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-text">
+      <div class="d-flex align-center justify-center py-8"><i class="mdi-information-outline mdi v-icon notranslate v-theme--light v-icon--size-large text-grey-lighten-1 mr-4" aria-hidden="true"></i><span class="text-body-1"> No internal transactions found for this transaction. </span></div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+</div>"
+`;
+
+exports[`TransactionInternalTxns.vue > Should show trace steps when data is available 1`] = `
+"<div class="internal-txns-tab-content">
+  <!-- Trace Card -->
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated pb-2">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-text">
+      <trace-step-stub step="[object Object]"></trace-step-stub>
+      <trace-step-stub step="[object Object]"></trace-step-stub>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+</div>"
+`;
+
+exports[`TransactionInternalTxns.vue > Should use cached trace steps on subsequent renders 1`] = `
+"<div class="internal-txns-tab-content">
+  <!-- Trace Card -->
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated pb-2">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-text">
+      <trace-step-stub step="[object Object]"></trace-step-stub>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+</div>"
+`;

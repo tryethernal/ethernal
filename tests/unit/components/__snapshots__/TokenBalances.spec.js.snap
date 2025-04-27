@@ -70,14 +70,14 @@ exports[`TokenBalances.vue > Should display token balances 1`] = `
             <!---->
             <tr class="v-data-table__tr">
               <td class="v-data-table__td v-data-table-column--align-start">
-                <hash-link-stub type="address" hash="0x123" withname="true" withtokenname="true" contract="[object Object]"></hash-link-stub>
+                <hash-link-stub type="address" hash="0x123" contract="[object Object]" fullhash="false" withname="true" notcopiable="false" withtokenname="true" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
               </td>
               <td class="v-data-table__td v-data-table-column--align-start">99,999,989,989.989999 ETL</td>
             </tr>
             <!---->
             <tr class="v-data-table__tr">
               <td class="v-data-table__td v-data-table-column--align-start">
-                <hash-link-stub type="address" hash="0x456" withname="true" withtokenname="true" contract="[object Object]"></hash-link-stub>
+                <hash-link-stub type="address" hash="0x456" contract="[object Object]" fullhash="false" withname="true" notcopiable="false" withtokenname="true" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
               </td>
               <td class="v-data-table__td v-data-table-column--align-start">999,999.899899 USDC</td>
             </tr>
@@ -222,14 +222,14 @@ exports[`TokenBalances.vue > Should hide the topbar if in dense mode 1`] = `
             <!---->
             <tr class="v-data-table__tr">
               <td class="v-data-table__td v-data-table-column--align-start">
-                <hash-link-stub type="address" hash="0x456" withname="true" withtokenname="true" contract="[object Object]"></hash-link-stub>
+                <hash-link-stub type="address" hash="0x456" contract="[object Object]" fullhash="false" withname="true" notcopiable="false" withtokenname="true" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
               </td>
               <td class="v-data-table__td v-data-table-column--align-start">2</td>
             </tr>
             <!---->
             <tr class="v-data-table__tr">
               <td class="v-data-table__td v-data-table-column--align-start">
-                <hash-link-stub type="address" hash="0x123" withname="true" withtokenname="true" contract="[object Object]"></hash-link-stub>
+                <hash-link-stub type="address" hash="0x123" contract="[object Object]" fullhash="false" withname="true" notcopiable="false" withtokenname="true" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
               </td>
               <td class="v-data-table__td v-data-table-column--align-start">1</td>
             </tr>

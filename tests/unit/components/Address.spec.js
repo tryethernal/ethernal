@@ -2,10 +2,15 @@ import flushPromises from 'flush-promises';
 import Address from '@/components/Address.vue';
 
 const stubs = [
-    'Hash-Link',
+    'Base-Chip-Group',
+    'Address-Header',
     'Address-Transactions-List',
     'Address-Token-Transfers',
-    'Token-Balances'
+    'Address-Trace-Steps',
+    'Contract-Details',
+    'Contract-Logs',
+    'Address-Assets',
+    'Address-Analytics'
 ];
 
 describe('Address.vue', () => {
@@ -23,73 +28,9 @@ describe('Address.vue', () => {
             }});
     });
 
-    it('Should display EOA accounts stats', async () => {
+    it('Should display address base page', async () => {
         vi.spyOn(server, 'getContract')
             .mockResolvedValueOnce({ data: null });
-        const wrapper = mount(Address, {
-            props: {
-                hash: '0x123'
-            },
-            global: {
-                stubs,
-                mocks: {
-                    $route: {
-                        query: {
-                            tab: 'transactions'
-                        }
-                    }
-                }
-            }
-        });
-
-        await flushPromises();
-        expect(wrapper.html()).toMatchSnapshot();
-    });
-
-    it('Should display ERC20 contract stats', async () => {
-        vi.spyOn(server, 'getContract')
-            .mockResolvedValueOnce({ data: {
-                name: 'ERC20 Contract',
-                patterns: ['erc20'],
-                tokenName: 'ERC20 Token',
-                tokenSymbol: 'ERC',
-                tokenDecimals: 18,
-                address: '0x123',
-                creationTransaction: '0xabc'
-            }});
-
-        const wrapper = mount(Address, {
-            props: {
-                hash: '0x123'
-            },
-            global: {
-                stubs,
-                mocks: {
-                    $route: {
-                        query: {
-                            tab: 'transactions'
-                        }
-                    }
-                }
-            }
-        });
-
-        await flushPromises();
-        expect(wrapper.html()).toMatchSnapshot();
-    });
-
-    it('Should display ERC721 contract stats', async () => {
-        vi.spyOn(server, 'getContract')
-            .mockResolvedValueOnce({ data: {
-                name: 'ERC721 Contract',
-                patterns: ['erc721'],
-                tokenName: 'ERC721 Token',
-                tokenSymbol: 'ERC',
-                tokenDecimals: 18,
-                address: '0x123',
-                creationTransaction: '0xabc'
-            }});
-
         const wrapper = mount(Address, {
             props: {
                 hash: '0x123'

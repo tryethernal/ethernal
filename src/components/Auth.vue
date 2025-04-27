@@ -8,114 +8,127 @@
                         Ethernal is an open source block explorer for EVM-based chains.
                     </p>
                 </div>
-                <v-card v-if="signInMode" border>
-                    <v-alert class="mb-0" density="compact" text type="info" v-show="explorerToken">Sign up or sign in in order to finish setting up your explorer</v-alert>
-                    <v-alert class="mb-0" density="compact" text type="error" v-show="error">{{ error }}</v-alert>
-                    <v-card-title>Sign In</v-card-title>
-                    <v-card-text>
-                        <v-form @submit.prevent="signIn" v-model="valid">
-                            <v-text-field
-                                variant="outlined"
-                                color="primary"
-                                :rules="[
-                                    v => !!v || 'Email is required',
-                                    v => /.+@.+\..+/.test(v) || 'Email must be valid',
-                                ]"
-                                required
-                                v-model="email" name="email" label="Email" type="text"></v-text-field>
-                            <v-text-field
-                                :rules="[
-                                    v => !!v || 'Password is required',
-                                ]"
-                                required
-                                v-model="password" name="password" label="Password" type="password"></v-text-field>
-                            <v-card-actions class="px-0">
-                                <div style="float: left;">
-                                    <small><a href="#" @click.prevent="switchMode('signup')">Sign Up</a></small><br>
-                                    <small><a href="#" @click.prevent="switchMode('forgottenPwd')">Forgot My Password</a></small>
-                                </div>
-                                <v-spacer></v-spacer>
-                                <v-btn variant="flat" :disabled="!valid" :loading="loading" color="primary" type="submit">Sign In</v-btn>
-                            </v-card-actions>
-                        </v-form>
-                    </v-card-text>
-                </v-card>
-                <v-card v-else-if="signUpMode" border>
-                    <v-alert class="mb-0" density="compact" text type="info" v-show="explorerToken">Sign up or sign in in order to finish setting up your explorer</v-alert>
-                    <v-alert class="mb-0" density="compact" text type="error" v-show="error">{{ error }}</v-alert>
-                    <v-card-title>Sign Up</v-card-title>
-                    <v-card-text>
-                        <v-form @submit.prevent="signUp" v-model="valid">
-                            <v-text-field
-                                :rules="[
-                                    v => !!v || 'Email is required',
-                                    v => /.+@.+\..+/.test(v) || 'Email must be valid',
-                                ]"
-                                required v-model="email" name="email" label="Email" type="text"></v-text-field>
-                            <v-text-field
-                                :rules="[
-                                    v => !!v || 'Password is required',
-                                ]"
-                                required v-model="password" name="password" label="Password" type="password"></v-text-field>
+                <template v-if="willRedirect">
+                    <v-card>
+                        <v-card-text class="d-flex justify-center align-center">
+                            <v-progress-circular
+                                indeterminate
+                                size="20"
+                                color="primary" class="mr-4"></v-progress-circular>
+                                Redirecting...
+                        </v-card-text>
+                    </v-card>
+                </template>
+                <template v-else>
+                    <v-card v-if="signInMode" border>
+                        <v-alert class="mb-0" density="compact" text type="info" v-show="explorerToken">Sign up or sign in in order to finish setting up your explorer</v-alert>
+                        <v-alert class="mb-0" density="compact" text type="error" v-show="error">{{ error }}</v-alert>
+                        <v-card-title>Sign In</v-card-title>
+                        <v-card-text>
+                            <v-form @submit.prevent="signIn" v-model="valid">
+                                <v-text-field
+                                    variant="outlined"
+                                    color="primary"
+                                    :rules="[
+                                        v => !!v || 'Email is required',
+                                        v => /.+@.+\..+/.test(v) || 'Email must be valid',
+                                    ]"
+                                    required
+                                    v-model="email" name="email" label="Email" type="text"></v-text-field>
+                                <v-text-field
+                                    :rules="[
+                                        v => !!v || 'Password is required',
+                                    ]"
+                                    required
+                                    v-model="password" name="password" label="Password" type="password"></v-text-field>
+                                <v-card-actions class="px-0">
+                                    <div style="float: left;">
+                                        <small><a href="#" @click.prevent="switchMode('signup')">Sign Up</a></small><br>
+                                        <small><a href="#" @click.prevent="switchMode('forgottenPwd')">Forgot My Password</a></small>
+                                    </div>
+                                    <v-spacer></v-spacer>
+                                    <v-btn variant="flat" :disabled="!valid" :loading="loading" color="primary" type="submit">Sign In</v-btn>
+                                </v-card-actions>
+                            </v-form>
+                        </v-card-text>
+                    </v-card>
+                    <v-card v-else-if="signUpMode" border>
+                        <v-alert class="mb-0" density="compact" text type="info" v-show="explorerToken">Sign up or sign in in order to finish setting up your explorer</v-alert>
+                        <v-alert class="mb-0" density="compact" text type="error" v-show="error">{{ error }}</v-alert>
+                        <v-card-title>Sign Up</v-card-title>
+                        <v-card-text>
+                            <v-form @submit.prevent="signUp" v-model="valid">
+                                <v-text-field
+                                    :rules="[
+                                        v => !!v || 'Email is required',
+                                        v => /.+@.+\..+/.test(v) || 'Email must be valid',
+                                    ]"
+                                    required v-model="email" name="email" label="Email" type="text"></v-text-field>
+                                <v-text-field
+                                    :rules="[
+                                        v => !!v || 'Password is required',
+                                    ]"
+                                    required v-model="password" name="password" label="Password" type="password"></v-text-field>
 
-                            <v-card-actions class="px-0">
-                                <div style="float: left;">
-                                    <small><a href="#" @click.prevent="switchMode('signin')">Sign In</a></small><br>
-                                    <small><a href="#" @click.prevent="switchMode('forgottenPwd')">Forgot My Password</a></small>
-                                </div>
-                                <v-spacer></v-spacer>
-                                <v-btn variant="flat" :disabled="!valid" :loading="loading" color="primary" type="submit">Sign Up</v-btn>
-                            </v-card-actions>
-                        </v-form>
-                    </v-card-text>
-                </v-card>
-                <v-card v-else-if="forgottenPwdMode" border>
-                    <v-alert class="mb-0" density="compact" text type="error" v-show="error">{{ error }}</v-alert>
-                    <v-alert class="mb-0" density="compact" text type="success" v-show="success">{{ success }}</v-alert>
-                    <v-card-title>Forgotten Password?</v-card-title>
-                    <v-card-text>
-                        Enter your email below and we'll send you a link to reset your password.
-                        <v-form @submit.prevent="sendResetPasswordEmail" v-model="valid">
-                            <v-text-field
-                                :rules="[
-                                    v => !!v || 'Email is required',
-                                    v => /.+@.+\..+/.test(v) || 'Email must be valid',
-                                ]"
-                                required v-model="email" name="email" label="Email" type="text"></v-text-field>
+                                <v-card-actions class="px-0">
+                                    <div style="float: left;">
+                                        <small><a href="#" @click.prevent="switchMode('signin')">Sign In</a></small><br>
+                                        <small><a href="#" @click.prevent="switchMode('forgottenPwd')">Forgot My Password</a></small>
+                                    </div>
+                                    <v-spacer></v-spacer>
+                                    <v-btn variant="flat" :disabled="!valid" :loading="loading" color="primary" type="submit">Sign Up</v-btn>
+                                </v-card-actions>
+                            </v-form>
+                        </v-card-text>
+                    </v-card>
+                    <v-card v-else-if="forgottenPwdMode" border>
+                        <v-alert class="mb-0" density="compact" text type="error" v-show="error">{{ error }}</v-alert>
+                        <v-alert class="mb-0" density="compact" text type="success" v-show="success">{{ success }}</v-alert>
+                        <v-card-title>Forgotten Password?</v-card-title>
+                        <v-card-text>
+                            Enter your email below and we'll send you a link to reset your password.
+                            <v-form @submit.prevent="sendResetPasswordEmail" v-model="valid">
+                                <v-text-field
+                                    :rules="[
+                                        v => !!v || 'Email is required',
+                                        v => /.+@.+\..+/.test(v) || 'Email must be valid',
+                                    ]"
+                                    required v-model="email" name="email" label="Email" type="text"></v-text-field>
 
-                            <v-card-actions class="px-0">
-                                <div style="float: left;">
-                                    <small><a href="#" @click.prevent="switchMode('signin')">Sign In</a></small><br>
-                                    <small><a href="#" @click.prevent="switchMode('signup')">Sign Up</a></small>
-                                </div>
-                                <v-spacer></v-spacer>
-                                <v-btn variant="flat" :disabled="!valid" :loading="loading" color="primary" type="submit">Submit</v-btn>
-                            </v-card-actions>
-                        </v-form>
-                    </v-card-text>
-                </v-card>
-                <v-card v-else-if="resetPwdMode" border>
-                    <v-alert class="mb-0" density="compact" text type="error" v-show="error">{{ error }}</v-alert>
-                    <v-alert class="mb-0" density="compact" text type="success" v-show="success">{{ success }}</v-alert>
-                    <v-card-title>Reset Password</v-card-title>
-                    <v-card-text>
-                        <v-form @submit.prevent="resetPassword" v-model="valid">
-                            <v-text-field
-                                :rules="[
-                                    v => !!v || 'Password is required',
-                                ]"
-                                required v-model="password" name="password" label="New Password" type="password"></v-text-field>
+                                <v-card-actions class="px-0">
+                                    <div style="float: left;">
+                                        <small><a href="#" @click.prevent="switchMode('signin')">Sign In</a></small><br>
+                                        <small><a href="#" @click.prevent="switchMode('signup')">Sign Up</a></small>
+                                    </div>
+                                    <v-spacer></v-spacer>
+                                    <v-btn variant="flat" :disabled="!valid" :loading="loading" color="primary" type="submit">Submit</v-btn>
+                                </v-card-actions>
+                            </v-form>
+                        </v-card-text>
+                    </v-card>
+                    <v-card v-else-if="resetPwdMode" border>
+                        <v-alert class="mb-0" density="compact" text type="error" v-show="error">{{ error }}</v-alert>
+                        <v-alert class="mb-0" density="compact" text type="success" v-show="success">{{ success }}</v-alert>
+                        <v-card-title>Reset Password</v-card-title>
+                        <v-card-text>
+                            <v-form @submit.prevent="resetPassword" v-model="valid">
+                                <v-text-field
+                                    :rules="[
+                                        v => !!v || 'Password is required',
+                                    ]"
+                                    required v-model="password" name="password" label="New Password" type="password"></v-text-field>
 
-                            <v-card-actions class="px-0">
-                                <div style="float: left;">
-                                    <small><a @click="switchMode('signin')">Sign In</a></small><br>
-                                </div>
-                                <v-spacer></v-spacer>
-                                <v-btn variant="flat" :disabled="!valid" :loading="loading" color="primary" type="submit">Submit</v-btn>
-                            </v-card-actions>
-                        </v-form>
-                    </v-card-text>
-                </v-card>
+                                <v-card-actions class="px-0">
+                                    <div style="float: left;">
+                                        <small><a @click="switchMode('signin')">Sign In</a></small><br>
+                                    </div>
+                                    <v-spacer></v-spacer>
+                                    <v-btn variant="flat" :disabled="!valid" :loading="loading" color="primary" type="submit">Submit</v-btn>
+                                </v-card-actions>
+                            </v-form>
+                        </v-card-text>
+                    </v-card>
+                </template>
             </v-col>
         </v-row>
     </v-layout>
@@ -124,7 +137,7 @@
 <script>
 import { mapStores } from 'pinia';
 import { useUserStore } from '../stores/user';
-
+import { useEnvStore } from '../stores/env';
 export default {
     name: 'Auth',
     data: () => ({
@@ -135,12 +148,19 @@ export default {
         mode: 'signin',
         email: null,
         password: null,
+        resetPasswordToken: null,
     }),
     mounted() {
-        if (this.explorerToken)
+        if (this.$route.query.apiToken && this.$route.query.path) {
+            this.userStore.updateUser({ apiToken: this.$route.query.apiToken });
+            document.location.href = `//app.${this.envStore.mainDomain}${this.$route.query.path}${this.$route.query.explorerToken ? `?explorerToken=${this.$route.query.explorerToken}` : ''}`;
+        }
+        else if (this.explorerToken)
             this.mode = 'signup';
-        else if (this.$route.query.token)
+        else if (this.$route.query.token) {
             this.mode = 'resetPwd';
+            this.resetPasswordToken = this.$route.query.token;
+        }
     },
     methods: {
         switchMode(newMode) {
@@ -190,19 +210,20 @@ export default {
             this.loading = true;
             this.error = null;
             this.success = null;
-            this.$server.resetPassword(this.$route.query.token, this.password)
+            this.$server.resetPassword(this.resetPasswordToken, this.password)
                 .then(() => this.success = 'Your password has been reset successfully, you can now login.')
                 .catch(error => this.error = error.response.data)
                 .finally(() => this.loading = false);
         }
     },
     computed: {
-        ...mapStores(useUserStore),
+        ...mapStores(useUserStore, useEnvStore),
         signInMode() { return this.mode == 'signin' },
         signUpMode() { return this.mode == 'signup' },
         forgottenPwdMode() { return this.mode == 'forgottenPwd' },
         resetPwdMode() { return this.mode == 'resetPwd' },
-        explorerToken() { return this.$route.query.explorerToken }
+        explorerToken() { return this.$route.query.explorerToken },
+        willRedirect() { return this.$route.query.apiToken && this.$route.query.path }
     }
 }
 </script>

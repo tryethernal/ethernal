@@ -76,7 +76,7 @@ export default {
         create() {
             this.loading = true;
             this.$server.createExplorerFaucet(this.options.explorerId, this.formattedAmount, this.interval * 60)
-                .then(() => this.close(true))
+                .then(({ data }) => this.close(data))
                 .catch(error => {
                     this.loading = false;
                     this.errorMessage = error.response && error.response.data || 'Error while creating faucet. Please retry.';

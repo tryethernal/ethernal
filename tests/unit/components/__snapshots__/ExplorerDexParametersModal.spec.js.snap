@@ -26,7 +26,7 @@ exports[`ExplorerDexParametersModal.vue > Should display dex parameters 1`] = `
         <!---->
       </button></div>
     <div data-v-26514292="" class="v-card-text"> Slippage tolerance <div data-v-26514292="" class="d-flex">
-        <div data-v-26514292="" class="v-slide-group v-slide-group--mobile v-chip-group v-theme--light" tabindex="0">
+        <div data-v-26514292="" class="v-slide-group v-chip-group v-theme--light" tabindex="0">
           <!---->
           <div class="v-slide-group__container">
             <div class="v-slide-group__content"><span data-v-26514292="" class="v-chip v-chip--link v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal" draggable="false" tabindex="0"><span class="v-chip__overlay"></span><span class="v-chip__underlay"></span>

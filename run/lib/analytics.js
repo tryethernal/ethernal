@@ -4,7 +4,8 @@ const { isMarketingEnabled } = require('./flags');
 
 class Analytics {
     constructor() {
-        if (!isMarketingEnabled()) return;
+        if (!isMarketingEnabled() || !getPostHogApiKey() || !getPostHogApiHost())
+            return;
         this.posthog = new PostHog(getPostHogApiKey(), { host: getPostHogApiHost() });
     }
 

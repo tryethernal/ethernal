@@ -6,7 +6,7 @@ WORKDIR /app
 
 COPY public/ ./public/
 COPY src/ ./src/
-COPY index.html babel.config.js .firebaserc package.json yarn.lock vite.config.js _redirects _headers ./
+COPY index.html babel.config.js .firebaserc package.json yarn.lock vite.config.js _redirects _headers ads.txt ./
 RUN yarn install --network-timeout 100000
 EXPOSE 8080
 CMD ["yarn", "serve"]
