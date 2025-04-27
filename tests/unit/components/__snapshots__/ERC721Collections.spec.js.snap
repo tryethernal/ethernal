@@ -2,6 +2,10 @@
 
 exports[`ERC721Collections.vue > Should load & display erc721 contracts 1`] = `
 "<div class="v-container v-container--fluid v-locale--is-ltr">
+  <div class="d-flex align-center mb-4">
+    <h2 class="text-h6 font-weight-medium flex-grow-1">All NFT Collections</h2>
+  </div>
+  <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator">
   <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
     <!---->
     <div class="v-card__loader">
@@ -61,16 +65,17 @@ exports[`ERC721Collections.vue > Should load & display erc721 contracts 1`] = `
             <tbody class="v-data-table__tbody" role="rowgroup">
               <!---->
               <tr class="v-data-table__tr">
-                <td class="v-data-table__td v-data-table-column--align-start">
-                  <hash-link-stub type="nft" hash="0x123" contract="[object Object]"></hash-link-stub>
+                <td class="v-data-table__td v-data-table-column--align-start"><span><!--v-if--><a style="text-decoration: none;">ETL</a><!--v-if--><span> &nbsp;<i class="mdi-content-copy mdi v-icon notranslate v-theme--light v-icon--size-x-small v-icon--clickable text-medium-emphasis" role="button" aria-hidden="false" tabindex="0"></i><input type="hidden" id="copyElement-0x123" value="0x123"></span>
+                  <!--v-if-->
+                  <!--v-if--></span>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">Ethernal</td>
                 <td class="v-data-table__td v-data-table-column--align-start">ETL</td>
                 <td class="v-data-table__td v-data-table-column--align-start">100</td>
-                <td class="v-data-table__td v-data-table-column--align-start"><span class="v-chip v-theme--light v-chip--density-default v-chip--size-x-small v-chip--variant-tonal bg-success mr-2" draggable="false"><!----><span class="v-chip__underlay"></span>
+                <td class="v-data-table__td v-data-table-column--align-start"><span class="v-chip v-theme--light text-success v-chip--density-default v-chip--size-x-small v-chip--variant-tonal mr-2" draggable="false"><!----><span class="v-chip__underlay"></span>
                   <!---->
                   <!---->
-                  <div class="v-chip__content" data-no-activator="">ERC 721</div>
+                  <div class="v-chip__content" data-no-activator="">ERC-721</div>
                   <!---->
                   <!----></span>
                 </td>

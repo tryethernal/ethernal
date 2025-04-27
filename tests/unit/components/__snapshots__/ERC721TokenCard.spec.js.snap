@@ -1,7 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ERC721TokenCard.vue > Should display an erc721 token card 1`] = `
-"<div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+exports[`ERC721TokenCard.vue > Should display an erc721 token card in address mode 1`] = `
+"<div data-v-cd2ba4fc="" class="v-card v-card--link v-theme--light v-card--density-default v-card--variant-elevated nft-card d-flex flex-column align-center pa-2">
   <!---->
   <div class="v-card__loader">
     <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
@@ -18,18 +18,71 @@ exports[`ERC721TokenCard.vue > Should display an erc721 token card 1`] = `
     </div>
   </div>
   <!---->
-  <!----><a>
-    <div rounded="lg" elevation="2"><img src="http://image"></div>
-  </a>
-  <div class="v-card-text"><a><b>Token #1</b></a><br> Owned by <hash-link-stub type="address" hash="0x123" xshash="true"></hash-link-stub>
+  <!---->
+  <!-- Image Section -->
+  <div data-v-cd2ba4fc="" class="image-container"><span data-v-cd2ba4fc=""><img class="rounded-lg" src="http://image"></span></div><!-- Content Section -->
+  <div data-v-cd2ba4fc="" class="v-card-text pa-0 pt-2 d-flex flex-column card-content">
+    <!-- Default slot for custom content -->
+    <!-- Default content -->
+    <div data-v-cd2ba4fc="" class="text-container"><span data-v-cd2ba4fc="" class="text-caption text-medium-emphasis mr-1 label">Token:</span>
+      <div data-v-cd2ba4fc="" class="value-container">
+        <hash-link-stub data-v-cd2ba4fc="" type="address" hash="0xabc" contract="[object Object]" fullhash="false" withname="true" notcopiable="true" withtokenname="false" xshash="false" unlink="false" loadcontract="false" aria-describedby="v-tooltip-0">
+          <!---->
+          <!--teleport start-->
+          <!--teleport end-->
+        </hash-link-stub>
+      </div>
+    </div>
+    <div data-v-cd2ba4fc="" class="text-container"><span data-v-cd2ba4fc="" class="text-caption text-medium-emphasis mr-1 label">Symbol:</span>
+      <div data-v-cd2ba4fc="" class="value-container"><span data-v-cd2ba4fc="" class="text-medium-emphasis">ETL</span></div>
+    </div>
+    <div data-v-cd2ba4fc="" class="text-container"><span data-v-cd2ba4fc="" class="text-caption text-medium-emphasis mr-1 label">ID:</span>
+      <div data-v-cd2ba4fc="" class="value-container"><span data-v-cd2ba4fc="" class="text-medium-emphasis">0</span></div>
+    </div>
+  </div>
+  <!----><span class="v-card__overlay"></span><span class="v-card__underlay"></span>
+</div>"
+`;
+
+exports[`ERC721TokenCard.vue > Should display an erc721 token card in collection mode 1`] = `
+"<div data-v-cd2ba4fc="" class="v-card v-card--link v-theme--light v-card--density-default v-card--variant-elevated nft-card d-flex flex-column align-center pa-2">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
+        </div>
+      </transition-stub>
+      <!---->
+    </div>
   </div>
   <!---->
-  <!----><span class="v-card__underlay"></span>
+  <!---->
+  <!-- Image Section -->
+  <div data-v-cd2ba4fc="" class="image-container"><span data-v-cd2ba4fc=""><img class="rounded-lg" src="http://image"></span></div><!-- Content Section -->
+  <div data-v-cd2ba4fc="" class="v-card-text pa-0 pt-2 d-flex flex-column card-content">
+    <!-- Default slot for custom content -->
+    <!-- Default content -->
+    <div data-v-cd2ba4fc="" class="text-container"><span data-v-cd2ba4fc="" class="text-caption text-medium-emphasis mr-1 label">ID:</span>
+      <div data-v-cd2ba4fc="" class="value-container"><span data-v-cd2ba4fc="" class="text-medium-emphasis">0</span></div>
+    </div>
+    <div data-v-cd2ba4fc="" class="text-container"><span data-v-cd2ba4fc="" class="text-caption text-medium-emphasis mr-1 label">Owner:</span>
+      <div data-v-cd2ba4fc="" class="value-container">
+        <hash-link-stub data-v-cd2ba4fc="" type="address" hash="0x123" fullhash="false" withname="true" notcopiable="true" withtokenname="false" xshash="true" unlink="false" loadcontract="false"></hash-link-stub>
+      </div>
+    </div>
+  </div>
+  <!----><span class="v-card__overlay"></span><span class="v-card__underlay"></span>
 </div>"
 `;
 
 exports[`ERC721TokenCard.vue > Should display message if cannot fetch 1`] = `
-"<div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+"<div data-v-cd2ba4fc="" class="v-card v-card--link v-theme--light v-card--density-default v-card--variant-elevated nft-card d-flex flex-column align-center pa-2">
   <!---->
   <div class="v-card__loader">
     <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
@@ -47,8 +100,39 @@ exports[`ERC721TokenCard.vue > Should display message if cannot fetch 1`] = `
   </div>
   <!---->
   <!---->
-  <div class="v-card-text">Couldn't fetch token information.</div>
-  <!---->
-  <!----><span class="v-card__underlay"></span>
+  <!-- Image Section -->
+  <div data-v-cd2ba4fc="" class="v-responsive v-img v-img--booting rounded-lg bg-grey-lighten-4" style="height: 150px;">
+    <div class="v-responsive__sizer"></div>
+    <!---->
+    <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+      <!---->
+    </transition-stub>
+    <!---->
+    <!---->
+    <!---->
+    <div class="v-responsive__content">
+      <div data-v-cd2ba4fc="" class="d-flex align-center justify-center fill-height"><i data-v-cd2ba4fc="" class="mdi-image-outline mdi v-icon notranslate v-theme--light text-grey-lighten-1" style="font-size: 150px; height: 150px; width: 150px;" aria-hidden="true"></i></div>
+    </div>
+  </div><!-- Content Section -->
+  <div data-v-cd2ba4fc="" class="v-card-text pa-0 pt-2 d-flex flex-column card-content">
+    <!-- Default slot for custom content -->
+    <!-- Default content -->
+    <div data-v-cd2ba4fc="" class="text-container"><span data-v-cd2ba4fc="" class="text-caption text-medium-emphasis mr-1 label">Token:</span>
+      <div data-v-cd2ba4fc="" class="value-container">
+        <hash-link-stub data-v-cd2ba4fc="" type="address" hash="0xabc" contract="[object Object]" fullhash="false" withname="true" notcopiable="true" withtokenname="false" xshash="false" unlink="false" loadcontract="false" aria-describedby="v-tooltip-0">
+          <!---->
+          <!--teleport start-->
+          <!--teleport end-->
+        </hash-link-stub>
+      </div>
+    </div>
+    <div data-v-cd2ba4fc="" class="text-container"><span data-v-cd2ba4fc="" class="text-caption text-medium-emphasis mr-1 label">Symbol:</span>
+      <div data-v-cd2ba4fc="" class="value-container"><span data-v-cd2ba4fc="" class="text-medium-emphasis">ETL</span></div>
+    </div>
+    <div data-v-cd2ba4fc="" class="text-container"><span data-v-cd2ba4fc="" class="text-caption text-medium-emphasis mr-1 label">ID:</span>
+      <div data-v-cd2ba4fc="" class="value-container"><span data-v-cd2ba4fc="" class="text-medium-emphasis">N/A</span></div>
+    </div>
+  </div>
+  <!----><span class="v-card__overlay"></span><span class="v-card__underlay"></span>
 </div>"
 `;

@@ -21,6 +21,30 @@ const BASE_URL = '/api/contracts';
 
 beforeEach(() => jest.clearAllMocks());
 
+describe(`GET ${BASE_URL}/verified`, () => {
+    it('Should return a paginated list of verified contracts', (done) => {
+        jest.spyOn(db, 'getVerifiedContracts').mockResolvedValueOnce([{
+            address: '0x123',
+            name: 'Ethernal',
+            symbol: 'ETH',
+            decimals: 18,
+            totalSupply: '1000000000000000000'
+        }]);
+        request.get(`${BASE_URL}/verified?workspace=My+Workspace`)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual({ items: [{
+                    address: '0x123',
+                    name: 'Ethernal',
+                    symbol: 'ETH',
+                    decimals: 18,
+                    totalSupply: '1000000000000000000'
+                }] });
+                done();
+            });
+    });
+});
+
 describe(`GET ${BASE_URL}/sourceCode`, () => {
     it('Should return if cannot find contract', (done) => {
         jest.spyOn(db, 'getPublicExplorerParamsBySlug').mockResolvedValueOnce({ id: 1, workspaceId: 1 });

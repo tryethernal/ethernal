@@ -37,34 +37,34 @@ exports[`ERC721Gallery.vue > Should load cards from total supply 1`] = `
   <div class="v-row">
     <!--v-if-->
     <div class="v-col-sm-4 v-col-lg-2 v-col-6">
-      <e-r-c721-token-card-stub index="0" contractaddress="Ox123"></e-r-c721-token-card-stub>
+      <e-r-c721-token-card-stub contractaddress="Ox123" mode="address" index="0"></e-r-c721-token-card-stub>
     </div>
     <div class="v-col-sm-4 v-col-lg-2 v-col-6">
-      <e-r-c721-token-card-stub index="1" contractaddress="Ox123"></e-r-c721-token-card-stub>
+      <e-r-c721-token-card-stub contractaddress="Ox123" mode="address" index="1"></e-r-c721-token-card-stub>
     </div>
     <div class="v-col-sm-4 v-col-lg-2 v-col-6">
-      <e-r-c721-token-card-stub index="2" contractaddress="Ox123"></e-r-c721-token-card-stub>
+      <e-r-c721-token-card-stub contractaddress="Ox123" mode="address" index="2"></e-r-c721-token-card-stub>
     </div>
     <div class="v-col-sm-4 v-col-lg-2 v-col-6">
-      <e-r-c721-token-card-stub index="3" contractaddress="Ox123"></e-r-c721-token-card-stub>
+      <e-r-c721-token-card-stub contractaddress="Ox123" mode="address" index="3"></e-r-c721-token-card-stub>
     </div>
     <div class="v-col-sm-4 v-col-lg-2 v-col-6">
-      <e-r-c721-token-card-stub index="4" contractaddress="Ox123"></e-r-c721-token-card-stub>
+      <e-r-c721-token-card-stub contractaddress="Ox123" mode="address" index="4"></e-r-c721-token-card-stub>
     </div>
     <div class="v-col-sm-4 v-col-lg-2 v-col-6">
-      <e-r-c721-token-card-stub index="5" contractaddress="Ox123"></e-r-c721-token-card-stub>
+      <e-r-c721-token-card-stub contractaddress="Ox123" mode="address" index="5"></e-r-c721-token-card-stub>
     </div>
     <div class="v-col-sm-4 v-col-lg-2 v-col-6">
-      <e-r-c721-token-card-stub index="6" contractaddress="Ox123"></e-r-c721-token-card-stub>
+      <e-r-c721-token-card-stub contractaddress="Ox123" mode="address" index="6"></e-r-c721-token-card-stub>
     </div>
     <div class="v-col-sm-4 v-col-lg-2 v-col-6">
-      <e-r-c721-token-card-stub index="7" contractaddress="Ox123"></e-r-c721-token-card-stub>
+      <e-r-c721-token-card-stub contractaddress="Ox123" mode="address" index="7"></e-r-c721-token-card-stub>
     </div>
     <div class="v-col-sm-4 v-col-lg-2 v-col-6">
-      <e-r-c721-token-card-stub index="8" contractaddress="Ox123"></e-r-c721-token-card-stub>
+      <e-r-c721-token-card-stub contractaddress="Ox123" mode="address" index="8"></e-r-c721-token-card-stub>
     </div>
     <div class="v-col-sm-4 v-col-lg-2 v-col-6">
-      <e-r-c721-token-card-stub index="9" contractaddress="Ox123"></e-r-c721-token-card-stub>
+      <e-r-c721-token-card-stub contractaddress="Ox123" mode="address" index="9"></e-r-c721-token-card-stub>
     </div>
   </div>
   <div class="v-row">

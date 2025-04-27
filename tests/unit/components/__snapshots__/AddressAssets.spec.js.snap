@@ -1,0 +1,25 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`AddressAssets.vue > Should load address assets 1`] = `
+"<div class="d-flex justify-end">
+  <div class="v-slide-group v-chip-group v-theme--light" tabindex="0">
+    <!---->
+    <div class="v-slide-group__container">
+      <div class="v-slide-group__content"><span class="v-chip v-chip--link v-theme--light v-chip--density-default v-chip--size-x-small v-chip--variant-tonal text-primary" draggable="false" tabindex="0"><span class="v-chip__overlay"></span><span class="v-chip__underlay"></span>
+        <!---->
+        <!---->
+        <div class="v-chip__content" data-no-activator="">Tokens</div>
+        <!---->
+        <!----></span><span class="v-chip v-chip--link v-theme--light v-chip--density-default v-chip--size-x-small v-chip--variant-tonal" draggable="false" tabindex="0"><span class="v-chip__overlay"></span><span class="v-chip__underlay"></span>
+        <!---->
+        <!---->
+        <div class="v-chip__content" data-no-activator="">NFTs</div>
+        <!---->
+        <!----></span>
+      </div>
+    </div>
+    <!---->
+  </div>
+</div>
+<address-token-assets-stub address="0x1234567890123456789012345678901234567890"></address-token-assets-stub>"
+`;

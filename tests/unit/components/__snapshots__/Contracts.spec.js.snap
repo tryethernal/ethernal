@@ -86,7 +86,7 @@ exports[`Contracts.vue > Should display a warning message for free users with 10
               <!---->
               <tr class="v-data-table__tr">
                 <td class="v-data-table__td v-data-table-column--align-start">
-                  <hash-link-stub type="address" hash="0x0" contract="[object Object]"></hash-link-stub>
+                  <hash-link-stub type="address" hash="0x0" contract="[object Object]" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x0</td>
                 <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-8"></span>
@@ -104,7 +104,7 @@ exports[`Contracts.vue > Should display a warning message for free users with 10
               <!---->
               <tr class="v-data-table__tr">
                 <td class="v-data-table__td v-data-table-column--align-start">
-                  <hash-link-stub type="address" hash="0x1" contract="[object Object]"></hash-link-stub>
+                  <hash-link-stub type="address" hash="0x1" contract="[object Object]" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x1</td>
                 <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-10"></span>
@@ -122,7 +122,7 @@ exports[`Contracts.vue > Should display a warning message for free users with 10
               <!---->
               <tr class="v-data-table__tr">
                 <td class="v-data-table__td v-data-table-column--align-start">
-                  <hash-link-stub type="address" hash="0x2" contract="[object Object]"></hash-link-stub>
+                  <hash-link-stub type="address" hash="0x2" contract="[object Object]" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x2</td>
                 <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-12"></span>
@@ -140,7 +140,7 @@ exports[`Contracts.vue > Should display a warning message for free users with 10
               <!---->
               <tr class="v-data-table__tr">
                 <td class="v-data-table__td v-data-table-column--align-start">
-                  <hash-link-stub type="address" hash="0x3" contract="[object Object]"></hash-link-stub>
+                  <hash-link-stub type="address" hash="0x3" contract="[object Object]" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x3</td>
                 <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-14"></span>
@@ -158,7 +158,7 @@ exports[`Contracts.vue > Should display a warning message for free users with 10
               <!---->
               <tr class="v-data-table__tr">
                 <td class="v-data-table__td v-data-table-column--align-start">
-                  <hash-link-stub type="address" hash="0x4" contract="[object Object]"></hash-link-stub>
+                  <hash-link-stub type="address" hash="0x4" contract="[object Object]" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x4</td>
                 <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-16"></span>
@@ -176,7 +176,7 @@ exports[`Contracts.vue > Should display a warning message for free users with 10
               <!---->
               <tr class="v-data-table__tr">
                 <td class="v-data-table__td v-data-table-column--align-start">
-                  <hash-link-stub type="address" hash="0x5" contract="[object Object]"></hash-link-stub>
+                  <hash-link-stub type="address" hash="0x5" contract="[object Object]" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x5</td>
                 <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-18"></span>
@@ -194,7 +194,7 @@ exports[`Contracts.vue > Should display a warning message for free users with 10
               <!---->
               <tr class="v-data-table__tr">
                 <td class="v-data-table__td v-data-table-column--align-start">
-                  <hash-link-stub type="address" hash="0x6" contract="[object Object]"></hash-link-stub>
+                  <hash-link-stub type="address" hash="0x6" contract="[object Object]" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x6</td>
                 <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-20"></span>
@@ -212,7 +212,7 @@ exports[`Contracts.vue > Should display a warning message for free users with 10
               <!---->
               <tr class="v-data-table__tr">
                 <td class="v-data-table__td v-data-table-column--align-start">
-                  <hash-link-stub type="address" hash="0x7" contract="[object Object]"></hash-link-stub>
+                  <hash-link-stub type="address" hash="0x7" contract="[object Object]" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x7</td>
                 <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-22"></span>
@@ -230,7 +230,7 @@ exports[`Contracts.vue > Should display a warning message for free users with 10
               <!---->
               <tr class="v-data-table__tr">
                 <td class="v-data-table__td v-data-table-column--align-start">
-                  <hash-link-stub type="address" hash="0x8" contract="[object Object]"></hash-link-stub>
+                  <hash-link-stub type="address" hash="0x8" contract="[object Object]" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x8</td>
                 <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-24"></span>
@@ -248,7 +248,7 @@ exports[`Contracts.vue > Should display a warning message for free users with 10
               <!---->
               <tr class="v-data-table__tr">
                 <td class="v-data-table__td v-data-table-column--align-start">
-                  <hash-link-stub type="address" hash="0x9" contract="[object Object]"></hash-link-stub>
+                  <hash-link-stub type="address" hash="0x9" contract="[object Object]" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x9</td>
                 <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-26"></span>
@@ -446,7 +446,7 @@ exports[`Contracts.vue > Should not display a warning message for premium users 
               <!---->
               <tr class="v-data-table__tr">
                 <td class="v-data-table__td v-data-table-column--align-start">
-                  <hash-link-stub type="address" hash="0x0" contract="[object Object]"></hash-link-stub>
+                  <hash-link-stub type="address" hash="0x0" contract="[object Object]" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x0</td>
                 <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-8"></span>
@@ -464,7 +464,7 @@ exports[`Contracts.vue > Should not display a warning message for premium users 
               <!---->
               <tr class="v-data-table__tr">
                 <td class="v-data-table__td v-data-table-column--align-start">
-                  <hash-link-stub type="address" hash="0x1" contract="[object Object]"></hash-link-stub>
+                  <hash-link-stub type="address" hash="0x1" contract="[object Object]" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x1</td>
                 <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-10"></span>
@@ -482,7 +482,7 @@ exports[`Contracts.vue > Should not display a warning message for premium users 
               <!---->
               <tr class="v-data-table__tr">
                 <td class="v-data-table__td v-data-table-column--align-start">
-                  <hash-link-stub type="address" hash="0x2" contract="[object Object]"></hash-link-stub>
+                  <hash-link-stub type="address" hash="0x2" contract="[object Object]" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x2</td>
                 <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-12"></span>
@@ -500,7 +500,7 @@ exports[`Contracts.vue > Should not display a warning message for premium users 
               <!---->
               <tr class="v-data-table__tr">
                 <td class="v-data-table__td v-data-table-column--align-start">
-                  <hash-link-stub type="address" hash="0x3" contract="[object Object]"></hash-link-stub>
+                  <hash-link-stub type="address" hash="0x3" contract="[object Object]" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x3</td>
                 <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-14"></span>
@@ -518,7 +518,7 @@ exports[`Contracts.vue > Should not display a warning message for premium users 
               <!---->
               <tr class="v-data-table__tr">
                 <td class="v-data-table__td v-data-table-column--align-start">
-                  <hash-link-stub type="address" hash="0x4" contract="[object Object]"></hash-link-stub>
+                  <hash-link-stub type="address" hash="0x4" contract="[object Object]" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x4</td>
                 <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-16"></span>
@@ -536,7 +536,7 @@ exports[`Contracts.vue > Should not display a warning message for premium users 
               <!---->
               <tr class="v-data-table__tr">
                 <td class="v-data-table__td v-data-table-column--align-start">
-                  <hash-link-stub type="address" hash="0x5" contract="[object Object]"></hash-link-stub>
+                  <hash-link-stub type="address" hash="0x5" contract="[object Object]" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x5</td>
                 <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-18"></span>
@@ -554,7 +554,7 @@ exports[`Contracts.vue > Should not display a warning message for premium users 
               <!---->
               <tr class="v-data-table__tr">
                 <td class="v-data-table__td v-data-table-column--align-start">
-                  <hash-link-stub type="address" hash="0x6" contract="[object Object]"></hash-link-stub>
+                  <hash-link-stub type="address" hash="0x6" contract="[object Object]" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x6</td>
                 <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-20"></span>
@@ -572,7 +572,7 @@ exports[`Contracts.vue > Should not display a warning message for premium users 
               <!---->
               <tr class="v-data-table__tr">
                 <td class="v-data-table__td v-data-table-column--align-start">
-                  <hash-link-stub type="address" hash="0x7" contract="[object Object]"></hash-link-stub>
+                  <hash-link-stub type="address" hash="0x7" contract="[object Object]" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x7</td>
                 <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-22"></span>
@@ -590,7 +590,7 @@ exports[`Contracts.vue > Should not display a warning message for premium users 
               <!---->
               <tr class="v-data-table__tr">
                 <td class="v-data-table__td v-data-table-column--align-start">
-                  <hash-link-stub type="address" hash="0x8" contract="[object Object]"></hash-link-stub>
+                  <hash-link-stub type="address" hash="0x8" contract="[object Object]" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x8</td>
                 <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-24"></span>
@@ -608,7 +608,7 @@ exports[`Contracts.vue > Should not display a warning message for premium users 
               <!---->
               <tr class="v-data-table__tr">
                 <td class="v-data-table__td v-data-table-column--align-start">
-                  <hash-link-stub type="address" hash="0x9" contract="[object Object]"></hash-link-stub>
+                  <hash-link-stub type="address" hash="0x9" contract="[object Object]" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x9</td>
                 <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-26"></span>
@@ -806,7 +806,7 @@ exports[`Contracts.vue > Should not display a warning message for public explore
               <!---->
               <tr class="v-data-table__tr">
                 <td class="v-data-table__td v-data-table-column--align-start">
-                  <hash-link-stub type="address" hash="0x0" contract="[object Object]"></hash-link-stub>
+                  <hash-link-stub type="address" hash="0x0" contract="[object Object]" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x0</td>
                 <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-8"></span>
@@ -824,7 +824,7 @@ exports[`Contracts.vue > Should not display a warning message for public explore
               <!---->
               <tr class="v-data-table__tr">
                 <td class="v-data-table__td v-data-table-column--align-start">
-                  <hash-link-stub type="address" hash="0x1" contract="[object Object]"></hash-link-stub>
+                  <hash-link-stub type="address" hash="0x1" contract="[object Object]" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x1</td>
                 <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-10"></span>
@@ -842,7 +842,7 @@ exports[`Contracts.vue > Should not display a warning message for public explore
               <!---->
               <tr class="v-data-table__tr">
                 <td class="v-data-table__td v-data-table-column--align-start">
-                  <hash-link-stub type="address" hash="0x2" contract="[object Object]"></hash-link-stub>
+                  <hash-link-stub type="address" hash="0x2" contract="[object Object]" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x2</td>
                 <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-12"></span>
@@ -860,7 +860,7 @@ exports[`Contracts.vue > Should not display a warning message for public explore
               <!---->
               <tr class="v-data-table__tr">
                 <td class="v-data-table__td v-data-table-column--align-start">
-                  <hash-link-stub type="address" hash="0x3" contract="[object Object]"></hash-link-stub>
+                  <hash-link-stub type="address" hash="0x3" contract="[object Object]" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x3</td>
                 <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-14"></span>
@@ -878,7 +878,7 @@ exports[`Contracts.vue > Should not display a warning message for public explore
               <!---->
               <tr class="v-data-table__tr">
                 <td class="v-data-table__td v-data-table-column--align-start">
-                  <hash-link-stub type="address" hash="0x4" contract="[object Object]"></hash-link-stub>
+                  <hash-link-stub type="address" hash="0x4" contract="[object Object]" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x4</td>
                 <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-16"></span>
@@ -896,7 +896,7 @@ exports[`Contracts.vue > Should not display a warning message for public explore
               <!---->
               <tr class="v-data-table__tr">
                 <td class="v-data-table__td v-data-table-column--align-start">
-                  <hash-link-stub type="address" hash="0x5" contract="[object Object]"></hash-link-stub>
+                  <hash-link-stub type="address" hash="0x5" contract="[object Object]" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x5</td>
                 <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-18"></span>
@@ -914,7 +914,7 @@ exports[`Contracts.vue > Should not display a warning message for public explore
               <!---->
               <tr class="v-data-table__tr">
                 <td class="v-data-table__td v-data-table-column--align-start">
-                  <hash-link-stub type="address" hash="0x6" contract="[object Object]"></hash-link-stub>
+                  <hash-link-stub type="address" hash="0x6" contract="[object Object]" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x6</td>
                 <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-20"></span>
@@ -932,7 +932,7 @@ exports[`Contracts.vue > Should not display a warning message for public explore
               <!---->
               <tr class="v-data-table__tr">
                 <td class="v-data-table__td v-data-table-column--align-start">
-                  <hash-link-stub type="address" hash="0x7" contract="[object Object]"></hash-link-stub>
+                  <hash-link-stub type="address" hash="0x7" contract="[object Object]" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x7</td>
                 <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-22"></span>
@@ -950,7 +950,7 @@ exports[`Contracts.vue > Should not display a warning message for public explore
               <!---->
               <tr class="v-data-table__tr">
                 <td class="v-data-table__td v-data-table-column--align-start">
-                  <hash-link-stub type="address" hash="0x8" contract="[object Object]"></hash-link-stub>
+                  <hash-link-stub type="address" hash="0x8" contract="[object Object]" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x8</td>
                 <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-24"></span>
@@ -968,7 +968,7 @@ exports[`Contracts.vue > Should not display a warning message for public explore
               <!---->
               <tr class="v-data-table__tr">
                 <td class="v-data-table__td v-data-table-column--align-start">
-                  <hash-link-stub type="address" hash="0x9" contract="[object Object]"></hash-link-stub>
+                  <hash-link-stub type="address" hash="0x9" contract="[object Object]" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">0x9</td>
                 <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-26"></span>
@@ -1144,7 +1144,7 @@ exports[`Contracts.vue > Should show the contracts list 1`] = `
               <!---->
               <tr class="v-data-table__tr">
                 <td class="v-data-table__td v-data-table-column--align-start">
-                  <hash-link-stub type="address" hash="0x0" contract="[object Object]"></hash-link-stub>
+                  <hash-link-stub type="address" hash="0x0" contract="[object Object]" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">My Contract</td>
                 <td class="v-data-table__td v-data-table-column--align-start"><span aria-describedby="v-tooltip-7"></span>
@@ -1157,7 +1157,7 @@ exports[`Contracts.vue > Should show the contracts list 1`] = `
               <!---->
               <tr class="v-data-table__tr">
                 <td class="v-data-table__td v-data-table-column--align-start">
-                  <hash-link-stub type="address" hash="0x1" contract="[object Object]"></hash-link-stub>
+                  <hash-link-stub type="address" hash="0x1" contract="[object Object]" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">Another Contract</td>
                 <td class="v-data-table__td v-data-table-column--align-start">

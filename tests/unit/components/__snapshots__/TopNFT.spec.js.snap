@@ -1,0 +1,699 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`TopNFT.vue > Should handle error when fetching NFTs 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <div class="d-flex align-center mb-4">
+    <h2 class="text-h6 font-weight-medium flex-grow-1">Top NFT Collections</h2>
+  </div>
+  <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-text">
+      <div class="v-table v-table--has-top v-table--has-bottom v-theme--light v-table--density-default v-data-table hide-table-count" disable-pagination="true">
+        <!---->
+        <div class="v-table__wrapper">
+          <table>
+            <!---->
+            <thead class="v-data-table__thead" role="rowgroup">
+              <tr>
+                <th class="v-data-table__td v-data-table-column--align-start v-data-table__th" colspan="1" rowspan="1">
+                  <div class="v-data-table-header__content"><span>Collection</span>
+                    <!---->
+                    <!---->
+                  </div>
+                </th>
+                <th class="v-data-table__td v-data-table-column--align-start v-data-table__th" colspan="1" rowspan="1">
+                  <div class="v-data-table-header__content"><span>Type</span>
+                    <!---->
+                    <!---->
+                  </div>
+                </th>
+                <th class="v-data-table__td v-data-table-column--align-start v-data-table__th" colspan="1" rowspan="1">
+                  <div class="v-data-table-header__content"><span>Holders</span>
+                    <!---->
+                    <!---->
+                  </div>
+                </th>
+                <th class="v-data-table__td v-data-table-column--align-start v-data-table__th" colspan="1" rowspan="1">
+                  <div class="v-data-table-header__content"><span>Total Assets</span>
+                    <!---->
+                    <!---->
+                  </div>
+                </th>
+              </tr>
+              <!---->
+            </thead>
+            <!---->
+            <tbody class="v-data-table__tbody" role="rowgroup">
+              <!---->
+              <tr class="v-data-table-rows-no-data">
+                <td colspan="4">No data available</td>
+              </tr>
+              <!---->
+            </tbody>
+            <!---->
+            <!---->
+          </table>
+        </div>
+        <hr class="v-divider v-theme--light" aria-orientation="horizontal" role="separator">
+        <div class="v-data-table-footer">
+          <!---->
+          <div class="v-data-table-footer__items-per-page"><span>Rows per page:</span>
+            <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field v-select v-select--single v-select--selected">
+              <!---->
+              <div class="v-input__control">
+                <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--no-label v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="v-menu-2">
+                  <div class="v-field__overlay"></div>
+                  <div class="v-field__loader">
+                    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                      <!---->
+                      <div class="v-progress-linear__background"></div>
+                      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                        <div class="v-progress-linear__indeterminate">
+                          <div class="v-progress-linear__indeterminate long"></div>
+                          <div class="v-progress-linear__indeterminate short"></div>
+                        </div>
+                      </transition-stub>
+                      <!---->
+                    </div>
+                  </div>
+                  <!---->
+                  <div class="v-field__field" data-no-activator="">
+                    <!---->
+                    <!---->
+                    <!---->
+                    <div class="v-field__input" data-no-activator="">
+                      <!---->
+                      <!---->
+                      <div class="v-select__selection"><span class="v-select__selection-text">10<!----></span></div><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" inputmode="none" aria-label="Open" title="Open" value="10">
+                    </div>
+                    <!---->
+                  </div>
+                  <!---->
+                  <div class="v-field__append-inner">
+                    <!----><i class="mdi-menu-down mdi v-icon notranslate v-theme--light v-icon--size-default v-select__menu-icon" aria-hidden="true"></i>
+                    <!---->
+                  </div>
+                  <div class="v-field__outline">
+                    <div class="v-field__outline__start"></div>
+                    <!---->
+                    <div class="v-field__outline__end"></div>
+                    <!---->
+                  </div>
+                </div>
+              </div>
+              <!---->
+              <!---->
+            </div>
+          </div>
+          <div class="v-data-table-footer__info">
+            <div>0-0 of 0</div>
+          </div>
+          <div class="v-data-table-footer__pagination">
+            <nav class="v-pagination v-theme--light" role="navigation" aria-label="Pagination Navigation" data-test="v-pagination-root">
+              <ul class="v-pagination__list">
+                <li class="v-pagination__first" data-test="v-pagination-first"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="First page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                    <!----><span class="v-btn__content" data-no-activator=""><!----></span>
+                    <!---->
+                    <!---->
+                  </button></li>
+                <li class="v-pagination__prev" data-test="v-pagination-prev"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="Previous page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                    <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-chevron-left mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+                    <!---->
+                    <!---->
+                  </button></li>
+                <li class="v-pagination__next" data-test="v-pagination-next"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="Next page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                    <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-chevron-right mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+                    <!---->
+                    <!---->
+                  </button></li>
+                <li class="v-pagination__last" data-test="v-pagination-last"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="Last page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                    <!----><span class="v-btn__content" data-no-activator=""><!----></span>
+                    <!---->
+                    <!---->
+                  </button></li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+</div>"
+`;
+
+exports[`TopNFT.vue > Should show loading state 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <div class="d-flex align-center mb-4">
+    <h2 class="text-h6 font-weight-medium flex-grow-1">Top NFT Collections</h2>
+  </div>
+  <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-text">
+      <div class="v-table v-table--has-top v-table--has-bottom v-theme--light v-table--density-default v-data-table v-data-table--loading hide-table-count" disable-pagination="true">
+        <!---->
+        <div class="v-table__wrapper">
+          <table>
+            <!---->
+            <thead class="v-data-table__thead" role="rowgroup">
+              <tr>
+                <th class="v-data-table__td v-data-table-column--align-start v-data-table__th v-data-table-headers--loading" colspan="1" rowspan="1">
+                  <div class="v-data-table-header__content"><span>Collection</span>
+                    <!---->
+                    <!---->
+                  </div>
+                </th>
+                <th class="v-data-table__td v-data-table-column--align-start v-data-table__th v-data-table-headers--loading" colspan="1" rowspan="1">
+                  <div class="v-data-table-header__content"><span>Type</span>
+                    <!---->
+                    <!---->
+                  </div>
+                </th>
+                <th class="v-data-table__td v-data-table-column--align-start v-data-table__th v-data-table-headers--loading" colspan="1" rowspan="1">
+                  <div class="v-data-table-header__content"><span>Holders</span>
+                    <!---->
+                    <!---->
+                  </div>
+                </th>
+                <th class="v-data-table__td v-data-table-column--align-start v-data-table__th v-data-table-headers--loading" colspan="1" rowspan="1">
+                  <div class="v-data-table-header__content"><span>Total Assets</span>
+                    <!---->
+                    <!---->
+                  </div>
+                </th>
+              </tr>
+              <tr class="v-data-table-progress">
+                <th colspan="4">
+                  <div class="v-data-table-progress__loader">
+                    <div class="v-progress-linear v-progress-linear--absolute v-theme--light v-locale--is-ltr" style="top: 0px; height: 2px; --v-progress-linear-height: 2px; left: 50%; transform: translateX(-50%);" role="progressbar" aria-hidden="false" aria-valuemin="0" aria-valuemax="100">
+                      <!---->
+                      <div class="v-progress-linear__background"></div>
+                      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                        <div class="v-progress-linear__indeterminate">
+                          <div class="v-progress-linear__indeterminate long"></div>
+                          <div class="v-progress-linear__indeterminate short"></div>
+                        </div>
+                      </transition-stub>
+                      <!---->
+                    </div>
+                  </div>
+                </th>
+              </tr>
+            </thead>
+            <!---->
+            <tbody class="v-data-table__tbody" role="rowgroup">
+              <!---->
+              <tr class="v-data-table-rows-loading">
+                <td colspan="4">
+                  <div class="d-flex justify-center align-center pa-4">
+                    <div class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-3" style="width: 24px; height: 24px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+                        <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="8" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
+                        <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="8" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
+                      </svg>
+                      <!---->
+                    </div> Loading collections...
+                  </div>
+                </td>
+              </tr>
+              <!---->
+            </tbody>
+            <!---->
+            <!---->
+          </table>
+        </div>
+        <hr class="v-divider v-theme--light" aria-orientation="horizontal" role="separator">
+        <div class="v-data-table-footer">
+          <!---->
+          <div class="v-data-table-footer__items-per-page"><span>Rows per page:</span>
+            <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field v-select v-select--single v-select--selected">
+              <!---->
+              <div class="v-input__control">
+                <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--no-label v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox">
+                  <div class="v-field__overlay"></div>
+                  <div class="v-field__loader">
+                    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                      <!---->
+                      <div class="v-progress-linear__background"></div>
+                      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                        <div class="v-progress-linear__indeterminate">
+                          <div class="v-progress-linear__indeterminate long"></div>
+                          <div class="v-progress-linear__indeterminate short"></div>
+                        </div>
+                      </transition-stub>
+                      <!---->
+                    </div>
+                  </div>
+                  <!---->
+                  <div class="v-field__field" data-no-activator="">
+                    <!---->
+                    <!---->
+                    <!---->
+                    <div class="v-field__input" data-no-activator="">
+                      <!---->
+                      <!---->
+                      <div class="v-select__selection"><span class="v-select__selection-text">10<!----></span></div><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" inputmode="none" aria-label="Open" title="Open" value="10">
+                    </div>
+                    <!---->
+                  </div>
+                  <!---->
+                  <div class="v-field__append-inner">
+                    <!----><i class="mdi-menu-down mdi v-icon notranslate v-theme--light v-icon--size-default v-select__menu-icon" aria-hidden="true"></i>
+                    <!---->
+                  </div>
+                  <div class="v-field__outline">
+                    <div class="v-field__outline__start"></div>
+                    <!---->
+                    <div class="v-field__outline__end"></div>
+                    <!---->
+                  </div>
+                </div>
+              </div>
+              <!---->
+              <!---->
+            </div>
+          </div>
+          <div class="v-data-table-footer__info">
+            <div>0-0 of 0</div>
+          </div>
+          <div class="v-data-table-footer__pagination">
+            <nav class="v-pagination v-theme--light" role="navigation" aria-label="Pagination Navigation" data-test="v-pagination-root">
+              <ul class="v-pagination__list">
+                <li class="v-pagination__first" data-test="v-pagination-first"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="First page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                    <!----><span class="v-btn__content" data-no-activator=""><!----></span>
+                    <!---->
+                    <!---->
+                  </button></li>
+                <li class="v-pagination__prev" data-test="v-pagination-prev"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="Previous page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                    <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-chevron-left mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+                    <!---->
+                    <!---->
+                  </button></li>
+                <li class="v-pagination__next" data-test="v-pagination-next"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="Next page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                    <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-chevron-right mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+                    <!---->
+                    <!---->
+                  </button></li>
+                <li class="v-pagination__last" data-test="v-pagination-last"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="Last page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                    <!----><span class="v-btn__content" data-no-activator=""><!----></span>
+                    <!---->
+                    <!---->
+                  </button></li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+</div>"
+`;
+
+exports[`TopNFT.vue > Should show the component with data 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <div class="d-flex align-center mb-4">
+    <h2 class="text-h6 font-weight-medium flex-grow-1">Top NFT Collections</h2>
+  </div>
+  <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-text">
+      <div class="v-table v-table--has-top v-table--has-bottom v-theme--light v-table--density-default v-data-table hide-table-count" disable-pagination="true">
+        <!---->
+        <div class="v-table__wrapper">
+          <table>
+            <!---->
+            <thead class="v-data-table__thead" role="rowgroup">
+              <tr>
+                <th class="v-data-table__td v-data-table-column--align-start v-data-table__th" colspan="1" rowspan="1">
+                  <div class="v-data-table-header__content"><span>Collection</span>
+                    <!---->
+                    <!---->
+                  </div>
+                </th>
+                <th class="v-data-table__td v-data-table-column--align-start v-data-table__th" colspan="1" rowspan="1">
+                  <div class="v-data-table-header__content"><span>Type</span>
+                    <!---->
+                    <!---->
+                  </div>
+                </th>
+                <th class="v-data-table__td v-data-table-column--align-start v-data-table__th" colspan="1" rowspan="1">
+                  <div class="v-data-table-header__content"><span>Holders</span>
+                    <!---->
+                    <!---->
+                  </div>
+                </th>
+                <th class="v-data-table__td v-data-table-column--align-start v-data-table__th" colspan="1" rowspan="1">
+                  <div class="v-data-table-header__content"><span>Total Assets</span>
+                    <!---->
+                    <!---->
+                  </div>
+                </th>
+              </tr>
+              <!---->
+            </thead>
+            <!---->
+            <tbody class="v-data-table__tbody" role="rowgroup">
+              <!---->
+              <tr class="v-data-table__tr">
+                <td class="v-data-table__td v-data-table-column--align-start">
+                  <div class="d-flex align-center">
+                    <router-link-stub to="/token/0x123" class="text-decoration-none"></router-link-stub>
+                  </div>
+                </td>
+                <td class="v-data-table__td v-data-table-column--align-start"><span><span class="v-chip v-theme--light text-success v-chip--density-default v-chip--size-x-small v-chip--variant-tonal text-uppercase mr-1" draggable="false"><!----><span class="v-chip__underlay"></span>
+                  <!---->
+                  <!---->
+                  <div class="v-chip__content" data-no-activator="">ERC721</div>
+                  <!---->
+                  <!----></span></span>
+                </td>
+                <td class="v-data-table__td v-data-table-column--align-start">500</td>
+                <td class="v-data-table__td v-data-table-column--align-start">1,000</td>
+              </tr>
+              <!---->
+              <!---->
+            </tbody>
+            <!---->
+            <!---->
+          </table>
+        </div>
+        <hr class="v-divider v-theme--light" aria-orientation="horizontal" role="separator">
+        <div class="v-data-table-footer">
+          <!---->
+          <div class="v-data-table-footer__items-per-page"><span>Rows per page:</span>
+            <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field v-select v-select--single v-select--selected">
+              <!---->
+              <div class="v-input__control">
+                <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--no-label v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="v-menu-2">
+                  <div class="v-field__overlay"></div>
+                  <div class="v-field__loader">
+                    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                      <!---->
+                      <div class="v-progress-linear__background"></div>
+                      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                        <div class="v-progress-linear__indeterminate">
+                          <div class="v-progress-linear__indeterminate long"></div>
+                          <div class="v-progress-linear__indeterminate short"></div>
+                        </div>
+                      </transition-stub>
+                      <!---->
+                    </div>
+                  </div>
+                  <!---->
+                  <div class="v-field__field" data-no-activator="">
+                    <!---->
+                    <!---->
+                    <!---->
+                    <div class="v-field__input" data-no-activator="">
+                      <!---->
+                      <!---->
+                      <div class="v-select__selection"><span class="v-select__selection-text">10<!----></span></div><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" inputmode="none" aria-label="Open" title="Open" value="10">
+                    </div>
+                    <!---->
+                  </div>
+                  <!---->
+                  <div class="v-field__append-inner">
+                    <!----><i class="mdi-menu-down mdi v-icon notranslate v-theme--light v-icon--size-default v-select__menu-icon" aria-hidden="true"></i>
+                    <!---->
+                  </div>
+                  <div class="v-field__outline">
+                    <div class="v-field__outline__start"></div>
+                    <!---->
+                    <div class="v-field__outline__end"></div>
+                    <!---->
+                  </div>
+                </div>
+              </div>
+              <!---->
+              <!---->
+            </div>
+          </div>
+          <div class="v-data-table-footer__info">
+            <div>1-10 of 10</div>
+          </div>
+          <div class="v-data-table-footer__pagination">
+            <nav class="v-pagination v-theme--light" role="navigation" aria-label="Pagination Navigation" data-test="v-pagination-root">
+              <ul class="v-pagination__list">
+                <li class="v-pagination__first" data-test="v-pagination-first"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="First page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                    <!----><span class="v-btn__content" data-no-activator=""><!----></span>
+                    <!---->
+                    <!---->
+                  </button></li>
+                <li class="v-pagination__prev" data-test="v-pagination-prev"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="Previous page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                    <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-chevron-left mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+                    <!---->
+                    <!---->
+                  </button></li>
+                <li class="v-pagination__next" data-test="v-pagination-next"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="Next page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                    <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-chevron-right mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+                    <!---->
+                    <!---->
+                  </button></li>
+                <li class="v-pagination__last" data-test="v-pagination-last"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="Last page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                    <!----><span class="v-btn__content" data-no-activator=""><!----></span>
+                    <!---->
+                    <!---->
+                  </button></li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+</div>"
+`;
+
+exports[`TopNFT.vue > Should update NFTs when options change 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <div class="d-flex align-center mb-4">
+    <h2 class="text-h6 font-weight-medium flex-grow-1">Top NFT Collections</h2>
+  </div>
+  <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-text">
+      <div class="v-table v-table--has-top v-table--has-bottom v-theme--light v-table--density-default v-data-table hide-table-count" disable-pagination="true">
+        <!---->
+        <div class="v-table__wrapper">
+          <table>
+            <!---->
+            <thead class="v-data-table__thead" role="rowgroup">
+              <tr>
+                <th class="v-data-table__td v-data-table-column--align-start v-data-table__th" colspan="1" rowspan="1">
+                  <div class="v-data-table-header__content"><span>Collection</span>
+                    <!---->
+                    <!---->
+                  </div>
+                </th>
+                <th class="v-data-table__td v-data-table-column--align-start v-data-table__th" colspan="1" rowspan="1">
+                  <div class="v-data-table-header__content"><span>Type</span>
+                    <!---->
+                    <!---->
+                  </div>
+                </th>
+                <th class="v-data-table__td v-data-table-column--align-start v-data-table__th" colspan="1" rowspan="1">
+                  <div class="v-data-table-header__content"><span>Holders</span>
+                    <!---->
+                    <!---->
+                  </div>
+                </th>
+                <th class="v-data-table__td v-data-table-column--align-start v-data-table__th" colspan="1" rowspan="1">
+                  <div class="v-data-table-header__content"><span>Total Assets</span>
+                    <!---->
+                    <!---->
+                  </div>
+                </th>
+              </tr>
+              <!---->
+            </thead>
+            <!---->
+            <tbody class="v-data-table__tbody" role="rowgroup">
+              <!---->
+              <tr class="v-data-table__tr">
+                <td class="v-data-table__td v-data-table-column--align-start">
+                  <div class="d-flex align-center">
+                    <router-link-stub to="/token/0x123" class="text-decoration-none"></router-link-stub>
+                  </div>
+                </td>
+                <td class="v-data-table__td v-data-table-column--align-start"><span><span class="v-chip v-theme--light text-success v-chip--density-default v-chip--size-x-small v-chip--variant-tonal text-uppercase mr-1" draggable="false"><!----><span class="v-chip__underlay"></span>
+                  <!---->
+                  <!---->
+                  <div class="v-chip__content" data-no-activator="">ERC721</div>
+                  <!---->
+                  <!----></span></span>
+                </td>
+                <td class="v-data-table__td v-data-table-column--align-start">500</td>
+                <td class="v-data-table__td v-data-table-column--align-start">1,000</td>
+              </tr>
+              <!---->
+              <!---->
+            </tbody>
+            <!---->
+            <!---->
+          </table>
+        </div>
+        <hr class="v-divider v-theme--light" aria-orientation="horizontal" role="separator">
+        <div class="v-data-table-footer">
+          <!---->
+          <div class="v-data-table-footer__items-per-page"><span>Rows per page:</span>
+            <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field v-select v-select--single v-select--selected">
+              <!---->
+              <div class="v-input__control">
+                <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--no-label v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="v-menu-2">
+                  <div class="v-field__overlay"></div>
+                  <div class="v-field__loader">
+                    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                      <!---->
+                      <div class="v-progress-linear__background"></div>
+                      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                        <div class="v-progress-linear__indeterminate">
+                          <div class="v-progress-linear__indeterminate long"></div>
+                          <div class="v-progress-linear__indeterminate short"></div>
+                        </div>
+                      </transition-stub>
+                      <!---->
+                    </div>
+                  </div>
+                  <!---->
+                  <div class="v-field__field" data-no-activator="">
+                    <!---->
+                    <!---->
+                    <!---->
+                    <div class="v-field__input" data-no-activator="">
+                      <!---->
+                      <!---->
+                      <div class="v-select__selection"><span class="v-select__selection-text">10<!----></span></div><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" inputmode="none" aria-label="Open" title="Open" value="10">
+                    </div>
+                    <!---->
+                  </div>
+                  <!---->
+                  <div class="v-field__append-inner">
+                    <!----><i class="mdi-menu-down mdi v-icon notranslate v-theme--light v-icon--size-default v-select__menu-icon" aria-hidden="true"></i>
+                    <!---->
+                  </div>
+                  <div class="v-field__outline">
+                    <div class="v-field__outline__start"></div>
+                    <!---->
+                    <div class="v-field__outline__end"></div>
+                    <!---->
+                  </div>
+                </div>
+              </div>
+              <!---->
+              <!---->
+            </div>
+          </div>
+          <div class="v-data-table-footer__info">
+            <div>1-10 of 20</div>
+          </div>
+          <div class="v-data-table-footer__pagination">
+            <nav class="v-pagination v-theme--light" role="navigation" aria-label="Pagination Navigation" data-test="v-pagination-root">
+              <ul class="v-pagination__list">
+                <li class="v-pagination__first" data-test="v-pagination-first"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="First page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                    <!----><span class="v-btn__content" data-no-activator=""><!----></span>
+                    <!---->
+                    <!---->
+                  </button></li>
+                <li class="v-pagination__prev" data-test="v-pagination-prev"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="Previous page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                    <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-chevron-left mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+                    <!---->
+                    <!---->
+                  </button></li>
+                <li class="v-pagination__next" data-test="v-pagination-next"><button type="button" class="v-btn v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" aria-label="Next page" aria-disabled="false"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                    <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-chevron-right mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+                    <!---->
+                    <!---->
+                  </button></li>
+                <li class="v-pagination__last" data-test="v-pagination-last"><button type="button" class="v-btn v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" aria-label="Last page" aria-disabled="false"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                    <!----><span class="v-btn__content" data-no-activator=""><!----></span>
+                    <!---->
+                    <!---->
+                  </button></li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+</div>"
+`;

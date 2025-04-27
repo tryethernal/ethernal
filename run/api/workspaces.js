@@ -1,4 +1,5 @@
 const express = require('express');
+const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const authMiddleware = require('../middlewares/auth');
 const secretMiddleware = require('../middlewares/secret');
 const { sanitize, stringifyBns, withTimeout } = require('../lib/utils');
@@ -9,6 +10,28 @@ const PM2 = require('../lib/pm2');
 const { getPm2Host, getPm2Secret } = require('../lib/env');
 const router = express.Router();
 const { managedError, unmanagedError } = require('../lib/errors');
+
+/**
+ * Retrieves the list of token transfers for a workspace
+ * @param {string} workspaceId - The workspace id
+ * @param {number} page - The page number
+ * @param {number} itemsPerPage - The number of items per page
+ * @param {string} orderBy - The field to order by
+ * @param {string} order - The order to sort by
+ * @param {Array} tokenTypes - The types of tokens to return
+ * @returns {Promise<Array>} - A list of token transfers
+**/
+router.get('/:id/tokenTransfers', workspaceAuthMiddleware, async (req, res, next) => {
+    const data = { ...req.query, ...req.body.data };
+
+    try {
+        const tokenTransfers = await db.getWorkspaceTokenTransfers(data.workspace.id, data.page, data.itemsPerPage, data.orderBy, data.order, data.tokenTypes);
+
+        res.status(200).json({ items: tokenTransfers });
+    } catch(error) {
+        unmanagedError(error, req, next);
+    }
+});
 
 router.post('/reprocessTransactionErrors', [secretMiddleware], async (req, res, next) => {
     const data = req.body.data;

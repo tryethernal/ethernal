@@ -1,80 +1,25 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`TransactionEvent.vue > Should display in raw mode if no topics 1`] = `
-"<div data-v-1a031228="" class="my-3 text-medium-emphasis"><b data-v-1a031228="">Emitter:</b>
-  <hash-link-stub data-v-1a031228="" type="address" hash="0xc00e94Cb662C3520282E6f5717214004A7f26888"></hash-link-stub><br data-v-1a031228=""><b data-v-1a031228="">Data:</b>
-  <formatted-sol-var-stub data-v-1a031228="" notinteractive="true" isarrayel="true" input="[object Object]" class="ml-4"></formatted-sol-var-stub>
+"<div data-v-1a031228="" class="my-3 text-medium-emphasis">
+  <!-- Raw Mode Display -->
+  <!-- Full Mode Display -->
+  <log-details-stub data-v-1a031228="" log="[object Object]" self="false" istooltip="false" short="false"></log-details-stub>
 </div>"
 `;
 
 exports[`TransactionEvent.vue > Should display short version 1`] = `
-"<div data-v-1a031228="" class="my-3 text-medium-emphasis"><span data-v-1a031228="" class="v-chip v-chip--label v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal bg-primary-lighten-1" draggable="false" aria-describedby="v-tooltip-0"><!----><span class="v-chip__underlay"></span>
-  <!---->
-  <!---->
-  <div class="v-chip__content" data-no-activator=""><span data-v-1a031228="" class="color--text event-name">Transfer</span></div>
-  <!---->
-  <!----></span>
-  <!--teleport start-->
-  <!--teleport end-->
+"<div data-v-1a031228="" class="my-3 text-medium-emphasis">
+  <!-- Raw Mode Display -->
+  <!-- Full Mode Display -->
+  <log-details-stub data-v-1a031228="" log="[object Object]" self="false" istooltip="false" short="true"></log-details-stub>
 </div>"
 `;
 
 exports[`TransactionEvent.vue > Should display transaction event 1`] = `
-"<div data-v-1a031228="" class="my-3 text-medium-emphasis"><span data-v-1a031228=""><hash-link-stub data-v-1a031228="" type="address" notcopiable="true" withtokenname="true" withname="true" hash="0xc00e94Cb662C3520282E6f5717214004A7f26888" contract="[object Object]"></hash-link-stub>.Transfer(
-</span>
-  <div data-v-1a031228="" style="white-space: pre;">
-    <formatted-sol-var-stub data-v-1a031228="" input="[object Object]" class="ml-4" value="0xE93381fB4c4F14bDa253907b18faD305D799241a"></formatted-sol-var-stub>
-  </div>
-  <div data-v-1a031228="" style="white-space: pre;">
-    <formatted-sol-var-stub data-v-1a031228="" input="[object Object]" class="ml-4" value="0xc00e94Cb662C3520282E6f5717214004A7f26888"></formatted-sol-var-stub>
-  </div>
-  <div data-v-1a031228="" style="white-space: pre;">
-    <formatted-sol-var-stub data-v-1a031228="" input="[object Object]" class="ml-4" value="1"></formatted-sol-var-stub>
-  </div><span data-v-1a031228="">)</span>
-</div>"
-`;
-
-exports[`TransactionEvent.vue > Should display transaction event for a proxied contract 1`] = `
-"<div data-v-1a031228="" class="my-3 text-medium-emphasis"><span data-v-1a031228=""><hash-link-stub data-v-1a031228="" type="address" notcopiable="true" withtokenname="true" withname="true" hash="0xc00e94Cb662C3520282E6f5717214004A7f26888" contract="[object Object]"></hash-link-stub>.Transfer(
-</span>
-  <div data-v-1a031228="" style="white-space: pre;">
-    <formatted-sol-var-stub data-v-1a031228="" input="[object Object]" class="ml-4" value="0xE93381fB4c4F14bDa253907b18faD305D799241a"></formatted-sol-var-stub>
-  </div>
-  <div data-v-1a031228="" style="white-space: pre;">
-    <formatted-sol-var-stub data-v-1a031228="" input="[object Object]" class="ml-4" value="0xc00e94Cb662C3520282E6f5717214004A7f26888"></formatted-sol-var-stub>
-  </div>
-  <div data-v-1a031228="" style="white-space: pre;">
-    <formatted-sol-var-stub data-v-1a031228="" input="[object Object]" class="ml-4" value="1"></formatted-sol-var-stub>
-  </div><span data-v-1a031228="">)</span>
-</div>"
-`;
-
-exports[`TransactionEvent.vue > Should display warning if no ABI 1`] = `
-"<div data-v-1a031228="" class="my-3 text-medium-emphasis"><span data-v-1a031228=""><hash-link-stub data-v-1a031228="" type="address" notcopiable="true" withtokenname="true" withname="true" hash="0xc00e94Cb662C3520282E6f5717214004A7f26888" contract="[object Object]"></hash-link-stub>.Transfer(
-</span>
-  <div data-v-1a031228="" style="white-space: pre;">
-    <formatted-sol-var-stub data-v-1a031228="" input="[object Object]" class="ml-4" value="0xE93381fB4c4F14bDa253907b18faD305D799241a"></formatted-sol-var-stub>
-  </div>
-  <div data-v-1a031228="" style="white-space: pre;">
-    <formatted-sol-var-stub data-v-1a031228="" input="[object Object]" class="ml-4" value="0xc00e94Cb662C3520282E6f5717214004A7f26888"></formatted-sol-var-stub>
-  </div>
-  <div data-v-1a031228="" style="white-space: pre;">
-    <formatted-sol-var-stub data-v-1a031228="" input="[object Object]" class="ml-4" value="1"></formatted-sol-var-stub>
-  </div><span data-v-1a031228="">)</span>
-</div>"
-`;
-
-exports[`TransactionEvent.vue > Should load erc20 abi if event is detected 1`] = `
-"<div data-v-1a031228="" class="my-3 text-medium-emphasis"><span data-v-1a031228=""><hash-link-stub data-v-1a031228="" type="address" notcopiable="true" withtokenname="true" withname="true" hash="0xc00e94Cb662C3520282E6f5717214004A7f26888" contract="[object Object]"></hash-link-stub>.Transfer(
-</span>
-  <div data-v-1a031228="" style="white-space: pre;">
-    <formatted-sol-var-stub data-v-1a031228="" input="[object Object]" class="ml-4" value="0xE93381fB4c4F14bDa253907b18faD305D799241a"></formatted-sol-var-stub>
-  </div>
-  <div data-v-1a031228="" style="white-space: pre;">
-    <formatted-sol-var-stub data-v-1a031228="" input="[object Object]" class="ml-4" value="0xc00e94Cb662C3520282E6f5717214004A7f26888"></formatted-sol-var-stub>
-  </div>
-  <div data-v-1a031228="" style="white-space: pre;">
-    <formatted-sol-var-stub data-v-1a031228="" input="[object Object]" class="ml-4" value="1"></formatted-sol-var-stub>
-  </div><span data-v-1a031228="">)</span>
+"<div data-v-1a031228="" class="my-3 text-medium-emphasis">
+  <!-- Raw Mode Display -->
+  <!-- Full Mode Display -->
+  <log-details-stub data-v-1a031228="" log="[object Object]" self="false" istooltip="false" short="false" parsedlog="[object Object]" contract="[object Object]"></log-details-stub>
 </div>"
 `;

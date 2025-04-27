@@ -1,0 +1,281 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`OverviewStats.vue > Should handle server errors gracefully 1`] = `
+"<div data-v-1ebb31f3="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated white-card" style="height: 100%;">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
+        </div>
+      </transition-stub>
+      <!---->
+    </div>
+  </div>
+  <!---->
+  <!---->
+  <div data-v-1ebb31f3="" class="v-card-text">
+    <div data-v-1ebb31f3="" class="v-row stats-grid">
+      <div data-v-1ebb31f3="" class="v-col-sm-6 v-col-12 stat-item d-flex flex-column">
+        <stat-number-stub data-v-1ebb31f3="" title="Latest Block" loading="false" long="false" raw="true" border="false" icon="mdi-cube-outline" value="12,345"></stat-number-stub>
+        <hr data-v-1ebb31f3="" class="v-divider v-theme--light mt-5" aria-orientation="horizontal" role="separator" width="90%">
+      </div>
+      <div data-v-1ebb31f3="" class="v-col-sm-6 v-col-12 stat-item d-flex flex-column">
+        <stat-number-stub data-v-1ebb31f3="" title="Total Tx Count" loading="false" long="false" raw="false" border="false" value="0"></stat-number-stub>
+        <hr data-v-1ebb31f3="" class="v-divider v-theme--light mt-5" aria-orientation="horizontal" role="separator" width="90%">
+      </div>
+      <div data-v-1ebb31f3="" class="v-col-sm-6 v-col-12 stat-item d-flex flex-column">
+        <stat-number-stub data-v-1ebb31f3="" title="24h Tx Count" loading="false" long="false" raw="false" border="false" value="0"></stat-number-stub>
+        <hr data-v-1ebb31f3="" class="v-divider v-theme--light mt-5" aria-orientation="horizontal" role="separator" width="90%">
+      </div>
+      <div data-v-1ebb31f3="" class="v-col-sm-6 v-col-12 stat-item d-flex flex-column">
+        <stat-number-stub data-v-1ebb31f3="" title="Total Active Wallets Count" infotooltip="An active wallet is an address that has sent at least one transaction." loading="false" long="false" raw="false" border="false" value="0"></stat-number-stub>
+        <hr data-v-1ebb31f3="" class="v-divider v-theme--light mt-5" aria-orientation="horizontal" role="separator" width="90%">
+      </div>
+      <div data-v-1ebb31f3="" class="v-col-sm-6 v-col-12 stat-item d-flex flex-column">
+        <stat-number-stub data-v-1ebb31f3="" title="Total Supply" loading="false" long="false" raw="true" border="false" value="1.0 ETH"></stat-number-stub>
+      </div>
+    </div>
+  </div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
+`;
+
+exports[`OverviewStats.vue > Should hide dividers correctly on different screen sizes 1`] = `
+"<div data-v-1ebb31f3="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated white-card" style="height: 100%;">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
+        </div>
+      </transition-stub>
+      <!---->
+    </div>
+  </div>
+  <!---->
+  <!---->
+  <div data-v-1ebb31f3="" class="v-card-text">
+    <div data-v-1ebb31f3="" class="v-row stats-grid">
+      <div data-v-1ebb31f3="" class="v-col-sm-6 v-col-12 stat-item d-flex flex-column">
+        <stat-number-stub data-v-1ebb31f3="" title="Latest Block" loading="false" long="false" raw="true" border="false" icon="mdi-cube-outline" value="12,345"></stat-number-stub>
+        <hr data-v-1ebb31f3="" class="v-divider v-theme--light mt-5" aria-orientation="horizontal" role="separator" width="90%">
+      </div>
+      <div data-v-1ebb31f3="" class="v-col-sm-6 v-col-12 stat-item d-flex flex-column">
+        <stat-number-stub data-v-1ebb31f3="" title="Total Tx Count" loading="false" long="false" raw="false" border="false" value="1000"></stat-number-stub>
+        <hr data-v-1ebb31f3="" class="v-divider v-theme--light mt-5" aria-orientation="horizontal" role="separator" width="90%">
+      </div>
+      <div data-v-1ebb31f3="" class="v-col-sm-6 v-col-12 stat-item d-flex flex-column">
+        <stat-number-stub data-v-1ebb31f3="" title="24h Tx Count" loading="false" long="false" raw="false" border="false" value="50"></stat-number-stub>
+        <hr data-v-1ebb31f3="" class="v-divider v-theme--light mt-5" aria-orientation="horizontal" role="separator" width="90%">
+      </div>
+      <div data-v-1ebb31f3="" class="v-col-sm-6 v-col-12 stat-item d-flex flex-column">
+        <stat-number-stub data-v-1ebb31f3="" title="Total Active Wallets Count" infotooltip="An active wallet is an address that has sent at least one transaction." loading="false" long="false" raw="false" border="false" value="100"></stat-number-stub>
+        <hr data-v-1ebb31f3="" class="v-divider v-theme--light mt-5" aria-orientation="horizontal" role="separator" width="90%">
+      </div>
+      <div data-v-1ebb31f3="" class="v-col-sm-6 v-col-12 stat-item d-flex flex-column">
+        <stat-number-stub data-v-1ebb31f3="" title="Total Supply" loading="false" long="false" raw="true" border="false" value="1.0 ETH"></stat-number-stub>
+      </div>
+    </div>
+  </div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
+`;
+
+exports[`OverviewStats.vue > Should not show total supply when not available 1`] = `
+"<div data-v-1ebb31f3="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated white-card" style="height: 100%;">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
+        </div>
+      </transition-stub>
+      <!---->
+    </div>
+  </div>
+  <!---->
+  <!---->
+  <div data-v-1ebb31f3="" class="v-card-text">
+    <div data-v-1ebb31f3="" class="v-row stats-grid">
+      <div data-v-1ebb31f3="" class="v-col-sm-6 v-col-12 stat-item d-flex flex-column">
+        <stat-number-stub data-v-1ebb31f3="" title="Latest Block" loading="false" long="false" raw="true" border="false" icon="mdi-cube-outline" value="12,345"></stat-number-stub>
+        <hr data-v-1ebb31f3="" class="v-divider v-theme--light mt-5" aria-orientation="horizontal" role="separator" width="90%">
+      </div>
+      <div data-v-1ebb31f3="" class="v-col-sm-6 v-col-12 stat-item d-flex flex-column">
+        <stat-number-stub data-v-1ebb31f3="" title="Total Tx Count" loading="false" long="false" raw="false" border="false" value="1000"></stat-number-stub>
+        <hr data-v-1ebb31f3="" class="v-divider v-theme--light mt-5" aria-orientation="horizontal" role="separator" width="90%">
+      </div>
+      <div data-v-1ebb31f3="" class="v-col-sm-6 v-col-12 stat-item d-flex flex-column">
+        <stat-number-stub data-v-1ebb31f3="" title="24h Tx Count" loading="false" long="false" raw="false" border="false" value="50"></stat-number-stub>
+        <hr data-v-1ebb31f3="" class="v-divider v-theme--light mt-5" aria-orientation="horizontal" role="separator" width="90%">
+      </div>
+      <div data-v-1ebb31f3="" class="v-col-sm-6 v-col-12 stat-item d-flex flex-column">
+        <stat-number-stub data-v-1ebb31f3="" title="Total Active Wallets Count" infotooltip="An active wallet is an address that has sent at least one transaction." loading="false" long="false" raw="false" border="false" value="100"></stat-number-stub>
+        <hr data-v-1ebb31f3="" class="v-divider v-theme--light mt-5" aria-orientation="horizontal" role="separator" width="90%">
+      </div>
+      <!--v-if-->
+    </div>
+  </div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
+`;
+
+exports[`OverviewStats.vue > Should show block number when it is 0 1`] = `
+"<div data-v-1ebb31f3="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated white-card" style="height: 100%;">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
+        </div>
+      </transition-stub>
+      <!---->
+    </div>
+  </div>
+  <!---->
+  <!---->
+  <div data-v-1ebb31f3="" class="v-card-text">
+    <div data-v-1ebb31f3="" class="v-row stats-grid">
+      <div data-v-1ebb31f3="" class="v-col-sm-6 v-col-12 stat-item d-flex flex-column">
+        <stat-number-stub data-v-1ebb31f3="" title="Latest Block" loading="false" long="false" raw="true" border="false" icon="mdi-cube-outline" value="0"></stat-number-stub>
+        <hr data-v-1ebb31f3="" class="v-divider v-theme--light mt-5" aria-orientation="horizontal" role="separator" width="90%">
+      </div>
+      <div data-v-1ebb31f3="" class="v-col-sm-6 v-col-12 stat-item d-flex flex-column">
+        <stat-number-stub data-v-1ebb31f3="" title="Total Tx Count" loading="false" long="false" raw="false" border="false" value="1000"></stat-number-stub>
+        <hr data-v-1ebb31f3="" class="v-divider v-theme--light mt-5" aria-orientation="horizontal" role="separator" width="90%">
+      </div>
+      <div data-v-1ebb31f3="" class="v-col-sm-6 v-col-12 stat-item d-flex flex-column">
+        <stat-number-stub data-v-1ebb31f3="" title="24h Tx Count" loading="false" long="false" raw="false" border="false" value="50"></stat-number-stub>
+        <hr data-v-1ebb31f3="" class="v-divider v-theme--light mt-5" aria-orientation="horizontal" role="separator" width="90%">
+      </div>
+      <div data-v-1ebb31f3="" class="v-col-sm-6 v-col-12 stat-item d-flex flex-column">
+        <stat-number-stub data-v-1ebb31f3="" title="Total Active Wallets Count" infotooltip="An active wallet is an address that has sent at least one transaction." loading="false" long="false" raw="false" border="false" value="100"></stat-number-stub>
+        <hr data-v-1ebb31f3="" class="v-divider v-theme--light mt-5" aria-orientation="horizontal" role="separator" width="90%">
+      </div>
+      <div data-v-1ebb31f3="" class="v-col-sm-6 v-col-12 stat-item d-flex flex-column">
+        <stat-number-stub data-v-1ebb31f3="" title="Total Supply" loading="false" long="false" raw="true" border="false" value="1.0 ETH"></stat-number-stub>
+      </div>
+    </div>
+  </div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
+`;
+
+exports[`OverviewStats.vue > Should show loading state while fetching data 1`] = `
+"<div data-v-1ebb31f3="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated white-card" style="height: 100%;">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
+        </div>
+      </transition-stub>
+      <!---->
+    </div>
+  </div>
+  <!---->
+  <!---->
+  <div data-v-1ebb31f3="" class="v-card-text">
+    <div data-v-1ebb31f3="" class="v-row stats-grid">
+      <div data-v-1ebb31f3="" class="v-col-sm-6 v-col-12 stat-item d-flex flex-column">
+        <stat-number-stub data-v-1ebb31f3="" title="Latest Block" loading="true" long="false" raw="true" border="false" icon="mdi-cube-outline" value=""></stat-number-stub>
+        <hr data-v-1ebb31f3="" class="v-divider v-theme--light mt-5" aria-orientation="horizontal" role="separator" width="90%">
+      </div>
+      <div data-v-1ebb31f3="" class="v-col-sm-6 v-col-12 stat-item d-flex flex-column">
+        <stat-number-stub data-v-1ebb31f3="" title="Total Tx Count" loading="false" long="false" raw="false" border="false" value="0"></stat-number-stub>
+        <hr data-v-1ebb31f3="" class="v-divider v-theme--light mt-5" aria-orientation="horizontal" role="separator" width="90%">
+      </div>
+      <div data-v-1ebb31f3="" class="v-col-sm-6 v-col-12 stat-item d-flex flex-column">
+        <stat-number-stub data-v-1ebb31f3="" title="24h Tx Count" loading="false" long="false" raw="false" border="false" value="0"></stat-number-stub>
+        <hr data-v-1ebb31f3="" class="v-divider v-theme--light mt-5" aria-orientation="horizontal" role="separator" width="90%">
+      </div>
+      <div data-v-1ebb31f3="" class="v-col-sm-6 v-col-12 stat-item d-flex flex-column">
+        <stat-number-stub data-v-1ebb31f3="" title="Total Active Wallets Count" infotooltip="An active wallet is an address that has sent at least one transaction." loading="false" long="false" raw="false" border="false" value="0"></stat-number-stub>
+        <hr data-v-1ebb31f3="" class="v-divider v-theme--light mt-5" aria-orientation="horizontal" role="separator" width="90%">
+      </div>
+      <div data-v-1ebb31f3="" class="v-col-sm-6 v-col-12 stat-item d-flex flex-column">
+        <stat-number-stub data-v-1ebb31f3="" title="Total Supply" loading="false" long="false" raw="true" border="false" value="0.0 ETH"></stat-number-stub>
+      </div>
+    </div>
+  </div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
+`;
+
+exports[`OverviewStats.vue > Should show the component with all stats 1`] = `
+"<div data-v-1ebb31f3="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated white-card" style="height: 100%;">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
+        </div>
+      </transition-stub>
+      <!---->
+    </div>
+  </div>
+  <!---->
+  <!---->
+  <div data-v-1ebb31f3="" class="v-card-text">
+    <div data-v-1ebb31f3="" class="v-row stats-grid">
+      <div data-v-1ebb31f3="" class="v-col-sm-6 v-col-12 stat-item d-flex flex-column">
+        <stat-number-stub data-v-1ebb31f3="" title="Latest Block" loading="false" long="false" raw="true" border="false" icon="mdi-cube-outline" value="12,345"></stat-number-stub>
+        <hr data-v-1ebb31f3="" class="v-divider v-theme--light mt-5" aria-orientation="horizontal" role="separator" width="90%">
+      </div>
+      <div data-v-1ebb31f3="" class="v-col-sm-6 v-col-12 stat-item d-flex flex-column">
+        <stat-number-stub data-v-1ebb31f3="" title="Total Tx Count" loading="false" long="false" raw="false" border="false" value="1000"></stat-number-stub>
+        <hr data-v-1ebb31f3="" class="v-divider v-theme--light mt-5" aria-orientation="horizontal" role="separator" width="90%">
+      </div>
+      <div data-v-1ebb31f3="" class="v-col-sm-6 v-col-12 stat-item d-flex flex-column">
+        <stat-number-stub data-v-1ebb31f3="" title="24h Tx Count" loading="false" long="false" raw="false" border="false" value="50"></stat-number-stub>
+        <hr data-v-1ebb31f3="" class="v-divider v-theme--light mt-5" aria-orientation="horizontal" role="separator" width="90%">
+      </div>
+      <div data-v-1ebb31f3="" class="v-col-sm-6 v-col-12 stat-item d-flex flex-column">
+        <stat-number-stub data-v-1ebb31f3="" title="Total Active Wallets Count" infotooltip="An active wallet is an address that has sent at least one transaction." loading="false" long="false" raw="false" border="false" value="100"></stat-number-stub>
+        <hr data-v-1ebb31f3="" class="v-divider v-theme--light mt-5" aria-orientation="horizontal" role="separator" width="90%">
+      </div>
+      <div data-v-1ebb31f3="" class="v-col-sm-6 v-col-12 stat-item d-flex flex-column">
+        <stat-number-stub data-v-1ebb31f3="" title="Total Supply" loading="false" long="false" raw="true" border="false" value="1.0 ETH"></stat-number-stub>
+      </div>
+    </div>
+  </div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
+`;

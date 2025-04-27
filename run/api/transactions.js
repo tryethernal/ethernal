@@ -12,6 +12,48 @@ const { managedError, unmanagedError } = require('../lib/errors');
 
 const router = express.Router();
 
+/**
+ * Retrieves the internal transactions for a transaction
+ * @param {string} hash - The hash of the transaction
+ * @returns {Promise<Array>} An array of internal transactions
+ */
+router.get('/:hash/traceSteps', workspaceAuthMiddleware, async (req, res, next) => {
+    const data = req.query;
+
+    try {
+        if (!req.params.hash)
+            return managedError(new Error('Missing parameter'), req, res);
+
+        const result = await db.getTransactionTraceSteps(data.workspace.id, req.params.hash);
+
+        res.status(200).json(result);
+    } catch(error) {
+        unmanagedError(error, req, next);
+    }
+});
+
+/**
+ * Retrieves the token balance changes for a transaction
+ * @param {string} hash - The hash of the transaction
+ * @param {number} page - The page number
+ * @param {number} itemsPerPage - The number of items per page
+ * @returns {Promise<Array>} An array of token balance changes
+ */
+router.get('/:hash/tokenBalanceChanges', workspaceAuthMiddleware, async (req, res, next) => {
+    const data = req.query;
+
+    try {
+        if (!req.params.hash)
+            return managedError(new Error('Missing parameter'), req, res);
+
+        const result = await db.getTransactionTokenBalanceChanges(data.workspace.id, req.params.hash, data.page, data.itemsPerPage);
+
+        res.status(200).json(result);
+    } catch(error) {
+        unmanagedError(error, req, next);
+    }
+});
+
 router.get('/failedProcessable', authMiddleware, async (req, res, next) => {
     const data = req.query;
 

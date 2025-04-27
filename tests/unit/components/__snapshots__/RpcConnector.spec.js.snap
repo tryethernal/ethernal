@@ -1,167 +1,118 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`RpcConnector.vue > Should display the correct info 1`] = `
-"<header class="v-toolbar v-toolbar--flat v-toolbar--density-default v-theme--light v-locale--is-ltr px-3 color--text" style="background-color: white; border-bottom: thin solid rgba(0, 0, 0, 0.12); white-space: nowrap;" dense="">
-  <!---->
-  <div class="v-toolbar__content" style="height: 48px;">
-    <!---->
-    <!----><button type="button" class="v-btn v-btn--icon v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-app-bar-nav-icon"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-      <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-menu mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+exports[`RpcConnector.vue > Should display gas info when gas analytics is enabled 1`] = `
+"<div class="v-application v-theme--light v-layout v-layout--full-height v-locale--is-ltr">
+  <div class="v-application__wrap">
+    <header class="v-toolbar v-toolbar--flat v-toolbar--density-default v-theme--light v-locale--is-ltr v-app-bar top-bar" style="top: 0px; z-index: 1004; transform: translateY(0px); position: fixed; transition: none; left: 0px; width: calc(100% - 0px - 0px);">
       <!---->
-      <!---->
-    </button><i class="mdi-magnify mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--clickable" role="button" aria-hidden="false" tabindex="0"></i>
-    <transition-stub name="slide-x-transition" appear="false" persisted="false" css="true">
-      <div class="v-row" style="display: none;">
-        <div class="v-col v-col-12">
-          <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field v-autocomplete v-autocomplete--single v-autocomplete--selection-slot ml-2">
-            <!---->
-            <div class="v-input__control">
-              <div class="v-field v-field--appended v-field--center-affix v-field--no-label v-field--variant-filled v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-3">
-                <div class="v-field__overlay"></div>
-                <div class="v-field__loader">
-                  <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
-                    <!---->
-                    <div class="v-progress-linear__background"></div>
-                    <div class="v-progress-linear__buffer" style="width: 0%;"></div>
-                    <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
-                      <div class="v-progress-linear__indeterminate">
-                        <div class="v-progress-linear__indeterminate long"></div>
-                        <div class="v-progress-linear__indeterminate short"></div>
-                      </div>
-                    </transition-stub>
-                    <!---->
-                  </div>
-                </div>
+      <div class="v-toolbar__content" style="height: 48px;">
+        <!---->
+        <!---->
+        <div class="v-container v-locale--is-ltr d-flex align-center">
+          <div class="d-flex align-center w-100">
+            <!--v-if-->
+            <!-- Desktop Info Section -->
+            <!--v-if--> Latest Block: <a class="text-decoration-none ml-1">1</a>
+            <hr class="v-divider v-divider--inset v-divider--vertical v-theme--light mx-2" aria-orientation="vertical" role="separator"> Gas: <a class="text-decoration-none ml-1">&lt;0.01 gwei</a>
+            <div style="display: none;">
+              <hr class="v-divider v-divider--inset v-divider--vertical v-theme--light mx-2" aria-orientation="vertical" role="separator">
+              <div class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
+                  <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
+                  <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
+                </svg>
                 <!---->
-                <div class="v-field__field" data-no-activator="">
-                  <!---->
-                  <!---->
-                  <!---->
-                  <div class="v-field__input" data-no-activator="">
-                    <!---->
-                    <!----><input autofocus="" size="1" type="text" id="input-1" aria-describedby="input-1-messages" value="">
-                  </div>
-                  <!---->
-                </div>
-                <!---->
-                <div class="v-field__append-inner">
-                  <!----><i class="mdi-menu-down mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--clickable v-autocomplete__menu-icon" role="button" aria-hidden="false" tabindex="-1" aria-label="Open" title="Open"></i>
-                  <!---->
-                </div>
-                <div class="v-field__outline">
-                  <!---->
-                  <!---->
-                </div>
-              </div>
+              </div>Processing Contracts...
+            </div><!-- Search Bar Section -->
+            <div class="v-spacer"></div>
+            <div class="search-container">
+              <search-bar-stub compact="true"></search-bar-stub>
             </div>
-            <!---->
-            <!---->
           </div>
         </div>
-      </div>
-    </transition-stub>
-    <!--v-if-->
-    <!--v-if-->
-    <hr class="v-divider v-divider--inset v-divider--vertical v-theme--light mx-2" aria-orientation="vertical" role="separator"> Latest Block: <a class="text-decoration-none ml-1">1</a>
-    <!--v-if-->
-    <div style="display: none;">
-      <hr class="v-divider v-divider--inset v-divider--vertical v-theme--light mx-2" aria-orientation="vertical" role="separator">
-      <div class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
-          <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
-          <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
-        </svg>
         <!---->
-      </div>Processing Contracts...
-    </div>
-    <div class="v-spacer"></div>
-    <wallet-connector-stub></wallet-connector-stub>
-    <!---->
+      </div>
+      <transition-stub name="expand-transition" appear="false" persisted="false" css="true">
+        <!---->
+      </transition-stub>
+    </header>
   </div>
-  <transition-stub name="expand-transition" appear="false" persisted="false" css="true">
-    <!---->
-  </transition-stub>
-</header>"
+</div>"
+`;
+
+exports[`RpcConnector.vue > Should display the correct info 1`] = `
+"<div class="v-application v-theme--light v-layout v-layout--full-height v-locale--is-ltr">
+  <div class="v-application__wrap">
+    <header class="v-toolbar v-toolbar--flat v-toolbar--density-default v-theme--light v-locale--is-ltr v-app-bar top-bar" style="top: 0px; z-index: 1004; transform: translateY(0px); position: fixed; transition: none; left: 0px; width: calc(100% - 0px - 0px);">
+      <!---->
+      <div class="v-toolbar__content" style="height: 48px;">
+        <!---->
+        <!---->
+        <div class="v-container v-locale--is-ltr d-flex align-center">
+          <div class="d-flex align-center w-100">
+            <!--v-if-->
+            <!-- Desktop Info Section -->
+            <!--v-if--> Latest Block: <a class="text-decoration-none ml-1">1</a>
+            <!--v-if-->
+            <div style="display: none;">
+              <hr class="v-divider v-divider--inset v-divider--vertical v-theme--light mx-2" aria-orientation="vertical" role="separator">
+              <div class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
+                  <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
+                  <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
+                </svg>
+                <!---->
+              </div>Processing Contracts...
+            </div><!-- Search Bar Section -->
+            <div class="v-spacer"></div>
+            <div class="search-container">
+              <search-bar-stub compact="true"></search-bar-stub>
+            </div>
+          </div>
+        </div>
+        <!---->
+      </div>
+      <transition-stub name="expand-transition" appear="false" persisted="false" css="true">
+        <!---->
+      </transition-stub>
+    </header>
+  </div>
+</div>"
 `;
 
 exports[`RpcConnector.vue > Should not do private operations when in public explorer mode 1`] = `
-"<header class="v-toolbar v-toolbar--flat v-toolbar--density-default v-theme--light v-locale--is-ltr px-3 color--text" style="background-color: white; border-bottom: thin solid rgba(0, 0, 0, 0.12); white-space: nowrap;" dense="">
-  <!---->
-  <div class="v-toolbar__content" style="height: 48px;">
-    <!---->
-    <!----><button type="button" class="v-btn v-btn--icon v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-app-bar-nav-icon"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-      <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-menu mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+"<div class="v-application v-theme--light v-layout v-layout--full-height v-locale--is-ltr">
+  <div class="v-application__wrap">
+    <header class="v-toolbar v-toolbar--flat v-toolbar--density-default v-theme--light v-locale--is-ltr v-app-bar top-bar" style="top: 0px; z-index: 1004; transform: translateY(0%); position: fixed; transition: none;">
       <!---->
-      <!---->
-    </button><i class="mdi-magnify mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--clickable" role="button" aria-hidden="false" tabindex="0"></i>
-    <transition-stub name="slide-x-transition" appear="false" persisted="false" css="true">
-      <div class="v-row" style="display: none;">
-        <div class="v-col v-col-12">
-          <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field v-autocomplete v-autocomplete--single v-autocomplete--selection-slot ml-2">
-            <!---->
-            <div class="v-input__control">
-              <div class="v-field v-field--appended v-field--center-affix v-field--no-label v-field--variant-filled v-theme--light v-locale--is-ltr" role="combobox">
-                <div class="v-field__overlay"></div>
-                <div class="v-field__loader">
-                  <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
-                    <!---->
-                    <div class="v-progress-linear__background"></div>
-                    <div class="v-progress-linear__buffer" style="width: 0%;"></div>
-                    <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
-                      <div class="v-progress-linear__indeterminate">
-                        <div class="v-progress-linear__indeterminate long"></div>
-                        <div class="v-progress-linear__indeterminate short"></div>
-                      </div>
-                    </transition-stub>
-                    <!---->
-                  </div>
-                </div>
+      <div class="v-toolbar__content" style="height: 48px;">
+        <!---->
+        <!---->
+        <div class="v-container v-locale--is-ltr d-flex align-center">
+          <div class="d-flex align-center w-100">
+            <!--v-if-->
+            <!-- Desktop Info Section -->
+            <!--v-if--> Latest Block: <a class="text-decoration-none ml-1">1</a>
+            <!--v-if-->
+            <div style="display: none;">
+              <hr class="v-divider v-divider--inset v-divider--vertical v-theme--light mx-2" aria-orientation="vertical" role="separator">
+              <div class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
+                  <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
+                  <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
+                </svg>
                 <!---->
-                <div class="v-field__field" data-no-activator="">
-                  <!---->
-                  <!---->
-                  <!---->
-                  <div class="v-field__input" data-no-activator="">
-                    <!---->
-                    <!----><input autofocus="" size="1" type="text" id="input-1" aria-describedby="input-1-messages" value="">
-                  </div>
-                  <!---->
-                </div>
-                <!---->
-                <div class="v-field__append-inner">
-                  <!----><i class="mdi-menu-down mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--clickable v-autocomplete__menu-icon" role="button" aria-hidden="false" tabindex="-1" aria-label="Open" title="Open"></i>
-                  <!---->
-                </div>
-                <div class="v-field__outline">
-                  <!---->
-                  <!---->
-                </div>
-              </div>
+              </div>Processing Contracts...
+            </div><!-- Search Bar Section -->
+            <div class="v-spacer"></div>
+            <div class="search-container">
+              <search-bar-stub compact="true"></search-bar-stub>
             </div>
-            <!---->
-            <!---->
           </div>
         </div>
-      </div>
-    </transition-stub>
-    <!--v-if-->
-    <!--v-if-->
-    <hr class="v-divider v-divider--inset v-divider--vertical v-theme--light mx-2" aria-orientation="vertical" role="separator"> Latest Block: <a class="text-decoration-none ml-1">1</a>
-    <!--v-if-->
-    <div style="display: none;">
-      <hr class="v-divider v-divider--inset v-divider--vertical v-theme--light mx-2" aria-orientation="vertical" role="separator">
-      <div class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
-          <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
-          <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
-        </svg>
         <!---->
-      </div>Processing Contracts...
-    </div>
-    <div class="v-spacer"></div>
-    <wallet-connector-stub></wallet-connector-stub>
-    <!---->
+      </div>
+      <transition-stub name="expand-transition" appear="false" persisted="false" css="true">
+        <!---->
+      </transition-stub>
+    </header>
   </div>
-  <transition-stub name="expand-transition" appear="false" persisted="false" css="true">
-    <!---->
-  </transition-stub>
-</header>"
+</div>"
 `;

@@ -2,15 +2,24 @@ import flushPromises from 'flush-promises';
 import ERC20Contract from '@/components/ERC20Contract.vue';
 
 const stubs = [
-    'Hash-Link',
-    'Stat-Number',
-    'Transactions-List',
-    'Contract-Interaction',
-    'ERC-2O-Token-Holders',
-    'ERC-2O-Contract-Analytics',
-    'ERC-2O-Token-Transfers',
-    'Token-Balance-Card'
+    'Base-Chip-Group',
+    'Token-Header',
+    'ERC20-Token-Holders',
+    'ERC20-Contract-Analytics',
+    'Address-ERC20-Token-Transfer',
+    'Contract-Details'
 ];
+
+vi.mock('vue-router', () => ({
+    useRoute: vi.fn(() => ({
+        query: {
+            tab: 'transfers'
+        }
+    })),
+    useRouter: vi.fn(() => ({
+        replace: vi.fn()
+    }))
+}));
 
 describe('ERC20Contract.vue', () => {
     it('Should display a message if the address is not a contract', async () => {
@@ -26,7 +35,9 @@ describe('ERC20Contract.vue', () => {
 
         const wrapper = mount(ERC20Contract, {
             props: {
-                address: '0x123'
+                address: '0x123',
+                contract: {},
+                loadingContract: false
             },
             global: {
                 stubs
@@ -38,16 +49,6 @@ describe('ERC20Contract.vue', () => {
     });
 
     it('Should display contract info', async () => {
-        vi.spyOn(server, 'getContract')
-            .mockResolvedValueOnce({ data: {
-                tokenName: 'Amalfi',
-                patterns: ['erc20'],
-                tokenTotalSupply: '1000000000',
-                tokenDecimals: 2,
-                address: '0x123',
-                creationTransaction: { hash: '0xabc' }
-            }});
-
         vi.spyOn(server, 'getContractStats')
             .mockResolvedValueOnce({ data: {
                 tokenHolderCount: 1,
@@ -57,7 +58,16 @@ describe('ERC20Contract.vue', () => {
 
         const wrapper = mount(ERC20Contract, {
             props: {
-                address: '0x123'
+                address: '0x123',
+                contract: {
+                    tokenName: 'Amalfi',
+                    patterns: ['erc20'],
+                    tokenTotalSupply: '1000000000',
+                    tokenDecimals: 2,
+                    address: '0x123',
+                    creationTransaction: { hash: '0xabc' }
+                },
+                loadingContract: false
             },
             global: {
                 stubs
@@ -69,17 +79,6 @@ describe('ERC20Contract.vue', () => {
     });
 
     it('Should display placeholders', async () => {
-        vi.spyOn(server, 'getContract')
-            .mockResolvedValueOnce({ data: {
-                name: 'Amalfi',
-                tokenName: null,
-                patterns: [],
-                tokenTotalSupply: null,
-                tokenDecimals: null,
-                address: '0x123',
-                creationTransaction: { hash: '0xabc' }
-            }});
-
         vi.spyOn(server, 'getContractStats')
             .mockResolvedValueOnce({ data: {
                 tokenHolderCount: 0,
@@ -89,7 +88,9 @@ describe('ERC20Contract.vue', () => {
 
         const wrapper = mount(ERC20Contract, {
             props: {
-                address: '0x123'
+                address: '0x123',
+                contract: {},
+                loadingContract: true
             },
             global: {
                 stubs

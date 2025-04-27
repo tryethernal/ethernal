@@ -105,7 +105,7 @@ exports[`TokenBalanceCard.vue > Should show token balance 1`] = `
       <!---->
       <div class="v-card-subtitle">
         <div class="d-flex justify-space-between"><span>Your Balance</span>
-          <hash-link-stub type="address" hash="0x1234"></hash-link-stub>
+          <hash-link-stub type="address" hash="0x1234" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
         </div>
       </div>
       <!---->

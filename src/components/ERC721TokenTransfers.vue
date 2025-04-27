@@ -1,77 +1,80 @@
 <template>
-    <v-container fluid>
-        <Token-Transfers
-            :transfers="transfers"
-            :headers="headers"
-            :loading="loading"
-            :sort-by="currentOptions.sortBy"
-            :count="transferCount"
-            :withTransactionData="true"
-            :withTokenData="true"
-            @pagination="onPagination"
-            @update:options="getTransfers" />
-    </v-container>
+    <Token-Transfers
+        :transfers="transfers"
+        :headers="headers"
+        :loading="loading"
+        :count="transferCount"
+        :address="address"
+        @update:options="getTransfers"
+    />
 </template>
 
-<script>
-const moment = require('moment');
+<script setup>
+import { ref } from 'vue';
+import { inject } from 'vue';
 import TokenTransfers from './TokenTransfers.vue';
 
-export default {
-    name: 'ERC721TokenTransfers',
-    props: ['address', 'tokenId'],
-    components: {
-        TokenTransfers,
+const props = defineProps({
+    address: {
+        type: String,
+        required: true
     },
-    data: () => ({
-        loading: true,
-        transfers: [],
-        transferCount: 0,
-        headers: [
-            { title: 'Mined On', key: 'timestamp' },
-            { title: 'Transaction', key: 'transactionHash', sortable: false },
-            { title: 'Block', key: 'blockNumber' },
-            { title: 'From', key: 'src' },
-            { title: 'To', key: 'dst' },
-            { title: 'Token', key: 'token', sortable: false }
-        ],
-        currentOptions: { page: 1, itemsPerPage: 10, sortBy: [{ key: 'blockNumber', order: 'desc' }] }
-    }),
-    methods: {
-        moment: moment,
-        onPagination(options) {
-            this.getTransfers(options);
-        },
-        getTransfers({ page, itemsPerPage, sortBy } = {}) {
-            this.loading = true;
-
-            if (!page || !itemsPerPage || !sortBy || !sortBy.length)
-                return this.loading = false;
-
-            this.currentOptions = {
-                page,
-                itemsPerPage,
-                sortBy
-            };
-
-            if (this.tokenId)
-                this.$server.getErc721TokenTransfers(this.address, this.tokenId)
-                    .then(({ data }) => {
-                        this.transfers = data;
-                        this.transferCount = data.length;
-                    })
-                    .catch(console.log)
-                    .finally(() => this.loading = false);
-            else {
-                this.$server.getTokenTransfers(this.address, { page, itemsPerPage, orderBy: sortBy[0].key, order: sortBy[0].order })
-                    .then(({ data }) => {
-                        this.transfers = data.items;
-                        this.transferCount = data.total;
-                    })
-                    .catch(console.log)
-                    .finally(() => this.loading = false);
-            }
-        }
+    tokenId: {
+        type: String,
+        default: null
+    },
+    headers: {
+        type: Array,
+        default: () => [
+            { title: 'Transaction Hash', key: 'transactionHash', sortable: false },
+            { title: 'Method', key: 'methodDetails', sortable: false },
+            { title: 'Block', key: 'blockNumber', sortable: true },
+            { title: 'Age', key: 'timestamp', sortable: true },
+            { title: 'From', key: 'src', sortable: false },
+            { title: 'To', key: 'dst', sortable: false },
+            { title: 'Token', key: 'token', sortable: false },
+            { title: 'Amount', key: 'amount', sortable: false }
+        ]
     }
-}
+});
+
+// Inject server instance
+const $server = inject('$server');
+
+// Reactive state
+const loading = ref(false);
+const transfers = ref([]);
+const transferCount = ref(0);
+
+// Methods
+const getTransfers = async ({ page, itemsPerPage, sortBy } = {}) => {
+    if (!page || !itemsPerPage || !sortBy || !sortBy.length) {
+        return;
+    }
+
+    loading.value = true;
+    try {
+        const { data } = props.tokenId ?
+            await $server.getErc721TokenTransfers(
+                props.address,
+                props.tokenId
+            ) :
+            await $server.getTokenTransfers(
+                props.address,
+                {
+                    page,
+                    itemsPerPage,
+                    orderBy: sortBy[0].key,
+                    order: sortBy[0].order
+                }
+            );
+
+        transfers.value = data.items || [];
+        transferCount.value = data.total || 0;
+    } catch (error) {
+        console.error('Error fetching transfers:', error);
+    } finally {
+        loading.value = false;
+    }
+};
 </script>

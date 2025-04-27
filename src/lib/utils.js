@@ -2,6 +2,32 @@ const Web3 = require('web3');
 const ethers = require('ethers');
 // const BigNumber = ethers.BigNumber;
 
+import fromWei from '../filters/FromWei';
+
+const MINIMUM_DISPLAY_GWEI = 10000000;
+
+export const displayGasPrice = (gasPrice) => {
+    if (gasPrice === null || gasPrice === undefined)
+        return null;
+    else if (gasPrice <= 0)
+        return '0 gwei';
+    else if (gasPrice < MINIMUM_DISPLAY_GWEI)
+        return '<0.01 gwei';
+    else
+        return fromWei(gasPrice, 'gwei', 'gwei', false, 2);
+};
+
+export const displayPercentage = (value) => {
+    if (value === null || value === undefined)
+        return null;
+    else if (value == 0)
+        return '0%';
+    else if (value < 0.0001)
+        return '<0.01%';
+    else
+        return `${(value * 100).toFixed(2)}%`;
+};
+
 export const getBestContrastingColor = (background, themeColors) => {
     const colorValues = {
         [themeColors.primary]: 'primary',
@@ -215,13 +241,13 @@ export const processMethodCallParam = function(param, inputType) {
 export const formatContractPattern = function(pattern) {
     switch (pattern) {
         case 'erc20':
-            return 'ERC 20';
+            return 'ERC-20';
         case 'proxy':
             return 'Proxy'
         case 'erc721':
-            return 'ERC 721';
+            return 'ERC-721';
         case 'erc1155':
-            return 'ERC 1155';
+            return 'ERC-1155';
         default:
             return pattern;
     }

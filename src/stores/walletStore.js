@@ -49,7 +49,7 @@ export const useWalletStore = defineStore('wallet', () => {
 
         const rounded = parseFloat(currentBalance.value.formatted).toFixed(3);
 
-        return `${rounded} ${currentBalance.value.symbol}`
+        return `${rounded} ${currentBalance.value.symbol || 'ETH'}`
     })
 
     const shortenedConnectedAddress = computed(() => {

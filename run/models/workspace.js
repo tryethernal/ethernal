@@ -7,6 +7,7 @@ const {
 const { defineChain, createPublicClient, http, webSocket } = require('viem');
 const moment = require('moment');
 const { sanitize, slugify, processRawRpcObject } = require('../lib/utils');
+const { getTransactionMethodDetails } = require('../lib/abi');
 const { ProviderConnector } = require('../lib/rpc');
 const logger = require('../lib/logger');
 const { getMaxBlockForSyncReset } = require('../lib/env');
@@ -36,6 +37,7 @@ module.exports = (sequelize, DataTypes) => {
       Workspace.hasMany(models.CustomField, { foreignKey: 'workspaceId', as: 'customFields' });
       Workspace.hasMany(models.CustomField, { foreignKey: 'workspaceId', as: 'packages', scope: { location: 'package' } });
       Workspace.hasMany(models.CustomField, { foreignKey: 'workspaceId', as: 'functions', scope: { location: 'global' } });
+      Workspace.hasMany(models.TransactionTraceStep, { foreignKey: 'workspaceId', as: 'transactionTraceSteps' });
     }
 
     static findPublicWorkspaceById(id) {
@@ -90,6 +92,978 @@ module.exports = (sequelize, DataTypes) => {
 
     getProvider() {
         return new ProviderConnector(this.rpcServer);
+    }
+
+    /**
+     * Returns the top ERC20 tokens by holders for a workspace.
+     * 
+     * @param {number} page - The page number to return.
+     * @param {number} itemsPerPage - The number of items per page to return.
+     * @returns {Promise<Array>} - A list of top ERC20 tokens by holders.
+     */
+    async getTopNftsByHolders(page = 1, itemsPerPage = 10) {
+        return sequelize.query(`
+            SELECT
+                token,
+                COUNT(DISTINCT token_balance_change_events."address") AS holders,
+                c.name AS "contract.name",
+                c."tokenSymbol" AS "contract.tokenSymbol",
+                c."tokenName" AS "contract.tokenName"
+            FROM
+                token_balance_change_events
+            LEFT JOIN contracts c ON
+                c.address = token_balance_change_events."address"
+                AND c."workspaceId" = :workspaceId
+            WHERE
+                token_balance_change_events."workspaceId" = :workspaceId
+            GROUP BY token, c.name, c."tokenSymbol", c."tokenName"
+            ORDER BY holders DESC
+            LIMIT :itemsPerPage OFFSET :offset;
+        `, {
+            replacements: { workspaceId: this.id, itemsPerPage: itemsPerPage, offset: (page - 1) * itemsPerPage },
+            type: QueryTypes.SELECT,
+            nest: true
+        });
+    }
+
+    /**
+     * Returns a list of token transfers for a workspace.
+     * 
+     * @param {number} page - The page number to return.
+     * @param {number} itemsPerPage - The number of items per page to return.
+     * @param {string} orderBy - The field to order by.
+     * @param {string} order - The order to sort by.
+     * @param {Array} tokenTypes - The types of tokens to return.
+     * @returns {Promise<Array>} - A list of token transfers.
+     */
+    async getFilteredTokenTransfers(page = 1, itemsPerPage = 10, orderBy = 'timestamp', order = 'DESC', tokenTypes = []) {
+        const filteredTokenTypes = tokenTypes
+            .map(t => t.toLowerCase())
+            .filter(t => ['erc20', 'erc721', 'erc1155'].includes(t))
+            .map(t => `'${t}'`)
+            .join(',');
+
+        let sanitizedOrderBy = orderBy;
+        if (!['timestamp', 'amount', 'blockNumber'].includes(orderBy))
+            sanitizedOrderBy = ['timestamp'];
+
+        let sanitizedOrder = order;
+        if (sanitizedOrder.toLowerCase() !== 'asc' && sanitizedOrder.toLowerCase() !== 'desc')
+            sanitizedOrder = 'DESC';
+
+        switch(sanitizedOrderBy) {
+            case 'timestamp':
+                sanitizedOrderBy = `"t"."timestamp" ${sanitizedOrder}, "t"."transactionIndex" ${sanitizedOrder}`;
+                break;
+            case 'blockNumber':
+                sanitizedOrderBy = `"t"."blockNumber" ${sanitizedOrder}, "t"."transactionIndex" ${sanitizedOrder}`;
+                break;
+            case 'amount':
+                sanitizedOrderBy = '"tte"."amount"::numeric';
+                break;
+            default:
+                sanitizedOrderBy = `"t"."timestamp" ${sanitizedOrder}, "t"."transactionIndex" ${sanitizedOrder}`;
+                break;
+        }
+
+        let query = `
+            SELECT
+                tte.*,
+                tt."tokenId" AS "tokenId",
+                c.name AS "contract.name",
+                c."tokenSymbol" AS "contract.tokenSymbol",
+                c."tokenName" AS "contract.tokenName",
+                c."tokenDecimals" AS "contract.tokenDecimals",
+                c.abi AS "contract.abi",
+                c.patterns AS "contract.patterns",
+                t.hash AS "transaction.hash",
+                t."blockNumber" AS "transaction.blockNumber",
+                t.timestamp AS "transaction.timestamp",
+                t."data" AS "transaction.data",
+                t."transactionIndex" AS "transaction.transactionIndex"
+            FROM token_transfer_events tte
+            LEFT JOIN contracts c ON c."address" = tte.token AND c."workspaceId" = :workspaceId
+            LEFT JOIN token_transfers tt ON tte."tokenTransferId" = tt.id 
+            LEFT JOIN transactions t ON tt."transactionId" = t.id
+            WHERE tte."workspaceId" = :workspaceId
+        `;
+
+        if (tokenTypes.length)
+            query += ` AND "tokenType" IN (${filteredTokenTypes})`;
+
+        query += ` ORDER BY ${sanitizedOrderBy} LIMIT :itemsPerPage OFFSET :offset;`;
+        const result = await sequelize.query(query, {
+            replacements: {
+                workspaceId: this.id,
+                itemsPerPage: itemsPerPage,
+                offset: (page - 1) * itemsPerPage
+            },
+            type: QueryTypes.SELECT,
+            nest: true
+        });
+
+        const processedResult = result.map(item => {
+            let itemCopy = { ...item };
+            if (itemCopy.contract && itemCopy.transaction && itemCopy.transaction.data && itemCopy.contract.abi)
+                itemCopy.transaction.methodDetails = getTransactionMethodDetails({ data: itemCopy.transaction.data }, itemCopy.contract.abi);
+            return itemCopy;
+        });
+
+        return processedResult;
+    }
+
+    /**
+     * Returns contract stats for a workspace (displayed on the /contractsVerified page).
+     * - Total contracts
+     * - Contracts created in the last 24 hours
+     * - Verified contracts
+     * - Verified contracts created in the last 24 hours
+     * 
+     * @returns {Promise<Object>} - An object containing the contract stats.
+     */
+    async getContractStats() {
+        const [result] = await sequelize.query(`
+            SELECT
+                COUNT(*)::integer AS total_contracts,
+                COUNT(*) FILTER (WHERE "timestamp" > NOW() - INTERVAL '24 hours')::integer AS contracts_last_24_hours,
+                (SELECT COUNT(*) FROM contract_verifications WHERE "workspaceId" = :workspaceId)::integer AS verified_contracts,
+                (SELECT COUNT(*) FROM contract_verifications WHERE "workspaceId" = :workspaceId AND "createdAt" > NOW() - INTERVAL '24 hours')::integer AS verified_contracts_last_24_hours
+            FROM transaction_events
+            WHERE "to" IS NULL AND "workspaceId" = :workspaceId;
+        `, {
+            replacements: { workspaceId: this.id },
+            type: QueryTypes.SELECT,
+            logging: console.log
+        });
+
+        return result;
+    }
+
+    /**
+     * Returns a list of verified contracts for a workspace.
+     * 
+     * @param {number} page - The page number to return.
+     * @param {number} itemsPerPage - The number of items per page to return.
+     * @returns {Promise<Array>} - A list of verified contracts.
+     */
+    async getVerifiedContracts(page = 1, itemsPerPage = 10) {
+        return sequelize.query(`
+            WITH transaction_counts AS (
+                SELECT 
+                    "to" AS contract_address, 
+                    COUNT(*) AS transaction_count
+                FROM transaction_events
+                WHERE "workspaceId" = :workspaceId
+                GROUP BY "to"
+            )
+            SELECT
+                c.address,
+                c.name,
+                c.patterns,
+                c.abi,
+                cv."id" AS "verification.id",
+                cv."createdAt" AS "verification.createdAt",
+                cv."evmVersion" AS "verification.evmVersion",
+                cv."compilerVersion" AS "verification.compilerVersion",
+                cv."constructorArguments" AS "verification.constructorArguments",
+                cv."runs" AS "verification.runs",
+                COALESCE(tc.transaction_count, 0) AS "transactionCount"
+            FROM contracts c
+            LEFT JOIN contract_verifications cv ON c.id = cv."contractId"
+            LEFT JOIN transaction_counts tc ON c.address = tc.contract_address
+            WHERE c."workspaceId" = :workspaceId
+                AND cv."createdAt" IS NOT NULL
+            ORDER BY cv."createdAt" DESC
+            LIMIT :limit OFFSET :offset;
+
+        `, {
+            replacements: {
+                workspaceId: this.id,
+                limit: itemsPerPage,
+                offset: (Math.max(page, 1) - 1) * itemsPerPage
+            },
+            type: QueryTypes.SELECT,
+            nest: true
+        });
+    }
+
+    /**
+     * Returns a list of transaction trace steps (internal transactions) for a workspace.
+     * 
+     * @param {number} page - The page number to return.
+     * @param {number} itemsPerPage - The number of items per page to return.
+     * @returns {Promise<Array>} - A list of transaction trace steps.
+     */
+    async getTransactionTraceSteps(page = 1, itemsPerPage = 10) {
+        const result = await sequelize.query(`
+            WITH step_links AS (
+                SELECT 
+                    tts.id,
+                    tts."transactionId",
+                    tts.depth,
+                    tts.address,
+                    tts."workspaceId",
+                    tts.op,
+                    tts.input,
+                    tts."returnData",
+                    tts.value,
+                    MAX(tts_prev.id) AS parent_step_id,
+                    ARRAY_AGG(tts_next.id ORDER BY tts_next.id) FILTER (WHERE tts_next.id IS NOT NULL) AS children_step_ids
+                FROM transaction_trace_steps tts
+                LEFT JOIN LATERAL (
+                    SELECT id FROM transaction_trace_steps 
+                    WHERE "transactionId" = tts."transactionId" 
+                    AND depth = tts.depth - 1 
+                    AND id < tts.id
+                    ORDER BY id DESC
+                    LIMIT 1
+                ) tts_prev ON true
+                LEFT JOIN LATERAL (
+                    SELECT id FROM transaction_trace_steps
+                    WHERE "transactionId" = tts."transactionId"
+                    AND depth = tts.depth + 1
+                    AND id > tts.id
+                    AND NOT EXISTS (
+                        SELECT 1 
+                        FROM transaction_trace_steps
+                        WHERE "transactionId" = tts."transactionId"
+                        AND depth = tts.depth
+                        AND id > tts.id
+                        AND id < transaction_trace_steps.id
+                    )
+                    ORDER BY id
+                ) tts_next ON true
+                WHERE tts."workspaceId" = :workspaceId
+                GROUP BY tts.id, tts."transactionId", tts.depth, tts.address, tts."workspaceId", tts.op, tts.input, tts."returnData", tts.value
+            ),
+            relevant_steps AS (
+                -- Self (Main Steps)
+                SELECT 
+                    sl.*, 
+                    'self' AS relation_type
+                FROM step_links sl
+                
+                UNION ALL
+                
+                -- Parents
+                SELECT 
+                    ps.id,
+                    ps."transactionId",
+                    ps.depth,
+                    ps.address,
+                    ps."workspaceId",
+                    ps.op,
+                    ps.input,
+                    ps."returnData",
+                    ps.value,
+                    NULL AS parent_step_id,
+                    NULL AS children_step_ids,
+                    'parent' AS relation_type
+                FROM step_links sl 
+                JOIN transaction_trace_steps ps
+                    ON sl.parent_step_id = ps.id 
+                
+                UNION ALL
+                
+                -- Children
+                SELECT 
+                    cs.id,
+                    cs."transactionId",
+                    cs.depth,
+                    cs.address,
+                    cs."workspaceId",
+                    cs.op,
+                    cs.input,
+                    cs."returnData",
+                    cs.value,
+                    sl.id,
+                    NULL AS children_step_ids,
+                    'child' AS relation_type
+                FROM step_links sl
+                CROSS JOIN UNNEST(sl.children_step_ids) AS child_id
+                JOIN transaction_trace_steps cs ON cs.id = child_id
+            ),
+            from_addresses AS (
+                SELECT
+                    rs.id,
+                    rs."transactionId",
+                    COALESCE(parent_step.address, t.to) AS from_address
+                FROM relevant_steps rs
+                JOIN transactions t ON rs."transactionId" = t.id
+                LEFT JOIN transaction_trace_steps parent_step ON rs.parent_step_id = parent_step.id
+            )
+            SELECT DISTINCT ON (t.timestamp, t."transactionIndex", rs.id)
+                rs.op,
+                rs.input,
+                rs."returnData",
+                COALESCE(rs.value::numeric, 0) AS value,
+                rs.address AS "to.address",
+                rs.id AS "stepId",
+                t.hash AS "transaction.hash",
+                t.timestamp AS "transaction.timestamp",
+                rs."workspaceId" AS "workspaceId",
+                fa.from_address AS "from.address",
+                tc.name AS "to.contract.name",
+                tc."tokenSymbol" AS "to.contract.tokenSymbol",
+                tc."tokenName" AS "to.contract.tokenName",
+                tc.abi AS "to.contract.abi",
+                tcv."id" as "to.contract.verification.id",
+                fc.name AS "from.contract.name",
+                fc."tokenSymbol" AS "from.contract.tokenSymbol",
+                fc."tokenName" AS "from.contract.tokenName",
+                fc.abi AS "from.contract.abi",
+                fcv."id" as "from.contract.verification.id"
+            FROM relevant_steps rs
+            JOIN transactions t ON rs."transactionId" = t.id
+            JOIN from_addresses fa ON rs.id = fa.id AND rs."transactionId" = fa."transactionId"
+            LEFT JOIN contracts tc ON rs.address = tc.address AND tc."workspaceId" = :workspaceId
+            LEFT JOIN contract_verifications tcv ON tc.id = tcv."contractId"
+            LEFT JOIN contracts fc ON fa.from_address = fc.address AND fc."workspaceId" = :workspaceId
+            LEFT JOIN contract_verifications fcv ON fc.id = fcv."contractId"
+            ORDER BY t.timestamp, t."transactionIndex", rs.id ASC
+            LIMIT :itemsPerPage OFFSET :offset;
+        `, {
+            replacements: { workspaceId: this.id, itemsPerPage: itemsPerPage, offset: (page - 1) * itemsPerPage },
+            type: QueryTypes.SELECT,
+            nest: true
+        });
+
+        const processedResult = result.map(item => {
+            let itemCopy = { ...item };
+            itemCopy.method = getTransactionMethodDetails({ data: itemCopy.input }, itemCopy.to.contract.abi);
+            itemCopy.from.contract.verification = itemCopy.from.contract.verification.id ? itemCopy.from.contract.verification : null;
+            itemCopy.to.contract.verification = itemCopy.to.contract.verification.id ? itemCopy.to.contract.verification : null;
+            return itemCopy;
+        });
+
+        return processedResult;
+    }
+
+    /*
+        Returns the number of token transfers for an address in a given time range.
+
+        @param {string} address (mandatory) - The address to get the token transfer history for
+        @param {string} from (mandatory) - The start date
+        @param {string} to (mandatory) - The end date
+        @returns {Array} - The number of token transfers for the address in the given time range
+    */
+    async getAddressTokenTransferHistory(address, from, to) {
+        if (!address || !from || !to)
+            throw new Error('Missing parameter');
+
+        const [earliestBlock] = await this.getBlocks({
+            attributes: ['timestamp'],
+            where: {
+                timestamp: { [Op.gt]: new Date(0) }
+            },
+            order: [['number', 'ASC']],
+            limit: 1
+        });
+
+        if (!earliestBlock && +new Date(from) == 0)
+            return [];
+
+        const earliestTimestamp = +new Date(from) == 0 ? earliestBlock.timestamp : new Date(from);
+
+        return sequelize.query(`
+            WITH date_series AS (
+                SELECT generate_series(
+                    DATE_TRUNC('day', TIMESTAMP :from),
+                    DATE_TRUNC('day', TIMESTAMP :to),
+                    INTERVAL '1 day'
+                ) AS day
+            )
+            SELECT 
+                ds.day,
+                COALESCE(SUM(CASE WHEN tte.src = :address THEN 1 ELSE 0 END), 0)::integer AS from_count,
+                COALESCE(SUM(CASE WHEN tte.dst = :address THEN 1 ELSE 0 END), 0)::integer AS to_count
+            FROM date_series ds
+            LEFT JOIN token_transfer_events tte
+                ON DATE_TRUNC('day', tte.timestamp) = ds.day
+                AND (tte.src = :address OR tte.dst = :address)
+            WHERE tte."workspaceId" = :workspaceId
+            GROUP BY ds.day
+            ORDER BY ds.day;
+
+        `, {
+            replacements: {
+                address: address.toLowerCase(),
+                workspaceId: this.id,
+                from: earliestTimestamp,
+                to: new Date(to)
+            },
+            type: QueryTypes.SELECT,
+            logging: console.log
+        });
+    }
+
+    /*
+        Returns the amount of transaction fees spent by an address in a given time range.
+
+        @param {string} address (mandatory) - The address to get the transaction fees for
+        @param {string} from (mandatory) - The start date
+        @param {string} to (mandatory) - The end date
+        @returns {Array} - The amount of transaction fees spent by the address in the given time range
+    */
+    async getAddressSpentTransactionFeeHistory(address, from, to) {
+        if (!address || !from || !to)
+            throw new Error('Missing parameter');
+
+        const [earliestBlock] = await this.getBlocks({
+            attributes: ['timestamp'],
+            where: {
+                timestamp: { [Op.gt]: new Date(0) }
+            },
+            order: [['number', 'ASC']],
+            limit: 1
+        });
+
+        if (!earliestBlock && +new Date(from) == 0)
+            return [];
+
+        const earliestTimestamp = +new Date(from) == 0 ? earliestBlock.timestamp : new Date(from);
+        
+        return sequelize.query(`
+            SELECT
+                time_bucket('1 day', timestamp) as day,
+                sum("transactionFee") as transaction_fees
+            FROM
+                transaction_events
+            WHERE
+                "from" = :address
+                AND "workspaceId" = :workspaceId
+                AND DATE_TRUNC('day', timestamp) >= :from
+                AND DATE_TRUNC('day', timestamp) <= :to
+            GROUP BY day
+            ORDER BY day ASC
+        `, {
+            replacements: {
+                address: address.toLowerCase(),
+                workspaceId: this.id,
+                from: earliestTimestamp,
+                to: new Date(to)
+            },
+            type: QueryTypes.SELECT
+        });
+    }
+
+    /*
+        Returns the number of transactions for an address in a given time range.
+
+        @param {string} address (mandatory) - The address to get the number of transactions for
+        @param {string} from (mandatory) - The start date
+        @param {string} to (mandatory) - The end date
+        @returns {Array} - The number of transactions for the address in the given time range
+    */
+    async getAddressTransactionHistory(address, from, to) {
+        if (!address || !from || !to)
+            throw new Error('Missing parameter');
+
+        const [earliestBlock] = await this.getBlocks({
+            attributes: ['timestamp'],
+            where: {
+                timestamp: { [Op.gt]: new Date(0) }
+            },
+            order: [['number', 'ASC']],
+            limit: 1
+        });
+
+        if (!earliestBlock && +new Date(from) == 0)
+            return [];
+
+        const earliestTimestamp = +new Date(from) == 0 ? earliestBlock.timestamp : new Date(from);
+
+        return sequelize.query(`
+            SELECT
+                time_bucket('1 day', timestamp) as day,
+                count(*) as count
+            FROM
+                transaction_events
+            WHERE
+                ("to" = :address OR "from" = :address)
+                AND "workspaceId" = :workspaceId
+                AND DATE_TRUNC('day', timestamp) >= :from
+                AND DATE_TRUNC('day', timestamp) <= :to
+            GROUP BY day
+            ORDER BY day ASC
+        `, {
+            replacements: {
+                address: address.toLowerCase(),
+                workspaceId: this.id,
+                from: earliestTimestamp,
+                to: new Date(to)
+            },
+            type: QueryTypes.SELECT
+        });
+    }
+
+    /*
+        Returns the number of transaction steps for an address.
+
+        Based off of getAddressTransactionTraceSteps.
+        Probably can be optimized, but performances are still really good now.
+
+        @param {string} address (mandatory) - The address to get the number of transaction steps for
+        @returns {number} - The number of transaction steps for the address
+    */
+    async countAddressTransactionTraceSteps(address) {
+        if (!address)
+            throw new Error('Missing parameter');
+
+        const [result] = await sequelize.query(`
+            WITH step_links AS (
+                SELECT 
+                    tts.id,
+                    tts."transactionId",
+                    tts.depth,
+                    tts.address,
+                    tts."workspaceId",
+                    tts.op,
+                    tts.input,
+                    tts."returnData",
+                    tts.value,
+                    MAX(tts_prev.id) AS parent_step_id,
+                    ARRAY_AGG(tts_next.id ORDER BY tts_next.id) FILTER (WHERE tts_next.id IS NOT NULL) AS children_step_ids
+                FROM transaction_trace_steps tts
+                LEFT JOIN LATERAL (
+                    SELECT id FROM transaction_trace_steps 
+                    WHERE "transactionId" = tts."transactionId" 
+                    AND depth = tts.depth - 1 
+                    AND id < tts.id
+                    ORDER BY id DESC
+                    LIMIT 1
+                ) tts_prev ON true
+                LEFT JOIN LATERAL (
+                    SELECT id FROM transaction_trace_steps
+                    WHERE "transactionId" = tts."transactionId"
+                    AND depth = tts.depth + 1
+                    AND id > tts.id
+                    AND NOT EXISTS (
+                        SELECT 1 
+                        FROM transaction_trace_steps
+                        WHERE "transactionId" = tts."transactionId"
+                        AND depth = tts.depth
+                        AND id > tts.id
+                        AND id < transaction_trace_steps.id
+                    )
+                    ORDER BY id
+                ) tts_next ON true
+                WHERE tts.address = :address
+                AND tts."workspaceId" = :workspaceId
+                GROUP BY tts.id, tts."transactionId", tts.depth, tts.address, tts."workspaceId", tts.op, tts.input, tts."returnData", tts.value
+            ),
+            relevant_steps AS (
+                -- Self (Main Steps)
+                SELECT 
+                    sl.*, 
+                    'self' AS relation_type
+                FROM step_links sl
+                
+                UNION ALL
+                
+                -- Parents
+                SELECT 
+                    ps.id,
+                    ps."transactionId",
+                    ps.depth,
+                    ps.address,
+                    ps."workspaceId",
+                    ps.op,
+                    ps.input,
+                    ps."returnData",
+                    ps.value,
+                    NULL AS parent_step_id,
+                    NULL AS children_step_ids,
+                    'parent' AS relation_type
+                FROM step_links sl 
+                JOIN transaction_trace_steps ps
+                    ON sl.parent_step_id = ps.id 
+                
+                UNION ALL
+                
+                -- Children
+                SELECT 
+                    cs.id,
+                    cs."transactionId",
+                    cs.depth,
+                    cs.address,
+                    cs."workspaceId",
+                    cs.op,
+                    cs.input,
+                    cs."returnData",
+                    cs.value,
+                    sl.id,
+                    NULL AS children_step_ids,
+                    'child' AS relation_type
+                FROM step_links sl
+                CROSS JOIN UNNEST(sl.children_step_ids) AS child_id
+                JOIN transaction_trace_steps cs ON cs.id = child_id
+            ),
+            from_addresses AS (
+                SELECT
+                    rs.id,
+                    rs."transactionId",
+                    COALESCE(parent_step.address, t.to) AS from_address
+                FROM relevant_steps rs
+                JOIN transactions t ON rs."transactionId" = t.id
+                LEFT JOIN transaction_trace_steps parent_step ON rs.parent_step_id = parent_step.id
+            )
+            SELECT COALESCE(COUNT(DISTINCT(rs."transactionId", rs.id))::integer, 0) AS count
+            FROM relevant_steps rs
+            JOIN transactions t ON rs."transactionId" = t.id
+            JOIN from_addresses fa ON rs.id = fa.id AND rs."transactionId" = fa."transactionId"
+            WHERE (rs.address = :address OR fa.from_address = :address)
+        `, {
+            replacements: {
+                workspaceId: this.id,
+                address: address.toLowerCase()
+            },
+            type: QueryTypes.SELECT
+        });
+        
+        return result.count
+    }
+
+    /*
+        Returns internal transactions involving an address.
+        On top of the transaction_trace_steps rows, it also returns a relation_type column, which can be:
+            - 'self': The step is the address itself
+            - 'parent': A step that called the address
+            - 'child': A step that was called by the address
+        It also returns a parent_step_id column, which is the id of the parent step.
+        When parent_step_id is null, it means the contract "to" address called this step,
+        otherwise the step 
+
+        @param {string} address (mandatory) - The address to get the internal transactions for
+        @param {number} page (optional, default: 1) - The page number
+        @param {number} itemsPerPage (optional, default: 50) - The number of items per page
+    */
+    async getAddressTransactionTraceSteps(address, page = 1, itemsPerPage = 50) {
+        if (!address)
+            throw new Error('Missing parameter');
+
+        /*
+            This query is a mix of IA generated stuff and my own.
+            I'm not proud of it, but it works.
+            ^ The sentence above is IA generated (kind of true though).
+        */
+        const result = await sequelize.query(`
+            WITH step_links AS (
+                SELECT 
+                    tts.id,
+                    tts."transactionId",
+                    tts.depth,
+                    tts.address,
+                    tts."workspaceId",
+                    tts.op,
+                    tts.input,
+                    tts."returnData",
+                    tts.value,
+                    MAX(tts_prev.id) AS parent_step_id,
+                    ARRAY_AGG(tts_next.id ORDER BY tts_next.id) FILTER (WHERE tts_next.id IS NOT NULL) AS children_step_ids
+                FROM transaction_trace_steps tts
+                LEFT JOIN LATERAL (
+                    SELECT id FROM transaction_trace_steps 
+                    WHERE "transactionId" = tts."transactionId" 
+                    AND depth = tts.depth - 1 
+                    AND id < tts.id
+                    ORDER BY id DESC
+                    LIMIT 1
+                ) tts_prev ON true
+                LEFT JOIN LATERAL (
+                    SELECT id FROM transaction_trace_steps
+                    WHERE "transactionId" = tts."transactionId"
+                    AND depth = tts.depth + 1
+                    AND id > tts.id
+                    AND NOT EXISTS (
+                        SELECT 1 
+                        FROM transaction_trace_steps
+                        WHERE "transactionId" = tts."transactionId"
+                        AND depth = tts.depth
+                        AND id > tts.id
+                        AND id < transaction_trace_steps.id
+                    )
+                    ORDER BY id
+                ) tts_next ON true
+                WHERE tts.address = :address
+                AND tts."workspaceId" = :workspaceId
+                GROUP BY tts.id, tts."transactionId", tts.depth, tts.address, tts."workspaceId", tts.op, tts.input, tts."returnData", tts.value
+            ),
+            relevant_steps AS (
+                -- Self (Main Steps)
+                SELECT 
+                    sl.*, 
+                    'self' AS relation_type
+                FROM step_links sl
+                
+                UNION ALL
+                
+                -- Parents
+                SELECT 
+                    ps.id,
+                    ps."transactionId",
+                    ps.depth,
+                    ps.address,
+                    ps."workspaceId",
+                    ps.op,
+                    ps.input,
+                    ps."returnData",
+                    ps.value,
+                    NULL AS parent_step_id,
+                    NULL AS children_step_ids,
+                    'parent' AS relation_type
+                FROM step_links sl 
+                JOIN transaction_trace_steps ps
+                    ON sl.parent_step_id = ps.id 
+                
+                UNION ALL
+                
+                -- Children
+                SELECT 
+                    cs.id,
+                    cs."transactionId",
+                    cs.depth,
+                    cs.address,
+                    cs."workspaceId",
+                    cs.op,
+                    cs.input,
+                    cs."returnData",
+                    cs.value,
+                    sl.id,
+                    NULL AS children_step_ids,
+                    'child' AS relation_type
+                FROM step_links sl
+                CROSS JOIN UNNEST(sl.children_step_ids) AS child_id
+                JOIN transaction_trace_steps cs ON cs.id = child_id
+            ),
+            from_addresses AS (
+                SELECT
+                    rs.id,
+                    rs."transactionId",
+                    COALESCE(parent_step.address, t.to) AS from_address
+                FROM relevant_steps rs
+                JOIN transactions t ON rs."transactionId" = t.id
+                LEFT JOIN transaction_trace_steps parent_step ON rs.parent_step_id = parent_step.id
+            )
+            SELECT DISTINCT ON (rs."transactionId", rs.id)
+                rs.op,
+                rs.input,
+                rs."returnData",
+                COALESCE(rs.value::numeric, 0) AS value,
+                rs.address AS "to.address",
+                rs.id AS "stepId",
+                t.hash AS "transaction.hash",
+                t.timestamp AS "transaction.timestamp",
+                rs."workspaceId" AS "workspaceId",
+                fa.from_address AS "from.address",
+                tc.name AS "to.contract.name",
+                tc."tokenSymbol" AS "to.contract.tokenSymbol",
+                tc."tokenName" AS "to.contract.tokenName",
+                tc.abi AS "to.contract.abi",
+                tcv."id" as "to.contract.verification.id",
+                fc.name AS "from.contract.name",
+                fc."tokenSymbol" AS "from.contract.tokenSymbol",
+                fc."tokenName" AS "from.contract.tokenName",
+                fc.abi AS "from.contract.abi",
+                fcv."id" as "from.contract.verification.id"
+            FROM relevant_steps rs
+            JOIN transactions t ON rs."transactionId" = t.id
+            JOIN from_addresses fa ON rs.id = fa.id AND rs."transactionId" = fa."transactionId"
+            LEFT JOIN contracts tc ON rs.address = tc.address AND tc."workspaceId" = :workspaceId
+            LEFT JOIN contract_verifications tcv ON tc.id = tcv."contractId"
+            LEFT JOIN contracts fc ON fa.from_address = fc.address AND fc."workspaceId" = :workspaceId
+            LEFT JOIN contract_verifications fcv ON fc.id = fcv."contractId"
+            WHERE (rs.address = :address OR fa.from_address = :address)
+            ORDER BY rs."transactionId", rs.id ASC
+            LIMIT :itemsPerPage OFFSET :offset;
+        `, {
+            replacements: {
+                workspaceId: this.id,
+                address: address.toLowerCase(),
+                itemsPerPage: itemsPerPage,
+                offset: (page - 1) * itemsPerPage
+            },
+            nest: true,
+            type: QueryTypes.SELECT
+        });
+
+        const processedResult = result.map(item => {
+            let itemCopy = { ...item };
+            itemCopy.method = getTransactionMethodDetails({ data: itemCopy.input }, itemCopy.to.contract.abi);
+            itemCopy.from.contract.verification = itemCopy.from.contract.verification.id ? itemCopy.from.contract.verification : null;
+            itemCopy.to.contract.verification = itemCopy.to.contract.verification.id ? itemCopy.to.contract.verification : null;
+            return itemCopy;
+        });
+
+        return processedResult;
+    }
+
+    /*
+        This method is used to get the burnt fees for the last 24 hours for a workspace.
+
+        @returns {number} - The burnt fees for the last 24 hours
+    */
+    async getLast24hBurntFees() {
+        const [queryResult] = await sequelize.query(`
+            SELECT
+                sum("baseFeePerGas"::numeric * "gasUsed"::numeric) as "burntFees"
+            FROM block_events
+            WHERE "workspaceId" = :workspaceId
+            AND "timestamp" >= timestamp :from
+            AND "timestamp" < timestamp :to
+        `, {
+            replacements: {
+                workspaceId: this.id,
+                from: new Date(moment().subtract(1, 'day').toISOString()),
+                to: new Date(moment().toISOString())
+            },
+            type: QueryTypes.SELECT
+        });
+
+        return queryResult.burntFees;
+    }
+
+    /*
+        This method is used to get the total gas used for the last 24 hours for a workspace.
+
+        @returns {number} - The total gas used for the last 24 hours
+    */
+    async getLast24hTotalGasUsed() {
+        const [queryResult] = await sequelize.query(`
+            SELECT
+                sum("gasUsed"::numeric) as "totalGasUsed"
+            FROM transaction_events
+            WHERE "workspaceId" = :workspaceId
+            AND "timestamp" >= timestamp :from
+            AND "timestamp" < timestamp :to
+        `, {
+            replacements: {
+                workspaceId: this.id,
+                from: new Date(moment().subtract(1, 'day').toISOString()),
+                to: new Date(moment().toISOString())
+            },
+            type: QueryTypes.SELECT
+        });
+
+        return queryResult.totalGasUsed;
+    }
+
+    /*
+        This method is used to get the gas utilization ratio for the last 24 hours for a workspace.
+
+        @returns {number} - The gas utilization ratio for the last 24 hours
+    */
+    async getLast24hGasUtilisationRatio() {
+        const [queryResult] = await sequelize.query(`
+            SELECT
+                round(avg("gasUsedRatio"::numeric), 2) as "gasUtilizationRatio"
+            FROM block_events
+            WHERE "workspaceId" = :workspaceId
+            AND "timestamp" >= timestamp :from
+            AND "timestamp" < timestamp :to
+        `, {
+            replacements: {
+                workspaceId: this.id,
+                from: new Date(moment().subtract(1, 'day').toISOString()),
+                to: new Date(moment().toISOString())
+            },
+            type: QueryTypes.SELECT
+        });
+        return queryResult.gasUtilizationRatio;
+
+    }
+
+    /*
+        This method is used to get the average transaction fee for the last 24 hours for a workspace.
+
+        @returns {number} - The average transaction fee for the last 24 hours
+    */
+    async getLast24hAverageTransactionFee() {
+        const [avgTransactionFee] = await sequelize.query(`
+            SELECT
+                coalesce(round(avg("transactionFee")), 0) AS avg
+            FROM transaction_events
+            WHERE timestamp >= timestamp :from
+            AND timestamp < timestamp :to
+            AND "workspaceId" = :workspaceId
+        `, {
+            replacements: {
+                from: new Date(moment().subtract(1, 'day').toISOString()),
+                to: new Date(moment().toISOString()),
+                workspaceId: this.id
+            },
+            type: QueryTypes.SELECT
+        });
+
+        return avgTransactionFee.avg;
+    }
+
+    /*
+        This method is used to get the total transaction fees for the last 24 hours for a workspace.
+
+        @returns {number} - The total transaction fees for the last 24 hours
+    */
+    async getLast24hTransactionFees() {
+        const [transactionFees] = await sequelize.query(`
+            SELECT
+                coalesce(sum("transactionFee"::numeric), 0) as "transactionFees"
+            FROM transaction_events
+            WHERE "workspaceId" = :workspaceId
+            AND timestamp >= timestamp :from
+            AND timestamp <= timestamp :to
+        `, {
+            replacements: {
+                workspaceId: this.id,
+                from: new Date(moment().subtract(1, 'day').toISOString()),
+                to: new Date(moment().toISOString())
+            },
+            type: QueryTypes.SELECT
+        });
+
+        return transactionFees.transactionFees;
+    }
+
+    /*
+        This method is used to get the total transaction fees daily for a workspace.
+
+        @param {string} from - Start day
+        @param {string} to - End day
+        @returns {array} - The transaction fees
+            - day: The day of the transaction fees
+            - transactionFees: The average transaction fees for the day
+    */
+    async getTransactionFeeHistory(from, to) {
+        if (!from || !to)
+            throw new Error('Missing parameter');
+
+        const [earliestBlock] = await this.getBlocks({
+            attributes: ['timestamp'],
+            where: {
+                timestamp: { [Op.gt]: new Date(0) }
+            },
+            order: [['number', 'ASC']],
+            limit: 1
+        });
+
+        if (!earliestBlock && +new Date(from) == 0)
+            return [];
+
+        const earliestTimestamp = +new Date(from) == 0 ? earliestBlock.timestamp : new Date(from);
+
+        return sequelize.query(`
+            SELECT
+                time_bucket('1 day', timestamp) as day,
+                sum("transactionFee"::numeric) as "transactionFees"
+            FROM transaction_events
+            WHERE "workspaceId" = :workspaceId
+            AND timestamp >= timestamp :from
+            AND timestamp <= timestamp :to
+            GROUP BY day
+            ORDER BY day ASC
+        `, {
+            replacements: { workspaceId: this.id, from: new Date(earliestTimestamp), to },
+            type: QueryTypes.SELECT
+        });
     }
 
     /*
@@ -683,8 +1657,14 @@ module.exports = (sequelize, DataTypes) => {
         return blocks.filter(b => moment().diff(b.createdAt, 'minutes') >= ttlInMinutes);
     }
 
-    getFilteredAddressTokenTransfers(address, page = 1, itemsPerPage = 10, orderBy = 'id', order = 'DESC') {
+    getFilteredAddressTokenTransfers(address, page = 1, itemsPerPage = 10, orderBy = 'id', order = 'DESC', tokenTypes = []) {
         if (!address) throw new Error('Missing parameter');
+
+        const filteredTokenTypes = tokenTypes
+            .map(t => t.toLowerCase())
+            .filter(t => ['erc20', 'erc721', 'erc1155'].includes(t))
+            .map(t => `'${t}'`)
+            .join(',');
 
         let sanitizedOrderBy;
         switch(orderBy) {
@@ -701,89 +1681,145 @@ module.exports = (sequelize, DataTypes) => {
                 break;
         }
 
+        let where = {
+            [Op.or]: [
+                { src: address.toLowerCase() },
+                { dst: address.toLowerCase() }
+            ]
+        };
+
+        if (tokenTypes.length)
+            where['$contract.patterns$'] = { [Op.overlap]: sequelize.literal(`ARRAY[${filteredTokenTypes}]::character varying[]`) };
+
         return this.getTokenTransfers({
-            where: {
-                [Op.or]: [
-                    { src: address.toLowerCase() },
-                    { dst: address.toLowerCase() }
-                ]
-            },
+            where,
             include: [
                 {
                     model: sequelize.models.Transaction,
                     as: 'transaction',
-                    attributes: ['hash', 'blockNumber', 'timestamp']
+                    attributes: ['hash', 'blockNumber', 'timestamp', 'methodDetails', 'data']
                 },
                 {
                     model: sequelize.models.Contract,
                     as: 'contract',
-                    attributes: ['id', 'patterns', 'tokenName', 'tokenSymbol', 'tokenDecimals', 'abi']
+                    attributes: ['id', 'patterns', 'tokenName', 'tokenSymbol', 'tokenDecimals', 'abi'],
                 }
             ],
-            attributes: ['id', 'src', 'dst', 'token', [sequelize.cast(sequelize.col('"TokenTransfer".amount'), 'numeric'), 'amount']],
+            attributes: ['id', 'src', 'dst', 'token', 'tokenId', [sequelize.cast(sequelize.col('"TokenTransfer".amount'), 'numeric'), 'amount']],
             offset: (page - 1) * itemsPerPage,
             limit: itemsPerPage,
             order: [[...sanitizedOrderBy, order]]
         })
     }
 
-    countAddressTokenTransfers(address) {
+    async countAddressTokenTransfers(address, tokenTypes = []) {
         if (!address) throw new Error('Missing parameter');
 
-        return this.countTokenTransfers({
-            where: {
-                [Op.or]: [
-                    { src: address.toLowerCase() },
-                    { dst: address.toLowerCase() }
-                ]
-            }
+        let query = `
+            SELECT COUNT(*)::integer FROM token_transfer_events
+        `;
+
+        if (tokenTypes.length) {
+            query += ` LEFT JOIN contracts c
+                ON token_transfer_events."token" = c."address"
+                AND c."workspaceId" = :workspaceId`;
+        }
+
+        query += ` WHERE token_transfer_events."workspaceId" = :workspaceId
+            AND ("src" = :address OR "dst" = :address)`;
+
+        if (tokenTypes.length)
+            query += ` AND c."patterns"::text[] && ARRAY[:tokenTypes]`;
+
+        const [result] = await sequelize.query(query, {
+            replacements: { workspaceId: this.id, address, tokenTypes },
+            type: QueryTypes.SELECT
         });
+
+        return result.count;
     }
 
-    countAddressSentTransactions(address) {
+
+    async getAddressTransactionStats(address) {
         if (!address) throw new Error('Missing parameter');
 
-        return this.countTransactions({
-            where: { from: address.toLowerCase() }
+        const [result] = await sequelize.query(`
+            WITH first_tx AS (
+                SELECT te.timestamp, t.hash
+                FROM transaction_events te
+                JOIN transactions t ON te."transactionId" = t.id
+                WHERE te."workspaceId" = :workspaceId
+                AND te."from" = :address
+                ORDER BY te.timestamp ASC
+                LIMIT 1
+            ),
+            last_tx AS (
+                SELECT te.timestamp, t.hash
+                FROM transaction_events te
+                JOIN transactions t ON te."transactionId" = t.id
+                WHERE te."workspaceId" = :workspaceId
+                AND te."from" = :address
+                ORDER BY te.timestamp DESC
+                LIMIT 1
+            ),
+            transaction_stats AS (
+                SELECT 
+                    COUNT(CASE WHEN "from" = :address THEN 1 END) AS sent,
+                    COUNT(CASE WHEN "to" = :address THEN 1 END) AS received
+                FROM transaction_events
+                WHERE "workspaceId" = :workspaceId
+                AND ("from" = :address OR "to" = :address)
+            ),
+            transfer_stats AS (
+                SELECT
+                    COUNT(CASE WHEN "src" = :address AND c."patterns"::text[] && ARRAY['erc20'] THEN 1 END) AS erc20_sent,
+                    COUNT(CASE WHEN "dst" = :address AND c."patterns"::text[] && ARRAY['erc20'] THEN 1 END) AS erc20_received,
+                    COUNT(CASE WHEN "src" = :address AND c."patterns"::text[] && ARRAY['erc721'] THEN 1 END) AS erc721_sent,
+                    COUNT(CASE WHEN "dst" = :address AND c."patterns"::text[] && ARRAY['erc721'] THEN 1 END) AS erc721_received,
+                    COUNT(CASE WHEN "src" = :address AND c."patterns"::text[] && ARRAY['erc1155'] THEN 1 END) AS erc1155_sent,
+                    COUNT(CASE WHEN "dst" = :address AND c."patterns"::text[] && ARRAY['erc1155'] THEN 1 END) AS erc1155_received,
+                    COUNT(1) AS total_transfers
+                FROM token_transfer_events
+                LEFT JOIN contracts c ON
+                    token_transfer_events."token" = c."address"
+                    AND c."workspaceId" = :workspaceId
+                WHERE token_transfer_events."workspaceId" = :workspaceId
+                AND ("src" = :address OR "dst" = :address)
+            )
+            SELECT
+                COALESCE(transfer_stats.total_transfers, 0)::integer AS "tokenTransferCount",
+                COALESCE(transaction_stats.sent, 0)::integer AS sent,
+                COALESCE(transaction_stats.received, 0)::integer AS received,
+                first_tx.timestamp AS first_transaction_timestamp,
+                last_tx.timestamp AS last_transaction_timestamp,
+                first_tx.hash AS first_transaction_hash,
+                last_tx.hash AS last_transaction_hash,
+                COALESCE(transfer_stats.erc20_sent, 0)::integer AS erc20_sent,
+                COALESCE(transfer_stats.erc20_received, 0)::integer AS erc20_received,
+                COALESCE(transfer_stats.erc721_sent, 0)::integer AS erc721_sent,
+                COALESCE(transfer_stats.erc721_received, 0)::integer AS erc721_received,
+                COALESCE(transfer_stats.erc1155_sent, 0)::integer AS erc1155_sent,
+                COALESCE(transfer_stats.erc1155_received, 0)::integer AS erc1155_received
+            FROM transaction_stats
+            LEFT JOIN transfer_stats ON true
+            LEFT JOIN first_tx ON true
+            LEFT JOIN last_tx ON true;
+        `, {
+            replacements: {
+                workspaceId: this.id,
+                address: address.toLowerCase()
+            },
+            type: QueryTypes.SELECT
         });
+
+        return result;
     }
-
-    countAddressReceivedTransactions(address) {
-        if (!address) throw new Error('Missing parameter');
-
-        return this.countTransactions({
-            where: { to: address.toLowerCase() }
-        });
-    }
-
-    countAddressSentErc20TokenTransfers(address) {
-        if (!address) throw new Error('Missing parameter');
-
-        return this.countTokenTransfers({
-            where: {
-                src: address.toLowerCase(),
-                tokenId: null
-            }
-        });
-    }
-
-    countAddressReceivedErc20TokenTransfers(address) {
-        if (!address) throw new Error('Missing parameter');
-
-        return this.countTokenTransfers({
-            where: {
-                dst: address.toLowerCase(),
-                tokenId: null
-            }
-        });
-    }
-
     async getTransactionCount(since) {
         let query = `
             SELECT COUNT(1) AS count
             FROM transaction_events
             WHERE "workspaceId" = :workspaceId
-                AND timestamp >= timestamp :since
+            AND timestamp >= timestamp :since
         `;
 
         if (!since) {
@@ -1234,6 +2270,11 @@ module.exports = (sequelize, DataTypes) => {
             order: [['token'], ['transaction', 'blockNumber', 'DESC']],
             include: [
                 {
+                    model: sequelize.models.TokenTransfer,
+                    attributes: ['id', 'tokenId'],
+                    as: 'tokenTransfer'
+                },
+                {
                     model: sequelize.models.Contract,
                     attributes: ['name', 'tokenName', 'tokenSymbol', 'tokenDecimals', 'address', 'workspaceId'],
                     as: 'tokenContract',
@@ -1402,7 +2443,7 @@ module.exports = (sequelize, DataTypes) => {
                         timestamp: block.timestamp,
                         to: processed.to,
                         transactionIndex: transaction.transactionIndex !== undefined && transaction.transactionIndex !== null ? transaction.transactionIndex : transaction.index,
-                        type_: processed.type,
+                        type: processed.type,
                         v: processed.v,
                         value: processed.value,
                         state: 'syncing',
@@ -1791,7 +2832,7 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async findTransaction(hash) {
-        const blockAttributes = ['gasLimit', 'timestamp'];
+        const blockAttributes = ['gasLimit', 'timestamp', 'baseFeePerGas'];
         const explorer = await this.getExplorer({
             include: {
                 model: sequelize.models.StripeSubscription,
@@ -1808,59 +2849,79 @@ module.exports = (sequelize, DataTypes) => {
             where: {
                 hash: hash
             },
-            attributes: ['id', 'blockNumber', 'data', 'parsedError', 'rawError', 'from', 'formattedBalanceChanges', 'gasLimit', 'gasPrice', 'hash', 'timestamp', 'to', 'value', 'storage', 'workspaceId', 'raw', 'state',
-                [Sequelize.literal(`
-                    (SELECT COUNT(*)::int
-                    FROM token_transfers AS token_transfers
-                    WHERE token_transfers."transactionId" = "Transaction".id)
-                `), 'tokenTransferCount']
-            ],
-            order: [
-                [sequelize.literal('"traceSteps".'), 'id', 'asc']
+            attributes: ['id', 'blockNumber', 'data', 'parsedError', 'rawError', 'from', 'formattedBalanceChanges', 'gasLimit', 'gasPrice', 'hash', 'timestamp', 'to', 'value', 'storage', 'workspaceId', 'raw', 'state', 'transactionIndex', 'nonce', 'type',
+                [
+                    Sequelize.literal(`
+                        (
+                            SELECT COUNT(*)
+                            FROM token_transfers
+                            WHERE token_transfers."transactionId" = "Transaction".id
+                        )::int
+                    `), 'tokenTransferCount'
+                ],
+                [
+                    Sequelize.literal(`
+                        (
+                            SELECT COUNT(*)
+                            FROM token_balance_changes
+                            WHERE token_balance_changes."transactionId" = "Transaction".id
+                        )::int
+                    `), 'tokenBalanceChangeCount'
+                ],
+                [
+                    Sequelize.literal(`
+                        (
+                            SELECT COUNT(*)
+                            FROM transaction_trace_steps
+                            WHERE transaction_trace_steps."transactionId" = "Transaction".id
+                        )::int
+                    `), 'internalTransactionCount'
+                ]
             ],
             include: [
                 {
                     model: sequelize.models.TransactionReceipt,
-                    attributes: ['gasUsed', 'status', 'contractAddress', [sequelize.json('raw.root'), 'root'], 'cumulativeGasUsed', 'raw', [sequelize.json('raw.effectiveGasPrice'), 'effectiveGasPrice']],
+                    attributes: ['gasUsed', 'status', 'contractAddress', [sequelize.json('raw.root'), 'root'], 'cumulativeGasUsed', 'raw', [sequelize.json('raw.effectiveGasPrice'), 'effectiveGasPrice'],
+                        [Sequelize.literal(`
+                            (SELECT COUNT(*)
+                            FROM transaction_logs
+                            WHERE transaction_logs."transactionReceiptId" = "receipt".id)::int
+                        `), 'logCount']
+                    ],
                     as: 'receipt'
                 },
-                {
-                    model: sequelize.models.TransactionTraceStep,
-                    attributes: ['address', 'contractHashedBytecode', 'depth', 'input', 'op', 'returnData', 'workspaceId', 'id', 'value'],
-                    as: 'traceSteps',
-                    include: [
-                        {
-                            model: sequelize.models.Contract,
-                            attributes: ['abi', 'address' , 'name', 'tokenDecimals', 'tokenName', 'tokenSymbol', 'workspaceId'],
-                            include: [
-                                {
-                                    model: sequelize.models.Contract,
-                                    attributes: ['name', 'tokenName', 'tokenSymbol', 'tokenDecimals', 'abi', 'address', 'workspaceId'],
-                                    as: 'proxyContract',
-                                    where: {
-                                        [Op.and]: sequelize.where(
-                                            sequelize.col("traceSteps->contract.workspaceId"),
-                                            Op.eq,
-                                            sequelize.col("traceSteps->contract->proxyContract.workspaceId")
-                                        ),
-                                    },
-                                    required: false
-                                },
-                                {
-                                    model: sequelize.models.ContractVerification,
-                                    attributes: ['createdAt'],
-                                    as: 'verification'
-                                }
-                            ],
-                            as: 'contract'
-                        }
-                    ]
-                },
-                {
-                    model: sequelize.models.TokenBalanceChange,
-                    attributes: ['token', 'address', 'currentBalance', 'previousBalance', 'diff', 'transactionId'],
-                    as: 'tokenBalanceChanges'
-                },
+                // {
+                //     model: sequelize.models.TransactionTraceStep,
+                //     attributes: ['address', 'contractHashedBytecode', 'depth', 'input', 'op', 'returnData', 'workspaceId', 'id', 'value'],
+                //     as: 'traceSteps',
+                //     include: [
+                //         {
+                //             model: sequelize.models.Contract,
+                //             attributes: ['abi', 'address' , 'name', 'tokenDecimals', 'tokenName', 'tokenSymbol', 'workspaceId'],
+                //             include: [
+                //                 {
+                //                     model: sequelize.models.Contract,
+                //                     attributes: ['name', 'tokenName', 'tokenSymbol', 'tokenDecimals', 'abi', 'address', 'workspaceId'],
+                //                     as: 'proxyContract',
+                //                     where: {
+                //                         [Op.and]: sequelize.where(
+                //                             sequelize.col("traceSteps->contract.workspaceId"),
+                //                             Op.eq,
+                //                             sequelize.col("traceSteps->contract->proxyContract.workspaceId")
+                //                         ),
+                //                     },
+                //                     required: false
+                //                 },
+                //                 {
+                //                     model: sequelize.models.ContractVerification,
+                //                     attributes: ['createdAt'],
+                //                     as: 'verification'
+                //                 }
+                //             ],
+                //             as: 'contract'
+                //         }
+                //     ]
+                // },
                 {
                     model: sequelize.models.Block,
                     attributes: blockAttributes,
@@ -1903,6 +2964,17 @@ module.exports = (sequelize, DataTypes) => {
 
     async findContractByAddress(address) {
         const contracts = await this.getContracts({
+            attributes: [
+                'abi', 'address', 'asm', 'bytecode', 'has721Enumerable', 'has721Metadata', 'hashedBytecode', 'id', 'imported', 'isToken', 'name', 'patterns', 'processed', 'proxy', 'timestamp', 'tokenDecimals', 'tokenName', 'tokenSymbol', 'tokenTotalSupply', 'transactionId', 'verificationStatus', 'workspaceId',
+                [Sequelize.literal(`
+                    (
+                        SELECT COUNT(*)
+                        FROM transaction_logs
+                        WHERE transaction_logs."workspaceId" = "Contract"."workspaceId"
+                        AND transaction_logs."address" = "Contract"."address"
+                    )
+                `), 'logCount']
+            ],
             where: {
                 address: address.toLowerCase()
             },
@@ -2275,6 +3347,60 @@ module.exports = (sequelize, DataTypes) => {
             }, { transaction });
         }
         return transaction ? creationFn(transaction) : sequelize.transaction(creationFn);
+    }
+
+    /**
+     * Returns the top tokens by holders for a workspace filtered by token patterns.
+     * 
+     * @param {number} page - The page number to return.
+     * @param {number} itemsPerPage - The number of items per page to return.
+     * @param {string[]} patterns - Array of patterns to filter by. Valid values: 'erc20', 'erc721', 'erc1155'
+     * @returns {Promise<Array>} - A list of top tokens by holders.
+     * @throws {Error} - If invalid patterns are provided
+     */
+    async getTopTokensByHolders(page = 1, itemsPerPage = 10, patterns = []) {
+        const validPatterns = ['erc20', 'erc721', 'erc1155'];
+        const invalidPatterns = patterns.filter(p => !validPatterns.includes(p));
+        if (invalidPatterns.length > 0) {
+            throw new Error(`Invalid patterns provided: ${invalidPatterns.join(', ')}. Valid patterns are: ${validPatterns.join(', ')}`);
+        }
+
+        return sequelize.query(`
+            SELECT
+                token,
+                COUNT(DISTINCT token_balance_change_events."address") AS holders,
+                c.name AS "contract.name",
+                c."tokenSymbol" AS "contract.tokenSymbol",
+                c."tokenName" AS "contract.tokenName",
+                c."tokenTotalSupply" AS "contract.tokenTotalSupply",
+                c.patterns AS "contract.patterns",
+                c."workspaceId" AS "contract.workspaceId"
+            FROM
+                token_balance_change_events
+            LEFT JOIN contracts c ON
+                c.address = token_balance_change_events.token
+                AND token_balance_change_events."workspaceId" = :workspaceId
+            WHERE
+                (array_length(ARRAY[:patterns]::text[], 1) IS NULL OR 
+                EXISTS (
+                    SELECT 1 
+                    FROM unnest(c.patterns) pattern 
+                    WHERE LOWER(pattern) = ANY(ARRAY(SELECT LOWER(p) FROM unnest(ARRAY[:patterns]::text[]) p))
+                ))
+                AND c."workspaceId" = :workspaceId
+            GROUP BY token, c.name, c."tokenSymbol", c."tokenName", c."tokenTotalSupply", c.patterns, c."workspaceId"
+            ORDER BY holders DESC
+            LIMIT :itemsPerPage OFFSET :offset;
+        `, {
+            replacements: { 
+                workspaceId: this.id, 
+                itemsPerPage: itemsPerPage, 
+                offset: (page - 1) * itemsPerPage,
+                patterns: patterns
+            },
+            type: QueryTypes.SELECT,
+            nest: true
+        });
     }
   }
 

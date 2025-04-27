@@ -1,10 +1,10 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`TraceStep.vue > Should display the formatted step 1`] = `
-"<div data-v-90e41081="" class="v-row">
+exports[`TraceStep.vue > Should decode ERC20 transfer 1`] = `
+"<div data-v-90e41081="" class="v-row ma-1 pa-1 pb-0 mb-0">
   <!--v-if-->
-  <div data-v-90e41081="" class="v-col pb-0" style="overflow-y: auto;">
-    <div data-v-90e41081="" class="v-card v-card--flat v-theme--light v-card--density-default v-card--variant-elevated">
+  <div data-v-90e41081="" class="v-col py-0 my-0" style="overflow-y: auto;">
+    <div data-v-90e41081="" class="v-card v-theme--light border-false v-card--density-default v-card--variant-elevated">
       <!---->
       <div class="v-card__loader">
         <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
@@ -22,7 +22,105 @@ exports[`TraceStep.vue > Should display the formatted step 1`] = `
       </div>
       <!---->
       <!---->
-      <div data-v-90e41081="" class="v-card-text pa-0 ma-0"><span data-v-90e41081="" class="font-weight-black"> |<br data-v-90e41081=""> |--&gt; </span><span data-v-90e41081="" class="v-chip v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal bg-primary mr-2" draggable="false"><!----><span class="v-chip__underlay"></span>
+      <div data-v-90e41081="" class="v-card-text pa-0 ma-0">
+        <!--v-if--><span data-v-90e41081="" class="v-chip v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal bg-primary mr-2" draggable="false"><!----><span class="v-chip__underlay"></span>
+        <!---->
+        <!---->
+        <div class="v-chip__content" data-no-activator="">CALL</div>
+        <!---->
+        <!----></span>
+        <!--v-if-->
+        <!--v-if-->
+        <hash-link-stub data-v-90e41081="" type="address" hash="0x1234567890123456789012345678901234567890" fullhash="true" withname="true" notcopiable="true" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub><span data-v-90e41081="">.transfer(</span>
+        <div data-v-90e41081="">
+          <formatted-sol-var-stub data-v-90e41081="" input="[object Object]" class="ml-8" value="0xe5a4Dad2Ea987215460379Ab285DF87136E83BEA"></formatted-sol-var-stub>
+        </div>
+        <div data-v-90e41081="">
+          <formatted-sol-var-stub data-v-90e41081="" input="[object Object]" class="ml-8" value="1000000000000000000"></formatted-sol-var-stub>
+        </div><span data-v-90e41081="" class="ml-4">)</span>
+        <!--v-if-->
+      </div>
+      <!---->
+      <!----><span class="v-card__underlay"></span>
+    </div>
+  </div>
+</div>"
+`;
+
+exports[`TraceStep.vue > Should decode ERC721 transferFrom 1`] = `
+"<div data-v-90e41081="" class="v-row ma-1 pa-1 pb-0 mb-0">
+  <!--v-if-->
+  <div data-v-90e41081="" class="v-col py-0 my-0" style="overflow-y: auto;">
+    <div data-v-90e41081="" class="v-card v-theme--light border-false v-card--density-default v-card--variant-elevated">
+      <!---->
+      <div class="v-card__loader">
+        <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+          <!---->
+          <div class="v-progress-linear__background"></div>
+          <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+          <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+            <div class="v-progress-linear__indeterminate">
+              <div class="v-progress-linear__indeterminate long"></div>
+              <div class="v-progress-linear__indeterminate short"></div>
+            </div>
+          </transition-stub>
+          <!---->
+        </div>
+      </div>
+      <!---->
+      <!---->
+      <div data-v-90e41081="" class="v-card-text pa-0 ma-0">
+        <!--v-if--><span data-v-90e41081="" class="v-chip v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal bg-primary mr-2" draggable="false"><!----><span class="v-chip__underlay"></span>
+        <!---->
+        <!---->
+        <div class="v-chip__content" data-no-activator="">CALL</div>
+        <!---->
+        <!----></span>
+        <!--v-if-->
+        <!--v-if-->
+        <hash-link-stub data-v-90e41081="" type="address" hash="0x1234567890123456789012345678901234567890" fullhash="true" withname="true" notcopiable="true" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub><span data-v-90e41081="">.transferFrom(</span>
+        <div data-v-90e41081="">
+          <formatted-sol-var-stub data-v-90e41081="" input="[object Object]" class="ml-8" value="0xe5a4Dad2Ea987215460379Ab285DF87136E83BEA"></formatted-sol-var-stub>
+        </div>
+        <div data-v-90e41081="">
+          <formatted-sol-var-stub data-v-90e41081="" input="[object Object]" class="ml-8" value="0xa5A4dad2ea987215460379Ab285df87136E83beb"></formatted-sol-var-stub>
+        </div>
+        <div data-v-90e41081="">
+          <formatted-sol-var-stub data-v-90e41081="" input="[object Object]" class="ml-8" value="1"></formatted-sol-var-stub>
+        </div><span data-v-90e41081="" class="ml-4">)</span>
+        <!--v-if-->
+      </div>
+      <!---->
+      <!----><span class="v-card__underlay"></span>
+    </div>
+  </div>
+</div>"
+`;
+
+exports[`TraceStep.vue > Should display the formatted step 1`] = `
+"<div data-v-90e41081="" class="v-row ma-1 pa-1 pb-0 mb-0">
+  <!--v-if-->
+  <div data-v-90e41081="" class="v-col py-0 my-0" style="overflow-y: auto;">
+    <div data-v-90e41081="" class="v-card v-theme--light border-false v-card--density-default v-card--variant-elevated">
+      <!---->
+      <div class="v-card__loader">
+        <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+          <!---->
+          <div class="v-progress-linear__background"></div>
+          <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+          <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+            <div class="v-progress-linear__indeterminate">
+              <div class="v-progress-linear__indeterminate long"></div>
+              <div class="v-progress-linear__indeterminate short"></div>
+            </div>
+          </transition-stub>
+          <!---->
+        </div>
+      </div>
+      <!---->
+      <!---->
+      <div data-v-90e41081="" class="v-card-text pa-0 ma-0">
+        <!--v-if--><span data-v-90e41081="" class="v-chip v-theme--light v-chip--density-default v-chip--size-small v-chip--variant-tonal bg-primary mr-2" draggable="false"><!----><span class="v-chip__underlay"></span>
         <!---->
         <!---->
         <div class="v-chip__content" data-no-activator="">call</div>
@@ -30,12 +128,11 @@ exports[`TraceStep.vue > Should display the formatted step 1`] = `
         <!----></span>
         <!--v-if-->
         <!--v-if-->
-        <hash-link-stub data-v-90e41081="" type="address" hash="0xab8e74017a8cc7c15ffccd726603790d26d7deca" notcopiable="true" fullhash="true" withname="true" contract="[object Object]"></hash-link-stub>
+        <hash-link-stub data-v-90e41081="" type="address" hash="0xab8e74017a8cc7c15ffccd726603790d26d7deca" contract="[object Object]" fullhash="true" withname="true" notcopiable="true" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub><span data-v-90e41081="">.claim(</span>
+        <div data-v-90e41081="">
+          <formatted-sol-var-stub data-v-90e41081="" input="[object Object]" class="ml-8" value="2"></formatted-sol-var-stub>
+        </div><span data-v-90e41081="" class="ml-4">)</span>
         <!--v-if-->
-        <ul data-v-90e41081="">
-          <li data-v-90e41081="" class="raw-input"><b data-v-90e41081="" class="mr-2">Input:</b><a data-v-90e41081="">[ + ]</a> 0x379607f50000000000000000000000000000000000000000000000000000000000000002</li>
-          <!--v-if-->
-        </ul>
       </div>
       <!---->
       <!----><span class="v-card__underlay"></span>

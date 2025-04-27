@@ -1,0 +1,496 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`TransactionLogs.vue > Should handle page changes 1`] = `
+"<div data-v-f4c24e3e="" class="logs-tab-content">
+  <!-- Emitted Events -->
+  <div data-v-f4c24e3e="" class="transaction-events">
+    <div data-v-f4c24e3e="" class="d-flex flex-column gap-2">
+      <div data-v-f4c24e3e="" class="v-card v-theme--light v-card--density-default rounded-lg v-card--variant-elevated mb-3">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!---->
+        <div data-v-f4c24e3e="" class="v-card-text px-4 py-3">
+          <transaction-event-stub data-v-f4c24e3e="" log="[object Object]" short="false" self="false" label="false"></transaction-event-stub>
+        </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
+      </div>
+    </div>
+    <nav data-v-f4c24e3e="" class="v-pagination v-theme--light mt-4 white-bg-pagination" role="navigation" aria-label="Pagination Navigation" data-test="v-pagination-root">
+      <ul class="v-pagination__list">
+        <!---->
+        <li class="v-pagination__prev" data-test="v-pagination-prev"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--border text-primary v-btn--density-compact v-btn--size-default v-btn--variant-text" disabled="" aria-label="Previous page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+            <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-chevron-left mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+            <!---->
+            <!---->
+          </button></li>
+        <li class="v-pagination__item v-pagination__item--is-active" data-test="v-pagination-item"><button type="button" class="v-btn v-btn--icon v-theme--light v-btn--border text-primary v-btn--density-compact v-btn--size-default v-btn--variant-text" ellipsis="false" aria-current="true" aria-label="Page 1, Current page"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+            <!----><span class="v-btn__content" data-no-activator="">1</span>
+            <!---->
+            <!---->
+          </button></li>
+        <li class="v-pagination__item" data-test="v-pagination-item"><button type="button" class="v-btn v-btn--icon v-theme--light v-btn--border text-primary v-btn--density-compact v-btn--size-default v-btn--variant-text" ellipsis="false" aria-current="false" aria-label="Go to page 2"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+            <!----><span class="v-btn__content" data-no-activator="">2</span>
+            <!---->
+            <!---->
+          </button></li>
+        <li class="v-pagination__next" data-test="v-pagination-next"><button type="button" class="v-btn v-btn--icon v-theme--light v-btn--border text-primary v-btn--density-compact v-btn--size-default v-btn--variant-text" aria-label="Next page" aria-disabled="false"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+            <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-chevron-right mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+            <!---->
+            <!---->
+          </button></li>
+        <!---->
+      </ul>
+    </nav>
+  </div>
+</div>"
+`;
+
+exports[`TransactionLogs.vue > Should reload logs when hash changes 1`] = `
+"<div data-v-f4c24e3e="" class="logs-tab-content">
+  <!-- Emitted Events -->
+  <div data-v-f4c24e3e="" class="transaction-events">
+    <div data-v-f4c24e3e="" class="d-flex flex-column gap-2">
+      <div data-v-f4c24e3e="" class="v-card v-theme--light v-card--density-default rounded-lg v-card--variant-elevated mb-3">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!---->
+        <div data-v-f4c24e3e="" class="v-card-text px-4 py-3">
+          <transaction-event-stub data-v-f4c24e3e="" log="[object Object]" short="false" self="false" label="false"></transaction-event-stub>
+        </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
+      </div>
+    </div>
+    <!--v-if-->
+  </div>
+</div>"
+`;
+
+exports[`TransactionLogs.vue > Should show loading state initially 1`] = `
+"<div data-v-f4c24e3e="" class="logs-tab-content">
+  <!-- Emitted Events -->
+  <div data-v-f4c24e3e="" class="transaction-events">
+    <div data-v-f4c24e3e="" class="v-card v-theme--light v-card--density-default v-card--variant-flat border-0" bg-color="transparent">
+      <!---->
+      <div class="v-card__loader">
+        <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+          <!---->
+          <div class="v-progress-linear__background"></div>
+          <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+          <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+            <div class="v-progress-linear__indeterminate">
+              <div class="v-progress-linear__indeterminate long"></div>
+              <div class="v-progress-linear__indeterminate short"></div>
+            </div>
+          </transition-stub>
+          <!---->
+        </div>
+      </div>
+      <!---->
+      <!---->
+      <div data-v-f4c24e3e="" class="v-card-text">
+        <div data-v-f4c24e3e="" class="v-skeleton-loader v-theme--light" arialive="polite" arialabel="Loading..." role="alert">
+          <div class="v-skeleton-loader__bone v-skeleton-loader__list-item-three-line">
+            <div class="v-skeleton-loader__bone v-skeleton-loader__paragraph">
+              <div class="v-skeleton-loader__bone v-skeleton-loader__text"></div>
+              <div class="v-skeleton-loader__bone v-skeleton-loader__text"></div>
+              <div class="v-skeleton-loader__bone v-skeleton-loader__text"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!---->
+      <!----><span class="v-card__underlay"></span>
+    </div>
+    <!--v-if-->
+  </div>
+</div>"
+`;
+
+exports[`TransactionLogs.vue > Should show logs after loading 1`] = `
+"<div data-v-f4c24e3e="" class="logs-tab-content">
+  <!-- Emitted Events -->
+  <div data-v-f4c24e3e="" class="transaction-events">
+    <div data-v-f4c24e3e="" class="d-flex flex-column gap-2">
+      <div data-v-f4c24e3e="" class="v-card v-theme--light v-card--density-default rounded-lg v-card--variant-elevated mb-3">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!---->
+        <div data-v-f4c24e3e="" class="v-card-text px-4 py-3">
+          <transaction-event-stub data-v-f4c24e3e="" log="[object Object]" short="false" self="false" label="false"></transaction-event-stub>
+        </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
+      </div>
+      <div data-v-f4c24e3e="" class="v-card v-theme--light v-card--density-default rounded-lg v-card--variant-elevated mb-3">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!---->
+        <div data-v-f4c24e3e="" class="v-card-text px-4 py-3">
+          <transaction-event-stub data-v-f4c24e3e="" log="[object Object]" short="false" self="false" label="false"></transaction-event-stub>
+        </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
+      </div>
+    </div>
+    <!--v-if-->
+  </div>
+</div>"
+`;
+
+exports[`TransactionLogs.vue > Should show pagination when log count is greater than 10 1`] = `
+"<div data-v-f4c24e3e="" class="logs-tab-content">
+  <!-- Emitted Events -->
+  <div data-v-f4c24e3e="" class="transaction-events">
+    <div data-v-f4c24e3e="" class="d-flex flex-column gap-2">
+      <div data-v-f4c24e3e="" class="v-card v-theme--light v-card--density-default rounded-lg v-card--variant-elevated mb-3">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!---->
+        <div data-v-f4c24e3e="" class="v-card-text px-4 py-3">
+          <transaction-event-stub data-v-f4c24e3e="" log="[object Object]" short="false" self="false" label="false"></transaction-event-stub>
+        </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
+      </div>
+      <div data-v-f4c24e3e="" class="v-card v-theme--light v-card--density-default rounded-lg v-card--variant-elevated mb-3">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!---->
+        <div data-v-f4c24e3e="" class="v-card-text px-4 py-3">
+          <transaction-event-stub data-v-f4c24e3e="" log="[object Object]" short="false" self="false" label="false"></transaction-event-stub>
+        </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
+      </div>
+      <div data-v-f4c24e3e="" class="v-card v-theme--light v-card--density-default rounded-lg v-card--variant-elevated mb-3">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!---->
+        <div data-v-f4c24e3e="" class="v-card-text px-4 py-3">
+          <transaction-event-stub data-v-f4c24e3e="" log="[object Object]" short="false" self="false" label="false"></transaction-event-stub>
+        </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
+      </div>
+      <div data-v-f4c24e3e="" class="v-card v-theme--light v-card--density-default rounded-lg v-card--variant-elevated mb-3">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!---->
+        <div data-v-f4c24e3e="" class="v-card-text px-4 py-3">
+          <transaction-event-stub data-v-f4c24e3e="" log="[object Object]" short="false" self="false" label="false"></transaction-event-stub>
+        </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
+      </div>
+      <div data-v-f4c24e3e="" class="v-card v-theme--light v-card--density-default rounded-lg v-card--variant-elevated mb-3">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!---->
+        <div data-v-f4c24e3e="" class="v-card-text px-4 py-3">
+          <transaction-event-stub data-v-f4c24e3e="" log="[object Object]" short="false" self="false" label="false"></transaction-event-stub>
+        </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
+      </div>
+      <div data-v-f4c24e3e="" class="v-card v-theme--light v-card--density-default rounded-lg v-card--variant-elevated mb-3">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!---->
+        <div data-v-f4c24e3e="" class="v-card-text px-4 py-3">
+          <transaction-event-stub data-v-f4c24e3e="" log="[object Object]" short="false" self="false" label="false"></transaction-event-stub>
+        </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
+      </div>
+      <div data-v-f4c24e3e="" class="v-card v-theme--light v-card--density-default rounded-lg v-card--variant-elevated mb-3">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!---->
+        <div data-v-f4c24e3e="" class="v-card-text px-4 py-3">
+          <transaction-event-stub data-v-f4c24e3e="" log="[object Object]" short="false" self="false" label="false"></transaction-event-stub>
+        </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
+      </div>
+      <div data-v-f4c24e3e="" class="v-card v-theme--light v-card--density-default rounded-lg v-card--variant-elevated mb-3">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!---->
+        <div data-v-f4c24e3e="" class="v-card-text px-4 py-3">
+          <transaction-event-stub data-v-f4c24e3e="" log="[object Object]" short="false" self="false" label="false"></transaction-event-stub>
+        </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
+      </div>
+      <div data-v-f4c24e3e="" class="v-card v-theme--light v-card--density-default rounded-lg v-card--variant-elevated mb-3">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!---->
+        <div data-v-f4c24e3e="" class="v-card-text px-4 py-3">
+          <transaction-event-stub data-v-f4c24e3e="" log="[object Object]" short="false" self="false" label="false"></transaction-event-stub>
+        </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
+      </div>
+      <div data-v-f4c24e3e="" class="v-card v-theme--light v-card--density-default rounded-lg v-card--variant-elevated mb-3">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!---->
+        <div data-v-f4c24e3e="" class="v-card-text px-4 py-3">
+          <transaction-event-stub data-v-f4c24e3e="" log="[object Object]" short="false" self="false" label="false"></transaction-event-stub>
+        </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
+      </div>
+      <div data-v-f4c24e3e="" class="v-card v-theme--light v-card--density-default rounded-lg v-card--variant-elevated mb-3">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+            <!---->
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
+              </div>
+            </transition-stub>
+            <!---->
+          </div>
+        </div>
+        <!---->
+        <!---->
+        <div data-v-f4c24e3e="" class="v-card-text px-4 py-3">
+          <transaction-event-stub data-v-f4c24e3e="" log="[object Object]" short="false" self="false" label="false"></transaction-event-stub>
+        </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
+      </div>
+    </div>
+    <nav data-v-f4c24e3e="" class="v-pagination v-theme--light mt-4 white-bg-pagination" role="navigation" aria-label="Pagination Navigation" data-test="v-pagination-root">
+      <ul class="v-pagination__list">
+        <!---->
+        <li class="v-pagination__prev" data-test="v-pagination-prev"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--border text-primary v-btn--density-compact v-btn--size-default v-btn--variant-text" disabled="" aria-label="Previous page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+            <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-chevron-left mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+            <!---->
+            <!---->
+          </button></li>
+        <li class="v-pagination__item v-pagination__item--is-active" data-test="v-pagination-item"><button type="button" class="v-btn v-btn--icon v-theme--light v-btn--border text-primary v-btn--density-compact v-btn--size-default v-btn--variant-text" ellipsis="false" aria-current="true" aria-label="Page 1, Current page"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+            <!----><span class="v-btn__content" data-no-activator="">1</span>
+            <!---->
+            <!---->
+          </button></li>
+        <li class="v-pagination__item" data-test="v-pagination-item"><button type="button" class="v-btn v-btn--icon v-theme--light v-btn--border text-primary v-btn--density-compact v-btn--size-default v-btn--variant-text" ellipsis="false" aria-current="false" aria-label="Go to page 2"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+            <!----><span class="v-btn__content" data-no-activator="">2</span>
+            <!---->
+            <!---->
+          </button></li>
+        <li class="v-pagination__next" data-test="v-pagination-next"><button type="button" class="v-btn v-btn--icon v-theme--light v-btn--border text-primary v-btn--density-compact v-btn--size-default v-btn--variant-text" aria-label="Next page" aria-disabled="false"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+            <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-chevron-right mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+            <!---->
+            <!---->
+          </button></li>
+        <!---->
+      </ul>
+    </nav>
+  </div>
+</div>"
+`;

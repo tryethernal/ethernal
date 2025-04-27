@@ -38,7 +38,7 @@
                         No contracts found
                     </template>
                     <template v-slot:item.tags="{ item }">
-                        <v-chip v-for="(pattern, idx) in item.patterns" :key="idx" size="x-small" class="bg-success mr-2">
+                        <v-chip v-for="(pattern, idx) in item.patterns" :key="idx" size="x-small" color="success" class="mr-2">
                             {{ formatContractPattern(pattern) }}
                         </v-chip>
                     </template>

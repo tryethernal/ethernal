@@ -22,6 +22,32 @@ beforeEach(() => {
     jest.spyOn(db, 'canUserSyncBlock').mockResolvedValue(true);
 });
 
+describe(`GET ${BASE_URL}/:hash/traceSteps`, () => {
+    it('Should return trace steps', (done) => {
+        jest.spyOn(db, 'getTransactionTraceSteps').mockResolvedValueOnce([{ hash: '0x123' }]);
+
+        request.get(`${BASE_URL}/:hash/traceSteps`)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual([{ hash: '0x123' }]);
+                done();
+            });
+    });
+});
+
+describe(`GET ${BASE_URL}/:hash/tokenBalanceChanges`, () => {
+    it('Should return token balance changes', (done) => {
+        jest.spyOn(db, 'getTransactionTokenBalanceChanges').mockResolvedValueOnce({ total: 1, items: [{ hash: '0x123' }]});
+
+        request.get(`${BASE_URL}/:hash/tokenBalanceChanges`)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual({ total: 1, items: [{ hash: '0x123' }]});
+                done();
+            });
+    });
+});
+
 describe(`GET ${BASE_URL}/:hash/logs`, () => {
     it('Should return logs', (done) => {
         jest.spyOn(db, 'getTransactionLogs').mockResolvedValueOnce({ count: 1, logs: [{ hash: '0x123' }]});

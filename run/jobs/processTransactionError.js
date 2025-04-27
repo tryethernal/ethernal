@@ -39,7 +39,6 @@ module.exports = async job => {
     try {
         const provider = getProvider(transaction.workspace.rpcServer);
         const res = await provider.call({ to: transaction.to, data: transaction.data, value: transaction.value }, transaction.blockNumber);
-
         let reason;
         if (transaction.contract && transaction.contract.abi) {
             const iface = new ethers.utils.Interface(transaction.contract.abi);
@@ -48,7 +47,15 @@ module.exports = async job => {
             reason = ethers.utils.toUtf8String('0x' + res.substr(138));
         errorObject = { parsed: true, message: reason };
     } catch(error) {
-        if (error.response) {
+        const parsedError = JSON.parse(JSON.stringify(error));
+        if (parsedError.error && parsedError.error.body) {
+            const parsedBody = JSON.parse(parsedError.error.body);
+            if (parsedBody.error && parsedBody.error.message)
+                errorObject = { parsed: true, message: parsedBody.error.message };
+            else
+                errorObject = { parsed: false, message: parsedBody };
+        }
+        else if (error.response) {
             const parsed = JSON.parse(error.response);
             if (parsed.error && parsed.error.message)
                 errorObject = { parsed: true, message: parsed.error.message };

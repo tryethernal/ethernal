@@ -1,83 +1,83 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`HashLink.vue > Should display a full link to the address 1`] = `
-"<span><!--v-if--><a>0x2D481eeb2bA97955CD081Cf218f453A817259AB1</a><!--v-if--><span> &nbsp;<i class="mdi-content-copy mdi v-icon notranslate v-theme--light v-icon--size-x-small v-icon--clickable text-medium-emphasis" role="button" aria-hidden="false" tabindex="0"></i><input type="hidden" id="copyElement-0x2D481eeb2bA97955CD081Cf218f453A817259AB1" value="0x2D481eeb2bA97955CD081Cf218f453A817259AB1"></span>
+"<span><!--v-if--><a style="text-decoration: none;">0x2D481eeb2bA97955CD081Cf218f453A817259AB1</a><!--v-if--><span> &nbsp;<i class="mdi-content-copy mdi v-icon notranslate v-theme--light v-icon--size-x-small v-icon--clickable text-medium-emphasis" role="button" aria-hidden="false" tabindex="0"></i><input type="hidden" id="copyElement-0x2D481eeb2bA97955CD081Cf218f453A817259AB1" value="0x2D481eeb2bA97955CD081Cf218f453A817259AB1"></span>
 <!--v-if-->
 <!--v-if--></span>"
 `;
 
 exports[`HashLink.vue > Should display a shortened link to the address 1`] = `
-"<span><!--v-if--><a>0x2D481e...9AB1</a><!--v-if--><span> &nbsp;<i class="mdi-content-copy mdi v-icon notranslate v-theme--light v-icon--size-x-small v-icon--clickable text-medium-emphasis" role="button" aria-hidden="false" tabindex="0"></i><input type="hidden" id="copyElement-0x2D481eeb2bA97955CD081Cf218f453A817259AB1" value="0x2D481eeb2bA97955CD081Cf218f453A817259AB1"></span>
+"<span><!--v-if--><a style="text-decoration: none;">0x2D481e...9AB1</a><!--v-if--><span> &nbsp;<i class="mdi-content-copy mdi v-icon notranslate v-theme--light v-icon--size-x-small v-icon--clickable text-medium-emphasis" role="button" aria-hidden="false" tabindex="0"></i><input type="hidden" id="copyElement-0x2D481eeb2bA97955CD081Cf218f453A817259AB1" value="0x2D481eeb2bA97955CD081Cf218f453A817259AB1"></span>
 <!--v-if-->
 <!--v-if--></span>"
 `;
 
 exports[`HashLink.vue > Should display alternative link switch 1`] = `
-"<span><!--v-if--><a>0xed5af388653567af2f388e6224dc7c4b3241c544</a><!--v-if--><span> &nbsp;<i class="mdi-content-copy mdi v-icon notranslate v-theme--light v-icon--size-x-small v-icon--clickable text-medium-emphasis" role="button" aria-hidden="false" tabindex="0"></i><input type="hidden" id="copyElement-0xed5af388653567af2f388e6224dc7c4b3241c544" value="0xed5af388653567af2f388e6224dc7c4b3241c544"></span>
+"<span><!--v-if--><a style="text-decoration: none;">0xed5af388653567af2f388e6224dc7c4b3241c544</a><!--v-if--><span> &nbsp;<i class="mdi-content-copy mdi v-icon notranslate v-theme--light v-icon--size-x-small v-icon--clickable text-medium-emphasis" role="button" aria-hidden="false" tabindex="0"></i><input type="hidden" id="copyElement-0xed5af388653567af2f388e6224dc7c4b3241c544" value="0xed5af388653567af2f388e6224dc7c4b3241c544"></span>
 <!--v-if--><span> &nbsp; <i class="mdi-swap-horizontal mdi v-icon notranslate v-theme--light v-icon--size-x-small v-icon--clickable text-medium-emphasis" role="button" aria-hidden="false" tabindex="0"></i></span></span>"
 `;
 
 exports[`HashLink.vue > Should display an external link if embedded 1`] = `
-"<span><!--v-if--><a href="//explorer.tryethernal.com/address/0xed5af388653567af2f388e6224dc7c4b3241c544" target="_blank">0xed5af3...c544</a><!--v-if--><span> &nbsp;<i class="mdi-content-copy mdi v-icon notranslate v-theme--light v-icon--size-x-small v-icon--clickable text-medium-emphasis" role="button" aria-hidden="false" tabindex="0"></i><input type="hidden" id="copyElement-0xed5af388653567af2f388e6224dc7c4b3241c544" value="0xed5af388653567af2f388e6224dc7c4b3241c544"></span>
+"<span><!--v-if--><a style="text-decoration: none;" href="//explorer.tryethernal.com/address/0xed5af388653567af2f388e6224dc7c4b3241c544" target="_blank">0xed5af3...c544</a><!--v-if--><span> &nbsp;<i class="mdi-content-copy mdi v-icon notranslate v-theme--light v-icon--size-x-small v-icon--clickable text-medium-emphasis" role="button" aria-hidden="false" tabindex="0"></i><input type="hidden" id="copyElement-0xed5af388653567af2f388e6224dc7c4b3241c544" value="0xed5af388653567af2f388e6224dc7c4b3241c544"></span>
 <!--v-if-->
 <!--v-if--></span>"
 `;
 
 exports[`HashLink.vue > Should display custom label 1`] = `
-"<span><!--v-if--><a>My Address</a><!--v-if--><span> &nbsp;<i class="mdi-content-copy mdi v-icon notranslate v-theme--light v-icon--size-x-small v-icon--clickable text-medium-emphasis" role="button" aria-hidden="false" tabindex="0"></i><input type="hidden" id="copyElement-0xed5af388653567af2f388e6224dc7c4b3241c544" value="0xed5af388653567af2f388e6224dc7c4b3241c544"></span>
+"<span><!--v-if--><a style="text-decoration: none;">My Address</a><!--v-if--><span> &nbsp;<i class="mdi-content-copy mdi v-icon notranslate v-theme--light v-icon--size-x-small v-icon--clickable text-medium-emphasis" role="button" aria-hidden="false" tabindex="0"></i><input type="hidden" id="copyElement-0xed5af388653567af2f388e6224dc7c4b3241c544" value="0xed5af388653567af2f388e6224dc7c4b3241c544"></span>
 <!--v-if-->
 <!--v-if--></span>"
 `;
 
 exports[`HashLink.vue > Should display faucet name 1`] = `
-"<span><i class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success mr-1" aria-hidden="true" aria-describedby="v-tooltip-0"></i><!--teleport start--><!--teleport end--><a>ETL faucet</a><!--v-if--><span> &nbsp;<i class="mdi-content-copy mdi v-icon notranslate v-theme--light v-icon--size-x-small v-icon--clickable text-medium-emphasis" role="button" aria-hidden="false" tabindex="0"></i><input type="hidden" id="copyElement-0xed5af388653567af2f388e6224dc7c4b3241c544" value="0xed5af388653567af2f388e6224dc7c4b3241c544"></span>
+"<span><i class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success mr-1" aria-hidden="true" aria-describedby="v-tooltip-0"></i><!--teleport start--><!--teleport end--><a style="text-decoration: none;">ETL faucet</a><!--v-if--><span> &nbsp;<i class="mdi-content-copy mdi v-icon notranslate v-theme--light v-icon--size-x-small v-icon--clickable text-medium-emphasis" role="button" aria-hidden="false" tabindex="0"></i><input type="hidden" id="copyElement-0xed5af388653567af2f388e6224dc7c4b3241c544" value="0xed5af388653567af2f388e6224dc7c4b3241c544"></span>
 <!--v-if-->
 <!--v-if--></span>"
 `;
 
 exports[`HashLink.vue > Should display link to token if tokenId is passed 1`] = `
-"<span><!--v-if--><a>Ethernal</a><span> &nbsp;(<a>#1</a>) </span><span> &nbsp;<i class="mdi-content-copy mdi v-icon notranslate v-theme--light v-icon--size-x-small v-icon--clickable text-medium-emphasis" role="button" aria-hidden="false" tabindex="0"></i><input type="hidden" id="copyElement-0x123" value="0x123"></span>
+"<span><!--v-if--><a style="text-decoration: none;">Ethernal</a><span> &nbsp;(<a style="text-decoration: none;">#1</a>) </span><span> &nbsp;<i class="mdi-content-copy mdi v-icon notranslate v-theme--light v-icon--size-x-small v-icon--clickable text-medium-emphasis" role="button" aria-hidden="false" tabindex="0"></i><input type="hidden" id="copyElement-0x123" value="0x123"></span>
 <!--v-if-->
 <!--v-if--></span>"
 `;
 
 exports[`HashLink.vue > Should display smaller hash if xsHash option is passed 1`] = `
-"<span><!--v-if--><a>0xed5...c544</a><!--v-if--><span> &nbsp;<i class="mdi-content-copy mdi v-icon notranslate v-theme--light v-icon--size-x-small v-icon--clickable text-medium-emphasis" role="button" aria-hidden="false" tabindex="0"></i><input type="hidden" id="copyElement-0xed5af388653567af2f388e6224dc7c4b3241c544" value="0xed5af388653567af2f388e6224dc7c4b3241c544"></span>
+"<span><!--v-if--><a style="text-decoration: none;">0xed5...c544</a><!--v-if--><span> &nbsp;<i class="mdi-content-copy mdi v-icon notranslate v-theme--light v-icon--size-x-small v-icon--clickable text-medium-emphasis" role="button" aria-hidden="false" tabindex="0"></i><input type="hidden" id="copyElement-0xed5af388653567af2f388e6224dc7c4b3241c544" value="0xed5af388653567af2f388e6224dc7c4b3241c544"></span>
 <!--v-if-->
 <!--v-if--></span>"
 `;
 
 exports[`HashLink.vue > Should display the contract name when no token 1`] = `
-"<span><!--v-if--><a>My Contract</a><!--v-if--><span> &nbsp;<i class="mdi-content-copy mdi v-icon notranslate v-theme--light v-icon--size-x-small v-icon--clickable text-medium-emphasis" role="button" aria-hidden="false" tabindex="0"></i><input type="hidden" id="copyElement-0x123" value="0x123"></span>
+"<span><!--v-if--><a style="text-decoration: none;">My Contract</a><!--v-if--><span> &nbsp;<i class="mdi-content-copy mdi v-icon notranslate v-theme--light v-icon--size-x-small v-icon--clickable text-medium-emphasis" role="button" aria-hidden="false" tabindex="0"></i><input type="hidden" id="copyElement-0x123" value="0x123"></span>
 <!--v-if-->
 <!--v-if--></span>"
 `;
 
 exports[`HashLink.vue > Should display the name for the 0x0 address 1`] = `
-"<span><!--v-if--><a>Black Hole</a><!--v-if--><span> &nbsp;<i class="mdi-content-copy mdi v-icon notranslate v-theme--light v-icon--size-x-small v-icon--clickable text-medium-emphasis" role="button" aria-hidden="false" tabindex="0"></i><input type="hidden" id="copyElement-0x0000000000000000000000000000000000000000" value="0x0000000000000000000000000000000000000000"></span>
+"<span><!--v-if--><a style="text-decoration: none;">Black Hole</a><!--v-if--><span> &nbsp;<i class="mdi-content-copy mdi v-icon notranslate v-theme--light v-icon--size-x-small v-icon--clickable text-medium-emphasis" role="button" aria-hidden="false" tabindex="0"></i><input type="hidden" id="copyElement-0x0000000000000000000000000000000000000000" value="0x0000000000000000000000000000000000000000"></span>
 <!--v-if-->
 <!--v-if--></span>"
 `;
 
 exports[`HashLink.vue > Should display the token name if available & no token symbol 1`] = `
-"<span><!--v-if--><a>0x123...x123</a><!--v-if--><span> &nbsp;<i class="mdi-content-copy mdi v-icon notranslate v-theme--light v-icon--size-x-small v-icon--clickable text-medium-emphasis" role="button" aria-hidden="false" tabindex="0"></i><input type="hidden" id="copyElement-0x123" value="0x123"></span>
+"<span><!--v-if--><a style="text-decoration: none;">My Contract</a><!--v-if--><span> &nbsp;<i class="mdi-content-copy mdi v-icon notranslate v-theme--light v-icon--size-x-small v-icon--clickable text-medium-emphasis" role="button" aria-hidden="false" tabindex="0"></i><input type="hidden" id="copyElement-0x123" value="0x123"></span>
 <!--v-if-->
 <!--v-if--></span>"
 `;
 
 exports[`HashLink.vue > Should display the token name if symbol but flag withTokenName 1`] = `
-"<span><!--v-if--><a>Ethernal</a><!--v-if--><span> &nbsp;<i class="mdi-content-copy mdi v-icon notranslate v-theme--light v-icon--size-x-small v-icon--clickable text-medium-emphasis" role="button" aria-hidden="false" tabindex="0"></i><input type="hidden" id="copyElement-0x123" value="0x123"></span>
+"<span><!--v-if--><a style="text-decoration: none;">Ethernal</a><!--v-if--><span> &nbsp;<i class="mdi-content-copy mdi v-icon notranslate v-theme--light v-icon--size-x-small v-icon--clickable text-medium-emphasis" role="button" aria-hidden="false" tabindex="0"></i><input type="hidden" id="copyElement-0x123" value="0x123"></span>
 <!--v-if-->
 <!--v-if--></span>"
 `;
 
 exports[`HashLink.vue > Should display the token symbol if available 1`] = `
-"<span><!--v-if--><a>ETL</a><!--v-if--><span> &nbsp;<i class="mdi-content-copy mdi v-icon notranslate v-theme--light v-icon--size-x-small v-icon--clickable text-medium-emphasis" role="button" aria-hidden="false" tabindex="0"></i><input type="hidden" id="copyElement-0x123" value="0x123"></span>
+"<span><!--v-if--><a style="text-decoration: none;">ETL</a><!--v-if--><span> &nbsp;<i class="mdi-content-copy mdi v-icon notranslate v-theme--light v-icon--size-x-small v-icon--clickable text-medium-emphasis" role="button" aria-hidden="false" tabindex="0"></i><input type="hidden" id="copyElement-0x123" value="0x123"></span>
 <!--v-if-->
 <!--v-if--></span>"
 `;
 
-exports[`HashLink.vue > Should not be copiable if the notCopiable flag is passed 1`] = `"<span><!--v-if--><a>0x2D481e...9AB1</a><!--v-if--><!--v-if--><!--v-if--><!--v-if--></span>"`;
+exports[`HashLink.vue > Should not be copiable if the notCopiable flag is passed 1`] = `"<span><!--v-if--><a style="text-decoration: none;">0x2D481e...9AB1</a><!--v-if--><!--v-if--><!--v-if--><!--v-if--></span>"`;
 
 exports[`HashLink.vue > Should not create links 1`] = `"<span><!--v-if-->My Contract<!--v-if--><!--v-if--><!--v-if--><!--v-if--></span>"`;
 

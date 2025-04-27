@@ -61,7 +61,7 @@ exports[`Accounts.vue > Should load stored accounts 1`] = `
                 <td class="v-data-table__td v-data-table-column--align-start"><span style="display: none;"><i class="mdi-lock-open-outline mdi v-icon notranslate v-theme--light v-icon--size-small mr-2" aria-hidden="true" aria-describedby="v-tooltip-10"></i></span>
                   <!--teleport start-->
                   <!--teleport end-->
-                  <hash-link-stub type="address" hash="0x123"></hash-link-stub>
+                  <hash-link-stub type="address" hash="0x123" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start"><span>0.000000000000001 ETH</span></td>
               </tr>

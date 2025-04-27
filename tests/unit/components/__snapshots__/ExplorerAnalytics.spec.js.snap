@@ -2,7 +2,6 @@
 
 exports[`ExplorerAnalytics.vue > Should display charts 1`] = `
 "<div class="v-container v-container--fluid v-locale--is-ltr">
-  <date-range-selector-stub initialrange="7"></date-range-selector-stub>
   <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated" style="height: 100%;">
     <!---->
     <div class="v-card__loader">
@@ -22,6 +21,7 @@ exports[`ExplorerAnalytics.vue > Should display charts 1`] = `
     <!---->
     <!---->
     <div class="v-card-text">
+      <date-range-selector-stub initialrange="7"></date-range-selector-stub>
       <div class="v-row">
         <div class="v-col-md-6 v-col-12">
           <line-chart-stub title="Transaction Volume" tooltipunit="transaction" index="0"></line-chart-stub>
@@ -31,6 +31,9 @@ exports[`ExplorerAnalytics.vue > Should display charts 1`] = `
         </div>
         <div class="v-col-md-6 v-col-12">
           <line-chart-stub title="Average Gas Price" tokensymbol="gwei" floating="true" index="2"></line-chart-stub>
+        </div>
+        <div class="v-col-md-6 v-col-12">
+          <line-chart-stub title="Transaction Fees" tokensymbol="ETH" floating="true" index="3"></line-chart-stub>
         </div>
         <div class="v-col-md-6 v-col-12">
           <line-chart-stub title="Average Transaction Fee" tokensymbol="ETH" floating="true" index="3"></line-chart-stub>
@@ -55,7 +58,6 @@ exports[`ExplorerAnalytics.vue > Should display charts 1`] = `
 
 exports[`ExplorerAnalytics.vue > Should display gas analytics 1`] = `
 "<div class="v-container v-container--fluid v-locale--is-ltr">
-  <date-range-selector-stub initialrange="7"></date-range-selector-stub>
   <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated" style="height: 100%;">
     <!---->
     <div class="v-card__loader">
@@ -75,6 +77,7 @@ exports[`ExplorerAnalytics.vue > Should display gas analytics 1`] = `
     <!---->
     <!---->
     <div class="v-card-text">
+      <date-range-selector-stub initialrange="7"></date-range-selector-stub>
       <div class="v-row">
         <div class="v-col-md-6 v-col-12">
           <line-chart-stub title="Transaction Volume" tooltipunit="transaction" index="0"></line-chart-stub>
@@ -84,6 +87,9 @@ exports[`ExplorerAnalytics.vue > Should display gas analytics 1`] = `
         </div>
         <div class="v-col-md-6 v-col-12">
           <line-chart-stub title="Average Gas Price" tokensymbol="gwei" floating="true" index="2"></line-chart-stub>
+        </div>
+        <div class="v-col-md-6 v-col-12">
+          <line-chart-stub title="Transaction Fees" tokensymbol="ETH" floating="true" index="3"></line-chart-stub>
         </div>
         <div class="v-col-md-6 v-col-12">
           <line-chart-stub title="Average Transaction Fee" tokensymbol="ETH" floating="true" index="3"></line-chart-stub>

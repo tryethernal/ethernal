@@ -24,217 +24,190 @@
             </v-text-field>
         </div>
         <div class="bg-grey-lighten-3 pa-2 mt-1" v-show="result.txHash || result.message">
-            <div v-show="result.message">{{ result.message }}</div>
             <div v-show="result.txHash">
                 Tx: <a :href="`/transaction/${result.txHash}`" target="_blank">{{ result.txHash }}</a>
             </div>
-            <div v-show="result.txHash && receipt.status == undefined && !noReceipt">
-                <v-progress-circular class="mr-2" size="16" width="2" indeterminate color="primary"></v-progress-circular>Waiting for receipt...
+            <div v-if="result.txHash" class="mt-1">
+                <template v-if="receipt">
+                    <template v-if="receipt.status == 'success'">
+                        <v-icon size="small" color="success-lighten-1">mdi-check-circle</v-icon>
+                        Transaction successful
+                    </template>
+                    <template v-else>
+                        <v-icon size="small" color="error-lighten-1">mdi-alert-circle</v-icon>
+                        {{ result.message }}
+                    </template>
+                </template>
+                <template v-else>
+                    <v-progress-circular class="mr-2" size="16" width="2" indeterminate color="primary"></v-progress-circular>Waiting for receipt...
+                </template>
             </div>
-            <div v-show="receipt.status != undefined" class="mt-1">
-                Status: {{ receipt.status ? 'Succeeded' : 'Failed' }}
-                <v-icon size="small" v-show="receipt.status" color="success-lighten-1" class="mr-2 align-with-text">mdi-check-circle</v-icon>
-                <v-icon size="small" v-show="!receipt.status" color="error-lighten-1" class="mr-2 align-with-text">mdi-alert-circle</v-icon>
-            </div>
-            <div v-show="noReceipt && noWaitFunction">
-                Couldn't get receipt.
+            <div v-else-if="result.message">
+                {{ result.message }}
             </div>
         </div>
         <v-divider class="my-2"></v-divider>
-        <v-btn :disabled="!active" v-if="senderMode == 'metamask'" :loading="loading" variant="flat" class="mt-1" @click="sendWithMetamask()">Query</v-btn>
-        <v-btn :disabled="!active" v-else :loading="loading" variant="flat" class="mt-1" @click="sendMethod()">Query</v-btn>
+        <div class="d-flex align-center">
+            <v-btn :disabled="!active" v-if="senderMode == 'metamask'" :loading="loading" variant="flat" class="mt-1" @click="sendWithMetamask()">Query</v-btn>
+            <v-btn :disabled="!active" v-else :loading="loading" variant="flat" class="mt-1" @click="sendWithAccount()">Query</v-btn>
+            <v-checkbox class="ml-2" v-model="simulate" label="Simulate before sending" density="compact" hide-details></v-checkbox>
+        </div>
     </div>
 </template>
-<script>
-const Web3 = require('web3');
-const ethers = require('ethers');
+
+<script setup>
+import { ref, computed } from 'vue';
+import Web3 from 'web3';
 import { parseEther } from 'viem';
-import { writeContract } from '@web3-onboard/wagmi';
-import { mapStores } from 'pinia';
+import { privateKeyToAccount } from 'viem/accounts';
 import { useCurrentWorkspaceStore } from '@/stores/currentWorkspace';
 import { useWalletStore } from '@/stores/walletStore';
 import { sanitize, processMethodCallParam } from '../lib/utils';
-import { formatErrorFragment } from '../lib/abi';
 
-export default {
-    name: 'ContractWriteMethod',
-    props: ['method', 'contract', 'signature', 'senderMode', 'options'],
-    data: () => ({
-        valueInEth: 0,
-        params: {},
-        noReceipt: false,
-        receipt: {},
-        noWaitFunction: false,
-        result: {
-            txHash: null,
-            message: null
-        },
-        web3: new Web3(),
-        loading: false
-    }),
-    methods: {
-        sendWithMetamask() {
-            this.loading = true;
-            this.result = {
-                txHash: null,
-                message: null
-            };
+const props = defineProps({
+    method: Object,
+    contract: Object,
+    signature: String,
+    senderMode: String,
+    options: Object,
+    active: Boolean
+});
 
-            const processedParams = {};
-            for (let i = 0; i < this.method.inputs.length; i++) {
-                processedParams[i] = processMethodCallParam(this.params[i], this.method.inputs[i].type);
-            }
+const currentWorkspaceStore = useCurrentWorkspaceStore();
+const walletStore = useWalletStore();
 
-            writeContract(this.currentWorkspaceStore.wagmiConfig, sanitize({
-                address: this.contract.address,
-                abi: this.contract.abi,
-                functionName: this.method.name,
-                args: Object.values(processedParams),
-                gasPrice: this.currentWorkspaceStore.gasPrice,
-                gasLimit: this.currentWorkspaceStore.gasLimit,
-                value: parseEther(this.valueInEth.toString()),
-                connector: this.walletStore.wagmiConnector,
-                account: this.walletStore.connectedAddress
-            }))
-            .then(res => this.result.txHash = res)
-            .catch(error => {
-                console.log(JSON.stringify(error, null, 2));
-                this.result.message = `Error: ${error.shortMessage || error.message || error.reason}`
-            })
-            .finally(() => this.loading = false);
-        },
-        async sendMethod() {
-            try {
-                this.loading = true;
-                this.receipt = {};
-                this.noReceipt = false;
-                this.result = {
-                    txHash: null,
-                    message: null
-                };
+const valueInEth = ref(0);
+const params = ref({});
+const receipt = ref(null);
+const result = ref({
+    txHash: null,
+    message: null
+});
+const simulate = ref(false);
+const web3 = new Web3();
+const loading = ref(false);
 
-                if (!this.options.from || !this.options.from.address)
-                    throw new Error('You must select a "from" address.');
+const value = computed(() => {
+    return web3.utils.toWei(valueInEth.value.toString(), 'ether');
+});
 
-                var options = sanitize({
-                    gasPrice: this.currentWorkspaceStore.gasPrice,
-                    gasLimit: this.currentWorkspaceStore.gasLimit,
-                    value: this.value,
-                    privateKey: this.options.from.privateKey,
-                    from: this.options.from.address
-                });
+const inputSignature = (input) => {
+    if (input.type == 'tuple') {
+        return `${input.name ? input.name : 'tuple'}(${input.components.map((cpt) => `${cpt.type}${cpt.name ? ` ${cpt.name}` : ''}`).join(', ')})`;
+    }
+    else
+        return `${input.type}${input.name ? ` ${input.name}` : ''}`;
+};
 
-                if (!this.options.gasLimit || parseInt(this.options.gasLimit) < 1) {
-                    throw { reason: 'You must set a gas limit' }
-                }
+const processedParams = computed(() => {
+    const processedParams = {};
+    for (let i = 0; i < props.method.inputs.length; i++) {
+        processedParams[i] = processMethodCallParam(params.value[i], props.method.inputs[i].type);
+    }
+    return processedParams;
+});
 
-                const processedParams = {};
-                for (let i = 0; i < this.method.inputs.length; i++) {
-                    processedParams[i] = processMethodCallParam(this.params[i], this.method.inputs[i].type);
-                }
+const simulateTransaction = async (options) => {
+    try {
+        const publicClient = currentWorkspaceStore.getViemPublicClient;
+        const { request } = await publicClient.simulateContract(options);
+        return { success: true, request };
+    } catch (error) {
+        console.log(JSON.stringify(error, null, 2));
+        return { success: false, message: error.shortMessage || error.message || error.reason };
+    }
+}
 
-                this.$server.callContractWriteMethod(this.contract, this.signature, options, processedParams, this.currentWorkspaceStore.rpcServer)
-                    .then((pendingTx) => {
-                        this.result.txHash = pendingTx.hash;
+const sendWithMetamask = async () => {
+    const browserClient = currentWorkspaceStore.getViemBrowserClient;
 
-                        if (typeof pendingTx.wait === 'function') {
-                            pendingTx.wait()
-                                .then((receipt) => {
-                                    if (receipt)
-                                        this.receipt = receipt;
-                                    else
-                                        this.noReceipt = true;
-                                })
-                                .catch((error) => {
-                                    this.receipt = error.receipt;
+    try {
+        const options = sanitize({
+            address: props.contract.address,
+            abi: props.contract.abi,
+            functionName: props.method.name,
+            args: Object.values(processedParams.value),
+            chainId: parseInt(currentWorkspaceStore.networkId),
+            gas: currentWorkspaceStore.gasLimit ? BigInt(currentWorkspaceStore.gasLimit) : undefined,
+            gasPrice: currentWorkspaceStore.gasPrice ? BigInt(currentWorkspaceStore.gasPrice) : undefined,
+            value: parseEther(valueInEth.value.toString()),
+            connector: walletStore.wagmiConnector,
+            account: walletStore.connectedAddress
+        });
 
-                                    this.result = {
-                                        txHash: error.transaction.hash,
-                                        message: `Error: ${error.reason} `
-                                    };
-                                });
-                        }
-                        else {
-                            this.noReceipt = true;
-                            this.noWaitFunction = true;
-                        }
-                    })
-                    .catch(error => {
-                        console.log(error)
-                        if (error.data && !error.data.stack) {
-                            const jsonInterface = new ethers.utils.Interface(this.contract.abi);
-                            var txHash = error.data.txHash || Object.keys(error.data)[0];
-                            try {
-                                const result = jsonInterface.parseError(error.data[txHash].return);
-                                this.result = {
-                                    txHash: txHash,
-                                    message: `Error: ${formatErrorFragment(result)}`
-                                };
-                            } catch (parsingError) {
-                                let message;
-                                if (error.data[txHash] && error.data[txHash].reason)
-                                    message = error.data[txHash].reason;
-                                else if (error.message)
-                                    message = error.message;
-                                else if (error.reason)
-                                    message = error.reason;
-                                this.result = {
-                                    txHash: txHash,
-                                    message: message ? `Error: ${message}` : 'Unknown error'
-                                }
-                            } finally {
-                                this.noReceipt = true;
-                            }
-                        }
-                        else if (error.message || error.reason) {
-                            this.result.message = `Error: ${error.message || error.reason}`;
-                        }
-                        else {
-                            this.result.message = 'Error while sending the transaction';
-                        }
-                    })
-                    .finally(() => {
-                        this.loading = false;
-                    });
-            } catch(error) {
-                if (error.reason) {
-                    this.result.message = `Error: ${error.reason.split('(')[0].trim()}`;
-                }
-                else {
-                    console.log(error)
-                    this.result.message = error.message || 'Error while sending the transaction.';
-                }
-                this.loading = false;
-            }
-        },
-        inputSignature(input) {
-            if (input.type == 'tuple') {
-                return `${input.name ? input.name : 'tuple'}(${input.components.map((cpt) => `${cpt.type}${cpt.name ? ` ${cpt.name}` : ''}`).join(', ')})`;
+        sendTransaction(browserClient, options);
+    } catch (error) {
+        console.log(error);
+        result.value.message = error.message || 'Error while sending the transaction';
+    }
+};
+
+const sendWithAccount = async () => {
+    if (!props.options.from || !props.options.from.address)
+        return result.value.message = 'You must select a "from" address.';
+
+    if (!props.options.gasLimit || parseInt(props.options.gasLimit) < 1)
+        return result.value.message = 'You must set a gas limit';
+
+    try {
+        const options = sanitize({
+            address: props.contract.address,
+            abi: props.contract.abi,
+            functionName: props.method.name,
+            args: Object.values(processedParams.value),
+            gasPrice: currentWorkspaceStore.gasPrice,
+            value: value.value,
+            account: props.options.from.privateKey ? privateKeyToAccount(props.options.from.privateKey) : props.options.from.address
+        });
+
+        sendTransaction(currentWorkspaceStore.getViemWalletClient, options);
+    } catch (error) {
+        console.log(error);
+        result.value.message = error.message || 'Error while sending the transaction';
+    }
+};
+
+const sendTransaction = async (client, options) => {
+    loading.value = true;
+    receipt.value = null;
+    result.value = {
+        txHash: null,
+        message: null
+    };
+
+    const publicClient = currentWorkspaceStore.getViemPublicClient;
+    let request;
+
+    if (simulate.value) {
+        const res = await simulateTransaction(options);
+        if (!res.success) {
+            loading.value = false;
+            return result.value.message = `Transaction simulation failed with error: ${res.message}`;
+        }
+        request = res.request;
+    }
+
+    try {
+        const hash = await client.writeContract(request || options)
+        result.value.txHash = hash;
+        receipt.value = await publicClient.waitForTransactionReceipt({ hash })
+        if (receipt.value.status == 'reverted') {
+            const res = await simulateTransaction(options);
+            if (!res.success) {
+                loading.value = false;
+                return result.value.message = `Transaction failed with error: ${res.message}`;
             }
             else
-                return `${input.type}${input.name ? ` ${input.name}` : ''}`;
+                result.value.message = `Transaction failed without a message`; // Maybe there is a better way to handle that, but we shouldn't really get here...
         }
-    },
-    computed: {
-        ...mapStores(useCurrentWorkspaceStore, useWalletStore),
-        active() {
-            return this.walletStore.connectedAddress;
-        },
-        value() {
-            return this.web3.utils.toWei(this.valueInEth.toString(), 'ether');
-        },
-        outputSignature() {
-            const res = [];
-            const outputs = this.method.outputs;
-            for (var i = 0; i < outputs.length; i++) {
-                if (outputs[i].type == 'tuple') {
-                    res.push(`${outputs[i].name ? outputs[i].name : 'tuple'}(${outputs[i].components.map((cpt) => `${cpt.type}${cpt.name ? ` ${cpt.name}` : ''}`).join(', ')})`);
-                }
-                else
-                    res.push(`${outputs[i].type}${outputs[i].name ? `: ${outputs[i].name}` : ''}`);
-            }
-            return res.join(', ');
-        }
+    } catch (error) {
+        console.log(error)
+        if (error.message || error.reason)
+            result.value.message = `Error: ${error.shortMessage || error.message || error.reason}`;
+        else
+            result.value.message = 'Error while sending the transaction';
+    } finally {
+        loading.value = false;
     }
 }
 </script>

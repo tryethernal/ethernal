@@ -17,6 +17,25 @@ router.get('/:address/circulatingSupply', workspaceAuthMiddleware, circulatingSu
 router.get('/:address/holders', workspaceAuthMiddleware, holders);
 router.get('/:address/transfers', workspaceAuthMiddleware, transfers);
 
+/**
+ * Retrieves a list of verified contracts for a workspace
+ * @param {string} workspaceId - The workspace id
+ * @param {number} page - The page number
+ * @param {number} itemsPerPage - The number of items per page
+ * @returns {Array} - A list of verified contracts
+ */
+router.get('/verified', workspaceAuthMiddleware, async (req, res, next) => {
+    const data = req.query;
+
+    try {
+        const items = await db.getVerifiedContracts(data.workspace.id, data.page, data.itemsPerPage);
+
+        res.status(200).json({ items });
+    } catch(error) {
+        unmanagedError(error, req, next);
+    }
+});
+
 router.get('/getabi', async (req, res) => {
     const data = { ...req.query, ...req.body };
 
@@ -295,8 +314,6 @@ router.post('/:address', authMiddleware, async (req, res, next) => {
             address: data.address,
             name: data.name,
             abi: data.abi,
-            ast: data.ast,
-            watchedPaths: data.watchedPaths,
             hashedBytecode: data.hashedBytecode
         });
 

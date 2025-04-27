@@ -2,46 +2,69 @@
 
 exports[`Explorer.vue > Should display explorer sections 1`] = `
 "<div class="v-container v-container--fluid v-locale--is-ltr">
-  <div class="v-slide-group v-slide-group--mobile v-tabs v-tabs--horizontal v-tabs--align-tabs-start v-tabs--density-default" tabindex="-1" role="tablist">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
     <!---->
-    <div class="v-slide-group__container">
-      <div class="v-slide-group__content"><button type="button" class="v-btn v-tab-item--selected v-tab--selected v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab" tabindex="0" role="tab" aria-selected="true" id="generalTab" value="general"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-          <!----><span class="v-btn__content" data-no-activator="">General<div class="v-tab__slider"></div></span>
-          <!---->
-          <!---->
-        </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab" tabindex="-1" role="tab" aria-selected="false" id="faucetTab" value="faucet"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-          <!----><span class="v-btn__content" data-no-activator="">Faucet<div class="v-tab__slider"></div></span>
-          <!---->
-          <!---->
-        </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab" tabindex="-1" role="tab" aria-selected="false" id="dexTab" value="dex"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-          <!----><span class="v-btn__content" data-no-activator="">Dex<div class="v-tab__slider"></div></span>
-          <!---->
-          <!---->
-        </button></div>
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
     </div>
     <!---->
-  </div>
-  <!---->
-  <div class="v-window v-theme--light v-tabs-window">
-    <div class="v-window__container">
-      <transition-stub appear="false" persisted="false" css="true" disabled="true">
-        <div class="v-window-item v-window-item--active v-tabs-window-item">
-          <explorer-general-stub id="1"></explorer-general-stub>
+    <!---->
+    <div class="v-card-text">
+      <div class="v-slide-group v-tabs v-tabs--horizontal v-tabs--align-tabs-start v-tabs--density-default" tabindex="-1" role="tablist">
+        <!---->
+        <div class="v-slide-group__container">
+          <div class="v-slide-group__content"><button type="button" class="v-btn v-tab-item--selected v-tab--selected v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab" tabindex="0" role="tab" aria-selected="true" id="generalTab" value="general"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+              <!----><span class="v-btn__content" data-no-activator="">General<div class="v-tab__slider"></div></span>
+              <!---->
+              <!---->
+            </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab" tabindex="-1" role="tab" aria-selected="false" id="faucetTab" value="faucet"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+              <!----><span class="v-btn__content" data-no-activator="">Faucet<div class="v-tab__slider"></div></span>
+              <!---->
+              <!---->
+            </button><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-tab" tabindex="-1" role="tab" aria-selected="false" id="dexTab" value="dex"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+              <!----><span class="v-btn__content" data-no-activator="">Dex<div class="v-tab__slider"></div></span>
+              <!---->
+              <!---->
+            </button></div>
         </div>
-      </transition-stub>
-      <transition-stub appear="false" persisted="false" css="true" disabled="true">
-        <div class="v-window-item v-tabs-window-item" style="display: none;">
-          <!---->
-        </div>
-      </transition-stub>
-      <transition-stub appear="false" persisted="false" css="true" disabled="true">
-        <div class="v-window-item v-tabs-window-item" style="display: none;">
-          <!---->
-        </div>
-      </transition-stub>
+        <!---->
+      </div>
       <!---->
+      <div class="v-window v-theme--light v-tabs-window">
+        <div class="v-window__container">
+          <transition-stub appear="false" persisted="false" css="true" disabled="true">
+            <div class="v-window-item v-window-item--active v-tabs-window-item">
+              <explorer-general-stub id="1" sso="false"></explorer-general-stub>
+            </div>
+          </transition-stub>
+          <transition-stub appear="false" persisted="false" css="true" disabled="true">
+            <div class="v-window-item v-tabs-window-item" style="display: none;">
+              <!---->
+            </div>
+          </transition-stub>
+          <transition-stub appear="false" persisted="false" css="true" disabled="true">
+            <div class="v-window-item v-tabs-window-item" style="display: none;">
+              <!---->
+            </div>
+          </transition-stub>
+          <!---->
+        </div>
+        <!---->
+      </div>
     </div>
     <!---->
+    <!----><span class="v-card__underlay"></span>
   </div>
 </div>"
 `;

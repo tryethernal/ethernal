@@ -1,0 +1,81 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`WorkspaceNFTTransfer.vue > should handle API errors 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <h2 class="text-h6 font-weight-medium">NFT Transfers</h2>
+  <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <v-progress-linear-stub active="false" buffervalue="0" clickable="false" height="2" indeterminate="true" max="100" modelvalue="0" reverse="false" stream="false" striped="false" roundedbar="false" location="top" tile="false" tag="div"></v-progress-linear-stub>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-text">
+      <token-transfers-stub transfers="" headers="[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]" loading="false" sortby="" count="0" address="" density="default" withtransactiondata="false" withtokendata="false" nodatatext="No NFT transfers found." withcount="false"></token-transfers-stub>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+</div>"
+`;
+
+exports[`WorkspaceNFTTransfer.vue > should handle sorting and pagination 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <h2 class="text-h6 font-weight-medium">NFT Transfers</h2>
+  <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <v-progress-linear-stub active="false" buffervalue="0" clickable="false" height="2" indeterminate="true" max="100" modelvalue="0" reverse="false" stream="false" striped="false" roundedbar="false" location="top" tile="false" tag="div"></v-progress-linear-stub>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-text">
+      <token-transfers-stub transfers="[object Object]" headers="[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]" loading="false" sortby="" count="20" address="" density="default" withtransactiondata="false" withtokendata="false" nodatatext="No NFT transfers found." withcount="false"></token-transfers-stub>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+</div>"
+`;
+
+exports[`WorkspaceNFTTransfer.vue > should render the component with data 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <h2 class="text-h6 font-weight-medium">NFT Transfers</h2>
+  <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <v-progress-linear-stub active="false" buffervalue="0" clickable="false" height="2" indeterminate="true" max="100" modelvalue="0" reverse="false" stream="false" striped="false" roundedbar="false" location="top" tile="false" tag="div"></v-progress-linear-stub>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-text">
+      <token-transfers-stub transfers="" headers="[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]" loading="false" sortby="" count="0" address="" density="default" withtransactiondata="false" withtokendata="false" nodatatext="No NFT transfers found." withcount="false"></token-transfers-stub>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+</div>"
+`;
+
+exports[`WorkspaceNFTTransfer.vue > should render the component with loading state 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <h2 class="text-h6 font-weight-medium">NFT Transfers</h2>
+  <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <v-progress-linear-stub active="false" buffervalue="0" clickable="false" height="2" indeterminate="true" max="100" modelvalue="0" reverse="false" stream="false" striped="false" roundedbar="false" location="top" tile="false" tag="div"></v-progress-linear-stub>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-text">
+      <token-transfers-stub transfers="" headers="[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]" loading="false" sortby="" count="0" address="" density="default" withtransactiondata="false" withtokendata="false" nodatatext="No NFT transfers found." withcount="false"></token-transfers-stub>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+</div>"
+`;

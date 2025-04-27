@@ -57,13 +57,13 @@ exports[`ExplorerFaucetTransactionHistory.vue > Should display transaction histo
             <!---->
             <tr class="v-data-table__tr">
               <td class="v-data-table__td v-data-table-column--align-start">
-                <hash-link-stub type="transaction" hash="0x123"></hash-link-stub>
+                <hash-link-stub type="transaction" hash="0x123" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
               </td>
               <td class="v-data-table__td v-data-table-column--align-start">
                 <div class="my-2 text-left"><br><small></small></div>
               </td>
               <td class="v-data-table__td v-data-table-column--align-start">
-                <hash-link-stub type="address" hash="0xabc" withtokenname="true" withname="true"></hash-link-stub>
+                <hash-link-stub type="address" hash="0xabc" fullhash="false" withname="true" notcopiable="false" withtokenname="true" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
               </td>
               <td class="v-data-table__td v-data-table-column--align-start">0.01 ETL</td>
             </tr>
