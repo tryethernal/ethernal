@@ -1,0 +1,271 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ContractFileExplorer.vue > Should collapse all nodes when calling collapseAll 1`] = `
+"<div data-v-6e5ec0d2="" class="fill-height d-flex flex-column">
+  <div data-v-6e5ec0d2="" class="px-2 mb-2">
+    <div data-v-6e5ec0d2="" class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field search-field">
+      <!---->
+      <div class="v-input__control">
+        <div class="v-field v-field--appended v-field--center-affix v-field--prepended v-field--no-label v-field--variant-outlined v-theme--light v-locale--is-ltr">
+          <div class="v-field__overlay"></div>
+          <div class="v-field__loader">
+            <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+              <!---->
+              <div class="v-progress-linear__background"></div>
+              <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+              <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                <div class="v-progress-linear__indeterminate">
+                  <div class="v-progress-linear__indeterminate long"></div>
+                  <div class="v-progress-linear__indeterminate short"></div>
+                </div>
+              </transition-stub>
+              <!---->
+            </div>
+          </div>
+          <div class="v-field__prepend-inner"><i class="mdi-magnify mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i>
+            <!---->
+          </div>
+          <div class="v-field__field" data-no-activator="">
+            <!---->
+            <!---->
+            <!----><input placeholder="Search files..." size="1" type="text" id="input-0" aria-describedby="input-0-messages" class="v-field__input" value="">
+            <!---->
+          </div>
+          <transition-stub name="expand-x-transition" appear="false" persisted="false" css="true">
+            <div class="v-field__clearable" style="display: none;"><i class="mdi-close-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--clickable" role="button" aria-hidden="false" tabindex="0" aria-label="Clear "></i></div>
+          </transition-stub>
+          <div class="v-field__append-inner">
+            <!---->
+            <!---->
+          </div>
+          <div class="v-field__outline">
+            <div class="v-field__outline__start"></div>
+            <!---->
+            <div class="v-field__outline__end"></div>
+            <!---->
+          </div>
+        </div>
+      </div>
+      <!---->
+      <!---->
+    </div>
+  </div>
+  <v-treeview data-v-6e5ec0d2="" opened="" items="[object Object]" density="compact" item-value="id" activatable="" activated="" class="bg-grey-lighten-4 flex-grow-1 treeview-container" open-on-click=""></v-treeview>
+</div>"
+`;
+
+exports[`ContractFileExplorer.vue > Should expand all nodes when calling expandAll 1`] = `
+"<div data-v-6e5ec0d2="" class="fill-height d-flex flex-column">
+  <div data-v-6e5ec0d2="" class="px-2 mb-2">
+    <div data-v-6e5ec0d2="" class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field search-field">
+      <!---->
+      <div class="v-input__control">
+        <div class="v-field v-field--appended v-field--center-affix v-field--prepended v-field--no-label v-field--variant-outlined v-theme--light v-locale--is-ltr">
+          <div class="v-field__overlay"></div>
+          <div class="v-field__loader">
+            <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+              <!---->
+              <div class="v-progress-linear__background"></div>
+              <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+              <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                <div class="v-progress-linear__indeterminate">
+                  <div class="v-progress-linear__indeterminate long"></div>
+                  <div class="v-progress-linear__indeterminate short"></div>
+                </div>
+              </transition-stub>
+              <!---->
+            </div>
+          </div>
+          <div class="v-field__prepend-inner"><i class="mdi-magnify mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i>
+            <!---->
+          </div>
+          <div class="v-field__field" data-no-activator="">
+            <!---->
+            <!---->
+            <!----><input placeholder="Search files..." size="1" type="text" id="input-0" aria-describedby="input-0-messages" class="v-field__input" value="">
+            <!---->
+          </div>
+          <transition-stub name="expand-x-transition" appear="false" persisted="false" css="true">
+            <div class="v-field__clearable" style="display: none;"><i class="mdi-close-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--clickable" role="button" aria-hidden="false" tabindex="0" aria-label="Clear "></i></div>
+          </transition-stub>
+          <div class="v-field__append-inner">
+            <!---->
+            <!---->
+          </div>
+          <div class="v-field__outline">
+            <div class="v-field__outline__start"></div>
+            <!---->
+            <div class="v-field__outline__end"></div>
+            <!---->
+          </div>
+        </div>
+      </div>
+      <!---->
+      <!---->
+    </div>
+  </div>
+  <v-treeview data-v-6e5ec0d2="" opened="contracts,contracts/utils" items="[object Object]" density="compact" item-value="id" activatable="" activated="" class="bg-grey-lighten-4 flex-grow-1 treeview-container" open-on-click=""></v-treeview>
+</div>"
+`;
+
+exports[`ContractFileExplorer.vue > Should expand nodes when selectedFile prop changes 1`] = `
+"<div data-v-6e5ec0d2="" class="fill-height d-flex flex-column">
+  <div data-v-6e5ec0d2="" class="px-2 mb-2">
+    <div data-v-6e5ec0d2="" class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field search-field">
+      <!---->
+      <div class="v-input__control">
+        <div class="v-field v-field--appended v-field--center-affix v-field--prepended v-field--no-label v-field--variant-outlined v-theme--light v-locale--is-ltr">
+          <div class="v-field__overlay"></div>
+          <div class="v-field__loader">
+            <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+              <!---->
+              <div class="v-progress-linear__background"></div>
+              <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+              <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                <div class="v-progress-linear__indeterminate">
+                  <div class="v-progress-linear__indeterminate long"></div>
+                  <div class="v-progress-linear__indeterminate short"></div>
+                </div>
+              </transition-stub>
+              <!---->
+            </div>
+          </div>
+          <div class="v-field__prepend-inner"><i class="mdi-magnify mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i>
+            <!---->
+          </div>
+          <div class="v-field__field" data-no-activator="">
+            <!---->
+            <!---->
+            <!----><input placeholder="Search files..." size="1" type="text" id="input-0" aria-describedby="input-0-messages" class="v-field__input" value="">
+            <!---->
+          </div>
+          <transition-stub name="expand-x-transition" appear="false" persisted="false" css="true">
+            <div class="v-field__clearable" style="display: none;"><i class="mdi-close-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--clickable" role="button" aria-hidden="false" tabindex="0" aria-label="Clear "></i></div>
+          </transition-stub>
+          <div class="v-field__append-inner">
+            <!---->
+            <!---->
+          </div>
+          <div class="v-field__outline">
+            <div class="v-field__outline__start"></div>
+            <!---->
+            <div class="v-field__outline__end"></div>
+            <!---->
+          </div>
+        </div>
+      </div>
+      <!---->
+      <!---->
+    </div>
+  </div>
+  <v-treeview data-v-6e5ec0d2="" opened="contracts,contracts/utils" items="[object Object]" density="compact" item-value="id" activatable="" activated="contracts/utils/Helper.sol" class="bg-grey-lighten-4 flex-grow-1 treeview-container" open-on-click=""></v-treeview>
+</div>"
+`;
+
+exports[`ContractFileExplorer.vue > Should filter files when searching 1`] = `
+"<div data-v-6e5ec0d2="" class="fill-height d-flex flex-column">
+  <div data-v-6e5ec0d2="" class="px-2 mb-2">
+    <div data-v-6e5ec0d2="" class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field search-field">
+      <!---->
+      <div class="v-input__control">
+        <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--prepended v-field--no-label v-field--variant-outlined v-theme--light v-locale--is-ltr">
+          <div class="v-field__overlay"></div>
+          <div class="v-field__loader">
+            <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+              <!---->
+              <div class="v-progress-linear__background"></div>
+              <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+              <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                <div class="v-progress-linear__indeterminate">
+                  <div class="v-progress-linear__indeterminate long"></div>
+                  <div class="v-progress-linear__indeterminate short"></div>
+                </div>
+              </transition-stub>
+              <!---->
+            </div>
+          </div>
+          <div class="v-field__prepend-inner"><i class="mdi-magnify mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i>
+            <!---->
+          </div>
+          <div class="v-field__field" data-no-activator="">
+            <!---->
+            <!---->
+            <!----><input placeholder="Search files..." size="1" type="text" id="input-0" aria-describedby="input-0-messages" class="v-field__input" value="Token">
+            <!---->
+          </div>
+          <transition-stub name="expand-x-transition" appear="false" persisted="false" css="true">
+            <div class="v-field__clearable" style=""><i class="mdi-close-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--clickable" role="button" aria-hidden="false" tabindex="0" aria-label="Clear "></i></div>
+          </transition-stub>
+          <div class="v-field__append-inner">
+            <!---->
+            <!---->
+          </div>
+          <div class="v-field__outline">
+            <div class="v-field__outline__start"></div>
+            <!---->
+            <div class="v-field__outline__end"></div>
+            <!---->
+          </div>
+        </div>
+      </div>
+      <!---->
+      <!---->
+    </div>
+  </div>
+  <v-treeview data-v-6e5ec0d2="" opened="contracts,contracts/utils" items="[object Object]" density="compact" item-value="id" activatable="" activated="" class="bg-grey-lighten-4 flex-grow-1 treeview-container" open-on-click=""></v-treeview>
+</div>"
+`;
+
+exports[`ContractFileExplorer.vue > Should render the component with file tree 1`] = `
+"<div data-v-6e5ec0d2="" class="fill-height d-flex flex-column">
+  <div data-v-6e5ec0d2="" class="px-2 mb-2">
+    <div data-v-6e5ec0d2="" class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field search-field">
+      <!---->
+      <div class="v-input__control">
+        <div class="v-field v-field--appended v-field--center-affix v-field--prepended v-field--no-label v-field--variant-outlined v-theme--light v-locale--is-ltr">
+          <div class="v-field__overlay"></div>
+          <div class="v-field__loader">
+            <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+              <!---->
+              <div class="v-progress-linear__background"></div>
+              <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+              <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                <div class="v-progress-linear__indeterminate">
+                  <div class="v-progress-linear__indeterminate long"></div>
+                  <div class="v-progress-linear__indeterminate short"></div>
+                </div>
+              </transition-stub>
+              <!---->
+            </div>
+          </div>
+          <div class="v-field__prepend-inner"><i class="mdi-magnify mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i>
+            <!---->
+          </div>
+          <div class="v-field__field" data-no-activator="">
+            <!---->
+            <!---->
+            <!----><input placeholder="Search files..." size="1" type="text" id="input-0" aria-describedby="input-0-messages" class="v-field__input" value="">
+            <!---->
+          </div>
+          <transition-stub name="expand-x-transition" appear="false" persisted="false" css="true">
+            <div class="v-field__clearable" style="display: none;"><i class="mdi-close-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--clickable" role="button" aria-hidden="false" tabindex="0" aria-label="Clear "></i></div>
+          </transition-stub>
+          <div class="v-field__append-inner">
+            <!---->
+            <!---->
+          </div>
+          <div class="v-field__outline">
+            <div class="v-field__outline__start"></div>
+            <!---->
+            <div class="v-field__outline__end"></div>
+            <!---->
+          </div>
+        </div>
+      </div>
+      <!---->
+      <!---->
+    </div>
+  </div>
+  <v-treeview data-v-6e5ec0d2="" opened="" items="[object Object]" density="compact" item-value="id" activatable="" activated="" class="bg-grey-lighten-4 flex-grow-1 treeview-container" open-on-click=""></v-treeview>
+</div>"
+`;

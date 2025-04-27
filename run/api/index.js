@@ -22,7 +22,7 @@ const domains = require('./domains');
 const faucets = require('./faucets');
 const v2Dexes = require('./v2Dexes');
 const gas = require('./gas');
-
+const transactionTraceSteps = require('./transactionTraceSteps');
 router.use('/blocks', blocks);
 router.use('/contracts', contracts);
 router.use('/transactions', transactions);
@@ -43,6 +43,7 @@ router.use('/domains', domains);
 router.use('/faucets', faucets);
 router.use('/v2_dexes', v2Dexes);
 router.use('/gas', gas);
+router.use('/transactionTraceSteps', transactionTraceSteps);
 
 if (isDemoEnabled()) {
     const demo = require('./demo');

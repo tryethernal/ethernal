@@ -1,235 +1,105 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`TokensBalanceDiff.vue > Should display formatted token balances difference 1`] = `
-"<div class="v-card v-theme--light v-card--density-default v-card--variant-elevated my-2">
-  <!---->
-  <div class="v-card__loader">
-    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
-      <!---->
-      <div class="v-progress-linear__background"></div>
-      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
-      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
-        <div class="v-progress-linear__indeterminate">
-          <div class="v-progress-linear__indeterminate long"></div>
-          <div class="v-progress-linear__indeterminate short"></div>
-        </div>
-      </transition-stub>
-      <!---->
-    </div>
-  </div>
-  <!---->
-  <!---->
-  <div class="v-card-text">
-    <div class="v-table v-table--has-top v-table--has-bottom v-theme--light v-table--density-default v-data-table">
-      <div style="height: 48px; font-size: 16px;" class="d-flex justify-space-between">
-        <hash-link-stub type="address" hash="0xdc64a140aa3e981100a9beca4e685f962f0cf6c9" withtokenname="true" withname="true" loadcontract="true" class="align-self-center"></hash-link-stub>
-        <div class="v-input v-input--horizontal v-input--center-affix v-input--density-default v-theme--light v-locale--is-ltr v-input--dirty v-switch align-self-center">
-          <!---->
-          <div class="v-input__control">
-            <div class="v-selection-control v-selection-control--density-default">
-              <div class="v-selection-control__wrapper">
-                <div class="v-switch__track">
-                  <!---->
-                  <!---->
-                </div>
-                <div class="v-selection-control__input"><input id="switch-0" aria-disabled="false" aria-label="Unformatted Amounts" type="checkbox" aria-describedby="switch-0-messages" value="true">
-                  <div class="v-switch__thumb">
-                    <transition-stub name="scale-transition" appear="false" persisted="false" css="true">
-                      <!---->
-                    </transition-stub>
-                  </div>
-                </div>
-              </div><label class="v-label v-label--clickable" for="switch-0">
-                <!---->Unformatted Amounts
-              </label>
+exports[`TokensBalanceDiff.vue > Should display formatted token balances difference with contract info 1`] = `
+"<div data-v-6a8cf8d1="" class="balance-diff pa-0 rounded">
+  <!-- Loading State -->
+  <!-- Balance Changes List -->
+  <div data-v-6a8cf8d1="" class="balance-changes-list">
+    <div data-v-6a8cf8d1="" class="balance-item px-0 rounded-sm mb-3">
+      <div data-v-6a8cf8d1="" class="d-flex flex-justify-between">
+        <!-- Address cell -->
+        <div data-v-6a8cf8d1="" style="min-width: 200px;"><span data-v-6a8cf8d1="" class="font-weight-medium"><hash-link-stub data-v-6a8cf8d1="" type="address" hash="0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false" truncate="true"></hash-link-stub></span></div><!-- Balance changes cell -->
+        <div data-v-6a8cf8d1="" class="flex-grow-1">
+          <div data-v-6a8cf8d1="">
+            <!-- Balance info row -->
+            <div data-v-6a8cf8d1="" class="d-flex align-center mb-1"><i data-v-6a8cf8d1="" class="mdi-arrow-down-bold mdi v-icon notranslate v-theme--light v-icon--size-x-small text-error mr-2" aria-hidden="true"></i><!-- Token amount change --><span data-v-6a8cf8d1="" class="text-error font-weight-medium">-10 Ethernal</span><!-- Token symbol/contract --><span data-v-6a8cf8d1="" class="text-medium-emphasis ml-1">(ETL)</span><!-- Previous and current balance --><button data-v-6a8cf8d1="" type="button" class="v-btn v-btn--icon v-theme--light v-btn--density-comfortable v-btn--size-small v-btn--variant-text ml-2 text-medium-emphasis" aria-describedby="v-tooltip-0"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-history mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+                <!---->
+                <!---->
+              </button>
+              <!--teleport start-->
+              <!--teleport end-->
             </div>
           </div>
-          <!---->
-          <!---->
         </div>
       </div>
-      <div class="v-table__wrapper">
-        <table>
-          <!---->
-          <thead>
-            <tr>
-              <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th" colspan="1" rowspan="1">
-                <div class="v-data-table-header__content"><span>Address</span><i class="mdi-arrow-up mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
-                  <!---->
-                </div>
-              </th>
-              <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th" colspan="1" rowspan="1">
-                <div class="v-data-table-header__content"><span>Previous Block (#1)</span><i class="mdi-arrow-up mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
-                  <!---->
-                </div>
-              </th>
-              <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th" colspan="1" rowspan="1">
-                <div class="v-data-table-header__content"><span>Tx Block (#2)</span><i class="mdi-arrow-up mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
-                  <!---->
-                </div>
-              </th>
-              <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th" colspan="1" rowspan="1">
-                <div class="v-data-table-header__content"><span>Change</span><i class="mdi-arrow-up mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
-                  <!---->
-                </div>
-              </th>
-            </tr>
-            <!---->
-          </thead>
-          <!---->
-          <tbody>
-            <!---->
-            <tr class="v-data-table__tr">
-              <td class="v-data-table__td v-data-table-column--align-start">
-                <hash-link-stub type="address" hash="0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266"></hash-link-stub>
-              </td>
-              <td class="v-data-table__td v-data-table-column--align-start">99,999,999,880 ETL</td>
-              <td class="v-data-table__td v-data-table-column--align-start">99,999,999,870 ETL</td>
-              <td class="v-data-table__td v-data-table-column--align-start">
-                <!--v-if-->
-                <!--v-if--><span class="text-error">-10 ETL</span>
-              </td>
-            </tr>
-            <!---->
-            <tr class="v-data-table__tr">
-              <td class="v-data-table__td v-data-table-column--align-start">
-                <hash-link-stub type="address" hash="0x2d481eeb2ba97955cd081cf218f453a817259ab1"></hash-link-stub>
-              </td>
-              <td class="v-data-table__td v-data-table-column--align-start">120 ETL</td>
-              <td class="v-data-table__td v-data-table-column--align-start">130 ETL</td>
-              <td class="v-data-table__td v-data-table-column--align-start"><span class="text-success"> +10 ETL</span>
-                <!--v-if-->
-                <!--v-if-->
-              </td>
-            </tr>
-            <!---->
-            <!---->
-          </tbody>
-          <!---->
-          <!---->
-        </table>
-      </div>
-      <!---->
+      <hr data-v-6a8cf8d1="" class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator">
     </div>
-  </div>
-  <!---->
-  <!----><span class="v-card__underlay"></span>
+    <div data-v-6a8cf8d1="" class="balance-item px-0 rounded-sm mb-3">
+      <div data-v-6a8cf8d1="" class="d-flex flex-justify-between">
+        <!-- Address cell -->
+        <div data-v-6a8cf8d1="" style="min-width: 200px;"><span data-v-6a8cf8d1="" class="font-weight-medium"><hash-link-stub data-v-6a8cf8d1="" type="address" hash="0x2d481eeb2ba97955cd081cf218f453a817259ab1" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false" truncate="true"></hash-link-stub></span></div><!-- Balance changes cell -->
+        <div data-v-6a8cf8d1="" class="flex-grow-1">
+          <div data-v-6a8cf8d1="">
+            <!-- Balance info row -->
+            <div data-v-6a8cf8d1="" class="d-flex align-center mb-1"><i data-v-6a8cf8d1="" class="mdi-arrow-up-bold mdi v-icon notranslate v-theme--light v-icon--size-x-small text-success mr-2" aria-hidden="true"></i><!-- Token amount change --><span data-v-6a8cf8d1="" class="text-success font-weight-medium">+10 Ethernal</span><!-- Token symbol/contract --><span data-v-6a8cf8d1="" class="text-medium-emphasis ml-1">(ETL)</span><!-- Previous and current balance --><button data-v-6a8cf8d1="" type="button" class="v-btn v-btn--icon v-theme--light v-btn--density-comfortable v-btn--size-small v-btn--variant-text ml-2 text-medium-emphasis" aria-describedby="v-tooltip-2"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-history mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+                <!---->
+                <!---->
+              </button>
+              <!--teleport start-->
+              <!--teleport end-->
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--v-if-->
+    </div>
+  </div><!-- Pagination -->
+  <!--v-if-->
 </div>"
 `;
 
-exports[`TokensBalanceDiff.vue > Should display token balances difference 1`] = `
-"<div class="v-card v-theme--light v-card--density-default v-card--variant-elevated my-2">
-  <!---->
-  <div class="v-card__loader">
-    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
-      <!---->
-      <div class="v-progress-linear__background"></div>
-      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
-      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
-        <div class="v-progress-linear__indeterminate">
-          <div class="v-progress-linear__indeterminate long"></div>
-          <div class="v-progress-linear__indeterminate short"></div>
-        </div>
-      </transition-stub>
-      <!---->
-    </div>
-  </div>
-  <!---->
-  <!---->
-  <div class="v-card-text">
-    <div class="v-table v-table--has-top v-table--has-bottom v-theme--light v-table--density-default v-data-table">
-      <div style="height: 48px; font-size: 16px;" class="d-flex justify-space-between">
-        <hash-link-stub type="address" hash="0xdc64a140aa3e981100a9beca4e685f962f0cf6c9" withtokenname="true" withname="true" loadcontract="true" class="align-self-center"></hash-link-stub>
-        <div class="v-input v-input--horizontal v-input--center-affix v-input--density-default v-theme--light v-locale--is-ltr v-input--dirty v-switch align-self-center">
-          <!---->
-          <div class="v-input__control">
-            <div class="v-selection-control v-selection-control--density-default">
-              <div class="v-selection-control__wrapper">
-                <div class="v-switch__track">
-                  <!---->
-                  <!---->
-                </div>
-                <div class="v-selection-control__input"><input id="switch-0" aria-disabled="false" aria-label="Unformatted Amounts" type="checkbox" aria-describedby="switch-0-messages" value="true">
-                  <div class="v-switch__thumb">
-                    <transition-stub name="scale-transition" appear="false" persisted="false" css="true">
-                      <!---->
-                    </transition-stub>
-                  </div>
-                </div>
-              </div><label class="v-label v-label--clickable" for="switch-0">
-                <!---->Unformatted Amounts
-              </label>
+exports[`TokensBalanceDiff.vue > Should display token balances difference without contract info 1`] = `
+"<div data-v-6a8cf8d1="" class="balance-diff pa-0 rounded">
+  <!-- Loading State -->
+  <!-- Balance Changes List -->
+  <div data-v-6a8cf8d1="" class="balance-changes-list">
+    <div data-v-6a8cf8d1="" class="balance-item px-0 rounded-sm mb-3">
+      <div data-v-6a8cf8d1="" class="d-flex flex-justify-between">
+        <!-- Address cell -->
+        <div data-v-6a8cf8d1="" style="min-width: 200px;"><span data-v-6a8cf8d1="" class="font-weight-medium"><hash-link-stub data-v-6a8cf8d1="" type="address" hash="0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false" truncate="true"></hash-link-stub></span></div><!-- Balance changes cell -->
+        <div data-v-6a8cf8d1="" class="flex-grow-1">
+          <div data-v-6a8cf8d1="">
+            <!-- Balance info row -->
+            <div data-v-6a8cf8d1="" class="d-flex align-center mb-1"><i data-v-6a8cf8d1="" class="mdi-arrow-down-bold mdi v-icon notranslate v-theme--light v-icon--size-x-small text-error mr-2" aria-hidden="true"></i><!-- Token amount change --><span data-v-6a8cf8d1="" class="text-error font-weight-medium">-10000000000000000000</span><!-- Token symbol/contract -->
+              <!--v-if-->
+              <!-- Previous and current balance --><button data-v-6a8cf8d1="" type="button" class="v-btn v-btn--icon v-theme--light v-btn--density-comfortable v-btn--size-small v-btn--variant-text ml-2 text-medium-emphasis" aria-describedby="v-tooltip-0"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-history mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+                <!---->
+                <!---->
+              </button>
+              <!--teleport start-->
+              <!--teleport end-->
             </div>
           </div>
-          <!---->
-          <!---->
         </div>
       </div>
-      <div class="v-table__wrapper">
-        <table>
-          <!---->
-          <thead>
-            <tr>
-              <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th" colspan="1" rowspan="1">
-                <div class="v-data-table-header__content"><span>Address</span><i class="mdi-arrow-up mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
-                  <!---->
-                </div>
-              </th>
-              <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th" colspan="1" rowspan="1">
-                <div class="v-data-table-header__content"><span>Previous Block (#1)</span><i class="mdi-arrow-up mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
-                  <!---->
-                </div>
-              </th>
-              <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th" colspan="1" rowspan="1">
-                <div class="v-data-table-header__content"><span>Tx Block (#2)</span><i class="mdi-arrow-up mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
-                  <!---->
-                </div>
-              </th>
-              <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th" colspan="1" rowspan="1">
-                <div class="v-data-table-header__content"><span>Change</span><i class="mdi-arrow-up mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
-                  <!---->
-                </div>
-              </th>
-            </tr>
-            <!---->
-          </thead>
-          <!---->
-          <tbody>
-            <!---->
-            <tr class="v-data-table__tr">
-              <td class="v-data-table__td v-data-table-column--align-start">
-                <hash-link-stub type="address" hash="0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266"></hash-link-stub>
-              </td>
-              <td class="v-data-table__td v-data-table-column--align-start">99999999880000000000000000000</td>
-              <td class="v-data-table__td v-data-table-column--align-start">99999999870000000000000000000</td>
-              <td class="v-data-table__td v-data-table-column--align-start">
-                <!--v-if-->
-                <!--v-if--><span class="text-error">-10000000000000000000</span>
-              </td>
-            </tr>
-            <!---->
-            <tr class="v-data-table__tr">
-              <td class="v-data-table__td v-data-table-column--align-start">
-                <hash-link-stub type="address" hash="0x2d481eeb2ba97955cd081cf218f453a817259ab1"></hash-link-stub>
-              </td>
-              <td class="v-data-table__td v-data-table-column--align-start">120000000000000000000</td>
-              <td class="v-data-table__td v-data-table-column--align-start">130000000000000000000</td>
-              <td class="v-data-table__td v-data-table-column--align-start"><span class="text-success"> +10000000000000000000</span>
-                <!--v-if-->
-                <!--v-if-->
-              </td>
-            </tr>
-            <!---->
-            <!---->
-          </tbody>
-          <!---->
-          <!---->
-        </table>
-      </div>
-      <!---->
+      <hr data-v-6a8cf8d1="" class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator">
     </div>
-  </div>
-  <!---->
-  <!----><span class="v-card__underlay"></span>
+    <div data-v-6a8cf8d1="" class="balance-item px-0 rounded-sm mb-3">
+      <div data-v-6a8cf8d1="" class="d-flex flex-justify-between">
+        <!-- Address cell -->
+        <div data-v-6a8cf8d1="" style="min-width: 200px;"><span data-v-6a8cf8d1="" class="font-weight-medium"><hash-link-stub data-v-6a8cf8d1="" type="address" hash="0x2d481eeb2ba97955cd081cf218f453a817259ab1" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false" truncate="true"></hash-link-stub></span></div><!-- Balance changes cell -->
+        <div data-v-6a8cf8d1="" class="flex-grow-1">
+          <div data-v-6a8cf8d1="">
+            <!-- Balance info row -->
+            <div data-v-6a8cf8d1="" class="d-flex align-center mb-1"><i data-v-6a8cf8d1="" class="mdi-arrow-up-bold mdi v-icon notranslate v-theme--light v-icon--size-x-small text-success mr-2" aria-hidden="true"></i><!-- Token amount change --><span data-v-6a8cf8d1="" class="text-success font-weight-medium">+10000000000000000000</span><!-- Token symbol/contract -->
+              <!--v-if-->
+              <!-- Previous and current balance --><button data-v-6a8cf8d1="" type="button" class="v-btn v-btn--icon v-theme--light v-btn--density-comfortable v-btn--size-small v-btn--variant-text ml-2 text-medium-emphasis" aria-describedby="v-tooltip-2"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-history mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+                <!---->
+                <!---->
+              </button>
+              <!--teleport start-->
+              <!--teleport end-->
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--v-if-->
+    </div>
+  </div><!-- Pagination -->
+  <!--v-if-->
 </div>"
 `;

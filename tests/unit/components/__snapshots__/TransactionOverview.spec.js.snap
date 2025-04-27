@@ -1,0 +1,2414 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`TransactionOverview.vue > Should not show ad banner when displayAds is false 1`] = `
+"<div data-v-5bfbc386="" class="overview-tab-content">
+  <!-- Transaction Information Card (without header) -->
+  <div data-v-5bfbc386="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-6">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-5bfbc386="" class="v-card-text pa-0">
+      <div data-v-5bfbc386="" class="v-list v-theme--light v-list--density-compact v-list--one-line transaction-list" tabindex="0" role="listbox">
+        <!-- Transaction Hash -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-22">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Transaction Hash: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2 text-truncate">
+              <hash-link-stub data-v-5bfbc386="" type="tx" hash="0x123" fullhash="true" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
+            </div>
+          </div>
+          <!---->
+        </div><!-- Status -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-23">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Status: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2"><span data-v-5bfbc386="" class="v-chip v-theme--light text-success v-chip--density-default v-chip--size-small v-chip--variant-tonal font-weight-medium" draggable="false" text-color="white"><!----><span class="v-chip__underlay"></span>
+              <!---->
+              <div class="v-chip__prepend"><i class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--start" aria-hidden="true"></i>
+                <!---->
+              </div>
+              <div class="v-chip__content" data-no-activator="">
+                <!--v-if--> Success
+              </div>
+              <!---->
+              <!----></span><!-- Error message display - updated to use v-alert -->
+              <!--v-if-->
+            </div>
+          </div>
+          <!---->
+        </div><!-- Block -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-24">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Block: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2"><a data-v-5bfbc386="" style="text-decoration: none;">100</a><span data-v-5bfbc386="" class="ml-2 confirmation-text"><span data-v-5bfbc386="" class="v-chip v-theme--light text-grey-darken-2 v-chip--density-comfortable v-chip--size-small v-chip--variant-tonal font-weight-medium mr-2" draggable="false" text-color="white"><!----><span class="v-chip__underlay"></span>
+              <!---->
+              <!---->
+              <div class="v-chip__content" data-no-activator="">5 Block Confirmations </div>
+              <!---->
+              <!----></span></span>
+            </div>
+          </div>
+          <!---->
+        </div><!-- Timestamp -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-25">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Timestamp: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <!---->
+          </div>
+          <!---->
+        </div><!-- Divider before ad -->
+        <hr data-v-5bfbc386="" class="v-divider v-theme--light mx-4" aria-orientation="horizontal" role="separator">
+        <!--v-if-->
+        <!-- Token Transfers Section (if any) -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text token-transfers-item d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-26">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Token Transfers (2): </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2 token-activity-container">
+              <div data-v-5bfbc386="" class="token-transfers-wrapper">
+                <!-- Token Transfers -->
+                <compact-transaction-token-transfers-stub data-v-5bfbc386="" hash="0x123" address="0x456" totaltransfers="2" withtokendata="true" showall="false" embedded="true"></compact-transaction-token-transfers-stub>
+              </div>
+            </div>
+          </div>
+          <!---->
+        </div>
+        <hr data-v-5bfbc386="" class="v-divider v-theme--light mx-4" aria-orientation="horizontal" role="separator"><!-- From -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-27">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> From: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2 text-truncate">
+              <hash-link-stub data-v-5bfbc386="" type="address" hash="0x456" fullhash="true" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
+            </div>
+          </div>
+          <!---->
+        </div><!-- To / Contract Created -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-28">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> To: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2 text-truncate">
+              <hash-link-stub data-v-5bfbc386="" type="address" hash="0x789" fullhash="true" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
+            </div>
+          </div>
+          <!---->
+        </div><!-- Custom divider -->
+        <hr data-v-5bfbc386="" class="v-divider v-theme--light mx-4" aria-orientation="horizontal" role="separator"><!-- Value -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-29">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Value: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2">1 ETH</div>
+          </div>
+          <!---->
+        </div><!-- Transaction Fee -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-30">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Transaction Fee: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2">0.00042 ETH</div>
+          </div>
+          <!---->
+        </div><!-- Gas Price -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-31">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Gas Price: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2">20 gwei</div>
+          </div>
+          <!---->
+        </div><!-- L1 Block if applicable -->
+        <!--v-if-->
+        <!-- Fee Recipient -->
+        <!--v-if-->
+        <!-- Extra Fields -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-32">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Test Field: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2">
+              <custom-field-stub data-v-5bfbc386="" name="Test Field" type="string" title="Test Title" value="Test Value"></custom-field-stub>
+            </div>
+          </div>
+          <!---->
+        </div>
+      </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div><!-- More Details Card (without divider) -->
+  <div data-v-5bfbc386="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-6">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-5bfbc386="" class="v-card-title text-subtitle-1 font-weight-bold">More Details</div>
+    <div data-v-5bfbc386="" class="v-card-text pa-0">
+      <div data-v-5bfbc386="" class="v-list v-theme--light v-list--density-compact v-list--one-line transaction-list" tabindex="0" role="listbox">
+        <!-- Gas Limit & Usage by Txn -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-33">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Gas Limit &amp; Usage by Txn: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2"><span data-v-5bfbc386="">21,000 | 21,000 (100%) </span></div>
+          </div>
+          <!---->
+        </div><!-- Gas Fees -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-34">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Gas Fees: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2" style="word-break: break-word;"> Base: <span data-v-5bfbc386="" class="font-weight-bold">10 gwei</span> | Max: <span data-v-5bfbc386="" class="font-weight-bold">30 gwei</span> | Max Priority: <span data-v-5bfbc386="" class="font-weight-bold">2 gwei</span></div>
+          </div>
+          <!---->
+        </div>
+        <hr data-v-5bfbc386="" class="v-divider v-theme--light mx-4" aria-orientation="horizontal" role="separator"><!-- Burnt & Txn Savings Fees -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-35">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Burnt &amp; Txn Savings Fees: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2 d-flex flex-column flex-sm-row ga-1"><span data-v-5bfbc386="" class="v-chip v-theme--light text-error v-chip--density-comfortable v-chip--size-small v-chip--variant-tonal font-weight-medium mr-2" draggable="false" text-color="white"><!----><span class="v-chip__underlay"></span>
+              <!---->
+              <div class="v-chip__prepend"><i class="mdi-fire mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--start" aria-hidden="true"></i>
+                <!---->
+              </div>
+              <div class="v-chip__content" data-no-activator=""> Burnt: 210000000000000 ETH</div>
+              <!---->
+              <!----></span><span data-v-5bfbc386="" class="v-chip v-theme--light text-success v-chip--density-comfortable v-chip--size-small v-chip--variant-tonal font-weight-medium mr-2" draggable="false" text-color="white"><!----><span class="v-chip__underlay"></span>
+              <!---->
+              <div class="v-chip__prepend"><i class="mdi-cash mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--start" aria-hidden="true"></i>
+                <!---->
+              </div>
+              <div class="v-chip__content" data-no-activator=""> Txn Savings: 210000000000000 ETH</div>
+              <!---->
+              <!----></span>
+            </div>
+          </div>
+          <!---->
+        </div><!-- Other Attributes -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-36">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Other Attributes: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2 d-flex flex-column flex-sm-row ga-1"><span data-v-5bfbc386="" class="v-chip v-theme--light text-grey-darken-2 v-chip--density-comfortable v-chip--size-small v-chip--variant-tonal font-weight-medium mr-2" draggable="false" text-color="white"><!----><span class="v-chip__underlay"></span>
+              <!---->
+              <!---->
+              <div class="v-chip__content" data-no-activator=""> Txn Type: 2 (EIP-1559) </div>
+              <!---->
+              <!----></span><span data-v-5bfbc386="" class="v-chip v-theme--light text-grey-darken-2 v-chip--density-comfortable v-chip--size-small v-chip--variant-tonal font-weight-medium mr-2" draggable="false" text-color="white"><!----><span class="v-chip__underlay"></span>
+              <!---->
+              <!---->
+              <div class="v-chip__content" data-no-activator=""> Nonce: 1</div>
+              <!---->
+              <!----></span><span data-v-5bfbc386="" class="v-chip v-theme--light text-grey-darken-2 v-chip--density-comfortable v-chip--size-small v-chip--variant-tonal font-weight-medium" draggable="false" text-color="white"><!----><span class="v-chip__underlay"></span>
+              <!---->
+              <!---->
+              <div class="v-chip__content" data-no-activator=""> Position In Block: -</div>
+              <!---->
+              <!----></span>
+            </div>
+          </div>
+          <!---->
+        </div>
+      </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div><!-- Function Call Card -->
+  <!--v-if-->
+</div>"
+`;
+
+exports[`TransactionOverview.vue > Should render contract creation transaction 1`] = `
+"<div data-v-5bfbc386="" class="overview-tab-content">
+  <!-- Transaction Information Card (without header) -->
+  <div data-v-5bfbc386="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-6">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-5bfbc386="" class="v-card-text pa-0">
+      <div data-v-5bfbc386="" class="v-list v-theme--light v-list--density-compact v-list--one-line transaction-list" tabindex="0" role="listbox">
+        <!-- Transaction Hash -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-23">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Transaction Hash: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2 text-truncate">
+              <hash-link-stub data-v-5bfbc386="" type="tx" hash="0x123" fullhash="true" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
+            </div>
+          </div>
+          <!---->
+        </div><!-- Status -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-24">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Status: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2"><span data-v-5bfbc386="" class="v-chip v-theme--light text-success v-chip--density-default v-chip--size-small v-chip--variant-tonal font-weight-medium" draggable="false" text-color="white"><!----><span class="v-chip__underlay"></span>
+              <!---->
+              <div class="v-chip__prepend"><i class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--start" aria-hidden="true"></i>
+                <!---->
+              </div>
+              <div class="v-chip__content" data-no-activator="">
+                <!--v-if--> Success
+              </div>
+              <!---->
+              <!----></span><!-- Error message display - updated to use v-alert -->
+              <!--v-if-->
+            </div>
+          </div>
+          <!---->
+        </div><!-- Block -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-25">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Block: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2"><a data-v-5bfbc386="" style="text-decoration: none;">100</a><span data-v-5bfbc386="" class="ml-2 confirmation-text"><span data-v-5bfbc386="" class="v-chip v-theme--light text-grey-darken-2 v-chip--density-comfortable v-chip--size-small v-chip--variant-tonal font-weight-medium mr-2" draggable="false" text-color="white"><!----><span class="v-chip__underlay"></span>
+              <!---->
+              <!---->
+              <div class="v-chip__content" data-no-activator="">5 Block Confirmations </div>
+              <!---->
+              <!----></span></span>
+            </div>
+          </div>
+          <!---->
+        </div><!-- Timestamp -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-26">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Timestamp: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <!---->
+          </div>
+          <!---->
+        </div><!-- Divider before ad -->
+        <hr data-v-5bfbc386="" class="v-divider v-theme--light mx-4" aria-orientation="horizontal" role="separator"><!-- Ad Banner -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-27">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Sponsored: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title">
+              <ad-banner-stub data-v-5bfbc386=""></ad-banner-stub>
+            </div>
+          </div>
+          <!---->
+        </div><!-- Divider after ad -->
+        <hr data-v-5bfbc386="" class="v-divider v-theme--light mx-4" aria-orientation="horizontal" role="separator"><!-- Token Transfers Section (if any) -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text token-transfers-item d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-28">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Token Transfers (2): </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2 token-activity-container">
+              <div data-v-5bfbc386="" class="token-transfers-wrapper">
+                <!-- Token Transfers -->
+                <compact-transaction-token-transfers-stub data-v-5bfbc386="" hash="0x123" address="0x456" totaltransfers="2" withtokendata="true" showall="false" embedded="true"></compact-transaction-token-transfers-stub>
+              </div>
+            </div>
+          </div>
+          <!---->
+        </div>
+        <hr data-v-5bfbc386="" class="v-divider v-theme--light mx-4" aria-orientation="horizontal" role="separator"><!-- From -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-29">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> From: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2 text-truncate">
+              <hash-link-stub data-v-5bfbc386="" type="address" hash="0x456" fullhash="true" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
+            </div>
+          </div>
+          <!---->
+        </div><!-- To / Contract Created -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-30">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Contract Created: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2 text-truncate">
+              <hash-link-stub data-v-5bfbc386="" type="address" hash="0xabc" fullhash="true" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
+            </div>
+          </div>
+          <!---->
+        </div><!-- Custom divider -->
+        <hr data-v-5bfbc386="" class="v-divider v-theme--light mx-4" aria-orientation="horizontal" role="separator"><!-- Value -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-31">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Value: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2">1 ETH</div>
+          </div>
+          <!---->
+        </div><!-- Transaction Fee -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-32">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Transaction Fee: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2">0.00042 ETH</div>
+          </div>
+          <!---->
+        </div><!-- Gas Price -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-33">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Gas Price: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2">20 gwei</div>
+          </div>
+          <!---->
+        </div><!-- L1 Block if applicable -->
+        <!--v-if-->
+        <!-- Fee Recipient -->
+        <!--v-if-->
+        <!-- Extra Fields -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-34">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Test Field: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2">
+              <custom-field-stub data-v-5bfbc386="" name="Test Field" type="string" title="Test Title" value="Test Value"></custom-field-stub>
+            </div>
+          </div>
+          <!---->
+        </div>
+      </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div><!-- More Details Card (without divider) -->
+  <div data-v-5bfbc386="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-6">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-5bfbc386="" class="v-card-title text-subtitle-1 font-weight-bold">More Details</div>
+    <div data-v-5bfbc386="" class="v-card-text pa-0">
+      <div data-v-5bfbc386="" class="v-list v-theme--light v-list--density-compact v-list--one-line transaction-list" tabindex="0" role="listbox">
+        <!-- Gas Limit & Usage by Txn -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-35">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Gas Limit &amp; Usage by Txn: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2"><span data-v-5bfbc386="">21,000 | 21,000 (100%) </span></div>
+          </div>
+          <!---->
+        </div><!-- Gas Fees -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-36">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Gas Fees: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2" style="word-break: break-word;"> Base: <span data-v-5bfbc386="" class="font-weight-bold">10 gwei</span> | Max: <span data-v-5bfbc386="" class="font-weight-bold">30 gwei</span> | Max Priority: <span data-v-5bfbc386="" class="font-weight-bold">2 gwei</span></div>
+          </div>
+          <!---->
+        </div>
+        <hr data-v-5bfbc386="" class="v-divider v-theme--light mx-4" aria-orientation="horizontal" role="separator"><!-- Burnt & Txn Savings Fees -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-37">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Burnt &amp; Txn Savings Fees: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2 d-flex flex-column flex-sm-row ga-1"><span data-v-5bfbc386="" class="v-chip v-theme--light text-error v-chip--density-comfortable v-chip--size-small v-chip--variant-tonal font-weight-medium mr-2" draggable="false" text-color="white"><!----><span class="v-chip__underlay"></span>
+              <!---->
+              <div class="v-chip__prepend"><i class="mdi-fire mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--start" aria-hidden="true"></i>
+                <!---->
+              </div>
+              <div class="v-chip__content" data-no-activator=""> Burnt: 210000000000000 ETH</div>
+              <!---->
+              <!----></span><span data-v-5bfbc386="" class="v-chip v-theme--light text-success v-chip--density-comfortable v-chip--size-small v-chip--variant-tonal font-weight-medium mr-2" draggable="false" text-color="white"><!----><span class="v-chip__underlay"></span>
+              <!---->
+              <div class="v-chip__prepend"><i class="mdi-cash mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--start" aria-hidden="true"></i>
+                <!---->
+              </div>
+              <div class="v-chip__content" data-no-activator=""> Txn Savings: 210000000000000 ETH</div>
+              <!---->
+              <!----></span>
+            </div>
+          </div>
+          <!---->
+        </div><!-- Other Attributes -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-38">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Other Attributes: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2 d-flex flex-column flex-sm-row ga-1"><span data-v-5bfbc386="" class="v-chip v-theme--light text-grey-darken-2 v-chip--density-comfortable v-chip--size-small v-chip--variant-tonal font-weight-medium mr-2" draggable="false" text-color="white"><!----><span class="v-chip__underlay"></span>
+              <!---->
+              <!---->
+              <div class="v-chip__content" data-no-activator=""> Txn Type: 2 (EIP-1559) </div>
+              <!---->
+              <!----></span><span data-v-5bfbc386="" class="v-chip v-theme--light text-grey-darken-2 v-chip--density-comfortable v-chip--size-small v-chip--variant-tonal font-weight-medium mr-2" draggable="false" text-color="white"><!----><span class="v-chip__underlay"></span>
+              <!---->
+              <!---->
+              <div class="v-chip__content" data-no-activator=""> Nonce: 1</div>
+              <!---->
+              <!----></span><span data-v-5bfbc386="" class="v-chip v-theme--light text-grey-darken-2 v-chip--density-comfortable v-chip--size-small v-chip--variant-tonal font-weight-medium" draggable="false" text-color="white"><!----><span class="v-chip__underlay"></span>
+              <!---->
+              <!---->
+              <div class="v-chip__content" data-no-activator=""> Position In Block: -</div>
+              <!---->
+              <!----></span>
+            </div>
+          </div>
+          <!---->
+        </div>
+      </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div><!-- Function Call Card -->
+  <div data-v-5bfbc386="" class="v-card v-theme--light v-card--density-default v-card--variant-outlined mb-6">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-5bfbc386="" class="v-card-item">
+      <!---->
+      <div class="v-card-item__content">
+        <!---->
+        <!---->
+        <div data-v-5bfbc386="" class="v-card-title text-subtitle-1 font-weight-bold">Contract Creation Data</div>
+      </div>
+      <!---->
+    </div>
+    <div data-v-5bfbc386="" class="v-card-text">
+      <!-- Called Function -->
+      <div data-v-5bfbc386="" class="contract-creation">
+        <div data-v-5bfbc386="" class="v-card v-theme--light v-card--density-default v-card--variant-outlined pa-2">
+          <!---->
+          <div class="v-card__loader">
+            <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+              <!---->
+              <div class="v-progress-linear__background"></div>
+              <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+              <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                <div class="v-progress-linear__indeterminate">
+                  <div class="v-progress-linear__indeterminate long"></div>
+                  <div class="v-progress-linear__indeterminate short"></div>
+                </div>
+              </transition-stub>
+              <!---->
+            </div>
+          </div>
+          <!---->
+          <!---->
+          <div data-v-5bfbc386="" class="v-card-text pa-2">
+            <expandable-text-stub data-v-5bfbc386="" text="0x123456" maxchars="500" pre="false"></expandable-text-stub>
+          </div>
+          <!---->
+          <!----><span class="v-card__underlay"></span>
+        </div>
+      </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+</div>"
+`;
+
+exports[`TransactionOverview.vue > Should render failed transaction 1`] = `
+"<div data-v-5bfbc386="" class="overview-tab-content">
+  <!-- Transaction Information Card (without header) -->
+  <div data-v-5bfbc386="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-6">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-5bfbc386="" class="v-card-text pa-0">
+      <div data-v-5bfbc386="" class="v-list v-theme--light v-list--density-compact v-list--one-line transaction-list" tabindex="0" role="listbox">
+        <!-- Transaction Hash -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-23">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Transaction Hash: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2 text-truncate">
+              <hash-link-stub data-v-5bfbc386="" type="tx" hash="0x123" fullhash="true" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
+            </div>
+          </div>
+          <!---->
+        </div><!-- Status -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-24">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Status: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2"><span data-v-5bfbc386="" class="v-chip v-theme--light text-error v-chip--density-default v-chip--size-small v-chip--variant-tonal font-weight-medium" draggable="false" text-color="white"><!----><span class="v-chip__underlay"></span>
+              <!---->
+              <div class="v-chip__prepend"><i class="mdi-close mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--start" aria-hidden="true"></i>
+                <!---->
+              </div>
+              <div class="v-chip__content" data-no-activator="">
+                <!--v-if--> Failed
+              </div>
+              <!---->
+              <!----></span><!-- Error message display - updated to use v-alert -->
+              <div data-v-5bfbc386="" class="v-alert v-alert--border v-alert--border-start v-theme--light v-alert--density-compact v-alert--variant-flat mt-2" role="alert">
+                <!----><span class="v-alert__underlay"></span>
+                <div class="v-alert__border text-error"></div>
+                <!---->
+                <div class="v-alert__content">
+                  <!----><span data-v-5bfbc386="" class="text-error">Error: 'Transaction failed'</span>
+                  <!---->
+                </div>
+                <!---->
+                <!---->
+              </div>
+            </div>
+          </div>
+          <!---->
+        </div><!-- Block -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-25">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Block: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2"><a data-v-5bfbc386="" style="text-decoration: none;">100</a><span data-v-5bfbc386="" class="ml-2 confirmation-text"><span data-v-5bfbc386="" class="v-chip v-theme--light text-grey-darken-2 v-chip--density-comfortable v-chip--size-small v-chip--variant-tonal font-weight-medium mr-2" draggable="false" text-color="white"><!----><span class="v-chip__underlay"></span>
+              <!---->
+              <!---->
+              <div class="v-chip__content" data-no-activator="">5 Block Confirmations </div>
+              <!---->
+              <!----></span></span>
+            </div>
+          </div>
+          <!---->
+        </div><!-- Timestamp -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-26">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Timestamp: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <!---->
+          </div>
+          <!---->
+        </div><!-- Divider before ad -->
+        <hr data-v-5bfbc386="" class="v-divider v-theme--light mx-4" aria-orientation="horizontal" role="separator"><!-- Ad Banner -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-27">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Sponsored: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title">
+              <ad-banner-stub data-v-5bfbc386=""></ad-banner-stub>
+            </div>
+          </div>
+          <!---->
+        </div><!-- Divider after ad -->
+        <hr data-v-5bfbc386="" class="v-divider v-theme--light mx-4" aria-orientation="horizontal" role="separator"><!-- Token Transfers Section (if any) -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text token-transfers-item d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-28">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Token Transfers (2): </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2 token-activity-container">
+              <div data-v-5bfbc386="" class="token-transfers-wrapper">
+                <!-- Token Transfers -->
+                <compact-transaction-token-transfers-stub data-v-5bfbc386="" hash="0x123" address="0x456" totaltransfers="2" withtokendata="true" showall="false" embedded="true"></compact-transaction-token-transfers-stub>
+              </div>
+            </div>
+          </div>
+          <!---->
+        </div>
+        <hr data-v-5bfbc386="" class="v-divider v-theme--light mx-4" aria-orientation="horizontal" role="separator"><!-- From -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-29">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> From: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2 text-truncate">
+              <hash-link-stub data-v-5bfbc386="" type="address" hash="0x456" fullhash="true" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
+            </div>
+          </div>
+          <!---->
+        </div><!-- To / Contract Created -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-30">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> To: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2 text-truncate">
+              <hash-link-stub data-v-5bfbc386="" type="address" hash="0x789" fullhash="true" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
+            </div>
+          </div>
+          <!---->
+        </div><!-- Custom divider -->
+        <hr data-v-5bfbc386="" class="v-divider v-theme--light mx-4" aria-orientation="horizontal" role="separator"><!-- Value -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-31">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Value: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2">1 ETH</div>
+          </div>
+          <!---->
+        </div><!-- Transaction Fee -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-32">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Transaction Fee: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2">0.00042 ETH</div>
+          </div>
+          <!---->
+        </div><!-- Gas Price -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-33">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Gas Price: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2">20 gwei</div>
+          </div>
+          <!---->
+        </div><!-- L1 Block if applicable -->
+        <!--v-if-->
+        <!-- Fee Recipient -->
+        <!--v-if-->
+        <!-- Extra Fields -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-34">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Test Field: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2">
+              <custom-field-stub data-v-5bfbc386="" name="Test Field" type="string" title="Test Title" value="Test Value"></custom-field-stub>
+            </div>
+          </div>
+          <!---->
+        </div>
+      </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div><!-- More Details Card (without divider) -->
+  <div data-v-5bfbc386="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-6">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-5bfbc386="" class="v-card-title text-subtitle-1 font-weight-bold">More Details</div>
+    <div data-v-5bfbc386="" class="v-card-text pa-0">
+      <div data-v-5bfbc386="" class="v-list v-theme--light v-list--density-compact v-list--one-line transaction-list" tabindex="0" role="listbox">
+        <!-- Gas Limit & Usage by Txn -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-35">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Gas Limit &amp; Usage by Txn: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2"><span data-v-5bfbc386="">21,000 | 21,000 (100%) </span></div>
+          </div>
+          <!---->
+        </div><!-- Gas Fees -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-36">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Gas Fees: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2" style="word-break: break-word;"> Base: <span data-v-5bfbc386="" class="font-weight-bold">10 gwei</span> | Max: <span data-v-5bfbc386="" class="font-weight-bold">30 gwei</span> | Max Priority: <span data-v-5bfbc386="" class="font-weight-bold">2 gwei</span></div>
+          </div>
+          <!---->
+        </div>
+        <hr data-v-5bfbc386="" class="v-divider v-theme--light mx-4" aria-orientation="horizontal" role="separator"><!-- Burnt & Txn Savings Fees -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-37">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Burnt &amp; Txn Savings Fees: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2 d-flex flex-column flex-sm-row ga-1"><span data-v-5bfbc386="" class="v-chip v-theme--light text-error v-chip--density-comfortable v-chip--size-small v-chip--variant-tonal font-weight-medium mr-2" draggable="false" text-color="white"><!----><span class="v-chip__underlay"></span>
+              <!---->
+              <div class="v-chip__prepend"><i class="mdi-fire mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--start" aria-hidden="true"></i>
+                <!---->
+              </div>
+              <div class="v-chip__content" data-no-activator=""> Burnt: 210000000000000 ETH</div>
+              <!---->
+              <!----></span><span data-v-5bfbc386="" class="v-chip v-theme--light text-success v-chip--density-comfortable v-chip--size-small v-chip--variant-tonal font-weight-medium mr-2" draggable="false" text-color="white"><!----><span class="v-chip__underlay"></span>
+              <!---->
+              <div class="v-chip__prepend"><i class="mdi-cash mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--start" aria-hidden="true"></i>
+                <!---->
+              </div>
+              <div class="v-chip__content" data-no-activator=""> Txn Savings: 210000000000000 ETH</div>
+              <!---->
+              <!----></span>
+            </div>
+          </div>
+          <!---->
+        </div><!-- Other Attributes -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-38">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Other Attributes: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2 d-flex flex-column flex-sm-row ga-1"><span data-v-5bfbc386="" class="v-chip v-theme--light text-grey-darken-2 v-chip--density-comfortable v-chip--size-small v-chip--variant-tonal font-weight-medium mr-2" draggable="false" text-color="white"><!----><span class="v-chip__underlay"></span>
+              <!---->
+              <!---->
+              <div class="v-chip__content" data-no-activator=""> Txn Type: 2 (EIP-1559) </div>
+              <!---->
+              <!----></span><span data-v-5bfbc386="" class="v-chip v-theme--light text-grey-darken-2 v-chip--density-comfortable v-chip--size-small v-chip--variant-tonal font-weight-medium mr-2" draggable="false" text-color="white"><!----><span class="v-chip__underlay"></span>
+              <!---->
+              <!---->
+              <div class="v-chip__content" data-no-activator=""> Nonce: 1</div>
+              <!---->
+              <!----></span><span data-v-5bfbc386="" class="v-chip v-theme--light text-grey-darken-2 v-chip--density-comfortable v-chip--size-small v-chip--variant-tonal font-weight-medium" draggable="false" text-color="white"><!----><span class="v-chip__underlay"></span>
+              <!---->
+              <!---->
+              <div class="v-chip__content" data-no-activator=""> Position In Block: -</div>
+              <!---->
+              <!----></span>
+            </div>
+          </div>
+          <!---->
+        </div>
+      </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div><!-- Function Call Card -->
+  <!--v-if-->
+</div>"
+`;
+
+exports[`TransactionOverview.vue > Should render pending transaction 1`] = `
+"<div data-v-5bfbc386="" class="overview-tab-content">
+  <!-- Transaction Information Card (without header) -->
+  <div data-v-5bfbc386="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-6">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-5bfbc386="" class="v-card-text pa-0">
+      <div data-v-5bfbc386="" class="v-list v-theme--light v-list--density-compact v-list--one-line transaction-list" tabindex="0" role="listbox">
+        <!-- Transaction Hash -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-17">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Transaction Hash: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2 text-truncate">
+              <hash-link-stub data-v-5bfbc386="" type="tx" hash="0x123" fullhash="true" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
+            </div>
+          </div>
+          <!---->
+        </div><!-- Status -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-18">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Status: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2"><span data-v-5bfbc386="" class="v-chip v-theme--light text-grey v-chip--density-default v-chip--size-small v-chip--variant-tonal font-weight-medium" draggable="false" text-color="white"><!----><span class="v-chip__underlay"></span>
+              <!---->
+              <!---->
+              <div class="v-chip__content" data-no-activator="">
+                <div data-v-5bfbc386="" class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-white mr-2 slow-spin" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
+                    <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
+                    <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
+                  </svg>
+                  <!---->
+                </div> Pending
+              </div>
+              <!---->
+              <!----></span><!-- Error message display - updated to use v-alert -->
+              <!--v-if-->
+            </div>
+          </div>
+          <!---->
+        </div><!-- Block -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-19">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Block: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2"><span data-v-5bfbc386="">-</span>
+              <!--v-if-->
+            </div>
+          </div>
+          <!---->
+        </div><!-- Timestamp -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-20">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Timestamp: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2"> - </div>
+          </div>
+          <!---->
+        </div><!-- Divider before ad -->
+        <hr data-v-5bfbc386="" class="v-divider v-theme--light mx-4" aria-orientation="horizontal" role="separator"><!-- Ad Banner -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-21">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Sponsored: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title">
+              <ad-banner-stub data-v-5bfbc386=""></ad-banner-stub>
+            </div>
+          </div>
+          <!---->
+        </div><!-- Divider after ad -->
+        <hr data-v-5bfbc386="" class="v-divider v-theme--light mx-4" aria-orientation="horizontal" role="separator"><!-- Token Transfers Section (if any) -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text token-transfers-item d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-22">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Token Transfers (2): </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2 token-activity-container">
+              <div data-v-5bfbc386="" class="token-transfers-wrapper">
+                <!-- Token Transfers -->
+                <compact-transaction-token-transfers-stub data-v-5bfbc386="" hash="0x123" address="0x456" totaltransfers="2" withtokendata="true" showall="false" embedded="true"></compact-transaction-token-transfers-stub>
+              </div>
+            </div>
+          </div>
+          <!---->
+        </div>
+        <hr data-v-5bfbc386="" class="v-divider v-theme--light mx-4" aria-orientation="horizontal" role="separator"><!-- From -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-23">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> From: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2 text-truncate">
+              <hash-link-stub data-v-5bfbc386="" type="address" hash="0x456" fullhash="true" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
+            </div>
+          </div>
+          <!---->
+        </div><!-- To / Contract Created -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-24">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> To: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2 text-truncate">
+              <hash-link-stub data-v-5bfbc386="" type="address" hash="0x789" fullhash="true" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
+            </div>
+          </div>
+          <!---->
+        </div><!-- Custom divider -->
+        <hr data-v-5bfbc386="" class="v-divider v-theme--light mx-4" aria-orientation="horizontal" role="separator"><!-- Value -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-25">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Value: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2">1 ETH</div>
+          </div>
+          <!---->
+        </div><!-- Transaction Fee -->
+        <!--v-if-->
+        <!-- Gas Price -->
+        <!--v-if-->
+        <!-- L1 Block if applicable -->
+        <!--v-if-->
+        <!-- Fee Recipient -->
+        <!--v-if-->
+        <!-- Extra Fields -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-26">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Test Field: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2">
+              <custom-field-stub data-v-5bfbc386="" name="Test Field" type="string" title="Test Title" value="Test Value"></custom-field-stub>
+            </div>
+          </div>
+          <!---->
+        </div>
+      </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div><!-- More Details Card (without divider) -->
+  <div data-v-5bfbc386="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-6">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-5bfbc386="" class="v-card-title text-subtitle-1 font-weight-bold">More Details</div>
+    <div data-v-5bfbc386="" class="v-card-text pa-0">
+      <div data-v-5bfbc386="" class="v-list v-theme--light v-list--density-compact v-list--one-line transaction-list" tabindex="0" role="listbox">
+        <!-- Gas Limit & Usage by Txn -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-27">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Gas Limit &amp; Usage by Txn: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2"><span data-v-5bfbc386="">21,000 | <span data-v-5bfbc386="" class="font-italic">(Pending)</span></span></div>
+          </div>
+          <!---->
+        </div><!-- Gas Fees -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-28">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Gas Fees: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2" style="word-break: break-word;"> Base: <span data-v-5bfbc386="" class="font-weight-bold">0 gwei</span> | Max: <span data-v-5bfbc386="" class="font-weight-bold">30 gwei</span> | Max Priority: <span data-v-5bfbc386="" class="font-weight-bold">2 gwei</span></div>
+          </div>
+          <!---->
+        </div>
+        <hr data-v-5bfbc386="" class="v-divider v-theme--light mx-4" aria-orientation="horizontal" role="separator"><!-- Burnt & Txn Savings Fees -->
+        <!--v-if-->
+        <!-- Other Attributes -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-29">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Other Attributes: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2 d-flex flex-column flex-sm-row ga-1"><span data-v-5bfbc386="" class="v-chip v-theme--light text-grey-darken-2 v-chip--density-comfortable v-chip--size-small v-chip--variant-tonal font-weight-medium mr-2" draggable="false" text-color="white"><!----><span class="v-chip__underlay"></span>
+              <!---->
+              <!---->
+              <div class="v-chip__content" data-no-activator=""> Txn Type: 2 (EIP-1559) </div>
+              <!---->
+              <!----></span><span data-v-5bfbc386="" class="v-chip v-theme--light text-grey-darken-2 v-chip--density-comfortable v-chip--size-small v-chip--variant-tonal font-weight-medium mr-2" draggable="false" text-color="white"><!----><span class="v-chip__underlay"></span>
+              <!---->
+              <!---->
+              <div class="v-chip__content" data-no-activator=""> Nonce: 1</div>
+              <!---->
+              <!----></span><span data-v-5bfbc386="" class="v-chip v-theme--light text-grey-darken-2 v-chip--density-comfortable v-chip--size-small v-chip--variant-tonal font-weight-medium" draggable="false" text-color="white"><!----><span class="v-chip__underlay"></span>
+              <!---->
+              <!---->
+              <div class="v-chip__content" data-no-activator=""> Position In Block: -</div>
+              <!---->
+              <!----></span>
+            </div>
+          </div>
+          <!---->
+        </div>
+      </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div><!-- Function Call Card -->
+  <!--v-if-->
+</div>"
+`;
+
+exports[`TransactionOverview.vue > Should render successful transaction 1`] = `
+"<div data-v-5bfbc386="" class="overview-tab-content">
+  <!-- Transaction Information Card (without header) -->
+  <div data-v-5bfbc386="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-6">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-5bfbc386="" class="v-card-text pa-0">
+      <div data-v-5bfbc386="" class="v-list v-theme--light v-list--density-compact v-list--one-line transaction-list" tabindex="0" role="listbox">
+        <!-- Transaction Hash -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-23">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Transaction Hash: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2 text-truncate">
+              <hash-link-stub data-v-5bfbc386="" type="tx" hash="0x123" fullhash="true" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
+            </div>
+          </div>
+          <!---->
+        </div><!-- Status -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-24">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Status: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2"><span data-v-5bfbc386="" class="v-chip v-theme--light text-success v-chip--density-default v-chip--size-small v-chip--variant-tonal font-weight-medium" draggable="false" text-color="white"><!----><span class="v-chip__underlay"></span>
+              <!---->
+              <div class="v-chip__prepend"><i class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--start" aria-hidden="true"></i>
+                <!---->
+              </div>
+              <div class="v-chip__content" data-no-activator="">
+                <!--v-if--> Success
+              </div>
+              <!---->
+              <!----></span><!-- Error message display - updated to use v-alert -->
+              <!--v-if-->
+            </div>
+          </div>
+          <!---->
+        </div><!-- Block -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-25">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Block: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2"><a data-v-5bfbc386="" style="text-decoration: none;">100</a><span data-v-5bfbc386="" class="ml-2 confirmation-text"><span data-v-5bfbc386="" class="v-chip v-theme--light text-grey-darken-2 v-chip--density-comfortable v-chip--size-small v-chip--variant-tonal font-weight-medium mr-2" draggable="false" text-color="white"><!----><span class="v-chip__underlay"></span>
+              <!---->
+              <!---->
+              <div class="v-chip__content" data-no-activator="">5 Block Confirmations </div>
+              <!---->
+              <!----></span></span>
+            </div>
+          </div>
+          <!---->
+        </div><!-- Timestamp -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-26">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Timestamp: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <!---->
+          </div>
+          <!---->
+        </div><!-- Divider before ad -->
+        <hr data-v-5bfbc386="" class="v-divider v-theme--light mx-4" aria-orientation="horizontal" role="separator"><!-- Ad Banner -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-27">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Sponsored: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title">
+              <ad-banner-stub data-v-5bfbc386=""></ad-banner-stub>
+            </div>
+          </div>
+          <!---->
+        </div><!-- Divider after ad -->
+        <hr data-v-5bfbc386="" class="v-divider v-theme--light mx-4" aria-orientation="horizontal" role="separator"><!-- Token Transfers Section (if any) -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text token-transfers-item d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-28">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Token Transfers (2): </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2 token-activity-container">
+              <div data-v-5bfbc386="" class="token-transfers-wrapper">
+                <!-- Token Transfers -->
+                <compact-transaction-token-transfers-stub data-v-5bfbc386="" hash="0x123" address="0x456" totaltransfers="2" withtokendata="true" showall="false" embedded="true"></compact-transaction-token-transfers-stub>
+              </div>
+            </div>
+          </div>
+          <!---->
+        </div>
+        <hr data-v-5bfbc386="" class="v-divider v-theme--light mx-4" aria-orientation="horizontal" role="separator"><!-- From -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-29">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> From: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2 text-truncate">
+              <hash-link-stub data-v-5bfbc386="" type="address" hash="0x456" fullhash="true" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
+            </div>
+          </div>
+          <!---->
+        </div><!-- To / Contract Created -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-30">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> To: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2 text-truncate">
+              <hash-link-stub data-v-5bfbc386="" type="address" hash="0x789" fullhash="true" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
+            </div>
+          </div>
+          <!---->
+        </div><!-- Custom divider -->
+        <hr data-v-5bfbc386="" class="v-divider v-theme--light mx-4" aria-orientation="horizontal" role="separator"><!-- Value -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-31">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Value: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2">1 ETH</div>
+          </div>
+          <!---->
+        </div><!-- Transaction Fee -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-32">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Transaction Fee: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2">0.00042 ETH</div>
+          </div>
+          <!---->
+        </div><!-- Gas Price -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-33">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Gas Price: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2">20 gwei</div>
+          </div>
+          <!---->
+        </div><!-- L1 Block if applicable -->
+        <!--v-if-->
+        <!-- Fee Recipient -->
+        <!--v-if-->
+        <!-- Extra Fields -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-34">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Test Field: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2">
+              <custom-field-stub data-v-5bfbc386="" name="Test Field" type="string" title="Test Title" value="Test Value"></custom-field-stub>
+            </div>
+          </div>
+          <!---->
+        </div>
+      </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div><!-- More Details Card (without divider) -->
+  <div data-v-5bfbc386="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-6">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-5bfbc386="" class="v-card-title text-subtitle-1 font-weight-bold">More Details</div>
+    <div data-v-5bfbc386="" class="v-card-text pa-0">
+      <div data-v-5bfbc386="" class="v-list v-theme--light v-list--density-compact v-list--one-line transaction-list" tabindex="0" role="listbox">
+        <!-- Gas Limit & Usage by Txn -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-35">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Gas Limit &amp; Usage by Txn: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2"><span data-v-5bfbc386="">21,000 | 21,000 (100%) </span></div>
+          </div>
+          <!---->
+        </div><!-- Gas Fees -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-36">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Gas Fees: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2" style="word-break: break-word;"> Base: <span data-v-5bfbc386="" class="font-weight-bold">10 gwei</span> | Max: <span data-v-5bfbc386="" class="font-weight-bold">30 gwei</span> | Max Priority: <span data-v-5bfbc386="" class="font-weight-bold">2 gwei</span></div>
+          </div>
+          <!---->
+        </div>
+        <hr data-v-5bfbc386="" class="v-divider v-theme--light mx-4" aria-orientation="horizontal" role="separator"><!-- Burnt & Txn Savings Fees -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-37">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Burnt &amp; Txn Savings Fees: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2 d-flex flex-column flex-sm-row ga-1"><span data-v-5bfbc386="" class="v-chip v-theme--light text-error v-chip--density-comfortable v-chip--size-small v-chip--variant-tonal font-weight-medium mr-2" draggable="false" text-color="white"><!----><span class="v-chip__underlay"></span>
+              <!---->
+              <div class="v-chip__prepend"><i class="mdi-fire mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--start" aria-hidden="true"></i>
+                <!---->
+              </div>
+              <div class="v-chip__content" data-no-activator=""> Burnt: 210000000000000 ETH</div>
+              <!---->
+              <!----></span><span data-v-5bfbc386="" class="v-chip v-theme--light text-success v-chip--density-comfortable v-chip--size-small v-chip--variant-tonal font-weight-medium mr-2" draggable="false" text-color="white"><!----><span class="v-chip__underlay"></span>
+              <!---->
+              <div class="v-chip__prepend"><i class="mdi-cash mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--start" aria-hidden="true"></i>
+                <!---->
+              </div>
+              <div class="v-chip__content" data-no-activator=""> Txn Savings: 210000000000000 ETH</div>
+              <!---->
+              <!----></span>
+            </div>
+          </div>
+          <!---->
+        </div><!-- Other Attributes -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-38">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Other Attributes: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2 d-flex flex-column flex-sm-row ga-1"><span data-v-5bfbc386="" class="v-chip v-theme--light text-grey-darken-2 v-chip--density-comfortable v-chip--size-small v-chip--variant-tonal font-weight-medium mr-2" draggable="false" text-color="white"><!----><span class="v-chip__underlay"></span>
+              <!---->
+              <!---->
+              <div class="v-chip__content" data-no-activator=""> Txn Type: 2 (EIP-1559) </div>
+              <!---->
+              <!----></span><span data-v-5bfbc386="" class="v-chip v-theme--light text-grey-darken-2 v-chip--density-comfortable v-chip--size-small v-chip--variant-tonal font-weight-medium mr-2" draggable="false" text-color="white"><!----><span class="v-chip__underlay"></span>
+              <!---->
+              <!---->
+              <div class="v-chip__content" data-no-activator=""> Nonce: 1</div>
+              <!---->
+              <!----></span><span data-v-5bfbc386="" class="v-chip v-theme--light text-grey-darken-2 v-chip--density-comfortable v-chip--size-small v-chip--variant-tonal font-weight-medium" draggable="false" text-color="white"><!----><span class="v-chip__underlay"></span>
+              <!---->
+              <!---->
+              <div class="v-chip__content" data-no-activator=""> Position In Block: -</div>
+              <!---->
+              <!----></span>
+            </div>
+          </div>
+          <!---->
+        </div>
+      </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div><!-- Function Call Card -->
+  <!--v-if-->
+</div>"
+`;
+
+exports[`TransactionOverview.vue > Should show ad banner when displayAds is true 1`] = `
+"<div data-v-5bfbc386="" class="overview-tab-content">
+  <!-- Transaction Information Card (without header) -->
+  <div data-v-5bfbc386="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-6">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-5bfbc386="" class="v-card-text pa-0">
+      <div data-v-5bfbc386="" class="v-list v-theme--light v-list--density-compact v-list--one-line transaction-list" tabindex="0" role="listbox">
+        <!-- Transaction Hash -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-23">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Transaction Hash: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2 text-truncate">
+              <hash-link-stub data-v-5bfbc386="" type="tx" hash="0x123" fullhash="true" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
+            </div>
+          </div>
+          <!---->
+        </div><!-- Status -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-24">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Status: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2"><span data-v-5bfbc386="" class="v-chip v-theme--light text-success v-chip--density-default v-chip--size-small v-chip--variant-tonal font-weight-medium" draggable="false" text-color="white"><!----><span class="v-chip__underlay"></span>
+              <!---->
+              <div class="v-chip__prepend"><i class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--start" aria-hidden="true"></i>
+                <!---->
+              </div>
+              <div class="v-chip__content" data-no-activator="">
+                <!--v-if--> Success
+              </div>
+              <!---->
+              <!----></span><!-- Error message display - updated to use v-alert -->
+              <!--v-if-->
+            </div>
+          </div>
+          <!---->
+        </div><!-- Block -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-25">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Block: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2"><a data-v-5bfbc386="" style="text-decoration: none;">100</a><span data-v-5bfbc386="" class="ml-2 confirmation-text"><span data-v-5bfbc386="" class="v-chip v-theme--light text-grey-darken-2 v-chip--density-comfortable v-chip--size-small v-chip--variant-tonal font-weight-medium mr-2" draggable="false" text-color="white"><!----><span class="v-chip__underlay"></span>
+              <!---->
+              <!---->
+              <div class="v-chip__content" data-no-activator="">5 Block Confirmations </div>
+              <!---->
+              <!----></span></span>
+            </div>
+          </div>
+          <!---->
+        </div><!-- Timestamp -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-26">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Timestamp: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <!---->
+          </div>
+          <!---->
+        </div><!-- Divider before ad -->
+        <hr data-v-5bfbc386="" class="v-divider v-theme--light mx-4" aria-orientation="horizontal" role="separator"><!-- Ad Banner -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-27">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Sponsored: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title">
+              <ad-banner-stub data-v-5bfbc386=""></ad-banner-stub>
+            </div>
+          </div>
+          <!---->
+        </div><!-- Divider after ad -->
+        <hr data-v-5bfbc386="" class="v-divider v-theme--light mx-4" aria-orientation="horizontal" role="separator"><!-- Token Transfers Section (if any) -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text token-transfers-item d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-28">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Token Transfers (2): </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2 token-activity-container">
+              <div data-v-5bfbc386="" class="token-transfers-wrapper">
+                <!-- Token Transfers -->
+                <compact-transaction-token-transfers-stub data-v-5bfbc386="" hash="0x123" address="0x456" totaltransfers="2" withtokendata="true" showall="false" embedded="true"></compact-transaction-token-transfers-stub>
+              </div>
+            </div>
+          </div>
+          <!---->
+        </div>
+        <hr data-v-5bfbc386="" class="v-divider v-theme--light mx-4" aria-orientation="horizontal" role="separator"><!-- From -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-29">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> From: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2 text-truncate">
+              <hash-link-stub data-v-5bfbc386="" type="address" hash="0x456" fullhash="true" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
+            </div>
+          </div>
+          <!---->
+        </div><!-- To / Contract Created -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-30">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> To: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2 text-truncate">
+              <hash-link-stub data-v-5bfbc386="" type="address" hash="0x789" fullhash="true" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
+            </div>
+          </div>
+          <!---->
+        </div><!-- Custom divider -->
+        <hr data-v-5bfbc386="" class="v-divider v-theme--light mx-4" aria-orientation="horizontal" role="separator"><!-- Value -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-31">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Value: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2">1 ETH</div>
+          </div>
+          <!---->
+        </div><!-- Transaction Fee -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-32">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Transaction Fee: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2">0.00042 ETH</div>
+          </div>
+          <!---->
+        </div><!-- Gas Price -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-33">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Gas Price: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2">20 gwei</div>
+          </div>
+          <!---->
+        </div><!-- L1 Block if applicable -->
+        <!--v-if-->
+        <!-- Fee Recipient -->
+        <!--v-if-->
+        <!-- Extra Fields -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-34">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Test Field: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2">
+              <custom-field-stub data-v-5bfbc386="" name="Test Field" type="string" title="Test Title" value="Test Value"></custom-field-stub>
+            </div>
+          </div>
+          <!---->
+        </div>
+      </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div><!-- More Details Card (without divider) -->
+  <div data-v-5bfbc386="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated mb-6">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div data-v-5bfbc386="" class="v-card-title text-subtitle-1 font-weight-bold">More Details</div>
+    <div data-v-5bfbc386="" class="v-card-text pa-0">
+      <div data-v-5bfbc386="" class="v-list v-theme--light v-list--density-compact v-list--one-line transaction-list" tabindex="0" role="listbox">
+        <!-- Gas Limit & Usage by Txn -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-35">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Gas Limit &amp; Usage by Txn: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2"><span data-v-5bfbc386="">21,000 | 21,000 (100%) </span></div>
+          </div>
+          <!---->
+        </div><!-- Gas Fees -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-36">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Gas Fees: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2" style="word-break: break-word;"> Base: <span data-v-5bfbc386="" class="font-weight-bold">10 gwei</span> | Max: <span data-v-5bfbc386="" class="font-weight-bold">30 gwei</span> | Max Priority: <span data-v-5bfbc386="" class="font-weight-bold">2 gwei</span></div>
+          </div>
+          <!---->
+        </div>
+        <hr data-v-5bfbc386="" class="v-divider v-theme--light mx-4" aria-orientation="horizontal" role="separator"><!-- Burnt & Txn Savings Fees -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-37">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Burnt &amp; Txn Savings Fees: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2 d-flex flex-column flex-sm-row ga-1"><span data-v-5bfbc386="" class="v-chip v-theme--light text-error v-chip--density-comfortable v-chip--size-small v-chip--variant-tonal font-weight-medium mr-2" draggable="false" text-color="white"><!----><span class="v-chip__underlay"></span>
+              <!---->
+              <div class="v-chip__prepend"><i class="mdi-fire mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--start" aria-hidden="true"></i>
+                <!---->
+              </div>
+              <div class="v-chip__content" data-no-activator=""> Burnt: 210000000000000 ETH</div>
+              <!---->
+              <!----></span><span data-v-5bfbc386="" class="v-chip v-theme--light text-success v-chip--density-comfortable v-chip--size-small v-chip--variant-tonal font-weight-medium mr-2" draggable="false" text-color="white"><!----><span class="v-chip__underlay"></span>
+              <!---->
+              <div class="v-chip__prepend"><i class="mdi-cash mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--start" aria-hidden="true"></i>
+                <!---->
+              </div>
+              <div class="v-chip__content" data-no-activator=""> Txn Savings: 210000000000000 ETH</div>
+              <!---->
+              <!----></span>
+            </div>
+          </div>
+          <!---->
+        </div><!-- Other Attributes -->
+        <div data-v-5bfbc386="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+          <!----><span class="v-list-item__underlay"></span>
+          <div class="v-list-item__prepend">
+            <div data-v-5bfbc386="" class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;"><i data-v-5bfbc386="" class="mdi-help-circle-outline mdi v-icon notranslate v-theme--light v-icon--size-small text-grey mr-1" aria-hidden="true" aria-describedby="v-tooltip-38">
+                <!---->
+                <!--teleport start-->
+                <!--teleport end-->
+              </i> Other Attributes: </div>
+            <div class="v-list-item__spacer"></div>
+          </div>
+          <div class="v-list-item__content" data-no-activator="">
+            <!---->
+            <!---->
+            <div data-v-5bfbc386="" class="v-list-item-title text-body-2 d-flex flex-column flex-sm-row ga-1"><span data-v-5bfbc386="" class="v-chip v-theme--light text-grey-darken-2 v-chip--density-comfortable v-chip--size-small v-chip--variant-tonal font-weight-medium mr-2" draggable="false" text-color="white"><!----><span class="v-chip__underlay"></span>
+              <!---->
+              <!---->
+              <div class="v-chip__content" data-no-activator=""> Txn Type: 2 (EIP-1559) </div>
+              <!---->
+              <!----></span><span data-v-5bfbc386="" class="v-chip v-theme--light text-grey-darken-2 v-chip--density-comfortable v-chip--size-small v-chip--variant-tonal font-weight-medium mr-2" draggable="false" text-color="white"><!----><span class="v-chip__underlay"></span>
+              <!---->
+              <!---->
+              <div class="v-chip__content" data-no-activator=""> Nonce: 1</div>
+              <!---->
+              <!----></span><span data-v-5bfbc386="" class="v-chip v-theme--light text-grey-darken-2 v-chip--density-comfortable v-chip--size-small v-chip--variant-tonal font-weight-medium" draggable="false" text-color="white"><!----><span class="v-chip__underlay"></span>
+              <!---->
+              <!---->
+              <div class="v-chip__content" data-no-activator=""> Position In Block: -</div>
+              <!---->
+              <!----></span>
+            </div>
+          </div>
+          <!---->
+        </div>
+      </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div><!-- Function Call Card -->
+  <!--v-if-->
+</div>"
+`;

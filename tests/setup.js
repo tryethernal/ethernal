@@ -8,8 +8,23 @@ import * as directives from 'vuetify/directives'
 import { VStepperVertical, VStepperVerticalItem } from 'vuetify/labs/VStepperVertical'
 
 import $server from './unit/mocks/server';
+import $posthog from './unit/mocks/posthog';
 import FromWei from '@/filters/FromWei';
 import dt from '@/filters/dt';
+import { vi } from 'vitest';
+
+const ethernal = {
+    colors: {
+        primary: '#3D95CE',
+        secondary: '#424242',
+        accent: '#29648E',
+        error: '#E72732',
+        info: '#2196F3',
+        success: '#4CAF50',
+        warning: '#E78227',
+        background: '#F5F5F5'
+    }
+}
 
 const vuetify = createVuetify({
     components: {
@@ -18,10 +33,24 @@ const vuetify = createVuetify({
         VStepperVerticalItem
     },
     directives,
+    theme: {
+        themes: {
+            ethernal,
+            light: ethernal,
+            dark: ethernal
+        }
+    },
+    display: {
+        mobileBreakpoint: 'xs',
+        thresholds: {
+            xs: 0
+        }
+    }
 });
 
 const customMount = (component, options = {}) => {
     const global = options.global || {};
+    const provide = options.global?.provide || {};
     const plugins = global.plugins || [createTestingPinia()];
     let stubs = {};
 
@@ -41,6 +70,14 @@ const customMount = (component, options = {}) => {
 
     global.plugins = plugins;
     global.stubs = stubs;
+    global.provide = {
+        $server,
+        $posthog,
+        $fromWei: FromWei,
+        $dt: dt,
+        $pusher,
+        ...provide
+    };
 
     return mount(component, { ...options, global });
 };
@@ -68,9 +105,9 @@ const $pusher = {
 vi.stubGlobal('server', $server);
 vi.stubGlobal('pusher', $pusher);
 vi.stubGlobal('router', $router);
+vi.stubGlobal('posthog', $posthog);
 vi.stubGlobal('fromWei', FromWei);
 vi.stubGlobal('mount', customMount);
-vi.stubGlobal('createTestingPinia', createTestingPinia);
 vi.stubGlobal('flushPromises', flushPromises);
 vi.stubGlobal('createTestingPinia', createTestingPinia);
 vi.useFakeTimers();

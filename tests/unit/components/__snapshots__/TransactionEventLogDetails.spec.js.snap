@@ -1,0 +1,73 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`TransactionEventLogDetails.vue > When log is not parsed > Should display raw event info 1`] = `"<span data-v-1ca27088="" class=""><transaction-event-raw-info-stub data-v-1ca27088="" address="0x123" contract="[object Object]" topics="topic1,topic2" data="0xdata" showemitter="true" istooltip="false"></transaction-event-raw-info-stub></span>"`;
+
+exports[`TransactionEventLogDetails.vue > When log is parsed > Should display event in tooltip mode 1`] = `
+"<span data-v-1ca27088="" class="pre-wrap"><span data-v-1ca27088=""><hash-link-stub data-v-1ca27088="" type="address" hash="0x123" contract="[object Object]" fullhash="false" withname="true" notcopiable="true" withtokenname="true" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>.TestEvent(
+</span><!-- Show first item always -->
+<div data-v-1ca27088="" class="ml-4" style="word-break: break-all;">
+  <div data-v-1ca27088="">
+    <formatted-sol-var-stub data-v-1ca27088="" input="[object Object]" value="arg1"></formatted-sol-var-stub>
+  </div>
+  <div data-v-1ca27088="">
+    <formatted-sol-var-stub data-v-1ca27088="" input="[object Object]" value="arg2"></formatted-sol-var-stub>
+  </div>
+</div><!-- Show remaining items if not short or if expanded -->
+<!--v-if-->
+<!-- Show expand/collapse button if in short mode and there are more items -->
+<!--v-if--><span data-v-1ca27088="">)</span></span>"
+`;
+
+exports[`TransactionEventLogDetails.vue > When log is parsed > Should display event with arguments in short mode 1`] = `
+"<span data-v-1ca27088="" class=""><span data-v-1ca27088=""><hash-link-stub data-v-1ca27088="" type="address" hash="0x123" contract="[object Object]" fullhash="false" withname="true" notcopiable="true" withtokenname="true" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>.TestEvent(
+</span><!-- Show first item always -->
+<div data-v-1ca27088="" class="ml-4" style="word-break: break-all;">
+  <div data-v-1ca27088="">
+    <formatted-sol-var-stub data-v-1ca27088="" input="[object Object]" value="arg1"></formatted-sol-var-stub>
+  </div>
+  <div data-v-1ca27088="">
+    <formatted-sol-var-stub data-v-1ca27088="" input="[object Object]" value="arg2"></formatted-sol-var-stub>
+  </div>
+</div><!-- Show remaining items if not short or if expanded -->
+<!--v-if-->
+<!-- Show expand/collapse button if in short mode and there are more items -->
+<div data-v-1ca27088="" class="ml-4 mt-n2"><button data-v-1ca27088="" type="button" class="v-btn v-theme--light text-grey-darken-1 v-btn--density-compact v-btn--size-x-small v-btn--variant-text ml-4 px-0 text-caption"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+    <!----><span class="v-btn__content" data-no-activator="">▶ 2 more</span>
+    <!---->
+    <!---->
+  </button></div><span data-v-1ca27088="">)</span></span>"
+`;
+
+exports[`TransactionEventLogDetails.vue > When log is parsed > Should display event with no arguments 1`] = `
+"<span data-v-1ca27088="" class=""><span data-v-1ca27088="">TestContract.TestEvent() </span><!-- Show first item always -->
+<!--v-if-->
+<!-- Show remaining items if not short or if expanded -->
+<!--v-if-->
+<!-- Show expand/collapse button if in short mode and there are more items -->
+<!--v-if-->
+<!--v-if--></span>"
+`;
+
+exports[`TransactionEventLogDetails.vue > When log is parsed > Should expand to show more arguments when clicking expand button 1`] = `
+"<span data-v-1ca27088="" class=""><span data-v-1ca27088=""><hash-link-stub data-v-1ca27088="" type="address" hash="0x123" contract="[object Object]" fullhash="false" withname="true" notcopiable="true" withtokenname="true" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>.TestEvent(
+</span><!-- Show first item always -->
+<div data-v-1ca27088="" class="ml-4" style="word-break: break-all;">
+  <div data-v-1ca27088="">
+    <formatted-sol-var-stub data-v-1ca27088="" input="[object Object]" value="arg1"></formatted-sol-var-stub>
+  </div>
+  <div data-v-1ca27088="">
+    <formatted-sol-var-stub data-v-1ca27088="" input="[object Object]" value="arg2"></formatted-sol-var-stub>
+  </div>
+</div><!-- Show remaining items if not short or if expanded -->
+<div data-v-1ca27088="" class="ml-4 pt-0">
+  <formatted-sol-var-stub data-v-1ca27088="" input="[object Object]" value="arg3"></formatted-sol-var-stub>
+</div>
+<div data-v-1ca27088="" class="ml-4 pt-0">
+  <formatted-sol-var-stub data-v-1ca27088="" input="[object Object]" value="arg4"></formatted-sol-var-stub>
+</div><!-- Show expand/collapse button if in short mode and there are more items -->
+<div data-v-1ca27088="" class="ml-4 mt-n2"><button data-v-1ca27088="" type="button" class="v-btn v-theme--light text-grey-darken-1 v-btn--density-compact v-btn--size-x-small v-btn--variant-text ml-4 px-0 text-caption"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+    <!----><span class="v-btn__content" data-no-activator="">▼ less</span>
+    <!---->
+    <!---->
+  </button></div><span data-v-1ca27088="">)</span></span>"
+`;

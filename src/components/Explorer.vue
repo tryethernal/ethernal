@@ -1,49 +1,60 @@
 <template>
     <v-container fluid>
-        <v-tabs v-model="tab">
-            <v-tab id="generalTab" value="general">General</v-tab>
-            <v-tab id="faucetTab" value="faucet">Faucet</v-tab>
-            <v-tab id="dexTab" value="dex">Dex</v-tab>
-        </v-tabs>
+        <v-card>
+            <v-card-text>
+                <v-tabs v-model="tab">
+                    <v-tab id="generalTab" value="general">General</v-tab>
+                    <v-tab id="faucetTab" value="faucet">Faucet</v-tab>
+                    <v-tab id="dexTab" value="dex">Dex</v-tab>
+                </v-tabs>
 
-        <v-tabs-window v-model="tab">
-            <v-tabs-window-item value="general">
-                <Explorer-General :id="id" :sso="sso" />
-            </v-tabs-window-item>
+                <v-tabs-window v-model="tab">
+                    <v-tabs-window-item value="general">
+                        <Explorer-General :id="id" :sso="sso" />
+                    </v-tabs-window-item>
 
-            <v-tabs-window-item value="faucet">
-                <Explorer-Faucet-Settings :explorerId="id" :sso="sso" />
-            </v-tabs-window-item>
+                    <v-tabs-window-item value="faucet">
+                        <Explorer-Faucet-Settings :explorerId="id" :sso="sso" />
+                    </v-tabs-window-item>
 
-            <v-tabs-window-item value="dex">
-                <Explorer-Dex-Settings :explorerId="id" :sso="sso" />
-            </v-tabs-window-item>
-        </v-tabs-window>
+                    <v-tabs-window-item value="dex">
+                        <Explorer-Dex-Settings :explorerId="id" :sso="sso" />
+                    </v-tabs-window-item>
+                </v-tabs-window>
+            </v-card-text>
+        </v-card>
     </v-container>
 </template>
 
-<script>
+<script setup>
+import { computed } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import ExplorerGeneral from './ExplorerGeneral.vue';
 import ExplorerFaucetSettings from './ExplorerFaucetSettings.vue';
 import ExplorerDexSettings from './ExplorerDexSettings.vue';
 
-export default {
-    name: 'Explorer',
-    props: ['id', 'sso'],
-    components: {
-        ExplorerGeneral,
-        ExplorerFaucetSettings,
-        ExplorerDexSettings
+// Define props
+const props = defineProps({
+    id: {
+        type: [String, Number],
+        required: true
     },
-    computed: {
-        tab: {
-            set(tab) {
-                this.$router.replace({ query: { ...this.$route.query, tab } }).catch(()=>{});
-            },
-            get() {
-                return this.$route.query.tab;
-            }
-        }
+    sso: {
+        type: Boolean,
+        default: false
     }
-}
+});
+
+const route = useRoute();
+const router = useRouter();
+
+// Computed property for tab management
+const tab = computed({
+    get: () => route.query.tab,
+    set: (newTab) => {
+        router.replace({ 
+            query: { ...route.query, tab: newTab }
+        }).catch(() => {});
+    }
+});
 </script>

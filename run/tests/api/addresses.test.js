@@ -14,6 +14,62 @@ const BASE_URL = '/api/addresses';
 
 beforeEach(() => jest.clearAllMocks());
 
+describe(`GET ${BASE_URL}/:address/spentTransactionFeeHistory`, () => {
+    it('Should return a paginated list of spent transaction fees', (done) => {
+        jest.spyOn(db, 'getAddressSpentTransactionFeeHistory').mockResolvedValueOnce({ items: [{
+            hash: '0x123',
+            value: '1000000000000000000'
+        }]});
+        request.get(`${BASE_URL}/0x123/spentTransactionFeeHistory?from=2021-01-01&to=2021-01-02`)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual({ items: [{
+                    hash: '0x123',
+                    value: '1000000000000000000'
+                }]});
+                done();
+            });
+    });
+});
+
+describe(`GET ${BASE_URL}/:address/transactionHistory`, () => {
+    it('Should return a paginated list of transactions', (done) => {
+        jest.spyOn(db, 'getAddressTransactionHistory').mockResolvedValueOnce({ items: [{
+            hash: '0x123',
+            value: '1000000000000000000'
+        }]});
+        request.get(`${BASE_URL}/0x123/transactionHistory?from=2021-01-01&to=2021-01-02`)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual({ items: [{
+                    hash: '0x123',
+                    value: '1000000000000000000'
+                }]});
+                done();
+            });
+    });
+});
+
+describe(`GET ${BASE_URL}/:address/internalTransactions`, () => {
+    it('Should return a paginated list of internal transactions', (done) => {
+        jest.spyOn(db, 'getAddressTransactionTraceSteps').mockResolvedValueOnce([{
+            src: '0x123',
+            dst: '0x456',
+            value: '1000000000000000000'
+        }]);
+        request.get(`${BASE_URL}/0x123/internalTransactions`)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual({ items: [{
+                    src: '0x123',
+                    dst: '0x456',
+                    value: '1000000000000000000'
+                }] });
+                done();
+            });
+    });
+});
+
 describe(`GET ${BASE_URL}/:address/nativeTokenBalance`, () => {
     it('Should return the native token balance', (done) => {
         ProviderConnector.mockImplementationOnce(() => ({
@@ -42,7 +98,7 @@ describe(`GET ${BASE_URL}/:address/tokenTransfers`, () => {
 
 describe(`GET ${BASE_URL}/:address/stats`, () => {
     it('Should return token stats', (done) => {
-        jest.spyOn(db, 'getAddressStats').mockResolvedValueOnce({ sentTransactionCount: 20 });
+        jest.spyOn(db, 'getAddressTransactionStats').mockResolvedValueOnce({ sentTransactionCount: 20 });
         request.get(`${BASE_URL}/0x123/stats`)
             .expect(200)
             .then(({ body }) => {

@@ -1,265 +1,259 @@
 <template>
-    <v-container fluid>
-        <v-card v-if="loadingContract" border>
+    <v-container v-if="loadingContract" fluid>
+        <v-skeleton-loader
+            type="text"
+            max-width="600"
+            class="mb-4"
+        />
+        <v-divider class="my-4"></v-divider>
+        
+        <!-- Skeleton for AddressHeader -->
+        <v-row class="mb-6">
+            <v-col cols="12" sm="6" md="3">
+                <v-skeleton-loader type="card" height="100" />
+            </v-col>
+            <v-col cols="12" sm="6" md="3">
+                <v-skeleton-loader type="card" height="100" />
+            </v-col>
+            <v-col cols="12" sm="6" md="3">
+                <v-skeleton-loader type="card" height="100" />
+            </v-col>
+            <v-col cols="12" sm="6" md="3">
+                <v-skeleton-loader type="card" height="100" />
+            </v-col>
+        </v-row>
+
+        <!-- Skeleton for tab chips -->
+        <v-skeleton-loader
+            type="chip"
+            class="mb-4"
+        />
+
+        <!-- Skeleton for main content area -->
+        <v-card>
             <v-card-text>
-                <v-row>
-                    <v-col cols="4">
-                        <v-skeleton-loader type="card"></v-skeleton-loader>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col>
-                        <v-skeleton-loader max-height="40vh" type="table"></v-skeleton-loader>
-                    </v-col>
-                </v-row>
+                <v-skeleton-loader
+                    type="table-heading, divider, table-row-divider, table-row, table-row, table-row"
+                />
             </v-card-text>
         </v-card>
-        <template v-else>
-            <v-row class="mb-1">
-                <v-col cols="12" lg="5" v-if="contract">
-                    <v-card style="height: 100%">
-                        <v-card-title v-if="contract.name">{{ contract.name }}</v-card-title>
-                        <v-card-subtitle v-if="contract.patterns.length > 0" class="mt-2">
-                            <v-chip v-for="(pattern, idx) in contract.patterns" :key="idx" size="x-small" class="bg-success mr-2">
-                                {{ formatContractPattern(pattern) }}
-                            </v-chip>
-                        </v-card-subtitle>
-                        <v-card-text>
-                            <v-row>
-                                <v-col v-if="isErc20 || isErc721" cols="6">
-                                    <small>Token Name</small><br>
-                                    <span class="ml-2">
-                                        <Hash-Link :type="'token'" :contract="contract" :hash="contract.address" :withName="true" :withTokenName="true" />
-                                    </span>
-                                </v-col>
+    </v-container>
+    <v-container v-else fluid>
+        <h2 class="text-h6 font-weight-medium">
+            {{ contract ? 'Contract' : 'Address' }}
+            <span class="text-body-2 text-medium-emphasis">{{ address }}</span>
+        </h2>
+        <v-divider class="my-4"></v-divider>
+        <AddressHeader
+            :loading-balance="loadingBalance"
+            :loading-stats="loadingStats"
+            :balance="balance"
+            :contract="contract"
+            :address-transaction-stats="addressTransactionStats"
+        />
 
-                                <v-col v-if="isErc20 || isErc721" cols="6">
-                                    <small>Token Symbol</small><br>
-                                    <span class="text-h6 ml-2">{{ contract.tokenSymbol || 'N/A' }}</span>
-                                </v-col>
+        <BaseChipGroup v-model="activeTab" mandatory>
+            <v-chip label size="small" value="transactions">
+                Transactions 
+                <template v-if="!loadingStats">({{ totalTransactions }})</template>
+            </v-chip>
+            <v-chip label v-if="currentWorkspaceStore.tracing" size="small" value="internaltx">
+                Internal Transactions
+                <template v-if="!loadingStats">({{ addressTransactionStats.internalTransactionCount }})</template>
+            </v-chip>
+            <v-chip label size="small" value="tokentxns">
+                Token Transfers 
+                <template v-if="!loadingStats">({{ totalTokenTransfers }})</template>
+            </v-chip>
+            <v-chip label size="small" value="code" v-if="contract">
+                <v-icon v-if="contract.verification?.id" class="mr-1" color="success" icon="mdi-check-circle"></v-icon>
+                Contract
+            </v-chip>
+            <v-chip label size="small" value="events" v-if="contract">
+                Events
+                <template v-if="!loadingStats">({{ contract.logCount }})</template>
+            </v-chip>
+            <v-chip label size="small" value="analytics">Analytics</v-chip>
+            <v-chip label size="small" value="assets">Assets</v-chip>
+        </BaseChipGroup>
 
-                                <v-col cols="6">
-                                    <small>Deployment Transaction</small><br>
-                                    <span v-if="contract.creationTransaction" class="ml-2">
-                                        <Hash-Link :type="'transaction'" :hash="contract.creationTransaction.hash" />
-                                    </span>
-                                    <span v-else class="ml-2">N/A</span>
-                                </v-col>
+        <div v-if="activeTab === 'transactions'">
+            <v-card>
+                <v-card-text>
+                    <Address-Transactions-List :address="address" :key="address" />
+                </v-card-text>
+            </v-card>
+        </div>
 
-                                <v-col cols="6">
-                                    <small>Deployed By</small><br>
-                                    <span v-if="contract.creationTransaction" class="ml-2">
-                                        <Hash-Link :type="'address'" :hash="contract.creationTransaction.from" />
-                                    </span>
-                                    <span v-else class="ml-2">N/A</span>
-                                </v-col>
-                            </v-row>
-                        </v-card-text>
-                    </v-card>
-                </v-col>
+        <div v-if="activeTab === 'internaltx'">
+            <v-card>
+                <v-card-text>
+                    <AddressTraceSteps :address="address" :key="address" />
+                </v-card-text>
+            </v-card>
+        </div>
 
-                <v-col cols="12" lg="7">
-                    <v-row>
-                        <v-col cols="12">
-                            <v-card :loading="loadingStats">
-                                <template v-slot:subtitle>
-                                    Balance
-                                </template>
-                                <v-card-text class="text-h4 text-medium-emphasis" align="center">
-                                    {{ $fromWei(balance, 'ether', currentWorkspaceStore.chain.token) }}
-                                </v-card-text>
-                            </v-card>
-                        </v-col>
-                    </v-row>
+        <div v-if="activeTab === 'tokentxns'">
+            <v-card>
+                <v-card-text>
+                    <Address-Token-Transfers
+                        :address="address"
+                        :key="address" 
+                        :erc20-count="patternCount.erc20"
+                        :erc721-count="patternCount.erc721"
+                        :erc1155-count="patternCount.erc1155"
+                    />
+                </v-card-text>
+            </v-card>
+        </div>
 
-                    <v-row>
-                        <v-col cols="12" lg="6">
-                            <v-card style="height: 100%;" :loading="loadingStats">
-                                <template v-slot:subtitle>
-                                    Transactions
-                                </template>
-                                <v-card-text class="text-h4 text-medium-emphasis" align="center">
-                                    <template v-if="!contract">
-                                        {{ sentTransactionCount }}<v-icon size="x-small">mdi-arrow-up-thin</v-icon>
-                                        <v-divider vertical class="mx-4"></v-divider>
-                                    </template>
-                                    {{ receivedTransactionCount }}<v-icon size="x-small" v-if="!contract">mdi-arrow-down-thin</v-icon>
-                                </v-card-text>
-                            </v-card>
-                        </v-col>
+        <div v-if="activeTab === 'assets'">
+            <v-card>
+                <v-card-text>
+                    <Address-Assets :address="address" :key="address" />
+                </v-card-text>
+            </v-card>
+        </div>
 
-                        <v-col cols="12" lg="6">
-                            <v-card style="height: 100%;" :loading="loadingStats">
-                                <template v-slot:subtitle>
-                                    ERC-20 Transfers
-                                </template>
-                                <v-card-text class="text-h4 text-medium-emphasis" align="center">
-                                    {{ sentErc20TokenTransferCount }}<v-icon size="x-small">mdi-arrow-up-thin</v-icon><v-divider vertical class="mx-4"></v-divider> {{ receivedErc20TokenTransferCount }}<v-icon size="x-small">mdi-arrow-down-thin</v-icon>
-                                </v-card-text>
-                            </v-card>
-                        </v-col>
-                    </v-row>
-                </v-col>
-            </v-row>
+        <div v-if="activeTab === 'analytics'">
+            <AddressAnalytics :address="address" />
+        </div>
 
-            <v-tabs v-model="tab">
-                <v-tab class="text-medium-emphasis" color="primary" id="transactionsTab" value="transactions">Transactions</v-tab>
-                <v-tab class="text-medium-emphasis" color="primary" id="transfersTab" value="transfers">Transfers</v-tab>
-                <v-tab class="text-medium-emphasis" color="primary" id="erc20BalancesTab" value="erc20Balances">ERC-20 Tokens</v-tab>
-                <v-tab class="text-medium-emphasis" color="primary" id="erc721BalancesTab" value="erc721Balances">ERC-721 Tokens</v-tab>
-                <v-tab class="text-medium-emphasis" color="primary" v-if="contract" id="interactionsTab" value="interactions">Read / Write</v-tab>
-                <v-tab class="text-medium-emphasis" color="primary" v-if="contract" id="codeTab" value="code">Code</v-tab>
-                <v-tab class="text-medium-emphasis" color="primary" v-if="contract" id="logsTab" value="logs">Logs</v-tab>
-            </v-tabs>
+        <template v-if="contract">
+            <div v-if="activeTab === 'code'">
+                <Contract-Details v-if="contract" :contract="contract" :key="address" />
+            </div>
 
-            <v-tabs-window v-model="tab">
-                <v-tabs-window-item value="transactions">
-                    <v-card class="mt-3">
-                        <v-card-text>
-                            <Address-Transactions-List :address="address" :key="address" />
-                        </v-card-text>
-                    </v-card>
-                </v-tabs-window-item>
-
-                <v-tabs-window-item value="transfers">
-                    <v-card class="mt-3">
-                        <v-card-text>
-                            <Address-Token-Transfers :address="address" :key="address" />
-                        </v-card-text>
-                    </v-card>
-                </v-tabs-window-item>
-
-                <v-tabs-window-item value="erc20Balances">
-                    <div class="mt-3">
-                        <Token-Balances :address="address" :patterns="['erc20']" :key="address" />
-                    </div>
-                </v-tabs-window-item>
-
-                <v-tabs-window-item value="erc721Balances">
-                    <div class="mt-3">
-                        <Token-Balances :address="address" :patterns="['erc721']" :dense="true" :key="address" />
-                    </div>
-                </v-tabs-window-item>
-
-                <template v-if="contract">
-                    <v-tabs-window-item value="interactions">
-                        <Contract-Interaction :address="address" :key="address" />
-                    </v-tabs-window-item>
-
-                    <v-tabs-window-item value="code">
-                        <div class="mt-3">
-                            <Contract-Code v-if="contract" :contract="contract" :key="address" />
-                        </div>
-                    </v-tabs-window-item>
-
-                    <v-tabs-window-item value="logs">
-                        <v-card class="mt-3">
-                            <v-card-text>
-                                <Contract-Logs :address="address" :key="address" />
-                            </v-card-text>
-                        </v-card>
-                    </v-tabs-window-item>
-                </template>
-            </v-tabs-window>
+            <div v-if="activeTab === 'events'">
+                <v-card>
+                    <v-card-text>
+                        <Contract-Logs :address="address" :key="address" />
+                    </v-card-text>
+                </v-card>
+            </div>
         </template>
     </v-container>
 </template>
 
-<script>
-import { formatContractPattern } from '../lib/utils';
-
-import { mapStores } from 'pinia';
+<script setup>
+import { ref, computed, watch, onMounted, onBeforeUnmount, inject } from 'vue';
 import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
 
+import { formatNumber } from '../lib/utils';
+
+import BaseChipGroup from './base/BaseChipGroup.vue'
+import AddressHeader from './AddressHeader.vue';
 import AddressTransactionsList from './AddressTransactionsList.vue';
 import AddressTokenTransfers from './AddressTokenTransfers.vue';
-import TokenBalances from './TokenBalances.vue';
-import ContractInteraction from './ContractInteraction.vue';
-import ContractCode from './ContractCode.vue';
+import AddressTraceSteps from './AddressTraceSteps.vue';
+import ContractDetails from './ContractDetails.vue';
 import ContractLogs from './ContractLogs.vue';
-import HashLink from './HashLink.vue';
+import AddressAssets from './AddressAssets.vue';
+import AddressAnalytics from './AddressAnalytics.vue';
 
-export default {
-    name: 'Address',
-    props: ['address'],
-    components: {
-        AddressTransactionsList,
-        AddressTokenTransfers,
-        TokenBalances,
-        ContractInteraction,
-        ContractCode,
-        ContractLogs,
-        HashLink
-    },
-    data: () => ({
-        balance: 0,
-        loadingContract: true,
-        loadingStats: true,
-        contract: null,
-        sentTransactionCount: null,
-        receivedTransactionCount: null,
-        sentErc20TokenTransferCount: null,
-        receivedErc20TokenTransferCount: null
-    }),
-    mounted() {
-        this.$server.getNativeTokenBalance(this.address).then(({ data: { balance }}) => this.balance = balance || 0);
-    },
-    methods: {
-        formatContractPattern
-    },
-    watch: {
-        address: {
-            immediate: true,
-            handler(address) {
-                this.$server.getContract(address)
-                    .then(({ data }) => this.contract = data)
-                    .catch(console.log)
-                    .finally(() => this.loadingContract = false);
+// Props
+const props = defineProps(['address']);
 
-                this.$server.getAddressStats(address)
-                    .then(({ data }) => {
-                        this.sentTransactionCount = data.sentTransactionCount;
-                        this.receivedTransactionCount = data.receivedTransactionCount;
-                        this.sentErc20TokenTransferCount = data.sentErc20TokenTransferCount;
-                        this.receivedErc20TokenTransferCount = data.receivedErc20TokenTransferCount;
-                    })
-                    .catch(console.log)
-                    .finally(() => this.loadingStats = false);
-            }
-        }
-    },
-    computed: {
-        ...mapStores(useCurrentWorkspaceStore),
-        isErc20() {
-            return this.contract &&
-                this.contract.patterns &&
-                this.contract.patterns.indexOf('erc20') > -1;
-        },
-        isErc721() {
-            return this.contract &&
-                this.contract.patterns &&
-                this.contract.patterns.indexOf('erc721') > -1;
-        },
-        isContract: function() {
-            return this.contract && this.contract.address;
-        },
-        tab: {
-            set(tab) {
-                this.$router.replace({ query: { ...this.$route.query, tab } }).catch(()=>{});
-            },
-            get() {
-                return this.$route.query.tab;
-            }
-        },
+// Injected services
+const server = inject('$server');
+
+// Store
+const currentWorkspaceStore = useCurrentWorkspaceStore();
+
+// Reactive state
+const balance = ref(0);
+const loadingBalance = ref(true);
+const loadingContract = ref(true);
+const loadingStats = ref(true);
+const contract = ref(null);
+const addressTransactionStats = ref({});
+const activeTab = ref('transactions');
+
+const totalTransactions = computed(() => {
+    if (!addressTransactionStats.value.sent && !addressTransactionStats.value.received) return 0;
+    return formatNumber(addressTransactionStats.value.sent + addressTransactionStats.value.received, { short: true });
+});
+
+const totalTokenTransfers = computed(() => {
+    if (!addressTransactionStats.value.tokenTransferCount) return 0;
+    return formatNumber(addressTransactionStats.value.tokenTransferCount, { short: true });
+});
+
+const patternCount = computed(() => {
+    return {
+        erc20: addressTransactionStats.value ? addressTransactionStats.value.erc20_sent + addressTransactionStats.value.erc20_received : 0,
+        erc721: addressTransactionStats.value ? addressTransactionStats.value.erc721_sent + addressTransactionStats.value.erc721_received : 0,
+        erc1155: addressTransactionStats.value ? addressTransactionStats.value.erc1155_sent + addressTransactionStats.value.erc1155_received : 0
     }
-}
-</script>
-<style scoped>
-.v-window {
-    overflow: visible;
-}
+});
 
-.v-card-subtitle {
-    opacity: 1;
-}
-</style>
+const updateTabFromHash = () => {
+    const hash = window.location.hash.substring(1);
+    const validTabs = ['transactions', 'internaltx', 'tokentxns', 'interactions', 'events', 'analytics'];
+    
+    if (hash.startsWith('asset')) {
+        activeTab.value = 'assets';
+    } else if (hash === 'code' || hash === 'readContract' || hash === 'writeContract') {
+        activeTab.value = 'code';
+        // Pass the specific tab to ContractDetails via URL hash
+        window.location.hash = hash;
+    } else if (validTabs.includes(hash)) {
+        activeTab.value = hash;
+    } else {
+        activeTab.value = 'transactions';
+    }
+};
+
+// Methods
+const loadContractData = (address) => {
+    server.getContract(address)
+        .then(({ data }) => contract.value = data)
+        .catch(console.log)
+        .finally(() => loadingContract.value = false);
+
+    server.getAddressStats(address)
+        .then(({ data }) => addressTransactionStats.value = data || {})
+        .catch(console.log)
+        .finally(() => loadingStats.value = false);
+};
+
+// Lifecycle hooks
+onMounted(() => {
+    // Initialize default tab if none is set
+    updateTabFromHash();
+    
+    // Add event listener for hash changes
+    window.addEventListener('hashchange', updateTabFromHash);
+    
+    server.getNativeTokenBalance(props.address)
+        .then(({ data: { balance: balanceValue }}) => balance.value = balanceValue || 0)
+        .finally(() => loadingBalance.value = false);
+});
+
+onBeforeUnmount(() => {
+    // Clean up event listener
+    window.removeEventListener('hashchange', updateTabFromHash);
+});
+
+// Watchers
+watch(() => props.address, (address) => {
+    loadContractData(address);
+}, { immediate: true });
+
+// Watch for tab changes to update the URL hash
+watch(() => activeTab.value, (newTab) => {
+    const currentHash = window.location.hash.substring(1);
+    if (newTab === 'assets') {
+        if (!['asset-tokens', 'asset-nft'].includes(currentHash)) {
+            window.location.hash = 'asset-tokens';
+        }
+    } else if (newTab === 'code') {
+        // Don't override readContract/writeContract hashes
+        if (!['readContract', 'writeContract', 'code'].includes(currentHash)) {
+            window.location.hash = 'code';
+        }
+    } else if (currentHash !== newTab) {
+        window.location.hash = newTab;
+    }
+});
+</script>

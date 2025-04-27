@@ -1,0 +1,3 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`AddressTraceSteps.vue > Should load address trace steps 1`] = `"<trace-steps-table-stub items="[object Object]" totalitems="10" dense="false" highlightaddress="0x1234567890123456789012345678901234567890" loading="false" sortby="[object Object]"></trace-steps-table-stub>"`;

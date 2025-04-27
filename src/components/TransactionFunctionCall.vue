@@ -7,63 +7,99 @@
             </div>
             )
         </v-card-text>
-         <v-card-text v-else style="max-height: 250px; overflow-y: scroll; overflow-x: hidden;">
+         <v-card-text v-else>
             <div style="float: right;">
-                <a :class="{ underlined: displayUtf8Data }" @click="switchDataFormatting('hex')">Hex</a> | <a :class="{ underlined: !displayUtf8Data }" @click="switchDataFormatting('utf8')">UTF-8</a>
+                <a href="#" :class="{ 'no-decoration': !displayUtf8Data }" @click.prevent="switchDataFormatting('hex')">Hex</a> | <a href="#" :class="{ 'no-decoration': displayUtf8Data }" @click.prevent="switchDataFormatting('utf8')">UTF-8</a>
             </div>
             <b>Signature:</b> {{ sigHash }}<br>
-            <b>Data:</b> {{ convertedData }}
+            <b>Data:</b> 
+            <div style="word-break: break-all; white-space: normal;" class="data-container">
+                <div class="truncated-content">
+                    {{ isExpanded ? convertedData : truncatedData }}
+                </div>
+                <div v-if="showToggle" class="text-center mt-2">
+                    <a href="#" class="no-decoration text-uppercase d-flex align-center justify-center" @click.prevent="toggleExpand">
+                        <v-icon size="small" class="mr-1">mdi-eye{{ isExpanded ? '-off' : '' }}</v-icon>
+                        {{ isExpanded ? 'VIEW LESS' : 'VIEW ALL' }}
+                    </a>
+                </div>
+            </div>
         </v-card-text>
     </v-card>
 </template>
-<script>
+
+<script setup>
+import { ref, computed, onMounted } from 'vue';
 import { ethers } from 'ethers';
-const web3 = require('web3');
+import web3 from 'web3';
 import { findAbiForFunction } from '@/lib/abi';
 import FormattedSolVar from './FormattedSolVar.vue';
 
-export default {
-    name: 'TransactionFunctionCall',
-    props: ['data', 'value', 'abi', 'to'],
-    components: {
-        FormattedSolVar
-    },
-    data: () => ({
-        parsedTransactionData: null,
-        displayUtf8Data: false
-    }),
-    mounted: function() {
-        const contractAbi = this.abi ? this.abi : findAbiForFunction(this.data.slice(0, 10));
+// Constants
+const MAX_DISPLAY_CHARS = 500;
 
-        if (contractAbi) {
-            const jsonInterface = new ethers.utils.Interface(contractAbi);
-            this.parsedTransactionData = jsonInterface.parseTransaction({ data: this.data, value: this.value });
-        }
-    },
-    methods: {
-        switchDataFormatting(formatting) {
-            this.displayUtf8Data = formatting == 'utf8';
-        },
-        getSignatureFromFragment: function(fragment) {
-            if (!fragment.inputs.length)
-                return `${fragment.name}()`;
-            else
-                return `${fragment.name}(` + fragment.inputs.map((input) => `${input.type} ${input.name}`).join(', ') + ')'
-        }
-    },
-    computed: {
-        sigHash() { return this.data && this.data != '0x' ? this.data.slice(0, 10) : null },
-        convertedData() {
-            return this.displayUtf8Data ? web3.utils.hexToAscii(this.data) : this.data;
-        },
+// Props
+const props = defineProps({
+    data: String,
+    value: [String, Number],
+    abi: Array,
+    to: String
+});
+
+// Reactive state
+const parsedTransactionData = ref(null);
+const displayUtf8Data = ref(false);
+const isExpanded = ref(false);
+
+// Methods
+const switchDataFormatting = (formatting) => {
+    displayUtf8Data.value = formatting === 'utf8';
+};
+
+const toggleExpand = () => {
+    isExpanded.value = !isExpanded.value;
+};
+
+const getSignatureFromFragment = (fragment) => {
+    if (!fragment.inputs.length)
+        return `${fragment.name}()`;
+    else
+        return `${fragment.name}(` + fragment.inputs.map((input) => `${input.type} ${input.name}`).join(', ') + ')';
+};
+
+// Computed properties
+const sigHash = computed(() => props.data && props.data !== '0x' ? props.data.slice(0, 10) : null);
+const convertedData = computed(() => displayUtf8Data.value ? web3.utils.hexToAscii(props.data) : props.data);
+const truncatedData = computed(() => {
+    if (!convertedData.value) return '';
+    return convertedData.value.length > MAX_DISPLAY_CHARS ? 
+        convertedData.value.substring(0, MAX_DISPLAY_CHARS) + '...' : 
+        convertedData.value;
+});
+const showToggle = computed(() => convertedData.value && convertedData.value.length > MAX_DISPLAY_CHARS);
+
+// Lifecycle hook
+onMounted(() => {
+    const contractAbi = props.abi ? props.abi : findAbiForFunction(props.data.slice(0, 10));
+
+    if (contractAbi) {
+        const jsonInterface = new ethers.utils.Interface(contractAbi);
+        parsedTransactionData.value = jsonInterface.parseTransaction({ data: props.data, value: props.value });
     }
-}
+});
 </script>
+
 <style scoped>
-.underlined {
-    text-decoration: underline;
+.no-decoration {
+    text-decoration: none;
 }
 .v-card-text {
     line-height: 1.375rem;
+}
+.data-container {
+    position: relative;
+}
+.truncated-content {
+    position: relative;
 }
 </style>

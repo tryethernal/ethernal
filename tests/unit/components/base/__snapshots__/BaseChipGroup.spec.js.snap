@@ -1,0 +1,31 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`BaseChipGroup.vue > Should pass attributes to v-chip-group 1`] = `
+"<div class="v-slide-group v-chip-group v-chip-group--column v-theme--light" tabindex="0">
+  <!---->
+  <div class="v-slide-group__container">
+    <div class="v-slide-group__content"></div>
+  </div>
+  <!---->
+</div>"
+`;
+
+exports[`BaseChipGroup.vue > Should render with custom background color 1`] = `
+"<div class="v-slide-group v-chip-group v-theme--light" tabindex="0">
+  <!---->
+  <div class="v-slide-group__container">
+    <div class="v-slide-group__content"></div>
+  </div>
+  <!---->
+</div>"
+`;
+
+exports[`BaseChipGroup.vue > Should render with default props 1`] = `
+"<div class="v-slide-group v-chip-group v-theme--light" tabindex="0">
+  <!---->
+  <div class="v-slide-group__container">
+    <div class="v-slide-group__content"></div>
+  </div>
+  <!---->
+</div>"
+`;

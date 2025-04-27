@@ -1,0 +1,75 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`TokenContract.vue > Should show ERC20 contract component 1`] = `"<e-r-c20-contract-stub address="0x123" contract="[object Object]" loadingcontract="false"></e-r-c20-contract-stub>"`;
+
+exports[`TokenContract.vue > Should show ERC721 contract component 1`] = `"<e-r-c721-collection-stub address="0x123" contract="[object Object]" loadingcontract="false"></e-r-c721-collection-stub>"`;
+
+exports[`TokenContract.vue > Should show ERC1155 contract as ERC721 component 1`] = `"<e-r-c721-collection-stub address="0x123" contract="[object Object]" loadingcontract="false"></e-r-c721-collection-stub>"`;
+
+exports[`TokenContract.vue > Should show loading state 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <div class="v-skeleton-loader v-theme--light mb-4" style="max-width: 600px;" arialive="polite" arialabel="Loading..." role="alert">
+    <div class="v-skeleton-loader__bone v-skeleton-loader__text"></div>
+  </div>
+  <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator"><!-- Skeleton for token info cards -->
+  <div class="v-row mb-6">
+    <div class="v-col-lg-4 v-col-12">
+      <div class="v-skeleton-loader v-theme--light" style="height: 200px;" arialive="polite" arialabel="Loading..." role="alert">
+        <div class="v-skeleton-loader__bone v-skeleton-loader__card">
+          <div class="v-skeleton-loader__bone v-skeleton-loader__image"></div>
+          <div class="v-skeleton-loader__bone v-skeleton-loader__heading"></div>
+        </div>
+      </div>
+    </div>
+    <div class="v-col-lg-4 v-col-12">
+      <div class="v-skeleton-loader v-theme--light" style="height: 200px;" arialive="polite" arialabel="Loading..." role="alert">
+        <div class="v-skeleton-loader__bone v-skeleton-loader__card">
+          <div class="v-skeleton-loader__bone v-skeleton-loader__image"></div>
+          <div class="v-skeleton-loader__bone v-skeleton-loader__heading"></div>
+        </div>
+      </div>
+    </div>
+    <div class="v-col-lg-4 v-col-12">
+      <div class="v-skeleton-loader v-theme--light" style="height: 200px;" arialive="polite" arialabel="Loading..." role="alert">
+        <div class="v-skeleton-loader__bone v-skeleton-loader__card">
+          <div class="v-skeleton-loader__bone v-skeleton-loader__image"></div>
+          <div class="v-skeleton-loader__bone v-skeleton-loader__heading"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>"
+`;
+
+exports[`TokenContract.vue > Should show not a contract message 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <div class="v-row align-center justify-center" style="min-height: 400px;">
+    <div class="v-col-sm-8 v-col-md-6 v-col-lg-4 v-col-12 text-center"><i class="mdi-file mdi v-icon notranslate v-theme--light text-primary mb-4" style="font-size: 100px; height: 100px; width: 100px; opacity: 0.25;" aria-hidden="true"></i>
+      <div class="text-h6 mb-2">No Contract Found</div>
+      <div class="text-body-1 text-medium-emphasis">There doesn't seem to be a contract at this address.</div>
+    </div>
+  </div>
+</div>"
+`;
+
+exports[`TokenContract.vue > Should show not a contract message when getContract throws error 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <div class="v-row align-center justify-center" style="min-height: 400px;">
+    <div class="v-col-sm-8 v-col-md-6 v-col-lg-4 v-col-12 text-center"><i class="mdi-file mdi v-icon notranslate v-theme--light text-primary mb-4" style="font-size: 100px; height: 100px; width: 100px; opacity: 0.25;" aria-hidden="true"></i>
+      <div class="text-h6 mb-2">No Contract Found</div>
+      <div class="text-body-1 text-medium-emphasis">There doesn't seem to be a contract at this address.</div>
+    </div>
+  </div>
+</div>"
+`;
+
+exports[`TokenContract.vue > Should show unknown contract type message 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <div class="v-row align-center justify-center" style="min-height: 400px;">
+    <div class="v-col-sm-8 v-col-md-6 v-col-lg-4 v-col-12 text-center"><i class="mdi-help-circle mdi v-icon notranslate v-theme--light text-primary mb-4" style="font-size: 100px; height: 100px; width: 100px; opacity: 0.25;" aria-hidden="true"></i>
+      <div class="text-h6 mb-2">Unknown Contract Type</div>
+      <div class="text-body-1 text-medium-emphasis">This contract doesn't appear to be an ERC20 or ERC721 token.</div>
+    </div>
+  </div>
+</div>"
+`;

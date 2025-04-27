@@ -46,7 +46,11 @@ describe('TransactionsList.vue', () => {
                 withCount: true
             },
             global: {
-                stubs: ['Hash-Link']
+                stubs: ['Hash-Link'],
+                provide: {
+                    $server: server,
+                    $pusher: pusher
+                }
             }
         });
         await new Promise(process.nextTick);
@@ -66,6 +70,12 @@ describe('TransactionsList.vue', () => {
         const wrapper = mount(TransactionsList, {
             props: {
                 withCount: true
+            },
+            global: {
+                provide: {
+                    $server: server,
+                    $pusher: pusher
+                }
             }
         });
         await new Promise(process.nextTick);

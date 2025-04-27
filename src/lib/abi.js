@@ -29,7 +29,6 @@ export const findAbiForFunction = (signature) => {
     }
 };
 
-
 export const decodeLog = (log, abi) => {
     const ethersInterface = new ethers.utils.Interface(abi);
     let decodedLog;

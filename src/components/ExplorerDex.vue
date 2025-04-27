@@ -18,6 +18,13 @@
                             <template v-else><v-spacer /></template>
                             <v-btn size="small" variant="text" icon="mdi-cog" @click="openExplorerDexParametersModal()"></v-btn>
                         </div>
+                        <v-alert density="compact" type="warning" class="mx-5 mb-3" v-if="isDemo">
+                            This is a demo dex. Only tokens from liquidity pools deployed <b>after</b> creating this explorer will be available.
+                            If you want to add existing liquidity pools & tokens, either subscribe to a plan or reach out to us.
+                        </v-alert>
+                        <v-alert density="compact" type="info" class="mx-5 mb-3" v-if="isAdmin && pairCount < totalPairs">
+                            Syncing liquidity pools & tokens...({{ pairCount }} / {{ totalPairs }})
+                        </v-alert>
                         <div class="pa-12 pt-0">
                             <v-card-title class="text-primary d-flex justify-center align-center">{{ explorerName }} DEX</v-card-title>
                             <v-card-text class="pb-0">
@@ -147,6 +154,36 @@
                 </v-col>
             </v-row>
         </template>
+        <template v-else-if="isAdmin || isDemo">
+            <Create-Explorer-Dex-Modal ref="createExplorerDexModal" />
+            <v-card>
+                <v-card-text>
+                    <v-row>
+                        <v-col align="center">
+                            <v-icon style="opacity: 0.25;" size="200" color="primary-lighten-1">mdi-swap-horizontal</v-icon>
+                        </v-col>
+                    </v-row>
+                    <v-row>
+                        <v-spacer></v-spacer>
+                        <v-col cols="6" class="text-body-1">
+                            Ethernal comes with a built-in dex UI.<br>
+                            Before setting it up, make sure you've already deployed the UniswapV2Router02 contract.<br>
+                            Once it's done, you'll just need the contract address to continue.
+                            <br><br>
+                            By using this integrated dex, you won't have to build another UI from scratch, your token list will
+                            always be synchronized, you'll have access to pool analytics right away, and your users will have everything
+                            they need to interact with your chain in the same place.
+                        </v-col>
+                        <v-spacer></v-spacer>
+                    </v-row>
+                    <v-card-actions class="mb-4">
+                        <v-spacer></v-spacer>
+                        <v-btn @click="openCreateExplorerDexModal" variant="flat" :loading="loading" color="primary">Setup Now</v-btn>
+                        <v-spacer></v-spacer>
+                    </v-card-actions>
+                </v-card-text>
+            </v-card>
+        </template>
         <template v-else>
             <v-card>
                 <v-card-text>
@@ -159,8 +196,7 @@
                         <v-spacer></v-spacer>
                         <v-col cols="6" class="text-body-1">
                             No dex has been setup here, but it's possible to!<br>
-                            Reach out to the organization or individual that gave you access to this
-                            explorer and ask them to setup the dex on Ethernal.
+                            Reach out to the organization or individual that gave you access to this explorer and ask them to setup the dex on Ethernal.
                         </v-col>
                         <v-spacer></v-spacer>
                     </v-row>
@@ -180,6 +216,7 @@ import WalletConnectorMirror from './WalletConnectorMirror.vue';
 import HashLink from './HashLink.vue';
 import DexTokenSelectionModal from './DexTokenSelectionModal.vue';
 import ExplorerDexParametersModal from './ExplorerDexParametersModal.vue';
+import CreateExplorerDexModal from './CreateExplorerDexModal.vue';
 import { BNtoSignificantDigits, debounce } from '@/lib/utils';
 import { ERC20Connector, V2DexRouterConnector } from '@/lib/rpc';
 
@@ -200,7 +237,8 @@ export default{
         DexTokenSelectionModal,
         ExplorerDexParametersModal,
         WalletConnectorMirror,
-        HashLink
+        HashLink,
+        CreateExplorerDexModal
     },
     data: () => ({
         loading: false,
@@ -231,14 +269,18 @@ export default{
         loadingQuote: false,
         quoteDirection: 'exactIn',
         debouncedGetQuote: null,
-        loadingTokens: false
+        loadingTokens: false,
+        pairCount: 0,
+        totalPairs: 0,
+        statusLoadingInterval: null,
+        statusLoadingIntervalClear: false
     }),
     setup() {
-        const { v2Dex, token, name, chainId } = storeToRefs(useExplorerStore());
+        const { id, v2Dex, token, name, chainId, isDemo } = storeToRefs(useExplorerStore());
         const { connectedAddress } = storeToRefs(useWalletStore());
-        const { nativeTokenAddress } = useEnvStore();
+        const { nativeTokenAddress, isAdmin } = useEnvStore();
 
-        return { v2Dex, token, nativeTokenAddress, explorerName: name, explorerChainId: chainId, connectedAddress };
+        return { v2Dex, token, nativeTokenAddress, explorerName: name, explorerChainId: chainId, connectedAddress, isDemo, explorerId: id, isAdmin };
     },
     mounted() {
         if (!this.v2Dex)
@@ -256,7 +298,38 @@ export default{
             this.sellToken = this.buyToken;
             this.sellAmount = this.sellToken.address ? this.buyAmount : null;
             this.buyToken = token;
-            this.buyAmount = this.buyToken.address ? amount : null;
+            this.
+            buyAmount = this.buyToken.address ? amount : null;
+        },
+        loadStatus() {
+            this.$server.getV2DexStatus(this.v2Dex.id)
+                .then(({ data }) => {
+                    this.pairCount = data.pairCount;
+                    this.totalPairs = data.totalPairs;
+                    if (this.pairCount < this.totalPairs) {
+                        this.statusLoadingInterval = setTimeout(() => this.loadStatus(), 3000);
+                    }
+                    else if (this.statusLoadingIntervalClear) {
+                        clearTimeout(this.statusLoadingInterval);
+                    }
+                    this.loadTokens();
+                })
+                .catch(console.log);
+        },
+        openCreateExplorerDexModal() {
+            this.$refs.createExplorerDexModal.open({
+                explorerId: this.explorerId,
+                isDemo: this.isDemo
+            })
+            .then(v2Dex => {
+                if (v2Dex) {
+                    const explorerStore = useExplorerStore();
+                    explorerStore.updateExplorer({ v2Dex });
+                    if (!this.isDemo)
+                        this.loadStatus();
+                    this.initializeDexParameters();
+                }
+            })
         },
         selectionChanged() {
             if (!this.quotable)

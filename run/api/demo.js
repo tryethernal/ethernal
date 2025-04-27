@@ -1,15 +1,59 @@
 const express = require('express');
 const axios = require('axios');
-const { getDemoUserId, getDefaultPlanSlug, getAppDomain, getDemoTrialSlug, getStripeSecretKey, getDefaultExplorerTrialDays } = require('../lib/env');
+const { getDemoUserId, getDefaultPlanSlug, getAppDomain, getDemoTrialSlug, getStripeSecretKey, getDefaultExplorerTrialDays, whitelistedNetworkIdsForDemo, maxDemoExplorersForNetwork } = require('../lib/env');
 const stripe = require('stripe')(getStripeSecretKey());
 const { generateSlug } = require('random-word-slugs');
 const router = express.Router();
-const { ProviderConnector } = require('../lib/rpc');
+const { countUp, getCount } = require('../lib/counter');
+const { ProviderConnector, DexConnector } = require('../lib/rpc');
 const { encode, decode } = require('../lib/crypto');
 const { withTimeout, sanitize } = require('../lib/utils');
 const authMiddleware = require('../middlewares/auth');
 const db = require('../lib/firebase');
 const { managedError, unmanagedError } = require('../lib/errors');
+
+/*
+    Creates a uniswap v2 dex for a demo explorer
+    The created dex will be limited as it will only have access to tokens
+    from liquidity pools deployed after the explorer setup.
+    This is good enough for now to show what the dex looks like.
+    @param {string} routerAddress - The router address to use for the dex
+    @param {string} wrappedNativeTokenAddress - The wrapped native token address to use for the dex
+    @returns {object} - The v2 dex object
+*/
+router.post('/explorers/:id/v2_dexes', async (req, res, next) => {
+    const data = req.body.data;
+
+    try {
+        if (!data.routerAddress || !data.wrappedNativeTokenAddress)
+            return managedError(new Error('Missing parameters'), req, res);
+
+        const user = await db.getUserById(getDemoUserId());
+        if (!user)
+            return managedError(new Error('Could not find demo account.'), req, res);
+
+        const explorer = await db.getExplorerById(user.id, req.params.id);
+        if (!explorer || !explorer.workspace || !explorer.isDemo)
+            return managedError(new Error('Could not find explorer.'), req, res);
+
+        let routerFactoryAddress;
+        try {
+            const dexConnector = new DexConnector(explorer.workspace.rpcServer, data.routerAddress);
+            routerFactoryAddress = await dexConnector.getFactory();
+        } catch(error) {
+            return managedError(new Error(`Couldn't get factory address for router. Check that the factory method is present and returns an address.`), req, res);
+        }
+
+        if (!routerFactoryAddress || typeof routerFactoryAddress != 'string' || routerFactoryAddress.length != 42 || !routerFactoryAddress.startsWith('0x'))
+            return managedError(new Error(`Invalid factory address.`), req, res);
+
+        const v2Dex = await db.createExplorerV2Dex(user.firebaseUserId, req.params.id, data.routerAddress, routerFactoryAddress, data.wrappedNativeTokenAddress);
+
+        res.status(200).json({ v2Dex });
+    } catch(error) {
+        unmanagedError(error, req, next);
+    }
+});
 
 router.get('/explorers', authMiddleware, async (req, res, next) => {
     const data = { ...req.query, ...req.body.data };
@@ -120,6 +164,9 @@ router.post('/explorers', async (req, res, next) => {
             networkId = null;
         }
 
+        if (!networkId)
+            return managedError(new Error(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`), req, res);
+
         const response = await axios.get('https://raw.githubusercontent.com/tryethernal/chainlist/refs/heads/main/constants/chainIds.js', {
             responseType: 'text',
             headers: { 'Cache-Control': 'no-cache' }
@@ -130,8 +177,11 @@ router.post('/explorers', async (req, res, next) => {
         if (forbiddenChains[networkId])
             return managedError(new Error(`You can't create a demo with this network id (${networkId} - ${forbiddenChains[networkId]}). If you'd still like an explorer for this chain. Please reach out to contact@tryethernal.com, and we'll set one up for you.`), req, res);
 
-        if (!networkId)
-            return managedError(new Error(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`), req, res);
+        if (whitelistedNetworkIdsForDemo() && whitelistedNetworkIdsForDemo().split(',').indexOf(String(networkId)) == -1) {
+            const count = await countUp(networkId);;
+            if (count > maxDemoExplorersForNetwork())
+                return managedError(new Error(`You've reached the limit of demo explorers for this chain (networkId: ${networkId}). Please subscribe to a plan or reach out to contact@tryethernal.com for an extended trial.`), req, res);
+        }
 
         const user = await db.getUserById(getDemoUserId());
 
@@ -163,7 +213,7 @@ router.post('/explorers', async (req, res, next) => {
         } catch(error) {
             const err = new Error(error);
             if (err.message.includes('workspace with this name'))
-                return managedError(new Error('This explorername is already taken. Please choose a different name.'), req, res);
+                return managedError(new Error('This explorer name is already taken. Please choose a different name.'), req, res);
             return managedError(new Error(error), req, res);
         }
 

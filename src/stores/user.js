@@ -1,5 +1,4 @@
 import * as Sentry from '@sentry/vue';
-import { getCurrentInstance } from 'vue';
 import { defineStore } from 'pinia';
 
 import { useEnvStore } from './env';
@@ -19,7 +18,7 @@ export const useUserStore = defineStore('user', {
 
     actions: {
         updateUser(user) {
-            const env = useEnvStore();
+            const envStore = useEnvStore();
 
             if (user) {
                 this.$patch(user);
@@ -50,7 +49,7 @@ export const useUserStore = defineStore('user', {
                     window.smartsupp('email', null);
                 }
 
-                if (env.hasAnalyticsEnabled)
+                if (envStore.hasAnalyticsEnabled)
                     this.globalProperties.$posthog.reset();
             }
         }

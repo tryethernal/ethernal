@@ -14,6 +14,7 @@ require('../mocks/models');
 require('../mocks/lib/firebase');
 require('../mocks/lib/crypto');
 require('../mocks/middlewares/auth');
+require('../mocks/middlewares/workspaceAuth');
 require('../mocks/lib/queue');
 const db = require('../../lib/firebase');
 const { ProviderConnector } = require('../../lib/rpc');
@@ -24,6 +25,19 @@ const app = require('../../app');
 const request = supertest(app);
 
 const BASE_URL = '/api/workspaces';
+
+describe(`GET ${BASE_URL}/:id/tokenTransfers`, () => {
+    it('Should return token transfers', (done) => {
+        jest.spyOn(db, 'getWorkspaceTokenTransfers').mockResolvedValueOnce([{ hash: '0x123' }]);
+
+        request.get(`${BASE_URL}/:id/tokenTransfers`)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual({ items: [{ hash: '0x123' }] });
+                done();
+            });
+    });
+});
 
 describe(`DELETE ${BASE_URL}/:id`, () => {
     beforeEach(() => jest.clearAllMocks());
@@ -78,7 +92,10 @@ describe(`POST ${BASE_URL}/reset`, () => {
             .send({ data: { workspace: 'My Workspace' }})
             .expect(200)
             .then(({ body }) => {
+                expect(db.markWorkspaceForDeletion).toHaveBeenCalledWith(1, 1);
+                expect(db.replaceWorkspace).toHaveBeenCalledWith(1, 1);
                 expect(enqueue).toHaveBeenCalledWith('workspaceReset', 'workspaceReset-1', { workspaceId: 1, from: new Date(0), to: expect.anything() });
+                expect(enqueue).toHaveBeenCalledWith('deleteWorkspace', 'deleteWorkspace-1', { workspaceId: 1 });
                 expect(body).toEqual({ needsBatchReset: true });
                 done();
             });

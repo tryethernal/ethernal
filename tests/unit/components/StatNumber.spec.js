@@ -51,4 +51,39 @@ describe('StatNumber.vue', () => {
         });
         expect(wrapper.html()).toMatchSnapshot();
     });
+
+    it('Should display raw mode', () => {
+        const wrapper = mount(StatNumber, {
+            props: {
+                title: 'Stat',
+                value: '1234467689798',
+                loading: false,
+                raw: true
+            }
+        });
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
+    it('Should display without border', () => {
+        const wrapper = mount(StatNumber, {
+            props: {
+                title: 'Stat',
+                value: '1234467689798',
+                loading: false,
+                border: false
+            }
+        });
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
+    it('Should display with border by default', () => {
+        const wrapper = mount(StatNumber, {
+            props: {
+                title: 'Stat',
+                value: '1234467689798',
+                loading: false
+            }
+        });
+        expect(wrapper.html()).toMatchSnapshot();
+    });
 });

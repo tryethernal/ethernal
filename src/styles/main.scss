@@ -62,3 +62,38 @@ a.underlined {
     --onboard-modal-backdrop: rgb(var(--v-theme-primary), 0.2);
     --onboard-modal-z-index: 10000;
 }
+
+.no-decoration {
+    text-decoration: none;
+}
+
+// Pagination button styles
+.v-pagination {
+  .v-btn {
+    width: auto !important;
+    padding-inline: 5px;
+    min-width: 36px;
+    border-color: rgb(var(--v-theme-primary), 0.25) !important;
+    &--rounded {
+      border-radius: 50%;
+    }
+
+    &__overlay {
+      transition: none;
+    }
+  }
+
+  &__prev,
+  &__next {
+    .v-btn {
+      padding-inline: 0;
+      width: 36px;
+    }
+  }
+
+  &__item--is-active {
+    .v-btn__overlay {
+      opacity: var(--v-border-opacity);
+    }
+  }
+}

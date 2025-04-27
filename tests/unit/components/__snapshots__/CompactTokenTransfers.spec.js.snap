@@ -1,0 +1,72 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`CompactTokenTransfers.vue > Should show empty state when no transfers 1`] = `
+"<div class="embedded-transfers pa-0 rounded">
+  <!-- Simple Sentence List -->
+  <!-- Empty State -->
+  <div class="empty-state pa-4 text-center"><i class="mdi-swap-horizontal-off mdi v-icon notranslate v-theme--light text-grey-lighten-1 mb-2" style="font-size: 24px; height: 24px; width: 24px;" aria-hidden="true"></i>
+    <div class="text-body-2 text-grey-darken-1">No token transfers found for this transaction</div>
+  </div>
+</div>"
+`;
+
+exports[`CompactTokenTransfers.vue > Should show loading state 1`] = `
+"<div class="embedded-transfers pa-0 rounded">
+  <!-- Simple Sentence List -->
+  <!-- Loading State -->
+  <div class="loading-state d-flex justify-center align-center pa-4">
+    <div class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
+        <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
+        <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
+      </svg>
+      <!---->
+    </div><span class="text-caption">Loading token transfers...</span>
+  </div>
+</div>"
+`;
+
+exports[`CompactTokenTransfers.vue > Should show transfers list with pagination 1`] = `
+"<div class="embedded-transfers pa-0 rounded">
+  <!-- Simple Sentence List -->
+  <div class="transfers-list">
+    <div class="embedded-transfer-item py-2 px-0 rounded-sm border-bottom">
+      <div class="d-flex align-center">
+        <!-- Transfer Sentence --><span class="transfer-sentence text-body-2"><span class="mx-1 font-weight-medium">From</span><span class="font-weight-medium"><hash-link-stub type="address" hash="0x123" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false" truncate="true"></hash-link-stub></span><span class="mx-1 font-weight-medium">To</span><span class="font-weight-medium"><hash-link-stub type="address" hash="0x456" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false" truncate="true"></hash-link-stub></span><span class="mx-1 font-weight-medium">For</span><span>1.0</span><span class="mx-1"><hash-link-stub type="address" hash="0x789" contract="[object Object]" fullhash="false" withname="true" notcopiable="true" withtokenname="false" xshash="false" unlink="false" loadcontract="false" truncate="true"></hash-link-stub>&nbsp; <span class="text-medium-emphasis">(TEST)</span></span></span>
+      </div>
+    </div>
+    <div class="embedded-transfer-item py-2 px-0 rounded-sm">
+      <div class="d-flex align-center">
+        <!-- Transfer Sentence --><span class="transfer-sentence text-body-2"><span class="mx-1 font-weight-medium">From</span><span class="font-weight-medium"><hash-link-stub type="address" hash="0x789" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false" truncate="true"></hash-link-stub></span><span class="mx-1 font-weight-medium">To</span><span class="font-weight-medium"><hash-link-stub type="address" hash="0xabc" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false" truncate="true"></hash-link-stub></span><span class="mx-1 font-weight-medium">For</span><span>1.0</span><span class="mx-1"><hash-link-stub type="address" hash="0x789" contract="[object Object]" fullhash="false" withname="true" notcopiable="true" withtokenname="false" xshash="false" unlink="false" loadcontract="false" truncate="true"></hash-link-stub>&nbsp; <span class="text-medium-emphasis">(TEST)</span></span></span>
+      </div>
+    </div><!-- Pagination -->
+    <div class="text-center mt-4">
+      <nav class="v-pagination v-theme--light" role="navigation" aria-label="Pagination Navigation" data-test="v-pagination-root">
+        <ul class="v-pagination__list">
+          <!---->
+          <li class="v-pagination__prev" data-test="v-pagination-prev"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--border text-primary v-btn--density-compact v-btn--size-small v-btn--variant-text" disabled="" aria-label="Previous page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+              <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-chevron-left mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+              <!---->
+              <!---->
+            </button></li>
+          <li class="v-pagination__item v-pagination__item--is-active" data-test="v-pagination-item"><button type="button" class="v-btn v-btn--icon v-theme--light v-btn--border text-primary v-btn--density-compact v-btn--size-small v-btn--variant-text" ellipsis="false" aria-current="true" aria-label="Page 1, Current page"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+              <!----><span class="v-btn__content" data-no-activator="">1</span>
+              <!---->
+              <!---->
+            </button></li>
+          <li class="v-pagination__item" data-test="v-pagination-item"><button type="button" class="v-btn v-btn--icon v-theme--light v-btn--border text-primary v-btn--density-compact v-btn--size-small v-btn--variant-text" ellipsis="false" aria-current="false" aria-label="Go to page 2"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+              <!----><span class="v-btn__content" data-no-activator="">2</span>
+              <!---->
+              <!---->
+            </button></li>
+          <li class="v-pagination__next" data-test="v-pagination-next"><button type="button" class="v-btn v-btn--icon v-theme--light v-btn--border text-primary v-btn--density-compact v-btn--size-small v-btn--variant-text" aria-label="Next page" aria-disabled="false"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+              <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-chevron-right mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+              <!---->
+              <!---->
+            </button></li>
+          <!---->
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>"
+`;

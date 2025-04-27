@@ -1,7 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`TransactionsList.vue > Should display a message if no transactions 1`] = `
-"<div data-v-40c8aafa="" class="v-table v-table--has-top v-table--has-bottom v-theme--light v-table--density-default v-data-table hide-table-count" item-key="hash">
+"<div data-v-40c8aafa="" class="v-table v-table--has-top v-table--has-bottom v-theme--light v-table--density-default v-data-table hide-table-count" dense="false" item-key="hash">
   <!---->
   <div class="v-table__wrapper">
     <table>
@@ -19,13 +19,13 @@ exports[`TransactionsList.vue > Should display a message if no transactions 1`] 
               <!---->
             </div>
           </th>
-          <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th" colspan="1" rowspan="1">
-            <div class="v-data-table-header__content"><span>Block</span><i class="mdi-arrow-up mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
+          <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th--sorted v-data-table__th" colspan="1" rowspan="1">
+            <div class="v-data-table-header__content"><span>Block</span><i class="mdi-arrow-down mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
               <!---->
             </div>
           </th>
-          <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th--sorted v-data-table__th" colspan="1" rowspan="1">
-            <div class="v-data-table-header__content"><span>Mined On</span><i class="mdi-arrow-down mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
+          <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th" colspan="1" rowspan="1">
+            <div class="v-data-table-header__content"><span>Mined On</span><i class="mdi-arrow-up mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
               <!---->
             </div>
           </th>
@@ -151,7 +151,7 @@ exports[`TransactionsList.vue > Should display a message if no transactions 1`] 
 `;
 
 exports[`TransactionsList.vue > Should display the list 1`] = `
-"<div data-v-40c8aafa="" class="v-table v-table--has-top v-table--has-bottom v-theme--light v-table--density-default v-data-table hide-table-count" item-key="hash" transactions="[object Object],[object Object]">
+"<div data-v-40c8aafa="" class="v-table v-table--has-top v-table--has-bottom v-theme--light v-table--density-default v-data-table hide-table-count" dense="false" item-key="hash" transactions="[object Object],[object Object]">
   <!---->
   <div class="v-table__wrapper">
     <table>
@@ -169,13 +169,13 @@ exports[`TransactionsList.vue > Should display the list 1`] = `
               <!---->
             </div>
           </th>
-          <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th" colspan="1" rowspan="1">
-            <div class="v-data-table-header__content"><span>Block</span><i class="mdi-arrow-up mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
+          <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th--sorted v-data-table__th" colspan="1" rowspan="1">
+            <div class="v-data-table-header__content"><span>Block</span><i class="mdi-arrow-down mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
               <!---->
             </div>
           </th>
-          <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th--sorted v-data-table__th" colspan="1" rowspan="1">
-            <div class="v-data-table-header__content"><span>Mined On</span><i class="mdi-arrow-down mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
+          <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th" colspan="1" rowspan="1">
+            <div class="v-data-table-header__content"><span>Mined On</span><i class="mdi-arrow-up mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
               <!---->
             </div>
           </th>
@@ -216,26 +216,26 @@ exports[`TransactionsList.vue > Should display the list 1`] = `
             </div>
             <!--teleport start-->
             <!--teleport end-->
-            <hash-link-stub data-v-40c8aafa="" type="transaction" hash="0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0" xshash="true"></hash-link-stub>
+            <hash-link-stub data-v-40c8aafa="" type="transaction" hash="0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="true" unlink="false" loadcontract="false"></hash-link-stub>
           </td>
-          <td class="v-data-table__td v-data-table-column--align-start"><span data-v-40c8aafa=""><span data-v-40c8aafa="" class="v-chip v-chip--label v-theme--light bg-primary-lighten-1 v-chip--density-default v-chip--size-small v-chip--variant-flat" draggable="false"><!----><span class="v-chip__underlay"></span>
+          <td class="v-data-table__td v-data-table-column--align-start"><span data-v-40c8aafa="" class="v-chip v-chip--label v-theme--light bg-primary-lighten-1 v-chip--density-default v-chip--size-small v-chip--variant-flat" draggable="false"><!----><span class="v-chip__underlay"></span>
             <!---->
             <!---->
             <div class="v-chip__content" data-no-activator="">0xa9059cbb</div>
             <!---->
-            <!----></span></span>
+            <!----></span>
           </td>
           <td class="v-data-table__td v-data-table-column--align-start"><a data-v-40c8aafa="" style="text-decoration: none;">1</a></td>
           <td class="v-data-table__td v-data-table-column--align-start">
-            <div data-v-40c8aafa="" class="my-2 text-left">05/06 7:11:26 PM<br data-v-40c8aafa=""><small data-v-40c8aafa="">3 months ago</small></div>
+            <div data-v-40c8aafa="" class="my-2 text-left">05/06 7:11:26 PM<br data-v-40c8aafa=""><small data-v-40c8aafa="" class="text-caption text-medium-emphasis">3 months ago</small></div>
           </td>
           <td class="v-data-table__td v-data-table-column--align-start">
             <!--v-if-->
-            <hash-link-stub data-v-40c8aafa="" type="address" hash="0x0"></hash-link-stub>
+            <hash-link-stub data-v-40c8aafa="" type="address" hash="0x0" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
           </td>
           <td class="v-data-table__td v-data-table-column--align-start">
             <!--v-if-->
-            <hash-link-stub data-v-40c8aafa="" type="address" hash="Ox1" withtokenname="true" withname="true"></hash-link-stub>
+            <hash-link-stub data-v-40c8aafa="" type="address" hash="Ox1" fullhash="false" withname="true" notcopiable="false" withtokenname="true" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
           </td>
           <td class="v-data-table__td v-data-table-column--align-start">0 ETH</td>
           <td class="v-data-table__td v-data-table-column--align-start"><span data-v-40c8aafa="">0 ETH</span></td>
@@ -251,26 +251,26 @@ exports[`TransactionsList.vue > Should display the list 1`] = `
             </div>
             <!--teleport start-->
             <!--teleport end-->
-            <hash-link-stub data-v-40c8aafa="" type="transaction" hash="0x1234" xshash="true"></hash-link-stub>
+            <hash-link-stub data-v-40c8aafa="" type="transaction" hash="0x1234" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="true" unlink="false" loadcontract="false"></hash-link-stub>
           </td>
-          <td class="v-data-table__td v-data-table-column--align-start"><span data-v-40c8aafa=""><span data-v-40c8aafa="" class="v-chip v-chip--label v-theme--light bg-primary-lighten-1 v-chip--density-default v-chip--size-small v-chip--variant-flat" draggable="false" style="display: none;"><!----><span class="v-chip__underlay"></span>
+          <td class="v-data-table__td v-data-table-column--align-start"><span data-v-40c8aafa="" class="v-chip v-chip--label v-theme--light bg-primary-lighten-1 v-chip--density-default v-chip--size-small v-chip--variant-flat" draggable="false" style="display: none;"><!----><span class="v-chip__underlay"></span>
             <!---->
             <!---->
             <div class="v-chip__content" data-no-activator=""></div>
             <!---->
-            <!----></span></span>
+            <!----></span>
           </td>
           <td class="v-data-table__td v-data-table-column--align-start"><a data-v-40c8aafa="" style="text-decoration: none;">1</a></td>
           <td class="v-data-table__td v-data-table-column--align-start">
-            <div data-v-40c8aafa="" class="my-2 text-left">05/06 7:11:26 PM<br data-v-40c8aafa=""><small data-v-40c8aafa="">3 months ago</small></div>
+            <div data-v-40c8aafa="" class="my-2 text-left">05/06 7:11:26 PM<br data-v-40c8aafa=""><small data-v-40c8aafa="" class="text-caption text-medium-emphasis">3 months ago</small></div>
           </td>
           <td class="v-data-table__td v-data-table-column--align-start">
             <!--v-if-->
-            <hash-link-stub data-v-40c8aafa="" type="address" hash="0x0"></hash-link-stub>
+            <hash-link-stub data-v-40c8aafa="" type="address" hash="0x0" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
           </td>
           <td class="v-data-table__td v-data-table-column--align-start">
             <!--v-if-->
-            <hash-link-stub data-v-40c8aafa="" type="address" hash="Ox1" withtokenname="true" withname="true"></hash-link-stub>
+            <hash-link-stub data-v-40c8aafa="" type="address" hash="Ox1" fullhash="false" withname="true" notcopiable="false" withtokenname="true" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
           </td>
           <td class="v-data-table__td v-data-table-column--align-start">0 ETH</td>
           <td class="v-data-table__td v-data-table-column--align-start">

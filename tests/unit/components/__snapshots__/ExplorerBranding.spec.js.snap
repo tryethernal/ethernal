@@ -75,7 +75,7 @@ exports[`ExplorerBranding.vue > Should display branding options 1`] = `
           </div>
           <div>
             <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field mt-2 mb-5">
-              <div class="v-input__prepend"><i class="mdi-square mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--clickable" style="color: rgb(72, 169, 166); caret-color: #48A9A6; opacity: 1;" role="button" aria-hidden="false" tabindex="0"></i>
+              <div class="v-input__prepend"><i class="mdi-square mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--clickable" style="color: rgb(66, 66, 66); caret-color: #424242; opacity: 1;" role="button" aria-hidden="false" tabindex="0"></i>
                 <!---->
               </div>
               <div class="v-input__control">
@@ -100,7 +100,7 @@ exports[`ExplorerBranding.vue > Should display branding options 1`] = `
                     <!----><label class="v-label v-field-label" for="input-12">
                       <!---->Secondary Color
                     </label>
-                    <!----><input size="1" type="text" id="input-12" aria-describedby="input-12-messages" class="v-field__input" value="#48A9A6">
+                    <!----><input size="1" type="text" id="input-12" aria-describedby="input-12-messages" class="v-field__input" value="#424242">
                     <!---->
                   </div>
                   <!---->
@@ -118,15 +118,15 @@ exports[`ExplorerBranding.vue > Should display branding options 1`] = `
               <!---->
               <!---->
             </div>
-            <v-color-picker-stub class="mb-4" modelvalue="#48A9A6" style="display: none;"></v-color-picker-stub>
+            <v-color-picker-stub class="mb-4" modelvalue="#424242" style="display: none;"></v-color-picker-stub>
           </div>
           <div>
-            <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field mt-2 mb-5">
-              <div class="v-input__prepend"><i class="mdi-square mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--clickable" style="opacity: 1;" role="button" aria-hidden="false" tabindex="0"></i>
+            <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field mt-2 mb-5">
+              <div class="v-input__prepend"><i class="mdi-square mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--clickable" style="color: rgb(41, 100, 142); caret-color: #29648E; opacity: 1;" role="button" aria-hidden="false" tabindex="0"></i>
                 <!---->
               </div>
               <div class="v-input__control">
-                <div class="v-field v-field--center-affix v-field--variant-outlined v-theme--light v-locale--is-ltr">
+                <div class="v-field v-field--active v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr">
                   <div class="v-field__overlay"></div>
                   <div class="v-field__loader">
                     <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
@@ -147,7 +147,7 @@ exports[`ExplorerBranding.vue > Should display branding options 1`] = `
                     <!----><label class="v-label v-field-label" for="input-14">
                       <!---->Accent Color
                     </label>
-                    <!----><input size="1" type="text" id="input-14" aria-describedby="input-14-messages" class="v-field__input">
+                    <!----><input size="1" type="text" id="input-14" aria-describedby="input-14-messages" class="v-field__input" value="#29648E">
                     <!---->
                   </div>
                   <!---->
@@ -165,11 +165,11 @@ exports[`ExplorerBranding.vue > Should display branding options 1`] = `
               <!---->
               <!---->
             </div>
-            <v-color-picker-stub class="mb-4" style="display: none;"></v-color-picker-stub>
+            <v-color-picker-stub class="mb-4" modelvalue="#29648E" style="display: none;"></v-color-picker-stub>
           </div>
           <div>
             <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field mt-2 mb-5">
-              <div class="v-input__prepend"><i class="mdi-square mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--clickable" style="color: rgb(176, 0, 32); caret-color: #B00020; opacity: 1;" role="button" aria-hidden="false" tabindex="0"></i>
+              <div class="v-input__prepend"><i class="mdi-square mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--clickable" style="color: rgb(231, 39, 50); caret-color: #E72732; opacity: 1;" role="button" aria-hidden="false" tabindex="0"></i>
                 <!---->
               </div>
               <div class="v-input__control">
@@ -194,7 +194,7 @@ exports[`ExplorerBranding.vue > Should display branding options 1`] = `
                     <!----><label class="v-label v-field-label" for="input-16">
                       <!---->Error Color
                     </label>
-                    <!----><input size="1" type="text" id="input-16" aria-describedby="input-16-messages" class="v-field__input" value="#B00020">
+                    <!----><input size="1" type="text" id="input-16" aria-describedby="input-16-messages" class="v-field__input" value="#E72732">
                     <!---->
                   </div>
                   <!---->
@@ -212,7 +212,7 @@ exports[`ExplorerBranding.vue > Should display branding options 1`] = `
               <!---->
               <!---->
             </div>
-            <v-color-picker-stub class="mb-4" modelvalue="#B00020" style="display: none;"></v-color-picker-stub>
+            <v-color-picker-stub class="mb-4" modelvalue="#E72732" style="display: none;"></v-color-picker-stub>
           </div>
           <div>
             <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field mt-2 mb-5">
@@ -310,7 +310,7 @@ exports[`ExplorerBranding.vue > Should display branding options 1`] = `
           </div>
           <div>
             <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field mt-2 mb-5">
-              <div class="v-input__prepend"><i class="mdi-square mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--clickable" style="color: rgb(251, 140, 0); caret-color: #FB8C00; opacity: 1;" role="button" aria-hidden="false" tabindex="0"></i>
+              <div class="v-input__prepend"><i class="mdi-square mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--clickable" style="color: rgb(231, 130, 39); caret-color: #E78227; opacity: 1;" role="button" aria-hidden="false" tabindex="0"></i>
                 <!---->
               </div>
               <div class="v-input__control">
@@ -335,7 +335,7 @@ exports[`ExplorerBranding.vue > Should display branding options 1`] = `
                     <!----><label class="v-label v-field-label" for="input-22">
                       <!---->Warning Color
                     </label>
-                    <!----><input size="1" type="text" id="input-22" aria-describedby="input-22-messages" class="v-field__input" value="#FB8C00">
+                    <!----><input size="1" type="text" id="input-22" aria-describedby="input-22-messages" class="v-field__input" value="#E78227">
                     <!---->
                   </div>
                   <!---->
@@ -353,11 +353,11 @@ exports[`ExplorerBranding.vue > Should display branding options 1`] = `
               <!---->
               <!---->
             </div>
-            <v-color-picker-stub class="mb-4" modelvalue="#FB8C00" style="display: none;"></v-color-picker-stub>
+            <v-color-picker-stub class="mb-4" modelvalue="#E78227" style="display: none;"></v-color-picker-stub>
           </div>
           <div>
             <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field mt-2 mb-5">
-              <div class="v-input__prepend"><i class="mdi-square mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--clickable" style="color: rgb(255, 255, 255); caret-color: #FFFFFF; opacity: 1;" role="button" aria-hidden="false" tabindex="0"></i>
+              <div class="v-input__prepend"><i class="mdi-square mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--clickable" style="color: rgb(245, 245, 245); caret-color: #F5F5F5; opacity: 1;" role="button" aria-hidden="false" tabindex="0"></i>
                 <!---->
               </div>
               <div class="v-input__control">
@@ -382,7 +382,7 @@ exports[`ExplorerBranding.vue > Should display branding options 1`] = `
                     <!----><label class="v-label v-field-label" for="input-24">
                       <!---->Background Color
                     </label>
-                    <!----><input size="1" type="text" id="input-24" aria-describedby="input-24-messages" class="v-field__input" value="#FFFFFF">
+                    <!----><input size="1" type="text" id="input-24" aria-describedby="input-24-messages" class="v-field__input" value="#F5F5F5">
                     <!---->
                   </div>
                   <!---->
@@ -400,7 +400,7 @@ exports[`ExplorerBranding.vue > Should display branding options 1`] = `
               <!---->
               <!---->
             </div>
-            <v-color-picker-stub class="mb-4" modelvalue="#FFFFFF" style="display: none;"></v-color-picker-stub>
+            <v-color-picker-stub class="mb-4" modelvalue="#F5F5F5" style="display: none;"></v-color-picker-stub>
           </div>
         </div>
         <div class="v-col v-col-6">
@@ -686,7 +686,7 @@ exports[`ExplorerBranding.vue > Should display upgrade message 1`] = `
           </div>
           <div>
             <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field mt-2 mb-5">
-              <div class="v-input__prepend"><i class="mdi-square mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--clickable" style="color: rgb(72, 169, 166); caret-color: #48A9A6; opacity: 1;" role="button" aria-hidden="false" tabindex="0"></i>
+              <div class="v-input__prepend"><i class="mdi-square mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--clickable" style="color: rgb(66, 66, 66); caret-color: #424242; opacity: 1;" role="button" aria-hidden="false" tabindex="0"></i>
                 <!---->
               </div>
               <div class="v-input__control">
@@ -711,7 +711,7 @@ exports[`ExplorerBranding.vue > Should display upgrade message 1`] = `
                     <!----><label class="v-label v-field-label" for="input-12">
                       <!---->Secondary Color
                     </label>
-                    <!----><input size="1" type="text" id="input-12" aria-describedby="input-12-messages" class="v-field__input" value="#48A9A6">
+                    <!----><input size="1" type="text" id="input-12" aria-describedby="input-12-messages" class="v-field__input" value="#424242">
                     <!---->
                   </div>
                   <!---->
@@ -729,15 +729,15 @@ exports[`ExplorerBranding.vue > Should display upgrade message 1`] = `
               <!---->
               <!---->
             </div>
-            <v-color-picker-stub class="mb-4" modelvalue="#48A9A6" style="display: none;"></v-color-picker-stub>
+            <v-color-picker-stub class="mb-4" modelvalue="#424242" style="display: none;"></v-color-picker-stub>
           </div>
           <div>
-            <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field mt-2 mb-5">
-              <div class="v-input__prepend"><i class="mdi-square mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--clickable" style="opacity: 1;" role="button" aria-hidden="false" tabindex="0"></i>
+            <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field mt-2 mb-5">
+              <div class="v-input__prepend"><i class="mdi-square mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--clickable" style="color: rgb(41, 100, 142); caret-color: #29648E; opacity: 1;" role="button" aria-hidden="false" tabindex="0"></i>
                 <!---->
               </div>
               <div class="v-input__control">
-                <div class="v-field v-field--center-affix v-field--variant-outlined v-theme--light v-locale--is-ltr">
+                <div class="v-field v-field--active v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr">
                   <div class="v-field__overlay"></div>
                   <div class="v-field__loader">
                     <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
@@ -758,7 +758,7 @@ exports[`ExplorerBranding.vue > Should display upgrade message 1`] = `
                     <!----><label class="v-label v-field-label" for="input-14">
                       <!---->Accent Color
                     </label>
-                    <!----><input size="1" type="text" id="input-14" aria-describedby="input-14-messages" class="v-field__input">
+                    <!----><input size="1" type="text" id="input-14" aria-describedby="input-14-messages" class="v-field__input" value="#29648E">
                     <!---->
                   </div>
                   <!---->
@@ -776,11 +776,11 @@ exports[`ExplorerBranding.vue > Should display upgrade message 1`] = `
               <!---->
               <!---->
             </div>
-            <v-color-picker-stub class="mb-4" style="display: none;"></v-color-picker-stub>
+            <v-color-picker-stub class="mb-4" modelvalue="#29648E" style="display: none;"></v-color-picker-stub>
           </div>
           <div>
             <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field mt-2 mb-5">
-              <div class="v-input__prepend"><i class="mdi-square mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--clickable" style="color: rgb(176, 0, 32); caret-color: #B00020; opacity: 1;" role="button" aria-hidden="false" tabindex="0"></i>
+              <div class="v-input__prepend"><i class="mdi-square mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--clickable" style="color: rgb(231, 39, 50); caret-color: #E72732; opacity: 1;" role="button" aria-hidden="false" tabindex="0"></i>
                 <!---->
               </div>
               <div class="v-input__control">
@@ -805,7 +805,7 @@ exports[`ExplorerBranding.vue > Should display upgrade message 1`] = `
                     <!----><label class="v-label v-field-label" for="input-16">
                       <!---->Error Color
                     </label>
-                    <!----><input size="1" type="text" id="input-16" aria-describedby="input-16-messages" class="v-field__input" value="#B00020">
+                    <!----><input size="1" type="text" id="input-16" aria-describedby="input-16-messages" class="v-field__input" value="#E72732">
                     <!---->
                   </div>
                   <!---->
@@ -823,7 +823,7 @@ exports[`ExplorerBranding.vue > Should display upgrade message 1`] = `
               <!---->
               <!---->
             </div>
-            <v-color-picker-stub class="mb-4" modelvalue="#B00020" style="display: none;"></v-color-picker-stub>
+            <v-color-picker-stub class="mb-4" modelvalue="#E72732" style="display: none;"></v-color-picker-stub>
           </div>
           <div>
             <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field mt-2 mb-5">
@@ -921,7 +921,7 @@ exports[`ExplorerBranding.vue > Should display upgrade message 1`] = `
           </div>
           <div>
             <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field mt-2 mb-5">
-              <div class="v-input__prepend"><i class="mdi-square mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--clickable" style="color: rgb(251, 140, 0); caret-color: #FB8C00; opacity: 1;" role="button" aria-hidden="false" tabindex="0"></i>
+              <div class="v-input__prepend"><i class="mdi-square mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--clickable" style="color: rgb(231, 130, 39); caret-color: #E78227; opacity: 1;" role="button" aria-hidden="false" tabindex="0"></i>
                 <!---->
               </div>
               <div class="v-input__control">
@@ -946,7 +946,7 @@ exports[`ExplorerBranding.vue > Should display upgrade message 1`] = `
                     <!----><label class="v-label v-field-label" for="input-22">
                       <!---->Warning Color
                     </label>
-                    <!----><input size="1" type="text" id="input-22" aria-describedby="input-22-messages" class="v-field__input" value="#FB8C00">
+                    <!----><input size="1" type="text" id="input-22" aria-describedby="input-22-messages" class="v-field__input" value="#E78227">
                     <!---->
                   </div>
                   <!---->
@@ -964,11 +964,11 @@ exports[`ExplorerBranding.vue > Should display upgrade message 1`] = `
               <!---->
               <!---->
             </div>
-            <v-color-picker-stub class="mb-4" modelvalue="#FB8C00" style="display: none;"></v-color-picker-stub>
+            <v-color-picker-stub class="mb-4" modelvalue="#E78227" style="display: none;"></v-color-picker-stub>
           </div>
           <div>
             <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field mt-2 mb-5">
-              <div class="v-input__prepend"><i class="mdi-square mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--clickable" style="color: rgb(255, 255, 255); caret-color: #FFFFFF; opacity: 1;" role="button" aria-hidden="false" tabindex="0"></i>
+              <div class="v-input__prepend"><i class="mdi-square mdi v-icon notranslate v-theme--light v-icon--size-default v-icon--clickable" style="color: rgb(245, 245, 245); caret-color: #F5F5F5; opacity: 1;" role="button" aria-hidden="false" tabindex="0"></i>
                 <!---->
               </div>
               <div class="v-input__control">
@@ -993,7 +993,7 @@ exports[`ExplorerBranding.vue > Should display upgrade message 1`] = `
                     <!----><label class="v-label v-field-label" for="input-24">
                       <!---->Background Color
                     </label>
-                    <!----><input size="1" type="text" id="input-24" aria-describedby="input-24-messages" class="v-field__input" value="#FFFFFF">
+                    <!----><input size="1" type="text" id="input-24" aria-describedby="input-24-messages" class="v-field__input" value="#F5F5F5">
                     <!---->
                   </div>
                   <!---->
@@ -1011,7 +1011,7 @@ exports[`ExplorerBranding.vue > Should display upgrade message 1`] = `
               <!---->
               <!---->
             </div>
-            <v-color-picker-stub class="mb-4" modelvalue="#FFFFFF" style="display: none;"></v-color-picker-stub>
+            <v-color-picker-stub class="mb-4" modelvalue="#F5F5F5" style="display: none;"></v-color-picker-stub>
           </div>
         </div>
         <div class="v-col v-col-6">

@@ -4,7 +4,6 @@ const {
   Sequelize
 } = require('sequelize');
 const Op = Sequelize.Op;
-
 module.exports = (sequelize, DataTypes) => {
   class TransactionTraceStep extends Model {
     /**
@@ -14,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       TransactionTraceStep.belongsTo(models.Transaction, { foreignKey: 'id', as: 'transaction' });
+      TransactionTraceStep.belongsTo(models.Workspace, { foreignKey: 'workspaceId', as: 'workspace' });
       TransactionTraceStep.hasOne(models.Contract, {
           sourceKey: 'address',
           foreignKey:  'address',

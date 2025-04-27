@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`AdBanner.vue > Should show the component 1`] = `
+"<div data-v-5ae8ec01="" class="ad-banner">
+  <div data-v-5ae8ec01="" class="sevioads" data-zone="267ecf65-8e8c-45db-9b54-ad03098ebdb1"></div>
+</div>"
+`;

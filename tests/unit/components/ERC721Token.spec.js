@@ -10,10 +10,10 @@ describe('ERC721Token.vue', () => {
         const wrapper = mount(ERC721Token, {
             props: {
                 hash: '0x123',
-                index: 0
+                tokenId: '1'
             },
             global: {
-                stubs: ['ERC721-Token-Transfer-Modal', 'Hash-Link', 'Token-Transfers']
+                stubs: ['ERC721-Token-Transfer-Modal', 'Hash-Link', 'ERC721-Token-Transfers']
             }
         });
         await flushPromises();
@@ -24,6 +24,7 @@ describe('ERC721Token.vue', () => {
         vi.spyOn(server, 'getErc721TokenById')
             .mockResolvedValue({ data: {
                 metadata: {},
+                owner: '0x123',
                 attributes: {
                     name: 'My Token #1',
                     description: 'This NFT is the best',
@@ -46,10 +47,10 @@ describe('ERC721Token.vue', () => {
         const wrapper = mount(ERC721Token, {
             props: {
                 hash: '0x123',
-                index: 0
+                tokenId: '1'
             },
             global: {
-                stubs: ['ERC721-Token-Transfer-Modal', 'Hash-Link', 'Token-Transfers']
+                stubs: ['ERC721-Token-Transfer-Modal', 'Hash-Link', 'ERC721-Token-Transfers']
             }
         });
         await flushPromises();

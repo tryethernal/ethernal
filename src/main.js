@@ -1,5 +1,5 @@
 import 'vuetify/styles'
-import { createApp } from 'vue';
+import { createApp } from 'vue/dist/vue.esm-bundler';
 import * as Sentry from "@sentry/vue";
 
 import vuetify from './plugins/vuetify';
@@ -59,7 +59,9 @@ const createVueApp = (rootComponent, options) => {
     app.config.globalProperties.$dt = dt;
     app.config.globalProperties.$fromWei = FromWei;
 
+    app.provide('$dt', dt);
     app.provide('$fromWei', FromWei);
+    app.provide('$router', router);
 
     return app;
 }

@@ -15,7 +15,10 @@ export const useExplorerStore = defineStore('explorer', {
         workspace: {},
         faucet: null,
         v2Dex: null,
-        gasAnalyticsEnabled: null
+        gasAnalyticsEnabled: null,
+        isDemo: false,
+        totalSupply: null,
+        adsEnabled: null
     }),
 
     actions: {
@@ -24,6 +27,12 @@ export const useExplorerStore = defineStore('explorer', {
                 this.$reset();
 
             this.$patch(explorer);
+        }
+    },
+
+    getters: {
+        mainDomain() {
+            return this.domains.length ? this.domains[0] : this.domain;
         }
     }
 });

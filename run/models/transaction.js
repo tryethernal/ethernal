@@ -42,6 +42,78 @@ module.exports = (sequelize, DataTypes) => {
       Transaction.hasMany(models.TransactionTraceStep, { foreignKey: 'transactionId', as: 'traceSteps' });
     }
 
+    /**
+     * Get trace steps for a transaction
+     * @returns {Promise<Array>} - An array of trace steps
+     */
+    getTraceSteps() {
+        return sequelize.query(`
+            SELECT
+                tts.id,
+                tts."transactionId",
+                tts.address,
+                tts.depth,
+                tts.input,
+                tts.op,
+                tts."returnData",
+                tts.value,
+                c."tokenSymbol" AS "contract.tokenSymbol",
+                c."tokenName" AS "contract.tokenName",
+                c."tokenDecimals" AS "contract.tokenDecimals",
+                c."name" AS "contract.name",
+                c."abi" AS "contract.abi"
+            FROM transaction_trace_steps tts
+            LEFT JOIN contracts c ON
+                tts.address = c.address
+                AND tts."workspaceId" = c."workspaceId"
+            WHERE tts."transactionId" = :transactionId
+            AND tts."workspaceId" = :workspaceId
+            ORDER BY tts.id ASC
+        `, {
+            replacements: { transactionId: this.id, workspaceId: this.workspaceId },
+            type: sequelize.QueryTypes.SELECT,
+            nest: true
+        });
+    }
+
+    /**
+     * Get token balance changes for a transaction
+     * @param {number} page - The page number to fetch
+     * @param {number} itemsPerPage - The number of items per page
+     * @returns {Promise<Array>} - An array of token balance changes
+     */
+    getTokenBalanceChanges(page = 1, itemsPerPage = 10) {
+        return sequelize.query(`
+            SELECT
+                tbc.token,
+                tbc.address,
+                tbc."currentBalance",
+                tbc."previousBalance",
+                tbc."diff",
+                c."tokenSymbol" AS "contract.tokenSymbol",
+                c."tokenName" AS "contract.tokenName",
+                c."tokenDecimals" AS "contract.tokenDecimals",
+                c."name" AS "contract.name"
+            FROM token_balance_changes tbc
+            LEFT JOIN contracts c ON
+                tbc.token = c.address
+                AND tbc."workspaceId" = c."workspaceId"
+            WHERE tbc."transactionId" = :transactionId
+            AND tbc."workspaceId" = :workspaceId
+            ORDER BY tbc.id DESC
+            LIMIT :itemsPerPage OFFSET :offset
+        `, {
+            replacements: {
+                transactionId: this.id,
+                workspaceId: this.workspaceId,
+                itemsPerPage: itemsPerPage,
+                offset: (Math.max(page, 1) - 1) * itemsPerPage
+            },
+            type: sequelize.QueryTypes.SELECT,
+            nest: true
+        });
+    }
+
     async safeDestroy(transaction) {
         const receipt = await this.getReceipt();
         if (receipt)
@@ -226,7 +298,7 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     getFilteredTokenTransfers(page = 1, itemsPerPage = 10, order = 'DESC', orderBy = 'id') {
-        return sequelize.models.TokenTransfer.findAll({
+        return sequelize.models.TokenTransfer.findAndCountAll({
             where: { transactionId: this.id },
             include: {
                 model: sequelize.models.Contract,
@@ -244,10 +316,17 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    countTokenTransfers() {
-        return sequelize.models.TokenTransfer.count({
-            where: { transactionId: this.id }
+    async countTokenTransfers() {
+        const [{ count }] = await sequelize.query(`
+            SELECT COUNT(*)::int
+            FROM token_transfers
+            WHERE "transactionId" = :id
+            AND "workspaceId" = :workspaceId
+        `, {
+            replacements: { id: this.id, workspaceId: this.workspaceId },
+            type: sequelize.QueryTypes.SELECT
         });
+        return count;
     }
 
     getContract() {

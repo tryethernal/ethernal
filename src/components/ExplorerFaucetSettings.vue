@@ -166,6 +166,7 @@ export default {
                 .then(({ data }) => {
                     this.explorer = data;
                     this.faucet = data.faucet;
+                    this.explorerStore.updateExplorer(data);
                     if (this.faucet)
                         this.refreshFaucetBalance();
                 })
@@ -176,8 +177,8 @@ export default {
                 explorerId: this.explorerId,
                 token: this.explorer.token || 'ETH'
             })
-            .then(updated => {
-                if (updated) {
+            .then(faucet => {
+                if (!!faucet) {
                     this.explorer = null;
                     this.loadExplorer();
                 }

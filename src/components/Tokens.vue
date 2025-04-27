@@ -1,5 +1,9 @@
 <template>
     <v-container fluid>
+        <div class="d-flex align-center mb-4">
+            <h2 class="text-h6 font-weight-medium flex-grow-1">All ERC-20 Tokens</h2>
+        </div>
+        <v-divider class="my-4"></v-divider>
         <v-card>
             <v-card-text>
                 <v-data-table-server
@@ -31,7 +35,7 @@
                         {{ item.tokenSymbol }}
                     </template>
                     <template v-slot:item.tags="{ item }">
-                        <v-chip v-for="(pattern, idx) in item.patterns" :key="idx" size="x-small" class="bg-success mr-2">
+                        <v-chip v-for="(pattern, idx) in item.patterns" :key="idx" size="x-small" color="success" class="mr-2">
                             {{ formatContractPattern(pattern) }}
                         </v-chip>
                     </template>
@@ -40,79 +44,96 @@
         </v-card>
     </v-container>
 </template>
-<script>
+
+<script setup>
+import { ref, onMounted, onUnmounted, inject } from 'vue';
 import HashLink from '@/components/HashLink.vue';
 import { formatContractPattern } from '@/lib/utils';
 
-export default {
-    name: 'Contracts',
-    components: {
-        HashLink
+const $server = inject('$server');
+const $pusher = inject('$pusher');
+
+const loading = ref(true);
+const tokens = ref([]);
+const tokenCount = ref(0);
+
+const headers = [
+    {
+        title: 'Address',
+        key: 'address'
     },
-    data: () => ({
-        loading: true,
-        tokens: [],
-        headers: [
-            {
-                title: 'Address',
-                key: 'address'
-            },
-            {
-                title: 'Name',
-                key: 'tokenName'
-            },
-            {
-                title: 'Symbol',
-                key: 'tokenSymbol'
-            },
-            {
-                title: '',
-                key: 'tags',
-                sortable: false
-            }
-        ],
-        currentOptions: { page: 1, itemsPerPage: 10, orderBy: 'timestamp', order: 'desc', pattern: 'erc20' },
-        newTokenPusherHandler: null,
-        destroyedContractPusherHandler: null,
-        tokenCount: 0
-    }),
-    mounted: function() {
-        this.newTokenPusherHandler = this.$pusher.onNewToken(() => this.getTokens(this.currentOptions), this);
-        this.destroyedContractPusherHandler = this.$pusher.onDestroyedContract(() => this.getTokens(this.currentOptions), this);
+    {
+        title: 'Name',
+        key: 'tokenName'
     },
-    destroyed() {
-        this.newTokenPusherHandler();
-        this.destroyedContractPusherHandler.unbind(null, null, this);
+    {
+        title: 'Symbol',
+        key: 'tokenSymbol'
     },
-    methods: {
-        getTokens({ page, itemsPerPage, sortBy } = {}) {
-            this.loading = true;
-
-            if (!page || !itemsPerPage || !sortBy || !sortBy.length)
-                return this.loading = false;
-
-            if (this.currentOptions.page == page && this.currentOptions.itemsPerPage == itemsPerPage && this.currentOptions.sortBy == sortBy[0].key && this.currentOptions.sort == sortBy[0].order)
-                return this.loading = false;
-
-            this.currentOptions = {
-                page,
-                itemsPerPage,
-                orderBy: sortBy[0].key,
-                order: sortBy[0].order,
-                pattern: 'erc20'
-            };
-
-            this.$server.getContracts(this.currentOptions)
-                .then(({ data }) => {
-                    this.tokens = data.items;
-                    this.tokenCount = data.items.length == this.currentOptions.itemsPerPage ?
-                        (this.currentOptions.page * data.items.length) + 1 :
-                        this.currentOptions.page * data.items.length;
-                })
-                .catch(console.log)
-                .finally(() => this.loading = false);
-        },
-        formatContractPattern
+    {
+        title: '',
+        key: 'tags',
+        sortable: false
     }
-}
+];
+
+const currentOptions = ref({
+    page: 1,
+    itemsPerPage: 10,
+    orderBy: 'timestamp',
+    order: 'desc',
+    pattern: 'erc20'
+});
+
+let newTokenPusherHandler = null;
+let destroyedContractPusherHandler = null;
+
+const getTokens = ({ page, itemsPerPage, sortBy } = {}) => {
+    loading.value = true;
+
+    if (!page || !itemsPerPage || !sortBy || !sortBy.length) {
+        loading.value = false;
+        return;
+    }
+
+    if (currentOptions.value.page === page &&
+        currentOptions.value.itemsPerPage === itemsPerPage &&
+        currentOptions.value.sortBy === sortBy[0].key &&
+        currentOptions.value.sort === sortBy[0].order) {
+        loading.value = false;
+        return;
+    }
+
+    currentOptions.value = {
+        page,
+        itemsPerPage,
+        orderBy: sortBy[0].key,
+        order: sortBy[0].order,
+        pattern: 'erc20'
+    };
+
+    $server.getContracts(currentOptions.value)
+        .then(({ data }) => {
+            tokens.value = data.items;
+            tokenCount.value = data.items.length === currentOptions.value.itemsPerPage ?
+                (currentOptions.value.page * data.items.length) + 1 :
+                currentOptions.value.page * data.items.length;
+        })
+        .catch(console.log)
+        .finally(() => loading.value = false);
+};
+
+onMounted(() => {
+    newTokenPusherHandler = $pusher.onNewToken(() => getTokens(currentOptions.value));
+    destroyedContractPusherHandler = $pusher.onDestroyedContract(() => getTokens(currentOptions.value));
+});
+
+onUnmounted(() => {
+    if (newTokenPusherHandler) {
+        newTokenPusherHandler();
+    }
+    if (destroyedContractPusherHandler) {
+        destroyedContractPusherHandler.unbind(null, null);
+    }
+});
 </script>

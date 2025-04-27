@@ -1,6 +1,6 @@
 {
   "name": "ethernal",
-  "version": "4.4.1",
+  "version": "5.0.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -67,6 +67,7 @@
     "stripe": "^8.176.0",
     "util": "^0.12.5",
     "v-stripe-elements": "^1.2.0",
+    "viem": "^2.23.13",
     "vue": "^3.5.1",
     "vue-chartjs": "^5.3.2",
     "vue-json-pretty": "^2.2.4",
@@ -105,7 +106,7 @@
     "node-fetch": "^2.6.1",
     "sass": "^1.30.0",
     "terser": "^5.38.1",
-    "vite": "^5.4.3",
+    "vite": "^6.3.3",
     "vite-plugin-commonjs": "^0.10.1",
     "vite-plugin-node-polyfills": "^0.22.0",
     "vite-plugin-vuetify": "^2.0.4",

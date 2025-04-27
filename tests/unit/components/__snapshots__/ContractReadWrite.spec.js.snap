@@ -1,0 +1,358 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ContractReadWrite.vue > Should filter methods based on search input 1`] = `
+"<div>
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated mt-2">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-text">
+      <contract-call-options-stub accounts="" loading="false"></contract-call-options-stub>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated my-4">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-text">
+      <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field">
+        <!---->
+        <div class="v-input__control">
+          <div class="v-field v-field--active v-field--center-affix v-field--dirty v-field--prepended v-field--variant-outlined v-theme--light v-locale--is-ltr">
+            <div class="v-field__overlay"></div>
+            <div class="v-field__loader">
+              <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                <!---->
+                <div class="v-progress-linear__background"></div>
+                <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                  <div class="v-progress-linear__indeterminate">
+                    <div class="v-progress-linear__indeterminate long"></div>
+                    <div class="v-progress-linear__indeterminate short"></div>
+                  </div>
+                </transition-stub>
+                <!---->
+              </div>
+            </div>
+            <div class="v-field__prepend-inner"><i class="mdi-magnify mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i>
+              <!---->
+            </div>
+            <div class="v-field__field" data-no-activator="">
+              <!----><label class="v-label v-field-label" for="input-0">
+                <!---->Filter methods
+              </label>
+              <!----><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" class="v-field__input" value="balance">
+              <!---->
+            </div>
+            <!---->
+            <!---->
+            <div class="v-field__outline">
+              <div class="v-field__outline__start"></div>
+              <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
+                  <!---->Filter methods
+                </label></div>
+              <div class="v-field__outline__end"></div>
+              <!---->
+            </div>
+          </div>
+        </div>
+        <!---->
+        <!---->
+      </div>
+      <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator">
+      <div class="v-row pb-4">
+        <div class="v-col-sm-12 v-col-md-6 v-col-lg-6 v-col">
+          <contract-read-method-stub contract="[object Object]" method="[object Object]"></contract-read-method-stub>
+        </div>
+      </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+</div>"
+`;
+
+exports[`ContractReadWrite.vue > Should show read methods when forceTab is read 1`] = `
+"<div>
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated mt-2">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-text">
+      <contract-call-options-stub accounts="" loading="false"></contract-call-options-stub>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated my-4">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-text">
+      <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field">
+        <!---->
+        <div class="v-input__control">
+          <div class="v-field v-field--center-affix v-field--prepended v-field--variant-outlined v-theme--light v-locale--is-ltr">
+            <div class="v-field__overlay"></div>
+            <div class="v-field__loader">
+              <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                <!---->
+                <div class="v-progress-linear__background"></div>
+                <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                  <div class="v-progress-linear__indeterminate">
+                    <div class="v-progress-linear__indeterminate long"></div>
+                    <div class="v-progress-linear__indeterminate short"></div>
+                  </div>
+                </transition-stub>
+                <!---->
+              </div>
+            </div>
+            <div class="v-field__prepend-inner"><i class="mdi-magnify mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i>
+              <!---->
+            </div>
+            <div class="v-field__field" data-no-activator="">
+              <!----><label class="v-label v-field-label" for="input-0">
+                <!---->Filter methods
+              </label>
+              <!----><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" class="v-field__input" value="">
+              <!---->
+            </div>
+            <!---->
+            <!---->
+            <div class="v-field__outline">
+              <div class="v-field__outline__start"></div>
+              <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
+                  <!---->Filter methods
+                </label></div>
+              <div class="v-field__outline__end"></div>
+              <!---->
+            </div>
+          </div>
+        </div>
+        <!---->
+        <!---->
+      </div>
+      <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator">
+      <div class="v-row pb-4">
+        <div class="v-col-sm-12 v-col-md-6 v-col-lg-6 v-col">
+          <contract-read-method-stub contract="[object Object]" method="[object Object]"></contract-read-method-stub>
+        </div>
+      </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+</div>"
+`;
+
+exports[`ContractReadWrite.vue > Should show verification message when contract has no ABI 1`] = `
+"<div>
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated mt-2">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-text">
+      <contract-call-options-stub accounts="" loading="false"></contract-call-options-stub>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated my-4">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-text"> Verify the contract source code <a href="#code" class="text-primary text-decoration-none">here</a>. </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+</div>"
+`;
+
+exports[`ContractReadWrite.vue > Should show write methods when forceTab is write 1`] = `
+"<div>
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated mt-2">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-text">
+      <contract-call-options-stub accounts="" loading="false"></contract-call-options-stub>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated my-4">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-text">
+      <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field">
+        <!---->
+        <div class="v-input__control">
+          <div class="v-field v-field--center-affix v-field--prepended v-field--variant-outlined v-theme--light v-locale--is-ltr">
+            <div class="v-field__overlay"></div>
+            <div class="v-field__loader">
+              <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                <!---->
+                <div class="v-progress-linear__background"></div>
+                <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                  <div class="v-progress-linear__indeterminate">
+                    <div class="v-progress-linear__indeterminate long"></div>
+                    <div class="v-progress-linear__indeterminate short"></div>
+                  </div>
+                </transition-stub>
+                <!---->
+              </div>
+            </div>
+            <div class="v-field__prepend-inner"><i class="mdi-magnify mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i>
+              <!---->
+            </div>
+            <div class="v-field__field" data-no-activator="">
+              <!----><label class="v-label v-field-label" for="input-0">
+                <!---->Filter methods
+              </label>
+              <!----><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" class="v-field__input" value="">
+              <!---->
+            </div>
+            <!---->
+            <!---->
+            <div class="v-field__outline">
+              <div class="v-field__outline__start"></div>
+              <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
+                  <!---->Filter methods
+                </label></div>
+              <div class="v-field__outline__end"></div>
+              <!---->
+            </div>
+          </div>
+        </div>
+        <!---->
+        <!---->
+      </div>
+      <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator">
+      <div class="v-row pb-4">
+        <div class="v-col-sm-12 v-col-md-6 v-col-lg-6 v-col">
+          <contract-write-method-stub contract="[object Object]" method="[object Object]" options="[object Object]" active="false"></contract-write-method-stub>
+        </div>
+      </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+</div>"
+`;
