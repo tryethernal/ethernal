@@ -8,6 +8,7 @@
             v-if="mobile"
             location="left"
             width="300"
+            :class="'theme-background'"
         >
             <v-list>
                 <v-list-item>
@@ -166,7 +167,7 @@
         </v-navigation-drawer>
 
         <!-- Desktop Navigation Bar -->
-        <v-app-bar height="64" :style="styles" flat class="main-bar" v-if="!mobile">
+        <v-app-bar height="64" :style="styles" flat :class="['main-bar', 'theme-background']" v-if="!mobile">
             <v-container class="d-flex align-center fill-height">
                 <div class="d-flex align-center">
                     <div class="custom-logo-wrapper mr-4" v-if="logo">
@@ -192,11 +193,11 @@
                     >
                         <template v-slot:activator="{ props, isActive }">
                             <v-btn 
-                                :color="isActive || isBlockchainActive ? 'primary' : 'black'" 
+                                :color="isActive || isBlockchainActive ? 'primary' : undefined" 
                                 variant="plain" 
                                 v-bind="props"
                                 @mouseleave="blockchainMenuOpen = false"
-                                :class="`d-flex align-center opacity-${isActive || isBlockchainActive ? '100' : '80'} fill-height`"
+                                :class="`d-flex align-center opacity-${isActive || isBlockchainActive ? '100' : '80'} fill-height text-default`"
                             >
                                 Blockchain
                                 <v-icon :icon="isActive ? 'mdi-chevron-up' : 'mdi-chevron-down'" class="ml-1"></v-icon>
@@ -251,11 +252,11 @@
                     >
                         <template v-slot:activator="{ props, isActive }">
                             <v-btn 
-                                :color="isActive || isTokensActive ? 'primary' : 'black'" 
+                                :color="isActive || isTokensActive ? 'primary' : undefined" 
                                 variant="plain" 
                                 v-bind="props"
                                 @mouseleave="tokensMenuOpen = false"
-                                :class="`d-flex align-center opacity-${isActive || isTokensActive ? '100' : '80'} fill-height`"
+                                :class="`d-flex align-center opacity-${isActive || isTokensActive ? '100' : '80'} fill-height text-default`"
                             >
                                 Tokens
                                 <v-icon :icon="isActive ? 'mdi-chevron-up' : 'mdi-chevron-down'" class="ml-1"></v-icon>
@@ -444,12 +445,27 @@ const logOut = () => {
 </script>
 
 <style>
+.theme-background {
+    background-color: var(--app-bar-background) !important;
+}
+
 .v-app-bar {
-    background-color: white !important;
+    color: var(--text-primary);
 }
+
+.v-navigation-drawer {
+    color: var(--text-primary);
+}
+
+.v-app-bar {
+    background-color: var(--app-bar-background) !important;
+    color: var(--text-primary);
+}
+
 .v-app-bar.main-bar {
-    border-bottom: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
+    border-bottom: 1px solid var(--border-color);
 }
+
 .v-app-bar .v-btn {
     text-transform: none;
     font-weight: 500;
@@ -480,14 +496,25 @@ const logOut = () => {
 .v-app-bar .v-btn .v-ripple__container {
     display: none;
 }
+
 .v-app-bar .v-btn.text-default {
-    color: rgba(var(--v-theme-on-surface), var(--v-high-emphasis-opacity));
+    color: var(--text-primary);
 }
+
+/* Menu styles */
+.v-menu .v-list {
+    background-color: var(--card-background) !important;
+    border-radius: 8px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+    min-width: 220px;
+    padding: 8px 0;
+}
+
 .v-menu .v-list-item {
     min-height: 32px;
     padding: 0 16px;
     font-size: 0.875rem;
-    color: rgba(var(--v-theme-on-surface), var(--v-high-emphasis-opacity));
+    color: var(--text-primary);
     margin: 0 8px;
     border-radius: 16px;
     transition: color 0.2s ease;
@@ -521,24 +548,34 @@ const logOut = () => {
     opacity: 0 !important;
 }
 
-.v-menu .v-list {
-    border-radius: 8px;
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
-    min-width: 220px;
-    padding: 8px 0;
-}
-
 .v-menu .v-divider {
     margin: 8px 0;
+    border-color: var(--divider-color);
 }
 
-.custom-logo {
-    max-height: 40px;
+/* Navigation Drawer Styles */
+.v-navigation-drawer {
+    background-color: var(--card-background) !important;
+    color: var(--text-primary);
 }
 
-/* Mobile Navigation Styles */
+.v-navigation-drawer .v-list {
+    background-color: var(--card-background) !important;
+    color: var(--text-primary);
+}
+
 .v-navigation-drawer .v-list-item {
     min-height: 44px;
+    color: var(--text-primary);
+}
+
+.v-navigation-drawer .v-list-item:hover,
+.v-navigation-drawer .v-list-item.router-link-active {
+    color: rgb(var(--v-theme-primary));
+}
+
+.v-navigation-drawer .v-divider {
+    border-color: var(--divider-color);
 }
 
 .v-navigation-drawer .custom-logo {
@@ -553,5 +590,30 @@ const logOut = () => {
     font-size: 0.75rem;
     min-height: 36px;
     padding: 0 16px;
+    color: var(--text-secondary);
+}
+
+/* Logo styles */
+.custom-logo {
+    max-height: 40px;
+}
+
+/* Fix for text colors in buttons */
+.v-btn.text-default {
+    color: var(--text-primary) !important;
+}
+
+.v-btn.text-default:hover,
+.v-btn.router-link-active {
+    color: rgb(var(--v-theme-primary)) !important;
+}
+
+/* Opacity adjustments for better contrast in dark mode */
+.v-theme--dark .opacity-80 {
+    opacity: 0.9 !important;
+}
+
+.v-theme--dark .v-menu .v-list {
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 5px 0px, rgba(0, 0, 0, 0.2) 0px 0px 1px 0px;
 }
 </style>

@@ -25,10 +25,10 @@
         <template v-slot:item.hash="{ item }">
             <v-tooltip>
                 <template v-slot:activator="{ props }">
-                    <v-icon v-bind="props" size="small" v-show="txStatus(item) == 'succeeded'" color="success-lighten-1" class="mr-2">mdi-check-circle</v-icon>
-                    <v-icon v-bind="props" size="small" v-show="txStatus(item) == 'failed'" color="error-lighten-1" class="mr-2">mdi-alert-circle</v-icon>
-                    <v-icon v-bind="props" size="small" v-show="txStatus(item) == 'unknown'" color="grey-lighten-1" class="mr-2">mdi-help-circle</v-icon>
-                    <v-progress-circular v-bind="props" size="16" width="2" indeterminate color="primary" v-show="txStatus(item) == 'syncing'" class="mr-2"></v-progress-circular>
+                    <v-icon v-bind="props" size="small" v-show="txStatus(item) == 'succeeded'" class="mr-2 text-success">mdi-check-circle</v-icon>
+                    <v-icon v-bind="props" size="small" v-show="txStatus(item) == 'failed'" class="mr-2 text-error">mdi-alert-circle</v-icon>
+                    <v-icon v-bind="props" size="small" v-show="txStatus(item) == 'unknown'" class="mr-2 text-grey">mdi-help-circle</v-icon>
+                    <v-progress-circular v-bind="props" size="16" width="2" indeterminate v-show="txStatus(item) == 'syncing'" class="mr-2 text-primary"></v-progress-circular>
                 </template>
                 <span v-show="txStatus(item) == 'succeeded'">Succeeded Transaction</span>
                 <span v-show="txStatus(item) == 'failed'">Failed Transaction</span>
