@@ -13,9 +13,9 @@
                         size="small"
                         class="mt-2 px-2"
                         max-width="180px"
-                        :title="'Add to MetaMask'">
+                        :title="'Add to wallet'">
                             <img :src="MetamaskIcon" class="metamask-icon mr-2" width="20" height="20" alt="MetaMask" />
-                            <span class="text-body-2">Add to Metamask</span>
+                            <span class="text-body-2">Add to wallet</span>
                     </v-btn>
                 </div>
 

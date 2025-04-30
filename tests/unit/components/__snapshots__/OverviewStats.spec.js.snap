@@ -1,7 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`OverviewStats.vue > Should handle server errors gracefully 1`] = `
-"<div data-v-1ebb31f3="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated white-card" style="height: 100%;">
+"<div data-v-1ebb31f3="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated bg-surface" style="height: 100%;">
   <!---->
   <div class="v-card__loader">
     <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
@@ -48,7 +48,7 @@ exports[`OverviewStats.vue > Should handle server errors gracefully 1`] = `
 `;
 
 exports[`OverviewStats.vue > Should hide dividers correctly on different screen sizes 1`] = `
-"<div data-v-1ebb31f3="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated white-card" style="height: 100%;">
+"<div data-v-1ebb31f3="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated bg-surface" style="height: 100%;">
   <!---->
   <div class="v-card__loader">
     <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
@@ -95,7 +95,7 @@ exports[`OverviewStats.vue > Should hide dividers correctly on different screen 
 `;
 
 exports[`OverviewStats.vue > Should not show total supply when not available 1`] = `
-"<div data-v-1ebb31f3="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated white-card" style="height: 100%;">
+"<div data-v-1ebb31f3="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated bg-surface" style="height: 100%;">
   <!---->
   <div class="v-card__loader">
     <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
@@ -140,7 +140,7 @@ exports[`OverviewStats.vue > Should not show total supply when not available 1`]
 `;
 
 exports[`OverviewStats.vue > Should show block number when it is 0 1`] = `
-"<div data-v-1ebb31f3="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated white-card" style="height: 100%;">
+"<div data-v-1ebb31f3="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated bg-surface" style="height: 100%;">
   <!---->
   <div class="v-card__loader">
     <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
@@ -187,7 +187,7 @@ exports[`OverviewStats.vue > Should show block number when it is 0 1`] = `
 `;
 
 exports[`OverviewStats.vue > Should show loading state while fetching data 1`] = `
-"<div data-v-1ebb31f3="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated white-card" style="height: 100%;">
+"<div data-v-1ebb31f3="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated bg-surface" style="height: 100%;">
   <!---->
   <div class="v-card__loader">
     <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
@@ -234,7 +234,7 @@ exports[`OverviewStats.vue > Should show loading state while fetching data 1`] =
 `;
 
 exports[`OverviewStats.vue > Should show the component with all stats 1`] = `
-"<div data-v-1ebb31f3="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated white-card" style="height: 100%;">
+"<div data-v-1ebb31f3="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated bg-surface" style="height: 100%;">
   <!---->
   <div class="v-card__loader">
     <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">

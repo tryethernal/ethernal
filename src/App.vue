@@ -211,7 +211,6 @@ export default {
             this.userStore.updateUser(user);
 
             if (currentPath != '/auth' && !user && this.envStore.isAdmin) {
-                console.log('redirecting to auth');
                 return this.$router.push('/auth');
             }
             if (currentPath == '/auth' && user) {
@@ -242,13 +241,19 @@ export default {
                     customThemeKeys.forEach((key) => {
                         switch (key) {
                             case 'background':
-                                this.styles[key] = lightTheme[key];
+                                this.$vuetify.theme.themes.light.colors.background = lightTheme[key];
                                 break;
                             default:
                                 this.$vuetify.theme.themes.light.colors[key] = lightTheme[key];
                         }
                     });
                     this.theme.global.name.value = 'light';
+
+                    // Only copy the primary color to dark theme, but make it lighter for better contrast in dark mode
+                    const primaryColor = this.$vuetify.theme.themes.light.colors.primary;
+                    // Convert to a slightly lighter shade for dark theme
+                    const lighterPrimaryColor = this.lightenColor(primaryColor, 15); // Lighten by 15%
+                    this.$vuetify.theme.themes.dark.colors.primary = lighterPrimaryColor;
                 }
 
                 if (font)
@@ -287,6 +292,70 @@ export default {
             this.isOverlayActive = false;
             this.appBarComponent = 'rpc-connector';
             this.routerComponent = 'router-view';
+        },
+        lightenColor(hex, percent) {
+            // Remove the '#' if present
+            hex = hex.replace('#', '');
+            
+            // Convert hex to RGB first
+            let r = parseInt(hex.substr(0, 2), 16) / 255;
+            let g = parseInt(hex.substr(2, 2), 16) / 255;
+            let b = parseInt(hex.substr(4, 2), 16) / 255;
+            
+            // Find greatest and smallest channel values
+            let cmin = Math.min(r, g, b);
+            let cmax = Math.max(r, g, b);
+            let delta = cmax - cmin;
+            
+            let h = 0;
+            let s = 0;
+            let l = 0;
+            
+            // Calculate hue
+            if (delta === 0) h = 0;
+            else if (cmax === r) h = ((g - b) / delta) % 6;
+            else if (cmax === g) h = (b - r) / delta + 2;
+            else h = (r - g) / delta + 4;
+            
+            h = Math.round(h * 60);
+            if (h < 0) h += 360;
+            
+            // Calculate lightness
+            l = (cmax + cmin) / 2;
+            
+            // Calculate saturation
+            s = delta === 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+            
+            // Adjust lightness by percent
+            l = Math.min(1, l * (1 + percent / 100));
+            
+            // Convert back to RGB
+            let c = (1 - Math.abs(2 * l - 1)) * s;
+            let x = c * (1 - Math.abs((h / 60) % 2 - 1));
+            let m = l - c / 2;
+            
+            let r1, g1, b1;
+            if (0 <= h && h < 60) {
+                [r1, g1, b1] = [c, x, 0];
+            } else if (60 <= h && h < 120) {
+                [r1, g1, b1] = [x, c, 0];
+            } else if (120 <= h && h < 180) {
+                [r1, g1, b1] = [0, c, x];
+            } else if (180 <= h && h < 240) {
+                [r1, g1, b1] = [0, x, c];
+            } else if (240 <= h && h < 300) {
+                [r1, g1, b1] = [x, 0, c];
+            } else {
+                [r1, g1, b1] = [c, 0, x];
+            }
+            
+            // Convert to hex
+            const toHex = (n) => {
+                const hex = Math.round((n + m) * 255).toString(16);
+                return hex.length === 1 ? '0' + hex : hex;
+            };
+            
+            return `#${toHex(r1)}${toHex(g1)}${toHex(b1)}`;
         }
     },
     computed: {

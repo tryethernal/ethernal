@@ -1,125 +1,43 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`TransactionFunctionCall.vue > Should display transaction call 1`] = `
-"<div data-v-85d648db="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated text-medium-emphasis">
-  <!---->
-  <div class="v-card__loader">
-    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
-      <!---->
-      <div class="v-progress-linear__background"></div>
-      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
-      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
-        <div class="v-progress-linear__indeterminate">
-          <div class="v-progress-linear__indeterminate long"></div>
-          <div class="v-progress-linear__indeterminate short"></div>
-        </div>
-      </transition-stub>
-      <!---->
-    </div>
-  </div>
-  <!---->
-  <!---->
-  <div data-v-85d648db="" class="v-card-text">transfer(
-    <div data-v-85d648db="" class="ml-4" style="white-space: pre;">
-      <formatted-sol-var-stub data-v-85d648db="" input="[object Object]" value="0xc00e94Cb662C3520282E6f5717214004A7f26888"></formatted-sol-var-stub>
-    </div>
-    <div data-v-85d648db="" class="ml-4" style="white-space: pre;">
-      <formatted-sol-var-stub data-v-85d648db="" input="[object Object]" value="1"></formatted-sol-var-stub>
-    </div> )
-  </div>
-  <!---->
-  <!----><span class="v-card__underlay"></span>
-</div>"
+"transfer(
+<div data-v-85d648db="" class="ml-4" style="white-space: pre;">
+  <formatted-sol-var-stub data-v-85d648db="" input="[object Object]" value="0xc00e94Cb662C3520282E6f5717214004A7f26888"></formatted-sol-var-stub>
+</div>
+<div data-v-85d648db="" class="ml-4" style="white-space: pre;">
+  <formatted-sol-var-stub data-v-85d648db="" input="[object Object]" value="1"></formatted-sol-var-stub>
+</div>
+ )"
 `;
 
 exports[`TransactionFunctionCall.vue > Should display warning if no ABI 1`] = `
-"<div data-v-85d648db="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated text-medium-emphasis">
-  <!---->
-  <div class="v-card__loader">
-    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
-      <!---->
-      <div class="v-progress-linear__background"></div>
-      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
-      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
-        <div class="v-progress-linear__indeterminate">
-          <div class="v-progress-linear__indeterminate long"></div>
-          <div class="v-progress-linear__indeterminate short"></div>
-        </div>
-      </transition-stub>
-      <!---->
-    </div>
-  </div>
-  <!---->
-  <!---->
-  <div data-v-85d648db="" class="v-card-text">
-    <div data-v-85d648db="" style="float: right;"><a data-v-85d648db="" href="#" class="no-decoration">Hex</a> | <a data-v-85d648db="" href="#" class="">UTF-8</a></div><b data-v-85d648db="">Signature:</b> 0xb9059cbb<br data-v-85d648db=""><b data-v-85d648db="">Data:</b>
-    <div data-v-85d648db="" style="word-break: break-all; white-space: normal;" class="data-container">
-      <div data-v-85d648db="" class="truncated-content">0xb9059cbb23456789</div>
-      <!--v-if-->
-    </div>
-  </div>
-  <!---->
-  <!----><span class="v-card__underlay"></span>
+"<div data-v-85d648db="" style="float: right;"><a data-v-85d648db="" href="#" class="no-decoration">Hex</a> | <a data-v-85d648db="" href="#" class="">UTF-8</a></div>
+<b data-v-85d648db="">Signature:</b>
+ 0xb9059cbb
+<br data-v-85d648db="">
+<b data-v-85d648db="">Data:</b>
+<div data-v-85d648db="" style="word-break: break-all; white-space: normal;" class="data-container">
+  <div data-v-85d648db="" class="truncated-content">0xb9059cbb23456789</div>
+  <!--v-if-->
 </div>"
 `;
 
 exports[`TransactionFunctionCall.vue > Should handle arrays as parameters 1`] = `
-"<div data-v-85d648db="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated text-medium-emphasis">
-  <!---->
-  <div class="v-card__loader">
-    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
-      <!---->
-      <div class="v-progress-linear__background"></div>
-      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
-      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
-        <div class="v-progress-linear__indeterminate">
-          <div class="v-progress-linear__indeterminate long"></div>
-          <div class="v-progress-linear__indeterminate short"></div>
-        </div>
-      </transition-stub>
-      <!---->
-    </div>
-  </div>
-  <!---->
-  <!---->
-  <div data-v-85d648db="" class="v-card-text">reproWriteBug(
-    <div data-v-85d648db="" class="ml-4" style="white-space: pre;">
-      <formatted-sol-var-stub data-v-85d648db="" input="[object Object]" value="1,3"></formatted-sol-var-stub>
-    </div> )
-  </div>
-  <!---->
-  <!----><span class="v-card__underlay"></span>
-</div>"
+"reproWriteBug(
+<div data-v-85d648db="" class="ml-4" style="white-space: pre;">
+  <formatted-sol-var-stub data-v-85d648db="" input="[object Object]" value="1,3"></formatted-sol-var-stub>
+</div>
+ )"
 `;
 
 exports[`TransactionFunctionCall.vue > Should load erc20 abi if function is detected 1`] = `
-"<div data-v-85d648db="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated text-medium-emphasis">
-  <!---->
-  <div class="v-card__loader">
-    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
-      <!---->
-      <div class="v-progress-linear__background"></div>
-      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
-      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
-        <div class="v-progress-linear__indeterminate">
-          <div class="v-progress-linear__indeterminate long"></div>
-          <div class="v-progress-linear__indeterminate short"></div>
-        </div>
-      </transition-stub>
-      <!---->
-    </div>
-  </div>
-  <!---->
-  <!---->
-  <div data-v-85d648db="" class="v-card-text">transfer(
-    <div data-v-85d648db="" class="ml-4" style="white-space: pre;">
-      <formatted-sol-var-stub data-v-85d648db="" input="[object Object]" value="0xc00e94Cb662C3520282E6f5717214004A7f26888"></formatted-sol-var-stub>
-    </div>
-    <div data-v-85d648db="" class="ml-4" style="white-space: pre;">
-      <formatted-sol-var-stub data-v-85d648db="" input="[object Object]" value="1"></formatted-sol-var-stub>
-    </div> )
-  </div>
-  <!---->
-  <!----><span class="v-card__underlay"></span>
-</div>"
+"transfer(
+<div data-v-85d648db="" class="ml-4" style="white-space: pre;">
+  <formatted-sol-var-stub data-v-85d648db="" input="[object Object]" value="0xc00e94Cb662C3520282E6f5717214004A7f26888"></formatted-sol-var-stub>
+</div>
+<div data-v-85d648db="" class="ml-4" style="white-space: pre;">
+  <formatted-sol-var-stub data-v-85d648db="" input="[object Object]" value="1"></formatted-sol-var-stub>
+</div>
+ )"
 `;
