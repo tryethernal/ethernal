@@ -298,23 +298,65 @@ export default {
             // Remove the '#' if present
             hex = hex.replace('#', '');
             
-            // Convert to RGB
-            let r = parseInt(hex.substr(0, 2), 16);
-            let g = parseInt(hex.substr(2, 2), 16);
-            let b = parseInt(hex.substr(4, 2), 16);
+            // Convert hex to RGB first
+            let r = parseInt(hex.substr(0, 2), 16) / 255;
+            let g = parseInt(hex.substr(2, 2), 16) / 255;
+            let b = parseInt(hex.substr(4, 2), 16) / 255;
             
-            // Increase each component by the percentage
-            r = Math.min(255, Math.round(r * (1 + percent / 100)));
-            g = Math.min(255, Math.round(g * (1 + percent / 100)));
-            b = Math.min(255, Math.round(b * (1 + percent / 100)));
+            // Find greatest and smallest channel values
+            let cmin = Math.min(r, g, b);
+            let cmax = Math.max(r, g, b);
+            let delta = cmax - cmin;
             
-            // Convert back to hex
+            let h = 0;
+            let s = 0;
+            let l = 0;
+            
+            // Calculate hue
+            if (delta === 0) h = 0;
+            else if (cmax === r) h = ((g - b) / delta) % 6;
+            else if (cmax === g) h = (b - r) / delta + 2;
+            else h = (r - g) / delta + 4;
+            
+            h = Math.round(h * 60);
+            if (h < 0) h += 360;
+            
+            // Calculate lightness
+            l = (cmax + cmin) / 2;
+            
+            // Calculate saturation
+            s = delta === 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+            
+            // Adjust lightness by percent
+            l = Math.min(1, l * (1 + percent / 100));
+            
+            // Convert back to RGB
+            let c = (1 - Math.abs(2 * l - 1)) * s;
+            let x = c * (1 - Math.abs((h / 60) % 2 - 1));
+            let m = l - c / 2;
+            
+            let r1, g1, b1;
+            if (0 <= h && h < 60) {
+                [r1, g1, b1] = [c, x, 0];
+            } else if (60 <= h && h < 120) {
+                [r1, g1, b1] = [x, c, 0];
+            } else if (120 <= h && h < 180) {
+                [r1, g1, b1] = [0, c, x];
+            } else if (180 <= h && h < 240) {
+                [r1, g1, b1] = [0, x, c];
+            } else if (240 <= h && h < 300) {
+                [r1, g1, b1] = [x, 0, c];
+            } else {
+                [r1, g1, b1] = [c, 0, x];
+            }
+            
+            // Convert to hex
             const toHex = (n) => {
-                const hex = n.toString(16);
+                const hex = Math.round((n + m) * 255).toString(16);
                 return hex.length === 1 ? '0' + hex : hex;
             };
             
-            return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+            return `#${toHex(r1)}${toHex(g1)}${toHex(b1)}`;
         }
     },
     computed: {
