@@ -487,10 +487,6 @@ const logOut = () => {
 </script>
 
 <style>
-.theme-background {
-    background-color: var(--app-bar-background) !important;
-}
-
 .v-app-bar {
     color: var(--text-primary);
 }

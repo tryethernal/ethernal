@@ -55,4 +55,4 @@ describe('ThemeToggle.vue', () => {
         expect(wrapper.html()).toMatchSnapshot();
         expect(mockLocalStorage.setItem).toHaveBeenCalledWith('theme', 'dark');
     });
-}); 
+});

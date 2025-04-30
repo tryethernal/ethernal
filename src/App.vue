@@ -293,6 +293,28 @@ export default {
             this.isOverlayActive = false;
             this.appBarComponent = 'rpc-connector';
             this.routerComponent = 'router-view';
+        },
+        lightenColor(hex, percent) {
+            // Remove the '#' if present
+            hex = hex.replace('#', '');
+            
+            // Convert to RGB
+            let r = parseInt(hex.substr(0, 2), 16);
+            let g = parseInt(hex.substr(2, 2), 16);
+            let b = parseInt(hex.substr(4, 2), 16);
+            
+            // Increase each component by the percentage
+            r = Math.min(255, Math.round(r * (1 + percent / 100)));
+            g = Math.min(255, Math.round(g * (1 + percent / 100)));
+            b = Math.min(255, Math.round(b * (1 + percent / 100)));
+            
+            // Convert back to hex
+            const toHex = (n) => {
+                const hex = n.toString(16);
+                return hex.length === 1 ? '0' + hex : hex;
+            };
+            
+            return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
         }
     },
     computed: {

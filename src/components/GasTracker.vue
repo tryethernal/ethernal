@@ -209,7 +209,6 @@ const speedEstimatesAvailable = computed(() => {
 });
 
 const contrastingColor = computed(() => {
-    const theme = useTheme();
     return getBestContrastingColor(theme.current.value.colors['surface-variant'], theme.current.value.colors);
 });
 

@@ -284,4 +284,4 @@ describe('MainNavBar.vue', () => {
 
         expect(wrapper.html()).toMatchSnapshot();
     });
-}); 
+});

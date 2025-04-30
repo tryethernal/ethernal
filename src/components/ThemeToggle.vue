@@ -14,11 +14,20 @@ import { useTheme } from 'vuetify';
 
 const theme = useTheme();
 const isDarkMode = ref(false);
+const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
 // Initialize theme state
 const initializeTheme = () => {
-  const savedTheme = localStorage.getItem('theme') || 'light';
-  isDarkMode.value = savedTheme === 'dark';
+  const savedTheme = localStorage.getItem('theme');
+  
+  if (savedTheme) {
+    // Use saved preference if it exists
+    isDarkMode.value = savedTheme === 'dark';
+  } else {
+    // Otherwise use system preference
+    isDarkMode.value = mediaQuery.matches;
+  }
+  
   applyTheme();
 };
 
@@ -54,15 +63,10 @@ const updateThemeFromSystem = (e) => {
 // Lifecycle hooks
 onMounted(() => {
   initializeTheme();
-  
-  // Watch for system theme changes
-  const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
   mediaQuery.addEventListener('change', updateThemeFromSystem);
 });
 
 onBeforeUnmount(() => {
-  // Clean up event listener
-  const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
   mediaQuery.removeEventListener('change', updateThemeFromSystem);
 });
 </script>

@@ -190,10 +190,6 @@ onMounted(async () => {
 </script>
 
 <style>
-.theme-background {
-    background-color: var(--app-bar-background) !important;
-}
-
 .v-app-bar {
     display: flex;
     justify-content: center;

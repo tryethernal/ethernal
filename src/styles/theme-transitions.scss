@@ -1,9 +1,49 @@
 body {
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color 0.3s ease, color 0.1s ease;
 }
 
+// Common Vuetify components theme transitions
 .v-app-bar,
 .v-card,
-.v-sheet {
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+.v-sheet,
+.v-list,
+.v-navigation-drawer,
+.v-toolbar,
+.v-footer,
+.v-tabs,
+.v-btn,
+.v-menu,
+.v-dialog,
+.v-expansion-panel {
+  transition: background-color 0.3s ease, 
+              border-color 0.3s ease,
+              color 0.1s ease;
+
+  // Handle nested text elements
+  .v-list-item__title,
+  .v-list-item__subtitle,
+  .v-card__title,
+  .v-card__subtitle,
+  .v-card__text,
+  .v-toolbar__title,
+  .v-tab,
+  .v-btn__content {
+    transition: color 0.1s ease;
+  }
+}
+
+// Form components
+.v-text-field,
+.v-select,
+.v-textarea,
+.v-input {
+  transition: background-color 0.3s ease,
+              border-color 0.3s ease,
+              color 0.1s ease;
+
+  .v-label,
+  input,
+  textarea {
+    transition: color 0.1s ease;
+  }
 }
