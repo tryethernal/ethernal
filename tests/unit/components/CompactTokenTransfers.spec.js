@@ -85,7 +85,7 @@ describe('CompactTokenTransfers.vue', () => {
         expect(wrapper.html()).toMatchSnapshot();
 
         // Test pagination event
-        await wrapper.findComponent(VPagination).vm.$emit('update:model-value', 2);
+        await wrapper.findComponent(VPagination).vm.$emit('update:modelValue', 2);
         expect(wrapper.emitted().pagination[0]).toEqual([{
             page: 2,
             itemsPerPage: 5,

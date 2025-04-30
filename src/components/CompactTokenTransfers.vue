@@ -217,7 +217,6 @@ onMounted(() => {
 <style>
 .embedded-transfers {
   width: 100%;
-  border: 1px solid rgba(var(--v-theme-on-surface), 0.08);
   background-color: rgba(var(--v-theme-surface), 1);
 }
 

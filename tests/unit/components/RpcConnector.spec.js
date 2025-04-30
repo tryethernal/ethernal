@@ -14,13 +14,19 @@ import { auth } from '@/plugins/firebase';
 
 import RpcConnector from '@/components/RpcConnector.vue';
 
-const stubs = ['WalletConnector', 'SearchBar'];
+const stubs = ['WalletConnector', 'SearchBar', 'ThemeToggle'];
 
 describe('RpcConnector.vue', () => {
+    beforeEach(() => {
+        vi.spyOn(server, 'processFailedTransactions').mockResolvedValue();
+        vi.spyOn(server, 'getFailedProcessableTransactions').mockResolvedValue({ data: [] });
+        vi.spyOn(server, 'getProcessableTransactions').mockResolvedValue({ data: [] });
+    });
+
     it('Should display gas info when gas analytics is enabled', async () => {
         vi.spyOn(server, 'getBlocks').mockResolvedValue({ data: { items: [] }});
         vi.spyOn(pusher, 'onNewBlockEvent').mockImplementation((callback) => {
-            callback({ gasPrice: 1n });
+            callback({ gasPrice: 1000000000n }); // 1 gwei
         });
         const wrapper = mount(VApp, {
             slots: {
@@ -41,7 +47,8 @@ describe('RpcConnector.vue', () => {
                             currentBlock: { number: 1 },
                             public: false
                         },
-                        explorer: { id: 1, gasAnalyticsEnabled: true }
+                        explorer: { id: 1, gasAnalyticsEnabled: true },
+                        env: { isAdmin: true }
                     }
                 })]
             }
@@ -80,7 +87,8 @@ describe('RpcConnector.vue', () => {
                             currentBlock: { number: 1 },
                             public: false
                         },
-                        user: { isAdmin: true }
+                        user: { isAdmin: true },
+                        env: { isAdmin: true }
                     }
                 })]
             }
@@ -93,7 +101,7 @@ describe('RpcConnector.vue', () => {
         expect(wrapper.html()).toMatchSnapshot();
     });
 
-    it('Should not do private operations when in public explorer mode', () => {
+    it('Should not do private operations when in public explorer mode', async () => {
         auth.mockReturnValue({ currentUser: { id: '1' }});
         vi.spyOn(server, 'getBlocks').mockResolvedValue({ data: { items: [] }});
 
@@ -125,8 +133,51 @@ describe('RpcConnector.vue', () => {
             }
         });
 
+        await flushPromises();
+
         expect(onNewContractMock).not.toHaveBeenCalled();
         expect(processContractsMock).not.toHaveBeenCalled();
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
+    it('Should emit toggleMenu event when nav icon is clicked on mobile', async () => {
+        vi.spyOn(server, 'getBlocks').mockResolvedValue({ data: { items: [] }});
+        const wrapper = mount(VApp, {
+            slots: {
+                default: h(RpcConnector)
+            },
+            global: {
+                stubs,
+                mocks: {
+                    $route: {
+                        path: '/transactions'
+                    },
+                    $vuetify: {
+                        display: {
+                            mobile: true
+                        }
+                    }
+                },
+                plugins: [createTestingPinia({
+                    initialState: {
+                        currentWorkspace: {
+                            name: 'Hardhat',
+                            rpcServer: 'http://localhost:8545',
+                            currentBlock: { number: 1 },
+                            public: false
+                        }
+                    }
+                })]
+            }
+        });
+
+        await flushPromises();
+        
+        const navIcon = wrapper.find('.v-app-bar-nav-icon');
+        await navIcon.trigger('click');
+
+        const emitted = wrapper.findComponent(RpcConnector).emitted();
+        expect(emitted.toggleMenu).toBeTruthy();
         expect(wrapper.html()).toMatchSnapshot();
     });
 });

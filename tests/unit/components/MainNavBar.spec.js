@@ -181,4 +181,107 @@ describe('MainNavBar.vue', () => {
 
         expect(wrapper.html()).toMatchSnapshot();
     });
-}); 
+
+    it('Should show bridge when explorer is demo', async () => {
+        const wrapper = mount(VApp, {
+            global: {
+                stubs,
+                plugins: [vuetify, router, createTestingPinia({
+                    initialState: {
+                        explorer: {
+                            isDemo: true
+                        }
+                    }
+                })]
+            },
+            slots: {
+                default: {
+                    render: () => h(MainNavBar, {
+                        mobile: false
+                    })
+                }
+            }
+        });
+        await flushPromises();
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
+    it('Should show bridge when user is admin and workspace is public', async () => {
+        const wrapper = mount(VApp, {
+            global: {
+                stubs,
+                plugins: [vuetify, router, createTestingPinia({
+                    initialState: {
+                        env: {
+                            isAdmin: true
+                        },
+                        currentWorkspace: {
+                            public: true
+                        }
+                    }
+                })]
+            },
+            slots: {
+                default: {
+                    render: () => h(MainNavBar, {
+                        mobile: false
+                    })
+                }
+            }
+        });
+        await flushPromises();
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
+    it('Should highlight blockchain menu when on blockchain related routes', async () => {
+        const router = createRouter({
+            history: createWebHistory(),
+            routes: [{ path: '/transactions', component: { template: '<div></div>' } }]
+        });
+        await router.push('/transactions');
+
+        const wrapper = mount(VApp, {
+            global: {
+                stubs,
+                plugins: [vuetify, router, createTestingPinia()]
+            },
+            slots: {
+                default: {
+                    render: () => h(MainNavBar, {
+                        mobile: false
+                    })
+                }
+            }
+        });
+        await flushPromises();
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
+    it('Should highlight tokens menu when on tokens related routes', async () => {
+        const router = createRouter({
+            history: createWebHistory(),
+            routes: [{ path: '/tokens', component: { template: '<div></div>' } }]
+        });
+        await router.push('/tokens');
+
+        const wrapper = mount(VApp, {
+            global: {
+                stubs,
+                plugins: [vuetify, router, createTestingPinia()]
+            },
+            slots: {
+                default: {
+                    render: () => h(MainNavBar, {
+                        mobile: false
+                    })
+                }
+            }
+        });
+        await flushPromises();
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+});

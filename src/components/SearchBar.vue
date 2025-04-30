@@ -298,7 +298,6 @@ watch(searchSelectedItem, (item) => {
 .v-autocomplete:not(.compact) {
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     border-radius: 12px;
-    background: white;
 }
 
 :deep(.v-field__append-inner),
@@ -314,7 +313,7 @@ watch(searchSelectedItem, (item) => {
 :deep(.v-field) {
     --v-field-padding-start: 16px !important;
     border-radius: 12px;
-    background: white;
+    background-color: rgb(var(--v-theme-surface)) !important;
 }
 
 .search-icon {

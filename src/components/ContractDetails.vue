@@ -43,10 +43,11 @@ const userStore = useUserStore();
 const activeTab = ref('code');
 const filteredCounts = ref({ read: 0, write: 0 });
 const importModal = ref(null);
+
 // Add for chip group styling
 const contrastingColor = computed(() => {
     const theme = useTheme();
-    return getBestContrastingColor('#4242421f', theme.current.value.colors);
+    return getBestContrastingColor(theme.current.value.colors['surface-variant'], theme.current.value.colors);
 });
 
 const onUpdateFilteredCounts = (counts) => {
