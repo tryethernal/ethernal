@@ -156,6 +156,7 @@ onMounted(() => {
 }
 
 .bg-surface {
+    background-color: var(--card-background);
     box-shadow: 0 4px 6px rgba(0,0,0,0.1) !important;
 }
 </style>

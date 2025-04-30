@@ -110,7 +110,7 @@ const copyToClipboard = async () => {
 .expandable-text {
   position: relative;
   margin-bottom: 4px;
-  background-color: transparent;
+  background-color: var(--card-background);
 }
 
 .copy-btn-container {
@@ -124,7 +124,7 @@ const copyToClipboard = async () => {
 }
 
 pre {
-  background-color: transparent;
+  background-color: var(--card-background);
   margin: 0;
   padding: 8px;
   font-family: monospace;
@@ -134,7 +134,7 @@ pre {
 :deep(.v-theme--dark) {
   .expandable-text,
   pre {
-    background-color: transparent;
+    background-color: var(--card-background);
   }
 }
 </style>

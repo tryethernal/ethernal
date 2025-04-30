@@ -6,7 +6,7 @@ export function useContrastingColor(backgroundColor = null) {
     const theme = useTheme();
     
     const contrastingColor = computed(() => {
-        return getBestContrastingColor(backgroundColor || theme.current.value.colors['surface-variant'], theme.current.value.colors);
+        return getBestContrastingColor(backgroundColor || theme.current.value.colors.background, theme.current.value.colors);
     });
 
     return {
