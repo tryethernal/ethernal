@@ -313,6 +313,7 @@ watch(searchSelectedItem, (item) => {
 :deep(.v-field) {
     --v-field-padding-start: 16px !important;
     border-radius: 12px;
+    background-color: rgb(var(--v-theme-surface)) !important;
 }
 
 .search-icon {

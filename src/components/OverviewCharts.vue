@@ -1,5 +1,5 @@
 <template>
-    <v-card class="white-card" height="100%">
+    <v-card class="bg-surface" height="100%">
         <v-card-text>
             <BaseChipGroup v-model="selectedChart" mandatory>
                 <v-chip size="small" value="transactions">Transaction Volume</v-chip>
@@ -73,7 +73,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.white-card {
+.bg-surface {
     box-shadow: 0 4px 6px rgba(0,0,0,0.1) !important;
 }
 </style> 

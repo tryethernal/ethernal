@@ -13,9 +13,9 @@
                         max-width="180px"
                         size="small"
                         class="mt-2 px-2"
-                        :title="'Add to MetaMask'">
+                        :title="'Add to wallet'">
                             <img :src="MetamaskIcon" class="metamask-icon mr-2" width="20" height="20" alt="MetaMask" />
-                            <span class="text-body-2">Add to Metamask</span>
+                            <span class="text-body-2">Add to wallet</span>
                     </v-btn>
                 </div>
 
@@ -93,6 +93,14 @@ async function addToMetaMask() {
 <style scoped>
 .footer {
     border-top: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
+    background-color: rgb(var(--v-theme-background));
+    color: rgb(var(--v-theme-on-background));
+}
+
+.v-theme--dark .footer {
+    border-top: 1px solid rgba(var(--v-border-color), 0.32);
+    background-color: rgb(var(--v-theme-background));
+    color: rgb(var(--v-theme-on-background));
 }
 
 .metamask-icon {

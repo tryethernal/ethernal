@@ -22,41 +22,41 @@
                     </router-link>
                 </v-list-item>
 
-                <v-divider class="my-2"></v-divider>
+                <v-divider class="ma-2"></v-divider>
 
                 <!-- Blockchain Section -->
                 <v-list-group value="blockchain">
                     <template v-slot:activator="{ props }">
                         <v-list-item
                             v-bind="props"
-                            :active="isBlockchainActive"
+                            :color="isBlockchainActive ? 'primary' : undefined"
                         >
                             <template v-slot:title>
                                 <span class="text-body-1">Blockchain</span>
                             </template>
                         </v-list-item>
                     </template>
-                    <v-list-item :to="'/transactions'" title="Transactions">
+                    <v-list-item :to="'/transactions'" title="Transactions" :color="route.path === '/transactions' ? 'primary' : undefined">
                         <template v-slot:title>
                             <span class="text-body-2">Transactions</span>
                         </template>
                     </v-list-item>
-                    <v-list-item :to="'/txsInternal'" title="Internal Transactions">
+                    <v-list-item :to="'/txsInternal'" title="Internal Transactions" :color="route.path === '/txsInternal' ? 'primary' : undefined">
                         <template v-slot:title>
                             <span class="text-body-2">Internal Transactions</span>
                         </template>
                     </v-list-item>
-                    <v-list-item :to="'/blocks'" title="Blocks">
+                    <v-list-item :to="'/blocks'" title="Blocks" :color="route.path === '/blocks' ? 'primary' : undefined">
                         <template v-slot:title>
                             <span class="text-body-2">Blocks</span>
                         </template>
                     </v-list-item>
-                    <v-list-item :to="'/contractsVerified'" title="Verified Contracts">
+                    <v-list-item :to="'/contractsVerified'" title="Verified Contracts" :color="route.path === '/contractsVerified' ? 'primary' : undefined">
                         <template v-slot:title>
                             <span class="text-body-2">Verified Contracts</span>
                         </template>
                     </v-list-item>
-                    <v-list-item :to="'/contracts'" title="All Contracts">
+                    <v-list-item :to="'/contracts'" title="All Contracts" :color="route.path === '/contracts' ? 'primary' : undefined">
                         <template v-slot:title>
                             <span class="text-body-2">All Contracts</span>
                         </template>
@@ -68,7 +68,7 @@
                     <template v-slot:activator="{ props }">
                         <v-list-item
                             v-bind="props"
-                            :active="isTokensActive"
+                            :color="isTokensActive ? 'primary' : undefined"
                         >
                             <template v-slot:title>
                                 <span class="text-body-1">Tokens</span>
@@ -76,41 +76,41 @@
                         </v-list-item>
                     </template>
                     <v-list-subheader class="text-primary text-caption font-weight-medium">ERC-20</v-list-subheader>
-                    <v-list-item :to="'/toptokens'" title="Top Tokens">
+                    <v-list-item :to="'/toptokens'" title="Top Tokens" :color="route.path === '/toptokens' ? 'primary' : undefined">
                         <template v-slot:title>
                             <span class="text-body-2">Top Tokens</span>
                         </template>
                     </v-list-item>
-                    <v-list-item :to="'/tokens'" title="All Tokens">
+                    <v-list-item :to="'/tokens'" title="All Tokens" :color="route.path === '/tokens' ? 'primary' : undefined">
                         <template v-slot:title>
                             <span class="text-body-2">All Tokens</span>
                         </template>
                     </v-list-item>
-                    <v-list-item :to="'/tokenstxn'" title="Latest Transfers">
+                    <v-list-item :to="'/tokenstxn'" title="Latest Transfers" :color="route.path === '/tokenstxn' ? 'primary' : undefined">
                         <template v-slot:title>
                             <span class="text-body-2">Latest Transfers</span>
                         </template>
                     </v-list-item>
-                    <v-divider class="my-2"></v-divider>
+                    <v-divider class="ma-2"></v-divider>
                     <v-list-subheader class="text-primary text-caption font-weight-medium">NFTs (ERC-721 & ERC-1155)</v-list-subheader>
-                    <v-list-item :to="'/nft-top-contracts'" title="Top Tokens">
+                    <v-list-item :to="'/nft-top-contracts'" title="Top Tokens" :color="route.path === '/nft-top-contracts' ? 'primary' : undefined">
                         <template v-slot:title>
                             <span class="text-body-2">Top Tokens</span>
                         </template>
                     </v-list-item>
-                    <v-list-item :to="'/nfts'" title="All Tokens">
+                    <v-list-item :to="'/nfts'" title="All Tokens" :color="route.path === '/nfts' ? 'primary' : undefined">
                         <template v-slot:title>
                             <span class="text-body-2">All Tokens</span>
                         </template>
                     </v-list-item>
-                    <v-list-item :to="'/nft-transfers'" title="Latest Transfers">
+                    <v-list-item :to="'/nft-transfers'" title="Latest Transfers" :color="route.path === '/nft-transfers' ? 'primary' : undefined">
                         <template v-slot:title>
                             <span class="text-body-2">Latest Transfers</span>
                         </template>
                     </v-list-item>
                 </v-list-group>
 
-                <v-list-item :to="'/analytics'" :active="route.path === '/analytics'" title="Charts">
+                <v-list-item :to="'/analytics'" title="Charts" :color="route.path === '/analytics' ? 'primary' : undefined">
                     <template v-slot:title>
                         <span class="text-body-1">Charts</span>
                     </template>
@@ -118,21 +118,21 @@
 
                 <!-- Conditional Items -->
                 <v-list-item v-if="explorerStore.isDemo || explorerStore.faucet || (envStore.isAdmin && currentWorkspaceStore.public)" 
-                    :to="'/faucet'" :active="route.path === '/faucet'" title="Faucet">
+                    :to="'/faucet'" title="Faucet" :color="route.path === '/faucet' ? 'primary' : undefined">
                     <template v-slot:title>
                         <span class="text-body-1">Faucet</span>
                     </template>
                 </v-list-item>
 
                 <v-list-item v-if="explorerStore.isDemo || explorerStore.v2Dex || (envStore.isAdmin && currentWorkspaceStore.public)"
-                    :to="'/dex'" :active="route.path === '/dex'" title="DEX">
+                    :to="'/dex'" title="DEX" :color="route.path === '/dex' ? 'primary' : undefined">
                     <template v-slot:title>
                         <span class="text-body-1">DEX</span>
                     </template>
                 </v-list-item>
 
                 <v-list-item v-if="explorerStore.isDemo || (envStore.isAdmin && currentWorkspaceStore.public)"
-                    :to="'/bridge'" :active="route.path === '/bridge'" title="Bridge">
+                    :to="'/bridge'" title="Bridge" :color="route.path === '/bridge' ? 'primary' : undefined">
                     <template v-slot:title>
                         <span class="text-body-1">Bridge</span>
                     </template>
@@ -140,13 +140,13 @@
 
                 <!-- Admin Section -->
                 <template v-if="envStore.isAdmin">
-                    <v-divider class="my-2"></v-divider>
-                    <v-list-item :to="'/explorers'" :active="route.path === '/explorers'" title="Public Explorers">
+                    <v-divider class="ma-2"></v-divider>
+                    <v-list-item :to="'/explorers'" title="Public Explorers" :color="route.path === '/explorers' ? 'primary' : undefined">
                         <template v-slot:title>
                             <span class="text-body-1">Public Explorers</span>
                         </template>
                     </v-list-item>
-                    <v-list-item :to="'/settings?tab=workspace'" :active="route.path === '/settings'" title="Settings">
+                    <v-list-item :to="'/settings?tab=workspace'" title="Settings" :color="route.path === '/settings' ? 'primary' : undefined">
                         <template v-slot:title>
                             <span class="text-body-1">Settings</span>
                         </template>
@@ -157,7 +157,7 @@
                         </template>
                     </v-list-item>
                 </template>
-                <v-divider class="my-2"></v-divider>
+                <v-divider class="ma-2"></v-divider>
 
                 <!-- Wallet Section -->
                 <v-list-item>
@@ -193,11 +193,11 @@
                     >
                         <template v-slot:activator="{ props, isActive }">
                             <v-btn 
-                                :color="isActive || isBlockchainActive ? 'primary' : undefined" 
+                                :color="isActive || blockchainMenuOpen || isBlockchainActive ? 'primary' : undefined" 
                                 variant="plain" 
                                 v-bind="props"
                                 @mouseleave="blockchainMenuOpen = false"
-                                :class="`d-flex align-center opacity-${isActive || isBlockchainActive ? '100' : '80'} fill-height text-default`"
+                                :class="`opacity-100 d-flex align-center fill-height ${isActive || blockchainMenuOpen || isBlockchainActive ? 'text-primary' : 'text-default opacity-80'}`"
                             >
                                 Blockchain
                                 <v-icon :icon="isActive ? 'mdi-chevron-up' : 'mdi-chevron-down'" class="ml-1"></v-icon>
@@ -219,7 +219,7 @@
                                     <span class="text-body-2">Internal Transactions</span>
                                 </template>
                             </v-list-item>
-                            <v-divider class="my-2"></v-divider>
+                            <v-divider class="ma-2"></v-divider>
 
                             <v-list-item :to="'/blocks'" title="Blocks">
                                 <template v-slot:title>
@@ -227,7 +227,7 @@
                                 </template>
                             </v-list-item>
 
-                            <v-divider class="my-2"></v-divider>
+                            <v-divider class="ma-2"></v-divider>
 
                             <v-list-item :to="'/contractsVerified'" title="Verified Contracts">
                                 <template v-slot:title>
@@ -252,11 +252,11 @@
                     >
                         <template v-slot:activator="{ props, isActive }">
                             <v-btn 
-                                :color="isActive || isTokensActive ? 'primary' : undefined" 
+                                :color="isActive || tokensMenuOpen || isTokensActive ? 'primary' : undefined" 
                                 variant="plain" 
                                 v-bind="props"
                                 @mouseleave="tokensMenuOpen = false"
-                                :class="`d-flex align-center opacity-${isActive || isTokensActive ? '100' : '80'} fill-height text-default`"
+                                :class="`opacity-100 d-flex align-center fill-height ${isActive || tokensMenuOpen || isTokensActive ? 'text-primary' : 'text-default opacity-80'}`"
                             >
                                 Tokens
                                 <v-icon :icon="isActive ? 'mdi-chevron-up' : 'mdi-chevron-down'" class="ml-1"></v-icon>
@@ -285,7 +285,7 @@
                                 </template>
                             </v-list-item>
 
-                            <v-divider class="my-2"></v-divider>
+                            <v-divider class="ma-2"></v-divider>
 
                             <v-list-subheader class="text-primary text-caption font-weight-medium">NFTs (ERC-721 & ERC-1155)</v-list-subheader>
                             <v-list-item :to="'/nft-top-contracts'" title="Top Tokens">
@@ -308,28 +308,52 @@
 
                     <v-hover>
                         <template v-slot:default="{ isHovering, props }">
-                            <v-btn :color="isHovering || route.path === '/analytics' ? 'primary' : 'black'" variant="plain" v-bind="props" :to="'/analytics'" :class="`text-default opacity-${isHovering || route.path === '/analytics' ? '100' : '80'} fill-height`">Charts</v-btn>
+                            <v-btn 
+                                :color="isHovering || route.path === '/analytics' ? 'primary' : undefined" 
+                                variant="plain" 
+                                v-bind="props" 
+                                :to="'/analytics'" 
+                                :class="`opacity-100 d-flex align-center fill-height ${isHovering || route.path === '/analytics' ? 'text-primary' : 'text-default opacity-80'}`"
+                            >Charts</v-btn>
                         </template>
                     </v-hover>
 
                     <!-- Faucet Link -->
                     <v-hover v-if="explorerStore.isDemo || explorerStore.faucet || (envStore.isAdmin && currentWorkspaceStore.public)">
                         <template v-slot:default="{ isHovering, props }">
-                            <v-btn :color="isHovering || route.path === '/faucet' ? 'primary' : 'black'" variant="plain" v-bind="props" :to="'/faucet'" :class="`text-default opacity-${isHovering || route.path === '/faucet' ? '100' : '80'} fill-height`">Faucet</v-btn>
+                            <v-btn 
+                                :color="isHovering || route.path === '/faucet' ? 'primary' : undefined" 
+                                variant="plain" 
+                                v-bind="props" 
+                                :to="'/faucet'" 
+                                :class="`opacity-100 d-flex align-center fill-height ${isHovering || route.path === '/faucet' ? 'text-primary' : 'text-default opacity-80'}`"
+                            >Faucet</v-btn>
                         </template>
                     </v-hover>
 
                     <!-- DEX Link -->
                     <v-hover v-if="explorerStore.isDemo || explorerStore.v2Dex || (envStore.isAdmin && currentWorkspaceStore.public)">
                         <template v-slot:default="{ isHovering, props }">
-                            <v-btn :color="isHovering || route.path === '/dex' ? 'primary' : 'black'" variant="plain" v-bind="props" :to="'/dex'" :class="`text-default opacity-${isHovering || route.path === '/dex' ? '100' : '80'} fill-height`">DEX</v-btn>
+                            <v-btn 
+                                :color="isHovering || route.path === '/dex' ? 'primary' : undefined" 
+                                variant="plain" 
+                                v-bind="props" 
+                                :to="'/dex'" 
+                                :class="`opacity-100 d-flex align-center fill-height ${isHovering || route.path === '/dex' ? 'text-primary' : 'text-default opacity-80'}`"
+                            >DEX</v-btn>
                         </template>
                     </v-hover>
 
                     <!-- Bridge Link -->
                     <v-hover v-if="explorerStore.isDemo || (envStore.isAdmin && currentWorkspaceStore.public)">
                         <template v-slot:default="{ isHovering, props }">
-                            <v-btn :color="isHovering || route.path === '/bridge' ? 'primary' : 'black'" variant="plain" v-bind="props" :to="'/bridge'" :class="`text-default opacity-${isHovering || route.path === '/bridge' ? '100' : '80'} fill-height`">Bridge</v-btn>
+                            <v-btn 
+                                :color="isHovering || route.path === '/bridge' ? 'primary' : undefined" 
+                                variant="plain" 
+                                v-bind="props" 
+                                :to="'/bridge'" 
+                                :class="`d-flex align-center fill-height ${isHovering || route.path === '/bridge' ? 'text-primary opacity-100' : 'text-default opacity-80'}`"
+                            >Bridge</v-btn>
                         </template>
                     </v-hover>
 
@@ -338,19 +362,37 @@
                         <v-divider vertical class="my-2"></v-divider>
                         <v-hover>
                             <template v-slot:default="{ isHovering, props }">
-                                <v-btn :color="isHovering || route.path === '/explorers' ? 'primary' : 'black'" variant="plain" v-bind="props" :to="'/explorers'" :class="`text-default opacity-${isHovering || route.path === '/explorers' ? '100' : '80'} fill-height`">Public Explorers</v-btn>
+                                <v-btn 
+                                    :color="isHovering || route.path === '/explorers' ? 'primary' : undefined" 
+                                    variant="plain" 
+                                    v-bind="props" 
+                                    :to="'/explorers'" 
+                                    :class="`opacity-100 d-flex align-center fill-height ${isHovering || route.path === '/explorers' ? 'text-primary' : 'text-default opacity-80'}`"
+                                >Public Explorers</v-btn>
                             </template>
                         </v-hover>
 
                         <v-hover>
                             <template v-slot:default="{ isHovering, props }">
-                                <v-btn :color="isHovering || route.path === '/settings' ? 'primary' : 'black'" variant="plain" v-bind="props" :to="'/settings?tab=workspace'" :class="`text-default opacity-${isHovering || route.path === '/settings' ? '100' : '80'} fill-height`">Settings</v-btn>
+                                <v-btn 
+                                    :color="isHovering || route.path === '/settings' ? 'primary' : undefined" 
+                                    variant="plain" 
+                                    v-bind="props" 
+                                    :to="'/settings?tab=workspace'" 
+                                    :class="`opacity-100 d-flex align-center fill-height ${isHovering || route.path === '/settings' ? 'text-primary' : 'text-default opacity-80'}`"
+                                >Settings</v-btn>
                             </template>
                         </v-hover>
 
                         <v-hover>
                             <template v-slot:default="{ isHovering, props }">
-                                <v-btn @click="logOut" variant="plain" v-bind="props" :to="'/logout'" :class="`text-error opacity-${isHovering ? '100' : '80'} fill-height`">Logout</v-btn>
+                                <v-btn 
+                                    variant="plain" 
+                                    v-bind="props" 
+                                    @click="logOut" 
+                                    :to="'/logout'" 
+                                    :class="`d-flex align-center fill-height ${isHovering ? 'text-error' : 'text-error opacity-80'}`"
+                                >Logout</v-btn>
                             </template>
                         </v-hover>
                     </template>
@@ -422,8 +464,8 @@ const userStore = useUserStore();
 const route = useRoute();
 
 const isBlockchainActive = computed(() => {
-    const blockchainRoutes = ['/transactions', '/pending', '/internal-tx', '/blocks', '/accounts', '/contracts'];
-    return blockchainRoutes.includes(route.path);
+    const blockchainRoutes = ['/transactions', '/txsInternal', '/blocks', '/contractsVerified', '/contracts'];
+    return blockchainRoutes.some(path => route.path === path);
 });
 
 const isTokensActive = computed(() => {
@@ -435,7 +477,7 @@ const isTokensActive = computed(() => {
         '/nft-top-contracts',
         '/nft-transfers'
     ];
-    return tokenRoutes.includes(route.path);
+    return tokenRoutes.some(path => route.path === path);
 });
 
 const logOut = () => {
@@ -548,11 +590,6 @@ const logOut = () => {
     opacity: 0 !important;
 }
 
-.v-menu .v-divider {
-    margin: 8px 0;
-    border-color: var(--divider-color);
-}
-
 /* Navigation Drawer Styles */
 .v-navigation-drawer {
     background-color: var(--card-background) !important;
@@ -572,10 +609,6 @@ const logOut = () => {
 .v-navigation-drawer .v-list-item:hover,
 .v-navigation-drawer .v-list-item.router-link-active {
     color: rgb(var(--v-theme-primary));
-}
-
-.v-navigation-drawer .v-divider {
-    border-color: var(--divider-color);
 }
 
 .v-navigation-drawer .custom-logo {

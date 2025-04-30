@@ -84,6 +84,8 @@ const selectedTab = ref('overview');
 // Methods
 const commify = utils.commify;
 
+const theme = useTheme();
+
 const loadBlock = (number) => {
     loading.value = true;
     $server.getBlock(number)
@@ -121,8 +123,7 @@ const handleHashChange = () => {
 
 // Computed properties
 const contrastingColor = computed(() => {
-    const theme = useTheme();
-    return getBestContrastingColor('#4242421f', theme.current.value.colors);
+    return getBestContrastingColor(theme.current.value.colors['surface-variant'], theme.current.value.colors);
 });
 
 // Lifecycle hooks

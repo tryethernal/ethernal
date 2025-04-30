@@ -35,8 +35,8 @@
                 </template>
 
                 <!-- Theme Toggle and Other Controls -->
-                <v-spacer v-if="!$vuetify.display.mobile"></v-spacer>
-                <div class="d-flex align-center">
+                <v-spacer v-if="!isNotOverviewPage"></v-spacer>
+                <div class="d-flex align-center ml-2">
                     <theme-toggle />
                 </div>
             </div>

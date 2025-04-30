@@ -40,13 +40,13 @@
         <template v-slot:item.method="{ item }">
             <v-tooltip v-if="item.methodDetails?.name" location="top" :open-delay="150" color="grey-darken-1" content-class="tooltip">
                 <template v-slot:activator="{ props }">
-                    <v-chip color="primary-lighten-1" label v-bind="props" size="small" variant="flat">
-                        <span class="color--text methodName">{{ getMethodName(item) }}</span>
+                    <v-chip color="primary" label v-bind="props" size="small" variant="tonal">
+                        <span class="methodName">{{ getMethodName(item) }}</span>
                     </v-chip>
                 </template>
                 <span style="white-space: pre">{{ getMethodLabel(item.methodDetails) }}</span>
             </v-tooltip>
-            <v-chip v-else variant="flat" label size="small" color="primary-lighten-1" v-show="getMethodName(item)">{{ getMethodName(item) }}</v-chip>
+            <v-chip v-else variant="tonal" label size="small" color="primary" v-show="getMethodName(item)">{{ getMethodName(item) }}</v-chip>
         </template>
         <template v-slot:item.timestamp="{ item }">
             <div class="my-2 text-left">

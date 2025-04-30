@@ -2,11 +2,11 @@ import { computed } from 'vue';
 import { useTheme } from 'vuetify';
 import { getBestContrastingColor } from '@/lib/utils';
 
-export function useContrastingColor(backgroundColor = '#4242421f') {
+export function useContrastingColor(backgroundColor = null) {
     const theme = useTheme();
     
     const contrastingColor = computed(() => {
-        return getBestContrastingColor(backgroundColor, theme.current.value.colors);
+        return getBestContrastingColor(backgroundColor || theme.current.value.colors['surface-variant'], theme.current.value.colors);
     });
 
     return {

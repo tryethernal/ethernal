@@ -242,13 +242,16 @@ export default {
                     customThemeKeys.forEach((key) => {
                         switch (key) {
                             case 'background':
-                                this.styles[key] = lightTheme[key];
+                                this.$vuetify.theme.themes.light.colors.background = lightTheme[key];
                                 break;
                             default:
                                 this.$vuetify.theme.themes.light.colors[key] = lightTheme[key];
                         }
                     });
                     this.theme.global.name.value = 'light';
+
+                    // Only copy the primary color to dark theme, keep other colors as default
+                    this.$vuetify.theme.themes.dark.colors.primary = this.$vuetify.theme.themes.light.colors.primary;
                 }
 
                 if (font)
@@ -281,6 +284,7 @@ export default {
             });
         },
         initWorkspace(workspace) {
+            console.log(this.$vuetify.theme.themes.light.colors);
             this.currentWorkspaceStore.updateCurrentWorkspace(workspace);
             this.userStore.updateUser({ onboarded: true, firebaseUserId: workspace.firebaseUserId });
             this.$pusher.init();

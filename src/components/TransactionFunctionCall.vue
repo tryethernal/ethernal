@@ -1,31 +1,29 @@
 <template>
-    <v-card class="text-medium-emphasis">
-        <v-card-text v-if="parsedTransactionData">
-            {{ `${parsedTransactionData.functionFragment.name}(\n` }}
-            <div class="ml-4" style="white-space: pre;" v-for="(input, index) in parsedTransactionData.functionFragment.inputs" :key="index">
-                <Formatted-Sol-Var :input="input" :value="parsedTransactionData.args[index]" />
+    <template v-if="parsedTransactionData">
+        {{ `${parsedTransactionData.functionFragment.name}(\n` }}
+        <div class="ml-4" style="white-space: pre;" v-for="(input, index) in parsedTransactionData.functionFragment.inputs" :key="index">
+            <Formatted-Sol-Var :input="input" :value="parsedTransactionData.args[index]" />
+        </div>
+        )
+    </template>
+    <template v-else>
+        <div style="float: right;">
+            <a href="#" :class="{ 'no-decoration': !displayUtf8Data }" @click.prevent="switchDataFormatting('hex')">Hex</a> | <a href="#" :class="{ 'no-decoration': displayUtf8Data }" @click.prevent="switchDataFormatting('utf8')">UTF-8</a>
+        </div>
+        <b>Signature:</b> {{ sigHash }}<br>
+        <b>Data:</b> 
+        <div style="word-break: break-all; white-space: normal;" class="data-container">
+            <div class="truncated-content">
+                {{ isExpanded ? convertedData : truncatedData }}
             </div>
-            )
-        </v-card-text>
-         <v-card-text v-else>
-            <div style="float: right;">
-                <a href="#" :class="{ 'no-decoration': !displayUtf8Data }" @click.prevent="switchDataFormatting('hex')">Hex</a> | <a href="#" :class="{ 'no-decoration': displayUtf8Data }" @click.prevent="switchDataFormatting('utf8')">UTF-8</a>
+            <div v-if="showToggle" class="text-center mt-2">
+                <a href="#" class="no-decoration text-uppercase d-flex align-center justify-center" @click.prevent="toggleExpand">
+                    <v-icon size="small" class="mr-1">mdi-eye{{ isExpanded ? '-off' : '' }}</v-icon>
+                    {{ isExpanded ? 'VIEW LESS' : 'VIEW ALL' }}
+                </a>
             </div>
-            <b>Signature:</b> {{ sigHash }}<br>
-            <b>Data:</b> 
-            <div style="word-break: break-all; white-space: normal;" class="data-container">
-                <div class="truncated-content">
-                    {{ isExpanded ? convertedData : truncatedData }}
-                </div>
-                <div v-if="showToggle" class="text-center mt-2">
-                    <a href="#" class="no-decoration text-uppercase d-flex align-center justify-center" @click.prevent="toggleExpand">
-                        <v-icon size="small" class="mr-1">mdi-eye{{ isExpanded ? '-off' : '' }}</v-icon>
-                        {{ isExpanded ? 'VIEW LESS' : 'VIEW ALL' }}
-                    </a>
-                </div>
-            </div>
-        </v-card-text>
-    </v-card>
+        </div>
+    </template>
 </template>
 
 <script setup>
@@ -92,14 +90,32 @@ onMounted(() => {
 <style scoped>
 .no-decoration {
     text-decoration: none;
+    color: rgb(var(--v-theme-primary));
 }
+
 .v-card-text {
     line-height: 1.375rem;
+    color: rgb(var(--v-theme-on-surface));
 }
+
 .data-container {
     position: relative;
 }
+
 .truncated-content {
     position: relative;
+}
+
+.v-card {
+    background-color: rgb(var(--v-theme-surface));
+    color: rgb(var(--v-theme-on-surface));
+}
+
+:deep(.v-icon) {
+    color: rgb(var(--v-theme-on-surface));
+}
+
+:deep(b) {
+    color: rgb(var(--v-theme-on-surface));
 }
 </style>

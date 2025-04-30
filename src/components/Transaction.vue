@@ -118,6 +118,7 @@ const resetTransaction = () => {
 };
 
 const router = useRouter();
+const theme = useTheme();
 
 // Check URL hash for initial tab
 const checkUrlHash = () => {
@@ -133,8 +134,7 @@ const checkUrlHash = () => {
 };
 
 const contrastingColor = computed(() => {
-    const theme = useTheme();
-    return getBestContrastingColor('#4242421f', theme.current.value.colors);
+    return getBestContrastingColor(theme.current.value.colors['surface-variant'], theme.current.value.colors);
 });
 
 // Methods
