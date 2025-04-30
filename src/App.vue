@@ -211,7 +211,6 @@ export default {
             this.userStore.updateUser(user);
 
             if (currentPath != '/auth' && !user && this.envStore.isAdmin) {
-                console.log('redirecting to auth');
                 return this.$router.push('/auth');
             }
             if (currentPath == '/auth' && user) {
