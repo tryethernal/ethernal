@@ -1,5 +1,3 @@
-import flushPromises from 'flush-promises';
-
 import Block from '@/components/Block.vue';
 
 describe('Block.vue', () => {

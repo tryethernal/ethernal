@@ -177,7 +177,6 @@ onMounted(async () => {
 
     if (explorerStore.id && explorerStore.gasAnalyticsEnabled) {
         $pusher.onNewBlockEvent(blockEvent => {
-            console.log(blockEvent);
             if (blockEvent.gasPrice < 0) {
                 gasPrice.value = '0 gwei';
             } else if (blockEvent.gasPrice < MINIMUM_DISPLAY_GWEI) {

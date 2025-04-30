@@ -14,14 +14,14 @@ exports[`TraceStepsTable.vue > Should render the table in dense mode 1`] = `
           <td class="v-data-table__td v-data-table-column--align-start">
             <hash-link-stub type="transaction" hash="0x123" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="true" unlink="false" loadcontract="false"></hash-link-stub>
           </td>
-          <td class="v-data-table__td v-data-table-column--align-start"><span class="v-chip v-chip--label v-theme--light bg-primary-lighten-1 v-chip--density-default v-chip--size-small v-chip--variant-flat" draggable="false"><!----><span class="v-chip__underlay"></span>
+          <td class="v-data-table__td v-data-table-column--align-start"><span class="v-chip v-chip--label v-theme--light text-primary v-chip--density-default v-chip--size-small v-chip--variant-tonal" draggable="false"><!----><span class="v-chip__underlay"></span>
             <!---->
             <!---->
             <div class="v-chip__content" data-no-activator="">CALL</div>
             <!---->
             <!----></span>
           </td>
-          <td class="v-data-table__td v-data-table-column--align-start"><span class="v-chip v-chip--label v-theme--light bg-primary-lighten-1 v-chip--density-default v-chip--size-small v-chip--variant-flat" draggable="false" aria-describedby="v-tooltip-1"><!----><span class="v-chip__underlay"></span>
+          <td class="v-data-table__td v-data-table-column--align-start"><span class="v-chip v-chip--label v-theme--light text-primary v-chip--density-default v-chip--size-small v-chip--variant-tonal" draggable="false" aria-describedby="v-tooltip-1"><!----><span class="v-chip__underlay"></span>
             <!---->
             <!---->
             <div class="v-chip__content" data-no-activator="">transfer</div>
@@ -113,14 +113,14 @@ exports[`TraceStepsTable.vue > Should render the table with data 1`] = `
           <td class="v-data-table__td v-data-table-column--align-start">
             <hash-link-stub type="transaction" hash="0x123" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="true" unlink="false" loadcontract="false"></hash-link-stub>
           </td>
-          <td class="v-data-table__td v-data-table-column--align-start"><span class="v-chip v-chip--label v-theme--light bg-primary-lighten-1 v-chip--density-default v-chip--size-small v-chip--variant-flat" draggable="false"><!----><span class="v-chip__underlay"></span>
+          <td class="v-data-table__td v-data-table-column--align-start"><span class="v-chip v-chip--label v-theme--light text-primary v-chip--density-default v-chip--size-small v-chip--variant-tonal" draggable="false"><!----><span class="v-chip__underlay"></span>
             <!---->
             <!---->
             <div class="v-chip__content" data-no-activator="">CALL</div>
             <!---->
             <!----></span>
           </td>
-          <td class="v-data-table__td v-data-table-column--align-start"><span class="v-chip v-chip--label v-theme--light bg-primary-lighten-1 v-chip--density-default v-chip--size-small v-chip--variant-flat" draggable="false" aria-describedby="v-tooltip-1"><!----><span class="v-chip__underlay"></span>
+          <td class="v-data-table__td v-data-table-column--align-start"><span class="v-chip v-chip--label v-theme--light text-primary v-chip--density-default v-chip--size-small v-chip--variant-tonal" draggable="false" aria-describedby="v-tooltip-1"><!----><span class="v-chip__underlay"></span>
             <!---->
             <!---->
             <div class="v-chip__content" data-no-activator="">transfer</div>
@@ -294,14 +294,14 @@ exports[`TraceStepsTable.vue > Should render the table with highlighted address 
           <td class="v-data-table__td v-data-table-column--align-start">
             <hash-link-stub type="transaction" hash="0x123" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="true" unlink="false" loadcontract="false"></hash-link-stub>
           </td>
-          <td class="v-data-table__td v-data-table-column--align-start"><span class="v-chip v-chip--label v-theme--light bg-primary-lighten-1 v-chip--density-default v-chip--size-small v-chip--variant-flat" draggable="false"><!----><span class="v-chip__underlay"></span>
+          <td class="v-data-table__td v-data-table-column--align-start"><span class="v-chip v-chip--label v-theme--light text-primary v-chip--density-default v-chip--size-small v-chip--variant-tonal" draggable="false"><!----><span class="v-chip__underlay"></span>
             <!---->
             <!---->
             <div class="v-chip__content" data-no-activator="">CALL</div>
             <!---->
             <!----></span>
           </td>
-          <td class="v-data-table__td v-data-table-column--align-start"><span class="v-chip v-chip--label v-theme--light bg-primary-lighten-1 v-chip--density-default v-chip--size-small v-chip--variant-flat" draggable="false" aria-describedby="v-tooltip-1"><!----><span class="v-chip__underlay"></span>
+          <td class="v-data-table__td v-data-table-column--align-start"><span class="v-chip v-chip--label v-theme--light text-primary v-chip--density-default v-chip--size-small v-chip--variant-tonal" draggable="false" aria-describedby="v-tooltip-1"><!----><span class="v-chip__underlay"></span>
             <!---->
             <!---->
             <div class="v-chip__content" data-no-activator="">transfer</div>

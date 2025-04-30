@@ -19,7 +19,7 @@ exports[`Overview.vue > Should load the overview page 1`] = `
     </div>
     <div data-v-55ca85f9="" class="v-row">
       <div data-v-55ca85f9="" class="v-col-md-6 v-col-12">
-        <div data-v-55ca85f9="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated white-card">
+        <div data-v-55ca85f9="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated bg-surface">
           <!---->
           <div class="v-card__loader">
             <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
@@ -53,7 +53,7 @@ exports[`Overview.vue > Should load the overview page 1`] = `
         </div>
       </div>
       <div data-v-55ca85f9="" class="v-col-md-6 v-col-12">
-        <div data-v-55ca85f9="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated white-card">
+        <div data-v-55ca85f9="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated bg-surface">
           <!---->
           <div class="v-card__loader">
             <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">

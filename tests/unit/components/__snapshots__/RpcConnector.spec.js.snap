@@ -3,17 +3,17 @@
 exports[`RpcConnector.vue > Should display gas info when gas analytics is enabled 1`] = `
 "<div class="v-application v-theme--light v-layout v-layout--full-height v-locale--is-ltr">
   <div class="v-application__wrap">
-    <header class="v-toolbar v-toolbar--flat v-toolbar--density-default v-theme--light v-locale--is-ltr v-app-bar top-bar" style="top: 0px; z-index: 1004; transform: translateY(0px); position: fixed; transition: none; left: 0px; width: calc(100% - 0px - 0px);">
+    <header class="v-toolbar v-toolbar--density-default elevation-0 v-theme--light v-locale--is-ltr v-app-bar top-bar theme-background" style="top: 0px; z-index: 1004; transform: translateY(0px); position: fixed; transition: none; left: 0px; width: calc(100% - 0px - 0px);">
       <!---->
-      <div class="v-toolbar__content" style="height: 48px;">
+      <div class="v-toolbar__content" style="height: 64px;">
         <!---->
         <!---->
-        <div class="v-container v-locale--is-ltr d-flex align-center">
+        <div class="v-container v-locale--is-ltr d-flex align-center justify-space-between">
           <div class="d-flex align-center w-100">
             <!--v-if-->
-            <!-- Desktop Info Section -->
-            <!--v-if--> Latest Block: <a class="text-decoration-none ml-1">1</a>
-            <hr class="v-divider v-divider--inset v-divider--vertical v-theme--light mx-2" aria-orientation="vertical" role="separator"> Gas: <a class="text-decoration-none ml-1">&lt;0.01 gwei</a>
+            <!-- Desktop Info Section --><span style="max-width: 50ch; text-overflow: ellipsis; overflow: hidden;">http://localhost:8545</span>
+            <hr class="v-divider v-divider--inset v-divider--vertical v-theme--light mx-2" aria-orientation="vertical" role="separator"> Latest Block: <a class="text-decoration-none ml-1">1</a>
+            <hr class="v-divider v-divider--inset v-divider--vertical v-theme--light mx-2" aria-orientation="vertical" role="separator"> Gas: <a class="text-decoration-none ml-1">1 gwei</a>
             <div style="display: none;">
               <hr class="v-divider v-divider--inset v-divider--vertical v-theme--light mx-2" aria-orientation="vertical" role="separator">
               <div class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
@@ -26,6 +26,10 @@ exports[`RpcConnector.vue > Should display gas info when gas analytics is enable
             <div class="v-spacer"></div>
             <div class="search-container">
               <search-bar-stub compact="true"></search-bar-stub>
+            </div><!-- Theme Toggle and Other Controls -->
+            <!--v-if-->
+            <div class="d-flex align-center ml-2">
+              <theme-toggle-stub></theme-toggle-stub>
             </div>
           </div>
         </div>
@@ -42,16 +46,16 @@ exports[`RpcConnector.vue > Should display gas info when gas analytics is enable
 exports[`RpcConnector.vue > Should display the correct info 1`] = `
 "<div class="v-application v-theme--light v-layout v-layout--full-height v-locale--is-ltr">
   <div class="v-application__wrap">
-    <header class="v-toolbar v-toolbar--flat v-toolbar--density-default v-theme--light v-locale--is-ltr v-app-bar top-bar" style="top: 0px; z-index: 1004; transform: translateY(0px); position: fixed; transition: none; left: 0px; width: calc(100% - 0px - 0px);">
+    <header class="v-toolbar v-toolbar--density-default elevation-0 v-theme--light v-locale--is-ltr v-app-bar top-bar theme-background" style="top: 0px; z-index: 1004; transform: translateY(0px); position: fixed; transition: none; left: 0px; width: calc(100% - 0px - 0px);">
       <!---->
-      <div class="v-toolbar__content" style="height: 48px;">
+      <div class="v-toolbar__content" style="height: 64px;">
         <!---->
         <!---->
-        <div class="v-container v-locale--is-ltr d-flex align-center">
+        <div class="v-container v-locale--is-ltr d-flex align-center justify-space-between">
           <div class="d-flex align-center w-100">
             <!--v-if-->
-            <!-- Desktop Info Section -->
-            <!--v-if--> Latest Block: <a class="text-decoration-none ml-1">1</a>
+            <!-- Desktop Info Section --><span style="max-width: 50ch; text-overflow: ellipsis; overflow: hidden;">http://localhost:8545</span>
+            <hr class="v-divider v-divider--inset v-divider--vertical v-theme--light mx-2" aria-orientation="vertical" role="separator"> Latest Block: <a class="text-decoration-none ml-1">1</a>
             <!--v-if-->
             <div style="display: none;">
               <hr class="v-divider v-divider--inset v-divider--vertical v-theme--light mx-2" aria-orientation="vertical" role="separator">
@@ -65,6 +69,46 @@ exports[`RpcConnector.vue > Should display the correct info 1`] = `
             <div class="v-spacer"></div>
             <div class="search-container">
               <search-bar-stub compact="true"></search-bar-stub>
+            </div><!-- Theme Toggle and Other Controls -->
+            <!--v-if-->
+            <div class="d-flex align-center ml-2">
+              <theme-toggle-stub></theme-toggle-stub>
+            </div>
+          </div>
+        </div>
+        <!---->
+      </div>
+      <transition-stub name="expand-transition" appear="false" persisted="false" css="true">
+        <!---->
+      </transition-stub>
+    </header>
+  </div>
+</div>"
+`;
+
+exports[`RpcConnector.vue > Should emit toggleMenu event when nav icon is clicked on mobile 1`] = `
+"<div class="v-application v-theme--light v-layout v-layout--full-height v-locale--is-ltr">
+  <div class="v-application__wrap">
+    <header class="v-toolbar v-toolbar--density-default elevation-0 v-theme--light v-locale--is-ltr v-app-bar top-bar theme-background" style="top: 0px; z-index: 1004; transform: translateY(0px); position: fixed; transition: none; left: 0px; width: calc(100% - 0px - 0px);">
+      <!---->
+      <div class="v-toolbar__content" style="height: 64px;">
+        <!---->
+        <!---->
+        <div class="v-container v-locale--is-ltr d-flex align-center justify-space-between">
+          <div class="d-flex align-center w-100"><button type="button" class="v-btn v-btn--icon v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-text v-app-bar-nav-icon"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+              <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-menu mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+              <!---->
+              <!---->
+            </button><!-- Desktop Info Section -->
+            <!--v-if-->
+            <!-- Search Bar Section -->
+            <!--v-if-->
+            <div class="search-container search-container-mobile">
+              <search-bar-stub compact="true"></search-bar-stub>
+            </div><!-- Theme Toggle and Other Controls -->
+            <!--v-if-->
+            <div class="d-flex align-center ml-2">
+              <theme-toggle-stub></theme-toggle-stub>
             </div>
           </div>
         </div>
@@ -81,17 +125,17 @@ exports[`RpcConnector.vue > Should display the correct info 1`] = `
 exports[`RpcConnector.vue > Should not do private operations when in public explorer mode 1`] = `
 "<div class="v-application v-theme--light v-layout v-layout--full-height v-locale--is-ltr">
   <div class="v-application__wrap">
-    <header class="v-toolbar v-toolbar--flat v-toolbar--density-default v-theme--light v-locale--is-ltr v-app-bar top-bar" style="top: 0px; z-index: 1004; transform: translateY(0%); position: fixed; transition: none;">
+    <header class="v-toolbar v-toolbar--density-default elevation-0 v-theme--light v-locale--is-ltr v-app-bar top-bar theme-background" style="top: 0px; z-index: 1004; transform: translateY(0px); position: fixed; transition: none; left: 0px; width: calc(100% - 0px - 0px);">
       <!---->
-      <div class="v-toolbar__content" style="height: 48px;">
+      <div class="v-toolbar__content" style="height: 64px;">
         <!---->
         <!---->
-        <div class="v-container v-locale--is-ltr d-flex align-center">
+        <div class="v-container v-locale--is-ltr d-flex align-center justify-space-between">
           <div class="d-flex align-center w-100">
             <!--v-if-->
             <!-- Desktop Info Section -->
             <!--v-if--> Latest Block: <a class="text-decoration-none ml-1">1</a>
-            <!--v-if-->
+            <hr class="v-divider v-divider--inset v-divider--vertical v-theme--light mx-2" aria-orientation="vertical" role="separator"> Gas: <a class="text-decoration-none ml-1">1 gwei</a>
             <div style="display: none;">
               <hr class="v-divider v-divider--inset v-divider--vertical v-theme--light mx-2" aria-orientation="vertical" role="separator">
               <div class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
@@ -104,6 +148,10 @@ exports[`RpcConnector.vue > Should not do private operations when in public expl
             <div class="v-spacer"></div>
             <div class="search-container">
               <search-bar-stub compact="true"></search-bar-stub>
+            </div><!-- Theme Toggle and Other Controls -->
+            <!--v-if-->
+            <div class="d-flex align-center ml-2">
+              <theme-toggle-stub></theme-toggle-stub>
             </div>
           </div>
         </div>

@@ -250,8 +250,11 @@ export default {
                     });
                     this.theme.global.name.value = 'light';
 
-                    // Only copy the primary color to dark theme, keep other colors as default
-                    this.$vuetify.theme.themes.dark.colors.primary = this.$vuetify.theme.themes.light.colors.primary;
+                    // Only copy the primary color to dark theme, but make it lighter for better contrast in dark mode
+                    const primaryColor = this.$vuetify.theme.themes.light.colors.primary;
+                    // Convert to a slightly lighter shade for dark theme
+                    const lighterPrimaryColor = this.lightenColor(primaryColor, 15); // Lighten by 15%
+                    this.$vuetify.theme.themes.dark.colors.primary = lighterPrimaryColor;
                 }
 
                 if (font)
@@ -284,7 +287,6 @@ export default {
             });
         },
         initWorkspace(workspace) {
-            console.log(this.$vuetify.theme.themes.light.colors);
             this.currentWorkspaceStore.updateCurrentWorkspace(workspace);
             this.userStore.updateUser({ onboarded: true, firebaseUserId: workspace.firebaseUserId });
             this.$pusher.init();

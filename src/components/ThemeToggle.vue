@@ -65,4 +65,4 @@ onBeforeUnmount(() => {
   const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
   mediaQuery.removeEventListener('change', updateThemeFromSystem);
 });
-</script> 
+</script>
