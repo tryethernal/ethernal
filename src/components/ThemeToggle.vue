@@ -18,13 +18,15 @@ const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
 // Initialize theme state
 const initializeTheme = () => {
+  /** @type {('light'|'dark'|null)} */
   const savedTheme = localStorage.getItem('theme');
+  const validThemes = ['light', 'dark'];
   
-  if (savedTheme) {
-    // Use saved preference if it exists
+  if (savedTheme && validThemes.includes(savedTheme)) {
+    // Use validated saved preference
     isDarkMode.value = savedTheme === 'dark';
   } else {
-    // Otherwise use system preference
+    // Fall back to system preference
     isDarkMode.value = mediaQuery.matches;
   }
   
