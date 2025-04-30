@@ -15,7 +15,7 @@
             <template v-if="props.contract.abi">
                 <h4 class="mb-1">ABI</h4>
                 <v-card class="mb-6">
-                    <v-card-text class="text-medium-emphasis bg-grey-lighten-4">
+                    <v-card-text class="text-medium-emphasis">
                         <Expandable-Text :pre="true" :maxChars="100" :text="JSON.stringify(props.contract.abi, null, 2)" />
                     </v-card-text>
                 </v-card>
@@ -24,7 +24,7 @@
             <template v-if="props.contract.bytecode">
                 <h4 class="mb-1">Bytecode</h4>
                 <v-card class="mb-6">
-                    <v-card-text class="text-medium-emphasis bg-grey-lighten-4">
+                    <v-card-text class="text-medium-emphasis">
                         <Expandable-Text :pre="true" :maxChars="400" :text="props.contract.bytecode" />
                     </v-card-text>
                 </v-card>

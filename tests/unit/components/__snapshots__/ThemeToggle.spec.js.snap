@@ -1,0 +1,25 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ThemeToggle.vue > should render with dark theme when saved in localStorage 1`] = `
+"<button type="button" class="v-btn v-btn--elevated v-btn--icon v-theme--dark v-btn--density-default v-btn--size-default v-btn--variant-elevated" title="Switch to light mode"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+  <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-weather-sunny mdi v-icon notranslate v-theme--dark v-icon--size-default" aria-hidden="true"></i></span>
+  <!---->
+  <!---->
+</button>"
+`;
+
+exports[`ThemeToggle.vue > should render with light theme by default 1`] = `
+"<button type="button" class="v-btn v-btn--elevated v-btn--icon v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-elevated" title="Switch to dark mode"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+  <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-weather-night mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+  <!---->
+  <!---->
+</button>"
+`;
+
+exports[`ThemeToggle.vue > should toggle theme when button is clicked 1`] = `
+"<button type="button" class="v-btn v-btn--elevated v-btn--icon v-theme--dark v-btn--density-default v-btn--size-default v-btn--variant-elevated" title="Switch to light mode"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+  <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-weather-sunny mdi v-icon notranslate v-theme--dark v-icon--size-default" aria-hidden="true"></i></span>
+  <!---->
+  <!---->
+</button>"
+`;

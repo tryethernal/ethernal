@@ -1,5 +1,5 @@
 <template>
-    <v-card class="white-card" height="100%">
+    <v-card class="bg-surface" height="100%">
         <v-card-text>
             <v-row class="stats-grid">
                 <v-col cols="12" sm="6" class="stat-item d-flex flex-column">
@@ -155,12 +155,8 @@ onMounted(() => {
     }
 }
 
-.white-card {
-    background-color: white !important;
+.bg-surface {
+    background-color: var(--card-background);
     box-shadow: 0 4px 6px rgba(0,0,0,0.1) !important;
 }
-
-.white-card :deep(.v-card-subtitle) {
-    background-color: white;
-}
-</style> 
+</style>

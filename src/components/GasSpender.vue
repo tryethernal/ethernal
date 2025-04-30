@@ -78,7 +78,7 @@ const getLatestGasSpenders = () => {
 
 const contrastingColor = computed(() => {
     const theme = useTheme();
-    return getBestContrastingColor('#4242421f', theme.current.value.colors);
+    return getBestContrastingColor(theme.current.value.colors['surface-variant'], theme.current.value.colors);
 });
 
 

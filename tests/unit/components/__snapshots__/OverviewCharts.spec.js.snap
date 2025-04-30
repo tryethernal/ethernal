@@ -1,7 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`OverviewCharts.vue > Should show transaction volume chart by default 1`] = `
-"<div data-v-e940bb64="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated white-card" style="height: 100%;">
+"<div data-v-e940bb64="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated bg-surface" style="height: 100%;">
   <!---->
   <div class="v-card__loader">
     <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
@@ -20,7 +20,7 @@ exports[`OverviewCharts.vue > Should show transaction volume chart by default 1`
   <!---->
   <!---->
   <div data-v-e940bb64="" class="v-card-text">
-    <base-chip-group-stub data-v-e940bb64="" backgroundcolor="#4242421f" modelvalue="transactions" mandatory=""></base-chip-group-stub>
+    <base-chip-group-stub data-v-e940bb64="" modelvalue="transactions" mandatory=""></base-chip-group-stub>
     <line-chart-stub data-v-e940bb64="" title="Transaction Volume" xlabels="2024-01-01,2024-01-02" data="100,200" tooltipunit="transaction" index="0"></line-chart-stub>
     <!--v-if-->
   </div>
@@ -30,7 +30,7 @@ exports[`OverviewCharts.vue > Should show transaction volume chart by default 1`
 `;
 
 exports[`OverviewCharts.vue > Should switch to wallet count chart when wallet chip is selected 1`] = `
-"<div data-v-e940bb64="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated white-card" style="height: 100%;">
+"<div data-v-e940bb64="" class="v-card v-theme--light v-card--density-default v-card--variant-elevated bg-surface" style="height: 100%;">
   <!---->
   <div class="v-card__loader">
     <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
@@ -49,7 +49,7 @@ exports[`OverviewCharts.vue > Should switch to wallet count chart when wallet ch
   <!---->
   <!---->
   <div data-v-e940bb64="" class="v-card-text">
-    <base-chip-group-stub data-v-e940bb64="" backgroundcolor="#4242421f" modelvalue="wallets" mandatory=""></base-chip-group-stub>
+    <base-chip-group-stub data-v-e940bb64="" modelvalue="wallets" mandatory=""></base-chip-group-stub>
     <!--v-if-->
     <line-chart-stub data-v-e940bb64="" title="Active Wallets Count" xlabels="2024-01-01,2024-01-02" data="50,75" tooltipunit="wallet" index="4"></line-chart-stub>
   </div>
