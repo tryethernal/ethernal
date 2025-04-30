@@ -23,7 +23,7 @@ exports[`ContractCode.vue > Should display contract verification info if public 
     </div>
     <!---->
     <!---->
-    <div data-v-39109da1="" class="v-card-text text-medium-emphasis bg-grey-lighten-4">
+    <div data-v-39109da1="" class="v-card-text text-medium-emphasis">
       <expandable-text-stub data-v-39109da1="" text="[
   {
     &quot;inputs&quot;: [
@@ -649,7 +649,7 @@ exports[`ContractCode.vue > Should display contract verification info if public 
     </div>
     <!---->
     <!---->
-    <div data-v-39109da1="" class="v-card-text text-medium-emphasis bg-grey-lighten-4">
+    <div data-v-39109da1="" class="v-card-text text-medium-emphasis">
       <expandable-text-stub data-v-39109da1="" text="0x60" maxchars="400" pre="true"></expandable-text-stub>
     </div>
     <!---->
@@ -707,7 +707,7 @@ exports[`ContractCode.vue > Should display the contract verification panel for p
     </div>
     <!---->
     <!---->
-    <div data-v-39109da1="" class="v-card-text text-medium-emphasis bg-grey-lighten-4">
+    <div data-v-39109da1="" class="v-card-text text-medium-emphasis">
       <expandable-text-stub data-v-39109da1="" text="0x60" maxchars="400" pre="true"></expandable-text-stub>
     </div>
     <!---->
@@ -817,7 +817,7 @@ exports[`ContractCode.vue > Should show appropriate message when no assembly is 
     </div>
     <!---->
     <!---->
-    <div data-v-39109da1="" class="v-card-text text-medium-emphasis bg-grey-lighten-4">
+    <div data-v-39109da1="" class="v-card-text text-medium-emphasis">
       <expandable-text-stub data-v-39109da1="" text="0x60" maxchars="400" pre="true"></expandable-text-stub>
     </div>
     <!---->
@@ -927,7 +927,7 @@ exports[`ContractCode.vue > Should show loading state initially 1`] = `
     </div>
     <!---->
     <!---->
-    <div data-v-39109da1="" class="v-card-text text-medium-emphasis bg-grey-lighten-4">
+    <div data-v-39109da1="" class="v-card-text text-medium-emphasis">
       <expandable-text-stub data-v-39109da1="" text="0x60" maxchars="400" pre="true"></expandable-text-stub>
     </div>
     <!---->
@@ -994,7 +994,7 @@ exports[`ContractCode.vue > Should show success alert when contract is just veri
     </div>
     <!---->
     <!---->
-    <div data-v-39109da1="" class="v-card-text text-medium-emphasis bg-grey-lighten-4">
+    <div data-v-39109da1="" class="v-card-text text-medium-emphasis">
       <expandable-text-stub data-v-39109da1="" text="0x60" maxchars="400" pre="true"></expandable-text-stub>
     </div>
     <!---->

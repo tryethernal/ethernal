@@ -71,7 +71,7 @@
               <router-link v-if="transaction.blockNumber" style="text-decoration: none;" :to="'/block/' + transaction.blockNumber">{{ commify(transaction.blockNumber) }}</router-link>
               <span v-else>-</span>
               <span v-if="currentWorkspaceStore.currentBlock && currentWorkspaceStore.currentBlock.number && transaction.blockNumber" class="ml-2 confirmation-text">
-                <v-chip size="small" color="grey-darken-2" text-color="white" class="font-weight-medium mr-2" density="comfortable">
+                <v-chip size="small" color="primary" text-color="white" class="font-weight-medium mr-2" density="comfortable">
                   {{ commify(currentWorkspaceStore.currentBlock.number - transaction.blockNumber) }} Block Confirmations
                 </v-chip>
               </span>
@@ -338,7 +338,7 @@
             <v-list-item-title class="text-body-2 d-flex flex-column flex-sm-row ga-1">
               <v-chip
                 size="small"
-                color="grey-darken-2"
+                :color="theme.global.current.value.dark ? 'grey-lighten-1' : 'grey-darken-2'"
                 text-color="white"
                 class="font-weight-medium mr-2"
                 density="comfortable"
@@ -347,7 +347,7 @@
               </v-chip>
               <v-chip
                 size="small"
-                color="grey-darken-2"
+                :color="theme.global.current.value.dark ? 'grey-lighten-1' : 'grey-darken-2'"
                 text-color="white"
                 class="font-weight-medium mr-2"
                 density="comfortable"
@@ -356,7 +356,7 @@
               </v-chip>
               <v-chip
                 size="small"
-                color="grey-darken-2"
+                :color="theme.global.current.value.dark ? 'grey-lighten-1' : 'grey-darken-2'"
                 text-color="white"
                 class="font-weight-medium"
                 density="comfortable"
@@ -370,7 +370,7 @@
     </v-card>
 
     <!-- Function Call Card -->
-    <v-card class="mb-6" variant="outlined" v-if="(transaction.to && transaction.data && transaction.data !== '0x') || (transaction.receipt && transaction.receipt.contractAddress)">
+    <v-card class="mb-6" v-if="(transaction.to && transaction.data && transaction.data !== '0x') || (transaction.receipt && transaction.receipt.contractAddress)">
       <v-card-item>
         <v-card-title class="text-subtitle-1 font-weight-bold">{{ transaction.to ? 'Called Function' : 'Contract Creation Data' }}</v-card-title>
       </v-card-item>
@@ -401,6 +401,7 @@ import * as ethers from 'ethers';
 import { useExplorerStore } from '../stores/explorer';
 import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
 import { getGasPriceFromTransaction } from '../lib/utils';
+import { useTheme } from 'vuetify';
 import HashLink from './HashLink.vue';
 import CustomField from './CustomField.vue';
 import CompactTransactionTokenTransfers from './CompactTransactionTokenTransfers.vue';
@@ -425,6 +426,7 @@ const $dt = inject('$dt');
 // Stores
 const explorerStore = useExplorerStore();
 const currentWorkspaceStore = useCurrentWorkspaceStore();
+const theme = useTheme();
 
 // Cache frequently accessed values
 const cachedGasPrices = new Map();
@@ -502,116 +504,34 @@ const txTypeNames = {
 const getTxnTypeName = (type) => txTypeNames[type] || 'Unknown';
 </script>
 
-<style scoped>
-.transaction-list :deep(.v-list-item) {
-  min-height: 48px;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  /* Remove the border from all items */
-  border-bottom: none;
-}
-
-.transaction-list :deep(.v-list-item__prepend) {
-  align-self: start;
-}
-
-.transaction-list :deep(.v-list-item__content) {
-  align-self: start;
-}
-
+<style>
 .transaction-list :deep(.v-list-item-title) {
-  word-break: break-all;
-  white-space: inherit !important;
+  color: rgb(var(--v-theme-on-surface));
 }
 
-.v-theme--dark .transaction-list :deep(.v-list-item) {
-  /* Remove the border from all items in dark mode */
-  border-bottom: none;
+.transaction-list :deep(.text-subtitle-2) {
+  color: rgba(var(--v-theme-on-surface), 0.7);
 }
 
-/* Custom styling for confirmation text */
-.confirmation-text {
-  color: rgba(0, 0, 0, 0.6);
-  font-size: 0.875rem;
+.transaction-list :deep(.v-icon) {
+  color: rgba(var(--v-theme-on-surface), 0.7);
 }
 
-.v-theme--dark .confirmation-text {
-  color: rgba(255, 255, 255, 0.6);
+.transaction-list :deep(.v-divider) {
+  border-color: rgba(var(--v-theme-on-surface), 0.12);
 }
 
-/* Custom divider styling */
-.custom-divider {
-  height: 1px;
-  background-color: rgba(var(--v-theme-on-surface), 0.08);
-  margin: 8px 16px;
+.transaction-function-call :deep(.v-card) {
+  background-color: rgb(var(--v-theme-surface));
+  color: rgb(var(--v-theme-on-surface));
 }
 
-.v-theme--dark .custom-divider {
-  background-color: rgba(255, 255, 255, 0.12);
+.transaction-function-call :deep(.v-card-title) {
+  color: rgb(var(--v-theme-on-surface));
 }
 
-/* Enhanced styling for cards */
-:deep(.v-card) {
-  background-color: white !important;
-}
-
-.v-theme--dark :deep(.v-card) {
-  background-color: rgb(30, 30, 30) !important;
-}
-
-/* Function call styling */
-:deep(.transaction-function-call .v-card) {
-  box-shadow: none !important;
-  border: none !important;
-  background-color: transparent !important;
-}
-
-:deep(.transaction-function-call .v-card-text) {
-  padding: 8px 0 !important;
-}
-
-/* Contract creation data styling */
-:deep(.contract-creation .v-textarea) {
-  margin: 0 !important;
-}
-
-:deep(.embedded-transfers) {
-  border: none !important;
-  background: transparent !important;
-  padding: 0 !important;
-  margin: 0 !important;
-}
-
-:deep(.token-transfers-header) {
-  display: none;
-}
-
-.token-activity-container {
-  padding-top: 4px;
-  padding-left: 0;
-}
-
-.token-transfers-item, .balance-changes-item {
-  padding-top: 12px;
-  padding-bottom: 12px;
-  position: relative;
-}
-
-/* Remove hover effects */
-.token-transfers-item:hover, .balance-changes-item:hover {
-  background-color: transparent !important;
-}
-
-:deep(.embedded-transfer-item:hover), :deep(.embedded-balance-item:hover) {
-  background-color: transparent !important;
-}
-
-.token-transfers-wrapper {
-  width: 100%;
-}
-
-/* Remove dividers between token transfers */
-:deep(.embedded-transfer-item) {
-  border-bottom: none !important;
+.contract-creation :deep(.v-card) {
+  background-color: rgb(var(--v-theme-surface));
+  color: rgb(var(--v-theme-on-surface));
 }
 </style>

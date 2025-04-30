@@ -1,8 +1,8 @@
 <template>
-    <v-app-bar height="48" :style="styles" flat class="top-bar">
-        <v-container class="d-flex align-center">
+    <v-app-bar elevation="0" :class="['top-bar', 'theme-background']">
+        <v-container class="d-flex align-center justify-space-between">
             <div class="d-flex align-center w-100">
-                <v-app-bar-nav-icon @click.stop="toggleMenu" v-if="$vuetify.display.mobile"></v-app-bar-nav-icon>
+                <v-app-bar-nav-icon @click.stop="$emit('toggleMenu')" v-if="$vuetify.display.mobile"></v-app-bar-nav-icon>
 
                 <!-- Desktop Info Section -->
                 <template v-if="!$vuetify.display.mobile">
@@ -33,6 +33,12 @@
                         <SearchBar :compact="true" />
                     </div>
                 </template>
+
+                <!-- Theme Toggle and Other Controls -->
+                <v-spacer v-if="!isNotOverviewPage"></v-spacer>
+                <div class="d-flex align-center ml-2">
+                    <theme-toggle />
+                </div>
             </div>
         </v-container>
     </v-app-bar>
@@ -48,11 +54,12 @@ import { useEnvStore } from '../stores/env';
 import { useUserStore } from '../stores/user';
 import { shortRpcUrl } from '@/lib/utils';
 import SearchBar from './SearchBar.vue';
+import ThemeToggle from './ThemeToggle.vue';
 
 const MINIMUM_DISPLAY_GWEI = 10000000;
 
 // Props
-defineProps({
+const props = defineProps({
     styles: {
         type: Object,
         default: () => ({})
@@ -83,15 +90,10 @@ const gasPrice = ref(null);
 
 // Computed properties
 const isUserAdmin = computed(() => envStore.isAdmin);
+const isNotOverviewPage = computed(() => route.path !== '/' && route.path !== '/overview');
 
 // Methods
 const commify = ethersUtils.commify;
-
-const toggleMenu = () => {
-    emit('toggleMenu');
-};
-
-const isNotOverviewPage = computed(() => route.path !== '/' && route.path !== '/overview');
 
 const processContracts = async () => {
     processingContracts.value = true;
@@ -175,7 +177,6 @@ onMounted(async () => {
 
     if (explorerStore.id && explorerStore.gasAnalyticsEnabled) {
         $pusher.onNewBlockEvent(blockEvent => {
-            console.log(blockEvent);
             if (blockEvent.gasPrice < 0) {
                 gasPrice.value = '0 gwei';
             } else if (blockEvent.gasPrice < MINIMUM_DISPLAY_GWEI) {
@@ -192,15 +193,32 @@ onMounted(async () => {
 .v-app-bar {
     display: flex;
     justify-content: center;
-    background-color: white !important;
+    color: var(--text-primary);
 }
+
 .v-app-bar.top-bar {
-    border-bottom: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
+    border-bottom: 1px solid var(--border-color);
 }
+
 .v-app-bar .v-container {
     flex: none;
     width: 100%;
     padding: 0;
+}
+
+/* Links in the app bar */
+.v-app-bar a {
+    color: var(--text-primary);
+    text-decoration: none;
+}
+
+.v-app-bar a:hover {
+    color: rgb(var(--v-theme-primary));
+}
+
+/* Progress circular color */
+.v-app-bar .v-progress-circular {
+    color: rgb(var(--v-theme-primary));
 }
 
 .search-container {

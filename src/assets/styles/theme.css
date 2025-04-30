@@ -1,0 +1,12 @@
+/* Core Theme Classes */
+.theme-background {
+    background-color: var(--app-bar-background) !important;
+}
+
+/* Base Theme Colors */
+:root {
+    --app-background: var(--card-background);
+    --text-color-primary: var(--text-primary);
+    --text-color-secondary: var(--text-secondary);
+    --border-color-theme: var(--border-color);
+}

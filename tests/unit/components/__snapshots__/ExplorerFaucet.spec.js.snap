@@ -28,7 +28,8 @@ exports[`ExplorerFaucet.vue > Should display an active faucet 1`] = `
         <div class="v-card-title text-primary d-flex justify-center align-center"> Faucet - Get ETL Tokens</div>
         <div class="v-card-text pb-0">
           <!--v-if-->
-          <!--v-if-->. <form class="v-form" novalidate="">
+          <!--v-if-->
+          <form class="v-form" novalidate="">
             <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field mt-1">
               <!---->
               <div class="v-input__control">

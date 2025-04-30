@@ -207,8 +207,8 @@ exports[`TransactionsList.vue > Should display the list 1`] = `
       <tbody class="v-data-table__tbody" role="rowgroup">
         <!---->
         <tr class="v-data-table__tr">
-          <td class="v-data-table__td v-data-table-column--align-start"><i data-v-40c8aafa="" class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success-lighten-1 mr-2" aria-hidden="true" aria-describedby="v-tooltip-7"></i><i data-v-40c8aafa="" class="mdi-alert-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-error-lighten-1 mr-2" aria-hidden="true" aria-describedby="v-tooltip-7" style="display: none;"></i><i data-v-40c8aafa="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-grey-lighten-1 mr-2" aria-hidden="true" aria-describedby="v-tooltip-7" style="display: none;"></i>
-            <div data-v-40c8aafa="" class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px; display: none;" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-describedby="v-tooltip-7"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
+          <td class="v-data-table__td v-data-table-column--align-start"><i data-v-40c8aafa="" class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small mr-2 text-success" aria-hidden="true" aria-describedby="v-tooltip-7"></i><i data-v-40c8aafa="" class="mdi-alert-circle mdi v-icon notranslate v-theme--light v-icon--size-small mr-2 text-error" aria-hidden="true" aria-describedby="v-tooltip-7" style="display: none;"></i><i data-v-40c8aafa="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small mr-2 text-grey" aria-hidden="true" aria-describedby="v-tooltip-7" style="display: none;"></i>
+            <div data-v-40c8aafa="" class="v-progress-circular v-progress-circular--indeterminate v-theme--light mr-2 text-primary" style="width: 16px; height: 16px; display: none;" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-describedby="v-tooltip-7"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
                 <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
                 <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
               </svg>
@@ -218,7 +218,7 @@ exports[`TransactionsList.vue > Should display the list 1`] = `
             <!--teleport end-->
             <hash-link-stub data-v-40c8aafa="" type="transaction" hash="0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="true" unlink="false" loadcontract="false"></hash-link-stub>
           </td>
-          <td class="v-data-table__td v-data-table-column--align-start"><span data-v-40c8aafa="" class="v-chip v-chip--label v-theme--light bg-primary-lighten-1 v-chip--density-default v-chip--size-small v-chip--variant-flat" draggable="false"><!----><span class="v-chip__underlay"></span>
+          <td class="v-data-table__td v-data-table-column--align-start"><span data-v-40c8aafa="" class="v-chip v-chip--label v-theme--light text-primary v-chip--density-default v-chip--size-small v-chip--variant-tonal" draggable="false"><!----><span class="v-chip__underlay"></span>
             <!---->
             <!---->
             <div class="v-chip__content" data-no-activator="">0xa9059cbb</div>
@@ -242,8 +242,8 @@ exports[`TransactionsList.vue > Should display the list 1`] = `
         </tr>
         <!---->
         <tr class="v-data-table__tr">
-          <td class="v-data-table__td v-data-table-column--align-start"><i data-v-40c8aafa="" class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success-lighten-1 mr-2" aria-hidden="true" aria-describedby="v-tooltip-9" style="display: none;"></i><i data-v-40c8aafa="" class="mdi-alert-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-error-lighten-1 mr-2" aria-hidden="true" aria-describedby="v-tooltip-9" style="display: none;"></i><i data-v-40c8aafa="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-grey-lighten-1 mr-2" aria-hidden="true" aria-describedby="v-tooltip-9" style="display: none;"></i>
-            <div data-v-40c8aafa="" class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-describedby="v-tooltip-9"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
+          <td class="v-data-table__td v-data-table-column--align-start"><i data-v-40c8aafa="" class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small mr-2 text-success" aria-hidden="true" aria-describedby="v-tooltip-9" style="display: none;"></i><i data-v-40c8aafa="" class="mdi-alert-circle mdi v-icon notranslate v-theme--light v-icon--size-small mr-2 text-error" aria-hidden="true" aria-describedby="v-tooltip-9" style="display: none;"></i><i data-v-40c8aafa="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small mr-2 text-grey" aria-hidden="true" aria-describedby="v-tooltip-9" style="display: none;"></i>
+            <div data-v-40c8aafa="" class="v-progress-circular v-progress-circular--indeterminate v-theme--light mr-2 text-primary" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-describedby="v-tooltip-9"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
                 <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
                 <circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle>
               </svg>
@@ -253,7 +253,7 @@ exports[`TransactionsList.vue > Should display the list 1`] = `
             <!--teleport end-->
             <hash-link-stub data-v-40c8aafa="" type="transaction" hash="0x1234" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="true" unlink="false" loadcontract="false"></hash-link-stub>
           </td>
-          <td class="v-data-table__td v-data-table-column--align-start"><span data-v-40c8aafa="" class="v-chip v-chip--label v-theme--light bg-primary-lighten-1 v-chip--density-default v-chip--size-small v-chip--variant-flat" draggable="false" style="display: none;"><!----><span class="v-chip__underlay"></span>
+          <td class="v-data-table__td v-data-table-column--align-start"><span data-v-40c8aafa="" class="v-chip v-chip--label v-theme--light text-primary v-chip--density-default v-chip--size-small v-chip--variant-tonal" draggable="false" style="display: none;"><!----><span class="v-chip__underlay"></span>
             <!---->
             <!---->
             <div class="v-chip__content" data-no-activator=""></div>

@@ -145,6 +145,8 @@ import GasConsumers from './GasConsumers.vue';
 import GasSpender from './GasSpender.vue';
 
 const explorerStore = useExplorerStore();
+const theme = useTheme();
+
 const server = inject('$server');
 const fromWei = inject('$fromWei');
 
@@ -207,8 +209,7 @@ const speedEstimatesAvailable = computed(() => {
 });
 
 const contrastingColor = computed(() => {
-    const theme = useTheme();
-    return getBestContrastingColor('#4242421f', theme.current.value.colors);
+    return getBestContrastingColor(theme.current.value.colors['surface-variant'], theme.current.value.colors);
 });
 
 const getLatestGasStats = () => {
@@ -251,21 +252,21 @@ const getGasPriceHistory = () => {
                         data: data.map(t => t.slow ? formatGwei(Number(t.slow)) : null),
                         max: data.map(t => t.maxSlow ? formatGwei(Number(t.maxSlow)) : null),
                         min: data.map(t => t.minSlow ? formatGwei(Number(t.minSlow)) : null),
-                        borderColor: '#4CAF50',
+                        borderColor: theme.current.value.colors['gas-slow'],
                     },
                     {
                         label: 'Average',
                         data: data.map(t => t.average ? formatGwei(Number(t.average)) : null),
                         max: data.map(t => t.maxAverage ? formatGwei(Number(t.maxAverage)) : null),
                         min: data.map(t => t.minAverage ? formatGwei(Number(t.minAverage)) : null),
-                        borderColor: '#3D95CE',
+                        borderColor: theme.current.value.colors['gas-average'],
                     },
                     {
                         label: 'Fast',
                         data: data.map(t => t.fast ? formatGwei(Number(t.fast)) : null),
                         max: data.map(t => t.maxFast ? formatGwei(Number(t.maxFast)) : null),
                         min: data.map(t => t.minFast ? formatGwei(Number(t.minFast)) : null),
-                        borderColor: '#E72732',
+                        borderColor: theme.current.value.colors['gas-fast'],
                     }
                 ]
             };
@@ -297,14 +298,14 @@ onUnmounted(() => {
 </script>
 <style scoped>
 .slow {
-    color: #4CAF50;
+    color: rgb(var(--v-theme-gas-slow));
 }
 
 .average {
-    color: #3D95CE;
+    color: rgb(var(--v-theme-gas-average));
 }
 
 .fast {
-    color: #E72732;
+    color: rgb(var(--v-theme-gas-fast));
 }
 </style>

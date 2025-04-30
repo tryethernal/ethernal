@@ -5,8 +5,8 @@ exports[`PublicExplorerFooter.vue > Should show the component 1`] = `
   <div data-v-eccf9220="" class="v-container v-locale--is-ltr d-flex flex-column py-4">
     <!-- Links Columns Row -->
     <div data-v-eccf9220="" class="d-flex flex-column flex-sm-row ga-md-8 ga-sm-1">
-      <div data-v-eccf9220="" class="d-flex flex-column mb-8"><span data-v-eccf9220="" class="text-body-2"> Block explorer &amp; data analytics platform for evm chains. </span><button data-v-eccf9220="" type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-small v-btn--variant-outlined mt-2 px-2" style="max-width: 180px;" title="Add to MetaMask"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-          <!----><span class="v-btn__content" data-no-activator=""><img data-v-eccf9220="" src="/src/assets/metamask-fox.svg" class="metamask-icon mr-2" width="20" height="20" alt="MetaMask"><span data-v-eccf9220="" class="text-body-2">Add to Metamask</span></span>
+      <div data-v-eccf9220="" class="d-flex flex-column mb-8"><span data-v-eccf9220="" class="text-body-2"> Block explorer &amp; data analytics platform for evm chains. </span><button data-v-eccf9220="" type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-small v-btn--variant-outlined mt-2 px-2" style="max-width: 180px;" title="Add to wallet"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+          <!----><span class="v-btn__content" data-no-activator=""><img data-v-eccf9220="" src="/src/assets/metamask-fox.svg" class="metamask-icon mr-2" width="20" height="20" alt="MetaMask"><span data-v-eccf9220="" class="text-body-2">Add to wallet</span></span>
           <!---->
           <!---->
         </button></div>

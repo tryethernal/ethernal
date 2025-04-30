@@ -110,6 +110,7 @@ const copyToClipboard = async () => {
 .expandable-text {
   position: relative;
   margin-bottom: 4px;
+  background-color: var(--card-background);
 }
 
 .copy-btn-container {
@@ -122,9 +123,18 @@ const copyToClipboard = async () => {
   text-decoration: none;
 }
 
-/* Dark mode support */
-:deep(.v-theme--dark) .code-wrapper {
-  background-color: rgba(30, 30, 30, 1);
-  border-color: rgba(255, 255, 255, 0.12);
+pre {
+  background-color: var(--card-background);
+  margin: 0;
+  padding: 8px;
+  font-family: monospace;
 }
-</style> 
+
+/* Dark mode support */
+:deep(.v-theme--dark) {
+  .expandable-text,
+  pre {
+    background-color: var(--card-background);
+  }
+}
+</style>

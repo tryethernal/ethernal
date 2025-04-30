@@ -1,0 +1,35 @@
+:root {
+  // Light theme defaults
+  --app-background: #FFFFFF;
+  --text-primary: rgba(0, 0, 0, 0.87);
+  --text-secondary: rgba(0, 0, 0, 0.6);
+  --border-color: rgba(0, 0, 0, 0.12);
+  --card-background: #FFFFFF;
+  --app-bar-background: #FFFFFF;
+  --hover-background: rgba(0, 0, 0, 0.04);
+  --divider-color: rgba(0, 0, 0, 0.12);
+}
+
+.v-theme--dark {
+  // Dark theme overrides
+  --app-background: #121212;
+  --text-primary: rgba(255, 255, 255, 0.87);
+  --text-secondary: rgba(255, 255, 255, 0.6);
+  --border-color: rgba(255, 255, 255, 0.12);
+  --card-background: #1E1E1E;
+  --app-bar-background: #1E1E1E;
+  --hover-background: rgba(255, 255, 255, 0.08);
+  --divider-color: rgba(255, 255, 255, 0.12);
+}
+
+// Force background color in dark mode
+.v-theme--dark .v-app-bar,
+.v-theme--dark .v-navigation-drawer {
+  background-color: var(--app-bar-background) !important;
+}
+
+// Force text colors in dark mode
+.v-theme--dark .v-app-bar,
+.v-theme--dark .v-navigation-drawer {
+  color: var(--text-primary) !important;
+}

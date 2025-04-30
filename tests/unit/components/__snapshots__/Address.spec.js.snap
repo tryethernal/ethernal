@@ -5,7 +5,7 @@ exports[`Address.vue > Should display address base page 1`] = `
   <h2 class="text-h6 font-weight-medium">Address <span class="text-body-2 text-medium-emphasis"></span></h2>
   <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator">
   <address-header-stub balance="10000" loadingbalance="false" loadingstats="false" addresstransactionstats="[object Object]"></address-header-stub>
-  <base-chip-group-stub backgroundcolor="#4242421f" modelvalue="transactions" mandatory=""></base-chip-group-stub>
+  <base-chip-group-stub modelvalue="transactions" mandatory=""></base-chip-group-stub>
   <div>
     <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
       <!---->

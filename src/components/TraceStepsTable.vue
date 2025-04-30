@@ -30,13 +30,13 @@
         <template v-slot:item.method="{ item }">
             <v-tooltip v-if="item.method.name">
                 <template v-slot:activator="{ props }">
-                    <v-chip v-bind="props" color="primary-lighten-1" label size="small" variant="flat">
+                    <v-chip v-bind="props" color="primary" label size="small" variant="tonal">
                         {{ item.method.name }}
                     </v-chip>
                 </template>
                 <span style="white-space: pre">{{ item.method.label }}</span>
             </v-tooltip>
-            <v-chip v-else-if="item.method.sighash" color="primary-lighten-1" label size="small" variant="flat">
+            <v-chip v-else-if="item.method.sighash" color="primary" label size="small" variant="tonal">
                 {{ item.method.sighash }}
             </v-chip>
         </template>
@@ -70,7 +70,7 @@
         </template>
         
         <template v-slot:item.type="{ item }">
-            <v-chip label size="small" color="primary-lighten-1" variant="flat">{{ item.op }}</v-chip>
+            <v-chip label size="small" color="primary" variant="tonal">{{ item.op }}</v-chip>
         </template>
     </v-data-table-server>
 </template>

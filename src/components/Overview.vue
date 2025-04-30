@@ -19,7 +19,7 @@
 
             <v-row>
                 <v-col cols="12" md="6">
-                    <v-card class="white-card">
+                    <v-card class="bg-surface">
                         <template v-slot:subtitle>
                             <div class="pt-2">Latest Blocks</div>
                         </template>
@@ -28,7 +28,7 @@
                 </v-col>
 
                 <v-col cols="12" md="6">
-                    <v-card class="white-card">
+                    <v-card class="bg-surface">
                         <template v-slot:subtitle>
                             <div class="pt-2">Latest Transactions</div>
                         </template>
@@ -61,7 +61,7 @@ const explorerStore = useExplorerStore();
     background: linear-gradient(to bottom, 
         rgba(var(--v-theme-primary), 0.95) 0%,
         rgba(var(--v-theme-primary), 0.7) 25%,
-        rgba(var(--v-theme-background), 1) 50%
+        rgb(var(--v-theme-background)) 50%
     );
 }
 
@@ -73,29 +73,30 @@ const explorerStore = useExplorerStore();
     right: 0;
     height: 70vh;
     background: 
-        radial-gradient(circle at 100% 0%, rgba(255, 255, 255, 0.25) 0%, transparent 35%),
-        radial-gradient(circle at 0% 100%, rgba(255, 255, 255, 0.25) 0%, transparent 35%),
+        radial-gradient(circle at 100% 0%, currentColor 0%, transparent 35%),
+        radial-gradient(circle at 0% 100%, currentColor 0%, transparent 35%),
         radial-gradient(2em 2em at 20% 20%, rgba(var(--v-theme-primary), 0.3) 0%, transparent 100%),
         radial-gradient(2em 2em at 80% 80%, rgba(var(--v-theme-primary), 0.3) 0%, transparent 100%),
         radial-gradient(2em 2em at 40% 60%, rgba(var(--v-theme-primary), 0.3) 0%, transparent 100%),
         radial-gradient(2em 2em at 60% 30%, rgba(var(--v-theme-primary), 0.3) 0%, transparent 100%),
         repeating-linear-gradient(45deg, 
-            rgba(255, 255, 255, 0.15) 0%, 
-            rgba(255, 255, 255, 0.15) 10px,
+            currentColor 0%, 
+            currentColor 10px,
             transparent 10px, 
             transparent 20px
         ),
         repeating-linear-gradient(-45deg, 
-            rgba(255, 255, 255, 0.15) 0%, 
-            rgba(255, 255, 255, 0.15) 10px,
+            currentColor 0%, 
+            currentColor 10px,
             transparent 10px, 
             transparent 20px
         );
-    opacity: 0.8;
-    mix-blend-mode: overlay;
+    opacity: 0.1;
+    mix-blend-mode: soft-light;
     mask-image: linear-gradient(to bottom, black 40%, transparent 80%);
     -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 80%);
     pointer-events: none;
+    color: var(--v-theme-on-surface);
 }
 
 .search-hero {
@@ -121,7 +122,7 @@ const explorerStore = useExplorerStore();
 
 .search-container h1 {
     margin: 0 0 2rem !important;
-    color: white;
+    color: rgb(var(--v-theme-on-primary));
     text-shadow: 0 1px 2px rgba(0,0,0,0.1);
     width: 100%;
 }
@@ -132,12 +133,7 @@ const explorerStore = useExplorerStore();
     z-index: 1;
 }
 
-.white-card {
-    background-color: white !important;
+.bg-surface {
     box-shadow: 0 4px 6px rgba(0,0,0,0.1) !important;
-}
-
-.white-card :deep(.v-card-subtitle) {
-    background-color: white;
 }
 </style>

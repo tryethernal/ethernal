@@ -12,7 +12,7 @@
                         <v-card-title class="text-primary d-flex justify-center align-center">{{ explorerStore.name }} Faucet - Get {{ tokenSymbol }} Tokens</v-card-title>
                         <v-card-text class="pb-0">
                             <v-alert text type="error" v-if="errorMessage" v-html="errorMessage"></v-alert>
-                            <v-alert text type="success" v-if="transactionHash">Tokens sent successfully! <Hash-Link :type="'transaction'" :hash="transactionHash" :customLabel="'See transaction'" /></v-alert>.
+                            <v-alert text type="success" v-if="transactionHash">Tokens sent successfully! <Hash-Link :type="'transaction'" :hash="transactionHash" :customLabel="'See transaction'" /></v-alert>
                             <v-form @submit.prevent="requestTokens()" v-model="valid">
                                 <v-text-field
                                     prepend-inner-icon="mdi-wallet-outline"

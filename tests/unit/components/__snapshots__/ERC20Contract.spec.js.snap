@@ -17,7 +17,7 @@ exports[`ERC20Contract.vue > Should display contract info 1`] = `
   <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator"><!-- Skeleton loader for TokenHeader when loading -->
   <!-- TokenHeader when data is loaded -->
   <token-header-stub contract="[object Object]" stats="[object Object]" loading-contract="false"></token-header-stub><!-- Navigation Chips -->
-  <base-chip-group-stub backgroundcolor="#4242421f" modelvalue="transfers" mandatory=""></base-chip-group-stub><!-- Tab Content -->
+  <base-chip-group-stub modelvalue="transfers" mandatory=""></base-chip-group-stub><!-- Tab Content -->
   <div>
     <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
       <!---->

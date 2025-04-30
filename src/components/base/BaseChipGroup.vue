@@ -9,13 +9,16 @@
 
 <script setup>
 import { useContrastingColor } from '@/composables/useContrastingColor';
+import { useTheme } from 'vuetify';
+
+const theme = useTheme();
 
 const props = defineProps({ 
     backgroundColor: {
         type: String,
-        default: '#4242421f'
+        default: null
     }
 });
 
-const { contrastingColor } = useContrastingColor(props.backgroundColor);
+const { contrastingColor } = useContrastingColor(props.backgroundColor || theme.current.value.colors['surface-variant']);
 </script>
