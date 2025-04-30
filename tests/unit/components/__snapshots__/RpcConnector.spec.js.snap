@@ -5,16 +5,16 @@ exports[`RpcConnector.vue > Should display gas info when gas analytics is enable
   <div class="v-application__wrap">
     <header class="v-toolbar v-toolbar--density-default elevation-0 v-theme--light v-locale--is-ltr v-app-bar top-bar theme-background" style="top: 0px; z-index: 1004; transform: translateY(0px); position: fixed; transition: none; left: 0px; width: calc(100% - 0px - 0px);">
       <!---->
-      <div class="v-toolbar__content" style="height: 64px;">
+      <div class="v-toolbar__content" style="height: 50px;">
         <!---->
         <!---->
         <div class="v-container v-locale--is-ltr d-flex align-center justify-space-between">
           <div class="d-flex align-center w-100">
             <!--v-if-->
-            <!-- Desktop Info Section --><span style="max-width: 50ch; text-overflow: ellipsis; overflow: hidden;">http://localhost:8545</span>
-            <hr class="v-divider v-divider--inset v-divider--vertical v-theme--light mx-2" aria-orientation="vertical" role="separator"> Latest Block: <a class="text-decoration-none ml-1">1</a>
-            <hr class="v-divider v-divider--inset v-divider--vertical v-theme--light mx-2" aria-orientation="vertical" role="separator"> Gas: <a class="text-decoration-none ml-1">1 gwei</a>
-            <div style="display: none;">
+            <!-- Desktop Info Section --><span class="text-body-2" style="max-width: 50ch; text-overflow: ellipsis; overflow: hidden;">http://localhost:8545</span>
+            <hr class="v-divider v-divider--inset v-divider--vertical v-theme--light mx-2" aria-orientation="vertical" role="separator"><span class="text-body-2">Latest Block: <a class="text-decoration-none ml-1">1</a></span>
+            <hr class="v-divider v-divider--inset v-divider--vertical v-theme--light mx-2" aria-orientation="vertical" role="separator"><span class="text-body-2">Gas: <a class="text-decoration-none ml-1">1 gwei</a></span>
+            <div class="text-body-2" style="display: none;">
               <hr class="v-divider v-divider--inset v-divider--vertical v-theme--light mx-2" aria-orientation="vertical" role="separator">
               <div class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
                   <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
@@ -48,16 +48,16 @@ exports[`RpcConnector.vue > Should display the correct info 1`] = `
   <div class="v-application__wrap">
     <header class="v-toolbar v-toolbar--density-default elevation-0 v-theme--light v-locale--is-ltr v-app-bar top-bar theme-background" style="top: 0px; z-index: 1004; transform: translateY(0px); position: fixed; transition: none; left: 0px; width: calc(100% - 0px - 0px);">
       <!---->
-      <div class="v-toolbar__content" style="height: 64px;">
+      <div class="v-toolbar__content" style="height: 50px;">
         <!---->
         <!---->
         <div class="v-container v-locale--is-ltr d-flex align-center justify-space-between">
           <div class="d-flex align-center w-100">
             <!--v-if-->
-            <!-- Desktop Info Section --><span style="max-width: 50ch; text-overflow: ellipsis; overflow: hidden;">http://localhost:8545</span>
-            <hr class="v-divider v-divider--inset v-divider--vertical v-theme--light mx-2" aria-orientation="vertical" role="separator"> Latest Block: <a class="text-decoration-none ml-1">1</a>
+            <!-- Desktop Info Section --><span class="text-body-2" style="max-width: 50ch; text-overflow: ellipsis; overflow: hidden;">http://localhost:8545</span>
+            <hr class="v-divider v-divider--inset v-divider--vertical v-theme--light mx-2" aria-orientation="vertical" role="separator"><span class="text-body-2">Latest Block: <a class="text-decoration-none ml-1">1</a></span>
             <!--v-if-->
-            <div style="display: none;">
+            <div class="text-body-2" style="display: none;">
               <hr class="v-divider v-divider--inset v-divider--vertical v-theme--light mx-2" aria-orientation="vertical" role="separator">
               <div class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
                   <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>
@@ -91,7 +91,7 @@ exports[`RpcConnector.vue > Should emit toggleMenu event when nav icon is clicke
   <div class="v-application__wrap">
     <header class="v-toolbar v-toolbar--density-default elevation-0 v-theme--light v-locale--is-ltr v-app-bar top-bar theme-background" style="top: 0px; z-index: 1004; transform: translateY(0px); position: fixed; transition: none; left: 0px; width: calc(100% - 0px - 0px);">
       <!---->
-      <div class="v-toolbar__content" style="height: 64px;">
+      <div class="v-toolbar__content" style="height: 50px;">
         <!---->
         <!---->
         <div class="v-container v-locale--is-ltr d-flex align-center justify-space-between">
@@ -127,16 +127,16 @@ exports[`RpcConnector.vue > Should not do private operations when in public expl
   <div class="v-application__wrap">
     <header class="v-toolbar v-toolbar--density-default elevation-0 v-theme--light v-locale--is-ltr v-app-bar top-bar theme-background" style="top: 0px; z-index: 1004; transform: translateY(0px); position: fixed; transition: none; left: 0px; width: calc(100% - 0px - 0px);">
       <!---->
-      <div class="v-toolbar__content" style="height: 64px;">
+      <div class="v-toolbar__content" style="height: 50px;">
         <!---->
         <!---->
         <div class="v-container v-locale--is-ltr d-flex align-center justify-space-between">
           <div class="d-flex align-center w-100">
             <!--v-if-->
             <!-- Desktop Info Section -->
-            <!--v-if--> Latest Block: <a class="text-decoration-none ml-1">1</a>
-            <hr class="v-divider v-divider--inset v-divider--vertical v-theme--light mx-2" aria-orientation="vertical" role="separator"> Gas: <a class="text-decoration-none ml-1">1 gwei</a>
-            <div style="display: none;">
+            <!--v-if--><span class="text-body-2">Latest Block: <a class="text-decoration-none ml-1">1</a></span>
+            <hr class="v-divider v-divider--inset v-divider--vertical v-theme--light mx-2" aria-orientation="vertical" role="separator"><span class="text-body-2">Gas: <a class="text-decoration-none ml-1">1 gwei</a></span>
+            <div class="text-body-2" style="display: none;">
               <hr class="v-divider v-divider--inset v-divider--vertical v-theme--light mx-2" aria-orientation="vertical" role="separator">
               <div class="v-progress-circular v-progress-circular--indeterminate v-theme--light text-primary mr-2" style="width: 16px; height: 16px;" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.714285714285715 45.714285714285715">
                   <circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle>

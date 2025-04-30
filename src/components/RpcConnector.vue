@@ -1,5 +1,5 @@
 <template>
-    <v-app-bar elevation="0" :class="['top-bar', 'theme-background']">
+    <v-app-bar elevation="0" :class="['top-bar', 'theme-background']" height="50">
         <v-container class="d-flex align-center justify-space-between">
             <div class="d-flex align-center w-100">
                 <v-app-bar-nav-icon @click.stop="$emit('toggleMenu')" v-if="$vuetify.display.mobile"></v-app-bar-nav-icon>
@@ -7,17 +7,17 @@
                 <!-- Desktop Info Section -->
                 <template v-if="!$vuetify.display.mobile">
                     <template v-if="isUserAdmin && !currentWorkspaceStore.public">
-                        <span style="max-width: 50ch; text-overflow: ellipsis; overflow: hidden;">{{ shortRpcUrl(currentWorkspaceStore.rpcServer) }}</span>
+                        <span class="text-body-2" style="max-width: 50ch; text-overflow: ellipsis; overflow: hidden;">{{ shortRpcUrl(currentWorkspaceStore.rpcServer) }}</span>
                         <v-divider vertical inset class="mx-2"></v-divider>
                     </template>
                     <template v-if="currentWorkspaceStore.currentBlock.number !== null && currentWorkspaceStore.currentBlock.number !== undefined">
-                        Latest Block: <router-link class="text-decoration-none ml-1" :to="'/block/' + currentWorkspaceStore.currentBlock.number">{{ currentWorkspaceStore.currentBlock.number && commify(currentWorkspaceStore.currentBlock.number) }}</router-link>
+                        <span class="text-body-2">Latest Block: <router-link class="text-decoration-none ml-1" :to="'/block/' + currentWorkspaceStore.currentBlock.number">{{ currentWorkspaceStore.currentBlock.number && commify(currentWorkspaceStore.currentBlock.number) }}</router-link></span>
                     </template>
                     <template v-if="explorerStore.id && explorerStore.gasAnalyticsEnabled && gasPrice">
                         <v-divider vertical inset class="mx-2"></v-divider>
-                        Gas: <router-link class="text-decoration-none ml-1" :to="'/gas'">{{ gasPrice }}</router-link>
+                        <span class="text-body-2">Gas: <router-link class="text-decoration-none ml-1" :to="'/gas'">{{ gasPrice }}</router-link></span>
                     </template>
-                    <div v-show="processingContracts">
+                    <div v-show="processingContracts" class="text-body-2">
                         <v-divider vertical inset class="mx-2"></v-divider>
                         <v-progress-circular indeterminate class="mr-2" size="16" width="2" color="primary"></v-progress-circular>Processing Contracts...
                     </div>
@@ -194,6 +194,7 @@ onMounted(async () => {
     display: flex;
     justify-content: center;
     color: var(--text-primary);
+    min-height: 50px !important;
 }
 
 .v-app-bar.top-bar {
