@@ -183,7 +183,7 @@ export default {
         },
         openStripePortal() {
             this.subscriptionButtonLoading = true;
-            this.$server.createStripePortalSession(`http://app.${this.envStore.mainDomain}/settings?tab=billing`)
+            this.$server.createStripePortalSession(`http://${document.location.host}/settings?tab=billing`)
                 .then(({ data }) => {
                     document.location.href = data.url
                 })

@@ -53,8 +53,8 @@
                             </ul>
                             <Explorer-Plan-Selector v-if="explorer"
                                 :explorerId="explorer.id"
-                                :stripeSuccessUrl="`http://app.${envStore.mainDomain}/explorers/${explorer.id}?justCreated=true`"
-                                :stripeCancelUrl="`http://app.${envStore.mainDomain}/explorers/${explorer.id}`"
+                                :stripeSuccessUrl="`http://${envStore.mainDomain}/explorers/${explorer.id}?justCreated=true`"
+                                :stripeCancelUrl="`http://${envStore.mainDomain}/explorers/${explorer.id}`"
                                 @planCreated="planCreated"></Explorer-Plan-Selector>
                         </v-card-text>
                     </v-card>

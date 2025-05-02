@@ -89,7 +89,7 @@ export default {
             }
             else if (this.userStore.canTrial) {
                 this.$server.startTrial(this.explorerId, slug)
-                    .then(() => window.location.assign(`//app.${this.envStore.mainDomain}/explorers/${this.explorerId}`))
+                    .then(() => window.location.assign(`//${envStore.mainDomain}/explorers/${this.explorerId}`))
                     .catch(error => {
                         console.log(error);
                         this.errorMessage = error.response && error.response.data || 'Error while subscribing to the selected plan. Please retry.';
@@ -97,8 +97,8 @@ export default {
                     });
             }
             else {
-                const successUrl = this.stripeSuccessUrl || `http://app.${this.envStore.mainDomain}/explorers/${this.explorerId}?justCreated=true`;
-                const cancelUrl = this.stripeCancelUrl || `http://app.${this.envStore.mainDomain}/explorers/${this.explorerId}`;
+                const successUrl = this.stripeSuccessUrl || `http://${this.envStore.mainDomain}/explorers/${this.explorerId}?justCreated=true`;
+                const cancelUrl = this.stripeCancelUrl || `http://${this.envStore.mainDomain}/explorers/${this.explorerId}`;
                 this.$server.createStripeExplorerCheckoutSession(this.explorerId, this.selectedPlanSlug, successUrl, cancelUrl)
                     .then(({ data }) => window.location.assign(data.url))
                     .catch(error => {

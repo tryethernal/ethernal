@@ -153,7 +153,7 @@ export default {
     mounted() {
         if (this.$route.query.apiToken && this.$route.query.path) {
             this.userStore.updateUser({ apiToken: this.$route.query.apiToken });
-            document.location.href = `//app.${this.envStore.mainDomain}${this.$route.query.path}${this.$route.query.explorerToken ? `?explorerToken=${this.$route.query.explorerToken}` : ''}`;
+            document.location.href = `//${this.envStore.mainDomain}${this.$route.query.path}${this.$route.query.explorerToken ? `?explorerToken=${this.$route.query.explorerToken}` : ''}`;
         }
         else if (this.explorerToken)
             this.mode = 'signup';

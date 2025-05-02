@@ -3,13 +3,14 @@ const ethers = require('ethers');
 const { stringify } = require('../lib/utils');
 const BigNumber = ethers.BigNumber;
 const { Transaction, TransactionReceipt, TransactionEvent, TokenTransfer, TokenTransferEvent, TokenBalanceChange, TokenBalanceChangeEvent } = require('../models');
+const { getMaxNumberToInsert } = require('../lib/env');
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
     const contracts = {};
     let receipts;
-    let offset = 0, limit = parseInt(process.env.MAX_NUMBER_TO_INSERT || 1);
+    let offset = 0, limit = getMaxNumberToInsert();
     do {
 
       receipts = await TransactionReceipt.findAll({
@@ -53,12 +54,8 @@ module.exports = {
     offset = 0;
     do {
       transfers = await TokenTransfer.findAll({
-<<<<<<< HEAD
-        include: 'transaction',
-=======
         include: { model: Transaction, as: 'transaction', attributes: ['blockNumber', 'timestamp'] },
         attributes: ['token', 'id', 'workspaceId', 'amount', 'src', 'dst'],
->>>>>>> develop
         order: [['id', 'ASC']],
         offset, limit
       });

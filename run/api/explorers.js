@@ -769,7 +769,7 @@ router.get('/search', async (req, res, next) => {
 
         let explorer;
 
-        if (data.domain == `app.${getAppDomain()}`)
+        if (data.domain == getAppDomain())
             return res.sendStatus(200);
 
         if (data.domain.endsWith(getAppDomain())) {

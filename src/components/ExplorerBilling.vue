@@ -46,7 +46,7 @@ export default {
     methods: {
         openStripePortal() {
             this.stripePortalLoading = true;
-            this.$server.createStripePortalSession(`http://app.${this.envStore.mainDomain}/explorers/${this.explorer.id}`)
+            this.$server.createStripePortalSession(`http://${document.location.host}/explorers/${this.explorer.id}`)
                 .then(({ data }) => document.location.href = data.url)
                 .catch(() => this.stripePortalLoading = false );
         },

@@ -67,3 +67,35 @@ services:
     ports: []
     image: antoinedc44/ethernal:latest
     command: node workers/lowPriority.js
+
+  pm2:
+    build:
+      context: .
+      dockerfile: Dockerfile.pm2
+      target: prod
+    working_dir: /app
+    volumes:
+      - ./pm2-server:/app
+    ports:
+      - "80:8080"
+    env_file: ./pm2-server/.env
+    networks:
+      - ethernal
+
+  pgbouncer:
+    image: edoburu/pgbouncer
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=${POSTGRES_USER:-postgres}
+      - DB_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - AUTH_TYPE=scram-sha-256
+      - POOL_MODE=transaction
+      - ADMIN_USERS=${POSTGRES_USER:-postgres},admin
+      - MAX_CLIENT_CONN=1000
+    ports:
+      - "5433:5432"
+    depends_on:
+      - postgres
+    networks:
+      - ethernal

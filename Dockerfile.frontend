@@ -1,0 +1,26 @@
+FROM node:18-alpine
+
+# Add Python and build dependencies
+RUN apk add --no-cache python3 make g++ gcc
+
+WORKDIR /app
+
+# Install dependencies
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile --network-timeout 100000
+
+# Copy only necessary files for build
+COPY public/ ./public/
+COPY src/ ./src/
+COPY index.html ./
+COPY vite.config.js ./
+COPY babel.config.js ./
+COPY vue.config.js ./
+COPY .env* ./
+COPY jsconfig.json ./
+COPY _redirects ./
+COPY _headers ./
+COPY .firebaserc ./
+
+EXPOSE 8080
+CMD ["yarn", "serve"] 

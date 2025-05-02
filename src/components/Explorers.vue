@@ -79,7 +79,7 @@
                                 </v-tooltip>
                             </template>
                             <template v-else>
-                                <a :href="`http://${ item.slug }.${ envStore.mainDomain }`" target="_blank">{{ item.slug }}.{{ envStore.mainDomain }}</a>
+                                <a :href="`http://${ item.slug }.${documentHost}`" target="_blank">{{ item.slug }}.{{ documentHost }}</a>
                             </template>
                         </template>
                         <template v-slot:item.rpcServer="{ item }">
@@ -95,89 +95,105 @@
     </v-container>
 </template>
 
-<script>
-import { mapStores } from 'pinia';
-import { useEnvStore } from '../stores/env';
+<script setup>
+import { ref, reactive, computed, onMounted, getCurrentInstance } from 'vue';
+import { useRoute } from 'vue-router';
 
 import CreateExplorerModal from './CreateExplorerModal.vue';
 import { shortRpcUrl } from '../lib/utils';
 
-export default {
-    name: 'Explorers',
-    components: {
-        CreateExplorerModal
-    },
-    data: () => ({
-        explorers: [],
-        explorerCount: 0,
-        headers: [],
-        loading: true,
-        currentOptions: { page: 1, itemsPerPage: 10, orderBy: 'id', order: 'desc' },
-    }),
-    mounted() {
-        this.headers.push(
-            { title: 'Name', key: 'name' },
-            { title: 'Workspace', key: 'workspace', sortable: false },
-            { title: 'Domains', key: 'domain', sortable: false },
-            { title: 'RPC', key: 'rpcServer', sortable: false }
-        );
-    },
-    methods: {
-        shortRpcUrl,
-        getExplorers({ page, itemsPerPage, sortBy } = {}) {
-            this.loading = true;
+// Refs and reactive state
+const explorers = ref([]);
+const explorerCount = ref(0);
+const headers = ref([]);
+const loading = ref(true);
+const currentOptions = reactive({ page: 1, itemsPerPage: 10, orderBy: 'id', order: 'desc' });
 
-            if (!page || !itemsPerPage || !sortBy || !sortBy.length)
-                return this.loading = false;
+const createExplorerModalRef = ref(null);
 
-            if (this.currentOptions.page == page && this.currentOptions.itemsPerPage == itemsPerPage && this.currentOptions.sortBy == sortBy[0].key && this.currentOptions.sort == sortBy[0].order)
-                return this.loading = false;
+// Router
+const route = useRoute();
 
-            this.currentOptions = {
-                page,
-                itemsPerPage,
-                orderBy: sortBy[0].key,
-                order: sortBy[0].order
-            };
+// Access to $server
+const { proxy } = getCurrentInstance();
 
-            this.$server.getExplorers(this.currentOptions)
-                .then(({ data }) => {
-                    this.explorers = data.items;
-                    this.explorerCount = data.total;
-                })
-                .catch(console.log)
-                .finally(() => this.loading = false);
-        },
-        openCreateExplorerModal() {
-            this.$refs.createExplorerModalRef.open()
-                .then(this.getExplorers);
-        },
-        statusClass(subscription) {
-            if (!subscription) return 'error';
-            else if (subscription.isActive || subscription.isTrialingWithCard) return 'success';
-            else if (subscription.isPendingCancelation || subscription.isTrialing) return 'warning';
-            return '';
-        },
-        statusIcon(subscription) {
-            if (!subscription) return 'mdi-alert-circle';
-            else if (subscription.isActive || subscription.isTrialingWithCard) return 'mdi-check-circle';
-            else if (subscription.isPendingCancelation || subscription.isTrialing) return 'mdi-alert';
-            return '';
-        },
-        statusText(subscription) {
-            if (!subscription) return 'Inactive';
-            else if (subscription.isActive) return 'Active';
-            else if (subscription.isPendingCancelation) return 'Pending Cancelation';
-            else if (subscription.isTrialing) return 'Ongoing Trial - Set up a payment method to keep your explorer running';
-            else if (subscription.isTrialingWithCard) return 'Ongoing Trial';
-            return '';
-        }
-    },
-    computed: {
-        ...mapStores(useEnvStore),
-        deletedExplorer() {
-            return this.$route.query.deletedExplorer ? this.$route.query.deletedExplorer : null;
-        }
-    }
+// Host for explorer links
+const documentHost = typeof window !== 'undefined' ? window.location.host : '';
+
+// Computed
+const deletedExplorer = computed(() => {
+    return route.query.deletedExplorer ? route.query.deletedExplorer : null;
+});
+
+// Methods
+function openCreateExplorerModal() {
+    createExplorerModalRef.value.open().then(getExplorers);
 }
+
+function statusClass(subscription) {
+    if (!subscription) return 'error';
+    else if (subscription.isActive || subscription.isTrialingWithCard) return 'success';
+    else if (subscription.isPendingCancelation || subscription.isTrialing) return 'warning';
+    return '';
+}
+
+function statusIcon(subscription) {
+    if (!subscription) return 'mdi-alert-circle';
+    else if (subscription.isActive || subscription.isTrialingWithCard) return 'mdi-check-circle';
+    else if (subscription.isPendingCancelation || subscription.isTrialing) return 'mdi-alert';
+    return '';
+}
+
+function statusText(subscription) {
+    if (!subscription) return 'Inactive';
+    else if (subscription.isActive) return 'Active';
+    else if (subscription.isPendingCancelation) return 'Pending Cancelation';
+    else if (subscription.isTrialing) return 'Ongoing Trial - Set up a payment method to keep your explorer running';
+    else if (subscription.isTrialingWithCard) return 'Ongoing Trial';
+    return '';
+}
+
+function getExplorers({ page, itemsPerPage, sortBy } = {}) {
+    loading.value = true;
+
+    // Use currentOptions if not provided
+    if (!page || !itemsPerPage || !sortBy || !sortBy.length) {
+        page = currentOptions.page;
+        itemsPerPage = currentOptions.itemsPerPage;
+        sortBy = [{ key: currentOptions.orderBy, order: currentOptions.order }];
+    }
+
+    currentOptions.page = page;
+    currentOptions.itemsPerPage = itemsPerPage;
+    currentOptions.orderBy = sortBy[0].key;
+    currentOptions.order = sortBy[0].order;
+
+    if (!proxy || !proxy.$server) {
+        loading.value = false;
+        return;
+    }
+
+    proxy.$server.getExplorers(currentOptions)
+        .then(({ data }) => {
+            explorers.value = data.items;
+            explorerCount.value = data.total;
+        })
+        .catch(() => {})
+        .finally(() => (loading.value = false));
+}
+
+onMounted(() => {
+    headers.value.push(
+        { title: 'Name', key: 'name' },
+        { title: 'Workspace', key: 'workspace', sortable: false },
+        { title: 'Domains', key: 'domain', sortable: false },
+        { title: 'RPC', key: 'rpcServer', sortable: false }
+    );
+    // Load explorers on mount
+    getExplorers({
+        page: currentOptions.page,
+        itemsPerPage: currentOptions.itemsPerPage,
+        sortBy: [{ key: currentOptions.orderBy, order: currentOptions.order }]
+    });
+});
 </script>

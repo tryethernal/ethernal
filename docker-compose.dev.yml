@@ -6,9 +6,12 @@ services:
       context: .
       dockerfile: Dockerfile.frontend
     ports:
-      - "80:80"
-    depends_on:
-      - backend
+      - "8080:8080"
+    volumes:
+      - ./src:/app/src
+      - ./public:/app/public
+      - ./.env:/app/.env
+    command: yarn serve
     networks:
       - ethernal-network
 
@@ -18,11 +21,14 @@ services:
       dockerfile: Dockerfile.backend
     ports:
       - "8888:8888"
+    volumes:
+      - ./run:/app
+      - ./run/.env:/app/.env
+    command: npm run start
     env_file: ./run/.env
     depends_on:
       - postgres
       - redis
-      - soketi
     networks:
       - ethernal-network
 
@@ -30,7 +36,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.backend
-    command: node workers/highPriority.js
+    volumes:
+      - ./run:/app
+      - ./run/.env:/app/.env
+    command: npm run worker:high
     env_file: ./run/.env
     depends_on:
       - postgres
@@ -42,7 +51,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.backend
-    command: node workers/mediumPriority.js
+    volumes:
+      - ./run:/app
+      - ./run/.env:/app/.env
+    command: npm run worker:medium
     env_file: ./run/.env
     depends_on:
       - postgres
@@ -54,19 +66,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.backend
-    command: node workers/lowPriority.js
-    env_file: ./run/.env
-    depends_on:
-      - postgres
-      - redis
-    networks:
-      - ethernal-network
-
-  process_historical_blocks:
-    build:
-      context: .
-      dockerfile: Dockerfile.backend
-    command: node workers/processHistoricalBlocks.js
+    volumes:
+      - ./run:/app
+      - ./run/.env:/app/.env
+    command: npm run worker:low
     env_file: ./run/.env
     depends_on:
       - postgres
@@ -77,9 +80,9 @@ services:
   postgres:
     image: timescale/timescaledb:2.11.1-pg14
     environment:
-      - POSTGRES_USER=${POSTGRES_USER:-postgres}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
-      - POSTGRES_DB=${DB_NAME:-ethernal}
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=ethernal
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -105,10 +108,49 @@ services:
     networks:
       - ethernal-network
 
+  stripe-cli:
+    image: stripe/stripe-cli
+    command: listen --forward-to http://backend:8888/webhooks/stripe
+    env_file: .env.stripe
+    networks:
+      - ethernal-network
+
+  pm2:
+    build:
+      context: .
+      dockerfile: Dockerfile.pm2
+      target: dev
+    working_dir: /app
+    volumes:
+      - ./pm2-server:/app
+    ports:
+      - "8081:8080"
+    env_file: ./pm2-server/.env
+    networks:
+      - ethernal-network
+
+  pgbouncer:
+    image: edoburu/pgbouncer
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - AUTH_TYPE=scram-sha-256
+      - POOL_MODE=transaction
+      - ADMIN_USERS=postgres,admin
+      - MAX_CLIENT_CONN=1000
+    ports:
+      - "5433:5432"
+    depends_on:
+      - postgres
+    networks:
+      - ethernal-network
+
 networks:
   ethernal-network:
     driver: bridge
 
 volumes:
   postgres_data:
-  redis_data:
+  redis_data: 

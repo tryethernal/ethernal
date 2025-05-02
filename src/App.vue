@@ -35,7 +35,7 @@
             <component :is="routerComponent"></component>
         </v-main>
 
-        <component :is="host.includes(`app.${envStore.mainDomain}`) ? 'PrivateExplorerFooter' : 'PublicExplorerFooter'" v-if="canDisplaySides" />
+        <component :is="isPrivateExplorer ? 'PrivateExplorerFooter' : 'PublicExplorerFooter'" v-if="canDisplaySides" />
     </v-app>
 </template>
 
@@ -116,8 +116,11 @@ export default {
                     this.setupPrivateExplorer();
             })
             .catch(error => {
-                console.log(error)
-                document.location.href = `//app.${this.envStore.mainDomain}`;
+                if (error.response && error.response.status === 404) {
+                    document.location.href = `/`;
+                } else {
+                    this.setupPrivateExplorer();
+                }
             });
     },
     methods: {
@@ -376,10 +379,26 @@ export default {
             return `0x${parseInt(this.currentWorkspaceStore.networkId).toString(16)}`;
         },
         isAuthPage() { return this.$route.path.indexOf('/auth') > -1 },
-        canDisplaySides() { return (this.userStore.loggedIn || this.explorerStore.id) && !this.isAuthPage && !this.isOverlayActive },
+        canDisplaySides() {
+            // Defensive: check stores and required properties
+            return (
+                this.userStore && typeof this.userStore.loggedIn !== 'undefined' &&
+                this.explorerStore && (typeof this.explorerStore.id !== 'undefined') &&
+                (this.userStore.loggedIn || this.explorerStore.id) &&
+                !this.isAuthPage &&
+                !this.isOverlayActive
+            );
+        },
         explorerToken() { return this.$route.query.explorerToken },
         justMigrated() { return !!this.$route.query.justMigrated },
-        isPublicExplorer() { return this.explorerStore.id }
+        isPrivateExplorer() {
+            // Defensive: check stores and required properties
+            return (
+                this.explorerStore && typeof this.explorerStore.id !== 'undefined' &&
+                this.userStore && typeof this.userStore.loggedIn !== 'undefined' &&
+                !this.explorerStore.id && this.userStore.loggedIn
+            );
+        }
     }
 };
 </script>
