@@ -62,18 +62,6 @@ services:
     networks:
       - ethernal-network
 
-  process_historical_blocks:
-    build:
-      context: .
-      dockerfile: Dockerfile.backend
-    command: node workers/processHistoricalBlocks.js
-    env_file: ./run/.env
-    depends_on:
-      - postgres
-      - redis
-    networks:
-      - ethernal-network
-
   postgres:
     image: timescale/timescaledb:2.11.1-pg14
     environment:

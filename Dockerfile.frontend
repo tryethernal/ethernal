@@ -16,10 +16,9 @@ COPY index.html ./
 COPY vite.config.js ./
 COPY babel.config.js ./
 COPY vue.config.js ./
+COPY ads.txt ./
 COPY .env* ./
 COPY jsconfig.json ./
-COPY _redirects ./
-COPY _headers ./
 COPY .firebaserc ./
 
 EXPOSE 8080
