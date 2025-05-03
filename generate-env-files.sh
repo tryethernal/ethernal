@@ -56,46 +56,12 @@ mkdir -p run pm2-server
 printf "%s\n" "$BACKEND_ENV_CONTENT" > .env.prod
 printf "%s\n" "$BACKEND_ENV_CONTENT" > run/.env.prod
 
+# Output nginx env to .env.nginx.prod
+printf "EXPOSED_PORT=%s\n" "$EXPOSED_PORT" > .env.nginx.prod
+
 # Output pm2.env to pm2-server/.env.prod
 PM2_ENV_CONTENT="SECRET=$PM2_SECRET
 ETHERNAL_SECRET=$BACKEND_SECRET
 ETHERNAL_REDIS_URL=redis://redis:6379/0
 ETHERNAL_HOST=$ETHERNAL_HOST"
 printf "%s\n" "$PM2_ENV_CONTENT" > pm2-server/.env.prod
-
-# Output nginx.conf to nginx.conf.prod
-cat <<NGINX > nginx.conf.prod
-server {
-    listen $EXPOSED_PORT; # Externally exposed port
-    server_name localhost;
-
-    # Proxy API requests to the backend service
-    location ~ ^/api/ {
-        proxy_pass http://backend:8888;
-        proxy_set_header Host \$host;
-        proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto \$scheme;
-    }
-
-    # Proxy all other requests to the frontend service
-    location / {
-        proxy_pass http://frontend:8080;
-        proxy_set_header Host \$host;
-        proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto \$scheme;
-    }
-
-    # Optionally, you can keep static asset caching if you want nginx to cache responses from the frontend
-    # location ~* \\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)\$ {
-    #     expires 1y;
-    #     add_header Cache-Control "public, no-transform";
-    # }
-
-    # location ~* \\.html$ {
-    #     expires -1;
-    #     add_header Cache-Control "no-store, no-cache, must-revalidate, proxy-revalidate";
-    # }
-}
-NGINX
