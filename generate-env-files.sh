@@ -69,13 +69,22 @@ server {
     listen $EXPOSED_PORT; # Externally exposed port
     server_name localhost;
 
-    # Proxy all requests to the frontend service
+    # Proxy API requests to the backend service
+    location ~ ^/api/ {
+        proxy_pass http://backend:8888;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # Proxy all other requests to the frontend service
     location / {
         proxy_pass http://frontend:8080;
-        proxy_set_header Host \$host;
-        proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto \$scheme;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
     }
 
     # Optionally, you can keep static asset caching if you want nginx to cache responses from the frontend
