@@ -64,7 +64,7 @@ ETHERNAL_HOST=$ETHERNAL_HOST"
 printf "%s\n" "$PM2_ENV_CONTENT" > pm2-server/.env.prod
 
 # Output nginx.conf to nginx.conf.prod
-cat <<'NGINX' > nginx.conf.prod
+cat <<NGINX > nginx.conf.prod
 server {
     listen $EXPOSED_PORT; # Externally exposed port
     server_name localhost;
@@ -72,19 +72,19 @@ server {
     # Proxy API requests to the backend service
     location ~ ^/api/ {
         proxy_pass http://backend:8888;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
     }
 
     # Proxy all other requests to the frontend service
     location / {
         proxy_pass http://frontend:8080;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
     }
 
     # Optionally, you can keep static asset caching if you want nginx to cache responses from the frontend
