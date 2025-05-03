@@ -1,4 +1,5 @@
-FROM node:18-alpine
+# --- Base Stage ---
+FROM node:18-alpine AS base
 
 # Add Python and build dependencies
 RUN apk add --no-cache python3 make g++ gcc
@@ -9,7 +10,7 @@ WORKDIR /app
 COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile --network-timeout 100000
 
-# Copy only necessary files for build
+# Copy all necessary files
 COPY public/ ./public/
 COPY src/ ./src/
 COPY index.html ./
@@ -21,5 +22,20 @@ COPY .env* ./
 COPY jsconfig.json ./
 COPY .firebaserc ./
 
+# --- Development Stage ---
+FROM base AS dev
 EXPOSE 8080
-CMD ["yarn", "serve"] 
+CMD ["yarn", "serve"]
+
+# --- Build Stage ---
+FROM base AS build
+RUN yarn build
+
+# --- Production Runtime Stage ---
+FROM node:18-alpine AS prod
+WORKDIR /app
+RUN yarn global add serve
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/ads.txt ./dist/ads.txt
+EXPOSE 8080
+CMD ["serve", "-s", "dist", "-l", "8080"] 
