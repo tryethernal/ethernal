@@ -66,7 +66,6 @@ printf "%s\n" "$PM2_ENV_CONTENT" > pm2-server/.env.prod
 
 # Output nginx.conf to nginx.conf.prod
 cat <<NGINX > nginx.conf.prod
---- nginx.conf ---
 server {
     listen $EXPOSED_PORT; # Externally exposed port
     server_name localhost;
