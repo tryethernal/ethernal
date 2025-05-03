@@ -64,7 +64,7 @@ ETHERNAL_HOST=$ETHERNAL_HOST"
 printf "%s\n" "$PM2_ENV_CONTENT" > pm2-server/.env.prod
 
 # Output nginx.conf to nginx.conf.prod
-cat <<NGINX > nginx.conf.prod
+cat <<'NGINX' > nginx.conf.prod
 server {
     listen $EXPOSED_PORT; # Externally exposed port
     server_name localhost;
