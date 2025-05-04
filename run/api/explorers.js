@@ -781,10 +781,10 @@ router.get('/search', async (req, res, next) => {
             explorer = await db.getPublicExplorerParamsByDomain(data.domain); // This method will return null if the current explorer plan doesn't have the "customDomain" capability
 
         if (!explorer)
-            return managedError(new Error(`Couldn't find explorer.`), req, res);
+            return res.status(400).json({ error: "Couldn't find explorer.", mainDomain: getAppDomain() });
 
         if (!explorer.stripeSubscription)
-            return managedError(new Error('This explorer is not active.'), req, res);
+            return res.status(400).json({ error: "This explorer is not active.", mainDomain: getAppDomain() });
 
         const capabilities = explorer.stripeSubscription.stripePlan.capabilities;
 
@@ -800,7 +800,8 @@ router.get('/search', async (req, res, next) => {
             admin: explorer.admin,
             workspace: explorer.workspace,
             gasAnalyticsEnabled: explorer.gasAnalyticsEnabled,
-            isDemo: explorer.isDemo
+            isDemo: explorer.isDemo,
+            mainDomain: getAppDomain()
         };
 
         fields['token'] = capabilities.nativeToken ? explorer.token : 'ether';

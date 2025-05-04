@@ -16,7 +16,7 @@ services:
       - ethernal
     image: timescale/timescaledb:2.11.1-pg14
     restart: always
-    env_file: .env.prod
+    env_file: .env.postgres.prod
     volumes: 
       - db:/var/lib/postgresql/data
 

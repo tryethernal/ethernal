@@ -54,8 +54,7 @@ PORT=8888"
 printf "%s\n" "$BACKEND_ENV_CONTENT" > run/.env.prod
 
 # Output frontend.env to .env.prod
-FRONTEND_ENV_CONTENT="VITE_MAIN_DOMAIN=$VITE_MAIN_DOMAIN
-NODE_ENV=production
+FRONTEND_ENV_CONTENT="NODE_ENV=production
 VITE_SOKETI_PORT=6001"
 printf "%s\n" "$FRONTEND_ENV_CONTENT" > .env.prod
 

@@ -310,16 +310,18 @@ onMounted(() => {
         localStorage.removeItem('ssoApiToken');
     $server.searchExplorer(window.location.host)
         .then(({ data }) => {
+            envStore.setMainDomain(data.mainDomain);
             if (data.explorer)
                 setupPublicExplorer(data.explorer);
             else
                 setupPrivateExplorer();
         })
         .catch(error => {
+            envStore.setMainDomain(error.response.data.mainDomain);
             if (error.response && error.response.status === 404) {
                 document.location.href = `/`;
             } else {
-                setupPrivateExplorer();
+                document.location.assign(`//${envStore.mainDomain}`);
             }
         });
 });
