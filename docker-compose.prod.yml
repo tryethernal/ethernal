@@ -125,4 +125,4 @@ services:
       - "${EXPOSED_PORT}:80"
     env_file: .env.nginx.prod
     volumes:
-      - ./nginx.conf.prod:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
