@@ -19,6 +19,14 @@ services:
     env_file: .env.postgres.prod
     volumes: 
       - db:/var/lib/postgresql/data
+  
+  soketi:
+    image: quay.io/soketi/soketi:1.6.1-16-debian
+    ports:
+      - "6001:6001"
+    env_file: ./run/.env.prod
+    networks:
+      - ethernal
 
   redis:
     networks:
