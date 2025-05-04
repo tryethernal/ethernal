@@ -7,7 +7,7 @@ gen_hex() { openssl rand -hex "$1"; }
 gen_str() { openssl rand -base64 32 | tr -dc 'a-zA-Z0-9' | head -c "$1"; }
 
 # Pre-generate all needed random values
-ENCRYPTION_KEY=$(gen_hex 8) # 16 hex chars
+ENCRYPTION_KEY=$(gen_hex 16) # 32 hex chars
 ENCRYPTION_JWT_SECRET=$(gen_hex 32) # 64 hex chars
 BACKEND_SECRET=$(gen_str 32)
 PUSHER_APP_ID=$(gen_str 12)
@@ -15,6 +15,8 @@ PUSHER_KEY=$(gen_str 24)
 PUSHER_SECRET=$(gen_str 32)
 BULLBOARD_PASSWORD=$(gen_str 16)
 PM2_SECRET=$(gen_str 32)
+FIREBASE_SIGNER_KEY=$(openssl rand -base64 64)
+FIREBASE_SALT_SEPARATOR=$(openssl rand -base64 16)
 
 # Prompt for values
 read -p "Enter value for APP_URL: " APP_URL
@@ -46,6 +48,10 @@ DB_PORT=5432
 BULLBOARD_USERNAME=ethernal
 BULLBOARD_PASSWORD=$BULLBOARD_PASSWORD
 APP_DOMAIN=$ETHERNAL_HOST
+FIREBASE_SIGNER_KEY=$FIREBASE_SIGNER_KEY
+FIREBASE_SALT_SEPARATOR=$FIREBASE_SALT_SEPARATOR
+FIREBASE_ROUNDS=8
+FIREBASE_MEM_COST=14
 APP_URL=$APP_URL
 PORT=8888"
 
