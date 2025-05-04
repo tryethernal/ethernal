@@ -176,7 +176,7 @@ export default {
             this.$server.signIn(this.email, this.password)
                 .then(({ data: { user }}) => {
                     this.userStore.updateUser(user);
-                    document.location.href = `/transactions${this.explorerToken ? '?explorerToken=' + this.explorerToken : ''}`;
+                    document.location.href = `/overview${this.explorerToken ? '?explorerToken=' + this.explorerToken : ''}`;
                 })
                 .catch(error => {
                     console.log(error);

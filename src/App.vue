@@ -120,11 +120,12 @@ function handleClickEvent(event) {
 }
 
 function setupPrivateExplorer() {
-    // $server is available via globalProperties
     $server.getCurrentUser()
         .then(({ data }) => {
-            authStateChanged(data);
-            if (justMigrated.value) {
+            const redirectPath = authStateChanged(data);
+            if (redirectPath)
+                return window.location.assign(redirectPath);
+            else if (justMigrated.value) {
                 isOverlayActive.value = false;
                 migrateExplorerModal.value.open({ explorerId: parseInt(new URLSearchParams(window.location.search).get('justMigrated')), justMigrated: true });
             }
@@ -136,10 +137,12 @@ function setupPrivateExplorer() {
                     launchOnboarding();
         })
         .catch((error) => {
+            const redirectPath = authStateChanged(null);
+            if (redirectPath)
+                return window.location.assign(redirectPath);
             isOverlayActive.value = false;
             routerComponent.value = 'router-view';
             console.log('error', error);
-            authStateChanged(null);
         });
 }
 
@@ -179,17 +182,22 @@ function authStateChanged(user) {
     const currentPath = window.location.pathname;
     userStore.updateUser(user);
     if (currentPath != '/auth' && !user && envStore.isOnMainDomain) {
-        return window.location.assign('/auth');
+        console.log('redirecting to auth', envStore.mainDomain);
+        return '/auth';
     }
     if (currentPath == '/auth' && user) {
         const params = new URLSearchParams(window.location.search);
         params.delete('next');
-        window.location.assign(window.location.origin + (params.get('next') || '/overview') + (params.toString() ? '?' + params.toString() : ''));
+        return window.location.origin + (params.get('next') || '/overview') + (params.toString() ? '?' + params.toString() : '');
     }
 }
 
 function setupPublicExplorer(explorer) {
-    explorerStore.updateExplorer(explorer);
+    const currentPath = window.location.pathname;
+    if (currentPath == '/auth')
+        return window.location.assign('/overview');
+
+        explorerStore.updateExplorer(explorer);
     if (explorer.themes) {
         const lightTheme = explorer.themes.light || {};
         const font = explorer.themes.font;
@@ -310,11 +318,13 @@ onMounted(() => {
         localStorage.removeItem('ssoApiToken');
     $server.searchExplorer(window.location.host)
         .then(({ data }) => {
-            envStore.setMainDomain(data.mainDomain);
-            if (data.explorer)
+            if (data.explorer) {
+                envStore.setMainDomain(data.explorer.mainDomain);
                 setupPublicExplorer(data.explorer);
-            else
+            } else {
+                envStore.setMainDomain(window.location.host);
                 setupPrivateExplorer();
+            }
         })
         .catch(error => {
             envStore.setMainDomain(error.response.data.mainDomain);
