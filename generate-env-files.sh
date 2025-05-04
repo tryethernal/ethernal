@@ -10,8 +10,6 @@ gen_str() { openssl rand -base64 32 | tr -dc 'a-zA-Z0-9' | head -c "$1"; }
 ENCRYPTION_KEY=$(gen_hex 16) # 32 hex chars
 ENCRYPTION_JWT_SECRET=$(gen_hex 32) # 64 hex chars
 BACKEND_SECRET=$(gen_str 32)
-SOKETI_APP_ID=$(gen_str 12)
-SOKETI_KEY=$(gen_str 24)
 SOKETI_SECRET=$(gen_str 32)
 BULLBOARD_PASSWORD=$(gen_str 16)
 PM2_SECRET=$(gen_str 32)
@@ -43,7 +41,7 @@ DB_PASSWORD=postgres
 DB_NAME=ethernal
 DB_PORT=5432
 SOKETI_DEFAULT_APP_ID=default-app
-SOKETI_DEFAULT_APP_KEY=$SOKETI_KEY
+SOKETI_DEFAULT_APP_KEY=app-key
 SOKETI_DEFAULT_APP_SECRET=$SOKETI_SECRET
 SOKETI_HOST=soketi
 SOKETI_PORT=6001
