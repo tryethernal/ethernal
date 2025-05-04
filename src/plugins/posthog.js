@@ -4,7 +4,7 @@ import { useEnvStore } from '../stores/env';
 export default {
     install(app) {
         const envStore = useEnvStore();
-        const $posthog = envStore.hasAnalyticsEnabled ?
+        const $posthog = envStore.hasAnalyticsEnabled && envStore.postHogApiKey && envStore.postHogApiHost ?
             posthog.init(
                 envStore.postHogApiKey, { api_host: envStore.postHogApiHost }
             ) :

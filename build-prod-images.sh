@@ -1,16 +1,13 @@
 #!/bin/bash
 set -e
 
-# Build frontend image
-docker build -f Dockerfile.frontend -t ethernal-frontend:latest .
+# Build and push amd64 and arm64 images using buildx (multi-arch, same tag)
+echo "Building and pushing multi-arch images (amd64 + arm64) with buildx..."
+DOCKER_BUILDKIT=1 docker buildx build --platform linux/amd64,linux/arm64 -f Dockerfile.frontend -t antoinedc44/ethernal-frontend:latest --push .
+DOCKER_BUILDKIT=1 docker buildx build --platform linux/amd64,linux/arm64 -f Dockerfile.backend -t antoinedc44/ethernal-backend:latest --push .
+DOCKER_BUILDKIT=1 docker buildx build --platform linux/amd64,linux/arm64 -f Dockerfile.pm2 --target prod -t antoinedc44/ethernal-pm2:latest --push .
 
-# Build backend image (used by backend and all worker services)
-docker build -f Dockerfile.backend -t ethernal-backend:latest .
-
-# Build pm2 image (with prod target)
-docker build -f Dockerfile.pm2 --target prod -t ethernal-pm2:latest .
-
-echo "All production images built successfully:"
+echo "All production images built & pushed successfully:"
 echo "  ethernal-frontend:latest"
 echo "  ethernal-backend:latest"
 echo "  ethernal-pm2:latest" 

@@ -14,7 +14,6 @@ import Overview from '../components/Overview.vue';
 import ERC721Token from '../components/ERC721Token.vue';
 import ERC721Collections from '../components/ERC721Collections.vue';
 import ERC721Collection from '../components/ERC721Collection.vue';
-import ERC20Contract from '../components/ERC20Contract.vue';
 import ExplorerStatus from '../components/ExplorerStatus.vue';
 import Explorers from '../components/Explorers.vue';
 import Explorer from '../components/Explorer.vue';
@@ -37,7 +36,7 @@ const isLoggedIn = () => {
 
 const isPublic = () => {
     const envStore = useEnvStore();
-    return !envStore.isAdmin;
+    return !envStore.isOnMainDomain;
 };
 
 const redirectIfLoggedIn = function (to, from, next) {

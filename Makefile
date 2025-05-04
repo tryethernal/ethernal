@@ -14,6 +14,7 @@ start:
 	@echo "Waiting for backend container to be healthy..."
 	@docker compose -f docker-compose.prod.yml exec backend sh -c 'until nc -z localhost 8888; do sleep 1; done'
 	@echo "Running sequelize migrations in backend container..."
+	docker compose -f docker-compose.prod.yml exec backend npx sequelize db:create
 	docker compose -f docker-compose.prod.yml exec backend npx sequelize db:migrate
 
 stop:
@@ -23,4 +24,4 @@ stop:
 nuke:
 	@echo "Nuking everything: containers, networks, volumes, and generated env/config files..."
 	docker compose -f docker-compose.prod.yml down --remove-orphans --volumes
-	rm -f .env.prod run/.env.prod pm2-server/.env.prod nginx.conf.prod 
+	rm -f .env.prod run/.env.prod pm2-server/.env.prod

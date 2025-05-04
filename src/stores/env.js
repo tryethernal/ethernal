@@ -14,7 +14,7 @@ export const useEnvStore = defineStore('env', {
         postHogApiHost: import.meta.env.VITE_POSTHOG_API_HOST,
         hasAnalyticsEnabled: !!import.meta.env.VITE_ENABLE_ANALYTICS,
         hasDemoEnabled: !!import.meta.env.VITE_ENABLE_DEMO,
-        mainDomain: window.location.host,
+        mainDomain: import.meta.env.VITE_MAIN_DOMAIN,
         isBillingEnabled: !!import.meta.env.VITE_ENABLE_BILLING,
         isMarketingEnabled: !!import.meta.env.VITE_ENABLE_MARKETING,
         apiRoot: '',
@@ -58,6 +58,10 @@ export const useEnvStore = defineStore('env', {
         isAdmin: () => {
             const userStore = useUserStore();
             return userStore.isAdmin;
+        },
+
+        isOnMainDomain: () => {
+            return window.location.host === import.meta.env.VITE_MAIN_DOMAIN;
         }
     }
 });

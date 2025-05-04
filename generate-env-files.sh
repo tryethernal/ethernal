@@ -30,7 +30,7 @@ else
   VITE_MAIN_DOMAIN="$APP_URL:$EXPOSED_PORT"
 fi
 
-# Output backend.env to .env.prod and run/.env.prod
+# Output backend.env run/.env.prod
 BACKEND_ENV_CONTENT="ENCRYPTION_KEY=$ENCRYPTION_KEY
 ENCRYPTION_JWT_SECRET=$ENCRYPTION_JWT_SECRET
 SECRET=$BACKEND_SECRET
@@ -50,18 +50,22 @@ BULLBOARD_PASSWORD=$BULLBOARD_PASSWORD
 APP_URL=$APP_URL
 PORT=8888"
 
-mkdir -p run pm2-server
-
-# Write backend env to .env.prod and run/.env.prod
-printf "%s\n" "$BACKEND_ENV_CONTENT" > .env.prod
+# Write backend env to run/.env.prod
 printf "%s\n" "$BACKEND_ENV_CONTENT" > run/.env.prod
 
-# Output nginx env to .env.nginx.prod
-printf "EXPOSED_PORT=%s\n" "$EXPOSED_PORT" > .env.nginx.prod
+# Output frontend.env to .env.prod
+FRONTEND_ENV_CONTENT="VITE_MAIN_DOMAIN=$VITE_MAIN_DOMAIN
+NODE_ENV=production
+VITE_SOKETI_PORT=6001"
+printf "%s\n" "$FRONTEND_ENV_CONTENT" > .env.prod
 
+mkdir -p run pm2-server
 # Output pm2.env to pm2-server/.env.prod
 PM2_ENV_CONTENT="SECRET=$PM2_SECRET
 ETHERNAL_SECRET=$BACKEND_SECRET
 ETHERNAL_REDIS_URL=redis://redis:6379/0
 ETHERNAL_HOST=$ETHERNAL_HOST"
 printf "%s\n" "$PM2_ENV_CONTENT" > pm2-server/.env.prod
+
+# Output nginx env to .env.nginx.prod
+printf "EXPOSED_PORT=%s\n" "$EXPOSED_PORT" > .env.nginx.prod
