@@ -35,7 +35,7 @@
             <component :is="routerComponent"></component>
         </v-main>
 
-        <component :is="isPrivateExplorer ? 'PrivateExplorerFooter' : 'PublicExplorerFooter'" v-if="canDisplaySides" />
+        <component :is="isPrivateExplorer ? PrivateExplorerFooter : PublicExplorerFooter" v-if="canDisplaySides" />
     </v-app>
 </template>
 
@@ -53,6 +53,9 @@ import BrowserSyncExplainerModal from './components/BrowserSyncExplainerModal';
 import MigrateExplorerModal from './components/MigrateExplorerModal';
 import DemoExplorerMigrationModal from './components/DemoExplorerMigrationModal';
 import MainNavBar from './components/MainNavBar';
+import RpcConnector from './components/RpcConnector.vue';
+import PrivateExplorerFooter from './components/PrivateExplorerFooter.vue';
+import PublicExplorerFooter from './components/PublicExplorerFooter.vue';
 
 // Pinia stores
 const currentWorkspaceStore = useCurrentWorkspaceStore();
@@ -259,7 +262,7 @@ function initWorkspace(workspace) {
     userStore.updateUser({ onboarded: true, firebaseUserId: workspace.firebaseUserId });
     $pusher.init();
     isOverlayActive.value = false;
-    appBarComponent.value = 'rpc-connector';
+    appBarComponent.value = RpcConnector;
     routerComponent.value = 'router-view';
 }
 
