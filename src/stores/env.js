@@ -9,7 +9,7 @@ export const useEnvStore = defineStore('env', {
         soketiHost: window.location.hostname,
         soketiPort: import.meta.env.VITE_SOKETI_PORT && parseInt(import.meta.env.VITE_SOKETI_PORT),
         soketiForceTLS: !!import.meta.env.VITE_SOKETI_FORCE_TLS,
-        pusherKey: import.meta.env.VITE_PUSHER_KEY,
+        soketiKey: import.meta.env.VITE_SOKETI_KEY || 'app-key',
         postHogApiKey: import.meta.env.VITE_POSTHOG_API_KEY,
         postHogApiHost: import.meta.env.VITE_POSTHOG_API_HOST,
         hasAnalyticsEnabled: !!import.meta.env.VITE_ENABLE_ANALYTICS,

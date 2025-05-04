@@ -42,7 +42,6 @@ services:
       - ethernal
     image: antoinedc44/ethernal-frontend:latest
     restart: always
-    env_file: ./.env.prod
 
   backend:
     networks:
