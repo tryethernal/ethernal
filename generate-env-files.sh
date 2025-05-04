@@ -69,3 +69,11 @@ printf "%s\n" "$PM2_ENV_CONTENT" > pm2-server/.env.prod
 
 # Output nginx env to .env.nginx.prod
 printf "EXPOSED_PORT=%s\n" "$EXPOSED_PORT" > .env.nginx.prod
+
+# Output postgres env to .env.postgres.prod
+POSTGRES_ENV_CONTENT="POSTGRES_HOST=postgres
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=ethernal
+POSTGRES_PORT=5432"
+printf "%s\n" "$POSTGRES_ENV_CONTENT" > .env.postgres.prod
