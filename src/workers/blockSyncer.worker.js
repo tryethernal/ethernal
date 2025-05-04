@@ -7,9 +7,9 @@ const Api = require('@/workers/api');
 const onError = console.log;
 
 addEventListener('message', event => {
-    const { rpcServer, apiToken, workspace, apiRoot } = event.data;
+    const { rpcServer, apiToken, workspace } = event.data;
 
-    if (!rpcServer || !apiToken || !workspace || !apiRoot)
+    if (!rpcServer || !apiToken || !workspace)
         console.log(`[workers.blockSyncer] Missing parameters`);
 
     const provider = getProvider(rpcServer);
@@ -17,7 +17,7 @@ addEventListener('message', event => {
     if (!provider)
         return console.log(`[workers.blockSyncer] Couldn't setup rpc provider`);
 
-    const api = new Api(apiToken, apiRoot, workspace);
+    const api = new Api(apiToken, workspace);
 
     provider.on('block', async (blockNumber, error) => {
        if (error && error.reason) {
