@@ -16,7 +16,7 @@ start:
 	@echo "Running sequelize migrations in backend container..."
 	docker compose -f docker-compose.prod.yml exec backend npx sequelize db:create
 	docker compose -f docker-compose.prod.yml exec backend npx sequelize db:migrate
-
+	docker compose -f docker-compose.prod.yml exec backend npx sequelize db:seed:all
 stop:
 	@echo "Stopping and cleaning up all containers and networks..."
 	docker compose -f docker-compose.prod.yml down --remove-orphans 
