@@ -96,12 +96,9 @@ services:
       - ethernal
     image: antoinedc44/ethernal-pm2:latest
     container_name: pm2
-    working_dir: /app
-    volumes:
-      - ./pm2-server:/app
-    ports:
-      - "80:8080"
     env_file: ./pm2-server/.env.prod
+    depends_on:
+      - backend
 
   pgbouncer:
     image: edoburu/pgbouncer

@@ -1,8 +1,41 @@
 /* eslint-disable */
 // For some reason the linter always thinks there are no new lines at the end of this file
 self.window = self;
-const { getProvider } = require('@/lib/rpc');
-const Api = require('@/workers/api');
+import Api from '@/workers/api';
+
+import { ethers } from 'ethers';
+
+let providers = {};
+const getProvider = function(url) {
+    if (providers[url])
+        return providers[url];
+
+    const rpcServer = new URL(url);
+
+    let ProviderClass;
+    if (rpcServer.protocol === 'http:' || rpcServer.protocol === 'https:') {
+        ProviderClass = ethers.providers.JsonRpcProvider;
+    } else if (rpcServer.protocol === 'ws:' || rpcServer.protocol === 'wss:') {
+        ProviderClass = ethers.providers.WebSocketProvider;
+    } else {
+        throw new Error('Unsupported protocol: ' + rpcServer.protocol);
+    }
+
+    // If username/password are present, inject them into the URL
+    let finalUrl = url;
+    if (rpcServer.username || rpcServer.password) {
+        // Rebuild the URL with auth
+        rpcServer.username = rpcServer.username || '';
+        rpcServer.password = rpcServer.password || '';
+        rpcServer.href = `${rpcServer.protocol}//${rpcServer.username}:${rpcServer.password}@${rpcServer.host}${rpcServer.pathname}${rpcServer.search}`;
+        finalUrl = rpcServer.href;
+    }
+
+    const providerInstance = new ProviderClass(finalUrl);
+    providers[url] = providerInstance;
+    return providerInstance;
+};
+// --- End inlined getProvider function ---
 
 const onError = console.log;
 
@@ -13,7 +46,6 @@ addEventListener('message', event => {
         console.log(`[workers.blockSyncer] Missing parameters`);
 
     const provider = getProvider(rpcServer);
-
     if (!provider)
         return console.log(`[workers.blockSyncer] Couldn't setup rpc provider`);
 

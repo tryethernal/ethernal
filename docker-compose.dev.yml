@@ -5,6 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.frontend
+      target: dev
     ports:
       - "8080:8080"
     volumes:
@@ -120,12 +121,11 @@ services:
       context: .
       dockerfile: Dockerfile.pm2
       target: dev
-    working_dir: /app
     volumes:
       - ./pm2-server:/app
-    ports:
-      - "8081:8080"
     env_file: ./pm2-server/.env
+    depends_on:
+      - backend
     networks:
       - ethernal-network
 

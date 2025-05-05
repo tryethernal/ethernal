@@ -1,4 +1,4 @@
-const axios = require('axios');
+import axios from 'axios';
 
 class Api {
     constructor(apiToken, workspace) {
@@ -36,5 +36,4 @@ class Api {
     }
 }
 
-
-module.exports = Api;
+export default Api;
