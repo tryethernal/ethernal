@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Explorers.vue > Should display public explorer explainer when no explorers 1`] = `
+exports[`Explorers.vue > Should display a list of explorers 1`] = `
 "<div class="v-container v-container--fluid v-locale--is-ltr">
   <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
     <!---->
@@ -66,7 +66,7 @@ exports[`Explorers.vue > Should display public explorer explainer when no explor
 </div>"
 `;
 
-exports[`Explorers.vue > Should display settings with all options 1`] = `
+exports[`Explorers.vue > Should display public explorer explainer when no explorers 1`] = `
 "<div class="v-container v-container--fluid v-locale--is-ltr">
   <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
     <!---->
@@ -88,175 +88,42 @@ exports[`Explorers.vue > Should display settings with all options 1`] = `
     <!---->
     <div class="v-card-text">
       <create-explorer-modal-stub></create-explorer-modal-stub>
-      <!--v-if-->
-      <div class="v-table v-table--has-top v-table--has-bottom v-theme--light v-table--density-default v-data-table" footer-props="[object Object]">
-        <div class="d-flex justify-end"><button type="button" class="v-btn v-theme--light bg-primary v-btn--density-default v-btn--size-small v-btn--variant-flat mr-2"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-            <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-plus mdi v-icon notranslate v-theme--light v-icon--size-small mr-1" aria-hidden="true"></i>Create Explorer </span>
+      <div class="v-card v-card--flat v-theme--light v-card--border v-card--density-default v-card--variant-elevated">
+        <!---->
+        <div class="v-card__loader">
+          <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
             <!---->
-            <!---->
-          </button></div>
-        <div class="v-table__wrapper">
-          <table>
-            <!---->
-            <thead class="v-data-table__thead" role="rowgroup">
-              <tr>
-                <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th" colspan="1" rowspan="1">
-                  <div class="v-data-table-header__content"><span>Name</span><i class="mdi-arrow-up mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
-                    <!---->
-                  </div>
-                </th>
-                <th class="v-data-table__td v-data-table-column--align-start v-data-table__th" colspan="1" rowspan="1">
-                  <div class="v-data-table-header__content"><span>Workspace</span>
-                    <!---->
-                    <!---->
-                  </div>
-                </th>
-                <th class="v-data-table__td v-data-table-column--align-start v-data-table__th" colspan="1" rowspan="1">
-                  <div class="v-data-table-header__content"><span>Domains</span>
-                    <!---->
-                    <!---->
-                  </div>
-                </th>
-                <th class="v-data-table__td v-data-table-column--align-start v-data-table__th" colspan="1" rowspan="1">
-                  <div class="v-data-table-header__content"><span>RPC</span>
-                    <!---->
-                    <!---->
-                  </div>
-                </th>
-              </tr>
-              <!---->
-            </thead>
-            <!---->
-            <tbody class="v-data-table__tbody" role="rowgroup">
-              <!---->
-              <tr class="v-data-table__tr">
-                <td class="v-data-table__td v-data-table-column--align-start"><i class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-success lignthen mr-2" aria-hidden="true" aria-describedby="v-tooltip-8"></i>
-                  <!--teleport start-->
-                  <!--teleport end--><a>Explorer 1</a>
-                </td>
-                <td class="v-data-table__td v-data-table-column--align-start">Workspace 1</td>
-                <td class="v-data-table__td v-data-table-column--align-start"><a href="http://explorer1.com" target="_blank">explorer1.com</a>
-                  <!--v-if-->
-                </td>
-                <td class="v-data-table__td v-data-table-column--align-start">rpc 1</td>
-              </tr>
-              <!---->
-              <tr class="v-data-table__tr">
-                <td class="v-data-table__td v-data-table-column--align-start"><i class="mdi-alert mdi v-icon notranslate v-theme--light v-icon--size-small text-warning lignthen mr-2" aria-hidden="true" aria-describedby="v-tooltip-9"></i>
-                  <!--teleport start-->
-                  <!--teleport end--><a>Explorer 2</a>
-                </td>
-                <td class="v-data-table__td v-data-table-column--align-start">Workspace 2</td>
-                <td class="v-data-table__td v-data-table-column--align-start"><a href="http://test.ethernal.local:8080" target="_blank">test.ethernal.local:8080</a></td>
-                <td class="v-data-table__td v-data-table-column--align-start">rpc 2</td>
-              </tr>
-              <!---->
-              <tr class="v-data-table__tr">
-                <td class="v-data-table__td v-data-table-column--align-start"><i class="mdi-alert-circle mdi v-icon notranslate v-theme--light v-icon--size-small text-error lignthen mr-2" aria-hidden="true" aria-describedby="v-tooltip-10"></i>
-                  <!--teleport start-->
-                  <!--teleport end--><a>Explorer 3</a>
-                </td>
-                <td class="v-data-table__td v-data-table-column--align-start">Workspace 3</td>
-                <td class="v-data-table__td v-data-table-column--align-start"><a href="http://a.explorer1.com" target="_blank">a.explorer1.com</a><span class="v-chip v-theme--light v-chip--density-default v-chip--size-x-small v-chip--variant-tonal ml-2" draggable="false" aria-describedby="v-tooltip-11"><!----><span class="v-chip__underlay"></span>
-                  <!---->
-                  <!---->
-                  <div class="v-chip__content" data-no-activator="">+ 1</div>
-                  <!---->
-                  <!----></span>
-                  <!--teleport start-->
-                  <!--teleport end-->
-                </td>
-                <td class="v-data-table__td v-data-table-column--align-start">rpc 3</td>
-              </tr>
-              <!---->
-              <!---->
-            </tbody>
-            <!---->
-            <!---->
-          </table>
-        </div>
-        <hr class="v-divider v-theme--light" aria-orientation="horizontal" role="separator">
-        <div class="v-data-table-footer">
-          <!---->
-          <div class="v-data-table-footer__items-per-page"><span>Rows per page:</span>
-            <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field v-select v-select--single v-select--selected">
-              <!---->
-              <div class="v-input__control">
-                <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--no-label v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="v-menu-3">
-                  <div class="v-field__overlay"></div>
-                  <div class="v-field__loader">
-                    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
-                      <!---->
-                      <div class="v-progress-linear__background"></div>
-                      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
-                      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
-                        <div class="v-progress-linear__indeterminate">
-                          <div class="v-progress-linear__indeterminate long"></div>
-                          <div class="v-progress-linear__indeterminate short"></div>
-                        </div>
-                      </transition-stub>
-                      <!---->
-                    </div>
-                  </div>
-                  <!---->
-                  <div class="v-field__field" data-no-activator="">
-                    <!---->
-                    <!---->
-                    <!---->
-                    <div class="v-field__input" data-no-activator="">
-                      <!---->
-                      <!---->
-                      <div class="v-select__selection"><span class="v-select__selection-text">10<!----></span></div><input size="1" type="text" id="input-1" aria-describedby="input-1-messages" inputmode="none" aria-label="Open" title="Open" value="10">
-                    </div>
-                    <!---->
-                  </div>
-                  <!---->
-                  <div class="v-field__append-inner">
-                    <!----><i class="mdi-menu-down mdi v-icon notranslate v-theme--light v-icon--size-default v-select__menu-icon" aria-hidden="true"></i>
-                    <!---->
-                  </div>
-                  <div class="v-field__outline">
-                    <div class="v-field__outline__start"></div>
-                    <!---->
-                    <div class="v-field__outline__end"></div>
-                    <!---->
-                  </div>
-                </div>
+            <div class="v-progress-linear__background"></div>
+            <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+            <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+              <div class="v-progress-linear__indeterminate">
+                <div class="v-progress-linear__indeterminate long"></div>
+                <div class="v-progress-linear__indeterminate short"></div>
               </div>
-              <!---->
-              <!---->
-            </div>
-          </div>
-          <div class="v-data-table-footer__info">
-            <div>1-3 of 3</div>
-          </div>
-          <div class="v-data-table-footer__pagination">
-            <nav class="v-pagination v-theme--light" role="navigation" aria-label="Pagination Navigation" data-test="v-pagination-root">
-              <ul class="v-pagination__list">
-                <li class="v-pagination__first" data-test="v-pagination-first"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="First page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-                    <!----><span class="v-btn__content" data-no-activator=""><!----></span>
-                    <!---->
-                    <!---->
-                  </button></li>
-                <li class="v-pagination__prev" data-test="v-pagination-prev"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="Previous page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-                    <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-chevron-left mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
-                    <!---->
-                    <!---->
-                  </button></li>
-                <li class="v-pagination__next" data-test="v-pagination-next"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="Next page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-                    <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-chevron-right mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
-                    <!---->
-                    <!---->
-                  </button></li>
-                <li class="v-pagination__last" data-test="v-pagination-last"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="Last page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-                    <!----><span class="v-btn__content" data-no-activator=""><!----></span>
-                    <!---->
-                    <!---->
-                  </button></li>
-              </ul>
-            </nav>
+            </transition-stub>
+            <!---->
           </div>
         </div>
+        <!---->
+        <!---->
+        <div class="v-card-title">Public Explorers</div>
+        <div class="v-card-text"> At the moment, only your account is able to use this explorer. If you are collaborating with others on this chain or another, or if you want to provide your users with an explorer, you might be interested in setting up a public explorer that will be easily accessible, without needing a login, to anyone that needs it.<br><br> You will get the following: <ul class="ml-2 mt-2">
+            <li>A public explorer showing blocks, transactions, contracts, tokens, etc...</li>
+            <li>A custom url like http://explorer.myprotocol.com to access it</li>
+            <li>A Metamask integration so your users can easily interact with contracts</li>
+            <li>A contract verification system through a CLI or an UI</li>
+            <li>Chain analytics</li>
+            <li>Custom branding with your colors, logo, etc...</li>
+            <li>And of course all the feature that you are already currently using such as transaction decoding, transfers &amp; balance changes display, tokens detection, etc...</li>
+          </ul>
+          <div class="mt-4" align="center"><button type="button" class="v-btn v-theme--light bg-primary v-btn--density-default v-btn--size-default v-btn--variant-flat mr-2"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+              <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-plus mdi v-icon notranslate v-theme--light v-icon--size-default mr-1" aria-hidden="true"></i>Create Explorer </span>
+              <!---->
+              <!---->
+            </button></div>
+        </div>
+        <!---->
+        <!----><span class="v-card__underlay"></span>
       </div>
     </div>
     <!---->

@@ -2,11 +2,13 @@
 const {
   Model, Sequelize
 } = require('sequelize');
-const { getAppDomain } = require('../lib/env');
+const { randomUUID } = require('crypto');
+const uuidAPIKey = require('uuid-apikey');
+const { isSelfHosted } = require('../lib/flags');
 const { sanitize, slugify, validateBNString } = require('../lib/utils');
 const { enqueue } = require('../lib/queue');
 const { trigger } = require('../lib/pusher');
-const { encode, decrypt } = require('../lib/crypto');
+const { encode, decrypt, encrypt, firebaseHash } = require('../lib/crypto');
 
 const Op = Sequelize.Op;
 const SYNC_RATE_LIMIT_INTERVAL = 5000
@@ -155,6 +157,33 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    static async createAdmin(email, password) {
+        if (!isSelfHosted())
+            throw new Error('This feature is only available on self-hosted instances');
+
+        const existingUser = await User.findOne({ where: { email } });
+        if (existingUser)
+            throw new Error('This email address is already registered.');
+
+        const apiKey = uuidAPIKey.create().apiKey;
+        const encryptedKey = encrypt(apiKey);
+
+        let uid, passwordSalt, passwordHash;
+        ({ uid, passwordSalt, passwordHash } = { uid: randomUUID(), ...(await firebaseHash(password)) });
+
+        return User.create({
+            firebaseUserId: uid,
+            email,
+            apiKey: encryptedKey,
+            stripeCustomerId: 'dummy',
+            plan: 'premium',
+            passwordHash,
+            passwordSalt,
+            canUseDemoPlan: true,
+            canTrial: false
+        });
+    }
+
     static async safeCreate(firebaseUserId, email, apiKey, stripeCustomerId, plan, explorerSubscriptionId, passwordHash, passwordSalt, qnId) {
         if (!firebaseUserId || !email || !apiKey || !stripeCustomerId || !plan) throw new Error('[User.createUser] Missing parameter');
 
@@ -233,6 +262,9 @@ module.exports = (sequelize, DataTypes) => {
             }
             else
                 throw new Error('You need to either pass a workspaceId parameter or a name & rpcServer parameters to create an explorer');
+
+            if (!this.currentWorkspaceId)
+                await this.update({ currentWorkspaceId: workspace.id }, { transaction });
 
             const tentativeSlug = slug || slugify(workspace.name);
             const existingExplorer = await sequelize.models.Explorer.findOne({ where: { slug: tentativeSlug }});

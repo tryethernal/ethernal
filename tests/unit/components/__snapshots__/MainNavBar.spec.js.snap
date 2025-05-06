@@ -52,58 +52,6 @@ exports[`MainNavBar.vue > Should highlight blockchain menu when on blockchain re
 </div>"
 `;
 
-exports[`MainNavBar.vue > Should highlight tokens menu when on token routes 1`] = `
-"<div class="v-application v-theme--light v-layout v-layout--full-height v-locale--is-ltr">
-  <div class="v-application__wrap">
-    <div>
-      <!-- Mobile Navigation Drawer -->
-      <!--v-if-->
-      <!-- Desktop Navigation Bar -->
-      <header class="v-toolbar v-toolbar--flat v-toolbar--density-default v-theme--light v-locale--is-ltr v-app-bar main-bar theme-background" style="top: 0px; z-index: 1004; transform: translateY(0px); position: fixed; transition: none; left: 0px; width: calc(100% - 0px - 0px);">
-        <!---->
-        <div class="v-toolbar__content" style="height: 64px;">
-          <!---->
-          <!---->
-          <div class="v-container v-locale--is-ltr d-flex align-center fill-height">
-            <div class="d-flex align-center"><a class="text-decoration-none text-h6 text-primary">Ethernal</a></div>
-            <div class="v-spacer"></div>
-            <div class="d-flex align-center fill-height"><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-plain opacity-100 d-flex align-center fill-height text-default opacity-80" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-                <!----><span class="v-btn__content" data-no-activator=""> Blockchain <i class="mdi-chevron-down mdi v-icon notranslate v-theme--light v-icon--size-default ml-1" aria-hidden="true"></i></span>
-                <!---->
-                <!---->
-              </button>
-              <!----><button type="button" class="v-btn v-theme--light text-primary v-btn--density-default v-btn--size-default v-btn--variant-plain opacity-100 d-flex align-center fill-height text-primary" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-3"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-                <!----><span class="v-btn__content" data-no-activator=""> Tokens <i class="mdi-chevron-down mdi v-icon notranslate v-theme--light v-icon--size-default ml-1" aria-hidden="true"></i></span>
-                <!---->
-                <!---->
-              </button>
-              <!----><a class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-plain opacity-100 d-flex align-center fill-height text-default opacity-80" href="/analytics"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-                <!----><span class="v-btn__content" data-no-activator="">Charts</span>
-                <!---->
-                <!---->
-              </a><!-- Faucet Link -->
-              <!--v-if-->
-              <!-- DEX Link -->
-              <!--v-if-->
-              <!-- Bridge Link -->
-              <!--v-if-->
-              <!-- Admin Links -->
-              <!--v-if-->
-              <hr class="v-divider v-divider--vertical v-theme--light my-4 mr-4" aria-orientation="vertical" role="separator">
-              <!--v-if-->
-            </div>
-          </div>
-          <!---->
-        </div>
-        <transition-stub name="expand-transition" appear="false" persisted="false" css="true">
-          <!---->
-        </transition-stub>
-      </header>
-    </div>
-  </div>
-</div>"
-`;
-
 exports[`MainNavBar.vue > Should highlight tokens menu when on tokens related routes 1`] = `
 "<div class="v-application v-theme--light v-layout v-layout--full-height v-locale--is-ltr">
   <div class="v-application__wrap">
@@ -192,19 +140,7 @@ exports[`MainNavBar.vue > Should show admin menu items when user is admin 1`] = 
               <!-- Bridge Link -->
               <!--v-if-->
               <!-- Admin Links -->
-              <hr class="v-divider v-divider--vertical v-theme--light my-2" aria-orientation="vertical" role="separator"><a class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-plain opacity-100 d-flex align-center fill-height text-default opacity-80" href="/explorers"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-                <!----><span class="v-btn__content" data-no-activator="">Public Explorers</span>
-                <!---->
-                <!---->
-              </a><a class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-plain opacity-100 d-flex align-center fill-height text-default opacity-80" href="/settings?tab=workspace"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-                <!----><span class="v-btn__content" data-no-activator="">Settings</span>
-                <!---->
-                <!---->
-              </a><a class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-plain d-flex align-center fill-height text-error opacity-80" href="/logout"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-                <!----><span class="v-btn__content" data-no-activator="">Logout</span>
-                <!---->
-                <!---->
-              </a>
+              <!--v-if-->
               <hr class="v-divider v-divider--vertical v-theme--light my-4 mr-4" aria-orientation="vertical" role="separator">
               <!--v-if-->
             </div>
@@ -307,32 +243,14 @@ exports[`MainNavBar.vue > Should show bridge when user is admin and workspace is
                 <!----><span class="v-btn__content" data-no-activator="">Charts</span>
                 <!---->
                 <!---->
-              </a><!-- Faucet Link --><a class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-plain opacity-100 d-flex align-center fill-height text-default opacity-80" href="/faucet"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-                <!----><span class="v-btn__content" data-no-activator="">Faucet</span>
-                <!---->
-                <!---->
-              </a><!-- DEX Link --><a class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-plain opacity-100 d-flex align-center fill-height text-default opacity-80" href="/dex"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-                <!----><span class="v-btn__content" data-no-activator="">DEX</span>
-                <!---->
-                <!---->
-              </a><!-- Bridge Link --><a class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-plain d-flex align-center fill-height text-default opacity-80" href="/bridge"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-                <!----><span class="v-btn__content" data-no-activator="">Bridge</span>
-                <!---->
-                <!---->
-              </a><!-- Admin Links -->
-              <hr class="v-divider v-divider--vertical v-theme--light my-2" aria-orientation="vertical" role="separator"><a class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-plain opacity-100 d-flex align-center fill-height text-default opacity-80" href="/explorers"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-                <!----><span class="v-btn__content" data-no-activator="">Public Explorers</span>
-                <!---->
-                <!---->
-              </a><a class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-plain opacity-100 d-flex align-center fill-height text-default opacity-80" href="/settings?tab=workspace"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-                <!----><span class="v-btn__content" data-no-activator="">Settings</span>
-                <!---->
-                <!---->
-              </a><a class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-plain d-flex align-center fill-height text-error opacity-80" href="/logout"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-                <!----><span class="v-btn__content" data-no-activator="">Logout</span>
-                <!---->
-                <!---->
-              </a>
+              </a><!-- Faucet Link -->
+              <!--v-if-->
+              <!-- DEX Link -->
+              <!--v-if-->
+              <!-- Bridge Link -->
+              <!--v-if-->
+              <!-- Admin Links -->
+              <!--v-if-->
               <hr class="v-divider v-divider--vertical v-theme--light my-4 mr-4" aria-orientation="vertical" role="separator">
               <!--v-if-->
             </div>

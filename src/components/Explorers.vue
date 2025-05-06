@@ -96,7 +96,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted, getCurrentInstance } from 'vue';
+import { ref, reactive, computed, onMounted, inject } from 'vue';
 import { useRoute } from 'vue-router';
 
 import CreateExplorerModal from './CreateExplorerModal.vue';
@@ -113,9 +113,7 @@ const createExplorerModalRef = ref(null);
 
 // Router
 const route = useRoute();
-
-// Access to $server
-const { proxy } = getCurrentInstance();
+const $server = inject('$server');
 
 // Host for explorer links
 const documentHost = typeof window !== 'undefined' ? window.location.host : '';
@@ -168,12 +166,7 @@ function getExplorers({ page, itemsPerPage, sortBy } = {}) {
     currentOptions.orderBy = sortBy[0].key;
     currentOptions.order = sortBy[0].order;
 
-    if (!proxy || !proxy.$server) {
-        loading.value = false;
-        return;
-    }
-
-    proxy.$server.getExplorers(currentOptions)
+    $server.getExplorers(currentOptions)
         .then(({ data }) => {
             explorers.value = data.items;
             explorerCount.value = data.total;

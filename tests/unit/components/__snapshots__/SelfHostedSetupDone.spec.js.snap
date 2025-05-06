@@ -1,0 +1,35 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`SelfHostedSetupDone.vue > shows explorer domain if present 1`] = `
+"<div data-v-4f63d1a0="" class="text-center py-8"><i data-v-4f63d1a0="" class="mdi-check-circle mdi v-icon notranslate v-theme--light text-success" style="font-size: 64px; height: 64px; width: 64px;" aria-hidden="true"></i>
+  <h2 data-v-4f63d1a0="" class="my-4">Setup Complete!</h2>
+  <div data-v-4f63d1a0="">
+    <div data-v-4f63d1a0="" class="mb-2"><span data-v-4f63d1a0="">Your explorer is now live at:</span><br data-v-4f63d1a0=""><a data-v-4f63d1a0="" class="font-weight-bold text-primary text-decoration-none" href="https://myexplorer.com" target="_blank">https://myexplorer.com</a></div>
+    <div data-v-4f63d1a0="" class="mt-6 d-flex flex-column align-center useful-links-compact">
+      <h3 data-v-4f63d1a0="" class="mb-2">Useful Links</h3>
+      <ul data-v-4f63d1a0="" class="compact-link-list">
+        <li data-v-4f63d1a0="" class="d-flex align-center"><i data-v-4f63d1a0="" class="mdi-cog mdi v-icon notranslate v-theme--light text-grey lighten-1 mr-1" style="font-size: 18px; height: 18px; width: 18px;" aria-hidden="true"></i><a data-v-4f63d1a0="" target="_blank" href="/explorers/1" class="compact-link text-medium-emphasis text-primary text-decoration-none"> Explorer Settings </a></li>
+        <li data-v-4f63d1a0="" class="d-flex align-center"><i data-v-4f63d1a0="" class="mdi-view-dashboard mdi v-icon notranslate v-theme--light text-grey lighten-1 mr-1" style="font-size: 18px; height: 18px; width: 18px;" aria-hidden="true"></i><a data-v-4f63d1a0="" target="_blank" href="/" class="compact-link text-medium-emphasis text-primary text-decoration-none"> Ethernal Dashboard </a></li>
+        <li data-v-4f63d1a0="" class="d-flex align-center"><i data-v-4f63d1a0="" class="mdi-compass mdi v-icon notranslate v-theme--light text-grey lighten-1 mr-1" style="font-size: 18px; height: 18px; width: 18px;" aria-hidden="true"></i><a data-v-4f63d1a0="" target="_blank" href="/explorers" class="compact-link text-medium-emphasis text-primary text-decoration-none"> My Explorers </a></li>
+      </ul>
+    </div>
+  </div>
+</div>"
+`;
+
+exports[`SelfHostedSetupDone.vue > shows slug-based url if no domain 1`] = `
+"<div data-v-4f63d1a0="" class="text-center py-8"><i data-v-4f63d1a0="" class="mdi-check-circle mdi v-icon notranslate v-theme--light text-success" style="font-size: 64px; height: 64px; width: 64px;" aria-hidden="true"></i>
+  <h2 data-v-4f63d1a0="" class="my-4">Setup Complete!</h2>
+  <div data-v-4f63d1a0="">
+    <div data-v-4f63d1a0="" class="mb-2"><span data-v-4f63d1a0="">Your explorer is now live at:</span><br data-v-4f63d1a0=""><a data-v-4f63d1a0="" class="font-weight-bold text-primary text-decoration-none" href="https://slug.localhost:3000" target="_blank">https://slug.localhost:3000</a></div>
+    <div data-v-4f63d1a0="" class="mt-6 d-flex flex-column align-center useful-links-compact">
+      <h3 data-v-4f63d1a0="" class="mb-2">Useful Links</h3>
+      <ul data-v-4f63d1a0="" class="compact-link-list">
+        <li data-v-4f63d1a0="" class="d-flex align-center"><i data-v-4f63d1a0="" class="mdi-cog mdi v-icon notranslate v-theme--light text-grey lighten-1 mr-1" style="font-size: 18px; height: 18px; width: 18px;" aria-hidden="true"></i><a data-v-4f63d1a0="" target="_blank" href="/explorers/2" class="compact-link text-medium-emphasis text-primary text-decoration-none"> Explorer Settings </a></li>
+        <li data-v-4f63d1a0="" class="d-flex align-center"><i data-v-4f63d1a0="" class="mdi-view-dashboard mdi v-icon notranslate v-theme--light text-grey lighten-1 mr-1" style="font-size: 18px; height: 18px; width: 18px;" aria-hidden="true"></i><a data-v-4f63d1a0="" target="_blank" href="/" class="compact-link text-medium-emphasis text-primary text-decoration-none"> Ethernal Dashboard </a></li>
+        <li data-v-4f63d1a0="" class="d-flex align-center"><i data-v-4f63d1a0="" class="mdi-compass mdi v-icon notranslate v-theme--light text-grey lighten-1 mr-1" style="font-size: 18px; height: 18px; width: 18px;" aria-hidden="true"></i><a data-v-4f63d1a0="" target="_blank" href="/explorers" class="compact-link text-medium-emphasis text-primary text-decoration-none"> My Explorers </a></li>
+      </ul>
+    </div>
+  </div>
+</div>"
+`;

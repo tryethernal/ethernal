@@ -1,0 +1,193 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`SelfHostedSetup.vue > moves to done step on explorer-created 1`] = `
+"<div data-v-26a1cee2="" class="v-application v-theme--light v-layout v-layout--full-height v-locale--is-ltr setup-bg">
+  <div class="v-application__wrap">
+    <div data-v-26a1cee2="" class="v-container v-container--fluid v-locale--is-ltr d-flex align-center justify-center setup-container">
+      <div data-v-26a1cee2="" class="v-row align-center justify-center w-100">
+        <div data-v-26a1cee2="" class="v-col-md-7 v-col-lg-5 v-col-12">
+          <div data-v-26a1cee2="" class="v-card v-theme--light v-card--density-default elevation-10 v-card--variant-elevated pa-8 setup-card">
+            <!---->
+            <div class="v-card__loader">
+              <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                <!---->
+                <div class="v-progress-linear__background"></div>
+                <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                  <div class="v-progress-linear__indeterminate">
+                    <div class="v-progress-linear__indeterminate long"></div>
+                    <div class="v-progress-linear__indeterminate short"></div>
+                  </div>
+                </transition-stub>
+                <!---->
+              </div>
+            </div>
+            <!---->
+            <!---->
+            <div data-v-26a1cee2="" class="d-flex justify-center align-center mb-8">
+              <h1 data-v-26a1cee2="" class="ml-3 mb-0 setup-title">Welcome! Let's Get Your Ethernal Instance Ready</h1>
+            </div>
+            <div data-v-26a1cee2="" class="wizard-stepper d-flex justify-space-between align-center mb-8">
+              <div data-v-26a1cee2="" class="wizard-step done"><i data-v-26a1cee2="" class="mdi-account-plus mdi v-icon notranslate v-theme--light text-grey-lighten-1 step-icon" style="font-size: 22px; height: 22px; width: 22px;" aria-hidden="true"></i><span data-v-26a1cee2="" class="step-label">Create Admin User</span></div><i data-v-26a1cee2="" class="mdi-arrow-right-thin mdi v-icon notranslate v-theme--light text-grey-lighten-1 wizard-arrow" style="font-size: 20px; height: 20px; width: 20px;" aria-hidden="true"></i>
+              <div data-v-26a1cee2="" class="wizard-step done"><i data-v-26a1cee2="" class="mdi-rocket-launch-outline mdi v-icon notranslate v-theme--light text-grey-lighten-1 step-icon" style="font-size: 22px; height: 22px; width: 22px;" aria-hidden="true"></i><span data-v-26a1cee2="" class="step-label">Create Explorer</span></div><i data-v-26a1cee2="" class="mdi-arrow-right-thin mdi v-icon notranslate v-theme--light text-grey-lighten-1 wizard-arrow" style="font-size: 20px; height: 20px; width: 20px;" aria-hidden="true"></i>
+              <div data-v-26a1cee2="" class="wizard-step active"><i data-v-26a1cee2="" class="mdi-check-circle-outline mdi v-icon notranslate v-theme--light text-primary step-icon" style="font-size: 22px; height: 22px; width: 22px;" aria-hidden="true"></i><span data-v-26a1cee2="" class="step-label">Done</span></div>
+            </div>
+            <hr data-v-26a1cee2="" class="v-divider v-theme--light mb-7" aria-orientation="horizontal" role="separator">
+            <div data-v-26a1cee2="" class="v-window v-theme--light">
+              <div class="v-window__container">
+                <transition-stub data-v-26a1cee2="" appear="false" persisted="false" css="true" disabled="true">
+                  <div class="v-window-item" style="display: none;">
+                    <self-hosted-setup-user-stub data-v-26a1cee2="" loading="false"></self-hosted-setup-user-stub>
+                  </div>
+                </transition-stub>
+                <transition-stub data-v-26a1cee2="" appear="false" persisted="false" css="true" disabled="true">
+                  <div class="v-window-item" style="display: none;">
+                    <self-hosted-setup-explorer-stub data-v-26a1cee2="" loading="false"></self-hosted-setup-explorer-stub>
+                  </div>
+                </transition-stub>
+                <transition-stub data-v-26a1cee2="" appear="false" persisted="false" css="true" disabled="true">
+                  <div class="v-window-item v-window-item--active" style="">
+                    <self-hosted-setup-done-stub data-v-26a1cee2="" explorer="[object Object]"></self-hosted-setup-done-stub>
+                  </div>
+                </transition-stub>
+                <!---->
+              </div>
+              <!---->
+            </div>
+            <!---->
+            <!----><span class="v-card__underlay"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>"
+`;
+
+exports[`SelfHostedSetup.vue > moves to explorer step on user-created 1`] = `
+"<div data-v-26a1cee2="" class="v-application v-theme--light v-layout v-layout--full-height v-locale--is-ltr setup-bg">
+  <div class="v-application__wrap">
+    <div data-v-26a1cee2="" class="v-container v-container--fluid v-locale--is-ltr d-flex align-center justify-center setup-container">
+      <div data-v-26a1cee2="" class="v-row align-center justify-center w-100">
+        <div data-v-26a1cee2="" class="v-col-md-7 v-col-lg-5 v-col-12">
+          <div data-v-26a1cee2="" class="v-card v-theme--light v-card--density-default elevation-10 v-card--variant-elevated pa-8 setup-card">
+            <!---->
+            <div class="v-card__loader">
+              <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                <!---->
+                <div class="v-progress-linear__background"></div>
+                <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                  <div class="v-progress-linear__indeterminate">
+                    <div class="v-progress-linear__indeterminate long"></div>
+                    <div class="v-progress-linear__indeterminate short"></div>
+                  </div>
+                </transition-stub>
+                <!---->
+              </div>
+            </div>
+            <!---->
+            <!---->
+            <div data-v-26a1cee2="" class="d-flex justify-center align-center mb-8">
+              <h1 data-v-26a1cee2="" class="ml-3 mb-0 setup-title">Welcome! Let's Get Your Ethernal Instance Ready</h1>
+            </div>
+            <div data-v-26a1cee2="" class="wizard-stepper d-flex justify-space-between align-center mb-8">
+              <div data-v-26a1cee2="" class="wizard-step done"><i data-v-26a1cee2="" class="mdi-account-plus mdi v-icon notranslate v-theme--light text-grey-lighten-1 step-icon" style="font-size: 22px; height: 22px; width: 22px;" aria-hidden="true"></i><span data-v-26a1cee2="" class="step-label">Create Admin User</span></div><i data-v-26a1cee2="" class="mdi-arrow-right-thin mdi v-icon notranslate v-theme--light text-grey-lighten-1 wizard-arrow" style="font-size: 20px; height: 20px; width: 20px;" aria-hidden="true"></i>
+              <div data-v-26a1cee2="" class="wizard-step active"><i data-v-26a1cee2="" class="mdi-rocket-launch-outline mdi v-icon notranslate v-theme--light text-primary step-icon" style="font-size: 22px; height: 22px; width: 22px;" aria-hidden="true"></i><span data-v-26a1cee2="" class="step-label">Create Explorer</span></div><i data-v-26a1cee2="" class="mdi-arrow-right-thin mdi v-icon notranslate v-theme--light text-grey-lighten-1 wizard-arrow" style="font-size: 20px; height: 20px; width: 20px;" aria-hidden="true"></i>
+              <div data-v-26a1cee2="" class="wizard-step"><i data-v-26a1cee2="" class="mdi-check-circle-outline mdi v-icon notranslate v-theme--light text-grey-lighten-1 step-icon" style="font-size: 22px; height: 22px; width: 22px;" aria-hidden="true"></i><span data-v-26a1cee2="" class="step-label">Done</span></div>
+            </div>
+            <hr data-v-26a1cee2="" class="v-divider v-theme--light mb-7" aria-orientation="horizontal" role="separator">
+            <div data-v-26a1cee2="" class="v-window v-theme--light">
+              <div class="v-window__container">
+                <transition-stub data-v-26a1cee2="" appear="false" persisted="false" css="true" disabled="true">
+                  <div class="v-window-item" style="display: none;">
+                    <self-hosted-setup-user-stub data-v-26a1cee2="" loading="false"></self-hosted-setup-user-stub>
+                  </div>
+                </transition-stub>
+                <transition-stub data-v-26a1cee2="" appear="false" persisted="false" css="true" disabled="true">
+                  <div class="v-window-item v-window-item--active" style="">
+                    <self-hosted-setup-explorer-stub data-v-26a1cee2="" loading="false"></self-hosted-setup-explorer-stub>
+                  </div>
+                </transition-stub>
+                <transition-stub data-v-26a1cee2="" appear="false" persisted="false" css="true" disabled="true">
+                  <div class="v-window-item" style="display: none;">
+                    <!---->
+                  </div>
+                </transition-stub>
+                <!---->
+              </div>
+              <!---->
+            </div>
+            <!---->
+            <!----><span class="v-card__underlay"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>"
+`;
+
+exports[`SelfHostedSetup.vue > renders the initial user step 1`] = `
+"<div data-v-26a1cee2="" class="v-application v-theme--light v-layout v-layout--full-height v-locale--is-ltr setup-bg">
+  <div class="v-application__wrap">
+    <div data-v-26a1cee2="" class="v-container v-container--fluid v-locale--is-ltr d-flex align-center justify-center setup-container">
+      <div data-v-26a1cee2="" class="v-row align-center justify-center w-100">
+        <div data-v-26a1cee2="" class="v-col-md-7 v-col-lg-5 v-col-12">
+          <div data-v-26a1cee2="" class="v-card v-theme--light v-card--density-default elevation-10 v-card--variant-elevated pa-8 setup-card">
+            <!---->
+            <div class="v-card__loader">
+              <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                <!---->
+                <div class="v-progress-linear__background"></div>
+                <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                  <div class="v-progress-linear__indeterminate">
+                    <div class="v-progress-linear__indeterminate long"></div>
+                    <div class="v-progress-linear__indeterminate short"></div>
+                  </div>
+                </transition-stub>
+                <!---->
+              </div>
+            </div>
+            <!---->
+            <!---->
+            <div data-v-26a1cee2="" class="d-flex justify-center align-center mb-8">
+              <h1 data-v-26a1cee2="" class="ml-3 mb-0 setup-title">Welcome! Let's Get Your Ethernal Instance Ready</h1>
+            </div>
+            <div data-v-26a1cee2="" class="wizard-stepper d-flex justify-space-between align-center mb-8">
+              <div data-v-26a1cee2="" class="wizard-step active"><i data-v-26a1cee2="" class="mdi-account-plus mdi v-icon notranslate v-theme--light text-primary step-icon" style="font-size: 22px; height: 22px; width: 22px;" aria-hidden="true"></i><span data-v-26a1cee2="" class="step-label">Create Admin User</span></div><i data-v-26a1cee2="" class="mdi-arrow-right-thin mdi v-icon notranslate v-theme--light text-grey-lighten-1 wizard-arrow" style="font-size: 20px; height: 20px; width: 20px;" aria-hidden="true"></i>
+              <div data-v-26a1cee2="" class="wizard-step"><i data-v-26a1cee2="" class="mdi-rocket-launch-outline mdi v-icon notranslate v-theme--light text-grey-lighten-1 step-icon" style="font-size: 22px; height: 22px; width: 22px;" aria-hidden="true"></i><span data-v-26a1cee2="" class="step-label">Create Explorer</span></div><i data-v-26a1cee2="" class="mdi-arrow-right-thin mdi v-icon notranslate v-theme--light text-grey-lighten-1 wizard-arrow" style="font-size: 20px; height: 20px; width: 20px;" aria-hidden="true"></i>
+              <div data-v-26a1cee2="" class="wizard-step"><i data-v-26a1cee2="" class="mdi-check-circle-outline mdi v-icon notranslate v-theme--light text-grey-lighten-1 step-icon" style="font-size: 22px; height: 22px; width: 22px;" aria-hidden="true"></i><span data-v-26a1cee2="" class="step-label">Done</span></div>
+            </div>
+            <hr data-v-26a1cee2="" class="v-divider v-theme--light mb-7" aria-orientation="horizontal" role="separator">
+            <div data-v-26a1cee2="" class="v-window v-theme--light">
+              <div class="v-window__container">
+                <transition-stub data-v-26a1cee2="" appear="false" persisted="false" css="true" disabled="true">
+                  <div class="v-window-item v-window-item--active">
+                    <self-hosted-setup-user-stub data-v-26a1cee2="" loading="false"></self-hosted-setup-user-stub>
+                  </div>
+                </transition-stub>
+                <transition-stub data-v-26a1cee2="" appear="false" persisted="false" css="true" disabled="true">
+                  <div class="v-window-item" style="display: none;">
+                    <!---->
+                  </div>
+                </transition-stub>
+                <transition-stub data-v-26a1cee2="" appear="false" persisted="false" css="true" disabled="true">
+                  <div class="v-window-item" style="display: none;">
+                    <!---->
+                  </div>
+                </transition-stub>
+                <!---->
+              </div>
+              <!---->
+            </div>
+            <!---->
+            <!----><span class="v-card__underlay"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>"
+`;

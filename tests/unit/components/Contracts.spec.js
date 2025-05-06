@@ -53,7 +53,7 @@ describe('Contracts.vue', () => {
         const wrapper = mount(Contracts, {
             global: {
                 stubs: ['Hash-Link', 'Import-Contract-Modal', 'Remove-Contract-Confirmation-Modal'],
-                plugins: [createTestingPinia({ initialState: { user: { plan: 'free' }, env: { isAdmin: true } } })]
+                plugins: [createTestingPinia({ initialState: { user: { plan: 'free', isAdmin: true } } })]
             }
         });
         await new Promise(process.nextTick);
@@ -72,7 +72,7 @@ describe('Contracts.vue', () => {
         const wrapper = mount(Contracts, {
             global: {
                 stubs: ['Hash-Link', 'Import-Contract-Modal', 'Remove-Contract-Confirmation-Modal'],
-                plugins: [createTestingPinia({ initialState: { user: { plan: 'premium' }, env: { isAdmin: true } } })]
+                plugins: [createTestingPinia({ initialState: { user: { plan: 'premium', isAdmin: true } } })]
             }
         });
         await new Promise(process.nextTick);
@@ -93,8 +93,7 @@ describe('Contracts.vue', () => {
                 stubs: ['Hash-Link', 'Import-Contract-Modal', 'Remove-Contract-Confirmation-Modal'],
                 plugins: [createTestingPinia({
                     initialState: {
-                        user: { plan: 'free' },
-                        env: { isAdmin: true },
+                        user: { plan: 'free', isAdmin: true },
                         currentWorkspace: { public: true }
                     }
                 })]

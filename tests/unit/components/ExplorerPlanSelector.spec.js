@@ -43,7 +43,8 @@ describe('ExplorerPlanSelector.vue', () => {
                     initialState: {
                         user: {
                             cryptoPaymentEnabled: true
-                        }
+                        },
+                        env: { mainDomain: 'ethernal.local:8080' }
                     }
                 })],
             }
@@ -69,7 +70,8 @@ describe('ExplorerPlanSelector.vue', () => {
                     initialState: {
                         user: {
                             cryptoPaymentEnabled: false
-                        }
+                        },
+                        env: { mainDomain: 'app.ethernal.local:8080' }
                     }
                 })],
             }
@@ -93,7 +95,8 @@ describe('ExplorerPlanSelector.vue', () => {
                     initialState: {
                         user: {
                             cryptoPaymentEnabled: true
-                        }
+                        },
+                        env: { mainDomain: 'ethernal.local:8080' }
                     }
                 })],
             },
@@ -121,7 +124,8 @@ describe('ExplorerPlanSelector.vue', () => {
                     initialState: {
                         user: {
                             cryptoPaymentEnabled: false
-                        }
+                        },
+                        env: { mainDomain: 'ethernal.local:8080' }
                     }
                 })],
             },
@@ -149,7 +153,8 @@ describe('ExplorerPlanSelector.vue', () => {
                     initialState: {
                         user: {
                             canTrial: true
-                        }
+                        },
+                        env: { mainDomain: 'ethernal.local:8080' }
                     }
                 })],
             },

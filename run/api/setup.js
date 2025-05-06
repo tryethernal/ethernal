@@ -1,0 +1,26 @@
+const express = require('express');
+const router = express.Router();
+const db = require('../lib/firebase');
+const selfHostedMiddleware = require('../middlewares/selfHosted');
+const { managedError, unmanagedError } = require('../lib/errors');
+
+router.get('/admin', selfHostedMiddleware, async (req, res, next) => {
+    const data = req.query;
+    try {
+        const canSetupAdmin = await db.canSetupAdmin();
+        if (!canSetupAdmin)
+            return managedError(new Error('Setup is not allowed'), req, res);
+
+        try {
+            const user = await db.createAdmin(data.email, data.password);
+            res.status(200).json({ user });
+        } catch (error) {
+            console.error(JSON.stringify(error, null, 2));
+            managedError(error, req, res);
+        }
+    } catch(error) {
+        unmanagedError(error, req, next);
+    }
+});
+
+module.exports = router;

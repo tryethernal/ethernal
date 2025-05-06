@@ -21,6 +21,8 @@ import App from './App.vue';
 import Demo from './Demo.vue';
 import SSO from './SSO.vue';
 import Embedded from './Embedded.vue';
+import SetupRoot from './SetupRoot.vue';
+import setupRouter from './plugins/setupRouter';
 
 const pinia = createPinia();
 
@@ -71,5 +73,7 @@ else if (window.location.pathname.startsWith('/embedded'))
     createVueApp(Embedded, { router: embeddedRouter, provided: { embedded: true } }).mount('#app');
 else if (window.location.pathname.endsWith('/sso'))
     createVueApp(SSO, { router: ssoRouter }).mount('#app');
+else if (window.location.pathname.startsWith('/setup'))
+    createVueApp(SetupRoot, { router: setupRouter }).mount('#app');
 else
     createVueApp(App, { router }).mount('#app');
