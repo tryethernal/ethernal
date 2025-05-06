@@ -1,5 +1,5 @@
 jest.mock('../../../lib/flags', () => ({
-    isSelfHosted: jest.fn(() => false),
+    isSelfHosted: jest.fn(() => true),
     isStripeEnabled: jest.fn(() => true),
     isMarketingEnabled: jest.fn(() => true),
     isPusherEnabled: jest.fn(() => true),

@@ -4,7 +4,7 @@ const db = require('../lib/firebase');
 const selfHostedMiddleware = require('../middlewares/selfHosted');
 const { managedError, unmanagedError } = require('../lib/errors');
 
-router.get('/admin', selfHostedMiddleware, async (req, res, next) => {
+router.post('/admin', selfHostedMiddleware, async (req, res, next) => {
     const data = req.query;
     try {
         const canSetupAdmin = await db.canSetupAdmin();

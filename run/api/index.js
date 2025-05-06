@@ -59,7 +59,6 @@ if (isMarketingEnabled()) {
     const marketing = require('./marketing');
     router.use('/marketing', marketing);
 }
-
 if (isSelfHosted()) {
     const setup = require('./setup');
     router.use('/setup', setup);

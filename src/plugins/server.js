@@ -354,7 +354,7 @@ export default {
         const $server = {
             setupAdmin(email, password) {
                 const resource = `${envStore.apiRoot}/api/setup/admin`;
-                return axios.get(resource, { params: { email, password }});
+                return axios.post(resource, { email, password });
             },
 
             getWorkspaceTokenTransfers(options) {
