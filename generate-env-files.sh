@@ -18,10 +18,13 @@ FIREBASE_SALT_SEPARATOR=$(openssl rand -base64 16 | sed 's/"/\\"/g')
 
 # Prompt for values
 read -p "Enter value for APP_URL: " APP_URL
+# Strip http:// or https:// from APP_URL if present
+APP_URL=${APP_URL#http://}
+APP_URL=${APP_URL#https://}
 read -p "Enter value for EXPOSED_PORT [80]: " EXPOSED_PORT
 EXPOSED_PORT="${EXPOSED_PORT:-80}"
 
-# Set ETHERNAL_HOST and VITE_MAIN_DOMAIN based on EXPOSED_PORT
+# Set ETHERNAL_HOST based on EXPOSED_PORT
 if [ "$EXPOSED_PORT" = "80" ]; then
   ETHERNAL_HOST="$APP_URL"
 else
@@ -68,7 +71,7 @@ PM2_ENV_CONTENT="SECRET=$PM2_SECRET
 ETHERNAL_SECRET=$BACKEND_SECRET
 PORT=9090
 ETHERNAL_REDIS_URL=redis://redis:6379/0
-ETHERNAL_HOST=$ETHERNAL_HOST"
+ETHERNAL_HOST=http://$ETHERNAL_HOST"
 printf "%s\n" "$PM2_ENV_CONTENT" > pm2-server/.env.prod
 
 # Output nginx env to .env.nginx.prod

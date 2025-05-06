@@ -18,7 +18,7 @@
       autocomplete="new-password"
       class="mb-4 mt-1"
     />
-    <v-btn :loading="props.loading" color="primary" type="submit" :disabled="!valid || props.loading" block>
+    <v-btn :loading="props.loading || submitting" color="primary" type="submit" :disabled="!valid || props.loading || submitting" block>
       Create User
     </v-btn>
   </v-form>
@@ -26,7 +26,6 @@
 
 <script setup>
 import { ref, inject } from 'vue';
-import { defineProps, defineEmits } from 'vue';
 
 const props = defineProps({
   loading: {
@@ -43,6 +42,7 @@ const password = ref('');
 const error = ref('');
 const valid = ref(false);
 const form = ref(null);
+const submitting = ref(false);
 
 const emailRules = [
   v => !!v || 'Email is required',
@@ -55,6 +55,7 @@ const passwordRules = [
 async function submit() {
   error.value = '';
   if (!valid.value) return;
+  submitting.value = true;
   try {
     const response = await $server.setupAdmin(email.value, password.value);
     // Store apiToken in localStorage if present in response
@@ -64,6 +65,8 @@ async function submit() {
     emit('user-created');
   } catch (e) {
     error.value = e?.response?.data || e?.message || 'Failed to create user.';
+  } finally {
+    submitting.value = false;
   }
 }
 </script>

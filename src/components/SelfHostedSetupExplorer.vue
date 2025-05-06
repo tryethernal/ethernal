@@ -15,7 +15,7 @@
       required
       class="mb-4"
     />
-    <v-btn :loading="props.loading" color="primary" type="submit" :disabled="!valid || props.loading" block>
+    <v-btn :loading="props.loading || submitting" color="primary" type="submit" :disabled="!valid || props.loading || submitting" block>
       Create Explorer
     </v-btn>
   </v-form>
@@ -23,7 +23,6 @@
 
 <script setup>
 import { ref, inject } from 'vue';
-import { defineProps, defineEmits } from 'vue';
 
 const props = defineProps({
   loading: {
@@ -40,7 +39,7 @@ const rpcUrl = ref('');
 const error = ref('');
 const valid = ref(false);
 const form = ref(null);
-
+const submitting = ref(false);
 const nameRules = [
   v => !!v || 'Name is required',
 ];
@@ -52,11 +51,14 @@ const rpcRules = [
 async function submit() {
   error.value = '';
   if (!valid.value) return;
+  submitting.value = true;
   try {
     const { data: explorer } = await $server.createExplorerFromOptions(name.value, rpcUrl.value);
     emit('explorer-created', explorer);
   } catch (e) {
     error.value = e?.response?.data || e?.message || 'Failed to create explorer.';
+  } finally {
+    submitting.value = false;
   }
 }
 </script>
