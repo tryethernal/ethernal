@@ -5,7 +5,7 @@ const selfHostedMiddleware = require('../middlewares/selfHosted');
 const { managedError, unmanagedError } = require('../lib/errors');
 
 router.post('/admin', selfHostedMiddleware, async (req, res, next) => {
-    const data = req.query;
+    const data = req.body.data;
     try {
         const canSetupAdmin = await db.canSetupAdmin();
         if (!canSetupAdmin)

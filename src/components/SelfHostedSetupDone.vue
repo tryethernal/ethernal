@@ -4,7 +4,7 @@
     <h2 class="my-4">Setup Complete!</h2>
     <div v-if="explorer">
       <div class="mb-2">
-        <span>Your explorer is now live at:</span>
+        <span>Your first explorer is now live at:</span>
         <br />
         <a class="font-weight-bold text-primary text-decoration-none" :href="explorerUrl" target="_blank">{{ explorerUrl }}</a>
       </div>
