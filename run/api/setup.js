@@ -15,7 +15,6 @@ router.post('/admin', selfHostedMiddleware, async (req, res, next) => {
             const user = await db.createAdmin(data.email, data.password);
             res.status(200).json({ user });
         } catch (error) {
-            console.error(JSON.stringify(error, null, 2));
             managedError(error, req, res);
         }
     } catch(error) {

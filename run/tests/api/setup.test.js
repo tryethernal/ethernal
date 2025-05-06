@@ -26,7 +26,7 @@ describe(`POST ${BASE_URL}/admin`, () => {
     it('Should return a 400 if setup is not allowed', (done) => {
         jest.spyOn(db, 'canSetupAdmin').mockResolvedValueOnce(false);
         request.post(`${BASE_URL}/admin`)
-            .send({ username: 'admin', password: 'password' })
+            .send({ data: { email: 'admin', password: 'password' } })
             .expect(400)
             .then(({ text }) => {
                 expect(text).toEqual('Setup is not allowed');
@@ -37,7 +37,7 @@ describe(`POST ${BASE_URL}/admin`, () => {
         jest.spyOn(db, 'canSetupAdmin').mockResolvedValueOnce(true);
         jest.spyOn(db, 'createAdmin').mockResolvedValueOnce({ email: 'admin@example.com' });
         request.post(`${BASE_URL}/admin`)
-            .send({ email: 'admin@example.com', password: 'password' })
+            .send({ data: { email: 'admin@example.com', password: 'password' } })
             .expect(200)
             .then(({ text }) => {
                 expect(text).toEqual(JSON.stringify({ user: { email: 'admin@example.com' } }));
