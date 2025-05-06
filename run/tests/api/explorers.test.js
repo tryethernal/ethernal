@@ -341,7 +341,7 @@ describe(`POST ${BASE_URL}/syncExplorers`, () => {
             { id: 1, slug: 'explorer-1' },
             { id: 2, slug: 'explorer-2' }
         ]);
-        request.post(`${BASE_URL}/syncExplorers`)
+        request.post(`${BASE_URL}/syncExplorers?secret=secret`)
             .expect(200)
             .then(() => {
                 expect(bulkEnqueue).toHaveBeenCalledWith('updateExplorerSyncingProcess', [
@@ -1381,7 +1381,7 @@ describe(`POST ${BASE_URL}`, () => {
 
 describe(`GET ${BASE_URL}/search`, () => {
     it('Should return a 200 if this is admin domain', (done) => {
-        request.get(`${BASE_URL}/search?domain=app.ethernal.com`)
+        request.get(`${BASE_URL}/search?domain=ethernal.com`)
             .expect(200)
             .then(() => done());
     });
@@ -1397,7 +1397,8 @@ describe(`GET ${BASE_URL}/search`, () => {
                 expect(body).toEqual({
                     explorer: { token: 'ether', slug: 'ethernal', name: 'Ethernal Explorer', themes: { light: {}},
                         adsEnabled: false,
-                        totalSupply: null
+                        totalSupply: null,
+                        mainDomain: 'ethernal.com'
                     }
                 });
                 done();
@@ -1415,7 +1416,8 @@ describe(`GET ${BASE_URL}/search`, () => {
             .then(({ body }) => {
                 expect(body).toEqual({
                     explorer: { token: 'ether', totalSupply: '1', slug: 'ethernal', name: 'Ethernal Explorer', themes: { light: {}},
-                        adsEnabled: true
+                        adsEnabled: true,
+                        mainDomain: 'ethernal.com'
                     }
                 });
                 done();
@@ -1433,7 +1435,8 @@ describe(`GET ${BASE_URL}/search`, () => {
                 expect(body).toEqual({
                     explorer: {
                         totalSupply: null, slug: 'ethernal', name: 'Ethernal Explorer', themes: { light: {}},
-                        adsEnabled: true
+                        adsEnabled: true,
+                        mainDomain: 'ethernal.com'
                     }
                 });
                 done();
@@ -1451,7 +1454,8 @@ describe(`GET ${BASE_URL}/search`, () => {
                 expect(body).toEqual({
                     explorer: {
                         slug: 'ethernal', name: 'Ethernal Explorer', themes: { light: {}},
-                        adsEnabled: true
+                        adsEnabled: true,
+                        mainDomain: 'ethernal.com'
                     }
                 });
                 done();
@@ -1463,7 +1467,7 @@ describe(`GET ${BASE_URL}/search`, () => {
         request.get(`${BASE_URL}/search?domain=ethernal.domain.com`)
             .expect(400)
             .then(({ text }) => {
-                expect(text).toEqual(`Couldn't find explorer.`);
+                expect(text).toEqual(JSON.stringify({ error: "Couldn't find explorer.", mainDomain: 'ethernal.com' }));
                 done();
             });
     });
