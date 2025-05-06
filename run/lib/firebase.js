@@ -54,7 +54,6 @@ const createAdmin = async (email, password) => {
  * @returns {Promise<boolean>} - True if the admin can be setup, false otherwise
  */
 const canSetupAdmin = async () => {
-    return true;
     const userCount = await User.count();
     return userCount === 0;
 }
