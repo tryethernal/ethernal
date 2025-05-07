@@ -19,6 +19,7 @@ start:
 	docker compose -f docker-compose.prod.yml exec backend npx sequelize db:create
 	docker compose -f docker-compose.prod.yml exec backend npx sequelize db:migrate
 	docker compose -f docker-compose.prod.yml exec backend npx sequelize db:seed:all
+
 stop:
 	@echo "Stopping and cleaning up all containers and networks..."
 	docker compose -f docker-compose.prod.yml down --remove-orphans 
@@ -27,6 +28,7 @@ nuke:
 	@echo "Nuking everything: containers, networks, volumes, and generated env/config files..."
 	docker compose -f docker-compose.prod.yml down --remove-orphans --volumes
 	rm -f .env.prod run/.env.prod pm2-server/.env.prod
+	rm -f pgbouncer/.env.pgbouncer.prod pgbouncer/userlist.txt pgbouncer/pgbouncer.ini
 
 update:
 	@echo "Pulling latest images for all services..."
