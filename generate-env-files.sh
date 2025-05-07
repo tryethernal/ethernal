@@ -149,7 +149,7 @@ output_pm2_env() {
   fi
 }
 
-output_nginx_env() {
+output_docker_compose_env() {
   if [ "$dry_run" = true ]; then
     printf '\n--- .env.docker-compose.prod ---\n'
     printf "EXPOSED_PORT=%s\n" "$EXPOSED_PORT"
@@ -210,7 +210,7 @@ output_pgbouncer_ini() {
 # Main output
 output_backend_env
 output_pm2_env
-output_nginx_env
+output_docker_compose_env
 output_postgres_env
 output_pgbouncer_env
 output_pgbouncer_userlist
