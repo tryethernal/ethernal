@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-
 set -e
 
 command -v openssl >/dev/null 2>&1 || { echo >&2 "openssl is required but not installed."; exit 1; }
