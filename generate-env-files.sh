@@ -99,6 +99,7 @@ PGBOUNCER_USERLIST_CONTENT="\"${POSTGRES_USER}\" \"${HASHED_PASS}\""
 
 PGBOUNCER_INIT_CONTENT="[databases]
 ${POSTGRES_DB} = host=postgres port=5432 dbname=${POSTGRES_DB} user=${POSTGRES_USER} password=${POSTGRES_PASSWORD}
+postgres = host=postgres port=5432 dbname=postgres user=${POSTGRES_USER} password=${POSTGRES_PASSWORD}
 
 [pgbouncer]
 listen_addr = 0.0.0.0
