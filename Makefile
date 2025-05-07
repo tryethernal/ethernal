@@ -15,8 +15,13 @@ start:
 	docker compose -f docker-compose.prod.yml --env-file .env.docker-compose.prod up -d
 	@echo "Waiting for backend container to be healthy..."
 	@docker compose -f docker-compose.prod.yml --env-file .env.docker-compose.prod exec backend sh -c 'until nc -z localhost 8888; do sleep 1; done'
+	@DB_NAME=$$(grep '^DB_NAME=' run/.env.prod | cut -d '=' -f2); \
+	if docker compose -f docker-compose.prod.yml exec -T postgres psql -U postgres -tAc "SELECT 1 FROM pg_database WHERE datname='$$DB_NAME'" | grep -q 1; then \
+		echo "Database '$$DB_NAME' already exists. Skipping creation."; \
+	else \
+		docker compose -f docker-compose.prod.yml --env-file .env.docker-compose.prod exec backend npx sequelize db:create; \
+	fi
 	@echo "Running sequelize migrations in backend container..."
-	docker compose -f docker-compose.prod.yml --env-file .env.docker-compose.prod exec backend npx sequelize db:create
 	docker compose -f docker-compose.prod.yml --env-file .env.docker-compose.prod exec backend npx sequelize db:migrate
 	docker compose -f docker-compose.prod.yml --env-file .env.docker-compose.prod exec backend npx sequelize db:seed:all
 
