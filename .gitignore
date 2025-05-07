@@ -28,6 +28,9 @@ qn-marketplace-cli
 functions/.runtimeconfig.json
 /ganache-db
 
+pgbouncer/pgbouncer.ini
+pgbouncer/userlist.txt
+
 /firebase-export-*
 /.firebase
 
