@@ -38,7 +38,7 @@
                     </v-row>
                 </v-stepper-vertical-item>
 
-                <v-stepper-vertical-item v-if="envStore.isBillingEnabled" value="2" :complete="stepperIndex > 2">
+                <v-stepper-vertical-item v-if="!envStore.isSelfHosted" value="2" :complete="stepperIndex > 2">
                     <template v-slot:title>
                         <h4>Choose A Plan</h4>
                     </template>
@@ -108,7 +108,7 @@ export default {
                     this.explorer = data;
                     this.$emit('explorerCreated');
 
-                    if (this.envStore.isBillingEnabled && !this.userStore.canUseDemoPlan)
+                    if (!this.envStore.isSelfHosted && !this.userStore.canUseDemoPlan)
                         this.stepperIndex = 2;
                     else
                         this.$router.push({ path: `/explorers/${this.explorer.id}?status=success`});

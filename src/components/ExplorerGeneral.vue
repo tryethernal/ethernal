@@ -28,18 +28,18 @@
             <v-col cols="6">
                 <h4>Sync</h4>
                 <Explorer-Sync :explorer="explorer" />
-                <template v-if="envStore.isBillingEnabled && !envStore.isSelfHosted">
+                <template v-if="!envStore.isSelfHosted">
                     <h4 class="mt-2">Billing</h4>
                     <Explorer-Billing :explorer="explorer" @updated="loadExplorer(id)" :sso="sso" />
                 </template>
                 <h4 class="mt-2">Domain Aliases</h4>
-                <Explorer-Domains-List :key="JSON.stringify(capabilities)" :explorer="explorer" :disabled="envStore.isBillingEnabled && (!explorer.stripeSubscription || !explorer.stripeSubscription.stripePlan.capabilities.customDomain)" @updated="loadExplorer(id)" />
+                <Explorer-Domains-List :key="JSON.stringify(capabilities)" :explorer="explorer" :disabled="!explorer.stripeSubscription || !explorer.stripeSubscription.stripePlan.capabilities.customDomain" @updated="loadExplorer(id)" />
             </v-col>
         </v-row>
         <v-row>
             <v-col>
                 <h4>Branding</h4>
-                <Explorer-Branding :key="JSON.stringify(capabilities)" :explorer="explorer" :disabled="envStore.isBillingEnabled && (!explorer.stripeSubscription || !explorer.stripeSubscription.stripePlan.capabilities.branding)" @updated="loadExplorer(id)" />
+                <Explorer-Branding :key="JSON.stringify(capabilities)" :explorer="explorer" :disabled="!explorer.stripeSubscription || !explorer.stripeSubscription.stripePlan.capabilities.branding" @updated="loadExplorer(id)" />
             </v-col>
         </v-row>
         <v-row v-if="!sso">

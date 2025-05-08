@@ -29,7 +29,6 @@ import WorkspaceNFTTransfer from '../components/WorkspaceNFTTransfer.vue';
 import TokenContract from '../components/TokenContract.vue';
 import { useEnvStore } from '../stores/env';
 import VerifiedContracts from '@/components/VerifiedContracts.vue'
-import SelfHostedSetup from '../components/SelfHostedSetup.vue';
 
 const isLoggedIn = () => {
     return localStorage.getItem('apiToken') !== null;
@@ -73,7 +72,6 @@ const ESRoutes = [
 ]
 
 const routes = [
-    { path: '/setup', component: SelfHostedSetup },
     { path: '/auth', component: Auth, beforeEnter: redirectIfLoggedIn },
     { path: '/blocks', component: Blocks, beforeEnter: redirectIfLoggedOut },
     { path: '/overview', component: Overview, beforeEnter: redirectIfLoggedOut },

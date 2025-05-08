@@ -16,7 +16,6 @@ export const useEnvStore = defineStore('env', {
         hasAnalyticsEnabled: !!import.meta.env.VITE_ENABLE_ANALYTICS,
         hasDemoEnabled: !!import.meta.env.VITE_ENABLE_DEMO,
         mainDomain: '',
-        isBillingEnabled: !!import.meta.env.VITE_ENABLE_BILLING,
         isMarketingEnabled: !!import.meta.env.VITE_ENABLE_MARKETING,
         apiRoot: '',
         maxV2DexPairsForTrial: 20,
