@@ -1,6 +1,5 @@
-
 const express = require('express');
-const { isStripeEnabled, isMarketingEnabled, isDemoEnabled, isSelfHosted } = require('../lib/flags');
+const { isStripeEnabled, isDemoEnabled, isSelfHosted } = require('../lib/flags');
 const router = express.Router();
 
 const blocks = require('./blocks');
@@ -55,13 +54,12 @@ if (isStripeEnabled()) {
     router.use('/stripe', stripe);
 }
 
-if (isMarketingEnabled()) {
-    const marketing = require('./marketing');
-    router.use('/marketing', marketing);
-}
 if (isSelfHosted()) {
+    const marketing = require('./marketing');
     const setup = require('./setup');
+
     router.use('/setup', setup);
+    router.use('/marketing', marketing);
 }
 
 module.exports = router;

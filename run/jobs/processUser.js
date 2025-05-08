@@ -3,13 +3,28 @@ const Analytics = require('../lib/analytics');
 const { managedWorkerError } = require('../lib/errors');
 const db = require('../lib/firebase');
 const { getGhostApiKey, getGhostEndpoint } = require('../lib/env');
-const { isMarketingEnabled } = require('../lib/flags');
+const { isSelfHosted } = require('../lib/flags');
 
 module.exports = async job => {
     const data = job.data;
     try {
-        if (!isMarketingEnabled())
-            return 'Marketing is not enabled';
+
+        const analytics = new Analytics();
+        analytics.track(user.id, 'auth:user_signup', {
+            $set: {
+                email: user.email,
+                plan: 'free',
+                can_trial: true
+            },
+            $set_once: {
+                created_at: user.createdAt
+            }
+        });
+
+        analytics.shutdown();
+
+        if (isSelfHosted())
+            return 'Skipping user sync with blog for self-hosted instance';
 
         if (!data.id)
             throw new Error('Missing parameter');
@@ -34,20 +49,6 @@ module.exports = async job => {
                 managedWorkerError(error, 'processUser', data, 'lowPriority');
             }
         }
-
-        const analytics = new Analytics();
-        analytics.track(user.id, 'auth:user_signup', {
-            $set: {
-                email: user.email,
-                plan: 'free',
-                can_trial: true
-            },
-            $set_once: {
-                created_at: user.createdAt
-            }
-        });
-
-        return analytics.shutdown();
     } catch(error) {
         if (error.context && error.context.startsWith('Member already exists'))
             return;

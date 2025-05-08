@@ -39,17 +39,18 @@ const createVueApp = (rootComponent, options) => {
     if (isSentryConfigured) {
         Sentry.init({
             app,
-        environment: import.meta.env.MODE,
-        release: `ethernal@${import.meta.env.VITE_VERSION}`,
-        dsn: `${window.location.protocol}//${import.meta.env.VITE_SENTRY_DSN_SECRET}@${window.location.host}/${import.meta.env.VITE_SENTRY_DSN_PROJECT_ID}`,
-        integrations: [
-            Sentry.browserTracingIntegration({ router }),
-            Sentry.browserProfilingIntegration(),
-        ],
-        tracesSampleRate: 1.0,
-        tracePropagationTargets: [/.*/],
-        enabled: import.meta.env.VITE_SENTRY_ENABLED
-    });
+            environment: import.meta.env.MODE,
+            release: `ethernal@${import.meta.env.VITE_VERSION}`,
+            dsn: `${window.location.protocol}//${import.meta.env.VITE_SENTRY_DSN_SECRET}@${window.location.host}/${import.meta.env.VITE_SENTRY_DSN_PROJECT_ID}`,
+            integrations: [
+                Sentry.browserTracingIntegration({ router }),
+                Sentry.browserProfilingIntegration(),
+            ],
+            tracesSampleRate: 1.0,
+            tracePropagationTargets: [/.*/],
+            enabled: import.meta.env.VITE_SENTRY_ENABLED
+        });
+    }
 
     function createPiniaGlobalPlugin(app) {
         return () => ({ globalProperties: app.config.globalProperties });
@@ -76,7 +77,7 @@ const createVueApp = (rootComponent, options) => {
     return app;
 }
 
-if (import.meta.env.VITE_ENABLE_DEMO && !import.meta.env.VITE_IS_SELF_HOSTED && window.location.pathname.startsWith('/demo'))
+if (!import.meta.env.VITE_IS_SELF_HOSTED && window.location.pathname.startsWith('/demo'))
     createVueApp(Demo, { router: demoRouter }).mount('#app');
 else if (window.location.pathname.startsWith('/embedded') && !import.meta.env.VITE_IS_SELF_HOSTED)
     createVueApp(Embedded, { router: embeddedRouter, provided: { embedded: true } }).mount('#app');
