@@ -26,72 +26,66 @@
     </v-card>
 </template>
 
-<script>
-import { mapStores } from 'pinia';
-import { useEnvStore } from '../stores/env';
-
+<script setup>
+import { ref, computed, inject } from 'vue';
 import UpdateExplorerPlanModal from './UpdateExplorerPlanModal.vue';
 import ExplorerQuotaManagementModal from './ExplorerQuotaManagementModal.vue';
 
-export default {
-    name: 'ExplorerBilling',
-    props: ['explorer', 'sso'],
-    components: {
-        UpdateExplorerPlanModal,
-        ExplorerQuotaManagementModal
-    },
-    data: () => ({
-        stripePortalLoading: false
-    }),
-    methods: {
-        openStripePortal() {
-            this.stripePortalLoading = true;
-            this.$server.createStripePortalSession(`http://${document.location.host}/explorers/${this.explorer.id}`)
-                .then(({ data }) => document.location.href = data.url)
-                .catch(() => this.stripePortalLoading = false );
-        },
-        openUpdateExplorerPlanModal() {
-            this.$refs.updateExplorerPlanModal.open({
-                explorerId: this.explorer.id,
-                currentPlanSlug: this.explorer.stripeSubscription && this.explorer.stripeSubscription.stripePlan.slug,
-                pendingCancelation: this.pendingCancelation,
-                isTrialing: this.trial || this.trialWithCard
-            }).then(refresh => {
-                if (refresh)
-                    this.$emit('updated');
-            });
-        },
-        openExplorerQuotaManagementModal() {
-            this.$refs.explorerQuotaManagementModal.open({
-                explorerId: this.explorer.id,
-                subscription: this.explorer.stripeSubscription
-            }).then(() => this.$emit('updated'));
-        }
-    },
-    computed: {
-        ...mapStores(useEnvStore),
-        transactionQuota() {
-            if (!this.explorer || !this.explorer.stripeSubscription)
-                return 0;
+const props = defineProps({
+  explorer: { type: Object, required: true },
+  sso: { type: Boolean, default: false }
+});
+const emit = defineEmits(['updated']);
 
-            return this.explorer.stripeSubscription.stripeQuotaExtension ?
-                this.explorer.stripeSubscription.stripePlan.capabilities.txLimit + this.explorer.stripeSubscription.stripeQuotaExtension.quota :
-                this.explorer.stripeSubscription.stripePlan.capabilities.txLimit;
-        },
-        trial() { return this.explorer.stripeSubscription && this.explorer.stripeSubscription.status == 'trial' },
-        trialWithCard() { return this.explorer.stripeSubscription && this.explorer.stripeSubscription.status == 'trial_with_card' },
-        activeSubscription() { return this.explorer.stripeSubscription && this.explorer.stripeSubscription.status == 'active' },
-        pendingCancelation() { return this.explorer.stripeSubscription && this.explorer.stripeSubscription.status == 'pending_cancelation' },
-        formattedExplorerStatus() {
-            if (this.activeSubscription)
-                return 'Active';
-            else if (this.pendingCancelation)
-                return 'Pending Cancelation';
-            else if (this.trial || this.trialWithCard)
-                return 'Trial'
-            else
-                return 'N/A';
-        }
-    }
+const updateExplorerPlanModal = ref(null);
+const explorerQuotaManagementModal = ref(null);
+const stripePortalLoading = ref(false);
+
+const $server = inject('$server');
+
+const transactionQuota = computed(() => {
+  if (!props.explorer || !props.explorer.stripeSubscription)
+    return 0;
+  return props.explorer.stripeSubscription.stripeQuotaExtension
+    ? props.explorer.stripeSubscription.stripePlan.capabilities.txLimit + props.explorer.stripeSubscription.stripeQuotaExtension.quota
+    : props.explorer.stripeSubscription.stripePlan.capabilities.txLimit;
+});
+
+const trial = computed(() => props.explorer.stripeSubscription && props.explorer.stripeSubscription.status === 'trial');
+const trialWithCard = computed(() => props.explorer.stripeSubscription && props.explorer.stripeSubscription.status === 'trial_with_card');
+const activeSubscription = computed(() => props.explorer.stripeSubscription && props.explorer.stripeSubscription.status === 'active');
+const pendingCancelation = computed(() => props.explorer.stripeSubscription && props.explorer.stripeSubscription.status === 'pending_cancelation');
+
+const formattedExplorerStatus = computed(() => {
+  if (activeSubscription.value) return 'Active';
+  else if (pendingCancelation.value) return 'Pending Cancelation';
+  else if (trial.value || trialWithCard.value) return 'Trial';
+  else return 'N/A';
+});
+
+function openStripePortal() {
+  stripePortalLoading.value = true;
+  $server.createStripePortalSession(`http://${document.location.host}/explorers/${props.explorer.id}`)
+    .then(({ data }) => document.location.href = data.url)
+    .catch(() => stripePortalLoading.value = false);
+}
+
+function openUpdateExplorerPlanModal() {
+  updateExplorerPlanModal.value.open({
+    explorerId: props.explorer.id,
+    currentPlanSlug: props.explorer.stripeSubscription && props.explorer.stripeSubscription.stripePlan.slug,
+    pendingCancelation: pendingCancelation.value,
+    isTrialing: trial.value || trialWithCard.value
+  }).then(refresh => {
+    if (refresh)
+      emit('updated');
+  });
+}
+
+function openExplorerQuotaManagementModal() {
+  explorerQuotaManagementModal.value.open({
+    explorerId: props.explorer.id,
+    subscription: props.explorer.stripeSubscription
+  }).then(() => emit('updated'));
 }
 </script>

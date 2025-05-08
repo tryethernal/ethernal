@@ -129,7 +129,7 @@ export const useCurrentWorkspaceStore = defineStore('currentWorkspace', {
         displayAds() {
             const explorer = useExplorerStore();
 
-            if (!explorer.id) return true;
+            if (!explorer.id || useEnvStore().isSelfHosted) return true;
 
             if (!explorer.adsEnabled) return false;
 

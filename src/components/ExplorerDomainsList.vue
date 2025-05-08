@@ -1,6 +1,6 @@
 <template>
     <v-card :disabled="disabled">
-        <New-Explorer-Domain-Modal ref="newExplorerDomainModal" />
+        <NewExplorerDomainModal ref="newExplorerDomainModal" />
         <v-card-text>
             <v-alert v-if="disabled" text type="warning">Upgrade your plan to activate domain aliases.</v-alert>
             <v-list v-if="domains.length" class="py-0 mb-4">
@@ -16,43 +16,49 @@
     </v-card>
 </template>
 
-<script>
+<script setup>
+import { ref, onMounted, inject } from 'vue';
 import ExplorerDomain from './ExplorerDomain.vue';
 import NewExplorerDomainModal from './NewExplorerDomainModal.vue';
 
-export default {
-    name: 'ExplorerDomainsList',
-    props: ['explorer', 'disabled'],
-    components: {
-        ExplorerDomain,
-        NewExplorerDomainModal
-    },
-    data: () => ({
-        loading: false,
-        domains: []
-    }),
-    mounted() {
-        this.domains = this.explorer.domains;
-    },
-    methods: {
-        reloadDomains() {
-            this.$server.getExplorer(this.explorer.id)
-                .then(({ data }) => this.domains = data.domains)
-                .catch(console.log);
-        },
-        openNewExplorerDomainModal() {
-            this.$refs.newExplorerDomainModal
-                .open({ explorer: this.explorer })
-                .then(refresh => {
-                    if (refresh) this.reloadDomains();
-                });
-        },
-        showDnsInfo(domain) {
-            this.$refs.newExplorerDomainModal
-                .open({ onlyDnsInfo: true, domain });
-        }
-    },
-    computed: {
-    }
+const props = defineProps({
+    explorer: { type: Object, required: true },
+    disabled: { type: Boolean, default: false }
+});
+
+const loading = ref(false);
+const domains = ref([]);
+const newExplorerDomainModal = ref(null);
+
+const $server = inject('$server');
+
+onMounted(() => {
+    domains.value = props.explorer.domains;
+});
+
+function reloadDomains() {
+    loading.value = true;
+
+    $server.getExplorer(props.explorer.id)
+        .then(({ data }) => {
+            domains.value = data.domains;
+        })
+        .catch(console.log)
+        .finally(() => {
+            loading.value = false;
+        });
+}
+
+function openNewExplorerDomainModal() {
+    newExplorerDomainModal.value
+        .open({ explorer: props.explorer })
+        .then(refresh => {
+            if (refresh) reloadDomains();
+        });
+}
+
+function showDnsInfo(domain) {
+    newExplorerDomainModal.value
+        .open({ onlyDnsInfo: true, domain });
 }
 </script>

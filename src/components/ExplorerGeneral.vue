@@ -28,7 +28,7 @@
             <v-col cols="6">
                 <h4>Sync</h4>
                 <Explorer-Sync :explorer="explorer" />
-                <template v-if="envStore.isBillingEnabled">
+                <template v-if="envStore.isBillingEnabled && !envStore.isSelfHosted">
                     <h4 class="mt-2">Billing</h4>
                     <Explorer-Billing :explorer="explorer" @updated="loadExplorer(id)" :sso="sso" />
                 </template>

@@ -39,7 +39,7 @@ update:
 	@echo "Pulling latest images for all services..."
 	docker compose -f docker-compose.prod.yml pull
 	@echo "Recreating containers with latest images..."
-	docker compose -f docker-compose.prod.yml up -d --force-recreate
+	docker compose -f docker-compose.prod.yml --env-file .env.docker-compose.prod up -d --force-recreate
 	@echo "Waiting for backend container to be healthy..."
 	@docker compose -f docker-compose.prod.yml --env-file .env.docker-compose.prod exec backend sh -c 'until nc -z localhost 8888; do sleep 1; done'
 	@echo "Running sequelize migrations in backend container..."

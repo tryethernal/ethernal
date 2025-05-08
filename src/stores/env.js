@@ -6,6 +6,7 @@ export const useEnvStore = defineStore('env', {
     state: () => ({
         version: import.meta.env.VITE_VERSION,
         environment: import.meta.env.NODE_ENV,
+        isSelfHosted: !!import.meta.env.VITE_IS_SELF_HOSTED,
         soketiHost: window.location.hostname,
         soketiPort: import.meta.env.VITE_SOKETI_PORT && parseInt(import.meta.env.VITE_SOKETI_PORT),
         soketiForceTLS: !!import.meta.env.VITE_SOKETI_FORCE_TLS,
