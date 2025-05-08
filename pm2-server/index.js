@@ -7,7 +7,8 @@ const triggerSync = () => {
     axios.post(`${process.env.ETHERNAL_HOST}/api/explorers/syncExplorers?secret=${process.env.ETHERNAL_SECRET}`)
         .then(({ data }) => console.log(data))
         .catch((error) => {
-            console.log(`Error when starting sync: ${error.response.data}. Trying again in 1 second...`);
+            console.log(`Error when starting sync. Trying again in 1 second...`);
+            console.log(error);
             setTimeout(triggerSync, 1000);
         });
 };
