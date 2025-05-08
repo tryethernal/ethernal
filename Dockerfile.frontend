@@ -6,8 +6,6 @@ RUN apk add --no-cache python3 make g++ gcc
 
 WORKDIR /app
 
-ARG NODE_ENV
-
 ARG VITE_SOKETI_PORT
 ARG VITE_SOKETI_KEY
 
@@ -22,8 +20,7 @@ ARG VITE_SENTRY_ENABLED
 ARG VITE_VERSION
 ARG VITE_IS_SELF_HOSTED
 
-ENV NODE_ENV=$NODE_ENV \
-    VITE_SOKETI_PORT=$VITE_SOKETI_PORT \
+ENV VITE_SOKETI_PORT=$VITE_SOKETI_PORT \
     VITE_SOKETI_KEY=$VITE_SOKETI_KEY \
     VITE_SENTRY_DSN_SECRET=$VITE_SENTRY_DSN_SECRET \
     VITE_SENTRY_DSN_PROJECT_ID=$VITE_SENTRY_DSN_PROJECT_ID \
@@ -63,6 +60,7 @@ RUN yarn build
 # --- Production Runtime Stage ---
 FROM node:18-alpine AS prod
 WORKDIR /app
+ENV NODE_ENV=production
 RUN yarn global add serve
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/ads.txt ./dist/ads.txt

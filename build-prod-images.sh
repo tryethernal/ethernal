@@ -4,9 +4,10 @@ set -e
 # Build and push amd64 and arm64 images using buildx (multi-arch, same tag)
 echo "Building and pushing multi-arch images (amd64 + arm64) with buildx..."
 DOCKER_BUILDKIT=1 docker buildx build \
+    --platform linux/amd64,linux/arm64 \
+    --no-cache \
     -f Dockerfile.frontend \
     --target prod \
-    --build-arg NODE_ENV=production \
     --build-arg VITE_SOKETI_PORT \
     --build-arg VITE_SOKETI_KEY \
     --build-arg VITE_SENTRY_DSN_SECRET \
