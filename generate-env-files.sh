@@ -166,7 +166,7 @@ ${domain_block} {
         on_demand
     }
 
-    handle_path /api/* {
+    handle /api/* {
         reverse_proxy backend:8888 {
             header_up Host {host}
             header_up X-Real-IP {remote_host}
@@ -227,7 +227,7 @@ ${domain_block} {
     # Assume it's an IP address, generate HTTP-only Caddyfile
     cat > Caddyfile <<EOF
 :${EXPOSED_PORT} {
-    handle_path /api/* {
+    handle /api/* {
         reverse_proxy backend:8888 {
             header_up Host {host}
             header_up X-Real-IP {remote_host}
