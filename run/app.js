@@ -22,6 +22,8 @@ require('./scheduler');
 
 initializeApp();
 
+app.set('trust proxy', true);
+
 app.use(express.json({
     limit: '25mb',
     verify: function(req, res, buf) {

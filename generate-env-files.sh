@@ -149,11 +149,10 @@ output_caddyfile() {
 {
     on_demand_tls {
         ask http://backend:8888/should-allow-domain
-        rate_limit 10 60s
     }
 }
 
-*.${ETHERNAL_HOST} {
+*.${ETHERNAL_HOST}:${EXPOSED_PORT} {
     tls {
         on_demand
     }
@@ -171,7 +170,6 @@ output_caddyfile() {
 
     handle_path /bull* {
         reverse_proxy backend:8888 {
-            uri /bull{uri}
             header_up Host {host}
             header_up X-Real-IP {remote_host}
             header_up X-Forwarded-For {remote_host}
@@ -201,11 +199,11 @@ output_caddyfile() {
     encode gzip
 }
 EOF
-    echo "Wrote Caddyfile for domain: *.${ETHERNAL_HOST} (HTTPS with on-demand TLS)"
+    echo "Wrote Caddyfile for domain: *.${ETHERNAL_HOST}:${EXPOSED_PORT} (HTTPS with on-demand TLS)"
   else
     # Assume it's an IP address, generate HTTP-only Caddyfile
     cat > Caddyfile <<EOF
-:80 {
+:${EXPOSED_PORT} {
     handle_path /api/* {
         reverse_proxy backend:8888 {
             header_up Host {host}
@@ -219,7 +217,6 @@ EOF
 
     handle_path /bull* {
         reverse_proxy backend:8888 {
-            uri /bull{uri}
             header_up Host {host}
             header_up X-Real-IP {remote_host}
             header_up X-Forwarded-For {remote_host}
@@ -249,7 +246,7 @@ EOF
     encode gzip
 }
 EOF
-    echo "Wrote Caddyfile for IP address: $ETHERNAL_HOST (HTTP only, no TLS)"
+    echo "Wrote Caddyfile for IP address: $ETHERNAL_HOST (HTTP only, no TLS) on port ${EXPOSED_PORT}"
     echo "WARNING: Serving over HTTP only. SSL/TLS is not available for IP addresses. Not recommended for production."
   fi
 }
