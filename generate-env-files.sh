@@ -125,6 +125,135 @@ append_to_gitignore() {
   echo "Updated .gitignore with env/config files."
 }
 
+# Function to check if a string is a valid domain (not an IP address)
+is_valid_domain() {
+  local domain="$1"
+  # Check if it's an IPv4 address
+  if [[ $domain =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    return 1
+  fi
+  # Check if it's an IPv6 address
+  if [[ $domain =~ ^([0-9a-fA-F]{0,4}:){1,7}[0-9a-fA-F]{0,4}$ ]]; then
+    return 1
+  fi
+  # Basic domain validation (letters, numbers, dashes, dots)
+  if [[ $domain =~ ^([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$ ]]; then
+    return 0
+  fi
+  return 1
+}
+
+output_caddyfile() {
+  if is_valid_domain "$ETHERNAL_HOST"; then
+    cat > Caddyfile <<EOF
+{
+    on_demand_tls {
+        ask http://backend:8888/should-allow-domain
+        rate_limit 10 60s
+    }
+}
+
+*.${ETHERNAL_HOST} {
+    tls {
+        on_demand
+    }
+
+    handle_path /api/* {
+        reverse_proxy backend:8888 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+            header_up Upgrade {http_upgrade}
+            header_up Connection {http_connection}
+        }
+    }
+
+    handle_path /bull* {
+        reverse_proxy backend:8888 {
+            uri /bull{uri}
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+            header_up Upgrade {http_upgrade}
+            header_up Connection {http_connection}
+        }
+    }
+
+    @websockets {
+        header Connection *Upgrade*
+        header Upgrade websocket
+    }
+    reverse_proxy @websockets backend:8888
+
+    handle {
+        reverse_proxy frontend:8080 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+            header_up Upgrade {http_upgrade}
+            header_up Connection {http_connection}
+        }
+    }
+
+    encode gzip
+}
+EOF
+    echo "Wrote Caddyfile for domain: *.${ETHERNAL_HOST} (HTTPS with on-demand TLS)"
+  else
+    # Assume it's an IP address, generate HTTP-only Caddyfile
+    cat > Caddyfile <<EOF
+:80 {
+    handle_path /api/* {
+        reverse_proxy backend:8888 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+            header_up Upgrade {http_upgrade}
+            header_up Connection {http_connection}
+        }
+    }
+
+    handle_path /bull* {
+        reverse_proxy backend:8888 {
+            uri /bull{uri}
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+            header_up Upgrade {http_upgrade}
+            header_up Connection {http_connection}
+        }
+    }
+
+    @websockets {
+        header Connection *Upgrade*
+        header Upgrade websocket
+    }
+    reverse_proxy @websockets backend:8888
+
+    handle {
+        reverse_proxy frontend:8080 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+            header_up Upgrade {http_upgrade}
+            header_up Connection {http_connection}
+        }
+    }
+
+    encode gzip
+}
+EOF
+    echo "Wrote Caddyfile for IP address: $ETHERNAL_HOST (HTTP only, no TLS)"
+    echo "WARNING: Serving over HTTP only. SSL/TLS is not available for IP addresses. Not recommended for production."
+  fi
+}
+
 # Output functions
 output_backend_env() {
   if [ "$dry_run" = true ]; then
@@ -216,6 +345,9 @@ output_postgres_env
 output_pgbouncer_env
 output_pgbouncer_userlist
 output_pgbouncer_ini
+
+# Generate Caddyfile if ETHERNAL_HOST is a valid domain
+output_caddyfile
 
 if [ "$dry_run" = false ]; then
   append_to_gitignore

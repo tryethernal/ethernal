@@ -23,7 +23,7 @@ start:
 	fi
 	@echo "Running sequelize migrations in backend container..."
 	docker compose -f docker-compose.prod.yml --env-file .env.docker-compose.prod exec backend npx sequelize db:migrate
-	docker compose -f docker-compose.prod.yml --env-file .env.docker-compose.prod exec backend npx sequelize db:seed
+	docker compose -f docker-compose.prod.yml --env-file .env.docker-compose.prod exec backend npx sequelize db:seed:all
 
 stop:
 	@echo "Stopping and cleaning up all containers and networks..."
@@ -45,4 +45,4 @@ update:
 	@echo "Running sequelize migrations in backend container..."
 	docker compose -f docker-compose.prod.yml --env-file .env.docker-compose.prod exec backend npx sequelize db:migrate
 	@echo "Running sequelize seeds in backend container..."
-	docker compose -f docker-compose.prod.yml --env-file .env.docker-compose.prod exec backend npx sequelize db:seed:all
+	docker compose -f docker-compose.prod.yml --env-file .env.docker-compose.prod exec backend npx sequelize db:seed
