@@ -188,11 +188,17 @@ ${domain_block} {
         }
     }
 
-    @websockets {
-        header Connection *Upgrade*
-        header Upgrade websocket
+    # WebSocket traffic (Soketi)
+    handle /app/* {
+        reverse_proxy soketi:6001 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+            header_up Upgrade {http_upgrade}
+            header_up Connection {http_connection}
+        }
     }
-    reverse_proxy @websockets backend:8888
 
     handle {
         reverse_proxy frontend:8080 {
@@ -249,11 +255,17 @@ ${domain_block} {
         }
     }
 
-    @websockets {
-        header Connection *Upgrade*
-        header Upgrade websocket
+    # WebSocket traffic (Soketi)
+    handle /app/* {
+        reverse_proxy soketi:6001 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+            header_up Upgrade {http_upgrade}
+            header_up Connection {http_connection}
+        }
     }
-    reverse_proxy @websockets backend:8888
 
     handle {
         reverse_proxy frontend:8080 {
