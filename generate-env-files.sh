@@ -157,7 +157,7 @@ output_caddyfile() {
     local caddyfile_content
     caddyfile_content="{
     on_demand_tls {
-        ask http://backend:8888/should-allow-domain
+        ask http://backend:8888/api/caddy/validDomain
     }
 }
 
