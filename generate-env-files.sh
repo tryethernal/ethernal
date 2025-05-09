@@ -144,6 +144,10 @@ is_valid_domain() {
 }
 
 output_caddyfile() {
+  local caddy_staging=""
+  if [ "${CADDY_STAGING}" = "true" ]; then
+    caddy_staging="    acme_ca https://acme-staging-v02.api.letsencrypt.org/directory"
+  fi
   if is_valid_domain "$ETHERNAL_HOST"; then
     # Determine domain and port for Caddyfile
     local domain_block
@@ -164,6 +168,7 @@ output_caddyfile() {
 ${domain_block} {
     tls {
         on_demand
+${caddy_staging}
     }
 
     handle /api/* {

@@ -7,6 +7,10 @@ volumes:
     driver: local
   redis:
     driver: local
+  caddy_data:
+    driver: local
+  caddy_config:
+    driver: local
 
 services:
   postgres:
@@ -118,3 +122,5 @@ services:
       - "443:443"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
