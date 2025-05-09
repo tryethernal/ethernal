@@ -55,6 +55,7 @@ CMD ["yarn", "serve"]
 
 # --- Build Stage ---
 FROM base AS build
+ENV NODE_ENV=production
 RUN yarn build
 
 # --- Production Runtime Stage ---

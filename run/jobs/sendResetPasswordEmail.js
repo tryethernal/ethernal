@@ -2,7 +2,6 @@ const sgMail = require('@sendgrid/mail');
 const { encode } = require('../lib/crypto');
 const { getAppUrl, getSendgridApiKey, getSendgridSender } = require('../lib/env');
 const { isSendgridEnabled } = require('../lib/flags');
-sgMail.setApiKey(getSendgridApiKey());
 
 module.exports = async (job) => {
     const { email, userId } = job.data;
@@ -11,6 +10,8 @@ module.exports = async (job) => {
 
     if (!isSendgridEnabled())
         throw new Error('Sendgrid has not been enabled.');
+
+    sgMail.setApiKey(getSendgridApiKey());
 
     return sgMail.send({
         to: email,
