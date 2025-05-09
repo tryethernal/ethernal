@@ -145,14 +145,23 @@ is_valid_domain() {
 
 output_caddyfile() {
   if is_valid_domain "$ETHERNAL_HOST"; then
-    cat > Caddyfile <<EOF
-{
+    # Determine domain and port for Caddyfile
+    local domain_block
+    local apex_domain
+    apex_domain="$APP_URL"
+    if [ "$EXPOSED_PORT" = "80" ]; then
+      domain_block="*.${apex_domain}, ${apex_domain}"
+    else
+      domain_block="*.${apex_domain}:${EXPOSED_PORT}, ${apex_domain}:${EXPOSED_PORT}"
+    fi
+    local caddyfile_content
+    caddyfile_content="{
     on_demand_tls {
         ask http://backend:8888/should-allow-domain
     }
 }
 
-*.${ETHERNAL_HOST}:${EXPOSED_PORT} {
+${domain_block} {
     tls {
         on_demand
     }
@@ -197,9 +206,23 @@ output_caddyfile() {
     }
 
     encode gzip
-}
-EOF
-    echo "Wrote Caddyfile for domain: *.${ETHERNAL_HOST}:${EXPOSED_PORT} (HTTPS with on-demand TLS)"
+}"
+    if [ "$dry_run" = true ]; then
+      printf '\n--- Caddyfile ---\n'
+      printf "%s\n" "$caddyfile_content"
+      if [ "$EXPOSED_PORT" = "80" ]; then
+        echo "Printed Caddyfile for domain: *.${apex_domain}, ${apex_domain} (dry run)"
+      else
+        echo "Printed Caddyfile for domain: *.${apex_domain}:${EXPOSED_PORT}, ${apex_domain}:${EXPOSED_PORT} (dry run)"
+      fi
+    else
+      printf "%s\n" "$caddyfile_content" > Caddyfile
+      if [ "$EXPOSED_PORT" = "80" ]; then
+        echo "Wrote Caddyfile for domain: *.${apex_domain}, ${apex_domain} (HTTPS with on-demand TLS)"
+      else
+        echo "Wrote Caddyfile for domain: *.${apex_domain}:${EXPOSED_PORT}, ${apex_domain}:${EXPOSED_PORT} (HTTPS with on-demand TLS)"
+      fi
+    fi
   else
     # Assume it's an IP address, generate HTTP-only Caddyfile
     cat > Caddyfile <<EOF
@@ -349,4 +372,3 @@ output_caddyfile
 if [ "$dry_run" = false ]; then
   append_to_gitignore
 fi
-

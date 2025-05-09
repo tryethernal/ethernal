@@ -57,9 +57,11 @@ if (isStripeEnabled()) {
 if (isSelfHosted()) {
     const marketing = require('./marketing');
     const setup = require('./setup');
+    const caddy = require('./caddy');
 
     router.use('/setup', setup);
     router.use('/marketing', marketing);
+    router.use('/caddy', caddy);
 }
 
 module.exports = router;
