@@ -189,7 +189,7 @@ ${domain_block} {
     }
 
     # WebSocket traffic (Soketi)
-    handle /app/* {
+    handle /app* {
         reverse_proxy soketi:6001 {
             header_up Host {host}
             header_up X-Real-IP {remote_host}
@@ -256,7 +256,7 @@ ${domain_block} {
     }
 
     # WebSocket traffic (Soketi)
-    handle /app/* {
+    handle /app* {
         reverse_proxy soketi:6001 {
             header_up Host {host}
             header_up X-Real-IP {remote_host}
