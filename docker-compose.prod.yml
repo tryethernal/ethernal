@@ -24,6 +24,8 @@ services:
 
   soketi:
     image: quay.io/soketi/soketi:1.6.1-16-debian
+    environment:
+      - SOKETI_HOST=0.0.0.0
     networks:
       - ethernal
 
@@ -117,6 +119,7 @@ services:
     depends_on:
       - backend
       - frontend
+      - soketi
     ports:
       - "80:80"
       - "443:443"

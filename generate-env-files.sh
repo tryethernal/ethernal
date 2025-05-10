@@ -163,12 +163,12 @@ output_caddyfile() {
     on_demand_tls {
         ask http://backend:8888/api/caddy/validDomain
     }
+    ${caddy_staging}
 }
 
 ${domain_block} {
     tls {
         on_demand
-${caddy_staging}
     }
 
     handle /api/* {
