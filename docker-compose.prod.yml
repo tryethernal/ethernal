@@ -22,7 +22,7 @@ services:
     env_file: .env.postgres.prod
     volumes: 
       - db:/var/lib/postgresql/data
-      - ./postgresql.conf:/etc/postgresql/postgresql.conf:ro
+      - ./postgresql.conf:/etc/postgresql/postgresql.conf
     command: postgres -c config_file=/etc/postgresql/postgresql.conf
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER"]
