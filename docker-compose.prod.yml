@@ -17,13 +17,16 @@ services:
     networks:
       - ethernal
     image: timescale/timescaledb:2.11.1-pg14
+    container_name: postgres
     restart: always
     env_file: .env.postgres.prod
     volumes: 
       - db:/var/lib/postgresql/data
+      - ./postgresql.conf:/var/lib/postgresql/data/postgresql.conf:ro
 
   soketi:
     image: quay.io/soketi/soketi:1.6.1-16-debian
+    container_name: soketi
     environment:
       - SOKETI_HOST=0.0.0.0
     networks:
@@ -33,6 +36,7 @@ services:
     networks:
       - ethernal
     image: redis:6.2-alpine
+    container_name: redis
     restart: always
     command: redis-server --save 20 1 --loglevel warning
     volumes: 
@@ -42,12 +46,14 @@ services:
     networks:
       - ethernal
     image: antoinedc44/ethernal-frontend:latest
+    container_name: frontend
     restart: always
 
   backend:
     networks:
       - ethernal
     image: antoinedc44/ethernal-backend:latest
+    container_name: backend
     depends_on:
       - postgres
       - redis
@@ -101,6 +107,7 @@ services:
 
   pgbouncer:
     image: edoburu/pgbouncer
+    container_name: pgbouncer
     ports:
       - "5433:5433"
     env_file: ./pgbouncer/.env.pgbouncer.prod

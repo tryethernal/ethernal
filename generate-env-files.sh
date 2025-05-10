@@ -107,7 +107,17 @@ listen_port = 5433
 auth_type = md5
 auth_file = /etc/pgbouncer/userlist.txt
 admin_users = ${POSTGRES_USER}
-pool_mode = session"
+pool_mode = session
+max_client_conn = 500
+default_pool_size = 10
+reserve_pool_size = 5
+reserve_pool_timeout = 5.0
+server_idle_timeout = 30.0
+ignore_startup_parameters = extra_float_digits
+
+log_connections = 1
+log_disconnections = 1
+log_pooler_errors = 1"
 
 append_to_gitignore() {
   local paths=(
