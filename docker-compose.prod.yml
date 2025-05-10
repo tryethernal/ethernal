@@ -24,6 +24,11 @@ services:
       - db:/var/lib/postgresql/data
       - ./postgresql.conf:/var/lib/postgresql/data/postgresql.conf:ro
     command: postgres -c config_file=/var/lib/postgresql/data/postgresql.conf
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   soketi:
     image: quay.io/soketi/soketi:1.6.1-16-debian
@@ -115,7 +120,8 @@ services:
     volumes:
       - ./pgbouncer/:/etc/pgbouncer:ro
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     networks:
       - ethernal
 
