@@ -8,6 +8,13 @@ const { isSelfHosted } = require('../lib/flags');
 module.exports = async job => {
     const data = job.data;
     try {
+        if (!data.id)
+            throw new Error('Missing parameter');
+
+        const user = await db.getUserById(data.id);
+        if (!user)
+            throw new Error('Cannot find user');
+
 
         const analytics = new Analytics();
         analytics.track(user.id, 'auth:user_signup', {
@@ -25,14 +32,6 @@ module.exports = async job => {
 
         if (isSelfHosted())
             return 'Skipping user sync with blog for self-hosted instance';
-
-        if (!data.id)
-            throw new Error('Missing parameter');
-
-        const user = await db.getUserById(data.id);
-
-        if (!user)
-            throw new Error('Cannot find user');
 
         const ghostApiKey = getGhostApiKey();
         const ghostEndpoint = getGhostEndpoint();
