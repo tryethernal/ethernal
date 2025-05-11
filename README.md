@@ -84,7 +84,14 @@ After setup, you'll see a summary like:
 
 ## ⚙️ Configuration
 
-### Frontend Environment Variables
+**All configuration files and environment variables are generated automatically during setup. For a default installation, you should not need to change any of these values.**
+If you want to customize advanced settings, you can edit the relevant files after the initial setup.
+
+Below are the main configuration files and the variables they contain:
+
+---
+
+### Frontend Environment Variables (`.env.prod`)
 
 | Variable                  | Description                              | Default                |
 |---------------------------|------------------------------------------|------------------------|
@@ -105,26 +112,92 @@ After setup, you'll see a summary like:
 | VITE_SENTRY_DSN_PROJECT_ID| Sentry project ID                        | -                      |
 | VITE_FEEDBACK_FIN_ENDPOINT| Endpoint for feedback collection         | -                      |
 
-### Backend Environment Variables
+---
+
+### Backend Environment Variables (`run/.env.prod`)
 
 | Variable           | Description                        | Default     |
 |--------------------|------------------------------------|-------------|
 | ENCRYPTION_KEY     | Key used for data encryption       | -           |
 | ENCRYPTION_JWT_SECRET | Secret for JWT token encryption | -           |
-| APP_URL            | Application URL                    | -           |
-| REDIS_HOST         | Redis server hostname              | redis       |
-| REDIS_PORT         | Redis server port                  | 6379        |
-| DB_HOST            | PostgreSQL server hostname         | postgres    |
-| POSTGRES_USER      | PostgreSQL username                | postgres    |
-| POSTGRES_PASSWORD  | PostgreSQL password                | postgres    |
-| DB_NAME            | PostgreSQL database name           | ethernal    |
-| DB_PORT            | PostgreSQL server port             | 5432        |
-| BULLBOARD_USERNAME | Username for Bull dashboard        | ethernal    |
-| BULLBOARD_PASSWORD | Password for Bull dashboard        | ethernal    |
-| SECRET             | Application secret key             | secret      |
-| PORT               | Application port                   | 8888        |
-| NODE_ENV           | Node environment                   | production  |
+| SECRET             | Application secret key             | -           |
 | CORS_DOMAIN        | CORS allowed domains               | *           |
+| NODE_ENV           | Node environment                   | production  |
+| REDIS_URL          | Redis connection string            | redis://redis:6379 |
+| DB_USER            | PostgreSQL username                | postgres    |
+| DB_PASSWORD        | PostgreSQL password                | (random)    |
+| DB_NAME            | PostgreSQL database name           | ethernal    |
+| DB_HOST            | PostgreSQL host (via pgbouncer)    | pgbouncer   |
+| DB_PORT            | PostgreSQL port (via pgbouncer)    | 5433        |
+| SOKETI_DEFAULT_APP_ID | Soketi app id                   | default-app |
+| SOKETI_DEFAULT_APP_KEY| Soketi app key                  | app-key     |
+| SOKETI_DEFAULT_APP_SECRET| Soketi app secret            | (random)    |
+| SOKETI_HOST        | Soketi host                        | soketi      |
+| SOKETI_PORT        | Soketi port                        | 6001        |
+| PM2_HOST           | PM2 dashboard host                 | pm2:9090    |
+| PM2_SECRET         | PM2 dashboard secret               | (random)    |
+| BULLBOARD_USERNAME | Username for Bull dashboard        | ethernal    |
+| BULLBOARD_PASSWORD | Password for Bull dashboard        | (random)    |
+| APP_DOMAIN         | Your domain or IP                  | (set at setup)|
+| FIREBASE_SIGNER_KEY| Firebase signer key                | (random)    |
+| FIREBASE_SALT_SEPARATOR| Firebase salt separator        | (random)    |
+| FIREBASE_ROUNDS    | Firebase rounds                    | 8           |
+| FIREBASE_MEM_COST  | Firebase memory cost               | 14          |
+| APP_URL            | Application URL                    | (set at setup)|
+| SELF_HOSTED        | Self-hosted flag                   | true        |
+| PORT               | Application port                   | 8888        |
+| DEFAULT_PLAN_SLUG  | Default plan slug                  | self-hosted |
+
+---
+
+### PM2 Environment Variables (`pm2-server/.env.prod`)
+
+| Variable           | Description                        | Default     |
+|--------------------|------------------------------------|-------------|
+| SECRET             | PM2 dashboard secret               | (random)    |
+| ETHERNAL_SECRET    | Backend secret                     | (random)    |
+| PORT               | PM2 dashboard port                 | 9090        |
+| ETHERNAL_REDIS_URL | Redis connection string            | redis://redis:6379/0 |
+| ETHERNAL_HOST      | Backend host URL                   | http://backend:8888  |
+
+---
+
+### PostgreSQL Environment Variables (`.env.postgres.prod`)
+
+| Variable           | Description                        | Default     |
+|--------------------|------------------------------------|-------------|
+| POSTGRES_HOST      | PostgreSQL host                    | postgres    |
+| POSTGRES_USER      | PostgreSQL username                | postgres    |
+| POSTGRES_PASSWORD  | PostgreSQL password                | (random)    |
+| POSTGRES_DB        | PostgreSQL database name           | ethernal    |
+| POSTGRES_PORT      | PostgreSQL port                    | 5432        |
+
+---
+
+### Soketi Environment Variables (`.env.soketi.prod`)
+
+| Variable                   | Description                        | Default     |
+|----------------------------|------------------------------------|-------------|
+| SOKETI_DEFAULT_APP_ID      | Soketi app id                      | default-app |
+| SOKETI_DEFAULT_APP_KEY     | Soketi app key                     | app-key     |
+| SOKETI_DEFAULT_APP_SECRET  | Soketi app secret                  | (random)    |
+| SOKETI_HOST                | Soketi host                        | 0.0.0.0     |
+| SOKETI_PORT                | Soketi port                        | 6001        |
+
+---
+
+### Docker Compose Environment Variables (`.env.docker-compose.prod`)
+
+| Variable           | Description                        | Default     |
+|--------------------|------------------------------------|-------------|
+| EXPOSED_PORT       | Public HTTP port                   | 80 (or as set at setup) |
+| EXPOSED_SSL_PORT   | Public HTTPS port                  | 443 (or as set at setup) |
+
+---
+
+**Note:**
+- All secrets and passwords are generated randomly for each installation.
+- For most users, there is no need to change these values after setup.
 
 ---
 
