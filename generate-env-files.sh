@@ -312,12 +312,15 @@ output_docker_compose_env() {
   local docker_env_content
   if is_valid_domain "$APP_URL"; then
     if [ "$EXPOSED_PORT" = "80" ]; then
-      docker_env_content="EXPOSED_PORT=80\nEXPOSED_SSL_PORT=443"
+      docker_env_content="EXPOSED_PORT=80
+EXPOSED_SSL_PORT=443"
     else
       if [ "$SSL_ENABLED" = "true" ]; then
-        docker_env_content="EXPOSED_PORT=80\nEXPOSED_SSL_PORT=$EXPOSED_PORT"
+        docker_env_content="EXPOSED_PORT=$EXPOSED_PORT
+EXPOSED_SSL_PORT=$EXPOSED_PORT"
       else
-        docker_env_content="EXPOSED_PORT=$EXPOSED_PORT\nEXPOSED_SSL_PORT=443"
+        docker_env_content="EXPOSED_PORT=$EXPOSED_PORT
+EXPOSED_SSL_PORT=443"
       fi
     fi
   else
