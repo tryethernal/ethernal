@@ -198,6 +198,11 @@ Below are the main configuration files and the variables they contain:
 **Note:**
 - All secrets and passwords are generated randomly for each installation.
 - For most users, there is no need to change these values after setup.
+- The production Docker Compose file is `docker-compose.prod.yml`. You should run it with the environment file like this:
+  
+  ```bash
+  docker compose -f docker-compose.prod.yml --env-file .env.docker-compose.prod up -d
+  ```
 
 ---
 
