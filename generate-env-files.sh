@@ -69,17 +69,12 @@ if ! is_valid_domain "$APP_URL" && \
   exit 1
 fi
 
-if is_valid_domain "$APP_URL"; then
-  EXPOSED_PORT=80
-  echo "Using port 80 for domain $APP_URL"
-else
-  read -p "Enter port to serve the app on [80]: " EXPOSED_PORT
-  EXPOSED_PORT="${EXPOSED_PORT:-80}"
-  # Validate port
-  if ! [[ $EXPOSED_PORT =~ ^[0-9]+$ ]] || [ "$EXPOSED_PORT" -lt 1 ] || [ "$EXPOSED_PORT" -gt 65535 ]; then
-    echo "Invalid port"
-    exit 1
-  fi
+# Always ask for port, default to 80, validate
+read -p "Enter port to serve the app on [80]: " EXPOSED_PORT
+EXPOSED_PORT="${EXPOSED_PORT:-80}"
+if ! [[ $EXPOSED_PORT =~ ^[0-9]+$ ]] || [ "$EXPOSED_PORT" -lt 1 ] || [ "$EXPOSED_PORT" -gt 65535 ]; then
+  echo "Invalid port"
+  exit 1
 fi
 
 # Set ETHERNAL_HOST based on EXPOSED_PORT
@@ -220,15 +215,11 @@ output_caddyfile() {
     encode gzip"
 
   if is_valid_domain "$APP_URL"; then
-    # Determine domain and port for Caddyfile
+    # Determine domain for Caddyfile (no port)
     local domain_block
     local apex_domain
     apex_domain="$APP_URL"
-    if [ "$EXPOSED_PORT" = "80" ]; then
-      domain_block="*.${apex_domain}, ${apex_domain}"
-    else
-      domain_block="*.${apex_domain}:${EXPOSED_PORT}, ${apex_domain}:${EXPOSED_PORT}"
-    fi
+    domain_block="*.${apex_domain}, ${apex_domain}"
     local caddyfile_content
     if [ "$SSL_ENABLED" = "false" ]; then
       # HTTP only, no TLS, but with domain
@@ -264,33 +255,25 @@ ${caddyfile_body}
       if [ "$dry_run" = true ]; then
         printf '\n--- Caddyfile ---\n'
         printf "%s\n" "$caddyfile_content"
-        if [ "$EXPOSED_PORT" = "80" ]; then
-          echo "Printed Caddyfile for domain: *.${apex_domain}, ${apex_domain} (dry run)"
-        else
-          echo "Printed Caddyfile for domain: *.${apex_domain}:${EXPOSED_PORT}, ${apex_domain}:${EXPOSED_PORT} (dry run)"
-        fi
+        echo "Printed Caddyfile for domain: ${domain_block} (dry run)"
       else
         printf "%s\n" "$caddyfile_content" > Caddyfile
-        if [ "$EXPOSED_PORT" = "80" ]; then
-          echo "Wrote Caddyfile for domain: *.${apex_domain}, ${apex_domain} (HTTPS with on-demand TLS)"
-        else
-          echo "Wrote Caddyfile for domain: *.${apex_domain}:${EXPOSED_PORT}, ${apex_domain}:${EXPOSED_PORT} (HTTPS with on-demand TLS)"
-        fi
+        echo "Wrote Caddyfile for domain: ${domain_block} (HTTPS with on-demand TLS)"
       fi
     fi
   else
-    # Assume it's an IP address, generate HTTP-only Caddyfile
-    caddyfile_content=":${EXPOSED_PORT} {
+    # Assume it's an IP address, always use :80 for HTTP-only Caddyfile
+    caddyfile_content=":80 {
 ${caddyfile_body}
 }"
     if [ "$dry_run" = true ]; then
       printf '\n--- Caddyfile ---\n'
       printf "%s\n" "$caddyfile_content"
-      echo "Printed Caddyfile for IP address: $ETHERNAL_HOST (HTTP only, no TLS) on port ${EXPOSED_PORT} (dry run)"
+      echo "Printed Caddyfile for IP address: $ETHERNAL_HOST (HTTP only, no TLS) on port 80 (dry run)"
       echo "WARNING: Serving over HTTP only. SSL/TLS is not available for IP addresses. Not recommended for production."
     else
       printf "%s\n" "$caddyfile_content" > Caddyfile
-      echo "Wrote Caddyfile for IP address: $ETHERNAL_HOST (HTTP only, no TLS) on port ${EXPOSED_PORT}"
+      echo "Wrote Caddyfile for IP address: $ETHERNAL_HOST (HTTP only, no TLS) on port 80"
       echo "WARNING: Serving over HTTP only. SSL/TLS is not available for IP addresses. Not recommended for production."
     fi
   fi
