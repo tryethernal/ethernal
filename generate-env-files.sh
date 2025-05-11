@@ -384,6 +384,23 @@ output_pgbouncer_ini() {
   fi
 }
 
+# Output soketi env file
+output_soketi_env() {
+  local soketi_env_content="SOKETI_DEFAULT_APP_ID=default-app
+SOKETI_DEFAULT_APP_KEY=app-key
+SOKETI_DEFAULT_APP_SECRET=$SOKETI_SECRET
+SOKETI_HOST=0.0.0.0
+SOKETI_PORT=6001"
+  if [ "$dry_run" = true ]; then
+    printf '\n--- .env.soketi.prod ---\n'
+    printf "%s\n" "$soketi_env_content"
+    echo "Printed .env.soketi.prod (dry run)"
+  else
+    printf "%s\n" "$soketi_env_content" > .env.soketi.prod
+    echo "Wrote .env.soketi.prod"
+  fi
+}
+
 # Main output
 output_backend_env
 output_pm2_env
@@ -392,6 +409,7 @@ output_postgres_env
 output_pgbouncer_env
 output_pgbouncer_userlist
 output_pgbouncer_ini
+output_soketi_env
 
 # Generate Caddyfile if ETHERNAL_HOST is a valid domain
 output_caddyfile

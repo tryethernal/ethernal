@@ -33,8 +33,7 @@ services:
   soketi:
     image: quay.io/soketi/soketi:1.6.1-16-debian
     container_name: soketi
-    environment:
-      - SOKETI_HOST=0.0.0.0
+    env_file: .env.soketi.prod
     networks:
       - ethernal
 
