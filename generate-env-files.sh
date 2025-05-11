@@ -8,6 +8,24 @@ command -v openssl >/dev/null 2>&1 || { echo >&2 "openssl is required but not in
 gen_hex() { openssl rand -hex "$1"; }
 gen_str() { openssl rand -base64 32 | tr -dc 'a-zA-Z0-9' | head -c "$1"; }
 
+# Function to check if a string is a valid domain (not an IP address)
+is_valid_domain() {
+  local domain="$1"
+  # Check if it's an IPv4 address
+  if [[ $domain =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    return 1
+  fi
+  # Check if it's an IPv6 address
+  if [[ $domain =~ ^([0-9a-fA-F]{0,4}:){1,7}[0-9a-fA-F]{0,4}$ ]]; then
+    return 1
+  fi
+  # Basic domain validation (letters, numbers, dashes, dots)
+  if [[ $domain =~ ^([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$ ]]; then
+    return 0
+  fi
+  return 1
+}
+
 # Parse arguments
 dry_run=false
 for arg in "$@"; do
@@ -33,7 +51,8 @@ POSTGRES_DB="ethernal"
 # Generate md5-hashed password for PgBouncer (md5 + md5(PASSWORD + USERNAME))
 HASH_INPUT="${POSTGRES_PASSWORD}${POSTGRES_USER}"
 HASHED_PASS="md5$(echo -n "$HASH_INPUT" | md5sum | awk '{print $1}')"
-
+echo "######### Starting Ethernal Setup #########"
+echo ""
 # Prompt for values
 read -p "Enter domain name or server IP address: " APP_URL
 # Strip http:// or https:// from APP_URL if present
@@ -164,24 +183,6 @@ append_to_gitignore() {
   echo "Updated .gitignore with env/config files."
 }
 
-# Function to check if a string is a valid domain (not an IP address)
-is_valid_domain() {
-  local domain="$1"
-  # Check if it's an IPv4 address
-  if [[ $domain =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-    return 1
-  fi
-  # Check if it's an IPv6 address
-  if [[ $domain =~ ^([0-9a-fA-F]{0,4}:){1,7}[0-9a-fA-F]{0,4}$ ]]; then
-    return 1
-  fi
-  # Basic domain validation (letters, numbers, dashes, dots)
-  if [[ $domain =~ ^([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$ ]]; then
-    return 0
-  fi
-  return 1
-}
-
 output_caddyfile() {
   local caddy_staging=""
   if [ "${CADDY_STAGING}" = "true" ]; then
@@ -231,7 +232,7 @@ output_caddyfile() {
 
     encode gzip"
 
-  if is_valid_domain "$ETHERNAL_HOST"; then
+  if is_valid_domain "$APP_URL"; then
     # Determine domain and port for Caddyfile
     local domain_block
     local apex_domain
