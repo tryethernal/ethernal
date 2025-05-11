@@ -187,8 +187,6 @@ ${domain_block} {
             header_up X-Real-IP {remote_host}
             header_up X-Forwarded-For {remote_host}
             header_up X-Forwarded-Proto {scheme}
-            header_up Upgrade {http_upgrade}
-            header_up Connection {http_connection}
         }
     }
 
@@ -198,8 +196,6 @@ ${domain_block} {
             header_up X-Real-IP {remote_host}
             header_up X-Forwarded-For {remote_host}
             header_up X-Forwarded-Proto {scheme}
-            header_up Upgrade {http_upgrade}
-            header_up Connection {http_connection}
         }
     }
 
@@ -210,8 +206,8 @@ ${domain_block} {
             header_up X-Real-IP {remote_host}
             header_up X-Forwarded-For {remote_host}
             header_up X-Forwarded-Proto {scheme}
-            header_up Upgrade {http_upgrade}
-            header_up Connection {http_connection}
+            header_up Upgrade "websocket"
+            header_up Connection "Upgrade"
         }
     }
 
@@ -221,8 +217,6 @@ ${domain_block} {
             header_up X-Real-IP {remote_host}
             header_up X-Forwarded-For {remote_host}
             header_up X-Forwarded-Proto {scheme}
-            header_up Upgrade {http_upgrade}
-            header_up Connection {http_connection}
         }
     }
 
@@ -265,8 +259,6 @@ ${domain_block} {
             header_up X-Real-IP {remote_host}
             header_up X-Forwarded-For {remote_host}
             header_up X-Forwarded-Proto {scheme}
-            header_up Upgrade {http_upgrade}
-            header_up Connection {http_connection}
         }
     }
 
@@ -277,8 +269,8 @@ ${domain_block} {
             header_up X-Real-IP {remote_host}
             header_up X-Forwarded-For {remote_host}
             header_up X-Forwarded-Proto {scheme}
-            header_up Upgrade {http_upgrade}
-            header_up Connection {http_connection}
+            header_up Upgrade "websocket"
+            header_up Connection "Upgrade"
         }
     }
 
@@ -288,8 +280,6 @@ ${domain_block} {
             header_up X-Real-IP {remote_host}
             header_up X-Forwarded-For {remote_host}
             header_up X-Forwarded-Proto {scheme}
-            header_up Upgrade {http_upgrade}
-            header_up Connection {http_connection}
         }
     }
 
