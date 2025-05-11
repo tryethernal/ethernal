@@ -24,7 +24,7 @@ start:
 	@echo "Running sequelize migrations in backend container..."
 	docker compose -f docker-compose.prod.yml --env-file .env.docker-compose.prod exec backend npx sequelize db:migrate
 	docker compose -f docker-compose.prod.yml --env-file .env.docker-compose.prod exec backend npx sequelize db:seed:all
-	@$(MAKE) info-box
+	@$(MAKE) info
 
 stop:
 	@echo "Stopping and cleaning up all containers and networks..."
@@ -48,7 +48,7 @@ update:
 	@echo "Running sequelize seeds in backend container..."
 	docker compose -f docker-compose.prod.yml --env-file .env.docker-compose.prod exec backend npx sequelize db:seed
 
-info-box:
+info:
 	@DOMAIN=$$(grep '^APP_DOMAIN=' run/.env.prod | cut -d '=' -f2); \
 	if [ -z "$$DOMAIN" ]; then \
 	  APP_URL=$$(grep '^APP_URL=' run/.env.prod | cut -d '=' -f2); \
