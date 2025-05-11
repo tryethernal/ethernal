@@ -59,3 +59,10 @@ run/helm_chart_values/pgbouncer-values.yaml
 
 # Sentry Config File
 .env.sentry-build-plugin
+run/.env.prod
+pm2-server/.env.prod
+.env.docker-compose.prod
+.env.postgres.prod
+pgbouncer/.env.pgbouncer.prod
+
+Caddyfile

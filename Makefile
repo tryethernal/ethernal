@@ -24,6 +24,7 @@ start:
 	@echo "Running sequelize migrations in backend container..."
 	docker compose -f docker-compose.prod.yml --env-file .env.docker-compose.prod exec backend npx sequelize db:migrate
 	docker compose -f docker-compose.prod.yml --env-file .env.docker-compose.prod exec backend npx sequelize db:seed:all
+	@$(MAKE) info-box
 
 stop:
 	@echo "Stopping and cleaning up all containers and networks..."
@@ -46,3 +47,39 @@ update:
 	docker compose -f docker-compose.prod.yml --env-file .env.docker-compose.prod exec backend npx sequelize db:migrate
 	@echo "Running sequelize seeds in backend container..."
 	docker compose -f docker-compose.prod.yml --env-file .env.docker-compose.prod exec backend npx sequelize db:seed
+
+info-box:
+	@DOMAIN=$$(grep '^APP_DOMAIN=' run/.env.prod | cut -d '=' -f2); \
+	if [ -z "$$DOMAIN" ]; then \
+	  APP_URL=$$(grep '^APP_URL=' run/.env.prod | cut -d '=' -f2); \
+	  EXPOSED_PORT=$$(grep '^EXPOSED_PORT=' .env.docker-compose.prod | cut -d '=' -f2); \
+	  if [ -z "$$EXPOSED_PORT" ] || [ "$$EXPOSED_PORT" = "80" ]; then \
+	    DOMAIN="$$APP_URL"; \
+	  else \
+	    DOMAIN="$$APP_URL:$$EXPOSED_PORT"; \
+	  fi; \
+	fi; \
+	DB_USER=$$(grep '^DB_USER=' run/.env.prod | cut -d '=' -f2); \
+	DB_PASSWORD=$$(grep '^DB_PASSWORD=' run/.env.prod | cut -d '=' -f2); \
+	DB_NAME=$$(grep '^DB_NAME=' run/.env.prod | cut -d '=' -f2); \
+	DB_HOST=$$(grep '^DB_HOST=' run/.env.prod | cut -d '=' -f2); \
+	DB_PORT=$$(grep '^DB_PORT=' run/.env.prod | cut -d '=' -f2); \
+	BULLBOARD_USERNAME=$$(grep '^BULLBOARD_USERNAME=' run/.env.prod | cut -d '=' -f2); \
+	BULLBOARD_PASSWORD=$$(grep '^BULLBOARD_PASSWORD=' run/.env.prod | cut -d '=' -f2); \
+	CONN_STR="postgresql://$$DB_USER:$$DB_PASSWORD@$$DB_HOST:$$DB_PORT/$$DB_NAME"; \
+	echo ""; \
+	echo "==================== Ethernal Installation Complete! ===================="; \
+	echo ""; \
+	echo "🔗  Start here to setup your instance:"; \
+	echo "    http://$$DOMAIN/setup"; \
+	echo ""; \
+	echo "🐘  PostgreSQL Connection String:"; \
+	echo "    $$CONN_STR"; \
+	echo ""; \
+	echo "📊  Bullboard Access (background jobs):"; \
+	echo "    http://$$DOMAIN/bull"; \
+	echo "    Username: $$BULLBOARD_USERNAME"; \
+	echo "    Password: $$BULLBOARD_PASSWORD"; \
+	echo ""; \
+	echo "==============================================================="; \
+	echo "";
