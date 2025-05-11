@@ -108,6 +108,8 @@ services:
     image: edoburu/pgbouncer
     container_name: pgbouncer
     env_file: ./pgbouncer/.env.pgbouncer.prod
+    ports:
+      - "5433:5433"
     volumes:
       - ./pgbouncer/:/etc/pgbouncer:ro
     depends_on:
