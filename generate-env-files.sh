@@ -316,7 +316,7 @@ output_docker_compose_env() {
 EXPOSED_SSL_PORT=443"
     else
       if [ "$SSL_ENABLED" = "true" ]; then
-        docker_env_content="EXPOSED_PORT=$EXPOSED_PORT
+        docker_env_content="EXPOSED_PORT=80
 EXPOSED_SSL_PORT=$EXPOSED_PORT"
       else
         docker_env_content="EXPOSED_PORT=$EXPOSED_PORT
