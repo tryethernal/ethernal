@@ -217,6 +217,8 @@ Found a bug? Please [open an issue](https://github.com/tryethernal/ethernal/issu
 Support Ethernal's development by subscribing to [a paid plan](https://www.tryethernal.com/pricing)
 or donating on Gitcoin: [https://gitcoin.co/grants/3982/ethernal](https://gitcoin.co/grants/3982/ethernal)
 
+**Note:** The self-hosted version will display ads by default. Running these ads helps support ongoing development of Ethernal. Thank you for contributing to the project by keeping them enabled!
+
 ---
 
 ## 📬 Contact Us
