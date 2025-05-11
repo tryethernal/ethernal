@@ -219,7 +219,11 @@ output_caddyfile() {
     local domain_block
     local apex_domain
     apex_domain="$APP_URL"
-    domain_block="*.${apex_domain}, ${apex_domain}"
+    if [ "$SSL_ENABLED" = "false" ]; then
+      domain_block="http://${apex_domain}, http://*.${apex_domain}"
+    else
+      domain_block="*.${apex_domain}, ${apex_domain}"
+    fi
     local caddyfile_content
     if [ "$SSL_ENABLED" = "false" ]; then
       # HTTP only, no TLS, but with domain
