@@ -35,18 +35,47 @@ HASH_INPUT="${POSTGRES_PASSWORD}${POSTGRES_USER}"
 HASHED_PASS="md5$(echo -n "$HASH_INPUT" | md5sum | awk '{print $1}')"
 
 # Prompt for values
-read -p "Enter value for APP_URL: " APP_URL
+read -p "Enter domain name or server IP address: " APP_URL
 # Strip http:// or https:// from APP_URL if present
 APP_URL=${APP_URL#http://}
 APP_URL=${APP_URL#https://}
-read -p "Enter value for EXPOSED_PORT [80]: " EXPOSED_PORT
+
+# Validate domain or IP
+if ! is_valid_domain "$APP_URL" && \
+   ! [[ $APP_URL =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]] && \
+   ! [[ $APP_URL =~ ^([0-9a-fA-F]{0,4}:){1,7}[0-9a-fA-F]{0,4}$ ]]; then
+  echo "Invalid domain/ip"
+  exit 1
+fi
+
+read -p "Enter port to serve the app on [80]: " EXPOSED_PORT
 EXPOSED_PORT="${EXPOSED_PORT:-80}"
+
+# Validate port
+if ! [[ $EXPOSED_PORT =~ ^[0-9]+$ ]] || [ "$EXPOSED_PORT" -lt 1 ] || [ "$EXPOSED_PORT" -gt 65535 ]; then
+  echo "Invalid port"
+  exit 1
+fi
 
 # Set ETHERNAL_HOST based on EXPOSED_PORT
 if [ "$EXPOSED_PORT" = "80" ]; then
   ETHERNAL_HOST="$APP_URL"
 else
   ETHERNAL_HOST="$APP_URL:$EXPOSED_PORT"
+fi
+
+# Ask about SSL if domain is valid
+SSL_ENABLED="true"
+if is_valid_domain "$APP_URL"; then
+  read -p "Do you want to enable SSL (HTTPS) for this domain? [Y/n]: " ENABLE_SSL
+  case "$ENABLE_SSL" in
+    [nN]|[nN][oO])
+      SSL_ENABLED="false"
+      ;;
+    *)
+      SSL_ENABLED="true"
+      ;;
+  esac
 fi
 
 # Compose env file contents
@@ -158,6 +187,50 @@ output_caddyfile() {
   if [ "${CADDY_STAGING}" = "true" ]; then
     caddy_staging="    acme_ca https://acme-staging-v02.api.letsencrypt.org/directory"
   fi
+
+  # Shared Caddyfile body (reused in all cases)
+  local caddyfile_body
+  caddyfile_body="    handle /api/* {
+        reverse_proxy backend:8888 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+
+    handle_path /bull* {
+        reverse_proxy backend:8888 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+
+    # WebSocket traffic (Soketi)
+    handle /app* {
+        reverse_proxy soketi:6001 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+            header_up Upgrade \"websocket\"
+            header_up Connection \"Upgrade\"
+        }
+    }
+
+    handle {
+        reverse_proxy frontend:8080 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+
+    encode gzip"
+
   if is_valid_domain "$ETHERNAL_HOST"; then
     # Determine domain and port for Caddyfile
     local domain_block
@@ -169,7 +242,22 @@ output_caddyfile() {
       domain_block="*.${apex_domain}:${EXPOSED_PORT}, ${apex_domain}:${EXPOSED_PORT}"
     fi
     local caddyfile_content
-    caddyfile_content="{
+    if [ "$SSL_ENABLED" = "false" ]; then
+      # HTTP only, no TLS, but with domain
+      caddyfile_content="${domain_block} {
+${caddyfile_body}
+}"
+      if [ "$dry_run" = true ]; then
+        printf '\n--- Caddyfile ---\n'
+        printf "%s\n" "$caddyfile_content"
+        echo "Printed Caddyfile for domain: ${domain_block} (HTTP only, no TLS, per user choice) (dry run)"
+      else
+        printf "%s\n" "$caddyfile_content" > Caddyfile
+        echo "Wrote Caddyfile for domain: ${domain_block} (HTTP only, no TLS, per user choice)"
+      fi
+    else
+      # SSL enabled (default)
+      caddyfile_content="{
     on_demand_tls {
         ask http://backend:8888/api/caddy/validDomain
     }
@@ -180,114 +268,40 @@ ${domain_block} {
     tls {
         on_demand
     }
-
-    handle /api/* {
-        reverse_proxy backend:8888 {
-            header_up Host {host}
-            header_up X-Real-IP {remote_host}
-            header_up X-Forwarded-For {remote_host}
-            header_up X-Forwarded-Proto {scheme}
-        }
-    }
-
-    handle_path /bull* {
-        reverse_proxy backend:8888 {
-            header_up Host {host}
-            header_up X-Real-IP {remote_host}
-            header_up X-Forwarded-For {remote_host}
-            header_up X-Forwarded-Proto {scheme}
-        }
-    }
-
-    # WebSocket traffic (Soketi)
-    handle /app* {
-        reverse_proxy soketi:6001 {
-            header_up Host {host}
-            header_up X-Real-IP {remote_host}
-            header_up X-Forwarded-For {remote_host}
-            header_up X-Forwarded-Proto {scheme}
-            header_up Upgrade "websocket"
-            header_up Connection "Upgrade"
-        }
-    }
-
-    handle {
-        reverse_proxy frontend:8080 {
-            header_up Host {host}
-            header_up X-Real-IP {remote_host}
-            header_up X-Forwarded-For {remote_host}
-            header_up X-Forwarded-Proto {scheme}
-        }
-    }
-
-    encode gzip
+${caddyfile_body}
 }"
-    if [ "$dry_run" = true ]; then
-      printf '\n--- Caddyfile ---\n'
-      printf "%s\n" "$caddyfile_content"
-      if [ "$EXPOSED_PORT" = "80" ]; then
-        echo "Printed Caddyfile for domain: *.${apex_domain}, ${apex_domain} (dry run)"
+      if [ "$dry_run" = true ]; then
+        printf '\n--- Caddyfile ---\n'
+        printf "%s\n" "$caddyfile_content"
+        if [ "$EXPOSED_PORT" = "80" ]; then
+          echo "Printed Caddyfile for domain: *.${apex_domain}, ${apex_domain} (dry run)"
+        else
+          echo "Printed Caddyfile for domain: *.${apex_domain}:${EXPOSED_PORT}, ${apex_domain}:${EXPOSED_PORT} (dry run)"
+        fi
       else
-        echo "Printed Caddyfile for domain: *.${apex_domain}:${EXPOSED_PORT}, ${apex_domain}:${EXPOSED_PORT} (dry run)"
-      fi
-    else
-      printf "%s\n" "$caddyfile_content" > Caddyfile
-      if [ "$EXPOSED_PORT" = "80" ]; then
-        echo "Wrote Caddyfile for domain: *.${apex_domain}, ${apex_domain} (HTTPS with on-demand TLS)"
-      else
-        echo "Wrote Caddyfile for domain: *.${apex_domain}:${EXPOSED_PORT}, ${apex_domain}:${EXPOSED_PORT} (HTTPS with on-demand TLS)"
+        printf "%s\n" "$caddyfile_content" > Caddyfile
+        if [ "$EXPOSED_PORT" = "80" ]; then
+          echo "Wrote Caddyfile for domain: *.${apex_domain}, ${apex_domain} (HTTPS with on-demand TLS)"
+        else
+          echo "Wrote Caddyfile for domain: *.${apex_domain}:${EXPOSED_PORT}, ${apex_domain}:${EXPOSED_PORT} (HTTPS with on-demand TLS)"
+        fi
       fi
     fi
   else
     # Assume it's an IP address, generate HTTP-only Caddyfile
-    cat > Caddyfile <<EOF
-:${EXPOSED_PORT} {
-    handle /api/* {
-        reverse_proxy backend:8888 {
-            header_up Host {host}
-            header_up X-Real-IP {remote_host}
-            header_up X-Forwarded-For {remote_host}
-            header_up X-Forwarded-Proto {scheme}
-            header_up Upgrade {http_upgrade}
-            header_up Connection {http_connection}
-        }
-    }
-
-    handle_path /bull* {
-        reverse_proxy backend:8888 {
-            header_up Host {host}
-            header_up X-Real-IP {remote_host}
-            header_up X-Forwarded-For {remote_host}
-            header_up X-Forwarded-Proto {scheme}
-        }
-    }
-
-    # WebSocket traffic (Soketi)
-    handle /app* {
-        reverse_proxy soketi:6001 {
-            header_up Host {host}
-            header_up X-Real-IP {remote_host}
-            header_up X-Forwarded-For {remote_host}
-            header_up X-Forwarded-Proto {scheme}
-            header_up Upgrade "websocket"
-            header_up Connection "Upgrade"
-        }
-    }
-
-    handle {
-        reverse_proxy frontend:8080 {
-            header_up Host {host}
-            header_up X-Real-IP {remote_host}
-            header_up X-Forwarded-For {remote_host}
-            header_up X-Forwarded-Proto {scheme}
-        }
-    }
-
-    encode gzip
-}
-EOF
-    echo "Wrote Caddyfile for IP address: $ETHERNAL_HOST (HTTP only, no TLS) on port ${EXPOSED_PORT}"
-    echo "WARNING: Serving over HTTP only. SSL/TLS is not available for IP addresses. Not recommended for production."
+    caddyfile_content=":${EXPOSED_PORT} {
+${caddyfile_body}
+}"
+    if [ "$dry_run" = true ]; then
+      printf '\n--- Caddyfile ---\n'
+      printf "%s\n" "$caddyfile_content"
+      echo "Printed Caddyfile for IP address: $ETHERNAL_HOST (HTTP only, no TLS) on port ${EXPOSED_PORT} (dry run)"
+      echo "WARNING: Serving over HTTP only. SSL/TLS is not available for IP addresses. Not recommended for production."
+    else
+      printf "%s\n" "$caddyfile_content" > Caddyfile
+      echo "Wrote Caddyfile for IP address: $ETHERNAL_HOST (HTTP only, no TLS) on port ${EXPOSED_PORT}"
+      echo "WARNING: Serving over HTTP only. SSL/TLS is not available for IP addresses. Not recommended for production."
+    fi
   fi
 }
 
