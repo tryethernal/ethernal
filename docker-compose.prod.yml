@@ -127,7 +127,7 @@ services:
       - frontend
       - soketi
     ports:
-      - "80:80"
+      - "${EXPOSED_PORT}:80"
       - "443:443"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro

@@ -67,13 +67,17 @@ if ! is_valid_domain "$APP_URL" && \
   exit 1
 fi
 
-read -p "Enter port to serve the app on [80]: " EXPOSED_PORT
-EXPOSED_PORT="${EXPOSED_PORT:-80}"
-
-# Validate port
-if ! [[ $EXPOSED_PORT =~ ^[0-9]+$ ]] || [ "$EXPOSED_PORT" -lt 1 ] || [ "$EXPOSED_PORT" -gt 65535 ]; then
-  echo "Invalid port"
-  exit 1
+if is_valid_domain "$APP_URL"; then
+  EXPOSED_PORT=80
+  echo "Using port 80 for domain $APP_URL"
+else
+  read -p "Enter port to serve the app on [80]: " EXPOSED_PORT
+  EXPOSED_PORT="${EXPOSED_PORT:-80}"
+  # Validate port
+  if ! [[ $EXPOSED_PORT =~ ^[0-9]+$ ]] || [ "$EXPOSED_PORT" -lt 1 ] || [ "$EXPOSED_PORT" -gt 65535 ]; then
+    echo "Invalid port"
+    exit 1
+  fi
 fi
 
 # Set ETHERNAL_HOST based on EXPOSED_PORT
@@ -195,7 +199,6 @@ output_caddyfile() {
         reverse_proxy backend:8888 {
             header_up Host {host}
             header_up X-Real-IP {remote_host}
-            header_up X-Forwarded-For {remote_host}
             header_up X-Forwarded-Proto {scheme}
         }
     }
@@ -204,7 +207,6 @@ output_caddyfile() {
         reverse_proxy backend:8888 {
             header_up Host {host}
             header_up X-Real-IP {remote_host}
-            header_up X-Forwarded-For {remote_host}
             header_up X-Forwarded-Proto {scheme}
         }
     }
@@ -214,7 +216,6 @@ output_caddyfile() {
         reverse_proxy soketi:6001 {
             header_up Host {host}
             header_up X-Real-IP {remote_host}
-            header_up X-Forwarded-For {remote_host}
             header_up X-Forwarded-Proto {scheme}
             header_up Upgrade \"websocket\"
             header_up Connection \"Upgrade\"
@@ -225,7 +226,6 @@ output_caddyfile() {
         reverse_proxy frontend:8080 {
             header_up Host {host}
             header_up X-Real-IP {remote_host}
-            header_up X-Forwarded-For {remote_host}
             header_up X-Forwarded-Proto {scheme}
         }
     }
@@ -245,9 +245,10 @@ output_caddyfile() {
     local caddyfile_content
     if [ "$SSL_ENABLED" = "false" ]; then
       # HTTP only, no TLS, but with domain
-      caddyfile_content="${domain_block} {
-${caddyfile_body}
-}"
+      caddyfile_content="{ auto_https off }
+      ${domain_block} {
+        ${caddyfile_body}
+      }"
       if [ "$dry_run" = true ]; then
         printf '\n--- Caddyfile ---\n'
         printf "%s\n" "$caddyfile_content"
