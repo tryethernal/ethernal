@@ -56,7 +56,7 @@ echo ""
 echo "######### Starting Ethernal Setup #########"
 echo ""
 # Prompt for values
-read -p "Enter domain name or server IP address: " APP_URL
+read -p "Enter domain name (APEX, without www) or server IP address: " APP_URL
 # Strip http:// or https:// from APP_URL if present
 APP_URL=${APP_URL#http://}
 APP_URL=${APP_URL#https://}
@@ -309,12 +309,27 @@ output_pm2_env() {
 }
 
 output_docker_compose_env() {
+  local docker_env_content
+  if is_valid_domain "$APP_URL"; then
+    if [ "$EXPOSED_PORT" = "80" ]; then
+      docker_env_content="EXPOSED_PORT=80\nEXPOSED_SSL_PORT=443"
+    else
+      if [ "$SSL_ENABLED" = "true" ]; then
+        docker_env_content="EXPOSED_PORT=80\nEXPOSED_SSL_PORT=$EXPOSED_PORT"
+      else
+        docker_env_content="EXPOSED_PORT=$EXPOSED_PORT\nEXPOSED_SSL_PORT=443"
+      fi
+    fi
+  else
+    docker_env_content="EXPOSED_PORT=$EXPOSED_PORT"
+  fi
+
   if [ "$dry_run" = true ]; then
     printf '\n--- .env.docker-compose.prod ---\n'
-    printf "EXPOSED_PORT=%s\n" "$EXPOSED_PORT"
+    printf "%s\n" "$docker_env_content"
     echo "Printed .env.docker-compose.prod (dry run)"
   else
-    printf "EXPOSED_PORT=%s\n" "$EXPOSED_PORT" > .env.docker-compose.prod
+    printf "%s\n" "$docker_env_content" > .env.docker-compose.prod
     echo "Wrote .env.docker-compose.prod"
   fi
 }

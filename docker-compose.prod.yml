@@ -107,8 +107,6 @@ services:
   pgbouncer:
     image: edoburu/pgbouncer
     container_name: pgbouncer
-    ports:
-      - "5433:5433"
     env_file: ./pgbouncer/.env.pgbouncer.prod
     volumes:
       - ./pgbouncer/:/etc/pgbouncer:ro
@@ -128,7 +126,7 @@ services:
       - soketi
     ports:
       - "${EXPOSED_PORT}:80"
-      - "443:443"
+      - "${EXPOSED_SSL_PORT}:443"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy_data:/data
