@@ -51,6 +51,8 @@ POSTGRES_DB="ethernal"
 # Generate md5-hashed password for PgBouncer (md5 + md5(PASSWORD + USERNAME))
 HASH_INPUT="${POSTGRES_PASSWORD}${POSTGRES_USER}"
 HASHED_PASS="md5$(echo -n "$HASH_INPUT" | md5sum | awk '{print $1}')"
+
+echo ""
 echo "######### Starting Ethernal Setup #########"
 echo ""
 # Prompt for values
@@ -196,38 +198,23 @@ output_caddyfile() {
   # Shared Caddyfile body (reused in all cases)
   local caddyfile_body
   caddyfile_body="    handle /api/* {
-        reverse_proxy backend:8888 {
-            header_up Host {host}
-            header_up X-Real-IP {remote_host}
-            header_up X-Forwarded-Proto {scheme}
-        }
+      reverse_proxy backend:8888
     }
 
     handle_path /bull* {
-        reverse_proxy backend:8888 {
-            header_up Host {host}
-            header_up X-Real-IP {remote_host}
-            header_up X-Forwarded-Proto {scheme}
-        }
+      reverse_proxy backend:8888
     }
 
     # WebSocket traffic (Soketi)
     handle /app* {
-        reverse_proxy soketi:6001 {
-            header_up Host {host}
-            header_up X-Real-IP {remote_host}
-            header_up X-Forwarded-Proto {scheme}
-            header_up Upgrade \"websocket\"
-            header_up Connection \"Upgrade\"
-        }
+      reverse_proxy soketi:6001 {
+        header_up Upgrade \"websocket\"
+        header_up Connection \"Upgrade\"
+      }
     }
 
     handle {
-        reverse_proxy frontend:8080 {
-            header_up Host {host}
-            header_up X-Real-IP {remote_host}
-            header_up X-Forwarded-Proto {scheme}
-        }
+      reverse_proxy frontend:8080
     }
 
     encode gzip"
@@ -245,7 +232,9 @@ output_caddyfile() {
     local caddyfile_content
     if [ "$SSL_ENABLED" = "false" ]; then
       # HTTP only, no TLS, but with domain
-      caddyfile_content="{ auto_https off }
+      caddyfile_content="{
+        auto_https off
+      }
       ${domain_block} {
         ${caddyfile_body}
       }"
