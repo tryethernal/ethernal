@@ -22,7 +22,7 @@ exports[`ExplorerGeneral.vue > Should display inactive subscription message 1`] 
     <h4>Sync</h4>
     <explorer-sync-stub explorer="[object Object]"></explorer-sync-stub>
     <h4 class="mt-2">Billing</h4>
-    <explorer-billing-stub explorer="[object Object]"></explorer-billing-stub>
+    <explorer-billing-stub explorer="[object Object]" sso="false"></explorer-billing-stub>
     <h4 class="mt-2">Domain Aliases</h4>
     <explorer-domains-list-stub explorer="[object Object]" disabled="true"></explorer-domains-list-stub>
   </div>
@@ -86,7 +86,7 @@ exports[`ExplorerGeneral.vue > Should display the explorer page 1`] = `
     <h4>Sync</h4>
     <explorer-sync-stub explorer="[object Object]"></explorer-sync-stub>
     <h4 class="mt-2">Billing</h4>
-    <explorer-billing-stub explorer="[object Object]"></explorer-billing-stub>
+    <explorer-billing-stub explorer="[object Object]" sso="false"></explorer-billing-stub>
     <h4 class="mt-2">Domain Aliases</h4>
     <explorer-domains-list-stub explorer="[object Object]" disabled="true"></explorer-domains-list-stub>
   </div>
@@ -127,7 +127,7 @@ exports[`ExplorerGeneral.vue > Should display trial message 1`] = `
     <h4>Sync</h4>
     <explorer-sync-stub explorer="[object Object]"></explorer-sync-stub>
     <h4 class="mt-2">Billing</h4>
-    <explorer-billing-stub explorer="[object Object]"></explorer-billing-stub>
+    <explorer-billing-stub explorer="[object Object]" sso="false"></explorer-billing-stub>
     <h4 class="mt-2">Domain Aliases</h4>
     <explorer-domains-list-stub explorer="[object Object]" disabled="true"></explorer-domains-list-stub>
   </div>

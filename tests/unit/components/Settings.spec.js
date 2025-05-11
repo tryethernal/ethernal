@@ -26,11 +26,16 @@ describe('Settings.vue', () => {
 
     it('Should load the settings page', async () => {
         vi.spyOn(server, 'getWorkspaces')
-            .mockResolvedValueOnce({ data: [{ id: 'Hardhat', name: 'Hardhat', rpcServer: 'http://localhost:1234' }]})
+        .mockResolvedValueOnce({ data: [{ id: 'Hardhat', name: 'Hardhat', rpcServer: 'http://localhost:1234' }]})
         const wrapper = mount(Settings, {
             global: {
                 stubs: ['Workspace-List', 'Billing', 'Account']
-            }
+            },
+            plugins: [createTestingPinia({
+                initialState: {
+                    env: { isSelfHosted: false }
+                }
+            })]
         });
         await new Promise(process.nextTick);
         expect(wrapper.html()).toMatchSnapshot();

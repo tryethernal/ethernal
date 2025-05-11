@@ -37,7 +37,7 @@ exports[`ExplorerDangerZone.vue > Should display a warning message and an active
 </div>"
 `;
 
-exports[`ExplorerDangerZone.vue > Should have an active button if active subscription & billing disabled 1`] = `
+exports[`ExplorerDangerZone.vue > Should have an active button if active subscription & self-hosted 1`] = `
 "<div class="v-sheet v-theme--light bg-error v-sheet--border v-sheet--rounded">
   <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated elevation-0">
     <!---->
@@ -61,7 +61,7 @@ exports[`ExplorerDangerZone.vue > Should have an active button if active subscri
     <div class="v-card-text font-weight-medium text-error">
       <!--v-if-->
       <div class="v-row mt-2 pb-1">
-        <div class="v-spacer"></div><button type="button" class="v-btn v-theme--light bg-error v-btn--density-default v-btn--size-default v-btn--variant-flat mt-2"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+        <div class="v-spacer"></div><button type="button" class="v-btn v-btn--disabled v-theme--light bg-error v-btn--density-default v-btn--size-default v-btn--variant-flat mt-2" disabled=""><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
           <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-delete mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i>Delete Explorer</span>
           <!---->
           <!---->
