@@ -12,4 +12,4 @@ const setupRouter = createRouter({
     routes
 });
 
-export default setupRouter; 
+export default setupRouter;

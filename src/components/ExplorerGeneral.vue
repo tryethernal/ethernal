@@ -13,10 +13,12 @@
         </v-card>
     </template>
     <template v-else-if="explorer && workspaces.length > 0">
-        <v-alert class="mb-2" text type="warning" v-if="explorer.stripeSubscription && explorer.stripeSubscription.isTrialing">
+        <v-alert class="my-2" text type="warning" v-if="explorer.stripeSubscription && explorer.stripeSubscription.isTrialing">
             This explorer is on a free trial plan. To keep it running once it's over, add a payment method.
         </v-alert>
-        <v-alert text type="error" v-if="!explorer.stripeSubscription">This explorer is not active. To activate it, start a subscription.</v-alert>
+        <v-alert class="my-2" text type="error" v-if="!explorer.stripeSubscription">
+            This explorer is not active. To activate it, start a subscription.
+        </v-alert>
         <div class="text-body-2 mt-4">
             <span class="text-caption">Explorer URL: <a :href="'//' + explorerDomain" target="_blank">{{ explorerDomain }}</a></span>
         </div>
