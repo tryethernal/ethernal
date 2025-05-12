@@ -33,6 +33,23 @@ const ExplorerV2Dex = models.ExplorerV2Dex;
 const V2DexPair = models.V2DexPair;
 
 /**
+ * Checks if a domain is a registered domain.
+ * We use on self hosted instances to check if
+ * we can issue a SSL certificate for the domain.
+ * @param {string} domain - The domain to check
+ * @returns {Promise<boolean>} - True if the domain is registered, false otherwise
+ */
+const isValidExplorerDomain = async (domain) => {
+    const explorerDomain = await ExplorerDomain.findOne({
+        where: {
+            domain
+        }
+    });
+
+    return !!explorerDomain;
+}
+
+/**
  * Creates an admin user
  * This should only be called on routes that are protected by the self-hosted middleware
  * @param {string} email - The email of the admin user
@@ -3103,5 +3120,6 @@ module.exports = {
     getWorkspaceTokenTransfers: getWorkspaceTokenTransfers,
     getTopTokensByHolders: getTopTokensByHolders,
     createAdmin: createAdmin,
-    canSetupAdmin: canSetupAdmin
+    canSetupAdmin: canSetupAdmin,
+    isValidExplorerDomain: isValidExplorerDomain
 };

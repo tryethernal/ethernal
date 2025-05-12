@@ -4,4 +4,4 @@
 
 <script setup>
 import SelfHostedSetup from './components/SelfHostedSetup.vue';
-</script> 
+</script>
