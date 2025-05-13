@@ -192,14 +192,7 @@ jobs:
       - name: Build & push backend image
         run: |
           flyctl auth docker
-          docker build --target prod_back -t registry.fly.io/ethernal:${{ github.sha }} -f Dockerfile .
-          docker push registry.fly.io/ethernal:${{ github.sha }}
-
-      - name: Build & push PM2 server image
-        run: |
-          flyctl auth docker
-          docker build --target prod -t registry.fly.io/ethernal-pm2:${{ github.sha }} -f Dockerfile.pm2 .
-          docker push registry.fly.io/ethernal-pm2:${{ github.sha }}
+          ./build-prod-images.sh ${{ needs.create_release.outputs.current_version }}
 
   release_front:
     if: startsWith(github.ref, 'refs/tags/v')

@@ -1,6 +1,11 @@
 #!/bin/bash
 set -e
 
+# Accept tag as first argument, default to 'latest' if not provided
+TAG="${1:-latest}"
+
+echo "Using image tag: $TAG"
+
 # Build and push amd64 and arm64 images using buildx (multi-arch, same tag)
 echo "Building and pushing multi-arch images (amd64 + arm64) with buildx..."
 DOCKER_BUILDKIT=1 docker buildx build \
@@ -19,23 +24,23 @@ DOCKER_BUILDKIT=1 docker buildx build \
     --build-arg VITE_SENTRY_ENABLED \
     --build-arg VITE_VERSION \
     --build-arg VITE_IS_SELF_HOSTED=true \
-    -t antoinedc44/ethernal-frontend:latest \
+    -t antoinedc44/ethernal-frontend:$TAG \
     --push .
 
 DOCKER_BUILDKIT=1 docker buildx build \
     --platform linux/amd64,linux/arm64 \
     -f Dockerfile.backend \
-    -t antoinedc44/ethernal-backend:latest \
+    -t registry.fly.io/ethernal-backend:$TAG \
     --push .
 
 DOCKER_BUILDKIT=1 docker buildx build \
     --platform linux/amd64,linux/arm64 \
     -f Dockerfile.pm2 \
     --target prod \
-    -t antoinedc44/ethernal-pm2:latest \
+    -t registry.fly.io/ethernal-pm2:$TAG \
     --push .
 
 echo "All production images built & pushed successfully:"
-echo "  ethernal-frontend:latest"
-echo "  ethernal-backend:latest"
-echo "  ethernal-pm2:latest" 
+echo "  ethernal-frontend:$TAG"
+echo "  ethernal-backend:$TAG"
+echo "  ethernal-pm2:$TAG" 
