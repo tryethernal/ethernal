@@ -2,7 +2,7 @@ const { getAppDomain, getDefaultPlanSlug, getDefaultExplorerTrialDays, getStripe
 const stripe = require('stripe')(getStripeSecretKey());
 const express = require('express');
 const router = express.Router();
-const { isStripeEnabled } = require('../lib/flags');
+const { isStripeEnabled, isSelfHosted } = require('../lib/flags');
 const { ProviderConnector, DexConnector } = require('../lib/rpc');
 const { enqueue } = require('../lib/queue');
 const logger = require('../lib/logger');
@@ -768,6 +768,9 @@ router.get('/search', async (req, res, next) => {
             return managedError(new Error('Missing parameters.'), req, res);
 
         let explorer;
+
+        if (!isSelfHosted() && data.domain == `app.${getAppDomain()}`)
+            return res.sendStatus(200);
 
         if (data.domain == getAppDomain())
             return res.sendStatus(200);
