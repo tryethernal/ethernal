@@ -1,0 +1,156 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+      target: dev
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./src:/app/src
+      - ./public:/app/public
+      - ./.env:/app/.env
+    command: yarn serve
+    networks:
+      - ethernal-network
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./run:/app
+      - ./run/.env:/app/.env
+    command: npm run start
+    env_file: ./run/.env
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - ethernal-network
+
+  high_priority_worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    volumes:
+      - ./run:/app
+      - ./run/.env:/app/.env
+    command: npm run worker:high
+    env_file: ./run/.env
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - ethernal-network
+
+  medium_priority_worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    volumes:
+      - ./run:/app
+      - ./run/.env:/app/.env
+    command: npm run worker:medium
+    env_file: ./run/.env
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - ethernal-network
+
+  low_priority_worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    volumes:
+      - ./run:/app
+      - ./run/.env:/app/.env
+    command: npm run worker:low
+    env_file: ./run/.env
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - ethernal-network
+
+  postgres:
+    image: timescale/timescaledb:2.11.1-pg14
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=ethernal
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - ethernal-network
+
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - ethernal-network
+
+  soketi:
+    image: quay.io/soketi/soketi:1.6.1-16-debian
+    ports:
+      - "6001:6001"
+    env_file: ./run/.env
+    networks:
+      - ethernal-network
+
+  stripe-cli:
+    image: stripe/stripe-cli
+    command: listen --forward-to http://backend:8888/webhooks/stripe
+    env_file: .env.stripe
+    networks:
+      - ethernal-network
+
+  pm2:
+    build:
+      context: .
+      dockerfile: Dockerfile.pm2
+      target: dev
+    volumes:
+      - ./pm2-server:/app
+    env_file: ./pm2-server/.env
+    depends_on:
+      - backend
+    networks:
+      - ethernal-network
+
+  pgbouncer:
+    image: edoburu/pgbouncer
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - AUTH_TYPE=scram-sha-256
+      - POOL_MODE=transaction
+      - ADMIN_USERS=postgres,admin
+      - MAX_CLIENT_CONN=1000
+    ports:
+      - "5433:5432"
+    depends_on:
+      - postgres
+    networks:
+      - ethernal-network
+
+networks:
+  ethernal-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data: 

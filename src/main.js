@@ -21,25 +21,36 @@ import App from './App.vue';
 import Demo from './Demo.vue';
 import SSO from './SSO.vue';
 import Embedded from './Embedded.vue';
+import SetupRoot from './SetupRoot.vue';
+import setupRouter from './plugins/setupRouter';
 
 const pinia = createPinia();
+
+const isSentryConfigured = import.meta.env.VITE_SENTRY_DSN_SECRET &&
+    import.meta.env.VITE_SENTRY_DSN_PROJECT_ID &&
+    import.meta.env.VITE_SENTRY_AUTH_TOKEN &&
+    import.meta.env.VITE_SENTRY_ORG &&
+    import.meta.env.VITE_SENTRY_PROJECT &&
+    import.meta.env.VITE_SENTRY_URL;
 
 const createVueApp = (rootComponent, options) => {
     const app = createApp(rootComponent);
 
-    Sentry.init({
-        app,
-        environment: import.meta.env.MODE,
-        release: `ethernal@${import.meta.env.VITE_VERSION}`,
-        dsn: `${window.location.protocol}//${import.meta.env.VITE_SENTRY_DSN_SECRET}@${window.location.host}/${import.meta.env.VITE_SENTRY_DSN_PROJECT_ID}`,
-        integrations: [
-            Sentry.browserTracingIntegration({ router }),
-            Sentry.browserProfilingIntegration(),
-        ],
-        tracesSampleRate: 1.0,
-        tracePropagationTargets: [/.*/],
-        enabled: false,
-    });
+    if (isSentryConfigured) {
+        Sentry.init({
+            app,
+            environment: import.meta.env.MODE,
+            release: `ethernal@${import.meta.env.VITE_VERSION}`,
+            dsn: `${window.location.protocol}//${import.meta.env.VITE_SENTRY_DSN_SECRET}@${window.location.host}/${import.meta.env.VITE_SENTRY_DSN_PROJECT_ID}`,
+            integrations: [
+                Sentry.browserTracingIntegration({ router }),
+                Sentry.browserProfilingIntegration(),
+            ],
+            tracesSampleRate: 1.0,
+            tracePropagationTargets: [/.*/],
+            enabled: import.meta.env.VITE_SENTRY_ENABLED
+        });
+    }
 
     function createPiniaGlobalPlugin(app) {
         return () => ({ globalProperties: app.config.globalProperties });
@@ -65,11 +76,14 @@ const createVueApp = (rootComponent, options) => {
 
     return app;
 }
-if (import.meta.env.VITE_ENABLE_DEMO && window.location.pathname.startsWith('/demo'))
+
+if (!import.meta.env.VITE_IS_SELF_HOSTED && window.location.pathname.startsWith('/demo'))
     createVueApp(Demo, { router: demoRouter }).mount('#app');
-else if (window.location.pathname.startsWith('/embedded'))
+else if (window.location.pathname.startsWith('/embedded') && !import.meta.env.VITE_IS_SELF_HOSTED)
     createVueApp(Embedded, { router: embeddedRouter, provided: { embedded: true } }).mount('#app');
 else if (window.location.pathname.endsWith('/sso'))
     createVueApp(SSO, { router: ssoRouter }).mount('#app');
+else if (window.location.pathname.startsWith('/setup') && import.meta.env.VITE_IS_SELF_HOSTED)
+    createVueApp(SetupRoot, { router: setupRouter }).mount('#app');
 else
     createVueApp(App, { router }).mount('#app');

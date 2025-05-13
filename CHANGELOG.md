@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.2.0] - 2025-04-31
+### Added
+- Instructions on how to self host
+- docker-compose.prod.yml that contains everything needed to self host Ethernal
+- Self hosted installation scripts. `make start` should install everything.
+
+### Changed
+- Flagging for self hosted version
+
+## [5.1.1] - 2025-04-31
+### Changed
+- Reduce app bar size + better styling for text there
+
 ## [5.1.0] - 2025-04-30
 ### Added
 - Dark theme mode

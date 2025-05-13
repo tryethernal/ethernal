@@ -117,7 +117,7 @@ describe('ExplorerDex.vue', () => {
             global: {
                 stubs,
                 plugins: [createTestingPinia({ initialState: {
-                    env: { isAdmin: true },
+                    user: { isAdmin: true },
                     explorer: { v2Dex: null },
                 } })]
             }

@@ -13,10 +13,12 @@
         </v-card>
     </template>
     <template v-else-if="explorer && workspaces.length > 0">
-        <v-alert class="mb-2" text type="warning" v-if="explorer.stripeSubscription && explorer.stripeSubscription.isTrialing">
+        <v-alert class="my-2" text type="warning" v-if="explorer.stripeSubscription && explorer.stripeSubscription.isTrialing">
             This explorer is on a free trial plan. To keep it running once it's over, add a payment method.
         </v-alert>
-        <v-alert text type="error" v-if="!explorer.stripeSubscription">This explorer is not active. To activate it, start a subscription.</v-alert>
+        <v-alert class="my-2" text type="error" v-if="!explorer.stripeSubscription">
+            This explorer is not active. To activate it, start a subscription.
+        </v-alert>
         <div class="text-body-2 mt-4">
             <span class="text-caption">Explorer URL: <a :href="'//' + explorerDomain" target="_blank">{{ explorerDomain }}</a></span>
         </div>
@@ -28,18 +30,18 @@
             <v-col cols="6">
                 <h4>Sync</h4>
                 <Explorer-Sync :explorer="explorer" />
-                <template v-if="envStore.isBillingEnabled">
+                <template v-if="!envStore.isSelfHosted">
                     <h4 class="mt-2">Billing</h4>
                     <Explorer-Billing :explorer="explorer" @updated="loadExplorer(id)" :sso="sso" />
                 </template>
                 <h4 class="mt-2">Domain Aliases</h4>
-                <Explorer-Domains-List :key="JSON.stringify(capabilities)" :explorer="explorer" :disabled="envStore.isBillingEnabled && (!explorer.stripeSubscription || !explorer.stripeSubscription.stripePlan.capabilities.customDomain)" @updated="loadExplorer(id)" />
+                <Explorer-Domains-List :key="JSON.stringify(capabilities)" :explorer="explorer" :disabled="!explorer.stripeSubscription || !explorer.stripeSubscription.stripePlan.capabilities.customDomain" @updated="loadExplorer(id)" />
             </v-col>
         </v-row>
         <v-row>
             <v-col>
                 <h4>Branding</h4>
-                <Explorer-Branding :key="JSON.stringify(capabilities)" :explorer="explorer" :disabled="envStore.isBillingEnabled && (!explorer.stripeSubscription || !explorer.stripeSubscription.stripePlan.capabilities.branding)" @updated="loadExplorer(id)" />
+                <Explorer-Branding :key="JSON.stringify(capabilities)" :explorer="explorer" :disabled="!explorer.stripeSubscription || !explorer.stripeSubscription.stripePlan.capabilities.branding" @updated="loadExplorer(id)" />
             </v-col>
         </v-row>
         <v-row v-if="!sso">

@@ -48,4 +48,11 @@ jest.mock('../../../lib/env', () => ({
     getCounterNamespace: jest.fn(() => 'dev'),
     whitelistedNetworkIdsForDemo: jest.fn(() => '31337,99999'),
     maxDemoExplorersForNetwork: jest.fn(() => 3),
+    getFirebaseSignerKey: jest.fn(() => 'a'),
+    getFirebaseSaltSeparator: jest.fn(() => 'a'),
+    getFirebaseRounds: jest.fn(() => 1),
+    getFirebaseMemCost: jest.fn(() => 1),
+    getLogLevel: jest.fn(() => 'info'),
+    getServeFrontend: jest.fn(() => false),
+    getSecret: jest.fn(() => 'secret')
 }));

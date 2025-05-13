@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`NewExplorerDomainModal.vue > Should display dns setup info 1`] = `
+exports[`NewExplorerDomainModal.vue > Should display correct html when the input is filled with a domain name 1`] = `
 "<div class="v-dialog-stub" max-width="600">
   <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
     <!---->
@@ -80,6 +80,191 @@ exports[`NewExplorerDomainModal.vue > Should display dns setup info 1`] = `
         <div style="border-radius: 5px;" class="mb-1 pa-2 bg-black text-white font-weight-medium">explorer.protocol.com A 37.16.1.34</div>
         <div class="v-card-actions">
           <div class="v-spacer"></div><button type="button" class="v-btn v-btn--slim v-theme--light text-primary v-btn--density-default v-btn--size-default v-btn--variant-text" tyoe="submit"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+            <!----><span class="v-btn__content" data-no-activator="">Save</span>
+            <!---->
+            <!---->
+          </button>
+        </div>
+      </form>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+</div>"
+`;
+
+exports[`NewExplorerDomainModal.vue > Should display correct html when the input is filled with a domain name in self-hosted setup 1`] = `
+"<div class="v-dialog-stub" max-width="600">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-title d-flex justify-space-between align-center">
+      <h4>Add Domain Alias</h4><button type="button" class="v-btn v-btn--icon v-theme--light text-grey v-btn--density-default v-btn--size-default v-btn--variant-text"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+        <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-close mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+        <!---->
+        <!---->
+      </button>
+    </div>
+    <div class="v-card-text">
+      <!--v-if-->
+      <form class="v-form" novalidate=""> Enter your domain alias without the "http(s)" protocol. <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field mt-2">
+          <!---->
+          <div class="v-input__control">
+            <div class="v-field v-field--active v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr">
+              <div class="v-field__overlay"></div>
+              <div class="v-field__loader">
+                <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                  <!---->
+                  <div class="v-progress-linear__background"></div>
+                  <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                  <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                    <div class="v-progress-linear__indeterminate">
+                      <div class="v-progress-linear__indeterminate long"></div>
+                      <div class="v-progress-linear__indeterminate short"></div>
+                    </div>
+                  </transition-stub>
+                  <!---->
+                </div>
+              </div>
+              <!---->
+              <div class="v-field__field" data-no-activator="">
+                <!----><label class="v-label v-field-label" for="input-1">
+                  <!---->Domain Alias
+                </label>
+                <!----><input size="1" type="text" id="input-1" aria-describedby="input-1-messages" class="v-field__input" value="explorer.protocol.com">
+                <!---->
+              </div>
+              <!---->
+              <!---->
+              <div class="v-field__outline">
+                <div class="v-field__outline__start"></div>
+                <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-1">
+                    <!---->Domain Alias
+                  </label></div>
+                <div class="v-field__outline__end"></div>
+                <!---->
+              </div>
+            </div>
+          </div>
+          <!---->
+          <div id="input-1-messages" class="v-input__details" role="alert" aria-live="polite">
+            <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
+              <!---->
+            </transition-group-stub>
+            <!---->
+          </div>
+        </div>
+        <div class="mb-1">Log in to the account you have with your DNS provider, and add the following record:</div>
+        <div style="border-radius: 5px;" class="mb-1 pa-2 bg-black text-white font-weight-medium">explorer.protocol.com A &lt;ethernal-server-ip&gt;</div>
+        <div class="v-card-actions">
+          <div class="v-spacer"></div><button type="button" class="v-btn v-btn--slim v-theme--light text-primary v-btn--density-default v-btn--size-default v-btn--variant-text" tyoe="submit"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+            <!----><span class="v-btn__content" data-no-activator="">Save</span>
+            <!---->
+            <!---->
+          </button>
+        </div>
+      </form>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+</div>"
+`;
+
+exports[`NewExplorerDomainModal.vue > Should display dns setup info 1`] = `
+"<div class="v-dialog-stub" max-width="600">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-title d-flex justify-space-between align-center">
+      <h4>Add Domain Alias</h4><button type="button" class="v-btn v-btn--icon v-theme--light text-grey v-btn--density-default v-btn--size-default v-btn--variant-text"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+        <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-close mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+        <!---->
+        <!---->
+      </button>
+    </div>
+    <div class="v-card-text">
+      <!--v-if-->
+      <form class="v-form" novalidate=""> Enter your domain alias without the "http(s)" protocol. <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field mt-2">
+          <!---->
+          <div class="v-input__control">
+            <div class="v-field v-field--center-affix v-field--variant-outlined v-theme--light v-locale--is-ltr">
+              <div class="v-field__overlay"></div>
+              <div class="v-field__loader">
+                <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                  <!---->
+                  <div class="v-progress-linear__background"></div>
+                  <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                  <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                    <div class="v-progress-linear__indeterminate">
+                      <div class="v-progress-linear__indeterminate long"></div>
+                      <div class="v-progress-linear__indeterminate short"></div>
+                    </div>
+                  </transition-stub>
+                  <!---->
+                </div>
+              </div>
+              <!---->
+              <div class="v-field__field" data-no-activator="">
+                <!----><label class="v-label v-field-label" for="input-1">
+                  <!---->Domain Alias
+                </label>
+                <!----><input size="1" type="text" id="input-1" aria-describedby="input-1-messages" class="v-field__input">
+                <!---->
+              </div>
+              <!---->
+              <!---->
+              <div class="v-field__outline">
+                <div class="v-field__outline__start"></div>
+                <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-1">
+                    <!---->Domain Alias
+                  </label></div>
+                <div class="v-field__outline__end"></div>
+                <!---->
+              </div>
+            </div>
+          </div>
+          <!---->
+          <div id="input-1-messages" class="v-input__details" role="alert" aria-live="polite">
+            <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
+              <!---->
+            </transition-group-stub>
+            <!---->
+          </div>
+        </div>
+        <!--v-if-->
+        <div class="v-card-actions">
+          <div class="v-spacer"></div><button type="button" class="v-btn v-btn--disabled v-btn--slim v-theme--light text-primary v-btn--density-default v-btn--size-default v-btn--variant-text" disabled="" tyoe="submit"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
             <!----><span class="v-btn__content" data-no-activator="">Save</span>
             <!---->
             <!---->

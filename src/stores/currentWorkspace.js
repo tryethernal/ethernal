@@ -37,13 +37,11 @@ export const useCurrentWorkspaceStore = defineStore('currentWorkspace', {
     actions: {
         startBrowserSync() {
             const userStore = useUserStore();
-            const envStore = useEnvStore();
             const privateCurrentWorkspaceStore = usePrivateCurrentWorkspaceStore();
 
             const rpcListenerWorker = new Worker(new URL('../workers/blockSyncer.worker.js', import.meta.url), { type: 'module' });
             rpcListenerWorker.onmessage = () => this.updateBrowserSyncStatus(false);
             rpcListenerWorker.postMessage({
-                apiRoot: envStore.apiRoot,
                 rpcServer: this.rpcServer,
                 apiToken: userStore.apiToken,
                 workspace: this.name
@@ -131,7 +129,7 @@ export const useCurrentWorkspaceStore = defineStore('currentWorkspace', {
         displayAds() {
             const explorer = useExplorerStore();
 
-            if (!explorer.id) return true;
+            if (!explorer.id || useEnvStore().isSelfHosted) return true;
 
             if (!explorer.adsEnabled) return false;
 

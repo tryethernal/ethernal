@@ -3,11 +3,12 @@
 */
 
 const auth = require('basic-auth');
+const { getBullboardUsername, getBullboardPassword } = require('../lib/env');
 
 module.exports = (req, res, next) => {
     const user = auth(req);
 
-    if (user && user.name == process.env.BULLBOARD_USERNAME && user.pass == process.env.BULLBOARD_PASSWORD) {
+    if (user && user.name == getBullboardUsername() && user.pass == getBullboardPassword()) {
         next();
     }
     else {

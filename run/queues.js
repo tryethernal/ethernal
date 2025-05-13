@@ -1,6 +1,6 @@
 const { Queue } = require('bullmq');
 const connection = require('./lib/redis');
-const priorities = require('./workers/priorities.json');
+const priorities = require('./workers/priorities');
 
 const queues = {};
 priorities['high'].forEach(jobName => {
