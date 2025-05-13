@@ -1,0 +1,37 @@
+FROM node:18-alpine
+
+# Add Python and build dependencies
+RUN apk add --no-cache python3 make g++ gcc
+
+WORKDIR /app
+
+# Install dependencies first (better layer caching)
+COPY run/package*.json ./
+RUN npm ci --only=production
+
+# Copy application files
+COPY run/api ./api
+COPY run/config ./config
+COPY run/jobs ./jobs
+COPY run/lib ./lib
+COPY run/middlewares ./middlewares
+COPY run/models ./models
+COPY run/webhooks ./webhooks
+COPY run/workers ./workers
+COPY run/migrations ./migrations
+COPY run/seeders ./seeders
+COPY run/.sequelizerc ./
+COPY run/app.js .
+COPY run/index.js .
+COPY run/queues.js .
+COPY run/scheduler.js .
+COPY run/instrument.js .
+
+COPY ethernal-95a14-19f78a7e26cc.json ./ethernal-95a14-19f78a7e26cc.json
+
+# Install sequelize-cli globally for migrations
+RUN npm install -g sequelize-cli && \
+    npm install -g nodemon
+
+EXPOSE 8888
+CMD ["node", "index.js"] 
