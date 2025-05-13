@@ -4,7 +4,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../lib/firebase');
 const { withTimeout } = require('../lib/utils');
-const { getDiscordFeedbackChannelWebhook } = require('../lib/env');
+const { getDiscordFeedbackChannelWebhook, getProductRoadToken } = require('../lib/env');
 const authMiddleware = require('../middlewares/auth');
 const { managedError, unmanagedError } = require('../lib/errors');
 
@@ -28,13 +28,13 @@ ${data.message}
 router.get('/productRoadToken', authMiddleware, async (req, res, next) => {
     const data = { ...req.query, ...req.body.data };
     try {
-        if (!process.env.PRODUCT_ROAD_TOKEN)
+        if (!getProductRoadToken())
             return res.status(200).json({ token: null });
 
         if (!data.workspace)
             return managedError(new Error('Missing parameters.'), req, res);
 
-        const prAuthSecret = process.env.PRODUCT_ROAD_TOKEN;
+        const prAuthSecret = getProductRoadToken();
         const user = await db.getUser(data.uid);
 
         const payload = {

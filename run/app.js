@@ -1,4 +1,4 @@
-const { getSentryDsn } = require('./lib/env');
+const { getSentryDsn, getServeFrontend } = require('./lib/env');
 require('./instrument');
 const express = require('express');
 const app = express();
@@ -21,6 +21,8 @@ const webhooks = require('./webhooks');
 require('./scheduler');
 
 initializeApp();
+
+app.set('trust proxy', true);
 
 app.use(express.json({
     limit: '25mb',
@@ -64,7 +66,7 @@ app.use('/webhooks', webhooks);
 
 app.use('/bull', bullboardMiddleware, serverAdapter.getRouter());
 
-if (process.env.SERVE_FRONTEND) {
+if (getServeFrontend()) {
     app.use(express.static('dist'));
     app.get('*', (req, res) => {
         res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));

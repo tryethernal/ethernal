@@ -10,7 +10,6 @@ module.exports = {
     receiptSync: require('./receiptSync'),
     removeStalledBlock: require('./removeStalledBlock'),
     increaseStripeBillingQuota: require('./increaseStripeBillingQuota'),
-    deleteDuplicateBalanceChangeForWorkspace: require('./deleteDuplicateBalanceChangeForWorkspace'),
 
     // Medium Priority
     processContract: require('./processContract'),
@@ -37,7 +36,6 @@ module.exports = {
     batchContractDelete: require('./batchContractDelete'),
     removeExpiredExplorers: require('./removeExpiredExplorers'),
     deleteWorkspace: require('./deleteWorkspace'),
-    tokenTransferCleanup: require('./tokenTransferCleanup'),
     queueMonitoring: require('./queueMonitoring'),
     blockSyncMonitoring: require('./blockSyncMonitoring')
 };

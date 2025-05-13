@@ -9,7 +9,8 @@ describe('MigrateExplorerModal.vue', () => {
             global: {
                 plugins: [createTestingPinia({
                     initialState: {
-                        user: { canTrial: false }
+                        user: { canTrial: false },
+                        env: { mainDomain: 'ethernal.local:8080' }
                     }
                 })],
                 stubs: ['Explorer-Plan-Selector']
@@ -30,7 +31,8 @@ describe('MigrateExplorerModal.vue', () => {
             global: {
                 plugins: [createTestingPinia({
                     initialState: {
-                        user: { canTrial: true }
+                        user: { canTrial: true },
+                        env: { mainDomain: 'ethernal.local:8080' }
                     }
                 })],
                 stubs: ['Explorer-Plan-Selector']
@@ -51,7 +53,8 @@ describe('MigrateExplorerModal.vue', () => {
             global: {
                 plugins: [createTestingPinia({
                     initialState: {
-                        user: { canTrial: false }
+                        user: { canTrial: false },
+                        env: { mainDomain: 'ethernal.local:8080' }
                     }
                 })],
                 stubs: ['Explorer-Plan-Selector']
@@ -74,7 +77,8 @@ describe('MigrateExplorerModal.vue', () => {
             global: {
                 plugins: [createTestingPinia({
                     initialState: {
-                        user: { id: 1, canTrial: true }
+                        user: { id: 1, canTrial: true },
+                        env: { mainDomain: 'ethernal.local:8080' }
                     }
                 })],
                 stubs: ['Explorer-Plan-Selector']
@@ -95,7 +99,8 @@ describe('MigrateExplorerModal.vue', () => {
             global: {
                 plugins: [createTestingPinia({
                     initialState: {
-                        user: { id: 1, canTrial: false }
+                        user: { id: 1, canTrial: false },
+                        env: { mainDomain: 'ethernal.local:8080' }
                     }
                 })],
                 stubs: ['Explorer-Plan-Selector']

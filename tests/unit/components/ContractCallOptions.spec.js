@@ -1,7 +1,7 @@
 import ContractCallOptions from '@/components/ContractCallOptions.vue';
 import { useCurrentWorkspaceStore } from '@/stores/currentWorkspace';
 import { useWalletStore } from '@/stores/walletStore';
-import { useEnvStore } from '@/stores/env';
+import { useUserStore } from '@/stores/user';
 import { nextTick } from 'vue';
 
 const stubs = ['WalletConnectorMirror', 'HashLink'];
@@ -39,11 +39,11 @@ describe('ContractCallOptions.vue', () => {
                             gasPrice: '1000',
                             defaultAccount: null
                         },
-                        env: {
-                            isAdmin: true
-                        },
                         wallet: {
                             connectedAddress: null
+                        },
+                        user: {
+                            isAdmin: true
                         }
                     }
                 })]
@@ -60,8 +60,8 @@ describe('ContractCallOptions.vue', () => {
 
     it('Should not show info alert when not admin', async () => {
         const wrapper = createWrapper();
-        const envStore = useEnvStore();
-        envStore.isAdmin = false;
+        const userStore = useUserStore();
+        userStore.isAdmin = false;
         await flushPromises();
 
         expect(wrapper.html()).toMatchSnapshot();

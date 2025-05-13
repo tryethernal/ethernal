@@ -14,7 +14,6 @@ import Overview from '../components/Overview.vue';
 import ERC721Token from '../components/ERC721Token.vue';
 import ERC721Collections from '../components/ERC721Collections.vue';
 import ERC721Collection from '../components/ERC721Collection.vue';
-import ERC20Contract from '../components/ERC20Contract.vue';
 import ExplorerStatus from '../components/ExplorerStatus.vue';
 import Explorers from '../components/Explorers.vue';
 import Explorer from '../components/Explorer.vue';
@@ -35,25 +34,23 @@ const isLoggedIn = () => {
     return localStorage.getItem('apiToken') !== null;
 };
 
-const isPublic = () => {
-    const envStore = useEnvStore();
-    return !envStore.isAdmin;
-};
-
 const redirectIfLoggedIn = function (to, from, next) {
-    if (isLoggedIn() || isPublic()) {
-        if (to.path == '/auth')
-            next({ path: to.query.path || '/transactions', query: to.query });
-        else
-            next(to || { path: '/transactions', query: to.query });
-    } else
-        next();
+    next();
+    // if (isLoggedIn() || !envStore.isOnMainDomain) {
+    //     if (to.path == '/auth')
+    //         next({ path: to.query.path || '/transactions', query: to.query });
+    //     else
+    //         next(to || { path: '/transactions', query: to.query });
+    // } else
+    //     next();
 };
 
 const redirectIfLoggedOut = function (to, from, next) {
+    const envStore = useEnvStore();
+
     if (to.hash && to.hash.startsWith('#'))
         to.query.tab = to.hash.split('#')[1];
-    if (isLoggedIn() || isPublic())
+    if (isLoggedIn() || !envStore.isOnMainDomain)
         next();
     else
         next({ path: '/auth', query: to.query });

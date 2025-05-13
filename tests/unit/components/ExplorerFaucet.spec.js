@@ -12,7 +12,7 @@ describe('ExplorerFaucet.vue', () => {
                 stubs,
                 plugins: [createTestingPinia({
                     initialState: {
-                        env: { isAdmin: true },
+                        user: { isAdmin: true },
                         explorer: {
                             id: 1
                         }

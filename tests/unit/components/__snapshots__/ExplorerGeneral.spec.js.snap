@@ -2,12 +2,12 @@
 
 exports[`ExplorerGeneral.vue > Should display inactive subscription message 1`] = `
 "<!--v-if-->
-<div class="v-alert v-theme--light bg-error v-alert--density-default v-alert--variant-flat" role="alert">
+<div class="v-alert v-theme--light bg-error v-alert--density-default v-alert--variant-flat my-2" role="alert">
   <!----><span class="v-alert__underlay"></span>
   <!---->
   <div class="v-alert__prepend"><i class="mdi-close-circle mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="default"></i></div>
   <div class="v-alert__content">
-    <!---->This explorer is not active. To activate it, start a subscription.
+    <!----> This explorer is not active. To activate it, start a subscription.
   </div>
   <!---->
   <!---->
@@ -22,7 +22,7 @@ exports[`ExplorerGeneral.vue > Should display inactive subscription message 1`] 
     <h4>Sync</h4>
     <explorer-sync-stub explorer="[object Object]"></explorer-sync-stub>
     <h4 class="mt-2">Billing</h4>
-    <explorer-billing-stub explorer="[object Object]"></explorer-billing-stub>
+    <explorer-billing-stub explorer="[object Object]" sso="false"></explorer-billing-stub>
     <h4 class="mt-2">Domain Aliases</h4>
     <explorer-domains-list-stub explorer="[object Object]" disabled="true"></explorer-domains-list-stub>
   </div>
@@ -86,7 +86,7 @@ exports[`ExplorerGeneral.vue > Should display the explorer page 1`] = `
     <h4>Sync</h4>
     <explorer-sync-stub explorer="[object Object]"></explorer-sync-stub>
     <h4 class="mt-2">Billing</h4>
-    <explorer-billing-stub explorer="[object Object]"></explorer-billing-stub>
+    <explorer-billing-stub explorer="[object Object]" sso="false"></explorer-billing-stub>
     <h4 class="mt-2">Domain Aliases</h4>
     <explorer-domains-list-stub explorer="[object Object]" disabled="true"></explorer-domains-list-stub>
   </div>
@@ -106,7 +106,7 @@ exports[`ExplorerGeneral.vue > Should display the explorer page 1`] = `
 `;
 
 exports[`ExplorerGeneral.vue > Should display trial message 1`] = `
-"<div class="v-alert v-theme--light bg-warning v-alert--density-default v-alert--variant-flat mb-2" role="alert">
+"<div class="v-alert v-theme--light bg-warning v-alert--density-default v-alert--variant-flat my-2" role="alert">
   <!----><span class="v-alert__underlay"></span>
   <!---->
   <div class="v-alert__prepend"><i class="mdi-alert-circle mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="default"></i></div>
@@ -127,7 +127,7 @@ exports[`ExplorerGeneral.vue > Should display trial message 1`] = `
     <h4>Sync</h4>
     <explorer-sync-stub explorer="[object Object]"></explorer-sync-stub>
     <h4 class="mt-2">Billing</h4>
-    <explorer-billing-stub explorer="[object Object]"></explorer-billing-stub>
+    <explorer-billing-stub explorer="[object Object]" sso="false"></explorer-billing-stub>
     <h4 class="mt-2">Domain Aliases</h4>
     <explorer-domains-list-stub explorer="[object Object]" disabled="true"></explorer-domains-list-stub>
   </div>

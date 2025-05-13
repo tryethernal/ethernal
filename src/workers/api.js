@@ -1,11 +1,10 @@
-const axios = require('axios');
+import axios from 'axios';
 
 class Api {
-    constructor(apiToken, apiRoot, workspace) {
-        if (!apiToken || !apiRoot || !workspace)
+    constructor(apiToken, workspace) {
+        if (!apiToken || !workspace)
             throw new Error('[workers.api.constructor] Missing parameters');
 
-        this.apiRoot = apiRoot;
         this.workspace = workspace;
         axios.interceptors.request.use(
             config => {
@@ -19,14 +18,14 @@ class Api {
         if (!block)
             throw new Error('[workers.api.syncBlock] Missing block');
 
-        return axios.post(`${this.apiRoot}/api/blocks?browserSync=true`, { data: { block: block, workspace: this.workspace }});
+        return axios.post(`/api/blocks?browserSync=true`, { data: { block: block, workspace: this.workspace }});
     }
 
     syncTransaction(block, transaction, transactionReceipt) {
         if (!block || !transaction || !transactionReceipt)
             throw new Error('[workers.api.syncTransaction] Missing parameter');
 
-        return axios.post(`${this.apiRoot}/api/transactions?browserSync=true`, {
+        return axios.post(`/api/transactions?browserSync=true`, {
             data: {
                 block: block,
                 transaction: transaction,
@@ -37,5 +36,4 @@ class Api {
     }
 }
 
-
-module.exports = Api;
+export default Api;

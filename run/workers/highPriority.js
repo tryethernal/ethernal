@@ -6,7 +6,7 @@ const { Worker, MetricsTime } = require('bullmq');
 const connection = require('../lib/redis');
 const jobs = require('../jobs');
 const logger = require('../lib/logger');
-const priorities = require('./priorities.json');
+const priorities = require('./priorities.js');
 const { managedWorkerError } = require('../lib/errors');
 
 priorities['high'].forEach(jobName => {

@@ -1,44 +1,23 @@
-const sgMail = require('@sendgrid/mail')
+const sgMail = require('@sendgrid/mail');
 const { encode } = require('../lib/crypto');
+const { getAppUrl, getSendgridApiKey, getSendgridSender } = require('../lib/env');
 const { isSendgridEnabled } = require('../lib/flags');
 
-module.exports = async job => {
-    const data = job.data;
+module.exports = async (job) => {
+    const { email, userId } = job.data;
+    const jwt = encode({ userId });
+    const link = `${getAppUrl()}/auth?token=${jwt}`;
 
     if (!isSendgridEnabled())
         throw new Error('Sendgrid has not been enabled.');
 
-    if (!data.email)
-        throw new Error('Missing parameter.');
+    sgMail.setApiKey(getSendgridApiKey());
 
-    sgMail.setApiKey(process.env.SENDGRID_API_KEY)
-
-    const jwt = encode({
-        email: data.email,
-        expiresAt: Date.now() + 3600 * 1000
+    return sgMail.send({
+        to: email,
+        from: getSendgridSender(),
+        subject: 'Reset your password',
+        text: `Click on this link to reset your password: ${link}`,
+        html: `<p>Click on this link to reset your password: <a href="${link}">${link}</a></p>`
     });
-
-    const link = `${process.env.APP_URL}/auth?token=${jwt}`;
-
-    const email = {
-        to: data.email,
-        from: process.env.SENDGRID_SENDER,
-        subject: 'Your password reset request',
-        html: `
-            Hi,<br><br>
-
-            Click the following link to reset your password on Ethernal: <a href="${link}">${link}</a>.<br><br>
-
-            If you haven't requested a password reset link, you can ignore this email.<br><br>
-
-            - The Ethernal Team
-        `
-    };
-
-    const res = await sgMail.send(email);
-
-    if (res && res[0] && res[0].statusCode == 202)
-        return true
-    else
-        throw new Error(res);
-};
+}

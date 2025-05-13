@@ -4,6 +4,7 @@ const { Worker, MetricsTime } = require('bullmq');
 const connection = require('../lib/redis');
 const jobs = require('../jobs');
 const { managedWorkerError } = require('../lib/errors');
+const { getHistoricalBlocksProcessingConcurrency } = require('../lib/env');
 
 const worker = new Worker(
     'processHistoricalBlocks',
@@ -15,7 +16,7 @@ const worker = new Worker(
         )
     },
     {
-        concurrency: parseInt(process.env.HISTORICAL_BLOCKS_PROCESSING_CONCURRENCY) || 50,
+        concurrency: getHistoricalBlocksProcessingConcurrency(),
         connection,
         metrics: {
             maxDataPoints: MetricsTime.ONE_WEEK * 2,
@@ -23,3 +24,5 @@ const worker = new Worker(
     }
 );
 worker.on('failed', (job, error) => managedWorkerError(error, 'processHistoricalBlocks', job.data, 'highPriority'));
+
+module.exports = worker;

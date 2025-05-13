@@ -6,6 +6,7 @@ const { managedError, unmanagedError } = require('../lib/errors');
 const db = require('../lib/firebase');
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const authMiddleware = require('../middlewares/auth');
+const { getGoogleApiKey } = require('../lib/env');
 
 router.get('/icons', authMiddleware, async (req, res, next) => {
     const data = req.query;
@@ -36,7 +37,7 @@ router.get('/fonts', authMiddleware, async (req, res, next) => {
         if (!data.font)
             return managedError(new Error('Missing parameters'), req, res);
 
-        const { data: rawFonts } = await axios.get(`https://www.googleapis.com/webfonts/v1/webfonts?key=${process.env.GOOGLE_API_KEY}`);
+        const { data: rawFonts } = await axios.get(`https://www.googleapis.com/webfonts/v1/webfonts?key=${getGoogleApiKey()}`);
         const fonts = rawFonts.items
             .filter(rf => rf.family.toLowerCase().includes(data.font))
             .map(rf => rf.family);

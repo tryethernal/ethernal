@@ -119,7 +119,7 @@ export default {
                         else
                             return this.errorMessage = `
                                 Can't connect to remote rpc server. Is your node up?<br>
-                                Make sure CORS settings are allowing "app.${this.mainDomain}" to connect to it.<br>
+                                Make sure CORS settings are allowing "${this.envStore.mainDomain}" to connect to it.<br>
                                 Check as well that your node supports "eth_chainId" & "net_version" requests.<br>
                             `;
                     })

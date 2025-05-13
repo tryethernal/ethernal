@@ -1,22 +1,21 @@
 import { defineStore } from 'pinia';
 
+import { useUserStore } from './user';
+
 export const useEnvStore = defineStore('env', {
     state: () => ({
         version: import.meta.env.VITE_VERSION,
         environment: import.meta.env.NODE_ENV,
-        soketiHost: import.meta.env.VITE_SOKETI_HOST,
+        isSelfHosted: !!import.meta.env.VITE_IS_SELF_HOSTED,
+        soketiHost: window.location.hostname,
         soketiPort: import.meta.env.VITE_SOKETI_PORT && parseInt(import.meta.env.VITE_SOKETI_PORT),
         soketiForceTLS: !!import.meta.env.VITE_SOKETI_FORCE_TLS,
-        pusherKey: import.meta.env.VITE_PUSHER_KEY,
+        soketiKey: import.meta.env.VITE_SOKETI_KEY || 'app-key',
         postHogApiKey: import.meta.env.VITE_POSTHOG_API_KEY,
         postHogApiHost: import.meta.env.VITE_POSTHOG_API_HOST,
-        hasAnalyticsEnabled: !!import.meta.env.VITE_ENABLE_ANALYTICS,
-        hasDemoEnabled: !!import.meta.env.VITE_ENABLE_DEMO,
-        mainDomain: import.meta.env.VITE_MAIN_DOMAIN,
-        isBillingEnabled: !!import.meta.env.VITE_ENABLE_BILLING,
-        isMarketingEnabled: !!import.meta.env.VITE_ENABLE_MARKETING,
-        apiRoot: import.meta.env.VITE_API_ROOT,
-        isAdmin: location.host === `app.${import.meta.env.VITE_MAIN_DOMAIN}`,
+        hasAnalyticsEnabled: !!import.meta.env.VITE_POSTHOG_API_KEY && !!import.meta.env.VITE_POSTHOG_API_HOST,
+        mainDomain: '',
+        apiRoot: '',
         maxV2DexPairsForTrial: 20,
         nativeTokenAddress: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
         chains: {
@@ -52,4 +51,21 @@ export const useEnvStore = defineStore('env', {
             }
         }
     }),
+
+    actions: {
+        setMainDomain(mainDomain) {
+            this.mainDomain = mainDomain;
+        }
+    },
+
+    getters: {
+        isAdmin: () => {
+            const userStore = useUserStore();
+            return userStore.isAdmin;
+        },
+
+        isOnMainDomain: (state) => {
+            return window.location.host === state.mainDomain;
+        }
+    }
 });

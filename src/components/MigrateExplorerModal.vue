@@ -70,9 +70,9 @@ export default {
     }),
     setup() {
         const { id: userId, canTrial, cryptoPaymentEnabled } = storeToRefs(useUserStore());
-        const { mainDomain, isBillingEnabled } = storeToRefs(useEnvStore());
+        const { mainDomain } = storeToRefs(useEnvStore());
 
-        return { userId, canTrial, cryptoPaymentEnabled, mainDomain, isBillingEnabled };
+        return { userId, canTrial, cryptoPaymentEnabled, mainDomain };
     },
     methods: {
         open(options) {

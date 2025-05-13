@@ -5,6 +5,7 @@ const { withTimeout } = require('../lib/utils');
 const db = require('../lib/firebase');
 const authMiddleware = require('../middlewares/auth');
 const { managedError, unmanagedError } = require('../lib/errors');
+const { getApproximatedApiKey } = require('../lib/env');
 
 router.delete('/:id', authMiddleware, async (req, res, next) => {
     const data = { ...req.query, ...req.body.data };
@@ -34,7 +35,7 @@ router.get('/:id', authMiddleware, async (req, res, next) => {
         try {
             const { data: { data } } = await withTimeout(
                 axios.get(`https://cloud.approximated.app/api/vhosts/by/incoming/${domain.domain}`, {
-                    headers: { 'api-key': process.env.APPROXIMATED_API_KEY }
+                    headers: { 'api-key': getApproximatedApiKey() }
                 })
             );
             ({ dns_pointed_at, apx_hit, is_resolving, last_monitored_humanized, status, status_message, has_ssl } = data);
