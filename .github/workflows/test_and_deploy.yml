@@ -172,7 +172,7 @@ jobs:
           name: netlify_deploy_id
           path: deploy_id.txt
 
-  deploy_back:
+  deploy_back_amd64:
     if: startsWith(github.ref, 'refs/tags/v')
     needs: [create_release]
     runs-on: ubuntu-latest
@@ -198,11 +198,39 @@ jobs:
       - name: Build & push backend image
         run: |
           flyctl auth docker
-          ./build-prod-images.sh ${{ needs.create_release.outputs.current_version }}
+          ./build-prod-images.sh ${{ needs.create_release.outputs.current_version }} linux/amd64
+  
+  deploy_back_arm64:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [create_release]
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup credentials
+        run: |
+          echo "$GCLOUD_CREDENTIALS" >> ethernal-95a14-19f78a7e26cc.json
+        shell: bash
+        env:
+          GCLOUD_CREDENTIALS: ${{ secrets.GCLOUD_CREDENTIALS }}
+
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Setup Docker Buildx
+        run: |
+          docker buildx create --use
+          docker buildx inspect --bootstrap
+        shell: bash
+
+      - name: Build & push backend image
+        run: |
+          flyctl auth docker
+          ./build-prod-images.sh ${{ needs.create_release.outputs.current_version }} linux/arm64
 
   release_front:
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: [deploy_front, deploy_back]
+    needs: [deploy_front, deploy_back_amd64]
     runs-on: ubuntu-latest
     environment: production
     steps:
@@ -218,7 +246,7 @@ jobs:
 
   release_back:
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: [deploy_front, deploy_back, create_release]
+    needs: [deploy_front, deploy_back_amd64, create_release]
     runs-on: ubuntu-latest
     environment: production
     steps:
