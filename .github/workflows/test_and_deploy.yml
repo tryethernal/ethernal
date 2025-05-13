@@ -189,6 +189,12 @@ jobs:
 
       - uses: superfly/flyctl-actions/setup-flyctl@master
 
+      - name: Setup Docker Buildx
+        run: |
+          docker buildx create --use
+          docker buildx inspect --bootstrap
+        shell: bash
+
       - name: Build & push backend image
         run: |
           flyctl auth docker
