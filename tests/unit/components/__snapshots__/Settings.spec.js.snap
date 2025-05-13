@@ -67,7 +67,7 @@ exports[`Settings.vue > Should load the settings page 1`] = `
 </div>"
 `;
 
-exports[`Settings.vue > Should not display the Billing tab if stripe is disabled 1`] = `
+exports[`Settings.vue > Should not display the Billing tab if self-hosted 1`] = `
 "<div class="v-container v-container--fluid v-locale--is-ltr">
   <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated pa-4">
     <!---->

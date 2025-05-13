@@ -16,6 +16,7 @@ jest.mock('@tryghost/admin-api', () => {
 
 const db = require('../../lib/firebase');
 const env = require('../../lib/env')
+const flags = require('../../lib/flags');
 
 const processUser = require('../../jobs/processUser');
 
@@ -25,6 +26,7 @@ describe('processUser', () => {
     it('Should call the Ghost API', (done) => {
         jest.spyOn(env, 'getGhostApiKey').mockReturnValueOnce('123');
         jest.spyOn(env, 'getGhostEndpoint').mockReturnValueOnce('http://ghost');
+        jest.spyOn(flags, 'isSelfHosted').mockReturnValueOnce(false);
         jest.spyOn(db, 'getUserById').mockResolvedValueOnce({ email: 'email' });
 
         processUser({ data: { id: 1 }}).then(() => {
@@ -36,6 +38,7 @@ describe('processUser', () => {
     it('Should not call the Ghost API if no env variables', (done) => {
         jest.spyOn(env, 'getGhostApiKey').mockReturnValueOnce(null);
         jest.spyOn(env, 'getGhostEndpoint').mockReturnValueOnce(null);
+        jest.spyOn(flags, 'isSelfHosted').mockReturnValueOnce(false);
         jest.spyOn(db, 'getUserById').mockResolvedValueOnce({ email: 'email' });
 
         processUser({ data: { id: 1 }}).then(() => {
@@ -47,6 +50,7 @@ describe('processUser', () => {
     it('Should succeed if the user already exists', (done) => {
         jest.spyOn(env, 'getGhostApiKey').mockReturnValueOnce('123');
         jest.spyOn(env, 'getGhostEndpoint').mockReturnValueOnce('http://ghost');
+        jest.spyOn(flags, 'isSelfHosted').mockReturnValueOnce(false);
         jest.spyOn(db, 'getUserById').mockResolvedValueOnce({ email: 'email' });
         mockMembersAdd.mockRejectedValue({ context: 'Member already exists. Attempting to add member with existing email address' });
         

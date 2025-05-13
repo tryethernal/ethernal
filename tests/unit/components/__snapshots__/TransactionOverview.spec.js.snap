@@ -84,7 +84,7 @@ exports[`TransactionOverview.vue > Should not show ad banner when displayAds is 
           <div class="v-list-item__content" data-no-activator="">
             <!---->
             <!---->
-            <div class="v-list-item-title text-body-2"><a style="text-decoration: none;">100</a><span class="ml-2 confirmation-text"><span class="v-chip v-theme--light text-primary v-chip--density-comfortable v-chip--size-small v-chip--variant-tonal font-weight-medium mr-2" draggable="false" text-color="white"><!----><span class="v-chip__underlay"></span>
+            <div class="v-list-item-title text-body-2"><a style="text-decoration: none;">100</a><span class="ml-2 confirmation-text"><span class="v-chip v-theme--light text-grey-darken-2 v-chip--density-comfortable v-chip--size-small v-chip--variant-tonal font-weight-medium mr-2" draggable="false"><!----><span class="v-chip__underlay"></span>
               <!---->
               <!---->
               <div class="v-chip__content" data-no-activator="">5 Block Confirmations </div>
@@ -470,7 +470,7 @@ exports[`TransactionOverview.vue > Should render contract creation transaction 1
           <div class="v-list-item__content" data-no-activator="">
             <!---->
             <!---->
-            <div class="v-list-item-title text-body-2"><a style="text-decoration: none;">100</a><span class="ml-2 confirmation-text"><span class="v-chip v-theme--light text-primary v-chip--density-comfortable v-chip--size-small v-chip--variant-tonal font-weight-medium mr-2" draggable="false" text-color="white"><!----><span class="v-chip__underlay"></span>
+            <div class="v-list-item-title text-body-2"><a style="text-decoration: none;">100</a><span class="ml-2 confirmation-text"><span class="v-chip v-theme--light text-grey-darken-2 v-chip--density-comfortable v-chip--size-small v-chip--variant-tonal font-weight-medium mr-2" draggable="false"><!----><span class="v-chip__underlay"></span>
               <!---->
               <!---->
               <div class="v-chip__content" data-no-activator="">5 Block Confirmations </div>
@@ -942,7 +942,7 @@ exports[`TransactionOverview.vue > Should render failed transaction 1`] = `
           <div class="v-list-item__content" data-no-activator="">
             <!---->
             <!---->
-            <div class="v-list-item-title text-body-2"><a style="text-decoration: none;">100</a><span class="ml-2 confirmation-text"><span class="v-chip v-theme--light text-primary v-chip--density-comfortable v-chip--size-small v-chip--variant-tonal font-weight-medium mr-2" draggable="false" text-color="white"><!----><span class="v-chip__underlay"></span>
+            <div class="v-list-item-title text-body-2"><a style="text-decoration: none;">100</a><span class="ml-2 confirmation-text"><span class="v-chip v-theme--light text-grey-darken-2 v-chip--density-comfortable v-chip--size-small v-chip--variant-tonal font-weight-medium mr-2" draggable="false"><!----><span class="v-chip__underlay"></span>
               <!---->
               <!---->
               <div class="v-chip__content" data-no-activator="">5 Block Confirmations </div>
@@ -1689,7 +1689,7 @@ exports[`TransactionOverview.vue > Should render successful transaction 1`] = `
           <div class="v-list-item__content" data-no-activator="">
             <!---->
             <!---->
-            <div class="v-list-item-title text-body-2"><a style="text-decoration: none;">100</a><span class="ml-2 confirmation-text"><span class="v-chip v-theme--light text-primary v-chip--density-comfortable v-chip--size-small v-chip--variant-tonal font-weight-medium mr-2" draggable="false" text-color="white"><!----><span class="v-chip__underlay"></span>
+            <div class="v-list-item-title text-body-2"><a style="text-decoration: none;">100</a><span class="ml-2 confirmation-text"><span class="v-chip v-theme--light text-grey-darken-2 v-chip--density-comfortable v-chip--size-small v-chip--variant-tonal font-weight-medium mr-2" draggable="false"><!----><span class="v-chip__underlay"></span>
               <!---->
               <!---->
               <div class="v-chip__content" data-no-activator="">5 Block Confirmations </div>
@@ -2093,7 +2093,7 @@ exports[`TransactionOverview.vue > Should show ad banner when displayAds is true
           <div class="v-list-item__content" data-no-activator="">
             <!---->
             <!---->
-            <div class="v-list-item-title text-body-2"><a style="text-decoration: none;">100</a><span class="ml-2 confirmation-text"><span class="v-chip v-theme--light text-primary v-chip--density-comfortable v-chip--size-small v-chip--variant-tonal font-weight-medium mr-2" draggable="false" text-color="white"><!----><span class="v-chip__underlay"></span>
+            <div class="v-list-item-title text-body-2"><a style="text-decoration: none;">100</a><span class="ml-2 confirmation-text"><span class="v-chip v-theme--light text-grey-darken-2 v-chip--density-comfortable v-chip--size-small v-chip--variant-tonal font-weight-medium mr-2" draggable="false"><!----><span class="v-chip__underlay"></span>
               <!---->
               <!---->
               <div class="v-chip__content" data-no-activator="">5 Block Confirmations </div>

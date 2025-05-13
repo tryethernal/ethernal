@@ -1,15 +1,15 @@
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
-const { getEncryptionKey, getEncryptionJwtSecret } = require('./env');
+const { getEncryptionKey, getEncryptionJwtSecret, getFirebaseSignerKey, getFirebaseSaltSeparator, getFirebaseRounds, getFirebaseMemCost } = require('./env');
 const { FirebaseScrypt } = require('firebase-scrypt');
 const ALGORITHM = 'aes-256-cbc';
 const IV_LENGTH = 16;
 const firebaseParameters = {
     algorithm: 'SCRYPT',
-    signerKey: process.env.FIREBASE_SIGNER_KEY,
-    saltSeparator: process.env.FIREBASE_SALT_SEPARATOR,
-    rounds: parseInt(process.env.FIREBASE_ROUNDS),
-    memCost: parseInt(process.env.FIREBASE_MEM_COST),
+    signerKey: getFirebaseSignerKey(),
+    saltSeparator: getFirebaseSaltSeparator(),
+    rounds: getFirebaseRounds(),
+    memCost: getFirebaseMemCost(),
 };
 
 module.exports = {

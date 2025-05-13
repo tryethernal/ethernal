@@ -24,7 +24,7 @@ const ethernal = {
         warning: '#E78227',
         background: '#F5F5F5'
     }
-}
+};
 
 const vuetify = createVuetify({
     components: {

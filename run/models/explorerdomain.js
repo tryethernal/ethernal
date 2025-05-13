@@ -3,6 +3,7 @@ const {
   Model
 } = require('sequelize');
 const { enqueue } = require('../lib/queue');
+const { isSelfHosted } = require('../lib/flags');
 
 module.exports = (sequelize, DataTypes) => {
   class ExplorerDomain extends Model {
@@ -28,6 +29,8 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     hooks: {
         afterCreate(explorerDomain, options) {
+          if (isSelfHosted()) return;
+
           const afterCommitFn = () => {
             return enqueue('updateApproximatedRecord', `updateApproximatedRecord-${explorerDomain.id}-${explorerDomain.domain}`, { explorerDomain });
           }
@@ -38,6 +41,8 @@ module.exports = (sequelize, DataTypes) => {
               return afterCommitFn();
         },
         afterDestroy(explorerDomain, options) {
+          if (isSelfHosted()) return;
+
           const afterCommitFn = () => {
             return enqueue('updateApproximatedRecord', `updateApproximatedRecord-${explorerDomain.id}-${explorerDomain.domain}`, { explorerDomain });
           }

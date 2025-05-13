@@ -38,7 +38,7 @@
                     </v-row>
                 </v-stepper-vertical-item>
 
-                <v-stepper-vertical-item v-if="envStore.isBillingEnabled" value="2" :complete="stepperIndex > 2">
+                <v-stepper-vertical-item v-if="!envStore.isSelfHosted" value="2" :complete="stepperIndex > 2">
                     <template v-slot:title>
                         <h4>Choose A Plan</h4>
                     </template>
@@ -53,8 +53,8 @@
                             </ul>
                             <Explorer-Plan-Selector v-if="explorer"
                                 :explorerId="explorer.id"
-                                :stripeSuccessUrl="`http://app.${envStore.mainDomain}/explorers/${explorer.id}?justCreated=true`"
-                                :stripeCancelUrl="`http://app.${envStore.mainDomain}/explorers/${explorer.id}`"
+                                :stripeSuccessUrl="`http://${envStore.mainDomain}/explorers/${explorer.id}?justCreated=true`"
+                                :stripeCancelUrl="`http://${envStore.mainDomain}/explorers/${explorer.id}`"
                                 @planCreated="planCreated"></Explorer-Plan-Selector>
                         </v-card-text>
                     </v-card>
@@ -108,7 +108,7 @@ export default {
                     this.explorer = data;
                     this.$emit('explorerCreated');
 
-                    if (this.envStore.isBillingEnabled && !this.userStore.canUseDemoPlan)
+                    if (!this.envStore.isSelfHosted && !this.userStore.canUseDemoPlan)
                         this.stepperIndex = 2;
                     else
                         this.$router.push({ path: `/explorers/${this.explorer.id}?status=success`});

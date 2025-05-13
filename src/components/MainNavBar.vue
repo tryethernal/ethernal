@@ -29,8 +29,7 @@
                     <template v-slot:activator="{ props }">
                         <v-list-item
                             v-bind="props"
-                            :color="isBlockchainActive ? 'primary' : undefined"
-                        >
+                            :color="isBlockchainActive ? 'primary' : undefined">
                             <template v-slot:title>
                                 <span class="text-body-1">Blockchain</span>
                             </template>
@@ -68,8 +67,7 @@
                     <template v-slot:activator="{ props }">
                         <v-list-item
                             v-bind="props"
-                            :color="isTokensActive ? 'primary' : undefined"
-                        >
+                            :color="isTokensActive ? 'primary' : undefined">
                             <template v-slot:title>
                                 <span class="text-body-1">Tokens</span>
                             </template>
@@ -110,7 +108,7 @@
                     </v-list-item>
                 </v-list-group>
 
-                <v-list-item :to="'/analytics'" title="Charts" :color="route.path === '/analytics' ? 'primary' : undefined">
+                <v-list-item :to="'/analytics'" title="Charts" :class="{ 'text-primary': route.path === '/analytics' }">
                     <template v-slot:title>
                         <span class="text-body-1">Charts</span>
                     </template>
@@ -118,21 +116,21 @@
 
                 <!-- Conditional Items -->
                 <v-list-item v-if="explorerStore.isDemo || explorerStore.faucet || (envStore.isAdmin && currentWorkspaceStore.public)" 
-                    :to="'/faucet'" title="Faucet" :color="route.path === '/faucet' ? 'primary' : undefined">
+                    :to="'/faucet'" title="Faucet" :class="{ 'text-primary': route.path === '/faucet' }">
                     <template v-slot:title>
                         <span class="text-body-1">Faucet</span>
                     </template>
                 </v-list-item>
 
                 <v-list-item v-if="explorerStore.isDemo || explorerStore.v2Dex || (envStore.isAdmin && currentWorkspaceStore.public)"
-                    :to="'/dex'" title="DEX" :color="route.path === '/dex' ? 'primary' : undefined">
+                    :to="'/dex'" title="DEX" :class="{ 'text-primary': route.path === '/dex' }">
                     <template v-slot:title>
                         <span class="text-body-1">DEX</span>
                     </template>
                 </v-list-item>
 
                 <v-list-item v-if="explorerStore.isDemo || (envStore.isAdmin && currentWorkspaceStore.public)"
-                    :to="'/bridge'" title="Bridge" :color="route.path === '/bridge' ? 'primary' : undefined">
+                    :to="'/bridge'" title="Bridge" :class="{ 'text-primary': route.path === '/bridge' }">
                     <template v-slot:title>
                         <span class="text-body-1">Bridge</span>
                     </template>
@@ -141,12 +139,12 @@
                 <!-- Admin Section -->
                 <template v-if="envStore.isAdmin">
                     <v-divider class="ma-2"></v-divider>
-                    <v-list-item :to="'/explorers'" title="Public Explorers" :color="route.path === '/explorers' ? 'primary' : undefined">
+                    <v-list-item :to="'/explorers'" title="Public Explorers" :class="{ 'text-primary': route.path.startsWith('/explorers') }">
                         <template v-slot:title>
                             <span class="text-body-1">Public Explorers</span>
                         </template>
                     </v-list-item>
-                    <v-list-item :to="'/settings?tab=workspace'" title="Settings" :color="route.path === '/settings' ? 'primary' : undefined">
+                    <v-list-item :to="'/settings?tab=workspace'" title="Settings" :class="{ 'text-primary': route.path === '/settings' }">
                         <template v-slot:title>
                             <span class="text-body-1">Settings</span>
                         </template>
@@ -193,7 +191,6 @@
                     >
                         <template v-slot:activator="{ props, isActive }">
                             <v-btn 
-                                :color="isActive || blockchainMenuOpen || isBlockchainActive ? 'primary' : undefined" 
                                 variant="plain" 
                                 v-bind="props"
                                 @mouseleave="blockchainMenuOpen = false"
@@ -252,7 +249,6 @@
                     >
                         <template v-slot:activator="{ props, isActive }">
                             <v-btn 
-                                :color="isActive || tokensMenuOpen || isTokensActive ? 'primary' : undefined" 
                                 variant="plain" 
                                 v-bind="props"
                                 @mouseleave="tokensMenuOpen = false"
@@ -309,7 +305,6 @@
                     <v-hover>
                         <template v-slot:default="{ isHovering, props }">
                             <v-btn 
-                                :color="isHovering || route.path === '/analytics' ? 'primary' : undefined" 
                                 variant="plain" 
                                 v-bind="props" 
                                 :to="'/analytics'" 
@@ -322,7 +317,6 @@
                     <v-hover v-if="explorerStore.isDemo || explorerStore.faucet || (envStore.isAdmin && currentWorkspaceStore.public)">
                         <template v-slot:default="{ isHovering, props }">
                             <v-btn 
-                                :color="isHovering || route.path === '/faucet' ? 'primary' : undefined" 
                                 variant="plain" 
                                 v-bind="props" 
                                 :to="'/faucet'" 
@@ -335,7 +329,6 @@
                     <v-hover v-if="explorerStore.isDemo || explorerStore.v2Dex || (envStore.isAdmin && currentWorkspaceStore.public)">
                         <template v-slot:default="{ isHovering, props }">
                             <v-btn 
-                                :color="isHovering || route.path === '/dex' ? 'primary' : undefined" 
                                 variant="plain" 
                                 v-bind="props" 
                                 :to="'/dex'" 
@@ -348,7 +341,6 @@
                     <v-hover v-if="explorerStore.isDemo || (envStore.isAdmin && currentWorkspaceStore.public)">
                         <template v-slot:default="{ isHovering, props }">
                             <v-btn 
-                                :color="isHovering || route.path === '/bridge' ? 'primary' : undefined" 
                                 variant="plain" 
                                 v-bind="props" 
                                 :to="'/bridge'" 
@@ -363,11 +355,10 @@
                         <v-hover>
                             <template v-slot:default="{ isHovering, props }">
                                 <v-btn 
-                                    :color="isHovering || route.path === '/explorers' ? 'primary' : undefined" 
                                     variant="plain" 
                                     v-bind="props" 
                                     :to="'/explorers'" 
-                                    :class="`opacity-100 d-flex align-center fill-height ${isHovering || route.path === '/explorers' ? 'text-primary' : 'text-default opacity-80'}`"
+                                    :class="`opacity-100 d-flex align-center fill-height ${isHovering || route.path.startsWith('/explorers') ? 'text-primary' : 'text-default opacity-80'}`"
                                 >Public Explorers</v-btn>
                             </template>
                         </v-hover>
@@ -375,7 +366,6 @@
                         <v-hover>
                             <template v-slot:default="{ isHovering, props }">
                                 <v-btn 
-                                    :color="isHovering || route.path === '/settings' ? 'primary' : undefined" 
                                     variant="plain" 
                                     v-bind="props" 
                                     :to="'/settings?tab=workspace'" 

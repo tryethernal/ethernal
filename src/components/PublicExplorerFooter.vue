@@ -93,7 +93,6 @@ async function addToMetaMask() {
 <style scoped>
 .footer {
     border-top: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
-    background-color: rgb(var(--v-theme-background));
     color: rgb(var(--v-theme-on-background));
 }
 

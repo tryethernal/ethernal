@@ -8,7 +8,12 @@ describe('ExplorerGeneral.vue', () => {
         vi.spyOn(server, 'getExplorer').mockResolvedValueOnce({ data: { id: 1, slug: 'test', domains: [] }});
         const wrapper = mount(Explorer, {
             global: {
-                stubs: ['Explorer-Settings', 'Explorer-Billing', 'Explorer-Domains-List', 'Explorer-Branding', 'Explorer-Danger-Zone', 'Explorer-Sync']
+                stubs: ['Explorer-Settings', 'Explorer-Billing', 'Explorer-Domains-List', 'Explorer-Branding', 'Explorer-Danger-Zone', 'Explorer-Sync'],
+                plugins: [createTestingPinia({
+                    initialState: {
+                        env: { mainDomain: 'ethernal.local:8080' }
+                    }
+                })]
             }
         });
         await flushPromises();
@@ -21,7 +26,12 @@ describe('ExplorerGeneral.vue', () => {
         vi.spyOn(server, 'getExplorer').mockResolvedValueOnce({ data: { id: 1, slug: 'test', domains: [], stripeSubscription: { isTrialing: true, stripePlan: { capabilities: {}}}}});
         const wrapper = mount(Explorer, {
             global: {
-                stubs: ['Explorer-Settings', 'Explorer-Billing', 'Explorer-Domains-List', 'Explorer-Branding', 'Explorer-Danger-Zone', 'Explorer-Sync']
+                stubs: ['Explorer-Settings', 'Explorer-Billing', 'Explorer-Domains-List', 'Explorer-Branding', 'Explorer-Danger-Zone', 'Explorer-Sync'],
+                plugins: [createTestingPinia({
+                    initialState: {
+                        env: { mainDomain: 'ethernal.local:8080' }
+                    }
+                })]
             }
         });
         await flushPromises();

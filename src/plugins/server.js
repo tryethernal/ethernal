@@ -352,6 +352,11 @@ export default {
         );
 
         const $server = {
+            setupAdmin(email, password) {
+                const resource = `${envStore.apiRoot}/api/setup/admin`;
+                return axios.post(resource, { data: { email, password } });
+            },
+
             getWorkspaceTokenTransfers(options) {
                 const params = {
                     firebaseUserId: firebaseUserId.value,
@@ -832,6 +837,12 @@ export default {
 
             createExplorer(workspaceId) {
                 const data = { workspaceId };
+                const resource = `${envStore.apiRoot}/api/explorers`;
+                return axios.post(resource, { data });
+            },
+
+            createExplorerFromOptions(name, rpcServer) {
+                const data = { name, rpcServer };
                 const resource = `${envStore.apiRoot}/api/explorers`;
                 return axios.post(resource, { data });
             },

@@ -151,7 +151,7 @@ exports[`ExplorerSettings.vue > Should display settings with all options 1`] = `
                   <!----><label class="v-label v-field-label" for="input-5">
                     <!---->Ethernal Domain
                   </label>
-                  <!----><input size="1" type="text" id="input-5" aria-describedby="input-5-messages" class="v-field__input" value="explorer"><span class="v-text-field__suffix"><span class="v-text-field__suffix__text">.ethernal.local:8080</span></span>
+                  <!----><input size="1" type="text" id="input-5" aria-describedby="input-5-messages" class="v-field__input" value="explorer"><span class="v-text-field__suffix"><span class="v-text-field__suffix__text">.</span></span>
                 </div>
                 <!---->
                 <!---->
@@ -481,7 +481,7 @@ exports[`ExplorerSettings.vue > Should display settings with deactivated options
                   <!----><label class="v-label v-field-label" for="input-5">
                     <!---->Ethernal Domain
                   </label>
-                  <!----><input size="1" type="text" id="input-5" aria-describedby="input-5-messages" class="v-field__input" value="explorer"><span class="v-text-field__suffix"><span class="v-text-field__suffix__text">.ethernal.local:8080</span></span>
+                  <!----><input size="1" type="text" id="input-5" aria-describedby="input-5-messages" class="v-field__input" value="explorer"><span class="v-text-field__suffix"><span class="v-text-field__suffix__text">.</span></span>
                 </div>
                 <!---->
                 <!---->
