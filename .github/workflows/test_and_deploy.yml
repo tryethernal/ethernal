@@ -268,10 +268,10 @@ jobs:
           flyctl secrets set VERSION=${{ needs.create_release.outputs.current_version }} --stage -a ethernal-pm2
 
       - name: Release backend
-        run: flyctl deploy -c fly.toml -i registry.fly.io/ethernal:${{ github.sha }}
+        run: flyctl deploy -c fly.toml -i registry.fly.io/ethernal:${{ needs.create_release.outputs.current_version }}
 
       - name: Release PM2 server
-        run: flyctl deploy -c fly.pm2.toml -i registry.fly.io/ethernal-pm2:${{ github.sha }}
+        run: flyctl deploy -c fly.pm2.toml -i registry.fly.io/ethernal-pm2:${{ needs.create_release.outputs.current_version }}
 
       - name: Release Soketi server
         run: flyctl deploy -c fly.soketi.toml
