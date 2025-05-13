@@ -3,9 +3,11 @@
 */
 
 const logger = require('../lib/logger');
+const { getSecret } = require('../lib/env');
+
 module.exports = (req, res, next) => {
     try {
-        if (req.query.secret == process.env.SECRET)
+        if (req.query.secret == getSecret())
             next();
         else
             throw new Error('Invalid secret')

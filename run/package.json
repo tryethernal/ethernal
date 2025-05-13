@@ -4,11 +4,14 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "node index.js",
+    "start": "nodemon index.js",
     "test": "jest",
     "test:update": "jest -u",
     "test:handles": "jest  --detectOpenHandles",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "worker:high": "nodemon ./workers/highPriority.js",
+    "worker:medium": "nodemon ./workers/mediumPriority.js",
+    "worker:low": "nodemon ./workers/lowPriority.js"
   },
   "engines": {
     "node": ">= 16.0.0"

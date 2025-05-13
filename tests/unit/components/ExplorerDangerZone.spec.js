@@ -37,11 +37,11 @@ describe('ExplorerDangerZone.vue', () => {
         expect(wrapper.html()).toMatchSnapshot();
     });
 
-    it('Should have an active button if active subscription & billing disabled', async () => {
+    it('Should have an active button if active subscription & self-hosted', async () => {
         const wrapper = mount(ExplorerDangerZone, {
             global: {
                 stubs: ['Delete-Explorer-Modal'],
-                plugins: [createTestingPinia({ initialState: { env: { isBillingEnabled: false } } })]
+                plugins: [createTestingPinia({ initialState: { env: { isSelfHosted: true } } })]
             },
             props: {
                 explorer: {

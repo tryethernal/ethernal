@@ -1,8 +1,7 @@
 FROM node:18 AS base
+
 WORKDIR /app
-ENV ETHERNAL_API_ROOT=
-ENV NODE_ENV=production
-ENV SECRET=
+
 COPY pm2-server/package.json pm2-server/yarn.lock pm2-server/app.js pm2-server/index.js pm2-server/ecosystem.config.js ./
 COPY pm2-server/lib/ ./lib
 RUN yarn global add ethernal-light pm2

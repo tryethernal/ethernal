@@ -71,7 +71,7 @@
               <router-link v-if="transaction.blockNumber" style="text-decoration: none;" :to="'/block/' + transaction.blockNumber">{{ commify(transaction.blockNumber) }}</router-link>
               <span v-else>-</span>
               <span v-if="currentWorkspaceStore.currentBlock && currentWorkspaceStore.currentBlock.number && transaction.blockNumber" class="ml-2 confirmation-text">
-                <v-chip size="small" color="primary" text-color="white" class="font-weight-medium mr-2" density="comfortable">
+                <v-chip size="small" :color="theme.global.current.value.dark ? 'grey-lighten-1' : 'grey-darken-2'"class="font-weight-medium mr-2" density="comfortable">
                   {{ commify(currentWorkspaceStore.currentBlock.number - transaction.blockNumber) }} Block Confirmations
                 </v-chip>
               </span>

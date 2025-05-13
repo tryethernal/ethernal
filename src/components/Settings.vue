@@ -4,7 +4,7 @@
         <v-card class="pa-4">
             <v-tabs v-model="tab" class="mb-2">
                 <v-tab class="text-medium-emphasis" color="primary" value="workspace">Workspace</v-tab>
-                <v-tab v-if="envStore.isBillingEnabled" class="text-medium-emphasis" color="primary" value="billing">Billing</v-tab>
+                <v-tab v-if="!envStore.isSelfHosted" class="text-medium-emphasis" color="primary" value="billing">Billing</v-tab>
                 <v-tab class="text-medium-emphasis" color="primary" value="account">Account</v-tab>
             </v-tabs>
 
@@ -136,7 +136,7 @@
                     </v-row>
                 </v-tabs-window-item>
 
-                <v-tabs-window-item v-if="envStore.isBillingEnabled" value="billing">
+                <v-tabs-window-item v-if="!envStore.isSelfHosted" value="billing">
                     <Billing />
                 </v-tabs-window-item>
 

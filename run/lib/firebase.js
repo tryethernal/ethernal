@@ -33,6 +33,49 @@ const ExplorerV2Dex = models.ExplorerV2Dex;
 const V2DexPair = models.V2DexPair;
 
 /**
+ * Checks if a domain is a registered domain.
+ * We use on self hosted instances to check if
+ * we can issue a SSL certificate for the domain.
+ * @param {string} domain - The domain to check
+ * @returns {Promise<boolean>} - True if the domain is registered, false otherwise
+ */
+const isValidExplorerDomain = async (domain) => {
+    const explorerDomain = await ExplorerDomain.findOne({
+        where: {
+            domain
+        }
+    });
+
+    return !!explorerDomain;
+}
+
+/**
+ * Creates an admin user
+ * This should only be called on routes that are protected by the self-hosted middleware
+ * @param {string} email - The email of the admin user
+ * @param {string} password - The password of the admin user
+ * @returns {Promise<User>} - The created admin user
+ */
+const createAdmin = async (email, password) => {
+    if (!email || !password)
+        throw new Error('Missing parameters');
+
+    return User.createAdmin(email, password);
+};
+
+/**
+ * Checks if the admin can be setup
+ * This should only be called on routes that are protected by the self-hosted middleware
+ * This check is to make sure we only create one admin user on self-hosted instances
+ * and can't create more later on
+ * @returns {Promise<boolean>} - True if the admin can be setup, false otherwise
+ */
+const canSetupAdmin = async () => {
+    const userCount = await User.count();
+    return userCount === 0;
+}
+
+/**
  * Retrieves a list of token transfers for a workspace
  * @param {string} workspaceId - The workspace id
  * @param {number} page - The page number
@@ -3075,5 +3118,8 @@ module.exports = {
     getVerifiedContracts: getVerifiedContracts,
     getWorkspaceContractStats: getWorkspaceContractStats,
     getWorkspaceTokenTransfers: getWorkspaceTokenTransfers,
-    getTopTokensByHolders: getTopTokensByHolders
+    getTopTokensByHolders: getTopTokensByHolders,
+    createAdmin: createAdmin,
+    canSetupAdmin: canSetupAdmin,
+    isValidExplorerDomain: isValidExplorerDomain
 };

@@ -32,7 +32,7 @@ exports[`UpdateExplorerPlanModal.vue > Should display plan selector 1`] = `
         <li>To setup crypto payment (Explorer 150 or above), reach out to contact@tryethernal.com.</li>
         <li>Each plan includes a 7 day free trial - No credit card needed.</li>
       </ul>
-      <explorer-plan-selector-stub currentplanslug="100" stripesuccessurl="http://app.ethernal.local:8080/explorers/undefined?justCreated=true" stripecancelurl="http://app.ethernal.local:8080/explorers/undefined" bestvalueslug="explorer-150" pendingcancelation="false"></explorer-plan-selector-stub>
+      <explorer-plan-selector-stub currentplanslug="100" stripesuccessurl="http://app./explorers/undefined?justCreated=true" stripecancelurl="http://app./explorers/undefined" bestvalueslug="explorer-150" pendingcancelation="false"></explorer-plan-selector-stub>
     </div>
     <!---->
     <!----><span class="v-card__underlay"></span>

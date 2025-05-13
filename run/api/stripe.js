@@ -1,5 +1,5 @@
 const express = require('express');
-const { getAppUrl, getStripeSecretKey } = require('../lib/env');
+const { getAppUrl, getStripeSecretKey, getStripePremiumPriceId } = require('../lib/env');
 const stripe = require('stripe')(getStripeSecretKey());
 const db = require('../lib/firebase');
 const { sanitize } = require('../lib/utils');
@@ -25,7 +25,7 @@ router.post('/createUserCheckoutSession', [authMiddleware, stripeMiddleware], as
             customer: user.stripeCustomerId,
             line_items: [
                 {
-                    price: process.env.STRIPE_PREMIUM_PRICE_ID,
+                    price: getStripePremiumPriceId(),
                     quantity: 1
                 }
             ],

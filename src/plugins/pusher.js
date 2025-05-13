@@ -17,8 +17,8 @@ export default {
                 userStore = useUserStore();
                 apiToken = localStorage.getItem('apiToken');
 
-                pusher = envStore.pusherKey ?
-                    new Pusher(envStore.pusherKey, {
+                pusher = envStore.soketiKey ?
+                    new Pusher(envStore.soketiKey, {
                         wsHost: envStore.soketiHost,
                         wsPort: envStore.soketiPort,
                         forceTLS: envStore.soketiForceTLS,
@@ -36,7 +36,8 @@ export default {
                         }
                     }) : {
                         subscribe: () => ({ bind: () => {}, unbind: () => {} }),
-                    }
+                        unsubscribe: () => {}
+                    };
             },
 
             onNewContractLog(handler, address, context) {

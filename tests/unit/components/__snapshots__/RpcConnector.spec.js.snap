@@ -11,8 +11,8 @@ exports[`RpcConnector.vue > Should display gas info when gas analytics is enable
         <div class="v-container v-locale--is-ltr d-flex align-center justify-space-between">
           <div class="d-flex align-center w-100">
             <!--v-if-->
-            <!-- Desktop Info Section --><span class="text-body-2" style="max-width: 50ch; text-overflow: ellipsis; overflow: hidden;">http://localhost:8545</span>
-            <hr class="v-divider v-divider--inset v-divider--vertical v-theme--light mx-2" aria-orientation="vertical" role="separator"><span class="text-body-2">Latest Block: <a class="text-decoration-none ml-1">1</a></span>
+            <!-- Desktop Info Section -->
+            <!--v-if--><span class="text-body-2">Latest Block: <a class="text-decoration-none ml-1">1</a></span>
             <hr class="v-divider v-divider--inset v-divider--vertical v-theme--light mx-2" aria-orientation="vertical" role="separator"><span class="text-body-2">Gas: <a class="text-decoration-none ml-1">1 gwei</a></span>
             <div class="text-body-2" style="display: none;">
               <hr class="v-divider v-divider--inset v-divider--vertical v-theme--light mx-2" aria-orientation="vertical" role="separator">

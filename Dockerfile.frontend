@@ -1,0 +1,69 @@
+# --- Base Stage ---
+FROM node:18-alpine AS base
+
+# Add Python and build dependencies
+RUN apk add --no-cache python3 make g++ gcc
+
+WORKDIR /app
+
+ARG VITE_SOKETI_PORT
+ARG VITE_SOKETI_KEY
+
+ARG VITE_SENTRY_DSN_SECRET
+ARG VITE_SENTRY_DSN_PROJECT_ID
+ARG VITE_SENTRY_AUTH_TOKEN
+ARG VITE_SENTRY_ORG
+ARG VITE_SENTRY_PROJET
+ARG VITE_SENTRY_URL
+ARG VITE_SENTRY_ENABLED
+
+ARG VITE_VERSION
+ARG VITE_IS_SELF_HOSTED
+
+ENV VITE_SOKETI_PORT=$VITE_SOKETI_PORT \
+    VITE_SOKETI_KEY=$VITE_SOKETI_KEY \
+    VITE_SENTRY_DSN_SECRET=$VITE_SENTRY_DSN_SECRET \
+    VITE_SENTRY_DSN_PROJECT_ID=$VITE_SENTRY_DSN_PROJECT_ID \
+    VITE_SENTRY_AUTH_TOKEN=$VITE_SENTRY_AUTH_TOKEN \
+    VITE_SENTRY_ORG=$VITE_SENTRY_ORG \
+    VITE_SENTRY_PROJET=$VITE_SENTRY_PROJET \
+    VITE_SENTRY_URL=$VITE_SENTRY_URL \
+    VITE_SENTRY_ENABLED=$VITE_SENTRY_ENABLED \
+    VITE_VERSION=$VITE_VERSION \
+    VITE_IS_SELF_HOSTED=$VITE_IS_SELF_HOSTED
+
+# Install dependencies
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile --network-timeout 100000
+
+# Copy all necessary files
+COPY public/ ./public/
+COPY src/ ./src/
+COPY index.html ./
+COPY vite.config.js ./
+COPY babel.config.js ./
+COPY vue.config.js ./
+COPY ads.txt ./
+COPY .env* ./
+COPY jsconfig.json ./
+COPY .firebaserc ./
+
+# --- Development Stage ---
+FROM base AS dev
+EXPOSE 8080
+CMD ["yarn", "serve"]
+
+# --- Build Stage ---
+FROM base AS build
+ENV NODE_ENV=production
+RUN yarn build
+
+# --- Production Runtime Stage ---
+FROM node:18-alpine AS prod
+WORKDIR /app
+ENV NODE_ENV=production
+RUN yarn global add serve
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/ads.txt ./dist/ads.txt
+EXPOSE 8080
+CMD ["serve", "-s", "dist", "-l", "8080"] 
