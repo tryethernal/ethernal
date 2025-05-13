@@ -27,13 +27,14 @@ DOCKER_BUILDKIT=1 docker buildx build \
     --build-arg VITE_SENTRY_ENABLED \
     --build-arg VITE_VERSION \
     --build-arg VITE_IS_SELF_HOSTED=true \
-    -t registry.fly.io/ethernal-frontend:$TAG \
+    -t antoinedc44/ethernal-frontend:$TAG \
     --push .
 
 DOCKER_BUILDKIT=1 docker buildx build \
     --platform $PLATFORMS \
     -f Dockerfile.backend \
     -t registry.fly.io/ethernal-backend:$TAG \
+    -t antoinedc44/ethernal-backend:$TAG \
     --push .
 
 DOCKER_BUILDKIT=1 docker buildx build \
@@ -41,6 +42,7 @@ DOCKER_BUILDKIT=1 docker buildx build \
     -f Dockerfile.pm2 \
     --target prod \
     -t registry.fly.io/ethernal-pm2:$TAG \
+    -t antoinedc44/ethernal-pm2:$TAG \
     --push .
 
 echo "All production images built & pushed successfully:"
