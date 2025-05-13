@@ -16,6 +16,10 @@
 
 ## 🏠 Self-Hosting Ethernal
 
+> ⚠️ **Beta Notice:**
+> 
+> The self-hosted version of Ethernal is currently in **beta**. Some features may not work as expected or may be incomplete. If you encounter any issues, please consider [opening an issue](https://github.com/tryethernal/ethernal/issues) to help us improve the project. Your feedback is greatly appreciated!
+
 Run your own Ethernal instance on your infrastructure, with full control over your data and configuration.
 
 ### Prerequisites
