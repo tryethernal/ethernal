@@ -71,7 +71,7 @@ After setup, you'll see a summary like:
 
 **👉 Next step:**
 
-- **Open the setup link shown above in your browser.**
+- Open the setup link shown above in your browser.
 - This guided setup will help you **create your admin user account** and **set up your first explorer** quickly and easily.
 - Once complete, you'll be ready to start using Ethernal!
 
