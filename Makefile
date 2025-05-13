@@ -49,27 +49,40 @@ update:
 	docker compose -f docker-compose.prod.yml --env-file .env.docker-compose.prod exec backend npx sequelize db:seed
 
 info:
-	@DOMAIN=$$(grep '^APP_DOMAIN=' run/.env.prod | cut -d '=' -f2); \
+	@sh -c '\
+	is_domain() { \
+	  case "$$1" in \
+	    *[a-zA-Z]*) return 0 ;; \
+	    *) return 1 ;; \
+	  esac; \
+	}; \
+	DOMAIN=$$(grep "^APP_DOMAIN=" run/.env.prod | cut -d "=" -f2); \
 	if [ -z "$$DOMAIN" ]; then \
-	  APP_URL=$$(grep '^APP_URL=' run/.env.prod | cut -d '=' -f2); \
-	  EXPOSED_PORT=$$(grep '^EXPOSED_PORT=' .env.docker-compose.prod | cut -d '=' -f2); \
+	  APP_URL=$$(grep "^APP_URL=" run/.env.prod | cut -d "=" -f2); \
+	  EXPOSED_PORT=$$(grep "^EXPOSED_PORT=" .env.docker-compose.prod | cut -d "=" -f2); \
 	  if [ -z "$$EXPOSED_PORT" ] || [ "$$EXPOSED_PORT" = "80" ]; then \
 	    DOMAIN="$$APP_URL"; \
 	  else \
 	    DOMAIN="$$APP_URL:$$EXPOSED_PORT"; \
 	  fi; \
 	fi; \
-	DB_USER=$$(grep '^DB_USER=' run/.env.prod | cut -d '=' -f2); \
-	DB_PASSWORD=$$(grep '^DB_PASSWORD=' run/.env.prod | cut -d '=' -f2); \
-	DB_NAME=$$(grep '^DB_NAME=' run/.env.prod | cut -d '=' -f2); \
-	DB_HOST=$$(grep '^DB_HOST=' run/.env.prod | cut -d '=' -f2); \
-	DB_PORT=$$(grep '^DB_PORT=' run/.env.prod | cut -d '=' -f2); \
-	BULLBOARD_USERNAME=$$(grep '^BULLBOARD_USERNAME=' run/.env.prod | cut -d '=' -f2); \
-	BULLBOARD_PASSWORD=$$(grep '^BULLBOARD_PASSWORD=' run/.env.prod | cut -d '=' -f2); \
+	DB_USER=$$(grep "^DB_USER=" run/.env.prod | cut -d "=" -f2); \
+	DB_PASSWORD=$$(grep "^DB_PASSWORD=" run/.env.prod | cut -d "=" -f2); \
+	DB_NAME=$$(grep "^DB_NAME=" run/.env.prod | cut -d "=" -f2); \
+	DB_HOST=$$(grep "^DB_HOST=" run/.env.prod | cut -d "=" -f2); \
+	DB_PORT=$$(grep "^DB_PORT=" run/.env.prod | cut -d "=" -f2); \
+	BULLBOARD_USERNAME=$$(grep "^BULLBOARD_USERNAME=" run/.env.prod | cut -d "=" -f2); \
+	BULLBOARD_PASSWORD=$$(grep "^BULLBOARD_PASSWORD=" run/.env.prod | cut -d "=" -f2); \
 	CONN_STR="postgresql://$$DB_USER:$$DB_PASSWORD@$$DB_HOST:$$DB_PORT/$$DB_NAME"; \
 	echo ""; \
 	echo "==================== Ethernal Installation Complete! ===================="; \
 	echo ""; \
+	if is_domain "$$DOMAIN"; then \
+	  echo "🌐  DNS Setup Reminder:"; \
+	  echo "    Make sure to add an A record in your DNS provider:"; \
+	  echo "    $${DOMAIN} -> <your-server-ip-address>"; \
+	  echo ""; \
+	fi; \
 	echo "🔗  Start here to setup your instance:"; \
 	echo "    http://$$DOMAIN/setup"; \
 	echo ""; \
@@ -82,4 +95,5 @@ info:
 	echo "    Password: $$BULLBOARD_PASSWORD"; \
 	echo ""; \
 	echo "==============================================================="; \
-	echo "";
+	echo ""; \
+	'

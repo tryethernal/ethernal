@@ -52,6 +52,10 @@ After setup, you'll see a summary like:
 ```
 ==================== Ethernal Installation Complete! ====================
 
+🌐  DNS Setup Reminder:
+    Make sure to add an A record in your DNS provider:
+    your-domain.com -> <your-server-ip-address>
+
 🔗  Start here to setup your instance:
     http://your-domain-or-ip/setup
 
@@ -70,6 +74,14 @@ After setup, you'll see a summary like:
 - **Open the setup link shown above in your browser.**
 - This guided setup will help you **create your admin user account** and **set up your first explorer** quickly and easily.
 - Once complete, you'll be ready to start using Ethernal!
+
+> **🌐 DNS Setup Reminder:**
+> 
+> If you are using a custom domain (not an IP address), make sure to add an **A record** in your DNS provider:
+> 
+>     your-domain.com -> <your-server-ip-address>
+> 
+> Replace `<your-server-ip-address>` with the actual public IP of your server. This is required for your domain to resolve correctly to your Ethernal instance.
 
 ---
 
