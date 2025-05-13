@@ -66,3 +66,4 @@ pm2-server/.env.prod
 pgbouncer/.env.pgbouncer.prod
 
 Caddyfile
+pgbouncer/
