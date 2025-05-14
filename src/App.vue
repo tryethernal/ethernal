@@ -330,6 +330,7 @@ onMounted(() => {
             }
         })
         .catch(error => {
+            console.log('error', error);
             envStore.setMainDomain(error.response.data.mainDomain);
             if (error.response && error.response.status === 404) {
                 document.location.href = `/`;
