@@ -212,21 +212,40 @@ function setupPublicExplorer(explorer) {
         if (explorer.themes.banner)
             banner.value = explorer.themes.banner;
         const customThemeKeys = Object.keys(lightTheme);
+
+        const customTheme = { ...theme.global.current.value.colors };
         if (customThemeKeys.length) {
             customThemeKeys.forEach((key) => {
                 switch (key) {
                     case 'background':
-                        theme.global.current.value.colors.background = lightTheme[key];
+                        customTheme.background = lightTheme[key];
                         break;
                     default:
-                        theme.global.current.value.colors[key] = lightTheme[key];
+                        customTheme[key] = lightTheme[key];
                 }
             });
-            theme.global.name.value = 'light';
+
             // Only copy the primary color to dark theme, but make it lighter for better contrast in dark mode
-            const primaryColor = theme.global.current.value.colors.primary;
+            const primaryColor = customTheme.primary;
             const lighterPrimaryColor = lightenColor(primaryColor, 15); // Lighten by 15%
-            theme.global.current.value.colors.primary = lighterPrimaryColor;
+
+            theme.themes.value = {
+                ...theme.themes.value,
+                light: {
+                    dark: false,
+                    variables: theme.global.current.value.variables,
+                    colors: customTheme
+                },
+                dark: {
+                    dark: true,
+                    variables: theme.themes.value.dark.variables,
+                    colors: {
+                        ...theme.themes.value.dark.colors,
+                        primary: lighterPrimaryColor,
+                        accent: customTheme.primary
+                    }
+                }
+            };
         }
         if (font)
             WebFont.load({
