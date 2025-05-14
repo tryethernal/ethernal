@@ -216,17 +216,17 @@ function setupPublicExplorer(explorer) {
             customThemeKeys.forEach((key) => {
                 switch (key) {
                     case 'background':
-                        theme.global.current.value.themes.light.colors.background = lightTheme[key];
+                        theme.global.current.value.colors.background = lightTheme[key];
                         break;
                     default:
-                        theme.global.current.value.themes.light.colors[key] = lightTheme[key];
+                        theme.global.current.value.colors[key] = lightTheme[key];
                 }
             });
             theme.global.name.value = 'light';
             // Only copy the primary color to dark theme, but make it lighter for better contrast in dark mode
-            const primaryColor = theme.global.current.value.themes.light.colors.primary;
+            const primaryColor = theme.global.current.value.colors.primary;
             const lighterPrimaryColor = lightenColor(primaryColor, 15); // Lighten by 15%
-            theme.global.current.value.themes.dark.colors.primary = lighterPrimaryColor;
+            theme.global.current.value.colors.primary = lighterPrimaryColor;
         }
         if (font)
             WebFont.load({
