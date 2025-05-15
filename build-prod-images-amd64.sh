@@ -31,8 +31,13 @@ DOCKER_BUILDKIT=1 docker buildx build \
 DOCKER_BUILDKIT=1 docker buildx build \
     --platform linux/amd64 \
     -f Dockerfile.backend \
-    -t registry.fly.io/ethernal:$TAG \
     -t antoinedc44/ethernal-backend:$TAG \
+    --push .
+
+DOCKER_BUILDKIT=1 docker buildx build \
+    --platform linux/amd64 \
+    -f Dockerfile.backend.fly \
+    -t registry.fly.io/ethernal:$TAG \
     --push .
 
 DOCKER_BUILDKIT=1 docker buildx build \
