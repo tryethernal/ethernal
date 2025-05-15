@@ -3,16 +3,14 @@ set -e
 
 # Accept tag as first argument, default to 'latest' if not provided
 TAG="${1:-latest}"
-# Accept platforms as second argument, default to 'linux/amd64,linux/arm64' if not provided
-PLATFORMS="${2:-linux/amd64,linux/arm64}"
 
 echo "Using image tag: $TAG"
-echo "Using platforms: $PLATFORMS"
+echo "Using platforms: linux/amd64"
 
 # Build and push amd64 and arm64 images using buildx (multi-arch, same tag)
-echo "Building and pushing multi-arch images ($PLATFORMS) with buildx..."
+echo "Building and pushing multi-arch images (linux/amd64) with buildx..."
 DOCKER_BUILDKIT=1 docker buildx build \
-    --platform $PLATFORMS \
+    --platform linux/amd64 \
     --no-cache \
     -f Dockerfile.frontend \
     --target prod \
@@ -31,19 +29,14 @@ DOCKER_BUILDKIT=1 docker buildx build \
     --push .
 
 DOCKER_BUILDKIT=1 docker buildx build \
-    --platform $PLATFORMS \
+    --platform linux/amd64 \
     -f Dockerfile.backend \
+    -t registry.fly.io/ethernal:$TAG \
     -t antoinedc44/ethernal-backend:$TAG \
     --push .
 
 DOCKER_BUILDKIT=1 docker buildx build \
-    --platform $PLATFORMS \
-    -f Dockerfile.backend.fly \
-    -t registry.fly.io/ethernal:$TAG \
-    --push .
-
-DOCKER_BUILDKIT=1 docker buildx build \
-    --platform $PLATFORMS \
+    --platform linux/amd64 \
     -f Dockerfile.pm2 \
     --target prod \
     -t registry.fly.io/ethernal-pm2:$TAG \
@@ -51,6 +44,6 @@ DOCKER_BUILDKIT=1 docker buildx build \
     --push .
 
 echo "All production images built & pushed successfully:"
-echo "  ethernal-frontend:$TAG ($PLATFORMS)"
-echo "  ethernal-backend:$TAG ($PLATFORMS)"
-echo "  ethernal-pm2:$TAG ($PLATFORMS)" 
+echo "  ethernal-frontend:$TAG (linux/amd64)"
+echo "  ethernal-backend:$TAG (linux/amd64)"
+echo "  ethernal-pm2:$TAG (linux/amd64)" 
