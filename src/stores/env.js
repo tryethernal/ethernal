@@ -7,7 +7,7 @@ export const useEnvStore = defineStore('env', {
         version: import.meta.env.VITE_VERSION,
         environment: import.meta.env.NODE_ENV,
         isSelfHosted: !!import.meta.env.VITE_IS_SELF_HOSTED,
-        soketiHost: window.location.hostname,
+        soketiHost: import.meta.env.VITE_SOKETI_HOST || window.location.hostname,
         soketiPort: import.meta.env.VITE_SOKETI_PORT && parseInt(import.meta.env.VITE_SOKETI_PORT),
         soketiForceTLS: !!import.meta.env.VITE_SOKETI_FORCE_TLS,
         soketiKey: import.meta.env.VITE_SOKETI_KEY || 'app-key',
