@@ -769,6 +769,7 @@ router.get('/search', async (req, res, next) => {
 
         let explorer;
 
+        // Workaround for saas version that is hosted on app.
         if (!isSelfHosted() && data.domain == `app.${getAppDomain()}`)
             return res.sendStatus(200);
 
