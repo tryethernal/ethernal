@@ -1749,7 +1749,7 @@ module.exports = (sequelize, DataTypes) => {
                 FROM transaction_events te
                 JOIN transactions t ON te."transactionId" = t.id
                 WHERE te."workspaceId" = :workspaceId
-                AND te."from" = :address
+                    AND te."from" = :address
                 ORDER BY te.timestamp ASC
                 LIMIT 1
             ),
@@ -1758,52 +1758,55 @@ module.exports = (sequelize, DataTypes) => {
                 FROM transaction_events te
                 JOIN transactions t ON te."transactionId" = t.id
                 WHERE te."workspaceId" = :workspaceId
-                AND te."from" = :address
+                    AND te."from" = :address
                 ORDER BY te.timestamp DESC
                 LIMIT 1
             ),
             transaction_stats AS (
-                SELECT 
-                    COUNT(CASE WHEN "from" = :address THEN 1 END) AS sent,
-                    COUNT(CASE WHEN "to" = :address THEN 1 END) AS received
-                FROM transaction_events
-                WHERE "workspaceId" = :workspaceId
-                AND ("from" = :address OR "to" = :address)
+                SELECT
+                    COUNT(*) AS count
+                FROM transaction_events te
+                WHERE te."workspaceId" = :workspaceId
+                AND (
+                    te."from" = :address OR
+                    te."to" = :address
+                )
             ),
             transfer_stats AS (
                 SELECT
-                    COUNT(CASE WHEN "src" = :address AND c."patterns"::text[] && ARRAY['erc20'] THEN 1 END) AS erc20_sent,
-                    COUNT(CASE WHEN "dst" = :address AND c."patterns"::text[] && ARRAY['erc20'] THEN 1 END) AS erc20_received,
-                    COUNT(CASE WHEN "src" = :address AND c."patterns"::text[] && ARRAY['erc721'] THEN 1 END) AS erc721_sent,
-                    COUNT(CASE WHEN "dst" = :address AND c."patterns"::text[] && ARRAY['erc721'] THEN 1 END) AS erc721_received,
-                    COUNT(CASE WHEN "src" = :address AND c."patterns"::text[] && ARRAY['erc1155'] THEN 1 END) AS erc1155_sent,
-                    COUNT(CASE WHEN "dst" = :address AND c."patterns"::text[] && ARRAY['erc1155'] THEN 1 END) AS erc1155_received,
-                    COUNT(1) AS total_transfers
-                FROM token_transfer_events
-                LEFT JOIN contracts c ON
-                    token_transfer_events."token" = c."address"
-                    AND c."workspaceId" = :workspaceId
-                WHERE token_transfer_events."workspaceId" = :workspaceId
-                AND ("src" = :address OR "dst" = :address)
+                    COUNT(*) AS total_transfers,
+                    COUNT(*) FILTER (
+                        WHERE c."patterns" && ARRAY['erc20']::varchar[]
+                    ) AS erc20_transfer_count,
+                    COUNT(*) FILTER (
+                        WHERE c."patterns" && ARRAY['erc721']::varchar[]
+                    ) AS erc721_transfer_count,
+                    COUNT(*) FILTER (
+                        WHERE c."patterns" && ARRAY['erc1155']::varchar[]
+                    ) AS erc1155_transfer_count
+                FROM token_transfer_events tte
+                LEFT JOIN contracts c 
+                    ON tte."token" = c."address" AND c."workspaceId" = :workspaceId
+                WHERE tte."workspaceId" = :workspaceId
+                AND (
+                    tte."src" = :address OR
+                    tte."dst" = :address
+                )
             )
             SELECT
-                COALESCE(transfer_stats.total_transfers, 0)::integer AS "tokenTransferCount",
-                COALESCE(transaction_stats.sent, 0)::integer AS sent,
-                COALESCE(transaction_stats.received, 0)::integer AS received,
-                first_tx.timestamp AS first_transaction_timestamp,
-                last_tx.timestamp AS last_transaction_timestamp,
-                first_tx.hash AS first_transaction_hash,
-                last_tx.hash AS last_transaction_hash,
-                COALESCE(transfer_stats.erc20_sent, 0)::integer AS erc20_sent,
-                COALESCE(transfer_stats.erc20_received, 0)::integer AS erc20_received,
-                COALESCE(transfer_stats.erc721_sent, 0)::integer AS erc721_sent,
-                COALESCE(transfer_stats.erc721_received, 0)::integer AS erc721_received,
-                COALESCE(transfer_stats.erc1155_sent, 0)::integer AS erc1155_sent,
-                COALESCE(transfer_stats.erc1155_received, 0)::integer AS erc1155_received
-            FROM transaction_stats
-            LEFT JOIN transfer_stats ON true
-            LEFT JOIN first_tx ON true
-            LEFT JOIN last_tx ON true;
+                COALESCE(ts.total_transfers, 0)::integer AS "tokenTransferCount",
+                COALESCE(tx.count, 0)::integer AS "transactionCount",
+                ft.timestamp AS "firstTransactionTimestamp",
+                lt.timestamp AS "lastTransactionTimestamp",
+                ft.hash AS "firstTransactionHash",
+                lt.hash AS "lastTransactionHash",
+                COALESCE(ts."erc20TransferCount", 0)::integer AS "erc20TransferCount",
+                COALESCE(ts."erc721TransferCount", 0)::integer AS "erc721TransferCount",
+                COALESCE(ts."erc1155TransferCount", 0)::integer AS "erc1155TransferCount"
+            FROM transaction_stats tx
+            LEFT JOIN transfer_stats ts ON true
+            LEFT JOIN first_tx ft ON true
+            LEFT JOIN last_tx lt ON true;
         `, {
             replacements: {
                 workspaceId: this.id,

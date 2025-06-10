@@ -48,7 +48,7 @@ const createVueApp = (rootComponent, options) => {
             ],
             tracesSampleRate: 1.0,
             tracePropagationTargets: [/.*/],
-            enabled: import.meta.env.VITE_SENTRY_ENABLED
+            enabled: !!import.meta.env.VITE_SENTRY_ENABLED
         });
     }
 
