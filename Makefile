@@ -3,7 +3,7 @@ start:
 		echo "Stopping and removing running containers..."; \
 		docker compose -f docker-compose.prod.yml --env-file .env.docker-compose.prod down --remove-orphans; \
 	fi
-	@if [ ! -f .env.prod ] || [ ! -f run/.env.prod ] || [ ! -f pm2-server/.env.prod ] || [ ! -f .env.docker-compose.prod ]; then \
+	@if [ ! -f run/.env.prod ] || [ ! -f pm2-server/.env.prod ] || [ ! -f .env.docker-compose.prod ]; then \
 		echo "Generating environment and config files..."; \
 		bash ./generate-env-files.sh; \
 	else \
@@ -23,7 +23,7 @@ start:
 	fi
 	@echo "Running sequelize migrations in backend container..."
 	docker compose -f docker-compose.prod.yml --env-file .env.docker-compose.prod exec backend npx sequelize db:migrate
-	docker compose -f docker-compose.prod.yml --env-file .env.docker-compose.prod exec backend npx sequelize db:seed:all
+	docker compose -f docker-compose.prod.yml --env-file .env.docker-compose.prod exec backend npx sequelize db:seed
 	@$(MAKE) info
 
 stop:
