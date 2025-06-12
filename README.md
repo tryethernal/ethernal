@@ -89,6 +89,23 @@ After setup, you'll see a summary like:
 
 ---
 
+## 📡 API
+
+Ethernal exposes a powerful API for programmatic access to your blockchain data and explorer features.
+
+- **API Documentation:**
+  - Full list of endpoints and usage examples: [Ethernal API Reference (Postman)](https://documenter.getpostman.com/view/12141908/2s83zfQ5Tf)
+  - **Note:** Replace all instances of `api.tryethernal.com` in the documentation with your own server's domain or IP address.
+
+You can use this API to:
+- Query blocks, transactions, contracts, logs, and more
+- Integrate Ethernal data into your own dashboards or tools
+- Automate explorer management (add/delete explorer, customise them, etc...)
+
+If you need additional endpoints or have suggestions for improvements, **pull requests and issues are welcome!**
+
+---
+
 ## 🛠️ Useful Makefile Commands
 
 - `make start` – Start or restart Ethernal (with env/config generation)
