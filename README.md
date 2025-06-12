@@ -94,7 +94,7 @@ After setup, you'll see a summary like:
 Ethernal exposes a powerful API for programmatic access to your blockchain data and explorer features.
 
 - **API Documentation:**
-  - Full list of endpoints and usage examples: [Ethernal API Reference (Postman)](https://documenter.getpostman.com/view/12141908/2s83zfQ5Tf)
+  - Full list of endpoints and usage examples: [Ethernal API Reference](https://documenter.getpostman.com/view/12141908/2s83zfQ5Tf)
   - **Note:** Replace all instances of `api.tryethernal.com` in the documentation with your own server's domain or IP address.
 
 You can use this API to:
