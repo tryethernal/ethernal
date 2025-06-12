@@ -11,6 +11,7 @@
 ### Hosted Version
 
 - **Try Ethernal instantly:** [app.tryethernal.com](https://app.tryethernal.com)
+- **Create a demo explorer:** [app.tryethernal.com/demo](https://app.tryethernal.com/demo)
 
 ---
 
