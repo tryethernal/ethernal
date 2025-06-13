@@ -4,9 +4,10 @@ const { getDemoUserId, getDefaultPlanSlug, getAppDomain, getDemoTrialSlug, getSt
 const stripe = require('stripe')(getStripeSecretKey());
 const { generateSlug } = require('random-word-slugs');
 const router = express.Router();
-const { countUp, getCount } = require('../lib/counter');
+const { countUp } = require('../lib/counter');
 const { ProviderConnector, DexConnector } = require('../lib/rpc');
-const { encode, decode } = require('../lib/crypto');
+const { decode } = require('../lib/crypto');
+const { enqueue } = require('../lib/queue');
 const { withTimeout, sanitize } = require('../lib/utils');
 const authMiddleware = require('../middlewares/auth');
 const db = require('../lib/firebase');
@@ -139,6 +140,7 @@ router.post('/migrateExplorer', authMiddleware, async (req, res, next) => {
     the explorer to not function properly.
 
     @param {string} rpcServer - The RPC server to use for the explorer
+    @param {string} email - The email of the user, we'll send them a link to the explorer
     @param {string} name (optional) - The name of the explorer
     @param {string} token (optional) - The native token to use for the explorer
     @returns {object} - The explorer object
@@ -146,11 +148,10 @@ router.post('/migrateExplorer', authMiddleware, async (req, res, next) => {
 router.post('/explorers', async (req, res, next) => {
     const data = req.body;
     try {
-        if (!data.rpcServer)
+        if (!data.rpcServer || !data.email) 
             return managedError(new Error('Missing parameters.'), req, res);
 
         let name = data.name;
-        let slugGenerated = false;
         if (!name) {
             name = generateSlug();
             slugGenerated = true;
@@ -220,7 +221,9 @@ router.post('/explorers', async (req, res, next) => {
         if (!explorer)
             return managedError(new Error('Could not create explorer. Please retry.'), req, res);
 
-        res.status(200).send({ domain: `${explorer.slug}.${getAppDomain()}` });
+        await enqueue('sendDemoExplorerLink', `sendDemoExplorerLink-${explorer.id}`, { email: data.email, explorerSlug: explorer.slug });
+
+        res.sendStatus(200);
     } catch(error) {
         unmanagedError(error, req, next);
     }

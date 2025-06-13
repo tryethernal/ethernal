@@ -37,5 +37,6 @@ module.exports = {
     removeExpiredExplorers: require('./removeExpiredExplorers'),
     deleteWorkspace: require('./deleteWorkspace'),
     queueMonitoring: require('./queueMonitoring'),
-    blockSyncMonitoring: require('./blockSyncMonitoring')
+    blockSyncMonitoring: require('./blockSyncMonitoring'),
+    sendDemoExplorerLink: require('./sendDemoExplorerLink')
 };
