@@ -1,11 +1,6 @@
-vi.mock('@/plugins/posthog', () => ({
-    posthogPlugin: {
-        install(Vue) {
-            Vue.prototype.$posthog = {
-                identify: jest.fn(),
-                capture: jest.fn(),
-                reset: jest.fn()
-            }
-        }
-    }
-}));
+import { vi } from 'vitest';
+export default {
+    capture: vi.fn(),
+    identify: vi.fn(),
+    reset: vi.fn()
+};
