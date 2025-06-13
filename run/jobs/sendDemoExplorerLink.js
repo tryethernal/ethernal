@@ -10,7 +10,7 @@ module.exports = async (job) => {
 
     sgMail.setApiKey(getSendgridApiKey());
 
-    const explorerLink = `${explorerSlug}.${getAppDomain()}`;
+    const explorerLink = `https://${explorerSlug}.${getAppDomain()}`;
 
     return sgMail.send({
         to: email,
@@ -19,7 +19,7 @@ module.exports = async (job) => {
         text: `
             Hello,
 
-            Your Ethernal demo explorer is ready. You can access it at https://${explorerLink}.
+            Your Ethernal demo explorer is ready. You can access it at ${explorerLink}.
 
             Feel free to reply to this email if you have any questions!
 
@@ -29,7 +29,7 @@ module.exports = async (job) => {
         `,
         html: `
             <p>Hello,</p>
-            <p>Your Ethernal demo explorer is ready. You can access it at <a href="https://${explorerLink}">https://${explorerLink}</a>.</p>
+            <p>Your Ethernal demo explorer is ready. You can access it at <a href="${explorerLink}">${explorerLink}</a>.</p>
             <p>Feel free to reply to this email if you have any questions!</p>
             <p>Regards,</p>
             <p>The Ethernal team</p>
