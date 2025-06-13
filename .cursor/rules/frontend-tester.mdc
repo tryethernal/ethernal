@@ -239,6 +239,8 @@ Command example: `npm run test tests/unit/components/MyComponent.spec.js` (assum
 
 # Snapshot verification (IMPORTANT)
 - Always take a look at the generated snapshot file to make sure values there match the spec file. Look for "undefined", "null", "NaN" etc... values, and error messages. If you find those, double check that it's expected (it's probably not expected).
+- Look for error messages and v-alert component with type="error", make sure they only appear if the test is expecting an error message.
+- Look for success messages and v-alert component with type="success", make sure they only appear if the test is expecting an success message.
 - If you find an issue with the snapshot file, here is the process to follow:
   1. Edit the spec file to fix the issue
   2. Run the test command again

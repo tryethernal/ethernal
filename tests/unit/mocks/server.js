@@ -63,6 +63,7 @@ export default {
     migrateDemoExplorer: vi.fn(),
     startTrial: vi.fn(),
     getCurrentUser: vi.fn(),
+    createDemoExplorer: vi.fn(),
     getTokenCirculatingSupply: vi.fn(),
     getAverageGasPrice: vi.fn(),
     getAverageTransactionFee: vi.fn(),

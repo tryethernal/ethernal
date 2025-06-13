@@ -49,15 +49,13 @@
                                     ]"
                                     variant="outlined" v-model="rpcServer" label="RPC URL" placeholder="https://my.rpc.com:8545" class="mb-2" required></v-text-field>
                                 <v-text-field variant="outlined" v-model="nativeToken" label="Native Token Symbol (optional)" placeholder="ETH" class="my-2" required></v-text-field>
+                                <v-text-field persistent-hint hint="We'll send you the link to the explorer" variant="outlined" v-model="email" label="Email" placeholder="your@email.com" class="mt-2 mb-4" required></v-text-field>
                                 <v-btn size="large" width="100%" :loading="loading" color="primary" :disabled="!valid" type="submit">Generate Explorer</v-btn>
                             </v-form>
-                            <v-card class="mt-4" v-if="domain">
-                                <v-card-title class="text-success">
-                                    <v-icon class="text-success mr-2">mdi-check-circle</v-icon>
-                                    Your demo explorer is ready!
-                                </v-card-title>
-                                <v-card-text>
-                                    You can access it here: <a :href="`//${domain}`" target="_blank">https://{{ domain }}</a> (blocks might take a few seconds to start appearing).
+                            <v-card class="mt-4" v-if="success">
+                                <v-card-text class="text-success">
+                                    <v-icon class="mr-2">mdi-check-circle</v-icon>
+                                    Your demo explorer is ready! A link has been sent to your email.
                                 </v-card-text>
                             </v-card>
                         </v-card-text>
@@ -134,7 +132,8 @@ const rpcServer = ref(null);
 const loading = ref(false);
 const nativeToken = ref('ether');
 const errorMessage = ref(null);
-const domain = ref(null);
+const success = ref(false);
+const email = ref(null);
 
 // Inject server service
 const $server = inject('$server');
@@ -153,11 +152,11 @@ const isUrlValid = (url) => {
 const submit = () => {
     loading.value = true;
     errorMessage.value = null;
-    domain.value = null;
+    success.value = false;
     
-    $server.createDemoExplorer(explorerName.value, rpcServer.value, nativeToken.value)
-        .then(({ data }) => {
-            domain.value = data.domain;
+    $server.createDemoExplorer(explorerName.value, rpcServer.value, nativeToken.value, email.value)
+        .then(() => {
+            success.value = true;
             $posthog.capture('explorer:explorer_create', {
                 source: 'demo',
                 is_demo: true

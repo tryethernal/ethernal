@@ -783,9 +783,9 @@ export default {
                 return axios.get(resource, { params: { token }});
             },
 
-            createDemoExplorer(name, rpcServer, nativeToken) {
+            createDemoExplorer(name, rpcServer, nativeToken, email) {
                 const resource = `${envStore.apiRoot}/api/demo/explorers`;
-                return axios.post(resource, { name, rpcServer, nativeToken });
+                return axios.post(resource, { name, rpcServer, nativeToken, email });
             },
 
             startExplorerSync(id) {

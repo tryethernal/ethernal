@@ -33,6 +33,7 @@ require('../mocks/lib/firebase');
 require('../mocks/middlewares/auth');
 
 const db = require('../../lib/firebase');
+const { enqueue } = require('../../lib/queue');
 const { ProviderConnector, DexConnector } = require('../../lib/rpc');
 const crypto = require('../../lib/crypto');
 
@@ -331,7 +332,7 @@ describe(`POST ${BASE_URL}/explorers`, () => {
         }));
 
         request.post(`${BASE_URL}/explorers`)
-            .send({ name: 'demo', rpcServer: 'rpc.demo', nativeToken: 'token' })
+            .send({ name: 'demo', rpcServer: 'rpc.demo', nativeToken: 'token', email: 'email@email.com' })
             .expect(400)
             .then(({ text }) => {
                 expect(text).toEqual(`You can't create a demo with this network id (1 - ethereum). If you'd still like an explorer for this chain. Please reach out to contact@tryethernal.com, and we'll set one up for you.`);
@@ -345,7 +346,7 @@ describe(`POST ${BASE_URL}/explorers`, () => {
         }));
 
         request.post(`${BASE_URL}/explorers`)
-            .send({ name: 'demo', rpcServer: 'rpc.demo', nativeToken: 'token' })
+            .send({ name: 'demo', rpcServer: 'rpc.demo', nativeToken: 'token', email: 'email@email.com' })
             .expect(400)
             .then(({ text }) => {
                 expect(text).toEqual(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`);
@@ -362,7 +363,7 @@ describe(`POST ${BASE_URL}/explorers`, () => {
         }));
 
         request.post(`${BASE_URL}/explorers`)
-            .send({ name: 'demo', rpcServer: 'rpc.demo', nativeToken: 'token' })
+            .send({ name: 'demo', rpcServer: 'rpc.demo', nativeToken: 'token', email: 'email@email.com' })
             .expect(400)
             .then(({ text }) => {
                 expect(text).toEqual('Could not create explorer. Please retry.');
@@ -378,7 +379,7 @@ describe(`POST ${BASE_URL}/explorers`, () => {
         }));
 
         request.post(`${BASE_URL}/explorers`)
-            .send({ name: 'demo', rpcServer: 'rpc.demo', nativeToken: 'token' })
+            .send({ name: 'demo', rpcServer: 'rpc.demo', nativeToken: 'token', email: 'email@email.com' })
             .expect(400)
             .then(({ text }) => {
                 expect(text).toEqual('Error setting up the explorer. Please retry.');
@@ -396,7 +397,7 @@ describe(`POST ${BASE_URL}/explorers`, () => {
         mockCountUp.mockResolvedValueOnce(4);
 
         request.post(`${BASE_URL}/explorers`)
-            .send({ name: 'demo', rpcServer: 'rpc.demo', nativeToken: 'token' })
+            .send({ name: 'demo', rpcServer: 'rpc.demo', nativeToken: 'token', email: 'email@email.com' })
             .expect(400)
             .then(({ text }) => {
                 expect(text).toEqual(`You've reached the limit of demo explorers for this chain (networkId: 54321). Please subscribe to a plan or reach out to contact@tryethernal.com for an extended trial.`);
@@ -413,7 +414,7 @@ describe(`POST ${BASE_URL}/explorers`, () => {
         }));
 
         request.post(`${BASE_URL}/explorers`)
-            .send({ name: 'demo', rpcServer: 'rpc.demo', nativeToken: 'token' })
+            .send({ name: 'demo', rpcServer: 'rpc.demo', nativeToken: 'token', email: 'email@email.com' })
             .expect(200)
             .then(() => {
                 expect(mockCountUp).not.toHaveBeenCalled();
@@ -431,10 +432,11 @@ describe(`POST ${BASE_URL}/explorers`, () => {
         mockGetCount.mockResolvedValueOnce(0);
 
         request.post(`${BASE_URL}/explorers`)
-            .send({ name: 'demo', rpcServer: 'rpc.demo', nativeToken: 'token' })
+            .send({ name: 'demo', rpcServer: 'rpc.demo', nativeToken: 'token', email: 'email@email.com' })
             .expect(200)
-            .then(({ body }) => {
-                expect(body).toEqual({ domain: 'slug.ethernal.com' });
+            .then(() => {
+                expect(enqueue).toHaveBeenCalledWith('sendDiscordMessage', 'sendDiscordMessage-1', { content: expect.any(String), channel: expect.any(String) });
+                expect(enqueue).toHaveBeenCalledWith('sendDemoExplorerLink', 'sendDemoExplorerLink-1', { email: 'email@email.com', explorerSlug: 'slug' });
                 done();
             });
     });

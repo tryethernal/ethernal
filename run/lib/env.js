@@ -64,4 +64,6 @@ module.exports = {
     getProductRoadToken: () => process.env.PRODUCT_ROAD_TOKEN,
     getStripePremiumPriceId: () => process.env.STRIPE_PREMIUM_PRICE_ID,
     getMaxNumberToInsert: () => parseInt(process.env.MAX_NUMBER_TO_INSERT || 1),
+    getDemoExplorerSender: () => process.env.DEMO_EXPLORER_SENDER,
+    getDiscordDemoExplorerChannelWebhook: () => process.env.DISCORD_DEMO_EXPLORER_CHANNEL_WEBHOOK,
 };
