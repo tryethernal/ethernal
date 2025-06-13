@@ -36,13 +36,14 @@ const priorities = {
         'deleteWorkspace',
         'removeStalledBlock',
         'queueMonitoring',
-        'blockSyncMonitoring'
+        'blockSyncMonitoring',
+        'sendDiscordMessage'
     ]
 }
 
 if (!isSelfHosted()) {
     priorities.high.push('updateApproximatedRecord', 'increaseStripeBillingQuota');
-    priorities.low.push('sendDemoExplorerLink');
+    priorities.low.push('sendDemoExplorerLink', 'sendDiscordMessage');
 }
 
 module.exports = priorities;

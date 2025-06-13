@@ -38,5 +38,6 @@ module.exports = {
     deleteWorkspace: require('./deleteWorkspace'),
     queueMonitoring: require('./queueMonitoring'),
     blockSyncMonitoring: require('./blockSyncMonitoring'),
-    sendDemoExplorerLink: require('./sendDemoExplorerLink')
+    sendDemoExplorerLink: require('./sendDemoExplorerLink'),
+    sendDiscordMessage: require('./sendDiscordMessage')
 };

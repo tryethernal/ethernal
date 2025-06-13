@@ -1,6 +1,6 @@
 const express = require('express');
 const axios = require('axios');
-const { getDemoUserId, getDefaultPlanSlug, getAppDomain, getDemoTrialSlug, getStripeSecretKey, getDefaultExplorerTrialDays, whitelistedNetworkIdsForDemo, maxDemoExplorersForNetwork } = require('../lib/env');
+const { getDemoUserId, getDefaultPlanSlug, getAppDomain, getDemoTrialSlug, getStripeSecretKey, getDefaultExplorerTrialDays, whitelistedNetworkIdsForDemo, maxDemoExplorersForNetwork, getDiscordDemoExplorerChannelWebhook } = require('../lib/env');
 const stripe = require('stripe')(getStripeSecretKey());
 const { generateSlug } = require('random-word-slugs');
 const router = express.Router();
@@ -222,6 +222,16 @@ router.post('/explorers', async (req, res, next) => {
             return managedError(new Error('Could not create explorer. Please retry.'), req, res);
 
         await enqueue('sendDemoExplorerLink', `sendDemoExplorerLink-${explorer.id}`, { email: data.email, explorerSlug: explorer.slug });
+
+        const discordNotification = `
+**New Demo Explorer**
+
+**User Email:** ${data.email}
+**Explorer Name:** ${explorer.name || 'N/A'}
+**Explorer Link:** https://${explorer.slug}.${getAppDomain()}
+**Explorer RPC:** ${data.rpcServer || 'N/A'}
+        `;
+        await enqueue('sendDiscordMessage', `sendDiscordMessage-${explorer.id}`, { content: discordNotification, channel: getDiscordDemoExplorerChannelWebhook() });
 
         res.sendStatus(200);
     } catch(error) {
