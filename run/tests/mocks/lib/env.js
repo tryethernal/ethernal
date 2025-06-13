@@ -54,5 +54,7 @@ jest.mock('../../../lib/env', () => ({
     getFirebaseMemCost: jest.fn(() => 1),
     getLogLevel: jest.fn(() => 'info'),
     getServeFrontend: jest.fn(() => false),
-    getSecret: jest.fn(() => 'secret')
+    getSecret: jest.fn(() => 'secret'),
+    getDiscordDemoExplorerChannelWebhook: jest.fn(() => 'https://discord.com/api/webhooks'),
+    getDemoExplorerSender: jest.fn(() => 'antoine@tryethernal.com')
 }));

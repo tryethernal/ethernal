@@ -3,7 +3,7 @@ const axios = require('axios');
 const express = require('express');
 const router = express.Router();
 const db = require('../lib/firebase');
-const { withTimeout } = require('../lib/utils');
+const { enqueue } = require('../lib/queue');
 const { getDiscordFeedbackChannelWebhook, getProductRoadToken } = require('../lib/env');
 const authMiddleware = require('../middlewares/auth');
 const { managedError, unmanagedError } = require('../lib/errors');
@@ -17,7 +17,7 @@ router.post('/feedback', async (req, res, next) => {
 ${data.message}
         `;
 
-        await withTimeout(axios.post(getDiscordFeedbackChannelWebhook(), { content }));
+        await enqueue('sendDiscordMessage', `sendDiscordMessage-${Date.now()}`, { content, channel: getDiscordFeedbackChannelWebhook() });
 
         res.sendStatus(200);
     } catch(error) {
