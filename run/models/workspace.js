@@ -1800,9 +1800,9 @@ module.exports = (sequelize, DataTypes) => {
                 lt.timestamp AS "lastTransactionTimestamp",
                 ft.hash AS "firstTransactionHash",
                 lt.hash AS "lastTransactionHash",
-                COALESCE(ts."erc20TransferCount", 0)::integer AS "erc20TransferCount",
-                COALESCE(ts."erc721TransferCount", 0)::integer AS "erc721TransferCount",
-                COALESCE(ts."erc1155TransferCount", 0)::integer AS "erc1155TransferCount"
+                COALESCE(ts."erc20_transfer_count", 0)::integer AS "erc20TransferCount",
+                COALESCE(ts."erc721_transfer_count", 0)::integer AS "erc721TransferCount",
+                COALESCE(ts."erc1155_transfer_count", 0)::integer AS "erc1155TransferCount"
             FROM transaction_stats tx
             LEFT JOIN transfer_stats ts ON true
             LEFT JOIN first_tx ft ON true
