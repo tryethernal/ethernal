@@ -3,26 +3,21 @@ import { VApp } from "vuetify/components";
 import DemoExplorerSetupEmbedded from '@/components/DemoExplorerSetupEmbedded.vue';
 
 describe('DemoExplorerSetupEmbedded.vue', () => {
-    it('renders the default form', async () => {
+    it('renders the default RPC form', async () => {
         vi.spyOn(server, 'getCurrentUser').mockResolvedValueOnce({ data: { id: 1 }});
-        const wrapper = mount(VApp, {
-            slots: {
-                default: h(DemoExplorerSetupEmbedded)
-            }
-        });
+        const wrapper = mount(DemoExplorerSetupEmbedded);
         await flushPromises();
         expect(wrapper.html()).toMatchSnapshot();
     });
 
-    it('opens the email modal when Get Started is clicked', async () => {
+    it('shows the email field after submitting RPC', async () => {
         vi.spyOn(server, 'getCurrentUser').mockResolvedValueOnce({ data: { id: 1 }});
-        const wrapper = mount(VApp, {
-            slots: {
-                default: h(DemoExplorerSetupEmbedded)
-            }
-        });
-        const embedded = wrapper.findComponent(DemoExplorerSetupEmbedded);
-        embedded.vm.openEmailModal();
+        const wrapper = mount(DemoExplorerSetupEmbedded);
+        await flushPromises();
+        // Set valid RPC and submit
+        wrapper.vm.rpcServer = 'https://my.rpc.com:8545';
+        wrapper.vm.valid = true;
+        await wrapper.find('form').trigger('submit.prevent');
         await flushPromises();
         expect(wrapper.html()).toMatchSnapshot();
     });
@@ -30,20 +25,17 @@ describe('DemoExplorerSetupEmbedded.vue', () => {
     it('shows the success message after explorer creation', async () => {
         vi.spyOn(server, 'getCurrentUser').mockResolvedValueOnce({ data: { id: 1 }});
         vi.spyOn(server, 'createDemoExplorer').mockResolvedValueOnce();
-        const wrapper = mount(VApp, {
-            slots: {
-                default: h(DemoExplorerSetupEmbedded)
-            }
-        });
-        const embedded = wrapper.findComponent(DemoExplorerSetupEmbedded);
-        embedded.vm.openEmailModal();
+        const wrapper = mount(DemoExplorerSetupEmbedded);
         await flushPromises();
-        // Set valid email and rpcServer to pass validation
-        embedded.vm.email = 'test@example.com';
-        embedded.vm.emailValid = true;
-        embedded.vm.rpcServer = 'https://my.rpc.com:8545';
-        // Simulate submit
-        await embedded.vm.submit();
+        // Go to email step
+        wrapper.vm.rpcServer = 'https://my.rpc.com:8545';
+        wrapper.vm.valid = true;
+        await wrapper.find('form').trigger('submit.prevent');
+        await flushPromises();
+        // Set valid email and submit
+        wrapper.vm.email = 'test@example.com';
+        wrapper.vm.emailValid = true;
+        await wrapper.find('form').trigger('submit.prevent');
         await flushPromises();
         expect(wrapper.html()).toMatchSnapshot();
     });

@@ -1,56 +1,56 @@
 <template>
-    <v-main>
-        <v-container fluid>
-            <v-form class="mt-4" @submit.prevent="openEmailModal" v-model="valid">
-                <v-row>
-                    <v-col>
-                        <v-text-field
-                            :rules="[
-                                v => isUrlValid(v) || 'RPC needs to be a valid URL',
-                                v => !!v || 'RPC server is required'
-                            ]"
-                            variant="outlined" v-model="rpcServer" label="RPC URL" placeholder="https://my.rpc.com:8545" required>
-                            <template v-slot:append>
-                                <v-btn style="height: 56px;" :loading="loading" color="primary" :disabled="!valid" type="submit">Get Started</v-btn>
-                            </template>
-                        </v-text-field>
-                    </v-col>
-                </v-row>
-            </v-form>
-            <v-dialog v-model="emailModal" max-width="400">
-                <v-card>
-                    <v-card-title>One last thing...</v-card-title>
-                    <v-card-text class="pb-0">
-                        <template v-if="!success">
-                            Enter your email address and we'll send you the link to the explorer.
-                        </template>
-                        <template v-else>
-                            <div class="text-success">
-                                <v-icon class="mr-2">mdi-check-circle</v-icon>
-                                Your demo explorer is ready! A link has been sent to your email.
-                            </div>
-                        </template>
-                    </v-card-text>
-                    <v-card-text>
+    <v-card border="none">
+        <v-card-text class="pb-0" v-if="step === 2">
+            <template v-if="success">
+                <div class="text-success">
+                    <v-icon class="mr-2">mdi-check-circle</v-icon>
+                    Your demo explorer is ready! A link has been sent to your email.
+                </div>
+            </template>
+        </v-card-text>
+        <v-card-text>
+            <v-slide-x-transition mode="out-in">
+                <div :key="step">
+                    <template v-if="step === 1">
+                        <v-form @submit.prevent="onRpcSubmit" v-model="valid">
+                            <v-text-field
+                                :rules="[
+                                    v => isUrlValid(v) || 'RPC needs to be a valid URL',
+                                    v => !!v || 'RPC server is required'
+                                ]"
+                                variant="outlined" v-model="rpcServer" label="RPC URL" placeholder="https://my.rpc.com:8545" required :disabled="loading">
+                                <template v-slot:append>
+                                    <v-btn style="height: 56px;" :loading="loading" color="primary" :disabled="!valid || loading" type="submit">Get Started</v-btn>
+                                </template>
+                            </v-text-field>
+                        </v-form>
+                    </template>
+                    <template v-else>
                         <v-form @submit.prevent="submit" ref="emailForm" v-model="emailValid" v-if="!success">
                             <v-text-field
                                 v-model="email"
                                 label="Email"
                                 autocomplete="email"
+                                hint="We'll send you the link to the explorer"
+                                persistent-hint
                                 :rules="emailRules"
                                 required
-                            />
-                            <v-card-actions>
-                                <v-spacer></v-spacer>
-                                <v-btn text @click="closeEmailModal">Close</v-btn>
-                                <v-btn variant="flat" color="primary" :loading="loading" :disabled="!emailValid || success" type="submit">Create Explorer</v-btn>
-                            </v-card-actions>
+                            >
+                                <template v-slot:append>
+                                    <v-btn style="height: 56px;" variant="flat" color="primary" :loading="loading" :disabled="!emailValid || loading" type="submit">Create Explorer</v-btn>
+                                    <v-btn style="height: 56px;" variant="text" color="primary" @click="reset">Back</v-btn>
+                                </template>
+                            </v-text-field>
                         </v-form>
-                    </v-card-text>
-                </v-card>
-            </v-dialog>
-        </v-container>
-    </v-main>
+                        <div v-else-if="success" class="text-success">
+                            <v-icon class="mr-2">mdi-check-circle</v-icon>
+                            Your demo explorer is ready! A link has been sent to your email.
+                        </div>
+                    </template>
+                </div>
+            </v-slide-x-transition>
+        </v-card-text>
+    </v-card>
 </template>
 
 <script setup>
@@ -62,7 +62,6 @@ const rpcServer = ref(null);
 const loading = ref(false);
 const nativeToken = ref('ether');
 const success = ref(false);
-const emailModal = ref(false);
 const email = ref('');
 const emailValid = ref(false);
 const emailForm = ref(null);
@@ -75,20 +74,26 @@ const userStore = useUserStore();
 const $server = inject('$server');
 const $posthog = inject('$posthog');
 
+const step = ref(1); // 1: RPC, 2: Email
+
 onMounted(() => {
     $server.getCurrentUser()
         .then(({ data }) => userStore.updateUser(data))
         .catch(() => userStore.updateUser(null));
 });
 
-function openEmailModal() {
-    emailModal.value = true;
+function onRpcSubmit() {
+    if (!valid.value) return;
+    step.value = 2;
     email.value = '';
     emailValid.value = false;
     success.value = false;
 }
-function closeEmailModal() {
-    emailModal.value = false;
+function reset() {
+    step.value = 1;
+    email.value = '';
+    emailValid.value = false;
+    success.value = false;
 }
 function submit() {
     if (!emailForm.value.validate()) return;
