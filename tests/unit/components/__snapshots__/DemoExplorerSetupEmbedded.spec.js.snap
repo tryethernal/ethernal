@@ -19,8 +19,7 @@ exports[`DemoExplorerSetupEmbedded.vue > renders the default RPC form 1`] = `
   </div>
   <!---->
   <!---->
-  <!--v-if-->
-  <div data-v-d31fb907="" class="v-card-text">
+  <div data-v-d31fb907="" class="v-card-text pa-2 pt-3 pb-0">
     <transition-stub data-v-d31fb907="" name="slide-x-transition" mode="out-in" appear="false" persisted="false" css="true">
       <div data-v-d31fb907="">
         <form data-v-d31fb907="" class="v-form" novalidate="">
@@ -105,10 +104,7 @@ exports[`DemoExplorerSetupEmbedded.vue > shows the email field after submitting 
   </div>
   <!---->
   <!---->
-  <div data-v-d31fb907="" class="v-card-text pb-0">
-    <!--v-if-->
-  </div>
-  <div data-v-d31fb907="" class="v-card-text">
+  <div data-v-d31fb907="" class="v-card-text pa-2 pt-3 pb-0">
     <transition-stub data-v-d31fb907="" name="slide-x-transition" mode="out-in" appear="false" persisted="false" css="true">
       <div data-v-d31fb907="">
         <form data-v-d31fb907="" class="v-form" novalidate="">
@@ -194,13 +190,10 @@ exports[`DemoExplorerSetupEmbedded.vue > shows the success message after explore
   </div>
   <!---->
   <!---->
-  <div data-v-d31fb907="" class="v-card-text pb-0">
-    <div data-v-d31fb907="" class="text-success"><i data-v-d31fb907="" class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-default mr-2" aria-hidden="true"></i> Your demo explorer is ready! A link has been sent to your email. </div>
-  </div>
-  <div data-v-d31fb907="" class="v-card-text">
+  <div data-v-d31fb907="" class="v-card-text pa-2 pt-3 pb-0">
     <transition-stub data-v-d31fb907="" name="slide-x-transition" mode="out-in" appear="false" persisted="false" css="true">
       <div data-v-d31fb907="">
-        <div data-v-d31fb907="" class="text-success"><i data-v-d31fb907="" class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-default mr-2" aria-hidden="true"></i> Your demo explorer is ready! A link has been sent to your email. </div>
+        <div data-v-d31fb907="" class="text-success text-h6 d-flex align-center justify-center text-center w-100" style="min-height: 60px;"><i data-v-d31fb907="" class="mdi-check-circle mdi v-icon notranslate v-theme--light v-icon--size-default mr-2" aria-hidden="true"></i> Your demo explorer is ready! A link has been sent to your email. </div>
       </div>
     </transition-stub>
   </div>
