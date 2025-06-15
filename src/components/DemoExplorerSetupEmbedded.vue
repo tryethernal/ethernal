@@ -1,14 +1,6 @@
 <template>
     <v-card border="none">
-        <v-card-text class="pb-0" v-if="step === 2">
-            <template v-if="success">
-                <div class="text-success">
-                    <v-icon class="mr-2">mdi-check-circle</v-icon>
-                    Your demo explorer is ready! A link has been sent to your email.
-                </div>
-            </template>
-        </v-card-text>
-        <v-card-text>
+        <v-card-text class="pa-2 pt-3 pb-0">
             <v-slide-x-transition mode="out-in">
                 <div :key="step">
                     <template v-if="step === 1">
@@ -42,7 +34,7 @@
                                 </template>
                             </v-text-field>
                         </v-form>
-                        <div v-else-if="success" class="text-success">
+                        <div v-else-if="success" class="text-success text-h6 d-flex align-center justify-center text-center w-100" style="min-height: 60px;">
                             <v-icon class="mr-2">mdi-check-circle</v-icon>
                             Your demo explorer is ready! A link has been sent to your email.
                         </div>
