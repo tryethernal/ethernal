@@ -92,6 +92,7 @@ module.exports = (sequelize, DataTypes) => {
                 returning: true,
                 transaction
             });
+
             if (tokenBalanceChange && tokenBalanceChange.id)
                 await tokenBalanceChange.insertAnalyticEvent(transaction);
         });
@@ -171,7 +172,7 @@ module.exports = (sequelize, DataTypes) => {
     transactionId: DataTypes.INTEGER,
     transactionLogId: DataTypes.INTEGER,
     workspaceId: DataTypes.INTEGER,
-    processed: DataTypes.BOOLEAN
+    isReward: DataTypes.BOOLEAN
   }, {
     hooks: {
         afterBulkCreate(tokenTransfers, options) {

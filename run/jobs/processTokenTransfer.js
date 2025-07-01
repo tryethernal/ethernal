@@ -1,5 +1,5 @@
 const { TokenTransfer, Workspace, Transaction } = require('../models');
-const { getBalanceChange } = require('../lib/rpc');
+const { getBalanceChange, getNativeBalanceChange } = require('../lib/rpc');
 const logger = require('../lib/logger');
 
 module.exports = async job => {
@@ -19,7 +19,7 @@ module.exports = async job => {
             {
                 model: Transaction,
                 as: 'transaction',
-                attributes: ['id', 'blockNumber']
+                attributes: ['id', 'blockNumber', 'hash']
             }
         ]
     });
@@ -40,9 +40,13 @@ module.exports = async job => {
 
     if (tokenTransfer.src != '0x0000000000000000000000000000000000000000') {
         try {
-            const balanceChange = await getBalanceChange(tokenTransfer.src, tokenTransfer.token, transaction.blockNumber, workspace.rpcServer);
-            if (balanceChange && balanceChange.diff != '0')
+            const balanceChange = tokenTransfer.token == '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' ?
+                await getNativeBalanceChange(tokenTransfer.src, transaction.blockNumber, workspace.rpcServer) :
+                await getBalanceChange(tokenTransfer.src, tokenTransfer.token, transaction.blockNumber, workspace.rpcServer);
+
+            if (balanceChange && balanceChange.diff != '0') {
                 changes.push(balanceChange);
+            }
         } catch(error) {
             if (error.message && error.message.startsWith('missing revert data in call exception')) {
                 logger.error(error.message, { location: 'jobs.processTokenTransfer', error: error, data });
@@ -53,9 +57,13 @@ module.exports = async job => {
 
     if (tokenTransfer.dst != '0x0000000000000000000000000000000000000000') {
         try {
-            const balanceChange = await getBalanceChange(tokenTransfer.dst, tokenTransfer.token, transaction.blockNumber, workspace.rpcServer);
-            if (balanceChange && balanceChange.diff != '0')
+            const balanceChange = tokenTransfer.token == '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' ?
+                await getNativeBalanceChange(tokenTransfer.dst, transaction.blockNumber, workspace.rpcServer) :
+                await getBalanceChange(tokenTransfer.dst, tokenTransfer.token, transaction.blockNumber, workspace.rpcServer);
+
+            if (balanceChange && balanceChange.diff != '0') {
                 changes.push(balanceChange);
+            }
         } catch(error) {
             if (error.message && error.message.startsWith('missing revert data in call exception')) {
                 logger.error(error.message, { location: 'jobs.processTokenTransfer', error: error, data });

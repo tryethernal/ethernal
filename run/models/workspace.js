@@ -185,6 +185,7 @@ module.exports = (sequelize, DataTypes) => {
             LEFT JOIN contracts c ON c."address" = tte.token AND c."workspaceId" = :workspaceId
             LEFT JOIN token_transfers tt ON tte."tokenTransferId" = tt.id 
             LEFT JOIN transactions t ON tt."transactionId" = t.id
+            LEFT JOIN explorers e ON e."workspaceId" = :workspaceId
             WHERE tte."workspaceId" = :workspaceId
         `;
 
@@ -206,6 +207,13 @@ module.exports = (sequelize, DataTypes) => {
             let itemCopy = { ...item };
             if (itemCopy.contract && itemCopy.transaction && itemCopy.transaction.data && itemCopy.contract.abi)
                 itemCopy.transaction.methodDetails = getTransactionMethodDetails({ data: itemCopy.transaction.data }, itemCopy.contract.abi);
+            if (itemCopy.token == '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
+                itemCopy.contract = {
+                    tokenSymbol: itemCopy.explorer && itemCopy.explorer.nativeToken || 'ETH',
+                    tokenName: itemCopy.explorer && itemCopy.explorer.nativeToken || 'Ether',
+                    tokenDecimals: 18,
+                };
+            console.log('itemCopy', itemCopy);
             return itemCopy;
         });
 
@@ -2859,6 +2867,7 @@ module.exports = (sequelize, DataTypes) => {
                             SELECT COUNT(*)
                             FROM token_transfers
                             WHERE token_transfers."transactionId" = "Transaction".id
+                            AND token_transfers."isReward" = false
                         )::int
                     `), 'tokenTransferCount'
                 ],
@@ -2893,38 +2902,6 @@ module.exports = (sequelize, DataTypes) => {
                     ],
                     as: 'receipt'
                 },
-                // {
-                //     model: sequelize.models.TransactionTraceStep,
-                //     attributes: ['address', 'contractHashedBytecode', 'depth', 'input', 'op', 'returnData', 'workspaceId', 'id', 'value'],
-                //     as: 'traceSteps',
-                //     include: [
-                //         {
-                //             model: sequelize.models.Contract,
-                //             attributes: ['abi', 'address' , 'name', 'tokenDecimals', 'tokenName', 'tokenSymbol', 'workspaceId'],
-                //             include: [
-                //                 {
-                //                     model: sequelize.models.Contract,
-                //                     attributes: ['name', 'tokenName', 'tokenSymbol', 'tokenDecimals', 'abi', 'address', 'workspaceId'],
-                //                     as: 'proxyContract',
-                //                     where: {
-                //                         [Op.and]: sequelize.where(
-                //                             sequelize.col("traceSteps->contract.workspaceId"),
-                //                             Op.eq,
-                //                             sequelize.col("traceSteps->contract->proxyContract.workspaceId")
-                //                         ),
-                //                     },
-                //                     required: false
-                //                 },
-                //                 {
-                //                     model: sequelize.models.ContractVerification,
-                //                     attributes: ['createdAt'],
-                //                     as: 'verification'
-                //                 }
-                //             ],
-                //             as: 'contract'
-                //         }
-                //     ]
-                // },
                 {
                     model: sequelize.models.Block,
                     attributes: blockAttributes,

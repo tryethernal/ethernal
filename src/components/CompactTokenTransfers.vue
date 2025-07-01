@@ -40,25 +40,24 @@
             </span>
             
             <span class="mx-1">
-              <template v-if="transfer.contract.tokenName">
+              <template v-if="transfer.contract?.tokenName">
                 <Hash-Link
                   :type="'address'"
                   :hash="transfer.token"
                   :contract="transfer.contract"
                   :notCopiable="true"
-                  :withName="true"
-                  truncate="true"
+                  :withTokenName="true"
+                  :truncate="true"
                 />&nbsp;
-                <span v-if="transfer.contract.tokenSymbol" class="text-medium-emphasis">({{ transfer.contract.tokenSymbol }})</span>
+                <span v-if="transfer.contract?.tokenSymbol && transfer.contract.tokenSymbol !== transfer.contract.tokenName" class="text-medium-emphasis">({{ transfer.contract.tokenSymbol }})</span>
               </template>
               <template v-else>
                 (<Hash-Link
                   :type="'address'"
                   :hash="transfer.token"
-                  :withName="true"
                   :contract="transfer.contract"
-                  :notCopiable="!!transfer.contract.name"
-                  truncate="true"
+                  :notCopiable="!!transfer.contract?.name"
+                  :truncate="true"
                 />)
               </template>
             </span>

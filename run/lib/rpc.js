@@ -17,6 +17,19 @@ const ERC721_ENUMERABLE_ABI = require('./abis/erc721Enumerable.json');
 const ERC721_METADATA_ABI = require('./abis/erc721Metadata.json');
 const ALL_ABIS = ERC721_ABI.concat(ERC20_ABI, ERC721_ENUMERABLE_ABI, ERC721_METADATA_ABI, ERC1155_ABI);
 
+const getNativeBalanceChange = async (address, blockNumber, rpcServer) => {
+    const provider = new ProviderConnector(rpcServer);
+    const currentBalance = blockNumber > 0 ? await provider.getBalance(address, blockNumber) : ethers.BigNumber.from('0');
+    const previousBalance = blockNumber > 1 ? await provider.getBalance(address, blockNumber - 1) : ethers.BigNumber.from('0');
+
+    return {
+        address: address,
+        currentBalance: currentBalance.toString(),
+        previousBalance: previousBalance.toString(),
+        diff: currentBalance.sub(previousBalance).toString()
+    };
+}
+
 const getBalanceChange = async (address, token, blockNumber, rpcServer) => {
     let currentBalance = ethers.BigNumber.from('0');
     let previousBalance = ethers.BigNumber.from('0');
@@ -163,8 +176,8 @@ class ProviderConnector {
         this.limiter = limiter;
     }
 
-    getBalance(address) {
-        return withTimeout(this.provider.getBalance(address));
+    getBalance(address, block = 'latest') {
+        return withTimeout(this.provider.getBalance(address, block));
     }
 
     async checkRateLimit() {
@@ -535,5 +548,6 @@ module.exports = {
     WalletConnector: WalletConnector,
     DexConnector: DexConnector,
     DexFactoryConnector: DexFactoryConnector,
-    getBalanceChange: getBalanceChange
+    getBalanceChange: getBalanceChange,
+    getNativeBalanceChange: getNativeBalanceChange
 };

@@ -238,20 +238,63 @@ module.exports = (sequelize, DataTypes) => {
                         transactionId: this.id,
                         transactionLogId: log.id,
                         workspaceId: this.workspaceId,
+                        isReward: false,
                         ...tokenTransfer
                     }));
             }
 
+            const block = await this.getBlock();
+            let toValidator;
+            if (this.type && this.type == 2) {
+                // Use BigNumber for (effectiveGasPrice - baseFeePerGas) * gasUsed
+                const effectiveGasPrice = ethers.BigNumber.from(receipt.raw.effectiveGasPrice);
+                const baseFeePerGas = ethers.BigNumber.from(block.baseFeePerGas);
+                const gasUsed = ethers.BigNumber.from(receipt.gasUsed);
+                toValidator = effectiveGasPrice.sub(baseFeePerGas).mul(gasUsed);
+            } else {
+                // Use BigNumber for gasPrice * gasUsed
+                const gasPrice = ethers.BigNumber.from(this.gasPrice);
+                const gasUsed = ethers.BigNumber.from(receipt.gasUsed);
+                toValidator = gasPrice.mul(gasUsed);
+            }
+
+            tokenTransfers.push(sanitize({
+                transactionId: this.id,
+                transactionLogId: null,
+                workspaceId: this.workspaceId,
+                src: this.from,
+                dst: block.miner,
+                amount: toValidator.toString(),
+                token: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+                tokenId: null,
+                isReward: true
+            }));
+
+            if (this.value > 0) {
+                tokenTransfers.push(sanitize({
+                    transactionId: this.id,
+                    transactionLogId: null,
+                    workspaceId: this.workspaceId,
+                    src: this.from,
+                    dst: this.to,
+                    amount: this.value,
+                    token: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+                    tokenId: null,
+                    isReward: false
+                }));
+            }
+
+            const events = [];
             if (tokenTransfers.length > 0) {
                 const storedTokenTransfers = await sequelize.models.TokenTransfer.bulkCreate(tokenTransfers, {
                     ignoreDuplicates: true,
                     returning: true,
                     transaction
                 });
+                console.log('storedTokenTransfers', storedTokenTransfers);
                 for (let i = 0; i < storedTokenTransfers.length; i++)
                     trigger(`private-contractLog;workspace=${this.workspaceId};contract=${tokenTransfers[i].address}`, 'new', null);
 
-                const events = [];
                 for (let i = 0; i < storedTokenTransfers.length; i++) {
                     const tokenTransfer = storedTokenTransfers[i];
                     if (!tokenTransfer.id)
@@ -271,25 +314,25 @@ module.exports = (sequelize, DataTypes) => {
                         }, transaction);
                     }
 
-                    events.push({
+                    events.push(sanitize({
                         workspaceId: this.workspaceId,
                         tokenTransferId: tokenTransfer.id,
                         blockNumber: receipt.blockNumber,
                         timestamp: this.timestamp,
-                        amount: ethers.BigNumber.from(tokenTransfer.amount).toString(),
+                        amount: toValidator.toString(),
                         token: tokenTransfer.token,
                         tokenType: contract ? contract.patterns[0] : null,
                         src: tokenTransfer.src,
-                        dst: tokenTransfer.dst
-                    });
+                        dst: tokenTransfer.dst,
+                        isReward: tokenTransfer.isReward
+                    }));
                 }
-
-                if (events.length > 0)
-                    await sequelize.models.TokenTransferEvent.bulkCreate(events, {
-                        ignoreDuplicates: true,
-                        transaction
-                    });
             }
+
+            await sequelize.models.TokenTransferEvent.bulkCreate(events, {
+                ignoreDuplicates: true,
+                transaction
+            });
 
             await storedReceipt.insertAnalyticEvent(transaction);
 
@@ -297,9 +340,9 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    getFilteredTokenTransfers(page = 1, itemsPerPage = 10, order = 'DESC', orderBy = 'id') {
-        return sequelize.models.TokenTransfer.findAndCountAll({
-            where: { transactionId: this.id },
+    async getFilteredTokenTransfers(page = 1, itemsPerPage = 10, order = 'DESC', orderBy = 'id') {
+        const result = await sequelize.models.TokenTransfer.findAndCountAll({
+            where: { transactionId: this.id, isReward: false },
             include: {
                 model: sequelize.models.Contract,
                 as: 'contract',
@@ -314,6 +357,26 @@ module.exports = (sequelize, DataTypes) => {
             limit: itemsPerPage,
             order: [[orderBy, order]]
         });
+
+        const tokenTransfers = result.rows.map(t => t.toJSON());
+        const processedTokenTransfers = [];
+
+        // Inject custom contract object for native token
+        for (const transfer of tokenTransfers) {
+            if (transfer.token === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') {
+                const explorer = await sequelize.models.Explorer.findOne({ where: { workspaceId: this.workspaceId } });
+                transfer.contract = {
+                    tokenSymbol: explorer.token || 'ETH',
+                    tokenDecimals: 18,
+                    tokenName: explorer.token || 'Ether'
+                };
+                processedTokenTransfers.push(transfer);
+            }
+        }
+        return {
+            items: processedTokenTransfers,
+            total: result.count
+        };
     }
 
     async countTokenTransfers() {

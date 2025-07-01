@@ -1959,16 +1959,20 @@ const getAddressTransactionStats = async (workspaceId, address) => {
 const getTransactionTokenTransfers = async (workspaceId, transactionHash, page, itemsPerPage, order, orderBy) => {
     if (!workspaceId || !transactionHash) throw new Error('Missing parameter');
 
-    const workspace = await Workspace.findByPk(workspaceId);
-    const transaction = await workspace.findTransaction(transactionHash);
+    const transaction = await Transaction.findOne({
+        where: {
+            hash: transactionHash,
+            workspaceId
+        }
+    });
 
     if (!transaction)
         throw new Error('Cannot find transaction');
 
-    const { rows: transfers, count } = await transaction.getFilteredTokenTransfers(page, itemsPerPage, order, orderBy);
+    const { items: transfers, total: count } = await transaction.getFilteredTokenTransfers(page, itemsPerPage, order, orderBy);
 
     return {
-        items: transfers.map(t => t.toJSON()),
+        items: transfers,
         total: count
     };
 };

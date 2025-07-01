@@ -31,7 +31,8 @@ module.exports = (sequelize, DataTypes) => {
     token: DataTypes.STRING,
     tokenType: DataTypes.STRING,
     src: DataTypes.STRING,
-    dst: DataTypes.STRING
+    dst: DataTypes.STRING,
+    isReward: DataTypes.BOOLEAN
   }, {
 
     sequelize,
