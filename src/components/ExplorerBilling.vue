@@ -13,7 +13,7 @@
             <div>
                 Monthly Transaction Quota:
                 <template v-if="explorer.stripeSubscription.cycleEndsAt">
-                    <b>{{ explorer.stripeSubscription.transactionQuota.toLocaleString() }} / {{ transactionQuota > 0 ? transactionQuota.toLocaleString() : '&#8734;' }}</b> <template v-if="explorer.stripeSubscription.cycleEndsAt > 0">(Resetting {{ $dt.format(explorer.stripeSubscription.cycleEndsAt, 'MMM. d') }})</template><template v-if="activeSubscription"> | <a href="#" @click="openExplorerQuotaManagementModal()">Manage Quota</a></template>
+                    <b>{{ explorer.stripeSubscription.transactionQuota.toLocaleString() }} / {{ transactionQuota > 0 ? transactionQuota.toLocaleString() : '&#8734;' }}</b> <template v-if="explorer.stripeSubscription.cycleEndsAt > 0">(Resetting {{ $dt.format(explorer.stripeSubscription.cycleEndsAt, 'MMM. d') }})</template><template v-if="activeSubscription && hasTxLimit"> | <a href="#" @click="openExplorerQuotaManagementModal()">Manage Quota</a></template>
                 </template>
                 <template v-else><b>Unlimited</b></template>
             </div>
@@ -55,6 +55,9 @@ const trial = computed(() => props.explorer.stripeSubscription && props.explorer
 const trialWithCard = computed(() => props.explorer.stripeSubscription && props.explorer.stripeSubscription.status === 'trial_with_card');
 const activeSubscription = computed(() => props.explorer.stripeSubscription && props.explorer.stripeSubscription.status === 'active');
 const pendingCancelation = computed(() => props.explorer.stripeSubscription && props.explorer.stripeSubscription.status === 'pending_cancelation');
+const hasTxLimit = computed(() => {
+  return props.explorer.stripeSubscription.stripePlan.capabilities.txLimit && props.explorer.stripeSubscription.stripePlan.capabilities.txLimit > 0;
+});
 
 const formattedExplorerStatus = computed(() => {
   if (activeSubscription.value) return 'Active';
