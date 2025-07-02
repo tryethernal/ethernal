@@ -1762,9 +1762,30 @@ describe('updateExplorerSubscription', () => {
             customer: { invoice_settings: {} }
         }
         jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({ safeUpdateSubscription });
+        jest.spyOn(StripePlan, 'findByPk').mockResolvedValueOnce({ price: 1 });
+
         db.updateExplorerSubscription(1, 1, 1, stripeSubscription)
             .then(() => {
                 expect(safeUpdateSubscription).toHaveBeenCalledWith(1, '1', new Date(1000), 'active');
+                done();
+            })
+    });
+
+    it('Should throw an error if plan is not found', async () => {
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({ id: 1 });
+        jest.spyOn(StripePlan, 'findByPk').mockResolvedValueOnce(null);
+        await expect(db.updateExplorerSubscription(1, 1, 1, {}))
+            .rejects.toThrow(`Can't find plan`);
+    });
+
+    it('Should update the subscription to a free plan without a stripe subscription', (done) => {
+        const safeUpdateSubscription = jest.fn();
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({ safeUpdateSubscription });
+        jest.spyOn(StripePlan, 'findByPk').mockResolvedValueOnce({ price: 0 });
+
+        db.updateExplorerSubscription(1, 1, 1, null)
+            .then(() => {
+                expect(safeUpdateSubscription).toHaveBeenCalledWith(1, undefined, new Date(0), 'active');
                 done();
             })
     });
@@ -1778,6 +1799,8 @@ describe('updateExplorerSubscription', () => {
             customer: { invoice_settings: {} }
         }
         jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({ safeUpdateSubscription });
+        jest.spyOn(StripePlan, 'findByPk').mockResolvedValueOnce({ price: 1 });
+
         db.updateExplorerSubscription(1, 1, 1, stripeSubscription)
             .then(() => {
                 expect(safeUpdateSubscription).toHaveBeenCalledWith(1, '1', new Date(1000), 'trial');
@@ -1794,6 +1817,8 @@ describe('updateExplorerSubscription', () => {
             customer: { default_source: 'yes' }
         }
         jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({ safeUpdateSubscription });
+        jest.spyOn(StripePlan, 'findByPk').mockResolvedValueOnce({ price: 1 });
+
         db.updateExplorerSubscription(1, 1, 1, stripeSubscription)
             .then(() => {
                 expect(safeUpdateSubscription).toHaveBeenCalledWith(1, '1', new Date(1000), 'trial_with_card');
@@ -1810,6 +1835,8 @@ describe('updateExplorerSubscription', () => {
             customer: { invoice_settings: { default_payment_method: 'yes' }}
         }
         jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({ safeUpdateSubscription });
+        jest.spyOn(StripePlan, 'findByPk').mockResolvedValueOnce({ price: 1 });
+
         db.updateExplorerSubscription(1, 1, 1, stripeSubscription)
             .then(() => {
                 expect(safeUpdateSubscription).toHaveBeenCalledWith(1, '1', new Date(1000), 'trial_with_card');
@@ -1820,6 +1847,8 @@ describe('updateExplorerSubscription', () => {
     it('Should update a subscription without a subscription object', (done) => {
         const safeUpdateSubscription = jest.fn();
         jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({ safeUpdateSubscription });
+        jest.spyOn(StripePlan, 'findByPk').mockResolvedValueOnce({ price: 1 });
+
         db.updateExplorerSubscription(1, 1, 1)
             .then(() => {
                 expect(safeUpdateSubscription).toHaveBeenCalledWith(1, undefined, new Date(0), 'active');
@@ -1829,6 +1858,8 @@ describe('updateExplorerSubscription', () => {
 
     it('Should throw an error if explorer is not found', async () => {
         jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce(null);
+        jest.spyOn(StripePlan, 'findByPk').mockResolvedValueOnce({ price: 1 });
+
         await expect(db.updateExplorerSubscription(1, 1, 1))
             .rejects.toThrow(`Can't find explorer`);
     });
