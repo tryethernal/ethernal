@@ -25,11 +25,9 @@
 <script setup>
 import { ref } from 'vue';
 import { useEnvStore } from '../stores/env';
-import { useUserStore } from '../stores/user';
 import ExplorerPlanSelector from './ExplorerPlanSelector.vue';
 
 const envStore = useEnvStore();
-const userStore = useUserStore();
 
 const dialog = ref(false);
 const resolve = ref(null);
@@ -46,25 +44,22 @@ function open(opts) {
     });
 }
 
-function planCreated(slug) {
-    options.value.currentPlanSlug = slug;
-    refresh.value = true;
-}
-
 function planUpdated(slug) {
     options.value.currentPlanSlug = slug;
     options.value.pendingCancelation = false;
     refresh.value = true;
 }
-
-function planCanceled() {
-    options.value.pendingCancelation = true;
-    refresh.value = true;
-}
-
 function close() {
     if (resolve.value) resolve.value(refresh.value);
     reset();
+}
+
+function planCanceled(shouldClose) {
+    refresh.value = true;
+    if (shouldClose)
+        close();
+    else
+        options.value.pendingCancelation = true;
 }
 
 function reset() {

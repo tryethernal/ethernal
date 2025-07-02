@@ -1526,6 +1526,10 @@ const updateExplorerSubscription = async (userId, explorerId, stripePlanId, stri
         }
     });
 
+    const newPlan = await StripePlan.findByPk(stripePlanId);
+    if (!newPlan)
+        throw new Error(`Can't find plan`);
+
     if (!explorer)
         throw new Error(`Can't find explorer`);
 
@@ -1538,7 +1542,9 @@ const updateExplorerSubscription = async (userId, explorerId, stripePlanId, stri
         cycleEndsAt = new Date(stripeSubscription.current_period_end * 1000);
         stripeId = stripeSubscription.id;
 
-        if (stripeSubscription.status == 'trialing' && !customer.default_source && !customer.invoice_settings.default_payment_method)
+        if (newPlan.price == 0)
+            status = 'active';
+        else if (stripeSubscription.status == 'trialing' && !customer.default_source && !customer.invoice_settings.default_payment_method)
             status = stripeSubscription.default_payment_method ? 'trial_with_card' : 'trial';
         else if (stripeSubscription.status == 'trialing' && (customer.default_source || customer.invoice_settings.default_payment_method))
             status = 'trial_with_card';

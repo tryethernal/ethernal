@@ -121,8 +121,8 @@ describe('ExplorerPlanSelector.vue', () => {
                 pendingCancelation: false,
             },
         });
-        wrapper.vm.onPlanSelected()
         await flushPromises();
+        wrapper.vm.onPlanSelected()
         expect(server.cancelExplorerSubscription).toHaveBeenCalledWith(1);
         expect(window.confirm).toHaveBeenCalledWith(expect.stringContaining('If you cancel now'));
     });
