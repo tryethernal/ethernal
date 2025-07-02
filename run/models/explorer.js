@@ -437,7 +437,7 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async safeUpdateSubscription(stripePlanId, stripeId, cycleEndsAt, status) {
-        if (!stripePlanId || !stripeId || !cycleEndsAt || !status) throw new Error('Missing parameter');
+        if (!stripePlanId || !cycleEndsAt || !status) throw new Error('Missing parameter');
 
         if (sequelize.models.StripeSubscription.rawAttributes.status.values.indexOf(status) == -1)
             throw new Error('Invalid subscription status');

@@ -350,19 +350,27 @@ router.put('/:id/subscription', [authMiddleware, stripeMiddleware], async (req, 
         let subscription;
         if (explorer.stripeSubscription.stripeId) {
             subscription = await stripe.subscriptions.retrieve(explorer.stripeSubscription.stripeId, { expand: ['customer']});
-            await stripe.subscriptions.update(subscription.id, {
-                cancel_at_period_end: false,
-                proration_behavior: 'always_invoice',
-                items: [{
-                    id: subscription.items.data[0].id,
-                    price: stripePlan.stripePriceId
-                }]
-            });
+            if (stripePlan.price == 0) {
+                await stripe.subscriptions.cancel(subscription.id, {
+                    prorate: true
+                });
+                await db.deleteExplorerSubscription(data.user.id, explorer.id);
+                await db.createExplorerSubscription(data.user.id, explorer.id, stripePlan.id);
+            }
+            else
+                await stripe.subscriptions.update(subscription.id, {
+                    cancel_at_period_end: false,
+                    proration_behavior: 'always_invoice',
+                    items: [{
+                        id: subscription.items.data[0].id,
+                        price: stripePlan.stripePriceId
+                    }]
+                });
         }
-
+ 
         if (explorer.stripeSubscription.isPendingCancelation)
             await db.revertExplorerSubscriptionCancelation(data.user.id, explorer.id);
-        else
+        else if (stripePlan.price > 0)
             await db.updateExplorerSubscription(data.user.id, explorer.id, stripePlan.id, subscription);
 
         res.sendStatus(200);
@@ -390,7 +398,7 @@ router.post('/:id/subscription', [authMiddleware, stripeMiddleware], async (req,
         if (!stripePlan)
             return managedError(new Error(`Can't find plan.`), req, res);
 
-        if (!stripePlan.capabilities.skipBilling)
+        if (!stripePlan.capabilities.skipBilling && stripePlan.price > 0)
             return managedError(new Error(`This plan cannot be used via the API at the moment. Start the subscription using the dashboard, or reach out to contact@tryethernal.com.`), req, res);
 
         await db.createExplorerSubscription(data.user.id, explorer.id, stripePlan.id);
@@ -415,7 +423,10 @@ router.delete('/:id/subscription', [authMiddleware, stripeMiddleware], async (re
             await stripe.subscriptions.update(subscription.id, {
                 cancel_at_period_end: true
             });
-            await db.cancelExplorerSubscription(data.user.id, explorer.id);
+            if (explorer.stripeSubscription.stripePlan.price == 0)
+                await db.deleteExplorerSubscription(data.user.id, explorer.id);
+            else
+                await db.cancelExplorerSubscription(data.user.id, explorer.id);
         }
         else
             await db.deleteExplorerSubscription(data.user.id, explorer.id);

@@ -136,7 +136,7 @@
                 <v-btn variant="flat" :loading="loading" :disabled="disabled" v-if="current && !pendingCancelation" @click="changePlan(null)" class="bg-error">Cancel Plan</v-btn>
                 <v-btn variant="flat" :loading="loading" :disabled="disabled" v-else-if="current && pendingCancelation" @click="changePlan(plan.slug)" class="bg-primary">Revert Cancelation</v-btn>
                 <v-btn variant="flat" v-else :loading="loading" :disabled="disabled" @click="changePlan(plan.slug)" class="bg-primary">
-                    <template v-if="trial">Start 7 day Trial</template>
+                    <template v-if="trial && plan.price > 0">Start 7 day Trial</template>
                     <template v-else>Choose Plan</template>
                 </v-btn>
             </template>
