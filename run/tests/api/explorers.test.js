@@ -5,6 +5,7 @@ const mockSubscriptionUpdate = jest.fn();
 const mockSubscriptionItemDelete = jest.fn();
 const mockInvoiceListUpcomingLines = jest.fn();
 const mockSubscriptionItemUpdate = jest.fn();
+const mockSubscriptionCancel = jest.fn();
 
 jest.mock('stripe', () => {
     return jest.fn().mockImplementation(() => {
@@ -15,7 +16,8 @@ jest.mock('stripe', () => {
             subscriptions: {
                 create: mockSubscriptionCreate,
                 retrieve: mockSubscriptionRetrieve,
-                update: mockSubscriptionUpdate
+                update: mockSubscriptionUpdate,
+                cancel: mockSubscriptionCancel
             },
             subscriptionItems: {
                 del: mockSubscriptionItemDelete,
@@ -597,7 +599,7 @@ describe(`PUT ${BASE_URL}/:id/quotaExtension`, () => {
 describe(`PUT ${BASE_URL}/:id/subscription`, () => {
     it('Should update the plan without calling stripe if no stripeId', (done) => {
         jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, stripeSubscription: { stripePlan: { id: 1, slug: 'slug' }}});
-        jest.spyOn(db, 'getStripePlan').mockResolvedValue({ public: true, stripePriceId: 'priceId' });
+        jest.spyOn(db, 'getStripePlan').mockResolvedValue({ public: true, stripePriceId: 'priceId', price: 1 });
 
         request.put(`${BASE_URL}/1/subscription`)
             .send({ data: { explorerId: 1, newStripePlanSlug: 'slug' }})
@@ -647,9 +649,26 @@ describe(`PUT ${BASE_URL}/:id/subscription`, () => {
             });
     });
 
+    it('Should delete the subscription & create a new free one and return a 200', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, stripeSubscription: { stripePlan: { slug: 'slug' }, stripeId: 'subscriptionId' }});
+        jest.spyOn(db, 'getStripePlan').mockResolvedValue({ public: true, stripePriceId: 'priceId', price: 0 });
+        mockSubscriptionRetrieve.mockResolvedValueOnce({ id: 'subscriptionId', items: { data: [{ id: 'itemId' }]}});
+
+        request.put(`${BASE_URL}/1/subscription`)
+            .send({ data: { explorerId: 1, newStripePlanSlug: 'slug' }})
+            .expect(200)
+            .then(() => {
+                expect(mockSubscriptionRetrieve).toHaveBeenCalledWith('subscriptionId', { expand: ['customer']});
+                expect(mockSubscriptionCancel).toHaveBeenCalledWith('subscriptionId', { prorate: true });
+                expect(db.deleteExplorerSubscription).toHaveBeenCalled();
+                expect(db.createExplorerSubscription).toHaveBeenCalled();
+                done();
+            });
+    });
+
     it('Should update the subscription and return a 200', (done) => {
         jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, stripeSubscription: { stripePlan: { slug: 'slug' }, stripeId: 'subscriptionId' }});
-        jest.spyOn(db, 'getStripePlan').mockResolvedValue({ public: true, stripePriceId: 'priceId' });
+        jest.spyOn(db, 'getStripePlan').mockResolvedValue({ public: true, stripePriceId: 'priceId', price: 1 });
         mockSubscriptionRetrieve.mockResolvedValueOnce({ id: 'subscriptionId', items: { data: [{ id: 'itemId' }]}});
 
         request.put(`${BASE_URL}/1/subscription`)
@@ -708,6 +727,19 @@ describe(`POST ${BASE_URL}/:id/subscription`, () => {
             });
     });
 
+    it('Should return a 200 if the subscription is created for a free plan', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1 });
+        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ id: 1, price: 0, public: true, stripePriceId: 'priceId', capabilities: {}});
+
+        request.post(`${BASE_URL}/1/subscription`)
+            .send({ data: { planSlug: 'slug' }})
+            .expect(200)
+            .then(() => {
+                expect(db.createExplorerSubscription).toHaveBeenCalledWith(1, 1, 1);
+               done();
+            });
+    });
+
     it('Should return an error if no explorer found', (done) => {
         jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce(null);
 
@@ -745,9 +777,9 @@ describe(`POST ${BASE_URL}/:id/subscription`, () => {
             });
     });
 
-    it('Should return an error if plan does not have skipBilling capability', (done) => {
+    it('Should return an error if plan does not have skipBilling capability and is not free', (done) => {
         jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1 });
-        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ id: 1, public: true, stripePriceId: 'priceId', capabilities: {}});
+        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ id: 1, price: 1, public: true, stripePriceId: 'priceId', capabilities: {}});
 
         request.post(`${BASE_URL}/1/subscription`)
             .send({ data: { planSlug: 'slug' }})
@@ -785,8 +817,35 @@ describe(`DELETE ${BASE_URL}/:id/subscription`, () => {
             });
     });
 
-    it('Should cancel the subscription and return a 200', (done) => {
-        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, stripeSubscription: { stripeId: 'subscriptionId' }});
+    it('Should delete the free subscription and return a 200', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({
+            id: 1,
+            stripeSubscription: {
+                stripeId: 'subscriptionId',
+                stripePlan: { price: 0 }
+            }
+        });
+        mockSubscriptionRetrieve.mockResolvedValueOnce({ id: 'subscriptionId' });
+
+        request.delete(`${BASE_URL}/1/subscription`)
+            .send({ data: { explorerId: 1 }})
+            .expect(200)
+            .then(() => {
+                expect(mockSubscriptionRetrieve).toHaveBeenCalledWith('subscriptionId');
+                expect(mockSubscriptionUpdate).toBeCalledWith('subscriptionId', { cancel_at_period_end: true });
+                expect(db.deleteExplorerSubscription).toHaveBeenCalled();
+                done();
+            });
+    });
+
+    it('Should cancel the paid subscription and return a 200', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({
+            id: 1,
+            stripeSubscription: {
+                stripeId: 'subscriptionId',
+                stripePlan: { price: 1 }
+            }
+        });
         mockSubscriptionRetrieve.mockResolvedValueOnce({ id: 'subscriptionId' });
 
         request.delete(`${BASE_URL}/1/subscription`)
