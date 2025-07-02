@@ -21,10 +21,10 @@ exports[`ExplorerDomainsList.vue > Should be disabled 1`] = `
   <!---->
   <new-explorer-domain-modal-stub></new-explorer-domain-modal-stub>
   <div class="v-card-text">
-    <div class="v-alert v-theme--light bg-warning v-alert--density-default v-alert--variant-flat" role="alert">
+    <div class="v-alert v-theme--light bg-warning v-alert--density-compact v-alert--variant-flat mb-4" role="alert">
       <!----><span class="v-alert__underlay"></span>
       <!---->
-      <div class="v-alert__prepend"><i class="mdi-alert-circle mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="default"></i></div>
+      <div class="v-alert__prepend"><i class="mdi-alert-circle mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="compact"></i></div>
       <div class="v-alert__content">
         <!---->Upgrade your plan to activate domain aliases.
       </div>

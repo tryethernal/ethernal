@@ -2,7 +2,7 @@
     <v-card :disabled="disabled">
         <NewExplorerDomainModal ref="newExplorerDomainModal" />
         <v-card-text>
-            <v-alert v-if="disabled" text type="warning">Upgrade your plan to activate domain aliases.</v-alert>
+            <v-alert class="mb-4" density="compact" v-if="disabled" text type="warning">Upgrade your plan to activate domain aliases.</v-alert>
             <v-list v-if="domains.length" class="py-0 mb-4">
                 <Explorer-Domain @deleted="reloadDomains()" v-for="(domain, idx) in domains" :domain="domain" :key="idx" />
             </v-list>
