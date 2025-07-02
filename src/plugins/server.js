@@ -847,6 +847,12 @@ export default {
                 return axios.post(resource, { data });
             },
 
+            createExplorerSubscription(explorerId, planSlug) {
+                const data = { planSlug };
+                const resource = `${envStore.apiRoot}/api/explorers/${explorerId}/subscription`;
+                return axios.post(resource, { data });
+            },
+
             cancelExplorerSubscription(explorerId) {
                 const resource = `${envStore.apiRoot}/api/explorers/${explorerId}/subscription`;
                 return axios.delete(resource);

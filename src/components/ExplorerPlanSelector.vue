@@ -13,7 +13,7 @@
                     <v-card><v-skeleton-loader type="article, actions"></v-skeleton-loader></v-card>
                 </v-col>
             </template>
-            <v-col v-else cols="3" v-for="(plan, idx) in plans" :key="idx">
+            <v-col v-else lg="3" md="6" sm="12" v-for="(plan, idx) in plans" :key="idx">
                 <Explorer-Plan-Card
                     :current="currentPlanSlug == plan.slug"
                     :pendingCancelation="pendingCancelation && plan.slug == currentPlanSlug"
@@ -64,7 +64,12 @@ onMounted(() => {
     // If not, inject it or import as needed
     // eslint-disable-next-line no-undef
     $server.getExplorerPlans()
-        .then(({ data }) => plans.value = data.sort((a, b) => a.price - b.price && b.price > 0))
+        .then(({ data }) => plans.value = data.sort((a, b) => {
+            if (a.price === null && b.price === null) return 0;
+            if (a.price === null) return 1;
+            if (b.price === null) return -1;
+            return a.price - b.price;
+        }))
         .catch(console.log)
         .finally(() => loading.value = false);
 });
@@ -80,7 +85,12 @@ function onPlanSelected(slug) {
         cancelPlan();
 }
 
+function findPlan(slug) {
+    return plans.value.find(plan => plan.slug === slug);
+}
+
 function createPlan(slug) {
+    const plan = findPlan(slug);
     if (userStore.cryptoPaymentEnabled) {
         // eslint-disable-next-line no-undef
         $server.startCryptoSubscription(slug, props.explorerId)
@@ -103,18 +113,31 @@ function createPlan(slug) {
                 selectedPlanSlug.value = null;
             });
     }
-    else {
-        const successUrl = props.stripeSuccessUrl || `http://${envStore.mainDomain}/explorers/${props.explorerId}?justCreated=true`;
-        const cancelUrl = props.stripeCancelUrl || `http://${envStore.mainDomain}/explorers/${props.explorerId}`;
-        // eslint-disable-next-line no-undef
-        $server.createStripeExplorerCheckoutSession(props.explorerId, selectedPlanSlug.value, successUrl, cancelUrl)
-            .then(({ data }) => window.location.assign(data.url))
+    else if (plan.capabilities.skipBilling) {
+        $server.createExplorerSubscription(props.explorerId, slug)
+            .then(() => window.location.assign(`//${envStore.mainDomain}/explorers/${props.explorerId}`))
             .catch(error => {
                 console.log(error);
                 errorMessage.value = error.response && error.response.data || 'Error while subscribing to the selected plan. Please retry.';
                 selectedPlanSlug.value = null;
             });
     }
+    else {
+        createStripeCheckoutSession();
+    }
+}
+
+function createStripeCheckoutSession() {
+    const successUrl = props.stripeSuccessUrl || `http://${envStore.mainDomain}/explorers/${props.explorerId}?justCreated=true`;
+    const cancelUrl = props.stripeCancelUrl || `http://${envStore.mainDomain}/explorers/${props.explorerId}`;
+    // eslint-disable-next-line no-undef
+    $server.createStripeExplorerCheckoutSession(props.explorerId, selectedPlanSlug.value, successUrl, cancelUrl)
+        .then(({ data }) => window.location.assign(data.url))
+        .catch(error => {
+            console.log(error);
+            errorMessage.value = error.response && error.response.data || 'Error while subscribing to the selected plan. Please retry.';
+            selectedPlanSlug.value = null;
+        });
 }
 
 function updatePlan(slug) {
@@ -134,14 +157,20 @@ function updatePlan(slug) {
             return selectedPlanSlug.value = null;
     }
 
-    // eslint-disable-next-line no-undef
-    $server.updateExplorerSubscription(props.explorerId, slug)
-        .then(() => emit('planUpdated', slug))
-        .catch(error => {
-            console.log(error);
-            errorMessage.value = error.response && error.response.data || 'Error while updating the plan. Please retry.';
-        })
-        .finally(() => selectedPlanSlug.value = null);
+    const currentPlan = findPlan(props.currentPlanSlug);
+    if (currentPlan.capabilities.skipBilling) {
+        createStripeCheckoutSession();
+    }
+    else {
+        // eslint-disable-next-line no-undef
+        $server.updateExplorerSubscription(props.explorerId, slug)
+            .then(() => emit('planUpdated', slug))
+            .catch(error => {
+                console.log(error);
+                errorMessage.value = error.response && error.response.data || 'Error while updating the plan. Please retry.';
+            })
+            .finally(() => selectedPlanSlug.value = null);
+    }
 }
 
 function cancelPlan() {

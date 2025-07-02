@@ -28,11 +28,18 @@ exports[`UpdateExplorerPlanModal.vue > Should display plan selector 1`] = `
       </button>
     </div>
     <div class="v-card-text">
-      <ul style="list-style: none;" class="mb-4 pl-0">
-        <li>To setup crypto payment (Explorer 150 or above), reach out to contact@tryethernal.com.</li>
-        <li>Each plan includes a 7 day free trial - No credit card needed.</li>
-      </ul>
-      <explorer-plan-selector-stub currentplanslug="100" stripesuccessurl="http://app./explorers/undefined?justCreated=true" stripecancelurl="http://app./explorers/undefined" bestvalueslug="explorer-150" pendingcancelation="false"></explorer-plan-selector-stub>
+      <div class="v-alert v-theme--light text-info v-alert--density-default v-alert--variant-tonal mb-4" role="alert">
+        <!----><span class="v-alert__underlay"></span>
+        <!---->
+        <div class="v-alert__prepend"><i class="mdi-information mdi v-icon notranslate v-theme--light" style="font-size: 28px; height: 28px; width: 28px;" aria-hidden="true" density="default"></i></div>
+        <div class="v-alert__content">
+          <!---->
+          <!---->High volume networks may qualify for a free ad-supported plan with all features included. Contact us at contact@tryethernal.com to learn more.
+        </div>
+        <!---->
+        <!---->
+      </div>
+      <explorer-plan-selector-stub stripesuccessurl="http://app./explorers/undefined?justCreated=true" stripecancelurl="http://app./explorers/undefined" bestvalueslug="explorer-150"></explorer-plan-selector-stub>
     </div>
     <!---->
     <!----><span class="v-card__underlay"></span>

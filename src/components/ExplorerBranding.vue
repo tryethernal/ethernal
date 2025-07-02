@@ -5,7 +5,7 @@
                 <v-alert v-if="disabled" density="compact" text type="warning">Upgrade your plan to activate branding customization.</v-alert>
                 <v-alert v-if="successMessage" density="compact" text type="success">{{ successMessage }}</v-alert>
                 <v-alert v-if="errorMessage" density="compact" text type="error">{{ errorMessage }}</v-alert>
-                <v-row class="mt-3">
+                <v-row class="mt-4">
                     <v-col cols="6">
                         <div v-for="(key, idx) in Object.keys(themes.light)" :key="idx">
                             <v-text-field

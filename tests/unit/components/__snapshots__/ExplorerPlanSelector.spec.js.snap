@@ -4,10 +4,10 @@ exports[`ExplorerPlanSelector.vue > Should display plans 1`] = `
 "<div>
   <!--v-if-->
   <div class="v-row justify-center">
-    <div class="v-col v-col-3">
+    <div class="v-col-sm-12 v-col-md-6 v-col-lg-3 v-col">
       <explorer-plan-card-stub current="false" pendingcancelation="false" bestvalue="false" plan="[object Object]"></explorer-plan-card-stub>
     </div>
-    <div class="v-col v-col-3">
+    <div class="v-col-sm-12 v-col-md-6 v-col-lg-3 v-col">
       <explorer-plan-card-stub current="false" pendingcancelation="false" bestvalue="false" plan="[object Object]"></explorer-plan-card-stub>
     </div>
   </div>
