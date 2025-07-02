@@ -114,7 +114,7 @@ router.post('/migrateExplorer', authMiddleware, async (req, res, next) => {
 
         const subscription = await stripe.subscriptions.create({
             customer: user.stripeCustomerId,
-            items: [{ price: getDemoTrialSlug() }],
+            items: [{ price: plan.stripePriceId }],
             trial_period_days: getDefaultExplorerTrialDays(),
             trial_settings: {
                 end_behavior: { missing_payment_method: 'cancel' }
