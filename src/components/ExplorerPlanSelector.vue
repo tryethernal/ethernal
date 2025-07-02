@@ -86,7 +86,6 @@ function onPlanSelected(slug) {
 }
 
 function findPlan(slug) {
-    console.log(plans.value)
     return plans.value.find(plan => plan.slug === slug);
 }
 
