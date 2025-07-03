@@ -168,7 +168,7 @@ const resetEmail = () => {
 }
 
 const goToExplorer = () => {
-    document.location.href = `//${envStore.mainDomain}/auth?apiToken=${userStore.apiToken}&path=/explorers/${explorerId.value}`;
+    document.location.href = `//app.${envStore.mainDomain}/auth?apiToken=${userStore.apiToken}&path=/explorers/${explorerId.value}`;
 }
 
 const checkEmail = () => {
@@ -195,7 +195,7 @@ const signIn = () => {
     server.signIn(email.value, password.value)
         .then(({ data: { user }}) => {
             if (!user.canTrial)
-                return document.location.href = `//${envStore.mainDomain}/auth?explorerToken=${jwtToken.value}&path=/transactions&apiToken=${user.apiToken}`;
+                return document.location.href = `//app.${envStore.mainDomain}/auth?explorerToken=${jwtToken.value}&path=/transactions&apiToken=${user.apiToken}`;
 
             userStore.updateUser(user);
             migrateExplorer(user.apiToken);
