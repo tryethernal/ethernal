@@ -5,7 +5,7 @@ const { isSendgridEnabled } = require('../lib/flags');
 
 module.exports = async (job) => {
     const { email, userId } = job.data;
-    const jwt = encode({ userId });
+    const jwt = encode({ userId, email, expiresAt: Date.now() + 1000 * 60 * 60 * 24 });
     const link = `${getAppUrl()}/auth?token=${jwt}`;
 
     if (!isSendgridEnabled())
