@@ -1,7 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`ExplorerSettings.vue > Should display settings with all options 1`] = `
-"<div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+"<div class="v-card v-theme--light v-card--density-default v-card--variant-elevated" workspaces="[object Object],[object Object]">
   <!---->
   <div class="v-card__loader">
     <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
@@ -24,62 +24,7 @@ exports[`ExplorerSettings.vue > Should display settings with all options 1`] = `
     <!--v-if-->
     <form class="v-form mt-4" novalidate="">
       <div class="v-row">
-        <div class="v-col">
-          <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-input--disabled v-text-field v-select v-select--single v-select--selected v-select--selection-slot">
-            <!---->
-            <div class="v-input__control">
-              <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--disabled v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="v-menu-2">
-                <div class="v-field__overlay"></div>
-                <div class="v-field__loader">
-                  <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
-                    <!---->
-                    <div class="v-progress-linear__background"></div>
-                    <div class="v-progress-linear__buffer" style="width: 0%;"></div>
-                    <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
-                      <div class="v-progress-linear__indeterminate">
-                        <div class="v-progress-linear__indeterminate long"></div>
-                        <div class="v-progress-linear__indeterminate short"></div>
-                      </div>
-                    </transition-stub>
-                    <!---->
-                  </div>
-                </div>
-                <!---->
-                <div class="v-field__field" data-no-activator="">
-                  <!----><label class="v-label v-field-label" for="input-0">
-                    <!---->Associated Workspace
-                  </label>
-                  <!---->
-                  <div class="v-field__input" data-no-activator="">
-                    <!---->
-                    <!---->
-                    <div class="v-select__selection">Workspace 1<small class="ml-2">(rpc | 1)</small></div><input disabled="" size="1" type="text" id="input-0" aria-describedby="input-0-messages" inputmode="none" aria-label="Open" title="Open" value="Workspace 1">
-                  </div>
-                  <!---->
-                </div>
-                <!---->
-                <div class="v-field__append-inner">
-                  <!----><i class="mdi-menu-down mdi v-icon notranslate v-theme--light v-icon--size-default v-select__menu-icon" aria-hidden="true"></i>
-                  <!---->
-                </div>
-                <div class="v-field__outline">
-                  <div class="v-field__outline__start"></div>
-                  <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
-                      <!---->Associated Workspace
-                    </label></div>
-                  <div class="v-field__outline__end"></div>
-                  <!---->
-                </div>
-              </div>
-            </div>
-            <!---->
-            <div id="input-0-messages" class="v-input__details" role="alert" aria-live="polite">
-              <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
-                <!---->
-              </transition-group-stub>
-              <!---->
-            </div>
-          </div>
+        <div class="v-col pt-1">
           <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field">
             <!---->
             <div class="v-input__control">
@@ -101,17 +46,17 @@ exports[`ExplorerSettings.vue > Should display settings with all options 1`] = `
                 </div>
                 <!---->
                 <div class="v-field__field" data-no-activator="">
-                  <!----><label class="v-label v-field-label" for="input-3">
+                  <!----><label class="v-label v-field-label" for="input-0">
                     <!---->Name
                   </label>
-                  <!----><input size="1" type="text" id="input-3" aria-describedby="input-3-messages" class="v-field__input" value="Explorer">
+                  <!----><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" class="v-field__input" value="Explorer">
                   <!---->
                 </div>
                 <!---->
                 <!---->
                 <div class="v-field__outline">
                   <div class="v-field__outline__start"></div>
-                  <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-3">
+                  <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
                       <!---->Name
                     </label></div>
                   <div class="v-field__outline__end"></div>
@@ -120,7 +65,7 @@ exports[`ExplorerSettings.vue > Should display settings with all options 1`] = `
               </div>
             </div>
             <!---->
-            <div id="input-3-messages" class="v-input__details" role="alert" aria-live="polite">
+            <div id="input-0-messages" class="v-input__details" role="alert" aria-live="polite">
               <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
                 <!---->
               </transition-group-stub>
@@ -148,16 +93,16 @@ exports[`ExplorerSettings.vue > Should display settings with all options 1`] = `
                 </div>
                 <!---->
                 <div class="v-field__field" data-no-activator="">
-                  <!----><label class="v-label v-field-label" for="input-5">
+                  <!----><label class="v-label v-field-label" for="input-2">
                     <!---->Ethernal Domain
                   </label>
-                  <!----><input size="1" type="text" id="input-5" aria-describedby="input-5-messages" class="v-field__input" value="explorer"><span class="v-text-field__suffix"><span class="v-text-field__suffix__text">.</span></span>
+                  <!----><input size="1" type="text" id="input-2" aria-describedby="input-2-messages" class="v-field__input" value="explorer"><span class="v-text-field__suffix"><span class="v-text-field__suffix__text">.</span></span>
                 </div>
                 <!---->
                 <!---->
                 <div class="v-field__outline">
                   <div class="v-field__outline__start"></div>
-                  <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-5">
+                  <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-2">
                       <!---->Ethernal Domain
                     </label></div>
                   <div class="v-field__outline__end"></div>
@@ -166,7 +111,7 @@ exports[`ExplorerSettings.vue > Should display settings with all options 1`] = `
               </div>
             </div>
             <!---->
-            <div id="input-5-messages" class="v-input__details" role="alert" aria-live="polite">
+            <div id="input-2-messages" class="v-input__details" role="alert" aria-live="polite">
               <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
                 <div class="v-messages__message">Your explorer will always be reachable at this address</div>
               </transition-group-stub>
@@ -194,17 +139,17 @@ exports[`ExplorerSettings.vue > Should display settings with all options 1`] = `
                 </div>
                 <!---->
                 <div class="v-field__field" data-no-activator="">
-                  <!----><label class="v-label v-field-label" for="input-7">
+                  <!----><label class="v-label v-field-label" for="input-4">
                     <!---->Native Token Symbol
                   </label>
-                  <!----><input size="1" type="text" id="input-7" aria-describedby="input-7-messages" class="v-field__input" value="ETL">
+                  <!----><input size="1" type="text" id="input-4" aria-describedby="input-4-messages" class="v-field__input" value="ETL">
                   <!---->
                 </div>
                 <!---->
                 <!---->
                 <div class="v-field__outline">
                   <div class="v-field__outline__start"></div>
-                  <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-7">
+                  <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-4">
                       <!---->Native Token Symbol
                     </label></div>
                   <div class="v-field__outline__end"></div>
@@ -213,7 +158,7 @@ exports[`ExplorerSettings.vue > Should display settings with all options 1`] = `
               </div>
             </div>
             <!---->
-            <div id="input-7-messages" class="v-input__details" role="alert" aria-live="polite">
+            <div id="input-4-messages" class="v-input__details" role="alert" aria-live="polite">
               <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
                 <!---->
               </transition-group-stub>
@@ -241,17 +186,17 @@ exports[`ExplorerSettings.vue > Should display settings with all options 1`] = `
                 </div>
                 <!---->
                 <div class="v-field__field" data-no-activator="">
-                  <!----><label class="v-label v-field-label" for="input-9">
+                  <!----><label class="v-label v-field-label" for="input-6">
                     <!---->Total Supply (in wei)
                   </label>
-                  <!----><input size="1" type="number" id="input-9" aria-describedby="input-9-messages" class="v-field__input">
+                  <!----><input size="1" type="number" id="input-6" aria-describedby="input-6-messages" class="v-field__input">
                   <!---->
                 </div>
                 <!---->
                 <!---->
                 <div class="v-field__outline">
                   <div class="v-field__outline__start"></div>
-                  <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-9">
+                  <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-6">
                       <!---->Total Supply (in wei)
                     </label></div>
                   <div class="v-field__outline__end"></div>
@@ -260,7 +205,7 @@ exports[`ExplorerSettings.vue > Should display settings with all options 1`] = `
               </div>
             </div>
             <!---->
-            <div id="input-9-messages" class="v-input__details" role="alert" aria-live="polite">
+            <div id="input-6-messages" class="v-input__details" role="alert" aria-live="polite">
               <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
                 <div class="v-messages__message">In ether: N/A</div>
               </transition-group-stub>
@@ -288,17 +233,17 @@ exports[`ExplorerSettings.vue > Should display settings with all options 1`] = `
                 </div>
                 <!---->
                 <div class="v-field__field" data-no-activator="">
-                  <!----><label class="v-label v-field-label" for="input-11">
+                  <!----><label class="v-label v-field-label" for="input-8">
                     <!---->L1 Explorer Base URL
                   </label>
-                  <!----><input placeholder="https://etherscan.io" size="1" type="text" id="input-11" aria-describedby="input-11-messages" class="v-field__input">
+                  <!----><input placeholder="https://etherscan.io" size="1" type="text" id="input-8" aria-describedby="input-8-messages" class="v-field__input">
                   <!---->
                 </div>
                 <!---->
                 <!---->
                 <div class="v-field__outline">
                   <div class="v-field__outline__start"></div>
-                  <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-11">
+                  <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-8">
                       <!---->L1 Explorer Base URL
                     </label></div>
                   <div class="v-field__outline__end"></div>
@@ -307,7 +252,7 @@ exports[`ExplorerSettings.vue > Should display settings with all options 1`] = `
               </div>
             </div>
             <!---->
-            <div id="input-11-messages" class="v-input__details" role="alert" aria-live="polite">
+            <div id="input-8-messages" class="v-input__details" role="alert" aria-live="polite">
               <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
                 <div class="v-messages__message">If the L1BlockNumber key is on the block object, this setting will be used to display a link to the L1 explorer.</div>
               </transition-group-stub>
@@ -331,7 +276,7 @@ exports[`ExplorerSettings.vue > Should display settings with all options 1`] = `
 `;
 
 exports[`ExplorerSettings.vue > Should display settings with deactivated options 1`] = `
-"<div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+"<div class="v-card v-theme--light v-card--density-default v-card--variant-elevated" workspaces="[object Object],[object Object]">
   <!---->
   <div class="v-card__loader">
     <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
@@ -354,62 +299,7 @@ exports[`ExplorerSettings.vue > Should display settings with deactivated options
     <!--v-if-->
     <form class="v-form mt-4" novalidate="">
       <div class="v-row">
-        <div class="v-col">
-          <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-input--disabled v-text-field v-select v-select--single v-select--selected v-select--selection-slot">
-            <!---->
-            <div class="v-input__control">
-              <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--disabled v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="v-menu-2">
-                <div class="v-field__overlay"></div>
-                <div class="v-field__loader">
-                  <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
-                    <!---->
-                    <div class="v-progress-linear__background"></div>
-                    <div class="v-progress-linear__buffer" style="width: 0%;"></div>
-                    <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
-                      <div class="v-progress-linear__indeterminate">
-                        <div class="v-progress-linear__indeterminate long"></div>
-                        <div class="v-progress-linear__indeterminate short"></div>
-                      </div>
-                    </transition-stub>
-                    <!---->
-                  </div>
-                </div>
-                <!---->
-                <div class="v-field__field" data-no-activator="">
-                  <!----><label class="v-label v-field-label" for="input-0">
-                    <!---->Associated Workspace
-                  </label>
-                  <!---->
-                  <div class="v-field__input" data-no-activator="">
-                    <!---->
-                    <!---->
-                    <div class="v-select__selection">Workspace 1<small class="ml-2">(rpc | 1)</small></div><input disabled="" size="1" type="text" id="input-0" aria-describedby="input-0-messages" inputmode="none" aria-label="Open" title="Open" value="Workspace 1">
-                  </div>
-                  <!---->
-                </div>
-                <!---->
-                <div class="v-field__append-inner">
-                  <!----><i class="mdi-menu-down mdi v-icon notranslate v-theme--light v-icon--size-default v-select__menu-icon" aria-hidden="true"></i>
-                  <!---->
-                </div>
-                <div class="v-field__outline">
-                  <div class="v-field__outline__start"></div>
-                  <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
-                      <!---->Associated Workspace
-                    </label></div>
-                  <div class="v-field__outline__end"></div>
-                  <!---->
-                </div>
-              </div>
-            </div>
-            <!---->
-            <div id="input-0-messages" class="v-input__details" role="alert" aria-live="polite">
-              <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
-                <!---->
-              </transition-group-stub>
-              <!---->
-            </div>
-          </div>
+        <div class="v-col pt-1">
           <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field">
             <!---->
             <div class="v-input__control">
@@ -431,17 +321,17 @@ exports[`ExplorerSettings.vue > Should display settings with deactivated options
                 </div>
                 <!---->
                 <div class="v-field__field" data-no-activator="">
-                  <!----><label class="v-label v-field-label" for="input-3">
+                  <!----><label class="v-label v-field-label" for="input-0">
                     <!---->Name
                   </label>
-                  <!----><input size="1" type="text" id="input-3" aria-describedby="input-3-messages" class="v-field__input" value="Explorer">
+                  <!----><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" class="v-field__input" value="Explorer">
                   <!---->
                 </div>
                 <!---->
                 <!---->
                 <div class="v-field__outline">
                   <div class="v-field__outline__start"></div>
-                  <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-3">
+                  <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
                       <!---->Name
                     </label></div>
                   <div class="v-field__outline__end"></div>
@@ -450,7 +340,7 @@ exports[`ExplorerSettings.vue > Should display settings with deactivated options
               </div>
             </div>
             <!---->
-            <div id="input-3-messages" class="v-input__details" role="alert" aria-live="polite">
+            <div id="input-0-messages" class="v-input__details" role="alert" aria-live="polite">
               <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
                 <!---->
               </transition-group-stub>
@@ -478,16 +368,16 @@ exports[`ExplorerSettings.vue > Should display settings with deactivated options
                 </div>
                 <!---->
                 <div class="v-field__field" data-no-activator="">
-                  <!----><label class="v-label v-field-label" for="input-5">
+                  <!----><label class="v-label v-field-label" for="input-2">
                     <!---->Ethernal Domain
                   </label>
-                  <!----><input size="1" type="text" id="input-5" aria-describedby="input-5-messages" class="v-field__input" value="explorer"><span class="v-text-field__suffix"><span class="v-text-field__suffix__text">.</span></span>
+                  <!----><input size="1" type="text" id="input-2" aria-describedby="input-2-messages" class="v-field__input" value="explorer"><span class="v-text-field__suffix"><span class="v-text-field__suffix__text">.</span></span>
                 </div>
                 <!---->
                 <!---->
                 <div class="v-field__outline">
                   <div class="v-field__outline__start"></div>
-                  <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-5">
+                  <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-2">
                       <!---->Ethernal Domain
                     </label></div>
                   <div class="v-field__outline__end"></div>
@@ -496,7 +386,7 @@ exports[`ExplorerSettings.vue > Should display settings with deactivated options
               </div>
             </div>
             <!---->
-            <div id="input-5-messages" class="v-input__details" role="alert" aria-live="polite">
+            <div id="input-2-messages" class="v-input__details" role="alert" aria-live="polite">
               <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
                 <div class="v-messages__message">Your explorer will always be reachable at this address</div>
               </transition-group-stub>
@@ -524,17 +414,17 @@ exports[`ExplorerSettings.vue > Should display settings with deactivated options
                 </div>
                 <!---->
                 <div class="v-field__field" data-no-activator="">
-                  <!----><label class="v-label v-field-label" for="input-7">
+                  <!----><label class="v-label v-field-label" for="input-4">
                     <!---->Native Token Symbol
                   </label>
-                  <!----><input disabled="" size="1" type="text" id="input-7" aria-describedby="input-7-messages" class="v-field__input" value="ETL">
+                  <!----><input disabled="" size="1" type="text" id="input-4" aria-describedby="input-4-messages" class="v-field__input" value="ETL">
                   <!---->
                 </div>
                 <!---->
                 <!---->
                 <div class="v-field__outline">
                   <div class="v-field__outline__start"></div>
-                  <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-7">
+                  <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-4">
                       <!---->Native Token Symbol
                     </label></div>
                   <div class="v-field__outline__end"></div>
@@ -543,7 +433,7 @@ exports[`ExplorerSettings.vue > Should display settings with deactivated options
               </div>
             </div>
             <!---->
-            <div id="input-7-messages" class="v-input__details" role="alert" aria-live="polite">
+            <div id="input-4-messages" class="v-input__details" role="alert" aria-live="polite">
               <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
                 <div class="v-messages__message">Upgrade your plan to customize your native token symbol.</div>
               </transition-group-stub>
@@ -571,17 +461,17 @@ exports[`ExplorerSettings.vue > Should display settings with deactivated options
                 </div>
                 <!---->
                 <div class="v-field__field" data-no-activator="">
-                  <!----><label class="v-label v-field-label" for="input-9">
+                  <!----><label class="v-label v-field-label" for="input-6">
                     <!---->Total Supply (in wei)
                   </label>
-                  <!----><input disabled="" size="1" type="number" id="input-9" aria-describedby="input-9-messages" class="v-field__input">
+                  <!----><input disabled="" size="1" type="number" id="input-6" aria-describedby="input-6-messages" class="v-field__input">
                   <!---->
                 </div>
                 <!---->
                 <!---->
                 <div class="v-field__outline">
                   <div class="v-field__outline__start"></div>
-                  <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-9">
+                  <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-6">
                       <!---->Total Supply (in wei)
                     </label></div>
                   <div class="v-field__outline__end"></div>
@@ -590,7 +480,7 @@ exports[`ExplorerSettings.vue > Should display settings with deactivated options
               </div>
             </div>
             <!---->
-            <div id="input-9-messages" class="v-input__details" role="alert" aria-live="polite">
+            <div id="input-6-messages" class="v-input__details" role="alert" aria-live="polite">
               <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
                 <div class="v-messages__message">Upgrade your plan to display a total supply.</div>
               </transition-group-stub>
@@ -618,17 +508,17 @@ exports[`ExplorerSettings.vue > Should display settings with deactivated options
                 </div>
                 <!---->
                 <div class="v-field__field" data-no-activator="">
-                  <!----><label class="v-label v-field-label" for="input-11">
+                  <!----><label class="v-label v-field-label" for="input-8">
                     <!---->L1 Explorer Base URL
                   </label>
-                  <!----><input placeholder="https://etherscan.io" size="1" type="text" id="input-11" aria-describedby="input-11-messages" class="v-field__input">
+                  <!----><input placeholder="https://etherscan.io" size="1" type="text" id="input-8" aria-describedby="input-8-messages" class="v-field__input">
                   <!---->
                 </div>
                 <!---->
                 <!---->
                 <div class="v-field__outline">
                   <div class="v-field__outline__start"></div>
-                  <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-11">
+                  <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-8">
                       <!---->L1 Explorer Base URL
                     </label></div>
                   <div class="v-field__outline__end"></div>
@@ -637,7 +527,7 @@ exports[`ExplorerSettings.vue > Should display settings with deactivated options
               </div>
             </div>
             <!---->
-            <div id="input-11-messages" class="v-input__details" role="alert" aria-live="polite">
+            <div id="input-8-messages" class="v-input__details" role="alert" aria-live="polite">
               <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
                 <div class="v-messages__message">If the L1BlockNumber key is on the block object, this setting will be used to display a link to the L1 explorer. Upgrade your plan to use it.</div>
               </transition-group-stub>

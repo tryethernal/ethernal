@@ -12,11 +12,11 @@ exports[`ExplorerGeneral.vue > Should display inactive subscription message 1`] 
   <!---->
   <!---->
 </div>
-<div class="text-body-2 mt-4"><span class="text-caption">Explorer URL: <a href="//test.ethernal.local:8080" target="_blank">test.ethernal.local:8080</a></span></div>
+<div class="text-body-2 mt-4"><span class="text-caption">Explorer URL: <a href="//test." target="_blank">test.</a></span><br><span class="text-caption">Workspace: Test Workspace - http://localhost:8545 (1)</span></div>
 <div class="v-row mt-2">
   <div class="v-col v-col-6">
     <h4>Settings</h4>
-    <explorer-settings-stub explorer="[object Object]" workspaces="[object Object]"></explorer-settings-stub>
+    <explorer-settings-stub explorer="[object Object]"></explorer-settings-stub>
   </div>
   <div class="v-col v-col-6">
     <h4>Sync</h4>
@@ -76,11 +76,11 @@ exports[`ExplorerGeneral.vue > Should display loading 1`] = `
 exports[`ExplorerGeneral.vue > Should display the explorer page 1`] = `
 "<!--v-if-->
 <!--v-if-->
-<div class="text-body-2 mt-4"><span class="text-caption">Explorer URL: <a href="//a.test.com" target="_blank">a.test.com</a></span></div>
+<div class="text-body-2 mt-4"><span class="text-caption">Explorer URL: <a href="//a.test.com" target="_blank">a.test.com</a></span><br><span class="text-caption">Workspace: Test Workspace - http://localhost:8545 (1)</span></div>
 <div class="v-row mt-2">
   <div class="v-col v-col-6">
     <h4>Settings</h4>
-    <explorer-settings-stub explorer="[object Object]" workspaces="[object Object]"></explorer-settings-stub>
+    <explorer-settings-stub explorer="[object Object]"></explorer-settings-stub>
   </div>
   <div class="v-col v-col-6">
     <h4>Sync</h4>
@@ -117,11 +117,11 @@ exports[`ExplorerGeneral.vue > Should display trial message 1`] = `
   <!---->
 </div>
 <!--v-if-->
-<div class="text-body-2 mt-4"><span class="text-caption">Explorer URL: <a href="//test.ethernal.local:8080" target="_blank">test.ethernal.local:8080</a></span></div>
+<div class="text-body-2 mt-4"><span class="text-caption">Explorer URL: <a href="//test." target="_blank">test.</a></span><br><span class="text-caption">Workspace: Test Workspace - http://localhost:8545 (1)</span></div>
 <div class="v-row mt-2">
   <div class="v-col v-col-6">
     <h4>Settings</h4>
-    <explorer-settings-stub explorer="[object Object]" workspaces="[object Object]"></explorer-settings-stub>
+    <explorer-settings-stub explorer="[object Object]"></explorer-settings-stub>
   </div>
   <div class="v-col v-col-6">
     <h4>Sync</h4>
@@ -149,11 +149,11 @@ exports[`ExplorerGeneral.vue > Should display trial message 1`] = `
 exports[`ExplorerGeneral.vue > Should not display danger zone if SSO 1`] = `
 "<!--v-if-->
 <!--v-if-->
-<div class="text-body-2 mt-4"><span class="text-caption">Explorer URL: <a href="//a.test.com" target="_blank">a.test.com</a></span></div>
+<div class="text-body-2 mt-4"><span class="text-caption">Explorer URL: <a href="//a.test.com" target="_blank">a.test.com</a></span><br><span class="text-caption">Workspace: Test Workspace - http://localhost:8545 (1)</span></div>
 <div class="v-row mt-2">
   <div class="v-col v-col-6">
     <h4>Settings</h4>
-    <explorer-settings-stub explorer="[object Object]" workspaces="[object Object]"></explorer-settings-stub>
+    <explorer-settings-stub explorer="[object Object]"></explorer-settings-stub>
   </div>
   <div class="v-col v-col-6">
     <h4>Sync</h4>
