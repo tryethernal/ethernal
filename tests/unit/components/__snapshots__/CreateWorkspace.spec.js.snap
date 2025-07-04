@@ -380,7 +380,7 @@ exports[`CreateWorkspace.vue > Should display an error if it cannot connect to t
               <div class="v-field__input" data-no-activator="">
                 <!---->
                 <!---->
-                <div class="v-select__selection"><span class="v-select__selection-text">ethereum<!----></span></div><input size="1" type="text" id="chain" aria-describedby="chain-messages" inputmode="none" aria-label="Open" title="Open" required="" value="ethereum">
+                <div class="v-select__selection"><span class="v-select__selection-text">Ethereum<!----></span></div><input size="1" type="text" id="chain" aria-describedby="chain-messages" inputmode="none" aria-label="Open" title="Open" required="" value="ethereum">
               </div>
               <!---->
             </div>
@@ -569,7 +569,7 @@ exports[`CreateWorkspace.vue > Should display locally running networks 1`] = `
               <div class="v-field__input" data-no-activator="">
                 <!---->
                 <!---->
-                <div class="v-select__selection"><span class="v-select__selection-text">ethereum<!----></span></div><input size="1" type="text" id="chain" aria-describedby="chain-messages" inputmode="none" aria-label="Open" title="Open" required="" value="ethereum">
+                <div class="v-select__selection"><span class="v-select__selection-text">Ethereum<!----></span></div><input size="1" type="text" id="chain" aria-describedby="chain-messages" inputmode="none" aria-label="Open" title="Open" required="" value="ethereum">
               </div>
               <!---->
             </div>
