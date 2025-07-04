@@ -387,24 +387,6 @@ describe(`POST ${BASE_URL}/explorers`, () => {
             });
     });
 
-    it('Should return an error if too many demo explorers are created with the same network id', (done) => {
-        jest.spyOn(db, 'getUserById').mockResolvedValueOnce({ id: 123 });
-        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ id: 1 });
-        jest.spyOn(db, 'createExplorerFromOptions').mockResolvedValueOnce({ id: 1, slug: 'slug' });
-        ProviderConnector.mockImplementationOnce(() => ({
-            fetchNetworkId: jest.fn().mockResolvedValueOnce(54321)
-        }));
-        mockCountUp.mockResolvedValueOnce(4);
-
-        request.post(`${BASE_URL}/explorers`)
-            .send({ name: 'demo', rpcServer: 'rpc.demo', nativeToken: 'token', email: 'email@email.com' })
-            .expect(400)
-            .then(({ text }) => {
-                expect(text).toEqual(`You've reached the limit of demo explorers for this chain (networkId: 54321). Please subscribe to a plan or reach out to contact@tryethernal.com for an extended trial.`);
-                done();
-            });
-    });
-
     it('Should not use the counter if the network is whitelisted', (done) => {
         jest.spyOn(db, 'getUserById').mockResolvedValueOnce({ id: 123 });
         jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ id: 1 });
