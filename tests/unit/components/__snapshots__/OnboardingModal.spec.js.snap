@@ -39,7 +39,7 @@ exports[`OnboardingModal.vue > Should let the user create a new workspace 1`] = 
         <transition-stub name="expand-transition" appear="false" persisted="false" css="true">
           <div class="v-expansion-panel-text">
             <div class="v-expansion-panel-text__wrapper"><span class="text-body-2">Workspaces allow you to separate your different projects/server. You'll be able to add more and switch between them later.</span>
-              <create-workspace-stub ispublic="false"></create-workspace-stub>
+              <create-workspace-stub></create-workspace-stub>
               <div class="v-stepper-actions v-stepper-vertical-actions"></div>
             </div>
           </div>
