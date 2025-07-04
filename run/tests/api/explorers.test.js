@@ -36,6 +36,7 @@ require('../mocks/lib/utils');
 require('../mocks/lib/firebase');
 require('../mocks/lib/pm2');
 require('../mocks/lib/flags');
+require('../mocks/lib/chains');
 require('../mocks/lib/env');
 require('../mocks/middlewares/auth');
 const { Explorer } = require('../mocks/models');
@@ -45,6 +46,7 @@ const PM2 = require('../../lib/pm2');
 const { ProviderConnector, DexConnector } = require('../../lib/rpc');
 const { withTimeout, validateBNString } = require('../../lib/utils');
 const flags = require('../../lib/flags');
+const chains = require('../../lib/chains');
 const authMiddleware = require('../../middlewares/auth');
 
 const supertest = require('supertest');
@@ -1100,33 +1102,6 @@ describe(`POST ${BASE_URL}/:id/settings`, () => {
             });
     });
 
-    it('Should update workspace & return 200', (done) => {
-        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, workspace: { name: 'hardhat' }});
-        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValueOnce({ id: 1 });
-
-        request.post(`${BASE_URL}/123/settings`)
-            .send({ data: { workspace: 'New Workspace' }})
-            .expect(200)
-            .then(() => {
-                expect(db.updateExplorerWorkspace).toHaveBeenCalled();
-                done();
-            });
-    });
-
-    it('Should return an error if trying to update to an invalid workspace', (done) => {
-        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, workspace: { name: 'hardhat' }});
-        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValueOnce(null);
-
-        request.post(`${BASE_URL}/123/settings`)
-            .send({ data: { workspace: 'New Workspace' }})
-            .expect(400)
-            .then(({ text }) => {
-                expect(db.updateExplorerWorkspace).not.toHaveBeenCalled();
-                expect(text).toEqual('Invalid workspace.');
-                done();
-            });
-    });
-
     it('Should update settings & return 200', (done) => {
         jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, workspace: { name: 'hardhat' }});
         jest.spyOn(db, 'updateExplorerSettings').mockResolvedValueOnce();
@@ -1279,6 +1254,22 @@ describe(`POST ${BASE_URL}`, () => {
             .expect(400)
             .then(({ text }) => {
                 expect(text).toEqual('This workspace already has an explorer.');
+                done();
+            });
+    });
+
+    it('Should fail if network id is not allowed', (done) => {
+        jest.spyOn(db, 'getWorkspaceById').mockResolvedValueOnce({ id: 1, rpcServer: 'rpc' });
+        ProviderConnector.mockImplementationOnce(() => ({
+            fetchNetworkId: jest.fn().mockResolvedValueOnce(1)
+        }));
+        jest.spyOn(chains, 'isChainAllowed').mockResolvedValueOnce(false);
+
+        request.post(BASE_URL)
+            .send({ data: { rpcServer: 'test', name: 'test' }})
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual('You can\'t create an explorer with this network id (1). If you\'d still like an explorer for this chain. Please reach out to contact@tryethernal.com, and we\'ll set one up for you.');
                 done();
             });
     });

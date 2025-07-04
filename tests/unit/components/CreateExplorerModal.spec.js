@@ -1,94 +1,89 @@
 import flushPromises from 'flush-promises';
-
 import CreateExplorerModal from '@/components/CreateExplorerModal.vue';
+import { useUserStore } from '@/stores/user';
+import { useEnvStore } from '@/stores/env';
 
 describe('CreateExplorerModal.vue', () => {
-    it('Should let the user choose an existing workspace', async () => {
-        vi.spyOn(server, 'getWorkspaces').mockResolvedValueOnce({ data: [{ name: 'my workspace', rpcServer: 'a', networkId: 1 }]});
-        vi.spyOn(server, 'getExplorerPlans').mockResolvedValueOnce({ data: [] });
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
 
+    it('Should show the creation form and allow explorer creation', async () => {
+        server.createExplorerFromOptions.mockResolvedValueOnce({ data: { id: 42 } });
         const wrapper = mount(CreateExplorerModal, {
             global: {
-                stubs: ['Create-Workspace', 'Explorer-Plan-Selector']
+                stubs: ['ExplorerPlanSelector'],
+                provide: { $router: router }
             }
         });
+        useUserStore().canUseDemoPlan = true;
+        useEnvStore().isSelfHosted = true;
 
         wrapper.vm.open();
-
+        wrapper.vm.name = 'Test Explorer';
+        wrapper.vm.rpcServer = 'ws://localhost:8545';
+        wrapper.vm.valid = true;
+        await wrapper.find('form').trigger('submit.prevent');
         await flushPromises();
 
-        expect(server.getWorkspaces).toHaveBeenCalled();
+        expect(server.createExplorerFromOptions).toHaveBeenCalledWith('Test Explorer', 'ws://localhost:8545');
+        expect(router.push).toHaveBeenCalledWith({ path: '/explorers/42?status=success' });
         expect(wrapper.html()).toMatchSnapshot();
     });
 
-    it('Should only show creation form if no workspace available', async () => {
-        vi.spyOn(server, 'getWorkspaces').mockResolvedValueOnce({ data: [{ explorer: {}}]});
-        vi.spyOn(server, 'getExplorerPlans').mockResolvedValueOnce({ data: [] });
-
+    it('Should show error if explorer creation fails', async () => {
+        server.createExplorerFromOptions.mockRejectedValueOnce({ response: { data: 'Creation failed' } });
         const wrapper = mount(CreateExplorerModal, {
             global: {
-                stubs: ['Create-Workspace', 'Explorer-Plan-Selector']
+                stubs: ['ExplorerPlanSelector'],
+                provide: { $router: router }
             }
         });
+        useUserStore().canUseDemoPlan = true;
+        useEnvStore().isSelfHosted = true;
 
         wrapper.vm.open();
-
+        wrapper.vm.name = 'Test Explorer';
+        wrapper.vm.rpcServer = 'ws://localhost:8545';
+        wrapper.vm.valid = true;
+        await wrapper.find('form').trigger('submit.prevent');
         await flushPromises();
 
-        expect(server.getWorkspaces).toHaveBeenCalled();
         expect(wrapper.html()).toMatchSnapshot();
     });
 
-    it('Should skip billing if user is demo account', async () => {
-        vi.spyOn(server, 'getWorkspaces').mockResolvedValueOnce({ data: [{ name: 'my workspace', rpcServer: 'a', networkId: 1 }]});
-        vi.spyOn(server, 'getExplorerPlans').mockResolvedValueOnce({ data: [] });
-        vi.spyOn(server, 'createExplorer').mockResolvedValueOnce({ data: { id: 1 }});
-
+    it('Should go to plan selection if not self-hosted and not demo', async () => {
+        server.createExplorerFromOptions.mockResolvedValueOnce({ data: { id: 99 } });
         const wrapper = mount(CreateExplorerModal, {
             global: {
-                stubs: ['Create-Workspace', 'Explorer-Plan-Selector'],
-                plugins: [createTestingPinia({
-                    initialState: {
-                        user: { canUseDemoPlan: true },
-                        env: { billingEnabled: true }
-                    }
-                })]
+                stubs: ['ExplorerPlanSelector'],
+                provide: { $router: router }
             }
         });
+        useUserStore().canUseDemoPlan = false;
+        useEnvStore().isSelfHosted = false;
+        useEnvStore().mainDomain = 'test.com';
 
         wrapper.vm.open();
-        await wrapper.setData({ workspace: { id: 1 }});
-
-        await wrapper.find('#selectWorkspace').trigger('click');
+        wrapper.vm.name = 'Test Explorer';
+        wrapper.vm.rpcServer = 'ws://localhost:8545';
+        wrapper.vm.valid = true;
+        await wrapper.find('form').trigger('submit.prevent');
         await flushPromises();
 
-        expect(server.createExplorer).toHaveBeenCalled();
-        expect(router.push).toBeCalledWith({ path: '/explorers/1?status=success'});
+        expect(wrapper.vm.stepperIndex).toBe(2);
+        expect(wrapper.html()).toMatchSnapshot();
     });
 
-    it('Should skip billing if it is not enabled', async () => {
-        vi.spyOn(server, 'getWorkspaces').mockResolvedValueOnce({ data: [{ name: 'my workspace', rpcServer: 'a', networkId: 1 }]});
-        vi.spyOn(server, 'getExplorerPlans').mockResolvedValueOnce({ data: [] });
-        vi.spyOn(server, 'createExplorer').mockResolvedValueOnce({ data: { id: 1 }});
-
+    it('Should redirect after planCreated event', async () => {
         const wrapper = mount(CreateExplorerModal, {
             global: {
-                stubs: ['Explorer-Plan-Card', 'Create-Workspace', 'Explorer-Plan-Selector'],
-                plugins: [createTestingPinia({
-                    initialState: {
-                        env: { billingEnabled: false }
-                    }
-                })]
+                stubs: ['ExplorerPlanSelector'],
+                provide: { $router: router }
             }
         });
-
-        wrapper.vm.open();
-        await wrapper.setData({ workspace: { id: 1 }});
-
-        await wrapper.find('#selectWorkspace').trigger('click');
-        await flushPromises();
-
-        expect(server.createExplorer).toHaveBeenCalled();
-        expect(router.push).toBeCalledWith({ path: '/explorers/1?status=success'});
+        wrapper.vm.explorer = { id: 123 };
+        wrapper.vm.planCreated();
+        expect(router.push).toHaveBeenCalledWith({ path: `/explorers/123?status=success` });
     });
 });

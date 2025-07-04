@@ -1,18 +1,15 @@
-import flushPromises from 'flush-promises';
-
 import CreateWorkspaceModal from '@/components/CreateWorkspaceModal.vue';
+
+const stubs = ['CreateWorkspace']
 
 describe('CreateWorkspaceModal.vue', () => {
     it('Should let the user create a new workspace', async () => {
         const wrapper = mount(CreateWorkspaceModal, {
             global: {
-                stubs: ['Create-Workspace']
+                stubs
             }
         });
 
-        await wrapper.setData({ dialog: true, resolve: vi.fn() });
-
-        await flushPromises();
         expect(wrapper.html()).toMatchSnapshot();
     });
 });
