@@ -20,7 +20,7 @@
             This explorer is not active. To activate it, start a subscription.
         </v-alert>
         <div class="text-body-2 mt-4">
-            <span class="text-caption">Explorer URL: <a :href="'//' + explorerDomain" target="_blank">{{ explorerDomain }}</a></span><br>
+            <span class="text-caption">Explorer URL: <a :href="'//' + explorerDomain" target="_blank">https://{{ explorerDomain }}</a></span><br>
             <span class="text-caption">Workspace: {{ explorer.workspace.name }} - {{ shortRpcUrl(explorer.workspace.rpcServer) }} ({{ explorer.workspace.networkId }})</span>
         </div>
         <v-row class="mt-2">
