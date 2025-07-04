@@ -79,7 +79,7 @@
                                 </v-tooltip>
                             </template>
                             <template v-else>
-                                <a :href="`http://${ item.slug }.${envStore.mainDomain}`" target="_blank">{{ item.slug }}.{{ envStore.mainDomain }}</a>
+                                <a :href="`http://${ item.slug }.${subdomainRoot}`" target="_blank">{{ item.slug }}.{{ subdomainRoot }}</a>
                             </template>
                         </template>
                         <template v-slot:item.rpcServer="{ item }">
@@ -117,6 +117,9 @@ const createExplorerModalRef = ref(null);
 const route = useRoute();
 const $server = inject('$server');
 const envStore = useEnvStore();
+
+// SaaS app is setup differently than self-hosted, so we have to rely on this workaround
+const subdomainRoot = window.location.hostname == 'app.tryethernal.com' ? 'tryethernal.com' : envStore.mainDomain;
 
 // Computed
 const deletedExplorer = computed(() => {
