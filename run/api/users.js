@@ -69,6 +69,8 @@ router.post('/resetPassword', async (req, res, next) => {
 
         if (isFirebaseAuthEnabled()) {
             const user = await db.getUserByEmail(tokenData.email);
+            if (!user)
+                throw new Error('Could not find user with this email address.');
             await getAuth().updateUser(user.firebaseUserId, { password: data.password });
             const firebaseUser = await findUser(tokenData.email);
             const { passwordSalt, passwordHash } = firebaseUser;
@@ -93,7 +95,7 @@ router.post('/sendResetPasswordEmail', async (req, res, next) => {
         if (!data.email)
             return managedError(new Error('Missing parameter.'), req, res);
 
-        await enqueue('sendResetPasswordEmail', `sendResetPasswordEmail-${Date.now()}`, { email: data.email });
+        await enqueue('sendResetPasswordEmail', `sendResetPasswordEmail-${Date.now()}`, { email: data.email.toLowercase() });
 
         res.sendStatus(200);
     } catch(error) {
