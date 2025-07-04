@@ -5,25 +5,7 @@
             <v-alert v-if="errorMessage" density="compact" text type="error">{{ errorMessage }}</v-alert>
             <v-form class="mt-4" @submit.prevent="updateExplorerSettings()" v-model="valid">
                 <v-row>
-                    <v-col>
-                        <v-select
-                            variant="outlined"
-                            density="compact"
-                            label="Associated Workspace"
-                            v-model="currentWorkspace"
-                            item-title="name"
-                            :items="workspaces"
-                            disabled
-                            return-object>
-                            <template v-slot:item="{ props, item }">
-                                <v-list-item v-bind="props">
-                                    <small class="ml-2">{{ shortRpcUrl(item.raw.rpcServer) }} | {{ item.raw.networkId }}</small>
-                                </v-list-item>
-                            </template>
-                            <template v-slot:selection="{ item }">
-                                {{ item.raw.name }}<small class="ml-2">({{ shortRpcUrl(item.raw.rpcServer) }} | {{ item.raw.networkId }})</small>
-                            </template>
-                        </v-select>
+                    <v-col class="pt-1">
                         <v-text-field
                             density="compact"
                             variant="outlined"
@@ -61,7 +43,7 @@
                         <v-text-field
                             density="compact"
                             variant="outlined"
-                            :rules="[v => !v || this.isUrlValid(v) || 'Invalid URL']"
+                            :rules="[v => !v || isUrlValid(v) || 'Invalid URL']"
                             persistent-hint
                             placeholder="https://etherscan.io"
                             v-model="currentExplorer.l1Explorer"
@@ -78,76 +60,61 @@
     </v-card>
 </template>
 
-<script>
-import { mapStores } from 'pinia';
-
+<script setup>
+import { ref, onMounted, inject } from 'vue';
 import { useEnvStore } from '../stores/env';
+import { formatNumber, isUrlValid } from '../lib/utils';
 
-import { formatNumber, shortRpcUrl, isUrlValid } from '../lib/utils';
+const props = defineProps({
+    explorer: { type: Object, required: true }
+});
+const emit = defineEmits(['updated']);
 
-export default {
-    name: 'Explorer',
-    props: ['explorer', 'workspaces'],
-    data: () => ({
-        successMessage: null,
-        errorMessage: null,
-        currentWorkspace: null,
-        currentExplorer: null,
-        valid: false,
-        loading: false,
-        capabilities: {}
-    }),
-    mounted() {
-        this.currentExplorer = this.explorer;
-        if (this.explorer.stripeSubscription)
-            this.capabilities = this.explorer.stripeSubscription.stripePlan.capabilities;
-    },
-    methods: {
-        shortRpcUrl, isUrlValid,
-        formatTotalSupply() {
-            if (!this.currentExplorer.totalSupply) return 'N/A';
-            return formatNumber(this.currentExplorer.totalSupply)
-        },
-        updateExplorerSettings() {
-            this.loading = true;
-            this.successMessage = null;
-            this.errorMessage = null;
-            const settings = {
-                name: this.currentExplorer.name,
-                slug: this.currentExplorer.slug,
-                l1Explorer: this.currentExplorer.l1Explorer
-            };
+const envStore = useEnvStore();
+const $server = inject('$server');
 
-            if (this.capabilities.nativeToken)
-                settings['token'] = this.currentExplorer.token;
+const successMessage = ref(null);
+const errorMessage = ref(null);
+const valid = ref(false);
+const loading = ref(false);
+const capabilities = ref({});
+const currentExplorer = ref(null);
 
-            if (this.capabilities.totalSupply)
-                settings['totalSupply'] = this.currentExplorer.totalSupply;
-
-            if (this.capabilities.l1Explorer)
-                settings['l1Explorer'] = this.currentExplorer.l1Explorer;
-
-            this.$server.updateExplorerSettings(this.currentExplorer.id, settings)
-                .then(() => {
-                    this.successMessage = 'Settings updated.';
-                    this.$emit('updated');
-                })
-                .catch(error => {
-                    this.errorMessage = error.response && error.response.data || 'Error while updating settings. Please retry.';
-                })
-                .finally(() => this.loading = false);
-        }
-    },
-    computed: {
-        ...mapStores(useEnvStore),
-    },
-    watch: {
-        workspaces: {
-            immediate: true,
-            handler() {
-                this.currentWorkspace = this.workspaces.find(w => w.id == this.explorer.workspaceId);
-            }
-        }
+onMounted(() => {
+    currentExplorer.value = props.explorer;
+    if (props.explorer.stripeSubscription) {
+        capabilities.value = props.explorer.stripeSubscription.stripePlan.capabilities;
     }
+});
+
+function formatTotalSupply() {
+    if (!currentExplorer.value.totalSupply) return 'N/A';
+    return formatNumber(currentExplorer.value.totalSupply);
+}
+
+function updateExplorerSettings() {
+    loading.value = true;
+    successMessage.value = null;
+    errorMessage.value = null;
+    const settings = {
+        name: currentExplorer.value.name,
+        slug: currentExplorer.value.slug,
+        l1Explorer: currentExplorer.value.l1Explorer
+    };
+    if (capabilities.value.nativeToken)
+        settings['token'] = currentExplorer.value.token;
+    if (capabilities.value.totalSupply)
+        settings['totalSupply'] = currentExplorer.value.totalSupply;
+    if (capabilities.value.l1Explorer)
+        settings['l1Explorer'] = currentExplorer.value.l1Explorer;
+    $server.updateExplorerSettings(currentExplorer.value.id, settings)
+        .then(() => {
+            successMessage.value = 'Settings updated.';
+            emit('updated');
+        })
+        .catch(error => {
+            errorMessage.value = error.response && error.response.data || 'Error while updating settings. Please retry.';
+        })
+        .finally(() => loading.value = false);
 }
 </script>
