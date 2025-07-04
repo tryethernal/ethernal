@@ -27,7 +27,7 @@ exports[`CreateWorkspaceModal.vue > Should let the user create a new workspace 1
         <!---->
       </button>
     </div>
-    <create-workspace-stub></create-workspace-stub>
+    <create-workspace-stub ispublic="false"></create-workspace-stub>
     <!---->
     <!----><span class="v-card__underlay"></span>
   </div>
