@@ -34,11 +34,11 @@
                     variant="outlined" v-model="name" id="workspaceName" label="Name*" placeholder="My Ethereum Project" hide-details="auto" class="mb-2" required></v-text-field>
                 <v-text-field
                     :rules="[
-                        v => this.isUrlValid(v) || 'RPC needs to be a valid URL',
+                        v => isUrlValid(v) || 'RPC needs to be a valid URL',
                         v => !!v || 'RPC server is required'
                     ]"
                     variant="outlined" v-model="rpcServer" id="workspaceServer" label="RPC Server*" placeholder="ws://localhost:8545" hide-details="auto" class="mb-2" required></v-text-field>
-                <v-select v-if="!isPublic" id="chain" item-title="name" item-value="slug" variant="outlined" required label="Chain" v-model="chain" :items="availableChains" hide-details="auto"></v-select>
+                <v-select v-if="!isPublic" id="chain" item-title="name" item-value="slug" variant="outlined" required label="Chain" v-model="chain" :items="availableChains.value" hide-details="auto"></v-select>
 
                 <v-card-actions>
                     <v-spacer></v-spacer>
@@ -48,146 +48,154 @@
         </v-card-text>
     </v-card>
 </template>
-<script>
-const ipaddr = require('ipaddr.js');
-import { mapStores } from 'pinia';
+<script setup>
+import { ref, computed, watch, onMounted, inject } from 'vue';
 import { useEnvStore } from '@/stores/env';
 import { useUserStore } from '@/stores/user';
+const ipaddr = require('ipaddr.js');
 
-export default {
-    name: 'CreateWorkspace',
-    props: ['isPublic'],
-    data: () => ({
-        availableChains: [],
-        chain: 'ethereum',
-        errorMessage: null,
-        loading: false,
-        name: null,
-        rpcServer: null,
-        localNetwork: false,
-        detectedNetworks: [],
-        noNetworks: false,
-        workspace: null,
-        valid: false
-    }),
-    emits: ['workspaceCreated'],
-    mounted() {
-        this.availableChains = Object.values(this.envStore.chains).map((chain) => ({
-            name: chain.name,
-            slug: chain.slug
-        }));
-    },
-    methods: {
-        initRpcServer(name, rpcServer) {
-            this.loading = true;
-            if (!this.isPublic) {
-                this.$server.initRpcServer(rpcServer)
-                    .then(data => {
-                        this.workspace = data;
-                        this.createWorkspace();
-                    })
-                    .catch(error => {
-                        this.loading = false;
-                        if (error.message.indexOf('Invalid URL') > -1)
-                            return this.errorMessage = `
-                                URL of the rpc server looks invalid. Make sure you entered a valid ws(s) or http(s) url.
-                            `;
-                        else if (this.localNetwork && (rpcServer.startsWith('http://') || rpcServer.startsWith('ws://'))) {
-                            return this.errorMessage = `
-                                Can't connect to rpc server, 
-                                make sure your node is up, and reachable from the browser.<br>
-                                If you are using Brave, you'll need to disable Shields. 
-                                Try disabling adblockers as well.<br>
-                                Another option is to setup a public URL such as <a href="https://ngrok.com/" target="_blank">ngrok</a>, and use https to connect.
-                            `;
-                        }
-                        else if (!this.localNetwork && (rpcServer.startsWith('http://') || rpcServer.startsWith('ws://'))) {
-                            return this.errorMessage = `
-                                Can't connect to remote rpc server.<br>
-                                Make sure your node is up, supports "eth_chainId" & "net_version" requests, and that you've allowed app.tryethernal.com to 
-                                <a href="https://experienceleague.adobe.com/docs/target/using/experiences/vec/troubleshoot-composer/mixed-content.html" target="_blank">load insecure content</a>.<br>
-                                Try using a secure connection (https or wss) if possible.
-                            `;
-                        }
-                        else if (!this.localNetwork && rpcServer.startsWith('wss://')) {
-                            return this.errorMessage = `
-                                Can't connect to remote rpc server. Is your node up?<br>
-                                Check as well that your node supports "eth_chainId" & "net_version" requests.<br>
-                                Try using https if possible.
-                            `;
-                        }
-                        else
-                            return this.errorMessage = `
-                                Can't connect to remote rpc server. Is your node up?<br>
-                                Make sure CORS settings are allowing "${this.envStore.mainDomain}" to connect to it.<br>
-                                Check as well that your node supports "eth_chainId" & "net_version" requests.<br>
-                            `;
-                    })
-            }
-            else {
-                this.workspace = { name, rpcServer, settings: {}};
-                this.createWorkspace();
-            }
-        },
-        createWorkspace() {
-            this.$server.createWorkspace(this.name, { ...this.workspace, chain: this.chain, public: this.isPublic })
-                .then(({ data }) => {
-                    this.$emit('workspaceCreated', data);
-                })
-                .catch(error => {
-                    console.log(error)
-                    if (error.response && error.response.data)
-                        return this.errorMessage = error.response.data;
-                    else
-                        return this.errorMessage = 'Error while creating workspace';
-                })
-                .finally(() => this.loading = false)
-        },
-        detectNetwork() {
-            this.noNetworks = false;
-            this.$server.searchForLocalChains().then((res) => {
-                this.detectedNetworks = res;
-                if (!res.length) {
-                    this.noNetworks = true;
-                }
-            });
-        },
-        isUrlValid(url) {
-            try {
-                new URL(url);
-                return true;
-            } catch(error) {
-                return false;
-            }
-        },
-        goToBilling() {
-            this.$emit('goToBilling');
-        }
-    },
-    computed: {
-        ...mapStores(useEnvStore, useUserStore),
-        isUsingSafari() {
-            return !!window.GestureEvent;
-        },
-    },
-    watch: {
-        rpcServer() {
-            try {
-                if (!this.isUrlValid(this.rpcServer)) {
-                    return;
-                }
-                const hostname = new URL(this.rpcServer).hostname;
-                const localStrings = ['private', 'linkLocal', 'loopback', 'carrierGradeNat', 'localhost'];
-                if (hostname == 'localhost') {
-                    this.localNetwork = true;
-                }
-                else {
-                    this.localNetwork = ipaddr.isValid(hostname) && localStrings.indexOf(ipaddr.parse(hostname).range()) > -1;
-                }
-            } catch(error) {
-                console.log(error);
-            }
-        }
+const props = defineProps({
+    isPublic: Boolean
+});
+const emit = defineEmits(['workspaceCreated', 'goToBilling', 'validatedWorkspaceSettings']);
+
+const envStore = useEnvStore();
+const userStore = useUserStore();
+
+const $server = inject('$server');
+
+const availableChains = ref([]);
+const chain = ref('ethereum');
+const errorMessage = ref(null);
+const loading = ref(false);
+const name = ref(null);
+const rpcServer = ref(null);
+const localNetwork = ref(false);
+const detectedNetworks = ref([]);
+const noNetworks = ref(false);
+const workspace = ref(null);
+const valid = ref(false);
+
+onMounted(() => {
+    availableChains.value = Object.values(envStore.chains).map((chain) => ({
+        name: chain.name,
+        slug: chain.slug
+    }));
+});
+
+function isUrlValid(url) {
+    try {
+        new URL(url);
+        return true;
+    } catch (error) {
+        return false;
     }
 }
+
+function goToBilling() {
+    emit('goToBilling');
+}
+
+function detectNetwork() {
+    noNetworks.value = false;
+    $server.searchForLocalChains().then((res) => {
+        detectedNetworks.value = res;
+        if (!res.length) {
+            noNetworks.value = true;
+        }
+    });
+}
+
+function initRpcServer(nameVal, rpcServerVal) {
+    loading.value = true;
+    if (!props.isPublic) {
+        $server.initRpcServer(rpcServerVal)
+            .then(data => {
+                workspace.value = data;
+                createWorkspace();
+            })
+            .catch(error => {
+                loading.value = false;
+                if (error.message.indexOf('Invalid URL') > -1)
+                    return errorMessage.value = `
+                        URL of the rpc server looks invalid. Make sure you entered a valid ws(s) or http(s) url.
+                    `;
+                else if (localNetwork.value && (rpcServerVal.startsWith('http://') || rpcServerVal.startsWith('ws://'))) {
+                    return errorMessage.value = `
+                        Can't connect to rpc server, 
+                        make sure your node is up, and reachable from the browser.<br>
+                        If you are using Brave, you'll need to disable Shields. 
+                        Try disabling adblockers as well.<br>
+                        Another option is to setup a public URL such as <a href="https://ngrok.com/" target="_blank">ngrok</a>, and use https to connect.
+                    `;
+                }
+                else if (!localNetwork.value && (rpcServerVal.startsWith('http://') || rpcServerVal.startsWith('ws://'))) {
+                    return errorMessage.value = `
+                        Can't connect to remote rpc server.<br>
+                        Make sure your node is up, supports "eth_chainId" & "net_version" requests, and that you've allowed app.tryethernal.com to 
+                        <a href="https://experienceleague.adobe.com/docs/target/using/experiences/vec/troubleshoot-composer/mixed-content.html" target="_blank">load insecure content</a>.<br>
+                        Try using a secure connection (https or wss) if possible.
+                    `;
+                }
+                else if (!localNetwork.value && rpcServerVal.startsWith('wss://')) {
+                    return errorMessage.value = `
+                        Can't connect to remote rpc server. Is your node up?<br>
+                        Check as well that your node supports "eth_chainId" & "net_version" requests.<br>
+                        Try using https if possible.
+                    `;
+                }
+                else
+                    return errorMessage.value = `
+                        Can't connect to remote rpc server. Is your node up?<br>
+                        Make sure CORS settings are allowing "${envStore.mainDomain}" to connect to it.<br>
+                        Check as well that your node supports "eth_chainId" & "net_version" requests.<br>
+                    `;
+            })
+    } else {
+        workspace.value = { name: nameVal, rpcServer: rpcServerVal, settings: {} };
+        createWorkspace();
+    }
+}
+
+function createWorkspace() {
+    errorMessage.value = null;
+    if (props.isPublic) {
+        return emit('validatedWorkspaceSettings', { name: name.value, rpcServer: rpcServer.value, settings: {} });
+    }
+
+    $server.createWorkspace(name.value, { ...workspace.value, chain: chain.value, public: props.isPublic })
+        .then(({ data }) => {
+            emit('workspaceCreated', data);
+        })
+        .catch(error => {
+            console.log(error)
+            if (error.response && error.response.data)
+                return errorMessage.value = error.response.data;
+            else
+                return errorMessage.value = 'Error while creating workspace';
+        })
+        .finally(() => loading.value = false)
+}
+
+const isUsingSafari = computed(() => {
+    return !!window.GestureEvent;
+});
+
+watch(rpcServer, (newVal) => {
+    try {
+        if (!isUrlValid(newVal)) {
+            return;
+        }
+        const hostname = new URL(newVal).hostname;
+        const localStrings = ['private', 'linkLocal', 'loopback', 'carrierGradeNat', 'localhost'];
+        if (hostname == 'localhost') {
+            localNetwork.value = true;
+        }
+        else {
+            localNetwork.value = ipaddr.isValid(hostname) && localStrings.indexOf(ipaddr.parse(hostname).range()) > -1;
+        }
+    } catch (error) {
+        console.log(error);
+    }
+});
 </script>

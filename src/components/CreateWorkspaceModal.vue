@@ -5,49 +5,50 @@
             <h4>Create Workspace</h4>
             <v-btn color="grey" variant="text" icon="mdi-close" @click="close(false)"></v-btn>
         </v-card-title>
-        <Create-Workspace @workspaceCreated="onWorkspaceCreated" @goToBilling="goToBilling" />
+        <CreateWorkspace @workspaceCreated="onWorkspaceCreated" @goToBilling="goToBilling" />
     </v-card>
 </v-dialog>
 </template>
-<script>
+<script setup>
+import { ref, inject } from 'vue';
+import { useRouter } from 'vue-router';
 import CreateWorkspace from './CreateWorkspace.vue';
 
-export default {
-    name: 'CreateWorkspaceModal',
-    components: {
-        CreateWorkspace
-    },
-    data: () => ({
-        dialog: false,
-        resolve: null,
-        reject: null,
-    }),
-    methods: {
-        open: function() {
-            this.dialog = true;
-            return new Promise((resolve, reject) => {
-                this.resolve = resolve;
-                this.reject = reject;
-            })
-        },
-        close: function(workspaceCreated = false) {
-            const resolve = this.resolve;
-            this.reset();
-            resolve(workspaceCreated);
-        },
-        onWorkspaceCreated: function(workspaceData) {
-            this.$server.setCurrentWorkspace(workspaceData.name)
-                .then(() => document.location = '/overview');
-        },
-        goToBilling: function() {
-            this.close(false);
-            this.$router.push({ path: '/settings', query: { tab: 'billing' }});
-        },
-        reset: function() {
-            this.dialog = false;
-            this.resolve = null;
-            this.reject = null;
-        }
-    }
+const dialog = ref(false);
+const resolveRef = ref(null);
+const rejectRef = ref(null);
+const router = useRouter();
+const $server = inject('$server');
+
+function open() {
+    dialog.value = true;
+    return new Promise((resolve, reject) => {
+        resolveRef.value = resolve;
+        rejectRef.value = reject;
+    });
 }
+
+function close(workspaceCreated = false) {
+    const resolve = resolveRef.value;
+    reset();
+    if (resolve) resolve(workspaceCreated);
+}
+
+function onWorkspaceCreated(workspaceData) {
+    $server.setCurrentWorkspace(workspaceData.name)
+        .then(() => document.location = '/overview');
+}
+
+function goToBilling() {
+    close(false);
+    router.push({ path: '/settings', query: { tab: 'billing' }});
+}
+
+function reset() {
+    dialog.value = false;
+    resolveRef.value = null;
+    rejectRef.value = null;
+}
+
+defineExpose({ open, close });
 </script>

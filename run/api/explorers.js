@@ -12,6 +12,7 @@ const { withTimeout, validateBNString, sanitize } = require('../lib/utils');
 const { bulkEnqueue } = require('../lib/queue');
 const PM2 = require('../lib/pm2');
 const db = require('../lib/firebase');
+const { isChainAllowed } = require('../lib/chains');
 const authMiddleware = require('../middlewares/auth');
 const stripeMiddleware = require('../middlewares/stripe');
 const secretMiddleware = require('../middlewares/secret');
@@ -590,16 +591,8 @@ router.post('/:id/settings', authMiddleware, async (req, res, next) => {
 
     try {
         const explorer = await db.getExplorerById(data.user.id, req.params.id);
-        if (!explorer || !explorer.workspace)
+        if (!explorer)
             return managedError(new Error('Could not find explorer.'), req, res);
-
-        if (data.workspace && data.workspace != explorer.workspace.name) {
-            const workspace = await db.getWorkspaceByName(data.uid, data.workspace);
-            if (!workspace)
-                return managedError(new Error('Invalid workspace.'), req, res);
-            else
-                await db.updateExplorerWorkspace(explorer.id, workspace.id);
-        }
 
         try {
             await db.updateExplorerSettings(explorer.id, data);
@@ -643,6 +636,10 @@ router.post('/', authMiddleware, async (req, res, next) => {
         } catch(error) {
             return managedError(new Error(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`), req, res);
         }
+
+        const allowed = await isChainAllowed(networkId);
+        if (!allowed)
+            return managedError(new Error('You can\'t create an explorer with this network id (' + networkId + '). If you\'d still like an explorer for this chain. Please reach out to contact@tryethernal.com, and we\'ll set one up for you.'), req, res);
 
         let options = data.workspaceId ?
             { workspaceId: data.workspaceId } :
@@ -720,7 +717,13 @@ router.post('/', authMiddleware, async (req, res, next) => {
             }
         }
 
-        const explorer = await db.createExplorerFromOptions(user.id, sanitize(options));
+        let explorer;
+        try {
+            explorer = await db.createExplorerFromOptions(user.id, sanitize(options));
+        } catch(error) {
+            return managedError(new Error(error), req, res);
+        }
+
         if (!explorer)
             return managedError(new Error('Could not create explorer.'), req, res);
 
