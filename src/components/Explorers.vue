@@ -79,7 +79,7 @@
                                 </v-tooltip>
                             </template>
                             <template v-else>
-                                <a :href="`http://${ item.slug }.${documentHost}`" target="_blank">{{ item.slug }}.{{ documentHost }}</a>
+                                <a :href="`http://${ item.slug }.${envStore.mainDomain}`" target="_blank">{{ item.slug }}.{{ envStore.mainDomain }}</a>
                             </template>
                         </template>
                         <template v-slot:item.rpcServer="{ item }">
@@ -99,6 +99,8 @@
 import { ref, reactive, computed, onMounted, inject } from 'vue';
 import { useRoute } from 'vue-router';
 
+import { useEnvStore } from '@/stores/env';
+
 import CreateExplorerModal from './CreateExplorerModal.vue';
 import { shortRpcUrl } from '../lib/utils';
 
@@ -114,9 +116,7 @@ const createExplorerModalRef = ref(null);
 // Router
 const route = useRoute();
 const $server = inject('$server');
-
-// Host for explorer links
-const documentHost = typeof window !== 'undefined' ? window.location.host : '';
+const envStore = useEnvStore();
 
 // Computed
 const deletedExplorer = computed(() => {
