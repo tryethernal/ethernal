@@ -38,7 +38,7 @@
                         v => !!v || 'RPC server is required'
                     ]"
                     variant="outlined" v-model="rpcServer" id="workspaceServer" label="RPC Server*" placeholder="ws://localhost:8545" hide-details="auto" class="mb-2" required></v-text-field>
-                <v-select v-if="!isPublic" id="chain" item-title="name" item-value="slug" variant="outlined" required label="Chain" v-model="chain" :items="availableChains.value" hide-details="auto"></v-select>
+                <v-select v-if="!isPublic" id="chain" item-title="name" item-value="slug" variant="outlined" required label="Chain" v-model="chain" :items="availableChains" hide-details="auto"></v-select>
 
                 <v-card-actions>
                     <v-spacer></v-spacer>
