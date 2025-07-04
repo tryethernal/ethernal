@@ -95,7 +95,7 @@ router.post('/sendResetPasswordEmail', async (req, res, next) => {
         if (!data.email)
             return managedError(new Error('Missing parameter.'), req, res);
 
-        await enqueue('sendResetPasswordEmail', `sendResetPasswordEmail-${Date.now()}`, { email: data.email.toLowercase() });
+        await enqueue('sendResetPasswordEmail', `sendResetPasswordEmail-${Date.now()}`, { email: data.email.toLowerCase() });
 
         res.sendStatus(200);
     } catch(error) {
