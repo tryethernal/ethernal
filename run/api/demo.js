@@ -172,12 +172,6 @@ router.post('/explorers', async (req, res, next) => {
         if (!allowed)
             return managedError(new Error('You can\'t create a demo with this network id (' + networkId + '). If you\'d still like an explorer for this chain. Please reach out to contact@tryethernal.com, and we\'ll set one up for you.'), req, res);
 
-        if (whitelistedNetworkIdsForDemo() && whitelistedNetworkIdsForDemo().split(',').indexOf(String(networkId)) == -1) {
-            const count = await countUp(networkId);
-            if (count > maxDemoExplorersForNetwork())
-                return managedError(new Error('You\'ve reached the limit of demo explorers for this chain (networkId: ' + networkId + '). Please subscribe to a plan or reach out to contact@tryethernal.com for an extended trial.'), req, res);
-        }
-
         const user = await db.getUserById(getDemoUserId());
 
         const stripePlan = await db.getStripePlan(getDefaultPlanSlug());
