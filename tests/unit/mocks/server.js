@@ -49,6 +49,7 @@ export default {
     getExplorer: vi.fn(),
     getExplorerPlans: vi.fn(),
     createExplorer: vi.fn(),
+    createExplorerFromOptions: vi.fn(),
     startCryptoSubscription: vi.fn(),
     createStripeExplorerCheckoutSession: vi.fn(),
     getExplorerDomainStatus: vi.fn(),

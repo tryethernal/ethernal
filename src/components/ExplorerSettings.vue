@@ -13,6 +13,7 @@
                             v-model="currentWorkspace"
                             item-title="name"
                             :items="workspaces"
+                            disabled
                             return-object>
                             <template v-slot:item="{ props, item }">
                                 <v-list-item v-bind="props">
@@ -112,7 +113,6 @@ export default {
             this.successMessage = null;
             this.errorMessage = null;
             const settings = {
-                workspace: this.currentWorkspace.name,
                 name: this.currentExplorer.name,
                 slug: this.currentExplorer.slug,
                 l1Explorer: this.currentExplorer.l1Explorer
