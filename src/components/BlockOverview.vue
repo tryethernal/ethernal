@@ -360,7 +360,6 @@ const tryDecodeExtraData = (hexData) => {
   white-space: inherit !important;
 }
 
-
 .v-theme--dark .block-list :deep(.v-list-item) {
   border-bottom: none;
 }
