@@ -504,16 +504,29 @@ const txTypeNames = {
 const getTxnTypeName = (type) => txTypeNames[type] || 'Unknown';
 </script>
 
-<style>
+<style scoped>
+.transaction-list :deep(.v-list-item) {
+  min-height: 48px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  border-bottom: none;
+}
+
+.transaction-list :deep(.v-list-item__prepend) {
+  align-self: start;
+}
+
+.transaction-list :deep(.v-list-item__content) {
+  align-self: start;
+}
+
 .transaction-list :deep(.v-list-item-title) {
+  word-break: break-all;
+  white-space: inherit !important;
   color: rgb(var(--v-theme-on-surface));
 }
 
 .transaction-list :deep(.text-subtitle-2) {
-  color: rgba(var(--v-theme-on-surface), 0.7);
-}
-
-.transaction-list :deep(.v-icon) {
   color: rgba(var(--v-theme-on-surface), 0.7);
 }
 
