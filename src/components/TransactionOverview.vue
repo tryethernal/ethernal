@@ -232,7 +232,10 @@
               </div>
             </template>
             <v-list-item-title class="text-body-2">
-              <a :href="`${explorerStore.l1Explorer}/block/${transaction.block.l1BlockNumber}`" target="_blank">{{ commify(transaction.block.l1BlockNumber) }}</a>
+              <a class="text-decoration-none" :href="`${explorerStore.l1Explorer}/block/${transaction.block.l1BlockNumber}`" target="_blank">
+                {{ commify(transaction.block.l1BlockNumber) }}
+                <v-icon size="x-small" color="primary" class="pb-1">mdi-open-in-new</v-icon>
+              </a>
             </v-list-item-title>
           </v-list-item>
 
