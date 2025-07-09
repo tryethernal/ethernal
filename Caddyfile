@@ -5,7 +5,7 @@
     
 }
 
-*.tryethernal.com, tryethernal.com {
+* {
     tls {
         on_demand
     }
