@@ -28,5 +28,3 @@ primary_region = "iad" # Change to your preferred region
 [[mounts]]
   source = "caddy_data"
   destination = "/data"
-
-# If you want to use secrets for sensitive data, you can set them up with `fly secrets set`
