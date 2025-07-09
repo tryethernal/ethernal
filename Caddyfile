@@ -26,5 +26,9 @@
       }
     }
 
+    handle {
+        reverse_proxy tryethernal.netlify.app
+    }
+
     encode gzip
 }
