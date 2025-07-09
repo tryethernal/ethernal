@@ -65,6 +65,5 @@ pm2-server/.env.prod
 .env.postgres.prod
 pgbouncer/.env.pgbouncer.prod
 
-Caddyfile
 pgbouncer/
 ethernal-95a14-19f78a7e26cc.json
