@@ -1,9 +1,16 @@
-app = "ethernal-caddy" # Change this to your Fly.io app name
-
-primary_region = "iad" # Change to your preferred region
+app = "ethernal-caddy"
+primary_region = "ord"
 
 [build]
-  image = "caddy:2.7.6-alpine" # Use the official Caddy image from Docker Hub
+  dockerfile = "Dockerfile.caddyfile"
+
+# Caddy needs to see raw TLS handshake, so do NOT use handlers
+[[services]]
+  internal_port = 443
+  protocol = "tcp"
+
+  [[services.ports]]
+    port = 443
 
 [[services]]
   internal_port = 80
@@ -11,20 +18,13 @@ primary_region = "iad" # Change to your preferred region
 
   [[services.ports]]
     port = 80
-    handlers = ["http"]
 
-  [[services.ports]]
-    port = 443
-    handlers = ["tls", "http"]
+[[services.tcp_checks]]
+  interval = 10000
+  timeout = 2000
+  grace_period = "5s"
+  restart_limit = 0
 
-  [[services.tcp_checks]]
-    interval = 10000
-    timeout = 2000
-    grace_period = "5s"
-    restart_limit = 0
-
-# Optional: persistent volume for Caddy data (certificates, etc.)
-# Uncomment if you want to persist Caddy's data directory
 [[mounts]]
   source = "caddy_data"
   destination = "/data"
