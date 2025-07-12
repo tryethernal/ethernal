@@ -13,10 +13,21 @@ async function fetchForbiddenChains() {
     responseType: 'text',
     headers: { 'Cache-Control': 'no-cache' }
   });
-  const jsonString = response.data.replace(/^export default\s*/, '');
-  forbiddenChainsCache = JSON.parse(jsonString);
-  forbiddenChainsCacheTime = Date.now();
-  return forbiddenChainsCache;
+  let jsonString = response.data
+    .replace(/^export default\s*/, '') // Remove export default
+    .replace(/;\s*$/, '') // Remove trailing semicolon
+    .replace(/\/\/.*$/gm, '') // Remove single-line comments
+    .replace(/,\s*([}\]])/g, '$1') // Remove trailing commas
+    .trim();
+  try {
+    const forbiddenChains = JSON.parse(jsonString);
+    forbiddenChainsCache = forbiddenChains;
+    forbiddenChainsCacheTime = Date.now();
+    return forbiddenChains;
+  } catch (e) {
+    console.error('Invalid JSON in chainIds.js:', jsonString);
+    throw e;
+  }
 }
 
 /**

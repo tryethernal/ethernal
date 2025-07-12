@@ -212,56 +212,38 @@ module.exports = (sequelize, DataTypes) => {
         }));
     }
 
-    createExplorerFromOptions({ workspaceId, rpcServer, name, networkId, chain = 'ethereum', tracing = 'other', faucet, token, slug, totalSupply, l1Explorer, branding, qnEndpointId, domains = [], isDemo = false, subscription, integrityCheckStartBlockNumber }) {
-        if (!workspaceId && (!rpcServer || !name || !networkId))
+    createExplorerFromOptions({ backendRpcServer, frontendRpcServer, name, networkId, chain = 'ethereum', tracing = 'other', faucet, token, slug, totalSupply, l1Explorer, branding, qnEndpointId, domains = [], isDemo = false, subscription, integrityCheckStartBlockNumber }) {
+        if (!backendRpcServer || !name || !networkId)
             throw new Error('Missing parameters');
 
         return sequelize.transaction(async transaction => {
-            let workspace;
-            if (workspaceId) {
-                workspace = await sequelize.models.Workspace.findOne({ where: { id: workspaceId, userId: this.id }, include: 'explorer' });
-                if (!workspace)
-                    throw new Error('Could not find workspace');
-                if (workspace.explorer)
-                    throw new Error('There is already an explorer associated to this workspace');
-                workspace.update({
-                    public: true,
-                    dataRetentionLimit: this.defaultDataRetentionLimit,
-                    integrityCheckStartBlockNumber: integrityCheckStartBlockNumber,
-                    browserSyncEnabled: false,
-                    storageEnabled: false,
-                    erc721LoadingEnabled: false,
-                    rpcHealthCheckEnabled: true,
-                    rateLimitInterval: SYNC_RATE_LIMIT_INTERVAL,
-                    rateLimitMaxInInterval: SYNC_RATE_LIMIT_MAX_IN_INTERVAL,
-                    qnEndpointId
-                }, { transaction });
-            }
-            else if (rpcServer && name && networkId) {
-                const existingWorkspace = await sequelize.models.Workspace.findOne({ where: { name, userId: this.id }});
-                if (existingWorkspace)
-                    throw new Error('You already have a workspace with this name');
+            if (!backendRpcServer || !name || !networkId)
+                throw new Error('Missing parameters');
 
-                workspace = await this.createWorkspace(sanitize({
-                    name: name,
-                    public: true,
-                    chain: chain,
-                    networkId: networkId,
-                    rpcServer: rpcServer,
-                    tracing: tracing,
-                    dataRetentionLimit: this.defaultDataRetentionLimit,
-                    integrityCheckStartBlockNumber: integrityCheckStartBlockNumber,
-                    browserSyncEnabled: false,
-                    storageEnabled: false,
-                    erc721LoadingEnabled: false,
-                    rpcHealthCheckEnabled: true,
-                    rateLimitInterval: SYNC_RATE_LIMIT_INTERVAL,
-                    rateLimitMaxInInterval: SYNC_RATE_LIMIT_MAX_IN_INTERVAL,
-                    qnEndpointId
-                }), { transaction });
-            }
-            else
-                throw new Error('You need to either pass a workspaceId parameter or a name & rpcServer parameters to create an explorer');
+            const existingWorkspace = await sequelize.models.Workspace.findOne({ where: { name, userId: this.id }});
+            if (existingWorkspace)
+                throw new Error('You already have a workspace with this name');
+
+            const workspace = await this.createWorkspace(sanitize({
+                name: name,
+                public: true,
+                chain: chain,
+                networkId: networkId,
+                rpcServer: backendRpcServer,
+                tracing: tracing,
+                dataRetentionLimit: this.defaultDataRetentionLimit,
+                integrityCheckStartBlockNumber: integrityCheckStartBlockNumber,
+                browserSyncEnabled: false,
+                storageEnabled: false,
+                erc721LoadingEnabled: false,
+                rpcHealthCheckEnabled: true,
+                rateLimitInterval: SYNC_RATE_LIMIT_INTERVAL,
+                rateLimitMaxInInterval: SYNC_RATE_LIMIT_MAX_IN_INTERVAL,
+                qnEndpointId
+            }), { transaction });
+
+            if (!workspace)
+                throw new Error('Could not create workspace');
 
             if (!this.currentWorkspaceId)
                 await this.update({ currentWorkspaceId: workspace.id }, { transaction });
@@ -281,7 +263,7 @@ module.exports = (sequelize, DataTypes) => {
                 chainId: workspace.networkId,
                 slug: explorerSlug,
                 name: workspace.name,
-                rpcServer: workspace.rpcServer,
+                rpcServer: frontendRpcServer || backendRpcServer,
                 themes: { 'default': {}},
                 domain: `${explorerSlug}.${process.env.APP_DOMAIN}`
             }), { transaction });
@@ -369,8 +351,6 @@ module.exports = (sequelize, DataTypes) => {
                     pendingDeletion: false
                 }
             });
-
-            console.log(existingWorkspace);
 
             if (existingWorkspace)
                 throw new Error('A workspace with this name already exists.');

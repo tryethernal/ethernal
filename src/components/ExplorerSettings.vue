@@ -12,7 +12,15 @@
                             v-model="currentExplorer.name"
                             label="Name"></v-text-field>
                         <v-text-field
-                            class="mb-2"
+                            density="compact"
+                            variant="outlined"
+                            class="mb-4"
+                            v-model="currentExplorer.rpcServer"
+                            hint="This is the RPC server that will be exposed to the frontend (wallets, etc...)."
+                            :persistent-hint="true"
+                            label="Frontend RPC Server"></v-text-field>
+                        <v-text-field
+                            class="mb-4"
                             density="compact"
                             variant="outlined"
                             v-model="currentExplorer.slug"
@@ -99,7 +107,8 @@ function updateExplorerSettings() {
     const settings = {
         name: currentExplorer.value.name,
         slug: currentExplorer.value.slug,
-        l1Explorer: currentExplorer.value.l1Explorer
+        l1Explorer: currentExplorer.value.l1Explorer,
+        rpcServer: currentExplorer.value.rpcServer
     };
     if (capabilities.value.nativeToken)
         settings['token'] = currentExplorer.value.token;
