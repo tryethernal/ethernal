@@ -55,11 +55,6 @@ import ERC721_ABI from '../abis/erc721.json';
 import HashLink from './HashLink.vue';
 import WalletConnectorMirror from './WalletConnectorMirror.vue';
 
-const props = defineProps({
-    address: String,
-    token: Object
-});
-
 const $server = inject('$server');
 
 const dialog = ref(false);
@@ -81,9 +76,17 @@ const { wagmiConfig } = storeToRefs(currentWorkspaceStore);
 const { wagmiConnector, connectedAddress } = storeToRefs(walletStore);
 const isPublicExplorer = computed(() => currentWorkspaceStore.public);
 
-const rpcServer = computed(() => explorerStore.rpcServer || currentWorkspaceStore.rpcServer);
+const rpcServer = computed(() => {
+    // Use explorerStore.rpcServer if it is a non-empty string, otherwise fallback
+    return (explorerStore.rpcServer && typeof explorerStore.rpcServer === 'string' && explorerStore.rpcServer.trim())
+        ? explorerStore.rpcServer
+        : currentWorkspaceStore.rpcServer;
+});
 
-const invalidOwner = computed(() => !options.value.token || connectedAddress.value !== options.value.token.owner);
+const invalidOwner = computed(() => {
+    // Always use options.value for token and address
+    return !options.value.token || connectedAddress.value !== options.value.token.owner;
+});
 
 function transferWithInjectedWallet() {
     writeContract(wagmiConfig.value, {
@@ -102,11 +105,12 @@ function transferToken() {
     loading.value = true;
     successMessage.value = null;
     errorMessage.value = null;
-    $server.impersonateAccount(rpcServer.value, props.token.owner)
+    // Use options.value for all transfer context
+    $server.impersonateAccount(rpcServer.value, options.value.token.owner)
         .then(hasBeenUnlocked => {
             if (!hasBeenUnlocked)
                 throw new Error("Transfer failed. Couldn't unlock owner account.");
-            $server.transferErc721Token(rpcServer.value, props.address, props.token.owner, recipient.value, props.token.tokenId)
+            $server.transferErc721Token(rpcServer.value, options.value.address, options.value.token.owner, recipient.value, options.value.token.tokenId)
                 .then(tx => {
                     transaction.value = { ...tx, receipt: {} };
                     tx.wait().then(receipt => {

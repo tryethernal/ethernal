@@ -217,9 +217,6 @@ module.exports = (sequelize, DataTypes) => {
             throw new Error('Missing parameters');
 
         return sequelize.transaction(async transaction => {
-            if (!backendRpcServer || !name || !networkId)
-                throw new Error('Missing parameters');
-
             const existingWorkspace = await sequelize.models.Workspace.findOne({ where: { name, userId: this.id }});
             if (existingWorkspace)
                 throw new Error('You already have a workspace with this name');
