@@ -1,19 +1,19 @@
 <template>
-<v-dialog v-model="dialog.value" max-width="600">
+<v-dialog v-model="dialog" max-width="600">
     <v-card>
-        <v-card-title class="text-h5">Transfer {{ token.attributes.name }}</v-card-title>
-        <v-form v-model="validForm.value">
+        <v-card-title class="text-h5">Transfer {{ options.token?.attributes?.name || '' }}</v-card-title>
+        <v-form v-model="validForm">
             <v-card-text>
-                <v-alert class="mb-3" density="compact" type="success" v-if="successMessage.value" v-html="successMessage.value"></v-alert>
-                <v-alert class="mb-3" density="compact" type="error" v-if="errorMessage.value" v-html="errorMessage.value"></v-alert>
-                <v-alert class="mb-3" density="compact" type="warning" v-if="invalidOwner.value && isPublicExplorer.value">The connected account is not the owner of this token.</v-alert>
-                <v-alert class="mb-3" density="compact" v-if="!successMessage.value && !errorMessage.value && !isPublicExplorer.value && !invalidOwner.value" type="info">This will only work if your node supports <code>hardhat_impersonateAccount</code> or <code>evm_unlockUnknownAccount</code>.</v-alert>
+                <v-alert class="mb-3" density="compact" type="success" v-if="successMessage" v-html="successMessage"></v-alert>
+                <v-alert class="mb-3" density="compact" type="error" v-if="errorMessage" v-html="errorMessage"></v-alert>
+                <v-alert class="mb-3" density="compact" type="warning" v-if="invalidOwner && isPublicExplorer">The connected account is not the owner of this token.</v-alert>
+                <v-alert class="mb-3" density="compact" v-if="!successMessage && !errorMessage && !isPublicExplorer && !invalidOwner" type="info">This will only work if your node supports <code>hardhat_impersonateAccount</code> or <code>evm_unlockUnknownAccount</code>.</v-alert>
 
-                <div>Owner: <Hash-Link :type="'address'" :fullHash="true" :hash="token.owner"></Hash-Link></div>
-                <div v-if="connectedAddress.value">Connected account: <Hash-Link :type="'address'" :fullHash="true" :hash="connectedAddress.value"></Hash-Link></div>
+                <div>Owner: <Hash-Link :type="'address'" :fullHash="true" :hash="options.token?.owner"></Hash-Link></div>
+                <div v-if="connectedAddress">Connected account: <Hash-Link :type="'address'" :fullHash="true" :hash="connectedAddress"></Hash-Link></div>
                 <WalletConnectorMirror v-else prepend-icon="mdi-wallet" rounded size="small" variant="outlined" />
                 <v-text-field
-                    v-model="recipient.value"
+                    v-model="recipient"
                     :rules="[v => !!v && v.length == 42 || 'Invalid address (must be 42 characters long)']"
                     small
                     variant="outlined"
@@ -23,22 +23,22 @@
                     id="recipient"
                     label="Recipient Address">
                 </v-text-field>
-                <span class="align-right" v-if="transaction.value.hash">
+                <span class="align-right" v-if="transaction.hash">
                     Transaction:
-                    <v-progress-circular v-if="transaction.value.hash && transaction.value.receipt.status === undefined" class="mr-2" size="16" width="2" indeterminate color="primary"></v-progress-circular>
+                    <v-progress-circular v-if="transaction.hash && transaction.receipt.status === undefined" class="mr-2" size="16" width="2" indeterminate color="primary"></v-progress-circular>
                     <template v-else>
-                        <v-icon size="small" v-show="transaction.value.receipt.status" color="success-lighten-1" class="mr-1 align-with-text">mdi-check-circle</v-icon>
-                        <v-icon size="small" v-show="!transaction.value.receipt.status" color="error-lighten-1" class="mr-1 align-with-text">mdi-alert-circle</v-icon>
+                        <v-icon size="small" v-show="transaction.receipt.status" color="success-lighten-1" class="mr-1 align-with-text">mdi-check-circle</v-icon>
+                        <v-icon size="small" v-show="!transaction.receipt.status" color="error-lighten-1" class="mr-1 align-with-text">mdi-alert-circle</v-icon>
                     </template>
-                    <Hash-Link :type="'transaction'" :hash="transaction.value.hash"></Hash-Link>
+                    <Hash-Link :type="'transaction'" :hash="transaction.hash"></Hash-Link>
                 </span>
             </v-card-text>
 
             <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn @click.stop="close()">Close</v-btn>
-                <v-btn v-if="isPublicExplorer.value" id="transferToken" variant="flat" :disabled="!validForm.value || invalidOwner.value" :loading="loading.value" @click.stop="transferWithInjectedWallet()">Transfer Token</v-btn>
-                <v-btn v-else id="transferToken" variant="flat" :disabled="!validForm.value" :loading="loading.value" @click.stop="transferToken()">Transfer Token</v-btn>
+                <v-btn v-if="isPublicExplorer" id="transferToken" variant="flat" :disabled="!validForm || invalidOwner" :loading="loading" @click.stop="transferWithInjectedWallet()">Transfer Token</v-btn>
+                <v-btn v-else id="transferToken" variant="flat" :disabled="!validForm" :loading="loading" @click.stop="transferToken()">Transfer Token</v-btn>
             </v-card-actions>
         </v-form>
     </v-card>
