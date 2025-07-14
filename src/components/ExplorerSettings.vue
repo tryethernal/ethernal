@@ -16,7 +16,7 @@
                             variant="outlined"
                             class="mb-4"
                             v-model="currentExplorer.rpcServer"
-                            hint="This is the RPC server that will be exposed to the frontend (wallets, etc...)."
+                            hint="This is the RPC server that will be exposed to end users (wallets, etc...)."
                             :persistent-hint="true"
                             label="Frontend RPC Server"></v-text-field>
                         <v-text-field
