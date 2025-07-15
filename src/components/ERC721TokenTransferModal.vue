@@ -1,7 +1,7 @@
 <template>
 <v-dialog v-model="dialog" max-width="600">
     <v-card>
-        <v-card-title class="text-h5">Transfer {{ token.attributes.name }}</v-card-title>
+        <v-card-title class="text-h5">Transfer {{ options.token?.attributes?.name || '' }}</v-card-title>
         <v-form v-model="validForm">
             <v-card-text>
                 <v-alert class="mb-3" density="compact" type="success" v-if="successMessage" v-html="successMessage"></v-alert>
@@ -9,7 +9,7 @@
                 <v-alert class="mb-3" density="compact" type="warning" v-if="invalidOwner && isPublicExplorer">The connected account is not the owner of this token.</v-alert>
                 <v-alert class="mb-3" density="compact" v-if="!successMessage && !errorMessage && !isPublicExplorer && !invalidOwner" type="info">This will only work if your node supports <code>hardhat_impersonateAccount</code> or <code>evm_unlockUnknownAccount</code>.</v-alert>
 
-                <div>Owner: <Hash-Link :type="'address'" :fullHash="true" :hash="token.owner"></Hash-Link></div>
+                <div>Owner: <Hash-Link :type="'address'" :fullHash="true" :hash="options.token?.owner"></Hash-Link></div>
                 <div v-if="connectedAddress">Connected account: <Hash-Link :type="'address'" :fullHash="true" :hash="connectedAddress"></Hash-Link></div>
                 <WalletConnectorMirror v-else prepend-icon="mdi-wallet" rounded size="small" variant="outlined" />
                 <v-text-field
@@ -44,131 +44,126 @@
     </v-card>
 </v-dialog>
 </template>
-<script>
-import { computed, ref } from 'vue';
+<script setup>
+import { ref, computed, inject, defineExpose } from 'vue';
 import { storeToRefs } from 'pinia';
 import { writeContract } from '@web3-onboard/wagmi';
 import { useCurrentWorkspaceStore } from '@/stores/currentWorkspace';
+import { useExplorerStore } from '@/stores/explorer';
 import { useWalletStore } from '@/stores/walletStore';
 import ERC721_ABI from '../abis/erc721.json';
 import HashLink from './HashLink.vue';
 import WalletConnectorMirror from './WalletConnectorMirror.vue';
 
-export default {
-    name: 'ERC721TokenTransferModal',
-    props: ['address', 'token'],
-    components: {
-        HashLink,
-        WalletConnectorMirror
-    },
-    data: () => ({
-        validForm: false,
-        dialog: false,
-        resolve: null,
-        reject: null,
-        errorMessage: null,
-        loading: false,
-        transaction: {
-            receipt: {}
-        },
-        didTransfer: false
-    }),
-    setup() {
-        const currentWorkspaceStore = useCurrentWorkspaceStore();
-        const walletStore = useWalletStore();
-        const { rpcServer, public: isPublicExplorer } = currentWorkspaceStore;
-        const { wagmiConfig } = storeToRefs(currentWorkspaceStore);
-        const { wagmiConnector, connectedAddress } = storeToRefs(walletStore);
+const $server = inject('$server');
 
-        const successMessage = ref(null);
+const dialog = ref(false);
+const validForm = ref(false);
+const errorMessage = ref(null);
+const successMessage = ref(null);
+const loading = ref(false);
+const transaction = ref({ receipt: {} });
+const didTransfer = ref(false);
+const resolveRef = ref(null);
+const rejectRef = ref(null);
+const recipient = ref(null);
+const options = ref({});
 
-        const recipient = ref(null);
-        const options = ref({});
+const currentWorkspaceStore = useCurrentWorkspaceStore();
+const explorerStore = useExplorerStore();
+const walletStore = useWalletStore();
+const { wagmiConfig } = storeToRefs(currentWorkspaceStore);
+const { wagmiConnector, connectedAddress } = storeToRefs(walletStore);
+const isPublicExplorer = computed(() => currentWorkspaceStore.public);
 
-        const invalidOwner = computed(() => !options.value.token || connectedAddress.value !== options.value.token.owner);
+const rpcServer = computed(() => {
+    // Use explorerStore.rpcServer if it is a non-empty string, otherwise fallback
+    return (explorerStore.rpcServer && typeof explorerStore.rpcServer === 'string' && explorerStore.rpcServer.trim())
+        ? explorerStore.rpcServer
+        : currentWorkspaceStore.rpcServer;
+});
 
-        function transferWithInjectedWallet() {
-            writeContract(wagmiConfig.value, {
-                abi: ERC721_ABI,
-                address: options.value.address,
-                functionName: 'safeTransferFrom',
-                args: [connectedAddress.value, recipient.value, options.value.token.tokenId],
-                connector: wagmiConnector.value,
-                account: connectedAddress.value
-            })
-            .then(hash => successMessage.value = `Transfer transaction sent: <a class="white--text" href="/transaction/${hash}">${hash}</a>`)
-            .catch(console.error);
-        }
+const invalidOwner = computed(() => {
+    // Always use options.value for token and address
+    return !options.value.token || connectedAddress.value !== options.value.token.owner;
+});
 
-        return { rpcServer, isPublicExplorer, wagmiConfig, wagmiConnector, transferWithInjectedWallet, recipient, options, connectedAddress, invalidOwner, successMessage };
-    },
-    methods: {
-        transferToken() {
-            this.loading = true;
-            this.successMessage = null;
-            this.errorMessage = null;
+function transferWithInjectedWallet() {
+    writeContract(wagmiConfig.value, {
+        abi: ERC721_ABI,
+        address: options.value.address,
+        functionName: 'safeTransferFrom',
+        args: [connectedAddress.value, recipient.value, options.value.token.tokenId],
+        connector: wagmiConnector.value,
+        account: connectedAddress.value
+    })
+    .then(hash => successMessage.value = `Transfer transaction sent: <a class="white--text" href="/transaction/${hash}">${hash}</a>`)
+    .catch(console.error);
+}
 
-            this.$server.impersonateAccount(this.rpcServer, this.token.owner)
-                .then(hasBeenUnlocked => {
-                    if (!hasBeenUnlocked)
-                        throw new Error("Transfer failed. Couldn't unlock owner account.");
-
-                    this.$server.transferErc721Token(this.rpcServer, this.address, this.token.owner, this.recipient, this.token.tokenId)
-                        .then(transaction => {
-                            this.transaction = { ...transaction, receipt: {} };
-                            transaction.wait().then(receipt => {
-                                this.transaction.receipt = receipt;
-                                if (receipt.status) {
-                                    this.successMessage = `Token transferred successfully!`;
-                                    this.didTransfer = true;
-                                }
-                                else {
-                                    console.log(transaction, receipt);
-                                    this.errorMessage = `Transaction failed`;
-                                }
-                            });
-                        })
-                        .catch(error => {
-                            console.log(error);
-                            this.errorMessage = error.reason || `Error: ${error.message}` || 'Error while sending the transaction. Please reload the page and try again.';
-                        })
-                        .finally(() => this.loading = false);
+function transferToken() {
+    loading.value = true;
+    successMessage.value = null;
+    errorMessage.value = null;
+    // Use options.value for all transfer context
+    $server.impersonateAccount(rpcServer.value, options.value.token.owner)
+        .then(hasBeenUnlocked => {
+            if (!hasBeenUnlocked)
+                throw new Error("Transfer failed. Couldn't unlock owner account.");
+            $server.transferErc721Token(rpcServer.value, options.value.address, options.value.token.owner, recipient.value, options.value.token.tokenId)
+                .then(tx => {
+                    transaction.value = { ...tx, receipt: {} };
+                    tx.wait().then(receipt => {
+                        transaction.value.receipt = receipt;
+                        if (receipt.status) {
+                            successMessage.value = `Token transferred successfully!`;
+                            didTransfer.value = true;
+                        } else {
+                            console.log(tx, receipt);
+                            errorMessage.value = `Transaction failed`;
+                        }
+                    });
                 })
                 .catch(error => {
                     console.log(error);
-                    this.errorMessage = error.message || error;
-                    this.loading = false;
+                    errorMessage.value = error.reason || `Error: ${error.message}` || 'Error while sending the transaction. Please reload the page and try again.';
                 })
-        },
-        open(options) {
-            this.dialog = true;
-            this.options = options || {};
-            return new Promise((resolve, reject) => {
-                this.resolve = resolve;
-                this.reject = reject;
-            });
-        },
-        close() {
-            this.resolve(this.didTransfer);
-            this.reset();
-        },
-        reset() {
-            this.options = {};
-            this.transaction = {
-                receipt: {}
-            };
-            this.validForm = false;
-            this.didTransfer = false;
-            this.rpcConnectionStatus = false;
-            this.invalidOwner = false;
-            this.recipient = null;
-            this.successMessage = null;
-            this.errorMessage = null;
-            this.loading = false;
-            this.dialog = false;
-            this.resolve = null;
-            this.reject = null;
-        }
-    }
+                .finally(() => loading.value = false);
+        })
+        .catch(error => {
+            console.log(error);
+            errorMessage.value = error.message || error;
+            loading.value = false;
+        });
 }
+
+function open(opts) {
+    dialog.value = true;
+    options.value = opts || {};
+    return new Promise((resolve, reject) => {
+        resolveRef.value = resolve;
+        rejectRef.value = reject;
+    });
+}
+
+function close() {
+    if (resolveRef.value) resolveRef.value(didTransfer.value);
+    reset();
+}
+
+function reset() {
+    options.value = {};
+    transaction.value = { receipt: {} };
+    validForm.value = false;
+    didTransfer.value = false;
+    recipient.value = null;
+    successMessage.value = null;
+    errorMessage.value = null;
+    loading.value = false;
+    dialog.value = false;
+    resolveRef.value = null;
+    rejectRef.value = null;
+}
+
+defineExpose({ open, close });
 </script>
