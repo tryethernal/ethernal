@@ -12,6 +12,7 @@ const { withTimeout, sanitize } = require('../lib/utils');
 const authMiddleware = require('../middlewares/auth');
 const db = require('../lib/firebase');
 const { managedError, unmanagedError } = require('../lib/errors');
+const { isChainAllowed } = require('../lib/chains');
 
 /*
     Creates a uniswap v2 dex for a demo explorer
@@ -114,7 +115,7 @@ router.post('/migrateExplorer', authMiddleware, async (req, res, next) => {
 
         const subscription = await stripe.subscriptions.create({
             customer: user.stripeCustomerId,
-            items: [{ price: '500' }],
+            items: [{ price: plan.stripePriceId }],
             trial_period_days: getDefaultExplorerTrialDays(),
             trial_settings: {
                 end_behavior: { missing_payment_method: 'cancel' }
@@ -148,13 +149,12 @@ router.post('/migrateExplorer', authMiddleware, async (req, res, next) => {
 router.post('/explorers', async (req, res, next) => {
     const data = req.body;
     try {
-        if (!data.rpcServer || !data.email) 
+        if (!data.rpcServer || !data.email)
             return managedError(new Error('Missing parameters.'), req, res);
 
         let name = data.name;
         if (!name) {
             name = generateSlug();
-            slugGenerated = true;
         }
 
         const provider = new ProviderConnector(data.rpcServer);
@@ -166,23 +166,11 @@ router.post('/explorers', async (req, res, next) => {
         }
 
         if (!networkId)
-            return managedError(new Error(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`), req, res);
+            return managedError(new Error('Our servers can\'t query this rpc, please use a rpc that is reachable from the internet.'), req, res);
 
-        const response = await axios.get('https://raw.githubusercontent.com/tryethernal/chainlist/refs/heads/main/constants/chainIds.js', {
-            responseType: 'text',
-            headers: { 'Cache-Control': 'no-cache' }
-        });
-        const jsonString = response.data.replace(/^export default\s*/, '');
-        const forbiddenChains = JSON.parse(jsonString);
-
-        if (forbiddenChains[networkId])
-            return managedError(new Error(`You can't create a demo with this network id (${networkId} - ${forbiddenChains[networkId]}). If you'd still like an explorer for this chain. Please reach out to contact@tryethernal.com, and we'll set one up for you.`), req, res);
-
-        if (whitelistedNetworkIdsForDemo() && whitelistedNetworkIdsForDemo().split(',').indexOf(String(networkId)) == -1) {
-            const count = await countUp(networkId);;
-            if (count > maxDemoExplorersForNetwork())
-                return managedError(new Error(`You've reached the limit of demo explorers for this chain (networkId: ${networkId}). Please subscribe to a plan or reach out to contact@tryethernal.com for an extended trial.`), req, res);
-        }
+        const allowed = await isChainAllowed(networkId);
+        if (!allowed)
+            return managedError(new Error('You can\'t create a demo with this network id (' + networkId + '). If you\'d still like an explorer for this chain. Please reach out to contact@tryethernal.com, and we\'ll set one up for you.'), req, res);
 
         const user = await db.getUserById(getDemoUserId());
 
@@ -192,7 +180,7 @@ router.post('/explorers', async (req, res, next) => {
 
         const options = {
             name, networkId,
-            rpcServer: data.rpcServer,
+            backendRpcServer: data.rpcServer,
             dataRetentionLimit: 1,
             token: data.nativeToken,
             isDemo: true,
@@ -223,15 +211,8 @@ router.post('/explorers', async (req, res, next) => {
 
         await enqueue('sendDemoExplorerLink', `sendDemoExplorerLink-${explorer.id}`, { email: data.email, explorerSlug: explorer.slug });
 
-        const discordNotification = `
-**New Demo Explorer**
-
-**User Email:** ${data.email}
-**Explorer Name:** ${explorer.name || 'N/A'}
-**Explorer Link:** https://${explorer.slug}.${getAppDomain()}
-**Explorer RPC:** ${data.rpcServer || 'N/A'}
-        `;
-        await enqueue('sendDiscordMessage', `sendDiscordMessage-${explorer.id}`, { content: discordNotification, channel: getDiscordDemoExplorerChannelWebhook() });
+        const discordNotification = '\n**New Demo Explorer**\n\n**User Email:** ' + data.email + '\n**Explorer Name:** ' + (explorer.name || 'N/A') + '\n**Explorer Link:** https://' + explorer.slug + '.' + getAppDomain() + '\n**Explorer RPC:** ' + (data.rpcServer || 'N/A') + '\n';
+        await enqueue('sendDiscordMessage', 'sendDiscordMessage-' + explorer.id, { content: discordNotification, channel: getDiscordDemoExplorerChannelWebhook() });
 
         res.sendStatus(200);
     } catch(error) {

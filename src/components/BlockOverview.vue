@@ -183,7 +183,10 @@
                                 </div>
                             </template>
                             <v-list-item-title class="text-body-2">
-                                <a style="text-decoration: none;" :href="`${explorerStore.l1Explorer}/block/${block.l1BlockNumber}`" target="_blank">{{ commify(block.l1BlockNumber) }}</a>
+                                <a class="text-decoration-none" :href="`${explorerStore.l1Explorer}/block/${block.l1BlockNumber}`" target="_blank">
+                                    {{ commify(block.l1BlockNumber) }}
+                                    <v-icon size="x-small" color="primary" class="pb-1">mdi-open-in-new</v-icon>
+                                </a>
                             </v-list-item-title>
                         </v-list-item>
                     </template>
@@ -359,7 +362,6 @@ const tryDecodeExtraData = (hexData) => {
   word-break: break-all;
   white-space: inherit !important;
 }
-
 
 .v-theme--dark .block-list :deep(.v-list-item) {
   border-bottom: none;

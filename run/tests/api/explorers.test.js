@@ -5,6 +5,7 @@ const mockSubscriptionUpdate = jest.fn();
 const mockSubscriptionItemDelete = jest.fn();
 const mockInvoiceListUpcomingLines = jest.fn();
 const mockSubscriptionItemUpdate = jest.fn();
+const mockSubscriptionCancel = jest.fn();
 
 jest.mock('stripe', () => {
     return jest.fn().mockImplementation(() => {
@@ -15,7 +16,8 @@ jest.mock('stripe', () => {
             subscriptions: {
                 create: mockSubscriptionCreate,
                 retrieve: mockSubscriptionRetrieve,
-                update: mockSubscriptionUpdate
+                update: mockSubscriptionUpdate,
+                cancel: mockSubscriptionCancel
             },
             subscriptionItems: {
                 del: mockSubscriptionItemDelete,
@@ -34,6 +36,7 @@ require('../mocks/lib/utils');
 require('../mocks/lib/firebase');
 require('../mocks/lib/pm2');
 require('../mocks/lib/flags');
+require('../mocks/lib/chains');
 require('../mocks/lib/env');
 require('../mocks/middlewares/auth');
 const { Explorer } = require('../mocks/models');
@@ -43,6 +46,7 @@ const PM2 = require('../../lib/pm2');
 const { ProviderConnector, DexConnector } = require('../../lib/rpc');
 const { withTimeout, validateBNString } = require('../../lib/utils');
 const flags = require('../../lib/flags');
+const chains = require('../../lib/chains');
 const authMiddleware = require('../../middlewares/auth');
 
 const supertest = require('supertest');
@@ -597,7 +601,7 @@ describe(`PUT ${BASE_URL}/:id/quotaExtension`, () => {
 describe(`PUT ${BASE_URL}/:id/subscription`, () => {
     it('Should update the plan without calling stripe if no stripeId', (done) => {
         jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, stripeSubscription: { stripePlan: { id: 1, slug: 'slug' }}});
-        jest.spyOn(db, 'getStripePlan').mockResolvedValue({ public: true, stripePriceId: 'priceId' });
+        jest.spyOn(db, 'getStripePlan').mockResolvedValue({ public: true, stripePriceId: 'priceId', price: 1 });
 
         request.put(`${BASE_URL}/1/subscription`)
             .send({ data: { explorerId: 1, newStripePlanSlug: 'slug' }})
@@ -647,9 +651,26 @@ describe(`PUT ${BASE_URL}/:id/subscription`, () => {
             });
     });
 
+    it('Should delete the subscription & create a new free one and return a 200', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, stripeSubscription: { stripePlan: { slug: 'slug' }, stripeId: 'subscriptionId' }});
+        jest.spyOn(db, 'getStripePlan').mockResolvedValue({ public: true, stripePriceId: 'priceId', price: 0 });
+        mockSubscriptionRetrieve.mockResolvedValueOnce({ id: 'subscriptionId', items: { data: [{ id: 'itemId' }]}});
+
+        request.put(`${BASE_URL}/1/subscription`)
+            .send({ data: { explorerId: 1, newStripePlanSlug: 'slug' }})
+            .expect(200)
+            .then(() => {
+                expect(mockSubscriptionRetrieve).toHaveBeenCalledWith('subscriptionId', { expand: ['customer']});
+                expect(mockSubscriptionCancel).toHaveBeenCalledWith('subscriptionId', { prorate: true });
+                expect(db.deleteExplorerSubscription).toHaveBeenCalled();
+                expect(db.createExplorerSubscription).toHaveBeenCalled();
+                done();
+            });
+    });
+
     it('Should update the subscription and return a 200', (done) => {
         jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, stripeSubscription: { stripePlan: { slug: 'slug' }, stripeId: 'subscriptionId' }});
-        jest.spyOn(db, 'getStripePlan').mockResolvedValue({ public: true, stripePriceId: 'priceId' });
+        jest.spyOn(db, 'getStripePlan').mockResolvedValue({ public: true, stripePriceId: 'priceId', price: 1 });
         mockSubscriptionRetrieve.mockResolvedValueOnce({ id: 'subscriptionId', items: { data: [{ id: 'itemId' }]}});
 
         request.put(`${BASE_URL}/1/subscription`)
@@ -708,6 +729,19 @@ describe(`POST ${BASE_URL}/:id/subscription`, () => {
             });
     });
 
+    it('Should return a 200 if the subscription is created for a free plan', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1 });
+        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ id: 1, price: 0, public: true, stripePriceId: 'priceId', capabilities: {}});
+
+        request.post(`${BASE_URL}/1/subscription`)
+            .send({ data: { planSlug: 'slug' }})
+            .expect(200)
+            .then(() => {
+                expect(db.createExplorerSubscription).toHaveBeenCalledWith(1, 1, 1);
+               done();
+            });
+    });
+
     it('Should return an error if no explorer found', (done) => {
         jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce(null);
 
@@ -745,9 +779,9 @@ describe(`POST ${BASE_URL}/:id/subscription`, () => {
             });
     });
 
-    it('Should return an error if plan does not have skipBilling capability', (done) => {
+    it('Should return an error if plan does not have skipBilling capability and is not free', (done) => {
         jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1 });
-        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ id: 1, public: true, stripePriceId: 'priceId', capabilities: {}});
+        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ id: 1, price: 1, public: true, stripePriceId: 'priceId', capabilities: {}});
 
         request.post(`${BASE_URL}/1/subscription`)
             .send({ data: { planSlug: 'slug' }})
@@ -785,8 +819,35 @@ describe(`DELETE ${BASE_URL}/:id/subscription`, () => {
             });
     });
 
-    it('Should cancel the subscription and return a 200', (done) => {
-        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, stripeSubscription: { stripeId: 'subscriptionId' }});
+    it('Should delete the free subscription and return a 200', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({
+            id: 1,
+            stripeSubscription: {
+                stripeId: 'subscriptionId',
+                stripePlan: { price: 0 }
+            }
+        });
+        mockSubscriptionRetrieve.mockResolvedValueOnce({ id: 'subscriptionId' });
+
+        request.delete(`${BASE_URL}/1/subscription`)
+            .send({ data: { explorerId: 1 }})
+            .expect(200)
+            .then(() => {
+                expect(mockSubscriptionRetrieve).toHaveBeenCalledWith('subscriptionId');
+                expect(mockSubscriptionUpdate).toBeCalledWith('subscriptionId', { cancel_at_period_end: true });
+                expect(db.deleteExplorerSubscription).toHaveBeenCalled();
+                done();
+            });
+    });
+
+    it('Should cancel the paid subscription and return a 200', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({
+            id: 1,
+            stripeSubscription: {
+                stripeId: 'subscriptionId',
+                stripePlan: { price: 1 }
+            }
+        });
         mockSubscriptionRetrieve.mockResolvedValueOnce({ id: 'subscriptionId' });
 
         request.delete(`${BASE_URL}/1/subscription`)
@@ -1041,39 +1102,22 @@ describe(`POST ${BASE_URL}/:id/settings`, () => {
             });
     });
 
-    it('Should update workspace & return 200', (done) => {
-        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, workspace: { name: 'hardhat' }});
-        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValueOnce({ id: 1 });
-
-        request.post(`${BASE_URL}/123/settings`)
-            .send({ data: { workspace: 'New Workspace' }})
-            .expect(200)
-            .then(() => {
-                expect(db.updateExplorerWorkspace).toHaveBeenCalled();
-                done();
-            });
-    });
-
-    it('Should return an error if trying to update to an invalid workspace', (done) => {
-        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, workspace: { name: 'hardhat' }});
-        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValueOnce(null);
-
-        request.post(`${BASE_URL}/123/settings`)
-            .send({ data: { workspace: 'New Workspace' }})
-            .expect(400)
-            .then(({ text }) => {
-                expect(db.updateExplorerWorkspace).not.toHaveBeenCalled();
-                expect(text).toEqual('Invalid workspace.');
-                done();
-            });
-    });
-
     it('Should update settings & return 200', (done) => {
         jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, workspace: { name: 'hardhat' }});
         jest.spyOn(db, 'updateExplorerSettings').mockResolvedValueOnce();
 
         request.post(`${BASE_URL}/:id/settings`)
             .send({ data: { name: 'New name' }})
+            .expect(200)
+            .then(() => done());
+    });
+
+    it('Should update the rpc server', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, rpcServer: 'old.rpc' });
+        jest.spyOn(db, 'updateExplorerSettings').mockResolvedValueOnce();
+
+        request.post(`${BASE_URL}/:id/settings`)
+            .send({ data: { rpcServer: 'new.rpc' }})
             .expect(200)
             .then(() => done());
     });
@@ -1111,7 +1155,7 @@ describe(`POST ${BASE_URL}`, () => {
                     { quantity: 2, proration_behavior: 'always_invoice' }
                 );
                 expect(db.createExplorerFromOptions).toHaveBeenCalledWith(1, {
-                    rpcServer: 'test.rpc',
+                    backendRpcServer: 'test.rpc',
                     name: 'explorer',
                     networkId: 1,
                     subscription: {
@@ -1143,7 +1187,7 @@ describe(`POST ${BASE_URL}`, () => {
             .expect(200)
             .then(({ body }) => {
                 expect(db.createExplorerFromOptions).toHaveBeenCalledWith(1, {
-                    rpcServer: 'test.rpc',
+                    backendRpcServer: 'test.rpc',
                     name: 'explorer',
                     networkId: 1,
                     subscription: {
@@ -1168,7 +1212,7 @@ describe(`POST ${BASE_URL}`, () => {
             .expect(200)
             .then(({ body }) => {
                 expect(db.createExplorerFromOptions).toHaveBeenCalledWith(1, {
-                    rpcServer: 'test.rpc',
+                    backendRpcServer: 'test.rpc',
                     name: 'explorer',
                     networkId: 1,
                     integrityCheckStartBlockNumber: 1,
@@ -1189,7 +1233,7 @@ describe(`POST ${BASE_URL}`, () => {
             .expect(200)
             .then(({ body }) => {
                 expect(db.createExplorerFromOptions).toHaveBeenCalledWith(1, {
-                    rpcServer: 'test.rpc',
+                    backendRpcServer: 'test.rpc',
                     name: 'explorer',
                     networkId: 1
                 });
@@ -1212,14 +1256,18 @@ describe(`POST ${BASE_URL}`, () => {
             });
     });
 
-    it('Should fail if there is already an explorer for this workspace', (done) => {
-        jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, workspaces: [{ id: 1, explorer: {} }] });
+    it('Should fail if network id is not allowed', (done) => {
+        jest.spyOn(db, 'getWorkspaceById').mockResolvedValueOnce({ id: 1, rpcServer: 'rpc' });
+        ProviderConnector.mockImplementationOnce(() => ({
+            fetchNetworkId: jest.fn().mockResolvedValueOnce(1)
+        }));
+        jest.spyOn(chains, 'isChainAllowed').mockResolvedValueOnce(false);
 
         request.post(BASE_URL)
-            .send({ data: { workspaceId: 1 }})
+            .send({ data: { rpcServer: 'test', name: 'test' }})
             .expect(400)
             .then(({ text }) => {
-                expect(text).toEqual('This workspace already has an explorer.');
+                expect(text).toEqual('You can\'t create an explorer with this network id (1). If you\'d still like an explorer for this chain. Please reach out to contact@tryethernal.com, and we\'ll set one up for you.');
                 done();
             });
     });
@@ -1244,18 +1292,6 @@ describe(`POST ${BASE_URL}`, () => {
             .expect(400)
             .then(({ text }) => {
                 expect(text).toEqual('Could not create explorer.');
-                done();
-            });
-    });
-
-    it('Should return an error if workspace id is invalid', (done) => {
-        jest.spyOn(db, 'getUser').mockResolvedValueOnce({ workspaces: [{ id:2 }]});
-
-        request.post(BASE_URL)
-            .send({ data: { workspaceId: 1 }})
-            .expect(400)
-            .then(({ text }) => {
-                expect(text).toEqual('Could not find workspace');
                 done();
             });
     });

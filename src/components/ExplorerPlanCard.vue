@@ -6,9 +6,10 @@
             <v-chip class="ml-2" color="primary" size="small" v-if="bestValue && !current">Best Value</v-chip>
         </v-card-title>
         <v-card-subtitle v-if="plan.price > 0" class="pb-0">${{ plan.price.toLocaleString() }} / month</v-card-subtitle>
+        <v-card-subtitle v-else-if="plan.price == 0" class="pb-0">Free</v-card-subtitle>
         <v-card-subtitle v-else class="pb-0">Custom Pricing</v-card-subtitle>
         <v-card-text>
-            <div class="mt-3 two-lines">
+            <div class="mt-3 two-lines" style="height: 4.5em;">
                 {{ plan.capabilities.description }}
             </div>
             <v-list density="compact">
@@ -30,27 +31,6 @@
                         <template v-else>
                             Unlimited transactions
                         </template>
-                    </template>
-                </v-list-item>
-
-                <v-list-item icon class="mr-2">
-                    <template v-slot:prepend>
-                        <v-icon color="success" class="font-weight-bold">mdi-check</v-icon>
-                    </template>
-
-                    <template v-slot:title>
-                        {{ plan.capabilities.dataRetention > 0 ? `${plan.capabilities.dataRetention} days` : 'Unlimited' }} Data Retention
-                        <v-tooltip location="left" color="black">
-                            <template v-slot:activator="{ props }">
-                                <v-icon v-bind="props" class="ml-1" size="small">mdi-help-circle</v-icon>
-                            </template>
-                            <template v-if="plan.capabilities.dataRetention > 0">
-                                Your data will automatically be deleted after {{ plan.capabilities.dataRetention }} days.
-                            </template>
-                            <template v-else>
-                                Your data will never be deleted automatically.
-                            </template>
-                        </v-tooltip>
                     </template>
                 </v-list-item>
 
@@ -147,7 +127,7 @@
             </v-list>
         </v-card-text>
         <v-card-actions class="justify-center">
-            <template v-if="plan.price == 0">
+            <template v-if="plan.price == null">
                 <v-btn variant="outlined" color="primary">
                     <a href="mailto:contact@tryethernal.com?subject=Ethernal+enterprise+plan+setup" target="_blank" style="text-decoration: none;">CONTACT US</a>
                 </v-btn>
@@ -156,7 +136,7 @@
                 <v-btn variant="flat" :loading="loading" :disabled="disabled" v-if="current && !pendingCancelation" @click="changePlan(null)" class="bg-error">Cancel Plan</v-btn>
                 <v-btn variant="flat" :loading="loading" :disabled="disabled" v-else-if="current && pendingCancelation" @click="changePlan(plan.slug)" class="bg-primary">Revert Cancelation</v-btn>
                 <v-btn variant="flat" v-else :loading="loading" :disabled="disabled" @click="changePlan(plan.slug)" class="bg-primary">
-                    <template v-if="trial">Start 7 day Trial</template>
+                    <template v-if="trial && plan.price > 0">Start 7 day Trial</template>
                     <template v-else>Choose Plan</template>
                 </v-btn>
             </template>

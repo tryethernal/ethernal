@@ -4,6 +4,79 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.4.0] - 2025-08-15
+### Changed
+- Frontend RPC server is now exposed in the UI & API
+
+## [5.3.16] - 2025-08-12
+### Fixed
+- Chain id hotfix
+
+## [5.3.15] - 2025-08-05
+### Changed
+- Caddy config
+
+## [5.3.14] - 2025-08-05
+### Changed
+- Caddy config
+
+## [5.3.13] - 2025-08-05
+### Added
+- Caddy config
+
+## [5.3.12] - 2025-07-05
+### Fixed
+- L1 block link styling
+
+## [5.3.11] - 2025-07-05
+### Fixed
+- Alignments issue on small screens on transaction page
+
+## [5.3.10] - 2025-07-04
+### Fixed
+- tryethernal.com subdomains displayed in the explorer details pages
+
+## [5.3.9] - 2025-07-04
+### Fixed
+- tryethernal.com subdomains displayed in the explorers list
+
+## [5.3.8] - 2025-07-04
+### Fixed
+- tryethernal.com subdomains displayed in the explorers list
+- Cleaner & simpler explorer creation internal frontend flow
+
+## [5.3.7] - 2025-07-04
+### Fixed
+- Tests
+
+## [5.3.6] - 2025-07-04
+### Removed
+- Broken counter API
+
+## [5.3.5] - 2025-07-03
+### Fixed
+- Password reset bug
+
+## [5.3.4] - 2025-07-02
+### Fixed
+- Demo migration redirection bug
+
+## [5.3.3] - 2025-07-02
+### Fixed
+- Bugs related to demo migration
+
+## [5.3.2] - 2025-07-02
+### Fixed
+- Bugs related to demo migration
+
+## [5.3.1] - 2025-07-02
+### Fixed
+- Bugs related to plan switching
+
+## [5.3.0] - 2025-07-02
+### Added
+- Support for a free public explorer plan
+
 ## [5.2.19] - 2025-06-15
 ### Fixed
 - Address stats endpoint

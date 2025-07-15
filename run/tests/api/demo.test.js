@@ -31,11 +31,13 @@ require('../mocks/lib/utils');
 require('../mocks/lib/env');
 require('../mocks/lib/firebase');
 require('../mocks/middlewares/auth');
+require('../mocks/lib/chains');
 
 const db = require('../../lib/firebase');
 const { enqueue } = require('../../lib/queue');
 const { ProviderConnector, DexConnector } = require('../../lib/rpc');
 const crypto = require('../../lib/crypto');
+const chains = require('../../lib/chains');
 
 const supertest = require('supertest');
 const app = require('../../app');
@@ -330,12 +332,13 @@ describe(`POST ${BASE_URL}/explorers`, () => {
         ProviderConnector.mockImplementationOnce(() => ({
             fetchNetworkId: jest.fn().mockResolvedValueOnce(1)
         }));
+        jest.spyOn(chains, 'isChainAllowed').mockResolvedValueOnce(false);
 
         request.post(`${BASE_URL}/explorers`)
             .send({ name: 'demo', rpcServer: 'rpc.demo', nativeToken: 'token', email: 'email@email.com' })
             .expect(400)
             .then(({ text }) => {
-                expect(text).toEqual(`You can't create a demo with this network id (1 - ethereum). If you'd still like an explorer for this chain. Please reach out to contact@tryethernal.com, and we'll set one up for you.`);
+                expect(text).toEqual(`You can't create a demo with this network id (1). If you'd still like an explorer for this chain. Please reach out to contact@tryethernal.com, and we'll set one up for you.`);
                 done();
             });
     });
@@ -383,41 +386,6 @@ describe(`POST ${BASE_URL}/explorers`, () => {
             .expect(400)
             .then(({ text }) => {
                 expect(text).toEqual('Error setting up the explorer. Please retry.');
-                done();
-            });
-    });
-
-    it('Should return an error if too many demo explorers are created with the same network id', (done) => {
-        jest.spyOn(db, 'getUserById').mockResolvedValueOnce({ id: 123 });
-        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ id: 1 });
-        jest.spyOn(db, 'createExplorerFromOptions').mockResolvedValueOnce({ id: 1, slug: 'slug' });
-        ProviderConnector.mockImplementationOnce(() => ({
-            fetchNetworkId: jest.fn().mockResolvedValueOnce(54321)
-        }));
-        mockCountUp.mockResolvedValueOnce(4);
-
-        request.post(`${BASE_URL}/explorers`)
-            .send({ name: 'demo', rpcServer: 'rpc.demo', nativeToken: 'token', email: 'email@email.com' })
-            .expect(400)
-            .then(({ text }) => {
-                expect(text).toEqual(`You've reached the limit of demo explorers for this chain (networkId: 54321). Please subscribe to a plan or reach out to contact@tryethernal.com for an extended trial.`);
-                done();
-            });
-    });
-
-    it('Should not use the counter if the network is whitelisted', (done) => {
-        jest.spyOn(db, 'getUserById').mockResolvedValueOnce({ id: 123 });
-        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ id: 1 });
-        jest.spyOn(db, 'createExplorerFromOptions').mockResolvedValueOnce({ id: 1, slug: 'slug' });
-        ProviderConnector.mockImplementationOnce(() => ({
-            fetchNetworkId: jest.fn().mockResolvedValueOnce(31337)
-        }));
-
-        request.post(`${BASE_URL}/explorers`)
-            .send({ name: 'demo', rpcServer: 'rpc.demo', nativeToken: 'token', email: 'email@email.com' })
-            .expect(200)
-            .then(() => {
-                expect(mockCountUp).not.toHaveBeenCalled();
                 done();
             });
     });

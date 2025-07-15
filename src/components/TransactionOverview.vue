@@ -232,7 +232,10 @@
               </div>
             </template>
             <v-list-item-title class="text-body-2">
-              <a :href="`${explorerStore.l1Explorer}/block/${transaction.block.l1BlockNumber}`" target="_blank">{{ commify(transaction.block.l1BlockNumber) }}</a>
+              <a class="text-decoration-none" :href="`${explorerStore.l1Explorer}/block/${transaction.block.l1BlockNumber}`" target="_blank">
+                {{ commify(transaction.block.l1BlockNumber) }}
+                <v-icon size="x-small" color="primary" class="pb-1">mdi-open-in-new</v-icon>
+              </a>
             </v-list-item-title>
           </v-list-item>
 
@@ -504,16 +507,29 @@ const txTypeNames = {
 const getTxnTypeName = (type) => txTypeNames[type] || 'Unknown';
 </script>
 
-<style>
+<style scoped>
+.transaction-list :deep(.v-list-item) {
+  min-height: 48px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  border-bottom: none;
+}
+
+.transaction-list :deep(.v-list-item__prepend) {
+  align-self: start;
+}
+
+.transaction-list :deep(.v-list-item__content) {
+  align-self: start;
+}
+
 .transaction-list :deep(.v-list-item-title) {
+  word-break: break-all;
+  white-space: inherit !important;
   color: rgb(var(--v-theme-on-surface));
 }
 
 .transaction-list :deep(.text-subtitle-2) {
-  color: rgba(var(--v-theme-on-surface), 0.7);
-}
-
-.transaction-list :deep(.v-icon) {
   color: rgba(var(--v-theme-on-surface), 0.7);
 }
 

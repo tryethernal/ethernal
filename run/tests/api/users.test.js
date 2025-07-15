@@ -75,7 +75,7 @@ describe(`POST ${BASE_URL}/sendResetPasswordEmail`, () => {
 
     it('Should enqueue reset password email task', (done) => {
         request.post(`${BASE_URL}/sendResetPasswordEmail`)
-            .send({ email: 'antoine@tryethernal.com' })
+            .send({ email: 'Antoine@tryethernal.com' })
             .expect(200)
             .then(() => {
                 expect(enqueue).toHaveBeenCalledWith('sendResetPasswordEmail', expect.anything(), { email: 'antoine@tryethernal.com' });

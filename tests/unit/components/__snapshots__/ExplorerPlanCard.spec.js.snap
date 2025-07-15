@@ -25,7 +25,7 @@ exports[`ExplorerPlanCard.vue > Should display card with trial button 1`] = `
   </div>
   <div data-v-f986fcf1="" class="v-card-subtitle pb-0">$1,000 / month</div>
   <div data-v-f986fcf1="" class="v-card-text">
-    <div data-v-f986fcf1="" class="mt-3 two-lines">This is a plan</div>
+    <div data-v-f986fcf1="" class="mt-3 two-lines" style="height: 4.5em;">This is a plan</div>
     <div data-v-f986fcf1="" class="v-list v-theme--light v-list--density-compact v-list--one-line" tabindex="0" role="listbox">
       <hr data-v-f986fcf1="" class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator">
       <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text mr-2" icon="">
@@ -45,26 +45,11 @@ exports[`ExplorerPlanCard.vue > Should display card with trial button 1`] = `
       </div>
       <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text mr-2" icon="">
         <!----><span class="v-list-item__underlay"></span>
-        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success font-weight-bold" aria-hidden="true"></i>
-          <div class="v-list-item__spacer"></div>
-        </div>
-        <div class="v-list-item__content" data-no-activator="">
-          <div class="v-list-item-title">7 days Data Retention <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-3"></i>
-            <!--teleport start-->
-            <!--teleport end-->
-          </div>
-          <!---->
-          <!---->
-        </div>
-        <!---->
-      </div>
-      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text mr-2" icon="">
-        <!----><span class="v-list-item__underlay"></span>
         <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success" aria-hidden="true"></i>
           <div class="v-list-item__spacer"></div>
         </div>
         <div class="v-list-item__content" data-no-activator="">
-          <div class="v-list-item-title"> Custom Domains <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-5"></i>
+          <div class="v-list-item-title"> Custom Domains <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-3"></i>
             <!--teleport start-->
             <!--teleport end-->
           </div>
@@ -79,7 +64,7 @@ exports[`ExplorerPlanCard.vue > Should display card with trial button 1`] = `
           <div class="v-list-item__spacer"></div>
         </div>
         <div class="v-list-item__content" data-no-activator="">
-          <div class="v-list-item-title"> Native Token Symbol <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-7"></i>
+          <div class="v-list-item-title"> Native Token Symbol <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-5"></i>
             <!--teleport start-->
             <!--teleport end-->
           </div>
@@ -94,7 +79,7 @@ exports[`ExplorerPlanCard.vue > Should display card with trial button 1`] = `
           <div class="v-list-item__spacer"></div>
         </div>
         <div class="v-list-item__content" data-no-activator="">
-          <div class="v-list-item-title"> Total Supply <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-9"></i>
+          <div class="v-list-item-title"> Total Supply <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-7"></i>
             <!--teleport start-->
             <!--teleport end-->
           </div>
@@ -109,7 +94,7 @@ exports[`ExplorerPlanCard.vue > Should display card with trial button 1`] = `
           <div class="v-list-item__spacer"></div>
         </div>
         <div class="v-list-item__content" data-no-activator="">
-          <div class="v-list-item-title"> Status Page <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-11"></i>
+          <div class="v-list-item-title"> Status Page <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-9"></i>
             <!--teleport start-->
             <!--teleport end-->
           </div>
@@ -124,7 +109,7 @@ exports[`ExplorerPlanCard.vue > Should display card with trial button 1`] = `
           <div class="v-list-item__spacer"></div>
         </div>
         <div class="v-list-item__content" data-no-activator="">
-          <div class="v-list-item-title"> Whitelabeling <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-13"></i>
+          <div class="v-list-item-title"> Whitelabeling <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-11"></i>
             <!--teleport start-->
             <!--teleport end-->
           </div>
@@ -139,7 +124,7 @@ exports[`ExplorerPlanCard.vue > Should display card with trial button 1`] = `
           <div class="v-list-item__spacer"></div>
         </div>
         <div class="v-list-item__content" data-no-activator="">
-          <div class="v-list-item-title"> Custom Fields <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-15"></i>
+          <div class="v-list-item-title"> Custom Fields <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-13"></i>
             <!--teleport start-->
             <!--teleport end-->
           </div>
@@ -189,7 +174,7 @@ exports[`ExplorerPlanCard.vue > Should display current plan card 1`] = `
   </div>
   <div data-v-f986fcf1="" class="v-card-subtitle pb-0">$1,000 / month</div>
   <div data-v-f986fcf1="" class="v-card-text">
-    <div data-v-f986fcf1="" class="mt-3 two-lines">This is a plan</div>
+    <div data-v-f986fcf1="" class="mt-3 two-lines" style="height: 4.5em;">This is a plan</div>
     <div data-v-f986fcf1="" class="v-list v-theme--light v-list--density-compact v-list--one-line" tabindex="0" role="listbox">
       <hr data-v-f986fcf1="" class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator">
       <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text mr-2" icon="">
@@ -209,26 +194,11 @@ exports[`ExplorerPlanCard.vue > Should display current plan card 1`] = `
       </div>
       <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text mr-2" icon="">
         <!----><span class="v-list-item__underlay"></span>
-        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success font-weight-bold" aria-hidden="true"></i>
-          <div class="v-list-item__spacer"></div>
-        </div>
-        <div class="v-list-item__content" data-no-activator="">
-          <div class="v-list-item-title">7 days Data Retention <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-4"></i>
-            <!--teleport start-->
-            <!--teleport end-->
-          </div>
-          <!---->
-          <!---->
-        </div>
-        <!---->
-      </div>
-      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text mr-2" icon="">
-        <!----><span class="v-list-item__underlay"></span>
         <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success" aria-hidden="true"></i>
           <div class="v-list-item__spacer"></div>
         </div>
         <div class="v-list-item__content" data-no-activator="">
-          <div class="v-list-item-title"> Custom Domains <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-6"></i>
+          <div class="v-list-item-title"> Custom Domains <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-4"></i>
             <!--teleport start-->
             <!--teleport end-->
           </div>
@@ -243,7 +213,7 @@ exports[`ExplorerPlanCard.vue > Should display current plan card 1`] = `
           <div class="v-list-item__spacer"></div>
         </div>
         <div class="v-list-item__content" data-no-activator="">
-          <div class="v-list-item-title"> Native Token Symbol <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-8"></i>
+          <div class="v-list-item-title"> Native Token Symbol <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-6"></i>
             <!--teleport start-->
             <!--teleport end-->
           </div>
@@ -258,7 +228,7 @@ exports[`ExplorerPlanCard.vue > Should display current plan card 1`] = `
           <div class="v-list-item__spacer"></div>
         </div>
         <div class="v-list-item__content" data-no-activator="">
-          <div class="v-list-item-title"> Total Supply <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-10"></i>
+          <div class="v-list-item-title"> Total Supply <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-8"></i>
             <!--teleport start-->
             <!--teleport end-->
           </div>
@@ -273,7 +243,7 @@ exports[`ExplorerPlanCard.vue > Should display current plan card 1`] = `
           <div class="v-list-item__spacer"></div>
         </div>
         <div class="v-list-item__content" data-no-activator="">
-          <div class="v-list-item-title"> Status Page <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-12"></i>
+          <div class="v-list-item-title"> Status Page <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-10"></i>
             <!--teleport start-->
             <!--teleport end-->
           </div>
@@ -288,7 +258,7 @@ exports[`ExplorerPlanCard.vue > Should display current plan card 1`] = `
           <div class="v-list-item__spacer"></div>
         </div>
         <div class="v-list-item__content" data-no-activator="">
-          <div class="v-list-item-title"> Whitelabeling <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-14"></i>
+          <div class="v-list-item-title"> Whitelabeling <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-12"></i>
             <!--teleport start-->
             <!--teleport end-->
           </div>
@@ -303,7 +273,7 @@ exports[`ExplorerPlanCard.vue > Should display current plan card 1`] = `
           <div class="v-list-item__spacer"></div>
         </div>
         <div class="v-list-item__content" data-no-activator="">
-          <div class="v-list-item-title"> Custom Fields <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-16"></i>
+          <div class="v-list-item-title"> Custom Fields <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-14"></i>
             <!--teleport start-->
             <!--teleport end-->
           </div>
@@ -349,7 +319,7 @@ exports[`ExplorerPlanCard.vue > Should display disabled plan card 1`] = `
   </div>
   <div data-v-f986fcf1="" class="v-card-subtitle pb-0">$1,000 / month</div>
   <div data-v-f986fcf1="" class="v-card-text">
-    <div data-v-f986fcf1="" class="mt-3 two-lines">This is a plan</div>
+    <div data-v-f986fcf1="" class="mt-3 two-lines" style="height: 4.5em;">This is a plan</div>
     <div data-v-f986fcf1="" class="v-list v-theme--light v-list--density-compact v-list--one-line" tabindex="0" role="listbox">
       <hr data-v-f986fcf1="" class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator">
       <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text mr-2" icon="">
@@ -369,26 +339,11 @@ exports[`ExplorerPlanCard.vue > Should display disabled plan card 1`] = `
       </div>
       <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text mr-2" icon="">
         <!----><span class="v-list-item__underlay"></span>
-        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success font-weight-bold" aria-hidden="true"></i>
-          <div class="v-list-item__spacer"></div>
-        </div>
-        <div class="v-list-item__content" data-no-activator="">
-          <div class="v-list-item-title">7 days Data Retention <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-3"></i>
-            <!--teleport start-->
-            <!--teleport end-->
-          </div>
-          <!---->
-          <!---->
-        </div>
-        <!---->
-      </div>
-      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text mr-2" icon="">
-        <!----><span class="v-list-item__underlay"></span>
         <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success" aria-hidden="true"></i>
           <div class="v-list-item__spacer"></div>
         </div>
         <div class="v-list-item__content" data-no-activator="">
-          <div class="v-list-item-title"> Custom Domains <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-5"></i>
+          <div class="v-list-item-title"> Custom Domains <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-3"></i>
             <!--teleport start-->
             <!--teleport end-->
           </div>
@@ -403,7 +358,7 @@ exports[`ExplorerPlanCard.vue > Should display disabled plan card 1`] = `
           <div class="v-list-item__spacer"></div>
         </div>
         <div class="v-list-item__content" data-no-activator="">
-          <div class="v-list-item-title"> Native Token Symbol <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-7"></i>
+          <div class="v-list-item-title"> Native Token Symbol <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-5"></i>
             <!--teleport start-->
             <!--teleport end-->
           </div>
@@ -418,7 +373,7 @@ exports[`ExplorerPlanCard.vue > Should display disabled plan card 1`] = `
           <div class="v-list-item__spacer"></div>
         </div>
         <div class="v-list-item__content" data-no-activator="">
-          <div class="v-list-item-title"> Total Supply <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-9"></i>
+          <div class="v-list-item-title"> Total Supply <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-7"></i>
             <!--teleport start-->
             <!--teleport end-->
           </div>
@@ -433,7 +388,7 @@ exports[`ExplorerPlanCard.vue > Should display disabled plan card 1`] = `
           <div class="v-list-item__spacer"></div>
         </div>
         <div class="v-list-item__content" data-no-activator="">
-          <div class="v-list-item-title"> Status Page <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-11"></i>
+          <div class="v-list-item-title"> Status Page <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-9"></i>
             <!--teleport start-->
             <!--teleport end-->
           </div>
@@ -448,7 +403,7 @@ exports[`ExplorerPlanCard.vue > Should display disabled plan card 1`] = `
           <div class="v-list-item__spacer"></div>
         </div>
         <div class="v-list-item__content" data-no-activator="">
-          <div class="v-list-item-title"> Whitelabeling <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-13"></i>
+          <div class="v-list-item-title"> Whitelabeling <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-11"></i>
             <!--teleport start-->
             <!--teleport end-->
           </div>
@@ -463,7 +418,7 @@ exports[`ExplorerPlanCard.vue > Should display disabled plan card 1`] = `
           <div class="v-list-item__spacer"></div>
         </div>
         <div class="v-list-item__content" data-no-activator="">
-          <div class="v-list-item-title"> Custom Fields <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-15"></i>
+          <div class="v-list-item-title"> Custom Fields <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-13"></i>
             <!--teleport start-->
             <!--teleport end-->
           </div>
@@ -509,7 +464,7 @@ exports[`ExplorerPlanCard.vue > Should display loading plan card 1`] = `
   </div>
   <div data-v-f986fcf1="" class="v-card-subtitle pb-0">$1,000 / month</div>
   <div data-v-f986fcf1="" class="v-card-text">
-    <div data-v-f986fcf1="" class="mt-3 two-lines">This is a plan</div>
+    <div data-v-f986fcf1="" class="mt-3 two-lines" style="height: 4.5em;">This is a plan</div>
     <div data-v-f986fcf1="" class="v-list v-theme--light v-list--density-compact v-list--one-line" tabindex="0" role="listbox">
       <hr data-v-f986fcf1="" class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator">
       <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text mr-2" icon="">
@@ -529,26 +484,11 @@ exports[`ExplorerPlanCard.vue > Should display loading plan card 1`] = `
       </div>
       <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text mr-2" icon="">
         <!----><span class="v-list-item__underlay"></span>
-        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success font-weight-bold" aria-hidden="true"></i>
-          <div class="v-list-item__spacer"></div>
-        </div>
-        <div class="v-list-item__content" data-no-activator="">
-          <div class="v-list-item-title">7 days Data Retention <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-3"></i>
-            <!--teleport start-->
-            <!--teleport end-->
-          </div>
-          <!---->
-          <!---->
-        </div>
-        <!---->
-      </div>
-      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text mr-2" icon="">
-        <!----><span class="v-list-item__underlay"></span>
         <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success" aria-hidden="true"></i>
           <div class="v-list-item__spacer"></div>
         </div>
         <div class="v-list-item__content" data-no-activator="">
-          <div class="v-list-item-title"> Custom Domains <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-5"></i>
+          <div class="v-list-item-title"> Custom Domains <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-3"></i>
             <!--teleport start-->
             <!--teleport end-->
           </div>
@@ -563,7 +503,7 @@ exports[`ExplorerPlanCard.vue > Should display loading plan card 1`] = `
           <div class="v-list-item__spacer"></div>
         </div>
         <div class="v-list-item__content" data-no-activator="">
-          <div class="v-list-item-title"> Native Token Symbol <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-7"></i>
+          <div class="v-list-item-title"> Native Token Symbol <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-5"></i>
             <!--teleport start-->
             <!--teleport end-->
           </div>
@@ -578,7 +518,7 @@ exports[`ExplorerPlanCard.vue > Should display loading plan card 1`] = `
           <div class="v-list-item__spacer"></div>
         </div>
         <div class="v-list-item__content" data-no-activator="">
-          <div class="v-list-item-title"> Total Supply <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-9"></i>
+          <div class="v-list-item-title"> Total Supply <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-7"></i>
             <!--teleport start-->
             <!--teleport end-->
           </div>
@@ -593,7 +533,7 @@ exports[`ExplorerPlanCard.vue > Should display loading plan card 1`] = `
           <div class="v-list-item__spacer"></div>
         </div>
         <div class="v-list-item__content" data-no-activator="">
-          <div class="v-list-item-title"> Status Page <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-11"></i>
+          <div class="v-list-item-title"> Status Page <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-9"></i>
             <!--teleport start-->
             <!--teleport end-->
           </div>
@@ -608,7 +548,7 @@ exports[`ExplorerPlanCard.vue > Should display loading plan card 1`] = `
           <div class="v-list-item__spacer"></div>
         </div>
         <div class="v-list-item__content" data-no-activator="">
-          <div class="v-list-item-title"> Whitelabeling <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-13"></i>
+          <div class="v-list-item-title"> Whitelabeling <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-11"></i>
             <!--teleport start-->
             <!--teleport end-->
           </div>
@@ -623,7 +563,7 @@ exports[`ExplorerPlanCard.vue > Should display loading plan card 1`] = `
           <div class="v-list-item__spacer"></div>
         </div>
         <div class="v-list-item__content" data-no-activator="">
-          <div class="v-list-item-title"> Custom Fields <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-15"></i>
+          <div class="v-list-item-title"> Custom Fields <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-13"></i>
             <!--teleport start-->
             <!--teleport end-->
           </div>
@@ -672,7 +612,7 @@ exports[`ExplorerPlanCard.vue > Should display pending cancelation plan card 1`]
   </div>
   <div data-v-f986fcf1="" class="v-card-subtitle pb-0">$1,000 / month</div>
   <div data-v-f986fcf1="" class="v-card-text">
-    <div data-v-f986fcf1="" class="mt-3 two-lines">This is a plan</div>
+    <div data-v-f986fcf1="" class="mt-3 two-lines" style="height: 4.5em;">This is a plan</div>
     <div data-v-f986fcf1="" class="v-list v-theme--light v-list--density-compact v-list--one-line" tabindex="0" role="listbox">
       <hr data-v-f986fcf1="" class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator">
       <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text mr-2" icon="">
@@ -692,26 +632,11 @@ exports[`ExplorerPlanCard.vue > Should display pending cancelation plan card 1`]
       </div>
       <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text mr-2" icon="">
         <!----><span class="v-list-item__underlay"></span>
-        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success font-weight-bold" aria-hidden="true"></i>
-          <div class="v-list-item__spacer"></div>
-        </div>
-        <div class="v-list-item__content" data-no-activator="">
-          <div class="v-list-item-title">7 days Data Retention <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-4"></i>
-            <!--teleport start-->
-            <!--teleport end-->
-          </div>
-          <!---->
-          <!---->
-        </div>
-        <!---->
-      </div>
-      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text mr-2" icon="">
-        <!----><span class="v-list-item__underlay"></span>
         <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success" aria-hidden="true"></i>
           <div class="v-list-item__spacer"></div>
         </div>
         <div class="v-list-item__content" data-no-activator="">
-          <div class="v-list-item-title"> Custom Domains <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-6"></i>
+          <div class="v-list-item-title"> Custom Domains <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-4"></i>
             <!--teleport start-->
             <!--teleport end-->
           </div>
@@ -726,7 +651,7 @@ exports[`ExplorerPlanCard.vue > Should display pending cancelation plan card 1`]
           <div class="v-list-item__spacer"></div>
         </div>
         <div class="v-list-item__content" data-no-activator="">
-          <div class="v-list-item-title"> Native Token Symbol <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-8"></i>
+          <div class="v-list-item-title"> Native Token Symbol <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-6"></i>
             <!--teleport start-->
             <!--teleport end-->
           </div>
@@ -741,7 +666,7 @@ exports[`ExplorerPlanCard.vue > Should display pending cancelation plan card 1`]
           <div class="v-list-item__spacer"></div>
         </div>
         <div class="v-list-item__content" data-no-activator="">
-          <div class="v-list-item-title"> Total Supply <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-10"></i>
+          <div class="v-list-item-title"> Total Supply <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-8"></i>
             <!--teleport start-->
             <!--teleport end-->
           </div>
@@ -756,7 +681,7 @@ exports[`ExplorerPlanCard.vue > Should display pending cancelation plan card 1`]
           <div class="v-list-item__spacer"></div>
         </div>
         <div class="v-list-item__content" data-no-activator="">
-          <div class="v-list-item-title"> Status Page <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-12"></i>
+          <div class="v-list-item-title"> Status Page <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-10"></i>
             <!--teleport start-->
             <!--teleport end-->
           </div>
@@ -771,7 +696,7 @@ exports[`ExplorerPlanCard.vue > Should display pending cancelation plan card 1`]
           <div class="v-list-item__spacer"></div>
         </div>
         <div class="v-list-item__content" data-no-activator="">
-          <div class="v-list-item-title"> Whitelabeling <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-14"></i>
+          <div class="v-list-item-title"> Whitelabeling <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-12"></i>
             <!--teleport start-->
             <!--teleport end-->
           </div>
@@ -786,7 +711,7 @@ exports[`ExplorerPlanCard.vue > Should display pending cancelation plan card 1`]
           <div class="v-list-item__spacer"></div>
         </div>
         <div class="v-list-item__content" data-no-activator="">
-          <div class="v-list-item-title"> Custom Fields <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-16"></i>
+          <div class="v-list-item-title"> Custom Fields <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-14"></i>
             <!--teleport start-->
             <!--teleport end-->
           </div>
@@ -832,7 +757,7 @@ exports[`ExplorerPlanCard.vue > Should display regular plan card 1`] = `
   </div>
   <div data-v-f986fcf1="" class="v-card-subtitle pb-0">$1,000 / month</div>
   <div data-v-f986fcf1="" class="v-card-text">
-    <div data-v-f986fcf1="" class="mt-3 two-lines">This is a plan</div>
+    <div data-v-f986fcf1="" class="mt-3 two-lines" style="height: 4.5em;">This is a plan</div>
     <div data-v-f986fcf1="" class="v-list v-theme--light v-list--density-compact v-list--one-line" tabindex="0" role="listbox">
       <hr data-v-f986fcf1="" class="v-divider v-theme--light my-2" aria-orientation="horizontal" role="separator">
       <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text mr-2" icon="">
@@ -852,26 +777,11 @@ exports[`ExplorerPlanCard.vue > Should display regular plan card 1`] = `
       </div>
       <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text mr-2" icon="">
         <!----><span class="v-list-item__underlay"></span>
-        <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success font-weight-bold" aria-hidden="true"></i>
-          <div class="v-list-item__spacer"></div>
-        </div>
-        <div class="v-list-item__content" data-no-activator="">
-          <div class="v-list-item-title">7 days Data Retention <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-3"></i>
-            <!--teleport start-->
-            <!--teleport end-->
-          </div>
-          <!---->
-          <!---->
-        </div>
-        <!---->
-      </div>
-      <div data-v-f986fcf1="" class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text mr-2" icon="">
-        <!----><span class="v-list-item__underlay"></span>
         <div class="v-list-item__prepend"><i data-v-f986fcf1="" class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success" aria-hidden="true"></i>
           <div class="v-list-item__spacer"></div>
         </div>
         <div class="v-list-item__content" data-no-activator="">
-          <div class="v-list-item-title"> Custom Domains <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-5"></i>
+          <div class="v-list-item-title"> Custom Domains <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-3"></i>
             <!--teleport start-->
             <!--teleport end-->
           </div>
@@ -886,7 +796,7 @@ exports[`ExplorerPlanCard.vue > Should display regular plan card 1`] = `
           <div class="v-list-item__spacer"></div>
         </div>
         <div class="v-list-item__content" data-no-activator="">
-          <div class="v-list-item-title"> Native Token Symbol <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-7"></i>
+          <div class="v-list-item-title"> Native Token Symbol <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-5"></i>
             <!--teleport start-->
             <!--teleport end-->
           </div>
@@ -901,7 +811,7 @@ exports[`ExplorerPlanCard.vue > Should display regular plan card 1`] = `
           <div class="v-list-item__spacer"></div>
         </div>
         <div class="v-list-item__content" data-no-activator="">
-          <div class="v-list-item-title"> Total Supply <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-9"></i>
+          <div class="v-list-item-title"> Total Supply <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-7"></i>
             <!--teleport start-->
             <!--teleport end-->
           </div>
@@ -916,7 +826,7 @@ exports[`ExplorerPlanCard.vue > Should display regular plan card 1`] = `
           <div class="v-list-item__spacer"></div>
         </div>
         <div class="v-list-item__content" data-no-activator="">
-          <div class="v-list-item-title"> Status Page <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-11"></i>
+          <div class="v-list-item-title"> Status Page <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-9"></i>
             <!--teleport start-->
             <!--teleport end-->
           </div>
@@ -931,7 +841,7 @@ exports[`ExplorerPlanCard.vue > Should display regular plan card 1`] = `
           <div class="v-list-item__spacer"></div>
         </div>
         <div class="v-list-item__content" data-no-activator="">
-          <div class="v-list-item-title"> Whitelabeling <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-13"></i>
+          <div class="v-list-item-title"> Whitelabeling <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-11"></i>
             <!--teleport start-->
             <!--teleport end-->
           </div>
@@ -946,7 +856,7 @@ exports[`ExplorerPlanCard.vue > Should display regular plan card 1`] = `
           <div class="v-list-item__spacer"></div>
         </div>
         <div class="v-list-item__content" data-no-activator="">
-          <div class="v-list-item-title"> Custom Fields <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-15"></i>
+          <div class="v-list-item-title"> Custom Fields <i data-v-f986fcf1="" class="mdi-help-circle mdi v-icon notranslate v-theme--light v-icon--size-small ml-1" aria-hidden="true" aria-describedby="v-tooltip-13"></i>
             <!--teleport start-->
             <!--teleport end-->
           </div>

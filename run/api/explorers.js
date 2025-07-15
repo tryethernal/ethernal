@@ -12,6 +12,7 @@ const { withTimeout, validateBNString, sanitize } = require('../lib/utils');
 const { bulkEnqueue } = require('../lib/queue');
 const PM2 = require('../lib/pm2');
 const db = require('../lib/firebase');
+const { isChainAllowed } = require('../lib/chains');
 const authMiddleware = require('../middlewares/auth');
 const stripeMiddleware = require('../middlewares/stripe');
 const secretMiddleware = require('../middlewares/secret');
@@ -350,19 +351,27 @@ router.put('/:id/subscription', [authMiddleware, stripeMiddleware], async (req, 
         let subscription;
         if (explorer.stripeSubscription.stripeId) {
             subscription = await stripe.subscriptions.retrieve(explorer.stripeSubscription.stripeId, { expand: ['customer']});
-            await stripe.subscriptions.update(subscription.id, {
-                cancel_at_period_end: false,
-                proration_behavior: 'always_invoice',
-                items: [{
-                    id: subscription.items.data[0].id,
-                    price: stripePlan.stripePriceId
-                }]
-            });
+            if (stripePlan.price == 0) {
+                await stripe.subscriptions.cancel(subscription.id, {
+                    prorate: true
+                });
+                await db.deleteExplorerSubscription(data.user.id, explorer.id);
+                await db.createExplorerSubscription(data.user.id, explorer.id, stripePlan.id);
+            }
+            else
+                await stripe.subscriptions.update(subscription.id, {
+                    cancel_at_period_end: false,
+                    proration_behavior: 'always_invoice',
+                    items: [{
+                        id: subscription.items.data[0].id,
+                        price: stripePlan.stripePriceId
+                    }]
+                });
         }
-
+ 
         if (explorer.stripeSubscription.isPendingCancelation)
             await db.revertExplorerSubscriptionCancelation(data.user.id, explorer.id);
-        else
+        else if (stripePlan.price > 0)
             await db.updateExplorerSubscription(data.user.id, explorer.id, stripePlan.id, subscription);
 
         res.sendStatus(200);
@@ -390,7 +399,7 @@ router.post('/:id/subscription', [authMiddleware, stripeMiddleware], async (req,
         if (!stripePlan)
             return managedError(new Error(`Can't find plan.`), req, res);
 
-        if (!stripePlan.capabilities.skipBilling)
+        if (!stripePlan.capabilities.skipBilling && stripePlan.price > 0)
             return managedError(new Error(`This plan cannot be used via the API at the moment. Start the subscription using the dashboard, or reach out to contact@tryethernal.com.`), req, res);
 
         await db.createExplorerSubscription(data.user.id, explorer.id, stripePlan.id);
@@ -415,7 +424,10 @@ router.delete('/:id/subscription', [authMiddleware, stripeMiddleware], async (re
             await stripe.subscriptions.update(subscription.id, {
                 cancel_at_period_end: true
             });
-            await db.cancelExplorerSubscription(data.user.id, explorer.id);
+            if (explorer.stripeSubscription.stripePlan.price == 0)
+                await db.deleteExplorerSubscription(data.user.id, explorer.id);
+            else
+                await db.cancelExplorerSubscription(data.user.id, explorer.id);
         }
         else
             await db.deleteExplorerSubscription(data.user.id, explorer.id);
@@ -579,15 +591,19 @@ router.post('/:id/settings', authMiddleware, async (req, res, next) => {
 
     try {
         const explorer = await db.getExplorerById(data.user.id, req.params.id);
-        if (!explorer || !explorer.workspace)
+        if (!explorer)
             return managedError(new Error('Could not find explorer.'), req, res);
 
-        if (data.workspace && data.workspace != explorer.workspace.name) {
-            const workspace = await db.getWorkspaceByName(data.uid, data.workspace);
-            if (!workspace)
-                return managedError(new Error('Invalid workspace.'), req, res);
-            else
-                await db.updateExplorerWorkspace(explorer.id, workspace.id);
+        if (data.rpcServer && data.rpcServer != explorer.rpcServer) {
+            let networkId;
+            const provider = new ProviderConnector(data.rpcServer);
+            try {
+                networkId = await withTimeout(provider.fetchNetworkId());
+                if (!networkId)
+                    throw 'Error';
+            } catch(error) {
+                return managedError(new Error(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`), req, res);
+            }
         }
 
         try {
@@ -605,26 +621,16 @@ router.post('/:id/settings', authMiddleware, async (req, res, next) => {
 router.post('/', authMiddleware, async (req, res, next) => {
     const data = req.body.data;
 
+    const backendRpcServer = data.backendRpcServer || data.rpcServer;
+
     try {
-        if (!data.workspaceId && !(data.rpcServer && data.name))
+        if (!backendRpcServer || !data.name)
             return managedError(new Error('Missing parameters.'), req, res);
 
         const user = await db.getUser(data.uid, ['stripeCustomerId', 'canUseDemoPlan']);
 
-        let rpcServer;
-        if (data.workspaceId) {
-            const workspace = user.workspaces.find(w => w.id == data.workspaceId);
-            if (!workspace)
-                return managedError(new Error('Could not find workspace'), req, res);
-            if (workspace.explorer)
-                return managedError(new Error('This workspace already has an explorer.'), req, res);
-            rpcServer = workspace.rpcServer;
-        }
-        else
-            rpcServer = data.rpcServer;
-
         let networkId;
-        const provider = new ProviderConnector(rpcServer);
+        const provider = new ProviderConnector(backendRpcServer);
         try {
             networkId = await withTimeout(provider.fetchNetworkId());
             if (!networkId)
@@ -633,15 +639,18 @@ router.post('/', authMiddleware, async (req, res, next) => {
             return managedError(new Error(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`), req, res);
         }
 
-        let options = data.workspaceId ?
-            { workspaceId: data.workspaceId } :
-            {
-                name: data.name,
-                rpcServer: data.rpcServer,
-                chain: data.chain,
-                networkId,
-                tracing: data.tracing
-            };
+        const allowed = await isChainAllowed(networkId);
+        if (!allowed)
+            return managedError(new Error('You can\'t create an explorer with this network id (' + networkId + '). If you\'d still like an explorer for this chain. Please reach out to contact@tryethernal.com, and we\'ll set one up for you.'), req, res);
+
+        let options = {
+            name: data.name,
+            backendRpcServer,
+            chain: data.chain,
+            networkId,
+            tracing: data.tracing,
+            frontendRpcServer: data.frontendRpcServer
+        };
 
         if (data.faucet && data.faucet.amount && data.faucet.interval)
             options['faucet'] = { amount: data.faucet.amount, interval: data.faucet.interval };
@@ -709,11 +718,17 @@ router.post('/', authMiddleware, async (req, res, next) => {
             }
         }
 
-        const explorer = await db.createExplorerFromOptions(user.id, sanitize(options));
+        let explorer;
+        try {
+            explorer = await db.createExplorerFromOptions(user.id, sanitize(options));
+        } catch(error) {
+            return managedError(new Error(error), req, res);
+        }
+
         if (!explorer)
             return managedError(new Error('Could not create explorer.'), req, res);
 
-        if (!usingDefaultPlan && stripePlan && req.query.startSubscription && !options['subscription']) {
+        if (!usingDefaultPlan && stripePlan && req.query.startSubscription && !options['subscription'] && stripePlan.stripePriceId) {
             let stripeParams = {
                 customer: user.stripeCustomerId,
                 items: [

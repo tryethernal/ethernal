@@ -1,0 +1,38 @@
+{
+    storage file_system {
+        root /data
+    }
+
+    on_demand_tls {
+        ask http://ethernal.internal:8080/api/caddy/validDomain
+    }
+}
+
+:443 {
+    tls {
+        on_demand
+    }
+
+    handle /api/* {
+        reverse_proxy ethernal.internal:8080
+    }
+
+    handle_path /bull* {
+        reverse_proxy ethernal.internal:8080
+    }
+
+    handle /app* {
+        reverse_proxy ethernal-soketi:6001 {
+            header_up Upgrade "websocket"
+            header_up Connection "Upgrade"
+        }
+    }
+
+    handle {
+        reverse_proxy tryethernal.netlify.app {
+            header_up Host tryethernal.netlify.app
+        }
+    }
+
+    encode gzip
+}

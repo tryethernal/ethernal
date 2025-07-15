@@ -30,7 +30,7 @@
                     </v-card-text>
                 </v-card>
                 <template v-else>
-                    <v-alert v-if="deletedExplorer" density="compact" text type="success">Explorer "<b>{{ deletedExplorer }}</b>" has been successfully deleted.</v-alert>
+                    <v-alert class="mb-4" v-if="deletedExplorer" density="compact" text type="success">Explorer "<b>{{ deletedExplorer }}</b>" has been successfully deleted.</v-alert>
                     <v-data-table-server
                         :loading="loading"
                         :items="explorers"
@@ -79,7 +79,7 @@
                                 </v-tooltip>
                             </template>
                             <template v-else>
-                                <a :href="`http://${ item.slug }.${documentHost}`" target="_blank">{{ item.slug }}.{{ documentHost }}</a>
+                                <a :href="`http://${ item.slug }.${subdomainRoot}`" target="_blank">{{ item.slug }}.{{ subdomainRoot }}</a>
                             </template>
                         </template>
                         <template v-slot:item.rpcServer="{ item }">
@@ -99,6 +99,8 @@
 import { ref, reactive, computed, onMounted, inject } from 'vue';
 import { useRoute } from 'vue-router';
 
+import { useEnvStore } from '@/stores/env';
+
 import CreateExplorerModal from './CreateExplorerModal.vue';
 import { shortRpcUrl } from '../lib/utils';
 
@@ -114,9 +116,10 @@ const createExplorerModalRef = ref(null);
 // Router
 const route = useRoute();
 const $server = inject('$server');
+const envStore = useEnvStore();
 
-// Host for explorer links
-const documentHost = typeof window !== 'undefined' ? window.location.host : '';
+// SaaS app is setup differently than self-hosted, so we have to rely on this workaround
+const subdomainRoot = window.location.hostname == 'app.tryethernal.com' ? 'tryethernal.com' : envStore.mainDomain;
 
 // Computed
 const deletedExplorer = computed(() => {
