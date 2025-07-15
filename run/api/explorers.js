@@ -621,7 +621,7 @@ router.post('/:id/settings', authMiddleware, async (req, res, next) => {
 router.post('/', authMiddleware, async (req, res, next) => {
     const data = req.body.data;
 
-    const backendRpcServer = data.rpcServer || data.backendRpcServer;
+    const backendRpcServer = data.backendRpcServer || data.rpcServer;
 
     try {
         if (!backendRpcServer || !data.name)
@@ -648,7 +648,8 @@ router.post('/', authMiddleware, async (req, res, next) => {
             backendRpcServer,
             chain: data.chain,
             networkId,
-            tracing: data.tracing
+            tracing: data.tracing,
+            frontendRpcServer: data.frontendRpcServer
         };
 
         if (data.faucet && data.faucet.amount && data.faucet.interval)
@@ -727,7 +728,7 @@ router.post('/', authMiddleware, async (req, res, next) => {
         if (!explorer)
             return managedError(new Error('Could not create explorer.'), req, res);
 
-        if (!usingDefaultPlan && stripePlan && req.query.startSubscription && !options['subscription']) {
+        if (!usingDefaultPlan && stripePlan && req.query.startSubscription && !options['subscription'] && stripePlan.stripePriceId) {
             let stripeParams = {
                 customer: user.stripeCustomerId,
                 items: [
