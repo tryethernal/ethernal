@@ -36,7 +36,7 @@ exports[`ERC721Token.vue > Should display a message when the token is not found 
 
 exports[`ERC721Token.vue > Should load & display an erc721 token 1`] = `
 "<div data-v-d69d0b79="" class="v-container v-container--fluid v-locale--is-ltr">
-  <e-r-c721-token-transfer-modal-stub data-v-d69d0b79="" address="0x123" token="[object Object]"></e-r-c721-token-transfer-modal-stub>
+  <e-r-c721-token-transfer-modal-stub data-v-d69d0b79=""></e-r-c721-token-transfer-modal-stub>
   <div data-v-d69d0b79="" class="v-row">
     <!-- Token Image -->
     <div data-v-d69d0b79="" class="v-col-md-5 v-col-lg-4 v-col-12">

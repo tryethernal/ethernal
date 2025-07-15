@@ -466,7 +466,7 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async safeUpdateSettings(settings) {
-        const ALLOWED_SETTINGS = ['name', 'slug', 'token', 'totalSupply', 'l1Explorer'];
+        const ALLOWED_SETTINGS = ['name', 'slug', 'token', 'totalSupply', 'l1Explorer', 'rpcServer'];
 
         const filteredSettings = {};
         Object.keys(settings).forEach(key => {
