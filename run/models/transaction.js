@@ -82,8 +82,8 @@ module.exports = (sequelize, DataTypes) => {
      * @param {number} itemsPerPage - The number of items per page
      * @returns {Promise<Array>} - An array of token balance changes
      */
-    getTokenBalanceChanges(page = 1, itemsPerPage = 10) {
-        return sequelize.query(`
+    async getTokenBalanceChanges(page = 1, itemsPerPage = 10) {
+        const result = await sequelize.query(`
             SELECT
                 tbc.token,
                 tbc.address,
@@ -112,6 +112,30 @@ module.exports = (sequelize, DataTypes) => {
             type: sequelize.QueryTypes.SELECT,
             nest: true
         });
+
+        const processedTokenBalanceChanges = [];
+
+        for (const balanceChange of result) {
+            if (balanceChange.token === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') {
+                // Only inject custom contract object for native token
+                let tokenSymbol = 'ETH';
+                let tokenName = 'Ether';
+                let tokenDecimals = 18;
+                const explorer = await sequelize.models.Explorer.findOne({ where: { workspaceId: this.workspaceId } });
+                if (explorer) {
+                    tokenSymbol = explorer.token || tokenSymbol;
+                    tokenName = explorer.token || tokenName;
+                }
+                balanceChange.contract = {
+                    tokenSymbol,
+                    tokenDecimals,
+                    tokenName
+                };
+            }
+            processedTokenBalanceChanges.push(balanceChange);
+        }
+
+        return processedTokenBalanceChanges;
     }
 
     async safeDestroy(transaction) {
@@ -291,7 +315,7 @@ module.exports = (sequelize, DataTypes) => {
                     returning: true,
                     transaction
                 });
-                console.log('storedTokenTransfers', storedTokenTransfers);
+
                 for (let i = 0; i < storedTokenTransfers.length; i++)
                     trigger(`private-contractLog;workspace=${this.workspaceId};contract=${tokenTransfers[i].address}`, 'new', null);
 
@@ -361,17 +385,24 @@ module.exports = (sequelize, DataTypes) => {
         const tokenTransfers = result.rows.map(t => t.toJSON());
         const processedTokenTransfers = [];
 
-        // Inject custom contract object for native token
         for (const transfer of tokenTransfers) {
             if (transfer.token === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') {
+                // Only inject custom contract object for native token
+                let tokenSymbol = 'ETH';
+                let tokenName = 'Ether';
+                let tokenDecimals = 18;
                 const explorer = await sequelize.models.Explorer.findOne({ where: { workspaceId: this.workspaceId } });
+                if (explorer) {
+                    tokenSymbol = explorer.token || tokenSymbol;
+                    tokenName = explorer.token || tokenName;
+                }
                 transfer.contract = {
-                    tokenSymbol: explorer.token || 'ETH',
-                    tokenDecimals: 18,
-                    tokenName: explorer.token || 'Ether'
+                    tokenSymbol,
+                    tokenDecimals,
+                    tokenName
                 };
-                processedTokenTransfers.push(transfer);
             }
+            processedTokenTransfers.push(transfer);
         }
         return {
             items: processedTokenTransfers,
@@ -451,12 +482,67 @@ module.exports = (sequelize, DataTypes) => {
     safeCreateTransactionTrace(steps) {
         return sequelize.transaction(async transaction => {
 
+            // Find parent address for each step
+            const findParentAddress = (step, steps) => {
+                const candidates = steps.filter(
+                    s => s.depth === step.depth - 1
+                );
+                if (candidates.length === 0) return null
+
+                const parentStep = candidates.reduce((max, s) => (s.id > max.id ? s : max), candidates[0]);
+                return parentStep.address;
+            };
+
             const augmentedSteps = steps.map(step => ({
                 ...step,
                 workspaceId: this.workspaceId,
                 timestamp: this.timestamp,
-                transactionId: this.id
+                transactionId: this.id,
+                parentAddress: step.depth === 1 ? this.to : findParentAddress(step, steps)
             }));
+
+            const tokenTransfers = [];
+            for (const step of augmentedSteps) {
+                if (step.value > 0) {
+                    tokenTransfers.push(sanitize({
+                        transactionId: this.id,
+                        transactionLogId: null,
+                        workspaceId: this.workspaceId,
+                        src: step.parentAddress,
+                        dst: step.address,
+                        amount: step.value,
+                        token: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+                        tokenId: null,
+                        isReward: false
+                    }));
+                }
+            }
+
+            const createdTokenTransfers = await sequelize.models.TokenTransfer.bulkCreate(tokenTransfers, {
+                ignoreDuplicates: true,
+                transaction
+            });
+
+            const tokenTransferEvents = [];
+            for (const tokenTransfer of createdTokenTransfers) {
+                tokenTransferEvents.push(sanitize({
+                    workspaceId: this.workspaceId,
+                    tokenTransferId: tokenTransfer.id,
+                    blockNumber: this.blockNumber,
+                    timestamp: this.timestamp,
+                    amount: tokenTransfer.amount,
+                    token: tokenTransfer.token,
+                    tokenType: null,
+                    src: tokenTransfer.src,
+                    dst: tokenTransfer.dst,
+                    isReward: false
+                }));
+            }
+
+            await sequelize.models.TokenTransferEvent.bulkCreate(tokenTransferEvents, {
+                ignoreDuplicates: true,
+                transaction
+            });
 
             const contracts = steps
                 .filter(step => step.contractHashedBytecode)

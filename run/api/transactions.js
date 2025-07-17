@@ -248,7 +248,6 @@ router.get('/:hash/tokenTransfers', workspaceAuthMiddleware, async (req, res, ne
             return managedError(new Error('Missing parameter'), req, res);
 
         const result = await db.getTransactionTokenTransfers(data.workspace.id, req.params.hash, data.page, data.itemsPerPage, data.order, data.orderBy);
-        console.log('result', result.items);
 
         res.status(200).json(result);
     } catch(error) {

@@ -52,6 +52,7 @@ module.exports = async job => {
                 logger.error(error.message, { location: 'jobs.processTokenTransfer', error: error, data });
                 return error.message;
             }
+            else throw error;
         }
     }
 
@@ -69,6 +70,7 @@ module.exports = async job => {
                 logger.error(error.message, { location: 'jobs.processTokenTransfer', error: error, data });
                 return error.message;
             }
+            else throw error;
         }
     }
 
