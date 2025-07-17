@@ -180,7 +180,8 @@ module.exports = (sequelize, DataTypes) => {
                 t."blockNumber" AS "transaction.blockNumber",
                 t.timestamp AS "transaction.timestamp",
                 t."data" AS "transaction.data",
-                t."transactionIndex" AS "transaction.transactionIndex"
+                t."transactionIndex" AS "transaction.transactionIndex",
+                e.token AS "explorer.token"
             FROM token_transfer_events tte
             LEFT JOIN contracts c ON c."address" = tte.token AND c."workspaceId" = :workspaceId
             LEFT JOIN token_transfers tt ON tte."tokenTransferId" = tt.id 
@@ -209,11 +210,10 @@ module.exports = (sequelize, DataTypes) => {
                 itemCopy.transaction.methodDetails = getTransactionMethodDetails({ data: itemCopy.transaction.data }, itemCopy.contract.abi);
             if (itemCopy.token == '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
                 itemCopy.contract = {
-                    tokenSymbol: itemCopy.explorer && itemCopy.explorer.nativeToken || 'ETH',
-                    tokenName: itemCopy.explorer && itemCopy.explorer.nativeToken || 'Ether',
+                    tokenSymbol: itemCopy.explorer && itemCopy.explorer.token || 'ETH',
+                    tokenName: itemCopy.explorer && itemCopy.explorer.token || 'Ether',
                     tokenDecimals: 18,
                 };
-            console.log('itemCopy', itemCopy);
             return itemCopy;
         });
 

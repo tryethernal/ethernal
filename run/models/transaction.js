@@ -343,7 +343,7 @@ module.exports = (sequelize, DataTypes) => {
                         tokenTransferId: tokenTransfer.id,
                         blockNumber: receipt.blockNumber,
                         timestamp: this.timestamp,
-                        amount: toValidator.toString(),
+                        amount: tokenTransfer.amount,
                         token: tokenTransfer.token,
                         tokenType: contract ? contract.patterns[0] : null,
                         src: tokenTransfer.src,
@@ -532,7 +532,7 @@ module.exports = (sequelize, DataTypes) => {
                     timestamp: this.timestamp,
                     amount: tokenTransfer.amount,
                     token: tokenTransfer.token,
-                    tokenType: null,
+                    tokenType: null, // This is ok as we are only creating native token transfer events here
                     src: tokenTransfer.src,
                     dst: tokenTransfer.dst,
                     isReward: false
