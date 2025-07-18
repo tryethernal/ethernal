@@ -92,9 +92,15 @@ router.get('/sourceCode', async (req, res) => {
 
         const contractAddress = data.address.toLowerCase();
 
+        console.log(req.headers);
+
         let explorer;
         if (req.headers['apx-incoming-host']) {
-            explorer = await db.getPublicExplorerParamsByDomain(req.headers['apx-incoming-host'])
+            const incomingHostRaw = req.headers['apx-incoming-host'];
+            const incomingHost = Array.isArray(incomingHostRaw)
+                ? incomingHostRaw[0]
+                : incomingHostRaw;
+            explorer = await db.getPublicExplorerParamsByDomain(incomingHost)
         }
         else if (data['apikey']) {
             explorer = await db.getPublicExplorerParamsBySlug(data['apikey']);
