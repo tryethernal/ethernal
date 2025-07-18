@@ -96,6 +96,9 @@ router.get('/sourceCode', async (req, res) => {
         if (req.headers['apx-incoming-host']) {
             explorer = await db.getPublicExplorerParamsByDomain(req.headers['apx-incoming-host'])
         }
+        else if (req.headers['host']) {
+            explorer = await db.getPublicExplorerParamsByDomain(req.headers['host'])
+        }
         else if (data['apikey']) {
             explorer = await db.getPublicExplorerParamsBySlug(data['apikey']);
         }
