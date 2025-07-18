@@ -13,16 +13,47 @@
         on_demand
     }
 
-    log {
-        output stdout
-        format console
-    }
-
     header {
-        apx-incoming-host "{host}"
+        Apx-Incoming-Host "{host}"
     }
 
-    handle /api/* {
+    @checkVerifyStatus {
+        path /api
+        query module=contract
+        query action=checkverifystatus
+        query apikey=*
+    }
+    handle @checkVerifyStatus {
+        rewrite * /api/contracts/verificationStatus
+        reverse_proxy ethernal.internal:8080
+    }
+
+    @getSourceCode {
+        path /api
+        query module=contract
+        query action=getsourcecode
+        query apikey=*
+    }
+    handle @getSourceCode {
+        rewrite * /api/contracts/sourceCode
+        reverse_proxy ethernal.internal:8080
+    }
+
+    @getAbi {
+        path /api
+        query module=contract
+        query action=getabi
+        query apikey=*
+    }
+    handle @getAbi {
+        rewrite * /api/contracts/getabi
+        reverse_proxy ethernal.internal:8080
+    }
+
+    @fallbackApi {
+        path /api*
+    }
+    handle @fallbackApi {
         reverse_proxy ethernal.internal:8080
     }
 

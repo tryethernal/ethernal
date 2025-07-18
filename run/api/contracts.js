@@ -166,6 +166,8 @@ router.post('/verify', async (req, res) => {
         let explorer;
 
         console.log(req.headers);
+        console.log('host', req.headers['host']);
+        console.log('x-forwarded-host', req.headers['x-forwarded-host']);
 
         if (req.headers['apx-incoming-host']) {
             explorer = await db.getPublicExplorerParamsByDomain(req.headers['apx-incoming-host'])
@@ -173,7 +175,7 @@ router.post('/verify', async (req, res) => {
         else if (data['apikey']) {
             explorer = await db.getPublicExplorerParamsBySlug(data['apikey']);
         }
-        else if (req.headers['host']) {
+        else if (req.headers['x-forwarded-host']) {
             explorer = await db.getPublicExplorerParamsByDomain(req.headers['host'])
         }
 
