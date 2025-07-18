@@ -176,7 +176,9 @@ router.post('/verify', async (req, res) => {
             explorer = await db.getPublicExplorerParamsBySlug(data['apikey']);
         }
         else if (req.headers['x-forwarded-host']) {
-            explorer = await db.getPublicExplorerParamsByDomain(req.headers['host'])
+            console.log('found host', req.headers['x-forwarded-host'])
+            explorer = await db.getPublicExplorerParamsByDomain(req.headers['x-forwarded-host'])
+            console.log('explorer', explorer);
         }
 
         if (!explorer)
