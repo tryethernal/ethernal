@@ -49,11 +49,12 @@ router.get('/getabi', async (req, res) => {
         if (req.headers['apx-incoming-host']) {
             explorer = await db.getPublicExplorerParamsByDomain(req.headers['apx-incoming-host'])
         }
-        else if (req.headers['ethernal-host'] && req.headers['ethernal-host'].endsWith(getAppDomain())) {
-            const host = req.headers['ethernal-host'].split(`.${getAppDomain()}`)[0];
-            explorer = await db.getPublicExplorerParamsBySlug(host);
+        if (!explorer && req.headers['x-forwarded-host']) {
+            console.log('found host', req.headers['x-forwarded-host'])
+            explorer = await db.getPublicExplorerParamsByDomain(req.headers['x-forwarded-host'])
+            console.log('explorer', explorer);
         }
-        else if (data['apikey']) {
+        if (!explorer && data['apikey']) {
             explorer = await db.getPublicExplorerParamsBySlug(data['apikey']);
         }
 
@@ -94,17 +95,15 @@ router.get('/sourceCode', async (req, res) => {
 
         let explorer;
         if (req.headers['apx-incoming-host']) {
-            const incomingHostRaw = req.headers['apx-incoming-host'];
-            const incomingHost = Array.isArray(incomingHostRaw)
-                ? incomingHostRaw[0]
-                : incomingHostRaw;
-            explorer = await db.getPublicExplorerParamsByDomain(incomingHost)
+            explorer = await db.getPublicExplorerParamsByDomain(req.headers['apx-incoming-host'])
         }
-        else if (data['apikey']) {
+        if (!explorer && req.headers['x-forwarded-host']) {
+            console.log('found host', req.headers['x-forwarded-host'])
+            explorer = await db.getPublicExplorerParamsByDomain(req.headers['x-forwarded-host'])
+            console.log('explorer', explorer);
+        }
+        if (!explorer && data['apikey']) {
             explorer = await db.getPublicExplorerParamsBySlug(data['apikey']);
-        }
-        else if (req.headers['host']) {
-            explorer = await db.getPublicExplorerParamsByDomain(req.headers['host'])
         }
 
         if (!explorer)
@@ -172,13 +171,13 @@ router.post('/verify', async (req, res) => {
         if (req.headers['apx-incoming-host']) {
             explorer = await db.getPublicExplorerParamsByDomain(req.headers['apx-incoming-host'])
         }
-        else if (data['apikey']) {
-            explorer = await db.getPublicExplorerParamsBySlug(data['apikey']);
-        }
-        else if (req.headers['x-forwarded-host']) {
+        if (!explorer && req.headers['x-forwarded-host']) {
             console.log('found host', req.headers['x-forwarded-host'])
             explorer = await db.getPublicExplorerParamsByDomain(req.headers['x-forwarded-host'])
             console.log('explorer', explorer);
+        }
+        if (!explorer && data['apikey']) {
+            explorer = await db.getPublicExplorerParamsBySlug(data['apikey']);
         }
 
         if (!explorer)
