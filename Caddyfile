@@ -13,6 +13,15 @@
         on_demand
     }
 
+    log {
+        output stdout
+        format console
+    }
+
+    header {
+        apx-incoming-host "{host}"
+    }
+
     handle /api/* {
         reverse_proxy ethernal.internal:8080
     }
