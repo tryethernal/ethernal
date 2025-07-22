@@ -1111,6 +1111,16 @@ describe(`POST ${BASE_URL}/:id/settings`, () => {
             .expect(200)
             .then(() => done());
     });
+
+    it('Should update the rpc server', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, rpcServer: 'old.rpc' });
+        jest.spyOn(db, 'updateExplorerSettings').mockResolvedValueOnce();
+
+        request.post(`${BASE_URL}/:id/settings`)
+            .send({ data: { rpcServer: 'new.rpc' }})
+            .expect(200)
+            .then(() => done());
+    });
 });
 
 describe(`POST ${BASE_URL}`, () => {
@@ -1145,7 +1155,7 @@ describe(`POST ${BASE_URL}`, () => {
                     { quantity: 2, proration_behavior: 'always_invoice' }
                 );
                 expect(db.createExplorerFromOptions).toHaveBeenCalledWith(1, {
-                    rpcServer: 'test.rpc',
+                    backendRpcServer: 'test.rpc',
                     name: 'explorer',
                     networkId: 1,
                     subscription: {
@@ -1177,7 +1187,7 @@ describe(`POST ${BASE_URL}`, () => {
             .expect(200)
             .then(({ body }) => {
                 expect(db.createExplorerFromOptions).toHaveBeenCalledWith(1, {
-                    rpcServer: 'test.rpc',
+                    backendRpcServer: 'test.rpc',
                     name: 'explorer',
                     networkId: 1,
                     subscription: {
@@ -1202,7 +1212,7 @@ describe(`POST ${BASE_URL}`, () => {
             .expect(200)
             .then(({ body }) => {
                 expect(db.createExplorerFromOptions).toHaveBeenCalledWith(1, {
-                    rpcServer: 'test.rpc',
+                    backendRpcServer: 'test.rpc',
                     name: 'explorer',
                     networkId: 1,
                     integrityCheckStartBlockNumber: 1,
@@ -1223,7 +1233,7 @@ describe(`POST ${BASE_URL}`, () => {
             .expect(200)
             .then(({ body }) => {
                 expect(db.createExplorerFromOptions).toHaveBeenCalledWith(1, {
-                    rpcServer: 'test.rpc',
+                    backendRpcServer: 'test.rpc',
                     name: 'explorer',
                     networkId: 1
                 });
@@ -1242,18 +1252,6 @@ describe(`POST ${BASE_URL}`, () => {
             .expect(200)
             .then(({ body }) => {
                 expect(body).toEqual({ id: 1 });
-                done();
-            });
-    });
-
-    it('Should fail if there is already an explorer for this workspace', (done) => {
-        jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, workspaces: [{ id: 1, explorer: {} }] });
-
-        request.post(BASE_URL)
-            .send({ data: { workspaceId: 1 }})
-            .expect(400)
-            .then(({ text }) => {
-                expect(text).toEqual('This workspace already has an explorer.');
                 done();
             });
     });
@@ -1294,18 +1292,6 @@ describe(`POST ${BASE_URL}`, () => {
             .expect(400)
             .then(({ text }) => {
                 expect(text).toEqual('Could not create explorer.');
-                done();
-            });
-    });
-
-    it('Should return an error if workspace id is invalid', (done) => {
-        jest.spyOn(db, 'getUser').mockResolvedValueOnce({ workspaces: [{ id:2 }]});
-
-        request.post(BASE_URL)
-            .send({ data: { workspaceId: 1 }})
-            .expect(400)
-            .then(({ text }) => {
-                expect(text).toEqual('Could not find workspace');
                 done();
             });
     });

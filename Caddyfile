@@ -1,0 +1,78 @@
+{
+    storage file_system {
+        root /data
+    }
+
+    on_demand_tls {
+        ask http://ethernal.internal:8080/api/caddy/validDomain
+    }
+}
+
+:443 {
+    tls {
+        on_demand
+    }
+
+    header {
+        Apx-Incoming-Host "{host}"
+    }
+
+    @checkVerifyStatus {
+        path /api
+        query module=contract
+        query action=checkverifystatus
+        query apikey=*
+    }
+    handle @checkVerifyStatus {
+        rewrite * /api/contracts/verificationStatus
+        reverse_proxy ethernal.internal:8080
+    }
+
+    @getSourceCode {
+        path /api
+        query module=contract
+        query action=getsourcecode
+        query apikey=*
+    }
+    handle @getSourceCode {
+        rewrite * /api/contracts/sourceCode
+        reverse_proxy ethernal.internal:8080
+    }
+
+    @getAbi {
+        path /api
+        query module=contract
+        query action=getabi
+        query apikey=*
+    }
+    handle @getAbi {
+        rewrite * /api/contracts/getabi
+        reverse_proxy ethernal.internal:8080
+    }
+
+    @fallbackApi {
+        path /api*
+    }
+    handle @fallbackApi {
+        reverse_proxy ethernal.internal:8080
+    }
+
+    handle_path /bull* {
+        reverse_proxy ethernal.internal:8080
+    }
+
+    handle /app* {
+        reverse_proxy ethernal-soketi:6001 {
+            header_up Upgrade "websocket"
+            header_up Connection "Upgrade"
+        }
+    }
+
+    handle {
+        reverse_proxy tryethernal.netlify.app {
+            header_up Host tryethernal.netlify.app
+        }
+    }
+
+    encode gzip
+}

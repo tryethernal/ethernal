@@ -22,6 +22,7 @@ const faucets = require('./faucets');
 const v2Dexes = require('./v2Dexes');
 const gas = require('./gas');
 const transactionTraceSteps = require('./transactionTraceSteps');
+const caddy = require('./caddy');
 router.use('/blocks', blocks);
 router.use('/contracts', contracts);
 router.use('/transactions', transactions);
@@ -43,6 +44,7 @@ router.use('/faucets', faucets);
 router.use('/v2_dexes', v2Dexes);
 router.use('/gas', gas);
 router.use('/transactionTraceSteps', transactionTraceSteps);
+router.use('/caddy', caddy);
 
 if (isDemoEnabled()) {
     const demo = require('./demo');
@@ -57,11 +59,9 @@ if (isStripeEnabled()) {
 if (isSelfHosted()) {
     const marketing = require('./marketing');
     const setup = require('./setup');
-    const caddy = require('./caddy');
 
     router.use('/setup', setup);
     router.use('/marketing', marketing);
-    router.use('/caddy', caddy);
 }
 
 module.exports = router;

@@ -170,8 +170,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     transactionId: DataTypes.INTEGER,
     transactionLogId: DataTypes.INTEGER,
-    workspaceId: DataTypes.INTEGER,
-    processed: DataTypes.BOOLEAN
+    workspaceId: DataTypes.INTEGER
   }, {
     hooks: {
         afterBulkCreate(tokenTransfers, options) {

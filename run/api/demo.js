@@ -180,7 +180,7 @@ router.post('/explorers', async (req, res, next) => {
 
         const options = {
             name, networkId,
-            rpcServer: data.rpcServer,
+            backendRpcServer: data.rpcServer,
             dataRetentionLimit: 1,
             token: data.nativeToken,
             isDemo: true,

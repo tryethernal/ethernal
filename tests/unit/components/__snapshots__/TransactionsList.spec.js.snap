@@ -235,6 +235,7 @@ exports[`TransactionsList.vue > Should display the list 1`] = `
           </td>
           <td class="v-data-table__td v-data-table-column--align-start">
             <!--v-if-->
+            <!--v-if-->
             <hash-link-stub data-v-40c8aafa="" type="address" hash="Ox1" fullhash="false" withname="true" notcopiable="false" withtokenname="true" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
           </td>
           <td class="v-data-table__td v-data-table-column--align-start">0 ETH</td>
@@ -269,6 +270,7 @@ exports[`TransactionsList.vue > Should display the list 1`] = `
             <hash-link-stub data-v-40c8aafa="" type="address" hash="0x0" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
           </td>
           <td class="v-data-table__td v-data-table-column--align-start">
+            <!--v-if-->
             <!--v-if-->
             <hash-link-stub data-v-40c8aafa="" type="address" hash="Ox1" fullhash="false" withname="true" notcopiable="false" withtokenname="true" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
           </td>
