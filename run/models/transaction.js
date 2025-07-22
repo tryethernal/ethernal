@@ -118,13 +118,11 @@ module.exports = (sequelize, DataTypes) => {
         for (const balanceChange of result) {
             if (balanceChange.token === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') {
                 // Only inject custom contract object for native token
-                let tokenSymbol = 'ETH';
-                let tokenName = 'Ether';
-                let tokenDecimals = 18;
                 const explorer = await sequelize.models.Explorer.findOne({ where: { workspaceId: this.workspaceId } });
                 if (explorer) {
-                    tokenSymbol = explorer.token || tokenSymbol;
-                    tokenName = explorer.token || tokenName;
+                    tokenSymbol = explorer.token || 'ETH';
+                    tokenName = explorer.token || 'Ether';
+                    tokenDecimals = 18;
                 }
                 balanceChange.contract = {
                     tokenSymbol,
@@ -294,18 +292,27 @@ module.exports = (sequelize, DataTypes) => {
                 isReward: true
             }));
 
-            if (this.value > 0) {
-                tokenTransfers.push(sanitize({
-                    transactionId: this.id,
-                    transactionLogId: null,
-                    workspaceId: this.workspaceId,
-                    src: this.from,
-                    dst: this.to,
-                    amount: this.value,
-                    token: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
-                    tokenId: null,
-                    isReward: false
-                }));
+            if (this.value) {
+                // Use BigNumber for value comparison
+                const valueBN = ethers.BigNumber.from(this.value);
+                if (valueBN.gt(ethers.constants.Zero)) {
+                    let dstAddress = this.to;
+                    // If contract creation (to is null), use receipt.contractAddress
+                    if (!dstAddress && receipt.contractAddress) {
+                        dstAddress = receipt.contractAddress;
+                    }
+                    tokenTransfers.push(sanitize({
+                        transactionId: this.id,
+                        transactionLogId: null,
+                        workspaceId: this.workspaceId,
+                        src: this.from,
+                        dst: dstAddress,
+                        amount: valueBN.toString(),
+                        token: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+                        tokenId: null,
+                        isReward: false
+                    }));
+                }
             }
 
             const events = [];
@@ -388,13 +395,11 @@ module.exports = (sequelize, DataTypes) => {
         for (const transfer of tokenTransfers) {
             if (transfer.token === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') {
                 // Only inject custom contract object for native token
-                let tokenSymbol = 'ETH';
-                let tokenName = 'Ether';
-                let tokenDecimals = 18;
                 const explorer = await sequelize.models.Explorer.findOne({ where: { workspaceId: this.workspaceId } });
                 if (explorer) {
-                    tokenSymbol = explorer.token || tokenSymbol;
-                    tokenName = explorer.token || tokenName;
+                    tokenSymbol = explorer.token || 'ETH';
+                    tokenName = explorer.token || 'Ether';
+                    tokenDecimals = 18;
                 }
                 transfer.contract = {
                     tokenSymbol,
@@ -484,13 +489,9 @@ module.exports = (sequelize, DataTypes) => {
 
             // Find parent address for each step
             const findParentAddress = (step, steps) => {
-                const candidates = steps.filter(
-                    s => s.depth === step.depth - 1
-                );
-                if (candidates.length === 0) return null
-
-                const parentStep = candidates.reduce((max, s) => (s.id > max.id ? s : max), candidates[0]);
-                return parentStep.address;
+                const filtered = steps.filter(s => s.depth === step.depth - 1);
+                if (filtered.length === 0) return null;
+                return filtered[filtered.length - 1].address;
             };
 
             const augmentedSteps = steps.map(step => ({
@@ -503,18 +504,22 @@ module.exports = (sequelize, DataTypes) => {
 
             const tokenTransfers = [];
             for (const step of augmentedSteps) {
-                if (step.value > 0) {
-                    tokenTransfers.push(sanitize({
-                        transactionId: this.id,
-                        transactionLogId: null,
-                        workspaceId: this.workspaceId,
-                        src: step.parentAddress,
-                        dst: step.address,
-                        amount: step.value,
-                        token: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
-                        tokenId: null,
-                        isReward: false
-                    }));
+                // Use BigNumber for value comparison
+                if (step.value) {
+                    const valueBN = ethers.BigNumber.from(step.value);
+                    if (valueBN.gt(ethers.constants.Zero)) {
+                        tokenTransfers.push(sanitize({
+                            transactionId: this.id,
+                            transactionLogId: null,
+                            workspaceId: this.workspaceId,
+                            src: step.parentAddress,
+                            dst: step.address,
+                            amount: valueBN.toString(),
+                            token: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+                            tokenId: null,
+                            isReward: false
+                        }));
+                    }
                 }
             }
 
