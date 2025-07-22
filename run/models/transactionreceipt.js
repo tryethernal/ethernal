@@ -6,7 +6,6 @@ const ethers = require('ethers');
 const BigNumber = ethers.BigNumber;
 const { trigger } = require('../lib/pusher');
 const { enqueue } = require('../lib/queue');
-const moment = require('moment');
 
 module.exports = (sequelize, DataTypes) => {
   class TransactionReceipt extends Model {
@@ -19,6 +18,12 @@ module.exports = (sequelize, DataTypes) => {
         TransactionReceipt.hasMany(models.TransactionLog, { foreignKey: 'transactionReceiptId', as: 'logs' });
         TransactionReceipt.belongsTo(models.Transaction, { foreignKey: 'transactionId', as: 'transaction' });
         TransactionReceipt.belongsTo(models.Workspace, { foreignKey: 'workspaceId', as: 'workspace' });
+        TransactionReceipt.hasOne(models.Contract, {
+            sourceKey: 'contractAddress',
+            foreignKey:  'address',
+            as: 'createdContract',
+            constraints: false
+        });
     }
 
     async insertAnalyticEvent(sequelizeTransaction) {
