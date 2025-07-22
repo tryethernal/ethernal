@@ -31,7 +31,7 @@
                             <span v-else>N/A (creation transaction not indexed)</span>
                         </div>
 
-                        <div>
+                        <div v-if="contract.tokenName || contract.tokenSymbol">
                             <h4 class="text-uppercase text-caption text-medium-emphasis">Token Tracker</h4>
                             <router-link class="text-decoration-none" :to="`/token/${contract.address}`">
                                 {{ contract.tokenName || contract.name || contract.address }} <span v-if="contract.tokenSymbol" class="text-caption text-medium-emphasis">({{ contract.tokenSymbol }})</span>
