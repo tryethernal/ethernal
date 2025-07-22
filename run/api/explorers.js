@@ -594,6 +594,18 @@ router.post('/:id/settings', authMiddleware, async (req, res, next) => {
         if (!explorer)
             return managedError(new Error('Could not find explorer.'), req, res);
 
+        if (data.rpcServer && data.rpcServer != explorer.rpcServer) {
+            let networkId;
+            const provider = new ProviderConnector(data.rpcServer);
+            try {
+                networkId = await withTimeout(provider.fetchNetworkId());
+                if (!networkId)
+                    throw 'Error';
+            } catch(error) {
+                return managedError(new Error(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`), req, res);
+            }
+        }
+
         try {
             await db.updateExplorerSettings(explorer.id, data);
         } catch(error) {
@@ -609,26 +621,16 @@ router.post('/:id/settings', authMiddleware, async (req, res, next) => {
 router.post('/', authMiddleware, async (req, res, next) => {
     const data = req.body.data;
 
+    const backendRpcServer = data.backendRpcServer || data.rpcServer;
+
     try {
-        if (!data.workspaceId && !(data.rpcServer && data.name))
+        if (!backendRpcServer || !data.name)
             return managedError(new Error('Missing parameters.'), req, res);
 
         const user = await db.getUser(data.uid, ['stripeCustomerId', 'canUseDemoPlan']);
 
-        let rpcServer;
-        if (data.workspaceId) {
-            const workspace = user.workspaces.find(w => w.id == data.workspaceId);
-            if (!workspace)
-                return managedError(new Error('Could not find workspace'), req, res);
-            if (workspace.explorer)
-                return managedError(new Error('This workspace already has an explorer.'), req, res);
-            rpcServer = workspace.rpcServer;
-        }
-        else
-            rpcServer = data.rpcServer;
-
         let networkId;
-        const provider = new ProviderConnector(rpcServer);
+        const provider = new ProviderConnector(backendRpcServer);
         try {
             networkId = await withTimeout(provider.fetchNetworkId());
             if (!networkId)
@@ -641,15 +643,14 @@ router.post('/', authMiddleware, async (req, res, next) => {
         if (!allowed)
             return managedError(new Error('You can\'t create an explorer with this network id (' + networkId + '). If you\'d still like an explorer for this chain. Please reach out to contact@tryethernal.com, and we\'ll set one up for you.'), req, res);
 
-        let options = data.workspaceId ?
-            { workspaceId: data.workspaceId } :
-            {
-                name: data.name,
-                rpcServer: data.rpcServer,
-                chain: data.chain,
-                networkId,
-                tracing: data.tracing
-            };
+        let options = {
+            name: data.name,
+            backendRpcServer,
+            chain: data.chain,
+            networkId,
+            tracing: data.tracing,
+            frontendRpcServer: data.frontendRpcServer
+        };
 
         if (data.faucet && data.faucet.amount && data.faucet.interval)
             options['faucet'] = { amount: data.faucet.amount, interval: data.faucet.interval };
@@ -727,7 +728,7 @@ router.post('/', authMiddleware, async (req, res, next) => {
         if (!explorer)
             return managedError(new Error('Could not create explorer.'), req, res);
 
-        if (!usingDefaultPlan && stripePlan && req.query.startSubscription && !options['subscription']) {
+        if (!usingDefaultPlan && stripePlan && req.query.startSubscription && !options['subscription'] && stripePlan.stripePriceId) {
             let stripeParams = {
                 customer: user.stripeCustomerId,
                 items: [

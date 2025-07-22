@@ -16,7 +16,7 @@
         </v-card>
     </v-container>
     <v-container v-else fluid>
-        <ERC721-Token-Transfer-Modal ref="erc721TokenTransferModal" :address="hash" :token="token" />
+        <ERC721-Token-Transfer-Modal ref="erc721TokenTransferModal" />
 
         <v-row>
             <!-- Token Image -->

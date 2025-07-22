@@ -50,7 +50,7 @@
                     </template>
                     <template v-slot:item.balance="{ item }">
                         <span v-if="item.balance">
-                            {{ $fromWei(item.balance, 'ether', currentWorkspaceStore.chain.token) }}
+                            {{ fromWei(item.balance, 'ether', currentWorkspaceStore.chain.token) }}
                         </span>
                         <span v-else>N/A</span>
                     </template>
@@ -62,101 +62,109 @@
         </v-card>
     </v-container>
 </template>
-<script>
-const ethers = require('ethers');
-import { mapStores } from 'pinia';
-
+<script setup>
+import { ref, inject, onMounted, onUnmounted } from 'vue';
 import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
 import { useEnvStore } from '../stores/env';
-
+import { useExplorerStore } from '../stores/explorer';
 import AddAccountModal from './AddAccountModal.vue';
 import UnlockAccountModal from './UnlockAccountModal.vue';
 import HashLink from './HashLink.vue';
+import fromWei from '../filters/FromWei';
+import { ethers } from 'ethers';
 
-export default {
-    name: 'Accounts',
-    components: {
-        HashLink,
-        AddAccountModal,
-        UnlockAccountModal
-    },
-    data: () => ({
-        accounts: [],
-        accountCount: 0,
-        headers: [
-            { title: 'Address', key: 'address' },
-            { title: 'Balance', key: 'balance' }
-        ],
-        loading: false,
-        currentOptions: { page: 1, itemsPerPage: 10, orderBy: 'address', order: 'desc' },
-        pusherUnsubscribe: null
-    }),
-    mounted() {
-        this.pusherUnsubscribe = this.$pusher.onUpdatedAccount(() => this.getAccounts());
-        if (this.envStore.isAdmin)
-            this.headers.push({ title: 'Actions', key: 'actions' });
-    },
-    destroyed() {
-        this.pusherUnsubscribe();
-    },
-    methods: {
-        syncAccounts() {
-            this.loading = true;
-            this.$server.getRpcAccounts(this.currentWorkspaceStore.rpcServer)
-                .then(accounts => {
-                    const promises = [];
-                    for (let i = 0; i < accounts.length; i++)
-                        promises.push(this.$server.syncBalance(accounts[i], '0'));
+const $server = inject('$server');
+const $pusher = inject('$pusher');
 
-                    Promise.all(promises).then(() => this.getAccounts(this.currentOptions));
-                })
-                .catch(() => this.loading = false);
-        },
-        getAccounts({ page, itemsPerPage, sortBy } = {}) {
-            this.loading = true;
+const addAccountModalRef = ref();
+const openUnlockAccountModalRef = ref();
 
-            if (!page || !itemsPerPage || !sortBy || !sortBy.length)
-                return this.loading = false;
+const currentWorkspaceStore = useCurrentWorkspaceStore();
+const envStore = useEnvStore();
+const explorerStore = useExplorerStore();
 
-            if (this.currentOptions.page == page && this.currentOptions.itemsPerPage == itemsPerPage && this.currentOptions.sortBy == sortBy[0].key && this.currentOptions.sort == sortBy[0].order)
-                return this.loading = false;
+const accounts = ref([]);
+const accountCount = ref(0);
+const loading = ref(false);
+const currentOptions = ref({ page: 1, itemsPerPage: 10, orderBy: 'address', order: 'desc' });
+const headers = ref([
+    { title: 'Address', key: 'address' },
+    { title: 'Balance', key: 'balance' }
+]);
 
-            this.currentOptions = {
-                page,
-                itemsPerPage,
-                orderBy: sortBy[0].key,
-                order: sortBy[0].order
-            };
+let pusherUnsubscribe = null;
 
-            this.$server.getAccounts(this.currentOptions)
-                .then(({ data }) => {
-                    this.currentWorkspaceStore.updateAccounts(data.items);
-                    this.accounts = data.items;
-                    this.accountCount = data.total;
-                    for (let i = 0; i < this.accounts.length; i++) {
-                        this.$server.getAccountBalance(this.accounts[i].address)
-                            .then(rawBalance => {
-                                const balance = ethers.BigNumber.from(rawBalance).toString();
-                                this.accounts[i].balance = balance;
-                            });
-                    }
-                })
-                .catch(console.log)
-                .finally(() => this.loading = false);
-        },
-        openAddAccountModal() {
-            this.$refs.addAccountModalRef.open()
-                .then(refresh => {
-                    if (refresh)
-                        this.getAccounts();
-                });
-        },
-        openUnlockAccountModal(account) {
-          this.$refs.openUnlockAccountModalRef.open({ address: account.address })
-        }
-    },
-    computed: {
-        ...mapStores(useCurrentWorkspaceStore, useEnvStore),
+onMounted(() => {
+    pusherUnsubscribe = $pusher.onUpdatedAccount(() => getAccounts());
+    if (envStore.isAdmin) {
+        headers.value.push({ title: 'Actions', key: 'actions' });
     }
+});
+
+onUnmounted(() => {
+    if (pusherUnsubscribe) pusherUnsubscribe();
+});
+
+function syncAccounts() {
+    loading.value = true;
+    const rpcServer = explorerStore.rpcServer || currentWorkspaceStore.rpcServer;
+    $server.getRpcAccounts(rpcServer)
+        .then(accs => {
+            const promises = [];
+            for (let i = 0; i < accs.length; i++)
+                promises.push($server.syncBalance(accs[i], '0'));
+            Promise.all(promises).then(() => getAccounts(currentOptions.value));
+        })
+        .catch(() => loading.value = false);
+}
+
+function getAccounts({ page, itemsPerPage, sortBy } = {}) {
+    loading.value = true;
+    if (!page || !itemsPerPage || !sortBy || !sortBy.length) {
+        loading.value = false;
+        return;
+    }
+    if (
+        currentOptions.value.page == page &&
+        currentOptions.value.itemsPerPage == itemsPerPage &&
+        currentOptions.value.sortBy == sortBy[0].key &&
+        currentOptions.value.sort == sortBy[0].order
+    ) {
+        loading.value = false;
+        return;
+    }
+    currentOptions.value = {
+        page,
+        itemsPerPage,
+        orderBy: sortBy[0].key,
+        order: sortBy[0].order
+    };
+    $server.getAccounts(currentOptions.value)
+        .then(({ data }) => {
+            currentWorkspaceStore.updateAccounts(data.items);
+            accounts.value = data.items;
+            accountCount.value = data.total;
+            for (let i = 0; i < accounts.value.length; i++) {
+                $server.getAccountBalance(accounts.value[i].address)
+                    .then(rawBalance => {
+                        const balance = ethers.BigNumber.from(rawBalance).toString();
+                        accounts.value[i].balance = balance;
+                    });
+            }
+        })
+        .catch(console.log)
+        .finally(() => loading.value = false);
+}
+
+function openAddAccountModal() {
+    addAccountModalRef.value.open()
+        .then(refresh => {
+            if (refresh)
+                getAccounts(currentOptions.value);
+        });
+}
+
+function openUnlockAccountModal(account) {
+    openUnlockAccountModalRef.value.open({ address: account.address });
 }
 </script>

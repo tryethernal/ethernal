@@ -35,7 +35,7 @@
                 <span v-show="txStatus(item) == 'unknown'">Unkown Transaction Status</span>
                 <span v-show="txStatus(item) == 'syncing'">Indexing Transaction...</span>
             </v-tooltip>
-            <Hash-Link :type="'transaction'" :hash="item.hash" :xsHash="true" />
+            <Hash-Link :type="'transaction'" :hash="item.hash" :xsHash="true" :key="item.hash"/>
         </template>
         <template v-slot:item.method="{ item }">
             <v-tooltip v-if="item.methodDetails?.name" location="top" :open-delay="150" color="grey-darken-1" content-class="tooltip">
@@ -59,12 +59,12 @@
                 <div class="my-2 text-left">
                     From: <Hash-Link :type="'address'" :hash="item.from" /><br>
                     <span v-if="item.to">To: <Hash-Link :type="'address'" :hash="item.to" :withTokenName="true" :withName="true" :contract="item.contract" /></span>
-                    <span v-else-if="item.receipt && item.receipt.contractAddress">Created: <Hash-Link :type="'address'" :hash="item.receipt.contractAddress" :withTokenName="true" :withName="true" /></span>
+                    <span v-else-if="item.receipt && item.receipt.contractAddress">Created: <Hash-Link :contract="item.receipt?.createdContract" :type="'address'" :hash="item.receipt.contractAddress" :withTokenName="true" :withName="true" /></span>
                 </div>
             </template>
             <template v-else>
                 <v-chip size="x-small" class="mr-2" v-if="item.from && item.from === currentAddress">self</v-chip>
-                <Hash-Link :type="'address'" :hash="item.from" />
+                <Hash-Link :type="'address'" :hash="item.from" :key="item.hash"/>
             </template>
         </template>
         <template v-slot:item.blockNumber="{ item }">
@@ -72,7 +72,8 @@
         </template>
         <template v-slot:item.to="{ item }">
             <v-chip size="x-small" class="mr-2" v-if="item.to && item.to === currentAddress">self</v-chip>
-            <Hash-Link :type="'address'" :hash="item.to" :withTokenName="true" :withName="true" :contract="item.contract" />
+            <template v-if="!item.to && item.receipt?.contractAddress">Created: </template>
+            <Hash-Link :type="'address'" :hash="item.to || item.receipt?.contractAddress" :withTokenName="true" :withName="true" :contract="item.contract ||item.receipt?.createdContract" :key="item.hash"/>
         </template>
         <template v-slot:item.value="{ item }">
             {{ $fromWei(item.value, 'ether', currentWorkspaceStore.chain.token, false, 4) }}

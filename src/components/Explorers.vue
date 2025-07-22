@@ -30,7 +30,7 @@
                     </v-card-text>
                 </v-card>
                 <template v-else>
-                    <v-alert v-if="deletedExplorer" density="compact" text type="success">Explorer "<b>{{ deletedExplorer }}</b>" has been successfully deleted.</v-alert>
+                    <v-alert class="mb-4" v-if="deletedExplorer" density="compact" text type="success">Explorer "<b>{{ deletedExplorer }}</b>" has been successfully deleted.</v-alert>
                     <v-data-table-server
                         :loading="loading"
                         :items="explorers"

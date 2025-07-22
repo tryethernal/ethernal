@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../lib/firebase');
-const selfHostedMiddleware = require('../middlewares/selfHosted');
 const { getAppDomain } = require('../lib/env');
 const { unmanagedError } = require('../lib/errors');
 
@@ -11,7 +10,7 @@ const { unmanagedError } = require('../lib/errors');
  * @param {string} domain - The domain to check
  * @returns {Promise<boolean>} - True if the domain is registered, false otherwise
  */
-router.get('/validDomain', selfHostedMiddleware, async (req, res, next) => {
+router.get('/validDomain', async (req, res, next) => {
     try {
         const { domain } = req.query;
         if (!domain)
