@@ -2390,10 +2390,16 @@ module.exports = (sequelize, DataTypes) => {
                     as: 'receipt',
                     include: {
                         model: sequelize.models.Contract,
-                        attributes: ['address', 'name', 'tokenName', 'tokenSymbol', 'workspaceId'],
                         as: 'createdContract',
+                        attributes: ['address', 'name', 'tokenDecimals', 'tokenName', 'tokenSymbol', 'workspaceId', 'patterns'],
                         where: {
                             workspaceId: this.id
+                        },
+                        required: false,
+                        include: {
+                            model: sequelize.models.ContractVerification,
+                            as: 'verification',
+                            attributes: ['createdAt']
                         }
                     }
                 },
@@ -2906,6 +2912,12 @@ module.exports = (sequelize, DataTypes) => {
                         attributes: ['address', 'name', 'tokenDecimals', 'tokenName', 'tokenSymbol', 'workspaceId', 'patterns'],
                         where: {
                             workspaceId: this.id
+                        },
+                        required: false,
+                        include: {
+                            model: sequelize.models.ContractVerification,
+                            as: 'verification',
+                            attributes: ['createdAt']
                         }
                     }
                 },
@@ -2917,7 +2929,12 @@ module.exports = (sequelize, DataTypes) => {
                 {
                     model: sequelize.models.Contract,
                     attributes: ['abi', 'address', 'name', 'tokenDecimals', 'tokenName', 'tokenSymbol', 'workspaceId', 'patterns'],
-                    as: 'contract'
+                    as: 'contract',
+                    include: {
+                        model: sequelize.models.ContractVerification,
+                        as: 'verification',
+                        attributes: ['createdAt']
+                    }
                 }
             ]
         });
