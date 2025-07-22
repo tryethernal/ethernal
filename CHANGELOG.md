@@ -4,6 +4,54 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.4.12] - 2025-08-22
+### Changed
+- Display created contract info on block transaction list
+
+## [5.4.11] - 2025-08-22
+### Fixed
+- Incorrect display of "token tracker" label
+
+## [5.4.10] - 2025-08-22
+### Changed
+- Display created contract name + verification chip
+
+## [5.4.9] - 2025-08-18
+### Changed
+- Display created contract address on tx list
+
+## [5.4.8] - 2025-08-18
+### Changed
+- Host check
+
+## [5.4.7] - 2025-08-18
+### Changed
+- Host check
+
+## [5.4.6] - 2025-08-18
+### Changed
+- Host check
+
+## [5.4.5] - 2025-08-18
+### Changed
+- Host check
+
+## [5.4.4] - 2025-08-18
+### Changed
+- Host check
+
+## [5.4.3] - 2025-08-18
+### Changed
+- Redeploy
+
+## [5.4.2] - 2025-08-18
+### Fixed
+- Tests
+
+## [5.4.1] - 2025-08-18
+### Fixed
+- Contract verification for hosts not going through Approximated
+
 ## [5.4.0] - 2025-08-15
 ### Changed
 - Frontend RPC server is now exposed in the UI & API

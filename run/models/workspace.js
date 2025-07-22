@@ -2395,11 +2395,25 @@ module.exports = (sequelize, DataTypes) => {
                 {
                     model: sequelize.models.TransactionReceipt,
                     attributes: ['gasUsed', 'status', 'contractAddress', [sequelize.json('raw.root'), 'root'], 'gasUsed', 'cumulativeGasUsed', [sequelize.json('raw.effectiveGasPrice'), 'effectiveGasPrice']],
-                    as: 'receipt'
+                    as: 'receipt',
+                    include: {
+                        model: sequelize.models.Contract,
+                        as: 'createdContract',
+                        attributes: ['address', 'name', 'tokenDecimals', 'tokenName', 'tokenSymbol', 'workspaceId', 'patterns'],
+                        where: {
+                            workspaceId: this.id
+                        },
+                        required: false,
+                        include: {
+                            model: sequelize.models.ContractVerification,
+                            as: 'verification',
+                            attributes: ['createdAt']
+                        }
+                    }
                 },
                 {
                     model: sequelize.models.Contract,
-                    attributes: ['abi', 'name', 'tokenName', 'tokenSymbol'],
+                    attributes: ['name', 'tokenName', 'tokenSymbol'],
                     as: 'contract',
                     include: {
                         model: sequelize.models.ContractVerification,
@@ -2900,7 +2914,21 @@ module.exports = (sequelize, DataTypes) => {
                             WHERE transaction_logs."transactionReceiptId" = "receipt".id)::int
                         `), 'logCount']
                     ],
-                    as: 'receipt'
+                    as: 'receipt',
+                    include: {
+                        model: sequelize.models.Contract,
+                        as: 'createdContract',
+                        attributes: ['address', 'name', 'tokenDecimals', 'tokenName', 'tokenSymbol', 'workspaceId', 'patterns'],
+                        where: {
+                            workspaceId: this.id
+                        },
+                        required: false,
+                        include: {
+                            model: sequelize.models.ContractVerification,
+                            as: 'verification',
+                            attributes: ['createdAt']
+                        }
+                    }
                 },
                 {
                     model: sequelize.models.Block,
@@ -2910,7 +2938,12 @@ module.exports = (sequelize, DataTypes) => {
                 {
                     model: sequelize.models.Contract,
                     attributes: ['abi', 'address', 'name', 'tokenDecimals', 'tokenName', 'tokenSymbol', 'workspaceId', 'patterns'],
-                    as: 'contract'
+                    as: 'contract',
+                    include: {
+                        model: sequelize.models.ContractVerification,
+                        as: 'verification',
+                        attributes: ['createdAt']
+                    }
                 }
             ]
         });
