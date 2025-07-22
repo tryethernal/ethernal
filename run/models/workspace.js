@@ -180,11 +180,13 @@ module.exports = (sequelize, DataTypes) => {
                 t."blockNumber" AS "transaction.blockNumber",
                 t.timestamp AS "transaction.timestamp",
                 t."data" AS "transaction.data",
-                t."transactionIndex" AS "transaction.transactionIndex"
+                t."transactionIndex" AS "transaction.transactionIndex",
+                e.token AS "explorer.token"
             FROM token_transfer_events tte
             LEFT JOIN contracts c ON c."address" = tte.token AND c."workspaceId" = :workspaceId
             LEFT JOIN token_transfers tt ON tte."tokenTransferId" = tt.id 
             LEFT JOIN transactions t ON tt."transactionId" = t.id
+            LEFT JOIN explorers e ON e."workspaceId" = :workspaceId
             WHERE tte."workspaceId" = :workspaceId
         `;
 
@@ -206,6 +208,12 @@ module.exports = (sequelize, DataTypes) => {
             let itemCopy = { ...item };
             if (itemCopy.contract && itemCopy.transaction && itemCopy.transaction.data && itemCopy.contract.abi)
                 itemCopy.transaction.methodDetails = getTransactionMethodDetails({ data: itemCopy.transaction.data }, itemCopy.contract.abi);
+            if (itemCopy.token == '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
+                itemCopy.contract = {
+                    tokenSymbol: itemCopy.explorer && itemCopy.explorer.token || 'ETH',
+                    tokenName: itemCopy.explorer && itemCopy.explorer.token || 'Ether',
+                    tokenDecimals: 18,
+                };
             return itemCopy;
         });
 
@@ -2873,6 +2881,7 @@ module.exports = (sequelize, DataTypes) => {
                             SELECT COUNT(*)
                             FROM token_transfers
                             WHERE token_transfers."transactionId" = "Transaction".id
+                            AND token_transfers."isReward" = false
                         )::int
                     `), 'tokenTransferCount'
                 ],
