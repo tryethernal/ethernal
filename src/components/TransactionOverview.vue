@@ -176,7 +176,7 @@
               </div>
             </template>
             <v-list-item-title class="text-body-2 text-truncate">
-              <Hash-Link v-if="transaction.receipt && transaction.receipt.contractAddress" :type="'address'" :hash="transaction.receipt.contractAddress" :fullHash="true" :withName="true" />
+              <Hash-Link v-if="transaction.receipt && transaction.receipt.contractAddress" :type="'address'" :contract="transaction.receipt.createdContract" :hash="transaction.receipt.contractAddress" :fullHash="true" :withName="true" />
               <span v-else>-</span>
             </v-list-item-title>
           </v-list-item>
