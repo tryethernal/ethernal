@@ -34,6 +34,7 @@ Run your own Ethernal instance on your infrastructure, with full control over yo
 ```bash
 git clone https://github.com/tryethernal/ethernal.git
 cd ethernal
+git checkout $(git describe --tags --abbrev=0) # Makes sure that you are using the latest stable version 
 ```
 
 ### 2. Start Ethernal (Automatic Setup)
