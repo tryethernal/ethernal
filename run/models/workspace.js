@@ -94,6 +94,54 @@ module.exports = (sequelize, DataTypes) => {
         return new ProviderConnector(this.rpcServer);
     }
 
+    async getAddresses(page = 1, itemsPerPage = 10, orderBy = 'balance', order = 'DESC') {
+        return sequelize.query(`
+            WITH latest_balances AS (
+                SELECT
+                    tbc.address,
+                    tbc."currentBalance"::numeric AS balance
+                FROM (
+                    SELECT
+                        tbc.*,
+                        t."blockNumber",
+                        ROW_NUMBER() OVER (
+                            PARTITION BY tbc.address
+                            ORDER BY t."blockNumber" DESC, tbc."transactionId" DESC
+                        ) AS rn
+                    FROM token_balance_changes tbc
+                    JOIN transactions t ON tbc."transactionId" = t.id
+                    WHERE tbc."workspaceId" = :workspaceId
+                      AND tbc."token" = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+                ) tbc
+                WHERE tbc.rn = 1
+            ),
+            grand_total AS (
+                SELECT SUM(balance) as total_balance
+                FROM latest_balances
+            )
+            SELECT
+                lb.address,
+                lb.balance,
+                ROUND(
+                    100 * lb.balance / gt.total_balance,
+                    4
+                ) AS share
+            FROM latest_balances lb
+            CROSS JOIN grand_total gt
+            ORDER BY lb.balance DESC
+            LIMIT :itemsPerPage
+            OFFSET :offset;
+            `, {
+                replacements: {
+                    workspaceId: this.id,
+                    itemsPerPage: itemsPerPage,
+                    offset: (page - 1) * itemsPerPage
+                },
+                type: QueryTypes.SELECT,
+            }
+        );
+    }
+
     /**
      * Returns the top ERC20 tokens by holders for a workspace.
      * 
