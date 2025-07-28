@@ -9,6 +9,7 @@ describe('TransactionsList.vue', () => {
             to: 'Ox1',
             gas: 0,
             gasPrice: 0,
+            data: '0x123456',
             blockNumber: 1,
             receipt: {
                 gasUsed: 0,
@@ -25,6 +26,7 @@ describe('TransactionsList.vue', () => {
             to: 'Ox1',
             gas: 0,
             gasPrice: 0,
+            data: '0x123456',
             blockNumber: 1,
             value: '0',
             state: 'syncing'
@@ -46,7 +48,7 @@ describe('TransactionsList.vue', () => {
                 withCount: true
             },
             global: {
-                stubs: ['Hash-Link'],
+                stubs: ['Hash-Link', 'Method-Details-Chip'],
                 provide: {
                     $server: server,
                     $pusher: pusher
@@ -72,6 +74,7 @@ describe('TransactionsList.vue', () => {
                 withCount: true
             },
             global: {
+                stubs: ['Hash-Link', 'Method-Details-Chip'],
                 provide: {
                     $server: server,
                     $pusher: pusher
