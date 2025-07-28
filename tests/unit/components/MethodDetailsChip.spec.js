@@ -90,4 +90,4 @@ describe('MethodDetailsChip.vue', () => {
 
         expect(wrapper.html()).toMatchSnapshot();
     });
-}); 
+});
