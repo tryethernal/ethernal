@@ -137,7 +137,7 @@ const name = computed(() => {
         return `${token.value || 'ETH'} faucet`;
     }
     if (props.withName) {
-        if (tokenData.value?.name && props.withTokenName) return tokenData.value.name || tokenData.value.symbol;
+        if (props.withTokenName) return tokenData.value.name || tokenData.value.symbol;
         return contractName.value ? contractName.value : formattedHash.value;
     }
     return formattedHash.value;
