@@ -166,7 +166,7 @@
               </div>
             </template>
             <v-list-item-title class="text-body-2 text-truncate">
-              <Hash-Link :type="'address'" :hash="transaction.to" :fullHash="true" :withName="true" :contract="transaction.contract" />
+              <Hash-Link :type="'address'" :hash="transaction.to" :fullHash="true" :withName="true" :withTokenName="false" :contract="transaction.contract" />
             </v-list-item-title>
           </v-list-item>
           <v-list-item v-else class="d-flex flex-column flex-sm-row">
