@@ -28,17 +28,7 @@
         </template>
 
         <template v-slot:item.methodDetails="{ item }">
-            <v-tooltip v-if="item.transaction.methodDetails && item.transaction.methodDetails.name">
-                <template v-slot:activator="{ props }">
-                    <v-chip v-bind="props" color="primary-lighten-1" label size="small" variant="flat">
-                        {{ item.transaction.methodDetails.name }}
-                    </v-chip>
-                </template>
-                <span style="white-space: pre">{{ item.transaction.methodDetails.label }}</span>
-            </v-tooltip>
-            <v-chip v-else-if="item.transaction.methodDetails && item.transaction.methodDetails.sighash" color="primary-lighten-1" label size="small" variant="flat">
-                {{ item.transaction.methodDetails.sighash }}
-            </v-chip>
+            <Method-Details-Chip :transaction="item.transaction" />
         </template>
 
         <template v-slot:item.tokenType="{ item }">
@@ -51,7 +41,7 @@
             <v-chip v-else-if="item.contract.patterns.includes('erc1155')" color="success" size="x-small">
                 ERC-1155
             </v-chip>
-            <v-chip color="grey-lighten-1" v-else size="x-small">
+            <v-chip color="grey-lighten" v-else size="x-small">
                 Unknown
             </v-chip>
         </template>
@@ -79,8 +69,7 @@
             <div class="d-flex align-center">
                 <v-chip
                     size="x-small"
-                    color="grey-lighten-1"
-                    variant="flat"
+                    color="grey-lighten"
                     class="mr-2"
                     v-if="item.src === address"
                 >
@@ -101,7 +90,7 @@
             <div class="d-flex align-center">
                 <v-chip
                     size="x-small"
-                    color="grey-lighten-1"
+                    color="grey-lighten"
                     variant="flat"
                     class="mr-2"
                     v-if="item.dst === address"
@@ -227,6 +216,7 @@
 import { ref, computed, watch, inject } from 'vue';
 import { formatContractPattern } from '@/lib/utils';
 import HashLink from './HashLink.vue';
+import MethodDetailsChip from './MethodDetailsChip.vue';
 
 // Component props
 const props = defineProps({
