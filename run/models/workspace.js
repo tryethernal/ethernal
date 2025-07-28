@@ -2405,7 +2405,7 @@ module.exports = (sequelize, DataTypes) => {
                 },
                 {
                     model: sequelize.models.Contract,
-                    attributes: ['name', 'tokenName', 'tokenSymbol'],
+                    attributes: ['name', 'tokenName', 'tokenSymbol', 'abi'],
                     as: 'contract',
                     include: {
                         model: sequelize.models.ContractVerification,
@@ -2866,7 +2866,7 @@ module.exports = (sequelize, DataTypes) => {
             where: {
                 hash: hash
             },
-            attributes: ['id', 'blockNumber', 'data', 'parsedError', 'rawError', 'from', 'formattedBalanceChanges', 'gasLimit', 'gasPrice', 'hash', 'timestamp', 'to', 'value', 'storage', 'workspaceId', 'raw', 'state', 'transactionIndex', 'nonce', 'type',
+            attributes: ['id', 'blockNumber', 'data', 'parsedError', 'rawError', 'from', 'formattedBalanceChanges', 'gasLimit', 'gasPrice', 'hash', 'timestamp', 'to', 'value', 'storage', 'workspaceId', 'raw', 'state', 'transactionIndex', 'nonce', 'type', 'methodDetails',
                 [
                     Sequelize.literal(`
                         (

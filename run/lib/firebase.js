@@ -22,6 +22,7 @@ const Workspace = models.Workspace;
 const TransactionReceipt = models.TransactionReceipt;
 const Explorer = models.Explorer;
 const Contract = models.Contract;
+const ContractVerification = models.ContractVerification;
 const Block = models.Block;
 const StripeSubscription = models.StripeSubscription;
 const StripePlan = models.StripePlan;
@@ -2451,12 +2452,31 @@ const getBlockTransactions = async (workspaceId, blockNumber, page = 1, itemsPer
             {
                 model: TransactionReceipt,
                 as: 'receipt',
-                attributes: ['gasUsed', 'status', 'contractAddress', [Sequelize.json('raw.root'), 'root'], 'gasUsed', 'cumulativeGasUsed', [Sequelize.json('raw.effectiveGasPrice'), 'effectiveGasPrice']]
+                attributes: ['gasUsed', 'status', 'contractAddress', [Sequelize.json('raw.root'), 'root'], 'gasUsed', 'cumulativeGasUsed', [Sequelize.json('raw.effectiveGasPrice'), 'effectiveGasPrice']],
+                include: {
+                    model: Contract,
+                    as: 'createdContract',
+                    attributes: ['address', 'tokenName', 'tokenSymbol', 'tokenDecimals', 'name', 'workspaceId'],
+                    where: {
+                        workspaceId: workspaceId
+                    },
+                    include: {
+                        model: ContractVerification,
+                        as: 'verification',
+                        attributes: ['createdAt']
+                    },
+                    required: false
+                }
             },
             {
                 model: Contract,
                 as: 'contract',
                 attributes: ['tokenName', 'tokenSymbol', 'tokenDecimals', 'name'],
+                include: {
+                    model: ContractVerification,
+                    as: 'verification',
+                    attributes: ['createdAt']
+                }
             }
         ],
         offset: (page - 1) * itemsPerPage,
