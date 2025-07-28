@@ -1,0 +1,67 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`MethodDetailsChip.vue > Should show data in tooltip when methodDetails.label does not exist 1`] = `
+"<span data-v-5583a228="" class="v-chip v-chip--label v-theme--light text-primary v-chip--density-default v-chip--size-small v-chip--variant-tonal" draggable="false" aria-describedby="v-tooltip-0"><!----><span class="v-chip__underlay"></span>
+<!---->
+<!---->
+<div class="v-chip__content" data-no-activator=""><span data-v-5583a228="" class="methodName">transfer</span></div>
+<!---->
+<!----></span>
+<!--teleport start-->
+<!--teleport end-->"
+`;
+
+exports[`MethodDetailsChip.vue > Should show method label in tooltip when methodDetails.label exists 1`] = `
+"<span data-v-5583a228="" class="v-chip v-chip--label v-theme--light text-primary v-chip--density-default v-chip--size-small v-chip--variant-tonal" draggable="false" aria-describedby="v-tooltip-0"><!----><span class="v-chip__underlay"></span>
+<!---->
+<!---->
+<div class="v-chip__content" data-no-activator=""><span data-v-5583a228="" class="methodName">transfer</span></div>
+<!---->
+<!----></span>
+<!--teleport start-->
+<!--teleport end-->"
+`;
+
+exports[`MethodDetailsChip.vue > Should show method name when methodDetails.name exists 1`] = `
+"<span data-v-5583a228="" class="v-chip v-chip--label v-theme--light text-primary v-chip--density-default v-chip--size-small v-chip--variant-tonal" draggable="false" aria-describedby="v-tooltip-0"><!----><span class="v-chip__underlay"></span>
+<!---->
+<!---->
+<div class="v-chip__content" data-no-activator=""><span data-v-5583a228="" class="methodName">transfer</span></div>
+<!---->
+<!----></span>
+<!--teleport start-->
+<!--teleport end-->"
+`;
+
+exports[`MethodDetailsChip.vue > Should show sighash when data is 0x 1`] = `
+"<span data-v-5583a228="" class="v-chip v-chip--label v-theme--light text-primary v-chip--density-default v-chip--size-small v-chip--variant-tonal" draggable="false" aria-describedby="v-tooltip-0"><!----><span class="v-chip__underlay"></span>
+<!---->
+<!---->
+<div class="v-chip__content" data-no-activator=""><span data-v-5583a228="" class="methodName"></span></div>
+<!---->
+<!----></span>
+<!--teleport start-->
+<!--teleport end-->"
+`;
+
+exports[`MethodDetailsChip.vue > Should show sighash when methodDetails exists but name is empty 1`] = `
+"<span data-v-5583a228="" class="v-chip v-chip--label v-theme--light text-primary v-chip--density-default v-chip--size-small v-chip--variant-tonal" draggable="false" aria-describedby="v-tooltip-0"><!----><span class="v-chip__underlay"></span>
+<!---->
+<!---->
+<div class="v-chip__content" data-no-activator=""><span data-v-5583a228="" class="methodName">0xa9059cbb</span></div>
+<!---->
+<!----></span>
+<!--teleport start-->
+<!--teleport end-->"
+`;
+
+exports[`MethodDetailsChip.vue > Should show sighash when methodDetails.name does not exist 1`] = `
+"<span data-v-5583a228="" class="v-chip v-chip--label v-theme--light text-primary v-chip--density-default v-chip--size-small v-chip--variant-tonal" draggable="false" aria-describedby="v-tooltip-0"><!----><span class="v-chip__underlay"></span>
+<!---->
+<!---->
+<div class="v-chip__content" data-no-activator=""><span data-v-5583a228="" class="methodName">0xa9059cbb</span></div>
+<!---->
+<!----></span>
+<!--teleport start-->
+<!--teleport end-->"
+`;

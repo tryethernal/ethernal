@@ -38,15 +38,7 @@
             <Hash-Link :type="'transaction'" :hash="item.hash" :xsHash="true" :key="item.hash"/>
         </template>
         <template v-slot:item.method="{ item }">
-            <v-tooltip v-if="item.methodDetails?.name" location="top" :open-delay="150" color="grey-darken-1" content-class="tooltip">
-                <template v-slot:activator="{ props }">
-                    <v-chip color="primary" label v-bind="props" size="small" variant="tonal">
-                        <span class="methodName">{{ getMethodName(item) }}</span>
-                    </v-chip>
-                </template>
-                <span style="white-space: pre">{{ getMethodLabel(item.methodDetails) }}</span>
-            </v-tooltip>
-            <v-chip v-else variant="tonal" label size="small" color="primary" v-show="getMethodName(item)">{{ getMethodName(item) }}</v-chip>
+            <Method-Details-Chip v-if="item.data.length > 2" :transaction="item" />
         </template>
         <template v-slot:item.timestamp="{ item }">
             <div class="my-2 text-left">
@@ -88,6 +80,7 @@ import { ethers } from 'ethers';
 import { shallowRef, ref, onMounted, onUnmounted, inject, defineEmits, watch } from 'vue';
 
 import HashLink from './HashLink.vue';
+import MethodDetailsChip from './MethodDetailsChip.vue';
 
 import { useCurrentWorkspaceStore } from '@/stores/currentWorkspace';
 import { getGasPriceFromTransaction } from '@/lib/utils';
@@ -153,19 +146,7 @@ const rowClasses = (item) => {
         return 'isSyncing'
 };
 
-const getMethodName = (transaction) => {
-    if (!transaction.methodDetails) return getSighash(transaction);
-    return transaction.methodDetails.name ? transaction.methodDetails.name : getSighash(transaction);
-};
 
-const getMethodLabel = (methodDetails) => {
-    if (!methodDetails) return null;
-    return methodDetails.label ? methodDetails.label : null;
-};
-
-const getSighash = (transaction) => {
-    return transaction.data && transaction.data != '0x' ? transaction.data.slice(0, 10) : null;
-};
 
 const txStatus = (item) => {
     if (!item) return 'unknown';
@@ -243,14 +224,5 @@ onUnmounted(() => {
     font-style: italic;
     opacity: 0.7;
 }
-.methodName {
-    display: block;
-    max-width: 11ch;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-.tooltip {
-    opacity: 1!important;
-}
+
 </style>
