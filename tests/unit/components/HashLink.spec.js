@@ -198,7 +198,7 @@ describe('HashLink.vue', () => {
             props: {
                 type: 'address',
                 hash: '0x123',
-                withName: true,
+                withTokenName: true,
                 contract: { name: 'My Contract', tokenSymbol: 'ETL' }
             }
         });
