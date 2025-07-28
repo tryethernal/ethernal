@@ -46,7 +46,7 @@
                   :hash="transfer.token"
                   :contract="transfer.contract"
                   :notCopiable="true"
-                  :withName="true"
+                  :withTokenName="true"
                   truncate="true"
                 />&nbsp;
                 <span v-if="transfer.contract.tokenSymbol" class="text-medium-emphasis">({{ transfer.contract.tokenSymbol }})</span>
