@@ -27,7 +27,8 @@ describe('TransactionOverview.vue', () => {
         'Custom-Field',
         'Compact-Transaction-Token-Transfers',
         'Transaction-Function-Call',
-        'AdBanner'
+        'AdBanner',
+        'Method-Details-Chip'
     ];
 
     const mockTransaction = {

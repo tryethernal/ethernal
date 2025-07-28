@@ -4,6 +4,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.4.17] - 2025-08-28
+### Fixed
+- Tests
+
+## [5.4.16] - 2025-08-28
+### Changed
+- Better contract name display
+
+## [5.4.15] - 2025-08-28
+### Changed
+- Improved token transfer list design
+
+## [5.4.14] - 2025-08-28
+### Changed
+- Displayed contract name 
+
+### Added
+- Chip next to transaction status
+
+## [5.4.13] - 2025-08-28
+### Fixed
+- Display method name in transaction list
+
+## [5.4.12] - 2025-08-22
+### Changed
+- Display created contract info on block transaction list
+
 ## [5.4.11] - 2025-08-22
 ### Fixed
 - Incorrect display of "token tracker" label
