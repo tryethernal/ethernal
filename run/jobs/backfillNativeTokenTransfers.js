@@ -12,16 +12,22 @@
 const { Transaction, TokenTransfer, TransactionTraceStep, TokenBalanceChange } = require('../models');
 const { sequelize } = require('../models');
 const ethers = require('ethers');
-const { sanitize } = require('../utils');
+const { sanitize } = require('../lib/utils');
 
 const BigNumber = ethers.BigNumber;
 
-const findRewardTokenTransfer = async (transaction) => {
+const findRewardTokenTransfer = transaction => {
     return transaction.tokenTransfers.find(tokenTransfer => tokenTransfer.token === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' && tokenTransfer.isReward);
 };
 
-const findValueTokenTransfer = async (transaction) => {
-    return transaction.tokenTransfers.find(tokenTransfer => tokenTransfer.token === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' && BigNumber.from(tokenTransfer.amount).eq(transaction.value));
+const findValueTokenTransfer = transaction => {
+    return transaction.tokenTransfers.find(tokenTransfer => tokenTransfer.token === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' && BigNumber.from(String(tokenTransfer.amount)).eq(transaction.value));
+};
+
+const findTraceStepParentAddress = (step, steps) => {
+    const filtered = steps.filter(s => s.depth === step.depth - 1);
+    if (filtered.length === 0) return null;
+    return filtered[filtered.length - 1].address;
 };
 
 module.exports = async job => {
@@ -60,18 +66,19 @@ module.exports = async job => {
     const tokenTransfers = [];
 
     const rewardTokenTransfer = findRewardTokenTransfer(transaction);
+    console.log(rewardTokenTransfer);
     if (!rewardTokenTransfer) {
         let toValidator;
         if (transaction.type && transaction.type == 2) {
             // Use BigNumber for (effectiveGasPrice - baseFeePerGas) * gasUsed
-            const effectiveGasPrice = ethers.BigNumber.from(transaction.receipt.raw.effectiveGasPrice);
-            const baseFeePerGas = ethers.BigNumber.from(transaction.block.baseFeePerGas);
-            const gasUsed = ethers.BigNumber.from(transaction.receipt.gasUsed);
+            const effectiveGasPrice = ethers.BigNumber.from(String(transaction.receipt.raw.effectiveGasPrice));
+            const baseFeePerGas = ethers.BigNumber.from(String(transaction.block.baseFeePerGas));
+            const gasUsed = ethers.BigNumber.from(String(transaction.receipt.gasUsed));
             toValidator = effectiveGasPrice.sub(baseFeePerGas).mul(gasUsed);
         } else {
             // Use BigNumber for gasPrice * gasUsed
-            const gasPrice = ethers.BigNumber.from(transaction.gasPrice);
-            const gasUsed = ethers.BigNumber.from(transaction.receipt.gasUsed);
+            const gasPrice = ethers.BigNumber.from(String(transaction.gasPrice));
+            const gasUsed = ethers.BigNumber.from(String(transaction.receipt.gasUsed));
             toValidator = gasPrice.mul(gasUsed);
         }
 
@@ -108,7 +115,50 @@ module.exports = async job => {
         }));
     }
 
-    console.log(transaction.tokenTransfers);
-    console.log(transaction.tokenBalanceChanges);
-    console.log(transaction.traceSteps);
+    for (const step of transaction.traceSteps) {
+        const stepValue = BigNumber.from(String(step.value));
+        if (stepValue.gt(ethers.constants.Zero)) {
+            tokenTransfers.push(sanitize({
+                transactionId: transaction.id,
+                transactionLogId: null,
+                workspaceId: transaction.workspaceId,
+                src: step.depth == 1 ? transaction.to : findTraceStepParentAddress(step, transaction.traceSteps),
+                dst: step.address,
+                amount: stepValue.toString(),
+                token: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+                tokenId: null,
+                isReward: false
+            }));
+        }
+    }
+
+    console.log(tokenTransfers);
+
+    return sequelize.transaction(async sequelizeTransaction => {
+        const createdTokenTransfers = await sequelize.models.TokenTransfer.bulkCreate(tokenTransfers, {
+            ignoreDuplicates: true,
+            transaction: sequelizeTransaction
+        });
+    
+        const tokenTransferEvents = [];
+        for (const tokenTransfer of createdTokenTransfers) {
+            tokenTransferEvents.push(sanitize({
+                workspaceId: transaction.workspaceId,
+                tokenTransferId: tokenTransfer.id,
+                blockNumber: transaction.blockNumber,
+                timestamp: transaction.timestamp,
+                amount: tokenTransfer.amount,
+                token: tokenTransfer.token,
+                tokenType: null, // This is ok as we are only creating native token transfer events here
+                src: tokenTransfer.src,
+                dst: tokenTransfer.dst,
+                isReward: tokenTransfer.isReward
+            }));
+        }
+
+        await sequelize.models.TokenTransferEvent.bulkCreate(tokenTransferEvents, {
+            ignoreDuplicates: true,
+            transaction: sequelizeTransaction
+        });
+    });
 };

@@ -116,21 +116,19 @@ module.exports = (sequelize, DataTypes) => {
         const processedTokenBalanceChanges = [];
 
         for (const balanceChange of result) {
+            const balanceChangeCopy = { ...balanceChange };
             if (balanceChange.token === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') {
                 // Only inject custom contract object for native token
                 const explorer = await sequelize.models.Explorer.findOne({ where: { workspaceId: this.workspaceId } });
                 if (explorer) {
-                    tokenSymbol = explorer.token || 'ETH';
-                    tokenName = explorer.token || 'Ether';
-                    tokenDecimals = 18;
+                    balanceChangeCopy.contract = {
+                        tokenSymbol: explorer.token || 'ETH',
+                        tokenDecimals: 18,
+                        tokenName: explorer.token || 'Ether'
+                    };
                 }
-                balanceChange.contract = {
-                    tokenSymbol,
-                    tokenDecimals,
-                    tokenName
-                };
             }
-            processedTokenBalanceChanges.push(balanceChange);
+            processedTokenBalanceChanges.push(balanceChangeCopy);
         }
 
         return processedTokenBalanceChanges;
@@ -269,14 +267,14 @@ module.exports = (sequelize, DataTypes) => {
             let toValidator;
             if (this.type && this.type == 2) {
                 // Use BigNumber for (effectiveGasPrice - baseFeePerGas) * gasUsed
-                const effectiveGasPrice = ethers.BigNumber.from(receipt.raw.effectiveGasPrice);
-                const baseFeePerGas = ethers.BigNumber.from(block.baseFeePerGas);
-                const gasUsed = ethers.BigNumber.from(receipt.gasUsed);
+                const effectiveGasPrice = ethers.BigNumber.from(String(receipt.raw.effectiveGasPrice));
+                const baseFeePerGas = ethers.BigNumber.from(String(block.baseFeePerGas));
+                const gasUsed = ethers.BigNumber.from(String(receipt.gasUsed));
                 toValidator = effectiveGasPrice.sub(baseFeePerGas).mul(gasUsed);
             } else {
                 // Use BigNumber for gasPrice * gasUsed
-                const gasPrice = ethers.BigNumber.from(this.gasPrice);
-                const gasUsed = ethers.BigNumber.from(receipt.gasUsed);
+                const gasPrice = ethers.BigNumber.from(String(this.gasPrice));
+                const gasUsed = ethers.BigNumber.from(String(receipt.gasUsed));
                 toValidator = gasPrice.mul(gasUsed);
             }
 
@@ -294,7 +292,7 @@ module.exports = (sequelize, DataTypes) => {
 
             if (this.value) {
                 // Use BigNumber for value comparison
-                const valueBN = ethers.BigNumber.from(this.value);
+                const valueBN = ethers.BigNumber.from(String(this.value));
                 if (valueBN.gt(ethers.constants.Zero)) {
                     let dstAddress = this.to;
                     // If contract creation (to is null), use receipt.contractAddress
@@ -393,22 +391,21 @@ module.exports = (sequelize, DataTypes) => {
         const processedTokenTransfers = [];
 
         for (const transfer of tokenTransfers) {
+            const transferCopy = { ...transfer };
             if (transfer.token === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') {
                 // Only inject custom contract object for native token
                 const explorer = await sequelize.models.Explorer.findOne({ where: { workspaceId: this.workspaceId } });
                 if (explorer) {
-                    tokenSymbol = explorer.token || 'ETH';
-                    tokenName = explorer.token || 'Ether';
-                    tokenDecimals = 18;
+                    transferCopy.contract = {
+                        tokenSymbol: explorer.token || 'ETH',
+                        tokenDecimals: 18,
+                        tokenName: explorer.token || 'Ether'
+                    };
                 }
-                transfer.contract = {
-                    tokenSymbol,
-                    tokenDecimals,
-                    tokenName
-                };
             }
-            processedTokenTransfers.push(transfer);
+            processedTokenTransfers.push(transferCopy);
         }
+
         return {
             items: processedTokenTransfers,
             total: result.count
@@ -506,7 +503,7 @@ module.exports = (sequelize, DataTypes) => {
             for (const step of augmentedSteps) {
                 // Use BigNumber for value comparison
                 if (step.value) {
-                    const valueBN = ethers.BigNumber.from(step.value);
+                    const valueBN = ethers.BigNumber.from(String(step.value));
                     if (valueBN.gt(ethers.constants.Zero)) {
                         tokenTransfers.push(sanitize({
                             transactionId: this.id,
