@@ -32,11 +32,12 @@
                 size="small"
                 :color="txStatus == 'succeeded' ? 'success' : txStatus == 'failed' ? 'error' : 'grey'"
                 text-color="white"
-                class="font-weight-medium"
+                class="font-weight-medium mr-2"
               >
                 <v-progress-circular v-if="!transaction.receipt" indeterminate size="16" width="2" color="white" class="mr-2 slow-spin"></v-progress-circular>
                 {{ !transaction.receipt ? 'Pending' : txStatus == 'succeeded' ? 'Success' : txStatus == 'failed' ? 'Failed' : 'Unknown' }}
               </v-chip>
+              <Method-Details-Chip v-if="transaction.data.length > 2" :transaction="transaction" />
               <!-- Error message display - updated to use v-alert -->
               <v-alert
                 v-if="txStatus === 'failed' && (transaction.parsedError || transaction.rawError)"
@@ -411,6 +412,7 @@ import CompactTransactionTokenTransfers from './CompactTransactionTokenTransfers
 import TransactionFunctionCall from './TransactionFunctionCall.vue';
 import ExpandableText from './ExpandableText.vue';
 import AdBanner from './AdBanner.vue';
+import MethodDetailsChip from './MethodDetailsChip.vue';
 
 const props = defineProps({
   transaction: {
