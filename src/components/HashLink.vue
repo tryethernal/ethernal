@@ -7,7 +7,10 @@
             Verified contract.
         </v-tooltip>
         <template v-if="hash && !unlink">
-            <a style="text-decoration: none;" v-if="embedded" :href="externalLink" target="_blank">{{ name }}</a>
+            <span v-if="hash == '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' && tokenData.symbol">
+                {{ tokenData.symbol }}   
+            </span>
+            <a style="text-decoration: none;" v-else-if="embedded" :href="externalLink" target="_blank">{{ name }}</a>
             <router-link style="text-decoration: none;" v-else :to="link">{{ name }}</router-link>
         </template>
         <template v-else>{{ name }}</template>
