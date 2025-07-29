@@ -54,7 +54,11 @@
 
                                 <!-- Token symbol/contract -->
                                 <span v-if="item.contract" class="text-medium-emphasis ml-1">
-                                    <template v-if="item.contract.tokenSymbol">({{ item.contract.tokenSymbol }})</template>
+                                    <template v-if="item.contract.tokenSymbol">
+                                        <template v-if="!isNativeToken(item.contract.tokenSymbol)">
+                                            ({{ item.contract.tokenSymbol }})
+                                        </template>
+                                    </template>
                                     <template v-else>
                                         (<Hash-Link :notCopiable="!!item.contract.name" :contract="item.contract" :hash="item.token" :type="'address'" :withName="true" truncate="true" />)
                                     </template>
@@ -116,7 +120,10 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { BigNumber } from 'ethers';
+import { useExplorerStore } from '@/stores/explorer';
 import HashLink from './HashLink.vue';
+
+const explorerStore = useExplorerStore();
 
 const props = defineProps({
     balanceChanges: {
@@ -207,6 +214,10 @@ function getPreviousBalance(item) {
 
 function getCurrentBalance(item) {
     return item?.currentBalance || '0';
+}
+
+function isNativeToken(tokenSymbol) {
+    return tokenSymbol === explorerStore.token;
 }
 </script>
 

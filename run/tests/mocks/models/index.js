@@ -14,7 +14,12 @@ jest.mock('../../../models/index.js', () => ({
     TransactionReceipt: require('./TransactionReceipt').TransactionReceipt,
     V2DexPoolReserve: require('./V2DexPoolReserve').V2DexPoolReserve,
     Contract: require('./Contract').Contract,
-    TokenTransfer: require('./TokenTransfer').TokenTransfer
+    TokenTransfer: require('./TokenTransfer').TokenTransfer,
+    TokenTransferEvent: require('./TokenTransferEvent').TokenTransferEvent,
+    sequelize: {
+        transaction: jest.fn(cb => cb()),
+        literal: jest.fn(sql => sql)
+    }
 }));
 
 const { User, user } = require('./User');
@@ -33,6 +38,7 @@ const { TransactionReceipt } = require('./TransactionReceipt');
 const { V2DexPoolReserve } = require('./V2DexPoolReserve');
 const { Contract } = require('./Contract');
 const { TokenTransfer } = require('./TokenTransfer');
+const { TokenTransferEvent } = require('./TokenTransferEvent');
 
 module.exports = {
     Transaction,
@@ -53,5 +59,6 @@ module.exports = {
     V2DexPoolReserve,
     TransactionReceipt,
     Contract,
-    TokenTransfer
+    TokenTransfer,
+    TokenTransferEvent
 };

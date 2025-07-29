@@ -194,21 +194,6 @@ router.post('/:hash/trace', authMiddleware, async (req, res, next) => {
     }
 });
 
-router.post('/:hash/storage', workspaceAuthMiddleware, async (req, res, next) => {
-    const data = { ...req.query, ...req.body.data };
-
-    try {
-        if (!data.firebaseUserId || !data.workspace || !data.data)
-            return managedError(new Error('Missing parameter.'), req, res);
-
-        await db.storeTransactionData(data.firebaseUserId, data.workspace, req.params.hash, data.data);
-
-        res.sendStatus(200);
-    } catch(error) {
-        unmanagedError(error, req, next);
-    }
-});
-
 router.get('/', workspaceAuthMiddleware, async (req, res, next) => {
     const data = { ...req.query, ...req.params };
 

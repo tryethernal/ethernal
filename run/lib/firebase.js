@@ -1966,18 +1966,17 @@ const getAddressTransactionStats = async (workspaceId, address) => {
 const getTransactionTokenTransfers = async (workspaceId, transactionHash, page, itemsPerPage, order, orderBy) => {
     if (!workspaceId || !transactionHash) throw new Error('Missing parameter');
 
-    const workspace = await Workspace.findByPk(workspaceId);
-    const transaction = await workspace.findTransaction(transactionHash);
+    const transaction = await Transaction.findOne({
+        where: {
+            hash: transactionHash,
+            workspaceId
+        }
+    });
 
     if (!transaction)
         throw new Error('Cannot find transaction');
 
-    const { rows: transfers, count } = await transaction.getFilteredTokenTransfers(page, itemsPerPage, order, orderBy);
-
-    return {
-        items: transfers.map(t => t.toJSON()),
-        total: count
-    };
+    return transaction.getFilteredTokenTransfers(page, itemsPerPage, order, orderBy);
 };
 
 const getTokenHolderHistory = async (workspaceId, address, from, to) => {
@@ -2716,19 +2715,6 @@ const storeTrace = async (userId, workspace, txHash, trace) => {
     return transaction.safeCreateTransactionTrace(trace);
 };
 
-const storeTransactionData = async (userId, workspace, hash, data) => {
-    if (!userId || !workspace || !hash || !data) throw new Error('Missing parameter.');
-
-    const user = await User.findByAuthIdWithWorkspace(userId, workspace);
-    const transaction = await user.workspaces[0].findTransaction(hash);
-
-    if (!transaction)
-        throw new Error(`Couldn't find transaction`);
-
-    await transaction.safeUpdateStorage(data);
-    return transaction.toJSON();
-};
-
 const storeTokenBalanceChanges = async (userId, workspace, tokenTransferId, changes) => {
     if (!userId || !workspace || !tokenTransferId || !changes) throw new Error('Missing parameter.');
 
@@ -2971,7 +2957,6 @@ module.exports = {
     updateWorkspaceSettings: updateWorkspaceSettings,
     getUserbyStripeCustomerId: getUserbyStripeCustomerId,
     getUserWorkspaces: getUserWorkspaces,
-    storeTransactionData: storeTransactionData,
     createUser: createUser,
     getUnprocessedContracts: getUnprocessedContracts,
     canUserSyncContract: canUserSyncContract,

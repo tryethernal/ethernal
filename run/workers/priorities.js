@@ -37,7 +37,8 @@ const priorities = {
         'removeStalledBlock',
         'queueMonitoring',
         'blockSyncMonitoring',
-        'sendDiscordMessage'
+        'sendDiscordMessage',
+        'backfillNativeTokenTransfers'
     ]
 }
 

@@ -94,6 +94,54 @@ module.exports = (sequelize, DataTypes) => {
         return new ProviderConnector(this.rpcServer);
     }
 
+    async getAddresses(page = 1, itemsPerPage = 10, orderBy = 'balance', order = 'DESC') {
+        return sequelize.query(`
+            WITH latest_balances AS (
+                SELECT
+                    tbc.address,
+                    tbc."currentBalance"::numeric AS balance
+                FROM (
+                    SELECT
+                        tbc.*,
+                        t."blockNumber",
+                        ROW_NUMBER() OVER (
+                            PARTITION BY tbc.address
+                            ORDER BY t."blockNumber" DESC, tbc."transactionId" DESC
+                        ) AS rn
+                    FROM token_balance_changes tbc
+                    JOIN transactions t ON tbc."transactionId" = t.id
+                    WHERE tbc."workspaceId" = :workspaceId
+                      AND tbc."token" = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+                ) tbc
+                WHERE tbc.rn = 1
+            ),
+            grand_total AS (
+                SELECT SUM(balance) as total_balance
+                FROM latest_balances
+            )
+            SELECT
+                lb.address,
+                lb.balance,
+                ROUND(
+                    100 * lb.balance / gt.total_balance,
+                    4
+                ) AS share
+            FROM latest_balances lb
+            CROSS JOIN grand_total gt
+            ORDER BY lb.balance DESC
+            LIMIT :itemsPerPage
+            OFFSET :offset;
+            `, {
+                replacements: {
+                    workspaceId: this.id,
+                    itemsPerPage: itemsPerPage,
+                    offset: (page - 1) * itemsPerPage
+                },
+                type: QueryTypes.SELECT,
+            }
+        );
+    }
+
     /**
      * Returns the top ERC20 tokens by holders for a workspace.
      * 
@@ -180,11 +228,13 @@ module.exports = (sequelize, DataTypes) => {
                 t."blockNumber" AS "transaction.blockNumber",
                 t.timestamp AS "transaction.timestamp",
                 t."data" AS "transaction.data",
-                t."transactionIndex" AS "transaction.transactionIndex"
+                t."transactionIndex" AS "transaction.transactionIndex",
+                e.token AS "explorer.token"
             FROM token_transfer_events tte
             LEFT JOIN contracts c ON c."address" = tte.token AND c."workspaceId" = :workspaceId
             LEFT JOIN token_transfers tt ON tte."tokenTransferId" = tt.id 
             LEFT JOIN transactions t ON tt."transactionId" = t.id
+            LEFT JOIN explorers e ON e."workspaceId" = :workspaceId
             WHERE tte."workspaceId" = :workspaceId
         `;
 
@@ -206,6 +256,12 @@ module.exports = (sequelize, DataTypes) => {
             let itemCopy = { ...item };
             if (itemCopy.contract && itemCopy.transaction && itemCopy.transaction.data && itemCopy.contract.abi)
                 itemCopy.transaction.methodDetails = getTransactionMethodDetails({ data: itemCopy.transaction.data }, itemCopy.contract.abi);
+            if (itemCopy.token == '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
+                itemCopy.contract = {
+                    tokenSymbol: itemCopy.explorer && itemCopy.explorer.token || 'ETH',
+                    tokenName: itemCopy.explorer && itemCopy.explorer.token || 'Ether',
+                    tokenDecimals: 18,
+                };
             return itemCopy;
         });
 
@@ -2873,6 +2929,7 @@ module.exports = (sequelize, DataTypes) => {
                             SELECT COUNT(*)
                             FROM token_transfers
                             WHERE token_transfers."transactionId" = "Transaction".id
+                            AND token_transfers."isReward" = false
                         )::int
                     `), 'tokenTransferCount'
                 ],
