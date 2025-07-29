@@ -3,6 +3,7 @@ jest.mock('../../../lib/rpc', () => {
     const actual = jest.requireActual('../../../lib/rpc');
     return {
         getBalanceChange: jest.fn(),
+        getNativeBalanceChange: jest.fn(),
         getProvider: jest.fn(),    
         ContractConnector: jest.fn().mockImplementation(() => ({
             callReadMethod: jest.fn().mockResolvedValue([ethers.BigNumber.from('1')]),

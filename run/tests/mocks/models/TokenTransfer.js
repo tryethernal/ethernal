@@ -1,5 +1,6 @@
 const TokenTransfer = {
-    findByPk: jest.fn()
+    findByPk: jest.fn(),
+    bulkCreate: jest.fn()
 };
 
 module.exports = { TokenTransfer };

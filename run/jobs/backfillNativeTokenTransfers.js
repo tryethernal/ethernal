@@ -9,7 +9,7 @@
     - reward
 **/
  
-const { Transaction, TokenTransfer, TransactionTraceStep, TokenBalanceChange } = require('../models');
+const { Transaction, TokenTransfer, TransactionTraceStep, TokenBalanceChange, TokenTransferEvent } = require('../models');
 const { sequelize } = require('../models');
 const ethers = require('ethers');
 const { sanitize } = require('../lib/utils');
@@ -66,7 +66,7 @@ module.exports = async job => {
     const tokenTransfers = [];
 
     const rewardTokenTransfer = findRewardTokenTransfer(transaction);
-    console.log(rewardTokenTransfer);
+
     if (!rewardTokenTransfer) {
         let toValidator;
         if (transaction.type && transaction.type == 2) {
@@ -132,10 +132,11 @@ module.exports = async job => {
         }
     }
 
-    console.log(tokenTransfers);
-
     return sequelize.transaction(async sequelizeTransaction => {
-        const createdTokenTransfers = await sequelize.models.TokenTransfer.bulkCreate(tokenTransfers, {
+        if (!tokenTransfers.length)
+            return false;
+
+        const createdTokenTransfers = await TokenTransfer.bulkCreate(tokenTransfers, {
             ignoreDuplicates: true,
             transaction: sequelizeTransaction
         });
@@ -156,9 +157,11 @@ module.exports = async job => {
             }));
         }
 
-        await sequelize.models.TokenTransferEvent.bulkCreate(tokenTransferEvents, {
+        await TokenTransferEvent.bulkCreate(tokenTransferEvents, {
             ignoreDuplicates: true,
             transaction: sequelizeTransaction
         });
+
+        return true;
     });
 };

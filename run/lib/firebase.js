@@ -1976,12 +1976,7 @@ const getTransactionTokenTransfers = async (workspaceId, transactionHash, page, 
     if (!transaction)
         throw new Error('Cannot find transaction');
 
-    const { items: transfers, total: count } = await transaction.getFilteredTokenTransfers(page, itemsPerPage, order, orderBy);
-
-    return {
-        items: transfers,
-        total: count
-    };
+    return transaction.getFilteredTokenTransfers(page, itemsPerPage, order, orderBy);
 };
 
 const getTokenHolderHistory = async (workspaceId, address, from, to) => {
@@ -2715,19 +2710,6 @@ const storeTrace = async (userId, workspace, txHash, trace) => {
     return transaction.safeCreateTransactionTrace(trace);
 };
 
-const storeTransactionData = async (userId, workspace, hash, data) => {
-    if (!userId || !workspace || !hash || !data) throw new Error('Missing parameter.');
-
-    const user = await User.findByAuthIdWithWorkspace(userId, workspace);
-    const transaction = await user.workspaces[0].findTransaction(hash);
-
-    if (!transaction)
-        throw new Error(`Couldn't find transaction`);
-
-    await transaction.safeUpdateStorage(data);
-    return transaction.toJSON();
-};
-
 const storeTokenBalanceChanges = async (userId, workspace, tokenTransferId, changes) => {
     if (!userId || !workspace || !tokenTransferId || !changes) throw new Error('Missing parameter.');
 
@@ -2970,7 +2952,6 @@ module.exports = {
     updateWorkspaceSettings: updateWorkspaceSettings,
     getUserbyStripeCustomerId: getUserbyStripeCustomerId,
     getUserWorkspaces: getUserWorkspaces,
-    storeTransactionData: storeTransactionData,
     createUser: createUser,
     getUnprocessedContracts: getUnprocessedContracts,
     canUserSyncContract: canUserSyncContract,

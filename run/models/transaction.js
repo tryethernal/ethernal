@@ -115,11 +115,11 @@ module.exports = (sequelize, DataTypes) => {
 
         const processedTokenBalanceChanges = [];
 
+        const explorer = await sequelize.models.Explorer.findOne({ where: { workspaceId: this.workspaceId } });
         for (const balanceChange of result) {
             const balanceChangeCopy = { ...balanceChange };
             if (balanceChange.token === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') {
                 // Only inject custom contract object for native token
-                const explorer = await sequelize.models.Explorer.findOne({ where: { workspaceId: this.workspaceId } });
                 if (explorer) {
                     balanceChangeCopy.contract = {
                         tokenSymbol: explorer.token || 'ETH',
@@ -390,11 +390,11 @@ module.exports = (sequelize, DataTypes) => {
         const tokenTransfers = result.rows.map(t => t.toJSON());
         const processedTokenTransfers = [];
 
+        const explorer = await sequelize.models.Explorer.findOne({ where: { workspaceId: this.workspaceId } });
         for (const transfer of tokenTransfers) {
             const transferCopy = { ...transfer };
             if (transfer.token === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') {
                 // Only inject custom contract object for native token
-                const explorer = await sequelize.models.Explorer.findOne({ where: { workspaceId: this.workspaceId } });
                 if (explorer) {
                     transferCopy.contract = {
                         tokenSymbol: explorer.token || 'ETH',
