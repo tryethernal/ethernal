@@ -4,7 +4,6 @@ const {
   Sequelize
 } = require('sequelize');
 const Op = Sequelize.Op
-const moment = require('moment');
 const ethers = require('ethers');
 const { trigger } = require('../lib/pusher');
 const { enqueue } = require('../lib/queue');
@@ -92,6 +91,7 @@ module.exports = (sequelize, DataTypes) => {
                 returning: true,
                 transaction
             });
+
             if (tokenBalanceChange && tokenBalanceChange.id)
                 await tokenBalanceChange.insertAnalyticEvent(transaction);
         });
@@ -170,7 +170,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     transactionId: DataTypes.INTEGER,
     transactionLogId: DataTypes.INTEGER,
-    workspaceId: DataTypes.INTEGER
+    workspaceId: DataTypes.INTEGER,
+    isReward: DataTypes.BOOLEAN
   }, {
     hooks: {
         afterBulkCreate(tokenTransfers, options) {

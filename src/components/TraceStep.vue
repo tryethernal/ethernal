@@ -18,7 +18,7 @@
                     <template v-if="transactionDescription && transactionDescription.functionFragment && transactionDescription.functionFragment.inputs">
                         <div v-for="(input, index) in transactionDescription.functionFragment.inputs" :key="`in-${index}`">
                             <Formatted-Sol-Var :input="input" :value="transactionDescription.args ? transactionDescription.args[index] : null" class="ml-8" />
-                        </div><span class="ml-4">)</span>
+                        </div><span :class="transactionDescription.functionFragment.inputs.length > 0 ? 'ml-4' : ''">)</span>
                         <template v-if="step.returnData && transactionDescription.functionFragment.outputs && transactionDescription.functionFragment.outputs.length">
                             <template v-if="transactionDescription.functionFragment.outputs.length > 0">
                                 =>

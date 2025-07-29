@@ -141,7 +141,7 @@ const name = computed(() => {
         return contractName.value ? contractName.value : formattedHash.value;
     }
     return formattedHash.value;
-});
+}); 
 
 const link = computed(() => `/${[props.type, props.hash].join('/')}`);
 
