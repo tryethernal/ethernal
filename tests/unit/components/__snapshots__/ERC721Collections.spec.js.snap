@@ -65,7 +65,7 @@ exports[`ERC721Collections.vue > Should load & display erc721 contracts 1`] = `
             <tbody class="v-data-table__tbody" role="rowgroup">
               <!---->
               <tr class="v-data-table__tr">
-                <td class="v-data-table__td v-data-table-column--align-start"><span><!--v-if--><a style="text-decoration: none;">ETL</a><!--v-if--><span> &nbsp;<i class="mdi-content-copy mdi v-icon notranslate v-theme--light v-icon--size-x-small v-icon--clickable text-medium-emphasis" role="button" aria-hidden="false" tabindex="0"></i><input type="hidden" id="copyElement-0x123" value="0x123"></span>
+                <td class="v-data-table__td v-data-table-column--align-start"><span><!--v-if--><a style="text-decoration: none;">0x123...x123</a><!--v-if--><span> &nbsp;<i class="mdi-content-copy mdi v-icon notranslate v-theme--light v-icon--size-x-small v-icon--clickable text-medium-emphasis" role="button" aria-hidden="false" tabindex="0"></i><input type="hidden" id="copyElement-0x123" value="0x123"></span>
                   <!--v-if-->
                   <!--v-if--></span>
                 </td>

@@ -2471,6 +2471,11 @@ const getBlockTransactions = async (workspaceId, blockNumber, page = 1, itemsPer
                 model: Contract,
                 as: 'contract',
                 attributes: ['tokenName', 'tokenSymbol', 'tokenDecimals', 'name'],
+                include: {
+                    model: ContractVerification,
+                    as: 'verification',
+                    attributes: ['createdAt']
+                }
             }
         ],
         offset: (page - 1) * itemsPerPage,

@@ -47,7 +47,7 @@
                   :contract="transfer.contract"
                   :notCopiable="true"
                   :withTokenName="true"
-                  :truncate="true"
+                  truncate="true"
                 />&nbsp;
                 <span v-if="transfer.contract?.tokenSymbol && transfer.contract.tokenSymbol !== transfer.contract.tokenName" class="text-medium-emphasis">({{ transfer.contract.tokenSymbol }})</span>
               </template>
