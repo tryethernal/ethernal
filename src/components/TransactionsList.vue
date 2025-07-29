@@ -50,8 +50,8 @@
             <template v-if="dense">
                 <div class="my-2 text-left">
                     From: <Hash-Link :type="'address'" :hash="item.from" /><br>
-                    <span v-if="item.to">To: <Hash-Link :type="'address'" :hash="item.to" :withTokenName="true" :withName="true" :contract="item.contract" /></span>
-                    <span v-else-if="item.receipt && item.receipt.contractAddress">Created: <Hash-Link :contract="item.receipt?.createdContract" :type="'address'" :hash="item.receipt.contractAddress" :withTokenName="true" :withName="true" /></span>
+                    <span v-if="item.to">To: <Hash-Link :type="'address'" :hash="item.to" :withTokenName="false" :withName="true" :contract="item.contract" /></span>
+                    <span v-else-if="item.receipt && item.receipt.contractAddress">Created: <Hash-Link :contract="item.receipt?.createdContract" :type="'address'" :hash="item.receipt.contractAddress" :withTokenName="false" :withName="true" /></span>
                 </div>
             </template>
             <template v-else>
