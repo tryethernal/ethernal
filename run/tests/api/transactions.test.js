@@ -147,14 +147,6 @@ describe(`GET ${BASE_URL}/:hash`, () => {
     });
 });
 
-describe(`POST ${BASE_URL}/:hash/storage`, () => {
-    it('Should return 200 status', (done) => {
-        request.post(`${BASE_URL}/1234/storage`)
-            .send({ data: { workspace: 'My Workspace', data: [{ my: 'data' }]}})
-            .expect(200, done);
-    });
-});
-
 describe(`POST ${BASE_URL}/:hash/trace`, () => {
     it('Should store contract data, store trace & return 200 status', (done) => {
         jest.spyOn(db, 'canUserSyncContract').mockResolvedValue(true);

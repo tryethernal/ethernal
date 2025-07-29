@@ -9,7 +9,6 @@ module.exports = async job => {
         return 'Missing parameter';
 
     const transaction = await Transaction.findByPk(data.transactionId, {
-        attributes: ['id', 'hash', 'workspaceId'],
         include: [
             {
                 model: Workspace,
