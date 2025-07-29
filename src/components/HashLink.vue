@@ -24,7 +24,7 @@
             &nbsp; <v-icon class="text-medium-emphasis" size="x-small">mdi-check</v-icon>
         </span>
         <span v-if="alternateLink && hash !== '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'">
-            &nbsp; <v-icon class="text-medium-emphasis" size="x-small" @click="showAlternateLink = !showAlternateLink">mdi-swap-horizontal</v-icon>
+            <v-icon class="text-medium-emphasis" size="x-small" @click="showAlternateLink = !showAlternateLink">mdi-swap-horizontal</v-icon>
         </span>
     </span>
 </template>
