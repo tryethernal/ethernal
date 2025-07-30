@@ -69,12 +69,15 @@ import TransactionOverview from './TransactionOverview.vue';
 import TransactionLogs from './TransactionLogs.vue';
 import TransactionInternalTxns from './TransactionInternalTxns.vue';
 import TransactionState from './TransactionState.vue';
+import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
 
 const props = defineProps(['hash']);
 
 // Inject all required globals
 const $server = inject('$server');
 const $pusher = inject('$pusher');
+
+const currentWorkspaceStore = useCurrentWorkspaceStore();
 
 // Reactive state with optimized defaults
 const transaction = ref({
@@ -98,7 +101,7 @@ let pusherUnsubscribe = null;
 // Computed properties for improved null safety
 const hasLogs = computed(() => transaction.value.receipt && transaction.value.receipt.logCount > 0);
 const logCount = computed(() => transaction.value.receipt ? transaction.value.receipt.logCount : 0);
-const hasInternalTxns = computed(() => transaction.value.internalTransactionCount && transaction.value.internalTransactionCount > 0);
+const hasInternalTxns = computed(() => currentWorkspaceStore.tracing && transaction.value.internalTransactionCount && transaction.value.internalTransactionCount > 0);
 
 // Initialize empty transaction with safe defaults
 const resetTransaction = () => {

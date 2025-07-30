@@ -40,7 +40,7 @@
                             <span class="text-body-2">Transactions</span>
                         </template>
                     </v-list-item>
-                    <v-list-item :to="'/txsInternal'" title="Internal Transactions" :color="route.path === '/txsInternal' ? 'primary' : undefined">
+                    <v-list-item v-if="currentWorkspaceStore.tracing" :to="'/txsInternal'" title="Internal Transactions" :color="route.path === '/txsInternal' ? 'primary' : undefined">
                         <template v-slot:title>
                             <span class="text-body-2">Internal Transactions</span>
                         </template>
@@ -211,7 +211,7 @@
                                     <span class="text-body-2">Transactions</span>
                                 </template>
                             </v-list-item>
-                            <v-list-item :to="'/txsInternal'" title="Internal Transactions">
+                            <v-list-item v-if="currentWorkspaceStore.tracing" :to="'/txsInternal'" title="Internal Transactions">
                                 <template v-slot:title>
                                     <span class="text-body-2">Internal Transactions</span>
                                 </template>
