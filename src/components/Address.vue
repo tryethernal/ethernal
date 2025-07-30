@@ -170,8 +170,8 @@ const addressTransactionStats = ref({});
 const activeTab = ref('transactions');
 
 const totalTransactions = computed(() => {
-    if (!addressTransactionStats.value.sent && !addressTransactionStats.value.received) return 0;
-    return formatNumber(addressTransactionStats.value.sent + addressTransactionStats.value.received, { short: true });
+    if (!addressTransactionStats.value.transactionCount) return 0;
+    return formatNumber(addressTransactionStats.value.transactionCount, { short: true });
 });
 
 const totalTokenTransfers = computed(() => {
@@ -181,9 +181,9 @@ const totalTokenTransfers = computed(() => {
 
 const patternCount = computed(() => {
     return {
-        erc20: addressTransactionStats.value ? addressTransactionStats.value.erc20_sent + addressTransactionStats.value.erc20_received : 0,
-        erc721: addressTransactionStats.value ? addressTransactionStats.value.erc721_sent + addressTransactionStats.value.erc721_received : 0,
-        erc1155: addressTransactionStats.value ? addressTransactionStats.value.erc1155_sent + addressTransactionStats.value.erc1155_received : 0
+        erc20: addressTransactionStats.value.erc20TransferCount || 0,
+        erc721: addressTransactionStats.value.erc721TransferCount || 0,
+        erc1155: addressTransactionStats.value.erc1155TransferCount || 0
     }
 });
 
