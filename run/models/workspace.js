@@ -236,6 +236,7 @@ module.exports = (sequelize, DataTypes) => {
             LEFT JOIN transactions t ON tt."transactionId" = t.id
             LEFT JOIN explorers e ON e."workspaceId" = :workspaceId
             WHERE tte."workspaceId" = :workspaceId
+            AND tte.token != '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
         `;
 
         if (tokenTypes.length)
@@ -1741,7 +1742,8 @@ module.exports = (sequelize, DataTypes) => {
             [Op.or]: [
                 { src: address.toLowerCase() },
                 { dst: address.toLowerCase() }
-            ]
+            ],
+            token: { [Op.ne]: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' }
         };
 
         if (tokenTypes.length)
@@ -1782,7 +1784,8 @@ module.exports = (sequelize, DataTypes) => {
         }
 
         query += ` WHERE token_transfer_events."workspaceId" = :workspaceId
-            AND ("src" = :address OR "dst" = :address)`;
+            AND ("src" = :address OR "dst" = :address)
+            AND token_transfer_events.token != '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'`;
 
         if (tokenTypes.length)
             query += ` AND c."patterns"::text[] && ARRAY[:tokenTypes]`;
