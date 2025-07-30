@@ -7,7 +7,7 @@
             Verified contract.
         </v-tooltip>
         <template v-if="hash && !unlink">
-            <span v-if="hash == '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' && tokenData.symbol">
+            <span v-if="hash == '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' && tokenData?.symbol">
                 {{ tokenData.symbol }}   
             </span>
             <a style="text-decoration: none;" v-else-if="embedded" :href="externalLink" target="_blank">{{ name }}</a>
@@ -140,8 +140,8 @@ const name = computed(() => {
         return `${token.value || 'ETH'} faucet`;
     }
     if (props.withName) {
-        if (props.withTokenName) return tokenData.value.name || tokenData.value.symbol;
-        return contractName.value ? contractName.value : formattedHash.value;
+        if (props.withTokenName && tokenData.value) return tokenData.value?.name || tokenData.value?.symbol || formattedHash.value;
+        return contractName.value || formattedHash.value;
     }
     return formattedHash.value;
 }); 
@@ -152,6 +152,9 @@ const externalLink = computed(() => `//${domain.value}/${[props.type, props.hash
 
 // Watch for hash changes
 watch(() => props.hash, async (hash) => {
+    // Reset tokenData when hash changes
+    tokenData.value = null;
+
     if (!hash) return;
 
     if (props.withName && hash === '0x0000000000000000000000000000000000000000') {
@@ -170,6 +173,8 @@ watch(() => props.hash, async (hash) => {
                 name: props.contract.tokenName,
                 symbol: props.contract.tokenSymbol
             });
+        } else {
+            tokenData.value = null;
         }
         verified.value = !!props.contract.verification;
         contractName.value = props.contract.name;
@@ -182,12 +187,17 @@ watch(() => props.hash, async (hash) => {
                         name: data.tokenName,
                         symbol: data.tokenSymbol
                     });
+                } else {
+                    tokenData.value = null;
                 }
                 verified.value = !!data.verification;
                 contractName.value = data.name;
+            } else {
+                tokenData.value = null;
             }
         } catch (error) {
             console.error('Failed to load contract:', error);
+            tokenData.value = null;
         }
     }
 }, { immediate: true });
