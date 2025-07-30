@@ -18,6 +18,17 @@ router.get('/', workspaceAuthMiddleware, async (req, res, next) => {
     }
 });
 
+router.get('/imported', workspaceAuthMiddleware, async (req, res, next) => {
+    const data = { ...req.query, ...req.body.data };
+    try {
+        const result = await db.getImportedAccounts(data.firebaseUserId, data.workspace.name, data.page, data.itemsPerPage, data.orderBy, data.order)
+
+        res.status(200).json(result);
+    } catch(error) {
+        unmanagedError(error, req, next);
+    }
+});
+
 router.post('/:address/syncBalance', authMiddleware, async (req, res, next) => {
     const data = { ...req.params, ...req.body.data };
     try {

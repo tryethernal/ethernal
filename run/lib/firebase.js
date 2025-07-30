@@ -33,6 +33,10 @@ const ExplorerFaucet = models.ExplorerFaucet;
 const ExplorerV2Dex = models.ExplorerV2Dex;
 const V2DexPair = models.V2DexPair;
 
+const getAccounts = () => {
+    return getImportedAccounts();
+}
+
 /**
  * Checks if a domain is a registered domain.
  * We use on self hosted instances to check if
@@ -2688,13 +2692,13 @@ const storeAccountPrivateKey = async (userId, workspace, address, privateKey) =>
     return account.toJSON();
 };
 
-const getAccounts = async (userId, workspaceName, page, itemsPerPage, orderBy, order) => {
+const getImportedAccounts = async (userId, workspaceName, page, itemsPerPage, orderBy, order) => {
     if (!userId || !workspaceName) throw new Error('Missing parameter.');
 
     const user = await User.findByAuthIdWithWorkspace(userId, workspaceName);
     const workspace = user.workspaces[0];
 
-    const accounts = await workspace.getFilteredAccounts(page, itemsPerPage, orderBy, order);
+    const accounts = await workspace.getFilteredImportedAccounts(page, itemsPerPage, orderBy, order);
     const count = await workspace.countAccounts();
 
     return {
@@ -3132,5 +3136,6 @@ module.exports = {
     getTopTokensByHolders: getTopTokensByHolders,
     createAdmin: createAdmin,
     canSetupAdmin: canSetupAdmin,
-    isValidExplorerDomain: isValidExplorerDomain
+    isValidExplorerDomain: isValidExplorerDomain,
+    getImportedAccounts: getImportedAccounts
 };

@@ -1339,13 +1339,13 @@ export default {
                 return axios.get(resource, { params });
             },
 
-            getAccounts(options) {
+            getImportedAccounts(options) {
                 const params = {
                     firebaseUserId: firebaseUserId.value,
                     workspace: workspace.value,
                     ...options
                 };
-                const resource = `${envStore.apiRoot}/api/accounts`;
+                const resource = `${envStore.apiRoot}/api/accounts/imported`;
                 return axios.get(resource, { params });
             },
 

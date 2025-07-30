@@ -128,7 +128,7 @@ const processFailedTransactions = async () => {
 
 const getAccounts = async () => {
     try {
-        const { data: { items } } = await $server.getAccounts({ page: -1 });
+        const { data: { items } } = await $server.getImportedAccounts({ page: -1 });
         currentWorkspaceStore.updateAccounts(items);
     } catch (error) {
         console.log(error);

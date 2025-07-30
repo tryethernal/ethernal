@@ -2357,7 +2357,7 @@ module.exports = (sequelize, DataTypes) => {
         return Object.values(result);
     }
 
-    getFilteredAccounts(page = 1, itemsPerPage = 10, orderBy = 'address', order = 'DESC') {
+    getFilteredImportedAccounts(page = 1, itemsPerPage = 10, orderBy = 'address', order = 'DESC') {
         if (page == -1)
             return this.getAccounts({
                 order: [[orderBy, order]],
