@@ -91,7 +91,6 @@
                 <v-chip
                     size="x-small"
                     color="grey-lighten"
-                    variant="flat"
                     class="mr-2"
                     v-if="item.dst === address"
                 >
