@@ -14,7 +14,7 @@ module.exports = async job => {
             {
                 model: Workspace,
                 as: 'workspace',
-                attributes: ['id', 'name', 'public', 'rpcServer']
+                attributes: ['id', 'name', 'public', 'rpcServer', 'processNativeTokenTransfers']
             },
             {
                 model: Transaction,
@@ -26,6 +26,9 @@ module.exports = async job => {
 
     if (!tokenTransfer)
         return 'Cannot find token transfer';
+
+    if (tokenTransfer.token == '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' && !tokenTransfer.workspace.processNativeTokenTransfers)
+        return 'Not processing native token transfers';
 
     if (!tokenTransfer.workspace.public)
         return 'Not processing private workspaces';
