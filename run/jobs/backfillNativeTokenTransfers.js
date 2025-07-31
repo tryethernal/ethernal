@@ -94,6 +94,11 @@ module.exports = async job => {
             isReward: true
         }));
     }
+    else if (!rewardTokenTransfer.tokenBalanceChanges.length) {
+        await sequelize.transaction(async sequelizeTransaction => {
+            await rewardTokenTransfer.afterCreate({ transaction: sequelizeTransaction });
+        });
+    }
 
     const value = BigNumber.from(eToNumber(String(transaction.value)));
     if (value.gt(ethers.constants.Zero) && !findValueTokenTransfer(transaction)) {
@@ -113,6 +118,11 @@ module.exports = async job => {
             tokenId: null,
             isReward: false
         }));
+    }
+    else if (value.gt(ethers.constants.Zero) && !findValueTokenTransfer(transaction).tokenBalanceChanges.length) {
+        await sequelize.transaction(async sequelizeTransaction => {
+            await findValueTokenTransfer(transaction).afterCreate({ transaction: sequelizeTransaction });
+        });
     }
 
     for (const step of transaction.traceSteps) {
