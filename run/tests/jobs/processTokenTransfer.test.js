@@ -24,6 +24,7 @@ describe('processTokenTransfer', () => {
             token: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
             workspace: {
                 public: true,
+                processNativeTokenTransfers: true,
                 name: 'remote',
                 rpcServer: 'http://localhost:8545',
                 user: {
