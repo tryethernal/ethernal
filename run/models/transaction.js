@@ -278,8 +278,6 @@ module.exports = (sequelize, DataTypes) => {
                 toValidator = gasPrice.mul(gasUsed);
             }
 
-            console.log('toValidator', toValidator.toString());
-
             tokenTransfers.push(sanitize({
                 transactionId: this.id,
                 transactionLogId: null,
