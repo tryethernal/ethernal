@@ -19,15 +19,26 @@ const ALL_ABIS = ERC721_ABI.concat(ERC20_ABI, ERC721_ENUMERABLE_ABI, ERC721_META
 
 const getNativeBalanceChange = async (address, blockNumber, rpcServer) => {
     const provider = new ProviderConnector(rpcServer);
-    const currentBalance = blockNumber > 0 ? await provider.getBalance(address, blockNumber) : ethers.BigNumber.from('0');
-    const previousBalance = blockNumber > 1 ? await provider.getBalance(address, blockNumber - 1) : ethers.BigNumber.from('0');
+    
+    try {
+        const currentBalance = blockNumber > 0 ? await provider.getBalance(address, blockNumber) : ethers.BigNumber.from('0');
+        const previousBalance = blockNumber > 1 ? await provider.getBalance(address, blockNumber - 1) : ethers.BigNumber.from('0');
 
-    return {
-        address: address,
-        currentBalance: currentBalance.toString(),
-        previousBalance: previousBalance.toString(),
-        diff: currentBalance.sub(previousBalance).toString()
-    };
+        return {
+            address: address,
+            currentBalance: currentBalance.toString(),
+            previousBalance: previousBalance.toString(),
+            diff: currentBalance.sub(previousBalance).toString()
+        };
+    } catch (error) {
+        logger.error('Error getting native balance change', { 
+            location: 'lib.rpc.getNativeBalanceChange', 
+            error: error.message, 
+            address, 
+            blockNumber 
+        });
+        throw error;
+    }
 }
 
 const getBalanceChange = async (address, token, blockNumber, rpcServer) => {
@@ -46,13 +57,18 @@ const getBalanceChange = async (address, token, blockNumber, rpcServer) => {
 
         if (ethers.BigNumber.isBigNumber(res[0]))
             currentBalance = res[0];
+        else if (res.startsWith && res.startsWith('call revert exception'))
+            currentBalance = ethers.BigNumber.from('0');
         else
-            if (res.startsWith && res.startsWith('call revert exception'))
-                currentBalance = ethers.BigNumber.from('0');
-            else
-                throw new Error(res);
+            throw new Error(res);
     } catch(error) {
-        logger.error(error.message, { location: 'lib.rpc', error: error, data: { address, token, blockNumber }});
+        logger.error('Error getting current balance', { 
+            location: 'lib.rpc.getBalanceChange', 
+            error: error.message, 
+            address, 
+            token, 
+            blockNumber 
+        });
         throw error;
     }
 
@@ -67,13 +83,18 @@ const getBalanceChange = async (address, token, blockNumber, rpcServer) => {
 
             if (ethers.BigNumber.isBigNumber(res[0]))
                 previousBalance = res[0];
-            else
-            if (res.startsWith && res.startsWith('call revert exception'))
+            else if (res.startsWith && res.startsWith('call revert exception'))
                 previousBalance = ethers.BigNumber.from('0');
             else
                 throw new Error(res);
-        }  catch(error) {
-            logger.error(error.message, { location: 'lib.rpc', error: error, data: arguments });
+        } catch(error) {
+            logger.error('Error getting previous balance', { 
+                location: 'lib.rpc.getBalanceChange', 
+                error: error.message, 
+                address, 
+                token, 
+                blockNumber 
+            });
             throw error;
         }
     }
