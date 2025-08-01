@@ -7,10 +7,29 @@ const authMiddleware = require('../middlewares/auth');
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const { managedError, unmanagedError } = require('../lib/errors');
 
+/**
+ * Get filtered native token balances of all active addresses (paginated)
+ * with share % and transaction count
+ * @param {integer} workspaceId
+ * @param {integer} page
+ * @param {integer} itemsPerPage
+ * @returns {Promise<Array>} - A list of native token balances
+ */
 router.get('/', workspaceAuthMiddleware, async (req, res, next) => {
     const data = { ...req.query, ...req.body.data };
     try {
-        const result = await db.getAccounts(data.firebaseUserId, data.workspace.name, data.page, data.itemsPerPage, data.orderBy, data.order)
+        const result = await db.getFilteredNativeAccounts(data.workspace.id, data.page, data.itemsPerPage)
+
+        res.status(200).json({ items: result });
+    } catch(error) {
+        unmanagedError(error, req, next);
+    }
+});
+
+router.get('/imported', workspaceAuthMiddleware, async (req, res, next) => {
+    const data = { ...req.query, ...req.body.data };
+    try {
+        const result = await db.getImportedAccounts(data.firebaseUserId, data.workspace.name, data.page, data.itemsPerPage, data.orderBy, data.order)
 
         res.status(200).json(result);
     } catch(error) {

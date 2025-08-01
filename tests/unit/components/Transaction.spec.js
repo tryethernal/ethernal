@@ -27,7 +27,13 @@ describe('Transaction.vue', () => {
             },
             global: {
                 stubs,
-                plugins: [router]
+                plugins: [router, createTestingPinia({
+                    initialState: {
+                        currentWorkspace: {
+                            tracing: true
+                        }
+                    }
+                })]
             }
         });
         expect(wrapper.html()).toMatchSnapshot();
@@ -44,7 +50,13 @@ describe('Transaction.vue', () => {
             },
             global: {
                 stubs,
-                plugins: [router]
+                plugins: [router, createTestingPinia({
+                    initialState: {
+                        currentWorkspace: {
+                            tracing: true
+                        }
+                    }
+                })]
             }
         });
         await flushPromises();
@@ -69,7 +81,13 @@ describe('Transaction.vue', () => {
             },
             global: {
                 stubs,
-                plugins: [router]
+                plugins: [router, createTestingPinia({
+                    initialState: {
+                        currentWorkspace: {
+                            tracing: true
+                        }
+                    }
+                })]
             }
         });
         await flushPromises();
@@ -122,7 +140,13 @@ describe('Transaction.vue', () => {
             },
             global: {
                 stubs,
-                plugins: [router]
+                plugins: [router, createTestingPinia({
+                    initialState: {
+                        currentWorkspace: {
+                            tracing: true
+                        }
+                    }
+                })]
             }
         });
         await flushPromises();
@@ -149,7 +173,13 @@ describe('Transaction.vue', () => {
             },
             global: {
                 stubs,
-                plugins: [router]
+                plugins: [router, createTestingPinia({
+                    initialState: {
+                        currentWorkspace: {
+                            tracing: true
+                        }
+                    }
+                })]
             }
         });
         await flushPromises();
@@ -166,6 +196,7 @@ describe('Transaction.vue', () => {
                 formattedBalanceChanges: {},
                 tokenTransferCount: 2,
                 receipt: { ...USDCTransferTx.receipt, status: 1 },
+                internalTransactionCount: 2,
             }});
 
         const wrapper = mount(Transaction, {
@@ -176,7 +207,43 @@ describe('Transaction.vue', () => {
                 stubs,
                 plugins: [router, createTestingPinia({
                     initialState: {
-                        explorer: { id: 1, token: 'ETL' }
+                        explorer: { id: 1, token: 'ETL' },
+                        currentWorkspace: {
+                            tracing: true
+                        }
+                    }
+                })]
+            }
+        });
+        await flushPromises();
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
+    it('Should not display the internal transactions menu if tracing is disabled', async () => {
+        vi.spyOn(server, 'getTransaction')
+            .mockResolvedValue({ data: {
+                ...USDCTransferTx,
+                block: { gasLimit: '1000' },
+                traceSteps: [],
+                formattedBalanceChanges: {},
+                tokenTransferCount: 2,
+                internalTransactionCount: 2,
+                receipt: { ...USDCTransferTx.receipt, status: 1 },
+            }});
+
+        const wrapper = mount(Transaction, {
+            props: {
+                hash: '0x05d709954d59bfaa43bcf629b0a415d30e56ab1400d96dc7bd0ed1664a702759'
+            },
+            global: {
+                stubs,
+                plugins: [router, createTestingPinia({
+                    initialState: {
+                        explorer: { id: 1, token: 'ETL' },
+                        currentWorkspace: {
+                            tracing: false
+                        }
                     }
                 })]
             }
