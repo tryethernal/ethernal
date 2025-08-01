@@ -189,7 +189,7 @@ module.exports = (sequelize, DataTypes) => {
                 },
                 {
                     model: sequelize.models.Workspace,
-                    attributes: ['id', 'public', 'rpcServer', 'name'],
+                    attributes: ['id', 'public', 'rpcServer', 'name', 'processNativeTokenTransfers'],
                     as: 'workspace',
                     include: {
                         model: sequelize.models.User,
@@ -202,11 +202,13 @@ module.exports = (sequelize, DataTypes) => {
 
         if (transaction.workspace.public) {
             options.transaction.afterCommit(() => {
-                return enqueue('processTokenTransfer',
-                    `processTokenTransfer-${this.workspaceId}-${this.token}-${this.id}`, {
-                        tokenTransferId: this.id
-                    }
-                );
+                if (transaction.workspace.processNativeTokenTransfers) {
+                    return enqueue('processTokenTransfer',
+                        `processTokenTransfer-${this.workspaceId}-${this.token}-${this.id}`, {
+                            tokenTransferId: this.id
+                        }
+                    );
+                }
             });
 
             if (this.tokenId)
