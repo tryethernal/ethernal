@@ -123,6 +123,7 @@ export default {
     getWorkspaceContractStats: vi.fn(),
     getWorkspaceVerifiedContracts: vi.fn(),
     getWorkspaceTokenTransfers: vi.fn(),
+    getImportedAccounts: vi.fn(),
 
     syncTransactionData: function() {
         return new Promise((resolve) => resolve(true))

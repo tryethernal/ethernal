@@ -219,7 +219,7 @@ export default {
             slug: chain.slug
         }));
 
-        this.$server.getAccounts({ page: -1 })
+        this.$server.getImportedAccounts({ page: -1 })
             .then(({ data: { items } }) => this.accounts = items)
             .catch(console.log);
 

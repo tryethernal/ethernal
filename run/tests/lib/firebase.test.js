@@ -13,6 +13,38 @@ const env = require('../../lib/env');
 
 beforeEach(() => jest.clearAllMocks());
 
+describe('getFilteredNativeAccounts', () => {
+    it('Should return the filtered native accounts', (done) => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
+            getFilteredNativeAccounts: jest.fn().mockResolvedValueOnce([{
+                address: '0x123',
+                balance: 100,
+                share: 0.1,
+                transaction_count: 10
+            }])
+        });
+        db.getFilteredNativeAccounts(1, 1, 10)
+            .then((res) => {
+                expect(res).toEqual([{
+                    address: '0x123',
+                    balance: 100,
+                    share: 0.1,
+                    transaction_count: 10
+                }]);
+                done();
+            });
+    });
+
+    it('Should throw an error if no workspace', (done) => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce(null);
+        db.getFilteredNativeAccounts(1, 1, 10)
+            .catch(error => {
+                expect(error).toEqual(new Error('Could not find workspace'));
+                done();
+            });
+    });
+});
+
 describe('getWorkspaceTokenTransfers', () => {
     it('Should throw an error if no workspace', (done) => {
         jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce(null);
@@ -3513,11 +3545,11 @@ describe('getContract', () => {
     });
 });
 
-describe('getAccounts', () => {
+describe('getImportedAccounts', () => {
     it('Should return the account list with the total', (done) => {
-        jest.spyOn(workspace, 'getFilteredAccounts').mockResolvedValueOnce([{ toJSON: () => ({ address: '0x123' }) }]);
+        jest.spyOn(workspace, 'getFilteredImportedAccounts').mockResolvedValueOnce([{ toJSON: () => ({ address: '0x123' }) }]);
         jest.spyOn(workspace, 'countAccounts').mockResolvedValueOnce(1);
-        db.getAccounts('123', 'hardhat')
+        db.getImportedAccounts('123', 'hardhat', 1, 10)
             .then(({ items, total}) => {
                 expect(items).toEqual([{ address: '0x123' }]);
                 expect(total).toEqual(1);

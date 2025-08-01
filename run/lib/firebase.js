@@ -34,6 +34,25 @@ const ExplorerV2Dex = models.ExplorerV2Dex;
 const V2DexPair = models.V2DexPair;
 
 /**
+ * Return filtered native token balances of all active addresses (paginated)
+ * with share % and transaction count
+ * @param {integer} workspaceId 
+ * @param {integer} page 
+ * @param {integer} itemsPerPage 
+ * @returns {Promise<Array>} - A list of native token balances
+ */
+const getFilteredNativeAccounts = async (workspaceId, page, itemsPerPage) => {
+    if (!workspaceId)
+        throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+    if (!workspace)
+        throw new Error('Could not find workspace');
+
+    return workspace.getFilteredNativeAccounts(page, itemsPerPage);
+}
+
+/**
  * Checks if a domain is a registered domain.
  * We use on self hosted instances to check if
  * we can issue a SSL certificate for the domain.
@@ -2688,13 +2707,13 @@ const storeAccountPrivateKey = async (userId, workspace, address, privateKey) =>
     return account.toJSON();
 };
 
-const getAccounts = async (userId, workspaceName, page, itemsPerPage, orderBy, order) => {
+const getImportedAccounts = async (userId, workspaceName, page, itemsPerPage, orderBy, order) => {
     if (!userId || !workspaceName) throw new Error('Missing parameter.');
 
     const user = await User.findByAuthIdWithWorkspace(userId, workspaceName);
     const workspace = user.workspaces[0];
 
-    const accounts = await workspace.getFilteredAccounts(page, itemsPerPage, orderBy, order);
+    const accounts = await workspace.getFilteredImportedAccounts(page, itemsPerPage, orderBy, order);
     const count = await workspace.countAccounts();
 
     return {
@@ -2983,7 +3002,6 @@ module.exports = {
     getWorkspaceContractById: getWorkspaceContractById,
     getUserById: getUserById,
     getContract: getContract,
-    getAccounts: getAccounts,
     getPublicExplorerParamsByDomain: getPublicExplorerParamsByDomain,
     getProcessableTransactions: getProcessableTransactions,
     getFailedProcessableTransactions: getFailedProcessableTransactions,
@@ -3132,5 +3150,7 @@ module.exports = {
     getTopTokensByHolders: getTopTokensByHolders,
     createAdmin: createAdmin,
     canSetupAdmin: canSetupAdmin,
-    isValidExplorerDomain: isValidExplorerDomain
+    isValidExplorerDomain: isValidExplorerDomain,
+    getImportedAccounts: getImportedAccounts,
+    getFilteredNativeAccounts: getFilteredNativeAccounts
 };

@@ -176,7 +176,7 @@ watch(() => props.hash, async (hash) => {
         } else {
             tokenData.value = null;
         }
-        verified.value = !!props.contract.verification;
+        verified.value = props.contract.verification && props.contract.verification.createdAt;
         contractName.value = props.contract.name;
     } else if (props.loadContract) {
         try {
