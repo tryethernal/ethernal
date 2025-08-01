@@ -4,152 +4,156 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [5.5.11] - 2025-08-31
+## [5.5.12] - 2025-08-01
+### Fixed
+- Address header stats display
+
+## [5.5.11] - 2025-07-31
 ### Added
 - Toggle for native token processing
 
-## [5.5.10] - 2025-08-31
+## [5.5.10] - 2025-07-31
 ### Changed
 - Improved token transfer processing job (better performances)
 - Improved token transfer backfilling job
 
-## [5.5.9] - 2025-08-30
+## [5.5.9] - 2025-07-30
 ### Fixed
 - Navbar fix
 
-## [5.5.8] - 2025-08-30
+## [5.5.8] - 2025-07-30
 ### Fixed
 - Native token transfer backfilling edge case
 
-## [5.5.7] - 2025-08-30
+## [5.5.7] - 2025-07-30
 ### Fixed
 - Various counts on address page
 - Token transfers list bug
 
-## [5.5.6] - 2025-08-30
+## [5.5.6] - 2025-07-30
 ### Fixed
 - HashLink component edge cases bugs
 - Token transfers list bug
 
-## [5.5.5] - 2025-08-29
+## [5.5.5] - 2025-07-29
 ### Fixed
 - Tests
 
-## [5.5.4] - 2025-08-29
+## [5.5.4] - 2025-07-29
 ### Fixed
 - Tests
 
-## [5.5.3] - 2025-08-29
+## [5.5.3] - 2025-07-29
 ### Fixed
 - Decoded transaction log display
 
-## [5.5.2] - 2025-08-29
+## [5.5.2] - 2025-07-29
 ### Changed
 - No alternate links for native tokens
 
-## [5.5.1] - 2025-08-28
+## [5.5.1] - 2025-07-28
 ### Changed
 - Native tokens are not clickable
 
-## [5.5.0] - 2025-08-28
+## [5.5.0] - 2025-07-28
 ### Added
 - Native token transfers indexing
 
 ### Fixed
 - Issue when displaying some transactions to field in the overview page
 
-## [5.4.18] - 2025-08-28
+## [5.4.18] - 2025-07-28
 ### Fixed
 - Token name in token transfer lists
 
-## [5.4.17] - 2025-08-28
+## [5.4.17] - 2025-07-28
 ### Fixed
 - Tests
 
-## [5.4.16] - 2025-08-28
+## [5.4.16] - 2025-07-28
 ### Changed
 - Better contract name display
 
-## [5.4.15] - 2025-08-28
+## [5.4.15] - 2025-07-28
 ### Changed
 - Improved token transfer list design
 
-## [5.4.14] - 2025-08-28
+## [5.4.14] - 2025-07-28
 ### Changed
 - Displayed contract name 
 
 ### Added
 - Chip next to transaction status
 
-## [5.4.13] - 2025-08-28
+## [5.4.13] - 2025-07-28
 ### Fixed
 - Display method name in transaction list
 
-## [5.4.12] - 2025-08-22
+## [5.4.12] - 2025-07-22
 ### Changed
 - Display created contract info on block transaction list
 
-## [5.4.11] - 2025-08-22
+## [5.4.11] - 2025-07-22
 ### Fixed
 - Incorrect display of "token tracker" label
 
-## [5.4.10] - 2025-08-22
+## [5.4.10] - 2025-07-22
 ### Changed
 - Display created contract name + verification chip
 
-## [5.4.9] - 2025-08-18
+## [5.4.9] - 2025-07-18
 ### Changed
 - Display created contract address on tx list
 
-## [5.4.8] - 2025-08-18
+## [5.4.8] - 2025-07-18
 ### Changed
 - Host check
 
-## [5.4.7] - 2025-08-18
+## [5.4.7] - 2025-07-18
 ### Changed
 - Host check
 
-## [5.4.6] - 2025-08-18
+## [5.4.6] - 2025-07-18
 ### Changed
 - Host check
 
-## [5.4.5] - 2025-08-18
+## [5.4.5] - 2025-07-18
 ### Changed
 - Host check
 
-## [5.4.4] - 2025-08-18
+## [5.4.4] - 2025-07-18
 ### Changed
 - Host check
 
-## [5.4.3] - 2025-08-18
+## [5.4.3] - 2025-07-18
 ### Changed
 - Redeploy
 
-## [5.4.2] - 2025-08-18
+## [5.4.2] - 2025-07-18
 ### Fixed
 - Tests
 
-## [5.4.1] - 2025-08-18
+## [5.4.1] - 2025-07-18
 ### Fixed
 - Contract verification for hosts not going through Approximated
 
-## [5.4.0] - 2025-08-15
+## [5.4.0] - 2025-07-15
 ### Changed
 - Frontend RPC server is now exposed in the UI & API
 
-## [5.3.16] - 2025-08-12
+## [5.3.16] - 2025-07-12
 ### Fixed
 - Chain id hotfix
 
-## [5.3.15] - 2025-08-05
+## [5.3.15] - 2025-07-05
 ### Changed
 - Caddy config
 
-## [5.3.14] - 2025-08-05
+## [5.3.14] - 2025-07-05
 ### Changed
 - Caddy config
 
-## [5.3.13] - 2025-08-05
+## [5.3.13] - 2025-07-05
 ### Added
 - Caddy config
 
