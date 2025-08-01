@@ -4,6 +4,60 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.5.11] - 2025-08-31
+### Added
+- Toggle for native token processing
+
+## [5.5.10] - 2025-08-31
+### Changed
+- Improved token transfer processing job (better performances)
+- Improved token transfer backfilling job
+
+## [5.5.9] - 2025-08-30
+### Fixed
+- Navbar fix
+
+## [5.5.8] - 2025-08-30
+### Fixed
+- Native token transfer backfilling edge case
+
+## [5.5.7] - 2025-08-30
+### Fixed
+- Various counts on address page
+- Token transfers list bug
+
+## [5.5.6] - 2025-08-30
+### Fixed
+- HashLink component edge cases bugs
+- Token transfers list bug
+
+## [5.5.5] - 2025-08-29
+### Fixed
+- Tests
+
+## [5.5.4] - 2025-08-29
+### Fixed
+- Tests
+
+## [5.5.3] - 2025-08-29
+### Fixed
+- Decoded transaction log display
+
+## [5.5.2] - 2025-08-29
+### Changed
+- No alternate links for native tokens
+
+## [5.5.1] - 2025-08-28
+### Changed
+- Native tokens are not clickable
+
+## [5.5.0] - 2025-08-28
+### Added
+- Native token transfers indexing
+
+### Fixed
+- Issue when displaying some transactions to field in the overview page
+
 ## [5.4.18] - 2025-08-28
 ### Fixed
 - Token name in token transfer lists

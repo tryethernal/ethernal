@@ -20,6 +20,35 @@ const validateBNString = (str) => {
     }
 }
 
+const eToNumber = (num) => {
+    let sign = "";
+    (num += "").charAt(0) === "-" && (num = num.substring(1), sign = "-");
+    let arr = num.split(/[eE]/);
+    if (arr.length < 2) return sign + num;
+    let n = arr[0];
+    let exp = +arr[1];
+    let dot = '.';
+    let parts = n.split(dot);
+    let integerPart = parts[0];
+    let fractionalPart = parts[1] || "";
+    if (exp > 0) {
+        if (fractionalPart.length <= exp) {
+            fractionalPart = fractionalPart.padEnd(exp, '0');
+            n = integerPart + fractionalPart;
+        } else {
+            n = integerPart + fractionalPart.substring(0, exp) + dot + fractionalPart.substring(exp);
+        }
+    } else {
+        if (integerPart.length + exp > 0) {
+            n = integerPart.slice(0, exp) + dot + integerPart.slice(exp) + fractionalPart;
+        } else {
+            n = "0" + dot + "0".repeat(Math.abs(exp) - integerPart.length) + integerPart + fractionalPart;
+        }
+    }
+    n = n.replace(/^0+(?=\d)|(\.0+|(?<=\.\d*)0+)$/g, '');
+    return sign + n;
+};
+
 const getEnv = () => process.env.NODE_ENV;
 
 const formatErc721Metadata = (tokenId, metadata) => {
@@ -187,5 +216,6 @@ module.exports = {
     formatErc721Metadata,
     validateBNString,
     sleep,
-    avg
+    avg,
+    eToNumber
 };

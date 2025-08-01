@@ -7,7 +7,7 @@
                         type="address"
                         :unlink="unlink"
                         :notCopiable="true"
-                        :withTokenName="true"
+                        :withTokenName="false"
                         :withName="true"
                         :hash="log.address"
                         :contract="contract"

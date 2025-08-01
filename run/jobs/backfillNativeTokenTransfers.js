@@ -12,7 +12,7 @@
 const { Transaction, TokenTransfer, TransactionTraceStep, TokenBalanceChange, TokenTransferEvent } = require('../models');
 const { sequelize } = require('../models');
 const ethers = require('ethers');
-const { sanitize } = require('../lib/utils');
+const { sanitize, eToNumber } = require('../lib/utils');
 
 const BigNumber = ethers.BigNumber;
 
@@ -94,8 +94,13 @@ module.exports = async job => {
             isReward: true
         }));
     }
+    else if (!rewardTokenTransfer.tokenBalanceChanges.length) {
+        await sequelize.transaction(async sequelizeTransaction => {
+            await rewardTokenTransfer.afterCreate({ transaction: sequelizeTransaction });
+        });
+    }
 
-    const value = BigNumber.from(transaction.value);
+    const value = BigNumber.from(eToNumber(String(transaction.value)));
     if (value.gt(ethers.constants.Zero) && !findValueTokenTransfer(transaction)) {
         let dstAddress = transaction.to;
         // If contract creation (to is null), use receipt.contractAddress
@@ -114,9 +119,14 @@ module.exports = async job => {
             isReward: false
         }));
     }
+    else if (value.gt(ethers.constants.Zero) && !findValueTokenTransfer(transaction).tokenBalanceChanges.length) {
+        await sequelize.transaction(async sequelizeTransaction => {
+            await findValueTokenTransfer(transaction).afterCreate({ transaction: sequelizeTransaction });
+        });
+    }
 
     for (const step of transaction.traceSteps) {
-        const stepValue = BigNumber.from(String(step.value));
+        const stepValue = BigNumber.from(eToNumber(String(step.value)));
         if (stepValue.gt(ethers.constants.Zero)) {
             tokenTransfers.push(sanitize({
                 transactionId: transaction.id,
