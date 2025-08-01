@@ -7,6 +7,14 @@ const authMiddleware = require('../middlewares/auth');
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const { managedError, unmanagedError } = require('../lib/errors');
 
+/**
+ * Get filtered native token balances of all active addresses (paginated)
+ * with share % and transaction count
+ * @param {integer} workspaceId
+ * @param {integer} page
+ * @param {integer} itemsPerPage
+ * @returns {Promise<Array>} - A list of native token balances
+ */
 router.get('/', workspaceAuthMiddleware, async (req, res, next) => {
     const data = { ...req.query, ...req.body.data };
     try {
