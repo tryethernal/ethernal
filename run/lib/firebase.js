@@ -33,6 +33,14 @@ const ExplorerFaucet = models.ExplorerFaucet;
 const ExplorerV2Dex = models.ExplorerV2Dex;
 const V2DexPair = models.V2DexPair;
 
+/**
+ * Return filtered native token balances of all active addresses (paginated)
+ * with share % and transaction count
+ * @param {integer} workspaceId 
+ * @param {integer} page 
+ * @param {integer} itemsPerPage 
+ * @returns {Promise<Array>} - A list of native token balances
+ */
 const getFilteredNativeAccounts = async (workspaceId, page, itemsPerPage) => {
     if (!workspaceId)
         throw new Error('Missing parameter');
