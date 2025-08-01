@@ -33,8 +33,15 @@ const ExplorerFaucet = models.ExplorerFaucet;
 const ExplorerV2Dex = models.ExplorerV2Dex;
 const V2DexPair = models.V2DexPair;
 
-const getAccounts = () => {
-    return getImportedAccounts();
+const getFilteredNativeAccounts = async (workspaceId, page, itemsPerPage) => {
+    if (!workspaceId)
+        throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+    if (!workspace)
+        throw new Error('Could not find workspace');
+
+    return workspace.getFilteredNativeAccounts(page, itemsPerPage);
 }
 
 /**
@@ -2987,7 +2994,6 @@ module.exports = {
     getWorkspaceContractById: getWorkspaceContractById,
     getUserById: getUserById,
     getContract: getContract,
-    getAccounts: getAccounts,
     getPublicExplorerParamsByDomain: getPublicExplorerParamsByDomain,
     getProcessableTransactions: getProcessableTransactions,
     getFailedProcessableTransactions: getFailedProcessableTransactions,
@@ -3137,5 +3143,6 @@ module.exports = {
     createAdmin: createAdmin,
     canSetupAdmin: canSetupAdmin,
     isValidExplorerDomain: isValidExplorerDomain,
-    getImportedAccounts: getImportedAccounts
+    getImportedAccounts: getImportedAccounts,
+    getFilteredNativeAccounts: getFilteredNativeAccounts
 };

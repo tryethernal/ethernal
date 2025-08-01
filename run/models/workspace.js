@@ -94,7 +94,14 @@ module.exports = (sequelize, DataTypes) => {
         return new ProviderConnector(this.rpcServer);
     }
 
-    async getAddresses(page = 1, itemsPerPage = 10, orderBy = 'balance', order = 'DESC') {
+    /**
+     * Returns the native token balance for each active address in the workspace.
+     * It returns the balance, the share of the total balance, and the transaction count for each address.
+     * @param {number} page - The page number to return.
+     * @param {number} itemsPerPage - The number of items per page to return.
+     * @returns {Promise<Array>} - A list of native token balances.
+     */
+    async getFilteredNativeAccounts(page = 1, itemsPerPage = 10) {
         return sequelize.query(`
             WITH latest_balances AS (
                 SELECT
@@ -115,18 +122,35 @@ module.exports = (sequelize, DataTypes) => {
                 ) tbc
                 WHERE tbc.rn = 1
             ),
+            transaction_counts AS (
+                SELECT
+                    address,
+                    COUNT(*) AS transaction_count
+                FROM (
+                    SELECT te."from" AS address
+                    FROM transaction_events te
+                    WHERE te."workspaceId" = :workspaceId
+                    UNION ALL
+                    SELECT te."to" AS address
+                    FROM transaction_events te
+                    WHERE te."workspaceId" = :workspaceId
+                ) all_addresses
+                GROUP BY address
+            ),
             grand_total AS (
                 SELECT SUM(balance) as total_balance
                 FROM latest_balances
             )
             SELECT
                 lb.address,
-                lb.balance,
+                lb.balance::numeric balance,
                 ROUND(
                     100 * lb.balance / gt.total_balance,
                     4
-                ) AS share
+                ) AS share,
+                COALESCE(tc.transaction_count, 0) AS transaction_count
             FROM latest_balances lb
+            LEFT JOIN transaction_counts tc ON LOWER(lb.address) = LOWER(tc.address)
             CROSS JOIN grand_total gt
             ORDER BY lb.balance DESC
             LIMIT :itemsPerPage

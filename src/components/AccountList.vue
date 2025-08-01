@@ -50,6 +50,7 @@ const explorerStore = useExplorerStore();
 
 const dense = ref(false);
 const accounts = ref([]);
+const accountCount = ref(0);
 const loading = ref(false);
 const currentOptions = ref({ page: 1, itemsPerPage: 10, orderBy: 'address', order: 'desc' });
 const headers = ref([
@@ -59,6 +60,36 @@ const headers = ref([
 
 
 function getAccounts({ page, itemsPerPage, sortBy } = {}) {
+    if (loading.value)
+        return;
+
+    if (!page || !itemsPerPage || !sortBy || !sortBy.length)
+        return loading.value = false;
+    
+    currentOptions.value = { page, itemsPerPage, sortBy };
+
+    $server.getWorkspaceFilteredNativeAccounts(currentOptions.value)
+        .then(({ data }) => {
+            if (data.total)
+                accountCount.value = data.total;
+            else
+                accountCount.value = data.items.length == currentOptions.value.itemsPerPage ?
+                    (currentOptions.value.page * data.items.length) + 1 :
+                    currentOptions.value.page * data.items.length;
+
+            accounts.value = data.items;
+        })
+        .catch(console.log)
+        .finally(() => loading.value = false);
 }
 
+onMounted(() => {
+    currentOptions.value.sortBy = [{ key: 'balance', order: 'desc' }];
+
+    if (dense.value)
+        headers.value = [
+            { title: 'Address', key: 'address' },
+            { title: 'Balance', key: 'balance' }
+        ];
+});
 </script>

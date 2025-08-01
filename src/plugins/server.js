@@ -357,6 +357,16 @@ export default {
                 return axios.post(resource, { data: { email, password } });
             },
 
+            getWorkspaceFilteredNativeAccounts(options) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    ...options
+                };
+                const resource = `${envStore.apiRoot}/api/accounts`;
+                return axios.get(resource, { params });
+            },
+
             getWorkspaceTokenTransfers(options) {
                 const params = {
                     firebaseUserId: firebaseUserId.value,
