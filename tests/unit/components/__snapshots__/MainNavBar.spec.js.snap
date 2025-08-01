@@ -488,7 +488,8 @@ exports[`MainNavBar.vue > Should show mobile navigation drawer when mobile prop 
                       <!---->
                     </div>
                     <!---->
-                  </a><a class="v-list-item v-list-item--link v-theme--light v-list-item--density-default v-list-item--one-line rounded-0 v-list-item--variant-text" tabindex="-2" href="/contractsVerified"><span class="v-list-item__overlay"></span><span class="v-list-item__underlay"></span>
+                  </a>
+                  <!--v-if--><a class="v-list-item v-list-item--link v-theme--light v-list-item--density-default v-list-item--one-line rounded-0 v-list-item--variant-text" tabindex="-2" href="/contractsVerified"><span class="v-list-item__overlay"></span><span class="v-list-item__underlay"></span>
                     <!---->
                     <div class="v-list-item__content" data-no-activator="">
                       <div class="v-list-item-title"><span class="text-body-2">Verified Contracts</span></div>
@@ -504,7 +505,8 @@ exports[`MainNavBar.vue > Should show mobile navigation drawer when mobile prop 
                       <!---->
                     </div>
                     <!---->
-                  </a></div>
+                  </a>
+                </div>
               </transition-stub>
             </div><!-- Tokens Section -->
             <div class="v-list-group">
