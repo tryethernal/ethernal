@@ -43,16 +43,16 @@
                             <h4 class="text-uppercase text-caption text-medium-emphasis">Transactions</h4>
                             Latest:
                             <span class="font-weight-medium mr-3">
-                                <router-link v-if="addressTransactionStats.last_transaction_hash" class="no-decoration" :to="`/transaction/${addressTransactionStats.last_transaction_hash}`">
-                                    {{ dt.fromNow(addressTransactionStats.last_transaction_timestamp) }}
+                                <router-link v-if="addressTransactionStats.lastTransactionHash" class="no-decoration" :to="`/transaction/${addressTransactionStats.lastTransactionHash}`">
+                                    {{ dt.fromNow(addressTransactionStats.lastTransactionTimestamp) }}
                                     <sup><v-icon size="small" icon="mdi-arrow-top-right"></v-icon></sup>
                                 </router-link>
                                 <span v-else>N/A</span>
                             </span>
                             First:
                             <span class="font-weight-medium">
-                                <router-link v-if="addressTransactionStats.first_transaction_hash" class="no-decoration" :to="`/transaction/${addressTransactionStats.first_transaction_hash}`">
-                                    {{ dt.fromNow(addressTransactionStats.first_transaction_timestamp) }}
+                                <router-link v-if="addressTransactionStats.firstTransactionHash" class="no-decoration" :to="`/transaction/${addressTransactionStats.firstTransactionHash}`">
+                                    {{ dt.fromNow(addressTransactionStats.firstTransactionTimestamp) }}
                                     <sup><v-icon size="small" icon="mdi-arrow-top-right"></v-icon></sup>
                                 </router-link>
                                 <span v-else>N/A</span>

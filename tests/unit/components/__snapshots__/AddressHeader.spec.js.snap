@@ -51,7 +51,7 @@ exports[`AddressHeader.vue > Should display address info 1`] = `
       <div class="v-card-text d-flex flex-column ga-4">
         <h3 class="font-weight-medium">More Info</h3>
         <div>
-          <h4 class="text-uppercase text-caption text-medium-emphasis">Transactions</h4> Latest: <span class="font-weight-medium mr-3"><a class="no-decoration">1 year ago <sup><i class="mdi-arrow-top-right mdi v-icon notranslate v-theme--light v-icon--size-small" aria-hidden="true"></i></sup></a></span> First: <span class="font-weight-medium"><a class="no-decoration">1 year ago <sup><i class="mdi-arrow-top-right mdi v-icon notranslate v-theme--light v-icon--size-small" aria-hidden="true"></i></sup></a></span>
+          <h4 class="text-uppercase text-caption text-medium-emphasis">Transactions</h4> Latest: <span class="font-weight-medium mr-3"><span>N/A</span></span> First: <span class="font-weight-medium"><span>N/A</span></span>
         </div>
       </div>
       <!---->
