@@ -15,9 +15,43 @@ const BASE_URL = '/api/accounts';
 describe(`GET ${BASE_URL}`, () => {
     beforeEach(() => jest.clearAllMocks());
 
+    it('Should return the list of native accounts', (done) => {
+        const mockAccounts = [
+            { address: '0x123', balance: '1234567890' },
+            { address: '0x456', balance: '9876543210' }
+        ];
+        jest.spyOn(db, 'getFilteredNativeAccounts').mockResolvedValueOnce(mockAccounts);
+        
+        request.get(`${BASE_URL}`)
+            .query({ page: 1, itemsPerPage: 10 })
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual({ items: mockAccounts });
+                expect(db.getFilteredNativeAccounts).toHaveBeenCalledWith(1, '1', '10');
+                done();
+            });
+    });
+
+    it('Should handle errors gracefully', (done) => {
+        const error = new Error('Database error');
+        jest.spyOn(db, 'getFilteredNativeAccounts').mockRejectedValueOnce(error);
+        
+        request.get(`${BASE_URL}`)
+            .query({ page: 1, itemsPerPage: 10 })
+            .expect(500)
+            .then(() => {
+                expect(db.getFilteredNativeAccounts).toHaveBeenCalledWith(1, '1', '10');
+                done();
+            });
+    });
+});
+
+describe(`GET ${BASE_URL}/imported`, () => {
+    beforeEach(() => jest.clearAllMocks());
+
     it('Should return the list of accounts', (done) => {
-        jest.spyOn(db, 'getAccounts').mockResolvedValueOnce([{ address: '0x123', balance: '1234567890' }]);
-        request.get(BASE_URL)
+        jest.spyOn(db, 'getImportedAccounts').mockResolvedValueOnce([{ address: '0x123', balance: '1234567890' }]);
+        request.get(`${BASE_URL}/imported`)
             .expect(200)
             .then(({ body }) => {
                 expect(body).toEqual([{ address: '0x123', balance: '1234567890' }]);

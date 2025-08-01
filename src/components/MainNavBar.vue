@@ -40,7 +40,7 @@
                             <span class="text-body-2">Transactions</span>
                         </template>
                     </v-list-item>
-                    <v-list-item :to="'/txsInternal'" title="Internal Transactions" :color="route.path === '/txsInternal' ? 'primary' : undefined">
+                    <v-list-item v-if="currentWorkspaceStore.tracing" :to="'/txsInternal'" title="Internal Transactions" :color="route.path === '/txsInternal' ? 'primary' : undefined">
                         <template v-slot:title>
                             <span class="text-body-2">Internal Transactions</span>
                         </template>
@@ -48,6 +48,11 @@
                     <v-list-item :to="'/blocks'" title="Blocks" :color="route.path === '/blocks' ? 'primary' : undefined">
                         <template v-slot:title>
                             <span class="text-body-2">Blocks</span>
+                        </template>
+                    </v-list-item>
+                    <v-list-item v-if="explorerStore.displayTopAccounts" :to="'/accounts'" title="Top Accounts" :color="route.path === '/accounts' ? 'primary' : undefined">
+                        <template v-slot:title>
+                            <span class="text-body-2">Top Accounts</span>
                         </template>
                     </v-list-item>
                     <v-list-item :to="'/contractsVerified'" title="Verified Contracts" :color="route.path === '/contractsVerified' ? 'primary' : undefined">
@@ -211,7 +216,7 @@
                                     <span class="text-body-2">Transactions</span>
                                 </template>
                             </v-list-item>
-                            <v-list-item :to="'/txsInternal'" title="Internal Transactions">
+                            <v-list-item v-if="currentWorkspaceStore.tracing" :to="'/txsInternal'" title="Internal Transactions">
                                 <template v-slot:title>
                                     <span class="text-body-2">Internal Transactions</span>
                                 </template>
@@ -226,6 +231,11 @@
 
                             <v-divider class="ma-2"></v-divider>
 
+                            <v-list-item v-if="explorerStore.displayTopAccounts" :to="'/accounts'" title="Top Accounts">
+                                <template v-slot:title>
+                                    <span class="text-body-2">Top Accounts</span>
+                                </template>
+                            </v-list-item>
                             <v-list-item :to="'/contractsVerified'" title="Verified Contracts">
                                 <template v-slot:title>
                                     <span class="text-body-2">Verified Contracts</span>
@@ -454,7 +464,7 @@ const userStore = useUserStore();
 const route = useRoute();
 
 const isBlockchainActive = computed(() => {
-    const blockchainRoutes = ['/transactions', '/txsInternal', '/blocks', '/contractsVerified', '/contracts'];
+    const blockchainRoutes = ['/transactions', '/txsInternal', '/blocks', '/contractsVerified', '/contracts', '/accounts'];
     return blockchainRoutes.some(path => route.path === path);
 });
 

@@ -3,7 +3,7 @@
 exports[`TransactionEventLogDetails.vue > When log is not parsed > Should display raw event info 1`] = `"<span data-v-1ca27088="" class=""><transaction-event-raw-info-stub data-v-1ca27088="" address="0x123" contract="[object Object]" topics="topic1,topic2" data="0xdata" showemitter="true" istooltip="false"></transaction-event-raw-info-stub></span>"`;
 
 exports[`TransactionEventLogDetails.vue > When log is parsed > Should display event in tooltip mode 1`] = `
-"<span data-v-1ca27088="" class="pre-wrap"><span data-v-1ca27088=""><hash-link-stub data-v-1ca27088="" type="address" hash="0x123" contract="[object Object]" fullhash="false" withname="true" notcopiable="true" withtokenname="true" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>.TestEvent(
+"<span data-v-1ca27088="" class="pre-wrap"><span data-v-1ca27088=""><hash-link-stub data-v-1ca27088="" type="address" hash="0x123" contract="[object Object]" fullhash="false" withname="true" notcopiable="true" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>.TestEvent(
 </span><!-- Show first item always -->
 <div data-v-1ca27088="" class="ml-4" style="word-break: break-all;">
   <div data-v-1ca27088="">
@@ -19,7 +19,7 @@ exports[`TransactionEventLogDetails.vue > When log is parsed > Should display ev
 `;
 
 exports[`TransactionEventLogDetails.vue > When log is parsed > Should display event with arguments in short mode 1`] = `
-"<span data-v-1ca27088="" class=""><span data-v-1ca27088=""><hash-link-stub data-v-1ca27088="" type="address" hash="0x123" contract="[object Object]" fullhash="false" withname="true" notcopiable="true" withtokenname="true" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>.TestEvent(
+"<span data-v-1ca27088="" class=""><span data-v-1ca27088=""><hash-link-stub data-v-1ca27088="" type="address" hash="0x123" contract="[object Object]" fullhash="false" withname="true" notcopiable="true" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>.TestEvent(
 </span><!-- Show first item always -->
 <div data-v-1ca27088="" class="ml-4" style="word-break: break-all;">
   <div data-v-1ca27088="">
@@ -49,7 +49,7 @@ exports[`TransactionEventLogDetails.vue > When log is parsed > Should display ev
 `;
 
 exports[`TransactionEventLogDetails.vue > When log is parsed > Should expand to show more arguments when clicking expand button 1`] = `
-"<span data-v-1ca27088="" class=""><span data-v-1ca27088=""><hash-link-stub data-v-1ca27088="" type="address" hash="0x123" contract="[object Object]" fullhash="false" withname="true" notcopiable="true" withtokenname="true" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>.TestEvent(
+"<span data-v-1ca27088="" class=""><span data-v-1ca27088=""><hash-link-stub data-v-1ca27088="" type="address" hash="0x123" contract="[object Object]" fullhash="false" withname="true" notcopiable="true" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>.TestEvent(
 </span><!-- Show first item always -->
 <div data-v-1ca27088="" class="ml-4" style="word-break: break-all;">
   <div data-v-1ca27088="">

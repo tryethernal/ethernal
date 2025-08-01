@@ -819,6 +819,7 @@ router.get('/search', async (req, res, next) => {
             admin: explorer.admin,
             workspace: explorer.workspace,
             gasAnalyticsEnabled: explorer.gasAnalyticsEnabled,
+            displayTopAccounts: explorer.displayTopAccounts,
             isDemo: explorer.isDemo,
             mainDomain: getAppDomain()
         };

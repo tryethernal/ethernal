@@ -3,7 +3,7 @@ import Blocks from '../components/Blocks.vue';
 import Block from '../components/Block.vue';
 import Transactions from '../components/Transactions.vue';
 import InternalTransactions from '../components/InternalTransactions.vue';
-import Accounts from '../components/Accounts.vue';
+import ImportedAccounts from '../components/ImportedAccounts.vue';
 import Transaction from '../components/Transaction.vue';
 import Address from '../components/Address.vue';
 import Auth from '../components/Auth.vue';
@@ -27,8 +27,10 @@ import TopNFT from '../components/TopNFT.vue';
 import WorkspaceTokenTransfer from '../components/WorkspaceTokenTransfer.vue';
 import WorkspaceNFTTransfer from '../components/WorkspaceNFTTransfer.vue';
 import TokenContract from '../components/TokenContract.vue';
-import { useEnvStore } from '../stores/env';
 import VerifiedContracts from '@/components/VerifiedContracts.vue'
+import AccountList from '@/components/AccountList.vue'
+
+import { useEnvStore } from '../stores/env';
 
 const isLoggedIn = () => {
     return localStorage.getItem('apiToken') !== null;
@@ -73,6 +75,7 @@ const ESRoutes = [
 
 const routes = [
     { path: '/auth', component: Auth, beforeEnter: redirectIfLoggedIn },
+    { path: '/accounts', component: AccountList, beforeEnter: redirectIfLoggedOut },
     { path: '/blocks', component: Blocks, beforeEnter: redirectIfLoggedOut },
     { path: '/overview', component: Overview, beforeEnter: redirectIfLoggedOut },
     { path: '/block/:number', component: Block, props: true, beforeEnter: redirectIfLoggedOut },
@@ -81,7 +84,7 @@ const routes = [
     { path: '/internal-transactions', component: InternalTransactions, beforeEnter: redirectIfLoggedOut },
     { path: '/latest-erc20-transfers', component: WorkspaceTokenTransfer, beforeEnter: redirectIfLoggedOut },
     { path: '/latest-nft-transfers', component: WorkspaceNFTTransfer, beforeEnter: redirectIfLoggedOut },
-    { path: '/accounts', component: Accounts, beforeEnter: redirectIfLoggedOut },
+    { path: '/imported-accounts', component: ImportedAccounts, beforeEnter: redirectIfLoggedOut },
     { path: '/transaction/:hash', component: Transaction, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/address/:address', component: Address, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/address/:hash/:tokenId', component: ERC721Token, props: true, beforeEnter: redirectIfLoggedOut },

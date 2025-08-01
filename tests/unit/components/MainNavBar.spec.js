@@ -20,7 +20,13 @@ describe('MainNavBar.vue', () => {
         const wrapper = mount(VApp, {
             global: {
                 stubs,
-                plugins: [vuetify, router, createTestingPinia()]
+                plugins: [vuetify, router, createTestingPinia({
+                    initialState: {
+                        currentWorkspace: {
+                            tracing: true
+                        }
+                    }
+                })]
             },
             slots: {
                 default: {

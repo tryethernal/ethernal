@@ -63,7 +63,7 @@ describe('RpcConnector.vue', () => {
         auth.mockReturnValue({ currentUser: { id: '1' }});
         vi.spyOn(server, 'getBlocks').mockResolvedValue({ data: { items: [] }});
         vi.spyOn(server, 'getRpcAccounts').mockResolvedValue(['0x123']);
-        const getAccountsMock = vi.spyOn(server, 'getAccounts').mockResolvedValue({ data: { items: [{ address: '0x123' }, { address: '0x456' }]}});
+        const getImportedAccountsMock = vi.spyOn(server, 'getImportedAccounts').mockResolvedValue({ data: { items: [{ address: '0x123' }, { address: '0x456' }]}});
         vi.spyOn(server, 'getAccountBalance').mockResolvedValue('1000000000000000000000');
 
         const onNewContractMock = vi.spyOn(pusher, 'onNewContract');
@@ -96,7 +96,7 @@ describe('RpcConnector.vue', () => {
         await flushPromises();
 
         expect(onNewContractMock).toHaveBeenCalled();
-        expect(getAccountsMock).toHaveBeenCalled();
+        expect(getImportedAccountsMock).toHaveBeenCalled();
         expect(processContractMock).toHaveBeenCalled();
         expect(wrapper.html()).toMatchSnapshot();
     });

@@ -8,6 +8,7 @@ const ethers = require('ethers');
 const { trigger } = require('../lib/pusher');
 const { enqueue } = require('../lib/queue');
 const { sanitize } = require('../lib/utils');
+const logger = require('../lib/logger');
 
 module.exports = (sequelize, DataTypes) => {
   class TokenTransfer extends Model {
@@ -74,26 +75,106 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async safeCreateBalanceChange(balanceChange) {
+        if (!balanceChange || !balanceChange.address || balanceChange.diff === '0') {
+            return null; // Skip creation for invalid or zero balance changes
+        }
+
         return sequelize.transaction(async (transaction) => {
-            const [tokenBalanceChange] = await sequelize.models.TokenBalanceChange.bulkCreate([
-                sanitize({
-                    transactionId: this.transactionId,
-                    workspaceId: this.workspaceId,
+            try {
+                const [tokenBalanceChange] = await sequelize.models.TokenBalanceChange.bulkCreate([
+                    sanitize({
+                        transactionId: this.transactionId,
+                        workspaceId: this.workspaceId,
+                        tokenTransferId: this.id,
+                        token: this.token,
+                        address: balanceChange.address,
+                        currentBalance: balanceChange.currentBalance,
+                        previousBalance: balanceChange.previousBalance,
+                        diff: balanceChange.diff
+                    })
+                ], {
+                    ignoreDuplicates: true,
+                    returning: true,
+                    transaction
+                });
+
+                if (tokenBalanceChange && tokenBalanceChange.id) {
+                    await tokenBalanceChange.insertAnalyticEvent(transaction);
+                }
+
+                return tokenBalanceChange;
+            } catch (error) {
+                // Log the error but don't fail the entire job
+                logger.error('Error creating balance change:', {
+                    error: error.message,
+                    tokenTransferId: this.id,
+                    address: balanceChange.address,
+                    token: this.token
+                });
+                throw error; // Re-throw to rollback transaction
+            }
+        });
+    }
+
+    async safeCreateBalanceChanges(balanceChanges) {
+        if (!balanceChanges || !Array.isArray(balanceChanges) || balanceChanges.length === 0) {
+            return []; // Return empty array for invalid input
+        }
+
+        // Filter out invalid or zero balance changes
+        const validBalanceChanges = balanceChanges.filter(change => 
+            change && change.address && change.diff !== '0'
+        );
+
+        if (validBalanceChanges.length === 0) {
+            return []; // No valid changes to process
+        }
+
+        return sequelize.transaction(async (transaction) => {
+            try {
+                // Prepare all balance change records
+                const balanceChangeRecords = validBalanceChanges.map(change => 
+                    sanitize({
+                        transactionId: this.transactionId,
+                        workspaceId: this.workspaceId,
+                        tokenTransferId: this.id,
+                        token: this.token,
+                        address: change.address,
+                        currentBalance: change.currentBalance,
+                        previousBalance: change.previousBalance,
+                        diff: change.diff
+                    })
+                );
+
+                // Bulk create all balance changes at once
+                const createdBalanceChanges = await sequelize.models.TokenBalanceChange.bulkCreate(
+                    balanceChangeRecords,
+                    {
+                        ignoreDuplicates: true,
+                        returning: true,
+                        transaction
+                    }
+                );
+
+                // Create analytic events for all created balance changes
+                const analyticEventPromises = createdBalanceChanges
+                    .filter(balanceChange => balanceChange && balanceChange.id)
+                    .map(balanceChange => balanceChange.insertAnalyticEvent(transaction));
+
+                // Wait for all analytic events to be created
+                await Promise.all(analyticEventPromises);
+
+                return createdBalanceChanges;
+            } catch (error) {
+                // Log the error but don't fail the entire job
+                logger.error('Error creating balance changes:', {
+                    error: error.message,
                     tokenTransferId: this.id,
                     token: this.token,
-                    address: balanceChange.address,
-                    currentBalance: balanceChange.currentBalance,
-                    previousBalance: balanceChange.previousBalance,
-                    diff: balanceChange.diff
-                })
-            ], {
-                ignoreDuplicates: true,
-                returning: true,
-                transaction
-            });
-
-            if (tokenBalanceChange && tokenBalanceChange.id)
-                await tokenBalanceChange.insertAnalyticEvent(transaction);
+                    balanceChangesCount: validBalanceChanges.length
+                });
+                throw error; // Re-throw to rollback transaction
+            }
         });
     }
 
@@ -108,7 +189,7 @@ module.exports = (sequelize, DataTypes) => {
                 },
                 {
                     model: sequelize.models.Workspace,
-                    attributes: ['id', 'public', 'rpcServer', 'name'],
+                    attributes: ['id', 'public', 'rpcServer', 'name', 'processNativeTokenTransfers'],
                     as: 'workspace',
                     include: {
                         model: sequelize.models.User,
@@ -121,11 +202,13 @@ module.exports = (sequelize, DataTypes) => {
 
         if (transaction.workspace.public) {
             options.transaction.afterCommit(() => {
-                return enqueue('processTokenTransfer',
-                    `processTokenTransfer-${this.workspaceId}-${this.token}-${this.id}`, {
-                        tokenTransferId: this.id
-                    }
-                );
+                if (transaction.workspace.processNativeTokenTransfers) {
+                    return enqueue('processTokenTransfer',
+                        `processTokenTransfer-${this.workspaceId}-${this.token}-${this.id}`, {
+                            tokenTransferId: this.id
+                        }
+                    );
+                }
             });
 
             if (this.tokenId)

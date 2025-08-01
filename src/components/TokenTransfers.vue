@@ -91,7 +91,6 @@
                 <v-chip
                     size="x-small"
                     color="grey-lighten"
-                    variant="flat"
                     class="mr-2"
                     v-if="item.dst === address"
                 >
@@ -202,6 +201,7 @@
             <div class="d-flex justify-center align-center pa-4">
                 <v-progress-circular
                     size="24"
+                    width="2"
                     indeterminate
                     color="primary"
                     class="mr-3"
