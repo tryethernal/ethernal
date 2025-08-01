@@ -139,7 +139,7 @@ function getAccounts({ page, itemsPerPage, sortBy } = {}) {
         orderBy: sortBy[0].key,
         order: sortBy[0].order
     };
-    $server.getAccounts(currentOptions.value)
+    $server.getImportedAccounts(currentOptions.value)
         .then(({ data }) => {
             currentWorkspaceStore.updateAccounts(data.items);
             accounts.value = data.items;

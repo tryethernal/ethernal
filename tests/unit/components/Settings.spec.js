@@ -10,6 +10,9 @@ describe('Settings.vue', () => {
     it('Should not display the Billing tab if self-hosted', async () => {
         vi.spyOn(server, 'getWorkspaces')
             .mockResolvedValueOnce({ data: [{ id: 'Hardhat', name: 'Hardhat', rpcServer: 'http://localhost:1234' }]})
+        vi.spyOn(server, 'getImportedAccounts')
+            .mockResolvedValueOnce({ data: [{ address: '0x123', balance: 100, share: 0.1, transaction_count: 10 }]});
+
         const wrapper = mount(Settings, {
             global: {
                 stubs: ['Workspace-List', 'Billing', 'Account'],
@@ -26,7 +29,10 @@ describe('Settings.vue', () => {
 
     it('Should load the settings page', async () => {
         vi.spyOn(server, 'getWorkspaces')
-        .mockResolvedValueOnce({ data: [{ id: 'Hardhat', name: 'Hardhat', rpcServer: 'http://localhost:1234' }]})
+            .mockResolvedValueOnce({ data: [{ id: 'Hardhat', name: 'Hardhat', rpcServer: 'http://localhost:1234' }]})
+        vi.spyOn(server, 'getImportedAccounts')
+            .mockResolvedValueOnce({ data: [{ address: '0x123', balance: 100, share: 0.1, transaction_count: 10 }]});
+
         const wrapper = mount(Settings, {
             global: {
                 stubs: ['Workspace-List', 'Billing', 'Account']
@@ -43,6 +49,8 @@ describe('Settings.vue', () => {
 
     it('Should let the user update general options', async () => {
         const updateWorkspaceSettingsMock = vi.spyOn(server, 'updateWorkspaceSettings');
+        vi.spyOn(server, 'getImportedAccounts')
+            .mockResolvedValueOnce({ data: [{ address: '0x123', balance: 100, share: 0.1, transaction_count: 10 }]});
 
         const wrapper = mount(Settings, {
             global: {
@@ -69,6 +77,8 @@ describe('Settings.vue', () => {
 
     it('Should let the user update call options', async () => {
         const updateWorkspaceSettingsMock = vi.spyOn(server, 'updateWorkspaceSettings');
+        vi.spyOn(server, 'getImportedAccounts')
+            .mockResolvedValueOnce({ data: [{ address: '0x123', balance: 100, share: 0.1, transaction_count: 10 }]});
 
         const wrapper = mount(Settings, {
             global: {
@@ -98,6 +108,8 @@ describe('Settings.vue', () => {
     it('Should let the user reset the workspace', async () => {
         const resetWorkspaceMock = vi.spyOn(server, 'resetWorkspace')
             .mockResolvedValueOnce({ data: { needsBatchReset: false }});
+        vi.spyOn(server, 'getImportedAccounts')
+            .mockResolvedValueOnce({ data: [{ address: '0x123', balance: 100, share: 0.1, transaction_count: 10 }]});
         const wrapper = mount(Settings, {
             global: {
                 stubs: ['Workspace-List', 'Billing', 'Account'],
