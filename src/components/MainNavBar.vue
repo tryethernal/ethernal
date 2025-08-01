@@ -50,7 +50,7 @@
                             <span class="text-body-2">Blocks</span>
                         </template>
                     </v-list-item>
-                    <v-list-item :to="'/accounts'" title="Top Accounts" :color="route.path === '/accounts' ? 'primary' : undefined">
+                    <v-list-item v-if="explorerStore.displayTopAccounts" :to="'/accounts'" title="Top Accounts" :color="route.path === '/accounts' ? 'primary' : undefined">
                         <template v-slot:title>
                             <span class="text-body-2">Top Accounts</span>
                         </template>
@@ -231,7 +231,7 @@
 
                             <v-divider class="ma-2"></v-divider>
 
-                            <v-list-item :to="'/accounts'" title="Top Accounts">
+                            <v-list-item v-if="explorerStore.displayTopAccounts" :to="'/accounts'" title="Top Accounts">
                                 <template v-slot:title>
                                     <span class="text-body-2">Top Accounts</span>
                                 </template>

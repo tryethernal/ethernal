@@ -12,7 +12,7 @@ router.get('/', workspaceAuthMiddleware, async (req, res, next) => {
     try {
         const result = await db.getFilteredNativeAccounts(data.workspace.id, data.page, data.itemsPerPage)
 
-        res.status(200).json(result);
+        res.status(200).json({ items: result });
     } catch(error) {
         unmanagedError(error, req, next);
     }

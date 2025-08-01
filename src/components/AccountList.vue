@@ -25,6 +25,30 @@
                     ]"
                     item-key="address"
                     @update:options="getAccounts">
+                    <template #item.address="{ item }">
+                        <Hash-Link :contract="item.contract" :fullHash="true" :type="'address'" :hash="item.address" />
+                    </template>
+                    <template #item.balance="{ item }">
+                        {{ fromWei(item.balance, 18, explorerStore.token) }}
+                    </template>
+                    <template #item.share="{ item }">
+                        {{ (item.share * 100).toFixed(2) }}%
+                    </template>
+                    <template #item.transaction_count="{ item }">
+                        {{ item.transaction_count }}
+                    </template>
+                    <template v-slot:loading>
+                        <div class="d-flex justify-center align-center pa-4">
+                            <v-progress-circular
+                                size="24"
+                                width="2"
+                                indeterminate
+                                color="primary"
+                                class="mr-3"
+                            ></v-progress-circular>
+                            Loading balances...
+                        </div>
+                    </template>
                 </v-data-table-server>
             </v-card-text>
         </v-card>
@@ -32,20 +56,13 @@
 </template>
 
 <script setup>
-import { ref, inject, onMounted, onUnmounted } from 'vue';
-import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
-import { useEnvStore } from '../stores/env';
+import { ref, inject, onMounted } from 'vue';
 import { useExplorerStore } from '../stores/explorer';
-import AddAccountModal from './AddAccountModal.vue';
-import UnlockAccountModal from './UnlockAccountModal.vue';
 import HashLink from './HashLink.vue';
 import fromWei from '../filters/FromWei';
-import { ethers } from 'ethers';
 
 const $server = inject('$server');
 
-const currentWorkspaceStore = useCurrentWorkspaceStore();
-const envStore = useEnvStore();
 const explorerStore = useExplorerStore();
 
 const dense = ref(false);
@@ -54,8 +71,10 @@ const accountCount = ref(0);
 const loading = ref(false);
 const currentOptions = ref({ page: 1, itemsPerPage: 10, orderBy: 'address', order: 'desc' });
 const headers = ref([
-    { title: 'Address', key: 'address' },
-    { title: 'Balance', key: 'balance' }
+    { title: 'Address', key: 'address', sortable: false },
+    { title: 'Balance', key: 'balance', sortable: false },
+    { title: 'Percentage', key: 'share', sortable: false },
+    { title: 'Transaction Count', key: 'transaction_count', sortable: false }
 ]);
 
 
@@ -68,7 +87,7 @@ function getAccounts({ page, itemsPerPage, sortBy } = {}) {
     
     currentOptions.value = { page, itemsPerPage, sortBy };
 
-    $server.getWorkspaceFilteredNativeAccounts(currentOptions.value)
+    $server.getWorkspaceFilteredNativeAccounts({ page, itemsPerPage })
         .then(({ data }) => {
             if (data.total)
                 accountCount.value = data.total;
@@ -85,11 +104,5 @@ function getAccounts({ page, itemsPerPage, sortBy } = {}) {
 
 onMounted(() => {
     currentOptions.value.sortBy = [{ key: 'balance', order: 'desc' }];
-
-    if (dense.value)
-        headers.value = [
-            { title: 'Address', key: 'address' },
-            { title: 'Balance', key: 'balance' }
-        ];
 });
 </script>

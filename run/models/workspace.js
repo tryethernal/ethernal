@@ -145,12 +145,16 @@ module.exports = (sequelize, DataTypes) => {
                 lb.address,
                 lb.balance::numeric balance,
                 ROUND(
-                    100 * lb.balance / gt.total_balance,
+                    lb.balance / gt.total_balance,
                     4
                 ) AS share,
-                COALESCE(tc.transaction_count, 0) AS transaction_count
+                COALESCE(tc.transaction_count, 0) AS transaction_count,
+                c.name AS "contract.name",
+                cv."createdAt" AS "contract.verification.createdAt"
             FROM latest_balances lb
             LEFT JOIN transaction_counts tc ON LOWER(lb.address) = LOWER(tc.address)
+            LEFT JOIN contracts c ON LOWER(lb.address) = LOWER(c.address) AND c."workspaceId" = :workspaceId
+            LEFT JOIN contract_verifications cv ON c.id = cv."contractId"
             CROSS JOIN grand_total gt
             ORDER BY lb.balance DESC
             LIMIT :itemsPerPage
@@ -162,6 +166,7 @@ module.exports = (sequelize, DataTypes) => {
                     offset: (page - 1) * itemsPerPage
                 },
                 type: QueryTypes.SELECT,
+                nest: true
             }
         );
     }
@@ -3526,7 +3531,8 @@ module.exports = (sequelize, DataTypes) => {
         }
     },
     rateLimitInterval: DataTypes.INTEGER,
-    rateLimitMaxInInterval: DataTypes.INTEGER
+    rateLimitMaxInInterval: DataTypes.INTEGER,
+    processNativeTokenTransfers: DataTypes.BOOLEAN
   }, {
     hooks: {
         afterCreate(workspace, options) {
