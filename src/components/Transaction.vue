@@ -43,6 +43,13 @@
                 v-if="transaction.tokenBalanceChangeCount > 0 && selectedTab === 'statechange'"
                 :transaction="transaction"
             />
+
+            <!-- Orbit Transaction State (always visible if applicable) -->
+            <Orbit-Transaction-State
+                v-if="transaction.hash && isOrbitWorkspace"
+                :transaction-hash="transaction.hash"
+                class="mt-4"
+            />
         </template>
         <template v-else>
             <v-card>
@@ -69,6 +76,7 @@ import TransactionOverview from './TransactionOverview.vue';
 import TransactionLogs from './TransactionLogs.vue';
 import TransactionInternalTxns from './TransactionInternalTxns.vue';
 import TransactionState from './TransactionState.vue';
+import OrbitTransactionState from './OrbitTransactionState.vue';
 import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
 
 const props = defineProps(['hash']);
@@ -102,6 +110,11 @@ let pusherUnsubscribe = null;
 const hasLogs = computed(() => transaction.value.receipt && transaction.value.receipt.logCount > 0);
 const logCount = computed(() => transaction.value.receipt ? transaction.value.receipt.logCount : 0);
 const hasInternalTxns = computed(() => currentWorkspaceStore.tracing && transaction.value.internalTransactionCount && transaction.value.internalTransactionCount > 0);
+const isOrbitWorkspace = computed(() => {
+    // This will need to be updated once we add orbitConfig to the workspace store
+    // For now, we'll try to check if the workspace has orbit configuration
+    return currentWorkspaceStore.orbitConfig || false;
+});
 
 // Initialize empty transaction with safe defaults
 const resetTransaction = () => {
