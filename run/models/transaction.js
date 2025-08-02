@@ -5,7 +5,7 @@ const {
 } = require('sequelize');
 const ethers = require('ethers');
 const Op = Sequelize.Op
-const { sanitize, stringifyBns, processRawRpcObject } = require('../lib/utils');
+const { sanitize, stringifyBns, processRawRpcObject, eToNumber } = require('../lib/utils');
 const { trigger } = require('../lib/pusher');
 const logger = require('../lib/logger');
 let { getTransactionMethodDetails, getTokenTransfer } = require('../lib/abi');
@@ -292,7 +292,7 @@ module.exports = (sequelize, DataTypes) => {
 
             if (this.value) {
                 // Use BigNumber for value comparison
-                const valueBN = ethers.BigNumber.from(String(this.value));
+                const valueBN = ethers.BigNumber.from(eToNumber(String(this.value)));
                 if (valueBN.gt(ethers.constants.Zero)) {
                     let dstAddress = this.to;
                     // If contract creation (to is null), use receipt.contractAddress
@@ -335,7 +335,7 @@ module.exports = (sequelize, DataTypes) => {
                             address: tokenTransfer.token
                         }
                     });
-                    if (!contract) {
+                    if (!contract && tokenTransfer.token !== '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') {
                         const workspace = await this.getWorkspace();
                         await workspace.safeCreateOrUpdateContract({
                             address: tokenTransfer.token,
@@ -503,7 +503,7 @@ module.exports = (sequelize, DataTypes) => {
             for (const step of augmentedSteps) {
                 // Use BigNumber for value comparison
                 if (step.value) {
-                    const valueBN = ethers.BigNumber.from(String(step.value));
+                    const valueBN = ethers.BigNumber.from(eToNumber(String(step.value)));
                     if (valueBN.gt(ethers.constants.Zero)) {
                         tokenTransfers.push(sanitize({
                             transactionId: this.id,

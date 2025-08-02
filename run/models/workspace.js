@@ -2474,7 +2474,7 @@ module.exports = (sequelize, DataTypes) => {
             include: [
                 {
                     model: sequelize.models.TransactionReceipt,
-                    attributes: ['gasUsed', 'status', 'contractAddress', [sequelize.json('raw.root'), 'root'], 'gasUsed', 'cumulativeGasUsed', [sequelize.json('raw.effectiveGasPrice'), 'effectiveGasPrice']],
+                    attributes: ['gasUsed', 'status', 'contractAddress', [sequelize.json('raw.root'), 'root'], 'cumulativeGasUsed', [sequelize.json('raw.effectiveGasPrice'), 'effectiveGasPrice']],
                     as: 'receipt',
                     include: {
                         model: sequelize.models.Contract,
@@ -2826,6 +2826,9 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async safeCreateOrUpdateContract(contract, transaction) {
+        if (contract.address.toLowerCase() === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
+            return null;
+
         const contracts = await this.getContracts({ where: { address: contract.address.toLowerCase() }});
         const existingContract = contracts[0];
 
