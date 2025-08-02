@@ -28,13 +28,13 @@ class OrbitTransactionProcessor {
     constructor(transaction) {
         this.transaction = transaction;
         this.workspace = transaction.workspace;
-        this.orbitConfig = transaction.workspace.orbitConfig;
+        this.orbitConfig = transaction.workspace.orbitConfig || transaction.orbitConfig;
         
         // Two different providers for different purposes:
         // 1. Orbit chain provider - for transaction submission and orbit chain queries
         this.orbitProvider = this.workspace.getProvider().provider;
         // 2. Parent chain provider - for infrastructure contract monitoring
-        this.parentProvider = this.orbitConfig.getParentChainProvider().provider;
+        this.parentProvider = this.orbitConfig.getParentChainProvider();
         
         this.config = getOrbitConfig();
         

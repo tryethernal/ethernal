@@ -79,9 +79,9 @@ module.exports = {
         comment: 'Number of blocks for challenge period on parent chain'
       },
       chainType: {
-        type: Sequelize.ENUM('Rollup', 'AnyTrust'),
+        type: Sequelize.ENUM('ROLLUP', 'ANYTRUST'),
         allowNull: false,
-        defaultValue: 'Rollup',
+        defaultValue: 'ROLLUP',
         comment: 'Type of Arbitrum Orbit chain'
       },
       

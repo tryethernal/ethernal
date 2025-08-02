@@ -1,4 +1,5 @@
 const express = require('express');
+const { ethers } = require('ethers');
 const router = express.Router();
 const authMiddleware = require('../middlewares/auth');
 const { managedError, unmanagedError } = require('../lib/errors');
@@ -266,7 +267,9 @@ router.post('/config/test', authMiddleware, orbitInputValidation, orbitContractV
         }
 
         // Use provided config or existing config
-        const testConfig = config || await workspace.getOrbitConfig();
+
+        const getParentChainProvider = () => new ethers.providers.JsonRpcProvider(config.parentChainRpcServer);
+        const testConfig = { ...config, getParentChainProvider: getParentChainProvider }
 
         if (!testConfig) {
             return managedError(new Error('No configuration to test'), req, res);
@@ -303,7 +306,7 @@ router.post('/config/test', authMiddleware, orbitInputValidation, orbitContractV
 router.get('/transaction/:hash/state', authMiddleware, async (req, res, next) => {
     try {
         const { hash } = req.params;
-        const { uid, workspace: workspaceName } = req.query;
+        const { firebaseUserId: uid, workspace: workspaceName } = req.query;
 
         if (!uid || !workspaceName) {
             return managedError(new Error('Missing required parameters'), req, res);
@@ -311,8 +314,8 @@ router.get('/transaction/:hash/state', authMiddleware, async (req, res, next) =>
 
         // Find workspace
         const workspace = await Workspace.findOne({
-            where: { userId: uid, name: workspaceName },
-            include: ['orbitConfig']
+            where: { '$user.firebaseUserId$': uid, name: workspaceName },
+            include: ['orbitConfig', 'user']
         });
 
         if (!workspace) {
