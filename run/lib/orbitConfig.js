@@ -11,6 +11,11 @@ class OrbitConfig {
         this.RPC_RETRY_DELAY = parseInt(getEnv('ORBIT_RPC_RETRY_DELAY', '1000'));
         this.RPC_MAX_CONCURRENT = parseInt(getEnv('ORBIT_RPC_MAX_CONCURRENT', '10'));
         
+        // Block Range Limits (to avoid RPC provider errors)
+        this.MAX_BLOCK_RANGE_PER_QUERY = parseInt(getEnv('ORBIT_MAX_BLOCK_RANGE_PER_QUERY', '500')); // Alchemy/Infura limit
+        this.MAX_BLOCKS_TO_SEARCH = parseInt(getEnv('ORBIT_MAX_BLOCKS_TO_SEARCH', '10000')); // Don't search too far back
+        this.BLOCK_RANGE_CHUNK_SIZE = parseInt(getEnv('ORBIT_BLOCK_RANGE_CHUNK_SIZE', '500'));
+        
         // Job Configuration
         this.JOB_BATCH_SIZE = parseInt(getEnv('ORBIT_JOB_BATCH_SIZE', '100'));
         this.JOB_RETRY_ATTEMPTS = parseInt(getEnv('ORBIT_JOB_RETRY_ATTEMPTS', '5'));
