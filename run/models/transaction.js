@@ -190,7 +190,7 @@ module.exports = (sequelize, DataTypes) => {
             );
 
             if (!storedReceipt || !storedReceipt.id) {
-                logger.error('Could not create receipt', { location: 'models.transaction.safeCreateReceipt', receipt, transaction: this });
+                logger.error('Could not create receipt', { location: 'models.transaction.safeCreateReceipt', receipt: storedReceipt, transaction: this });
                 throw new Error('Could not create receipt');
             }
 
