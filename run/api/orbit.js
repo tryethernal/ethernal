@@ -5,6 +5,19 @@ const { managedError, unmanagedError } = require('../lib/errors');
 const { OrbitChainConfig, OrbitTransactionState, Workspace, Transaction, Explorer, sequelize } = require('../models');
 const { enqueue } = require('../lib/queue');
 const OrbitTransactionProcessor = require('../lib/orbitTransactionProcessor');
+const {
+    orbitApiLimiter,
+    orbitExpensiveLimiter,
+    orbitContractValidationLimiter,
+    orbitInputValidation,
+    orbitSecurityHeaders,
+    orbitRequestLogger
+} = require('../middlewares/orbitRateLimit');
+
+// Apply global middleware to all orbit routes
+router.use(orbitSecurityHeaders);
+router.use(orbitRequestLogger);
+router.use(orbitApiLimiter);
 
 /**
  * Get orbit configuration for workspace
@@ -61,7 +74,7 @@ router.get('/config', authMiddleware, async (req, res, next) => {
 /**
  * Create or update orbit configuration
  */
-router.post('/config', authMiddleware, async (req, res, next) => {
+router.post('/config', authMiddleware, orbitInputValidation, orbitExpensiveLimiter, async (req, res, next) => {
     try {
         const { uid, workspace: workspaceName, explorerId, config } = req.body;
 
@@ -214,7 +227,7 @@ router.delete('/config', authMiddleware, async (req, res, next) => {
 /**
  * Test orbit configuration
  */
-router.post('/config/test', authMiddleware, async (req, res, next) => {
+router.post('/config/test', authMiddleware, orbitInputValidation, orbitContractValidationLimiter, async (req, res, next) => {
     try {
         const { uid, workspace: workspaceName, explorerId, config } = req.body;
 
@@ -360,7 +373,7 @@ router.get('/transaction/:hash/state', authMiddleware, async (req, res, next) =>
 /**
  * Manually trigger orbit transaction processing
  */
-router.post('/transaction/:hash/process', authMiddleware, async (req, res, next) => {
+router.post('/transaction/:hash/process', authMiddleware, orbitExpensiveLimiter, async (req, res, next) => {
     try {
         const { hash } = req.params;
         const { uid, workspace: workspaceName } = req.body;

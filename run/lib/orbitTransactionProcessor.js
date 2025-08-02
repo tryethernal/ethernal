@@ -1,5 +1,8 @@
 const { OrbitTransactionState } = require('../models');
 const { ethers } = require('ethers');
+const { getOrbitConfig } = require('./orbitConfig');
+const { ProductionRpcClient, BatchDataParser } = require('./orbitRetry');
+const logger = require('./logger');
 
 // Basic ABIs for Orbit contracts - these would need to be more complete in production
 const SEQUENCER_INBOX_ABI = [
@@ -27,11 +30,33 @@ class OrbitTransactionProcessor {
         this.workspace = transaction.workspace;
         this.orbitConfig = transaction.workspace.orbitConfig;
         this.provider = this.workspace.getProvider();
+        this.config = getOrbitConfig();
         
-        // Initialize contract instances
+        // Initialize production-grade RPC clients
         this.sequencerInbox = null;
         this.rollup = null;
         this.bridge = null;
+        
+        // Initialize batch parser
+        this.batchParser = new BatchDataParser();
+        
+        // Metrics tracking
+        this.metrics = {
+            startTime: Date.now(),
+            stateTransitions: 0,
+            rpcCalls: 0,
+            errors: 0
+        };
+        
+        // Context for logging
+        this.context = {
+            transactionId: this.transaction.id,
+            transactionHash: this.transaction.hash,
+            workspaceId: this.workspace.id,
+            chainType: this.orbitConfig.chainType
+        };
+        
+        logger.info('OrbitTransactionProcessor initialized', this.context);
     }
 
     /**
@@ -100,45 +125,92 @@ class OrbitTransactionProcessor {
      * Check if transaction has been sequenced (included in a sequencer batch)
      */
     async checkSequenced(orbitState) {
+        const methodContext = { ...this.context, method: 'checkSequenced', currentState: orbitState.currentState };
+        
         try {
+            logger.debug('Checking if transaction is sequenced', methodContext);
+            
             const sequencerInbox = await this.getSequencerInboxContract();
             
-            // Get current batch count
-            const currentBatchCount = await sequencerInbox.batchCount();
+            // Get current batch count with production error handling
+            const currentBatchCount = await sequencerInbox.call('batchCount');
+            logger.debug('Retrieved current batch count', { ...methodContext, currentBatchCount: currentBatchCount.toString() });
             
             // Look for SequencerBatchDelivered events from when transaction was submitted
-            const filter = sequencerInbox.filters.SequencerBatchDelivered();
             const fromBlock = Math.max(0, Number(orbitState.submittedBlockNumber) - 10);
             const toBlock = 'latest';
             
-            const events = await sequencerInbox.queryFilter(filter, fromBlock, toBlock);
+            const events = await this.queryEvents(sequencerInbox, 'SequencerBatchDelivered', fromBlock, toBlock);
+            logger.debug('Retrieved sequencer batch events', { ...methodContext, eventCount: events.length, fromBlock, toBlock });
             
-            // In a real implementation, we would need to:
-            // 1. Download and parse batch data to check if our transaction is included
-            // 2. This is complex and would require additional infrastructure
-            
-            // For now, we'll simulate progression after a reasonable time
-            const timeThreshold = 5 * 60 * 1000; // 5 minutes
-            const now = new Date();
-            const timeSinceSubmitted = now - new Date(orbitState.submittedAt);
-            
-            if (timeSinceSubmitted > timeThreshold && events.length > 0) {
-                // Find the most recent batch event
-                const latestBatch = events[events.length - 1];
-                
-                await orbitState.updateState('SEQUENCED', {
-                    sequenced: {
-                        batchSequenceNumber: latestBatch.args.batchSequenceNumber.toString(),
-                        afterAcc: latestBatch.args.afterAcc,
-                        blockNumber: latestBatch.blockNumber,
-                        transactionHash: latestBatch.transactionHash
-                    }
-                });
-                
-                await orbitState.setStateDetails('SEQUENCED', latestBatch.blockNumber);
+            if (events.length === 0) {
+                logger.debug('No sequencer batch events found yet', methodContext);
+                return;
             }
+            
+            // Check each batch for our transaction
+            for (const event of events.slice(-10)) { // Check last 10 batches for efficiency
+                const batchNumber = event.args.batchSequenceNumber;
+                
+                try {
+                    const isIncluded = await this.checkTransactionInBatch(batchNumber, this.transaction.hash);
+                    
+                    if (isIncluded) {
+                        logger.info('Transaction found in sequencer batch', { 
+                            ...methodContext, 
+                            batchNumber: batchNumber.toString(),
+                            blockNumber: event.blockNumber
+                        });
+                        
+                        await orbitState.updateState('SEQUENCED', {
+                            sequenced: {
+                                batchSequenceNumber: batchNumber.toString(),
+                                afterAcc: event.args.afterAcc,
+                                blockNumber: event.blockNumber,
+                                transactionHash: event.transactionHash,
+                                verifiedAt: new Date().toISOString()
+                            }
+                        });
+                        
+                        await orbitState.setStateDetails('SEQUENCED', event.blockNumber);
+                        this.metrics.stateTransitions++;
+                        return;
+                    }
+                } catch (batchError) {
+                    logger.warn('Failed to check batch data', { 
+                        ...methodContext, 
+                        batchNumber: batchNumber.toString(),
+                        error: batchError.message 
+                    });
+                    // Continue checking other batches
+                }
+            }
+            
+            // Check if we've exceeded the sequencing timeout
+            const timeSinceSubmitted = Date.now() - new Date(orbitState.submittedAt);
+            if (timeSinceSubmitted > this.config.SEQUENCING_TIMEOUT) {
+                const errorMsg = `Transaction not sequenced within timeout (${this.config.SEQUENCING_TIMEOUT}ms)`;
+                logger.error(errorMsg, methodContext);
+                await orbitState.markAsFailed(errorMsg);
+                this.metrics.errors++;
+            } else {
+                logger.debug('Transaction not yet sequenced, will retry later', { 
+                    ...methodContext, 
+                    timeSinceSubmitted,
+                    timeoutRemaining: this.config.SEQUENCING_TIMEOUT - timeSinceSubmitted
+                });
+            }
+            
         } catch (error) {
-            console.error('Error checking sequenced state:', error);
+            this.metrics.errors++;
+            logger.error('Error checking sequenced state', { ...methodContext, error: error.message });
+            
+            // Don't mark as failed immediately - could be temporary RPC issue
+            if (error.message.includes('Circuit breaker')) {
+                logger.warn('Circuit breaker open, will retry later', methodContext);
+                return;
+            }
+            
             await orbitState.markAsFailed(`Failed to check sequenced state: ${error.message}`);
         }
     }
@@ -227,14 +299,98 @@ class OrbitTransactionProcessor {
     }
 
     /**
+     * Check if a transaction is included in a specific batch
+     */
+    async checkTransactionInBatch(batchNumber, transactionHash) {
+        const methodContext = { ...this.context, method: 'checkTransactionInBatch', batchNumber: batchNumber.toString() };
+        
+        try {
+            logger.debug('Checking transaction in batch', methodContext);
+            
+            // In a real implementation, this would:
+            // 1. Retrieve batch data from the sequencer inbox
+            // 2. Parse the compressed batch data
+            // 3. Check if the transaction hash is included
+            
+            // For now, we'll use the batch parser with simulated data
+            // This is where you'd integrate with Arbitrum's actual batch data format
+            const batchData = await this.getBatchData(batchNumber);
+            const result = await this.batchParser.parseBatchData(batchData, transactionHash);
+            
+            logger.debug('Batch check completed', { ...methodContext, result });
+            return result.isIncluded;
+            
+        } catch (error) {
+            logger.warn('Failed to check transaction in batch', { ...methodContext, error: error.message });
+            throw error;
+        }
+    }
+    
+    /**
+     * Retrieve batch data for a given batch number
+     */
+    async getBatchData(batchNumber) {
+        // This is a placeholder - real implementation would retrieve actual batch data
+        // from the sequencer inbox contract or an indexer service
+        
+        logger.warn('getBatchData not fully implemented - using placeholder', { 
+            batchNumber: batchNumber.toString() 
+        });
+        
+        // Return empty data for now - this needs real implementation
+        return Buffer.alloc(0);
+    }
+    
+    /**
+     * Query contract events with production error handling
+     */
+    async queryEvents(contract, eventName, fromBlock, toBlock) {
+        const methodContext = { 
+            ...this.context, 
+            method: 'queryEvents', 
+            contract: contract.contractAddress,
+            eventName,
+            fromBlock,
+            toBlock 
+        };
+        
+        try {
+            logger.debug('Querying contract events', methodContext);
+            
+            // Use the underlying ethers contract for event queries
+            // as our ProductionRpcClient is designed for method calls
+            const ethersContract = new ethers.Contract(
+                contract.contractAddress,
+                contract.abi,
+                contract.provider
+            );
+            
+            const filter = ethersContract.filters[eventName]();
+            const events = await ethersContract.queryFilter(filter, fromBlock, toBlock);
+            
+            logger.debug('Events retrieved successfully', { 
+                ...methodContext, 
+                eventCount: events.length 
+            });
+            
+            return events;
+            
+        } catch (error) {
+            logger.error('Failed to query events', { ...methodContext, error: error.message });
+            throw error;
+        }
+    }
+
+    /**
      * Get sequencer inbox contract instance
      */
     async getSequencerInboxContract() {
         if (!this.sequencerInbox) {
-            this.sequencerInbox = new ethers.Contract(
+            this.sequencerInbox = new ProductionRpcClient(
+                this.provider,
                 this.orbitConfig.sequencerInboxContract,
                 SEQUENCER_INBOX_ABI,
-                this.provider
+                'SequencerInbox'
             );
         }
         return this.sequencerInbox;
@@ -245,10 +401,11 @@ class OrbitTransactionProcessor {
      */
     async getRollupContract() {
         if (!this.rollup) {
-            this.rollup = new ethers.Contract(
+            this.rollup = new ProductionRpcClient(
+                this.provider,
                 this.orbitConfig.rollupContract,
                 ROLLUP_ABI,
-                this.provider
+                'Rollup'
             );
         }
         return this.rollup;
@@ -259,10 +416,11 @@ class OrbitTransactionProcessor {
      */
     async getBridgeContract() {
         if (!this.bridge) {
-            this.bridge = new ethers.Contract(
+            this.bridge = new ProductionRpcClient(
+                this.provider,
                 this.orbitConfig.bridgeContract,
                 BRIDGE_ABI,
-                this.provider
+                'Bridge'
             );
         }
         return this.bridge;
@@ -272,17 +430,47 @@ class OrbitTransactionProcessor {
      * Validate that all required contracts are accessible
      */
     async validateContracts() {
+        const methodContext = { ...this.context, method: 'validateContracts' };
+        
         try {
+            logger.info('Validating orbit contracts', methodContext);
+            
             const sequencerInbox = await this.getSequencerInboxContract();
             const rollup = await this.getRollupContract();
             const bridge = await this.getBridgeContract();
 
-            // Basic validation calls
-            await sequencerInbox.batchCount();
-            await rollup.latestConfirmed();
+            // Basic validation calls with production error handling
+            await sequencerInbox.call('batchCount');
+            await rollup.call('latestConfirmed');
+            
+            // Get health checks for all contracts
+            const healthChecks = await Promise.all([
+                sequencerInbox.healthCheck(),
+                rollup.healthCheck(),
+                bridge.healthCheck()
+            ]);
+            
+            const allHealthy = healthChecks.every(check => check.healthy);
+            
+            if (!allHealthy) {
+                const unhealthyContracts = healthChecks
+                    .filter(check => !check.healthy)
+                    .map(check => check.error)
+                    .join(', ');
+                throw new Error(`Some contracts are unhealthy: ${unhealthyContracts}`);
+            }
+            
+            logger.info('All orbit contracts validated successfully', { 
+                ...methodContext, 
+                healthChecks: healthChecks.map(check => ({ 
+                    healthy: check.healthy, 
+                    contractDeployed: check.contractDeployed 
+                }))
+            });
             
             return true;
         } catch (error) {
+            logger.error('Contract validation failed', { ...methodContext, error: error.message });
             throw new Error(`Contract validation failed: ${error.message}`);
         }
     }
