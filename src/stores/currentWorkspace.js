@@ -31,7 +31,8 @@ export const useCurrentWorkspaceStore = defineStore('currentWorkspace', {
         tracing: null,
         chainSlug: null,
         storageEnabled: null,
-        wagmiConfig: null
+        wagmiConfig: null,
+        orbitConfig: null
     }),
 
     actions: {
@@ -122,6 +123,29 @@ export const useCurrentWorkspaceStore = defineStore('currentWorkspace', {
                 name: this.name,
                 explorer: workspace.explorer ? { id: workspace.explorer.id, name: workspace.explorer.name } : null
             });
+        },
+
+        // Orbit chain methods
+        async loadOrbitConfig(serverInstance) {
+            if (!serverInstance) {
+                console.warn('Server instance required to load orbit config');
+                return;
+            }
+            try {
+                const response = await serverInstance.getOrbitConfig(this.id);
+                this.orbitConfig = response.data?.orbitConfig || null;
+            } catch (error) {
+                console.error('Failed to load orbit config:', error);
+                this.orbitConfig = null;
+            }
+        },
+
+        updateOrbitConfig(config) {
+            this.orbitConfig = config;
+        },
+
+        clearOrbitConfig() {
+            this.orbitConfig = null;
         }
     },
 
@@ -201,6 +225,23 @@ export const useCurrentWorkspaceStore = defineStore('currentWorkspace', {
                 chain: this.viemChainConfig,
                 transport: this.viemTransportConfig
             })
+        },
+
+        // Orbit chain getters
+        isOrbitChain: (state) => {
+            return !!state.orbitConfig;
+        },
+
+        orbitChainType: (state) => {
+            return state.orbitConfig?.chainType || null;
+        },
+
+        hasOrbitConfig: (state) => {
+            return !!(state.orbitConfig?.rollupContract && 
+                     state.orbitConfig?.bridgeContract &&
+                     state.orbitConfig?.inboxContract &&
+                     state.orbitConfig?.sequencerInboxContract &&
+                     state.orbitConfig?.outboxContract);
         }
     }
 });

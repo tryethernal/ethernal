@@ -23,6 +23,7 @@ const v2Dexes = require('./v2Dexes');
 const gas = require('./gas');
 const transactionTraceSteps = require('./transactionTraceSteps');
 const caddy = require('./caddy');
+const orbit = require('./orbit');
 router.use('/blocks', blocks);
 router.use('/contracts', contracts);
 router.use('/transactions', transactions);
@@ -45,6 +46,7 @@ router.use('/v2_dexes', v2Dexes);
 router.use('/gas', gas);
 router.use('/transactionTraceSteps', transactionTraceSteps);
 router.use('/caddy', caddy);
+router.use('/orbit', orbit);
 
 if (isDemoEnabled()) {
     const demo = require('./demo');

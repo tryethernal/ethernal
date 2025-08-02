@@ -1729,7 +1729,36 @@ export default {
                         .catch(reject)
                 });
             },
-            transferErc721Token: serverFunctions.transferErc721Token
+            transferErc721Token: serverFunctions.transferErc721Token,
+
+            // Orbit chain methods
+            getOrbitConfig(explorerId) {
+                return this.get('/orbit/config', { explorerId });
+            },
+
+            saveOrbitConfig(data) {
+                return this.post('/orbit/config', data);
+            },
+
+            removeOrbitConfig(explorerId) {
+                return this.delete('/orbit/config', { explorerId });
+            },
+
+            testOrbitConfig(data) {
+                return this.post('/orbit/config/test', data);
+            },
+
+            getOrbitTransactionState(hash) {
+                return this.get(`/orbit/transaction/${hash}/state`);
+            },
+
+            processOrbitTransaction(hash, data) {
+                return this.post(`/orbit/transaction/${hash}/process`, data);
+            },
+
+            getOrbitStats(explorerId) {
+                return this.get('/orbit/stats', { explorerId });
+            }
         };
 
         app.config.globalProperties.$server = $server;
