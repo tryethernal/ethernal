@@ -32,9 +32,9 @@ class OrbitTransactionProcessor {
         
         // Two different providers for different purposes:
         // 1. Orbit chain provider - for transaction submission and orbit chain queries
-        this.orbitProvider = this.workspace.getProvider();
+        this.orbitProvider = this.workspace.getProvider().provider;
         // 2. Parent chain provider - for infrastructure contract monitoring
-        this.parentProvider = this.orbitConfig.getParentChainProvider();
+        this.parentProvider = this.orbitConfig.getParentChainProvider().provider;
         
         this.config = getOrbitConfig();
         
@@ -452,16 +452,16 @@ class OrbitTransactionProcessor {
             // Basic validation calls with production error handling
             await sequencerInbox.call('batchCount');
             await rollup.call('latestConfirmed');
-            
+
             // Get health checks for all contracts
             const healthChecks = await Promise.all([
                 sequencerInbox.healthCheck(),
                 rollup.healthCheck(),
                 bridge.healthCheck()
             ]);
-            
+
             const allHealthy = healthChecks.every(check => check.healthy);
-            
+
             if (!allHealthy) {
                 const unhealthyContracts = healthChecks
                     .filter(check => !check.healthy)
@@ -469,7 +469,7 @@ class OrbitTransactionProcessor {
                     .join(', ');
                 throw new Error(`Some contracts are unhealthy: ${unhealthyContracts}`);
             }
-            
+
             logger.info('All orbit contracts validated successfully', { 
                 ...methodContext, 
                 healthChecks: healthChecks.map(check => ({ 
@@ -480,6 +480,7 @@ class OrbitTransactionProcessor {
             
             return true;
         } catch (error) {
+            console.log('error', error);
             logger.error('Contract validation failed', { ...methodContext, error: error.message });
             throw new Error(`Contract validation failed: ${error.message}`);
         }

@@ -1,4 +1,4 @@
-const { getAppDomain, getDefaultPlanSlug, getDefaultExplorerTrialDays, getStripeSecretKey } = require('../lib/env');
+const { getNodeEnv, getAppDomain, getDefaultPlanSlug, getDefaultExplorerTrialDays, getStripeSecretKey } = require('../lib/env');
 const stripe = require('stripe')(getStripeSecretKey());
 const express = require('express');
 const router = express.Router();
@@ -639,7 +639,7 @@ router.post('/', authMiddleware, async (req, res, next) => {
             return managedError(new Error(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`), req, res);
         }
 
-        const allowed = await isChainAllowed(networkId);
+        const allowed = getNodeEnv() == 'development' ? true : await isChainAllowed(networkId);
         if (!allowed)
             return managedError(new Error('You can\'t create an explorer with this network id (' + networkId + '). If you\'d still like an explorer for this chain. Please reach out to contact@tryethernal.com, and we\'ll set one up for you.'), req, res);
 

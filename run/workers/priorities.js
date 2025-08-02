@@ -7,7 +7,8 @@ const priorities = {
         'batchBlockSync',
         'sendResetPasswordEmail',
         'updateExplorerSyncingProcess',
-        'receiptSync'
+        'receiptSync',
+        'processOrbitTransaction'
     ],
     'medium': [
         'processContract',

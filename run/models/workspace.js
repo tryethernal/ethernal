@@ -3501,11 +3501,6 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    // Orbit Chain methods
-    async getOrbitConfig() {
-        return this.getOrbitConfig();
-    }
-
     async createOrbitConfig(configData) {
         return sequelize.models.OrbitChainConfig.create({
             workspaceId: this.id,

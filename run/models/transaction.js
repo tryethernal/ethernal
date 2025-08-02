@@ -590,11 +590,6 @@ module.exports = (sequelize, DataTypes) => {
             return afterCommitFn();
     }
 
-    // Orbit Chain methods
-    async getOrbitState() {
-        return this.getOrbitState();
-    }
-
     async isOrbitTransaction() {
         const workspace = await this.getWorkspace({ include: ['orbitConfig'] });
         return !!workspace.orbitConfig;

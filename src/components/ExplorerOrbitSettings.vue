@@ -298,18 +298,18 @@ const showError = ref(false);
 const errorMessage = ref('');
 
 const config = ref({
-    chainType: 'ROLLUP',
-    parentChainId: 1,
-    parentChainRpcServer: '',
-    rollupContract: '',
-    bridgeContract: '',
-    inboxContract: '',
-    sequencerInboxContract: '',
-    outboxContract: '',
+    chainType: 'ANYTRUST',
+    rollupContract: '0x374de579AE15aD59eD0519aeAf1A23F348Df259c',
+    bridgeContract: '0x6B71AFb4b7725227ab944c96FE018AB9dc0434b8',
+    inboxContract: '0x1B98e4ED82Ee1a91A65a38C690e2266364064D15',
+    sequencerInboxContract: '0xE6a92Ae29E24C343eE66A2B3D3ECB783d65E4a3C',
+    outboxContract: '0x4F405BA65291063d8A524c2bDf55d4e67405c2aF',
     challengeManagerContract: '',
-    validatorWalletCreatorContract: '',
+    validatorWalletCreatorContract: '0x5a6C98F6A60BDC02cE4d8AD43b4Fc88Fe5b38856',
+    parentChainId: 42161,
+    parentChainRpcServer: 'https://mainnet.infura.io/v3/YOUR_KEY',
     confirmationPeriodBlocks: 20,
-    stakeToken: ''
+    stakeToken: '0xAcB7D670bb95144B88a5Cd1883B87bC5021FD10a'
 });
 
 const chainTypes = [

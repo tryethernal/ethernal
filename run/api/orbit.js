@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { authMiddleware } = require('../middlewares/auth');
+const authMiddleware = require('../middlewares/auth');
 const { managedError, unmanagedError } = require('../lib/errors');
 const { OrbitChainConfig, OrbitTransactionState, Workspace, Transaction, Explorer, sequelize } = require('../models');
 const { enqueue } = require('../lib/queue');
@@ -24,7 +24,7 @@ router.use(orbitApiLimiter);
  */
 router.get('/config', authMiddleware, async (req, res, next) => {
     try {
-        const { uid, workspace: workspaceName, explorerId } = req.query;
+        const { firebaseUserId: uid, workspace: workspaceName, explorerId } = req.query;
 
         if (!uid) {
             return managedError(new Error('Missing uid parameter'), req, res);
@@ -43,7 +43,7 @@ router.get('/config', authMiddleware, async (req, res, next) => {
                 ]
             });
             
-            if (!explorer || explorer.workspace.userId != uid) {
+            if (!explorer) {
                 return managedError(new Error('Explorer not found or not accessible'), req, res);
             }
             
@@ -76,7 +76,7 @@ router.get('/config', authMiddleware, async (req, res, next) => {
  */
 router.post('/config', authMiddleware, orbitInputValidation, orbitExpensiveLimiter, async (req, res, next) => {
     try {
-        const { uid, workspace: workspaceName, explorerId, config } = req.body;
+        const { firebaseUserId: uid, workspace: workspaceName, explorerId, config } = req.body;
 
         if (!uid || !config) {
             return managedError(new Error('Missing required parameters'), req, res);
@@ -129,7 +129,7 @@ router.post('/config', authMiddleware, orbitInputValidation, orbitExpensiveLimit
                 ]
             });
             
-            if (!explorer || explorer.workspace.userId != uid) {
+            if (!explorer) {
                 return managedError(new Error('Explorer not found or not accessible'), req, res);
             }
             
@@ -229,7 +229,7 @@ router.delete('/config', authMiddleware, async (req, res, next) => {
  */
 router.post('/config/test', authMiddleware, orbitInputValidation, orbitContractValidationLimiter, async (req, res, next) => {
     try {
-        const { uid, workspace: workspaceName, explorerId, config } = req.body;
+        const { firebaseUserId: uid, workspace: workspaceName, explorerId, config } = req.body;
 
         if (!uid) {
             return managedError(new Error('Missing uid parameter'), req, res);
@@ -247,7 +247,7 @@ router.post('/config/test', authMiddleware, orbitInputValidation, orbitContractV
                 ]
             });
             
-            if (!explorer || explorer.workspace.userId != uid) {
+            if (!explorer) {
                 return managedError(new Error('Explorer not found or not accessible'), req, res);
             }
             
@@ -267,11 +267,10 @@ router.post('/config/test', authMiddleware, orbitInputValidation, orbitContractV
 
         // Use provided config or existing config
         const testConfig = config || await workspace.getOrbitConfig();
-        
+
         if (!testConfig) {
             return managedError(new Error('No configuration to test'), req, res);
         }
-
         // Create temporary processor to test configuration
         const tempTransaction = { workspace, orbitConfig: testConfig };
         const processor = new OrbitTransactionProcessor(tempTransaction);
@@ -291,6 +290,7 @@ router.post('/config/test', authMiddleware, orbitInputValidation, orbitContractV
             }
         });
     } catch (error) {
+        console.log('error', error);
         res.status(400).json({
             error: `Configuration test failed: ${error.message}`
         });
