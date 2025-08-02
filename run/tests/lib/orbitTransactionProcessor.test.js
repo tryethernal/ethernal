@@ -160,13 +160,16 @@ describe('OrbitTransactionProcessor', () => {
             };
 
             processor.getSequencerInboxContract = jest.fn().mockResolvedValue(mockSequencerInbox);
-            processor.queryEvents = jest.fn().mockResolvedValue([]);
+            processor.queryEventsWithChunking = jest.fn().mockResolvedValue([]);
             processor.checkTransactionInBatch = jest.fn().mockResolvedValue(false);
+            processor.parentProvider = {
+                getBlockNumber: jest.fn().mockResolvedValue(1000)
+            };
         });
 
         it('should handle no events found', async () => {
             mockSequencerInbox.call.mockResolvedValue(5);
-            processor.queryEvents.mockResolvedValue([]);
+            processor.queryEventsWithChunking.mockResolvedValue([]);
 
             await processor.checkSequenced(mockOrbitState);
 
@@ -185,7 +188,7 @@ describe('OrbitTransactionProcessor', () => {
             };
 
             mockSequencerInbox.call.mockResolvedValue(5);
-            processor.queryEvents.mockResolvedValue([mockEvent]);
+            processor.queryEventsWithChunking.mockResolvedValue([mockEvent]);
             processor.checkTransactionInBatch.mockResolvedValue(true);
 
             await processor.checkSequenced(mockOrbitState);
@@ -211,7 +214,7 @@ describe('OrbitTransactionProcessor', () => {
             mockOrbitState.submittedAt = new Date(Date.now() - 700000); // 11+ minutes ago
             
             mockSequencerInbox.call.mockResolvedValue(5);
-            processor.queryEvents.mockResolvedValue([]);
+            processor.queryEventsWithChunking.mockResolvedValue([]);
 
             await processor.checkSequenced(mockOrbitState);
 
@@ -234,6 +237,24 @@ describe('OrbitTransactionProcessor', () => {
         it('should not fail on circuit breaker errors', async () => {
             const error = new Error('Circuit breaker is OPEN');
             mockSequencerInbox.call.mockRejectedValue(error);
+
+            await processor.checkSequenced(mockOrbitState);
+
+            expect(mockOrbitState.markAsFailed).not.toHaveBeenCalled();
+        });
+
+        it('should not fail on block range errors', async () => {
+            const error = new Error('You can make eth_getLogs requests with up to a 500 block range');
+            processor.queryEventsWithChunking.mockRejectedValue(error);
+
+            await processor.checkSequenced(mockOrbitState);
+
+            expect(mockOrbitState.markAsFailed).not.toHaveBeenCalled();
+        });
+
+        it('should not fail on rate limit errors', async () => {
+            const error = new Error('rate limit exceeded');
+            processor.queryEventsWithChunking.mockRejectedValue(error);
 
             await processor.checkSequenced(mockOrbitState);
 
@@ -330,6 +351,49 @@ describe('OrbitTransactionProcessor', () => {
             await expect(processor.validateContracts()).rejects.toThrow(
                 'Contract validation failed: Contract call failed'
             );
+        });
+    });
+
+    describe('queryEventsWithChunking', () => {
+        let mockContract;
+
+        beforeEach(() => {
+            mockContract = {
+                contractAddress: '0x1234',
+                abi: ['event TestEvent()'],
+                provider: mockProvider
+            };
+
+            processor.queryEvents = jest.fn();
+        });
+
+        it('should chunk large block ranges', async () => {
+            const mockEvents1 = [{ blockNumber: 100, transactionHash: '0xabc' }];
+            const mockEvents2 = [{ blockNumber: 600, transactionHash: '0xdef' }];
+            
+            processor.queryEvents
+                .mockResolvedValueOnce(mockEvents1)
+                .mockResolvedValueOnce(mockEvents2);
+
+            const events = await processor.queryEventsWithChunking(mockContract, 'TestEvent', 100, 1000);
+
+            expect(events).toHaveLength(2);
+            expect(processor.queryEvents).toHaveBeenCalledTimes(2);
+            expect(processor.queryEvents).toHaveBeenCalledWith(mockContract, 'TestEvent', 100, 599);
+            expect(processor.queryEvents).toHaveBeenCalledWith(mockContract, 'TestEvent', 600, 1000);
+        });
+
+        it('should handle chunk failures gracefully', async () => {
+            const mockEvents = [{ blockNumber: 100, transactionHash: '0xabc' }];
+            
+            processor.queryEvents
+                .mockRejectedValueOnce(new Error('500 block range limit'))
+                .mockResolvedValueOnce(mockEvents);
+
+            const events = await processor.queryEventsWithChunking(mockContract, 'TestEvent', 100, 200);
+
+            expect(events).toHaveLength(1);
+            expect(events[0]).toEqual(mockEvents[0]);
         });
     });
 

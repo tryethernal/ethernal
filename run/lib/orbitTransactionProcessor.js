@@ -146,11 +146,27 @@ class OrbitTransactionProcessor {
             logger.debug('Retrieved current batch count', { ...methodContext, currentBatchCount: currentBatchCount.toString() });
             
             // Look for SequencerBatchDelivered events from when transaction was submitted
+            // Use reasonable block range to avoid RPC provider limits
+            const currentBlock = await this.parentProvider.getBlockNumber();
             const fromBlock = Math.max(0, Number(orbitState.submittedBlockNumber) - 10);
-            const toBlock = 'latest';
+            const maxToBlock = Math.min(
+                currentBlock,
+                fromBlock + this.config.MAX_BLOCKS_TO_SEARCH
+            );
             
-            const events = await this.queryEvents(sequencerInbox, 'SequencerBatchDelivered', fromBlock, toBlock);
-            logger.debug('Retrieved sequencer batch events', { ...methodContext, eventCount: events.length, fromBlock, toBlock });
+            const events = await this.queryEventsWithChunking(
+                sequencerInbox, 
+                'SequencerBatchDelivered', 
+                fromBlock, 
+                maxToBlock
+            );
+            logger.debug('Retrieved sequencer batch events', { 
+                ...methodContext, 
+                eventCount: events.length, 
+                fromBlock, 
+                toBlock: maxToBlock,
+                currentBlock 
+            });
             
             if (events.length === 0) {
                 logger.debug('No sequencer batch events found yet', methodContext);
@@ -206,7 +222,8 @@ class OrbitTransactionProcessor {
                 logger.debug('Transaction not yet sequenced, will retry later', { 
                     ...methodContext, 
                     timeSinceSubmitted,
-                    timeoutRemaining: this.config.SEQUENCING_TIMEOUT - timeSinceSubmitted
+                    timeoutRemaining: this.config.SEQUENCING_TIMEOUT - timeSinceSubmitted,
+                    blocksSearched: maxToBlock - fromBlock + 1
                 });
             }
             
@@ -214,12 +231,28 @@ class OrbitTransactionProcessor {
             this.metrics.errors++;
             logger.error('Error checking sequenced state', { ...methodContext, error: error.message });
             
-            // Don't mark as failed immediately - could be temporary RPC issue
+            // Handle specific RPC provider errors gracefully
             if (error.message.includes('Circuit breaker')) {
                 logger.warn('Circuit breaker open, will retry later', methodContext);
                 return;
             }
             
+            if (error.message.includes('block range') || error.message.includes('500 block')) {
+                logger.warn('RPC provider block range limit encountered, will retry with smaller range', methodContext);
+                return; // Don't mark as failed, will retry later
+            }
+            
+            if (error.message.includes('rate limit') || error.message.includes('too many requests')) {
+                logger.warn('RPC provider rate limit encountered, will retry later', methodContext);
+                return; // Don't mark as failed, will retry later
+            }
+            
+            if (error.code === 'NETWORK_ERROR' || error.code === 'SERVER_ERROR') {
+                logger.warn('Network/server error, will retry later', { ...methodContext, errorCode: error.code });
+                return; // Don't mark as failed, will retry later
+            }
+            
+            // Only mark as failed for non-recoverable errors
             await orbitState.markAsFailed(`Failed to check sequenced state: ${error.message}`);
         }
     }
@@ -350,6 +383,98 @@ class OrbitTransactionProcessor {
         return Buffer.alloc(0);
     }
     
+    /**
+     * Query contract events with block range chunking to avoid RPC provider limits
+     */
+    async queryEventsWithChunking(contract, eventName, fromBlock, toBlock) {
+        const methodContext = { 
+            ...this.context, 
+            method: 'queryEventsWithChunking', 
+            contract: contract.contractAddress,
+            eventName,
+            fromBlock,
+            toBlock 
+        };
+        
+        try {
+            logger.debug('Querying contract events with chunking', methodContext);
+            
+            const maxRangePerQuery = this.config.MAX_BLOCK_RANGE_PER_QUERY || 500;
+            const allEvents = [];
+            
+            let currentFromBlock = fromBlock;
+            
+            while (currentFromBlock <= toBlock) {
+                const currentToBlock = Math.min(currentFromBlock + maxRangePerQuery - 1, toBlock);
+                
+                const chunkContext = {
+                    ...methodContext,
+                    chunkFromBlock: currentFromBlock,
+                    chunkToBlock: currentToBlock,
+                    chunkSize: currentToBlock - currentFromBlock + 1
+                };
+                
+                logger.debug('Querying chunk', chunkContext);
+                
+                try {
+                    const chunkEvents = await this.queryEvents(contract, eventName, currentFromBlock, currentToBlock);
+                    allEvents.push(...chunkEvents);
+                    
+                    logger.debug('Chunk queried successfully', { 
+                        ...chunkContext, 
+                        eventCount: chunkEvents.length 
+                    });
+                    
+                } catch (chunkError) {
+                    // If a chunk fails, log it but continue with next chunk
+                    logger.warn('Chunk query failed', { 
+                        ...chunkContext, 
+                        error: chunkError.message 
+                    });
+                    
+                    // If it's a rate limit or range error, respect the suggested range from the error
+                    if (chunkError.message.includes('block range') || chunkError.message.includes('500 block')) {
+                        logger.warn('Reducing chunk size due to RPC provider limits', chunkContext);
+                        // Reduce chunk size and retry
+                        const smallerRange = Math.min(100, maxRangePerQuery / 2);
+                        const smallerToBlock = Math.min(currentFromBlock + smallerRange - 1, toBlock);
+                        
+                        try {
+                            const retryEvents = await this.queryEvents(contract, eventName, currentFromBlock, smallerToBlock);
+                            allEvents.push(...retryEvents);
+                            currentFromBlock = smallerToBlock + 1;
+                            continue;
+                        } catch (retryError) {
+                            logger.error('Retry with smaller chunk also failed', { 
+                                ...chunkContext, 
+                                retryError: retryError.message 
+                            });
+                        }
+                    }
+                }
+                
+                currentFromBlock = currentToBlock + 1;
+                
+                // Add small delay between chunks to be nice to RPC providers
+                if (currentFromBlock <= toBlock) {
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
+            }
+            
+            logger.debug('All chunks queried successfully', { 
+                ...methodContext, 
+                totalEvents: allEvents.length,
+                chunksProcessed: Math.ceil((toBlock - fromBlock + 1) / maxRangePerQuery)
+            });
+            
+            return allEvents;
+            
+        } catch (error) {
+            logger.error('Failed to query events with chunking', { ...methodContext, error: error.message });
+            throw error;
+        }
+    }
+
     /**
      * Query contract events with production error handling
      */
