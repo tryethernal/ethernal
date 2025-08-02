@@ -268,7 +268,7 @@ module.exports = (sequelize, DataTypes) => {
             if (this.type && this.type == 2) {
                 // Use BigNumber for (effectiveGasPrice - baseFeePerGas) * gasUsed
                 const effectiveGasPrice = ethers.BigNumber.from(String(receipt.raw.effectiveGasPrice));
-                const baseFeePerGas = ethers.BigNumber.from(String(block.baseFeePerGas));
+                const baseFeePerGas = ethers.BigNumber.from(String(block.baseFeePerGas || 0));
                 const gasUsed = ethers.BigNumber.from(String(receipt.gasUsed));
                 toValidator = effectiveGasPrice.sub(baseFeePerGas).mul(gasUsed);
             } else {
