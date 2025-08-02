@@ -29,10 +29,16 @@ class OrbitTransactionProcessor {
         this.transaction = transaction;
         this.workspace = transaction.workspace;
         this.orbitConfig = transaction.workspace.orbitConfig;
-        this.provider = this.workspace.getProvider();
+        
+        // Two different providers for different purposes:
+        // 1. Orbit chain provider - for transaction submission and orbit chain queries
+        this.orbitProvider = this.workspace.getProvider();
+        // 2. Parent chain provider - for infrastructure contract monitoring
+        this.parentProvider = this.orbitConfig.getParentChainProvider();
+        
         this.config = getOrbitConfig();
         
-        // Initialize production-grade RPC clients
+        // Initialize production-grade RPC clients (all use parent chain provider)
         this.sequencerInbox = null;
         this.rollup = null;
         this.bridge = null;
@@ -53,10 +59,13 @@ class OrbitTransactionProcessor {
             transactionId: this.transaction.id,
             transactionHash: this.transaction.hash,
             workspaceId: this.workspace.id,
-            chainType: this.orbitConfig.chainType
+            chainType: this.orbitConfig.chainType,
+            parentChainId: this.orbitConfig.parentChainId,
+            orbitChainRpc: this.workspace.rpcServer,
+            parentChainRpc: this.orbitConfig.parentChainRpcServer
         };
         
-        logger.info('OrbitTransactionProcessor initialized', this.context);
+        logger.info('OrbitTransactionProcessor initialized with dual-chain architecture', this.context);
     }
 
     /**
@@ -359,10 +368,11 @@ class OrbitTransactionProcessor {
             
             // Use the underlying ethers contract for event queries
             // as our ProductionRpcClient is designed for method calls
+            // Use parent provider since infrastructure contracts are on parent chain
             const ethersContract = new ethers.Contract(
                 contract.contractAddress,
                 contract.abi,
-                contract.provider
+                this.parentProvider
             );
             
             const filter = ethersContract.filters[eventName]();
@@ -387,7 +397,7 @@ class OrbitTransactionProcessor {
     async getSequencerInboxContract() {
         if (!this.sequencerInbox) {
             this.sequencerInbox = new ProductionRpcClient(
-                this.provider,
+                this.parentProvider, // Use parent chain provider
                 this.orbitConfig.sequencerInboxContract,
                 SEQUENCER_INBOX_ABI,
                 'SequencerInbox'
@@ -402,7 +412,7 @@ class OrbitTransactionProcessor {
     async getRollupContract() {
         if (!this.rollup) {
             this.rollup = new ProductionRpcClient(
-                this.provider,
+                this.parentProvider, // Use parent chain provider
                 this.orbitConfig.rollupContract,
                 ROLLUP_ABI,
                 'Rollup'
@@ -417,7 +427,7 @@ class OrbitTransactionProcessor {
     async getBridgeContract() {
         if (!this.bridge) {
             this.bridge = new ProductionRpcClient(
-                this.provider,
+                this.parentProvider, // Use parent chain provider
                 this.orbitConfig.bridgeContract,
                 BRIDGE_ABI,
                 'Bridge'

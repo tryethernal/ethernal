@@ -18,11 +18,19 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     /**
-     * Validate that all required contract addresses are deployed contracts
+     * Get parent chain provider for infrastructure contract validation
+     */
+    getParentChainProvider() {
+      const { ethers } = require('ethers');
+      return new ethers.providers.JsonRpcProvider(this.parentChainRpcServer);
+    }
+
+    /**
+     * Validate that all required contract addresses are deployed contracts on parent chain
      */
     async validateContracts() {
-      const workspace = await this.getWorkspace();
-      const provider = workspace.getProvider();
+      // Infrastructure contracts are deployed on the parent chain, not the orbit chain
+      const parentProvider = this.getParentChainProvider();
       
       const contracts = [
         { address: this.rollupContract, name: 'Rollup Contract' },
@@ -32,15 +40,57 @@ module.exports = (sequelize, DataTypes) => {
         { address: this.outboxContract, name: 'Outbox Contract' }
       ];
 
+      const validationResults = {};
+
+      // Validate parent chain RPC connectivity and chain ID
+      try {
+        const network = await parentProvider.getNetwork();
+        validationResults.parentChainRpc = {
+          accessible: true,
+          chainId: network.chainId,
+          expectedChainId: this.parentChainId,
+          chainIdMatches: network.chainId === this.parentChainId
+        };
+
+        if (network.chainId !== this.parentChainId) {
+          throw new Error(`Parent chain ID mismatch: expected ${this.parentChainId}, got ${network.chainId}`);
+        }
+      } catch (error) {
+        validationResults.parentChainRpc = {
+          accessible: false,
+          error: error.message,
+          expectedChainId: this.parentChainId
+        };
+        throw new Error(`Failed to connect to parent chain RPC: ${error.message}`);
+      }
+
+      // Validate infrastructure contracts on parent chain
       for (const contract of contracts) {
         if (contract.address) {
           try {
-            const code = await provider.getCode(contract.address);
+            const code = await parentProvider.getCode(contract.address);
             if (code === '0x') {
-              throw new Error(`No contract found at ${contract.name} address: ${contract.address}`);
+              validationResults[contract.name] = {
+                address: contract.address,
+                hasCode: false,
+                error: `No contract found at address`
+              };
+              throw new Error(`No contract found at ${contract.name} address: ${contract.address} on parent chain`);
+            } else {
+              validationResults[contract.name] = {
+                address: contract.address,
+                hasCode: true,
+                accessible: true
+              };
             }
           } catch (error) {
-            throw new Error(`Failed to validate ${contract.name}: ${error.message}`);
+            validationResults[contract.name] = {
+              address: contract.address,
+              hasCode: false,
+              accessible: false,
+              error: error.message
+            };
+            throw new Error(`Failed to validate ${contract.name} on parent chain: ${error.message}`);
           }
         }
       }
@@ -202,6 +252,20 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         min: 1
+      }
+    },
+    parentChainRpcServer: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+        isUrl: {
+          args: {
+            protocols: ['http', 'https', 'ws', 'wss'],
+            require_protocol: true
+          },
+          msg: 'Parent chain RPC server must be a valid URL'
+        }
       }
     },
     confirmationPeriodBlocks: {

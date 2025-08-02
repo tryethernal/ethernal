@@ -48,6 +48,21 @@
                             />
                         </v-col>
                     </v-row>
+
+                    <v-row>
+                        <v-col cols="12">
+                            <v-text-field
+                                v-model="config.parentChainRpcServer"
+                                label="Parent Chain RPC Server"
+                                required
+                                :rules="urlRules"
+                                hint="RPC endpoint for the parent chain where infrastructure contracts are deployed (e.g., https://mainnet.infura.io/v3/YOUR_KEY)"
+                                persistent-hint
+                                :disabled="loading"
+                                placeholder="https://mainnet.infura.io/v3/YOUR_KEY"
+                            />
+                        </v-col>
+                    </v-row>
                     
                     <v-divider class="my-6" />
                     
@@ -225,6 +240,10 @@
                         <div class="mb-2">
                             <strong>Parent Chain ID:</strong> {{ config.parentChainId }}
                         </div>
+                        <div class="mb-2">
+                            <strong>Parent Chain RPC:</strong> 
+                            <code class="text-caption">{{ config.parentChainRpcServer }}</code>
+                        </div>
                         <div>
                             <strong>Status:</strong>
                             <v-chip size="small" color="success" class="ml-2">
@@ -280,6 +299,8 @@ const errorMessage = ref('');
 
 const config = ref({
     chainType: 'ROLLUP',
+    parentChainId: 1,
+    parentChainRpcServer: '',
     rollupContract: '',
     bridgeContract: '',
     inboxContract: '',
@@ -287,7 +308,6 @@ const config = ref({
     outboxContract: '',
     challengeManagerContract: '',
     validatorWalletCreatorContract: '',
-    parentChainId: 1,
     confirmationPeriodBlocks: 20,
     stakeToken: ''
 });
@@ -306,8 +326,21 @@ const optionalAddressRules = [
     v => !v || /^0x[a-fA-F0-9]{40}$/.test(v) || 'Must be a valid Ethereum address'
 ];
 
+const urlRules = [
+    v => !!v || 'RPC URL is required',
+    v => {
+        try {
+            const url = new URL(v);
+            return ['http:', 'https:', 'ws:', 'wss:'].includes(url.protocol) || 'URL must use http, https, ws, or wss protocol';
+        } catch {
+            return 'Must be a valid URL';
+        }
+    }
+];
+
 const isConfigured = computed(() => {
-    return config.value.rollupContract && 
+    return config.value.parentChainRpcServer &&
+           config.value.rollupContract && 
            config.value.bridgeContract && 
            config.value.inboxContract &&
            config.value.sequencerInboxContract &&

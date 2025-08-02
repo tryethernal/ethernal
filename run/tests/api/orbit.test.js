@@ -63,6 +63,8 @@ describe('Orbit API', () => {
             // Create orbit config for testing
             orbitConfig = await OrbitChainConfig.create({
                 workspaceId: workspace.id,
+                parentChainId: 1,
+                parentChainRpcServer: 'https://mainnet.infura.io/v3/test',
                 rollupContract: '0x1234567890123456789012345678901234567890',
                 bridgeContract: '0x2345678901234567890123456789012345678901',
                 sequencerInboxContract: '0x3456789012345678901234567890123456789012',
@@ -70,7 +72,6 @@ describe('Orbit API', () => {
                 outboxContract: '0x5678901234567890123456789012345678901234',
                 challengeManagerContract: '0x6789012345678901234567890123456789012345',
                 validatorWalletCreatorContract: '0x7890123456789012345678901234567890123456',
-                parentChainId: 1,
                 confirmationPeriodBlocks: 45818,
                 chainType: 'Rollup'
             });
@@ -150,6 +151,8 @@ describe('Orbit API', () => {
 
     describe('POST /api/orbit/config', () => {
         const validConfig = {
+            parentChainId: 1,
+            parentChainRpcServer: 'https://mainnet.infura.io/v3/test',
             rollupContract: '0x1234567890123456789012345678901234567890',
             bridgeContract: '0x2345678901234567890123456789012345678901',
             sequencerInboxContract: '0x3456789012345678901234567890123456789012',
@@ -157,7 +160,6 @@ describe('Orbit API', () => {
             outboxContract: '0x5678901234567890123456789012345678901234',
             challengeManagerContract: '0x6789012345678901234567890123456789012345',
             validatorWalletCreatorContract: '0x7890123456789012345678901234567890123456',
-            parentChainId: 1,
             confirmationPeriodBlocks: 45818,
             chainType: 'Rollup'
         };
@@ -251,6 +253,44 @@ describe('Orbit API', () => {
             expect(response.body.details).toContain('Chain type must be either "Rollup" or "AnyTrust"');
         });
 
+        it('should validate parent chain RPC URL', async () => {
+            const invalidConfig = {
+                ...validConfig,
+                parentChainRpcServer: 'invalid-url'
+            };
+
+            const response = await request(app)
+                .post('/api/orbit/config')
+                .send({
+                    uid: user.firebaseUserId,
+                    workspace: workspace.name,
+                    config: invalidConfig
+                })
+                .set('Authorization', `Bearer ${authToken}`)
+                .expect(400);
+
+            expect(response.body.details).toContain('Parent chain RPC server must be a valid URL');
+        });
+
+        it('should validate parent chain RPC protocol', async () => {
+            const invalidConfig = {
+                ...validConfig,
+                parentChainRpcServer: 'ftp://example.com/rpc'
+            };
+
+            const response = await request(app)
+                .post('/api/orbit/config')
+                .send({
+                    uid: user.firebaseUserId,
+                    workspace: workspace.name,
+                    config: invalidConfig
+                })
+                .set('Authorization', `Bearer ${authToken}`)
+                .expect(400);
+
+            expect(response.body.details).toContain('Parent chain RPC server must use http, https, ws, or wss protocol');
+        });
+
         it('should apply rate limiting', async () => {
             // This test would need to be adjusted based on actual rate limits
             // For now, test that the middleware is applied
@@ -278,6 +318,8 @@ describe('Orbit API', () => {
 
     describe('POST /api/orbit/config/test', () => {
         const testConfig = {
+            parentChainId: 1,
+            parentChainRpcServer: 'https://mainnet.infura.io/v3/test',
             rollupContract: '0x1234567890123456789012345678901234567890',
             bridgeContract: '0x2345678901234567890123456789012345678901',
             sequencerInboxContract: '0x3456789012345678901234567890123456789012'
@@ -418,6 +460,8 @@ describe('Orbit API', () => {
         beforeEach(async () => {
             orbitConfig = await OrbitChainConfig.create({
                 workspaceId: workspace.id,
+                parentChainId: 1,
+                parentChainRpcServer: 'https://mainnet.infura.io/v3/test',
                 rollupContract: '0x1234567890123456789012345678901234567890',
                 bridgeContract: '0x2345678901234567890123456789012345678901',
                 sequencerInboxContract: '0x3456789012345678901234567890123456789012',

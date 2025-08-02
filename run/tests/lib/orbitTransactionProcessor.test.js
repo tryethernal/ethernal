@@ -29,7 +29,9 @@ describe('OrbitTransactionProcessor', () => {
             inboxContract: '0x4567890123456789012345678901234567890123',
             outboxContract: '0x5678901234567890123456789012345678901234',
             chainType: 'Rollup',
-            parentChainId: 1
+            parentChainId: 1,
+            parentChainRpcServer: 'https://mainnet.infura.io/v3/test',
+            getParentChainProvider: jest.fn().mockReturnValue(mockProvider)
         };
 
         mockWorkspace = {

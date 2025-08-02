@@ -344,8 +344,10 @@ async function getPerformanceMetrics() {
  */
 async function checkContractHealth(workspace) {
     const orbitConfig = workspace.orbitConfig;
-    const provider = workspace.getProvider();
+    const orbitProvider = workspace.getProvider();
+    const parentProvider = orbitConfig.getParentChainProvider();
     
+    // Infrastructure contracts are deployed on parent chain
     const contracts = [
         { name: 'Rollup', address: orbitConfig.rollupContract },
         { name: 'Bridge', address: orbitConfig.bridgeContract },
@@ -357,12 +359,69 @@ async function checkContractHealth(workspace) {
     const contractResults = [];
     let allHealthy = true;
 
+    // First check parent chain connectivity
+    try {
+        const startTime = Date.now();
+        const network = await parentProvider.getNetwork();
+        const latency = Date.now() - startTime;
+        
+        const parentChainResult = {
+            name: 'ParentChain',
+            chainId: network.chainId,
+            expectedChainId: orbitConfig.parentChainId,
+            healthy: network.chainId === orbitConfig.parentChainId,
+            latency,
+            rpcEndpoint: orbitConfig.parentChainRpcServer
+        };
+        
+        if (network.chainId !== orbitConfig.parentChainId) {
+            parentChainResult.error = `Chain ID mismatch: expected ${orbitConfig.parentChainId}, got ${network.chainId}`;
+            allHealthy = false;
+        }
+        
+        contractResults.push(parentChainResult);
+        
+    } catch (error) {
+        contractResults.push({
+            name: 'ParentChain',
+            healthy: false,
+            error: error.message,
+            rpcEndpoint: orbitConfig.parentChainRpcServer
+        });
+        allHealthy = false;
+    }
+
+    // Check orbit chain connectivity  
+    try {
+        const startTime = Date.now();
+        const network = await orbitProvider.getNetwork();
+        const latency = Date.now() - startTime;
+        
+        contractResults.push({
+            name: 'OrbitChain',
+            chainId: network.chainId,
+            healthy: true,
+            latency,
+            rpcEndpoint: workspace.rpcServer
+        });
+        
+    } catch (error) {
+        contractResults.push({
+            name: 'OrbitChain',
+            healthy: false,
+            error: error.message,
+            rpcEndpoint: workspace.rpcServer
+        });
+        allHealthy = false;
+    }
+
+    // Check infrastructure contracts on parent chain
     for (const contractInfo of contracts) {
         try {
             const startTime = Date.now();
             
-            // Simple health check - verify contract has code
-            const code = await provider.getCode(contractInfo.address);
+            // Use parent provider since infrastructure contracts are deployed there
+            const code = await parentProvider.getCode(contractInfo.address);
             const hasCode = code !== '0x';
             const latency = Date.now() - startTime;
             
@@ -371,11 +430,12 @@ async function checkContractHealth(workspace) {
                 address: contractInfo.address,
                 healthy: hasCode,
                 latency,
-                deployed: hasCode
+                deployed: hasCode,
+                chain: 'parent'
             };
             
             if (!hasCode) {
-                result.error = 'No contract code found at address';
+                result.error = 'No contract code found at address on parent chain';
                 allHealthy = false;
             }
             
@@ -386,7 +446,8 @@ async function checkContractHealth(workspace) {
                 name: contractInfo.name,
                 address: contractInfo.address,
                 healthy: false,
-                error: error.message
+                error: error.message,
+                chain: 'parent'
             });
             allHealthy = false;
         }

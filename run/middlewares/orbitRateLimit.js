@@ -143,6 +143,19 @@ const orbitContractValidationLimiter = rateLimit({
 const orbitInputValidation = (req, res, next) => {
     const errors = [];
     
+    // Validate parent chain RPC server
+    if (req.body.parentChainRpcServer !== undefined) {
+        try {
+            const url = new URL(req.body.parentChainRpcServer);
+            const validProtocols = ['http:', 'https:', 'ws:', 'wss:'];
+            if (!validProtocols.includes(url.protocol)) {
+                errors.push('Parent chain RPC server must use http, https, ws, or wss protocol');
+            }
+        } catch (error) {
+            errors.push('Parent chain RPC server must be a valid URL');
+        }
+    }
+
     // Validate Ethereum addresses if present
     const addressFields = ['rollupContract', 'bridgeContract', 'inboxContract', 
                           'sequencerInboxContract', 'outboxContract', 'challengeManagerContract', 
