@@ -265,7 +265,7 @@ async function loadTransactionState() {
     error.value = null;
     
     try {
-        const response = await $server.getOrbitTransactionState(props.transactionHash);
+        const { data: response } = await $server.getOrbitTransactionState(props.transactionHash);
         
         if (response.found) {
             found.value = true;
