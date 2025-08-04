@@ -62,12 +62,28 @@ const inputSignature = (input) => {
 const processResult = (result) => {
     const processed = [];
     
-    // Handle single result vs array of results
-    const resultArray = Array.isArray(result) ? result : [result];
-    
-    for (let i = 0; i < props.method.outputs.length; i++) {
-        const output = processOutputRecursive(resultArray[i], props.method.outputs[i]);
-        processed.push(output);
+    // If we have multiple outputs, each output corresponds to an element in the result array
+    if (props.method.outputs.length > 1) {
+        const resultArray = Array.isArray(result) ? result : [result];
+        for (let i = 0; i < props.method.outputs.length; i++) {
+            const output = processOutputRecursive(resultArray[i], props.method.outputs[i]);
+            processed.push(output);
+        }
+    } else {
+        // If we have only one output, check if it's an array type
+        const outputType = props.method.outputs[0];
+        const isArrayType = outputType.type && (outputType.type.endsWith('[]') || outputType.type === 'tuple[]');
+        
+        if (isArrayType) {
+            // If the output type is an array, ensure result is treated as an array
+            const resultArray = Array.isArray(result) ? result : [result];
+            const output = processOutputRecursive(resultArray, outputType);
+            processed.push(output);
+        } else {
+            // If the output type is not an array, treat result as a single value
+            const output = processOutputRecursive(result, outputType);
+            processed.push(output);
+        }
     }
 
     return processed;
@@ -163,9 +179,11 @@ const callMethod = async () => {
             args: Object.values(processedParams)
         });
 
+        console.log(res)
+
         console.log(processResult(res));
 
-        results.value = Array.isArray(res) ? processResult(res) : processResult([res]);
+        results.value = processResult(res);
     } catch (err) {
         console.log(JSON.stringify(err, null, 2));
         const message = err.shortMessage || err.message || err.reason;

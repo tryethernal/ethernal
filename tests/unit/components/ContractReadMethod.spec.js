@@ -1,14 +1,92 @@
 import DSProxyFactoryContract from '../fixtures/DSProxyFactoryContract.json';
 
 describe('ContractReadMethod.vue', () => {
+    const mockERC20Contract = {
+        address: '0x1234567890123456789012345678901234567890',
+        name: 'MockToken',
+        abi: [
+            {
+                outputs: [
+                    {
+                        type: 'bool',
+                        name: ''
+                    }
+                ],
+                constant: true,
+                inputs: [
+                    {
+                        type: 'address',
+                        name: 'owner'
+                    }
+                ],
+                stateMutability: 'view',
+                type: 'function',
+                payable: false,
+                name: 'isApprovedForAll'
+            },
+            {
+                outputs: [
+                    {
+                        type: 'uint256',
+                        name: ''
+                    }
+                ],
+                constant: true,
+                inputs: [
+                    {
+                        type: 'address',
+                        name: 'account'
+                    }
+                ],
+                stateMutability: 'view',
+                type: 'function',
+                payable: false,
+                name: 'balanceOf'
+            },
+            {
+                outputs: [
+                    {
+                        type: 'string',
+                        name: ''
+                    }
+                ],
+                constant: true,
+                inputs: [],
+                stateMutability: 'view',
+                type: 'function',
+                payable: false,
+                name: 'name'
+            },
+            {
+                outputs: [
+                    {
+                        type: 'uint256',
+                        name: ''
+                    },
+                    {
+                        type: 'uint256',
+                        name: ''
+                    }
+                ],
+                constant: true,
+                inputs: [],
+                stateMutability: 'view',
+                type: 'function',
+                payable: false,
+                name: 'getReserves'
+            }
+        ],
+        hashedBytecode: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef'
+    };
+
     beforeEach(() => {
         vi.resetModules();
     });
 
     it('Should display the UI to interact with a method', async () => {
         const props = {
-            method: DSProxyFactoryContract.abi[0],
-            contract: DSProxyFactoryContract,
+            method: mockERC20Contract.abi[0],
+            contract: mockERC20Contract,
             active: true,
             options: {
                 from: '0x0',
@@ -59,7 +137,7 @@ describe('ContractReadMethod.vue', () => {
                 "type": "function",
                 "constant": true
             },
-            contract: DSProxyFactoryContract,
+            contract: mockERC20Contract,
             signature: 'test',
         };
 
@@ -87,11 +165,7 @@ describe('ContractReadMethod.vue', () => {
             [
                 {
                     input: { type: 'uint256' },
-                    value: 1
-                },
-                {
-                    input: { type: 'uint256' },
-                    value: 2
+                    value: [1, 2]
                 }
             ]
         ]);
@@ -100,8 +174,8 @@ describe('ContractReadMethod.vue', () => {
 
     it('Should return the result when interacting with the method', async () => {
         const props = {
-            method: DSProxyFactoryContract.abi[0],
-            contract: DSProxyFactoryContract,
+            method: mockERC20Contract.abi[0],
+            contract: mockERC20Contract,
             active: true,
             options: {
                 from: '0x0',
@@ -144,7 +218,7 @@ describe('ContractReadMethod.vue', () => {
                         name: '',
                         type: 'bool'
                     },
-                    value: 'true'
+                    value: ['true']
                 }
             ]
         ]);
@@ -153,8 +227,8 @@ describe('ContractReadMethod.vue', () => {
 
     it('Should work when it is in public explorer mode', async () => {
         const props = {
-            method: DSProxyFactoryContract.abi[0],
-            contract: DSProxyFactoryContract,
+            method: mockERC20Contract.abi[0],
+            contract: mockERC20Contract,
             active: true,
             options: {
                 from: '0x0',
@@ -198,7 +272,7 @@ describe('ContractReadMethod.vue', () => {
                         name: '',
                         type: 'bool'
                     },
-                    value: 'true'
+                    value: ['true']
                 }
             ]
         ]);
@@ -213,7 +287,7 @@ describe('ContractReadMethod.vue', () => {
         const props = {
             method: {
                 "inputs": [],
-                "name": "returnAnUInt",
+                "name": "balanceOf",
                 "outputs": [
                     {
                         "internalType": "uint256",
@@ -225,7 +299,7 @@ describe('ContractReadMethod.vue', () => {
                 "type": "function",
                 "constant": true
             },
-            contract: DSProxyFactoryContract,
+            contract: mockERC20Contract,
             active: true,
             options: {
                 from: '0x0',
@@ -258,7 +332,7 @@ describe('ContractReadMethod.vue', () => {
                         name: '',
                         type: 'uint256'
                     },
-                    value: '1234'
+                    value: ['1234']
                 }
             ]
         ]);
@@ -273,7 +347,7 @@ describe('ContractReadMethod.vue', () => {
         const props = {
             method: {
                 "inputs": [],
-                "name": "returnAnUInt",
+                "name": "balanceOf",
                 "outputs": [
                     {
                         "internalType": "uint256",
@@ -285,7 +359,7 @@ describe('ContractReadMethod.vue', () => {
                 "type": "function",
                 "constant": true
             },
-            contract: DSProxyFactoryContract,
+            contract: mockERC20Contract,
             active: true,
             options: {
                 from: '0x0',
@@ -318,7 +392,7 @@ describe('ContractReadMethod.vue', () => {
                         name: '',
                         type: 'uint256'
                     },
-                    value: '50000000000000000000'
+                    value: ['50000000000000000000']
                 }
             ]
         ]);
@@ -333,7 +407,7 @@ describe('ContractReadMethod.vue', () => {
         const props = {
             method: {
                 "inputs": [],
-                "name": "returnAnUInt",
+                "name": "getReserves",
                 "outputs": [
                     {
                         "internalType": "uint256",
@@ -350,7 +424,7 @@ describe('ContractReadMethod.vue', () => {
                 "type": "function",
                 "constant": true
             },
-            contract: DSProxyFactoryContract,
+            contract: mockERC20Contract,
             active: true,
             options: {
                 from: '0x0',
@@ -406,8 +480,8 @@ describe('ContractReadMethod.vue', () => {
         }));
 
         const props = {
-            method: DSProxyFactoryContract.abi[0],
-            contract: DSProxyFactoryContract,
+            method: mockERC20Contract.abi[0],
+            contract: mockERC20Contract,
             active: true,
             options: {
                 from: '0x0',
@@ -450,8 +524,8 @@ describe('ContractReadMethod.vue', () => {
         }));
 
         const props = {
-            method: DSProxyFactoryContract.abi[0],
-            contract: DSProxyFactoryContract,
+            method: mockERC20Contract.abi[0],
+            contract: mockERC20Contract,
             active: true,
             options: {
                 from: '0x0',
