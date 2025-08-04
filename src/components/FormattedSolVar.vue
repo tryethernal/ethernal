@@ -45,11 +45,15 @@
                     </div>
                     <span :class="`ml-${4 * displayDepth} pl-${4 * titanicLevelDepth}`">&nbsp;]</span>
                 </span>
-                <span v-else>
+                <span v-else-if="safeValue">
                     {{ safeValue }}
                 </span>
+                <span v-else>
+                    <i>null</i>
+                </span>
             </span>
-            <span style="white-space: break-spaces;" v-else>{{ safeValue }}</span>
+            <span style="white-space: break-spaces;" v-else-if="safeValue">{{ safeValue }}</span>
+            <span v-else><i>null</i></span>
         </span>
     </span>
 </template>

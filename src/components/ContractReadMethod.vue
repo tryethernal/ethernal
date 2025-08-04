@@ -17,7 +17,12 @@
             <v-card v-for="(val, idx) in results" :key="idx" class="my-1">
                 <v-card-text class="py-2 ma-0 px-1">
                     <div style="white-space: pre;">
-                        <Formatted-Sol-Var v-for="(el, idx) in val" :key="idx" :input="el.input" :value="el.value" />
+                        <div v-if="val.length" v-for="(el, idx) in val" :key="idx">
+                            <Formatted-Sol-Var :input="el.input" :value="el.value" />
+                            <br>
+                        </div>
+                        <template v-else-if="method.outputs[idx].type.endsWith('[]')">[ ]</template>
+                        <i v-else>null</i>
                     </div>
                 </v-card-text>
             </v-card>
