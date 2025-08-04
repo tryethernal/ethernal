@@ -3,10 +3,10 @@
 exports[`ContractReadMethod.vue > Should display a generic error message if the function fails 1`] = `
 "<div active="true" options="[object Object]">
   <div class="pb-1 font-weight-bold">isProxy</div>
-  <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field py-1 col-3" style="width: 50%;">
+  <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field py-1 col-3" style="width: 50%;">
     <!---->
     <div class="v-input__control">
-      <div class="v-field v-field--center-affix v-field--variant-outlined v-theme--light v-locale--is-ltr">
+      <div class="v-field v-field--active v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr">
         <div class="v-field__overlay"></div>
         <div class="v-field__loader">
           <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
@@ -27,7 +27,7 @@ exports[`ContractReadMethod.vue > Should display a generic error message if the 
           <!----><label class="v-label v-field-label" for="input-0">
             <!---->address
           </label>
-          <!----><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" class="v-field__input">
+          <!----><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" class="v-field__input" value="test">
           <!---->
         </div>
         <!---->
@@ -113,10 +113,10 @@ exports[`ContractReadMethod.vue > Should display the UI to interact with a metho
 exports[`ContractReadMethod.vue > Should display the error message if one is returned 1`] = `
 "<div active="true" options="[object Object]">
   <div class="pb-1 font-weight-bold">isProxy</div>
-  <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field py-1 col-3" style="width: 50%;">
+  <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field py-1 col-3" style="width: 50%;">
     <!---->
     <div class="v-input__control">
-      <div class="v-field v-field--center-affix v-field--variant-outlined v-theme--light v-locale--is-ltr">
+      <div class="v-field v-field--active v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr">
         <div class="v-field__overlay"></div>
         <div class="v-field__loader">
           <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
@@ -137,7 +137,7 @@ exports[`ContractReadMethod.vue > Should display the error message if one is ret
           <!----><label class="v-label v-field-label" for="input-0">
             <!---->address
           </label>
-          <!----><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" class="v-field__input">
+          <!----><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" class="v-field__input" value="test">
           <!---->
         </div>
         <!---->
@@ -314,10 +314,10 @@ exports[`ContractReadMethod.vue > Should handle multiple results 1`] = `
 exports[`ContractReadMethod.vue > Should return the result when interacting with the method 1`] = `
 "<div active="true" options="[object Object]">
   <div class="pb-1 font-weight-bold">isProxy</div>
-  <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field py-1 col-3" style="width: 50%;">
+  <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field py-1 col-3" style="width: 50%;">
     <!---->
     <div class="v-input__control">
-      <div class="v-field v-field--center-affix v-field--variant-outlined v-theme--light v-locale--is-ltr">
+      <div class="v-field v-field--active v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr">
         <div class="v-field__overlay"></div>
         <div class="v-field__loader">
           <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
@@ -338,7 +338,7 @@ exports[`ContractReadMethod.vue > Should return the result when interacting with
           <!----><label class="v-label v-field-label" for="input-0">
             <!---->address
           </label>
-          <!----><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" class="v-field__input">
+          <!----><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" class="v-field__input" value="test">
           <!---->
         </div>
         <!---->
@@ -460,7 +460,8 @@ exports[`ContractReadMethod.vue > Should work when input is any array 1`] = `
       <!---->
       <div class="v-card-text py-2 ma-0 px-1">
         <div style="white-space: pre;">
-          <formatted-sol-var-stub input="[object Object]" value="1,2"></formatted-sol-var-stub>
+          <formatted-sol-var-stub input="[object Object]" value="1"></formatted-sol-var-stub>
+          <formatted-sol-var-stub input="[object Object]" value="2"></formatted-sol-var-stub>
         </div>
       </div>
       <!---->
@@ -478,10 +479,10 @@ exports[`ContractReadMethod.vue > Should work when input is any array 1`] = `
 exports[`ContractReadMethod.vue > Should work when it is in public explorer mode 1`] = `
 "<div active="true" options="[object Object]">
   <div class="pb-1 font-weight-bold">isProxy</div>
-  <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field py-1 col-3" style="width: 50%;">
+  <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field py-1 col-3" style="width: 50%;">
     <!---->
     <div class="v-input__control">
-      <div class="v-field v-field--center-affix v-field--variant-outlined v-theme--light v-locale--is-ltr">
+      <div class="v-field v-field--active v-field--center-affix v-field--dirty v-field--variant-outlined v-theme--light v-locale--is-ltr">
         <div class="v-field__overlay"></div>
         <div class="v-field__loader">
           <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
@@ -502,7 +503,7 @@ exports[`ContractReadMethod.vue > Should work when it is in public explorer mode
           <!----><label class="v-label v-field-label" for="input-0">
             <!---->address
           </label>
-          <!----><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" class="v-field__input">
+          <!----><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" class="v-field__input" value="test">
           <!---->
         </div>
         <!---->

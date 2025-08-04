@@ -1,4 +1,3 @@
-import flushPromises from 'flush-promises';
 import DSProxyFactoryContract from '../fixtures/DSProxyFactoryContract.json';
 
 describe('ContractReadMethod.vue', () => {
@@ -78,20 +77,23 @@ describe('ContractReadMethod.vue', () => {
         });
         await flushPromises();
 
+        // Set the required parameter
         await wrapper.find('input').setValue('[1,2]');
         await wrapper.vm.callMethod();
         await flushPromises();
 
         expect(wrapper.vm.results.length).toEqual(1);
         expect(wrapper.vm.results).toEqual([
-            {
-                input: {
-                    internalType: "uint256[]",
-                    name: '',
-                    type: 'uint256[]'
+            [
+                {
+                    input: { type: 'uint256' },
+                    value: 1
                 },
-                value: [1, 2]
-            }
+                {
+                    input: { type: 'uint256' },
+                    value: 2
+                }
+            ]
         ]);
         expect(wrapper.html()).toMatchSnapshot();
     })
@@ -125,17 +127,26 @@ describe('ContractReadMethod.vue', () => {
             }
         });
 
+        // Set required parameters if any
+        if (props.method.inputs && props.method.inputs.length > 0) {
+            for (let i = 0; i < props.method.inputs.length; i++) {
+                await wrapper.findAll('input')[i].setValue('test');
+            }
+        }
+
         await wrapper.find('button').trigger('click');
         await new Promise(process.nextTick);
 
         expect(wrapper.vm.results).toEqual([
-            {
-                input: {
-                    name: '',
-                    type: 'bool'
-                },
-                value: 'true'
-            }
+            [
+                {
+                    input: {
+                        name: '',
+                        type: 'bool'
+                    },
+                    value: 'true'
+                }
+            ]
         ]);
         expect(wrapper.html()).toMatchSnapshot();
     });
@@ -170,17 +181,26 @@ describe('ContractReadMethod.vue', () => {
             }
         });
 
+        // Set required parameters if any
+        if (props.method.inputs && props.method.inputs.length > 0) {
+            for (let i = 0; i < props.method.inputs.length; i++) {
+                await wrapper.findAll('input')[i].setValue('test');
+            }
+        }
+
         await wrapper.find('button').trigger('click');
         await new Promise(process.nextTick);
 
         expect(wrapper.vm.results).toEqual([
-            {
-                input: {
-                    name: '',
-                    type: 'bool'
-                },
-                value: 'true'
-            }
+            [
+                {
+                    input: {
+                        name: '',
+                        type: 'bool'
+                    },
+                    value: 'true'
+                }
+            ]
         ]);
         expect(wrapper.html()).toMatchSnapshot();
     });
@@ -231,14 +251,16 @@ describe('ContractReadMethod.vue', () => {
         await new Promise(process.nextTick);
 
         expect(wrapper.vm.results).toEqual([
-            {
-                input: {
-                    internalType: "uint256",
-                    name: '',
-                    type: 'uint256'
-                },
-                value: '1234'
-            }
+            [
+                {
+                    input: {
+                        internalType: "uint256",
+                        name: '',
+                        type: 'uint256'
+                    },
+                    value: '1234'
+                }
+            ]
         ]);
         expect(wrapper.html()).toMatchSnapshot();
     });
@@ -289,14 +311,16 @@ describe('ContractReadMethod.vue', () => {
         await new Promise(process.nextTick);
 
         expect(wrapper.vm.results).toEqual([
-            {
-                input: {
-                    internalType: "uint256",
-                    name: '',
-                    type: 'uint256'
-                },
-                value: '50000000000000000000'
-            }
+            [
+                {
+                    input: {
+                        internalType: "uint256",
+                        name: '',
+                        type: 'uint256'
+                    },
+                    value: '50000000000000000000'
+                }
+            ]
         ]);
         expect(wrapper.html()).toMatchSnapshot();
     });
@@ -352,22 +376,26 @@ describe('ContractReadMethod.vue', () => {
         await new Promise(process.nextTick);
 
         expect(wrapper.vm.results).toEqual([
-            {
-                input: {
-                    internalType: "uint256",
-                    name: '',
-                    type: 'uint256'
-                },
-                value: '1'
-            },
-            {
-                input: {
-                    internalType: "uint256",
-                    name: '',
-                    type: 'uint256'
-                },
-                value: '2'
-            }
+            [
+                {
+                    input: {
+                        internalType: "uint256",
+                        name: '',
+                        type: 'uint256'
+                    },
+                    value: '1'
+                }
+            ],
+            [
+                {
+                    input: {
+                        internalType: "uint256",
+                        name: '',
+                        type: 'uint256'
+                    },
+                    value: '2'
+                }
+            ]
         ]);
         expect(wrapper.html()).toMatchSnapshot();
     });
@@ -400,6 +428,13 @@ describe('ContractReadMethod.vue', () => {
                 }})]
             }
         });
+
+        // Set required parameters if any
+        if (props.method.inputs && props.method.inputs.length > 0) {
+            for (let i = 0; i < props.method.inputs.length; i++) {
+                await wrapper.findAll('input')[i].setValue('test');
+            }
+        }
 
         await wrapper.find('button').trigger('click');
         await new Promise(process.nextTick);
@@ -436,6 +471,13 @@ describe('ContractReadMethod.vue', () => {
                 }})]
             }
         });
+
+        // Set required parameters if any
+        if (props.method.inputs && props.method.inputs.length > 0) {
+            for (let i = 0; i < props.method.inputs.length; i++) {
+                await wrapper.findAll('input')[i].setValue('test');
+            }
+        }
 
         await wrapper.find('button').trigger('click');
         await new Promise(process.nextTick);

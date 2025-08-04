@@ -17,7 +17,7 @@
             <v-card v-for="(val, idx) in results" :key="idx" class="my-1">
                 <v-card-text class="py-2 ma-0 px-1">
                     <div style="white-space: pre;">
-                        <Formatted-Sol-Var :input="val.input" :value="val.value" />
+                        <Formatted-Sol-Var v-for="(el, idx) in val" :key="idx" :input="el.input" :value="el.value" />
                     </div>
                 </v-card-text>
             </v-card>
@@ -61,20 +61,83 @@ const inputSignature = (input) => {
 
 const processResult = (result) => {
     const processed = [];
-    if (props.method.outputs[0].baseType === 'array') {
-        processed.push({
-            input: props.method.outputs[0],
-            value: result
-        });
-    } else {
-        for (let i = 0; i < result.length; i++) {
-            processed.push({
-                input: props.method.outputs[i],
-                value: result[i]
-            });
+    
+    // Handle single result vs array of results
+    const resultArray = Array.isArray(result) ? result : [result];
+    
+    for (let i = 0; i < props.method.outputs.length; i++) {
+        const output = processOutputRecursive(resultArray[i], props.method.outputs[i]);
+        processed.push(output);
+    }
+
+    return processed;
+};
+
+const processOutputRecursive = (value, outputType) => {
+    // Handle tuple arrays (e.g., tuple[])
+    if (outputType.type === 'tuple[]') {
+        if (!Array.isArray(value)) {
+            value = [value];
+        }
+        return value.map((el) => ({
+            input: { type: 'tuple', components: outputType.components },
+            value: el
+        }));
+    }
+    
+    // Handle regular arrays (e.g., uint256[], address[])
+    if (outputType.type && outputType.type.endsWith('[]')) {
+        if (!Array.isArray(value)) {
+            value = [value];
+        }
+        return value.map((el) => ({
+            input: { type: outputType.type.slice(0, -2) }, // Remove '[]' suffix
+            value: el
+        }));
+    }
+    
+    // Handle tuples
+    if (outputType.type === 'tuple') {
+        if (!outputType.components) {
+            return [{
+                input: outputType,
+                value: value
+            }];
+        }
+        
+        // For tuples, we need to process each component
+        const processedComponents = [];
+        for (let i = 0; i < outputType.components.length; i++) {
+            const component = outputType.components[i];
+            const componentValue = value && value[i] !== undefined ? value[i] : null;
+            
+            // Recursively process nested structures
+            const processed = processOutputRecursive(componentValue, component);
+            processedComponents.push(...processed);
+        }
+        return processedComponents;
+    }
+    
+    // Handle nested arrays within tuples (e.g., tuple with array components)
+    if (outputType.arrayChildren) {
+        if (Array.isArray(value)) {
+            return value.map((el) => ({
+                input: outputType.arrayChildren,
+                value: el
+            }));
+        } else {
+            return [{
+                input: outputType.arrayChildren,
+                value: value
+            }];
         }
     }
-    return processed;
+    
+    // Handle base types (uint256, address, string, etc.)
+    return [{
+        input: outputType,
+        value: value
+    }];
 };
 
 const callMethod = async () => {
@@ -82,6 +145,11 @@ const callMethod = async () => {
         loading.value = true;
         error.value = null;
         results.value = [];
+
+        if (Object.keys(params.value).length < props.method.inputs.length) {
+            error.value = 'All parameters are required';
+            return;
+        }
 
         const processedParams = {};
         for (let i = 0; i < props.method.inputs.length; i++) {
@@ -94,6 +162,8 @@ const callMethod = async () => {
             functionName: props.method.name,
             args: Object.values(processedParams)
         });
+
+        console.log(processResult(res));
 
         results.value = Array.isArray(res) ? processResult(res) : processResult([res]);
     } catch (err) {
