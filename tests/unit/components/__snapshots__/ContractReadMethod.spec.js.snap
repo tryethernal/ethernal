@@ -190,7 +190,9 @@ exports[`ContractReadMethod.vue > Should display the result even if it is not an
       <!---->
       <div class="v-card-text py-2 ma-0 px-1">
         <div style="white-space: pre;">
-          <formatted-sol-var-stub input="[object Object]" value="1234"></formatted-sol-var-stub>
+          <div>
+            <formatted-sol-var-stub input="[object Object]" value="1234"></formatted-sol-var-stub><br>
+          </div>
         </div>
       </div>
       <!---->
@@ -230,7 +232,9 @@ exports[`ContractReadMethod.vue > Should handle big number results 1`] = `
       <!---->
       <div class="v-card-text py-2 ma-0 px-1">
         <div style="white-space: pre;">
-          <formatted-sol-var-stub input="[object Object]" value="50000000000000000000"></formatted-sol-var-stub>
+          <div>
+            <formatted-sol-var-stub input="[object Object]" value="50000000000000000000"></formatted-sol-var-stub><br>
+          </div>
         </div>
       </div>
       <!---->
@@ -270,7 +274,9 @@ exports[`ContractReadMethod.vue > Should handle multiple results 1`] = `
       <!---->
       <div class="v-card-text py-2 ma-0 px-1">
         <div style="white-space: pre;">
-          <formatted-sol-var-stub input="[object Object]" value="1"></formatted-sol-var-stub>
+          <div>
+            <formatted-sol-var-stub input="[object Object]" value="1"></formatted-sol-var-stub><br>
+          </div>
         </div>
       </div>
       <!---->
@@ -296,7 +302,9 @@ exports[`ContractReadMethod.vue > Should handle multiple results 1`] = `
       <!---->
       <div class="v-card-text py-2 ma-0 px-1">
         <div style="white-space: pre;">
-          <formatted-sol-var-stub input="[object Object]" value="2"></formatted-sol-var-stub>
+          <div>
+            <formatted-sol-var-stub input="[object Object]" value="2"></formatted-sol-var-stub><br>
+          </div>
         </div>
       </div>
       <!---->
@@ -378,7 +386,9 @@ exports[`ContractReadMethod.vue > Should return the result when interacting with
       <!---->
       <div class="v-card-text py-2 ma-0 px-1">
         <div style="white-space: pre;">
-          <formatted-sol-var-stub input="[object Object]" value="true"></formatted-sol-var-stub>
+          <div>
+            <formatted-sol-var-stub input="[object Object]" value="true"></formatted-sol-var-stub><br>
+          </div>
         </div>
       </div>
       <!---->
@@ -460,7 +470,9 @@ exports[`ContractReadMethod.vue > Should work when input is any array 1`] = `
       <!---->
       <div class="v-card-text py-2 ma-0 px-1">
         <div style="white-space: pre;">
-          <formatted-sol-var-stub input="[object Object]" value="1,2"></formatted-sol-var-stub>
+          <div>
+            <formatted-sol-var-stub input="[object Object]" value="1,2"></formatted-sol-var-stub><br>
+          </div>
         </div>
       </div>
       <!---->
@@ -542,7 +554,9 @@ exports[`ContractReadMethod.vue > Should work when it is in public explorer mode
       <!---->
       <div class="v-card-text py-2 ma-0 px-1">
         <div style="white-space: pre;">
-          <formatted-sol-var-stub input="[object Object]" value="true"></formatted-sol-var-stub>
+          <div>
+            <formatted-sol-var-stub input="[object Object]" value="true"></formatted-sol-var-stub><br>
+          </div>
         </div>
       </div>
       <!---->
