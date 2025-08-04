@@ -162,7 +162,8 @@
             <template v-slot:prepend>
               <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">
                 <v-icon size="small" color="grey" class="mr-1" v-tooltip="'The receiving address of the transaction'">mdi-help-circle-outline</v-icon>
-                To:
+                <template v-if="Object.keys(transaction.methodDetails).length > 0">Interacted With (To):</template>
+                <template v-else>To:</template>
               </div>
             </template>
             <v-list-item-title class="text-body-2 text-truncate">
