@@ -2,7 +2,7 @@
 
 exports[`ContractReadMethod.vue > Should display a generic error message if the function fails 1`] = `
 "<div active="true" options="[object Object]">
-  <div class="pb-1 font-weight-bold">isProxy</div>
+  <div class="pb-1 font-weight-bold">isApprovedForAll</div>
   <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field py-1 col-3" style="width: 50%;">
     <!---->
     <div class="v-input__control">
@@ -25,7 +25,7 @@ exports[`ContractReadMethod.vue > Should display a generic error message if the 
         <!---->
         <div class="v-field__field" data-no-activator="">
           <!----><label class="v-label v-field-label" for="input-0">
-            <!---->address
+            <!---->address owner
           </label>
           <!----><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" class="v-field__input" value="test">
           <!---->
@@ -35,7 +35,7 @@ exports[`ContractReadMethod.vue > Should display a generic error message if the 
         <div class="v-field__outline">
           <div class="v-field__outline__start"></div>
           <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
-              <!---->address
+              <!---->address owner
             </label></div>
           <div class="v-field__outline__end"></div>
           <!---->
@@ -57,7 +57,7 @@ exports[`ContractReadMethod.vue > Should display a generic error message if the 
 
 exports[`ContractReadMethod.vue > Should display the UI to interact with a method 1`] = `
 "<div active="true" options="[object Object]">
-  <div class="pb-1 font-weight-bold">isProxy</div>
+  <div class="pb-1 font-weight-bold">isApprovedForAll</div>
   <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-text-field py-1 col-3" style="width: 50%;">
     <!---->
     <div class="v-input__control">
@@ -80,7 +80,7 @@ exports[`ContractReadMethod.vue > Should display the UI to interact with a metho
         <!---->
         <div class="v-field__field" data-no-activator="">
           <!----><label class="v-label v-field-label" for="input-0">
-            <!---->address
+            <!---->address owner
           </label>
           <!----><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" class="v-field__input">
           <!---->
@@ -90,7 +90,7 @@ exports[`ContractReadMethod.vue > Should display the UI to interact with a metho
         <div class="v-field__outline">
           <div class="v-field__outline__start"></div>
           <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
-              <!---->address
+              <!---->address owner
             </label></div>
           <div class="v-field__outline__end"></div>
           <!---->
@@ -112,7 +112,7 @@ exports[`ContractReadMethod.vue > Should display the UI to interact with a metho
 
 exports[`ContractReadMethod.vue > Should display the error message if one is returned 1`] = `
 "<div active="true" options="[object Object]">
-  <div class="pb-1 font-weight-bold">isProxy</div>
+  <div class="pb-1 font-weight-bold">isApprovedForAll</div>
   <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field py-1 col-3" style="width: 50%;">
     <!---->
     <div class="v-input__control">
@@ -135,7 +135,7 @@ exports[`ContractReadMethod.vue > Should display the error message if one is ret
         <!---->
         <div class="v-field__field" data-no-activator="">
           <!----><label class="v-label v-field-label" for="input-0">
-            <!---->address
+            <!---->address owner
           </label>
           <!----><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" class="v-field__input" value="test">
           <!---->
@@ -145,7 +145,7 @@ exports[`ContractReadMethod.vue > Should display the error message if one is ret
         <div class="v-field__outline">
           <div class="v-field__outline__start"></div>
           <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
-              <!---->address
+              <!---->address owner
             </label></div>
           <div class="v-field__outline__end"></div>
           <!---->
@@ -167,7 +167,7 @@ exports[`ContractReadMethod.vue > Should display the error message if one is ret
 
 exports[`ContractReadMethod.vue > Should display the result even if it is not an array 1`] = `
 "<div active="true" options="[object Object]">
-  <div class="pb-1 font-weight-bold">returnAnUInt</div>
+  <div class="pb-1 font-weight-bold">balanceOf</div>
   <div>=&gt; uint256</div>
   <div id="call" style="">
     <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated my-1">
@@ -207,7 +207,7 @@ exports[`ContractReadMethod.vue > Should display the result even if it is not an
 
 exports[`ContractReadMethod.vue > Should handle big number results 1`] = `
 "<div active="true" options="[object Object]">
-  <div class="pb-1 font-weight-bold">returnAnUInt</div>
+  <div class="pb-1 font-weight-bold">balanceOf</div>
   <div>=&gt; uint256</div>
   <div id="call" style="">
     <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated my-1">
@@ -247,7 +247,7 @@ exports[`ContractReadMethod.vue > Should handle big number results 1`] = `
 
 exports[`ContractReadMethod.vue > Should handle multiple results 1`] = `
 "<div active="true" options="[object Object]">
-  <div class="pb-1 font-weight-bold">returnAnUInt</div>
+  <div class="pb-1 font-weight-bold">getReserves</div>
   <div>=&gt; uint256, uint256</div>
   <div id="call" style="">
     <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated my-1">
@@ -313,7 +313,7 @@ exports[`ContractReadMethod.vue > Should handle multiple results 1`] = `
 
 exports[`ContractReadMethod.vue > Should return the result when interacting with the method 1`] = `
 "<div active="true" options="[object Object]">
-  <div class="pb-1 font-weight-bold">isProxy</div>
+  <div class="pb-1 font-weight-bold">isApprovedForAll</div>
   <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field py-1 col-3" style="width: 50%;">
     <!---->
     <div class="v-input__control">
@@ -336,7 +336,7 @@ exports[`ContractReadMethod.vue > Should return the result when interacting with
         <!---->
         <div class="v-field__field" data-no-activator="">
           <!----><label class="v-label v-field-label" for="input-0">
-            <!---->address
+            <!---->address owner
           </label>
           <!----><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" class="v-field__input" value="test">
           <!---->
@@ -346,7 +346,7 @@ exports[`ContractReadMethod.vue > Should return the result when interacting with
         <div class="v-field__outline">
           <div class="v-field__outline__start"></div>
           <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
-              <!---->address
+              <!---->address owner
             </label></div>
           <div class="v-field__outline__end"></div>
           <!---->
@@ -460,8 +460,7 @@ exports[`ContractReadMethod.vue > Should work when input is any array 1`] = `
       <!---->
       <div class="v-card-text py-2 ma-0 px-1">
         <div style="white-space: pre;">
-          <formatted-sol-var-stub input="[object Object]" value="1"></formatted-sol-var-stub>
-          <formatted-sol-var-stub input="[object Object]" value="2"></formatted-sol-var-stub>
+          <formatted-sol-var-stub input="[object Object]" value="1,2"></formatted-sol-var-stub>
         </div>
       </div>
       <!---->
@@ -478,7 +477,7 @@ exports[`ContractReadMethod.vue > Should work when input is any array 1`] = `
 
 exports[`ContractReadMethod.vue > Should work when it is in public explorer mode 1`] = `
 "<div active="true" options="[object Object]">
-  <div class="pb-1 font-weight-bold">isProxy</div>
+  <div class="pb-1 font-weight-bold">isApprovedForAll</div>
   <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field py-1 col-3" style="width: 50%;">
     <!---->
     <div class="v-input__control">
@@ -501,7 +500,7 @@ exports[`ContractReadMethod.vue > Should work when it is in public explorer mode
         <!---->
         <div class="v-field__field" data-no-activator="">
           <!----><label class="v-label v-field-label" for="input-0">
-            <!---->address
+            <!---->address owner
           </label>
           <!----><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" class="v-field__input" value="test">
           <!---->
@@ -511,7 +510,7 @@ exports[`ContractReadMethod.vue > Should work when it is in public explorer mode
         <div class="v-field__outline">
           <div class="v-field__outline__start"></div>
           <div class="v-field__outline__notch"><label class="v-label v-field-label v-field-label--floating" aria-hidden="true" for="input-0">
-              <!---->address
+              <!---->address owner
             </label></div>
           <div class="v-field__outline__end"></div>
           <!---->
