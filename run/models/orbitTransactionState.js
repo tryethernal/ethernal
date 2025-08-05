@@ -16,13 +16,8 @@ module.exports = (sequelize, DataTypes) => {
             as: 'transaction'
         });
         
-        // Associate with batch based on batch sequence number in state data
-        OrbitTransactionState.belongsTo(models.OrbitBatch, {
-            foreignKey: 'batchSequenceNumber',
-            targetKey: 'batchSequenceNumber',
-            as: 'batch',
-            constraints: false // No foreign key constraint since it's stored in JSON
-        });
+        // Note: batchSequenceNumber is stored in stateData JSON, not as a separate column
+        // We handle the relationship to OrbitBatch manually when needed
       OrbitTransactionState.belongsTo(models.Workspace, { 
         foreignKey: 'workspaceId', 
         as: 'workspace' 

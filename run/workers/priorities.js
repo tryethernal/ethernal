@@ -38,6 +38,10 @@ const priorities = {
         'removeStalledBlock',
         'queueMonitoring',
         'blockSyncMonitoring',
+        'monitorOrbitBatchesStarter',
+        'monitorOrbitBatches',
+        'discoverOrbitBatchesStarter',
+        'discoverOrbitBatches',
         'sendDiscordMessage',
         'backfillNativeTokenTransfers'
     ]

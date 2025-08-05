@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { authMiddleware } = require('../middlewares/auth');
+const authMiddleware = require('../middlewares/auth');
 const { managedError, unmanagedError } = require('../lib/errors');
 const { OrbitBatch, OrbitTransactionState, Workspace, Explorer, sequelize } = require('../models');
 const {
