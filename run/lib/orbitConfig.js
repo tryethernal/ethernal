@@ -18,9 +18,11 @@ class OrbitConfig {
         
         // Job Configuration
         this.JOB_BATCH_SIZE = parseInt(getEnv('ORBIT_JOB_BATCH_SIZE', '100'));
-        this.JOB_RETRY_ATTEMPTS = parseInt(getEnv('ORBIT_JOB_RETRY_ATTEMPTS', '5'));
+        this.JOB_RETRY_ATTEMPTS = parseInt(getEnv('ORBIT_JOB_RETRY_ATTEMPTS', '3')); // Reduced from 5
         this.JOB_RETRY_DELAY = parseInt(getEnv('ORBIT_JOB_RETRY_DELAY', '5000'));
-        this.JOB_PROCESSING_TIMEOUT = parseInt(getEnv('ORBIT_JOB_PROCESSING_TIMEOUT', '300000')); // 5 minutes
+        this.JOB_PROCESSING_TIMEOUT = parseInt(getEnv('ORBIT_JOB_PROCESSING_TIMEOUT', '120000')); // 2 minutes, reduced from 5
+        this.JOB_CONTRACT_VALIDATION_TIMEOUT = parseInt(getEnv('ORBIT_JOB_CONTRACT_VALIDATION_TIMEOUT', '30000')); // 30 seconds
+        this.JOB_MAX_PROCESSING_RETRIES = parseInt(getEnv('ORBIT_JOB_MAX_PROCESSING_RETRIES', '3'));
         
         // Batch Monitoring Configuration
         this.BATCH_MONITOR_LIMIT = parseInt(getEnv('ORBIT_BATCH_MONITOR_LIMIT', '100'));
