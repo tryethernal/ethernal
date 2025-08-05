@@ -9,16 +9,8 @@ module.exports = (sequelize, DataTypes) => {
                 as: 'workspace'
             });
             
-            // A batch can contain many transaction states
-            OrbitBatch.hasMany(models.OrbitTransactionState, {
-                foreignKey: 'batchSequenceNumber',
-                sourceKey: 'batchSequenceNumber',
-                as: 'transactionStates',
-                scope: {
-                    // Only link transactions from the same workspace
-                    workspaceId: sequelize.where(sequelize.col('OrbitBatch.workspaceId'), '=', sequelize.col('transactionStates.workspaceId'))
-                }
-            });
+            // Note: batchSequenceNumber is stored in stateData JSON, not as a separate column
+            // We handle the relationship to OrbitTransactionState manually when needed
         }
 
         /**
