@@ -7,6 +7,7 @@ const QUEUE_MONITORING_INTERVAL = 60 * 1000;
 const CANCEL_DEMO_INTERVAL = 60 * 60 * 1000;
 const BLOCK_SYNC_MONITORING_INTERVAL = 60 * 1000;
 const ORBIT_BATCH_MONITORING_INTERVAL = 5 * 60 * 1000; // 5 minutes
+const ORBIT_BATCH_DISCOVERY_INTERVAL = 2 * 60 * 1000; // 2 minutes
 
 (async () => {
     await enqueue(
@@ -71,5 +72,13 @@ const ORBIT_BATCH_MONITORING_INTERVAL = 5 * 60 * 1000; // 5 minutes
         {},
         5,
         { every: ORBIT_BATCH_MONITORING_INTERVAL }
+    );
+
+    await enqueue(
+        'discoverOrbitBatchesStarter',
+        'discoverOrbitBatchesStarter',
+        {},
+        3,
+        { every: ORBIT_BATCH_DISCOVERY_INTERVAL }
     );
 })();

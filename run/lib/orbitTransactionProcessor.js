@@ -331,67 +331,51 @@ class OrbitTransactionProcessor {
     
     /**
      * Index new batches from searchFromBatch to currentBatchCount
+     * This is a lightweight version that delegates to the background discovery job
      */
     async indexNewBatches(searchFromBatch, currentBatchCount, methodContext) {
         const newBatches = [];
         
         try {
-            logger.debug('Indexing new batches', { 
+            logger.debug('Triggering background batch discovery', { 
                 ...methodContext, 
                 searchFromBatch, 
                 currentBatchCount: currentBatchCount.toString() 
             });
             
-            // Query for SequencerBatchDelivered events for new batches only
-            const sequencerInbox = await this.getSequencerInboxContract();
-            
-            // Get a reasonable block range for the search
-            const currentBlock = await this.parentProvider.getBlockNumber();
-            const searchFromBlock = Math.max(0, currentBlock - this.config.MAX_BLOCKS_TO_SEARCH);
-            
-            const events = await this.queryEventsWithChunking(
-                sequencerInbox,
-                'SequencerBatchDelivered',
-                searchFromBlock,
-                currentBlock
+            // Enqueue a high-priority batch discovery job for this workspace
+            const { enqueue } = require('./queue');
+            await enqueue(
+                'discoverOrbitBatches',
+                `discoverOrbitBatches-urgent-${this.workspace.id}`,
+                { workspaceId: this.workspace.id },
+                2 // Higher priority than regular discovery
             );
             
-            // Filter events for only new batches
-            const newBatchEvents = events.filter(event => 
-                event.args.batchSequenceNumber >= searchFromBatch && 
-                event.args.batchSequenceNumber < currentBatchCount
-            );
-            
-            logger.debug('Found new batch events', { 
-                ...methodContext, 
-                newBatchEvents: newBatchEvents.length 
-            });
-            
-            // Index each new batch
-            for (const event of newBatchEvents) {
-                try {
-                    const batch = await this.indexBatch(event, methodContext);
-                    if (batch) {
-                        newBatches.push(batch);
+            // Check if any batches are already indexed from previous runs
+            const indexedBatches = await OrbitBatch.findAll({
+                where: {
+                    workspaceId: this.workspace.id,
+                    batchSequenceNumber: {
+                        [OrbitBatch.sequelize.Sequelize.Op.gte]: searchFromBatch,
+                        [OrbitBatch.sequelize.Sequelize.Op.lt]: currentBatchCount
                     }
-                } catch (error) {
-                    logger.warn('Failed to index new batch', { 
-                        ...methodContext, 
-                        batchNumber: event.args.batchSequenceNumber.toString(),
-                        error: error.message 
-                    });
-                }
-            }
-            
-            logger.info('Successfully indexed new batches', { 
-                ...methodContext, 
-                indexedCount: newBatches.length 
+                },
+                order: [['batchSequenceNumber', 'ASC']],
+                limit: 100
             });
             
-            return newBatches;
+            logger.debug('Found indexed batches for range', { 
+                ...methodContext, 
+                indexedCount: indexedBatches.length,
+                searchFromBatch,
+                currentBatchCount: currentBatchCount.toString()
+            });
+            
+            return indexedBatches;
             
         } catch (error) {
-            logger.error('Error indexing new batches', { 
+            logger.error('Error triggering batch discovery', { 
                 ...methodContext, 
                 error: error.message 
             });

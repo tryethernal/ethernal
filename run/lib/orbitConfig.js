@@ -26,6 +26,12 @@ class OrbitConfig {
         this.BATCH_MONITOR_LIMIT = parseInt(getEnv('ORBIT_BATCH_MONITOR_LIMIT', '100'));
         this.BATCH_MONITOR_INTERVAL = parseInt(getEnv('ORBIT_BATCH_MONITOR_INTERVAL', '300000')); // 5 minutes
         
+        // Batch Discovery Configuration
+        this.BATCH_DISCOVERY_INTERVAL = parseInt(getEnv('ORBIT_BATCH_DISCOVERY_INTERVAL', '120000')); // 2 minutes
+        this.BATCH_DISCOVERY_LIMIT = parseInt(getEnv('ORBIT_BATCH_DISCOVERY_LIMIT', '1000')); // Max batches to discover per run
+        this.ENABLE_BATCH_DATA_PARSING = getEnv('ORBIT_ENABLE_BATCH_DATA_PARSING', 'true') === 'true';
+        this.BATCH_PARSING_TIMEOUT = parseInt(getEnv('ORBIT_BATCH_PARSING_TIMEOUT', '30000')); // 30 seconds
+        
         // State Progression Configuration
         this.SEQUENCING_TIMEOUT = parseInt(getEnv('ORBIT_SEQUENCING_TIMEOUT', '600000')); // 10 minutes
         this.POSTING_TIMEOUT = parseInt(getEnv('ORBIT_POSTING_TIMEOUT', '3600000')); // 1 hour
