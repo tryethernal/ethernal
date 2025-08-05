@@ -1,15 +1,92 @@
-import flushPromises from 'flush-promises';
 import DSProxyFactoryContract from '../fixtures/DSProxyFactoryContract.json';
 
 describe('ContractReadMethod.vue', () => {
+    const mockERC20Contract = {
+        address: '0x1234567890123456789012345678901234567890',
+        name: 'MockToken',
+        abi: [
+            {
+                outputs: [
+                    {
+                        type: 'bool',
+                        name: ''
+                    }
+                ],
+                constant: true,
+                inputs: [
+                    {
+                        type: 'address',
+                        name: 'owner'
+                    }
+                ],
+                stateMutability: 'view',
+                type: 'function',
+                payable: false,
+                name: 'isApprovedForAll'
+            },
+            {
+                outputs: [
+                    {
+                        type: 'uint256',
+                        name: ''
+                    }
+                ],
+                constant: true,
+                inputs: [
+                    {
+                        type: 'address',
+                        name: 'account'
+                    }
+                ],
+                stateMutability: 'view',
+                type: 'function',
+                payable: false,
+                name: 'balanceOf'
+            },
+            {
+                outputs: [
+                    {
+                        type: 'string',
+                        name: ''
+                    }
+                ],
+                constant: true,
+                inputs: [],
+                stateMutability: 'view',
+                type: 'function',
+                payable: false,
+                name: 'name'
+            },
+            {
+                outputs: [
+                    {
+                        type: 'uint256',
+                        name: ''
+                    },
+                    {
+                        type: 'uint256',
+                        name: ''
+                    }
+                ],
+                constant: true,
+                inputs: [],
+                stateMutability: 'view',
+                type: 'function',
+                payable: false,
+                name: 'getReserves'
+            }
+        ],
+        hashedBytecode: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef'
+    };
+
     beforeEach(() => {
         vi.resetModules();
     });
 
     it('Should display the UI to interact with a method', async () => {
         const props = {
-            method: DSProxyFactoryContract.abi[0],
-            contract: DSProxyFactoryContract,
+            method: mockERC20Contract.abi[0],
+            contract: mockERC20Contract,
             active: true,
             options: {
                 from: '0x0',
@@ -60,7 +137,7 @@ describe('ContractReadMethod.vue', () => {
                 "type": "function",
                 "constant": true
             },
-            contract: DSProxyFactoryContract,
+            contract: mockERC20Contract,
             signature: 'test',
         };
 
@@ -78,28 +155,27 @@ describe('ContractReadMethod.vue', () => {
         });
         await flushPromises();
 
+        // Set the required parameter
         await wrapper.find('input').setValue('[1,2]');
         await wrapper.vm.callMethod();
         await flushPromises();
 
         expect(wrapper.vm.results.length).toEqual(1);
         expect(wrapper.vm.results).toEqual([
-            {
-                input: {
-                    internalType: "uint256[]",
-                    name: '',
-                    type: 'uint256[]'
-                },
-                value: [1, 2]
-            }
+            [
+                {
+                    input: { type: 'uint256' },
+                    value: [1, 2]
+                }
+            ]
         ]);
         expect(wrapper.html()).toMatchSnapshot();
     })
 
     it('Should return the result when interacting with the method', async () => {
         const props = {
-            method: DSProxyFactoryContract.abi[0],
-            contract: DSProxyFactoryContract,
+            method: mockERC20Contract.abi[0],
+            contract: mockERC20Contract,
             active: true,
             options: {
                 from: '0x0',
@@ -125,25 +201,34 @@ describe('ContractReadMethod.vue', () => {
             }
         });
 
+        // Set required parameters if any
+        if (props.method.inputs && props.method.inputs.length > 0) {
+            for (let i = 0; i < props.method.inputs.length; i++) {
+                await wrapper.findAll('input')[i].setValue('test');
+            }
+        }
+
         await wrapper.find('button').trigger('click');
         await new Promise(process.nextTick);
 
         expect(wrapper.vm.results).toEqual([
-            {
-                input: {
-                    name: '',
-                    type: 'bool'
-                },
-                value: 'true'
-            }
+            [
+                {
+                    input: {
+                        name: '',
+                        type: 'bool'
+                    },
+                    value: ['true']
+                }
+            ]
         ]);
         expect(wrapper.html()).toMatchSnapshot();
     });
 
     it('Should work when it is in public explorer mode', async () => {
         const props = {
-            method: DSProxyFactoryContract.abi[0],
-            contract: DSProxyFactoryContract,
+            method: mockERC20Contract.abi[0],
+            contract: mockERC20Contract,
             active: true,
             options: {
                 from: '0x0',
@@ -170,17 +255,26 @@ describe('ContractReadMethod.vue', () => {
             }
         });
 
+        // Set required parameters if any
+        if (props.method.inputs && props.method.inputs.length > 0) {
+            for (let i = 0; i < props.method.inputs.length; i++) {
+                await wrapper.findAll('input')[i].setValue('test');
+            }
+        }
+
         await wrapper.find('button').trigger('click');
         await new Promise(process.nextTick);
 
         expect(wrapper.vm.results).toEqual([
-            {
-                input: {
-                    name: '',
-                    type: 'bool'
-                },
-                value: 'true'
-            }
+            [
+                {
+                    input: {
+                        name: '',
+                        type: 'bool'
+                    },
+                    value: ['true']
+                }
+            ]
         ]);
         expect(wrapper.html()).toMatchSnapshot();
     });
@@ -193,7 +287,7 @@ describe('ContractReadMethod.vue', () => {
         const props = {
             method: {
                 "inputs": [],
-                "name": "returnAnUInt",
+                "name": "balanceOf",
                 "outputs": [
                     {
                         "internalType": "uint256",
@@ -205,7 +299,7 @@ describe('ContractReadMethod.vue', () => {
                 "type": "function",
                 "constant": true
             },
-            contract: DSProxyFactoryContract,
+            contract: mockERC20Contract,
             active: true,
             options: {
                 from: '0x0',
@@ -231,14 +325,16 @@ describe('ContractReadMethod.vue', () => {
         await new Promise(process.nextTick);
 
         expect(wrapper.vm.results).toEqual([
-            {
-                input: {
-                    internalType: "uint256",
-                    name: '',
-                    type: 'uint256'
-                },
-                value: '1234'
-            }
+            [
+                {
+                    input: {
+                        internalType: "uint256",
+                        name: '',
+                        type: 'uint256'
+                    },
+                    value: ['1234']
+                }
+            ]
         ]);
         expect(wrapper.html()).toMatchSnapshot();
     });
@@ -251,7 +347,7 @@ describe('ContractReadMethod.vue', () => {
         const props = {
             method: {
                 "inputs": [],
-                "name": "returnAnUInt",
+                "name": "balanceOf",
                 "outputs": [
                     {
                         "internalType": "uint256",
@@ -263,7 +359,7 @@ describe('ContractReadMethod.vue', () => {
                 "type": "function",
                 "constant": true
             },
-            contract: DSProxyFactoryContract,
+            contract: mockERC20Contract,
             active: true,
             options: {
                 from: '0x0',
@@ -289,14 +385,16 @@ describe('ContractReadMethod.vue', () => {
         await new Promise(process.nextTick);
 
         expect(wrapper.vm.results).toEqual([
-            {
-                input: {
-                    internalType: "uint256",
-                    name: '',
-                    type: 'uint256'
-                },
-                value: '50000000000000000000'
-            }
+            [
+                {
+                    input: {
+                        internalType: "uint256",
+                        name: '',
+                        type: 'uint256'
+                    },
+                    value: ['50000000000000000000']
+                }
+            ]
         ]);
         expect(wrapper.html()).toMatchSnapshot();
     });
@@ -309,7 +407,7 @@ describe('ContractReadMethod.vue', () => {
         const props = {
             method: {
                 "inputs": [],
-                "name": "returnAnUInt",
+                "name": "getReserves",
                 "outputs": [
                     {
                         "internalType": "uint256",
@@ -326,7 +424,7 @@ describe('ContractReadMethod.vue', () => {
                 "type": "function",
                 "constant": true
             },
-            contract: DSProxyFactoryContract,
+            contract: mockERC20Contract,
             active: true,
             options: {
                 from: '0x0',
@@ -352,22 +450,26 @@ describe('ContractReadMethod.vue', () => {
         await new Promise(process.nextTick);
 
         expect(wrapper.vm.results).toEqual([
-            {
-                input: {
-                    internalType: "uint256",
-                    name: '',
-                    type: 'uint256'
-                },
-                value: '1'
-            },
-            {
-                input: {
-                    internalType: "uint256",
-                    name: '',
-                    type: 'uint256'
-                },
-                value: '2'
-            }
+            [
+                {
+                    input: {
+                        internalType: "uint256",
+                        name: '',
+                        type: 'uint256'
+                    },
+                    value: '1'
+                }
+            ],
+            [
+                {
+                    input: {
+                        internalType: "uint256",
+                        name: '',
+                        type: 'uint256'
+                    },
+                    value: '2'
+                }
+            ]
         ]);
         expect(wrapper.html()).toMatchSnapshot();
     });
@@ -378,8 +480,8 @@ describe('ContractReadMethod.vue', () => {
         }));
 
         const props = {
-            method: DSProxyFactoryContract.abi[0],
-            contract: DSProxyFactoryContract,
+            method: mockERC20Contract.abi[0],
+            contract: mockERC20Contract,
             active: true,
             options: {
                 from: '0x0',
@@ -401,6 +503,13 @@ describe('ContractReadMethod.vue', () => {
             }
         });
 
+        // Set required parameters if any
+        if (props.method.inputs && props.method.inputs.length > 0) {
+            for (let i = 0; i < props.method.inputs.length; i++) {
+                await wrapper.findAll('input')[i].setValue('test');
+            }
+        }
+
         await wrapper.find('button').trigger('click');
         await new Promise(process.nextTick);
 
@@ -415,8 +524,8 @@ describe('ContractReadMethod.vue', () => {
         }));
 
         const props = {
-            method: DSProxyFactoryContract.abi[0],
-            contract: DSProxyFactoryContract,
+            method: mockERC20Contract.abi[0],
+            contract: mockERC20Contract,
             active: true,
             options: {
                 from: '0x0',
@@ -436,6 +545,13 @@ describe('ContractReadMethod.vue', () => {
                 }})]
             }
         });
+
+        // Set required parameters if any
+        if (props.method.inputs && props.method.inputs.length > 0) {
+            for (let i = 0; i < props.method.inputs.length; i++) {
+                await wrapper.findAll('input')[i].setValue('test');
+            }
+        }
 
         await wrapper.find('button').trigger('click');
         await new Promise(process.nextTick);

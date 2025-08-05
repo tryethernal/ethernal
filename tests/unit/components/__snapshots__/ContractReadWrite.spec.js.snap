@@ -91,7 +91,7 @@ exports[`ContractReadWrite.vue > Should filter methods based on search input 1`]
       </div>
       <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator">
       <div class="v-row pb-4">
-        <div class="v-col-sm-12 v-col-md-6 v-col-lg-6 v-col">
+        <div class="v-col v-col-12">
           <contract-read-method-stub contract="[object Object]" method="[object Object]"></contract-read-method-stub>
         </div>
       </div>
@@ -193,7 +193,7 @@ exports[`ContractReadWrite.vue > Should show read methods when forceTab is read 
       </div>
       <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator">
       <div class="v-row pb-4">
-        <div class="v-col-sm-12 v-col-md-6 v-col-lg-6 v-col">
+        <div class="v-col v-col-12">
           <contract-read-method-stub contract="[object Object]" method="[object Object]"></contract-read-method-stub>
         </div>
       </div>
@@ -346,7 +346,7 @@ exports[`ContractReadWrite.vue > Should show write methods when forceTab is writ
       </div>
       <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator">
       <div class="v-row pb-4">
-        <div class="v-col-sm-12 v-col-md-6 v-col-lg-6 v-col">
+        <div class="v-col v-col-12">
           <contract-write-method-stub contract="[object Object]" method="[object Object]" options="[object Object]" active="false"></contract-write-method-stub>
         </div>
       </div>
