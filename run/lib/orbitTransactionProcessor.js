@@ -345,13 +345,25 @@ class OrbitTransactionProcessor {
             });
             
             // Enqueue a high-priority batch discovery job for this workspace
-            const { enqueue } = require('./queue');
-            await enqueue(
-                'discoverOrbitBatches',
-                `discoverOrbitBatches-urgent-${this.workspace.id}`,
-                { workspaceId: this.workspace.id },
-                2 // Higher priority than regular discovery
-            );
+            const { enqueueBatchDiscovery } = require('./orbitBatchQueue');
+            const result = await enqueueBatchDiscovery(this.workspace.id, {
+                reason: 'transaction_processing',
+                priority: 2,
+                maxAge: 90000, // 1.5 minutes cooldown
+                force: false
+            });
+            
+            if (result.enqueued) {
+                logger.debug('Enqueued batch discovery from transaction processor', {
+                    ...methodContext,
+                    jobId: result.jobId
+                });
+            } else {
+                logger.debug('Batch discovery skipped in transaction processor', {
+                    ...methodContext,
+                    skipReason: result.reason
+                });
+            }
             
             // Check if any batches are already indexed from previous runs
             const indexedBatches = await OrbitBatch.findAll({

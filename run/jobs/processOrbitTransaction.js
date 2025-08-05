@@ -1,6 +1,6 @@
 const OrbitTransactionProcessor = require('../lib/orbitTransactionProcessor');
 const { Transaction, Workspace, OrbitBatch, OrbitTransactionState } = require('../models');
-const { enqueue } = require('../lib/queue');
+const { enqueueBatchDiscovery, hasActiveDiscoveryJob } = require('../lib/orbitBatchQueue');
 const { getOrbitConfig } = require('../lib/orbitConfig');
 const logger = require('../lib/logger');
 
@@ -146,23 +146,37 @@ async function ensureBatchDiscoveryCompleted(workspaceId, context) {
             latestBatchNumber: latestBatch?.batchSequenceNumber
         });
 
-        // If no recent discovery (older than 5 minutes), trigger urgent discovery
-        if (timeSinceLastDiscovery > 5 * 60 * 1000) {
+        // If no recent discovery (older than 5 minutes) and no active job, trigger urgent discovery
+        if (timeSinceLastDiscovery > 5 * 60 * 1000 && !hasActiveDiscoveryJob(workspaceId)) {
             logger.info('Triggering urgent batch discovery', {
                 ...context,
                 reason: 'no_recent_discovery',
                 timeSinceLastDiscovery
             });
             
-            await enqueue(
-                'discoverOrbitBatches',
-                `discoverOrbitBatches-urgent-${workspaceId}-${Date.now()}`,
-                { workspaceId },
-                1 // Highest priority
-            );
+            const result = await enqueueBatchDiscovery(workspaceId, {
+                reason: 'urgent_transaction_processing',
+                priority: 1,
+                maxAge: 60000, // 1 minute cooldown for urgent jobs
+                force: false
+            });
             
-            // Wait a moment for the discovery to potentially complete
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            if (result.enqueued) {
+                logger.info('Enqueued urgent batch discovery', {
+                    ...context,
+                    jobId: result.jobId
+                });
+                
+                // Wait a moment for the discovery to potentially complete
+                await new Promise(resolve => setTimeout(resolve, 2000));
+            } else {
+                logger.debug('Urgent batch discovery skipped due to rate limiting', {
+                    ...context,
+                    skipReason: result.reason
+                });
+            }
+        } else if (hasActiveDiscoveryJob(workspaceId)) {
+            logger.debug('Batch discovery already active for workspace', context);
         }
 
     } catch (error) {
@@ -234,15 +248,22 @@ async function processWithTimeoutAndRetry(processor, context) {
             logger.debug('Waiting before retry', { ...context, retryDelay, attempt });
             await new Promise(resolve => setTimeout(resolve, retryDelay));
             
-            // For RPC errors, trigger batch discovery again
-            if (isRpcError) {
+            // For RPC errors, trigger batch discovery again if no active job
+            if (isRpcError && !hasActiveDiscoveryJob(context.workspaceId)) {
                 try {
-                    await enqueue(
-                        'discoverOrbitBatches',
-                        `discoverOrbitBatches-retry-${context.workspaceId}-${Date.now()}`,
-                        { workspaceId: context.workspaceId },
-                        1
-                    );
+                    const result = await enqueueBatchDiscovery(context.workspaceId, {
+                        reason: 'rpc_error_retry',
+                        priority: 1,
+                        maxAge: 30000, // 30 seconds cooldown for retries
+                        force: false
+                    });
+                    
+                    if (result.enqueued) {
+                        logger.info('Enqueued retry batch discovery for RPC error', {
+                            ...context,
+                            jobId: result.jobId
+                        });
+                    }
                 } catch (enqueueError) {
                     logger.warn('Failed to trigger retry batch discovery', {
                         ...context,

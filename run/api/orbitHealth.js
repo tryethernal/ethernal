@@ -3,6 +3,7 @@ const router = express.Router();
 const { getOrbitConfig } = require('../lib/orbitConfig');
 const { OrbitChainConfig, OrbitTransactionState, Workspace, sequelize } = require('../models');
 const { getQueue } = require('../lib/queue');
+const { getQueueStatistics, getOrbitBatchQueueManager } = require('../lib/orbitBatchQueue');
 const logger = require('../lib/logger');
 const { ProductionRpcClient } = require('../lib/orbitRetry');
 
@@ -45,6 +46,27 @@ router.get('/health', async (req, res) => {
             };
         } catch (error) {
             healthCheck.checks.queue = { status: 'unhealthy', error: error.message };
+            healthCheck.status = 'unhealthy';
+        }
+
+        // Orbit batch queue check
+        try {
+            const orbitQueueStats = getQueueStatistics();
+            healthCheck.checks.orbitQueue = {
+                status: 'healthy',
+                recentJobs: orbitQueueStats.recentJobs,
+                activeDiscoveryJobs: orbitQueueStats.activeDiscoveryJobs,
+                totalTrackedWorkspaces: orbitQueueStats.totalTrackedWorkspaces,
+                rateLimitingActive: orbitQueueStats.recentJobs > 0
+            };
+
+            // Warning if too many recent jobs (potential flood)
+            if (orbitQueueStats.recentJobs > 20) {
+                healthCheck.checks.orbitQueue.status = 'warning';
+                healthCheck.checks.orbitQueue.warning = 'High number of recent jobs detected - possible flood';
+            }
+        } catch (error) {
+            healthCheck.checks.orbitQueue = { status: 'unhealthy', error: error.message };
             healthCheck.status = 'unhealthy';
         }
 

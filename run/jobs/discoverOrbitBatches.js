@@ -1,6 +1,7 @@
 const { OrbitBatch, OrbitChainConfig, sequelize } = require('../models');
 const { getOrbitConfig } = require('../lib/orbitConfig');
 const { ProductionRpcClient } = require('../lib/orbitRetry');
+const { markJobCompleted } = require('../lib/orbitBatchQueue');
 const logger = require('../lib/logger');
 const { ethers } = require('ethers');
 
@@ -99,6 +100,9 @@ async function discoverOrbitBatches(job) {
         };
         
         logger.info('Completed orbit batch discovery', { ...jobContext, ...result });
+        
+        // Mark job as completed for rate limiting
+        markJobCompleted(workspaceId, job.id);
         
         return result;
         

@@ -6,8 +6,8 @@ const SUBSCRIPTION_CHECK_INTERVAL = 5 * 60 * 1000;
 const QUEUE_MONITORING_INTERVAL = 60 * 1000;
 const CANCEL_DEMO_INTERVAL = 60 * 60 * 1000;
 const BLOCK_SYNC_MONITORING_INTERVAL = 60 * 1000;
-const ORBIT_BATCH_MONITORING_INTERVAL = 5 * 60 * 1000; // 5 minutes
-const ORBIT_BATCH_DISCOVERY_INTERVAL = 2 * 60 * 1000; // 2 minutes
+const ORBIT_BATCH_MONITORING_INTERVAL = 10 * 60 * 1000; // 10 minutes (reduced frequency)
+const ORBIT_BATCH_DISCOVERY_INTERVAL = 5 * 60 * 1000; // 5 minutes (reduced frequency)
 
 (async () => {
     await enqueue(

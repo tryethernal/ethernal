@@ -1,5 +1,5 @@
 const { OrbitChainConfig } = require('../models');
-const { enqueue } = require('../lib/queue');
+const { enqueueBatchMonitoring, getQueueStatistics } = require('../lib/orbitBatchQueue');
 const logger = require('../lib/logger');
 
 /**
@@ -30,25 +30,39 @@ async function monitorOrbitBatchesStarter() {
         });
         
         let enqueuedJobs = 0;
+        let skippedJobs = 0;
         const errors = [];
         
-        // Enqueue monitoring job for each workspace
+        // Get current queue statistics
+        const queueStats = getQueueStatistics();
+        logger.debug('Current queue statistics', { ...jobContext, queueStats });
+        
+        // Enqueue monitoring job for each workspace with rate limiting
         for (const config of orbitWorkspaces) {
             try {
-                await enqueue(
-                    'monitorOrbitBatches',
-                    `monitorOrbitBatches-${config.workspaceId}`,
-                    { workspaceId: config.workspaceId },
-                    5 // Medium priority
-                );
-                
-                enqueuedJobs++;
-                
-                logger.debug('Enqueued orbit batch monitoring', { 
-                    ...jobContext, 
-                    workspaceId: config.workspaceId,
-                    workspaceName: config.workspace.name 
+                const result = await enqueueBatchMonitoring(config.workspaceId, {
+                    reason: 'scheduled',
+                    priority: 5,
+                    maxAge: 300000 // 5 minutes cooldown
                 });
+                
+                if (result.enqueued) {
+                    enqueuedJobs++;
+                    logger.debug('Enqueued orbit batch monitoring', { 
+                        ...jobContext, 
+                        workspaceId: config.workspaceId,
+                        workspaceName: config.workspace.name,
+                        jobId: result.jobId
+                    });
+                } else {
+                    skippedJobs++;
+                    logger.debug('Skipped orbit batch monitoring due to rate limiting', { 
+                        ...jobContext, 
+                        workspaceId: config.workspaceId,
+                        workspaceName: config.workspace.name,
+                        skipReason: result.reason
+                    });
+                }
                 
             } catch (error) {
                 const errorInfo = {
@@ -68,8 +82,10 @@ async function monitorOrbitBatchesStarter() {
         const result = {
             workspacesFound: orbitWorkspaces.length,
             jobsEnqueued: enqueuedJobs,
+            jobsSkipped: skippedJobs,
             errors: errors.length,
-            errorDetails: errors
+            errorDetails: errors,
+            queueStats: getQueueStatistics()
         };
         
         logger.info('Completed orbit batch monitoring starter', { ...jobContext, ...result });

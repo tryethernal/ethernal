@@ -1,6 +1,7 @@
 const { OrbitBatch, OrbitTransactionState, OrbitChainConfig, sequelize } = require('../models');
 const { getOrbitConfig } = require('../lib/orbitConfig');
 const { ProductionRpcClient } = require('../lib/orbitRetry');
+const { markJobCompleted } = require('../lib/orbitBatchQueue');
 const logger = require('../lib/logger');
 const { ethers } = require('ethers');
 
@@ -105,6 +106,9 @@ async function monitorOrbitBatches(job) {
         };
         
         logger.info('Completed orbit batch monitoring', { ...jobContext, ...result });
+        
+        // Mark job as completed for rate limiting
+        markJobCompleted(workspaceId, job.id);
         
         return result;
         

@@ -1,5 +1,5 @@
 const { OrbitChainConfig } = require('../models');
-const { enqueue } = require('../lib/queue');
+const { enqueueBatchDiscovery, getQueueStatistics } = require('../lib/orbitBatchQueue');
 const logger = require('../lib/logger');
 
 /**
@@ -31,25 +31,39 @@ async function discoverOrbitBatchesStarter() {
         });
         
         let enqueuedJobs = 0;
+        let skippedJobs = 0;
         const errors = [];
         
-        // Enqueue discovery job for each workspace
+        // Get current queue statistics
+        const queueStats = getQueueStatistics();
+        logger.debug('Current queue statistics', { ...jobContext, queueStats });
+        
+        // Enqueue discovery job for each workspace with rate limiting
         for (const config of orbitWorkspaces) {
             try {
-                await enqueue(
-                    'discoverOrbitBatches',
-                    `discoverOrbitBatches-${config.workspaceId}`,
-                    { workspaceId: config.workspaceId },
-                    3 // High priority for discovery
-                );
-                
-                enqueuedJobs++;
-                
-                logger.debug('Enqueued orbit batch discovery', { 
-                    ...jobContext, 
-                    workspaceId: config.workspaceId,
-                    workspaceName: config.workspace.name 
+                const result = await enqueueBatchDiscovery(config.workspaceId, {
+                    reason: 'scheduled',
+                    priority: 3,
+                    maxAge: 120000 // 2 minutes cooldown
                 });
+                
+                if (result.enqueued) {
+                    enqueuedJobs++;
+                    logger.debug('Enqueued orbit batch discovery', { 
+                        ...jobContext, 
+                        workspaceId: config.workspaceId,
+                        workspaceName: config.workspace.name,
+                        jobId: result.jobId
+                    });
+                } else {
+                    skippedJobs++;
+                    logger.debug('Skipped orbit batch discovery due to rate limiting', { 
+                        ...jobContext, 
+                        workspaceId: config.workspaceId,
+                        workspaceName: config.workspace.name,
+                        skipReason: result.reason
+                    });
+                }
                 
             } catch (error) {
                 const errorInfo = {
@@ -69,8 +83,10 @@ async function discoverOrbitBatchesStarter() {
         const result = {
             workspacesFound: orbitWorkspaces.length,
             jobsEnqueued: enqueuedJobs,
+            jobsSkipped: skippedJobs,
             errors: errors.length,
-            errorDetails: errors
+            errorDetails: errors,
+            queueStats: getQueueStatistics()
         };
         
         logger.info('Completed orbit batch discovery starter', { ...jobContext, ...result });
