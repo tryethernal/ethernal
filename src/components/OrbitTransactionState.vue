@@ -115,6 +115,46 @@
                                         View
                                     </v-btn>
                                 </div>
+                                
+                                <!-- Batch information for SEQUENCED state -->
+                                <div v-if="state.state === 'SEQUENCED' && getBatchInfo(state)" class="mt-2">
+                                    <div class="d-flex align-center">
+                                        <v-icon size="16" color="info" class="mr-2">mdi-package-variant</v-icon>
+                                        <span class="text-body-2">
+                                            Included in batch 
+                                            <router-link 
+                                                :to="{ name: 'orbit-batch-detail', params: { batchNumber: getBatchInfo(state).batchSequenceNumber } }"
+                                                class="text-decoration-none"
+                                            >
+                                                #{{ getBatchInfo(state).batchSequenceNumber }}
+                                            </router-link>
+                                        </span>
+                                        <v-chip 
+                                            v-if="getBatchInfo(state).batchId"
+                                            size="x-small" 
+                                            color="success" 
+                                            class="ml-2"
+                                        >
+                                            Indexed
+                                        </v-chip>
+                                    </div>
+                                    <div v-if="getBatchInfo(state).postedAt" class="text-caption text-medium-emphasis ml-6">
+                                        Posted {{ formatDateTime(getBatchInfo(state).postedAt) }}
+                                    </div>
+                                </div>
+                                
+                                <!-- L1 Cost information for POSTED state -->
+                                <div v-if="state.state === 'POSTED' && getL1CostInfo(state)" class="mt-2">
+                                    <div class="d-flex align-center">
+                                        <v-icon size="16" color="warning" class="mr-2">mdi-currency-eth</v-icon>
+                                        <span class="text-body-2">
+                                            L1 Cost: {{ getL1CostInfo(state).costEth }} ETH
+                                        </span>
+                                    </div>
+                                    <div v-if="getL1CostInfo(state).batchStatus" class="text-caption text-medium-emphasis ml-6">
+                                        Batch Status: {{ getL1CostInfo(state).batchStatus }}
+                                    </div>
+                                </div>
                             </div>
                         </v-timeline-item>
                     </v-timeline>
@@ -307,6 +347,38 @@ function stopPolling() {
         clearInterval(pollingInterval);
         pollingInterval = null;
     }
+}
+
+// Helper methods for batch information
+function getBatchInfo(state) {
+    const stateData = state.stateData || timeline.value.find(s => s.state === state.state)?.stateData;
+    if (state.state === 'SEQUENCED' && stateData?.sequenced) {
+        return stateData.sequenced;
+    }
+    return null;
+}
+
+function getL1CostInfo(state) {
+    const stateData = state.stateData || timeline.value.find(s => s.state === state.state)?.stateData;
+    if (state.state === 'POSTED' && stateData?.posted) {
+        const data = stateData.posted;
+        const result = {
+            batchStatus: data.batchStatus
+        };
+        
+        if (data.l1Cost) {
+            const costEth = (parseFloat(data.l1Cost) / 1e18).toFixed(6);
+            result.costEth = costEth;
+        }
+        
+        return result;
+    }
+    return null;
+}
+
+function formatDateTime(dateString) {
+    if (!dateString) return '';
+    return new Date(dateString).toLocaleString();
 }
 
 onMounted(async () => {

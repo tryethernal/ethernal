@@ -131,86 +131,66 @@ class OrbitTransactionProcessor {
     }
 
     /**
-     * Check if transaction has been sequenced (included in a sequencer batch)
+     * Check if transaction has been sequenced using indexed batch data (optimized)
      */
     async checkSequenced(orbitState) {
-        const methodContext = { ...this.context, method: 'checkSequenced', currentState: orbitState.currentState };
+        const methodContext = { 
+            ...this.context, 
+            method: 'checkSequenced',
+            currentState: orbitState.currentState
+        };
         
         try {
-            logger.debug('Checking if transaction is sequenced', methodContext);
+            logger.debug('Checking if transaction is sequenced using indexed batches', methodContext);
             
-            const sequencerInbox = await this.getSequencerInboxContract();
-            
-            // Get current batch count with production error handling
-            const currentBatchCount = await sequencerInbox.call('batchCount');
-            logger.debug('Retrieved current batch count', { ...methodContext, currentBatchCount: currentBatchCount.toString() });
-            
-            // Look for SequencerBatchDelivered events from when transaction was submitted
-            // Use reasonable block range to avoid RPC provider limits
-            const currentBlock = await this.parentProvider.getBlockNumber();
-            const fromBlock = Math.max(0, Number(orbitState.submittedBlockNumber) - 10);
-            const maxToBlock = Math.min(
-                currentBlock,
-                fromBlock + this.config.MAX_BLOCKS_TO_SEARCH
-            );
-            
-            const events = await this.queryEventsWithChunking(
-                sequencerInbox, 
-                'SequencerBatchDelivered', 
-                fromBlock, 
-                maxToBlock
-            );
-            logger.debug('Retrieved sequencer batch events', { 
-                ...methodContext, 
-                eventCount: events.length, 
-                fromBlock, 
-                toBlock: maxToBlock,
-                currentBlock 
-            });
-            
-            if (events.length === 0) {
-                logger.debug('No sequencer batch events found yet', methodContext);
+            // First, try to find transaction in already indexed batches
+            const existingBatch = await this.findTransactionInIndexedBatches(orbitState);
+            if (existingBatch) {
+                logger.info('Transaction found in indexed batch', { 
+                    ...methodContext, 
+                    batchNumber: existingBatch.batchSequenceNumber,
+                    batchId: existingBatch.id
+                });
+                
+                await this.updateTransactionWithBatch(orbitState, existingBatch);
+                this.metrics.stateTransitions++;
                 return;
             }
             
-            // Process and index all discovered batches
-            await this.processBatchEvents(events, methodContext);
+            // If not found in indexed batches, check for new batches since last check
+            const latestIndexedBatch = await this.getLatestIndexedBatch();
+            const searchFromBatch = latestIndexedBatch ? latestIndexedBatch.batchSequenceNumber + 1 : 0;
             
-            // Check each batch for our transaction
-            for (const event of events.slice(-10)) { // Check last 10 batches for efficiency
-                const batchNumber = event.args.batchSequenceNumber;
+            // Get current batch count to see if there are new batches
+            const sequencerInbox = await this.getSequencerInboxContract();
+            const currentBatchCount = await sequencerInbox.call('batchCount');
+            
+            logger.debug('Checking for new batches', { 
+                ...methodContext, 
+                searchFromBatch,
+                currentBatchCount: currentBatchCount.toString(),
+                latestIndexed: latestIndexedBatch?.batchSequenceNumber
+            });
+            
+            if (searchFromBatch < currentBatchCount) {
+                // There are new batches to index
+                const newBatches = await this.indexNewBatches(searchFromBatch, currentBatchCount, methodContext);
                 
-                try {
-                    const isIncluded = await this.checkTransactionInBatch(batchNumber, this.transaction.hash);
+                // Check if our transaction is in any of the new batches
+                for (const batch of newBatches) {
+                    const isIncluded = await this.checkTransactionInBatch(batch.batchSequenceNumber, this.transaction.hash);
                     
                     if (isIncluded) {
-                        logger.info('Transaction found in sequencer batch', { 
+                        logger.info('Transaction found in newly indexed batch', { 
                             ...methodContext, 
-                            batchNumber: batchNumber.toString(),
-                            blockNumber: event.blockNumber
+                            batchNumber: batch.batchSequenceNumber,
+                            batchId: batch.id
                         });
                         
-                        await orbitState.updateState('SEQUENCED', {
-                            sequenced: {
-                                batchSequenceNumber: batchNumber.toString(),
-                                afterAcc: event.args.afterAcc,
-                                blockNumber: event.blockNumber,
-                                transactionHash: event.transactionHash,
-                                verifiedAt: new Date().toISOString()
-                            }
-                        });
-                        
-                        await orbitState.setStateDetails('SEQUENCED', event.blockNumber);
+                        await this.updateTransactionWithBatch(orbitState, batch);
                         this.metrics.stateTransitions++;
                         return;
                     }
-                } catch (batchError) {
-                    logger.warn('Failed to check batch data', { 
-                        ...methodContext, 
-                        batchNumber: batchNumber.toString(),
-                        error: batchError.message 
-                    });
-                    // Continue checking other batches
                 }
             }
             
@@ -226,7 +206,7 @@ class OrbitTransactionProcessor {
                     ...methodContext, 
                     timeSinceSubmitted,
                     timeoutRemaining: this.config.SEQUENCING_TIMEOUT - timeSinceSubmitted,
-                    blocksSearched: maxToBlock - fromBlock + 1
+                    batchesChecked: currentBatchCount.toString()
                 });
             }
             
@@ -241,7 +221,7 @@ class OrbitTransactionProcessor {
             }
             
             if (error.message.includes('block range') || error.message.includes('500 block')) {
-                logger.warn('RPC provider block range limit encountered, will retry with smaller range', methodContext);
+                logger.warn('RPC provider block range limit encountered, will retry later', methodContext);
                 return; // Don't mark as failed, will retry later
             }
             
@@ -261,12 +241,261 @@ class OrbitTransactionProcessor {
     }
 
     /**
-     * Check if batch containing transaction was posted to parent chain
+     * Find transaction in already indexed batches (database lookup)
+     */
+    async findTransactionInIndexedBatches(orbitState) {
+        const methodContext = { 
+            ...this.context, 
+            method: 'findTransactionInIndexedBatches' 
+        };
+        
+        try {
+            // Look for transaction in existing orbit transaction states
+            const existingState = await OrbitTransactionState.findOne({
+                where: {
+                    workspaceId: this.workspace.id,
+                    transactionId: this.transaction.id,
+                    currentState: 'SEQUENCED'
+                }
+            });
+            
+            if (existingState && existingState.stateData?.sequenced?.batchSequenceNumber) {
+                const batchNumber = existingState.stateData.sequenced.batchSequenceNumber;
+                
+                // Find the corresponding indexed batch
+                const batch = await OrbitBatch.findOne({
+                    where: {
+                        workspaceId: this.workspace.id,
+                        batchSequenceNumber: batchNumber
+                    }
+                });
+                
+                if (batch) {
+                    logger.debug('Found transaction in indexed batch', { 
+                        ...methodContext, 
+                        batchNumber: batch.batchSequenceNumber 
+                    });
+                    return batch;
+                }
+            }
+            
+            // Also check for batches posted after transaction submission
+            const submittedAt = new Date(orbitState.submittedAt);
+            const potentialBatches = await OrbitBatch.findAll({
+                where: {
+                    workspaceId: this.workspace.id,
+                    postedAt: {
+                        [OrbitBatch.sequelize.Sequelize.Op.gte]: submittedAt
+                    }
+                },
+                order: [['batchSequenceNumber', 'ASC']],
+                limit: 50 // Check recent batches only
+            });
+            
+            logger.debug('Checking potential batches for transaction', { 
+                ...methodContext, 
+                batchCount: potentialBatches.length 
+            });
+            
+            return null; // Transaction not found in indexed batches
+            
+        } catch (error) {
+            logger.error('Error finding transaction in indexed batches', { 
+                ...methodContext, 
+                error: error.message 
+            });
+            return null;
+        }
+    }
+    
+    /**
+     * Get the latest indexed batch for this workspace
+     */
+    async getLatestIndexedBatch() {
+        try {
+            const latestBatch = await OrbitBatch.findOne({
+                where: { workspaceId: this.workspace.id },
+                order: [['batchSequenceNumber', 'DESC']],
+                limit: 1
+            });
+            
+            return latestBatch;
+        } catch (error) {
+            logger.error('Error getting latest indexed batch', { 
+                ...this.context, 
+                error: error.message 
+            });
+            return null;
+        }
+    }
+    
+    /**
+     * Index new batches from searchFromBatch to currentBatchCount
+     */
+    async indexNewBatches(searchFromBatch, currentBatchCount, methodContext) {
+        const newBatches = [];
+        
+        try {
+            logger.debug('Indexing new batches', { 
+                ...methodContext, 
+                searchFromBatch, 
+                currentBatchCount: currentBatchCount.toString() 
+            });
+            
+            // Query for SequencerBatchDelivered events for new batches only
+            const sequencerInbox = await this.getSequencerInboxContract();
+            
+            // Get a reasonable block range for the search
+            const currentBlock = await this.parentProvider.getBlockNumber();
+            const searchFromBlock = Math.max(0, currentBlock - this.config.MAX_BLOCKS_TO_SEARCH);
+            
+            const events = await this.queryEventsWithChunking(
+                sequencerInbox,
+                'SequencerBatchDelivered',
+                searchFromBlock,
+                currentBlock
+            );
+            
+            // Filter events for only new batches
+            const newBatchEvents = events.filter(event => 
+                event.args.batchSequenceNumber >= searchFromBatch && 
+                event.args.batchSequenceNumber < currentBatchCount
+            );
+            
+            logger.debug('Found new batch events', { 
+                ...methodContext, 
+                newBatchEvents: newBatchEvents.length 
+            });
+            
+            // Index each new batch
+            for (const event of newBatchEvents) {
+                try {
+                    const batch = await this.indexBatch(event, methodContext);
+                    if (batch) {
+                        newBatches.push(batch);
+                    }
+                } catch (error) {
+                    logger.warn('Failed to index new batch', { 
+                        ...methodContext, 
+                        batchNumber: event.args.batchSequenceNumber.toString(),
+                        error: error.message 
+                    });
+                }
+            }
+            
+            logger.info('Successfully indexed new batches', { 
+                ...methodContext, 
+                indexedCount: newBatches.length 
+            });
+            
+            return newBatches;
+            
+        } catch (error) {
+            logger.error('Error indexing new batches', { 
+                ...methodContext, 
+                error: error.message 
+            });
+            return newBatches;
+        }
+    }
+    
+    /**
+     * Update transaction state with batch information
+     */
+    async updateTransactionWithBatch(orbitState, batch) {
+        const methodContext = { 
+            ...this.context, 
+            method: 'updateTransactionWithBatch',
+            batchNumber: batch.batchSequenceNumber 
+        };
+        
+        try {
+            await orbitState.updateState('SEQUENCED', {
+                sequenced: {
+                    batchSequenceNumber: batch.batchSequenceNumber.toString(),
+                    afterAcc: batch.afterAcc,
+                    blockNumber: batch.parentChainBlockNumber,
+                    transactionHash: batch.parentChainTxHash,
+                    batchId: batch.id,
+                    postedAt: batch.postedAt.toISOString(),
+                    verifiedAt: new Date().toISOString()
+                }
+            });
+            
+            await orbitState.setStateDetails('SEQUENCED', batch.parentChainBlockNumber);
+            
+            logger.info('Updated transaction with batch information', methodContext);
+            
+        } catch (error) {
+            logger.error('Error updating transaction with batch information', { 
+                ...methodContext, 
+                error: error.message 
+            });
+            throw error;
+        }
+    }
+
+    /**
+     * Check if batch containing transaction was posted to parent chain (optimized)
      */
     async checkPosted(orbitState) {
+        const methodContext = { 
+            ...this.context, 
+            method: 'checkPosted',
+            currentState: orbitState.currentState 
+        };
+        
         try {
-            // In a real implementation, this would check parent chain for batch posting
-            // For now, simulate progression after sequencing
+            logger.debug('Checking if transaction batch is posted', methodContext);
+            
+            // Get batch sequence number from transaction state
+            const batchSequenceNumber = orbitState.stateData?.sequenced?.batchSequenceNumber;
+            if (!batchSequenceNumber) {
+                logger.warn('No batch sequence number found in transaction state', methodContext);
+                return;
+            }
+            
+            // Find the indexed batch
+            const batch = await OrbitBatch.findOne({
+                where: {
+                    workspaceId: this.workspace.id,
+                    batchSequenceNumber: batchSequenceNumber
+                }
+            });
+            
+            if (!batch) {
+                logger.warn('Batch not found in indexed batches', { 
+                    ...methodContext, 
+                    batchSequenceNumber 
+                });
+                return;
+            }
+            
+            // Check batch confirmation status
+            if (batch.confirmationStatus === 'confirmed' || batch.confirmationStatus === 'finalized') {
+                logger.info('Batch is confirmed/finalized, updating transaction to POSTED', { 
+                    ...methodContext, 
+                    batchNumber: batch.batchSequenceNumber,
+                    batchStatus: batch.confirmationStatus 
+                });
+                
+                await orbitState.updateState('POSTED', {
+                    posted: {
+                        batchSequenceNumber: batch.batchSequenceNumber.toString(),
+                        batchStatus: batch.confirmationStatus,
+                        confirmedAt: batch.confirmedAt?.toISOString(),
+                        finalizedAt: batch.finalizedAt?.toISOString(),
+                        l1Cost: batch.l1Cost,
+                        verifiedAt: new Date().toISOString()
+                    }
+                });
+                
+                await orbitState.setStateDetails('POSTED', batch.parentChainBlockNumber);
+                this.metrics.stateTransitions++;
+                return;
+            }
+            
+            // If batch is still pending, check if enough time has passed for posting
             const timeThreshold = 15 * 60 * 1000; // 15 minutes
             const now = new Date();
             const timeSinceSequenced = now - new Date(orbitState.sequencedAt);

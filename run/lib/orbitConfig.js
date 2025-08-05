@@ -22,6 +22,10 @@ class OrbitConfig {
         this.JOB_RETRY_DELAY = parseInt(getEnv('ORBIT_JOB_RETRY_DELAY', '5000'));
         this.JOB_PROCESSING_TIMEOUT = parseInt(getEnv('ORBIT_JOB_PROCESSING_TIMEOUT', '300000')); // 5 minutes
         
+        // Batch Monitoring Configuration
+        this.BATCH_MONITOR_LIMIT = parseInt(getEnv('ORBIT_BATCH_MONITOR_LIMIT', '100'));
+        this.BATCH_MONITOR_INTERVAL = parseInt(getEnv('ORBIT_BATCH_MONITOR_INTERVAL', '300000')); // 5 minutes
+        
         // State Progression Configuration
         this.SEQUENCING_TIMEOUT = parseInt(getEnv('ORBIT_SEQUENCING_TIMEOUT', '600000')); // 10 minutes
         this.POSTING_TIMEOUT = parseInt(getEnv('ORBIT_POSTING_TIMEOUT', '3600000')); // 1 hour
