@@ -20,7 +20,7 @@ router.use(orbitApiLimiter);
 router.get('/batches', authMiddleware, async (req, res, next) => {
     try {
         const { 
-            uid, 
+            firebaseUserId: uid, 
             workspace: workspaceName, 
             explorerId,
             page = 1,
@@ -106,7 +106,7 @@ router.get('/batches', authMiddleware, async (req, res, next) => {
 router.get('/batch/:batchNumber', authMiddleware, async (req, res, next) => {
     try {
         const { batchNumber } = req.params;
-        const { uid, workspace: workspaceName, explorerId } = req.query;
+        const { firebaseUserId: uid, workspace: workspaceName, explorerId } = req.query;
 
         if (!uid) {
             return managedError(new Error('Missing uid parameter'), req, res);
@@ -205,7 +205,7 @@ router.get('/batch/:batchNumber', authMiddleware, async (req, res, next) => {
  */
 router.get('/stats', authMiddleware, async (req, res, next) => {
     try {
-        const { uid, workspace: workspaceName, explorerId, days = 30 } = req.query;
+        const { firebaseUserId: uid, workspace: workspaceName, explorerId, days = 30 } = req.query;
 
         if (!uid) {
             return managedError(new Error('Missing uid parameter'), req, res);
@@ -276,7 +276,7 @@ router.get('/stats', authMiddleware, async (req, res, next) => {
  */
 router.get('/search', authMiddleware, async (req, res, next) => {
     try {
-        const { uid, workspace: workspaceName, explorerId, txHash } = req.query;
+        const { firebaseUserId: uid, workspace: workspaceName, explorerId, txHash } = req.query;
 
         if (!uid) {
             return managedError(new Error('Missing uid parameter'), req, res);

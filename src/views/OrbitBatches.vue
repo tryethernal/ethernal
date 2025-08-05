@@ -214,12 +214,14 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted, watch } from 'vue';
+import { ref, reactive, computed, onMounted, watch, inject } from 'vue';
 import { useRoute } from 'vue-router';
 import { useCurrentWorkspaceStore } from '@/stores/currentWorkspace';
+import { useExplorerStore } from '@/stores/explorer';
 
 const route = useRoute();
 const currentWorkspaceStore = useCurrentWorkspaceStore();
+const explorerStore = useExplorerStore();
 
 // Reactive data
 const loading = ref(false);
@@ -227,6 +229,8 @@ const batches = ref([]);
 const statistics = ref({});
 const currentPage = ref(1);
 const pageSize = ref(50);
+
+const $server = inject('$server');
 
 const filters = reactive({
     status: null,
@@ -279,13 +283,10 @@ const pageSizeOptions = [25, 50, 100];
 
 // Methods
 async function loadBatches() {
-    if (!currentWorkspaceStore.currentWorkspace) return;
-    
     loading.value = true;
     
     try {
         const params = {
-            workspace: currentWorkspaceStore.currentWorkspace.name,
             page: currentPage.value,
             limit: pageSize.value
         };
@@ -294,7 +295,7 @@ async function loadBatches() {
         if (filters.fromDate) params.fromDate = filters.fromDate;
         if (filters.toDate) params.toDate = filters.toDate;
 
-        const response = await $server.get('/orbit/batches', { params });
+        const response = await $server.getOrbitBatches(params);
         
         batches.value = response.data.batches;
         Object.assign(pagination, response.data.pagination);
@@ -308,15 +309,8 @@ async function loadBatches() {
 }
 
 async function loadStatistics() {
-    if (!currentWorkspaceStore.currentWorkspace) return;
-    
     try {
-        const response = await $server.get('/orbit/stats', {
-            params: {
-                workspace: currentWorkspaceStore.currentWorkspace.name,
-                days: 30
-            }
-        });
+        const response = await $server.getOrbitStats(explorerStore.id);
         
         statistics.value = response.data.statistics;
         

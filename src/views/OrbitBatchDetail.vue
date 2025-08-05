@@ -382,11 +382,7 @@ async function loadBatchDetails() {
     error.value = null;
     
     try {
-        const response = await $server.get(`/orbit/batch/${route.params.batchNumber}`, {
-            params: {
-                workspace: currentWorkspaceStore.currentWorkspace.name
-            }
-        });
+        const response = await $server.getOrbitBatchDetail(route.params.batchNumber);
         
         batch.value = response.data;
         

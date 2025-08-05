@@ -419,6 +419,25 @@ export default {
                 return axios.get(resource, { params });
             },
 
+            getOrbitBatches(options) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    ...options
+                };
+                const resource = `${envStore.apiRoot}/api/orbit/batches`;
+                return axios.get(resource, { params });
+            },
+
+            getOrbitBatchDetail(batchNumber) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value
+                };
+                const resource = `${envStore.apiRoot}/api/orbit/batches/${batchNumber}`;
+                return axios.get(resource, { params });
+            },
+
             setupAdmin(email, password) {
                 const resource = `${envStore.apiRoot}/api/setup/admin`;
                 return axios.post(resource, { data: { email, password } });

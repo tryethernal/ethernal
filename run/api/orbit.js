@@ -431,7 +431,7 @@ router.post('/transaction/:hash/process', authMiddleware, orbitExpensiveLimiter,
  */
 router.get('/stats', authMiddleware, async (req, res, next) => {
     try {
-        const { uid, workspace: workspaceName, explorerId } = req.query;
+        const { firebaseUserId: uid, workspace: workspaceName, explorerId } = req.query;
 
         if (!uid) {
             return managedError(new Error('Missing uid parameter'), req, res);
@@ -441,16 +441,17 @@ router.get('/stats', authMiddleware, async (req, res, next) => {
         if (explorerId) {
             // Get workspace via explorer
             const explorer = await Explorer.findByPk(explorerId, {
+                where: { '$user.firebaseUserId$': uid },
                 include: [
                     {
                         model: Workspace,
                         as: 'workspace',
-                        include: ['orbitConfig']
+                        include: ['orbitConfig', 'user']
                     }
                 ]
             });
             
-            if (!explorer || explorer.workspace.userId != uid) {
+            if (!explorer) {
                 return managedError(new Error('Explorer not found or not accessible'), req, res);
             }
             
