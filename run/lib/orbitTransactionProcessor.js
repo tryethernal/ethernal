@@ -1,4 +1,4 @@
-const { OrbitTransactionState } = require('../models');
+const { OrbitTransactionState, OrbitBatch } = require('../models');
 const { ethers } = require('ethers');
 const { getOrbitConfig } = require('./orbitConfig');
 const { ProductionRpcClient, BatchDataParser } = require('./orbitRetry');
@@ -173,6 +173,9 @@ class OrbitTransactionProcessor {
                 return;
             }
             
+            // Process and index all discovered batches
+            await this.processBatchEvents(events, methodContext);
+            
             // Check each batch for our transaction
             for (const event of events.slice(-10)) { // Check last 10 batches for efficiency
                 const batchNumber = event.args.batchSequenceNumber;
@@ -337,6 +340,162 @@ class OrbitTransactionProcessor {
         } catch (error) {
             console.error('Error checking finalized state:', error);
             await orbitState.markAsFailed(`Failed to check finalized state: ${error.message}`);
+        }
+    }
+
+    /**
+     * Process and index batch events discovered during sequencer monitoring
+     */
+    async processBatchEvents(events, methodContext) {
+        if (events.length === 0) return;
+        
+        logger.debug('Processing batch events for indexing', { 
+            ...methodContext, 
+            eventCount: events.length 
+        });
+        
+        for (const event of events) {
+            try {
+                await this.indexBatch(event, methodContext);
+            } catch (error) {
+                logger.warn('Failed to index batch', { 
+                    ...methodContext, 
+                    batchNumber: event.args.batchSequenceNumber.toString(),
+                    error: error.message 
+                });
+                // Continue processing other batches
+            }
+        }
+    }
+    
+    /**
+     * Index a single batch in the database
+     */
+    async indexBatch(event, methodContext) {
+        const batchSequenceNumber = event.args.batchSequenceNumber;
+        const batchContext = { 
+            ...methodContext, 
+            batchNumber: batchSequenceNumber.toString() 
+        };
+        
+        try {
+            // Check if batch already exists
+            const existingBatch = await OrbitBatch.findOne({
+                where: {
+                    workspaceId: this.workspace.id,
+                    batchSequenceNumber: batchSequenceNumber
+                }
+            });
+            
+            if (existingBatch) {
+                logger.debug('Batch already indexed', batchContext);
+                return existingBatch;
+            }
+            
+            // Get additional batch information
+            const [block, transaction] = await Promise.all([
+                this.parentProvider.getBlock(event.blockNumber),
+                this.parentProvider.getTransaction(event.transactionHash)
+            ]);
+            
+            const batchData = {
+                workspaceId: this.workspace.id,
+                batchSequenceNumber: batchSequenceNumber,
+                parentChainBlockNumber: event.blockNumber,
+                parentChainTxHash: event.transactionHash,
+                parentChainTxIndex: event.transactionIndex,
+                postedAt: new Date(block.timestamp * 1000),
+                beforeAcc: event.args.beforeAcc,
+                afterAcc: event.args.afterAcc,
+                delayedAcc: event.args.delayedAcc,
+                l1GasUsed: transaction.gasUsed,
+                l1GasPrice: transaction.gasPrice?.toString(),
+                l1Cost: transaction.gasUsed && transaction.gasPrice ? 
+                    (BigInt(transaction.gasUsed) * BigInt(transaction.gasPrice)).toString() : null,
+                metadata: {
+                    timeBounds: event.args.timeBounds,
+                    dataLocation: this.getDataLocationFromEvent(event),
+                    discoveredAt: new Date().toISOString(),
+                    indexedBy: 'orbitTransactionProcessor'
+                }
+            };
+            
+            // Try to determine transaction count and batch size
+            const batchMetrics = await this.getBatchMetrics(event, batchContext);
+            if (batchMetrics) {
+                batchData.transactionCount = batchMetrics.transactionCount;
+                batchData.batchSize = batchMetrics.batchSize;
+                batchData.batchDataHash = batchMetrics.batchDataHash;
+                batchData.batchDataLocation = batchMetrics.dataLocation;
+            }
+            
+            const batch = await OrbitBatch.create(batchData);
+            
+            logger.info('Successfully indexed new batch', { 
+                ...batchContext, 
+                id: batch.id,
+                transactionCount: batch.transactionCount
+            });
+            
+            return batch;
+            
+        } catch (error) {
+            if (error.name === 'SequelizeUniqueConstraintError') {
+                // Race condition - batch was created by another process
+                logger.debug('Batch already indexed (race condition)', batchContext);
+                return await OrbitBatch.findOne({
+                    where: {
+                        workspaceId: this.workspace.id,
+                        batchSequenceNumber: batchSequenceNumber
+                    }
+                });
+            }
+            
+            logger.error('Failed to index batch', { 
+                ...batchContext, 
+                error: error.message 
+            });
+            throw error;
+        }
+    }
+    
+    /**
+     * Get batch metrics (transaction count, size, etc.)
+     */
+    async getBatchMetrics(event, batchContext) {
+        try {
+            // For now, return basic information
+            // In a full implementation, this would parse batch data to count transactions
+            const dataLocation = this.getDataLocationFromEvent(event);
+            
+            return {
+                transactionCount: 0, // Will be updated later when we parse batch data
+                batchSize: null,
+                batchDataHash: null,
+                dataLocation: dataLocation
+            };
+        } catch (error) {
+            logger.warn('Failed to get batch metrics', { 
+                ...batchContext, 
+                error: error.message 
+            });
+            return null;
+        }
+    }
+    
+    /**
+     * Determine data location from batch event
+     */
+    getDataLocationFromEvent(event) {
+        // Arbitrum batch data location logic
+        // 0 = onchain, 1 = DAS (Data Availability Service), etc.
+        const dataLocation = event.args.dataLocation || 0;
+        
+        switch (dataLocation) {
+            case 0: return 'onchain';
+            case 1: return 'das';
+            case 2: return 'ipfs';
+            default: return 'onchain';
         }
     }
 

@@ -113,6 +113,24 @@
                     </v-list-item>
                 </v-list-group>
 
+                <!-- Orbit Section -->
+                <v-list-group value="orbit" v-if="currentWorkspaceStore.orbitConfig">
+                    <template v-slot:activator="{ props }">
+                        <v-list-item
+                            v-bind="props"
+                            :color="isOrbitActive ? 'primary' : undefined">
+                            <template v-slot:title>
+                                <span class="text-body-1">Orbit</span>
+                            </template>
+                        </v-list-item>
+                    </template>
+                    <v-list-item :to="'/batches'" title="Batches" :color="route.path === '/batches' ? 'primary' : undefined">
+                        <template v-slot:title>
+                            <span class="text-body-2">Batches</span>
+                        </template>
+                    </v-list-item>
+                </v-list-group>
+
                 <v-list-item :to="'/analytics'" title="Charts" :class="{ 'text-primary': route.path === '/analytics' }">
                     <template v-slot:title>
                         <span class="text-body-1">Charts</span>
@@ -312,6 +330,41 @@
                         </v-list>
                     </v-menu>
 
+                    <!-- Orbit Menu -->
+                    <v-menu 
+                        v-if="currentWorkspaceStore.orbitConfig"
+                        v-model="orbitMenuOpen"
+                        open-on-hover 
+                        :open-delay="0" 
+                        :close-delay="100"
+                        :close-on-content-click="false"
+                        transition="scroll-y-transition"
+                    >
+                        <template v-slot:activator="{ props, isActive }">
+                            <v-btn 
+                                variant="plain" 
+                                v-bind="props"
+                                @mouseleave="orbitMenuOpen = false"
+                                :class="`opacity-100 d-flex align-center fill-height ${isActive || orbitMenuOpen || isOrbitActive ? 'text-primary' : 'text-default opacity-80'}`"
+                            >
+                                Orbit
+                                <v-icon :icon="isActive ? 'mdi-chevron-up' : 'mdi-chevron-down'" class="ml-1"></v-icon>
+                            </v-btn>
+                        </template>
+                        <v-list 
+                            active-class="router-link-active" 
+                            border="opacity-100" 
+                            class="border-t-lg border-primary opacity-100 rounded-t-0"
+                            @mouseleave="orbitMenuOpen = false"
+                        >
+                            <v-list-item :to="'/batches'" title="Batches">
+                                <template v-slot:title>
+                                    <span class="text-body-2">Batches</span>
+                                </template>
+                            </v-list-item>
+                        </v-list>
+                    </v-menu>
+
                     <v-hover>
                         <template v-slot:default="{ isHovering, props }">
                             <v-btn 
@@ -418,6 +471,7 @@ import WalletConnector from './WalletConnector.vue';
 // Menu state controls
 const blockchainMenuOpen = ref(false);
 const tokensMenuOpen = ref(false);
+const orbitMenuOpen = ref(false);
 
 // Props definition
 const props = defineProps({
@@ -478,6 +532,11 @@ const isTokensActive = computed(() => {
         '/nft-transfers'
     ];
     return tokenRoutes.some(path => route.path === path);
+});
+
+const isOrbitActive = computed(() => {
+    const orbitRoutes = ['/batches'];
+    return orbitRoutes.some(path => route.path === path) || route.path.startsWith('/batch/');
 });
 
 const logOut = () => {

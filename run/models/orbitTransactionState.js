@@ -11,10 +11,18 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      OrbitTransactionState.belongsTo(models.Transaction, { 
-        foreignKey: 'transactionId', 
-        as: 'transaction' 
-      });
+              OrbitTransactionState.belongsTo(models.Transaction, {
+            foreignKey: 'transactionId',
+            as: 'transaction'
+        });
+        
+        // Associate with batch based on batch sequence number in state data
+        OrbitTransactionState.belongsTo(models.OrbitBatch, {
+            foreignKey: 'batchSequenceNumber',
+            targetKey: 'batchSequenceNumber',
+            as: 'batch',
+            constraints: false // No foreign key constraint since it's stored in JSON
+        });
       OrbitTransactionState.belongsTo(models.Workspace, { 
         foreignKey: 'workspaceId', 
         as: 'workspace' 

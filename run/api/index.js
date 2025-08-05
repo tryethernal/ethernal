@@ -25,6 +25,7 @@ const transactionTraceSteps = require('./transactionTraceSteps');
 const caddy = require('./caddy');
 const orbit = require('./orbit');
 const orbitHealth = require('./orbitHealth');
+const orbitBatches = require('./orbitBatches');
 router.use('/blocks', blocks);
 router.use('/contracts', contracts);
 router.use('/transactions', transactions);
@@ -49,6 +50,7 @@ router.use('/transactionTraceSteps', transactionTraceSteps);
 router.use('/caddy', caddy);
 router.use('/orbit', orbit);
 router.use('/orbit', orbitHealth);
+router.use('/orbit', orbitBatches);
 
 if (isDemoEnabled()) {
     const demo = require('./demo');

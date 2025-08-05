@@ -38,8 +38,9 @@ module.exports = (sequelize, DataTypes) => {
       Workspace.hasMany(models.CustomField, { foreignKey: 'workspaceId', as: 'packages', scope: { location: 'package' } });
       Workspace.hasMany(models.CustomField, { foreignKey: 'workspaceId', as: 'functions', scope: { location: 'global' } });
       Workspace.hasMany(models.TransactionTraceStep, { foreignKey: 'workspaceId', as: 'transactionTraceSteps' });
-      Workspace.hasOne(models.OrbitChainConfig, { foreignKey: 'workspaceId', as: 'orbitConfig' });
-      Workspace.hasMany(models.OrbitTransactionState, { foreignKey: 'workspaceId', as: 'orbitTransactionStates' });
+              Workspace.hasOne(models.OrbitChainConfig, { foreignKey: 'workspaceId', as: 'orbitConfig' });
+        Workspace.hasMany(models.OrbitTransactionState, { foreignKey: 'workspaceId', as: 'orbitTransactionStates' });
+        Workspace.hasMany(models.OrbitBatch, { foreignKey: 'workspaceId', as: 'orbitBatches' });
     }
 
     static findPublicWorkspaceById(id) {
