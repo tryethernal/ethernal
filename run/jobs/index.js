@@ -30,8 +30,6 @@ module.exports = {
     processUser: require('./processUser'),
     enforceDataRetentionForWorkspace: require('./enforceDataRetentionForWorkspace'),
     integrityCheckStarter: require('./integrityCheckStarter'),
-    monitorOrbitBatchesStarter: require('./monitorOrbitBatchesStarter'),
-    discoverOrbitBatchesStarter: require('./discoverOrbitBatchesStarter'),
     integrityCheck: require('./integrityCheck'),
     rpcHealthCheck: require('./rpcHealthCheck'),
     rpcHealthCheckStarter: require('./rpcHealthCheckStarter'),

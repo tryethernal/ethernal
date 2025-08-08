@@ -120,7 +120,45 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'TransactionLog',
-    tableName: 'transaction_logs'
+    tableName: 'transaction_logs',
+    hooks: {
+      async afterCreate(log, options) {
+        try {
+          const { Workspace, OrbitChainConfig } = sequelize.models;
+          const parentWs = await Workspace.findByPk(log.workspaceId, { attributes: ['id', 'chainFamily'] });
+          if (!parentWs || parentWs.chainFamily !== 'ARBITRUM') return;
+
+          // Filter for SequencerBatchDelivered by topic0
+          const SEQUENCER_INBOX_ABI = [
+            'event SequencerBatchDelivered(uint256 indexed batchSequenceNumber, bytes32 indexed beforeAcc, bytes32 indexed afterAcc, bytes32 delayedAcc, uint256 afterDelayedMessagesRead, tuple(uint64 minTimestamp, uint64 maxTimestamp, uint64 minBlockNumber, uint64 maxBlockNumber) timeBounds, uint8 dataLocation, bytes data)'
+          ];
+          const { ethers } = require('ethers');
+          const iface = new ethers.utils.Interface(SEQUENCER_INBOX_ABI);
+          const eventFragment = iface.getEvent('SequencerBatchDelivered');
+          const topic0 = iface.getEventTopic(eventFragment);
+
+          if (!Array.isArray(log.topics) || log.topics.length === 0 || log.topics[0] !== topic0) return;
+
+          // Find all orbit workspaces that depend on this parent workspace and target this sequencer inbox address
+          const orbitConfigs = await OrbitChainConfig.findAll({
+            where: {
+              parentWorkspaceId: log.workspaceId,
+              [Op.and]: sequelize.where(
+                sequelize.fn('LOWER', sequelize.col('sequencerInboxContract')),
+                Op.eq,
+                log.address
+              )
+            },
+            attributes: ['workspaceId']
+          });
+          if (!orbitConfigs.length) return;
+
+          const { enqueueBatchDiscovery } = require('../lib/orbitBatchQueue');
+          // Rate-limit via queue manager
+          await Promise.all(orbitConfigs.map(cfg => enqueueBatchDiscovery(cfg.workspaceId, { reason: 'parent-log', priority: 3, maxAge: 30000 })));
+        } catch (_) {}
+      }
+    }
   });
   return TransactionLog;
 };

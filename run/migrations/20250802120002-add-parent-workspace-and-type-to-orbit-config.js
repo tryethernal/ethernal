@@ -17,9 +17,9 @@ module.exports = {
 
     if (!desc.parentChainType) {
       await queryInterface.addColumn(table, 'parentChainType', {
-        type: Sequelize.ENUM('ARBITRUM', 'ETHEREUM', 'BSC', 'POLYGON', 'OPTIMISM', 'OTHER'),
-        allowNull: false,
-        defaultValue: 'ARBITRUM'
+        type: Sequelize.ENUM('ARBITRUM'),
+        allowNull: true,
+        defaultValue: null
       });
     }
   },

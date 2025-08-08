@@ -3573,8 +3573,7 @@ module.exports = (sequelize, DataTypes) => {
     emitMissedBlocks: DataTypes.BOOLEAN,
     skipFirstBlock: DataTypes.BOOLEAN,
     qnEndpointId: DataTypes.STRING,
-    isParentChain: DataTypes.BOOLEAN,
-    chainFamily: DataTypes.ENUM('ARBITRUM', 'ETHEREUM', 'BSC', 'POLYGON', 'OPTIMISM', 'OTHER'),
+    chainFamily: DataTypes.ENUM('ARBITRUM'),
     integrityCheckStartBlockNumber: {
       type: DataTypes.INTEGER,
       get() {

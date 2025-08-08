@@ -109,7 +109,7 @@ module.exports = (sequelize, DataTypes) => {
       for (const contract of optionalContracts) {
         if (contract.address) {
           try {
-            const code = await provider.getCode(contract.address);
+            const code = await parentProvider.getCode(contract.address);
             if (code === '0x') {
               throw new Error(`No contract found at ${contract.name} address: ${contract.address}`);
             }
@@ -303,9 +303,9 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     parentChainType: {
-      type: DataTypes.ENUM('ARBITRUM', 'ETHEREUM', 'BSC', 'POLYGON', 'OPTIMISM', 'OTHER'),
-      allowNull: false,
-      defaultValue: 'ARBITRUM'
+      type: DataTypes.ENUM('ARBITRUM'),
+      allowNull: true,
+      defaultValue: null
     },
     chainType: {
       type: DataTypes.ENUM('ROLLUP', 'ANYTRUST'),
