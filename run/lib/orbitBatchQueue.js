@@ -50,7 +50,7 @@ class OrbitBatchQueueManager {
             }
 
             // Generate unique job ID
-            const jobId = `discoverOrbitBatches-${workspaceId}-${reason}-${Date.now()}`;
+            const jobId = `discoverOrbitBatches-${workspaceId}`;
             
             logger.debug('Enqueuing batch discovery job', {
                 ...jobContext,
@@ -62,7 +62,10 @@ class OrbitBatchQueueManager {
                 'discoverOrbitBatches',
                 jobId,
                 { workspaceId },
-                priority
+                priority,
+                null,
+                null,
+                true
             );
 
             // Track this job

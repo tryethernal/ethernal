@@ -244,15 +244,16 @@ async function findBatchEventByNumber(parentProvider, contractAddress, batchNumb
 
         // Determine search window from config with sensible default
         const config = getOrbitConfig();
-        const SEARCH_BLOCK_WINDOW = Number(config.SEARCH_BLOCK_WINDOW || 50000);
+        const SEARCH_BLOCK_WINDOW = Number(9000);
 
         // Ensure proper encoding for indexed uint256
         const bn = ethers.BigNumber.from(batchNumber.toString());
 
         // Query for the specific batch number using indexed parameter
-        const filter = contract.filters.SequencerBatchDelivered(bn, null, null);
+        const filter = contract.filters.SequencerBatchDelivered(bn);
         const currentBlock = await parentProvider.getBlockNumber();
         const fromBlock = Math.max(currentBlock - SEARCH_BLOCK_WINDOW, 0);
+        console.log('fromBlock', fromBlock);
         const toBlock = 'latest';
 
         logger.debug('Querying SequencerBatchDelivered logs', {
@@ -263,32 +264,83 @@ async function findBatchEventByNumber(parentProvider, contractAddress, batchNumb
         });
 
         let events = await contract.queryFilter(filter, fromBlock, toBlock);
-
+        console.log('events', events);
         // Fallback: try provider.getLogs with explicit topics (in case of interface quirk)
         if (!events || events.length === 0) {
             const iface = new ethers.utils.Interface(SEQUENCER_INBOX_ABI);
-            const eventFragment = iface.getEvent('SequencerBatchDelivered');
-            const topic0 = iface.getEventTopic(eventFragment);
-            const paddedBatch = ethers.utils.hexZeroPad(bn.toHexString(), 32);
 
-            logger.debug('Primary filter returned no events, trying raw getLogs', {
-                ...batchContext,
-                topic0,
-                batchTopic: paddedBatch
-            });
+            const tryEventByTopics = async (eventName) => {
+                try {
+                    const eventFragment = iface.getEvent(eventName);
+                    const topic0 = iface.getEventTopic(eventFragment);
+                    const paddedBatch = ethers.utils.hexZeroPad(bn.toHexString(), 32);
 
-            const logs = await parentProvider.getLogs({
-                address: contractAddress,
-                fromBlock,
-                toBlock,
-                topics: [topic0, paddedBatch]
-            });
+                    const logs = await parentProvider.getLogs({
+                        address: contractAddress,
+                        fromBlock,
+                        toBlock,
+                        topics: [topic0, paddedBatch]
+                    });
 
-            if (logs && logs.length) {
-                events = logs.map(log => ({
-                    ...log,
-                    ...iface.parseLog(log)
-                }));
+                    if (logs && logs.length) {
+                        return logs.map(log => ({
+                            ...log,
+                            ...iface.parseLog(log)
+                        }));
+                    }
+                } catch (e) {
+                    logger.debug(`getLogs failed for ${eventName}`, { ...batchContext, error: e.message });
+                }
+                return [];
+            };
+
+            // Primary event
+            events = await tryEventByTopics('SequencerBatchDelivered');
+
+            // Alternate event sometimes used on Nitro chains
+            if (!events.length) {
+                logger.debug('Primary event not found, trying SequencerBatchDeliveredFromOrigin', batchContext);
+                events = await tryEventByTopics('SequencerBatchDeliveredFromOrigin');
+            }
+
+            // Diagnostic: fetch a few recent events without batch topic to verify address/window
+            if (!events.length) {
+                try {
+                    const eventFragment = iface.getEvent('SequencerBatchDelivered');
+                    const topic0 = iface.getEventTopic(eventFragment);
+
+                    // Fallback: fetch by topic0 only and filter by decoded args
+                    const logsWindow = await parentProvider.getLogs({
+                        address: contractAddress,
+                        fromBlock,
+                        toBlock,
+                        topics: [topic0]
+                    });
+
+                    const decoded = logsWindow.map(log => ({ ...log, ...iface.parseLog(log) }));
+                    const matching = decoded.find(ev => {
+                        try {
+                            const evBn = ethers.BigNumber.from(ev.args.batchSequenceNumber);
+                            return evBn.eq(bn);
+                        } catch (_) { return false; }
+                    });
+
+                    if (matching) {
+                        logger.info('Found batch event via broad scan fallback', {
+                            ...batchContext,
+                            blockNumber: matching.blockNumber,
+                            transactionHash: matching.transactionHash
+                        });
+                        events = [matching];
+                    } else {
+                        logger.debug('Diagnostics: recent SequencerBatchDelivered logs found but none matched batch', {
+                            ...batchContext,
+                            sampleCount: logsWindow.length
+                        });
+                    }
+                } catch (e) {
+                    logger.debug('Diagnostics: failed to fetch/parse SequencerBatchDelivered logs', { ...batchContext, error: e.message });
+                }
             }
         }
 
