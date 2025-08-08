@@ -32,7 +32,8 @@ async function discoverOrbitBatches(job) {
         
         // Get orbit configuration for this workspace
         const orbitConfig = await OrbitChainConfig.findOne({
-            where: { workspaceId }
+            where: { workspaceId },
+            include: [{ model: require('../models').Workspace, as: 'parentWorkspace', attributes: ['id', 'name'] }]
         });
         
         if (!orbitConfig) {
@@ -40,6 +41,26 @@ async function discoverOrbitBatches(job) {
             return { status: 'skipped', reason: 'no_orbit_config' };
         }
         
+        // Try DB-driven discovery if a parent workspace is configured
+        const canUseParentWorkspace = !!orbitConfig.parentWorkspaceId;
+
+        // Get latest indexed batch
+        const latestIndexedBatch = await OrbitBatch.findOne({
+            where: { workspaceId },
+            order: [['batchSequenceNumber', 'DESC']],
+            limit: 1
+        });
+        const lastIndexedNumber = latestIndexedBatch ? latestIndexedBatch.batchSequenceNumber : 0;
+
+        if (canUseParentWorkspace) {
+            const discoveryResult = await discoverBatchesFromIndexedLogs(orbitConfig, lastIndexedNumber + 1, jobContext);
+
+            const result = { status: 'completed', strategy: 'indexed_logs', lastIndexedNumber, ...discoveryResult };
+            logger.info('Completed orbit batch discovery (indexed logs)', { ...jobContext, ...result });
+            markJobCompleted(workspaceId, job.id);
+            return result;
+        }
+
         // Get parent chain provider
         const parentProvider = new ethers.providers.JsonRpcProvider(orbitConfig.parentChainRpcServer);
         
@@ -55,14 +76,7 @@ async function discoverOrbitBatches(job) {
         const currentBatchCount = await sequencerInbox.call('batchCount');
         const currentBatchNumber = currentBatchCount.toNumber();
         
-        // Get latest indexed batch
-        const latestIndexedBatch = await OrbitBatch.findOne({
-            where: { workspaceId },
-            order: [['batchSequenceNumber', 'DESC']],
-            limit: 1
-        });
-        
-        const lastIndexedNumber = latestIndexedBatch ? latestIndexedBatch.batchSequenceNumber : 46913;
+        // keep lastIndexedNumber from above
         const batchesToDiscover = currentBatchNumber - lastIndexedNumber - 1;
         
         logger.info('Batch discovery analysis', {
@@ -113,6 +127,129 @@ async function discoverOrbitBatches(job) {
         });
         throw error;
     }
+}
+
+/**
+ * Discover batches using indexed logs in the parent workspace to minimize RPC calls
+ */
+async function discoverBatchesFromIndexedLogs(orbitConfig, startFromBatch, jobContext) {
+    const { TransactionLog, TransactionReceipt, Transaction, Block } = require('../models');
+    const iface = new ethers.utils.Interface(SEQUENCER_INBOX_ABI);
+    const eventFragment = iface.getEvent('SequencerBatchDelivered');
+    const topic0 = iface.getEventTopic(eventFragment);
+
+    // Query logs in the parent workspace ordered by blockNumber/logIndex for the sequencer inbox address
+    const logs = await TransactionLog.findAll({
+        where: {
+            workspaceId: orbitConfig.parentWorkspaceId,
+            address: orbitConfig.sequencerInboxContract.toLowerCase(),
+            [sequelize.Op.and]: sequelize.where(
+                sequelize.json('topics')[0],
+                sequelize.Op.eq,
+                topic0
+            )
+        },
+        order: [ ['blockNumber', 'ASC'], ['logIndex', 'ASC'] ],
+        attributes: ['id', 'workspaceId', 'address', 'data', 'topics', 'blockNumber', 'transactionHash', 'logIndex']
+    });
+
+    let indexedBatches = 0;
+    let skippedBatches = 0;
+    const errors = [];
+
+    for (const log of logs) {
+        try {
+            const parsed = iface.parseLog({ topics: log.topics, data: log.data });
+            const bn = parsed.args.batchSequenceNumber.toNumber();
+            if (bn < startFromBatch) {
+                skippedBatches++;
+                continue;
+            }
+
+            // Avoid duplicates
+            const exists = await OrbitBatch.findOne({
+                where: { workspaceId: orbitConfig.workspaceId, batchSequenceNumber: bn }
+            });
+            if (exists) { skippedBatches++; continue; }
+
+            // Fetch related data from local DB where possible
+            const receipt = await TransactionReceipt.findOne({
+                where: { workspaceId: orbitConfig.parentWorkspaceId, transactionHash: log.transactionHash },
+                attributes: ['blockNumber', 'transactionIndex', 'gasUsed', 'transactionHash', 'raw', 'workspaceId', 'transactionId']
+            });
+            const tx = receipt ? await Transaction.findByPk(receipt.transactionId, { attributes: ['gasPrice', 'timestamp'] }) : null;
+            const blockNumber = log.blockNumber || receipt?.blockNumber;
+
+            const event = {
+                args: parsed.args,
+                blockNumber: blockNumber,
+                transactionHash: log.transactionHash,
+                transactionIndex: receipt?.transactionIndex,
+                topics: log.topics,
+                data: log.data
+            };
+
+            // Prepare a minimal provider; only used if we miss some fields
+            const parentProvider = new ethers.providers.JsonRpcProvider(orbitConfig.parentChainRpcServer);
+
+            // Index
+            await indexNewBatchFromDb(orbitConfig, event, { receipt, tx }, parentProvider, { ...jobContext, batchNumber: bn });
+            indexedBatches++;
+        } catch (e) {
+            errors.push({ error: e.message });
+            logger.error('Failed to process indexed parent log for batch', { ...jobContext, error: e.message });
+        }
+    }
+
+    return { batchesProcessed: logs.length, batchesIndexed: indexedBatches, batchesSkipped: skippedBatches, errors: errors.length };
+}
+
+async function indexNewBatchFromDb(orbitConfig, event, dbArtifacts, parentProvider, jobContext) {
+    const { TransactionReceipt, Transaction } = require('../models');
+    const batchSequenceNumber = event.args.batchSequenceNumber.toNumber();
+    const receipt = dbArtifacts.receipt || null;
+    const tx = dbArtifacts.tx || null;
+
+    // Compute l1GasUsed/Price/Cost from local data when possible
+    const l1GasUsed = receipt?.gasUsed;
+    const l1GasPrice = tx?.gasPrice || null;
+    const l1Cost = l1GasUsed && l1GasPrice ? (BigInt(l1GasUsed) * BigInt(l1GasPrice)).toString() : null;
+
+    // Extract batch data
+    const batchDataInfo = await extractBatchData(event, parentProvider, jobContext);
+
+    const batchData = {
+        workspaceId: orbitConfig.workspaceId,
+        batchSequenceNumber: batchSequenceNumber,
+        parentChainBlockNumber: event.blockNumber,
+        parentChainTxHash: event.transactionHash,
+        parentChainTxIndex: event.transactionIndex,
+        postedAt: tx?.timestamp ? new Date(tx.timestamp) : new Date(),
+        beforeAcc: event.args.beforeAcc,
+        afterAcc: event.args.afterAcc,
+        delayedAcc: event.args.delayedAcc,
+        l1GasUsed: l1GasUsed,
+        l1GasPrice: l1GasPrice ? String(l1GasPrice) : null,
+        l1Cost: l1Cost,
+        batchDataLocation: getDataLocationFromEvent(event),
+        transactionCount: batchDataInfo.transactionCount,
+        batchSize: batchDataInfo.batchSize,
+        batchDataHash: batchDataInfo.dataHash,
+        metadata: {
+            timeBounds: {
+                minTimestamp: event.args.timeBounds.minTimestamp.toString(),
+                maxTimestamp: event.args.timeBounds.maxTimestamp.toString(),
+                minBlockNumber: event.args.timeBounds.minBlockNumber.toString(),
+                maxBlockNumber: event.args.timeBounds.maxBlockNumber.toString()
+            },
+            afterDelayedMessagesRead: event.args.afterDelayedMessagesRead.toString(),
+            discoveredAt: new Date().toISOString(),
+            indexedBy: 'discoverOrbitBatches',
+            discoveryMethod: 'indexed-logs'
+        }
+    };
+
+    await OrbitBatch.create(batchData);
 }
 
 /**

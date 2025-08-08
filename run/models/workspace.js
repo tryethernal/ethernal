@@ -3573,14 +3573,16 @@ module.exports = (sequelize, DataTypes) => {
     emitMissedBlocks: DataTypes.BOOLEAN,
     skipFirstBlock: DataTypes.BOOLEAN,
     qnEndpointId: DataTypes.STRING,
+    isParentChain: DataTypes.BOOLEAN,
+    chainFamily: DataTypes.ENUM('ARBITRUM', 'ETHEREUM', 'BSC', 'POLYGON', 'OPTIMISM', 'OTHER'),
     integrityCheckStartBlockNumber: {
-        type: DataTypes.INTEGER,
-        get() {
-            const blockNumber = this.getDataValue('integrityCheckStartBlockNumber');
-            return blockNumber !== null && blockNumber !== undefined ?
-                Math.max(this.getDataValue('integrityCheckStartBlockNumber'), 0) :
-                null;
-        }
+      type: DataTypes.INTEGER,
+      get() {
+        const blockNumber = this.getDataValue('integrityCheckStartBlockNumber');
+        return blockNumber !== null && blockNumber !== undefined ?
+          Math.max(this.getDataValue('integrityCheckStartBlockNumber'), 0) :
+          null;
+      }
     },
     rateLimitInterval: DataTypes.INTEGER,
     rateLimitMaxInInterval: DataTypes.INTEGER,

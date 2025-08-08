@@ -13,91 +13,60 @@ module.exports = {
       workspaceId: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: {
-          model: 'workspaces',
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
-        unique: true
+        unique: true,
+        references: { model: 'workspaces', key: 'id' },
+        onDelete: 'CASCADE'
       },
-      
-      // Parent Chain Configuration
-      parentChainId: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        comment: 'Chain ID of the parent chain (L1 for L2 Orbit, L1/L2 for L3 Orbit)'
-      },
-      parentChainRpcServer: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        comment: 'RPC endpoint for the parent chain where infrastructure contracts are deployed'
-      },
-      
-      // Infrastructure Contracts (deployed on parent chain)
       rollupContract: {
         type: Sequelize.STRING(42),
-        allowNull: false,
-        comment: 'Rollup contract address on parent chain'
+        allowNull: false
       },
       bridgeContract: {
         type: Sequelize.STRING(42),
-        allowNull: false,
-        comment: 'Bridge contract address on parent chain'
+        allowNull: false
       },
       inboxContract: {
         type: Sequelize.STRING(42),
-        allowNull: false,
-        comment: 'Inbox contract address on parent chain'
+        allowNull: false
       },
       sequencerInboxContract: {
         type: Sequelize.STRING(42),
-        allowNull: false,
-        comment: 'Sequencer Inbox contract address on parent chain'
+        allowNull: false
       },
       outboxContract: {
         type: Sequelize.STRING(42),
-        allowNull: false,
-        comment: 'Outbox contract address on parent chain'
+        allowNull: false
       },
       challengeManagerContract: {
-        type: Sequelize.STRING(42),
-        allowNull: true,
-        comment: 'Challenge Manager contract address on parent chain'
+        type: Sequelize.STRING(42)
       },
       validatorWalletCreatorContract: {
-        type: Sequelize.STRING(42),
-        allowNull: true,
-        comment: 'Validator Wallet Creator contract address on parent chain'
+        type: Sequelize.STRING(42)
       },
-      
-      // Chain Configuration
+      parentChainId: {
+        type: Sequelize.INTEGER,
+        allowNull: false
+      },
+      parentChainRpcServer: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
       confirmationPeriodBlocks: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        defaultValue: 45818,
-        comment: 'Number of blocks for challenge period on parent chain'
+        defaultValue: 20
+      },
+      stakeToken: {
+        type: Sequelize.STRING(42)
+      },
+      baseStake: {
+        type: Sequelize.STRING(78)
       },
       chainType: {
         type: Sequelize.ENUM('ROLLUP', 'ANYTRUST'),
         allowNull: false,
-        defaultValue: 'ROLLUP',
-        comment: 'Type of Arbitrum Orbit chain'
+        defaultValue: 'ROLLUP'
       },
-      
-      // Optional Staking Configuration  
-      stakeToken: {
-        type: Sequelize.STRING(42),
-        allowNull: true,
-        comment: 'Stake token address on parent chain (if custom token used)'
-      },
-      baseStake: {
-        type: Sequelize.STRING,
-        allowNull: true,
-        comment: 'Base stake amount required for validators'
-      },
-      
-      // Metadata
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
@@ -106,6 +75,19 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
+    });
+
+    // Add new fields for parent workspace linkage and parent chain type
+    await queryInterface.addColumn('orbit_chain_configs', 'parentWorkspaceId', {
+      type: Sequelize.INTEGER,
+      allowNull: true,
+      references: { model: 'workspaces', key: 'id' },
+      onDelete: 'SET NULL'
+    });
+    await queryInterface.addColumn('orbit_chain_configs', 'parentChainType', {
+      type: Sequelize.ENUM('ARBITRUM', 'ETHEREUM', 'BSC', 'POLYGON', 'OPTIMISM', 'OTHER'),
+      allowNull: false,
+      defaultValue: 'ARBITRUM'
     });
 
     // Add indexes for performance

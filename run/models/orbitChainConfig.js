@@ -15,6 +15,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'workspaceId', 
         as: 'workspace' 
       });
+      OrbitChainConfig.belongsTo(models.Workspace, {
+        foreignKey: 'parentWorkspaceId',
+        as: 'parentWorkspace'
+      });
     }
 
     /**
@@ -170,6 +174,10 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       unique: true
     },
+    parentWorkspaceId: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
     rollupContract: {
       type: DataTypes.STRING(42),
       allowNull: false,
@@ -293,6 +301,11 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         isNumeric: true
       }
+    },
+    parentChainType: {
+      type: DataTypes.ENUM('ARBITRUM', 'ETHEREUM', 'BSC', 'POLYGON', 'OPTIMISM', 'OTHER'),
+      allowNull: false,
+      defaultValue: 'ARBITRUM'
     },
     chainType: {
       type: DataTypes.ENUM('ROLLUP', 'ANYTRUST'),
