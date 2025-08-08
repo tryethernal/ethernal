@@ -29,6 +29,8 @@ import WorkspaceNFTTransfer from '../components/WorkspaceNFTTransfer.vue';
 import TokenContract from '../components/TokenContract.vue';
 import VerifiedContracts from '@/components/VerifiedContracts.vue'
 import AccountList from '@/components/AccountList.vue'
+import OrbitBatches from '@/views/OrbitBatches.vue'
+import OrbitBatchDetail from '@/views/OrbitBatchDetail.vue'
 
 import { useEnvStore } from '../stores/env';
 
@@ -104,6 +106,8 @@ const routes = [
     { path: '/faucet', component: ExplorerFaucet, beforeEnter: redirectIfLoggedOut },
     { path: '/dex', component: ExplorerDex, beforeEnter: redirectIfLoggedOut },
     { path: '/bridge', component: ExplorerBridge, beforeEnter: redirectIfLoggedOut },
+    { path: '/batches', component: OrbitBatches, name: 'orbit-batches', beforeEnter: redirectIfLoggedOut },
+    { path: '/batch/:batchNumber', component: OrbitBatchDetail, name: 'orbit-batch-detail', props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/:pathMatch(.*)*', name: 'not-found', component: Overview, beforeEnter: redirectIfLoggedOut }
 ];
 

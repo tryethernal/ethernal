@@ -66,6 +66,10 @@ module.exports = (sequelize, DataTypes) => {
                     as: 'currentWorkspace',
                     include: [
                         {
+                            model: sequelize.models.OrbitChainConfig,
+                            as: 'orbitConfig',
+                        },
+                        {
                             model: sequelize.models.Explorer,
                             as: 'explorer',
                             attributes: currentExplorerAttributes,

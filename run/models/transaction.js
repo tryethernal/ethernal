@@ -7,6 +7,7 @@ const ethers = require('ethers');
 const Op = Sequelize.Op
 const { sanitize, stringifyBns, processRawRpcObject, eToNumber } = require('../lib/utils');
 const { trigger } = require('../lib/pusher');
+const { enqueue } = require('../lib/queue');
 const logger = require('../lib/logger');
 let { getTransactionMethodDetails, getTokenTransfer } = require('../lib/abi');
 const moment = require('moment');
@@ -40,6 +41,7 @@ module.exports = (sequelize, DataTypes) => {
       Transaction.hasMany(models.TokenTransfer, { foreignKey: 'transactionId', as: 'tokenTransfers' });
       Transaction.hasMany(models.TokenBalanceChange, { foreignKey: 'transactionId', as: 'tokenBalanceChanges' });
       Transaction.hasMany(models.TransactionTraceStep, { foreignKey: 'transactionId', as: 'traceSteps' });
+      Transaction.hasOne(models.OrbitTransactionState, { foreignKey: 'transactionId', as: 'orbitState' });
     }
 
     /**
@@ -466,7 +468,7 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    triggerEvents() {
+    async triggerEvents() {
         const data = {
             hash: this.hash,
             state: this.state,
@@ -478,6 +480,20 @@ module.exports = (sequelize, DataTypes) => {
         trigger(`private-transactions;workspace=${this.workspaceId}`, 'new', data);
         if (this.to)
             trigger(`private-transactions;workspace=${this.workspaceId};address=${this.to}`, 'new', data);
+        
+        // Check if this is an orbit transaction and enqueue processing
+        try {
+            const isOrbit = await this.isOrbitTransaction();
+            if (isOrbit) {
+                await enqueue('processOrbitTransaction', `processOrbitTransaction-${this.id}`, {
+                    transactionId: this.id
+                });
+            }
+        } catch (error) {
+            // Log error but don't fail the transaction creation
+            console.error(`Failed to enqueue orbit processing for transaction ${this.hash}:`, error);
+        }
+
         return trigger(`private-transactions;workspace=${this.workspaceId};address=${this.from}`, 'new', data);
     };
 
@@ -564,7 +580,7 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async afterCreate(options) {
-        const afterCommitFn = () => {
+        const afterCommitFn = async () => {
             return this.triggerEvents();
         };
 
@@ -572,6 +588,16 @@ module.exports = (sequelize, DataTypes) => {
             return options.transaction.afterCommit(afterCommitFn);
         else
             return afterCommitFn();
+    }
+
+    async isOrbitTransaction() {
+        const workspace = await this.getWorkspace({ include: ['orbitConfig'] });
+        return !!workspace.orbitConfig;
+    }
+
+    async createOrbitState(initialState = 'SUBMITTED') {
+        const workspace = await this.getWorkspace();
+        return workspace.createOrbitTransactionState(this.id, initialState);
     }
   }
   Transaction.init({

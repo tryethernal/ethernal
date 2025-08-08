@@ -38,6 +38,9 @@ module.exports = (sequelize, DataTypes) => {
       Workspace.hasMany(models.CustomField, { foreignKey: 'workspaceId', as: 'packages', scope: { location: 'package' } });
       Workspace.hasMany(models.CustomField, { foreignKey: 'workspaceId', as: 'functions', scope: { location: 'global' } });
       Workspace.hasMany(models.TransactionTraceStep, { foreignKey: 'workspaceId', as: 'transactionTraceSteps' });
+              Workspace.hasOne(models.OrbitChainConfig, { foreignKey: 'workspaceId', as: 'orbitConfig' });
+        Workspace.hasMany(models.OrbitTransactionState, { foreignKey: 'workspaceId', as: 'orbitTransactionStates' });
+        Workspace.hasMany(models.OrbitBatch, { foreignKey: 'workspaceId', as: 'orbitBatches' });
     }
 
     static findPublicWorkspaceById(id) {
@@ -3496,6 +3499,52 @@ module.exports = (sequelize, DataTypes) => {
             },
             type: QueryTypes.SELECT,
             nest: true
+        });
+    }
+
+    async createOrbitConfig(configData) {
+        return sequelize.models.OrbitChainConfig.create({
+            workspaceId: this.id,
+            ...configData
+        });
+    }
+
+    async updateOrbitConfig(configData) {
+        const existingConfig = await this.getOrbitConfig();
+        if (existingConfig) {
+            return existingConfig.update(configData);
+        } else {
+            return this.createOrbitConfig(configData);
+        }
+    }
+
+    async removeOrbitConfig() {
+        const existingConfig = await this.getOrbitConfig();
+        if (existingConfig) {
+            return existingConfig.destroy();
+        }
+        return null;
+    }
+
+    async isOrbitChain() {
+        const config = await this.getOrbitConfig();
+        return !!config;
+    }
+
+    async getOrbitTransactionState(transactionId) {
+        return sequelize.models.OrbitTransactionState.findOne({
+            where: {
+                workspaceId: this.id,
+                transactionId
+            }
+        });
+    }
+
+    async createOrbitTransactionState(transactionId, initialState = 'SUBMITTED') {
+        return sequelize.models.OrbitTransactionState.create({
+            workspaceId: this.id,
+            transactionId,
+            currentState: initialState
         });
     }
   }
