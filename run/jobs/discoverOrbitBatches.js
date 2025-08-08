@@ -15,7 +15,7 @@ const SEQUENCER_INBOX_ABI = [
 
 /**
  * Dedicated job for discovering and indexing new orbit batches
- * Runs independently of transaction processing to ensure complete batch coverage
+ * Uses batch-by-batch discovery instead of limited block range searches
  */
 async function discoverOrbitBatches(job) {
     const { workspaceId } = job.data;
@@ -62,10 +62,10 @@ async function discoverOrbitBatches(job) {
             limit: 1
         });
         
-        const lastIndexedNumber = latestIndexedBatch ? latestIndexedBatch.batchSequenceNumber : -1;
+        const lastIndexedNumber = latestIndexedBatch ? latestIndexedBatch.batchSequenceNumber : 46913;
         const batchesToDiscover = currentBatchNumber - lastIndexedNumber - 1;
         
-        logger.debug('Batch discovery analysis', {
+        logger.info('Batch discovery analysis', {
             ...jobContext,
             currentBatchNumber,
             lastIndexedNumber,
@@ -81,8 +81,8 @@ async function discoverOrbitBatches(job) {
             };
         }
         
-        // Discover new batches
-        const discoveryResult = await discoverNewBatches(
+        // Discover new batches using batch-by-batch approach
+        const discoveryResult = await discoverBatchesByNumber(
             orbitConfig,
             parentProvider,
             sequencerInbox,
@@ -116,101 +116,113 @@ async function discoverOrbitBatches(job) {
 }
 
 /**
- * Discover and index new batches in a given range
+ * Discover batches by directly querying each batch number
+ * This approach is more reliable than searching limited block ranges
  */
-async function discoverNewBatches(orbitConfig, parentProvider, sequencerInbox, fromBatch, toBatch, jobContext) {
+async function discoverBatchesByNumber(orbitConfig, parentProvider, sequencerInbox, fromBatch, toBatch, jobContext) {
     try {
         const config = getOrbitConfig();
+        const maxBatchesPerRun = config.BATCH_DISCOVERY_LIMIT || 1000;
         
-        // Get current block for event search range
-        const currentBlock = await parentProvider.getBlockNumber();
-        const searchFromBlock = Math.max(0, currentBlock - config.MAX_BLOCKS_TO_SEARCH);
+        // Limit the number of batches to process in one run
+        const actualToBatch = Math.min(toBatch, fromBatch + maxBatchesPerRun);
         
-        logger.debug('Searching for batch events', {
+        logger.info('Starting batch-by-batch discovery', {
             ...jobContext,
             fromBatch,
             toBatch,
-            searchFromBlock,
-            currentBlock
-        });
-        
-        // Query for SequencerBatchDelivered events
-        const events = await queryBatchEventsWithChunking(
-            parentProvider,
-            orbitConfig.sequencerInboxContract,
-            searchFromBlock,
-            currentBlock,
-            fromBatch,
-            toBatch,
-            jobContext
-        );
-        
-        logger.debug('Found batch events', {
-            ...jobContext,
-            eventCount: events.length
+            actualToBatch,
+            maxBatchesPerRun
         });
         
         let indexedBatches = 0;
         let updatedBatches = 0;
+        let skippedBatches = 0;
         const errors = [];
         
-        // Process each event
-        for (const event of events) {
+        // Process each batch number individually
+        for (let batchNum = fromBatch; batchNum < actualToBatch; batchNum++) {
             try {
-                const batchNumber = event.args.batchSequenceNumber.toNumber();
+                const batchContext = { ...jobContext, batchNumber: batchNum };
                 
                 // Check if batch already exists
                 const existingBatch = await OrbitBatch.findOne({
                     where: {
                         workspaceId: orbitConfig.workspaceId,
-                        batchSequenceNumber: batchNumber
+                        batchSequenceNumber: batchNum
                     }
                 });
                 
                 if (existingBatch) {
-                    // Update existing batch with any new information
-                    const updated = await updateExistingBatch(existingBatch, event, parentProvider, jobContext);
-                    if (updated) updatedBatches++;
-                } else {
+                    logger.info('Batch already exists, skipping', batchContext);
+                    skippedBatches++;
+                    continue;
+                }
+                
+                // Find the batch event by querying for the specific batch number
+                const batchEvent = await findBatchEventByNumber(
+                    parentProvider,
+                    orbitConfig.sequencerInboxContract,
+                    batchNum,
+                    batchContext
+                );
+                
+                if (batchEvent) {
                     // Index new batch
-                    await indexNewBatch(orbitConfig, event, parentProvider, jobContext);
+                    await indexNewBatch(orbitConfig, batchEvent, parentProvider, batchContext);
                     indexedBatches++;
+                    
+                    logger.info('Successfully indexed batch', {
+                        ...batchContext,
+                        indexedBatches,
+                        remainingBatches: actualToBatch - batchNum - 1
+                    });
+                } else {
+                    logger.warn('Batch event not found', batchContext);
+                    errors.push({
+                        batchNumber: batchNum,
+                        error: 'Batch event not found'
+                    });
+                }
+                
+                // Add small delay between batches to avoid overwhelming RPC
+                if (batchNum < actualToBatch - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 50));
                 }
                 
             } catch (error) {
                 const errorInfo = {
-                    batchNumber: event.args.batchSequenceNumber.toString(),
+                    batchNumber: batchNum,
                     error: error.message
                 };
                 errors.push(errorInfo);
                 
-                logger.error('Error processing batch event', {
+                logger.error('Error processing batch', {
                     ...jobContext,
                     ...errorInfo
                 });
             }
         }
         
-        // Handle missing batches (batches that should exist but weren't found in events)
-        const missingBatches = await handleMissingBatches(
-            orbitConfig,
-            fromBatch,
-            toBatch,
-            events,
-            jobContext
-        );
-        
-        return {
-            eventsFound: events.length,
+        const result = {
+            batchesProcessed: actualToBatch - fromBatch,
             batchesIndexed: indexedBatches,
             batchesUpdated: updatedBatches,
-            missingBatches: missingBatches,
+            batchesSkipped: skippedBatches,
             errors: errors.length,
-            errorDetails: errors
+            errorDetails: errors.slice(0, 10), // Limit error details in response
+            hasMoreBatches: actualToBatch < toBatch
         };
         
+        logger.info('Completed batch-by-batch discovery', {
+            ...jobContext,
+            ...result
+        });
+        
+        return result;
+        
     } catch (error) {
-        logger.error('Error discovering new batches', {
+        logger.error('Error in batch-by-batch discovery', {
             ...jobContext,
             error: error.message
         });
@@ -219,62 +231,87 @@ async function discoverNewBatches(orbitConfig, parentProvider, sequencerInbox, f
 }
 
 /**
- * Query batch events with block range chunking
+ * Find a specific batch event by batch number
+ * Uses indexed parameter to efficiently query for specific batches
  */
-async function queryBatchEventsWithChunking(parentProvider, contractAddress, fromBlock, toBlock, fromBatch, toBatch, jobContext) {
-    const config = getOrbitConfig();
-    const maxRangePerQuery = config.MAX_BLOCK_RANGE_PER_QUERY || 500;
-    const allEvents = [];
-    
-    let currentFromBlock = fromBlock;
-    
-    while (currentFromBlock <= toBlock) {
-        const currentToBlock = Math.min(currentFromBlock + maxRangePerQuery - 1, toBlock);
-        
-        try {
-            const contract = new ethers.Contract(
-                contractAddress,
-                SEQUENCER_INBOX_ABI,
-                parentProvider
-            );
-            
-            const filter = contract.filters.SequencerBatchDelivered();
-            const events = await contract.queryFilter(filter, currentFromBlock, currentToBlock);
-            
-            // Filter events for the batch range we're interested in
-            const relevantEvents = events.filter(event => {
-                const batchNum = event.args.batchSequenceNumber.toNumber();
-                return batchNum >= fromBatch && batchNum < toBatch;
+async function findBatchEventByNumber(parentProvider, contractAddress, batchNumber, batchContext) {
+    try {
+        const contract = new ethers.Contract(
+            contractAddress,
+            SEQUENCER_INBOX_ABI,
+            parentProvider
+        );
+
+        // Determine search window from config with sensible default
+        const config = getOrbitConfig();
+        const SEARCH_BLOCK_WINDOW = Number(config.SEARCH_BLOCK_WINDOW || 50000);
+
+        // Ensure proper encoding for indexed uint256
+        const bn = ethers.BigNumber.from(batchNumber.toString());
+
+        // Query for the specific batch number using indexed parameter
+        const filter = contract.filters.SequencerBatchDelivered(bn, null, null);
+        const currentBlock = await parentProvider.getBlockNumber();
+        const fromBlock = Math.max(currentBlock - SEARCH_BLOCK_WINDOW, 0);
+        const toBlock = 'latest';
+
+        logger.debug('Querying SequencerBatchDelivered logs', {
+            ...batchContext,
+            fromBlock,
+            toBlock: toBlock === 'latest' ? toBlock : Number(toBlock),
+            searchWindow: SEARCH_BLOCK_WINDOW
+        });
+
+        let events = await contract.queryFilter(filter, fromBlock, toBlock);
+
+        // Fallback: try provider.getLogs with explicit topics (in case of interface quirk)
+        if (!events || events.length === 0) {
+            const iface = new ethers.utils.Interface(SEQUENCER_INBOX_ABI);
+            const eventFragment = iface.getEvent('SequencerBatchDelivered');
+            const topic0 = iface.getEventTopic(eventFragment);
+            const paddedBatch = ethers.utils.hexZeroPad(bn.toHexString(), 32);
+
+            logger.debug('Primary filter returned no events, trying raw getLogs', {
+                ...batchContext,
+                topic0,
+                batchTopic: paddedBatch
             });
-            
-            allEvents.push(...relevantEvents);
-            
-            logger.debug('Queried batch events chunk', {
-                ...jobContext,
-                chunkFrom: currentFromBlock,
-                chunkTo: currentToBlock,
-                eventsFound: events.length,
-                relevantEvents: relevantEvents.length
+
+            const logs = await parentProvider.getLogs({
+                address: contractAddress,
+                fromBlock,
+                toBlock,
+                topics: [topic0, paddedBatch]
             });
-            
-        } catch (error) {
-            logger.warn('Failed to query batch events chunk', {
-                ...jobContext,
-                chunkFrom: currentFromBlock,
-                chunkTo: currentToBlock,
-                error: error.message
-            });
+
+            if (logs && logs.length) {
+                events = logs.map(log => ({
+                    ...log,
+                    ...iface.parseLog(log)
+                }));
+            }
         }
-        
-        currentFromBlock = currentToBlock + 1;
-        
-        // Small delay between chunks
-        if (currentFromBlock <= toBlock) {
-            await new Promise(resolve => setTimeout(resolve, 100));
+
+        if (events && events.length > 0) {
+            logger.info('Found batch event', {
+                ...batchContext,
+                eventCount: events.length,
+                blockNumber: events[0].blockNumber,
+                transactionHash: events[0].transactionHash
+            });
+            return events[0]; // Return the first (and should be only) event
         }
+
+        logger.debug('No batch event found', { ...batchContext, fromBlock, toBlock });
+        return null;
+
+    } catch (error) {
+        logger.error('Error finding batch event', {
+            ...batchContext,
+            error: error.message
+        });
+        return null;
     }
-    
-    return allEvents;
 }
 
 /**
@@ -325,6 +362,7 @@ async function indexNewBatch(orbitConfig, event, parentProvider, jobContext) {
                 afterDelayedMessagesRead: event.args.afterDelayedMessagesRead.toString(),
                 discoveredAt: new Date().toISOString(),
                 indexedBy: 'discoverOrbitBatches',
+                discoveryMethod: 'batch-by-batch',
                 batchDataInfo: batchDataInfo
             }
         };
@@ -342,7 +380,7 @@ async function indexNewBatch(orbitConfig, event, parentProvider, jobContext) {
         
     } catch (error) {
         if (error.name === 'SequelizeUniqueConstraintError') {
-            logger.debug('Batch already indexed (race condition)', batchContext);
+            logger.info('Batch already indexed (race condition)', batchContext);
             return null;
         }
         
@@ -351,56 +389,6 @@ async function indexNewBatch(orbitConfig, event, parentProvider, jobContext) {
             error: error.message
         });
         throw error;
-    }
-}
-
-/**
- * Update existing batch with new information if needed
- */
-async function updateExistingBatch(existingBatch, event, parentProvider, jobContext) {
-    const batchContext = {
-        ...jobContext,
-        batchNumber: existingBatch.batchSequenceNumber,
-        batchId: existingBatch.id
-    };
-    
-    try {
-        let updated = false;
-        const updates = {};
-        
-        // Check if we need to update transaction count or batch data
-        if (!existingBatch.transactionCount || existingBatch.transactionCount === 0) {
-            const batchDataInfo = await extractBatchData(event, parentProvider, batchContext);
-            
-            if (batchDataInfo.transactionCount > 0) {
-                updates.transactionCount = batchDataInfo.transactionCount;
-                updates.batchSize = batchDataInfo.batchSize;
-                updates.batchDataHash = batchDataInfo.dataHash;
-                updates.metadata = {
-                    ...existingBatch.metadata,
-                    batchDataInfo: batchDataInfo,
-                    updatedAt: new Date().toISOString()
-                };
-                updated = true;
-            }
-        }
-        
-        if (updated) {
-            await existingBatch.update(updates);
-            logger.info('Updated existing batch', {
-                ...batchContext,
-                updates: Object.keys(updates)
-            });
-        }
-        
-        return updated;
-        
-    } catch (error) {
-        logger.error('Failed to update existing batch', {
-            ...batchContext,
-            error: error.message
-        });
-        return false;
     }
 }
 
@@ -415,7 +403,7 @@ async function extractBatchData(event, parentProvider, batchContext) {
         const batchData = event.args.data;
         const dataLocation = event.args.dataLocation;
         
-        logger.debug('Extracting batch data with enhanced parser', {
+        logger.info('Extracting batch data with enhanced parser', {
             ...batchContext,
             dataLocation,
             dataSize: batchData ? batchData.length : 0
@@ -463,44 +451,6 @@ async function extractBatchData(event, parentProvider, batchContext) {
             blocks: [],
             metadata: { parseError: error.message, parseMethod: 'fallback' }
         };
-    }
-}
-
-
-
-/**
- * Handle batches that should exist but weren't found in events
- */
-async function handleMissingBatches(orbitConfig, fromBatch, toBatch, foundEvents, jobContext) {
-    try {
-        const foundBatchNumbers = new Set(
-            foundEvents.map(event => event.args.batchSequenceNumber.toNumber())
-        );
-        
-        const missingBatches = [];
-        
-        for (let batchNum = fromBatch; batchNum < toBatch; batchNum++) {
-            if (!foundBatchNumbers.has(batchNum)) {
-                missingBatches.push(batchNum);
-            }
-        }
-        
-        if (missingBatches.length > 0) {
-            logger.warn('Found missing batches - may need extended search', {
-                ...jobContext,
-                missingBatches: missingBatches.slice(0, 10), // Log first 10
-                totalMissing: missingBatches.length
-            });
-        }
-        
-        return missingBatches.length;
-        
-    } catch (error) {
-        logger.error('Error handling missing batches', {
-            ...jobContext,
-            error: error.message
-        });
-        return 0;
     }
 }
 
