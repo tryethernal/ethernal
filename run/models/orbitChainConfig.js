@@ -15,6 +15,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'workspaceId', 
         as: 'workspace' 
       });
+      OrbitChainConfig.belongsTo(models.Workspace, {
+        foreignKey: 'parentWorkspaceId',
+        as: 'parentWorkspace'
+      });
     }
 
     /**
@@ -105,7 +109,7 @@ module.exports = (sequelize, DataTypes) => {
       for (const contract of optionalContracts) {
         if (contract.address) {
           try {
-            const code = await provider.getCode(contract.address);
+            const code = await parentProvider.getCode(contract.address);
             if (code === '0x') {
               throw new Error(`No contract found at ${contract.name} address: ${contract.address}`);
             }
@@ -169,6 +173,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
       unique: true
+    },
+    parentWorkspaceId: {
+      type: DataTypes.INTEGER,
+      allowNull: true
     },
     rollupContract: {
       type: DataTypes.STRING(42),
@@ -293,6 +301,11 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         isNumeric: true
       }
+    },
+    parentChainType: {
+      type: DataTypes.ENUM('ARBITRUM'),
+      allowNull: true,
+      defaultValue: null
     },
     chainType: {
       type: DataTypes.ENUM('ROLLUP', 'ANYTRUST'),

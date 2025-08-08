@@ -65,20 +65,4 @@ const ORBIT_BATCH_DISCOVERY_INTERVAL = 5 * 60 * 1000; // 5 minutes (reduced freq
         10,
         { every: BLOCK_SYNC_MONITORING_INTERVAL }
     );
-
-    await enqueue(
-        'monitorOrbitBatchesStarter',
-        'monitorOrbitBatchesStarter',
-        {},
-        5,
-        { every: ORBIT_BATCH_MONITORING_INTERVAL }
-    );
-
-    await enqueue(
-        'discoverOrbitBatchesStarter',
-        'discoverOrbitBatchesStarter',
-        {},
-        3,
-        { every: ORBIT_BATCH_DISCOVERY_INTERVAL }
-    );
 })();
