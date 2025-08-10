@@ -11,18 +11,18 @@ module.exports = (sequelize, DataTypes) => {
   OrbitNode.init({
     workspaceId: DataTypes.INTEGER,
     nodeNum: DataTypes.BIGINT,
-    parentNodeNum: DataTypes.BIGINT,
-    seqNumStart: DataTypes.BIGINT,
-    seqNumEnd: DataTypes.BIGINT,
-    stateRoot: DataTypes.STRING,
-    sendAccumulator: DataTypes.STRING,
-    logAccumulator: DataTypes.STRING,
-    stakerCount: DataTypes.INTEGER,
-    challengeDeadline: DataTypes.DATE,
+    parentNodeHash: DataTypes.STRING,
+    nodeHash: DataTypes.STRING,
+    executionHash: DataTypes.STRING,
+    afterInboxBatchAcc: DataTypes.STRING,
+    wasmModuleRoot: DataTypes.STRING,
+    inboxMaxCount: DataTypes.BIGINT,
+    lastIncludedBatchSequenceNumber: DataTypes.BIGINT,
     confirmed: DataTypes.BOOLEAN,
     rejected: DataTypes.BOOLEAN,
     createdTxHash: DataTypes.STRING,
-    createdBlockNumber: DataTypes.BIGINT
+    confirmedBlockHash: DataTypes.STRING,
+    confirmedSendRoot: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'OrbitNode',

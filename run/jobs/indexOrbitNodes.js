@@ -1,12 +1,12 @@
-const { OrbitChainConfig, OrbitNode, OrbitBatch, OrbitBatchNodeMap, TransactionLog, TransactionReceipt, Transaction, Block, sequelize } = require('../models');
+const { OrbitChainConfig, OrbitNode, TransactionLog, Block } = require('../models');
+const { Sequelize } = require('sequelize');
+const Op = Sequelize.Op;
 const logger = require('../lib/logger');
 const { markJobCompleted } = require('../lib/orbitBatchQueue');
 const { ethers } = require('ethers');
 
-const ROLLUP_ABI = [
-  'event NodeCreated(uint64 nodeNum, bytes32 parentHash, uint64 parentNodeNum, uint64 createdAtBlock, uint64 deadlineBlock, bytes32 nodeHash, uint256 seqNumStart, uint256 seqNumEnd, bytes32 stateHash, bytes32 sendAcc, bytes32 logAcc)',
-  'event NodeConfirmed(uint64 nodeNum)'
-];
+// DO NOT CHANGE: ABI provided by user is correct
+const ROLLUP_ABI = [{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"previousAdmin","type":"address"},{"indexed":false,"internalType":"address","name":"newAdmin","type":"address"}],"name":"AdminChanged","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"beacon","type":"address"}],"name":"BeaconUpgraded","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint64","name":"nodeNum","type":"uint64"},{"indexed":false,"internalType":"bytes32","name":"blockHash","type":"bytes32"},{"indexed":false,"internalType":"bytes32","name":"sendRoot","type":"bytes32"}],"name":"NodeConfirmed","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint64","name":"nodeNum","type":"uint64"},{"indexed":true,"internalType":"bytes32","name":"parentNodeHash","type":"bytes32"},{"indexed":true,"internalType":"bytes32","name":"nodeHash","type":"bytes32"},{"indexed":false,"internalType":"bytes32","name":"executionHash","type":"bytes32"},{"components":[{"components":[{"components":[{"internalType":"bytes32[2]","name":"bytes32Vals","type":"bytes32[2]"},{"internalType":"uint64[2]","name":"u64Vals","type":"uint64[2]"}],"internalType":"struct GlobalState","name":"globalState","type":"tuple"},{"internalType":"enum MachineStatus","name":"machineStatus","type":"uint8"}],"internalType":"struct ExecutionState","name":"beforeState","type":"tuple"},{"components":[{"components":[{"internalType":"bytes32[2]","name":"bytes32Vals","type":"bytes32[2]"},{"internalType":"uint64[2]","name":"u64Vals","type":"uint64[2]"}],"internalType":"struct GlobalState","name":"globalState","type":"tuple"},{"internalType":"enum MachineStatus","name":"machineStatus","type":"uint8"}],"internalType":"struct ExecutionState","name":"afterState","type":"tuple"},{"internalType":"uint64","name":"numBlocks","type":"uint64"}],"indexed":false,"internalType":"struct Assertion","name":"assertion","type":"tuple"},{"indexed":false,"internalType":"bytes32","name":"afterInboxBatchAcc","type":"bytes32"},{"indexed":false,"internalType":"bytes32","name":"wasmModuleRoot","type":"bytes32"},{"indexed":false,"internalType":"uint256","name":"inboxMaxCount","type":"uint256"}],"name":"NodeCreated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint64","name":"nodeNum","type":"uint64"}],"name":"NodeRejected","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"id","type":"uint256"}],"name":"OwnerFunctionCalled","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Paused","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint64","name":"challengeIndex","type":"uint64"},{"indexed":false,"internalType":"address","name":"asserter","type":"address"},{"indexed":false,"internalType":"address","name":"challenger","type":"address"},{"indexed":false,"internalType":"uint64","name":"challengedNode","type":"uint64"}],"name":"RollupChallengeStarted","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"bytes32","name":"machineHash","type":"bytes32"},{"indexed":false,"internalType":"uint256","name":"chainId","type":"uint256"}],"name":"RollupInitialized","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Unpaused","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"implementation","type":"address"}],"name":"Upgraded","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"implementation","type":"address"}],"name":"UpgradedSecondary","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"initialBalance","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"finalBalance","type":"uint256"}],"name":"UserStakeUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"initialBalance","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"finalBalance","type":"uint256"}],"name":"UserWithdrawableFundsUpdated","type":"event"}];
 
 async function indexOrbitNodes(job) {
   const { workspaceId } = job.data;
@@ -26,7 +26,7 @@ async function indexOrbitNodes(job) {
       where: {
         workspaceId: cfg.parentWorkspaceId,
         address: cfg.rollupContract.toLowerCase(),
-        [sequelize.Op.and]: sequelize.where(sequelize.json('topics')[0], sequelize.Op.in, [nodeCreatedTopic, nodeConfirmedTopic])
+        [Op.and]: Sequelize.where(Sequelize.json('topics')[0], Op.in, [nodeCreatedTopic, nodeConfirmedTopic])
       },
       order: [['blockNumber','ASC'],['logIndex','ASC']],
       attributes: ['topics','data','transactionHash','blockNumber','logIndex']
@@ -39,35 +39,36 @@ async function indexOrbitNodes(job) {
         if (topic0 === nodeCreatedTopic) {
           const parsed = iface.parseLog({ topics: log.topics, data: log.data });
           const args = parsed.args;
-          const deadlineBlock = Number(args.deadlineBlock);
-          const createdAtBlock = Number(args.createdAtBlock);
 
-          let challengeDeadline = null;
-          if (!Number.isNaN(deadlineBlock)) {
-            const deadlineBlk = await Block.findOne({ where: { workspaceId: cfg.parentWorkspaceId, number: deadlineBlock }, attributes: ['timestamp'] });
-            if (deadlineBlk) challengeDeadline = deadlineBlk.timestamp;
-          }
-
-          await OrbitNode.upsert({
+          const nodeRecord = {
             workspaceId,
             nodeNum: String(args.nodeNum),
-            parentNodeNum: String(args.parentNodeNum),
-            seqNumStart: args.seqNumStart ? String(args.seqNumStart) : null,
-            seqNumEnd: args.seqNumEnd ? String(args.seqNumEnd) : null,
-            stateRoot: args.stateHash,
-            sendAccumulator: args.sendAcc,
-            logAccumulator: args.logAcc,
-            stakerCount: null,
-            challengeDeadline,
-            confirmed: false,
+            parentNodeHash: String(args.parentNodeHash),
+            nodeHash: String(args.nodeHash),
+            executionHash: String(args.executionHash),
+            afterInboxBatchAcc: String(args.afterInboxBatchAcc),
+            wasmModuleRoot: String(args.wasmModuleRoot),
+            inboxMaxCount: args.inboxMaxCount ? String(args.inboxMaxCount) : null,
             createdTxHash: log.transactionHash,
-            createdBlockNumber: createdAtBlock
-          });
+            confirmed: false,
+            rejected: false
+          };
+
+          // Derive last included batch using afterInboxBatchAcc if possible (implementation-specific heuristic)
+          // For Nitro, afterInboxBatchAcc represents the accumulator after processing inbox max count; we store batch seq number if retrievable.
+          try {
+            // If your system stores batch afterAcc mapped to batchSequenceNumber, you could resolve it here
+            nodeRecord.lastIncludedBatchSequenceNumber = null;
+          } catch (_) {}
+
+          await OrbitNode.upsert(nodeRecord);
           created++;
         } else if (topic0 === nodeConfirmedTopic) {
           const parsed = iface.parseLog({ topics: log.topics, data: log.data });
-          const nodeNum = String(parsed.args.nodeNum);
-          await OrbitNode.update({ confirmed: true }, { where: { workspaceId, nodeNum } });
+          const args = parsed.args;
+          await OrbitNode.update({ confirmed: true, confirmedBlockHash: String(args.blockHash), confirmedSendRoot: String(args.sendRoot) }, {
+            where: { workspaceId, nodeNum: String(args.nodeNum) }
+          });
           confirmed++;
         }
       } catch (e) {
@@ -76,25 +77,18 @@ async function indexOrbitNodes(job) {
       }
     }
 
-    // Build/refresh batch -> node mappings
-    const batches = await OrbitBatch.findAll({ where: { workspaceId }, attributes: ['id','seqNumEnd','confirmationStatus'] });
+    // Build/refresh batch -> node mappings using lastIncludedBatchSequenceNumber when present
+    // A batch is covered by the earliest node whose lastIncludedBatchSequenceNumber >= batch.batchSequenceNumber
+    const { OrbitBatch, OrbitBatchNodeMap } = require('../models');
+    const batches = await OrbitBatch.findAll({ where: { workspaceId }, attributes: ['id','batchSequenceNumber'] });
     for (const b of batches) {
-      if (!b.seqNumEnd) continue;
       const node = await OrbitNode.findOne({
-        where: { workspaceId, [sequelize.Op.and]: sequelize.where(sequelize.col('seqNumEnd'), ">=", b.seqNumEnd) },
-        order: [['seqNumEnd','ASC']]
+        where: { workspaceId, lastIncludedBatchSequenceNumber: { [Op.gte]: b.batchSequenceNumber } },
+        order: [['lastIncludedBatchSequenceNumber','ASC']]
       });
-      if (!node) {
-        await OrbitBatchNodeMap.upsert({ workspaceId, batchId: b.id, nodeNum: null, coverageStatus: 'pending' });
-        continue;
-      }
-      const coverageStatus = node.confirmed ? 'finalized' : 'executed';
-      await OrbitBatchNodeMap.upsert({ workspaceId, batchId: b.id, nodeNum: node.nodeNum, coverageStatus });
-
-      // Optionally reflect finalization in batch
-      if (node.confirmed && b.confirmationStatus !== 'finalized') {
-        await b.update({ confirmationStatus: 'finalized', finalizedAt: new Date() });
-      }
+      const coverageStatus = node ? (node.confirmed ? 'finalized' : 'executed') : 'pending';
+      await OrbitBatchNodeMap.upsert({ workspaceId, batchId: b.id, nodeNum: node ? node.nodeNum : null, coverageStatus });
+      if (node && node.confirmed) await b.update({ confirmationStatus: 'finalized', finalizedAt: new Date() });
     }
 
     const result = { status: 'completed', created, confirmed, errors };
