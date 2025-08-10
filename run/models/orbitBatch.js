@@ -171,6 +171,8 @@ module.exports = (sequelize, DataTypes) => {
                 batchDataHash: this.batchDataHash,
                 firstTxTimestamp: this.firstTxTimestamp,
                 lastTxTimestamp: this.lastTxTimestamp,
+                seqNumStart: this.seqNumStart,
+                seqNumEnd: this.seqNumEnd,
                 beforeAcc: this.beforeAcc,
                 afterAcc: this.afterAcc,
                 delayedAcc: this.delayedAcc,

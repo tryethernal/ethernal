@@ -40,6 +40,7 @@ const priorities = {
         'blockSyncMonitoring',
         'monitorOrbitBatches',
         'discoverOrbitBatches',
+        'indexOrbitNodes',
         'sendDiscordMessage',
         'backfillNativeTokenTransfers'
     ]

@@ -5,9 +5,9 @@ module.exports = {
     processBlock: require('./processBlock'),
     batchBlockSync: require('./batchBlockSync'),
     discoverOrbitBatches: require('./discoverOrbitBatches'),
+    indexOrbitNodes: require('./indexOrbitNodes'),
     sendResetPasswordEmail: require('./sendResetPasswordEmail'),
     updateExplorerSyncingProcess: require('./updateExplorerSyncingProcess'),
-    updateApproximatedRecord: require('./updateApproximatedRecord'),
     receiptSync: require('./receiptSync'),
     removeStalledBlock: require('./removeStalledBlock'),
     increaseStripeBillingQuota: require('./increaseStripeBillingQuota'),
@@ -41,7 +41,9 @@ module.exports = {
     deleteWorkspace: require('./deleteWorkspace'),
     queueMonitoring: require('./queueMonitoring'),
     blockSyncMonitoring: require('./blockSyncMonitoring'),
-    sendDemoExplorerLink: require('./sendDemoExplorerLink'),
+    monitorOrbitBatches: require('./monitorOrbitBatches'),
+    discoverOrbitBatches: require('./discoverOrbitBatches'),
+    indexOrbitNodes: require('./indexOrbitNodes'),
     sendDiscordMessage: require('./sendDiscordMessage'),
     backfillNativeTokenTransfers: require('./backfillNativeTokenTransfers')
 };

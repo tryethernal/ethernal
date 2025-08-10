@@ -95,7 +95,17 @@ async function discoverBatchesFromIndexedLogs(orbitConfig, startFromBatch, jobCo
 
     for (const log of logs) {
         try {
-            const parsed = iface.parseLog({ topics: log.topics, data: log.data });
+            let parsed;
+            try {
+                parsed = iface.parseLog({ topics: log.topics, data: log.data });
+            } catch (e) {
+                // Try alternative signature with seq range
+                const altAbi = [
+                  'event SequencerBatchDelivered(uint256 batchSequenceNumber, bytes32 beforeAcc, bytes32 afterAcc, uint256 afterAccBatchSeqNum, bytes32 txDataHash, uint256 seqNumStart, uint256 seqNumEnd, uint256 timestamp, address poster, bytes data)'
+                ];
+                const altIface = new ethers.utils.Interface(altAbi);
+                parsed = altIface.parseLog({ topics: log.topics, data: log.data });
+            }
             const bn = parsed.args.batchSequenceNumber.toNumber();
             if (bn < startFromBatch) { skippedBatches++; continue; }
 
@@ -140,6 +150,10 @@ async function indexNewBatchFromDb(orbitConfig, event, dbArtifacts, jobContext) 
 
     const batchDataInfo = await extractBatchData(event, null, jobContext);
 
+    let seqNumStart = null, seqNumEnd = null;
+    if (event.args.seqNumStart !== undefined) seqNumStart = String(event.args.seqNumStart);
+    if (event.args.seqNumEnd !== undefined) seqNumEnd = String(event.args.seqNumEnd);
+
     const batchData = {
         workspaceId: orbitConfig.workspaceId,
         batchSequenceNumber: batchSequenceNumber,
@@ -147,6 +161,8 @@ async function indexNewBatchFromDb(orbitConfig, event, dbArtifacts, jobContext) 
         parentChainTxHash: event.transactionHash,
         parentChainTxIndex: event.transactionIndex,
         postedAt: tx?.timestamp ? new Date(tx.timestamp) : new Date(),
+        seqNumStart,
+        seqNumEnd,
         beforeAcc: event.args.beforeAcc,
         afterAcc: event.args.afterAcc,
         delayedAcc: event.args.delayedAcc,

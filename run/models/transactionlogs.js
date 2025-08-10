@@ -137,25 +137,39 @@ module.exports = (sequelize, DataTypes) => {
           const eventFragment = iface.getEvent('SequencerBatchDelivered');
           const topic0 = iface.getEventTopic(eventFragment);
 
-          if (!Array.isArray(log.topics) || log.topics.length === 0 || log.topics[0] !== topic0) return;
+          // Rollup events
+          const ROLLUP_ABI = [
+            'event NodeCreated(uint64 nodeNum, bytes32 parentHash, uint64 parentNodeNum, uint64 createdAtBlock, uint64 deadlineBlock, bytes32 nodeHash, uint256 seqNumStart, uint256 seqNumEnd, bytes32 stateHash, bytes32 sendAcc, bytes32 logAcc)',
+            'event NodeConfirmed(uint64 nodeNum)'
+          ];
+          const riface = new ethers.utils.Interface(ROLLUP_ABI);
+          const nodeCreatedTopic = riface.getEventTopic('NodeCreated');
+          const nodeConfirmedTopic = riface.getEventTopic('NodeConfirmed');
 
-          // Find all orbit workspaces that depend on this parent workspace and target this sequencer inbox address
-          const orbitConfigs = await OrbitChainConfig.findAll({
-            where: {
-              parentWorkspaceId: log.workspaceId,
-              [Op.and]: sequelize.where(
-                sequelize.fn('LOWER', sequelize.col('sequencerInboxContract')),
-                Op.eq,
-                log.address
-              )
-            },
-            attributes: ['workspaceId']
-          });
+          const isBatchEvent = Array.isArray(log.topics) && log.topics.length > 0 && log.topics[0] === topic0;
+          const isNodeEvent = Array.isArray(log.topics) && log.topics.length > 0 && (log.topics[0] === nodeCreatedTopic || log.topics[0] === nodeConfirmedTopic);
+
+          if (!isBatchEvent && !isNodeEvent) return;
+
+          // Find all orbit workspaces that depend on this parent workspace and target corresponding infra contract
+          const where = { parentWorkspaceId: log.workspaceId };
+          if (isBatchEvent) {
+            Object.assign(where, { [Op.and]: sequelize.where(sequelize.fn('LOWER', sequelize.col('sequencerInboxContract')), Op.eq, log.address) });
+          } else if (isNodeEvent) {
+            Object.assign(where, { [Op.and]: sequelize.where(sequelize.fn('LOWER', sequelize.col('rollupContract')), Op.eq, log.address) });
+          }
+
+          const orbitConfigs = await OrbitChainConfig.findAll({ where, attributes: ['workspaceId'] });
           if (!orbitConfigs.length) return;
 
           const { enqueueBatchDiscovery } = require('../lib/orbitBatchQueue');
-          // Rate-limit via queue manager
-          await Promise.all(orbitConfigs.map(cfg => enqueueBatchDiscovery(cfg.workspaceId, { reason: 'parent-log', priority: 3, maxAge: 30000 })));
+          const { enqueue } = require('../lib/queue');
+          const enqueuePromises = [];
+          for (const cfg of orbitConfigs) {
+            if (isBatchEvent) enqueuePromises.push(enqueueBatchDiscovery(cfg.workspaceId, { reason: 'parent-log', priority: 3, maxAge: 30000 }));
+            if (isNodeEvent) enqueuePromises.push(enqueue('indexOrbitNodes', `indexOrbitNodes-${cfg.workspaceId}`, { workspaceId: cfg.workspaceId }, 3, null, null, true));
+          }
+          await Promise.all(enqueuePromises);
         } catch (_) {}
       }
     }
