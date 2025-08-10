@@ -54,11 +54,14 @@ async function indexOrbitNodes(job) {
             rejected: false
           };
 
-          // Derive last included batch using afterInboxBatchAcc if possible (implementation-specific heuristic)
-          // For Nitro, afterInboxBatchAcc represents the accumulator after processing inbox max count; we store batch seq number if retrievable.
+          // Derive last included batch using afterInboxBatchAcc by matching orbit_batches.afterAcc
           try {
-            // If your system stores batch afterAcc mapped to batchSequenceNumber, you could resolve it here
-            nodeRecord.lastIncludedBatchSequenceNumber = null;
+            const { OrbitBatch } = require('../models');
+            const matchedBatch = await OrbitBatch.findOne({
+              where: { workspaceId, afterAcc: String(args.afterInboxBatchAcc) },
+              attributes: ['batchSequenceNumber']
+            });
+            nodeRecord.lastIncludedBatchSequenceNumber = matchedBatch ? matchedBatch.batchSequenceNumber : null;
           } catch (_) {}
 
           await OrbitNode.upsert(nodeRecord);
