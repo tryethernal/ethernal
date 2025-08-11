@@ -121,13 +121,15 @@ const simulateTransaction = async (options) => {
 const sendWithMetamask = async () => {
     const browserClient = currentWorkspaceStore.getViemBrowserClient;
 
+    const currentChainId = await walletStore.wagmiConnector?.getChainId();
+
     try {
         const options = sanitize({
             address: props.contract.address,
             abi: props.contract.abi,
             functionName: props.method.name,
             args: Object.values(processedParams.value),
-            chainId: parseInt(currentWorkspaceStore.networkId),
+            chainId: currentChainId,
             gas: currentWorkspaceStore.gasLimit ? BigInt(currentWorkspaceStore.gasLimit) : undefined,
             gasPrice: currentWorkspaceStore.gasPrice ? BigInt(currentWorkspaceStore.gasPrice) : undefined,
             value: parseEther(valueInEth.value.toString()),
