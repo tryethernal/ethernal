@@ -26,7 +26,7 @@ async function indexOrbitNodes(job) {
       where: {
         workspaceId: cfg.parentWorkspaceId,
         address: cfg.rollupContract.toLowerCase(),
-        [Op.and]: Sequelize.where(Sequelize.json('topics')[0], Op.in, [nodeCreatedTopic, nodeConfirmedTopic])
+        [Op.and]: Sequelize.literal(`topics[1] IN ('${nodeCreatedTopic}','${nodeConfirmedTopic}')`)
       },
       order: [['blockNumber','ASC'],['logIndex','ASC']],
       attributes: ['topics','data','transactionHash','blockNumber','logIndex']
@@ -65,11 +65,12 @@ async function indexOrbitNodes(job) {
             nodeRecord.lastIncludedBatchSequenceNumber = matchedBatch ? matchedBatch.batchSequenceNumber : null;
           } catch (_) {}
 
-          await OrbitNode.upsert(nodeRecord);
+          await OrbitNode.bulkCreate([nodeRecord], { ignoreDuplicates: true });
           created++;
         } else if (topic0 === nodeConfirmedTopic) {
           const parsed = iface.parseLog({ topics: log.topics, data: log.data });
           const args = parsed.args;
+          console.log(String(args.nodeNum))
           await OrbitNode.update({ confirmed: true, confirmedBlockHash: String(args.blockHash), confirmedSendRoot: String(args.sendRoot) }, {
             where: { workspaceId, nodeNum: String(args.nodeNum) }
           });
@@ -92,7 +93,7 @@ async function indexOrbitNodes(job) {
         order: [['lastIncludedBatchSequenceNumber','ASC']]
       });
       const coverageStatus = node ? (node.confirmed ? 'finalized' : 'executed') : 'pending';
-      await OrbitBatchNodeMap.upsert({ workspaceId, batchId: b.id, nodeNum: node ? node.nodeNum : null, coverageStatus });
+      await OrbitBatchNodeMap.bulkCreate([{ workspaceId, batchId: b.id, nodeNum: node ? node.nodeNum : null, coverageStatus }], { ignoreDuplicates: true });
       if (node && node.confirmed) await b.update({ confirmationStatus: 'finalized', finalizedAt: new Date() });
     }
 

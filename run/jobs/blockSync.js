@@ -1,5 +1,5 @@
 const { ProviderConnector } = require('../lib/rpc');
-const { Workspace, Explorer, StripeSubscription, RpcHealthCheck, IntegrityCheck, Block } = require('../models');
+const { Workspace, Explorer, StripeSubscription, RpcHealthCheck, IntegrityCheck, Block, OrbitChainConfig } = require('../models');
 const db = require('../lib/firebase');
 const logger = require('../lib/logger');
 const { processRawRpcObject } = require('../lib/utils');
@@ -13,7 +13,6 @@ module.exports = async job => {
         return 'Missing parameter';
 
     const workspace = await Workspace.findOne({
-        attributes: ['id', 'rpcHealthCheckEnabled', 'rateLimitInterval', 'rateLimitMaxInInterval', 'name', 'rpcServer', 'browserSyncEnabled'],
         where: {
             name: data.workspace,
             '$user.firebaseUserId$': data.userId
@@ -106,6 +105,35 @@ module.exports = async job => {
             block,
             Object.keys(Block.rawAttributes).concat(['transactions'])
         );
+
+        const orbitChildConfigs = await OrbitChainConfig.findAll({
+            where: {
+                parentWorkspaceId: workspace.id
+            }
+        });
+        if (orbitChildConfigs.length > 0) {
+            // Filter transactions to only include those that interact with rollupContract or sequencerInbox
+            const contracts = ['rollupContract', 'sequencerInboxContract', 'bridgeContract', 'inboxContract', 'outboxContract', 'stakeToken'];
+
+            let contractAddresses = [];
+            const orbitConfig = orbitChildConfigs[0];
+            for (const contractKey of contracts) {
+                if (!orbitConfig[contractKey]) continue;
+                contractAddresses.push(orbitConfig[contractKey].toLowerCase());
+            }
+            // Remove duplicates just in case
+            contractAddresses = [...new Set(contractAddresses)];
+
+            // Filter transactions whose 'to' field matches any of the contract addresses
+            const filteredTransactions = processedBlock.transactions.filter(tx => {
+                if (!tx.to) return false;
+                return contractAddresses.includes(tx.to.toLowerCase());
+            });
+            
+            processedBlock.transactions = filteredTransactions;
+            console.log(processedBlock.transactions);
+            processedBlock.transactionsCount = filteredTransactions.length;
+        }
 
         const syncedBlock = await workspace.safeCreatePartialBlock(processedBlock);
         if (!syncedBlock)
