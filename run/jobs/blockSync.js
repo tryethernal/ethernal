@@ -116,11 +116,13 @@ module.exports = async job => {
             const contracts = ['rollupContract', 'sequencerInboxContract', 'bridgeContract', 'inboxContract', 'outboxContract', 'stakeToken'];
 
             let contractAddresses = [];
-            const orbitConfig = orbitChildConfigs[0];
-            for (const contractKey of contracts) {
-                if (!orbitConfig[contractKey]) continue;
-                contractAddresses.push(orbitConfig[contractKey].toLowerCase());
+            for (const orbitConfig of orbitChildConfigs) {
+                for (const contractKey of contracts) {
+                    if (!orbitConfig[contractKey]) continue;
+                    contractAddresses.push(orbitConfig[contractKey].toLowerCase());
+                }
             }
+
             // Remove duplicates just in case
             contractAddresses = [...new Set(contractAddresses)];
 
@@ -131,7 +133,6 @@ module.exports = async job => {
             });
             
             processedBlock.transactions = filteredTransactions;
-            console.log(processedBlock.transactions);
             processedBlock.transactionsCount = filteredTransactions.length;
         }
 

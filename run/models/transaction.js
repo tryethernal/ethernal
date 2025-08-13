@@ -11,6 +11,8 @@ const { enqueue } = require('../lib/queue');
 const logger = require('../lib/logger');
 let { getTransactionMethodDetails, getTokenTransfer } = require('../lib/abi');
 const moment = require('moment');
+const { isOrbitNodeCreatedLog, isOrbitNodeConfirmedLog, isOrbitNodeRejectedLog, getOrbitCreatedNodeData, getOrbitConfirmedNodeData } = require('../lib/orbitNodes');
+const { isOrbitBatchDeliveredLog, getOrbitBatchDeliveredData } = require('../lib/orbitBatches');
 
 module.exports = (sequelize, DataTypes) => {
   class Transaction extends Model {
@@ -248,6 +250,72 @@ module.exports = (sequelize, DataTypes) => {
                             }
                         )
                     ]);
+                }
+            }
+
+            if (receipt.to && this.data.length > 2) {
+                for (const orbitChildConfig of receipt.workspace.orbitChildConfigs) {
+                    // Detect orbit batch operations
+                    if (this.to.toLowerCase() === orbitChildConfig.sequencerInboxContract.toLowerCase()) {
+                        logger.info(`Processing orbit batch operations for transaction ${this.hash}`);
+                        for (const log of storedLogs) {
+                            if (isOrbitBatchDeliveredLog(log)) {
+                                const batchDeliveredData = {
+                                    workspaceId: orbitChildConfig.workspaceId,
+                                    parentChainBlockNumber: receipt.blockNumber,
+                                    parentChainTxHash: this.hash,
+                                    postedAt: this.timestamp,
+                                    ...getOrbitBatchDeliveredData(log, this)
+                                };
+                                logger.info(`Processing orbit batch ${batchDeliveredData.batchSequenceNumber} delivered log for transaction ${this.hash}`);
+                                const [createdBatch] = await sequelize.models.OrbitBatch.bulkCreate([batchDeliveredData], {
+                                    ignoreDuplicates: true,
+                                    returning: true,
+                                    transaction
+                                });
+                                logger.info(`Created batch ${createdBatch.id} for transaction ${this.hash}`);
+                            }
+                        }
+                    }
+
+                    // Detect orbit node logs
+                    if (this.to.toLowerCase() === orbitChildConfig.rollupContract.toLowerCase()) {
+                        logger.info(`Processing orbit node logs for transaction ${this.hash}`);
+                        for (const log of storedLogs) {
+                            if (isOrbitNodeCreatedLog(log)) {
+                                logger.info(`Processing orbit node created log for transaction ${this.hash}`);
+                                const createdNodeData = { workspaceId: this.workspaceId, ...getOrbitCreatedNodeData(log) };
+                                const [createdNode] = await sequelize.models.OrbitNode.bulkCreate([createdNodeData], {
+                                    ignoreDuplicates: true,
+                                    returning: true,
+                                    transaction
+                                });
+                                logger.info(`Created node ${createdNode.id} for transaction ${this.hash}`);
+                            }
+                            else if (isOrbitNodeConfirmedLog(log)) {
+                                logger.info(`Processing orbit node confirmed log for transaction ${this.hash}`);
+                                const confirmedNodeData = getOrbitConfirmedNodeData(log);
+                                const orbitNode = await sequelize.models.OrbitNode.findOne({
+                                    where: { workspaceId: this.workspaceId, nodeNum: confirmedNodeData.nodeNum }
+                                })
+
+                                if (!orbitNode) {
+                                    logger.error(`Orbit node ${confirmedNodeData.nodeNum} not found for transaction ${this.hash}`);
+                                    continue;
+                                }
+
+                                if (orbitNode.confirmed)
+                                    logger.info(`Node ${orbitNode.nodeNum} already confirmed for transaction ${this.hash}`);
+                                else {
+                                    await orbitNode.confirm(getOrbitConfirmedNodeData(log), transaction);
+                                    logger.info(`Confirmed node ${orbitNode.id} for transaction ${this.hash}`);
+                                }
+                            }
+                            else if (isOrbitNodeRejectedLog(log)) {
+                                console.log('Node rejected', log);
+                            }
+                        }
+                    }
                 }
             }
 

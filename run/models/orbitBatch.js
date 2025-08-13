@@ -13,6 +13,12 @@ module.exports = (sequelize, DataTypes) => {
             // We handle the relationship to OrbitTransactionState manually when needed
         }
 
+        confirm(transaction) {
+            return this.update({
+                confirmationStatus: 'finalized',
+            }, { transaction });
+        }
+
         /**
          * Get batch status with human-readable description
          */
@@ -377,6 +383,14 @@ module.exports = (sequelize, DataTypes) => {
         },
         metadata: {
             type: DataTypes.JSONB,
+            allowNull: true
+        },
+        prevMessageCount: {
+            type: DataTypes.BIGINT,
+            allowNull: true
+        },
+        newMessageCount: {
+            type: DataTypes.BIGINT,
             allowNull: true
         }
     }, {

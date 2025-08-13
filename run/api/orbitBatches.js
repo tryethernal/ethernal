@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middlewares/auth');
+const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
+const db = require('../lib/firebase');
 const { managedError, unmanagedError } = require('../lib/errors');
 const { OrbitBatch, OrbitTransactionState, Workspace, Explorer, sequelize } = require('../models');
 const {
@@ -16,87 +18,21 @@ router.use(orbitApiLimiter);
 
 /**
  * Get paginated list of batches for a workspace
+ * @param {number} page - The page number
+ * @param {number} itemsPerPage - The number of items per page
+ * @param {string} order - The order to sort by
+ * @returns {Promise<Array>} - A list of orbit batches
  */
-router.get('/batches', authMiddleware, async (req, res, next) => {
+router.get('/batches', workspaceAuthMiddleware, async (req, res, next) => {
+    const data = { ...req.query, ...req.params };
     try {
-        const { 
-            firebaseUserId: uid, 
-            workspace: workspaceName, 
-            explorerId,
-            page = 1,
-            limit = 50,
-            status,
-            fromDate,
-            toDate,
-            sortBy = 'batchSequenceNumber',
-            sortOrder = 'DESC'
-        } = req.query;
+        const { page, itemsPerPage, order } = data;
 
-        if (!uid) {
-            return managedError(new Error('Missing uid parameter'), req, res);
-        }
+        const { rows: items, count: total } = await db.getWorkspaceOrbitBatches(data.workspace.id, page, itemsPerPage, order);
 
-        let workspace;
-        
-        if (workspaceName) {
-            workspace = await Workspace.findOne({
-                where: { name: workspaceName },
-                include: [{
-                    model: require('../models').User,
-                    as: 'user',
-                    where: { firebaseUserId: uid }
-                }]
-            });
-        } else if (explorerId) {
-            const explorer = await Explorer.findByPk(explorerId, {
-                include: [{
-                    model: Workspace,
-                    as: 'workspace',
-                    include: [{
-                        model: require('../models').User,
-                        as: 'user',
-                        where: { firebaseUserId: uid }
-                    }]
-                }]
-            });
-            workspace = explorer?.workspace;
-        }
-
-        if (!workspace) {
-            return managedError(new Error('Workspace not found'), req, res);
-        }
-
-        const options = {
-            page: parseInt(page),
-            limit: Math.min(parseInt(limit), 100), // Cap at 100
-            sortBy,
-            sortOrder
-        };
-
-        if (status) {
-            options.status = status;
-        }
-
-        if (fromDate) {
-            options.fromDate = new Date(fromDate);
-        }
-
-        if (toDate) {
-            options.toDate = new Date(toDate);
-        }
-
-        const result = await OrbitBatch.findBatchesWithPagination(workspace.id, options);
-
-        res.json({
-            ...result,
-            workspace: {
-                id: workspace.id,
-                name: workspace.name
-            }
-        });
-
+        res.status(200).json({ items, total });
     } catch (error) {
-        unmanagedError(error, req, res);
+        unmanagedError(error, req, next);
     }
 });
 

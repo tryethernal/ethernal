@@ -41,6 +41,7 @@ module.exports = (sequelize, DataTypes) => {
       Workspace.hasOne(models.OrbitChainConfig, { foreignKey: 'workspaceId', as: 'orbitConfig' });
       Workspace.hasMany(models.OrbitTransactionState, { foreignKey: 'workspaceId', as: 'orbitTransactionStates' });
       Workspace.hasMany(models.OrbitBatch, { foreignKey: 'workspaceId', as: 'orbitBatches' });
+      Workspace.hasMany(models.OrbitChainConfig, { foreignKey: 'parentWorkspaceId', as: 'orbitChildConfigs' });
     }
 
     static findPublicWorkspaceById(id) {
@@ -95,6 +96,44 @@ module.exports = (sequelize, DataTypes) => {
 
     getProvider() {
         return new ProviderConnector(this.rpcServer);
+    }
+
+    async safeCreateOrbitBatch(batch, transaction) {
+        const [createdBatch] = await sequelize.models.OrbitBatch.bulkCreate([batch], {
+            ignoreDuplicates: true,
+            returning: true,
+            transaction
+        });
+
+        const batchBlocks = [];
+        const blocks = await sequelize.models.Block.findAll({
+            where: {
+                workspaceId: this.id,
+                number: { [Op.between]: [batch.prevMessageCount, batch.newMessageCount - 1] }
+            }
+        });
+        for (const block of blocks) {
+            batchBlocks.push({
+                blockId: block.id,
+                batchId: createdBatch.id
+            });
+        }
+        await sequelize.models.OrbitBatchBlock.bulkCreate(batchBlocks, { transaction });
+
+        return createdBatch;
+    }
+
+    async getFilteredOrbitBatches(page = 1, itemsPerPage = 10, order = 'DESC') {
+        const sanitizedOrder = ['asc', 'desc'].includes(order.toLowerCase()) ? order.toLowerCase() : 'desc';
+
+        return sequelize.models.OrbitBatch.findAndCountAll({
+            where: {
+                workspaceId: this.id
+            },
+            order: [['batchSequenceNumber', sanitizedOrder]],
+            limit: itemsPerPage,
+            offset: (page - 1) * itemsPerPage
+        });
     }
 
     /**

@@ -1,10 +1,37 @@
 'use strict';
-const { Model } = require('sequelize');
+const { Model, Op } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
   class OrbitNode extends Model {
     static associate(models) {
       OrbitNode.belongsTo(models.Workspace, { foreignKey: 'workspaceId', as: 'workspace' });
+    }
+
+    async confirm({ confirmedBlockHash, confirmedSendRoot }, transaction) {
+      const parentNode = await sequelize.models.OrbitNode.findOne({
+        where: {
+          workspaceId: this.workspaceId,
+          nodeNum: this.parentNodeHash
+        }
+      });
+
+      const previousInboxMaxCount = parentNode ? parentNode.inboxMaxCount : 0;
+
+      const confirmedBatches = await sequelize.models.OrbitBatch.findAll({
+        where: {
+          workspaceId: this.workspaceId,
+          batchSequenceNumber: {
+            [Op.lte]: this.inboxMaxCount,
+            [Op.gt]: previousInboxMaxCount
+          }
+        }
+      });
+
+      for (const batch of confirmedBatches) {
+        await batch.confirm(transaction);
+      }
+
+      return this.update({ confirmed: true, confirmedBlockHash, confirmedSendRoot }, { transaction });
     }
   }
 

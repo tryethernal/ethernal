@@ -34,6 +34,25 @@ const ExplorerV2Dex = models.ExplorerV2Dex;
 const V2DexPair = models.V2DexPair;
 
 /**
+ * Retrieves a list of orbit batches for a workspace
+ * @param {string} workspaceId - The workspace id
+ * @param {number} page - The page number
+ * @param {number} itemsPerPage - The number of items per page
+ * @param {string} order - The order to sort by
+ * @returns {Promise<Array>} - A list of orbit batches
+ */
+const getWorkspaceOrbitBatches = async (workspaceId, page, itemsPerPage, order) => {
+    if (!workspaceId)
+        throw new Error('Missing parameter');
+    
+    const workspace = await Workspace.findByPk(workspaceId);
+    if (!workspace)
+        throw new Error('Could not find workspace');
+
+    return workspace.getFilteredOrbitBatches(page, itemsPerPage, order);
+};
+
+/**
  * Return filtered native token balances of all active addresses (paginated)
  * with share % and transaction count
  * @param {integer} workspaceId 
@@ -3152,5 +3171,6 @@ module.exports = {
     canSetupAdmin: canSetupAdmin,
     isValidExplorerDomain: isValidExplorerDomain,
     getImportedAccounts: getImportedAccounts,
-    getFilteredNativeAccounts: getFilteredNativeAccounts
+    getFilteredNativeAccounts: getFilteredNativeAccounts,
+    getWorkspaceOrbitBatches: getWorkspaceOrbitBatches
 };

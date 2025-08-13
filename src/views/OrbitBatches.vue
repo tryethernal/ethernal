@@ -7,120 +7,17 @@
                     Batches posted to {{ parentChainName }} for {{ workspaceName }}
                 </p>
             </div>
-            
-            <v-btn
-                color="primary"
-                variant="outlined"
-                @click="refreshBatches"
-                :loading="loading"
-                prepend-icon="mdi-refresh"
-            >
-                Refresh
-            </v-btn>
         </div>
-
-        <!-- Statistics Cards -->
-        <v-row class="mb-6">
-            <v-col cols="12" sm="6" md="3">
-                <v-card>
-                    <v-card-text class="text-center">
-                        <div class="text-h5 primary--text">{{ statistics.totalBatches || '0' }}</div>
-                        <div class="text-caption text-medium-emphasis">Total Batches</div>
-                    </v-card-text>
-                </v-card>
-            </v-col>
-            <v-col cols="12" sm="6" md="3">
-                <v-card>
-                    <v-card-text class="text-center">
-                        <div class="text-h5 success--text">{{ statistics.statusDistribution?.finalized || '0' }}</div>
-                        <div class="text-caption text-medium-emphasis">Finalized</div>
-                    </v-card-text>
-                </v-card>
-            </v-col>
-            <v-col cols="12" sm="6" md="3">
-                <v-card>
-                    <v-card-text class="text-center">
-                        <div class="text-h5 warning--text">{{ statistics.statusDistribution?.pending || '0' }}</div>
-                        <div class="text-caption text-medium-emphasis">Pending</div>
-                    </v-card-text>
-                </v-card>
-            </v-col>
-            <v-col cols="12" sm="6" md="3">
-                <v-card>
-                    <v-card-text class="text-center">
-                        <div class="text-h5 info--text">{{ statistics.avgTxPerBatch || '0' }}</div>
-                        <div class="text-caption text-medium-emphasis">Avg Txs/Batch</div>
-                    </v-card-text>
-                </v-card>
-            </v-col>
-        </v-row>
-
-        <!-- Filters -->
-        <v-card class="mb-6">
-            <v-card-title>Filters</v-card-title>
-            <v-card-text>
-                <v-row>
-                    <v-col cols="12" sm="6" md="3">
-                        <v-select
-                            v-model="filters.status"
-                            :items="statusOptions"
-                            label="Status"
-                            clearable
-                            variant="outlined"
-                            density="compact"
-                        />
-                    </v-col>
-                    <v-col cols="12" sm="6" md="3">
-                        <v-text-field
-                            v-model="filters.fromDate"
-                            label="From Date"
-                            type="date"
-                            variant="outlined"
-                            density="compact"
-                            clearable
-                        />
-                    </v-col>
-                    <v-col cols="12" sm="6" md="3">
-                        <v-text-field
-                            v-model="filters.toDate"
-                            label="To Date"
-                            type="date"
-                            variant="outlined"
-                            density="compact"
-                            clearable
-                        />
-                    </v-col>
-                    <v-col cols="12" sm="6" md="3">
-                        <v-select
-                            v-model="pageSize"
-                            :items="pageSizeOptions"
-                            label="Per Page"
-                            variant="outlined"
-                            density="compact"
-                        />
-                    </v-col>
-                </v-row>
-            </v-card-text>
-        </v-card>
 
         <!-- Batches Table -->
         <v-card>
-            <v-card-title>
-                <div class="d-flex justify-space-between align-center w-100">
-                    <span>Batches</span>
-                    <v-chip v-if="pagination.total" size="small" variant="outlined">
-                        {{ pagination.total }} total
-                    </v-chip>
-                </div>
-            </v-card-title>
-            
             <v-data-table
                 :headers="headers"
                 :items="batches"
                 :loading="loading"
-                :server-items-length="pagination.total"
-                v-model:page="currentPage"
-                v-model:items-per-page="pageSize"
+                :server-items-length="total"
+                v-model:page="currentOptions.page"
+                v-model:items-per-page="currentOptions.itemsPerPage"
                 @update:page="loadBatches"
                 @update:itemsPerPage="loadBatches"
                 class="elevation-1"
@@ -131,20 +28,12 @@
                         :to="{ name: 'orbit-batch-detail', params: { batchNumber: item.batchSequenceNumber } }"
                         class="text-decoration-none"
                     >
-                        <v-chip color="primary" variant="outlined" size="small">
-                            #{{ item.batchSequenceNumber }}
-                        </v-chip>
+                        #{{ item.batchSequenceNumber }}
                     </router-link>
                 </template>
 
                 <template v-slot:item.status="{ item }">
-                    <v-chip 
-                        :color="item.status.color" 
-                        size="small"
-                        variant="flat"
-                    >
-                        {{ item.status.label }}
-                    </v-chip>
+                    {{ item.confirmationStatus }}
                 </template>
 
                 <template v-slot:item.transactionCount="{ item }">
@@ -154,12 +43,12 @@
                 </template>
 
                 <template v-slot:item.timing.ageFormatted="{ item }">
-                    <span class="text-body-2">{{ item.timing.ageFormatted }}</span>
+                    <span class="text-body-2">{{ item.postedAt }}</span>
                 </template>
 
                 <template v-slot:item.economics.l1CostEth="{ item }">
-                    <span v-if="item.economics.l1CostEth" class="font-mono">
-                        {{ item.economics.l1CostEth }} ETH
+                    <span v-if="item.l1Cost" class="font-mono">
+                        {{ item.l1Cost }} ETH
                     </span>
                     <span v-else class="text-medium-emphasis">—</span>
                 </template>
@@ -200,16 +89,6 @@
                 </template>
             </v-data-table>
         </v-card>
-
-        <!-- Pagination -->
-        <div v-if="pagination.totalPages > 1" class="d-flex justify-center mt-4">
-            <v-pagination
-                v-model="currentPage"
-                :length="pagination.totalPages"
-                :total-visible="7"
-                @update:modelValue="loadBatches"
-            />
-        </div>
     </div>
 </template>
 
@@ -225,27 +104,12 @@ const explorerStore = useExplorerStore();
 
 // Reactive data
 const loading = ref(false);
+const total = ref(0);
 const batches = ref([]);
-const statistics = ref({});
-const currentPage = ref(1);
-const pageSize = ref(50);
 
 const $server = inject('$server');
 
-const filters = reactive({
-    status: null,
-    fromDate: null,
-    toDate: null
-});
-
-const pagination = reactive({
-    page: 1,
-    limit: 50,
-    total: 0,
-    totalPages: 0,
-    hasNext: false,
-    hasPrev: false
-});
+const currentOptions = reactive({ page: 1, itemsPerPage: 50, order: 'DESC' });
 
 // Computed properties
 const workspaceName = computed(() => currentWorkspaceStore.currentWorkspace?.name || 'Unknown');
@@ -282,58 +146,31 @@ const statusOptions = [
 const pageSizeOptions = [25, 50, 100];
 
 // Methods
-async function loadBatches() {
+async function loadBatches({ page, itemsPerPage, order } = {}) {
     loading.value = true;
-    
-    try {
-        const params = {
-            page: currentPage.value,
-            limit: pageSize.value
-        };
 
-        if (filters.status) params.status = filters.status;
-        if (filters.fromDate) params.fromDate = filters.fromDate;
-        if (filters.toDate) params.toDate = filters.toDate;
-
-        const response = await $server.getOrbitBatches(params);
-        
-        batches.value = response.data.batches;
-        Object.assign(pagination, response.data.pagination);
-
-    } catch (error) {
-        console.error('Failed to load batches:', error);
-        // Could show error notification here
-    } finally {
-        loading.value = false;
+    if (!page || !itemsPerPage || !order || !order.length) {
+        page = currentOptions.page;
+        itemsPerPage = currentOptions.itemsPerPage;
+        order = [{ key: currentOptions.orderBy, order: currentOptions.order }];
     }
-}
 
-async function loadStatistics() {
-    try {
-        const response = await $server.getOrbitStats(explorerStore.id);
-        
-        statistics.value = response.data.statistics;
-        
-        // Calculate average transactions per batch
-        const totalTx = Object.values(response.data.statistics.dailyStats)
-            .reduce((sum, day) => sum + (day.transactionCount || 0), 0);
-        const totalBatches = Object.values(response.data.statistics.dailyStats)
-            .reduce((sum, day) => sum + (day.batchCount || 0), 0);
-        
-        statistics.value.avgTxPerBatch = totalBatches > 0 ? 
-            Math.round(totalTx / totalBatches) : 0;
-        statistics.value.totalBatches = totalBatches;
+    currentOptions.page = page;
+    currentOptions.itemsPerPage = itemsPerPage;
+    currentOptions.orderBy = order[0].key;
+    currentOptions.order = order[0].order;
 
-    } catch (error) {
-        console.error('Failed to load statistics:', error);
-    }
-}
-
-async function refreshBatches() {
-    await Promise.all([
-        loadBatches(),
-        loadStatistics()
-    ]);
+    $server.getOrbitBatches(currentOptions)
+        .then(response => {
+            batches.value = response.data.items;
+            total.value = response.data.total;
+        })
+        .catch(error => {
+            console.error('Failed to load batches:', error);
+        })
+        .finally(() => {
+            loading.value = false;
+        });
 }
 
 function formatBytes(bytes) {
@@ -355,15 +192,9 @@ function getParentChainTxUrl(txHash) {
     return (baseUrls[chainId] || 'https://etherscan.io/tx/') + txHash;
 }
 
-// Watchers
-watch([() => filters.status, () => filters.fromDate, () => filters.toDate], () => {
-    currentPage.value = 1;
-    loadBatches();
-}, { deep: true });
-
 // Lifecycle
 onMounted(async () => {
-    await refreshBatches();
+    await loadBatches();
 });
 </script>
 
