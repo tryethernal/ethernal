@@ -83,13 +83,13 @@ describe(`POST ${BASE_URL}/sendResetPasswordEmail`, () => {
             });
     });
 
-    it('Should fail if sendgrid is not enabled', (done) => {
-        jest.spyOn(flags, 'isSendgridEnabled').mockReturnValueOnce(false);
+    it('Should fail if mailgun is not enabled', (done) => {
+        jest.spyOn(flags, 'isMailgunEnabled').mockReturnValueOnce(false);
         request.post(`${BASE_URL}/sendResetPasswordEmail`)
             .send({ email: 'antoine@tryethernal.com' })
             .expect(400)
             .then(({ text }) => {
-                expect(text).toEqual('Sendgrid has not been enabled.');
+                expect(text).toEqual('Mailgun has not been enabled.');
                 done();
             });
     });

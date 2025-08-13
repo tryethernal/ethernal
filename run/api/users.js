@@ -1,7 +1,7 @@
 const { getStripeSecretKey } = require('../lib/env');
 const stripe = require('stripe')(getStripeSecretKey());
 const Analytics = require('../lib/analytics');
-const { isStripeEnabled, isSendgridEnabled, isFirebaseAuthEnabled } = require('../lib/flags');
+const { isStripeEnabled, isMailgunEnabled, isFirebaseAuthEnabled } = require('../lib/flags');
 const { getAuth } = require('firebase-admin/auth');
 const uuidAPIKey = require('uuid-apikey');
 const express = require('express');
@@ -89,8 +89,8 @@ router.post('/sendResetPasswordEmail', async (req, res, next) => {
     const data = req.body;
 
     try {
-        if (!isSendgridEnabled())
-            return managedError(new Error('Sendgrid has not been enabled.'), req, res);
+        if (!isMailgunEnabled())
+            return managedError(new Error('Mailgun has not been enabled.'), req, res);
 
         if (!data.email)
             return managedError(new Error('Missing parameter.'), req, res);

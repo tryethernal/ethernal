@@ -51,8 +51,6 @@ module.exports = {
     getSecret: () => process.env.SECRET,
     getAuthSecret: () => process.env.AUTH_SECRET,
     getHistoricalBlocksProcessingConcurrency: () => parseInt(process.env.HISTORICAL_BLOCKS_PROCESSING_CONCURRENCY) || 50,
-    getSendgridApiKey: () => process.env.SENDGRID_API_KEY,
-    getSendgridSender: () => process.env.SENDGRID_SENDER,
     getFirebaseSignerKey: () => process.env.FIREBASE_SIGNER_KEY,
     getFirebaseSaltSeparator: () => process.env.FIREBASE_SALT_SEPARATOR,
     getFirebaseRounds: () => parseInt(process.env.FIREBASE_ROUNDS),
@@ -67,4 +65,7 @@ module.exports = {
     getDemoExplorerSender: () => process.env.DEMO_EXPLORER_SENDER,
     getDiscordDemoExplorerChannelWebhook: () => process.env.DISCORD_DEMO_EXPLORER_CHANNEL_WEBHOOK,
     getEnv: (key, defaultValue) => process.env[key] || defaultValue,
+    getMailGunApiKey: () => process.env.MAILGUN_API_KEY,
+    getMailGunDomain: () => process.env.MAILGUN_DOMAIN,
+    getMailGunSender: () => process.env.MAILGUN_SENDER
 };
