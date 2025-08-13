@@ -93,7 +93,7 @@
                                         v => !!v || 'Email is required',
                                         v => /.+@.+\..+/.test(v) || 'Email must be valid',
                                     ]"
-                                    required v-model="email" name="email" label="Email" type="text"></v-text-field>
+                                    required class="mt-3" v-model="email" name="email" label="Email" type="text"></v-text-field>
 
                                 <v-card-actions class="px-0">
                                     <div style="float: left;">

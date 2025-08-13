@@ -56,5 +56,8 @@ jest.mock('../../../lib/env', () => ({
     getServeFrontend: jest.fn(() => false),
     getSecret: jest.fn(() => 'secret'),
     getDiscordDemoExplorerChannelWebhook: jest.fn(() => 'https://discord.com/api/webhooks'),
-    getDemoExplorerSender: jest.fn(() => 'antoine@tryethernal.com')
+    getDemoExplorerSender: jest.fn(() => 'antoine@tryethernal.com'),
+    getMailGunApiKey: jest.fn(() => 'a'),
+    getMailGunDomain: jest.fn(() => 'a'),
+    getMailGunSender: jest.fn(() => 'antoine@tryethernal.com')
 }));

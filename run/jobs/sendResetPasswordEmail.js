@@ -1,21 +1,24 @@
-const sgMail = require('@sendgrid/mail');
+const formData = require('form-data');
+const Mailgun = require('mailgun.js');
 const { encode } = require('../lib/crypto');
-const { getAppUrl, getSendgridApiKey, getSendgridSender } = require('../lib/env');
-const { isSendgridEnabled } = require('../lib/flags');
+const { getAppUrl, getMailGunApiKey, getMailGunSender, getMailGunDomain } = require('../lib/env');
+const { isMailgunEnabled } = require('../lib/flags');
 
 module.exports = async (job) => {
     const { email, userId } = job.data;
     const jwt = encode({ userId, email, expiresAt: Date.now() + 1000 * 60 * 60 * 24 });
     const link = `${getAppUrl()}/auth?token=${jwt}`;
 
-    if (!isSendgridEnabled())
-        throw new Error('Sendgrid has not been enabled.');
+    if (!isMailgunEnabled())
+        throw new Error('Mailgun has not been enabled.');
 
-    sgMail.setApiKey(getSendgridApiKey());
+    const mailgun = new Mailgun(formData);
 
-    return sgMail.send({
+    const mg = mailgun.client({ username: 'api', key: getMailGunApiKey() });
+
+    return mg.messages.create(getMailGunDomain(), {
         to: email,
-        from: getSendgridSender(),
+        from: getMailGunSender(),
         subject: 'Reset your password',
         text: `Click on this link to reset your password: ${link}`,
         html: `<p>Click on this link to reset your password: <a href="${link}">${link}</a></p>`
