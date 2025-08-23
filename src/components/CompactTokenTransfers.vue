@@ -35,7 +35,10 @@
             
             <span class="mx-1 font-weight-medium">For</span>
             
-            <span>
+            <span v-if="transfer.tokenId">
+              token ID <router-link class="text-decoration-none" :to="`/address/${transfer.token}/${transfer.tokenId}`">{{ transfer.tokenId }}</router-link> of
+            </span>
+            <span v-else>
               {{ $fromWei(transfer.amount, decimals[transfer.token], ' ', unformatted) }}
             </span>
             
@@ -52,13 +55,13 @@
                 <span v-if="transfer.contract?.tokenSymbol && transfer.contract.tokenSymbol !== transfer.contract.tokenName" class="text-medium-emphasis">({{ transfer.contract.tokenSymbol }})</span>
               </template>
               <template v-else>
-                (<Hash-Link
+               <Hash-Link
                   :type="'address'"
                   :hash="transfer.token"
                   :contract="transfer.contract"
                   :notCopiable="!!transfer.contract?.name"
                   :truncate="true"
-                />)
+                />
               </template>
             </span>
           </span>
