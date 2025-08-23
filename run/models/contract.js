@@ -574,7 +574,10 @@ module.exports = (sequelize, DataTypes) => {
                 afterCreateFn();
         },
 
-        afterSave(contract) {
+        async afterSave(contract) {
+            if (contract._changed.has('abi'))
+                await enqueue('processContract', `processContract-${contract.id}`, { contractId: contract.id });
+
             trigger(`private-contracts;workspace=${contract.workspaceId}`, 'new', null);
             trigger(`private-transactions;workspace=${contract.workspaceId};address=${contract.address}`, 'new', null);
 

@@ -1,4 +1,3 @@
-
 const stripBytecodeMetadata = (baseBytecode, includedBytecodes) => {
     let baseBytecodeCopy = baseBytecode;
     for (let i = 0; i < includedBytecodes.length; i++) {
