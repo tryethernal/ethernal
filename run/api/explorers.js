@@ -161,6 +161,16 @@ router.post('/:id/startTrial', authMiddleware, async (req, res, next) => {
     }
 });
 
+router.post('/startSafeBlockListeners', secretMiddleware, async (req, res, next) => {
+    try {
+        await enqueue('safeBlockListenerCheck', 'safeBlockListenerCheck', {});
+
+        res.sendStatus(200);
+    } catch(error) {
+        unmanagedError(error, req, next);
+    }
+});
+
 router.post('/syncExplorers', secretMiddleware, async (req, res, next) => {
     try {
         const explorers = await Explorer.findAll();

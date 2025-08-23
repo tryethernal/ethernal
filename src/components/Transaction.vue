@@ -1,6 +1,6 @@
 <template>
     <v-container fluid>
-        <h2 class="text-h5 font-weight-medium">Transaction Details</h2>
+        <h2 class="text-h6 font-weight-medium">Transaction Details</h2>
         <v-divider class="my-4"></v-divider>
         <template v-if="loading">
             <v-card>

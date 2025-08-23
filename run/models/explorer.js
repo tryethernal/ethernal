@@ -86,6 +86,11 @@ module.exports = (sequelize, DataTypes) => {
                             model: sequelize.models.CustomField,
                             as: 'functions',
                             attributes: ['function']
+                        },
+                        {
+                            model: sequelize.models.OrbitChainConfig,
+                            as: 'orbitConfig',
+                            attributes: ['parentChainExplorer']
                         }
                     ]
                 },
@@ -148,6 +153,11 @@ module.exports = (sequelize, DataTypes) => {
                                     model: sequelize.models.CustomField,
                                     as: 'functions',
                                     attributes: ['function']
+                                },
+                                {
+                                    model: sequelize.models.OrbitChainConfig,
+                                    as: 'orbitConfig',
+                                    attributes: ['parentChainExplorer']
                                 }
                             ]
                         },
@@ -201,7 +211,24 @@ module.exports = (sequelize, DataTypes) => {
                             'id', 'name', 'storageEnabled', 'defaultAccount', 'gasPrice', 'gasLimit', 'erc721LoadingEnabled', 'statusPageEnabled', 'public',
                             [sequelize.literal('CASE WHEN tracing IS NOT NULL THEN true ELSE false END'), 'tracing']
                         ],
-                        as: 'workspace'
+                        as: 'workspace',
+                        include: [
+                            {
+                                model: sequelize.models.CustomField,
+                                as: 'packages',
+                                attributes: ['function']
+                            },
+                            {
+                                model: sequelize.models.CustomField,
+                                as: 'functions',
+                                attributes: ['function']
+                            },
+                            {
+                                model: sequelize.models.OrbitChainConfig,
+                                as: 'orbitConfig',
+                                attributes: ['parentChainExplorer']
+                            }
+                        ]
                     },
                     {
                         model: sequelize.models.ExplorerFaucet,

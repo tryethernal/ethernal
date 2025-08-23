@@ -67,6 +67,13 @@ class PM2 {
         const resource = `${this.host}/processes/${slug}/delete?secret=${this.secret}`
         return withTimeout(axios.post(resource));
     }
+
+    startSafeBlockListener(slug, workspaceId) {
+        if (!slug || !workspaceId) throw new Error('Missing parameter');
+
+        const resource = `${this.host}/safe-block-listener?secret=${this.secret}`;
+        return withTimeout(axios.post(resource, { slug, workspaceId }));
+    }
 }
 
 module.exports = PM2;

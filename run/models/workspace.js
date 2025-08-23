@@ -42,6 +42,7 @@ module.exports = (sequelize, DataTypes) => {
       Workspace.hasMany(models.OrbitTransactionState, { foreignKey: 'workspaceId', as: 'orbitTransactionStates' });
       Workspace.hasMany(models.OrbitBatch, { foreignKey: 'workspaceId', as: 'orbitBatches' });
       Workspace.hasMany(models.OrbitChainConfig, { foreignKey: 'parentWorkspaceId', as: 'orbitChildConfigs' });
+      Workspace.hasMany(models.OrbitChainConfigWorkspace, { foreignKey: 'workspaceId', as: 'orbitChainConfigWorkspaces' });
     }
 
     static findPublicWorkspaceById(id) {
@@ -98,6 +99,13 @@ module.exports = (sequelize, DataTypes) => {
         return new ProviderConnector(this.rpcServer);
     }
 
+    async isOrbitParent() {
+        const childConfigs = await this.getOrbitChildConfigs();
+        const parentConfig = await this.getOrbitConfig();
+
+        return childConfigs.length > 0 && parentConfig;
+    }
+
     async safeCreateOrbitBatch(batch, transaction) {
         const [createdBatch] = await sequelize.models.OrbitBatch.bulkCreate([batch], {
             ignoreDuplicates: true,
@@ -125,15 +133,54 @@ module.exports = (sequelize, DataTypes) => {
 
     async getFilteredOrbitBatches(page = 1, itemsPerPage = 10, order = 'DESC') {
         const sanitizedOrder = ['asc', 'desc'].includes(order.toLowerCase()) ? order.toLowerCase() : 'desc';
+        const offset = (page - 1) * itemsPerPage;
 
-        return sequelize.models.OrbitBatch.findAndCountAll({
-            where: {
-                workspaceId: this.id
-            },
-            order: [['batchSequenceNumber', sanitizedOrder]],
-            limit: itemsPerPage,
-            offset: (page - 1) * itemsPerPage
-        });
+        const [rows, countResult] = await Promise.all([
+            sequelize.query(`
+                SELECT 
+                    ob.id,
+                    ob."confirmationStatus",
+                    ob."batchSequenceNumber",
+                    ob."parentChainBlockNumber",
+                    ob."parentChainTxHash",
+                    ob."postedAt",
+                    COALESCE(tc.count, 0)::integer AS "transactionCount"
+                FROM orbit_batches ob
+                LEFT JOIN LATERAL (
+                    SELECT COUNT(*) AS count
+                    FROM blocks b
+                    JOIN transactions t ON t."blockId" = b.id
+                    WHERE b."orbitBatchId" = ob.id
+                ) tc ON true
+                WHERE ob."workspaceId" = :workspaceId
+                ORDER BY ob."batchSequenceNumber" ${sanitizedOrder}
+                LIMIT :limit OFFSET :offset;
+
+            `, {
+                replacements: {
+                    workspaceId: this.id,
+                    limit: itemsPerPage,
+                    offset: offset
+                },
+                type: sequelize.QueryTypes.SELECT,
+                logging: console.log
+            }),
+            sequelize.query(`
+                SELECT COUNT(*)::integer as count
+                FROM orbit_batches ob
+                WHERE ob."workspaceId" = :workspaceId
+            `, {
+                replacements: {
+                    workspaceId: this.id
+                },
+                type: sequelize.QueryTypes.SELECT
+            })
+        ]);
+
+        return {
+            rows: rows,
+            count: countResult[0].count
+        };
     }
 
     /**
@@ -2505,9 +2552,12 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    getFilteredTransactions(page = 1, itemsPerPage = 10, order = 'DESC', orderBy = 'blockNumber', address) {
-        const where = address ? { [Op.or]: [{ to: address.toLowerCase() }, { from: address.toLowerCase() }] } : {};
-        return this.getTransactions({
+    async getFilteredTransactions(page = 1, itemsPerPage = 10, order = 'DESC', orderBy = 'blockNumber', address) {
+        let where = {};
+        if (address)
+            where = { [Op.or]: [{ to: address.toLowerCase() }, { from: address.toLowerCase() }] };
+
+        const res = await this.getTransactions({
             where: where,
             offset: (page - 1) * itemsPerPage,
             limit: itemsPerPage,
@@ -2545,6 +2595,10 @@ module.exports = (sequelize, DataTypes) => {
                 }
             ]
         });
+
+        console.log(res.length)
+
+        return res;
     }
 
     async canCreateContract() {
@@ -2641,6 +2695,24 @@ module.exports = (sequelize, DataTypes) => {
                     returning: true,
                     transaction: sequelizeTransaction
                 });
+
+                const orbitConfig = await sequelize.models.OrbitChainConfig.findOne({ where: { workspaceId: this.id } });
+                if (orbitConfig) {
+                    const orbitBatch = await sequelize.models.OrbitBatch.findOne({
+                        where: {
+                            workspaceId: this.id,
+                            prevMessageCount: { [Op.lte]: block.number },
+                            newMessageCount: { [Op.gt]: block.number }
+                        }
+                    });
+
+                    if (orbitBatch) {
+                        await orbitBatch.safeUpdateBlocks({
+                            parentMessageCountShift: orbitConfig.parentMessageCountShift,
+                            transaction: sequelizeTransaction
+                        });
+                    }
+                }
 
                 return { ...createdBlock, transactions: storedTransactions };
             } catch(error) {
@@ -2983,17 +3055,22 @@ module.exports = (sequelize, DataTypes) => {
 
     async findTransaction(hash) {
         const blockAttributes = ['gasLimit', 'timestamp', 'baseFeePerGas'];
-        const explorer = await this.getExplorer({
-            include: {
-                model: sequelize.models.StripeSubscription,
-                as: 'stripeSubscription',
-                include: 'stripePlan'
-            }
-        });
+        const blockInclude = [];
 
-        if (explorer && await explorer.canUseCapability('l1Explorer')) {
-            blockAttributes.push('l1BlockNumber')
-        };
+        const orbitConfig = await this.getOrbitConfig();
+        if (orbitConfig) {
+            blockAttributes.push('orbitStatus');
+            blockInclude.push({
+                model: sequelize.models.OrbitBatch,
+                as: 'orbitBatch',
+                attributes: ['batchSequenceNumber', 'confirmationStatus', 'parentChainTxHash'],
+                include: {
+                    model: sequelize.models.OrbitNode,
+                    as: 'orbitNode',
+                    attributes: ['id']
+                }
+            });
+        }
 
         const transactions = await this.getTransactions({
             where: {
@@ -3058,7 +3135,8 @@ module.exports = (sequelize, DataTypes) => {
                 {
                     model: sequelize.models.Block,
                     attributes: blockAttributes,
-                    as: 'block'
+                    as: 'block',
+                    include: blockInclude
                 },
                 {
                     model: sequelize.models.Contract,

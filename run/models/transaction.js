@@ -265,12 +265,17 @@ module.exports = (sequelize, DataTypes) => {
                                     parentChainBlockNumber: receipt.blockNumber,
                                     parentChainTxHash: this.hash,
                                     postedAt: this.timestamp,
+                                    confirmationStatus: orbitChildConfig.topParentChainBlockValidationType == 'LATEST' ? 'finalized' : 'pending',
                                     ...getOrbitBatchDeliveredData(log, this)
                                 };
                                 logger.info(`Processing orbit batch ${batchDeliveredData.batchSequenceNumber} delivered log for transaction ${this.hash}`);
                                 const [createdBatch] = await sequelize.models.OrbitBatch.bulkCreate([batchDeliveredData], {
                                     ignoreDuplicates: true,
                                     returning: true,
+                                    transaction
+                                });
+                                await createdBatch.safeUpdateBlocks({
+                                    parentMessageCountShift: orbitChildConfig.parentMessageCountShift,
                                     transaction
                                 });
                                 logger.info(`Created batch ${createdBatch.id} for transaction ${this.hash}`);
@@ -549,19 +554,6 @@ module.exports = (sequelize, DataTypes) => {
         if (this.to)
             trigger(`private-transactions;workspace=${this.workspaceId};address=${this.to}`, 'new', data);
         
-        // Check if this is an orbit transaction and enqueue processing
-        try {
-            const isOrbit = await this.isOrbitTransaction();
-            if (isOrbit) {
-                await enqueue('processOrbitTransaction', `processOrbitTransaction-${this.id}`, {
-                    transactionId: this.id
-                });
-            }
-        } catch (error) {
-            // Log error but don't fail the transaction creation
-            console.error(`Failed to enqueue orbit processing for transaction ${this.hash}:`, error);
-        }
-
         return trigger(`private-transactions;workspace=${this.workspaceId};address=${this.from}`, 'new', data);
     };
 

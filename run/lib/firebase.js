@@ -32,6 +32,130 @@ const StripeQuotaExtension = models.StripeQuotaExtension;
 const ExplorerFaucet = models.ExplorerFaucet;
 const ExplorerV2Dex = models.ExplorerV2Dex;
 const V2DexPair = models.V2DexPair;
+const OrbitBatch = models.OrbitBatch;
+const OrbitConfig = models.OrbitChainConfig;
+
+/**
+ * Retrieves a list of transactions for a specific batch
+ * @param {string} workspaceId - The workspace id
+ * @param {number} batchNumber - The batch number
+ * @param {number} page - The page number
+ * @param {number} itemsPerPage - The number of items per page
+ * @param {string} order - The order to sort by
+ * @param {string} orderBy - The field to order by
+ * @returns {Promise<Array>} - A list of orbit batch transactions
+ */
+const getWorkspaceOrbitBatchTransactions = async (workspaceId, batchNumber, page, itemsPerPage, order, orderBy, address) => {
+    if (!workspaceId || !batchNumber)
+        throw new Error('Missing parameter');
+    
+    const batch = await OrbitBatch.findOne({
+        where: {
+            workspaceId,
+            batchSequenceNumber: batchNumber
+        }
+    });
+    
+    if (!batch)
+        throw new Error('Could not find batch');
+
+    const total = await batch.countTransactions();
+    const items = await batch.getFilteredTransactions(page, itemsPerPage, order, orderBy, address);
+
+    return {
+        total,
+        items
+    };
+};
+
+/**
+ * Retrieves a list of blocks for a specific batch
+ * @param {string} workspaceId - The workspace id
+ * @param {number} batchNumber - The batch number
+ * @param {number} page - The page number
+ * @param {number} itemsPerPage - The number of items per page
+ * @param {string} order - The order to sort by
+ * @returns {Promise<Array>} - A list of orbit batch blocks
+ */
+const getOrbitBatchBlocks = async (workspaceId, batchNumber, page, itemsPerPage, order) => {
+    if (!workspaceId || !batchNumber)
+        throw new Error('Missing parameter');
+
+    const batch = await OrbitBatch.findOne({
+        where: {
+            workspaceId,
+            batchSequenceNumber: batchNumber
+        }
+    });
+
+    if (!batch)
+        throw new Error('Could not find batch');
+
+    return batch.getFilteredBlocks(page, itemsPerPage, order);
+};
+
+/**
+ * Retrieves an orbit batch by its sequence number for a workspace
+ * @param {string} workspaceId - The workspace id
+ * @param {number} batchNumber - The batch number
+ * @returns {Promise<Object>} - The orbit batch
+ */
+const getOrbitBatch = async (workspaceId, batchNumber) => {
+    if (!workspaceId || !batchNumber)
+        throw new Error('Missing parameter');
+
+    const batch = await OrbitBatch.findOne({
+        where: {
+            workspaceId,
+            batchSequenceNumber: batchNumber
+        },
+        attributes: [
+            'id',
+            'batchSequenceNumber',
+            'postedAt',
+            'confirmationStatus',
+            'parentChainBlockNumber',
+            'parentChainTxHash',
+            'beforeAcc',
+            'afterAcc',
+            [Sequelize.literal(`
+                (
+                    SELECT COUNT(t.id)
+                    FROM orbit_batches ob
+                    JOIN blocks b ON b."orbitBatchId" = ob.id
+                    JOIN transactions t ON t."blockId" = b.id
+                    WHERE ob."batchSequenceNumber" = ${Number(batchNumber)}
+                    AND ob."workspaceId" = ${Number(workspaceId)}
+                )::int
+            `), 'transactionCount'],
+            [Sequelize.literal(`
+                (
+                    SELECT COUNT(*)
+                    FROM orbit_batches ob
+                    JOIN blocks b ON b."orbitBatchId" = ob.id
+                    WHERE ob."batchSequenceNumber" = ${Number(batchNumber)}
+                    AND ob."workspaceId" = ${Number(workspaceId)}
+                )::int
+            `), 'blockCount']
+        ]
+    });
+
+    if (!batch)
+        throw new Error('Could not find batch');
+
+    return batch.toJSON();
+};
+
+const getWorkspaceByIdWithOrbitConfig = async (workspaceId) => {
+    if (!workspaceId)
+        throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId, {
+        include: 'orbitConfig'
+    });
+
+    return workspace.toJSON();
+};
 
 /**
  * Retrieves a list of orbit batches for a workspace
@@ -2414,20 +2538,20 @@ const getWorkspaceContractById = async (workspaceId, contractId) => {
 };
 
 const getWorkspaceBlock = async (workspaceId, number) => {
-    const workspace = await Workspace.findByPk(workspaceId, {
-        include: {
-            model: Explorer,
-            as: 'explorer',
-            include: {
-                model: StripeSubscription,
-                as: 'stripeSubscription',
-                include: 'stripePlan'
-            }
-        }
-    });
-
     const attributes = [
-        'id', 'number', 'timestamp', 'baseFeePerGas', 'gasUsed', 'transactionsCount', 'gasLimit', 'hash', 'miner', 'extraData', 'difficulty', 'raw', 'parentHash',
+        'id',
+        'number',
+        'timestamp',
+        'baseFeePerGas',
+        'gasUsed',
+        'transactionsCount',
+        'gasLimit',
+        'hash',
+        'miner',
+        'extraData',
+        'difficulty',
+        'raw',
+        'parentHash',
         [
             Sequelize.literal(`(
                 SELECT COUNT(*)::INTEGER
@@ -2438,16 +2562,27 @@ const getWorkspaceBlock = async (workspaceId, number) => {
         ]
     ];
 
-    if (workspace.explorer)
-        if (await workspace.explorer.canUseCapability('l1Explorer'))
-            attributes.push('l1BlockNumber');
+    const orbitConfig = await OrbitChainConfig.findOne({ where: { workspaceId } });
+    if (orbitConfig)
+        attributes.push('orbitStatus');
 
     const block = await Block.findOne({
         where: { number, workspaceId },
-        attributes
+        attributes, 
+        include: {
+            model: OrbitBatch,
+            as: 'orbitBatch',
+            attributes: [
+                'id',
+                'batchSequenceNumber',
+                'confirmationStatus',
+                'parentChainTxHash',
+                'parentChainBlockNumber'
+            ]
+        }
     });
 
-    return block ? block.toJSON() : null;
+    return block.toJSON();
 };
 
 const getWorkspaceBlocks = async (workspaceId, page = 1, itemsPerPage = 10, order = 'DESC') => {
@@ -3172,5 +3307,9 @@ module.exports = {
     isValidExplorerDomain: isValidExplorerDomain,
     getImportedAccounts: getImportedAccounts,
     getFilteredNativeAccounts: getFilteredNativeAccounts,
-    getWorkspaceOrbitBatches: getWorkspaceOrbitBatches
+    getWorkspaceOrbitBatches: getWorkspaceOrbitBatches,
+    getWorkspaceByIdWithOrbitConfig: getWorkspaceByIdWithOrbitConfig,
+    getOrbitBatch: getOrbitBatch,
+    getOrbitBatchBlocks: getOrbitBatchBlocks,
+    getWorkspaceOrbitBatchTransactions: getWorkspaceOrbitBatchTransactions
 };

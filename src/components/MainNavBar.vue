@@ -114,7 +114,7 @@
                 </v-list-group>
 
                 <!-- Orbit Section -->
-                <v-list-group value="orbit" v-if="currentWorkspaceStore.orbitConfig">
+                <v-list-group value="orbit">
                     <template v-slot:activator="{ props }">
                         <v-list-item
                             v-bind="props"
@@ -332,7 +332,6 @@
 
                     <!-- Orbit Menu -->
                     <v-menu 
-                        v-if="currentWorkspaceStore.orbitConfig"
                         v-model="orbitMenuOpen"
                         open-on-hover 
                         :open-delay="0" 

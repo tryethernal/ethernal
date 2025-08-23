@@ -21,6 +21,20 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
+    async getTopParentWorkspace() {
+      let parentWorkspaceId = this.parentWorkspaceId;
+      let parentWorkspace = await sequelize.models.Workspace.findByPk(parentWorkspaceId, { include: 'orbitConfig' });
+      while (parentWorkspaceId) {
+        parentWorkspace = await sequelize.models.Workspace.findByPk(parentWorkspaceId, { include: 'orbitConfig' });
+        if (!parentWorkspace.orbitConfig)
+          parentWorkspaceId = null;
+        else
+          parentWorkspaceId = parentWorkspace.orbitConfig.parentWorkspaceId;
+      }
+
+      return parentWorkspace;
+    }
+
     /**
      * Get parent chain provider for infrastructure contract validation
      */
@@ -77,7 +91,7 @@ module.exports = (sequelize, DataTypes) => {
               validationResults[contract.name] = {
                 address: contract.address,
                 hasCode: false,
-                error: `No contract found at address`
+                error: 'No contract found at address'
               };
               throw new Error(`No contract found at ${contract.name} address: ${contract.address} on parent chain`);
             } else {
@@ -303,14 +317,29 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     parentChainType: {
-      type: DataTypes.ENUM('ARBITRUM'),
+      type: DataTypes.ENUM('ARBITRUM', 'ETHEREUM'),
       allowNull: true,
-      defaultValue: null
+      defaultValue: 'ETHEREUM'
     },
     chainType: {
       type: DataTypes.ENUM('ROLLUP', 'ANYTRUST'),
       allowNull: false,
       defaultValue: 'ROLLUP'
+    },
+    topParentChainBlockValidationType: {
+      type: DataTypes.ENUM('LATEST', 'SAFE', 'FINALIZED'),
+      allowNull: false,
+      defaultValue: 'LATEST'
+    },
+    parentMessageCountShift: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
+    },
+    parentChainExplorer: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: 'https://etherscan.io'
     }
   }, {
     sequelize,

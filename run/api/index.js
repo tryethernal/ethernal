@@ -50,7 +50,7 @@ router.use('/transactionTraceSteps', transactionTraceSteps);
 router.use('/caddy', caddy);
 router.use('/orbit', orbit);
 router.use('/orbit', orbitHealth);
-router.use('/orbit', orbitBatches);
+router.use('/orbitBatches', orbitBatches);
 
 if (isDemoEnabled()) {
     const demo = require('./demo');

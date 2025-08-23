@@ -10,12 +10,21 @@ module.exports = (sequelize, DataTypes) => {
   }
 
   OrbitBatchBlock.init({
-    blockId: DataTypes.INTEGER,
-    batchId: DataTypes.INTEGER,
+    blockId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true
+    },
+    batchId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true
+    },
   }, {
     sequelize,
     modelName: 'OrbitBatchBlock',
-    tableName: 'orbit_batch_block'
+    tableName: 'orbit_batch_block',
+    timestamps: false
   });
 
   return OrbitBatchBlock;

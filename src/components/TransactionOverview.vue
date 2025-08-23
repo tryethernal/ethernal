@@ -60,6 +60,18 @@
             </v-list-item-title>
           </v-list-item>
 
+          <v-list-item v-if="transaction.block.orbitStatus" class="d-flex flex-column flex-sm-row">
+            <template v-slot:prepend>
+              <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">
+                <v-icon size="small" color="grey" class="mr-1" v-tooltip="'Transaction lifecycle status on L1'">mdi-help-circle-outline</v-icon>
+                L1 Status:
+              </div>
+            </template>
+            <v-list-item-title class="text-body-2">
+              <OrbitBlockStatus :status="transaction.block.orbitStatus" />
+            </v-list-item-title>
+          </v-list-item>
+
           <!-- Block -->
           <v-list-item class="d-flex flex-column flex-sm-row">
             <template v-slot:prepend>
@@ -76,6 +88,18 @@
                   {{ commify(currentWorkspaceStore.currentBlock.number - transaction.blockNumber) }} Block Confirmations
                 </v-chip>
               </span>
+            </v-list-item-title>
+          </v-list-item>
+
+          <v-list-item v-if="transaction.block.orbitBatch" class="d-flex flex-column flex-sm-row">
+            <template v-slot:prepend>
+              <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">
+                <v-icon size="small" color="grey" class="mr-1" v-tooltip="'Index of the batch containing this transaction'">mdi-help-circle-outline</v-icon>
+                Batch:
+              </div>
+            </template>
+            <v-list-item-title class="text-body-2">
+              <router-link class="text-decoration-none" :to="`/batch/${transaction.block.orbitBatch.batchSequenceNumber}`">{{ Number(transaction.block.orbitBatch.batchSequenceNumber).toLocaleString() }}</router-link>
             </v-list-item-title>
           </v-list-item>
 
@@ -98,7 +122,7 @@
           </v-list-item>
 
           <!-- Divider before ad -->
-          <v-divider class="mx-4"></v-divider>
+          <v-divider class="mx-4 mb-2"></v-divider>
 
           <template v-if="currentWorkspaceStore.displayAds">
             <!-- Ad Banner -->
@@ -115,7 +139,7 @@
             </v-list-item>
 
             <!-- Divider after ad -->
-            <v-divider class="mx-4"></v-divider>
+            <v-divider class="mx-4 mb-2"></v-divider>
           </template>
 
           <!-- Token Transfers Section (if any) -->
@@ -140,7 +164,7 @@
                 </div>
               </v-list-item-title>
             </v-list-item>
-            <v-divider class="mx-4"></v-divider>
+            <v-divider class="mx-4 mb-2"></v-divider>
           </template>
 
           <!-- From -->
@@ -184,7 +208,26 @@
           </v-list-item>
 
           <!-- Custom divider -->
-          <v-divider class="mx-4"></v-divider>
+          <v-divider class="mx-4 mb-2"></v-divider>
+
+          <template v-if="transaction.block.orbitBatch && transaction.block.orbitBatch.confirmationStatus == 'confirmed'">
+            <v-list-item class="d-flex flex-column flex-sm-row">
+              <template v-slot:prepend>
+                <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">
+                  <v-icon size="small" color="grey" class="mr-1" v-tooltip="'L1 transaction containing this batch commitment'">mdi-help-circle-outline</v-icon>
+                  Commitment tx
+                </div>
+              </template>
+              <v-list-item-title class="text-body-2">
+                <a class="text-decoration-none" :href="`${currentWorkspaceStore.orbitConfig.parentChainExplorer}/tx/${transaction.block.orbitBatch.parentChainTxHash}`" target="_blank">
+                  {{ transaction.block.orbitBatch.parentChainTxHash }}
+                  <v-icon size="x-small" color="primary" class="pb-1">mdi-open-in-new</v-icon>
+                </a>
+              </v-list-item-title>
+            </v-list-item>
+
+            <v-divider class="mx-4"></v-divider>
+          </template>
 
           <!-- Value -->
           <v-list-item class="d-flex flex-column flex-sm-row">
@@ -414,6 +457,7 @@ import TransactionFunctionCall from './TransactionFunctionCall.vue';
 import ExpandableText from './ExpandableText.vue';
 import AdBanner from './AdBanner.vue';
 import MethodDetailsChip from './MethodDetailsChip.vue';
+import OrbitBlockStatus from './OrbitBlockStatus.vue';
 
 const props = defineProps({
   transaction: {
@@ -534,10 +578,6 @@ const getTxnTypeName = (type) => txTypeNames[type] || 'Unknown';
 
 .transaction-list :deep(.text-subtitle-2) {
   color: rgba(var(--v-theme-on-surface), 0.7);
-}
-
-.transaction-list :deep(.v-divider) {
-  border-color: rgba(var(--v-theme-on-surface), 0.12);
 }
 
 .transaction-function-call :deep(.v-card) {

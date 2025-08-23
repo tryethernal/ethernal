@@ -5,6 +5,7 @@ module.exports = (sequelize, DataTypes) => {
   class OrbitNode extends Model {
     static associate(models) {
       OrbitNode.belongsTo(models.Workspace, { foreignKey: 'workspaceId', as: 'workspace' });
+      OrbitNode.hasMany(models.OrbitBatch, { foreignKey: 'orbitNodeId', as: 'batches' });
     }
 
     async confirm({ confirmedBlockHash, confirmedSendRoot }, transaction) {
@@ -28,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
       });
 
       for (const batch of confirmedBatches) {
-        await batch.confirm(transaction);
+        await batch.finalize(transaction);
       }
 
       return this.update({ confirmed: true, confirmedBlockHash, confirmedSendRoot }, { transaction });

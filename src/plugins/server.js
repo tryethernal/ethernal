@@ -419,13 +419,33 @@ export default {
                 return axios.get(resource, { params });
             },
 
+            getOrbitBatchTransactions(batchNumber, options) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    ...options
+                };
+                const resource = `${envStore.apiRoot}/api/orbitBatches/${batchNumber}/transactions`;
+                return axios.get(resource, { params });
+            },
+
+            getOrbitBatchBlocks(options) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    ...options
+                };
+                const resource = `${envStore.apiRoot}/api/orbitBatches/${options.batchNumber}/blocks`;
+                return axios.get(resource, { params });
+            },
+
             getOrbitBatches(options) {
                 const params = {
                     firebaseUserId: firebaseUserId.value,
                     workspace: workspace.value,
                     ...options
                 };
-                const resource = `${envStore.apiRoot}/api/orbit/batches`;
+                const resource = `${envStore.apiRoot}/api/orbitBatches`;
                 return axios.get(resource, { params });
             },
 
@@ -434,7 +454,7 @@ export default {
                     firebaseUserId: firebaseUserId.value,
                     workspace: workspace.value
                 };
-                const resource = `${envStore.apiRoot}/api/orbit/batches/${batchNumber}`;
+                const resource = `${envStore.apiRoot}/api/orbitBatches/${batchNumber}`;
                 return axios.get(resource, { params });
             },
 

@@ -29,8 +29,8 @@ import WorkspaceNFTTransfer from '../components/WorkspaceNFTTransfer.vue';
 import TokenContract from '../components/TokenContract.vue';
 import VerifiedContracts from '@/components/VerifiedContracts.vue'
 import AccountList from '@/components/AccountList.vue'
-import OrbitBatches from '@/views/OrbitBatches.vue'
-import OrbitBatchDetail from '@/views/OrbitBatchDetail.vue'
+import OrbitBatches from '@/components/OrbitBatches.vue'
+import OrbitBatchDetail from '@/components/OrbitBatchDetail.vue'
 
 import { useEnvStore } from '../stores/env';
 

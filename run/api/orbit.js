@@ -411,11 +411,6 @@ router.post('/transaction/:hash/process', authMiddleware, orbitExpensiveLimiter,
             return managedError(new Error('Transaction not found'), req, res);
         }
 
-        // Enqueue processing job
-        await enqueue('processOrbitTransaction', `processOrbitTransaction-${transaction.id}`, {
-            transactionId: transaction.id
-        });
-
         res.json({
             message: 'Orbit transaction processing queued',
             transactionHash: hash,

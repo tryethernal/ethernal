@@ -1,19 +1,203 @@
 'use strict';
 const { Model } = require('sequelize');
+const { Op } = require('sequelize');
+const logger = require('../lib/logger');
+const { getTransactionMethodDetails } = require('../lib/abi');
 
 module.exports = (sequelize, DataTypes) => {
     class OrbitBatch extends Model {
         static associate(models) {
-            OrbitBatch.belongsTo(models.Workspace, {
-                foreignKey: 'workspaceId',
-                as: 'workspace'
-            });
-            
-            // Note: batchSequenceNumber is stored in stateData JSON, not as a separate column
-            // We handle the relationship to OrbitTransactionState manually when needed
+            OrbitBatch.belongsTo(models.Workspace, { foreignKey: 'workspaceId', as: 'workspace' });
+            OrbitBatch.hasMany(models.Block, { foreignKey: 'orbitBatchId', as: 'blocks' });
+            OrbitBatch.belongsTo(models.OrbitNode, { foreignKey: 'orbitNodeId', as: 'orbitNode' });
         }
 
-        confirm(transaction) {
+        async countTransactions() {
+            const result = await sequelize.query(`
+                SELECT COUNT(*)::integer
+                FROM transactions t
+                JOIN blocks b ON t."blockId" = b.id
+                JOIN orbit_batches ob ON ob.id = b."orbitBatchId"
+                WHERE ob."batchSequenceNumber" = :batchSequenceNumber
+                AND ob."workspaceId" = :workspaceId;
+            `, {
+                replacements: {
+                    batchSequenceNumber: this.batchSequenceNumber,
+                    workspaceId: this.workspaceId
+                },
+                type: sequelize.QueryTypes.SELECT
+            });
+
+            return result[0].count;
+        }
+
+        async getFilteredTransactions(page = 1, itemsPerPage = 10, order = 'DESC', orderBy = 'blockNumber') {
+            const result = await sequelize.query(`
+                WITH batch_blocks AS (
+                    SELECT 
+                        b.id AS "blockId",
+                        (ob."prevMessageCount" + oc."parentMessageCountShift") AS startBlock,
+                        (ob."newMessageCount" + oc."parentMessageCountShift" - 1) AS endBlock
+                    FROM blocks b
+                    JOIN orbit_batches ob ON ob.id = b."orbitBatchId"
+                    JOIN orbit_chain_configs oc ON oc."workspaceId" = ob."workspaceId"
+                    WHERE b."orbitBatchId" = :batchId
+                ),
+                block_range AS (
+                    SELECT 
+                        MIN(startBlock) AS minBlock, 
+                        MAX(endBlock) AS maxBlock
+                    FROM batch_blocks
+                ),
+                paginated_transactions AS (
+                    SELECT t.*
+                    FROM transactions t
+                    JOIN batch_blocks bb ON bb."blockId" = t."blockId"
+                    CROSS JOIN block_range
+                    WHERE t."blockNumber" BETWEEN block_range.minBlock AND block_range.maxBlock
+                    ORDER BY t."blockNumber" ${order}
+                    LIMIT :itemsPerPage
+                    OFFSET :page
+                )
+                SELECT
+                    t."blockNumber" AS "transaction.blockNumber",
+                    t."from" AS "transaction.from",
+                    t."gasPrice" AS "transaction.gasPrice",
+                    t."hash" AS "transaction.hash",
+                    t."data" AS "transaction.data",
+                    t."timestamp" AS "transaction.timestamp",
+                    t."to" AS "transaction.to",
+                    t."value" AS "transaction.value",
+                    t."workspaceId" AS "transaction.workspaceId",
+                    t."state" AS "transaction.state",
+
+                    tr."gasUsed" AS "transaction.receipt.gasUsed",
+                    tr."status" AS "transaction.receipt.status",
+                    tr."contractAddress" AS "transaction.receipt.contractAddress",
+                    tr."raw"->>'root' AS "transaction.receipt.root",
+                    tr."cumulativeGasUsed" AS "transaction.receipt.cumulativeGasUsed",
+                    tr."raw"->>'effectiveGasPrice' AS "transaction.receipt.effectiveGasPrice",
+
+                    "createdContract"."address" AS "transaction.receipt.createdContract.address",
+                    "createdContract"."name" AS "transaction.receipt.createdContract.name",
+                    "createdContract"."tokenDecimals" AS "transaction.receipt.createdContract.tokenDecimals",
+                    "createdContract"."tokenName" AS "transaction.receipt.createdContract.tokenName",
+                    "createdContract"."tokenSymbol" AS "transaction.receipt.createdContract.tokenSymbol",
+                    "createdContract"."workspaceId" AS "transaction.receipt.createdContract.workspaceId",
+                    "createdContract"."patterns" AS "transaction.receipt.createdContract.patterns",
+
+                    "createdContractVerification"."createdAt" AS "transaction.receipt.contract.verification.createdAt",
+
+                    b."number" AS "transaction.block.number",
+
+                    c."name" AS "transaction.contract.name",
+                    c."tokenName" AS "transaction.contract.tokenName",
+                    c."tokenSymbol" AS "transaction.contract.tokenSymbol",
+                    c."abi" AS "transaction.contract.abi",
+
+                    cv."createdAt" AS "transaction.receipt.contract.verification.createdAt"
+                FROM paginated_transactions t
+                LEFT JOIN blocks b ON b."id" = t."blockId"
+                LEFT JOIN transaction_receipts tr ON tr."transactionId" = t.id
+                LEFT JOIN contracts "createdContract" 
+                    ON "createdContract"."address" = tr."contractAddress" 
+                AND "createdContract"."workspaceId" = tr."workspaceId"
+                LEFT JOIN contract_verifications "createdContractVerification" 
+                    ON "createdContractVerification"."contractId" = "createdContract"."id"
+                LEFT JOIN contracts c 
+                    ON c."address" = t."to" 
+                AND c."workspaceId" = t."workspaceId"
+                LEFT JOIN contract_verifications cv 
+                    ON cv."contractId" = c.id;
+            `, {
+                    replacements: {
+                        batchId: this.id,
+                        orderBy,
+                        order,
+                        itemsPerPage,
+                        page: (page - 1) * itemsPerPage
+                    },
+                    logging: console.log,
+                    type: sequelize.QueryTypes.SELECT,
+                    nest: true
+                }
+            );
+
+            const res = result.map(item => {
+                let transaction = item.transaction;
+                if (transaction && transaction.receipt && transaction.receipt.createdContract) {
+                    transaction.methodDetails = getTransactionMethodDetails({ data: transaction.data }, transaction.receipt.createdContract.abi);
+                }
+                else if (transaction && transaction.receipt && transaction.receipt.contract) {
+                    transaction.methodDetails = getTransactionMethodDetails({ data: transaction.data }, transaction.contract.abi);
+                }
+                return transaction;
+            });
+
+            return res;
+        }
+
+        getFilteredBlocks(page = 1, itemsPerPage = 10, order = 'DESC', orderBy = 'number') {
+            return sequelize.models.Block.findAndCountAll({
+                where: { orbitBatchId: this.id },
+                offset: (page - 1) * itemsPerPage,
+                limit: itemsPerPage,
+                order: [[orderBy, order]]
+            });
+        }
+
+        safeUpdateBlocks({ parentMessageCountShift, transaction }) {
+            const fromBlock = Number(this.prevMessageCount) + parentMessageCountShift;
+            const toBlock = Number(this.newMessageCount) + parentMessageCountShift - 1;
+            logger.info(`Updating blocks for batch #${this.batchSequenceNumber} (id: ${this.id}) from block ${fromBlock} to block ${toBlock}`);
+
+            return sequelize.models.Block.update(
+                { orbitBatchId: this.id },
+                { 
+                    where: {
+                        workspaceId: this.workspaceId,
+                        number: { [Op.between]: [fromBlock, toBlock] }
+                    }
+                },
+                { transaction }
+            );
+        }
+
+        async confirm(transaction) {
+
+            const _confirm = async (transaction) => {
+                const workspace = await this.getWorkspace();
+                const orbitConfig = await workspace.getOrbitConfig();
+
+                logger.info(`Finalizing batch ${this.batchSequenceNumber} on workspace ${workspace.name}`);
+
+                await this.update({ confirmationStatus: 'confirmed' }, { transaction });
+
+                const orbitChildConfigs = await workspace.getOrbitChildConfigs();
+                for (const orbitChildConfig of orbitChildConfigs) {
+                    const pendingBatches = await OrbitBatch.findAll({
+                        where: {
+                            workspaceId: orbitChildConfig.workspaceId,
+                            confirmationStatus: 'pending',
+                            parentChainBlockNumber: {
+                                [Op.lt]: Number(this.newMessageCount) + orbitConfig.parentMessageCountShift
+                            }
+                        }
+                    });
+
+                    for (const batch of pendingBatches) {
+                        await batch.confirm(transaction);
+                    }
+                }
+            }
+
+            if (transaction)
+                return _confirm(transaction);
+            else
+                return sequelize.transaction(_confirm);
+        }
+
+        finalize(transaction) {
             return this.update({
                 confirmationStatus: 'finalized',
             }, { transaction });

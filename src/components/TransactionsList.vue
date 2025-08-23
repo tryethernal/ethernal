@@ -91,7 +91,8 @@ const props = defineProps({
     blockNumber: String,
     address: String,
     withCount: Boolean,
-    totalCount: Number
+    totalCount: Number,
+    batchNumber: Number
 });
 const emit = defineEmits(['listUpdated']);
 
@@ -120,11 +121,7 @@ const getTransactions = ({ page, itemsPerPage, sortBy }) => {
 
     currentOptions.value = { page, itemsPerPage, sortBy };
 
-    const query = props.blockNumber ?
-        $server.getBlockTransactions(props.blockNumber, { page, itemsPerPage, orderBy: sortBy[0].key, order: sortBy[0].order }, !props.dense && !!props.withCount) :
-            props.address ?
-                $server.getAddressTransactions(props.address, { page, itemsPerPage, orderBy: sortBy[0].key, order: sortBy[0].order }, !props.dense && !!props.withCount) :
-                $server.getTransactions({ page, itemsPerPage, orderBy: sortBy[0].key, order: sortBy[0].order }, !props.dense && !!props.withCount);
+    const query = getQuery(page, itemsPerPage, sortBy);
 
     query.then(({ data }) => {
         transactions.value = data.items;
@@ -141,12 +138,21 @@ const getTransactions = ({ page, itemsPerPage, sortBy }) => {
     .finally(() => loading.value = false);
 };
 
+const getQuery = (page, itemsPerPage, sortBy) => {
+    if (props.blockNumber)
+        return $server.getBlockTransactions(props.blockNumber, { page, itemsPerPage, orderBy: sortBy[0].key, order: sortBy[0].order }, !props.dense && !!props.withCount);
+    else if (props.address)
+        return $server.getAddressTransactions(props.address, { page, itemsPerPage, orderBy: sortBy[0].key, order: sortBy[0].order }, !props.dense && !!props.withCount);
+    else if (props.batchNumber)
+        return $server.getOrbitBatchTransactions(props.batchNumber, { page, itemsPerPage, orderBy: sortBy[0].key, order: sortBy[0].order }, !props.dense && !!props.withCount);
+    else
+        return $server.getTransactions({ page, itemsPerPage, orderBy: sortBy[0].key, order: sortBy[0].order }, !props.dense && !!props.withCount);
+};
+
 const rowClasses = (item) => {
     if (item.state == 'syncing')
         return 'isSyncing'
 };
-
-
 
 const txStatus = (item) => {
     if (!item) return 'unknown';

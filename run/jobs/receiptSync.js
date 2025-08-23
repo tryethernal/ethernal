@@ -122,6 +122,8 @@ module.exports = async job => {
             receipt,
             Object.keys(TransactionReceipt.rawAttributes).concat(['logs']),
         );
+        console.log(receipt)
+        console.log(processedReceipt)
 
         processedReceipt.workspace = workspace;
 

@@ -11,6 +11,8 @@ module.exports = {
     receiptSync: require('./receiptSync'),
     removeStalledBlock: require('./removeStalledBlock'),
     increaseStripeBillingQuota: require('./increaseStripeBillingQuota'),
+    finalizePendingOrbitBatches: require('./finalizePendingOrbitBatches'),
+    startSafeBlockListener: require('./startSafeBlockListener'),
 
     // Medium Priority
     processContract: require('./processContract'),
@@ -41,9 +43,7 @@ module.exports = {
     deleteWorkspace: require('./deleteWorkspace'),
     queueMonitoring: require('./queueMonitoring'),
     blockSyncMonitoring: require('./blockSyncMonitoring'),
-    monitorOrbitBatches: require('./monitorOrbitBatches'),
-    discoverOrbitBatches: require('./discoverOrbitBatches'),
-    indexOrbitNodes: require('./indexOrbitNodes'),
     sendDiscordMessage: require('./sendDiscordMessage'),
-    backfillNativeTokenTransfers: require('./backfillNativeTokenTransfers')
+    backfillNativeTokenTransfers: require('./backfillNativeTokenTransfers'),
+    safeBlockListenerCheck: require('./safeBlockListenerCheck')
 };
