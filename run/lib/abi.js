@@ -8,6 +8,43 @@ const abis = {
 };
 const IUniswapV2Pair = require('./abis/IUniswapV2Pair.json')
 
+function hasFn(abi, name, inputs) {
+    return abi.some(
+      (item) =>
+        item.type === 'function' &&
+        item.name === name &&
+        JSON.stringify(item.inputs.map(i => i.type)) === JSON.stringify(inputs)
+    );
+}
+
+const detectStandard = (abi) => {
+    const isERC20 =
+      hasFn(abi, 'totalSupply', []) &&
+      hasFn(abi, 'balanceOf', ['address']) &&
+      hasFn(abi, 'transfer', ['address', 'uint256']) &&
+      hasFn(abi, 'approve', ['address', 'uint256']) &&
+      hasFn(abi, 'allowance', ['address', 'address']);
+  
+    const isERC721 =
+      hasFn(abi, 'balanceOf', ['address']) &&
+      hasFn(abi, 'ownerOf', ['uint256']) &&
+      hasFn(abi, 'approve', ['address', 'uint256']) &&
+      hasFn(abi, 'getApproved', ['uint256']) &&
+      hasFn(abi, 'setApprovalForAll', ['address', 'bool']) &&
+      hasFn(abi, 'isApprovedForAll', ['address', 'address']) &&
+      hasFn(abi, 'transferFrom', ['address', 'address', 'uint256']);
+  
+    const isERC1155 =
+      hasFn(abi, 'balanceOf', ['address', 'uint256']) &&
+      hasFn(abi, 'balanceOfBatch', ['address[]', 'uint256[]']) &&
+      hasFn(abi, 'setApprovalForAll', ['address', 'bool']) &&
+      hasFn(abi, 'isApprovedForAll', ['address', 'address']) &&
+      hasFn(abi, 'safeTransferFrom', ['address', 'address', 'uint256', 'uint256', 'bytes']) &&
+      hasFn(abi, 'safeBatchTransferFrom', ['address', 'address', 'uint256[]', 'uint256[]', 'bytes']);
+  
+    return { isERC20, isERC721, isERC1155 };
+}
+
 const getV2PoolReserves = (log) => {
     if (log.topics[0] == '0x1c411e9a96e071241c2f21f7726b17ae89e3cab4c78be50e062b03a9fffbbad1') {
         const decoded = decodeLog(log, IUniswapV2Pair);
@@ -138,5 +175,6 @@ module.exports = {
     getTokenTransfer: getTokenTransfer,
     getTransactionMethodDetails: getTransactionMethodDetails,
     findAbiForFunction: findAbiForFunction,
-    getV2PoolReserves: getV2PoolReserves
+    getV2PoolReserves: getV2PoolReserves,
+    detectStandard: detectStandard
 };
