@@ -83,13 +83,13 @@ describe(`POST ${BASE_URL}/sendResetPasswordEmail`, () => {
             });
     });
 
-    it('Should fail if mailgun is not enabled', (done) => {
-        jest.spyOn(flags, 'isMailgunEnabled').mockReturnValueOnce(false);
+    it('Should fail if mailjet is not enabled', (done) => {
+        jest.spyOn(flags, 'isMailjetEnabled').mockReturnValueOnce(false);
         request.post(`${BASE_URL}/sendResetPasswordEmail`)
             .send({ email: 'antoine@tryethernal.com' })
             .expect(400)
             .then(({ text }) => {
-                expect(text).toEqual('Mailgun has not been enabled.');
+                expect(text).toEqual('Mailjet has not been enabled.');
                 done();
             });
     });

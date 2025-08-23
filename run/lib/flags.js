@@ -9,5 +9,5 @@ module.exports = {
     isDevelopmentEnvironment: () => process.env.NODE_ENV == 'development',
     isDemoEnabled: () => !!process.env.DEMO_USER_ID,
     isQuicknodeEnabled: () => !!process.env.QUICKNODE_CREDENTIALS,
-    isMailgunEnabled: () => !!process.env.MAILGUN_API_KEY && !!process.env.MAILGUN_DOMAIN
+    isMailjetEnabled: () => !!process.env.MAILJET_PUBLIC_KEY && !!process.env.MAILJET_PRIVATE_KEY
 };

@@ -64,7 +64,7 @@ module.exports = {
     getMaxNumberToInsert: () => parseInt(process.env.MAX_NUMBER_TO_INSERT || 1),
     getDemoExplorerSender: () => process.env.DEMO_EXPLORER_SENDER,
     getDiscordDemoExplorerChannelWebhook: () => process.env.DISCORD_DEMO_EXPLORER_CHANNEL_WEBHOOK,
-    getMailGunApiKey: () => process.env.MAILGUN_API_KEY,
-    getMailGunDomain: () => process.env.MAILGUN_DOMAIN,
-    getMailGunSender: () => process.env.MAILGUN_SENDER
+    getMailjetPublicKey: () => process.env.MAILJET_PUBLIC_KEY,
+    getMailjetPrivateKey: () => process.env.MAILJET_PRIVATE_KEY,
+    getMailjetSender: () => process.env.MAILJET_SENDER
 };
