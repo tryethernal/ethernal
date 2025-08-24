@@ -183,6 +183,11 @@ module.exports = (sequelize, DataTypes) => {
                         transactionHash: receipt.transactionHash !== undefined ? receipt.transactionHash : receipt.hash,
                         transactionIndex: receipt.transactionIndex !== undefined && receipt.transactionIndex !== null ? receipt.transactionIndex : receipt.index,
                         type: receipt.type,
+                        blobGasUsed: receipt.blobGasUsed,
+                        blobGasPrice: receipt.blobGasPrice,
+                        timeboosted: receipt.timeboosted,
+                        gasUsedForL1: receipt.gasUsedForL1,
+                        effectiveGasPrice: receipt.effectiveGasPrice,
                         raw: receipt.raw
                     }))
                 ],
@@ -342,7 +347,7 @@ module.exports = (sequelize, DataTypes) => {
             let toValidator;
             if (this.type && this.type == 2) {
                 // Use BigNumber for (effectiveGasPrice - baseFeePerGas) * gasUsed
-                const effectiveGasPrice = ethers.BigNumber.from(String(receipt.raw.effectiveGasPrice));
+                const effectiveGasPrice = ethers.BigNumber.from(String(receipt.effectiveGasPrice));
                 const baseFeePerGas = ethers.BigNumber.from(String(block.baseFeePerGas || 0));
                 const gasUsed = ethers.BigNumber.from(String(receipt.gasUsed));
                 toValidator = effectiveGasPrice.sub(baseFeePerGas).mul(gasUsed);
@@ -749,7 +754,53 @@ module.exports = (sequelize, DataTypes) => {
         get() {
             return this.getDataValue('state') === 'syncing';
         }
-    }
+    },
+    maxFeePerGas: {
+        type: DataTypes.STRING,
+        get() {
+            return this.getDataValue('maxFeePerGas') || this.getDataValue('raw.maxFeePerGas');
+        }
+    },
+    maxPriorityFeePerGas: {
+        type: DataTypes.STRING,
+        get() {
+            return this.getDataValue('maxPriorityFeePerGas') || this.getDataValue('raw.maxPriorityFeePerGas');
+        }
+    },
+    gas: {
+        type: DataTypes.STRING,
+        get() {
+            return this.getDataValue('gas') || this.getDataValue('raw.gas');
+        }
+    },
+    accessList: {
+        type: DataTypes.JSON,
+        get() {
+            return this.getDataValue('accessList') || this.getDataValue('raw.accessList');
+        }
+    },
+    yParity: {
+        type: DataTypes.BOOLEAN,
+        get() {
+            return this.getDataValue('yParity') || this.getDataValue('raw.yParity');
+        },
+        set(value) {
+            const _val = value == '0x1' ? true : false;
+            this.setDataValue('yParity', _val);
+        }
+    },
+    blobVersionedHashes: {
+        type: DataTypes.JSON,
+        get() {
+            return this.getDataValue('blobVersionedHashes') || this.getDataValue('raw.blobVersionedHashes');
+        }
+    },
+    maxFeePerBlobGas: {
+        type: DataTypes.STRING,
+        get() {
+            return this.getDataValue('maxFeePerBlobGas') || this.getDataValue('raw.maxFeePerBlobGas');
+        }
+    },
   }, {
     hooks: {
         afterBulkCreate(transactions, options) {

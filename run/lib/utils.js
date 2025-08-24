@@ -163,7 +163,7 @@ const _isJson = function(obj) {
 };
 
 const _sanitize = (obj, numberization = true) => {
-    const numberize = ['number', 'difficulty', 'totalDifficulty', 'size', 'timestamp', 'nonce', 'baseFeePerGas', 'blockNumber', 'cumulativeGasUsed', 'effectiveGasPrice', 'gasUsed', 'logIndex', 'chainId', 'gasLimit', 'gasPrice', 'v', 'value', 'type', 'transactionIndex', 'status', 'l1BlockNumber', 'gas', 'maxFeePerGas', 'maxPriorityFeePerGas'];
+    const numberize = ['number', 'difficulty', 'totalDifficulty', 'size', 'timestamp', 'nonce', 'baseFeePerGas', 'blockNumber', 'cumulativeGasUsed', 'effectiveGasPrice', 'gasUsed', 'logIndex', 'chainId', 'gasLimit', 'gasPrice', 'v', 'value', 'type', 'transactionIndex', 'status', 'l1BlockNumber', 'gas', 'maxFeePerGas', 'maxPriorityFeePerGas', 'blobGasUsed', 'blobGasPrice', 'timeboosted', 'gasUsedForL1', 'effectiveGasPrice'];
     return Object.fromEntries(
         Object.entries(obj)
             .filter(([_, v]) => v != null)

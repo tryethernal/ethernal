@@ -2648,6 +2648,13 @@ module.exports = (sequelize, DataTypes) => {
                         v: processed.v,
                         value: processed.value,
                         state: 'syncing',
+                        gas: processed.gas,
+                        maxFeePerGas: processed.maxFeePerGas,
+                        maxPriorityFeePerGas: processed.maxPriorityFeePerGas,
+                        accessList: processed.accessList,
+                        yParity: processed.yParity,
+                        blobVersionedHashes: processed.blobVersionedHashes,
+                        maxFeePerBlobGas: processed.maxFeePerBlobGas,
                         raw: processed.raw
                     });
                 });
@@ -2886,6 +2893,13 @@ module.exports = (sequelize, DataTypes) => {
                 type_: transaction.type,
                 v: transaction.v,
                 value: transaction.value,
+                gas: transaction.gas,
+                maxFeePerGas: transaction.maxFeePerGas,
+                maxPriorityFeePerGas: transaction.maxPriorityFeePerGas,
+                accessList: transaction.accessList,
+                yParity: transaction.yParity,
+                blobVersionedHashes: transaction.blobVersionedHashes,
+                maxFeePerBlobGas: transaction.maxFeePerBlobGas,
                 raw: transaction
             }), { transaction: sequelizeTransaction });
 
