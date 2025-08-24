@@ -49,11 +49,11 @@
                     {{ safeValue }}
                 </span>
                 <span v-else>
-                    <i>null</i>
+                    <i>bnull</i>
                 </span>
             </span>
             <span style="white-space: break-spaces;" v-else-if="safeValue">{{ safeValue }}</span>
-            <span v-else><i>null</i></span>
+            <span v-else><i>anull</i></span>
         </span>
     </span>
 </template>
@@ -201,14 +201,14 @@ export default {
             if (this.input.type != 'string') return;
             if (this.isValueDataUriJson)
                 return JSON.parse(atob(this.value.substring(29)));
-            
+
             // Handle BigInt values safely by converting them to strings before parsing
             try {
                 // If the value is already an object (not a string), handle BigInt conversion
                 if (typeof this.value === 'object' && this.value !== null) {
                     return this.convertBigIntsToStrings(this.value);
                 }
-                
+
                 // If it's a string, try to parse it with BigInt handling
                 const processedValue = this.processBigIntInJSON(this.value);
                 return JSON.parse(processedValue);
@@ -228,7 +228,8 @@ export default {
             if (typeof this.value === 'object' && this.value !== null) {
                 return this.convertBigIntsToStrings(this.value);
             }
-            return this.value;
+
+            return String(this.value);
         }
     }
 }

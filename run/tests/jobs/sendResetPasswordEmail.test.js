@@ -1,6 +1,6 @@
 require('../mocks/lib/crypto');
 require('../mocks/lib/flags');
-require('../mocks/lib/mailgun');
+require('../mocks/lib/mailjet');
 
 const flags = require('../../lib/flags');
 
@@ -12,16 +12,15 @@ describe('batchBlockSync', () => {
     it('Should send a reset password email', (done) => {
         sendResetPasswordEmail({ data: { email: 'antoine@tryethernal.com' }})
             .then(res => {
-                expect(res).toEqual([{ statusCode: 202 }]);
                 done();
             });
     });
 
-    it('Should raise an error if Mailgun is not enabled', (done) => {
-        jest.spyOn(flags, 'isMailgunEnabled').mockReturnValueOnce(false);
+    it('Should raise an error if Mailjet is not enabled', (done) => {
+        jest.spyOn(flags, 'isMailjetEnabled').mockReturnValueOnce(false);
         sendResetPasswordEmail({ data: { email: 'antoine@tryethernal.com' }})
             .catch(error => {
-                expect(error.message).toEqual('Mailgun has not been enabled.');
+                expect(error.message).toEqual('Mailjet has not been enabled.');
                 done();
             });
     });

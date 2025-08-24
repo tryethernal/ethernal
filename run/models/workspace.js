@@ -407,8 +407,7 @@ module.exports = (sequelize, DataTypes) => {
             WHERE "to" IS NULL AND "workspaceId" = :workspaceId;
         `, {
             replacements: { workspaceId: this.id },
-            type: QueryTypes.SELECT,
-            logging: console.log
+            type: QueryTypes.SELECT
         });
 
         return result;
