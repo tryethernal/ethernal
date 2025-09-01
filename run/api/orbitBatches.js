@@ -21,7 +21,7 @@ router.get('/:batchNumber/transactions', workspaceAuthMiddleware, async (req, re
 
         res.status(200).json({ total, items });
     } catch (error) {
-        unmanagedError(error, req, res);
+        unmanagedError(error, req, next);
     }
 });
 
@@ -41,7 +41,7 @@ router.get('/:batchNumber/blocks', workspaceAuthMiddleware, async (req, res, nex
 
         res.status(200).json({ total, items: blocks });
     } catch (error) {
-        unmanagedError(error, req, res);
+        unmanagedError(error, req, next);
     }
 });
 
@@ -58,7 +58,7 @@ router.get('/:batchNumber', workspaceAuthMiddleware, async (req, res, next) => {
 
         res.status(200).json(batch);
     } catch (error) {
-        unmanagedError(error, req, res);
+        unmanagedError(error, req, next);
     }
 });
 

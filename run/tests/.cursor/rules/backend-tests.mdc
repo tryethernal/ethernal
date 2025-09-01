@@ -4,7 +4,6 @@ globs:
   - run/**/*.test.js
 description: |
   This rule applies only to `.test.js` files in the `run` folder and all its subfolders. Use it to target backend test files for linting, formatting, or other automated actions specific to backend test suites.
-
 ---
 - Use jest for testing
 - Only the behavior of the tested file should be tested, all external dependencies should be mocked.
@@ -12,3 +11,5 @@ description: |
 - When updating a test file, always run it afterwards to make sure all tests work as expected
 - Middlewares should only be tested in dedicated test files, do not run tests dependend on them in endpoint test files
 - Assuming you're in the "run/" or "pm2-server" directory, run tests with `npm run test`. You can pass a file path as an argument to only run tests in this file.
+- All functions in run/lib/firebase.js are automatically mocked to a jest.fn(), you don't need to setup a mock again for those.
+- As a general rule, do not setup mocks for files that are under run/lib in a test file, they should have their own mocking file. You can create it if it doesn't exist. However, feel free to override the mocks using mockImplementation, mockResolvedValue, etc...based on individual tests. 
