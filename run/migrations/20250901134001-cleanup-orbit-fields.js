@@ -20,7 +20,7 @@ module.exports = {
       await queryInterface.removeColumn('orbit_batches', 'seqNumStart', { transaction });
       await queryInterface.removeColumn('orbit_batches', 'seqNumEnd', { transaction });
 
-      await queryInterface.dropTable('orbit_batch_blocks', { transaction });
+      await queryInterface.dropTable('orbit_batch_block', { transaction });
 
       await queryInterface.removeColumn('orbit_chain_configs', 'parentChainRpcServer', { transaction });
       await queryInterface.removeColumn('orbit_chain_configs', 'parentChainType', { transaction });
