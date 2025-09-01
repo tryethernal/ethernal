@@ -10,6 +10,42 @@ beforeEach(() => jest.clearAllMocks());
 const host = 'http://pm2';
 const secret = 'secret';
 
+describe('startSafeBlockListener', () => {
+    it('Should throw an error if missing parameter', () => {
+        const pm2 = new PM2(host, secret);
+        expect(() => pm2.startSafeBlockListener()).toThrow('Missing parameter');
+    });
+
+    it('Should start safe block listener', (done) => {
+        jest.spyOn(axios, 'post').mockResolvedValueOnce({ data: null });
+
+        const pm2 = new PM2(host, secret);
+        pm2.startSafeBlockListener('slug', 1)
+            .then(() => {
+                expect(axios.post).toHaveBeenCalledWith('http://pm2/safe-block-listener?secret=secret', { slug: 'slug', workspaceId: 1 });
+                done();
+            });
+    });
+});
+
+describe('startLogListener', () => {
+    it('Should throw an error if missing parameter', () => {
+        const pm2 = new PM2(host, secret);
+        expect(() => pm2.startLogListener()).toThrow('Missing parameter');
+    });
+
+    it('Should start log listener', (done) => {
+        jest.spyOn(axios, 'post').mockResolvedValueOnce({ data: null });
+
+        const pm2 = new PM2(host, secret);
+        pm2.startLogListener('slug', '{"key": "value"}')
+            .then(() => {
+                expect(axios.post).toHaveBeenCalledWith('http://pm2/log-listener?secret=secret', { slug: 'slug', jsonArgs: '{"key": "value"}' });
+                done();
+            });
+    });
+});
+
 describe('reset', () => {
     it('Should throw an error if missing parameter', (done) => {
         const pm2 = new PM2(host, secret);

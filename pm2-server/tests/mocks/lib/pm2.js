@@ -6,5 +6,7 @@ jest.mock('../../../lib/pm2', () => ({
     restart: jest.fn(),
     delete: jest.fn(),
     start: jest.fn(),
-    resume: jest.fn()
+    resume: jest.fn(),
+    startLogListener: jest.fn(),
+    startSafeBlockListener: jest.fn()
 }));

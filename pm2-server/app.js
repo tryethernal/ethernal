@@ -1,18 +1,12 @@
 const express = require('express');
 const app = express();
 const pm2 = require('./lib/pm2.js');
+const { secretMiddleware } = require('./lib/middleware.js');
 
 const bodyParser = require('body-parser')
 app.use(bodyParser.json());
 
 const commands = ['stop', 'reload', 'restart', 'delete', 'resume'];
-
-const secretMiddleware = (req, res, next) => {
-    if (req.query.secret == process.env.SECRET)
-        next();
-    else
-        return res.status(401).send('Invalid secret');
-};
 
 const handleError = (res, error) => {
     console.log(error);

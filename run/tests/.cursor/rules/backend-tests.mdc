@@ -1,0 +1,14 @@
+---
+alwaysApply: false
+globs:
+  - run/**/*.test.js
+description: |
+  This rule applies only to `.test.js` files in the `run` folder and all its subfolders. Use it to target backend test files for linting, formatting, or other automated actions specific to backend test suites.
+
+---
+- Use jest for testing
+- Only the behavior of the tested file should be tested, all external dependencies should be mocked.
+- Before writing tests, look at the other tests in the file to get an idea of the kind of tests that should be written
+- When updating a test file, always run it afterwards to make sure all tests work as expected
+- Middlewares should only be tested in dedicated test files, do not run tests dependend on them in endpoint test files
+- Assuming you're in the "run/" or "pm2-server" directory, run tests with `npm run test`. You can pass a file path as an argument to only run tests in this file.
