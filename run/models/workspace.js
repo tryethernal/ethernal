@@ -3707,23 +3707,6 @@ module.exports = (sequelize, DataTypes) => {
         const config = await this.getOrbitConfig();
         return !!config;
     }
-
-    async getOrbitTransactionState(transactionId) {
-        return sequelize.models.OrbitTransactionState.findOne({
-            where: {
-                workspaceId: this.id,
-                transactionId
-            }
-        });
-    }
-
-    async createOrbitTransactionState(transactionId, initialState = 'SUBMITTED') {
-        return sequelize.models.OrbitTransactionState.create({
-            workspaceId: this.id,
-            transactionId,
-            currentState: initialState
-        });
-    }
   }
 
   Workspace.init({
@@ -3750,7 +3733,6 @@ module.exports = (sequelize, DataTypes) => {
     emitMissedBlocks: DataTypes.BOOLEAN,
     skipFirstBlock: DataTypes.BOOLEAN,
     qnEndpointId: DataTypes.STRING,
-    chainFamily: DataTypes.ENUM('ARBITRUM'),
     integrityCheckStartBlockNumber: {
       type: DataTypes.INTEGER,
       get() {

@@ -9,7 +9,6 @@ const OUTBOX_ABI = require('../lib/abis/orbitOutbox.json');
 const iface = new ethers.utils.Interface(require('../lib/abis/arbsys.json'));
 const nodeInterfaceIface = new ethers.utils.Interface(require('../lib/abis/orbitNodeInterface.json'));
 const outboxIface = new ethers.utils.Interface(require('../lib/abis/orbitOutbox.json'));
-const l2GatewayRouterIface = new ethers.utils.Interface(require('../lib/abis/l2GatewayRouter.json'));
 const finalizeInboundTransferIface = new ethers.utils.Interface(require('../lib/abis/finalizeInboundTransfer.json'));
 
 const getWithdrawalTokenInfo = async (tokenAddress, provider) => {
@@ -53,7 +52,7 @@ const getClaimTransactionData = async (messageNumber, size, transaction, log) =>
     const provider = transaction.workspace.getProvider().provider;
 
     const parsedLog = getWithdrawalData(log, transaction);
-    const proof = await constructOutboxProof(150418, messageNumber, provider);
+    const proof = await constructOutboxProof(size, messageNumber, provider);
 
     const args = [
         proof,

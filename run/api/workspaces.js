@@ -11,22 +11,6 @@ const { getPm2Host, getPm2Secret } = require('../lib/env');
 const router = express.Router();
 const { managedError, unmanagedError } = require('../lib/errors');
 
-router.get('/:id/orbitConfig', secretMiddleware, async (req, res, next) => {
-    try {
-        const workspace = await db.getWorkspaceByIdWithOrbitConfig(req.params.id);
-        const orbitConfig = workspace.orbitConfig;
-
-        console.log(workspace);
-
-        res.status(200).json({
-            workspace: workspace,
-            blockTag: orbitConfig.topParentChainBlockValidationType
-        });
-    } catch(error) {
-        unmanagedError(error, req, next);
-    }
-});
-
 /**
  * Retrieves the list of token transfers for a workspace
  * @param {string} workspaceId - The workspace id

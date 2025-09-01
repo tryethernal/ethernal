@@ -8,7 +8,6 @@ const priorities = {
         'sendResetPasswordEmail',
         'updateExplorerSyncingProcess',
         'receiptSync',
-        'processOrbitTransaction',
         'finalizePendingOrbitBatches',
         'startSafeBlockListener',
         'checkOrbitMessageDeliveredLogs',
@@ -45,7 +44,6 @@ const priorities = {
         'blockSyncMonitoring',
         'monitorOrbitBatches',
         'discoverOrbitBatches',
-        'indexOrbitNodes',
         'sendDiscordMessage',
         'backfillNativeTokenTransfers',
         'safeBlockListenerCheck'

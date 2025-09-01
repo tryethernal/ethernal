@@ -21,8 +21,6 @@ module.exports = {
     processTransactionTrace: require('./processTransactionTrace'),
     processTransactionError: require('./processTransactionError'),
     processTokenTransfer: require('./processTokenTransfer'),
-    processOrbitTransaction: require('./processOrbitTransaction'),
-    monitorOrbitBatches: require('./monitorOrbitBatches'),
     reloadErc721Token: require('./reloadErc721Token'),
     reprocessWorkspaceTransactionTraces: require('./reprocessWorkspaceTransactionTraces'),
     reprocessWorkspaceTransactionErrors: require('./reprocessWorkspaceTransactionErrors'),

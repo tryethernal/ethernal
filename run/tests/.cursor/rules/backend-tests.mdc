@@ -13,3 +13,4 @@ description: |
 - Assuming you're in the "run/" or "pm2-server" directory, run tests with `npm run test`. You can pass a file path as an argument to only run tests in this file.
 - All functions in run/lib/firebase.js are automatically mocked to a jest.fn(), you don't need to setup a mock again for those.
 - As a general rule, do not setup mocks for files that are under run/lib in a test file, they should have their own mocking file. You can create it if it doesn't exist. However, feel free to override the mocks using mockImplementation, mockResolvedValue, etc...based on individual tests. 
+- 500 are unexpected and thus shouldn't be tested, if you deem that a 500 scenario is likely to happen often enough so that it should be tested, fix the code so that it returns a 400, then test it.

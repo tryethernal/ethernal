@@ -5,10 +5,20 @@ const db = require('../lib/firebase');
 const { getClaimTransactionData } = require('../lib/orbitWithdrawals');
 const { unmanagedError } = require('../lib/errors');
 
+/**
+ * Generate calldata that the user will have to send to claim an orbit withdrawal
+ * This endpoint also returns the contract address, the chain id and the rpc server to use
+ * The frontend only has to instantiate a viem instance and generate a raw transaction request
+ * @param {string} hash - The hash of the transaction
+ * @param {number} messageNumber - The message number of the withdrawal
+ * @returns {Promise<Object>} - The claim calldata, the to address, the l1 rpc server, and the l1 chain id
+ */
 router.get('/:hash/claimCalldata', workspaceAuthMiddleware, async (req, res, next) => {
     const data = { ...req.query, ...req.params };
     try {
         const { hash, messageNumber } = data;
+        if (!hash || !messageNumber)
+            throw new Error('Missing parameters');
 
         const { log, transaction } = await db.getL2TransactionForOrbitWithdrawalClaim(data.workspace.id, hash, messageNumber);
         const latestConfirmedBlock = await transaction.workspace.getOrbitLatestConfirmedBlock();

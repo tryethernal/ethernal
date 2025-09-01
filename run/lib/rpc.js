@@ -112,7 +112,7 @@ let providers = {};
 const getProvider = function(url) {
     if (providers[url])
         return providers[url];
-    console.log(url);
+
     const rpcServer = new URL(url);
 
     let provider;
