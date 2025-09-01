@@ -19,6 +19,21 @@ const handleError = (res, error) => {
     return res.status(400).send(error.message);
 };
 
+app.post('/log-listener', secretMiddleware, async (req, res) => {
+    const data = req.body;
+
+    try {
+        if (!data.slug || !data.jsonArgs)
+            throw new Error('Missing parameter');
+
+        const pm2Process = await pm2.startLogListener(data.slug, data.jsonArgs);
+
+        return res.status(200).send(pm2Process);
+    } catch(error) {
+        handleError(res, error);
+    }
+});
+
 app.post('/safe-block-listener', secretMiddleware, async (req, res) => {
     const data = req.body;
 

@@ -1,33 +1,44 @@
 const { ethers } = require('ethers');
 
 const iface = new ethers.utils.Interface(require('../lib/abis/orbitRollup.json'));
+const boldIface = new ethers.utils.Interface(require('../lib/abis/orbitBoldRollup.json'));
 
 const isOrbitNodeCreatedLog = (log) => {
     const nodeCreatedTopic = iface.getEventTopic('NodeCreated');
-    return log.topics[0] === nodeCreatedTopic;
+    const boldNodeCreatedTopic = boldIface.getEventTopic('AssertionCreated');
+
+    return log.topics[0] === nodeCreatedTopic || log.topics[0] === boldNodeCreatedTopic;
 };
 
 const isOrbitNodeConfirmedLog = (log) => {
     const nodeConfirmedTopic = iface.getEventTopic('NodeConfirmed');
-    return log.topics[0] === nodeConfirmedTopic;
+    const boldNodeConfirmedTopic = boldIface.getEventTopic('AssertionConfirmed');
+
+    return log.topics[0] === nodeConfirmedTopic || log.topics[0] === boldNodeConfirmedTopic;
 };
 
 const isOrbitNodeRejectedLog = (log) => {
     const nodeRejectedTopic = iface.getEventTopic('NodeRejected');
+
     return log.topics[0] === nodeRejectedTopic;
 };
 
 const getOrbitCreatedNodeData = (log) => {
-    const parsed = iface.parseLog({ topics: log.topics, data: log.data });
+    let parsed;
+    try {
+        parsed = iface.parseLog({ topics: log.topics, data: log.data });
+    } catch (error) {
+        parsed = boldIface.parseLog({ topics: log.topics, data: log.data });
+    }
+
     const args = parsed.args;
     return {
-        nodeNum: String(args.nodeNum),
-        parentNodeHash: String(args.parentNodeHash),
-        nodeHash: String(args.nodeHash),
-        executionHash: String(args.executionHash),
-        afterInboxBatchAcc: String(args.afterInboxBatchAcc),
-        wasmModuleRoot: String(args.wasmModuleRoot),
-        inboxMaxCount: args.inboxMaxCount ? String(args.inboxMaxCount) : null,
+        nodeNum: args.nodeNum ? String(args.nodeNum) : null,
+        parentNodeHash: args.parentNodeHash || args.parentAssertionHash,
+        nodeHash: args.nodeHash || args.assertionHash,
+        afterInboxBatchAcc: args.afterInboxBatchAcc,
+        wasmModuleRoot: args.wasmModuleRoot,
+        inboxMaxCount: args.inboxMaxCount,
         createdTxHash: log.transactionHash,
         confirmed: false,
         rejected: false
@@ -35,13 +46,19 @@ const getOrbitCreatedNodeData = (log) => {
 };
 
 const getOrbitConfirmedNodeData = (log) => {
-    const parsed = iface.parseLog({ topics: log.topics, data: log.data });
+    let parsed;
+    try {
+        parsed = iface.parseLog({ topics: log.topics, data: log.data });
+    } catch (error) {
+        parsed = boldIface.parseLog({ topics: log.topics, data: log.data });
+    }
+
     const args = parsed.args;
     return {
-        confirmed: true,
-        nodeNum: String(args.nodeNum),
-        confirmedBlockHash: String(args.blockHash),
-        confirmedSendRoot: String(args.sendRoot)
+        nodeNum: args.nodeNum ? String(args.nodeNum) : null,
+        nodeHash: args.assertionHash,
+        confirmedBlockHash: args.blockHash,
+        confirmedSendRoot: args.sendRoot
     };
 };
 

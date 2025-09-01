@@ -340,7 +340,15 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       defaultValue: 'https://etherscan.io'
-    }
+    },
+    l2GatewayRouter: DataTypes.STRING(42),
+    l2Erc20Gateway: DataTypes.STRING(42),
+    l2WethGateway: DataTypes.STRING(42),
+    l2CustomGateway: DataTypes.STRING(42),
+    l1GatewayRouter: DataTypes.STRING(42),
+    l1Erc20Gateway: DataTypes.STRING(42),
+    l1WethGateway: DataTypes.STRING(42),
+    l1CustomGateway: DataTypes.STRING(42)
   }, {
     sequelize,
     modelName: 'OrbitChainConfig',

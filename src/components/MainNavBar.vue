@@ -35,11 +35,25 @@
                             </template>
                         </v-list-item>
                     </template>
+
                     <v-list-item :to="'/transactions'" title="Transactions" :color="route.path === '/transactions' ? 'primary' : undefined">
                         <template v-slot:title>
                             <span class="text-body-2">Transactions</span>
                         </template>
                     </v-list-item>
+
+                    <v-list-item :to="'/txsDeposits'" title="Latest L1->L2 Transactions" :color="route.path === '/txsDeposits' ? 'primary' : undefined">
+                        <template v-slot:title>
+                            <span class="text-body-2">Latest L1->L2 Transactions</span>
+                        </template>
+                    </v-list-item>
+
+                    <v-list-item :to="'/txsExit'" title="Latest L2->L1 Transactions" :color="route.path === '/txsExit' ? 'primary' : undefined">
+                        <template v-slot:title>
+                            <span class="text-body-2">Latest L2->L1 Transactions</span>
+                        </template>
+                    </v-list-item>
+
                     <v-list-item v-if="currentWorkspaceStore.tracing" :to="'/txsInternal'" title="Internal Transactions" :color="route.path === '/txsInternal' ? 'primary' : undefined">
                         <template v-slot:title>
                             <span class="text-body-2">Internal Transactions</span>
@@ -50,6 +64,13 @@
                             <span class="text-body-2">Blocks</span>
                         </template>
                     </v-list-item>
+
+                    <v-list-item v-if="currentWorkspaceStore.orbitConfig" :to="'/batches'" title="View Batches" :color="route.path === '/batches' ? 'primary' : undefined">
+                        <template v-slot:title>
+                            <span class="text-body-2">View Batches</span>
+                        </template>
+                    </v-list-item>
+
                     <v-list-item v-if="explorerStore.displayTopAccounts" :to="'/accounts'" title="Top Accounts" :color="route.path === '/accounts' ? 'primary' : undefined">
                         <template v-slot:title>
                             <span class="text-body-2">Top Accounts</span>
@@ -113,24 +134,6 @@
                     </v-list-item>
                 </v-list-group>
 
-                <!-- Orbit Section -->
-                <v-list-group value="orbit">
-                    <template v-slot:activator="{ props }">
-                        <v-list-item
-                            v-bind="props"
-                            :color="isOrbitActive ? 'primary' : undefined">
-                            <template v-slot:title>
-                                <span class="text-body-1">Orbit</span>
-                            </template>
-                        </v-list-item>
-                    </template>
-                    <v-list-item :to="'/batches'" title="Batches" :color="route.path === '/batches' ? 'primary' : undefined">
-                        <template v-slot:title>
-                            <span class="text-body-2">Batches</span>
-                        </template>
-                    </v-list-item>
-                </v-list-group>
-
                 <v-list-item :to="'/analytics'" title="Charts" :class="{ 'text-primary': route.path === '/analytics' }">
                     <template v-slot:title>
                         <span class="text-body-1">Charts</span>
@@ -158,6 +161,23 @@
                         <span class="text-body-1">Bridge</span>
                     </template>
                 </v-list-item>
+
+                <v-list-group v-if="currentWorkspaceStore.orbitConfig" value="more">
+                    <template v-slot:activator="{ props }">
+                        <v-list-item
+                            v-bind="props"
+                            :color="isMoreActive ? 'primary' : undefined">
+                            <template v-slot:title>
+                                <span class="text-body-1">More</span>
+                            </template>
+                        </v-list-item>
+                    </template>
+                    <v-list-item to="/messagerelayer" title="L2 to L1 Relayer" :class="{ 'text-primary': route.path === '/messagerelayer' }">
+                        <template v-slot:title>
+                            <span class="text-body-1">L2 to L1 Relayer</span>
+                        </template>
+                    </v-list-item>
+                </v-list-group>
 
                 <!-- Admin Section -->
                 <template v-if="envStore.isAdmin">
@@ -234,6 +254,19 @@
                                     <span class="text-body-2">Transactions</span>
                                 </template>
                             </v-list-item>
+
+                            <v-list-item :to="'/txsDeposits'" title="Latest L1->L2 Transactions">
+                                <template v-slot:title>
+                                    <span class="text-body-2">Latest L1->L2 Transactions</span>
+                                </template>
+                            </v-list-item>
+
+                            <v-list-item :to="'/txsExit'" title="Latest L2->L1 Transactions">
+                                <template v-slot:title>
+                                    <span class="text-body-2">Latest L2->L1 Transactions</span>
+                                </template>
+                            </v-list-item>
+
                             <v-list-item v-if="currentWorkspaceStore.tracing" :to="'/txsInternal'" title="Internal Transactions">
                                 <template v-slot:title>
                                     <span class="text-body-2">Internal Transactions</span>
@@ -244,6 +277,12 @@
                             <v-list-item :to="'/blocks'" title="Blocks">
                                 <template v-slot:title>
                                     <span class="text-body-2">Blocks</span>
+                                </template>
+                            </v-list-item>
+
+                            <v-list-item :to="'/batches'" title="Batches">
+                                <template v-slot:title>
+                                    <span class="text-body-2">View Batches</span>
                                 </template>
                             </v-list-item>
 
@@ -330,40 +369,6 @@
                         </v-list>
                     </v-menu>
 
-                    <!-- Orbit Menu -->
-                    <v-menu 
-                        v-model="orbitMenuOpen"
-                        open-on-hover 
-                        :open-delay="0" 
-                        :close-delay="100"
-                        :close-on-content-click="false"
-                        transition="scroll-y-transition"
-                    >
-                        <template v-slot:activator="{ props, isActive }">
-                            <v-btn 
-                                variant="plain" 
-                                v-bind="props"
-                                @mouseleave="orbitMenuOpen = false"
-                                :class="`opacity-100 d-flex align-center fill-height ${isActive || orbitMenuOpen || isOrbitActive ? 'text-primary' : 'text-default opacity-80'}`"
-                            >
-                                Orbit
-                                <v-icon :icon="isActive ? 'mdi-chevron-up' : 'mdi-chevron-down'" class="ml-1"></v-icon>
-                            </v-btn>
-                        </template>
-                        <v-list 
-                            active-class="router-link-active" 
-                            border="opacity-100" 
-                            class="border-t-lg border-primary opacity-100 rounded-t-0"
-                            @mouseleave="orbitMenuOpen = false"
-                        >
-                            <v-list-item :to="'/batches'" title="Batches">
-                                <template v-slot:title>
-                                    <span class="text-body-2">Batches</span>
-                                </template>
-                            </v-list-item>
-                        </v-list>
-                    </v-menu>
-
                     <v-hover>
                         <template v-slot:default="{ isHovering, props }">
                             <v-btn 
@@ -410,6 +415,39 @@
                             >Bridge</v-btn>
                         </template>
                     </v-hover>
+
+                    <v-menu 
+                        v-model="moreMenuOpen"
+                        open-on-hover 
+                        :open-delay="0" 
+                        :close-delay="100"
+                        :close-on-content-click="false"
+                        transition="scroll-y-transition"
+                    >
+                        <template v-slot:activator="{ props, isActive }">
+                            <v-btn 
+                                variant="plain" 
+                                v-bind="props"
+                                @mouseleave="moreMenuOpen = false"
+                                :class="`opacity-100 d-flex align-center fill-height ${isActive || moreMenuOpen || isMoreActive ? 'text-primary' : 'text-default opacity-80'}`"
+                            >
+                                More
+                                <v-icon :icon="isActive ? 'mdi-chevron-up' : 'mdi-chevron-down'" class="ml-1"></v-icon>
+                            </v-btn>
+                        </template>
+                        <v-list 
+                            active-class="router-link-active" 
+                            border="opacity-100" 
+                            class="border-t-lg border-primary opacity-100 rounded-t-0"
+                            @mouseleave="moreMenuOpen = false"
+                        >
+                            <v-list-item :to="'/messagerelayer'" title="L2 to L1 Relayer">
+                                <template v-slot:title>
+                                    <span class="text-body-2">L2 to L1 Relayer</span>
+                                </template>
+                            </v-list-item>
+                        </v-list>
+                    </v-menu>
 
                     <!-- Admin Links -->
                     <template v-if="envStore.isAdmin">
@@ -470,7 +508,7 @@ import WalletConnector from './WalletConnector.vue';
 // Menu state controls
 const blockchainMenuOpen = ref(false);
 const tokensMenuOpen = ref(false);
-const orbitMenuOpen = ref(false);
+const moreMenuOpen = ref(false);
 
 // Props definition
 const props = defineProps({
@@ -517,7 +555,7 @@ const userStore = useUserStore();
 const route = useRoute();
 
 const isBlockchainActive = computed(() => {
-    const blockchainRoutes = ['/transactions', '/txsInternal', '/blocks', '/contractsVerified', '/contracts', '/accounts'];
+    const blockchainRoutes = ['/transactions', '/txsInternal', '/blocks', '/txsDeposits', '/txsExit', '/batches', '/contractsVerified', '/contracts', '/accounts'];
     return blockchainRoutes.some(path => route.path === path);
 });
 
@@ -533,9 +571,9 @@ const isTokensActive = computed(() => {
     return tokenRoutes.some(path => route.path === path);
 });
 
-const isOrbitActive = computed(() => {
-    const orbitRoutes = ['/batches'];
-    return orbitRoutes.some(path => route.path === path) || route.path.startsWith('/batch/');
+const isMoreActive = computed(() => {
+    const moreRoutes = ['/messagerelayer'];
+    return moreRoutes.some(path => route.path === path);
 });
 
 const logOut = () => {

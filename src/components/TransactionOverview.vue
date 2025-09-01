@@ -60,7 +60,7 @@
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item v-if="transaction.block.orbitStatus" class="d-flex flex-column flex-sm-row">
+          <v-list-item v-if="transaction.block.orbitStatus" class="d-flex flex-column flex-sm-row mb-2">
             <template v-slot:prepend>
               <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">
                 <v-icon size="small" color="grey" class="mr-1" v-tooltip="'Transaction lifecycle status on L1'">mdi-help-circle-outline</v-icon>
@@ -208,10 +208,10 @@
           </v-list-item>
 
           <!-- Custom divider -->
-          <v-divider class="mx-4 mb-2"></v-divider>
+          <v-divider class="mx-4"></v-divider>
 
           <template v-if="transaction.block.orbitBatch && transaction.block.orbitBatch.confirmationStatus == 'confirmed'">
-            <v-list-item class="d-flex flex-column flex-sm-row">
+            <v-list-item class="d-flex flex-column flex-sm-row mt-2">
               <template v-slot:prepend>
                 <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">
                   <v-icon size="small" color="grey" class="mr-1" v-tooltip="'L1 transaction containing this batch commitment'">mdi-help-circle-outline</v-icon>
@@ -230,7 +230,7 @@
           </template>
 
           <!-- Value -->
-          <v-list-item class="d-flex flex-column flex-sm-row">
+          <v-list-item class="d-flex flex-column flex-sm-row mt-2">
             <template v-slot:prepend>
               <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">
                 <v-icon size="small" color="grey" class="mr-1" v-tooltip="'The amount of native tokens transferred in this transaction'">mdi-help-circle-outline</v-icon>
@@ -255,6 +255,32 @@
             </v-list-item-title>
           </v-list-item>
 
+          <template v-if="transaction.receipt.gasUsedForL1">
+            <v-list-item v-if="transaction.receipt" class="d-flex flex-column flex-sm-row">
+              <template v-slot:prepend>
+                <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">
+                  <v-icon size="small" color="grey" class="mr-1" v-tooltip="'Fee payable to the L1 network'">mdi-help-circle-outline</v-icon>
+                  Poster Fee:
+                </div>
+              </template>
+              <v-list-item-title class="text-body-2">
+                {{ getPosterFee() }}
+              </v-list-item-title>
+            </v-list-item>
+
+            <v-list-item v-if="transaction.receipt" class="d-flex flex-column flex-sm-row">
+              <template v-slot:prepend>
+                <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">
+                  <v-icon size="small" color="grey" class="mr-1" v-tooltip="'Fee payable to the L2 network'">mdi-help-circle-outline</v-icon>
+                  Network Fee:
+                </div>
+              </template>
+              <v-list-item-title class="text-body-2">
+                {{ getNetworkFee() }}
+              </v-list-item-title>
+            </v-list-item>
+          </template>
+
           <!-- Gas Price -->
           <v-list-item v-if="transaction.receipt" class="d-flex flex-column flex-sm-row">
             <template v-slot:prepend>
@@ -268,21 +294,6 @@
             </v-list-item-title>
           </v-list-item>
 
-          <!-- L1 Block if applicable -->
-          <v-list-item v-if="explorerStore.l1Explorer && transaction.block && transaction.block.l1BlockNumber" class="d-flex flex-column flex-sm-row">
-            <template v-slot:prepend>
-              <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">
-                <v-icon size="small" color="grey" class="mr-1" v-tooltip="'The corresponding L1 block for this L2 transaction'">mdi-help-circle-outline</v-icon>
-                L1 Block:
-              </div>
-            </template>
-            <v-list-item-title class="text-body-2">
-              <a class="text-decoration-none" :href="`${explorerStore.l1Explorer}/block/${transaction.block.l1BlockNumber}`" target="_blank">
-                {{ commify(transaction.block.l1BlockNumber) }}
-                <v-icon size="x-small" color="primary" class="pb-1">mdi-open-in-new</v-icon>
-              </a>
-            </v-list-item-title>
-          </v-list-item>
 
           <!-- Fee Recipient -->
           <v-list-item v-if="transaction.miner" class="d-flex flex-column flex-sm-row">
@@ -327,10 +338,14 @@
               </div>
             </template>
             <v-list-item-title class="text-body-2">
-              <span v-if="transaction.gasLimit">
-                {{ parseInt(transaction.gasLimit).toLocaleString() }} |
+              <span v-if="transaction.gasLimit" class="d-flex flex-column flex-sm-row align-center ga-1">
+                {{ parseInt(transaction.gasLimit).toLocaleString() }}
+                <v-divider vertical class="mx-2"></v-divider>
                 <template v-if="transaction.receipt">
-                  {{ parseInt(transaction.receipt.gasUsed).toLocaleString() }} ({{ Math.round(transaction.receipt.gasUsed / transaction.gasLimit * 100) }}%)
+                  {{ parseInt(transaction.receipt.gasUsed).toLocaleString() }}
+                  <v-divider vertical class="mx-2"></v-divider>
+                  <v-progress-linear height="5" style="width: 75px;" :model-value="percentageGasUsed" color="success" />
+                  <span class="font-weight-medium text-success">{{ percentageLabel(percentageGasUsed) }}</span>
                 </template>
                 <template v-else>
                   <span class="font-italic">(Pending)</span>
@@ -340,6 +355,38 @@
             </v-list-item-title>
           </v-list-item>
 
+          <template v-if="transaction.receipt.gasUsedForL1 !== undefined">
+            <v-list-item class="d-flex flex-column flex-sm-row">
+              <template v-slot:prepend>
+                <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">
+                  <v-icon size="small" color="grey" class="mr-1" v-tooltip="'L2 gas set aside for L1 data changes'">mdi-help-circle-outline</v-icon>
+                  Gas Used For L1:
+                </div>
+              </template>
+              <v-list-item-title class="text-body-2 d-flex flex-column flex-sm-row align-center ga-3">
+                {{ $fromWei(transaction.receipt.gasUsedForL1, 'wei', ' ') }}
+                <v-divider vertical></v-divider>
+                <v-progress-linear height="5" style="width: 75px;" :model-value="percentageL1Gas" color="success" />
+                <span class="font-weight-medium text-success">{{ percentageLabel(percentageL1Gas) }}</span>
+              </v-list-item-title>
+            </v-list-item>
+
+            <v-list-item class="d-flex flex-column flex-sm-row">
+              <template v-slot:prepend>
+                <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">
+                  <v-icon size="small" color="grey" class="mr-1" v-tooltip="'L2 gas spent on L2 resources'">mdi-help-circle-outline</v-icon>
+                  Gas Used For L2:
+                </div>
+              </template>
+              <v-list-item-title class="text-body-2 d-flex flex-column flex-sm-row align-center ga-3">
+                {{ $fromWei(ethers.BigNumber.from(transaction.receipt.gasUsed).sub(transaction.receipt.gasUsedForL1), 'wei', ' ') }}
+                <v-divider vertical></v-divider>
+                <v-progress-linear height="5" style="width: 75px;" :model-value="percentageL2Gas" color="success" />
+                <span class="font-weight-medium text-success">{{ percentageLabel(percentageL2Gas) }}</span>
+              </v-list-item-title>
+            </v-list-item>
+          </template>
+
           <!-- Gas Fees -->
           <v-list-item class="d-flex flex-column flex-sm-row">
             <template v-slot:prepend>
@@ -348,9 +395,11 @@
                 Gas Fees:
               </div>
             </template>
-            <v-list-item-title class="text-body-2" style="word-break: break-word;">
-              Base: <span class="font-weight-bold">{{ transaction.baseFeePerGas ? $fromWei(transaction.baseFeePerGas, 'gwei', '') : transaction.receipt?.baseFeePerGas ? $fromWei(transaction.receipt.baseFeePerGas, 'gwei', '') : '0 gwei' }}</span> | 
-              Max: <span class="font-weight-bold">{{ transaction.maxFeePerGas ? $fromWei(transaction.maxFeePerGas, 'gwei', '') : $fromWei(getGasPriceFromTx(transaction), 'gwei', '') }}</span> | 
+            <v-list-item-title class="text-body-2 d-flex flex-column flex-sm-row ga-1" style="word-break: break-word;">
+              Base: <span class="font-weight-bold">{{ transaction.baseFeePerGas ? $fromWei(transaction.baseFeePerGas, 'gwei', '') : transaction.receipt?.baseFeePerGas ? $fromWei(transaction.receipt.baseFeePerGas, 'gwei', '') : '0 gwei' }}</span>
+              <v-divider vertical class="mx-2"></v-divider>
+              Max: <span class="font-weight-bold">{{ transaction.maxFeePerGas ? $fromWei(transaction.maxFeePerGas, 'gwei', '') : $fromWei(getGasPriceFromTx(transaction), 'gwei', '') }}</span>
+              <v-divider vertical class="mx-2"></v-divider>
               Max Priority: <span class="font-weight-bold">{{ transaction.maxPriorityFeePerGas ? $fromWei(transaction.maxPriorityFeePerGas, 'gwei', '') : '0 gwei' }}</span>
             </v-list-item-title>
           </v-list-item>
@@ -358,7 +407,7 @@
           <v-divider class="mx-4"></v-divider>
 
           <!-- Burnt & Txn Savings Fees -->
-          <v-list-item v-if="transaction.receipt" class="d-flex flex-column flex-sm-row">
+          <v-list-item v-if="transaction.receipt" class="d-flex flex-column flex-sm-row mt-2">
             <template v-slot:prepend>
               <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 220px;">
                 <v-icon size="small" color="grey" class="mr-1" v-tooltip="'Burnt fees are the amount of ETH burned (Base Fee × Gas Used) as part of EIP-1559. Txn Savings are the total fees saved from the amount the user was willing to pay.'">mdi-help-circle-outline</v-icon>
@@ -410,6 +459,15 @@
                 density="comfortable"
               >
                 Position In Block: {{ transaction.transactionIndex !== undefined ? transaction.transactionIndex : '-' }}
+              </v-chip>
+              <v-chip v-if="transaction.receipt.timeboosted"
+                size="small"
+                :color="theme.global.current.value.dark ? 'grey-lighten-1' : 'grey-darken-2'"
+                text-color="white"
+                class="font-weight-medium"
+                density="comfortable"
+              >
+                Timeboosted: {{ transaction.receipt.timeboosted ? 'True' : 'False' }}
               </v-chip>
             </v-list-item-title>
           </v-list-item>
@@ -480,6 +538,38 @@ const theme = useTheme();
 
 // Cache frequently accessed values
 const cachedGasPrices = new Map();
+
+const percentageGasUsed = computed(() => {
+  if (!props.transaction.receipt || !props.transaction.receipt.gasUsed || !props.transaction.gasLimit) return '0';
+  const number = Number(ethers.BigNumber.from(props.transaction.receipt.gasUsed).mul(100000).div(props.transaction.gasLimit).toNumber() / 1000);
+  return number / 1000 < 0.01 ? 0.00999 : (number / 1000).toFixed(2);
+});
+
+const percentageLabel = (value) => {
+  if (value == 0) return '0%';
+  else if (value < 0.01) return '<0.01%';
+  else return `${value}%`;
+}
+
+  const percentageL1Gas = computed(() => {
+  if (!props.transaction.receipt || !props.transaction.receipt.gasUsed || !props.transaction.receipt.gasUsedForL1) return '0';
+  const number = Number(ethers.BigNumber.from(props.transaction.receipt.gasUsedForL1).mul(100000).div(props.transaction.receipt.gasUsed));
+  return props.transaction.receipt.gasUsedForL1 > 0 && number / 1000 < 0.01 ? 0.00999 : (number / 1000).toFixed(2);
+});
+
+const percentageL2Gas = computed(() => {
+  if (!props.transaction.receipt || !props.transaction.receipt.gasUsed || !props.transaction.receipt.gasUsedForL1) return '0';
+  const number = Number(ethers.BigNumber.from(props.transaction.receipt.gasUsed).sub(props.transaction.receipt.gasUsedForL1).mul(100000).div(props.transaction.receipt.gasUsed));
+  return number / 1000 < 0.01 ? 0.00999 : (number / 1000).toFixed(2);
+});
+
+const getPosterFee = () => {
+  return $fromWei(ethers.BigNumber.from(props.transaction.receipt.gasUsedForL1).mul(getGasPriceFromTx(props.transaction)), 'ether', currentWorkspaceStore.chain.token);
+}
+
+const getNetworkFee = () => {
+  return $fromWei(ethers.BigNumber.from(props.transaction.receipt.gasUsed).sub(props.transaction.receipt.gasUsedForL1).mul(getGasPriceFromTx(props.transaction)), 'ether', currentWorkspaceStore.chain.token);
+}
 
 // Error handling
 onErrorCaptured((error) => {

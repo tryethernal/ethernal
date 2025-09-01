@@ -43,6 +43,7 @@ module.exports = (sequelize, DataTypes) => {
       Workspace.hasMany(models.OrbitBatch, { foreignKey: 'workspaceId', as: 'orbitBatches' });
       Workspace.hasMany(models.OrbitChainConfig, { foreignKey: 'parentWorkspaceId', as: 'orbitChildConfigs' });
       Workspace.hasMany(models.OrbitChainConfigWorkspace, { foreignKey: 'workspaceId', as: 'orbitChainConfigWorkspaces' });
+      Workspace.hasMany(models.OrbitDeposit, { foreignKey: 'workspaceId', as: 'orbitDeposits' });
     }
 
     static findPublicWorkspaceById(id) {
@@ -97,6 +98,26 @@ module.exports = (sequelize, DataTypes) => {
 
     getProvider() {
         return new ProviderConnector(this.rpcServer);
+    }
+
+    async getOrbitLatestConfirmedBlock() {
+        const orbitNode = await sequelize.models.OrbitNode.findOne({
+            where: {
+                workspaceId: this.id,
+                status: 'confirmed'
+            },
+            limit: 1,
+            order: [['nodeNum', 'DESC']]
+        });
+
+        const block = await sequelize.models.Block.findOne({
+            where: {
+                workspaceId: this.id,
+                hash: orbitNode.confirmedBlockHash
+            },
+        });
+
+        return block;
     }
 
     async isOrbitParent() {
@@ -2654,6 +2675,17 @@ module.exports = (sequelize, DataTypes) => {
                         yParity: processed.yParity,
                         blobVersionedHashes: processed.blobVersionedHashes,
                         maxFeePerBlobGas: processed.maxFeePerBlobGas,
+                        logsBloom: processed.logsBloom,
+                        mixHash: processed.mixHash,
+                        receiptsRoot: processed.receiptsRoot,
+                        sendCount: processed.sendCount,
+                        sendRoot: processed.sendRoot,
+                        sha3Uncles: processed.sha3Uncles,
+                        size: processed.size,
+                        stateRoot: processed.stateRoot,
+                        transactionsRoot: processed.transactionsRoot,
+                        withdrawals: processed.withdrawals,
+                        requestId: processed.requestId,
                         raw: processed.raw
                     });
                 });
@@ -2676,6 +2708,16 @@ module.exports = (sequelize, DataTypes) => {
                             transactionsCount: block.transactions ? block.transactions.length : 0,
                             state: 'ready',
                             l1BlockNumber: block.l1BlockNumber,
+                            logsBloom: block.logsBloom,
+                            mixHash: block.mixHash,
+                            receiptsRoot: block.receiptsRoot,
+                            sendCount: block.sendCount,
+                            sendRoot: block.sendRoot,
+                            sha3Uncles: block.sha3Uncles,
+                            size: block.size,
+                            stateRoot: block.stateRoot,
+                            transactionsRoot: block.transactionsRoot,
+                            withdrawals: block.withdrawals,
                             raw: block.raw,
                         })
                     ],
@@ -3068,6 +3110,45 @@ module.exports = (sequelize, DataTypes) => {
 
     async findTransaction(hash) {
         const blockAttributes = ['gasLimit', 'timestamp', 'baseFeePerGas'];
+        const transactionAttributes = ['id', 'blockNumber', 'data', 'parsedError', 'rawError', 'from', 'formattedBalanceChanges', 'gasLimit', 'gasPrice', 'hash', 'timestamp', 'to', 'value', 'storage', 'workspaceId', 'raw', 'state', 'transactionIndex', 'nonce', 'type', 'methodDetails',
+            'gas', 'maxFeePerGas', 'maxPriorityFeePerGas', 'accessList', 'yParity', 'blobVersionedHashes', 'maxFeePerBlobGas',
+            [
+                Sequelize.literal(`
+                    (
+                        SELECT COUNT(*)
+                        FROM token_transfers
+                        WHERE token_transfers."transactionId" = "Transaction".id
+                        AND token_transfers."isReward" = false
+                    )::int
+                `), 'tokenTransferCount'
+            ],
+            [
+                Sequelize.literal(`
+                    (
+                        SELECT COUNT(*)
+                        FROM token_balance_changes
+                        WHERE token_balance_changes."transactionId" = "Transaction".id
+                    )::int
+                `), 'tokenBalanceChangeCount'
+            ],
+            [
+                Sequelize.literal(`
+                    (
+                        SELECT COUNT(*)
+                        FROM transaction_trace_steps
+                        WHERE transaction_trace_steps."transactionId" = "Transaction".id
+                    )::int
+                `), 'internalTransactionCount'
+            ]
+        ];
+        const receiptAttributes = ['gasUsed', 'status', 'contractAddress', [sequelize.json('raw.root'), 'root'], 'cumulativeGasUsed', 'raw', 'effectiveGasPrice',
+            'timeboosted', 'gasUsedForL1', 'blobGasUsed', 'blobGasPrice',
+            [Sequelize.literal(`
+                (SELECT COUNT(*)
+                FROM transaction_logs
+                WHERE transaction_logs."transactionReceiptId" = "receipt".id)::int
+            `), 'logCount']
+        ];
         const blockInclude = [];
 
         const orbitConfig = await this.getOrbitConfig();
@@ -3083,52 +3164,18 @@ module.exports = (sequelize, DataTypes) => {
                     attributes: ['id']
                 }
             });
+            receiptAttributes.push('timeboosted', 'gasUsedForL1');
         }
 
         const transactions = await this.getTransactions({
             where: {
                 hash: hash
             },
-            attributes: ['id', 'blockNumber', 'data', 'parsedError', 'rawError', 'from', 'formattedBalanceChanges', 'gasLimit', 'gasPrice', 'hash', 'timestamp', 'to', 'value', 'storage', 'workspaceId', 'raw', 'state', 'transactionIndex', 'nonce', 'type', 'methodDetails',
-                [
-                    Sequelize.literal(`
-                        (
-                            SELECT COUNT(*)
-                            FROM token_transfers
-                            WHERE token_transfers."transactionId" = "Transaction".id
-                            AND token_transfers."isReward" = false
-                        )::int
-                    `), 'tokenTransferCount'
-                ],
-                [
-                    Sequelize.literal(`
-                        (
-                            SELECT COUNT(*)
-                            FROM token_balance_changes
-                            WHERE token_balance_changes."transactionId" = "Transaction".id
-                        )::int
-                    `), 'tokenBalanceChangeCount'
-                ],
-                [
-                    Sequelize.literal(`
-                        (
-                            SELECT COUNT(*)
-                            FROM transaction_trace_steps
-                            WHERE transaction_trace_steps."transactionId" = "Transaction".id
-                        )::int
-                    `), 'internalTransactionCount'
-                ]
-            ],
+            attributes: transactionAttributes,
             include: [
                 {
                     model: sequelize.models.TransactionReceipt,
-                    attributes: ['gasUsed', 'status', 'contractAddress', [sequelize.json('raw.root'), 'root'], 'cumulativeGasUsed', 'raw', [sequelize.json('raw.effectiveGasPrice'), 'effectiveGasPrice'],
-                        [Sequelize.literal(`
-                            (SELECT COUNT(*)
-                            FROM transaction_logs
-                            WHERE transaction_logs."transactionReceiptId" = "receipt".id)::int
-                        `), 'logCount']
-                    ],
+                    attributes: receiptAttributes,
                     as: 'receipt',
                     include: {
                         model: sequelize.models.Contract,

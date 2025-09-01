@@ -121,58 +121,6 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'TransactionLog',
     tableName: 'transaction_logs',
-    hooks: {
-      async afterCreate(log, options) {
-        try {
-          const { Workspace, OrbitChainConfig } = sequelize.models;
-          const parentWs = await Workspace.findByPk(log.workspaceId, { attributes: ['id', 'chainFamily'] });
-          if (!parentWs || parentWs.chainFamily !== 'ARBITRUM') return;
-
-          // Filter for SequencerBatchDelivered by topic0
-          const SEQUENCER_INBOX_ABI = [
-            'event SequencerBatchDelivered(uint256 indexed batchSequenceNumber, bytes32 indexed beforeAcc, bytes32 indexed afterAcc, bytes32 delayedAcc, uint256 afterDelayedMessagesRead, tuple(uint64 minTimestamp, uint64 maxTimestamp, uint64 minBlockNumber, uint64 maxBlockNumber) timeBounds, uint8 dataLocation, bytes data)'
-          ];
-          const { ethers } = require('ethers');
-          const iface = new ethers.utils.Interface(SEQUENCER_INBOX_ABI);
-          const eventFragment = iface.getEvent('SequencerBatchDelivered');
-          const topic0 = iface.getEventTopic(eventFragment);
-
-          // Rollup events
-          const ROLLUP_ABI = [
-            'event NodeCreated(uint64 nodeNum, bytes32 parentHash, uint64 parentNodeNum, uint64 createdAtBlock, uint64 deadlineBlock, bytes32 nodeHash, uint256 seqNumStart, uint256 seqNumEnd, bytes32 stateHash, bytes32 sendAcc, bytes32 logAcc)',
-            'event NodeConfirmed(uint64 nodeNum)'
-          ];
-          const riface = new ethers.utils.Interface(ROLLUP_ABI);
-          const nodeCreatedTopic = riface.getEventTopic('NodeCreated');
-          const nodeConfirmedTopic = riface.getEventTopic('NodeConfirmed');
-
-          const isBatchEvent = Array.isArray(log.topics) && log.topics.length > 0 && log.topics[0] === topic0;
-          const isNodeEvent = Array.isArray(log.topics) && log.topics.length > 0 && (log.topics[0] === nodeCreatedTopic || log.topics[0] === nodeConfirmedTopic);
-
-          if (!isBatchEvent && !isNodeEvent) return;
-
-          // Find all orbit workspaces that depend on this parent workspace and target corresponding infra contract
-          const where = { parentWorkspaceId: log.workspaceId };
-          if (isBatchEvent) {
-            Object.assign(where, { [Op.and]: sequelize.where(sequelize.fn('LOWER', sequelize.col('sequencerInboxContract')), Op.eq, log.address) });
-          } else if (isNodeEvent) {
-            Object.assign(where, { [Op.and]: sequelize.where(sequelize.fn('LOWER', sequelize.col('rollupContract')), Op.eq, log.address) });
-          }
-
-          const orbitConfigs = await OrbitChainConfig.findAll({ where, attributes: ['workspaceId'] });
-          if (!orbitConfigs.length) return;
-
-          const { enqueueBatchDiscovery } = require('../lib/orbitBatchQueue');
-          const { enqueue } = require('../lib/queue');
-          const enqueuePromises = [];
-          for (const cfg of orbitConfigs) {
-            if (isBatchEvent) enqueuePromises.push(enqueueBatchDiscovery(cfg.workspaceId, { reason: 'parent-log', priority: 3, maxAge: 30000 }));
-            if (isNodeEvent) enqueuePromises.push(enqueue('indexOrbitNodes', `indexOrbitNodes-${cfg.workspaceId}`, { workspaceId: cfg.workspaceId }, 3, null, null, true));
-          }
-          await Promise.all(enqueuePromises);
-        } catch (_) {}
-      }
-    }
   });
   return TransactionLog;
 };

@@ -2,13 +2,17 @@ const { ethers } = require('ethers');
 const iface = new ethers.utils.Interface(require('../lib/abis/orbitSequencerInbox.json'));
 
 const isOrbitBatchDeliveredLog = (log) => {
-    const batchDeliveredTopic = iface.getEventTopic('SequencerBatchDelivered');
-    return log.topics[0] === batchDeliveredTopic;
+    try {
+        const batchDeliveredTopic = iface.getEventTopic('SequencerBatchDelivered');
+        return log.topics[0] === batchDeliveredTopic;
+    } catch (e) {
+        return false;
+    }
 };
 
 const getOrbitBatchDeliveredData = (log, transaction) => {
-    const parsedLog = iface.parseLog({ topics: log.topics, data: log.data });
-    const parsedTransaction = iface.parseTransaction({ data: transaction.data });
+    const parsedLog = iface.parseLog(log);
+    const parsedTransaction = iface.parseTransaction(transaction);
 
     let dataLocation = 'onchain';
     if (parsedLog.args.dataLocation) {
@@ -20,12 +24,12 @@ const getOrbitBatchDeliveredData = (log, transaction) => {
     }
 
     return {
-        batchSequenceNumber: String(parsedLog.args.batchSequenceNumber),
-        beforeAcc: String(parsedLog.args.beforeAcc),
-        afterAcc: String(parsedLog.args.afterAcc),
-        delayedAcc: String(parsedLog.args.delayedAcc),
-        afterDelayedMessageRead: String(parsedLog.args.afterDelayedMessageRead),
-        prevMessageCount: parsedTransaction.args.prevMessageCount.toString(),
+        batchSequenceNumber: parsedLog.args.batchSequenceNumber,
+        beforeAcc: parsedLog.args.beforeAcc,
+        afterAcc: parsedLog.args.afterAcc,
+        delayedAcc: parsedLog.args.delayedAcc,
+        afterDelayedMessageRead: parsedLog.args.afterDelayedMessageRead,
+        prevMessageCount: parsedTransaction.args.prevMessageCount,
         newMessageCount: parsedTransaction.args.newMessageCount.toString(),
         metadata: {
             timebounds: {

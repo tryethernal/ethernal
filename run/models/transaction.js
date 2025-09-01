@@ -7,12 +7,12 @@ const ethers = require('ethers');
 const Op = Sequelize.Op
 const { sanitize, stringifyBns, processRawRpcObject, eToNumber } = require('../lib/utils');
 const { trigger } = require('../lib/pusher');
-const { enqueue } = require('../lib/queue');
 const logger = require('../lib/logger');
 let { getTransactionMethodDetails, getTokenTransfer } = require('../lib/abi');
 const moment = require('moment');
 const { isOrbitNodeCreatedLog, isOrbitNodeConfirmedLog, isOrbitNodeRejectedLog, getOrbitCreatedNodeData, getOrbitConfirmedNodeData } = require('../lib/orbitNodes');
 const { isOrbitBatchDeliveredLog, getOrbitBatchDeliveredData } = require('../lib/orbitBatches');
+const { isWithdrawalLog, getWithdrawalData, isOutboxTransactionExecutedLog, getOutboxTransactionExecutedData, getWithdrawalTokenInfo } = require('../lib/orbitWithdrawals');
 
 module.exports = (sequelize, DataTypes) => {
   class Transaction extends Model {
@@ -164,7 +164,7 @@ module.exports = (sequelize, DataTypes) => {
         return sequelize.transaction(async transaction => {
             await this.update({ state: 'ready' }, { transaction });
 
-            const [storedReceipt] = await this.sequelize.models.TransactionReceipt.bulkCreate(
+            const [storedReceipt] = await sequelize.models.TransactionReceipt.bulkCreate(
                 [
                     stringifyBns(sanitize({
                         transactionId: this.id,
@@ -258,8 +258,88 @@ module.exports = (sequelize, DataTypes) => {
                 }
             }
 
+            // Orbit deposit finalization
+            if (this.requestId) {
+                const orbitDeposit = await sequelize.models.OrbitDeposit.findOne({
+                    where: {
+                        workspaceId: this.workspaceId,
+                        messageIndex: this.requestId
+                    }
+                });
+
+                if (orbitDeposit) {
+                    await orbitDeposit.finalize({
+                        l2TransactionId: this.id,
+                        l2TransactionHash: this.hash
+                    }, transaction);
+                }
+            }
+
             if (receipt.to && this.data.length > 2) {
+
+                if (receipt.workspace.orbitConfig) {
+                    // Detect orbit withdrawals
+                    for (const log of storedLogs) {
+                        if (isWithdrawalLog(log)) {
+                            const withdrawalData = getWithdrawalData(log, this);
+                            let tokenSymbol, tokenDecimals;
+                            if (withdrawalData.l1Token) {
+                                const parentWorkspace = await receipt.workspace.orbitConfig.getParentWorkspace();
+                                ({ tokenSymbol, tokenDecimals } = await getWithdrawalTokenInfo(withdrawalData.l1Token, parentWorkspace.rpcServer));
+                            }
+
+                            console.log(withdrawalData);
+
+                            const [createdWithdrawal] = await sequelize.models.OrbitWithdrawal.bulkCreate([
+                                {
+                                    workspaceId: receipt.workspace.id,
+                                    l2TransactionId: this.id,
+                                    l2TransactionHash: this.hash,
+                                    messageNumber: withdrawalData.position,
+                                    to: withdrawalData.destination,
+                                    amount: withdrawalData.amount,
+                                    l1TokenAddress: withdrawalData.l1Token,
+                                    tokenSymbol,
+                                    tokenDecimals,
+                                    timestamp: withdrawalData.timestamp,
+                                    from: withdrawalData.caller
+                                }
+                            ], {
+                                ignoreDuplicates: true,
+                                returning: true,
+                                transaction
+                            });
+
+                            logger.info(`Created withdrawal #${createdWithdrawal.messageNumber} for transaction ${this.hash}`);
+                        }
+                    }
+                }
+
                 for (const orbitChildConfig of receipt.workspace.orbitChildConfigs) {
+                    logger.info(`${receipt.workspace.id} has child ${orbitChildConfig.workspaceId}`)
+
+                    // Detect withdrawal confirmations
+                    if (this.to.toLowerCase() === orbitChildConfig.outboxContract.toLowerCase()) {
+                        logger.info(`Processing outbox transaction executed log for transaction ${this.hash}`);
+
+                        for (const log of storedLogs) {
+                            if (isOutboxTransactionExecutedLog(log)) {
+                                const outboxTransactionExecutedData = getOutboxTransactionExecutedData(log);
+                                const orbitWithdrawal = await sequelize.models.OrbitWithdrawal.findOne({
+                                    where: {
+                                        workspaceId: orbitChildConfig.workspaceId,
+                                        messageNumber: outboxTransactionExecutedData.transactionIndex
+                                    }
+                                });
+
+                                if (!orbitWithdrawal)
+                                    throw new Error('Could not find pending withdrawal');
+
+                                await orbitWithdrawal.finalize(this.id, transaction);
+                            }
+                        }
+                    }
+
                     // Detect orbit batch operations
                     if (this.to.toLowerCase() === orbitChildConfig.sequencerInboxContract.toLowerCase()) {
                         logger.info(`Processing orbit batch operations for transaction ${this.hash}`);
@@ -290,11 +370,14 @@ module.exports = (sequelize, DataTypes) => {
 
                     // Detect orbit node logs
                     if (this.to.toLowerCase() === orbitChildConfig.rollupContract.toLowerCase()) {
-                        logger.info(`Processing orbit node logs for transaction ${this.hash}`);
+                        logger.info(`Processing orbit node logs for transaction ${this.hash} - workspace ${this.workspaceId}`);
                         for (const log of storedLogs) {
                             if (isOrbitNodeCreatedLog(log)) {
                                 logger.info(`Processing orbit node created log for transaction ${this.hash}`);
-                                const createdNodeData = { workspaceId: this.workspaceId, ...getOrbitCreatedNodeData(log) };
+                                const createdNodeData = {
+                                    workspaceId: orbitChildConfig.workspaceId,
+                                    ...getOrbitCreatedNodeData(log)
+                                };
                                 const [createdNode] = await sequelize.models.OrbitNode.bulkCreate([createdNodeData], {
                                     ignoreDuplicates: true,
                                     returning: true,
@@ -305,19 +388,23 @@ module.exports = (sequelize, DataTypes) => {
                             else if (isOrbitNodeConfirmedLog(log)) {
                                 logger.info(`Processing orbit node confirmed log for transaction ${this.hash}`);
                                 const confirmedNodeData = getOrbitConfirmedNodeData(log);
-                                const orbitNode = await sequelize.models.OrbitNode.findOne({
-                                    where: { workspaceId: this.workspaceId, nodeNum: confirmedNodeData.nodeNum }
-                                })
+
+                                const where = { workspaceId: orbitChildConfig.workspaceId };
+                                if (confirmedNodeData.nodeNum)
+                                    where.nodeNum = confirmedNodeData.nodeNum;
+                                if (confirmedNodeData.nodeHash)
+                                    where.nodeHash = confirmedNodeData.nodeHash;
+
+                                const orbitNode = await sequelize.models.OrbitNode.findOne({ where });
 
                                 if (!orbitNode) {
                                     logger.error(`Orbit node ${confirmedNodeData.nodeNum} not found for transaction ${this.hash}`);
                                     continue;
                                 }
-
                                 if (orbitNode.confirmed)
                                     logger.info(`Node ${orbitNode.nodeNum} already confirmed for transaction ${this.hash}`);
                                 else {
-                                    await orbitNode.confirm(getOrbitConfirmedNodeData(log), transaction);
+                                    await orbitNode.confirm(confirmedNodeData, transaction);
                                     logger.info(`Confirmed node ${orbitNode.id} for transaction ${this.hash}`);
                                 }
                             }
@@ -758,19 +845,19 @@ module.exports = (sequelize, DataTypes) => {
     maxFeePerGas: {
         type: DataTypes.STRING,
         get() {
-            return this.getDataValue('maxFeePerGas') || this.getDataValue('raw.maxFeePerGas');
+            return String(this.getDataValue('maxFeePerGas') || this.getDataValue('raw.maxFeePerGas'));
         }
     },
     maxPriorityFeePerGas: {
         type: DataTypes.STRING,
         get() {
-            return this.getDataValue('maxPriorityFeePerGas') || this.getDataValue('raw.maxPriorityFeePerGas');
+            return String(this.getDataValue('maxPriorityFeePerGas') || this.getDataValue('raw.maxPriorityFeePerGas'));
         }
     },
     gas: {
         type: DataTypes.STRING,
         get() {
-            return this.getDataValue('gas') || this.getDataValue('raw.gas');
+            return String(this.getDataValue('gas') || this.getDataValue('raw.gas'));
         }
     },
     accessList: {
@@ -801,6 +888,7 @@ module.exports = (sequelize, DataTypes) => {
             return this.getDataValue('maxFeePerBlobGas') || this.getDataValue('raw.maxFeePerBlobGas');
         }
     },
+    requestId: DataTypes.INTEGER
   }, {
     hooks: {
         afterBulkCreate(transactions, options) {

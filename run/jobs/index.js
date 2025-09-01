@@ -1,4 +1,3 @@
-
 module.exports = {
     // High priority
     blockSync: require('./blockSync'),
@@ -13,6 +12,9 @@ module.exports = {
     increaseStripeBillingQuota: require('./increaseStripeBillingQuota'),
     finalizePendingOrbitBatches: require('./finalizePendingOrbitBatches'),
     startSafeBlockListener: require('./startSafeBlockListener'),
+    checkOrbitMessageDeliveredLogs: require('./checkOrbitMessageDeliveredLogs'),
+    backfillOrbitMessageDeliveredLogs: require('./backfillOrbitMessageDeliveredLogs'),
+    storeOrbitDeposit: require('./storeOrbitDeposit'),
 
     // Medium Priority
     processContract: require('./processContract'),

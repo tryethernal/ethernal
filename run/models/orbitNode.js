@@ -8,49 +8,67 @@ module.exports = (sequelize, DataTypes) => {
       OrbitNode.hasMany(models.OrbitBatch, { foreignKey: 'orbitNodeId', as: 'batches' });
     }
 
-    async confirm({ confirmedBlockHash, confirmedSendRoot }, transaction) {
-      const parentNode = await sequelize.models.OrbitNode.findOne({
+    async confirm(confirmedNodeData, transaction) {
+      const latestConfirmedBlock = await sequelize.models.Block.findOne({
         where: {
           workspaceId: this.workspaceId,
-          nodeNum: this.parentNodeHash
-        }
+          hash: confirmedNodeData.confirmedBlockHash
+        },
+        include: ['orbitBatch']
       });
 
-      const previousInboxMaxCount = parentNode ? parentNode.inboxMaxCount : 0;
+      if (!latestConfirmedBlock)
+        throw new Error('No confirmed block found');
 
-      const confirmedBatches = await sequelize.models.OrbitBatch.findAll({
-        where: {
-          workspaceId: this.workspaceId,
-          batchSequenceNumber: {
-            [Op.lte]: this.inboxMaxCount,
-            [Op.gt]: previousInboxMaxCount
+      if (latestConfirmedBlock.orbitBatch) {
+        const confirmedBatches = await sequelize.models.OrbitBatch.findAll({
+          where: {
+            workspaceId: this.workspaceId,
+            batchSequenceNumber: {
+              [Op.lte]: latestConfirmedBlock.orbitBatch.batchSequenceNumber
+            }
           }
-        }
-      });
+        });
 
-      for (const batch of confirmedBatches) {
-        await batch.finalize(transaction);
+        for (const batch of confirmedBatches) {
+          await batch.finalize(this.id, transaction);
+        }
       }
 
-      return this.update({ confirmed: true, confirmedBlockHash, confirmedSendRoot }, { transaction });
+      await sequelize.models.OrbitWithdrawal.update({
+        status: 'ready'
+      }, {
+        where: {
+          workspaceId: this.workspaceId,
+          messageNumber: {
+            [Op.lte]: latestConfirmedBlock.sendCount
+          },
+          status: 'waiting'
+        }
+      }, { transaction });
+
+      return this.update({
+        status: 'confirmed',
+        confirmedBlockHash: confirmedNodeData.confirmedBlockHash,
+        confirmedSendRoot: confirmedNodeData.confirmedSendRoot
+      }, { transaction });
     }
   }
 
   OrbitNode.init({
     workspaceId: DataTypes.INTEGER,
     nodeNum: DataTypes.BIGINT,
+    createdTxHash: DataTypes.STRING,
+    createdAt: DataTypes.DATE,
+    updatedAt: DataTypes.DATE,
     parentNodeHash: DataTypes.STRING,
     nodeHash: DataTypes.STRING,
-    executionHash: DataTypes.STRING,
     afterInboxBatchAcc: DataTypes.STRING,
     wasmModuleRoot: DataTypes.STRING,
     inboxMaxCount: DataTypes.BIGINT,
-    lastIncludedBatchSequenceNumber: DataTypes.BIGINT,
-    confirmed: DataTypes.BOOLEAN,
-    rejected: DataTypes.BOOLEAN,
-    createdTxHash: DataTypes.STRING,
     confirmedBlockHash: DataTypes.STRING,
-    confirmedSendRoot: DataTypes.STRING
+    confirmedSendRoot: DataTypes.STRING,
+    status: DataTypes.ENUM('pending', 'confirmed', 'rejected')
   }, {
     sequelize,
     modelName: 'OrbitNode',

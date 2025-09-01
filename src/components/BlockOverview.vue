@@ -136,7 +136,7 @@
                             </div>
                         </template>
                         <v-list-item-title class="text-body-2">
-                            {{ block.raw && block.raw.size ? `${parseInt(block.raw.size).toLocaleString()} bytes` : '-' }}
+                            {{ block.size ? `${parseInt(block.size).toLocaleString()} bytes` : '-' }}
                         </v-list-item-title>
                     </v-list-item>
 
@@ -273,7 +273,7 @@
                     </v-list-item>
 
                     <!-- Sha3Uncles -->
-                    <v-list-item v-if="block.raw && block.raw.sha3Uncles" class="d-flex flex-column flex-sm-row">
+                    <v-list-item v-if="block.sha3Uncles" class="d-flex flex-column flex-sm-row">
                         <template v-slot:prepend>
                             <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;">
                                 <v-icon size="small" color="grey" class="mr-1" v-tooltip="'The SHA3 hash of the uncle blocks in this block'">mdi-help-circle-outline</v-icon>
@@ -281,12 +281,12 @@
                             </div>
                         </template>
                         <v-list-item-title class="text-body-2 text-truncate" style="overflow-wrap: break-word;">
-                            {{ block.raw.sha3Uncles }}
+                            {{ block.sha3Uncles }}
                         </v-list-item-title>
                     </v-list-item>
 
                     <!-- State Root -->
-                    <v-list-item v-if="block.raw && block.raw.stateRoot" class="d-flex flex-column flex-sm-row">
+                    <v-list-item v-if="block.stateRoot" class="d-flex flex-column flex-sm-row">
                         <template v-slot:prepend>
                             <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;">
                                 <v-icon size="small" color="grey" class="mr-1" v-tooltip="'The root of the state trie after this block'">mdi-help-circle-outline</v-icon>
@@ -294,7 +294,7 @@
                             </div>
                         </template>
                         <v-list-item-title class="text-body-2 text-truncate" style="overflow-wrap: break-word;">
-                            {{ block.raw.stateRoot }}
+                            {{ block.stateRoot }}
                         </v-list-item-title>
                     </v-list-item>
 

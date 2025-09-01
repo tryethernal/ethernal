@@ -409,13 +409,43 @@ export default {
                 });
             },
 
-            getOrbitStats(explorerId) {
-                const params = { 
+            getOrbitDeposits(options) {
+                const params = {
                     firebaseUserId: firebaseUserId.value,
                     workspace: workspace.value,
-                    explorerId 
+                    ...options
                 };
-                const resource = `${envStore.apiRoot}/api/orbit/stats`;
+                const resource = `${envStore.apiRoot}/api/orbitDeposits`;
+                return axios.get(resource, { params });
+            },
+
+            getOrbitWithdrawalClaimCallData(hash, messageNumber) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    messageNumber
+                };
+                const resource = `${envStore.apiRoot}/api/orbitWithdrawals/${hash}/claimCalldata`;
+                return axios.get(resource, { params });
+            },
+
+            getL2TransactionWithdrawals(hash) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    hash
+                };
+                const resource = `${envStore.apiRoot}/api/orbitWithdrawals/${hash}`;
+                return axios.get(resource, { params });
+            },
+
+            getOrbitWithdrawals(options) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    ...options
+                };
+                const resource = `${envStore.apiRoot}/api/orbitWithdrawals`;
                 return axios.get(resource, { params });
             },
 

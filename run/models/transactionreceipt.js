@@ -112,38 +112,31 @@ module.exports = (sequelize, DataTypes) => {
     blobGasUsed: {
         type: DataTypes.STRING,
         get() {
-            return this.getDataValue('blobGasUsed') || this.getDataValue('raw.blobGasUsed');
-        },
-        set(value) {
-            this.setDataValue('blobGasUsed', String(value));
+            return String(this.getDataValue('blobGasUsed') || this.getDataValue('raw.blobGasUsed'));
         }
     },
     blobGasPrice: {
         type: DataTypes.STRING,
         get() {
-            return this.getDataValue('blobGasPrice') || this.getDataValue('raw.blobGasPrice');
+            return String(this.getDataValue('blobGasPrice') || this.getDataValue('raw.blobGasPrice'));
         }
     },
     timeboosted: {
         type: DataTypes.BOOLEAN,
         get() {
             return this.getDataValue('timeboosted') || this.getDataValue('raw.timeboosted');
-        },
-        set(value) {
-            const _val = value == '0x1' ? true : false;
-            this.setDataValue('timeboosted', _val);
         }
     },
     gasUsedForL1: {
         type: DataTypes.STRING,
         get() {
-            return this.getDataValue('gasUsedForL1') || this.getDataValue('raw.gasUsedForL1');
+            return String(this.getDataValue('gasUsedForL1') || this.getDataValue('raw.gasUsedForL1'));
         }
     },
     effectiveGasPrice: {
         type: DataTypes.STRING,
         get() {
-            return this.getDataValue('effectiveGasPrice') || this.getDataValue('raw.effectiveGasPrice');
+            return String(this.getDataValue('effectiveGasPrice') || this.getDataValue('raw.effectiveGasPrice'));
         }
     },
     raw: DataTypes.JSON

@@ -35,6 +35,10 @@ module.exports = async job => {
                 {
                     model: OrbitChainConfig,
                     as: 'orbitChildConfigs'
+                },
+                {
+                    model: OrbitChainConfig,
+                    as: 'orbitConfig'
                 }
             ]
         },
@@ -72,8 +76,8 @@ module.exports = async job => {
     if (!workspace.explorer)
         return 'Inactive explorer';
 
-    if (!workspace.explorer.shouldSync)
-        return 'Disabled sync';
+    // if (!workspace.explorer.shouldSync)
+    //     return 'Disabled sync';
 
     if (workspace.rpcHealthCheck && workspace.rpcHealthCheckEnabled && !workspace.rpcHealthCheck.isReachable)
         return 'RPC is unreachable';
@@ -122,8 +126,6 @@ module.exports = async job => {
             receipt,
             Object.keys(TransactionReceipt.rawAttributes).concat(['logs']),
         );
-        console.log(receipt)
-        console.log(processedReceipt)
 
         processedReceipt.workspace = workspace;
 

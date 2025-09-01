@@ -13,6 +13,7 @@ const Sequelize = require('sequelize');
 const { getDemoUserId, getMaxBlockForSyncReset } = require('./env');
 const models = require('../models');
 const { firebaseHash }  = require('./crypto');
+const { ORBIT_L2_TO_L1_LOG_TOPIC } = require('../constants/orbit');
 
 const Op = Sequelize.Op;
 const User = models.User;
@@ -33,7 +34,108 @@ const ExplorerFaucet = models.ExplorerFaucet;
 const ExplorerV2Dex = models.ExplorerV2Dex;
 const V2DexPair = models.V2DexPair;
 const OrbitBatch = models.OrbitBatch;
-const OrbitConfig = models.OrbitChainConfig;
+const OrbitChainConfig = models.OrbitChainConfig;
+const OrbitWithdrawal = models.OrbitWithdrawal;
+const OrbitDeposit = models.OrbitDeposit;
+
+const getWorkspaceOrbitDeposits = async (workspaceId, page, itemsPerPage, order) => {
+    if (!workspaceId)
+        throw new Error('Missing parameter');
+    
+    const workspace = await Workspace.findByPk(workspaceId);
+    if (!workspace)
+        throw new Error('Could not find workspace');
+
+    return OrbitDeposit.findAndCountAll({
+        where: { workspaceId },
+        order: [['messageIndex', order]],
+        limit: parseInt(itemsPerPage),
+        offset: (parseInt(page) - 1) * parseInt(itemsPerPage)
+    });
+}
+
+const getL2TransactionForOrbitWithdrawalClaim = async (workspaceId, hash, messsageNumber) => {
+    if (!workspaceId || !hash)
+        throw new Error('Missing parameter');
+
+    const withdrawal = await OrbitWithdrawal.findOne({
+        where: {
+            workspaceId,
+            l2TransactionHash: hash,
+            messageNumber: messsageNumber
+        },
+        include: [
+            {
+                model: Transaction,
+                as: 'l2Transaction',
+                include: [
+                    {
+                        model: TransactionReceipt,
+                        as: 'receipt',
+                    },
+                    {
+                        model: Workspace,
+                        as: 'workspace',
+                        include: {
+                            model: OrbitChainConfig,
+                            as: 'orbitConfig',
+                            attributes: ['outboxContract', 'parentChainRpcServer', 'parentChainId']
+                        }
+                    }
+                ]
+            },
+        ]
+    });
+
+    const logs = await withdrawal.l2Transaction.receipt.getLogs();
+
+    const log = logs.find(log => log.topics[0] === ORBIT_L2_TO_L1_LOG_TOPIC);
+
+    return { log, transaction: withdrawal.l2Transaction };
+};
+
+/**
+ * Retrieves an orbit withdrawal l2 transactionfor a workspace
+ * @param {string} workspaceId - The workspace id
+ * @param {string} hash - The hash of the transaction
+ * @returns {Promise<Object>} - The orbit withdrawal
+ */
+const getL2TransactionOrbitWithdrawals = (workspaceId, hash) => {
+    if (!workspaceId || !hash)
+        throw new Error('Missing parameter');
+
+    return OrbitWithdrawal.findAndCountAll({
+        where: {
+            workspaceId,
+            l2TransactionHash: hash
+        },
+        attributes: ['messageNumber', 'status', 'to', 'amount', 'l1TokenAddress', 'tokenSymbol', 'tokenDecimals'],
+    });
+};
+
+/**
+ * Retrieves a list of orbit withdrawals for a workspace
+ * @param {string} workspaceId - The workspace id
+ * @param {number} page - The page number
+ * @param {number} itemsPerPage - The number of items per page
+ * @param {string} order - The order to sort by
+ * @returns {Promise<Array>} - A list of orbit withdrawals
+ */
+const getWorkspaceOrbitWithdrawals = (workspaceId, page, itemsPerPage, order) => {
+    if (!workspaceId)
+        throw new Error('Missing parameter');
+
+    const sanitizedOrder = order === 'ASC' ? 'ASC' : 'DESC';
+    return OrbitWithdrawal.findAndCountAll({
+        where: {
+            workspaceId
+        },
+        attributes: ['to', 'amount', 'messageNumber', 'status', 'l1TokenAddress', 'tokenSymbol', 'tokenDecimals', 'timestamp', 'from', 'l2TransactionHash', 'l1TransactionHash'],
+        order: [['messageNumber', sanitizedOrder]],
+        limit: parseInt(itemsPerPage),
+        offset: (parseInt(page) - 1) * parseInt(itemsPerPage)
+    });
+};
 
 /**
  * Retrieves a list of transactions for a specific batch
@@ -3311,5 +3413,9 @@ module.exports = {
     getWorkspaceByIdWithOrbitConfig: getWorkspaceByIdWithOrbitConfig,
     getOrbitBatch: getOrbitBatch,
     getOrbitBatchBlocks: getOrbitBatchBlocks,
-    getWorkspaceOrbitBatchTransactions: getWorkspaceOrbitBatchTransactions
+    getWorkspaceOrbitBatchTransactions: getWorkspaceOrbitBatchTransactions,
+    getWorkspaceOrbitWithdrawals: getWorkspaceOrbitWithdrawals,
+    getL2TransactionOrbitWithdrawals: getL2TransactionOrbitWithdrawals,
+    getL2TransactionForOrbitWithdrawalClaim: getL2TransactionForOrbitWithdrawalClaim,
+    getWorkspaceOrbitDeposits: getWorkspaceOrbitDeposits
 };

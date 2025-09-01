@@ -6,7 +6,7 @@
         Processed on rollup
     </v-chip>
 
-    <v-icon class="mx-2" color="success">mdi-arrow-right-thick</v-icon>
+    <v-icon class="mx-2" :color="STATE_ORDER.indexOf(props.status) > 0 ? 'success' : 'grey'">mdi-arrow-right-thick</v-icon>
 
     <v-chip variant="outlined" label :color="sentToParentChainData.color">
         <template #prepend v-if="sentToParentChainData.icon">
@@ -15,9 +15,9 @@
         Sent to parent chain
     </v-chip>
 
-    <v-icon class="mx-2" :color="sentToParentChainData.color">mdi-arrow-right-thick</v-icon>
+    <v-icon class="mx-2" :color="STATE_ORDER.indexOf(props.status) > 2 ? 'success' : 'grey'">mdi-arrow-right-thick</v-icon>
 
-    <v-chip variant="outlined" label :color="sentToParentChainData.color">
+    <v-chip variant="outlined" label :color="confirmedOnParentChainData.color">
         <template #prepend v-if="confirmedOnParentChainData.icon">
             <v-icon class="mr-1" :color="confirmedOnParentChainData.color">{{ confirmedOnParentChainData.icon }}</v-icon>
         </template>

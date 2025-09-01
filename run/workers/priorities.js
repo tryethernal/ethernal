@@ -10,7 +10,10 @@ const priorities = {
         'receiptSync',
         'processOrbitTransaction',
         'finalizePendingOrbitBatches',
-        'startSafeBlockListener'
+        'startSafeBlockListener',
+        'checkOrbitMessageDeliveredLogs',
+        'backfillOrbitMessageDeliveredLogs',
+        'storeOrbitDeposit'
     ],
     'medium': [
         'processContract',

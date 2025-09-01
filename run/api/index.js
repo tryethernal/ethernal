@@ -26,6 +26,9 @@ const caddy = require('./caddy');
 const orbit = require('./orbit');
 const orbitHealth = require('./orbitHealth');
 const orbitBatches = require('./orbitBatches');
+const orbitWithdrawals = require('./orbitWithdrawals');
+const orbitDeposits = require('./orbitDeposits');
+
 router.use('/blocks', blocks);
 router.use('/contracts', contracts);
 router.use('/transactions', transactions);
@@ -51,6 +54,8 @@ router.use('/caddy', caddy);
 router.use('/orbit', orbit);
 router.use('/orbit', orbitHealth);
 router.use('/orbitBatches', orbitBatches);
+router.use('/orbitWithdrawals', orbitWithdrawals);
+router.use('/orbitDeposits', orbitDeposits);
 
 if (isDemoEnabled()) {
     const demo = require('./demo');

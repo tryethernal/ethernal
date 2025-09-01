@@ -5,6 +5,7 @@ const logger = require('../lib/logger');
 const { processRawRpcObject } = require('../lib/utils');
 const { enqueue, bulkEnqueue } = require('../lib/queue');
 const RateLimiter = require('../lib/rateLimiter');
+const constants = require('../constants/orbit');
 
 module.exports = async job => {
     const data = job.data;
@@ -19,6 +20,7 @@ module.exports = async job => {
         },
         include: [
             'user',
+            'orbitConfig',
             {
                 model: Explorer,
                 as: 'explorer',
@@ -111,9 +113,27 @@ module.exports = async job => {
                 parentWorkspaceId: workspace.id
             }
         });
-        if (orbitChildConfigs.length > 0) {
+
+        if (workspace.orbitConfig || orbitChildConfigs.length > 0) {
             // Filter transactions to only include those that interact with rollupContract or sequencerInbox
-            const contracts = ['rollupContract', 'sequencerInboxContract', 'bridgeContract', 'inboxContract', 'outboxContract', 'stakeToken'];
+            const contracts = [
+                'rollupContract',
+                'sequencerInboxContract',
+                'bridgeContract',
+                'inboxContract',
+                'outboxContract',
+                'stakeToken',
+            
+                'l1GatewayRouter',
+                'l1Erc20Gateway',
+                'l1WethGateway',
+                'l1CustomGateway',
+            
+                'l2GatewayRouter',
+                'l2Erc20Gateway',
+                'l2WethGateway',
+                'l2CustomGateway'
+            ];
 
             let contractAddresses = [];
             for (const orbitConfig of orbitChildConfigs) {
@@ -123,6 +143,15 @@ module.exports = async job => {
                 }
             }
 
+            if (workspace.orbitConfig) {
+                for (const contractKey of contracts) {
+                    if (!workspace.orbitConfig[contractKey]) continue;
+                    contractAddresses.push(workspace.orbitConfig[contractKey].toLowerCase());
+                }
+            }
+
+            contractAddresses.push(constants.ARBSYS_ADDRESS.toLowerCase(), constants.ARB_RETRYABLE_TX_ADDRESS.toLowerCase());
+
             // Remove duplicates just in case
             contractAddresses = [...new Set(contractAddresses)];
 
@@ -131,7 +160,10 @@ module.exports = async job => {
                 if (!tx.to) return false;
                 return contractAddresses.includes(tx.to.toLowerCase());
             });
-            
+
+            if (filteredTransactions.length > 0)
+                logger.info(`filteredTransactions: ${filteredTransactions.length}`);
+
             processedBlock.transactions = filteredTransactions;
             processedBlock.transactionsCount = filteredTransactions.length;
         }

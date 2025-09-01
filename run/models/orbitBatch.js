@@ -197,9 +197,10 @@ module.exports = (sequelize, DataTypes) => {
                 return sequelize.transaction(_confirm);
         }
 
-        finalize(transaction) {
+        finalize(orbitNodeId, transaction) {
             return this.update({
-                confirmationStatus: 'finalized',
+                orbitNodeId,
+                confirmationStatus: 'finalized'
             }, { transaction });
         }
 
