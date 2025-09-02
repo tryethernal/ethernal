@@ -7,7 +7,7 @@ require('../mocks/middlewares/browserSync');
 require('../mocks/lib/errors');
 require('../mocks/lib/orbitWithdrawals');
 const db = require('../../lib/firebase');
-const { unmanagedError } = require('../../lib/errors');
+const { unmanagedError, managedError } = require('../../lib/errors');
 const { getClaimTransactionData } = require('../../lib/orbitWithdrawals');
 
 const supertest = require('supertest');
@@ -18,6 +18,10 @@ const BASE_URL = '/api/orbitWithdrawals';
 
 beforeEach(() => {
     jest.clearAllMocks();
+
+    managedError.mockImplementation((error, req, res) => {
+        res.status(400).send(error.message);
+    });
     
     // Mock unmanagedError to call next(error) to trigger error handling middleware
     unmanagedError.mockImplementation((error, req, next) => {
@@ -77,22 +81,10 @@ describe(`GET ${BASE_URL}/:hash/claimCalldata`, () => {
     });
 
     it('Should handle missing messageNumber parameter', (done) => {
-        jest.spyOn(db, 'getL2TransactionForOrbitWithdrawalClaim').mockResolvedValue({
-            log: mockLog,
-            transaction: mockTransaction
-        });
-        getClaimTransactionData.mockResolvedValue('0xabcdef123456');
-
         request.get(`${BASE_URL}/0x123/claimCalldata`)
-            .expect(200)
-            .then(({ body }) => {
-                expect(body).toEqual({
-                    callData: '0xabcdef123456',
-                    to: '0x1234567890abcdef',
-                    l1RpcServer: 'https://rpc.example.com',
-                    l1ChainId: 1
-                });
-                expect(db.getL2TransactionForOrbitWithdrawalClaim).toHaveBeenCalledWith(1, '0x123', undefined);
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual('Missing parameters');
                 done();
             });
     });

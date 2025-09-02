@@ -3,7 +3,7 @@ const router = express.Router();
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const db = require('../lib/firebase');
 const { getClaimTransactionData } = require('../lib/orbitWithdrawals');
-const { unmanagedError } = require('../lib/errors');
+const { unmanagedError, managedError } = require('../lib/errors');
 
 /**
  * Generate calldata that the user will have to send to claim an orbit withdrawal
@@ -18,7 +18,7 @@ router.get('/:hash/claimCalldata', workspaceAuthMiddleware, async (req, res, nex
     try {
         const { hash, messageNumber } = data;
         if (!hash || !messageNumber)
-            throw new Error('Missing parameters');
+            return managedError(new Error('Missing parameters'), req, res);
 
         const { log, transaction } = await db.getL2TransactionForOrbitWithdrawalClaim(data.workspace.id, hash, messageNumber);
         const latestConfirmedBlock = await transaction.workspace.getOrbitLatestConfirmedBlock();
@@ -31,7 +31,7 @@ router.get('/:hash/claimCalldata', workspaceAuthMiddleware, async (req, res, nex
             l1RpcServer: transaction.workspace.orbitConfig.parentChainRpcServer,
             l1ChainId: transaction.workspace.orbitConfig.parentChainId
         });
-    } catch (error) {   
+    } catch (error) {
         unmanagedError(error, req, next);
     }
 });
