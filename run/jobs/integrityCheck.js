@@ -23,7 +23,15 @@ module.exports = async job => {
                 include: { model: models.Block, as: 'block' }
             },
             { model: models.User, as: 'user' },
-            { model: models.Explorer, as: 'explorer' },
+            {
+                model: models.Explorer,
+                as: 'explorer',
+                include: {
+                    model: models.StripeSubscription,
+                    as: 'stripeSubscription',
+                    include: { model: models.StripePlan, as: 'stripePlan' }
+                }
+            }
         ]
     });
 
@@ -38,6 +46,12 @@ module.exports = async job => {
 
     if (!workspace.explorer)
         return 'Should have an explorer associated';
+
+    if (workspace.explorer.stripeSubscription &&
+        workspace.explorer.stripeSubscription.stripePlan &&
+        workspace.explorer.stripeSubscription.stripePlan.capabilities.skipIntegrityCheck
+    )
+        return 'Integrity check disabled on this plan';
 
     if (workspace.explorer.isDemo)
         return 'No check on demo explorers';
