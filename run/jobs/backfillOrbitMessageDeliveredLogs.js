@@ -10,6 +10,9 @@ module.exports = async (job) => {
     const data = job.data;
 
     const orbitConfig = await OrbitChainConfig.findByPk(data.orbitChainConfigId);
+    if (!orbitConfig)
+        throw new Error('OrbitChainConfig not found');
+
     const parentWorkspace = await orbitConfig.getParentWorkspace();
     const bridgeContract = orbitConfig.bridgeContract;
     let fromBlock = data.fromBlock;
@@ -39,21 +42,21 @@ module.exports = async (job) => {
     });
 
     const logs = await client.getFilterLogs({ filter });
+    const deposits = [];
     for (const log of logs) {
         if ([3, 7, 9, 12].includes(log.args.kind)) {
             logger.info(`Found deposit #${parseInt(log.args.messageIndex)}`)
-            await OrbitDeposit.bulkCreate([
-                {
-                    workspaceId: orbitConfig.workspaceId,
-                    l1Block: parseInt(log.blockNumber),
-                    l1TransactionHash: log.transactionHash,
-                    messageIndex: parseInt(log.args.messageIndex),
-                    timestamp: String(log.args.timestamp),
-                    sender: log.args.sender
-                }
-            ], { ignoreDuplicates: true });
+            deposits.push({
+                workspaceId: orbitConfig.workspaceId,
+                l1Block: parseInt(log.blockNumber),
+                l1TransactionHash: log.transactionHash,
+                messageIndex: parseInt(log.args.messageIndex),
+                timestamp: String(log.args.timestamp),
+                sender: log.args.sender
+            });
         }
     }
+    await OrbitDeposit.bulkCreate(deposits, { ignoreDuplicates: true });
 
     const newFromBlock = fromBlock - SCAN_RANGE;
     return enqueue('backfillOrbitMessageDeliveredLogs', `backfillOrbitMessageDeliveredLogs-${orbitConfig.id}-${newFromBlock}-${fromBlock - 2 * SCAN_RANGE}`, {

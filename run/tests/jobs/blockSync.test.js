@@ -4,7 +4,7 @@ require('../mocks/lib/queue');
 require('../mocks/lib/firebase');
 require('../mocks/lib/transactions');
 require('../mocks/lib/logger');
-const { Workspace } = require('../mocks/models');
+const { Workspace, OrbitChainConfig } = require('../mocks/models');
 
 const db = require('../../lib/firebase');
 const { enqueue, bulkEnqueue } = require('../../lib/queue');
@@ -13,7 +13,11 @@ const { ProviderConnector } = require('../../lib/rpc');
 const blockSync = require('../../jobs/blockSync');
 const hasReachedTransactionQuota = jest.fn().mockResolvedValue(false);
 
-beforeEach(() => jest.clearAllMocks());
+beforeEach(() => {
+    jest.clearAllMocks();
+    // Mock OrbitChainConfig.findAll for all tests
+    jest.spyOn(OrbitChainConfig, 'findAll').mockResolvedValue([]);
+});
 
 describe('blockSync', () => {
     const mockSafeCreatePartialBlock = jest.fn();
@@ -40,8 +44,8 @@ describe('blockSync', () => {
         blockSync({ opts: { priority: 1 }, data : { userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
             .then(res => {
                 expect(bulkEnqueue).toHaveBeenCalledWith('receiptSync', [
-                    { name: 'receiptSync-1-0x123', data: { transactionId: 1, transactionHash: '0x123', workspaceId: 1 }},
-                    { name: 'receiptSync-1-0x456', data: { transactionId: 2, transactionHash: '0x456', workspaceId: 1 }}
+                    { name: 'receiptSync-1-0x123', data: { transactionId: 1, transactionHash: '0x123', workspaceId: 1, source: undefined, rateLimited: undefined }},
+                    { name: 'receiptSync-1-0x456', data: { transactionId: 2, transactionHash: '0x456', workspaceId: 1, source: undefined, rateLimited: undefined }}
                 ], 1);
                 expect(res).toEqual('Block synced');
                 done();
@@ -69,7 +73,7 @@ describe('blockSync', () => {
         }));
 
         blockSync({ opts: { priority: 1 }, data : { source: 'cli-light', userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
-            .then(res => {
+            .then(() => {
                 expect(enqueue).toHaveBeenCalledWith('blockSync', 'blockSync-1-1-1609459200000', {
                     userId: 'abc',
                     workspace: 'ws',
@@ -104,7 +108,7 @@ describe('blockSync', () => {
         }));
 
         blockSync({ opts: { priority: 1 }, data : { source: 'cli-light', rateLimited: true, userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
-            .then(res => {
+            .then(() => {
                 expect(enqueue).toHaveBeenCalledWith('blockSync', 'blockSync-1-1-1609459200000', {
                     userId: 'abc',
                     workspace: 'ws',
@@ -242,6 +246,109 @@ describe('blockSync', () => {
             });
     });
 
+    it('Should filter transactions when orbit config exists', (done) => {
+        mockSafeCreatePartialBlock.mockResolvedValue({ transactions: []});
+        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+            id: 1,
+            rpcServer: 'http://localhost:8545',
+            rpcHealthCheck: {
+                isReachable: true
+            },
+            explorer: {
+                hasReachedTransactionQuota,
+                stripeSubscription: {},
+                shouldSync: true
+            },
+            orbitConfig: {
+                rollupContract: '0x1234567890123456789012345678901234567890',
+                sequencerInboxContract: '0x0987654321098765432109876543210987654321'
+            },
+            safeCreatePartialBlock: mockSafeCreatePartialBlock
+        });
+        jest.spyOn(OrbitChainConfig, 'findAll').mockResolvedValue([]);
+        
+        ProviderConnector.mockImplementationOnce(() => ({
+            fetchRawBlockWithTransactions: jest.fn(() => ({
+                number: '0x1',
+                customField: 1,
+                transactions: [
+                    { hash: '0x123', to: '0x1234567890123456789012345678901234567890' },
+                    { hash: '0x456', to: '0x0987654321098765432109876543210987654321' },
+                    { hash: '0x789', to: '0x1111111111111111111111111111111111111111' }
+                ]
+            })),
+        }));
+
+        blockSync({ opts: { priority: 1 }, data : { userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
+            .then(res => {
+                expect(res).toEqual('Block synced');
+                expect(mockSafeCreatePartialBlock).toHaveBeenCalledWith({
+                    number: 1,
+                    raw: {
+                        customField: 1
+                    },
+                    transactions: [
+                        { hash: '0x123', to: '0x1234567890123456789012345678901234567890' },
+                        { hash: '0x456', to: '0x0987654321098765432109876543210987654321' }
+                    ],
+                    transactionsCount: 2
+                });
+                done();
+            });
+    });
+
+    it('Should filter transactions when orbit child configs exist', (done) => {
+        mockSafeCreatePartialBlock.mockResolvedValue({ transactions: []});
+        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+            id: 1,
+            rpcServer: 'http://localhost:8545',
+            rpcHealthCheck: {
+                isReachable: true
+            },
+            explorer: {
+                hasReachedTransactionQuota,
+                stripeSubscription: {},
+                shouldSync: true
+            },
+            safeCreatePartialBlock: mockSafeCreatePartialBlock
+        });
+        jest.spyOn(OrbitChainConfig, 'findAll').mockResolvedValue([
+            {
+                rollupContract: '0x1234567890123456789012345678901234567890',
+                bridgeContract: '0x0987654321098765432109876543210987654321'
+            }
+        ]);
+        
+        ProviderConnector.mockImplementationOnce(() => ({
+            fetchRawBlockWithTransactions: jest.fn(() => ({
+                number: '0x1',
+                customField: 1,
+                transactions: [
+                    { hash: '0x123', to: '0x1234567890123456789012345678901234567890' },
+                    { hash: '0x456', to: '0x0987654321098765432109876543210987654321' },
+                    { hash: '0x789', to: '0x1111111111111111111111111111111111111111' }
+                ]
+            })),
+        }));
+
+        blockSync({ opts: { priority: 1 }, data : { userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
+            .then(res => {
+                expect(res).toEqual('Block synced');
+                expect(mockSafeCreatePartialBlock).toHaveBeenCalledWith({
+                    number: 1,
+                    raw: {
+                        customField: 1
+                    },
+                    transactions: [
+                        { hash: '0x123', to: '0x1234567890123456789012345678901234567890' },
+                        { hash: '0x456', to: '0x0987654321098765432109876543210987654321' }
+                    ],
+                    transactionsCount: 2
+                });
+                done();
+            });
+    });
+
     it('Should disable browser sync', (done) => {
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
             id: 1,
@@ -252,8 +359,8 @@ describe('blockSync', () => {
             },
             explorer: {
                 hasReachedTransactionQuota,
-                shouldSync: true,
-                stripeSubscription: {}
+                stripeSubscription: {},
+                shouldSync: true
             },
             safeCreatePartialBlock: mockSafeCreatePartialBlock
         });
@@ -316,7 +423,7 @@ describe('blockSync', () => {
                 blockNumber: 1
             }
         }).then(res => {
-            expect(res).toEqual("Couldn't fetch block from provider");
+            expect(res).toEqual('Couldn\'t fetch block from provider');
             done();
         });
     });

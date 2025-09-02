@@ -16,6 +16,11 @@ module.exports = async () => {
     const newProcesses = [];
     const existingProcesses = [];
     for (const orbitConfig of orbitConfigs) {
+        // Additional safety check to ensure parentWorkspaceId is valid
+        if (!orbitConfig.parentWorkspaceId) {
+            continue;
+        }
+
         const pm2 = new PM2(getPm2Host(), getPm2Secret());
         const { data: existingProcess } = await pm2.find(`logListener-${orbitConfig.parentWorkspaceId}`);
 
@@ -24,7 +29,6 @@ module.exports = async () => {
             continue;
         }
 
-        console.log(`Listening address ${orbitConfig.bridgeContract} on ${orbitConfig.parentWorkspaceId}`);
         await pm2.startLogListener(`logListener-${orbitConfig.parentWorkspaceId}`,
             JSON.stringify({
                 parentWorkspaceId: orbitConfig.parentWorkspaceId,
