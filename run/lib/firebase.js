@@ -38,6 +38,14 @@ const OrbitChainConfig = models.OrbitChainConfig;
 const OrbitWithdrawal = models.OrbitWithdrawal;
 const OrbitDeposit = models.OrbitDeposit;
 
+/**
+ * Retrieves a list of orbit deposits for a workspace
+ * @param {string} workspaceId - The workspace id
+ * @param {number} page - The page number
+ * @param {number} itemsPerPage - The number of items per page
+ * @param {string} order - The order to sort by
+ * @returns {Promise<Array>} - A list of orbit deposits
+ */
 const getWorkspaceOrbitDeposits = async (workspaceId, page, itemsPerPage, order) => {
     if (!workspaceId)
         throw new Error('Missing parameter');
@@ -54,6 +62,14 @@ const getWorkspaceOrbitDeposits = async (workspaceId, page, itemsPerPage, order)
     });
 }
 
+/**
+ * Retrieves the l2 transaction containing an orbit withdrawal
+ * Data will be used to build claim calldata
+ * @param {string} workspaceId - The workspace id
+ * @param {string} hash - The hash of the transaction
+ * @param {number} messsageNumber - The message number of the withdrawal
+ * @returns {Promise<Object>} - The orbit withdrawal
+ */
 const getL2TransactionForOrbitWithdrawalClaim = async (workspaceId, hash, messsageNumber) => {
     if (!workspaceId || !hash)
         throw new Error('Missing parameter');
@@ -246,17 +262,6 @@ const getOrbitBatch = async (workspaceId, batchNumber) => {
         throw new Error('Could not find batch');
 
     return batch.toJSON();
-};
-
-const getWorkspaceByIdWithOrbitConfig = async (workspaceId) => {
-    if (!workspaceId)
-        throw new Error('Missing parameter');
-
-    const workspace = await Workspace.findByPk(workspaceId, {
-        include: 'orbitConfig'
-    });
-
-    return workspace.toJSON();
 };
 
 /**
@@ -3410,7 +3415,6 @@ module.exports = {
     getImportedAccounts: getImportedAccounts,
     getFilteredNativeAccounts: getFilteredNativeAccounts,
     getWorkspaceOrbitBatches: getWorkspaceOrbitBatches,
-    getWorkspaceByIdWithOrbitConfig: getWorkspaceByIdWithOrbitConfig,
     getOrbitBatch: getOrbitBatch,
     getOrbitBatchBlocks: getOrbitBatchBlocks,
     getWorkspaceOrbitBatchTransactions: getWorkspaceOrbitBatchTransactions,

@@ -39,10 +39,8 @@ module.exports = (sequelize, DataTypes) => {
       Workspace.hasMany(models.CustomField, { foreignKey: 'workspaceId', as: 'functions', scope: { location: 'global' } });
       Workspace.hasMany(models.TransactionTraceStep, { foreignKey: 'workspaceId', as: 'transactionTraceSteps' });
       Workspace.hasOne(models.OrbitChainConfig, { foreignKey: 'workspaceId', as: 'orbitConfig' });
-      Workspace.hasMany(models.OrbitTransactionState, { foreignKey: 'workspaceId', as: 'orbitTransactionStates' });
       Workspace.hasMany(models.OrbitBatch, { foreignKey: 'workspaceId', as: 'orbitBatches' });
       Workspace.hasMany(models.OrbitChainConfig, { foreignKey: 'parentWorkspaceId', as: 'orbitChildConfigs' });
-      Workspace.hasMany(models.OrbitChainConfigWorkspace, { foreignKey: 'workspaceId', as: 'orbitChainConfigWorkspaces' });
       Workspace.hasMany(models.OrbitDeposit, { foreignKey: 'workspaceId', as: 'orbitDeposits' });
     }
 
@@ -2572,12 +2570,12 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    async getFilteredTransactions(page = 1, itemsPerPage = 10, order = 'DESC', orderBy = 'blockNumber', address) {
+    getFilteredTransactions(page = 1, itemsPerPage = 10, order = 'DESC', orderBy = 'blockNumber', address) {
         let where = {};
         if (address)
             where = { [Op.or]: [{ to: address.toLowerCase() }, { from: address.toLowerCase() }] };
 
-        const res = await this.getTransactions({
+        return this.getTransactions({
             where: where,
             offset: (page - 1) * itemsPerPage,
             limit: itemsPerPage,
@@ -2615,10 +2613,6 @@ module.exports = (sequelize, DataTypes) => {
                 }
             ]
         });
-
-        console.log(res.length)
-
-        return res;
     }
 
     async canCreateContract() {
@@ -3677,35 +3671,6 @@ module.exports = (sequelize, DataTypes) => {
             type: QueryTypes.SELECT,
             nest: true
         });
-    }
-
-    async createOrbitConfig(configData) {
-        return sequelize.models.OrbitChainConfig.create({
-            workspaceId: this.id,
-            ...configData
-        });
-    }
-
-    async updateOrbitConfig(configData) {
-        const existingConfig = await this.getOrbitConfig();
-        if (existingConfig) {
-            return existingConfig.update(configData);
-        } else {
-            return this.createOrbitConfig(configData);
-        }
-    }
-
-    async removeOrbitConfig() {
-        const existingConfig = await this.getOrbitConfig();
-        if (existingConfig) {
-            return existingConfig.destroy();
-        }
-        return null;
-    }
-
-    async isOrbitChain() {
-        const config = await this.getOrbitConfig();
-        return !!config;
     }
   }
 

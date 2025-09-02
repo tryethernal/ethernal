@@ -170,11 +170,6 @@ module.exports = (sequelize, DataTypes) => {
         isNumeric: true
       }
     },
-    parentChainType: {
-      type: DataTypes.ENUM('ARBITRUM', 'ETHEREUM'),
-      allowNull: true,
-      defaultValue: 'ETHEREUM'
-    },
     chainType: {
       type: DataTypes.ENUM('ROLLUP', 'ANYTRUST'),
       allowNull: false,

@@ -235,37 +235,6 @@ module.exports = (sequelize, DataTypes) => {
         }
 
         /**
-         * Get batch timing information
-         */
-        getTimingInfo() {
-            const now = new Date();
-            const postedAt = new Date(this.postedAt);
-            const ageMs = now - postedAt;
-            
-            const timing = {
-                postedAt: this.postedAt,
-                ageMs,
-                ageFormatted: this.formatDuration(ageMs)
-            };
-
-            if (this.confirmedAt) {
-                const confirmedAt = new Date(this.confirmedAt);
-                timing.confirmedAt = this.confirmedAt;
-                timing.timeToConfirmMs = confirmedAt - postedAt;
-                timing.timeToConfirmFormatted = this.formatDuration(timing.timeToConfirmMs);
-            }
-
-            if (this.finalizedAt) {
-                const finalizedAt = new Date(this.finalizedAt);
-                timing.finalizedAt = this.finalizedAt;
-                timing.timeToFinalizeMs = finalizedAt - postedAt;
-                timing.timeToFinalizeFormatted = this.formatDuration(timing.timeToFinalizeMs);
-            }
-
-            return timing;
-        }
-
-        /**
          * Format duration in milliseconds to human readable format
          */
         formatDuration(ms) {
@@ -306,31 +275,6 @@ module.exports = (sequelize, DataTypes) => {
         }
 
         /**
-         * Update confirmation status
-         */
-        async updateConfirmationStatus(newStatus, metadata = {}) {
-            const updateData = { confirmationStatus: newStatus };
-            
-            if (newStatus === 'confirmed' && !this.confirmedAt) {
-                updateData.confirmedAt = new Date();
-            }
-            
-            if (newStatus === 'finalized' && !this.finalizedAt) {
-                updateData.finalizedAt = new Date();
-            }
-
-            if (Object.keys(metadata).length > 0) {
-                updateData.metadata = {
-                    ...this.metadata,
-                    ...metadata,
-                    [`${newStatus}UpdatedAt`]: new Date().toISOString()
-                };
-            }
-
-            await this.update(updateData);
-        }
-
-        /**
          * Get summary information for list views
          */
         getSummary() {
@@ -348,28 +292,6 @@ module.exports = (sequelize, DataTypes) => {
                 timing: timing,
                 economics: economics,
                 batchDataLocation: this.batchDataLocation
-            };
-        }
-
-        /**
-         * Get detailed information for detail views
-         */
-        getDetailedInfo() {
-            return {
-                ...this.getSummary(),
-                batchHash: this.batchHash,
-                parentChainTxIndex: this.parentChainTxIndex,
-                batchDataHash: this.batchDataHash,
-                firstTxTimestamp: this.firstTxTimestamp,
-                lastTxTimestamp: this.lastTxTimestamp,
-                seqNumStart: this.seqNumStart,
-                seqNumEnd: this.seqNumEnd,
-                beforeAcc: this.beforeAcc,
-                afterAcc: this.afterAcc,
-                delayedAcc: this.delayedAcc,
-                metadata: this.metadata,
-                createdAt: this.createdAt,
-                updatedAt: this.updatedAt
             };
         }
 
@@ -483,10 +405,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             allowNull: false
         },
-        batchHash: {
-            type: DataTypes.STRING(66),
-            allowNull: true
-        },
         parentChainBlockNumber: {
             type: DataTypes.BIGINT,
             allowNull: false
@@ -495,52 +413,19 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(66),
             allowNull: false
         },
-        parentChainTxIndex: {
-            type: DataTypes.INTEGER,
-            allowNull: true
-        },
-        transactionCount: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            defaultValue: 0
-        },
         batchDataLocation: {
             type: DataTypes.ENUM('onchain', 'das', 'ipfs'),
             allowNull: false,
             defaultValue: 'onchain'
         },
-        batchDataHash: {
-            type: DataTypes.STRING(66),
-            allowNull: true
-        },
-        batchSize: {
-            type: DataTypes.INTEGER,
-            allowNull: true
-        },
         postedAt: {
             type: DataTypes.DATE,
             allowNull: false
-        },
-        firstTxTimestamp: {
-            type: DataTypes.DATE,
-            allowNull: true
-        },
-        lastTxTimestamp: {
-            type: DataTypes.DATE,
-            allowNull: true
         },
         confirmationStatus: {
             type: DataTypes.ENUM('pending', 'confirmed', 'challenged', 'finalized'),
             allowNull: false,
             defaultValue: 'pending'
-        },
-        confirmedAt: {
-            type: DataTypes.DATE,
-            allowNull: true
-        },
-        finalizedAt: {
-            type: DataTypes.DATE,
-            allowNull: true
         },
         beforeAcc: {
             type: DataTypes.STRING(66),
@@ -552,18 +437,6 @@ module.exports = (sequelize, DataTypes) => {
         },
         delayedAcc: {
             type: DataTypes.STRING(66),
-            allowNull: true
-        },
-        l1GasUsed: {
-            type: DataTypes.BIGINT,
-            allowNull: true
-        },
-        l1GasPrice: {
-            type: DataTypes.STRING,
-            allowNull: true
-        },
-        l1Cost: {
-            type: DataTypes.STRING,
             allowNull: true
         },
         metadata: {

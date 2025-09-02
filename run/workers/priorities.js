@@ -9,7 +9,6 @@ const priorities = {
         'updateExplorerSyncingProcess',
         'receiptSync',
         'finalizePendingOrbitBatches',
-        'startSafeBlockListener',
         'checkOrbitMessageDeliveredLogs',
         'backfillOrbitMessageDeliveredLogs',
         'storeOrbitDeposit'

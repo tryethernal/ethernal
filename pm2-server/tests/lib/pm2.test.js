@@ -107,3 +107,25 @@ describe('start', () => {
             });
     });
 });
+
+describe('startSafeBlockListener', () => {
+    it('Should resolve with started process', (done) => {
+        jest.spyOn(pm2, 'describe').mockImplementation((_, cb) => cb(null, [{ process: 1 }]));
+        pm2Lib.startSafeBlockListener('slug', 1)
+            .then(process => {
+                expect(process).toEqual({ process: 1 });
+                done();
+            });
+    });
+});
+
+describe('startLogListener', () => {
+    it('Should resolve with started process', (done) => {
+        jest.spyOn(pm2, 'describe').mockImplementation((_, cb) => cb(null, [{ process: 1 }]));
+        pm2Lib.startLogListener('slug', { arg1: 'value1' })
+            .then(process => {
+                expect(process).toEqual({ process: 1 });
+                done();
+            });
+    });
+});

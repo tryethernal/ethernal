@@ -19,6 +19,7 @@ jest.mock('../../../models/index.js', () => ({
     OrbitBatch: require('./OrbitBatch').OrbitBatch,
     OrbitChainConfig: require('./OrbitChainConfig').OrbitChainConfig,
     OrbitDeposit: require('./OrbitDeposit').OrbitDeposit,
+    OrbitWithdrawal: require('./OrbitWithdrawal').OrbitWithdrawal,
     sequelize: {
         transaction: jest.fn(cb => cb()),
         literal: jest.fn(sql => sql)
@@ -45,6 +46,7 @@ const { TokenTransferEvent } = require('./TokenTransferEvent');
 const { OrbitBatch } = require('./OrbitBatch');
 const { OrbitChainConfig } = require('./OrbitChainConfig');
 const { OrbitDeposit } = require('./OrbitDeposit');
+const { OrbitWithdrawal } = require('./OrbitWithdrawal');
 
 module.exports = {
     Transaction,
@@ -69,5 +71,6 @@ module.exports = {
     TokenTransferEvent,
     OrbitBatch,
     OrbitChainConfig,
-    OrbitDeposit
+    OrbitDeposit,
+    OrbitWithdrawal
 };

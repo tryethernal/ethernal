@@ -43,7 +43,6 @@ module.exports = (sequelize, DataTypes) => {
       Transaction.hasMany(models.TokenTransfer, { foreignKey: 'transactionId', as: 'tokenTransfers' });
       Transaction.hasMany(models.TokenBalanceChange, { foreignKey: 'transactionId', as: 'tokenBalanceChanges' });
       Transaction.hasMany(models.TransactionTraceStep, { foreignKey: 'transactionId', as: 'traceSteps' });
-      Transaction.hasOne(models.OrbitTransactionState, { foreignKey: 'transactionId', as: 'orbitState' });
     }
 
     /**

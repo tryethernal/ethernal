@@ -22,7 +22,6 @@ module.exports = {
 
       await queryInterface.dropTable('orbit_batch_block', { transaction });
 
-      await queryInterface.removeColumn('orbit_chain_configs', 'parentChainRpcServer', { transaction });
       await queryInterface.removeColumn('orbit_chain_configs', 'parentChainType', { transaction });
 
       await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_orbit_chain_configs_parentChainType";', { transaction });

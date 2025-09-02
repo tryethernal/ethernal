@@ -12,55 +12,6 @@ jest.mock('../../lib/logger');
 jest.mock('../../lib/pm2');
 jest.mock('../../lib/env');
 
-// Mock Sequelize Op operators
-jest.mock('sequelize', () => ({
-    Op: {
-        ne: Symbol('ne'),
-        eq: Symbol('eq'),
-        gt: Symbol('gt'),
-        lt: Symbol('lt'),
-        gte: Symbol('gte'),
-        lte: Symbol('lte'),
-        in: Symbol('in'),
-        notIn: Symbol('notIn'),
-        like: Symbol('like'),
-        notLike: Symbol('notLike'),
-        iLike: Symbol('iLike'),
-        notILike: Symbol('notILike'),
-        between: Symbol('between'),
-        notBetween: Symbol('notBetween'),
-        overlap: Symbol('overlap'),
-        contains: Symbol('contains'),
-        contained: Symbol('contained'),
-        adjacent: Symbol('adjacent'),
-        strictLeft: Symbol('strictLeft'),
-        strictRight: Symbol('strictRight'),
-        noExtendLeft: Symbol('noExtendLeft'),
-        noExtendRight: Symbol('noExtendRight'),
-        and: Symbol('and'),
-        or: Symbol('or'),
-        any: Symbol('any'),
-        all: Symbol('all'),
-        values: Symbol('values'),
-        col: Symbol('col'),
-        placeholder: Symbol('placeholder'),
-        join: Symbol('join'),
-        fn: Symbol('fn'),
-        literal: Symbol('literal'),
-        cast: Symbol('cast'),
-        json: Symbol('json'),
-        where: Symbol('where'),
-        jsonPath: Symbol('jsonPath'),
-        attribute: Symbol('attribute'),
-        identifier: Symbol('identifier'),
-        match: Symbol('match'),
-        regexp: Symbol('regexp'),
-        notRegexp: Symbol('notRegexp'),
-        iRegexp: Symbol('iRegexp'),
-        notIRegexp: Symbol('notIRegexp')
-    }
-}));
-
 const PM2 = require('../../lib/pm2');
 const { getPm2Host, getPm2Secret } = require('../../lib/env');
 const { Op } = require('sequelize');
