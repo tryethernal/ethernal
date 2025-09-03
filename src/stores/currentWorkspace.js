@@ -124,29 +124,6 @@ export const useCurrentWorkspaceStore = defineStore('currentWorkspace', {
                 explorer: workspace.explorer ? { id: workspace.explorer.id, name: workspace.explorer.name } : null
             });
         },
-
-        // Orbit chain methods
-        async loadOrbitConfig(serverInstance) {
-            if (!serverInstance) {
-                console.warn('Server instance required to load orbit config');
-                return;
-            }
-            try {
-                const response = await serverInstance.getOrbitConfig(this.id);
-                this.orbitConfig = response.data?.orbitConfig || null;
-            } catch (error) {
-                console.error('Failed to load orbit config:', error);
-                this.orbitConfig = null;
-            }
-        },
-
-        updateOrbitConfig(config) {
-            this.orbitConfig = config;
-        },
-
-        clearOrbitConfig() {
-            this.orbitConfig = null;
-        }
     },
 
     getters: {
@@ -225,6 +202,7 @@ export const useCurrentWorkspaceStore = defineStore('currentWorkspace', {
                 chain: this.viemChainConfig,
                 transport: this.viemTransportConfig
             })
-        }
+        },
+
     }
 });
