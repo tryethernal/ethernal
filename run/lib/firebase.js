@@ -39,6 +39,101 @@ const OrbitWithdrawal = models.OrbitWithdrawal;
 const OrbitDeposit = models.OrbitDeposit;
 
 /**
+ * Creates an orbit config for an explorer
+ * @param {string} userId - The user id
+ * @param {string} explorerId - The explorer id
+ * @param {Object} params - The parameters to create
+ * @returns {Promise<Object>} - The created orbit config
+ */
+const createOrbitConfig = async (userId, explorerId, params) => {
+    if (!userId || !explorerId || !params)
+        throw new Error('Missing parameter');
+
+    const explorer = await Explorer.findOne({
+        where: {
+            id: explorerId,
+            '$workspace.userId$': userId
+        },
+        include: {
+            model: Workspace,
+            as: 'workspace',
+            include: {
+                model: OrbitChainConfig,
+                as: 'orbitConfig'
+            }
+        }
+    });
+
+    if (explorer && explorer.workspace.orbitConfig)
+        throw new Error('Orbit config already exists');
+    
+    return explorer.workspace.safeCreateOrbitConfig(params);
+}
+
+/**
+ * Updates an existing orbit config for an explorer
+ * @param {string} userId - The user id
+ * @param {string} explorerId - The explorer id
+ * @param {Object} params - The parameters to update
+ * @returns {Promise<Object>} - The updated orbit config
+ */
+const updateOrbitConfig = async (userId, explorerId, params) => {
+    if (!userId || !explorerId || !params)
+        throw new Error('Missing parameter');
+
+    const config = await OrbitChainConfig.findOne({
+        where: {
+            '$workspace.userId$': userId,
+            '$workspace.explorer.id$': explorerId
+        },
+        include: {
+            model: Workspace,
+            as: 'workspace',
+            include: {
+                model: Explorer,
+                as: 'explorer'
+            }
+        }
+    });
+
+    if (!config)
+        throw new Error('Could not find orbit config');
+
+    return config.safeUpdate(params);
+};
+
+/**
+ * Retrieves an orbit config for an explorer
+ * @param {string} userId - The user id
+ * @param {string} explorerId - The explorer id
+ * @returns {Promise<Object>} - The orbit config
+ */
+const getOrbitConfig = async (userId, explorerId) => {
+    if (!userId || !explorerId || !id)
+        throw new Error('Missing parameter');
+
+    const explorer = await Explorer.findOne({
+        where: {
+            id: explorerId,
+            '$workspace.userId$': userId
+        },
+        include: {
+            model: Workspace,
+            as: 'workspace',
+            include: {
+                model: OrbitChainConfig,
+                as: 'orbitConfig'
+            }
+        }
+    });
+
+    if (!explorer || !explorer.workspace.orbitConfig)
+        return null
+
+    return explorer.workspace.orbitConfig;
+}
+
+/**
  * Retrieves a list of orbit deposits for a workspace
  * @param {string} workspaceId - The workspace id
  * @param {number} page - The page number
@@ -3421,5 +3516,8 @@ module.exports = {
     getWorkspaceOrbitWithdrawals: getWorkspaceOrbitWithdrawals,
     getL2TransactionOrbitWithdrawals: getL2TransactionOrbitWithdrawals,
     getL2TransactionForOrbitWithdrawalClaim: getL2TransactionForOrbitWithdrawalClaim,
-    getWorkspaceOrbitDeposits: getWorkspaceOrbitDeposits
+    getWorkspaceOrbitDeposits: getWorkspaceOrbitDeposits,
+    updateOrbitConfig: updateOrbitConfig,
+    getOrbitConfig: getOrbitConfig,
+    createOrbitConfig: createOrbitConfig
 };

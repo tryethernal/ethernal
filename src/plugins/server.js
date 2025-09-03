@@ -352,61 +352,36 @@ export default {
         );
 
         const $server = {
-            // Orbit chain methods
-            getOrbitConfig(explorerId) {
-                const params = { 
-                    firebaseUserId: firebaseUserId.value,
-                    workspace: workspace.value,
-                    explorerId 
-                };
-                const resource = `${envStore.apiRoot}/api/orbit/config`;
-                return axios.get(resource, { params });
-            },
-
-            saveOrbitConfig(data) {
-                const resource = `${envStore.apiRoot}/api/orbit/config`;
-                return axios.post(resource, { 
-                    ...data,
-                    firebaseUserId: firebaseUserId.value,
-                    workspace: workspace.value
-                });
-            },
-
-            removeOrbitConfig(explorerId) {
-                const params = { 
-                    firebaseUserId: firebaseUserId.value,
-                    workspace: workspace.value,
-                    explorerId 
-                };
-                const resource = `${envStore.apiRoot}/api/orbit/config`;
-                return axios.delete(resource, { params });
-            },
-
-            testOrbitConfig(data) {
-                const resource = `${envStore.apiRoot}/api/orbit/config/test`;
-                return axios.post(resource, { 
-                    ...data,
-                    firebaseUserId: firebaseUserId.value,
-                    workspace: workspace.value
-                });
-            },
-
-            getOrbitTransactionState(hash) {
+            createOrbitConfig(explorerId, config) {
                 const params = {
                     firebaseUserId: firebaseUserId.value,
-                    workspace: workspace.value
-                };
-                const resource = `${envStore.apiRoot}/api/orbit/transaction/${hash}/state`;
-                return axios.get(resource, { params });
+                    workspace: workspace.value,
+                    explorerId,
+                    config
+                }
+                const resource = `${envStore.apiRoot}/api/explorers/${explorerId}/orbitConfig`;
+                return axios.post(resource, { params });
             },
 
-            processOrbitTransaction(hash, data) {
-                const resource = `${envStore.apiRoot}/api/orbit/transaction/${hash}/process`;
-                return axios.post(resource, { 
-                    ...data,
+            updateOrbitConfig(explorerId, config) {
+                const params = {
                     firebaseUserId: firebaseUserId.value,
-                    workspace: workspace.value
-                });
+                    workspace: workspace.value,
+                    explorerId,
+                    config
+                }
+                const resource = `${envStore.apiRoot}/api/explorers/${explorerId}/orbitConfig`;
+                return axios.put(resource, { params });
+            },
+
+            getOrbitConfig(explorerId) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    explorerId
+                };
+                const resource = `${envStore.apiRoot}/api/explorers/${explorerId}/orbitConfig`;
+                return axios.get(resource, { params });
             },
 
             getOrbitDeposits(options) {

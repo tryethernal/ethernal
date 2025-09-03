@@ -23,6 +23,7 @@ module.exports = {
       await queryInterface.dropTable('orbit_batch_block', { transaction });
 
       await queryInterface.removeColumn('orbit_chain_configs', 'parentChainType', { transaction });
+      await queryInterface.removeColumn('orbit_chain_configs', 'confirmationPeriodBlocks', { transaction });
 
       await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_orbit_chain_configs_parentChainType";', { transaction });
 
@@ -53,7 +54,7 @@ module.exports = {
       await queryInterface.addColumn('orbit_batches', 'seqNumStart', { type: Sequelize.BIGINT, allowNull: true }, { transaction });
       await queryInterface.addColumn('orbit_batches', 'seqNumEnd', { type: Sequelize.BIGINT, allowNull: true }, { transaction });
 
-      await queryInterface.addColumn('orbit_chain_configs', 'parentChainRpcServer', { type: Sequelize.STRING, allowNull: true }, { transaction });
+      await queryInterface.addColumn('orbit_chain_configs', 'confirmationPeriodBlocks', { type: Sequelize.INTEGER, allowNull: true }, { transaction });
       await queryInterface.addColumn('orbit_chain_configs', 'parentChainType', { type: Sequelize.STRING, allowNull: true }, { transaction });
 
       await transaction.commit();

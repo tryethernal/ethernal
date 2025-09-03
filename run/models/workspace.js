@@ -12,6 +12,7 @@ const { ProviderConnector } = require('../lib/rpc');
 const logger = require('../lib/logger');
 const { getMaxBlockForSyncReset } = require('../lib/env');
 const Analytics = require('../lib/analytics');
+const { SUPPORTED_PARENT_CHAINS } = require('../constants/orbit');
 
 const Op = Sequelize.Op;
 const INTEGRATION_FIELD_MAPPING = {
@@ -96,6 +97,47 @@ module.exports = (sequelize, DataTypes) => {
 
     getProvider() {
         return new ProviderConnector(this.rpcServer);
+    }
+
+    safeCreateOrbitConfig(params) {
+        const allowedParams = [
+            'parentChainRpcServer',
+            'parentChainId',
+            'parentChainExplorer',
+            'rollupContract',
+            'bridgeContract',
+            'inboxContract',
+            'sequencerInboxContract',
+            'outboxContract',
+            'l1GatewayRouter',
+            'l1Erc20Gateway',
+            'l1WethGateway',
+            'l1CustomGateway',
+            'l2GatewayRouter',
+            'l2Erc20Gateway',
+            'l2WethGateway',
+            'l2CustomGateway',
+            'challengeManagerContract',
+            'validatorWalletCreatorContract',
+            'stakeToken',
+            'parentMessageCountShift'
+        ];
+
+        if (!SUPPORTED_PARENT_CHAINS.includes(params.parentChainId)) {
+            throw new Error('Parent chain id must be 1 or 42161.');
+        }
+
+        const filteredParams = {};
+        for (const [key, value] of Object.entries(params)) {
+            if (allowedParams.includes(key)) {
+              filteredParams[key] = value;
+            }
+        }
+    
+        return sequelize.models.OrbitChainConfig.create({
+            ...filteredParams,
+            workspaceId: this.id
+        });
     }
 
     async getOrbitLatestConfirmedBlock() {

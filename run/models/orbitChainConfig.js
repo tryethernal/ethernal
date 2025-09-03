@@ -2,6 +2,7 @@
 const {
   Model
 } = require('sequelize');
+const { SUPPORTED_PARENT_CHAINS } = require('../constants/orbit');
 
 module.exports = (sequelize, DataTypes) => {
   class OrbitChainConfig extends Model {
@@ -19,6 +20,44 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'parentWorkspaceId',
         as: 'parentWorkspace'
       });
+    }
+
+    safeUpdate(params) {
+      const allowedParams = [
+        'parentChainRpcServer',
+        'parentChainId',
+        'parentChainExplorer',
+        'rollupContract',
+        'bridgeContract',
+        'inboxContract',
+        'sequencerInboxContract',
+        'outboxContract',
+        'l1GatewayRouter',
+        'l1Erc20Gateway',
+        'l1WethGateway',
+        'l1CustomGateway',
+        'l2GatewayRouter',
+        'l2Erc20Gateway',
+        'l2WethGateway',
+        'l2CustomGateway',
+        'challengeManagerContract',
+        'validatorWalletCreatorContract',
+        'stakeToken',
+        'parentMessageCountShift'
+      ];
+
+      if (!SUPPORTED_PARENT_CHAINS.includes(params.parentChainId)) {
+        throw new Error('Parent chain id must be 1 or 42161.');
+      }
+
+      const filteredParams = {};
+      for (const [key, value] of Object.entries(params)) {
+        if (allowedParams.includes(key)) {
+          filteredParams[key] = value;
+        }
+      }
+
+      return this.update(filteredParams);
     }
 
     async getTopParentWorkspace() {
@@ -142,14 +181,6 @@ module.exports = (sequelize, DataTypes) => {
           },
           msg: 'Parent chain RPC server must be a valid URL'
         }
-      }
-    },
-    confirmationPeriodBlocks: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 20,
-      validate: {
-        min: 1
       }
     },
     stakeToken: {

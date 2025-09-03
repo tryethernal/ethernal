@@ -17,6 +17,145 @@ const authMiddleware = require('../middlewares/auth');
 const stripeMiddleware = require('../middlewares/stripe');
 const secretMiddleware = require('../middlewares/secret');
 
+/**
+ * Get orbit config for a given explorer
+ * @param {string} id - The explorer id
+ * @returns {Promise<object>} - The orbit config
+ */
+
+router.get('/:id/orbitConfig', authMiddleware, async (req, res, next) => {
+    const data = { ...req.query, ...req.params };
+
+    try {
+        const orbitConfig = await db.getOrbitConfig(req.body.data.user.id, data.id);
+
+        res.status(200).json({ orbitConfig });
+    } catch (error) {
+        return managedError(error, req, res);
+    }
+});
+
+/**
+ * Update orbit config
+ * @param {object} config - The orbit config to update
+ * @param {string} config.parentChainRpcServer - RPC to use when sending claim transactions
+ * @param {string} config.parentChainExplorer - Explorer to use when linking to parent chain blocks/transactions
+ * @param {string} config.rollupContract - Rollup contract address
+ * @param {string} config.bridgeContract - Bridge contract address
+ * @param {string} config.inboxContract - Inbox contract address
+ * @param {string} config.sequencerInboxContract - Sequencer inbox contract address
+ * @param {string} config.outboxContract - Outbox contract address
+ * @param {string} config.l1GatewayRouter - L1 gateway router contract address
+ * @param {string} config.l1Erc20Gateway - L1 ERC20 gateway contract address
+ * @param {string} config.l1WethGateway - L1 WETH gateway contract address
+ * @param {string} config.l1CustomGateway - L1 custom gateway contract address
+ * @param {string} config.l2GatewayRouter - L2 gateway router contract address
+ * @param {string} config.l2Erc20Gateway - L2 ERC20 gateway contract address
+ * @param {string} config.l2WethGateway - L2 WETH gateway contract address
+ * @param {string} config.l2CustomGateway - L2 custom gateway contract address
+ * @param {string} config.challengeManagerContract - Challenge manager contract address
+ * @param {string} config.validatorWalletCreatorContract - Validator wallet creator contract address
+ * @param {string} config.stakeToken - Stake token address
+ * @param {number} config.confirmationPeriodBlocks - The number of blocks to wait for confirmation
+ * @param {string} config.parentMessageCountShift - The number of blocks to shift when counting messages
+ * @returns {Promise<object>} - The updated orbit config
+ */
+router.put('/:id/orbitConfig', authMiddleware, async (req, res, next) => {
+    const data = { ...req.query, ...req.params };
+
+    try {
+        const currentConfig = await db.getOrbitConfig(req.body.data.user.id, data.id);
+        if (!currentConfig)
+            return managedError(new Error('There is no orbit config for this explorer.'), req, res);
+
+        let params = { ...req.body.params };
+
+        if (params.config.parentChainRpcServer) {
+            let networkId;
+            const provider = new ProviderConnector(params.config.parentChainRpcServer);
+            try {
+                networkId = await withTimeout(provider.fetchNetworkId());
+                if (!networkId)
+                    throw 'Error';
+            } catch(error) {
+                return managedError(new Error(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`), req, res);
+            }
+
+            params.config.parentChainId = networkId;
+        }
+
+        let config;
+        try {
+            config = await db.updateOrbitConfig(req.body.data.user.id, data.id, params.config);
+        } catch(error) {
+            return managedError(error, req, res);
+        }
+
+        res.status(200).json({ config });
+    } catch (error) {
+        unmanagedError(error, req, res);
+    }
+});
+
+/**
+ * Create orbit config
+ * @param {object} config - The orbit config to create
+ * @param {string} config.parentChainRpcServer - RPC to use when sending claim transactions
+ * @param {string} config.parentChainExplorer - Explorer to use when linking to parent chain blocks/transactions
+ * @param {string} config.rollupContract - Rollup contract address
+ * @param {string} config.bridgeContract - Bridge contract address
+ * @param {string} config.inboxContract - Inbox contract address
+ * @param {string} config.sequencerInboxContract - Sequencer inbox contract address
+ * @param {string} config.outboxContract - Outbox contract address
+ * @param {string} config.l1GatewayRouter - L1 gateway router contract address
+ * @param {string} config.l1Erc20Gateway - L1 ERC20 gateway contract address
+ * @param {string} config.l1WethGateway - L1 WETH gateway contract address
+ * @param {string} config.l1CustomGateway - L1 custom gateway contract address
+ * @param {string} config.l2GatewayRouter - L2 gateway router contract address
+ * @param {string} config.l2Erc20Gateway - L2 ERC20 gateway contract address
+ * @param {string} config.l2WethGateway - L2 WETH gateway contract address
+ * @param {string} config.l2CustomGateway - L2 custom gateway contract address
+ * @param {string} config.challengeManagerContract - Challenge manager contract address
+ * @param {string} config.validatorWalletCreatorContract - Validator wallet creator contract address
+ * @param {string} config.stakeToken - Stake token address
+ * @param {number} config.confirmationPeriodBlocks - The number of blocks to wait for confirmation
+ * @param {string} config.parentMessageCountShift - The number of blocks to shift when counting messages
+ * @returns {Promise<object>} - The updated orbit config
+ */
+router.post('/:id/orbitConfig', authMiddleware, async (req, res, next) => {
+    const data = { ...req.query, ...req.params };
+
+    try {
+        const currentConfig = await db.getOrbitConfig(req.body.data.user.id, data.id);
+        if (currentConfig)
+            return managedError(new Error('There is already an orbit config for this explorer.'), req, res);
+
+        if (!req.body.params.config.parentChainRpcServer)
+            return managedError(new Error('Parent chain rpc server is required.'), req, res);
+
+        let networkId;
+        const provider = new ProviderConnector(req.body.params.config.parentChainRpcServer);
+        try {
+            networkId = await withTimeout(provider.fetchNetworkId());
+            if (!networkId)
+                throw 'Error';
+        } catch(error) {
+            return managedError(new Error(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`), req, res);
+        }
+
+        let config;
+        try {
+            config = await db.createOrbitConfig(req.body.data.user.id, data.id, { ...req.body.params.config, parentChainId: networkId });
+        } catch(error) {
+            return managedError(error, req, res);
+        }
+
+        res.status(200).json({ config });
+    } catch (error) {
+        unmanagedError(error, req, res);
+    }
+});
+
 router.post('/:id/v2_dexes', authMiddleware, async (req, res, next) => {
     const data = req.body.data;
 
