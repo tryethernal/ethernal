@@ -8,11 +8,82 @@ jest.mock('sequelize', () => ({
 require('../mocks/lib/env');
 require('../mocks/lib/queue');
 const { ORBIT_L2_TO_L1_LOG_TOPIC } = require('../../constants/orbit');
-const { ExplorerV2Dex, ExplorerFaucet, Workspace, Block, User, workspace, Explorer, ExplorerDomain, StripePlan, Transaction, StripeSubscription, Contract, OrbitBatch, OrbitWithdrawal } = require('../mocks/models');
+const { ExplorerV2Dex, ExplorerFaucet, Workspace, Block, User, workspace, Explorer, ExplorerDomain, StripePlan, Transaction, StripeSubscription, Contract, OrbitBatch, OrbitWithdrawal, OrbitChainConfig } = require('../mocks/models');
 const db = require('../../lib/firebase');
 const env = require('../../lib/env');
 
 beforeEach(() => jest.clearAllMocks());
+
+describe('createOrbitConfig', () => {
+    it('Should create the orbit config', (done) => {
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({
+            workspace: {
+                safeCreateOrbitConfig: jest.fn().mockResolvedValueOnce({ id: 1, parentChainRpcServer: 'https://rpc.example.com' })
+            }
+        });
+        jest.spyOn(OrbitChainConfig, 'create').mockResolvedValueOnce({id: 1, parentChainRpcServer: 'https://rpc.example.com', workspace: {} });
+
+        db.createOrbitConfig(1, '1', { parentChainRpcServer: 'https://rpc.example.com' })
+            .then((res) => {
+                expect(res).toEqual({ id: 1, parentChainRpcServer: 'https://rpc.example.com' });
+                done();
+            });
+    });
+
+    it('Should throw an error if the config already exists', (done) => {
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({
+            workspace: {
+                orbitConfig: { id: 1, parentChainRpcServer: 'https://rpc.example.com' }
+            }
+        });
+
+        db.createOrbitConfig(1, '1', { parentChainRpcServer: 'https://rpc.example.com' })
+            .catch((res) => {
+                expect(res).toEqual(new Error('Orbit config already exists'));
+                done();
+            });
+    });
+});
+
+describe('updateOrbitConfig', () => {
+    it('Should update the orbit config', (done) => {
+        jest.spyOn(OrbitChainConfig, 'findOne').mockResolvedValueOnce({
+            safeUpdate: jest.fn().mockResolvedValueOnce({ id: 1, parentChainRpcServer: 'https://rpc.example.com' })
+        });
+
+        db.updateOrbitConfig(1, '1', { parentChainRpcServer: 'https://rpc.example.com' })
+            .then((res) => {
+                expect(res).toEqual({ id: 1, parentChainRpcServer: 'https://rpc.example.com' });
+                done();
+            });
+    });
+
+    it('Should throw an error if no config', (done) => {
+        jest.spyOn(OrbitChainConfig, 'findOne').mockResolvedValueOnce(null);
+
+        db.updateOrbitConfig(1, '1', { parentChainRpcServer: 'https://rpc.example.com' })
+            .catch((res) => {
+                expect(res).toEqual(new Error('Could not find orbit config'));
+                done();
+            });
+    });
+});
+
+describe('getOrbitConfig', () => {
+    it('Should return the orbit config', (done) => {
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({
+            workspace: {
+                orbitConfig: { id: 1, parentChainRpcServer: 'https://rpc.example.com' }
+            }
+        });
+
+        db.getOrbitConfig(1, '1')
+            .then((res) => {
+                expect(res).toEqual({ id: 1, parentChainRpcServer: 'https://rpc.example.com' });
+                done();
+            });
+    });
+});
 
 describe('getL2TransactionForOrbitWithdrawalClaim', () => {
     it('Should return the l2 transaction for orbit withdrawal claim', (done) => {

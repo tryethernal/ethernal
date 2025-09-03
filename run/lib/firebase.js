@@ -64,7 +64,10 @@ const createOrbitConfig = async (userId, explorerId, params) => {
         }
     });
 
-    if (explorer && explorer.workspace.orbitConfig)
+    if (!explorer)
+        throw new Error('Could not find explorer');
+
+    if (explorer.workspace.orbitConfig)
         throw new Error('Orbit config already exists');
     
     return explorer.workspace.safeCreateOrbitConfig(params);
@@ -109,7 +112,7 @@ const updateOrbitConfig = async (userId, explorerId, params) => {
  * @returns {Promise<Object>} - The orbit config
  */
 const getOrbitConfig = async (userId, explorerId) => {
-    if (!userId || !explorerId || !id)
+    if (!userId || !explorerId)
         throw new Error('Missing parameter');
 
     const explorer = await Explorer.findOne({
