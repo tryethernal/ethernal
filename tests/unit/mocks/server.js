@@ -187,5 +187,8 @@ export default {
     getOrbitDeposits: vi.fn(),
     getL2TransactionWithdrawals: vi.fn(),
     getOrbitWithdrawalClaimCallData: vi.fn(),
-    getOrbitWithdrawals: vi.fn()
+    getOrbitWithdrawals: vi.fn(),
+    getOrbitConfig: vi.fn(),
+    createOrbitConfig: vi.fn(),
+    updateOrbitConfig: vi.fn()
 };
