@@ -123,7 +123,7 @@ export const useCurrentWorkspaceStore = defineStore('currentWorkspace', {
                 name: this.name,
                 explorer: workspace.explorer ? { id: workspace.explorer.id, name: workspace.explorer.name } : null
             });
-        },
+        }
     },
 
     getters: {
@@ -202,7 +202,6 @@ export const useCurrentWorkspaceStore = defineStore('currentWorkspace', {
                 chain: this.viemChainConfig,
                 transport: this.viemTransportConfig
             })
-        },
-
+        }
     }
 });
