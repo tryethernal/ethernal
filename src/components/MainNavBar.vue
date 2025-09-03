@@ -42,13 +42,13 @@
                         </template>
                     </v-list-item>
 
-                    <v-list-item :to="'/txsDeposits'" title="Latest L1->L2 Transactions" :color="route.path === '/txsDeposits' ? 'primary' : undefined">
+                    <v-list-item v-if="currentWorkspaceStore.orbitConfig" :to="'/txsDeposits'" title="Latest L1->L2 Transactions" :color="route.path === '/txsDeposits' ? 'primary' : undefined">
                         <template v-slot:title>
                             <span class="text-body-2">Latest L1->L2 Transactions</span>
                         </template>
                     </v-list-item>
 
-                    <v-list-item :to="'/txsExit'" title="Latest L2->L1 Transactions" :color="route.path === '/txsExit' ? 'primary' : undefined">
+                    <v-list-item v-if="currentWorkspaceStore.orbitConfig" :to="'/txsExit'" title="Latest L2->L1 Transactions" :color="route.path === '/txsExit' ? 'primary' : undefined">
                         <template v-slot:title>
                             <span class="text-body-2">Latest L2->L1 Transactions</span>
                         </template>
@@ -255,13 +255,13 @@
                                 </template>
                             </v-list-item>
 
-                            <v-list-item :to="'/txsDeposits'" title="Latest L1->L2 Transactions">
+                            <v-list-item v-if="currentWorkspaceStore.orbitConfig" :to="'/txsDeposits'" title="Latest L1->L2 Transactions">
                                 <template v-slot:title>
                                     <span class="text-body-2">Latest L1->L2 Transactions</span>
                                 </template>
                             </v-list-item>
 
-                            <v-list-item :to="'/txsExit'" title="Latest L2->L1 Transactions">
+                            <v-list-item v-if="currentWorkspaceStore.orbitConfig" :to="'/txsExit'" title="Latest L2->L1 Transactions">
                                 <template v-slot:title>
                                     <span class="text-body-2">Latest L2->L1 Transactions</span>
                                 </template>
@@ -280,7 +280,7 @@
                                 </template>
                             </v-list-item>
 
-                            <v-list-item :to="'/batches'" title="Batches">
+                            <v-list-item v-if="currentWorkspaceStore.orbitConfig" :to="'/batches'" title="Batches">
                                 <template v-slot:title>
                                     <span class="text-body-2">View Batches</span>
                                 </template>

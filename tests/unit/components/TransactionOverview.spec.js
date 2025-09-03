@@ -13,7 +13,10 @@ const mockCurrentWorkspaceStore = {
     currentBlock: {
         number: 105
     },
-    displayAds: true
+    displayAds: true,
+    orbitConfig: {
+        parentChainExplorer: 'https://etherscan.io'
+    }
 };
 
 vi.mock('@/stores/currentWorkspace', () => ({
@@ -28,7 +31,8 @@ describe('TransactionOverview.vue', () => {
         'Compact-Transaction-Token-Transfers',
         'Transaction-Function-Call',
         'AdBanner',
-        'Method-Details-Chip'
+        'Method-Details-Chip',
+        'OrbitBlockStatus'
     ];
 
     const mockTransaction = {
@@ -52,7 +56,9 @@ describe('TransactionOverview.vue', () => {
         maxPriorityFeePerGas: '2000000000',
         block: {
             baseFeePerGas: '10000000000',
-            number: 105
+            number: 105,
+            orbitStatus: null,
+            orbitBatch: null
         },
         tokenTransferCount: 2,
         extraFields: [
@@ -241,6 +247,135 @@ describe('TransactionOverview.vue', () => {
         const wrapper = mount(TransactionOverview, {
             props: {
                 transaction: mockTransaction
+            },
+            global: {
+                stubs,
+                provide: {
+                    $fromWei: mockFromWei,
+                    $dt: {
+                        shortDate: vi.fn().mockReturnValue('2024-03-21'),
+                        fromNow: vi.fn().mockReturnValue('a few seconds ago')
+                    }
+                }
+            }
+        });
+        await flushPromises();
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
+    it('Should render transaction with orbit status', async () => {
+        const orbitTransaction = {
+            ...mockTransaction,
+            block: {
+                ...mockTransaction.block,
+                orbitStatus: 'confirmed'
+            }
+        };
+
+        const wrapper = mount(TransactionOverview, {
+            props: {
+                transaction: orbitTransaction
+            },
+            global: {
+                stubs,
+                provide: {
+                    $fromWei: mockFromWei,
+                    $dt: {
+                        shortDate: vi.fn().mockReturnValue('2024-03-21'),
+                        fromNow: vi.fn().mockReturnValue('a few seconds ago')
+                    }
+                }
+            }
+        });
+        await flushPromises();
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
+    it('Should render transaction with orbit batch information', async () => {
+        const orbitBatchTransaction = {
+            ...mockTransaction,
+            block: {
+                ...mockTransaction.block,
+                orbitBatch: {
+                    batchSequenceNumber: 12345,
+                    confirmationStatus: 'confirmed',
+                    parentChainTxHash: '0xabcdef123456789'
+                }
+            }
+        };
+
+        const wrapper = mount(TransactionOverview, {
+            props: {
+                transaction: orbitBatchTransaction
+            },
+            global: {
+                stubs,
+                provide: {
+                    $fromWei: mockFromWei,
+                    $dt: {
+                        shortDate: vi.fn().mockReturnValue('2024-03-21'),
+                        fromNow: vi.fn().mockReturnValue('a few seconds ago')
+                    }
+                }
+            }
+        });
+        await flushPromises();
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
+    it('Should render transaction with orbit batch but not show commitment tx when not confirmed', async () => {
+        const orbitBatchTransaction = {
+            ...mockTransaction,
+            block: {
+                ...mockTransaction.block,
+                orbitBatch: {
+                    batchSequenceNumber: 12345,
+                    confirmationStatus: 'pending',
+                    parentChainTxHash: '0xabcdef123456789'
+                }
+            }
+        };
+
+        const wrapper = mount(TransactionOverview, {
+            props: {
+                transaction: orbitBatchTransaction
+            },
+            global: {
+                stubs,
+                provide: {
+                    $fromWei: mockFromWei,
+                    $dt: {
+                        shortDate: vi.fn().mockReturnValue('2024-03-21'),
+                        fromNow: vi.fn().mockReturnValue('a few seconds ago')
+                    }
+                }
+            }
+        });
+        await flushPromises();
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
+    it('Should render transaction with both orbit status and batch information', async () => {
+        const fullOrbitTransaction = {
+            ...mockTransaction,
+            block: {
+                ...mockTransaction.block,
+                orbitStatus: 'confirmed',
+                orbitBatch: {
+                    batchSequenceNumber: 12345,
+                    confirmationStatus: 'confirmed',
+                    parentChainTxHash: '0xabcdef123456789'
+                }
+            }
+        };
+
+        const wrapper = mount(TransactionOverview, {
+            props: {
+                transaction: fullOrbitTransaction
             },
             global: {
                 stubs,

@@ -180,5 +180,12 @@ export default {
 
     syncBalance: () => {
         return new Promise((resolve) => resolve({ success: true }));
-    }
+    },
+
+    getOrbitBatchDetail: vi.fn(),
+    getOrbitBatches: vi.fn(),
+    getOrbitDeposits: vi.fn(),
+    getL2TransactionWithdrawals: vi.fn(),
+    getOrbitWithdrawalClaimCallData: vi.fn(),
+    getOrbitWithdrawals: vi.fn()
 };

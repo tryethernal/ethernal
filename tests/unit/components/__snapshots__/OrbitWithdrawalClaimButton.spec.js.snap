@@ -1,0 +1,56 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`OrbitWithdrawalClaimButton.vue > Should handle error with cause details 1`] = `
+"<button type="button" class="v-btn v-btn--elevated v-theme--light bg-primary v-btn--density-default v-btn--size-small v-btn--variant-elevated"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+  <!----><span class="v-btn__content" data-no-activator=""> Claim withdrawal </span>
+  <!---->
+  <!---->
+</button>"
+`;
+
+exports[`OrbitWithdrawalClaimButton.vue > Should handle error with fallback to message 1`] = `
+"<button type="button" class="v-btn v-btn--elevated v-theme--light bg-primary v-btn--density-default v-btn--size-small v-btn--variant-elevated"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+  <!----><span class="v-btn__content" data-no-activator=""> Claim withdrawal </span>
+  <!---->
+  <!---->
+</button>"
+`;
+
+exports[`OrbitWithdrawalClaimButton.vue > Should handle server error when getting call data 1`] = `
+"<button type="button" class="v-btn v-btn--elevated v-theme--light bg-primary v-btn--density-default v-btn--size-small v-btn--variant-elevated"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+  <!----><span class="v-btn__content" data-no-activator=""> Claim withdrawal </span>
+  <!---->
+  <!---->
+</button>"
+`;
+
+exports[`OrbitWithdrawalClaimButton.vue > Should handle transaction error 1`] = `
+"<button type="button" class="v-btn v-btn--elevated v-theme--light bg-primary v-btn--density-default v-btn--size-small v-btn--variant-elevated"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+  <!----><span class="v-btn__content" data-no-activator=""> Claim withdrawal </span>
+  <!---->
+  <!---->
+</button>"
+`;
+
+exports[`OrbitWithdrawalClaimButton.vue > Should show loading state when claiming 1`] = `
+"<button type="button" class="v-btn v-btn--elevated v-btn--loading v-theme--light bg-primary v-btn--density-default v-btn--loading v-btn--size-small v-btn--variant-elevated" aria-busy="true" tabindex="-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+  <!----><span class="v-btn__content" data-no-activator=""> Claim withdrawal </span>
+  <!----><span class="v-btn__loader"><div class="v-progress-circular v-progress-circular--indeterminate v-theme--light v-progress-circular--size-default" role="progressbar" aria-valuemin="0" aria-valuemax="100"><svg style="transform: rotate(calc(-90deg + 0deg));" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 42.666666666666664 42.666666666666664"><circle class="v-progress-circular__underlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="2.6666666666666665" stroke-dasharray="125.66370614359172" stroke-dashoffset="0"></circle><circle class="v-progress-circular__overlay" fill="transparent" cx="50%" cy="50%" r="20" stroke-width="2.6666666666666665" stroke-dasharray="125.66370614359172" stroke-dashoffset="125.66370614359172px"></circle></svg><!----></div></span>
+</button>"
+`;
+
+exports[`OrbitWithdrawalClaimButton.vue > Should show the claim button 1`] = `
+"<button type="button" class="v-btn v-btn--elevated v-theme--light bg-primary v-btn--density-default v-btn--size-small v-btn--variant-elevated"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+  <!----><span class="v-btn__content" data-no-activator=""> Claim withdrawal </span>
+  <!---->
+  <!---->
+</button>"
+`;
+
+exports[`OrbitWithdrawalClaimButton.vue > Should successfully claim withdrawal 1`] = `
+"<button type="button" class="v-btn v-btn--elevated v-theme--light bg-primary v-btn--density-default v-btn--size-small v-btn--variant-elevated"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+  <!----><span class="v-btn__content" data-no-activator=""> Claim withdrawal </span>
+  <!---->
+  <!---->
+</button>"
+`;

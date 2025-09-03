@@ -1,0 +1,454 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`OrbitBatchOverview.vue > Should show the component with challenged batch data 1`] = `
+"<div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
+        </div>
+      </transition-stub>
+      <!---->
+    </div>
+  </div>
+  <!---->
+  <!---->
+  <div class="v-card-text pa-0">
+    <div class="v-list v-theme--light v-list--density-compact v-list--one-line transaction-list" tabindex="0" role="listbox">
+      <div class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend">
+          <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;"> Batch Index: </div>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <!---->
+          <!---->
+          <div class="v-list-item-title text-body-2">789</div>
+        </div>
+        <!---->
+      </div>
+      <div class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend">
+          <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;"> Status: </div>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <!---->
+          <!---->
+          <div class="v-list-item-title text-body-2"><span class="v-chip v-theme--light text-error v-chip--density-default v-chip--size-small v-chip--variant-tonal" draggable="false"><!----><span class="v-chip__underlay"></span>
+            <!---->
+            <!---->
+            <div class="v-chip__content" data-no-activator="">Challenged</div>
+            <!---->
+            <!----></span>
+          </div>
+        </div>
+        <!---->
+      </div>
+      <div class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend">
+          <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;"> L1 Timestamp: </div>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <!---->
+          <!---->
+          <div class="v-list-item-title text-body-2">01/03 10:15:00 AM<span class="text-medium-emphasis"> (in 1 year)</span></div>
+        </div>
+        <!---->
+      </div>
+      <div class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend">
+          <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;"> Batch Size: </div>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <!---->
+          <!---->
+          <div class="v-list-item-title text-body-2"><a class="text-decoration-none">0 transactions </a></div>
+        </div>
+        <!---->
+      </div>
+      <div class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend">
+          <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;"> Blocks: </div>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <!---->
+          <!---->
+          <div class="v-list-item-title text-body-2"><a class="text-decoration-none">0 blocks </a></div>
+        </div>
+        <!---->
+      </div>
+      <div class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend">
+          <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;"> L1 Transaction Hash: </div>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <!---->
+          <!---->
+          <div class="v-list-item-title text-body-2"><a class="text-decoration-none" href="https://etherscan.io/tx/0x3333333333333333333333333333333333333333" target="_blank">0x3333333333333333333333333333333333333333 <i class="mdi-open-in-new mdi v-icon notranslate v-theme--light v-icon--size-x-small" aria-hidden="true"></i></a></div>
+        </div>
+        <!---->
+      </div>
+      <div class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend">
+          <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;"> L1 Block Number: </div>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <!---->
+          <!---->
+          <div class="v-list-item-title text-body-2"><a class="text-decoration-none" href="https://etherscan.io/block/98765" target="_blank">98,765 <i class="mdi-open-in-new mdi v-icon notranslate v-theme--light v-icon--size-x-small" aria-hidden="true"></i></a></div>
+        </div>
+        <!---->
+      </div>
+      <div class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend">
+          <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;"> Before Acc: </div>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <!---->
+          <!---->
+          <div class="v-list-item-title text-body-2">4444444444444444444444444444444444444444</div>
+        </div>
+        <!---->
+      </div>
+      <div class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend">
+          <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;"> After Acc: </div>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <!---->
+          <!---->
+          <div class="v-list-item-title text-body-2">5555555555555555555555555555555555555555</div>
+        </div>
+        <!---->
+      </div>
+    </div>
+  </div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
+`;
+
+exports[`OrbitBatchOverview.vue > Should show the component with confirmed batch data 1`] = `
+"<div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
+        </div>
+      </transition-stub>
+      <!---->
+    </div>
+  </div>
+  <!---->
+  <!---->
+  <div class="v-card-text pa-0">
+    <div class="v-list v-theme--light v-list--density-compact v-list--one-line transaction-list" tabindex="0" role="listbox">
+      <div class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend">
+          <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;"> Batch Index: </div>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <!---->
+          <!---->
+          <div class="v-list-item-title text-body-2">123</div>
+        </div>
+        <!---->
+      </div>
+      <div class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend">
+          <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;"> Status: </div>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <!---->
+          <!---->
+          <div class="v-list-item-title text-body-2"><span class="v-chip v-theme--light text-success v-chip--density-default v-chip--size-small v-chip--variant-tonal" draggable="false"><!----><span class="v-chip__underlay"></span>
+            <!---->
+            <!---->
+            <div class="v-chip__content" data-no-activator="">Finalized</div>
+            <!---->
+            <!----></span>
+          </div>
+        </div>
+        <!---->
+      </div>
+      <div class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend">
+          <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;"> L1 Timestamp: </div>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <!---->
+          <!---->
+          <div class="v-list-item-title text-body-2">01/01 1:00:00 PM<span class="text-medium-emphasis"> (in 1 year)</span></div>
+        </div>
+        <!---->
+      </div>
+      <div class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend">
+          <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;"> Batch Size: </div>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <!---->
+          <!---->
+          <div class="v-list-item-title text-body-2"><a class="text-decoration-none">15 transactions </a></div>
+        </div>
+        <!---->
+      </div>
+      <div class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend">
+          <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;"> Blocks: </div>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <!---->
+          <!---->
+          <div class="v-list-item-title text-body-2"><a class="text-decoration-none">3 blocks </a></div>
+        </div>
+        <!---->
+      </div>
+      <div class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend">
+          <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;"> L1 Transaction Hash: </div>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <!---->
+          <!---->
+          <div class="v-list-item-title text-body-2"><a class="text-decoration-none" href="https://etherscan.io/tx/0x1234567890abcdef1234567890abcdef12345678" target="_blank">0x1234567890abcdef1234567890abcdef12345678 <i class="mdi-open-in-new mdi v-icon notranslate v-theme--light v-icon--size-x-small" aria-hidden="true"></i></a></div>
+        </div>
+        <!---->
+      </div>
+      <div class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend">
+          <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;"> L1 Block Number: </div>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <!---->
+          <!---->
+          <div class="v-list-item-title text-body-2"><a class="text-decoration-none" href="https://etherscan.io/block/12345" target="_blank">12,345 <i class="mdi-open-in-new mdi v-icon notranslate v-theme--light v-icon--size-x-small" aria-hidden="true"></i></a></div>
+        </div>
+        <!---->
+      </div>
+      <div class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend">
+          <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;"> Before Acc: </div>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <!---->
+          <!---->
+          <div class="v-list-item-title text-body-2">ABCDEF1234567890ABCDEF1234567890ABCDEF12</div>
+        </div>
+        <!---->
+      </div>
+      <div class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend">
+          <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;"> After Acc: </div>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <!---->
+          <!---->
+          <div class="v-list-item-title text-body-2">FEDCBA0987654321FEDCBA0987654321FEDCBA09</div>
+        </div>
+        <!---->
+      </div>
+    </div>
+  </div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
+`;
+
+exports[`OrbitBatchOverview.vue > Should show the component with pending batch data 1`] = `
+"<div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+  <!---->
+  <div class="v-card__loader">
+    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+      <!---->
+      <div class="v-progress-linear__background"></div>
+      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+        <div class="v-progress-linear__indeterminate">
+          <div class="v-progress-linear__indeterminate long"></div>
+          <div class="v-progress-linear__indeterminate short"></div>
+        </div>
+      </transition-stub>
+      <!---->
+    </div>
+  </div>
+  <!---->
+  <!---->
+  <div class="v-card-text pa-0">
+    <div class="v-list v-theme--light v-list--density-compact v-list--one-line transaction-list" tabindex="0" role="listbox">
+      <div class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend">
+          <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;"> Batch Index: </div>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <!---->
+          <!---->
+          <div class="v-list-item-title text-body-2">456</div>
+        </div>
+        <!---->
+      </div>
+      <div class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend">
+          <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;"> Status: </div>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <!---->
+          <!---->
+          <div class="v-list-item-title text-body-2"><span class="v-chip v-theme--light text-warning v-chip--density-default v-chip--size-small v-chip--variant-tonal" draggable="false"><!----><span class="v-chip__underlay"></span>
+            <!---->
+            <!---->
+            <div class="v-chip__content" data-no-activator="">Unfinalized</div>
+            <!---->
+            <!----></span>
+          </div>
+        </div>
+        <!---->
+      </div>
+      <div class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend">
+          <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;"> L1 Timestamp: </div>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <!---->
+          <!---->
+          <div class="v-list-item-title text-body-2">01/02 4:30:00 PM<span class="text-medium-emphasis"> (in 1 year)</span></div>
+        </div>
+        <!---->
+      </div>
+      <div class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend">
+          <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;"> Batch Size: </div>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <!---->
+          <!---->
+          <div class="v-list-item-title text-body-2"><a class="text-decoration-none">8 transactions </a></div>
+        </div>
+        <!---->
+      </div>
+      <div class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend">
+          <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;"> Blocks: </div>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <!---->
+          <!---->
+          <div class="v-list-item-title text-body-2"><a class="text-decoration-none">2 blocks </a></div>
+        </div>
+        <!---->
+      </div>
+      <div class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend">
+          <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;"> L1 Transaction Hash: </div>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <!---->
+          <!---->
+          <div class="v-list-item-title text-body-2"><a class="text-decoration-none" href="https://etherscan.io/tx/0xabcdef1234567890abcdef1234567890abcdef12" target="_blank">0xabcdef1234567890abcdef1234567890abcdef12 <i class="mdi-open-in-new mdi v-icon notranslate v-theme--light v-icon--size-x-small" aria-hidden="true"></i></a></div>
+        </div>
+        <!---->
+      </div>
+      <div class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend">
+          <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;"> L1 Block Number: </div>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <!---->
+          <!---->
+          <div class="v-list-item-title text-body-2"><a class="text-decoration-none" href="https://etherscan.io/block/54321" target="_blank">54,321 <i class="mdi-open-in-new mdi v-icon notranslate v-theme--light v-icon--size-x-small" aria-hidden="true"></i></a></div>
+        </div>
+        <!---->
+      </div>
+      <div class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend">
+          <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;"> Before Acc: </div>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <!---->
+          <!---->
+          <div class="v-list-item-title text-body-2">1111111111111111111111111111111111111111</div>
+        </div>
+        <!---->
+      </div>
+      <div class="v-list-item v-theme--light v-list-item--density-compact v-list-item--one-line rounded-0 v-list-item--variant-text d-flex flex-column flex-sm-row">
+        <!----><span class="v-list-item__underlay"></span>
+        <div class="v-list-item__prepend">
+          <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;"> After Acc: </div>
+          <div class="v-list-item__spacer"></div>
+        </div>
+        <div class="v-list-item__content" data-no-activator="">
+          <!---->
+          <!---->
+          <div class="v-list-item-title text-body-2">2222222222222222222222222222222222222222</div>
+        </div>
+        <!---->
+      </div>
+    </div>
+  </div>
+  <!---->
+  <!----><span class="v-card__underlay"></span>
+</div>"
+`;

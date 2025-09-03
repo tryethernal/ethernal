@@ -16,6 +16,7 @@ The linter for tests is tests/.eslintrc.js
 - When you create or update snapshots, always analyze them following instructions in the "Snapshots" sections of this file
 - Indent with 4 spaces
 - Make sure all imports are used. Remove unused ones.
+- It's fine to only have one test in a file if the tested file is simple. Each test should add some unique value.
 
 # Imports
 - Never import mount, vi, createTestingPinia, flushPromises

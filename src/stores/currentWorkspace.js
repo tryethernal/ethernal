@@ -225,23 +225,6 @@ export const useCurrentWorkspaceStore = defineStore('currentWorkspace', {
                 chain: this.viemChainConfig,
                 transport: this.viemTransportConfig
             })
-        },
-
-        // Orbit chain getters
-        isOrbitChain: (state) => {
-            return !!state.orbitConfig;
-        },
-
-        orbitChainType: (state) => {
-            return state.orbitConfig?.chainType || null;
-        },
-
-        hasOrbitConfig: (state) => {
-            return !!(state.orbitConfig?.rollupContract && 
-                     state.orbitConfig?.bridgeContract &&
-                     state.orbitConfig?.inboxContract &&
-                     state.orbitConfig?.sequencerInboxContract &&
-                     state.orbitConfig?.outboxContract);
         }
     }
 });

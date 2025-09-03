@@ -219,23 +219,6 @@
                             <span v-else>-</span>
                         </v-list-item-title>
                     </v-list-item>
-
-                    <template v-if="explorerStore.l1Explorer && block.l1BlockNumber">
-                        <v-list-item>
-                            <template v-slot:prepend>
-                                <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;">
-                                    <v-icon size="small" color="grey" class="mr-1" v-tooltip="'The corresponding L1 block for this L2 block'">mdi-help-circle-outline</v-icon>
-                                    L1 Block:
-                                </div>
-                            </template>
-                            <v-list-item-title class="text-body-2">
-                                <a class="text-decoration-none" :href="`${explorerStore.l1Explorer}/block/${block.l1BlockNumber}`" target="_blank">
-                                    {{ commify(block.l1BlockNumber) }}
-                                    <v-icon size="x-small" color="primary" class="pb-1">mdi-open-in-new</v-icon>
-                                </a>
-                            </v-list-item-title>
-                        </v-list-item>
-                    </template>
                 </v-list>
             </v-card-text>
         </v-card>
