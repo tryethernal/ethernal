@@ -56,7 +56,6 @@ router.get('/:id/orbitConfig', authMiddleware, async (req, res, next) => {
  * @param {string} config.challengeManagerContract - Challenge manager contract address
  * @param {string} config.validatorWalletCreatorContract - Validator wallet creator contract address
  * @param {string} config.stakeToken - Stake token address
- * @param {number} config.confirmationPeriodBlocks - The number of blocks to wait for confirmation
  * @param {string} config.parentMessageCountShift - The number of blocks to shift when counting messages
  * @returns {Promise<object>} - The updated orbit config
  */
@@ -118,7 +117,6 @@ router.put('/:id/orbitConfig', authMiddleware, async (req, res, next) => {
  * @param {string} config.challengeManagerContract - Challenge manager contract address
  * @param {string} config.validatorWalletCreatorContract - Validator wallet creator contract address
  * @param {string} config.stakeToken - Stake token address
- * @param {number} config.confirmationPeriodBlocks - The number of blocks to wait for confirmation
  * @param {string} config.parentMessageCountShift - The number of blocks to shift when counting messages
  * @returns {Promise<object>} - The updated orbit config
  */
@@ -293,16 +291,6 @@ router.post('/:id/startTrial', authMiddleware, async (req, res, next) => {
 
         await db.createExplorerSubscription(user.id, explorer.id,  plan.id, { ...subscription, customer });
         await db.disableUserTrial(user.id);
-
-        res.sendStatus(200);
-    } catch(error) {
-        unmanagedError(error, req, next);
-    }
-});
-
-router.post('/startSafeBlockListeners', secretMiddleware, async (req, res, next) => {
-    try {
-        await enqueue('safeBlockListenerCheck', 'safeBlockListenerCheck', {});
 
         res.sendStatus(200);
     } catch(error) {
@@ -810,7 +798,6 @@ router.post('/', authMiddleware, async (req, res, next) => {
         options['token'] = data.token;
         options['slug'] = data.slug;
         options['totalSupply'] = data.totalSupply;
-        options['l1Explorer'] = data.l1Explorer;
         options['branding'] = data.branding;
 
         const usingDefaultPlan = !data.plan && (!isStripeEnabled() || user.canUseDemoPlan);
@@ -961,7 +948,6 @@ router.get('/search', async (req, res, next) => {
             chainId: explorer.chainId,
             domain: explorer.domain,
             domains: explorer.domains,
-            l1Explorer: explorer.l1Explorer,
             name: explorer.name,
             rpcServer: explorer.rpcServer,
             slug: explorer.slug,

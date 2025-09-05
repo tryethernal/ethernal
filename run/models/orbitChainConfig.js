@@ -2,7 +2,6 @@
 const {
   Model
 } = require('sequelize');
-const { SUPPORTED_PARENT_CHAINS } = require('../constants/orbit');
 
 module.exports = (sequelize, DataTypes) => {
   class OrbitChainConfig extends Model {
@@ -22,10 +21,9 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
-    safeUpdate(params) {
+    async safeUpdate(params) {
       const allowedParams = [
         'parentChainRpcServer',
-        'parentChainId',
         'parentChainExplorer',
         'rollupContract',
         'bridgeContract',
@@ -46,8 +44,10 @@ module.exports = (sequelize, DataTypes) => {
         'parentMessageCountShift'
       ];
 
-      if (!SUPPORTED_PARENT_CHAINS.includes(params.parentChainId)) {
-        throw new Error('Parent chain id must be 1 or 42161.');
+      const supportedParentChains = await sequelize.models.Workspace.getAvailableTopOrbitParent();
+      const supportedParentChainIds = supportedParentChains.map(chain => chain.networkId);
+      if (!supportedParentChainIds.includes(params.parentChainId)) {
+        throw new Error(`Parent chain network is not supported yet. Available networks: ${supportedParentChainIds.join(', ')}`);
       }
 
       const filteredParams = {};
@@ -57,12 +57,15 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
 
-      return this.update(filteredParams);
+      return this.update({
+        ...filteredParams,
+        parentWorkspaceId: supportedParentChains.find(chain => chain.networkId === params.parentChainId).id
+      });
     }
 
     async getTopParentWorkspace() {
       let parentWorkspaceId = this.parentWorkspaceId;
-      let parentWorkspace = await sequelize.models.Workspace.findByPk(parentWorkspaceId, { include: 'orbitConfig' });
+      let parentWorkspace;
       while (parentWorkspaceId) {
         parentWorkspace = await sequelize.models.Workspace.findByPk(parentWorkspaceId, { include: 'orbitConfig' });
         if (!parentWorkspace.orbitConfig)
@@ -70,7 +73,6 @@ module.exports = (sequelize, DataTypes) => {
         else
           parentWorkspaceId = parentWorkspace.orbitConfig.parentWorkspaceId;
       }
-
       return parentWorkspace;
     }
   }
@@ -201,13 +203,8 @@ module.exports = (sequelize, DataTypes) => {
         isNumeric: true
       }
     },
-    chainType: {
-      type: DataTypes.ENUM('ROLLUP', 'ANYTRUST'),
-      allowNull: false,
-      defaultValue: 'ROLLUP'
-    },
     topParentChainBlockValidationType: {
-      type: DataTypes.ENUM('LATEST', 'SAFE', 'FINALIZED'),
+      type: DataTypes.ENUM('LATEST', 'SAFE'),
       allowNull: false,
       defaultValue: 'LATEST'
     },

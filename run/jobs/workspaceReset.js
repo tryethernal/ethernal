@@ -48,4 +48,5 @@ module.exports = async (job) => {
 
     await workspace.safeDestroyIntegrityCheck();
     await workspace.safeDestroyAccounts();
+    await workspace.safeDestroyOrbitData({ where: { workspaceId: data.workspaceId }});
 };

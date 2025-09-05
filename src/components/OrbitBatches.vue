@@ -141,9 +141,7 @@ async function loadBatches({ page, itemsPerPage, sortBy } = {}) {
         order: sortBy[0].order
     }).then(({ data }) => {
         batches.value = data.items;
-        total.value = data.items.length == currentOptions.itemsPerPage ?
-            (currentOptions.page * data.items.length) + 1 :
-            currentOptions.page * data.items.length;
+        total.value = data.total
     })
     .catch(console.log)
     .finally(() => loading.value = false);

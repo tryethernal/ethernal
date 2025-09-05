@@ -28,21 +28,6 @@ app.post('/log-listener', secretMiddleware, async (req, res) => {
     }
 });
 
-app.post('/safe-block-listener', secretMiddleware, async (req, res) => {
-    const data = req.body;
-
-    try {
-        if (!data.slug || !data.workspaceId)
-            throw new Error('Missing parameter');
-
-        const pm2Process = await pm2.startSafeBlockListener(data.slug, data.workspaceId);
-
-        return res.status(200).send(pm2Process);
-    } catch(error) {
-        handleError(res, error);
-    }
-});
-
 app.get('/processes', secretMiddleware, async (req, res) => {
     try {
         const processes = await pm2.list()

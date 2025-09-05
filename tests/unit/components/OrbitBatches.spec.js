@@ -33,7 +33,8 @@ describe('OrbitBatches.vue', () => {
                         postedAt: '2024-01-01T01:00:00Z',
                         transactionCount: 3
                     }
-                ]
+                ],
+                total: 2
             }
         };
 
@@ -60,7 +61,8 @@ describe('OrbitBatches.vue', () => {
     it('Should show the component with no data', async () => {
         const mockBatches = {
             data: {
-                items: []
+                items: [],
+                total: 0
             }
         };
 
@@ -96,7 +98,8 @@ describe('OrbitBatches.vue', () => {
                         postedAt: '2024-01-01T00:00:00Z',
                         transactionCount: 0
                     }
-                ]
+                ],
+                total: 1
             }
         };
 

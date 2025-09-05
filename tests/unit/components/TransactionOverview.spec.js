@@ -1,11 +1,5 @@
 import TransactionOverview from '@/components/TransactionOverview.vue';
 
-vi.mock('@/stores/explorer', () => ({
-    useExplorerStore: vi.fn(() => ({
-        l1Explorer: null
-    }))
-}));
-
 const mockCurrentWorkspaceStore = {
     chain: {
         token: 'ETH'

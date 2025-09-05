@@ -110,7 +110,8 @@ const workspace = {
     getAddressTransactionStats: jest.fn(),
     countAddressTokenTransfers: jest.fn(),
     countAddressTransactionTraceSteps: jest.fn(),
-    getFilteredImportedAccounts: jest.fn()
+    getFilteredImportedAccounts: jest.fn(),
+    safeDestroyOrbitData: jest.fn()
 };
 
 const Workspace = {

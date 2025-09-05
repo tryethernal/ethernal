@@ -43,8 +43,6 @@ module.exports = (sequelize, DataTypes) => {
                 currentExplorerAttributes.push('token');
             if (currentExplorer && (currentExplorer.isDemo || currentExplorer.stripeSubscription && currentExplorer.stripeSubscription.stripePlan.capabilities.totalSupply))
                 currentExplorerAttributes.push('totalSupply');
-            if (currentExplorer && (currentExplorer.isDemo || currentExplorer.stripeSubscription && currentExplorer.stripeSubscription.stripePlan.capabilities.l1Explorer))
-                currentExplorerAttributes.push('l1Explorer');
         }
         return  User.findOne({
             where: {
@@ -216,7 +214,7 @@ module.exports = (sequelize, DataTypes) => {
         }));
     }
 
-    createExplorerFromOptions({ backendRpcServer, frontendRpcServer, name, networkId, chain = 'ethereum', tracing = 'other', faucet, token, slug, totalSupply, l1Explorer, branding, qnEndpointId, domains = [], isDemo = false, subscription, integrityCheckStartBlockNumber }) {
+    createExplorerFromOptions({ backendRpcServer, frontendRpcServer, name, networkId, chain = 'ethereum', tracing = 'other', faucet, token, slug, totalSupply, branding, qnEndpointId, domains = [], isDemo = false, subscription, integrityCheckStartBlockNumber }) {
         if (!backendRpcServer || !name || !networkId)
             throw new Error('Missing parameters');
 
@@ -259,7 +257,7 @@ module.exports = (sequelize, DataTypes) => {
                 throw new Error('Invalid total supply. It needs to be a string representing a positive wei amount.');
 
             const explorer = await workspace.createExplorer(sanitize({
-                token, totalSupply, l1Explorer, isDemo,
+                token, totalSupply, isDemo,
                 userId: this.id,
                 chainId: workspace.networkId,
                 slug: explorerSlug,

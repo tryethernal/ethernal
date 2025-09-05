@@ -1,27 +1,15 @@
 const logger = require('../lib/logger');
-const { OrbitBatch, OrbitChainConfig } = require('../models');
+const { OrbitBatch, Workspace } = require('../models');
 const { Op } = require('sequelize');
 
 module.exports = async () => {
 
-    const orbitParentConfigs = await OrbitChainConfig.findAll({
-        where: {
-            topParentChainBlockValidationType: {
-                [Op.in]: ['SAFE', 'FINALIZED']
-            }
-        }
-    });
-
-    const workspaces = {};
-    for (const config of orbitParentConfigs) {
-        const parentWorkspace = await config.getTopParentWorkspace();
-        const orbitChildConfigs = await parentWorkspace.getOrbitChildConfigs();
-        workspaces[parentWorkspace.id] = Object.assign({}, parentWorkspace.toJSON(), { orbitChildConfigs, client: parentWorkspace.getViemPublicClient() });
-    }
+    const workspaces = await Workspace.findAll({ where: { isTopOrbitParent: true } });
 
     let allPendingBatches = [];
-    for (const workspace of Object.values(workspaces)) {
-        const block = await workspace.client.getBlock({ blockTag: 'safe' });
+    for (const workspace of workspaces) {
+        const client = workspace.getViemPublicClient();
+        const block = await client.getBlock({ blockTag: 'safe' });
         for (const orbitChildConfig of workspace.orbitChildConfigs) {
             logger.info(`Validating batches posted on ${workspace.name} by config ${orbitChildConfig.workspaceId} with block number ${block.number}`);
             const pendingBatches = await OrbitBatch.findAll({
@@ -37,7 +25,7 @@ module.exports = async () => {
             for (const batch of pendingBatches) {
                 await batch.confirm();
             }
-            
+
             allPendingBatches = allPendingBatches.concat(pendingBatches);
         }
     }

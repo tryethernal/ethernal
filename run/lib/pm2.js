@@ -68,13 +68,6 @@ class PM2 {
         return withTimeout(axios.post(resource));
     }
 
-    startSafeBlockListener(slug, workspaceId) {
-        if (!slug || !workspaceId) throw new Error('Missing parameter');
-
-        const resource = `${this.host}/safe-block-listener?secret=${this.secret}`;
-        return withTimeout(axios.post(resource, { slug, workspaceId }));
-    }
-
     startLogListener(slug, jsonArgs) {
         if (!slug || !jsonArgs) throw new Error('Missing parameter');
 

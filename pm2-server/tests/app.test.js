@@ -214,31 +214,4 @@ describe('POST /safe-block-listener', () => {
                 done();
             });
     });
-
-    it('Should successfully start safe block listener when all parameters are valid', (done) => {
-        const mockPm2Process = { id: 2, name: 'safe-block-process', status: 'online' };
-        jest.spyOn(pm2, 'startSafeBlockListener').mockResolvedValue(mockPm2Process);
-
-        request.post('/safe-block-listener')
-            .send({ slug: 'safe-block-process', workspaceId: 'workspace-123' })
-            .expect(200)
-            .then(({ body }) => {
-                expect(body).toEqual(mockPm2Process);
-                expect(pm2.startSafeBlockListener).toHaveBeenCalledWith('safe-block-process', 'workspace-123');
-                done();
-            });
-    });
-
-    it('Should handle pm2.startSafeBlockListener errors', (done) => {
-        const errorMessage = 'Safe block listener failed to start';
-        jest.spyOn(pm2, 'startSafeBlockListener').mockRejectedValue(new Error(errorMessage));
-
-        request.post('/safe-block-listener')
-            .send({ slug: 'safe-block-process', workspaceId: 'workspace-123' })
-            .expect(400)
-            .then(({ text }) => {
-                expect(text).toBe(errorMessage);
-                done();
-            });
-    });
 });

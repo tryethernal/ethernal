@@ -2,7 +2,7 @@ require('../mocks/lib/queue');
 require('../mocks/lib/logger');
 require('../mocks/models');
 
-const { OrbitBatch, OrbitChainConfig } = require('../mocks/models');
+const { OrbitBatch, Workspace } = require('../mocks/models');
 const finalizePendingOrbitBatches = require('../../jobs/finalizePendingOrbitBatches');
 
 // Mock dependencies
@@ -12,8 +12,7 @@ jest.mock('../../lib/logger');
 beforeEach(() => jest.clearAllMocks());
 
 describe('finalizePendingOrbitBatches', () => {
-    let mockOrbitParentConfigs;
-    let mockParentWorkspace;
+    let mockWorkspaces;
     let mockOrbitChildConfigs;
     let mockViemClient;
     let mockBlock;
@@ -22,34 +21,6 @@ describe('finalizePendingOrbitBatches', () => {
     beforeEach(() => {
         // Reset mocks
         jest.clearAllMocks();
-
-        // Mock orbit parent configs
-        mockOrbitParentConfigs = [
-            {
-                id: 1,
-                workspaceId: 100,
-                topParentChainBlockValidationType: 'SAFE',
-                getTopParentWorkspace: jest.fn()
-            },
-            {
-                id: 2,
-                workspaceId: 200,
-                topParentChainBlockValidationType: 'FINALIZED',
-                getTopParentWorkspace: jest.fn()
-            }
-        ];
-
-        // Mock parent workspace
-        mockParentWorkspace = {
-            id: 1,
-            name: 'Parent Workspace',
-            toJSON: jest.fn().mockReturnValue({
-                id: 1,
-                name: 'Parent Workspace'
-            }),
-            getOrbitChildConfigs: jest.fn(),
-            getViemPublicClient: jest.fn()
-        };
 
         // Mock orbit child configs
         mockOrbitChildConfigs = [
@@ -70,7 +41,7 @@ describe('finalizePendingOrbitBatches', () => {
 
         // Mock block
         mockBlock = {
-            number: 1000n
+            number: 1000
         };
 
         // Mock pending batches
@@ -91,46 +62,44 @@ describe('finalizePendingOrbitBatches', () => {
             }
         ];
 
+        // Mock workspaces with isTopOrbitParent: true
+        mockWorkspaces = [
+            {
+                id: 1,
+                name: 'Parent Workspace 1',
+                isTopOrbitParent: true,
+                orbitChildConfigs: mockOrbitChildConfigs,
+                getViemPublicClient: jest.fn().mockReturnValue(mockViemClient)
+            },
+            {
+                id: 2,
+                name: 'Parent Workspace 2',
+                isTopOrbitParent: true,
+                orbitChildConfigs: [],
+                getViemPublicClient: jest.fn().mockReturnValue(mockViemClient)
+            }
+        ];
+
         // Setup mocks
-        OrbitChainConfig.findAll.mockResolvedValue(mockOrbitParentConfigs);
-        mockOrbitParentConfigs[0].getTopParentWorkspace.mockResolvedValue(mockParentWorkspace);
-        mockOrbitParentConfigs[1].getTopParentWorkspace.mockResolvedValue(mockParentWorkspace);
-        mockParentWorkspace.getOrbitChildConfigs.mockResolvedValue(mockOrbitChildConfigs);
-        mockParentWorkspace.getViemPublicClient.mockReturnValue(mockViemClient);
+        Workspace.findAll.mockResolvedValue(mockWorkspaces);
         mockViemClient.getBlock.mockResolvedValue(mockBlock);
         OrbitBatch.findAll.mockResolvedValue(mockPendingBatches);
     });
 
     describe('basic functionality', () => {
-        it('should find orbit parent configs with SAFE and FINALIZED validation types', async () => {
+        it('should find workspaces with isTopOrbitParent: true', async () => {
             await finalizePendingOrbitBatches();
 
-            expect(OrbitChainConfig.findAll).toHaveBeenCalledWith({
-                where: {
-                    topParentChainBlockValidationType: {
-                        [require('sequelize').Op.in]: ['SAFE', 'FINALIZED']
-                    }
-                }
+            expect(Workspace.findAll).toHaveBeenCalledWith({
+                where: { isTopOrbitParent: true }
             });
         });
 
-        it('should get top parent workspace for each config', async () => {
+        it('should get viem public client for each workspace', async () => {
             await finalizePendingOrbitBatches();
 
-            expect(mockOrbitParentConfigs[0].getTopParentWorkspace).toHaveBeenCalled();
-            expect(mockOrbitParentConfigs[1].getTopParentWorkspace).toHaveBeenCalled();
-        });
-
-        it('should get orbit child configs for each parent workspace', async () => {
-            await finalizePendingOrbitBatches();
-
-            expect(mockParentWorkspace.getOrbitChildConfigs).toHaveBeenCalled();
-        });
-
-        it('should get viem public client for each parent workspace', async () => {
-            await finalizePendingOrbitBatches();
-
-            expect(mockParentWorkspace.getViemPublicClient).toHaveBeenCalled();
+            expect(mockWorkspaces[0].getViemPublicClient).toHaveBeenCalled();
+            expect(mockWorkspaces[1].getViemPublicClient).toHaveBeenCalled();
         });
 
         it('should get safe block for each workspace', async () => {
@@ -163,46 +132,43 @@ describe('finalizePendingOrbitBatches', () => {
         it('should return array of batch IDs', async () => {
             const result = await finalizePendingOrbitBatches();
 
-            // Since we have 2 parent configs that both point to the same workspace,
-            // and each workspace has 2 child configs, we expect 4 batch IDs total
-            // (2 batches × 2 child configs × 1 workspace)
+            // We have 2 workspaces, first has 2 child configs with 2 batches each, second has 0 child configs
+            // So we expect 4 batch IDs total (2 batches × 2 child configs)
             expect(result).toEqual([1, 2, 1, 2]);
         });
     });
 
-    describe('multiple parent configs', () => {
-        it('should process multiple parent configs correctly', async () => {
-            const mockParentWorkspace2 = {
+    describe('multiple workspaces', () => {
+        it('should process multiple workspaces correctly', async () => {
+            const mockWorkspace2 = {
                 id: 2,
                 name: 'Parent Workspace 2',
-                toJSON: jest.fn().mockReturnValue({
-                    id: 2,
-                    name: 'Parent Workspace 2'
-                }),
-                getOrbitChildConfigs: jest.fn().mockResolvedValue([]),
+                isTopOrbitParent: true,
+                orbitChildConfigs: [],
                 getViemPublicClient: jest.fn().mockReturnValue({
-                    getBlock: jest.fn().mockResolvedValue({ number: 2000n })
+                    getBlock: jest.fn().mockResolvedValue({ number: 2000 })
                 })
             };
 
-            mockOrbitParentConfigs[1].getTopParentWorkspace.mockResolvedValue(mockParentWorkspace2);
+            mockWorkspaces.push(mockWorkspace2);
 
             await finalizePendingOrbitBatches();
 
-            expect(mockOrbitParentConfigs[0].getTopParentWorkspace).toHaveBeenCalled();
-            expect(mockOrbitParentConfigs[1].getTopParentWorkspace).toHaveBeenCalled();
+            expect(Workspace.findAll).toHaveBeenCalledWith({
+                where: { isTopOrbitParent: true }
+            });
         });
     });
 
     describe('multiple child configs', () => {
-        it('should process multiple child configs for each parent workspace', async () => {
+        it('should process multiple child configs for each workspace', async () => {
             const extendedChildConfigs = [
                 { id: 10, workspaceId: 101 },
                 { id: 11, workspaceId: 102 },
                 { id: 12, workspaceId: 103 }
             ];
 
-            mockParentWorkspace.getOrbitChildConfigs.mockResolvedValue(extendedChildConfigs);
+            mockWorkspaces[0].orbitChildConfigs = extendedChildConfigs;
 
             // Mock multiple batch results for different child configs
             OrbitBatch.findAll
@@ -226,9 +192,9 @@ describe('finalizePendingOrbitBatches', () => {
         });
     });
 
-    describe('empty parent configs', () => {
-        it('should handle case when no parent configs exist', async () => {
-            OrbitChainConfig.findAll.mockResolvedValue([]);
+    describe('empty workspaces', () => {
+        it('should handle case when no workspaces exist', async () => {
+            Workspace.findAll.mockResolvedValue([]);
 
             const result = await finalizePendingOrbitBatches();
 
@@ -238,7 +204,7 @@ describe('finalizePendingOrbitBatches', () => {
 
     describe('empty child configs', () => {
         it('should handle case when no child configs exist', async () => {
-            mockParentWorkspace.getOrbitChildConfigs.mockResolvedValue([]);
+            mockWorkspaces[0].orbitChildConfigs = [];
 
             const result = await finalizePendingOrbitBatches();
 
@@ -248,7 +214,7 @@ describe('finalizePendingOrbitBatches', () => {
 
     describe('block number handling', () => {
         it('should convert BigInt block number to Number for comparison', async () => {
-            mockBlock.number = 5000n;
+            mockBlock.number = 5000;
 
             await finalizePendingOrbitBatches();
 
@@ -264,7 +230,7 @@ describe('finalizePendingOrbitBatches', () => {
         });
 
         it('should handle zero block number', async () => {
-            mockBlock.number = 0n;
+            mockBlock.number = 0;
 
             await finalizePendingOrbitBatches();
 
@@ -281,24 +247,10 @@ describe('finalizePendingOrbitBatches', () => {
     });
 
     describe('error handling', () => {
-        it('should handle errors in getTopParentWorkspace', async () => {
-            mockOrbitParentConfigs[0].getTopParentWorkspace.mockRejectedValue(new Error('Workspace error'));
+        it('should handle errors in Workspace.findAll', async () => {
+            Workspace.findAll.mockRejectedValue(new Error('Workspace find error'));
 
-            await expect(finalizePendingOrbitBatches()).rejects.toThrow('Workspace error');
-        });
-
-        it('should handle errors in getOrbitChildConfigs', async () => {
-            mockParentWorkspace.getOrbitChildConfigs.mockRejectedValue(new Error('Child configs error'));
-
-            await expect(finalizePendingOrbitBatches()).rejects.toThrow('Child configs error');
-        });
-
-        it('should handle errors in getViemPublicClient', async () => {
-            mockParentWorkspace.getViemPublicClient.mockImplementation(() => {
-                throw new Error('Viem client error');
-            });
-
-            await expect(finalizePendingOrbitBatches()).rejects.toThrow('Viem client error');
+            await expect(finalizePendingOrbitBatches()).rejects.toThrow('Workspace find error');
         });
 
         it('should handle errors in getBlock', async () => {

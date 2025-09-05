@@ -772,7 +772,7 @@ const getTransactionFeeHistory = async (workspaceId, from, to) => {
     return workspace.getTransactionFeeHistory(from, to);
 };
 
-/*
+/**
     workspace.replace() is used to replace a workspace.
     We use this when we want to reset an explorer.
     Waiting for the data to be deleted can take a long time,
@@ -802,7 +802,7 @@ const replaceWorkspace = async (userId, workspaceId) => {
     return workspace.replace();
 }
 
-/*
+/**
     This method is used to get the block size history for a workspace.
 
     @param {number} workspaceId - The ID of the workspace

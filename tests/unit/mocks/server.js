@@ -183,7 +183,7 @@ export default {
     },
 
     getOrbitBatchDetail: vi.fn(),
-    getOrbitBatches: vi.fn(),
+    getOrbitBatches: vi.fn().mockResolvedValue({ data: { items: [], total: 0 } }),
     getOrbitDeposits: vi.fn(),
     getL2TransactionWithdrawals: vi.fn(),
     getOrbitWithdrawalClaimCallData: vi.fn(),

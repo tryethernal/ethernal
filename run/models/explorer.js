@@ -46,7 +46,7 @@ module.exports = (sequelize, DataTypes) => {
 
     static findBySlug(slug) {
         return Explorer.findOne({
-            attributes: ['id', 'chainId', 'domain', 'l1Explorer', 'name', 'rpcServer', 'slug', 'token', 'themes', 'userId', 'workspaceId', 'gasAnalyticsEnabled', 'isDemo', 'totalSupply', 'displayTopAccounts'],
+            attributes: ['id', 'chainId', 'domain', 'name', 'rpcServer', 'slug', 'token', 'themes', 'userId', 'workspaceId', 'gasAnalyticsEnabled', 'isDemo', 'totalSupply', 'displayTopAccounts'],
             where: { slug },
             include: [
                 {
@@ -119,7 +119,7 @@ module.exports = (sequelize, DataTypes) => {
                 {
                     model: Explorer,
                     as: 'explorer',
-                    attributes: ['id', 'chainId', 'domain', 'l1Explorer', 'name', 'rpcServer', 'slug', 'token', 'themes', 'userId', 'workspaceId', 'gasAnalyticsEnabled', 'isDemo', 'totalSupply', 'displayTopAccounts'],
+                    attributes: ['id', 'chainId', 'domain', 'name', 'rpcServer', 'slug', 'token', 'themes', 'userId', 'workspaceId', 'gasAnalyticsEnabled', 'isDemo', 'totalSupply', 'displayTopAccounts'],
                     include: [
                         {
                             model: sequelize.models.StripeSubscription,
@@ -187,7 +187,7 @@ module.exports = (sequelize, DataTypes) => {
             return explorer.stripeSubscription && explorer.stripeSubscription.stripePlan.capabilities.customDomain ? explorer : null;
         else
             return Explorer.findOne({
-                attributes: ['id', 'chainId', 'domain', 'l1Explorer', 'name', 'rpcServer', 'slug', 'token', 'themes', 'totalSupply', 'displayTopAccounts'],
+                attributes: ['id', 'chainId', 'domain', 'name', 'rpcServer', 'slug', 'token', 'themes', 'totalSupply', 'displayTopAccounts'],
                 where: { domain: domain },
                 include: [
                     {
@@ -402,7 +402,7 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async canUseCapability(capability) {
-        if (['customDomain', 'branding', 'nativeToken', 'totalSupply', 'statusPage', 'l1Explorer'].indexOf(capability) < 0)
+        if (['customDomain', 'branding', 'nativeToken', 'totalSupply', 'statusPage'].indexOf(capability) < 0)
             return false;
         
         if (!isStripeEnabled())
@@ -493,7 +493,7 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async safeUpdateSettings(settings) {
-        const ALLOWED_SETTINGS = ['name', 'slug', 'token', 'totalSupply', 'l1Explorer', 'rpcServer'];
+        const ALLOWED_SETTINGS = ['name', 'slug', 'token', 'totalSupply', 'rpcServer'];
 
         const filteredSettings = {};
         Object.keys(settings).forEach(key => {
@@ -519,12 +519,6 @@ module.exports = (sequelize, DataTypes) => {
                 if (existingExplorer)
                     throw new Error('This domain is not available');
                 filteredSettings['slug'] = slugify(filteredSettings['slug']);
-            }
-
-            if (filteredSettings['l1Explorer']) {
-                const isL1ExplorerAllowed = await this.canUseCapability('l1Explorer');
-                if (!isL1ExplorerAllowed)
-                    throw new Error('Upgrade your plan to display L1 explorer links.')
             }
 
             return this.update(filteredSettings);
@@ -584,7 +578,6 @@ module.exports = (sequelize, DataTypes) => {
     shouldSync: DataTypes.BOOLEAN,
     shouldEnforceQuota: DataTypes.BOOLEAN,
     isDemo: DataTypes.BOOLEAN,
-    l1Explorer: DataTypes.STRING,
     gasAnalyticsEnabled: DataTypes.BOOLEAN,
     displayTopAccounts: DataTypes.BOOLEAN
   }, {

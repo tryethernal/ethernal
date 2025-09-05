@@ -44,8 +44,7 @@ const priorities = {
         'monitorOrbitBatches',
         'discoverOrbitBatches',
         'sendDiscordMessage',
-        'backfillNativeTokenTransfers',
-        'safeBlockListenerCheck'
+        'backfillNativeTokenTransfers'
     ]
 }
 

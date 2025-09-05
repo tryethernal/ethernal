@@ -3,16 +3,6 @@ const app = require('./app.js');
 
 const port = process.env.PORT || 9090;
 
-const startL1Trackers = () => {
-    axios.post(`${process.env.ETHERNAL_HOST}/api/explorers/startSafeBlockListeners?secret=${process.env.ETHERNAL_SECRET}`)
-        .then(({ data }) => console.log(data))
-        .catch((error) => {
-            console.log(`Error when starting safe block listeners. Trying again in 1 second...`);
-            console.log(error);
-            setTimeout(triggerSync, 1000);
-        });
-}
-
 const triggerSync = () => {
     axios.post(`${process.env.ETHERNAL_HOST}/api/explorers/syncExplorers?secret=${process.env.ETHERNAL_SECRET}`)
         .then(({ data }) => console.log(data))

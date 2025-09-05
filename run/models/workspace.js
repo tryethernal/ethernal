@@ -12,7 +12,6 @@ const { ProviderConnector } = require('../lib/rpc');
 const logger = require('../lib/logger');
 const { getMaxBlockForSyncReset } = require('../lib/env');
 const Analytics = require('../lib/analytics');
-const { SUPPORTED_PARENT_CHAINS } = require('../constants/orbit');
 
 const Op = Sequelize.Op;
 const INTEGRATION_FIELD_MAPPING = {
@@ -63,6 +62,10 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    static async getAvailableTopOrbitParent() {
+        return Workspace.findAll({ where: { isTopOrbitParent: true } });
+    }
+
     getViemPublicClient() {
         const fetchOptions = () => {
             const rpcServer = new URL(this.rpcServer);
@@ -99,10 +102,9 @@ module.exports = (sequelize, DataTypes) => {
         return new ProviderConnector(this.rpcServer);
     }
 
-    safeCreateOrbitConfig(params) {
+    async safeCreateOrbitConfig(params) {
         const allowedParams = [
             'parentChainRpcServer',
-            'parentChainId',
             'parentChainExplorer',
             'rollupContract',
             'bridgeContract',
@@ -123,8 +125,10 @@ module.exports = (sequelize, DataTypes) => {
             'parentMessageCountShift'
         ];
 
-        if (!SUPPORTED_PARENT_CHAINS.includes(params.parentChainId)) {
-            throw new Error('Parent chain id must be 1 or 42161.');
+        const supportedParentChains = await sequelize.models.Workspace.getAvailableTopOrbitParentIds();
+        const supportedParentChainIds = supportedParentChains.map(chain => chain.networkId);
+        if (!supportedParentChainIds.includes(params.parentChainId)) {
+            throw new Error(`Parent chain network is not supported yet. Available networks: ${supportedParentChainIds.join(', ')}`);
         }
 
         const filteredParams = {};
@@ -136,6 +140,7 @@ module.exports = (sequelize, DataTypes) => {
     
         return sequelize.models.OrbitChainConfig.create({
             ...filteredParams,
+            parentWorkspaceId: supportedParentChains.find(chain => chain.networkId === params.parentChainId).id,
             workspaceId: this.id
         });
     }
@@ -1331,14 +1336,19 @@ module.exports = (sequelize, DataTypes) => {
                 emitMissedBlocks: this.emitMissedBlocks,
                 skipFirstBlock: this.skipFirstBlock,
                 rateLimitInterval: this.rateLimitInterval,
-                rateLimitMaxInInterval: this.rateLimitMaxInInterval
+                rateLimitMaxInInterval: this.rateLimitMaxInInterval,
+                public: this.public
             }, { transaction });
-
+ 
             if (explorer)
                 await explorer.update({ workspaceId: duplicatedWorkspace.id }, { transaction });
 
             if (user.currentWorkspaceId == this.id)
                 await user.update({ currentWorkspaceId: duplicatedWorkspace.id }, { transaction });
+
+            const orbitConfig = await this.getOrbitConfig();
+            if (orbitConfig)
+                await orbitConfig.update({ workspaceId: duplicatedWorkspace.id }, { transaction });
 
             const newName = `Pending deletion - (Previously ${this.name} - #${this.id})`;
             await this.update({ name: newName }, { transaction });
@@ -3528,6 +3538,24 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    async safeDestroyOrbitData(filter, transaction) {
+        const orbitBatches = await sequelize.models.OrbitBatch.findAll(filter);
+        for (let i = 0; i < orbitBatches.length; i++)
+            await orbitBatches[i].destroy({ transaction });
+
+        const orbitDeposits = await sequelize.models.OrbitDeposit.findAll(filter);
+        for (let i = 0; i < orbitDeposits.length; i++)
+            await orbitDeposits[i].destroy({ transaction });
+
+        const orbitWithdrawals = await sequelize.models.OrbitWithdrawal.findAll(filter);
+        for (let i = 0; i < orbitWithdrawals.length; i++)
+            await orbitWithdrawals[i].destroy({ transaction });
+
+        const orbitNodes = await sequelize.models.OrbitNode.findAll(filter);
+        for (let i = 0; i < orbitNodes.length; i++)
+            await orbitNodes[i].destroy({ transaction });
+    }
+
     async reset(dayInterval, transaction) {
         const filter = { where: { workspaceId: this.id }};
         if (dayInterval)
@@ -3549,6 +3577,7 @@ module.exports = (sequelize, DataTypes) => {
             for (let i = 0; i < accounts.length; i++)
                 await accounts[i].destroy({ transaction });
 
+            await this.safeDestroyOrbitData({ where: { workspaceId: this.id }}, transaction);
         };
 
         return transaction ?

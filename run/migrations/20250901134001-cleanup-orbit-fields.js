@@ -23,11 +23,19 @@ module.exports = {
       await queryInterface.dropTable('orbit_batch_block', { transaction });
 
       await queryInterface.removeColumn('orbit_chain_configs', 'parentChainType', { transaction });
+      await queryInterface.removeColumn('orbit_chain_configs', 'topParentChainBlockValidationType', { transaction });
       await queryInterface.removeColumn('orbit_chain_configs', 'confirmationPeriodBlocks', { transaction });
 
       await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_orbit_chain_configs_parentChainType";', { transaction });
+      await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_orbit_chain_configs_topParentChainBlockValidationType";', { transaction });
 
       await queryInterface.dropTable('orbit_transaction_states', { transaction });
+
+      await queryInterface.addColumn('workspaces', 'isTopOrbitParent', { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: false }, { transaction });
+      await queryInterface.removeColumn('workspaces', 'chainFamily', { transaction });
+      await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_workspaces_chainFamily";', { transaction });
+
+      await queryInterface.removeColumn('explorers', 'l1Explorer', { transaction });
 
       await transaction.commit();
     } catch (error) {
@@ -56,6 +64,12 @@ module.exports = {
 
       await queryInterface.addColumn('orbit_chain_configs', 'confirmationPeriodBlocks', { type: Sequelize.INTEGER, allowNull: true }, { transaction });
       await queryInterface.addColumn('orbit_chain_configs', 'parentChainType', { type: Sequelize.STRING, allowNull: true }, { transaction });
+      await queryInterface.addColumn('orbit_chain_configs', 'topParentChainBlockValidationType', { type: Sequelize.STRING, allowNull: true }, { transaction });
+
+      await queryInterface.removeColumn('workspaces', 'isTopOrbitParent', { transaction });
+      await queryInterface.addColumn('workspaces', 'chainFamily', { type: Sequelize.ENUM('ARBITRUM'), allowNull: true, defaultValue: null }, { transaction });
+
+      await queryInterface.addColumn('explorers', 'l1Explorer', { type: Sequelize.STRING, allowNull: true }, { transaction });
 
       await transaction.commit();
     } catch (error) {
