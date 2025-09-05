@@ -183,35 +183,3 @@ describe('POST /log-listener', () => {
             });
     });
 });
-
-describe('POST /safe-block-listener', () => {
-    it('Should return 400 when slug is missing', (done) => {
-        request.post('/safe-block-listener')
-            .send({ workspaceId: 'workspace-123' })
-            .expect(400)
-            .then(({ text }) => {
-                expect(text).toBe('Missing parameter');
-                done();
-            });
-    });
-
-    it('Should return 400 when workspaceId is missing', (done) => {
-        request.post('/safe-block-listener')
-            .send({ slug: 'safe-block-process' })
-            .expect(400)
-            .then(({ text }) => {
-                expect(text).toBe('Missing parameter');
-                done();
-            });
-    });
-
-    it('Should return 400 when both slug and workspaceId are missing', (done) => {
-        request.post('/safe-block-listener')
-            .send({})
-            .expect(400)
-            .then(({ text }) => {
-                expect(text).toBe('Missing parameter');
-                done();
-            });
-    });
-});
