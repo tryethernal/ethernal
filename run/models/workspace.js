@@ -3538,22 +3538,26 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    async safeDestroyOrbitData(filter, transaction) {
-        const orbitBatches = await sequelize.models.OrbitBatch.findAll(filter);
-        for (let i = 0; i < orbitBatches.length; i++)
-            await orbitBatches[i].destroy({ transaction });
+    async safeDestroyOrbitData(transactiosn) {
+        await sequelize.models.OrbitBatch.destroy({
+            where: { workspaceId: this.id },
+            transaction
+        });
 
-        const orbitDeposits = await sequelize.models.OrbitDeposit.findAll(filter);
-        for (let i = 0; i < orbitDeposits.length; i++)
-            await orbitDeposits[i].destroy({ transaction });
+        await sequelize.models.OrbitDeposit.destroy({
+            where: { workspaceId: this.id },
+            transaction
+        });
 
-        const orbitWithdrawals = await sequelize.models.OrbitWithdrawal.findAll(filter);
-        for (let i = 0; i < orbitWithdrawals.length; i++)
-            await orbitWithdrawals[i].destroy({ transaction });
+        await sequelize.models.OrbitWithdrawal.destroy({
+            where: { workspaceId: this.id },
+            transaction
+        });
 
-        const orbitNodes = await sequelize.models.OrbitNode.findAll(filter);
-        for (let i = 0; i < orbitNodes.length; i++)
-            await orbitNodes[i].destroy({ transaction });
+        await sequelize.models.OrbitNode.destroy({
+            where: { workspaceId: this.id },
+            transaction
+        });
     }
 
     async reset(dayInterval, transaction) {

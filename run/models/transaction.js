@@ -287,8 +287,6 @@ module.exports = (sequelize, DataTypes) => {
                                 ({ tokenSymbol, tokenDecimals } = await getWithdrawalTokenInfo(withdrawalData.l1Token, parentWorkspace.rpcServer));
                             }
 
-                            console.log(withdrawalData);
-
                             const [createdWithdrawal] = await sequelize.models.OrbitWithdrawal.bulkCreate([
                                 {
                                     workspaceId: receipt.workspace.id,

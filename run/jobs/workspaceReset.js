@@ -5,6 +5,7 @@ const { getMaxBlockForSyncReset, getMaxContractForReset } = require('../lib/env'
 const Op = Sequelize.Op;
 
 module.exports = async (job) => {
+    console.log('workspaceReset');
     const data = job.data;
 
     if (!data.workspaceId || !data.from || !data.to)
@@ -18,6 +19,9 @@ module.exports = async (job) => {
     const workspace = await Workspace.findByPk(data.workspaceId);
     if (!workspace)
         throw new Error('Cannot find workspace');
+
+    console.log('destroying orbit data for workspace', data.workspaceId);
+    await workspace.safeDestroyOrbitData();
 
     const blocks = await workspace.getBlocks({ where, attributes: ['id'] });
     const blockIds = blocks.map(b => b.id);
@@ -48,5 +52,4 @@ module.exports = async (job) => {
 
     await workspace.safeDestroyIntegrityCheck();
     await workspace.safeDestroyAccounts();
-    await workspace.safeDestroyOrbitData({ where: { workspaceId: data.workspaceId }});
 };
