@@ -1,10 +1,11 @@
 const { ProviderConnector } = require('../lib/rpc');
-const { Workspace, Explorer, StripeSubscription, RpcHealthCheck, IntegrityCheck, Block } = require('../models');
+const { Workspace, Explorer, StripeSubscription, RpcHealthCheck, IntegrityCheck, Block, OrbitChainConfig } = require('../models');
 const db = require('../lib/firebase');
 const logger = require('../lib/logger');
 const { processRawRpcObject } = require('../lib/utils');
 const { enqueue, bulkEnqueue } = require('../lib/queue');
 const RateLimiter = require('../lib/rateLimiter');
+const constants = require('../constants/orbit');
 
 module.exports = async job => {
     const data = job.data;
@@ -13,13 +14,13 @@ module.exports = async job => {
         return 'Missing parameter';
 
     const workspace = await Workspace.findOne({
-        attributes: ['id', 'rpcHealthCheckEnabled', 'rateLimitInterval', 'rateLimitMaxInInterval', 'name', 'rpcServer', 'browserSyncEnabled'],
         where: {
             name: data.workspace,
             '$user.firebaseUserId$': data.userId
         },
         include: [
             'user',
+            'orbitConfig',
             {
                 model: Explorer,
                 as: 'explorer',
@@ -106,6 +107,66 @@ module.exports = async job => {
             block,
             Object.keys(Block.rawAttributes).concat(['transactions'])
         );
+
+        const orbitChildConfigs = await OrbitChainConfig.findAll({
+            where: {
+                parentWorkspaceId: workspace.id
+            }
+        });
+
+        if (workspace.orbitConfig || orbitChildConfigs.length > 0) {
+            // Filter transactions to only include those that interact with rollupContract or sequencerInbox
+            const contracts = [
+                'rollupContract',
+                'sequencerInboxContract',
+                'bridgeContract',
+                'inboxContract',
+                'outboxContract',
+                'stakeToken',
+            
+                'l1GatewayRouter',
+                'l1Erc20Gateway',
+                'l1WethGateway',
+                'l1CustomGateway',
+            
+                'l2GatewayRouter',
+                'l2Erc20Gateway',
+                'l2WethGateway',
+                'l2CustomGateway'
+            ];
+
+            let contractAddresses = [];
+            for (const orbitConfig of orbitChildConfigs) {
+                for (const contractKey of contracts) {
+                    if (!orbitConfig[contractKey]) continue;
+                    contractAddresses.push(orbitConfig[contractKey].toLowerCase());
+                }
+            }
+
+            if (workspace.orbitConfig) {
+                for (const contractKey of contracts) {
+                    if (!workspace.orbitConfig[contractKey]) continue;
+                    contractAddresses.push(workspace.orbitConfig[contractKey].toLowerCase());
+                }
+            }
+
+            contractAddresses.push(constants.ARBSYS_ADDRESS.toLowerCase(), constants.ARB_RETRYABLE_TX_ADDRESS.toLowerCase());
+
+            // Remove duplicates just in case
+            contractAddresses = [...new Set(contractAddresses)];
+
+            // Filter transactions whose 'to' field matches any of the contract addresses
+            const filteredTransactions = processedBlock.transactions.filter(tx => {
+                if (!tx.to) return false;
+                return contractAddresses.includes(tx.to.toLowerCase());
+            });
+
+            if (filteredTransactions.length > 0)
+                logger.info(`filteredTransactions: ${filteredTransactions.length}`);
+
+            processedBlock.transactions = filteredTransactions;
+            processedBlock.transactionsCount = filteredTransactions.length;
+        }
 
         const syncedBlock = await workspace.safeCreatePartialBlock(processedBlock);
         if (!syncedBlock)

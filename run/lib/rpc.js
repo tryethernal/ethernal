@@ -232,12 +232,8 @@ class ProviderConnector {
     async fetchTransactionReceipt(transactionHash) {
         await this.checkRateLimit();
 
-        try {
-            return await withTimeout(this.provider.getTransactionReceipt(transactionHash));
-        } catch(error) {
-            const rawTransaction = await withTimeout(this.provider.send('eth_getTransactionReceipt', [transactionHash]));
-            return sanitize(rawTransaction);
-        }
+        const rawTransaction = await withTimeout(this.provider.send('eth_getTransactionReceipt', [transactionHash]));
+        return sanitize(rawTransaction);
     }
 
     async fetchNetworkId() {

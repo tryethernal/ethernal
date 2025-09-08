@@ -3,7 +3,6 @@ const router = express.Router();
 const logger = require('../lib/logger');
 const Lock = require('../lib/lock');
 const db = require('../lib/firebase');
-const { enqueue } = require('../lib/queue');
 const { sanitize, sleep } = require('../lib/utils');
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const authMiddleware = require('../middlewares/auth');

@@ -1,4 +1,3 @@
-
 module.exports = {
     // High priority
     blockSync: require('./blockSync'),
@@ -6,10 +5,13 @@ module.exports = {
     batchBlockSync: require('./batchBlockSync'),
     sendResetPasswordEmail: require('./sendResetPasswordEmail'),
     updateExplorerSyncingProcess: require('./updateExplorerSyncingProcess'),
-    updateApproximatedRecord: require('./updateApproximatedRecord'),
     receiptSync: require('./receiptSync'),
     removeStalledBlock: require('./removeStalledBlock'),
     increaseStripeBillingQuota: require('./increaseStripeBillingQuota'),
+    finalizePendingOrbitBatches: require('./finalizePendingOrbitBatches'),
+    checkOrbitMessageDeliveredLogs: require('./checkOrbitMessageDeliveredLogs'),
+    backfillOrbitMessageDeliveredLogs: require('./backfillOrbitMessageDeliveredLogs'),
+    storeOrbitDeposit: require('./storeOrbitDeposit'),
 
     // Medium Priority
     processContract: require('./processContract'),
@@ -38,7 +40,6 @@ module.exports = {
     deleteWorkspace: require('./deleteWorkspace'),
     queueMonitoring: require('./queueMonitoring'),
     blockSyncMonitoring: require('./blockSyncMonitoring'),
-    sendDemoExplorerLink: require('./sendDemoExplorerLink'),
     sendDiscordMessage: require('./sendDiscordMessage'),
     backfillNativeTokenTransfers: require('./backfillNativeTokenTransfers')
 };

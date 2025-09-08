@@ -29,8 +29,9 @@ describe('workspaceReset', () => {
         const getContracts = jest.fn().mockResolvedValueOnce([{ id: 0 }, { id: 1 }]);
         const safeDestroyIntegrityCheck = jest.fn();
         const safeDestroyAccounts = jest.fn();
+        const safeDestroyOrbitData = jest.fn();
 
-        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({ id: 1, getBlocks, getContracts, safeDestroyIntegrityCheck, safeDestroyAccounts });
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({ id: 1, getBlocks, getContracts, safeDestroyIntegrityCheck, safeDestroyAccounts, safeDestroyOrbitData });
 
         workspaceReset({ data: { workspaceId: 1, from: new Date(0), to: new Date(1000) }})
             .then(() => {

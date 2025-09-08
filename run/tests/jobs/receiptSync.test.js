@@ -234,7 +234,15 @@ describe('receiptSync', () => {
             .then(() => {
                 expect(safeCreateReceipt).toHaveBeenCalledWith({
                     blockNumber: 1,
-                    raw: { transactionHash: '0x123' }
+                    raw: { transactionHash: '0x123' },
+                    workspace: {
+                        explorer: {
+                            shouldSync: true,
+                            stripeSubscription: { status: 'active' }
+                        },
+                        public: true,
+                        rpcServer: 'rpc'
+                    }
                 });
                 done();
             });

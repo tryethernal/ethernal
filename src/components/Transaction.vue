@@ -1,6 +1,6 @@
 <template>
     <v-container fluid>
-        <h2 class="text-h5 font-weight-medium">Transaction Details</h2>
+        <h2 class="text-h6 font-weight-medium">Transaction Details</h2>
         <v-divider class="my-4"></v-divider>
         <template v-if="loading">
             <v-card>
@@ -61,7 +61,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted, watch, inject, nextTick } from 'vue';
+import { ref, computed, onMounted, onUnmounted, watch, inject } from 'vue';
 import { useTheme } from 'vuetify';
 import { useRouter } from 'vue-router';
 import { getBestContrastingColor } from '../lib/utils';

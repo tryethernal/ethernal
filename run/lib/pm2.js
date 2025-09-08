@@ -67,6 +67,13 @@ class PM2 {
         const resource = `${this.host}/processes/${slug}/delete?secret=${this.secret}`
         return withTimeout(axios.post(resource));
     }
+
+    startLogListener(slug, jsonArgs) {
+        if (!slug || !jsonArgs) throw new Error('Missing parameter');
+
+        const resource = `${this.host}/log-listener?secret=${this.secret}`;
+        return withTimeout(axios.post(resource, { slug, jsonArgs }));
+    }
 }
 
 module.exports = PM2;

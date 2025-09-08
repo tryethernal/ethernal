@@ -66,5 +66,6 @@ module.exports = {
     getDiscordDemoExplorerChannelWebhook: () => process.env.DISCORD_DEMO_EXPLORER_CHANNEL_WEBHOOK,
     getMailjetPublicKey: () => process.env.MAILJET_PUBLIC_KEY,
     getMailjetPrivateKey: () => process.env.MAILJET_PRIVATE_KEY,
-    getMailjetSender: () => process.env.MAILJET_SENDER
+    getMailjetSender: () => process.env.MAILJET_SENDER,
+    getEnv: (env) => process.env[env]
 };

@@ -59,5 +59,7 @@ jest.mock('../../../lib/env', () => ({
     getDemoExplorerSender: jest.fn(() => 'antoine@tryethernal.com'),
     getMailjetPublicKey: jest.fn(() => 'a'),
     getMailjetPrivateKey: jest.fn(() => 'a'),
-    getMailjetSender: jest.fn(() => 'antoine@tryethernal.com')
+    getMailjetSender: jest.fn(() => 'antoine@tryethernal.com'),
+    getPm2Host: jest.fn(() => 'http://localhost:3000'),
+    getPm2Secret: jest.fn(() => 'secret123')
 }));

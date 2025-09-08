@@ -10,6 +10,9 @@ const { trigger } = require('../lib/pusher');
 const logger = require('../lib/logger');
 let { getTransactionMethodDetails, getTokenTransfer } = require('../lib/abi');
 const moment = require('moment');
+const { isOrbitNodeCreatedLog, isOrbitNodeConfirmedLog, isOrbitNodeRejectedLog, getOrbitCreatedNodeData, getOrbitConfirmedNodeData } = require('../lib/orbitNodes');
+const { isOrbitBatchDeliveredLog, getOrbitBatchDeliveredData } = require('../lib/orbitBatches');
+const { isWithdrawalLog, getWithdrawalData, isOutboxTransactionExecutedLog, getOutboxTransactionExecutedData, getWithdrawalTokenInfo } = require('../lib/orbitWithdrawals');
 
 module.exports = (sequelize, DataTypes) => {
   class Transaction extends Model {
@@ -160,7 +163,7 @@ module.exports = (sequelize, DataTypes) => {
         return sequelize.transaction(async transaction => {
             await this.update({ state: 'ready' }, { transaction });
 
-            const [storedReceipt] = await this.sequelize.models.TransactionReceipt.bulkCreate(
+            const [storedReceipt] = await sequelize.models.TransactionReceipt.bulkCreate(
                 [
                     stringifyBns(sanitize({
                         transactionId: this.id,
@@ -179,6 +182,11 @@ module.exports = (sequelize, DataTypes) => {
                         transactionHash: receipt.transactionHash !== undefined ? receipt.transactionHash : receipt.hash,
                         transactionIndex: receipt.transactionIndex !== undefined && receipt.transactionIndex !== null ? receipt.transactionIndex : receipt.index,
                         type: receipt.type,
+                        blobGasUsed: receipt.blobGasUsed,
+                        blobGasPrice: receipt.blobGasPrice,
+                        timeboosted: receipt.timeboosted,
+                        gasUsedForL1: receipt.gasUsedForL1,
+                        effectiveGasPrice: receipt.effectiveGasPrice,
                         raw: receipt.raw
                     }))
                 ],
@@ -249,6 +257,162 @@ module.exports = (sequelize, DataTypes) => {
                 }
             }
 
+            // Orbit deposit finalization
+            if (this.requestId) {
+                const orbitDeposit = await sequelize.models.OrbitDeposit.findOne({
+                    where: {
+                        workspaceId: this.workspaceId,
+                        messageIndex: this.requestId
+                    }
+                });
+
+                if (orbitDeposit) {
+                    await orbitDeposit.finalize({
+                        l2TransactionId: this.id,
+                        l2TransactionHash: this.hash
+                    }, transaction);
+                }
+            }
+
+            if (receipt.to && this.data.length > 2) {
+
+                if (receipt.workspace.orbitConfig) {
+                    // Detect orbit withdrawals
+                    for (const log of storedLogs) {
+                        if (isWithdrawalLog(log)) {
+                            const withdrawalData = getWithdrawalData(log, this);
+                            let tokenSymbol, tokenDecimals;
+                            if (withdrawalData.l1Token) {
+                                const parentWorkspace = await receipt.workspace.orbitConfig.getParentWorkspace();
+                                ({ tokenSymbol, tokenDecimals } = await getWithdrawalTokenInfo(withdrawalData.l1Token, parentWorkspace.rpcServer));
+                            }
+
+                            const [createdWithdrawal] = await sequelize.models.OrbitWithdrawal.bulkCreate([
+                                {
+                                    workspaceId: receipt.workspace.id,
+                                    l2TransactionId: this.id,
+                                    l2TransactionHash: this.hash,
+                                    messageNumber: withdrawalData.position,
+                                    to: withdrawalData.destination,
+                                    amount: withdrawalData.amount,
+                                    l1TokenAddress: withdrawalData.l1Token,
+                                    tokenSymbol,
+                                    tokenDecimals,
+                                    timestamp: withdrawalData.timestamp,
+                                    from: withdrawalData.caller
+                                }
+                            ], {
+                                ignoreDuplicates: true,
+                                returning: true,
+                                transaction
+                            });
+
+                            logger.info(`Created withdrawal #${createdWithdrawal.messageNumber} for transaction ${this.hash}`);
+                        }
+                    }
+                }
+
+                for (const orbitChildConfig of receipt.workspace.orbitChildConfigs) {
+                    logger.info(`${receipt.workspace.id} has child ${orbitChildConfig.workspaceId}`)
+
+                    // Detect withdrawal confirmations
+                    if (this.to.toLowerCase() === orbitChildConfig.outboxContract.toLowerCase()) {
+                        logger.info(`Processing outbox transaction executed log for transaction ${this.hash}`);
+
+                        for (const log of storedLogs) {
+                            if (isOutboxTransactionExecutedLog(log)) {
+                                const outboxTransactionExecutedData = getOutboxTransactionExecutedData(log);
+                                const orbitWithdrawal = await sequelize.models.OrbitWithdrawal.findOne({
+                                    where: {
+                                        workspaceId: orbitChildConfig.workspaceId,
+                                        messageNumber: outboxTransactionExecutedData.transactionIndex
+                                    }
+                                });
+
+                                if (!orbitWithdrawal)
+                                    throw new Error('Could not find pending withdrawal');
+
+                                await orbitWithdrawal.finalize(this.id, transaction);
+                            }
+                        }
+                    }
+
+                    // Detect orbit batch operations
+                    if (this.to.toLowerCase() === orbitChildConfig.sequencerInboxContract.toLowerCase()) {
+                        logger.info(`Processing orbit batch operations for transaction ${this.hash}`);
+                        for (const log of storedLogs) {
+                            if (isOrbitBatchDeliveredLog(log)) {
+                                const batchDeliveredData = {
+                                    workspaceId: orbitChildConfig.workspaceId,
+                                    parentChainBlockNumber: receipt.blockNumber,
+                                    parentChainTxHash: this.hash,
+                                    postedAt: this.timestamp,
+                                    confirmationStatus: orbitChildConfig.topParentChainBlockValidationType == 'LATEST' ? 'finalized' : 'pending',
+                                    ...getOrbitBatchDeliveredData(log, this)
+                                };
+                                logger.info(`Processing orbit batch ${batchDeliveredData.batchSequenceNumber} delivered log for transaction ${this.hash}`);
+                                const [createdBatch] = await sequelize.models.OrbitBatch.bulkCreate([batchDeliveredData], {
+                                    ignoreDuplicates: true,
+                                    returning: true,
+                                    transaction
+                                });
+                                await createdBatch.safeUpdateBlocks({
+                                    parentMessageCountShift: orbitChildConfig.parentMessageCountShift,
+                                    transaction
+                                });
+                                logger.info(`Created batch ${createdBatch.id} for transaction ${this.hash}`);
+                            }
+                        }
+                    }
+
+                    // Detect orbit node logs
+                    if (this.to.toLowerCase() === orbitChildConfig.rollupContract.toLowerCase()) {
+                        logger.info(`Processing orbit node logs for transaction ${this.hash} - workspace ${this.workspaceId}`);
+                        for (const log of storedLogs) {
+                            if (isOrbitNodeCreatedLog(log)) {
+                                logger.info(`Processing orbit node created log for transaction ${this.hash}`);
+                                const createdNodeData = {
+                                    workspaceId: orbitChildConfig.workspaceId,
+                                    ...getOrbitCreatedNodeData(log)
+                                };
+                                const [createdNode] = await sequelize.models.OrbitNode.bulkCreate([createdNodeData], {
+                                    ignoreDuplicates: true,
+                                    returning: true,
+                                    transaction
+                                });
+                                logger.info(`Created node ${createdNode.id} for transaction ${this.hash}`);
+                            }
+                            else if (isOrbitNodeConfirmedLog(log)) {
+                                logger.info(`Processing orbit node confirmed log for transaction ${this.hash}`);
+                                const confirmedNodeData = getOrbitConfirmedNodeData(log);
+
+                                const where = { workspaceId: orbitChildConfig.workspaceId };
+                                if (confirmedNodeData.nodeNum)
+                                    where.nodeNum = confirmedNodeData.nodeNum;
+                                if (confirmedNodeData.nodeHash)
+                                    where.nodeHash = confirmedNodeData.nodeHash;
+
+                                const orbitNode = await sequelize.models.OrbitNode.findOne({ where });
+
+                                if (!orbitNode) {
+                                    logger.error(`Orbit node ${confirmedNodeData.nodeNum} not found for transaction ${this.hash}`);
+                                    continue;
+                                }
+                                if (orbitNode.confirmed)
+                                    logger.info(`Node ${orbitNode.nodeNum} already confirmed for transaction ${this.hash}`);
+                                else {
+                                    await orbitNode.confirm(confirmedNodeData, transaction);
+                                    logger.info(`Confirmed node ${orbitNode.id} for transaction ${this.hash}`);
+                                }
+                            }
+                            else if (isOrbitNodeRejectedLog(log)) {
+                                console.log('Node rejected', log);
+                            }
+                        }
+                    }
+                }
+            }
+
             const tokenTransfers = [];
             for (let i = 0; i < storedLogs.length; i++) {
                 const log = storedLogs[i];
@@ -267,7 +431,7 @@ module.exports = (sequelize, DataTypes) => {
             let toValidator;
             if (this.type && this.type == 2) {
                 // Use BigNumber for (effectiveGasPrice - baseFeePerGas) * gasUsed
-                const effectiveGasPrice = ethers.BigNumber.from(String(receipt.raw.effectiveGasPrice));
+                const effectiveGasPrice = ethers.BigNumber.from(String(receipt.effectiveGasPrice));
                 const baseFeePerGas = ethers.BigNumber.from(String(block.baseFeePerGas || 0));
                 const gasUsed = ethers.BigNumber.from(String(receipt.gasUsed));
                 toValidator = effectiveGasPrice.sub(baseFeePerGas).mul(gasUsed);
@@ -466,7 +630,7 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    triggerEvents() {
+    async triggerEvents() {
         const data = {
             hash: this.hash,
             state: this.state,
@@ -478,6 +642,7 @@ module.exports = (sequelize, DataTypes) => {
         trigger(`private-transactions;workspace=${this.workspaceId}`, 'new', data);
         if (this.to)
             trigger(`private-transactions;workspace=${this.workspaceId};address=${this.to}`, 'new', data);
+        
         return trigger(`private-transactions;workspace=${this.workspaceId};address=${this.from}`, 'new', data);
     };
 
@@ -564,7 +729,7 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async afterCreate(options) {
-        const afterCommitFn = () => {
+        const afterCommitFn = async () => {
             return this.triggerEvents();
         };
 
@@ -572,6 +737,16 @@ module.exports = (sequelize, DataTypes) => {
             return options.transaction.afterCommit(afterCommitFn);
         else
             return afterCommitFn();
+    }
+
+    async isOrbitTransaction() {
+        const workspace = await this.getWorkspace({ include: ['orbitConfig'] });
+        return !!workspace.orbitConfig;
+    }
+
+    async createOrbitState(initialState = 'SUBMITTED') {
+        const workspace = await this.getWorkspace();
+        return workspace.createOrbitTransactionState(this.id, initialState);
     }
   }
   Transaction.init({
@@ -663,7 +838,54 @@ module.exports = (sequelize, DataTypes) => {
         get() {
             return this.getDataValue('state') === 'syncing';
         }
-    }
+    },
+    maxFeePerGas: {
+        type: DataTypes.STRING,
+        get() {
+            return String(this.getDataValue('maxFeePerGas') || this.getDataValue('raw.maxFeePerGas'));
+        }
+    },
+    maxPriorityFeePerGas: {
+        type: DataTypes.STRING,
+        get() {
+            return String(this.getDataValue('maxPriorityFeePerGas') || this.getDataValue('raw.maxPriorityFeePerGas'));
+        }
+    },
+    gas: {
+        type: DataTypes.STRING,
+        get() {
+            return String(this.getDataValue('gas') || this.getDataValue('raw.gas'));
+        }
+    },
+    accessList: {
+        type: DataTypes.JSON,
+        get() {
+            return this.getDataValue('accessList') || this.getDataValue('raw.accessList');
+        }
+    },
+    yParity: {
+        type: DataTypes.BOOLEAN,
+        get() {
+            return this.getDataValue('yParity') || this.getDataValue('raw.yParity');
+        },
+        set(value) {
+            const _val = value == '0x1' ? true : false;
+            this.setDataValue('yParity', _val);
+        }
+    },
+    blobVersionedHashes: {
+        type: DataTypes.JSON,
+        get() {
+            return this.getDataValue('blobVersionedHashes') || this.getDataValue('raw.blobVersionedHashes');
+        }
+    },
+    maxFeePerBlobGas: {
+        type: DataTypes.STRING,
+        get() {
+            return this.getDataValue('maxFeePerBlobGas') || this.getDataValue('raw.maxFeePerBlobGas');
+        }
+    },
+    requestId: DataTypes.INTEGER
   }, {
     hooks: {
         afterBulkCreate(transactions, options) {

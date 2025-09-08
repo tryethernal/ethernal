@@ -120,7 +120,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'TransactionLog',
-    tableName: 'transaction_logs'
+    tableName: 'transaction_logs',
   });
   return TransactionLog;
 };

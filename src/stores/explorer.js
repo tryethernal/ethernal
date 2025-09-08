@@ -7,7 +7,6 @@ export const useExplorerStore = defineStore('explorer', {
         name: null,
         rpcServer: null,
         token: 'ETH',
-        l1Explorer: null,
         domain: null,
         domains: [],
         themes: {},

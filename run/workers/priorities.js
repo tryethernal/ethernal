@@ -7,7 +7,11 @@ const priorities = {
         'batchBlockSync',
         'sendResetPasswordEmail',
         'updateExplorerSyncingProcess',
-        'receiptSync'
+        'receiptSync',
+        'finalizePendingOrbitBatches',
+        'checkOrbitMessageDeliveredLogs',
+        'backfillOrbitMessageDeliveredLogs',
+        'storeOrbitDeposit'
     ],
     'medium': [
         'processContract',
@@ -37,6 +41,8 @@ const priorities = {
         'removeStalledBlock',
         'queueMonitoring',
         'blockSyncMonitoring',
+        'monitorOrbitBatches',
+        'discoverOrbitBatches',
         'sendDiscordMessage',
         'backfillNativeTokenTransfers'
     ]
