@@ -91,11 +91,8 @@ exports[`MainNavBar.vue > Should highlight blockchain menu when on blockchain re
               <!-- DEX Link -->
               <!--v-if-->
               <!-- Bridge Link -->
-              <!--v-if--><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-plain opacity-100 d-flex align-center fill-height text-default opacity-80" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-6"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-                <!----><span class="v-btn__content" data-no-activator=""> More <i class="mdi-chevron-down mdi v-icon notranslate v-theme--light v-icon--size-default ml-1" aria-hidden="true"></i></span>
-                <!---->
-                <!---->
-              </button>
+              <!--v-if-->
+              <!--v-if-->
               <!---->
               <!-- Admin Links -->
               <!--v-if-->
@@ -205,11 +202,8 @@ exports[`MainNavBar.vue > Should highlight tokens menu when on tokens related ro
               <!-- DEX Link -->
               <!--v-if-->
               <!-- Bridge Link -->
-              <!--v-if--><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-plain opacity-100 d-flex align-center fill-height text-default opacity-80" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-6"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-                <!----><span class="v-btn__content" data-no-activator=""> More <i class="mdi-chevron-down mdi v-icon notranslate v-theme--light v-icon--size-default ml-1" aria-hidden="true"></i></span>
-                <!---->
-                <!---->
-              </button>
+              <!--v-if-->
+              <!--v-if-->
               <!---->
               <!-- Admin Links -->
               <!--v-if-->
@@ -262,11 +256,8 @@ exports[`MainNavBar.vue > Should show admin menu items when user is admin 1`] = 
               <!-- DEX Link -->
               <!--v-if-->
               <!-- Bridge Link -->
-              <!--v-if--><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-plain opacity-100 d-flex align-center fill-height text-default opacity-80" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-6"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-                <!----><span class="v-btn__content" data-no-activator=""> More <i class="mdi-chevron-down mdi v-icon notranslate v-theme--light v-icon--size-default ml-1" aria-hidden="true"></i></span>
-                <!---->
-                <!---->
-              </button>
+              <!--v-if-->
+              <!--v-if-->
               <!---->
               <!-- Admin Links -->
               <!--v-if-->
@@ -326,11 +317,8 @@ exports[`MainNavBar.vue > Should show bridge when explorer is demo 1`] = `
                 <!----><span class="v-btn__content" data-no-activator="">Bridge</span>
                 <!---->
                 <!---->
-              </a><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-plain opacity-100 d-flex align-center fill-height text-default opacity-80" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-9"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-                <!----><span class="v-btn__content" data-no-activator=""> More <i class="mdi-chevron-down mdi v-icon notranslate v-theme--light v-icon--size-default ml-1" aria-hidden="true"></i></span>
-                <!---->
-                <!---->
-              </button>
+              </a>
+              <!--v-if-->
               <!---->
               <!-- Admin Links -->
               <!--v-if-->
@@ -383,11 +371,8 @@ exports[`MainNavBar.vue > Should show bridge when user is admin and workspace is
               <!-- DEX Link -->
               <!--v-if-->
               <!-- Bridge Link -->
-              <!--v-if--><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-plain opacity-100 d-flex align-center fill-height text-default opacity-80" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-6"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-                <!----><span class="v-btn__content" data-no-activator=""> More <i class="mdi-chevron-down mdi v-icon notranslate v-theme--light v-icon--size-default ml-1" aria-hidden="true"></i></span>
-                <!---->
-                <!---->
-              </button>
+              <!--v-if-->
+              <!--v-if-->
               <!---->
               <!-- Admin Links -->
               <!--v-if-->
@@ -440,11 +425,8 @@ exports[`MainNavBar.vue > Should show desktop navigation bar when mobile prop is
               <!-- DEX Link -->
               <!--v-if-->
               <!-- Bridge Link -->
-              <!--v-if--><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-plain opacity-100 d-flex align-center fill-height text-default opacity-80" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-6"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-                <!----><span class="v-btn__content" data-no-activator=""> More <i class="mdi-chevron-down mdi v-icon notranslate v-theme--light v-icon--size-default ml-1" aria-hidden="true"></i></span>
-                <!---->
-                <!---->
-              </button>
+              <!--v-if-->
+              <!--v-if-->
               <!---->
               <!-- Admin Links -->
               <!--v-if-->
@@ -504,11 +486,8 @@ exports[`MainNavBar.vue > Should show faucet and dex when explorer is demo 1`] =
                 <!----><span class="v-btn__content" data-no-activator="">Bridge</span>
                 <!---->
                 <!---->
-              </a><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-plain opacity-100 d-flex align-center fill-height text-default opacity-80" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-9"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-                <!----><span class="v-btn__content" data-no-activator=""> More <i class="mdi-chevron-down mdi v-icon notranslate v-theme--light v-icon--size-default ml-1" aria-hidden="true"></i></span>
-                <!---->
-                <!---->
-              </button>
+              </a>
+              <!--v-if-->
               <!---->
               <!-- Admin Links -->
               <!--v-if-->
@@ -563,11 +542,8 @@ exports[`MainNavBar.vue > Should show logo when provided 1`] = `
               <!-- DEX Link -->
               <!--v-if-->
               <!-- Bridge Link -->
-              <!--v-if--><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-plain opacity-100 d-flex align-center fill-height text-default opacity-80" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-6"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-                <!----><span class="v-btn__content" data-no-activator=""> More <i class="mdi-chevron-down mdi v-icon notranslate v-theme--light v-icon--size-default ml-1" aria-hidden="true"></i></span>
-                <!---->
-                <!---->
-              </button>
+              <!--v-if-->
+              <!--v-if-->
               <!---->
               <!-- Admin Links -->
               <!--v-if-->
@@ -914,11 +890,8 @@ exports[`MainNavBar.vue > Should show workspace name when no logo is provided 1`
               <!-- DEX Link -->
               <!--v-if-->
               <!-- Bridge Link -->
-              <!--v-if--><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-plain opacity-100 d-flex align-center fill-height text-default opacity-80" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-6"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
-                <!----><span class="v-btn__content" data-no-activator=""> More <i class="mdi-chevron-down mdi v-icon notranslate v-theme--light v-icon--size-default ml-1" aria-hidden="true"></i></span>
-                <!---->
-                <!---->
-              </button>
+              <!--v-if-->
+              <!--v-if-->
               <!---->
               <!-- Admin Links -->
               <!--v-if-->

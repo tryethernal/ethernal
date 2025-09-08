@@ -425,7 +425,8 @@
                         transition="scroll-y-transition"
                     >
                         <template v-slot:activator="{ props, isActive }">
-                            <v-btn 
+                            <v-btn
+                                v-if="currentWorkspaceStore.orbitConfig"
                                 variant="plain" 
                                 v-bind="props"
                                 @mouseleave="moreMenuOpen = false"
