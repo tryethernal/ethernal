@@ -1,5 +1,62 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`MainNavBar.vue > Should highlight batches menu when on batches route 1`] = `
+"<div class="v-application v-theme--light v-layout v-layout--full-height v-locale--is-ltr">
+  <div class="v-application__wrap">
+    <div>
+      <!-- Mobile Navigation Drawer -->
+      <!--v-if-->
+      <!-- Desktop Navigation Bar -->
+      <header class="v-toolbar v-toolbar--flat v-toolbar--density-default v-theme--light v-locale--is-ltr v-app-bar main-bar theme-background" style="top: 0px; z-index: 1004; transform: translateY(0px); position: fixed; transition: none; left: 0px; width: calc(100% - 0px - 0px);">
+        <!---->
+        <div class="v-toolbar__content" style="height: 64px;">
+          <!---->
+          <!---->
+          <div class="v-container v-locale--is-ltr d-flex align-center fill-height">
+            <div class="d-flex align-center"><a class="text-decoration-none text-h6 text-primary">Ethernal</a></div>
+            <div class="v-spacer"></div>
+            <div class="d-flex align-center fill-height"><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-plain opacity-100 d-flex align-center fill-height text-primary" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator=""> Blockchain <i class="mdi-chevron-down mdi v-icon notranslate v-theme--light v-icon--size-default ml-1" aria-hidden="true"></i></span>
+                <!---->
+                <!---->
+              </button>
+              <!----><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-plain opacity-100 d-flex align-center fill-height text-default opacity-80" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-3"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator=""> Tokens <i class="mdi-chevron-down mdi v-icon notranslate v-theme--light v-icon--size-default ml-1" aria-hidden="true"></i></span>
+                <!---->
+                <!---->
+              </button>
+              <!----><a class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-plain opacity-100 d-flex align-center fill-height text-default opacity-80" href="/analytics"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator="">Charts</span>
+                <!---->
+                <!---->
+              </a><!-- Faucet Link -->
+              <!--v-if-->
+              <!-- DEX Link -->
+              <!--v-if-->
+              <!-- Bridge Link -->
+              <!--v-if--><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-plain opacity-100 d-flex align-center fill-height text-default opacity-80" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-6"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator=""> More <i class="mdi-chevron-down mdi v-icon notranslate v-theme--light v-icon--size-default ml-1" aria-hidden="true"></i></span>
+                <!---->
+                <!---->
+              </button>
+              <!---->
+              <!-- Admin Links -->
+              <!--v-if-->
+              <hr class="v-divider v-divider--vertical v-theme--light my-4 mr-4" aria-orientation="vertical" role="separator">
+              <!--v-if-->
+            </div>
+          </div>
+          <!---->
+        </div>
+        <transition-stub name="expand-transition" appear="false" persisted="false" css="true">
+          <!---->
+        </transition-stub>
+      </header>
+    </div>
+  </div>
+</div>"
+`;
+
 exports[`MainNavBar.vue > Should highlight blockchain menu when on blockchain related routes 1`] = `
 "<div class="v-application v-theme--light v-layout v-layout--full-height v-locale--is-ltr">
   <div class="v-application__wrap">
@@ -34,7 +91,69 @@ exports[`MainNavBar.vue > Should highlight blockchain menu when on blockchain re
               <!-- DEX Link -->
               <!--v-if-->
               <!-- Bridge Link -->
+              <!--v-if--><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-plain opacity-100 d-flex align-center fill-height text-default opacity-80" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-6"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator=""> More <i class="mdi-chevron-down mdi v-icon notranslate v-theme--light v-icon--size-default ml-1" aria-hidden="true"></i></span>
+                <!---->
+                <!---->
+              </button>
+              <!---->
+              <!-- Admin Links -->
               <!--v-if-->
+              <hr class="v-divider v-divider--vertical v-theme--light my-4 mr-4" aria-orientation="vertical" role="separator">
+              <!--v-if-->
+            </div>
+          </div>
+          <!---->
+        </div>
+        <transition-stub name="expand-transition" appear="false" persisted="false" css="true">
+          <!---->
+        </transition-stub>
+      </header>
+    </div>
+  </div>
+</div>"
+`;
+
+exports[`MainNavBar.vue > Should highlight more menu when on messagerelayer route 1`] = `
+"<div class="v-application v-theme--light v-layout v-layout--full-height v-locale--is-ltr">
+  <div class="v-application__wrap">
+    <div>
+      <!-- Mobile Navigation Drawer -->
+      <!--v-if-->
+      <!-- Desktop Navigation Bar -->
+      <header class="v-toolbar v-toolbar--flat v-toolbar--density-default v-theme--light v-locale--is-ltr v-app-bar main-bar theme-background" style="top: 0px; z-index: 1004; transform: translateY(0px); position: fixed; transition: none; left: 0px; width: calc(100% - 0px - 0px);">
+        <!---->
+        <div class="v-toolbar__content" style="height: 64px;">
+          <!---->
+          <!---->
+          <div class="v-container v-locale--is-ltr d-flex align-center fill-height">
+            <div class="d-flex align-center"><a class="text-decoration-none text-h6 text-primary">Ethernal</a></div>
+            <div class="v-spacer"></div>
+            <div class="d-flex align-center fill-height"><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-plain opacity-100 d-flex align-center fill-height text-default opacity-80" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator=""> Blockchain <i class="mdi-chevron-down mdi v-icon notranslate v-theme--light v-icon--size-default ml-1" aria-hidden="true"></i></span>
+                <!---->
+                <!---->
+              </button>
+              <!----><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-plain opacity-100 d-flex align-center fill-height text-default opacity-80" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-3"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator=""> Tokens <i class="mdi-chevron-down mdi v-icon notranslate v-theme--light v-icon--size-default ml-1" aria-hidden="true"></i></span>
+                <!---->
+                <!---->
+              </button>
+              <!----><a class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-plain opacity-100 d-flex align-center fill-height text-default opacity-80" href="/analytics"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator="">Charts</span>
+                <!---->
+                <!---->
+              </a><!-- Faucet Link -->
+              <!--v-if-->
+              <!-- DEX Link -->
+              <!--v-if-->
+              <!-- Bridge Link -->
+              <!--v-if--><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-plain opacity-100 d-flex align-center fill-height text-primary" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-6"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator=""> More <i class="mdi-chevron-down mdi v-icon notranslate v-theme--light v-icon--size-default ml-1" aria-hidden="true"></i></span>
+                <!---->
+                <!---->
+              </button>
+              <!---->
               <!-- Admin Links -->
               <!--v-if-->
               <hr class="v-divider v-divider--vertical v-theme--light my-4 mr-4" aria-orientation="vertical" role="separator">
@@ -86,7 +205,12 @@ exports[`MainNavBar.vue > Should highlight tokens menu when on tokens related ro
               <!-- DEX Link -->
               <!--v-if-->
               <!-- Bridge Link -->
-              <!--v-if-->
+              <!--v-if--><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-plain opacity-100 d-flex align-center fill-height text-default opacity-80" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-6"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator=""> More <i class="mdi-chevron-down mdi v-icon notranslate v-theme--light v-icon--size-default ml-1" aria-hidden="true"></i></span>
+                <!---->
+                <!---->
+              </button>
+              <!---->
               <!-- Admin Links -->
               <!--v-if-->
               <hr class="v-divider v-divider--vertical v-theme--light my-4 mr-4" aria-orientation="vertical" role="separator">
@@ -138,7 +262,12 @@ exports[`MainNavBar.vue > Should show admin menu items when user is admin 1`] = 
               <!-- DEX Link -->
               <!--v-if-->
               <!-- Bridge Link -->
-              <!--v-if-->
+              <!--v-if--><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-plain opacity-100 d-flex align-center fill-height text-default opacity-80" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-6"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator=""> More <i class="mdi-chevron-down mdi v-icon notranslate v-theme--light v-icon--size-default ml-1" aria-hidden="true"></i></span>
+                <!---->
+                <!---->
+              </button>
+              <!---->
               <!-- Admin Links -->
               <!--v-if-->
               <hr class="v-divider v-divider--vertical v-theme--light my-4 mr-4" aria-orientation="vertical" role="separator">
@@ -197,7 +326,13 @@ exports[`MainNavBar.vue > Should show bridge when explorer is demo 1`] = `
                 <!----><span class="v-btn__content" data-no-activator="">Bridge</span>
                 <!---->
                 <!---->
-              </a><!-- Admin Links -->
+              </a><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-plain opacity-100 d-flex align-center fill-height text-default opacity-80" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-9"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator=""> More <i class="mdi-chevron-down mdi v-icon notranslate v-theme--light v-icon--size-default ml-1" aria-hidden="true"></i></span>
+                <!---->
+                <!---->
+              </button>
+              <!---->
+              <!-- Admin Links -->
               <!--v-if-->
               <hr class="v-divider v-divider--vertical v-theme--light my-4 mr-4" aria-orientation="vertical" role="separator">
               <!--v-if-->
@@ -248,7 +383,12 @@ exports[`MainNavBar.vue > Should show bridge when user is admin and workspace is
               <!-- DEX Link -->
               <!--v-if-->
               <!-- Bridge Link -->
-              <!--v-if-->
+              <!--v-if--><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-plain opacity-100 d-flex align-center fill-height text-default opacity-80" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-6"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator=""> More <i class="mdi-chevron-down mdi v-icon notranslate v-theme--light v-icon--size-default ml-1" aria-hidden="true"></i></span>
+                <!---->
+                <!---->
+              </button>
+              <!---->
               <!-- Admin Links -->
               <!--v-if-->
               <hr class="v-divider v-divider--vertical v-theme--light my-4 mr-4" aria-orientation="vertical" role="separator">
@@ -300,7 +440,12 @@ exports[`MainNavBar.vue > Should show desktop navigation bar when mobile prop is
               <!-- DEX Link -->
               <!--v-if-->
               <!-- Bridge Link -->
-              <!--v-if-->
+              <!--v-if--><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-plain opacity-100 d-flex align-center fill-height text-default opacity-80" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-6"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator=""> More <i class="mdi-chevron-down mdi v-icon notranslate v-theme--light v-icon--size-default ml-1" aria-hidden="true"></i></span>
+                <!---->
+                <!---->
+              </button>
+              <!---->
               <!-- Admin Links -->
               <!--v-if-->
               <hr class="v-divider v-divider--vertical v-theme--light my-4 mr-4" aria-orientation="vertical" role="separator">
@@ -359,7 +504,13 @@ exports[`MainNavBar.vue > Should show faucet and dex when explorer is demo 1`] =
                 <!----><span class="v-btn__content" data-no-activator="">Bridge</span>
                 <!---->
                 <!---->
-              </a><!-- Admin Links -->
+              </a><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-plain opacity-100 d-flex align-center fill-height text-default opacity-80" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-9"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator=""> More <i class="mdi-chevron-down mdi v-icon notranslate v-theme--light v-icon--size-default ml-1" aria-hidden="true"></i></span>
+                <!---->
+                <!---->
+              </button>
+              <!---->
+              <!-- Admin Links -->
               <!--v-if-->
               <hr class="v-divider v-divider--vertical v-theme--light my-4 mr-4" aria-orientation="vertical" role="separator">
               <!--v-if-->
@@ -412,7 +563,12 @@ exports[`MainNavBar.vue > Should show logo when provided 1`] = `
               <!-- DEX Link -->
               <!--v-if-->
               <!-- Bridge Link -->
-              <!--v-if-->
+              <!--v-if--><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-plain opacity-100 d-flex align-center fill-height text-default opacity-80" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-6"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator=""> More <i class="mdi-chevron-down mdi v-icon notranslate v-theme--light v-icon--size-default ml-1" aria-hidden="true"></i></span>
+                <!---->
+                <!---->
+              </button>
+              <!---->
               <!-- Admin Links -->
               <!--v-if-->
               <hr class="v-divider v-divider--vertical v-theme--light my-4 mr-4" aria-orientation="vertical" role="separator">
@@ -472,6 +628,22 @@ exports[`MainNavBar.vue > Should show mobile navigation drawer when mobile prop 
                       <!---->
                     </div>
                     <!---->
+                  </a><a class="v-list-item v-list-item--link v-theme--light v-list-item--density-default v-list-item--one-line rounded-0 v-list-item--variant-text" tabindex="-2" href="/txsDeposits"><span class="v-list-item__overlay"></span><span class="v-list-item__underlay"></span>
+                    <!---->
+                    <div class="v-list-item__content" data-no-activator="">
+                      <div class="v-list-item-title"><span class="text-body-2">Latest L1-&gt;L2 Transactions</span></div>
+                      <!---->
+                      <!---->
+                    </div>
+                    <!---->
+                  </a><a class="v-list-item v-list-item--link v-theme--light v-list-item--density-default v-list-item--one-line rounded-0 v-list-item--variant-text" tabindex="-2" href="/txsExit"><span class="v-list-item__overlay"></span><span class="v-list-item__underlay"></span>
+                    <!---->
+                    <div class="v-list-item__content" data-no-activator="">
+                      <div class="v-list-item-title"><span class="text-body-2">Latest L2-&gt;L1 Transactions</span></div>
+                      <!---->
+                      <!---->
+                    </div>
+                    <!---->
                   </a><a class="v-list-item v-list-item--link v-theme--light v-list-item--density-default v-list-item--one-line rounded-0 v-list-item--variant-text" tabindex="-2" href="/txsInternal"><span class="v-list-item__overlay"></span><span class="v-list-item__underlay"></span>
                     <!---->
                     <div class="v-list-item__content" data-no-activator="">
@@ -484,6 +656,14 @@ exports[`MainNavBar.vue > Should show mobile navigation drawer when mobile prop 
                     <!---->
                     <div class="v-list-item__content" data-no-activator="">
                       <div class="v-list-item-title"><span class="text-body-2">Blocks</span></div>
+                      <!---->
+                      <!---->
+                    </div>
+                    <!---->
+                  </a><a class="v-list-item v-list-item--link v-theme--light v-list-item--density-default v-list-item--one-line rounded-0 v-list-item--variant-text" tabindex="-2" href="/batches"><span class="v-list-item__overlay"></span><span class="v-list-item__underlay"></span>
+                    <!---->
+                    <div class="v-list-item__content" data-no-activator="">
+                      <div class="v-list-item-title"><span class="text-body-2">View Batches</span></div>
                       <!---->
                       <!---->
                     </div>
@@ -593,7 +773,31 @@ exports[`MainNavBar.vue > Should show mobile navigation drawer when mobile prop 
             <!--v-if-->
             <!--v-if-->
             <!--v-if-->
-            <!-- Admin Section -->
+            <div class="v-list-group">
+              <div class="v-list-item v-list-item--link v-theme--light v-list-item--density-default v-list-item--one-line rounded-0 v-list-item--variant-text v-list-group__header" tabindex="-2" aria-selected="false" id="v-list-group--id-more"><span class="v-list-item__overlay"></span><span class="v-list-item__underlay"></span>
+                <!---->
+                <div class="v-list-item__content" data-no-activator="">
+                  <div class="v-list-item-title"><span class="text-body-1">More</span></div>
+                  <!---->
+                  <!---->
+                </div>
+                <div class="v-list-item__append"><i class="mdi-chevron-down mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true" density="default"></i>
+                  <!---->
+                  <div class="v-list-item__spacer"></div>
+                </div>
+              </div>
+              <transition-stub name="" appear="false" persisted="false" css="false">
+                <div class="v-list-group__items" role="group" aria-labelledby="v-list-group--id-more" style="display: none;"><a class="v-list-item v-list-item--link v-theme--light v-list-item--density-default v-list-item--one-line rounded-0 v-list-item--variant-text" tabindex="-2" href="/messagerelayer"><span class="v-list-item__overlay"></span><span class="v-list-item__underlay"></span>
+                    <!---->
+                    <div class="v-list-item__content" data-no-activator="">
+                      <div class="v-list-item-title"><span class="text-body-1">L2 to L1 Relayer</span></div>
+                      <!---->
+                      <!---->
+                    </div>
+                    <!---->
+                  </a></div>
+              </transition-stub>
+            </div><!-- Admin Section -->
             <!--v-if-->
             <hr class="v-divider v-theme--light ma-2" aria-orientation="horizontal" role="separator"><!-- Wallet Section -->
             <div class="v-list-item v-theme--light v-list-item--density-default v-list-item--one-line rounded-0 v-list-item--variant-text">
@@ -614,6 +818,63 @@ exports[`MainNavBar.vue > Should show mobile navigation drawer when mobile prop 
         <div class="v-navigation-drawer__scrim" style="z-index: 1003;"></div>
       </transition-stub><!-- Desktop Navigation Bar -->
       <!--v-if-->
+    </div>
+  </div>
+</div>"
+`;
+
+exports[`MainNavBar.vue > Should show orbit features when orbitConfig is present 1`] = `
+"<div class="v-application v-theme--light v-layout v-layout--full-height v-locale--is-ltr">
+  <div class="v-application__wrap">
+    <div>
+      <!-- Mobile Navigation Drawer -->
+      <!--v-if-->
+      <!-- Desktop Navigation Bar -->
+      <header class="v-toolbar v-toolbar--flat v-toolbar--density-default v-theme--light v-locale--is-ltr v-app-bar main-bar theme-background" style="top: 0px; z-index: 1004; transform: translateY(0px); position: fixed; transition: none; left: 0px; width: calc(100% - 0px - 0px);">
+        <!---->
+        <div class="v-toolbar__content" style="height: 64px;">
+          <!---->
+          <!---->
+          <div class="v-container v-locale--is-ltr d-flex align-center fill-height">
+            <div class="d-flex align-center"><a class="text-decoration-none text-h6 text-primary">Ethernal</a></div>
+            <div class="v-spacer"></div>
+            <div class="d-flex align-center fill-height"><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-plain opacity-100 d-flex align-center fill-height text-default opacity-80" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-1"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator=""> Blockchain <i class="mdi-chevron-down mdi v-icon notranslate v-theme--light v-icon--size-default ml-1" aria-hidden="true"></i></span>
+                <!---->
+                <!---->
+              </button>
+              <!----><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-plain opacity-100 d-flex align-center fill-height text-default opacity-80" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-3"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator=""> Tokens <i class="mdi-chevron-down mdi v-icon notranslate v-theme--light v-icon--size-default ml-1" aria-hidden="true"></i></span>
+                <!---->
+                <!---->
+              </button>
+              <!----><a class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-plain opacity-100 d-flex align-center fill-height text-default opacity-80" href="/analytics"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator="">Charts</span>
+                <!---->
+                <!---->
+              </a><!-- Faucet Link -->
+              <!--v-if-->
+              <!-- DEX Link -->
+              <!--v-if-->
+              <!-- Bridge Link -->
+              <!--v-if--><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-plain opacity-100 d-flex align-center fill-height text-default opacity-80" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-6"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator=""> More <i class="mdi-chevron-down mdi v-icon notranslate v-theme--light v-icon--size-default ml-1" aria-hidden="true"></i></span>
+                <!---->
+                <!---->
+              </button>
+              <!---->
+              <!-- Admin Links -->
+              <!--v-if-->
+              <hr class="v-divider v-divider--vertical v-theme--light my-4 mr-4" aria-orientation="vertical" role="separator">
+              <!--v-if-->
+            </div>
+          </div>
+          <!---->
+        </div>
+        <transition-stub name="expand-transition" appear="false" persisted="false" css="true">
+          <!---->
+        </transition-stub>
+      </header>
     </div>
   </div>
 </div>"
@@ -653,7 +914,12 @@ exports[`MainNavBar.vue > Should show workspace name when no logo is provided 1`
               <!-- DEX Link -->
               <!--v-if-->
               <!-- Bridge Link -->
-              <!--v-if-->
+              <!--v-if--><button type="button" class="v-btn v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-plain opacity-100 d-flex align-center fill-height text-default opacity-80" aria-haspopup="menu" aria-expanded="false" aria-controls="v-menu-6"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                <!----><span class="v-btn__content" data-no-activator=""> More <i class="mdi-chevron-down mdi v-icon notranslate v-theme--light v-icon--size-default ml-1" aria-hidden="true"></i></span>
+                <!---->
+                <!---->
+              </button>
+              <!---->
               <!-- Admin Links -->
               <!--v-if-->
               <hr class="v-divider v-divider--vertical v-theme--light my-4 mr-4" aria-orientation="vertical" role="separator">

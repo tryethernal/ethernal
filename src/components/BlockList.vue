@@ -10,7 +10,7 @@
         :disable-pagination="true"
         :hide-default-header="dense"
         :item-class="rowClasses"
-        items-per-page-text="Rows per page:"
+        items-per-page-text="Blocks per page:"
         no-data-text="No blocks indexed yet"
         last-icon=""
         first-icon=""
@@ -70,6 +70,10 @@ import { ref, reactive, onMounted, onBeforeUnmount, inject } from 'vue';
 
 const props = defineProps({
     dense: Boolean,
+    batchNumber: {
+        type: Number,
+        required: false
+    }
 });
 
 // Import ethers directly
@@ -114,7 +118,6 @@ const calculateGasPercentage = (item) => {
 };
 
 const getBlocks = ({ page, itemsPerPage, sortBy } = {}) => {
-    if (!$server) return;
     loading.value = true;
 
     if (!page || !itemsPerPage || !sortBy || !sortBy.length) {
@@ -129,12 +132,11 @@ const getBlocks = ({ page, itemsPerPage, sortBy } = {}) => {
         sortBy
     });
 
-    $server.getBlocks({ 
-        page, 
-        itemsPerPage, 
-        orderBy: sortBy[0].key, 
-        order: sortBy[0].order 
-    }).then(({ data }) => {
+    const fn = props.batchNumber ?
+        $server.getOrbitBatchBlocks({ batchNumber: props.batchNumber, page, itemsPerPage, orderBy: sortBy[0].key, order: sortBy[0].order }) :
+        $server.getBlocks({ page, itemsPerPage, orderBy: sortBy[0].key, order: sortBy[0].order });
+
+    fn.then(({ data }) => {
         blocks.value = data.items;
         blockCount.value = data.items.length == currentOptions.itemsPerPage ?
             (currentOptions.page * data.items.length) + 1 :

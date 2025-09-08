@@ -28,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
 
     async insertAnalyticEvent(sequelizeTransaction) {
         const transaction = await this.getTransaction();
-        const gasPrice = this.raw.effectiveGasPrice || this.raw.gasPrice || transaction.gasPrice;
+        const gasPrice = this.effectiveGasPrice || this.raw.gasPrice || transaction.gasPrice;
         const transactionFee = BigNumber.from(this.gasUsed.toString()).mul(BigNumber.from(gasPrice.toString()));
 
         return sequelize.models.TransactionEvent.create({
@@ -109,6 +109,36 @@ module.exports = (sequelize, DataTypes) => {
     type: DataTypes.INTEGER,
     transactionId: DataTypes.INTEGER,
     workspaceId: DataTypes.INTEGER,
+    blobGasUsed: {
+        type: DataTypes.STRING,
+        get() {
+            return String(this.getDataValue('blobGasUsed') || this.getDataValue('raw.blobGasUsed'));
+        }
+    },
+    blobGasPrice: {
+        type: DataTypes.STRING,
+        get() {
+            return String(this.getDataValue('blobGasPrice') || this.getDataValue('raw.blobGasPrice'));
+        }
+    },
+    timeboosted: {
+        type: DataTypes.BOOLEAN,
+        get() {
+            return this.getDataValue('timeboosted') || this.getDataValue('raw.timeboosted');
+        }
+    },
+    gasUsedForL1: {
+        type: DataTypes.STRING,
+        get() {
+            return String(this.getDataValue('gasUsedForL1') || this.getDataValue('raw.gasUsedForL1'));
+        }
+    },
+    effectiveGasPrice: {
+        type: DataTypes.STRING,
+        get() {
+            return String(this.getDataValue('effectiveGasPrice') || this.getDataValue('raw.effectiveGasPrice'));
+        }
+    },
     raw: DataTypes.JSON
   }, {
     hooks: {

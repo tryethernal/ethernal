@@ -1,0 +1,564 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`OrbitDeposits.vue > Should handle server error gracefully 1`] = `
+"<div class="v-container v-locale--is-ltr">
+  <h2 class="text-h6 font-weight-medium">Deposits (L1 -&gt; L2)</h2>
+  <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-text">
+      <div class="v-table v-table--has-top v-table--has-bottom v-theme--light v-table--density-default v-data-table">
+        <!---->
+        <div class="v-table__wrapper">
+          <table>
+            <!---->
+            <thead class="v-data-table__thead" role="rowgroup">
+              <tr>
+                <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th" colspan="1" rowspan="1">
+                  <div class="v-data-table-header__content"><span>L1 Block</span><i class="mdi-arrow-up mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
+                    <!---->
+                  </div>
+                </th>
+                <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th" colspan="1" rowspan="1">
+                  <div class="v-data-table-header__content"><span>Message #</span><i class="mdi-arrow-up mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
+                    <!---->
+                  </div>
+                </th>
+                <th class="v-data-table__td v-data-table-column--align-start v-data-table__th" colspan="1" rowspan="1">
+                  <div class="v-data-table-header__content"><span>L2 Transaction</span>
+                    <!---->
+                    <!---->
+                  </div>
+                </th>
+                <th class="v-data-table__td v-data-table-column--align-start v-data-table__th" colspan="1" rowspan="1">
+                  <div class="v-data-table-header__content"><span>Timestamp</span>
+                    <!---->
+                    <!---->
+                  </div>
+                </th>
+                <th class="v-data-table__td v-data-table-column--align-start v-data-table__th" colspan="1" rowspan="1">
+                  <div class="v-data-table-header__content"><span>Status</span>
+                    <!---->
+                    <!---->
+                  </div>
+                </th>
+                <th class="v-data-table__td v-data-table-column--align-start v-data-table__th" colspan="1" rowspan="1">
+                  <div class="v-data-table-header__content"><span>L1 Transaction</span>
+                    <!---->
+                    <!---->
+                  </div>
+                </th>
+              </tr>
+              <!---->
+            </thead>
+            <!---->
+            <tbody class="v-data-table__tbody" role="rowgroup">
+              <!---->
+              <tr class="v-data-table-rows-no-data">
+                <td colspan="6">
+                  <div class="text-center pa-4"> No deposits found </div>
+                </td>
+              </tr>
+              <!---->
+            </tbody>
+            <!---->
+            <!---->
+          </table>
+        </div>
+        <hr class="v-divider v-theme--light" aria-orientation="horizontal" role="separator">
+        <div class="v-data-table-footer">
+          <!---->
+          <div class="v-data-table-footer__items-per-page"><span>Deposits per page:</span>
+            <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field v-select v-select--single v-select--selected">
+              <!---->
+              <div class="v-input__control">
+                <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--no-label v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="v-menu-2">
+                  <div class="v-field__overlay"></div>
+                  <div class="v-field__loader">
+                    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                      <!---->
+                      <div class="v-progress-linear__background"></div>
+                      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                        <div class="v-progress-linear__indeterminate">
+                          <div class="v-progress-linear__indeterminate long"></div>
+                          <div class="v-progress-linear__indeterminate short"></div>
+                        </div>
+                      </transition-stub>
+                      <!---->
+                    </div>
+                  </div>
+                  <!---->
+                  <div class="v-field__field" data-no-activator="">
+                    <!---->
+                    <!---->
+                    <!---->
+                    <div class="v-field__input" data-no-activator="">
+                      <!---->
+                      <!---->
+                      <div class="v-select__selection"><span class="v-select__selection-text">10<!----></span></div><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" inputmode="none" aria-label="Open" title="Open" value="10">
+                    </div>
+                    <!---->
+                  </div>
+                  <!---->
+                  <div class="v-field__append-inner">
+                    <!----><i class="mdi-menu-down mdi v-icon notranslate v-theme--light v-icon--size-default v-select__menu-icon" aria-hidden="true"></i>
+                    <!---->
+                  </div>
+                  <div class="v-field__outline">
+                    <div class="v-field__outline__start"></div>
+                    <!---->
+                    <div class="v-field__outline__end"></div>
+                    <!---->
+                  </div>
+                </div>
+              </div>
+              <!---->
+              <!---->
+            </div>
+          </div>
+          <div class="v-data-table-footer__info">
+            <div>0-0 of 0</div>
+          </div>
+          <div class="v-data-table-footer__pagination">
+            <nav class="v-pagination v-theme--light" role="navigation" aria-label="Pagination Navigation" data-test="v-pagination-root">
+              <ul class="v-pagination__list">
+                <li class="v-pagination__first" data-test="v-pagination-first"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="First page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                    <!----><span class="v-btn__content" data-no-activator=""><!----></span>
+                    <!---->
+                    <!---->
+                  </button></li>
+                <li class="v-pagination__prev" data-test="v-pagination-prev"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="Previous page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                    <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-chevron-left mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+                    <!---->
+                    <!---->
+                  </button></li>
+                <li class="v-pagination__next" data-test="v-pagination-next"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="Next page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                    <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-chevron-right mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+                    <!---->
+                    <!---->
+                  </button></li>
+                <li class="v-pagination__last" data-test="v-pagination-last"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="Last page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                    <!----><span class="v-btn__content" data-no-activator=""><!----></span>
+                    <!---->
+                    <!---->
+                  </button></li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+</div>"
+`;
+
+exports[`OrbitDeposits.vue > Should show no data message when no deposits 1`] = `
+"<div class="v-container v-locale--is-ltr">
+  <h2 class="text-h6 font-weight-medium">Deposits (L1 -&gt; L2)</h2>
+  <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-text">
+      <div class="v-table v-table--has-top v-table--has-bottom v-theme--light v-table--density-default v-data-table">
+        <!---->
+        <div class="v-table__wrapper">
+          <table>
+            <!---->
+            <thead class="v-data-table__thead" role="rowgroup">
+              <tr>
+                <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th" colspan="1" rowspan="1">
+                  <div class="v-data-table-header__content"><span>L1 Block</span><i class="mdi-arrow-up mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
+                    <!---->
+                  </div>
+                </th>
+                <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th" colspan="1" rowspan="1">
+                  <div class="v-data-table-header__content"><span>Message #</span><i class="mdi-arrow-up mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
+                    <!---->
+                  </div>
+                </th>
+                <th class="v-data-table__td v-data-table-column--align-start v-data-table__th" colspan="1" rowspan="1">
+                  <div class="v-data-table-header__content"><span>L2 Transaction</span>
+                    <!---->
+                    <!---->
+                  </div>
+                </th>
+                <th class="v-data-table__td v-data-table-column--align-start v-data-table__th" colspan="1" rowspan="1">
+                  <div class="v-data-table-header__content"><span>Timestamp</span>
+                    <!---->
+                    <!---->
+                  </div>
+                </th>
+                <th class="v-data-table__td v-data-table-column--align-start v-data-table__th" colspan="1" rowspan="1">
+                  <div class="v-data-table-header__content"><span>Status</span>
+                    <!---->
+                    <!---->
+                  </div>
+                </th>
+                <th class="v-data-table__td v-data-table-column--align-start v-data-table__th" colspan="1" rowspan="1">
+                  <div class="v-data-table-header__content"><span>L1 Transaction</span>
+                    <!---->
+                    <!---->
+                  </div>
+                </th>
+              </tr>
+              <!---->
+            </thead>
+            <!---->
+            <tbody class="v-data-table__tbody" role="rowgroup">
+              <!---->
+              <tr class="v-data-table-rows-no-data">
+                <td colspan="6">
+                  <div class="text-center pa-4"> No deposits found </div>
+                </td>
+              </tr>
+              <!---->
+            </tbody>
+            <!---->
+            <!---->
+          </table>
+        </div>
+        <hr class="v-divider v-theme--light" aria-orientation="horizontal" role="separator">
+        <div class="v-data-table-footer">
+          <!---->
+          <div class="v-data-table-footer__items-per-page"><span>Deposits per page:</span>
+            <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field v-select v-select--single v-select--selected">
+              <!---->
+              <div class="v-input__control">
+                <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--no-label v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="v-menu-2">
+                  <div class="v-field__overlay"></div>
+                  <div class="v-field__loader">
+                    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                      <!---->
+                      <div class="v-progress-linear__background"></div>
+                      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                        <div class="v-progress-linear__indeterminate">
+                          <div class="v-progress-linear__indeterminate long"></div>
+                          <div class="v-progress-linear__indeterminate short"></div>
+                        </div>
+                      </transition-stub>
+                      <!---->
+                    </div>
+                  </div>
+                  <!---->
+                  <div class="v-field__field" data-no-activator="">
+                    <!---->
+                    <!---->
+                    <!---->
+                    <div class="v-field__input" data-no-activator="">
+                      <!---->
+                      <!---->
+                      <div class="v-select__selection"><span class="v-select__selection-text">10<!----></span></div><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" inputmode="none" aria-label="Open" title="Open" value="10">
+                    </div>
+                    <!---->
+                  </div>
+                  <!---->
+                  <div class="v-field__append-inner">
+                    <!----><i class="mdi-menu-down mdi v-icon notranslate v-theme--light v-icon--size-default v-select__menu-icon" aria-hidden="true"></i>
+                    <!---->
+                  </div>
+                  <div class="v-field__outline">
+                    <div class="v-field__outline__start"></div>
+                    <!---->
+                    <div class="v-field__outline__end"></div>
+                    <!---->
+                  </div>
+                </div>
+              </div>
+              <!---->
+              <!---->
+            </div>
+          </div>
+          <div class="v-data-table-footer__info">
+            <div>0-0 of 0</div>
+          </div>
+          <div class="v-data-table-footer__pagination">
+            <nav class="v-pagination v-theme--light" role="navigation" aria-label="Pagination Navigation" data-test="v-pagination-root">
+              <ul class="v-pagination__list">
+                <li class="v-pagination__first" data-test="v-pagination-first"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="First page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                    <!----><span class="v-btn__content" data-no-activator=""><!----></span>
+                    <!---->
+                    <!---->
+                  </button></li>
+                <li class="v-pagination__prev" data-test="v-pagination-prev"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="Previous page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                    <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-chevron-left mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+                    <!---->
+                    <!---->
+                  </button></li>
+                <li class="v-pagination__next" data-test="v-pagination-next"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="Next page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                    <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-chevron-right mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+                    <!---->
+                    <!---->
+                  </button></li>
+                <li class="v-pagination__last" data-test="v-pagination-last"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="Last page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                    <!----><span class="v-btn__content" data-no-activator=""><!----></span>
+                    <!---->
+                    <!---->
+                  </button></li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+</div>"
+`;
+
+exports[`OrbitDeposits.vue > Should show the deposits component with data 1`] = `
+"<div class="v-container v-locale--is-ltr">
+  <h2 class="text-h6 font-weight-medium">Deposits (L1 -&gt; L2)</h2>
+  <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-text">
+      <div class="v-table v-table--has-top v-table--has-bottom v-theme--light v-table--density-default v-data-table">
+        <!---->
+        <div class="v-table__wrapper">
+          <table>
+            <!---->
+            <thead class="v-data-table__thead" role="rowgroup">
+              <tr>
+                <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th" colspan="1" rowspan="1">
+                  <div class="v-data-table-header__content"><span>L1 Block</span><i class="mdi-arrow-up mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
+                    <!---->
+                  </div>
+                </th>
+                <th class="v-data-table__td v-data-table-column--align-start v-data-table__th--sortable v-data-table__th" colspan="1" rowspan="1">
+                  <div class="v-data-table-header__content"><span>Message #</span><i class="mdi-arrow-up mdi v-icon notranslate v-theme--light v-icon--size-default v-data-table-header__sort-icon" aria-hidden="true"></i>
+                    <!---->
+                  </div>
+                </th>
+                <th class="v-data-table__td v-data-table-column--align-start v-data-table__th" colspan="1" rowspan="1">
+                  <div class="v-data-table-header__content"><span>L2 Transaction</span>
+                    <!---->
+                    <!---->
+                  </div>
+                </th>
+                <th class="v-data-table__td v-data-table-column--align-start v-data-table__th" colspan="1" rowspan="1">
+                  <div class="v-data-table-header__content"><span>Timestamp</span>
+                    <!---->
+                    <!---->
+                  </div>
+                </th>
+                <th class="v-data-table__td v-data-table-column--align-start v-data-table__th" colspan="1" rowspan="1">
+                  <div class="v-data-table-header__content"><span>Status</span>
+                    <!---->
+                    <!---->
+                  </div>
+                </th>
+                <th class="v-data-table__td v-data-table-column--align-start v-data-table__th" colspan="1" rowspan="1">
+                  <div class="v-data-table-header__content"><span>L1 Transaction</span>
+                    <!---->
+                    <!---->
+                  </div>
+                </th>
+              </tr>
+              <!---->
+            </thead>
+            <!---->
+            <tbody class="v-data-table__tbody" role="rowgroup">
+              <!---->
+              <tr class="v-data-table__tr">
+                <td class="v-data-table__td v-data-table-column--align-start"><a class="text-decoration-none" href="https://etherscan.io/block/12345" target="_blank">12,345 <i class="mdi-open-in-new mdi v-icon notranslate v-theme--light v-icon--size-x-small" aria-hidden="true"></i></a></td>
+                <td class="v-data-table__td v-data-table-column--align-start">1</td>
+                <td class="v-data-table__td v-data-table-column--align-start">
+                  <hash-link-stub type="tx" hash="0xabcdef1234567890abcdef1234567890abcdef12" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
+                </td>
+                <td class="v-data-table__td v-data-table-column--align-start">
+                  <div class="my-2 text-left">01/15 11:30:00 AM<br><small>in 1 year</small></div>
+                </td>
+                <td class="v-data-table__td v-data-table-column--align-start"><span class="v-chip v-theme--light text-success v-chip--density-default v-chip--size-default v-chip--variant-tonal" draggable="false"><!----><span class="v-chip__underlay"></span>
+                  <!---->
+                  <!---->
+                  <div class="v-chip__content" data-no-activator="">Relayed</div>
+                  <!---->
+                  <!----></span>
+                </td>
+                <td class="v-data-table__td v-data-table-column--align-start"><a class="text-decoration-none" href="https://etherscan.io/tx/0x1234567890abcdef1234567890abcdef12345678" target="_blank">0x123456...5678 <i class="mdi-open-in-new mdi v-icon notranslate v-theme--light v-icon--size-x-small" aria-hidden="true"></i></a></td>
+              </tr>
+              <!---->
+              <tr class="v-data-table__tr">
+                <td class="v-data-table__td v-data-table-column--align-start"><a class="text-decoration-none" href="https://etherscan.io/block/12346" target="_blank">12,346 <i class="mdi-open-in-new mdi v-icon notranslate v-theme--light v-icon--size-x-small" aria-hidden="true"></i></a></td>
+                <td class="v-data-table__td v-data-table-column--align-start">2</td>
+                <td class="v-data-table__td v-data-table-column--align-start"><span>N/A</span></td>
+                <td class="v-data-table__td v-data-table-column--align-start">
+                  <div class="my-2 text-left">01/15 12:00:00 PM<br><small>in 1 year</small></div>
+                </td>
+                <td class="v-data-table__td v-data-table-column--align-start"><span class="v-chip v-theme--light text-warning v-chip--density-default v-chip--size-default v-chip--variant-tonal" draggable="false"><!----><span class="v-chip__underlay"></span>
+                  <!---->
+                  <!---->
+                  <div class="v-chip__content" data-no-activator="">Pending</div>
+                  <!---->
+                  <!----></span>
+                </td>
+                <td class="v-data-table__td v-data-table-column--align-start"><a class="text-decoration-none" href="https://etherscan.io/tx/0x9876543210fedcba9876543210fedcba98765432" target="_blank">0x987654...5432 <i class="mdi-open-in-new mdi v-icon notranslate v-theme--light v-icon--size-x-small" aria-hidden="true"></i></a></td>
+              </tr>
+              <!---->
+              <tr class="v-data-table__tr">
+                <td class="v-data-table__td v-data-table-column--align-start"><a class="text-decoration-none" href="https://etherscan.io/block/12347" target="_blank">12,347 <i class="mdi-open-in-new mdi v-icon notranslate v-theme--light v-icon--size-x-small" aria-hidden="true"></i></a></td>
+                <td class="v-data-table__td v-data-table-column--align-start">3</td>
+                <td class="v-data-table__td v-data-table-column--align-start">
+                  <hash-link-stub type="tx" hash="0xfedcba0987654321fedcba0987654321fedcba09" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
+                </td>
+                <td class="v-data-table__td v-data-table-column--align-start">
+                  <div class="my-2 text-left">01/15 12:30:00 PM<br><small>in 1 year</small></div>
+                </td>
+                <td class="v-data-table__td v-data-table-column--align-start"><span class="v-chip v-theme--light text-error v-chip--density-default v-chip--size-default v-chip--variant-tonal" draggable="false"><!----><span class="v-chip__underlay"></span>
+                  <!---->
+                  <!---->
+                  <div class="v-chip__content" data-no-activator="">Failed</div>
+                  <!---->
+                  <!----></span>
+                </td>
+                <td class="v-data-table__td v-data-table-column--align-start"><a class="text-decoration-none" href="https://etherscan.io/tx/0x5555555555555555555555555555555555555555" target="_blank">0x555555...5555 <i class="mdi-open-in-new mdi v-icon notranslate v-theme--light v-icon--size-x-small" aria-hidden="true"></i></a></td>
+              </tr>
+              <!---->
+              <!---->
+            </tbody>
+            <!---->
+            <!---->
+          </table>
+        </div>
+        <hr class="v-divider v-theme--light" aria-orientation="horizontal" role="separator">
+        <div class="v-data-table-footer">
+          <!---->
+          <div class="v-data-table-footer__items-per-page"><span>Deposits per page:</span>
+            <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field v-select v-select--single v-select--selected">
+              <!---->
+              <div class="v-input__control">
+                <div class="v-field v-field--active v-field--appended v-field--center-affix v-field--dirty v-field--no-label v-field--variant-outlined v-theme--light v-locale--is-ltr" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="v-menu-2">
+                  <div class="v-field__overlay"></div>
+                  <div class="v-field__loader">
+                    <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+                      <!---->
+                      <div class="v-progress-linear__background"></div>
+                      <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+                      <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+                        <div class="v-progress-linear__indeterminate">
+                          <div class="v-progress-linear__indeterminate long"></div>
+                          <div class="v-progress-linear__indeterminate short"></div>
+                        </div>
+                      </transition-stub>
+                      <!---->
+                    </div>
+                  </div>
+                  <!---->
+                  <div class="v-field__field" data-no-activator="">
+                    <!---->
+                    <!---->
+                    <!---->
+                    <div class="v-field__input" data-no-activator="">
+                      <!---->
+                      <!---->
+                      <div class="v-select__selection"><span class="v-select__selection-text">10<!----></span></div><input size="1" type="text" id="input-0" aria-describedby="input-0-messages" inputmode="none" aria-label="Open" title="Open" value="10">
+                    </div>
+                    <!---->
+                  </div>
+                  <!---->
+                  <div class="v-field__append-inner">
+                    <!----><i class="mdi-menu-down mdi v-icon notranslate v-theme--light v-icon--size-default v-select__menu-icon" aria-hidden="true"></i>
+                    <!---->
+                  </div>
+                  <div class="v-field__outline">
+                    <div class="v-field__outline__start"></div>
+                    <!---->
+                    <div class="v-field__outline__end"></div>
+                    <!---->
+                  </div>
+                </div>
+              </div>
+              <!---->
+              <!---->
+            </div>
+          </div>
+          <div class="v-data-table-footer__info">
+            <div>1-3 of 3</div>
+          </div>
+          <div class="v-data-table-footer__pagination">
+            <nav class="v-pagination v-theme--light" role="navigation" aria-label="Pagination Navigation" data-test="v-pagination-root">
+              <ul class="v-pagination__list">
+                <li class="v-pagination__first" data-test="v-pagination-first"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="First page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                    <!----><span class="v-btn__content" data-no-activator=""><!----></span>
+                    <!---->
+                    <!---->
+                  </button></li>
+                <li class="v-pagination__prev" data-test="v-pagination-prev"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="Previous page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                    <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-chevron-left mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+                    <!---->
+                    <!---->
+                  </button></li>
+                <li class="v-pagination__next" data-test="v-pagination-next"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="Next page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                    <!----><span class="v-btn__content" data-no-activator=""><i class="mdi-chevron-right mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i></span>
+                    <!---->
+                    <!---->
+                  </button></li>
+                <li class="v-pagination__last" data-test="v-pagination-last"><button type="button" class="v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-comfortable v-btn--rounded v-btn--size-default v-btn--variant-plain" disabled="" aria-label="Last page" aria-disabled="true"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+                    <!----><span class="v-btn__content" data-no-activator=""><!----></span>
+                    <!---->
+                    <!---->
+                  </button></li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+</div>"
+`;

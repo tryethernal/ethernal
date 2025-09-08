@@ -23,7 +23,10 @@ describe('MainNavBar.vue', () => {
                 plugins: [vuetify, router, createTestingPinia({
                     initialState: {
                         currentWorkspace: {
-                            tracing: true
+                            tracing: true,
+                            orbitConfig: {
+                                parentChainExplorer: 'https://etherscan.io'
+                            }
                         }
                     }
                 })]
@@ -277,6 +280,99 @@ describe('MainNavBar.vue', () => {
             global: {
                 stubs,
                 plugins: [vuetify, router, createTestingPinia()]
+            },
+            slots: {
+                default: {
+                    render: () => h(MainNavBar, {
+                        mobile: false
+                    })
+                }
+            }
+        });
+        await flushPromises();
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
+    it('Should show orbit features when orbitConfig is present', async () => {
+        const wrapper = mount(VApp, {
+            global: {
+                stubs,
+                plugins: [vuetify, router, createTestingPinia({
+                    initialState: {
+                        currentWorkspace: {
+                            orbitConfig: {
+                                parentChainExplorer: 'https://etherscan.io'
+                            }
+                        }
+                    }
+                })]
+            },
+            slots: {
+                default: {
+                    render: () => h(MainNavBar, {
+                        mobile: false
+                    })
+                }
+            }
+        });
+        await flushPromises();
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
+    it('Should highlight batches menu when on batches route', async () => {
+        const router = createRouter({
+            history: createWebHistory(),
+            routes: [{ path: '/batches', component: { template: '<div></div>' } }]
+        });
+        await router.push('/batches');
+
+        const wrapper = mount(VApp, {
+            global: {
+                stubs,
+                plugins: [vuetify, router, createTestingPinia({
+                    initialState: {
+                        currentWorkspace: {
+                            orbitConfig: {
+                                parentChainExplorer: 'https://etherscan.io'
+                            }
+                        }
+                    }
+                })]
+            },
+            slots: {
+                default: {
+                    render: () => h(MainNavBar, {
+                        mobile: false
+                    })
+                }
+            }
+        });
+        await flushPromises();
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
+    it('Should highlight more menu when on messagerelayer route', async () => {
+        const router = createRouter({
+            history: createWebHistory(),
+            routes: [{ path: '/messagerelayer', component: { template: '<div></div>' } }]
+        });
+        await router.push('/messagerelayer');
+
+        const wrapper = mount(VApp, {
+            global: {
+                stubs,
+                plugins: [vuetify, router, createTestingPinia({
+                    initialState: {
+                        currentWorkspace: {
+                            orbitConfig: {
+                                parentChainExplorer: 'https://etherscan.io'
+                            }
+                        }
+                    }
+                })]
             },
             slots: {
                 default: {

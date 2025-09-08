@@ -1,4 +1,5 @@
 'use strict';
+const ethers = require('ethers');
 const {
   Model,
   Sequelize
@@ -22,6 +23,10 @@ module.exports = (sequelize, DataTypes) => {
       Block.belongsTo(models.Workspace, { foreignKey: 'workspaceId', as: 'workspace' });
       Block.hasMany(models.Transaction, { foreignKey: 'blockId', as: 'transactions' });
       Block.hasOne(models.BlockEvent, { foreignKey: 'blockId', as: 'event' });
+      Block.belongsTo(models.OrbitBatch, {
+        foreignKey: 'orbitBatchId',
+        as: 'orbitBatch'
+      });
     }
 
     async safeDestroy(transaction) {
@@ -126,6 +131,28 @@ module.exports = (sequelize, DataTypes) => {
     number: DataTypes.INTEGER,
     parentHash: DataTypes.STRING,
     l1BlockNumber: DataTypes.INTEGER,
+    orbitStatus: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        if (!this.getDataValue('orbitBatch'))
+          return 'processed_on_rollup';
+
+        let status = 'processed_on_rollup';
+        const orbitBatch = this.getDataValue('orbitBatch');
+        if (!orbitBatch)
+          return status;
+  
+        status = 'pending_on_parent';
+        if (orbitBatch.confirmationStatus == 'confirmed') {
+          status = 'confirmed_on_parent';
+          const orbitNode = orbitBatch.orbitNode;
+          if (orbitNode)
+            status = 'finalized_on_parent';
+        }
+  
+        return status;
+      }
+    },
     timestamp: {
         type: DataTypes.DATE,
         set(value) {
@@ -145,6 +172,50 @@ module.exports = (sequelize, DataTypes) => {
           return this.getDataValue('state') === 'ready';
       }
     },
+    orbitBatchId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'orbit_batches',
+        key: 'id'
+      }
+    },
+    logsBloom: DataTypes.TEXT,
+    mixHash: DataTypes.STRING(66),
+    receiptsRoot: DataTypes.STRING(66),
+    sendCount: {
+      type: DataTypes.BIGINT,
+      get() {
+        return this.getDataValue('sendCount') || this.getDataValue('raw.sendCount');
+      },
+      set(value) {
+        if (value)
+          this.setDataValue('sendCount', ethers.BigNumber.from(value).toString());
+        else
+          this.setDataValue('sendCount', null);
+      }
+    },
+    sendRoot: DataTypes.STRING(66),
+    sha3Uncles: {
+      type: DataTypes.STRING(66),
+      get() {
+        return this.getDataValue('sha3Uncles') ||this.getDataValue('raw.sha3Uncles');
+      }
+    },
+    size: {
+      type: DataTypes.INTEGER,
+      get() {
+        return this.getDataValue('size') || this.getDataValue('raw.size');
+      }
+    },
+    stateRoot: {
+      type: DataTypes.STRING(66),
+      get() {
+        return this.getDataValue('stateRoot') || this.getDataValue('raw.stateRoot');
+      }
+    },
+    transactionsRoot: DataTypes.STRING(66),
+    withdrawals: DataTypes.JSON
   }, {
     hooks: {
         afterBulkCreate(blocks, options) {

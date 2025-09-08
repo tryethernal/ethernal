@@ -1,5 +1,5 @@
 const { ProviderConnector } = require('../lib/rpc');
-const { Workspace, Explorer, StripeSubscription, Transaction, TransactionReceipt, RpcHealthCheck } = require('../models');
+const { Workspace, Explorer, StripeSubscription, Transaction, TransactionReceipt, RpcHealthCheck, OrbitChainConfig } = require('../models');
 const { processRawRpcObject } = require('../lib/utils');
 const { enqueue } = require('../lib/queue');
 const RateLimiter = require('../lib/rateLimiter');
@@ -31,6 +31,14 @@ module.exports = async job => {
                     model: RpcHealthCheck,
                     as: 'rpcHealthCheck',
                     attributes: ['isReachable']
+                },
+                {
+                    model: OrbitChainConfig,
+                    as: 'orbitChildConfigs'
+                },
+                {
+                    model: OrbitChainConfig,
+                    as: 'orbitConfig'
                 }
             ]
         },
@@ -114,10 +122,12 @@ module.exports = async job => {
         if (!receipt)
             throw new Error('Failed to fetch receipt');
 
-        const processedReceipt = processRawRpcObject(
+        let processedReceipt = processRawRpcObject(
             receipt,
             Object.keys(TransactionReceipt.rawAttributes).concat(['logs']),
         );
+
+        processedReceipt.workspace = workspace;
 
         return transaction.safeCreateReceipt(processedReceipt);
     } catch(error) {

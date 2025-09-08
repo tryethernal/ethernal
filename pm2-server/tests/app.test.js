@@ -1,11 +1,20 @@
 require('./mocks/lib/pm2');
+require('./mocks/lib/env');
 const pm2 = require('../lib/pm2');
 
 const supertest = require('supertest');
+
+// Mock the middleware module to bypass authentication
+jest.mock('../lib/middleware', () => ({
+    secretMiddleware: (req, res, next) => next()
+}));
+
 const app = require('../app');
 const request = supertest(app);
 
-beforeEach(() => jest.clearAllMocks());
+beforeEach(() => {
+    jest.clearAllMocks();
+});
 
 describe('GET /processes', () => {
     it('Should return a list of processes', (done) => {
@@ -81,7 +90,7 @@ describe('POST /processes/:slug/:command', () => {
 
 describe('POST /processes', () => {
     it('Should start existing stopped process', (done) => {
-        jest.spyOn(pm2, 'show').mockResolvedValue({ pm2_env: { status: 'stopped' }});
+        jest.spyOn(pm2, 'show').mockResolvedValue({ pm2_env: { status: 'stopped' }});
         jest.spyOn(pm2, 'resume').mockResolvedValue({ process: 1 });
         request.post('/processes')
             .send({ slug: 'my-explorer', workspaceId: 1 })
@@ -111,6 +120,65 @@ describe('POST /processes', () => {
             .expect(400)
             .then(({ text }) => {
                 expect(text).toEqual('error');
+                done();
+            });
+    });
+});
+
+describe('POST /log-listener', () => {
+    it('Should return 400 when slug is missing', (done) => {
+        request.post('/log-listener')
+            .send({ jsonArgs: { arg1: 'value1' } })
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toBe('Missing parameter');
+                done();
+            });
+    });
+
+    it('Should return 400 when jsonArgs is missing', (done) => {
+        request.post('/log-listener')
+            .send({ slug: 'test-process' })
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toBe('Missing parameter');
+                done();
+            });
+    });
+
+    it('Should return 400 when both slug and jsonArgs are missing', (done) => {
+        request.post('/log-listener')
+            .send({})
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toBe('Missing parameter');
+                done();
+            });
+    });
+
+    it('Should successfully start log listener when all parameters are valid', (done) => {
+        const mockPm2Process = { id: 1, name: 'test-process', status: 'online' };
+        jest.spyOn(pm2, 'startLogListener').mockResolvedValue(mockPm2Process);
+
+        request.post('/log-listener')
+            .send({ slug: 'test-process', jsonArgs: { arg1: 'value1' } })
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual(mockPm2Process);
+                expect(pm2.startLogListener).toHaveBeenCalledWith('test-process', { arg1: 'value1' });
+                done();
+            });
+    });
+
+    it('Should handle pm2.startLogListener errors', (done) => {
+        const errorMessage = 'PM2 process failed to start';
+        jest.spyOn(pm2, 'startLogListener').mockRejectedValue(new Error(errorMessage));
+
+        request.post('/log-listener')
+            .send({ slug: 'test-process', jsonArgs: { arg1: 'value1' } })
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toBe(errorMessage);
                 done();
             });
     });

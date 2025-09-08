@@ -13,6 +13,7 @@ const Sequelize = require('sequelize');
 const { getDemoUserId, getMaxBlockForSyncReset } = require('./env');
 const models = require('../models');
 const { firebaseHash }  = require('./crypto');
+const { ORBIT_L2_TO_L1_LOG_TOPIC } = require('../constants/orbit');
 
 const Op = Sequelize.Op;
 const User = models.User;
@@ -32,6 +33,353 @@ const StripeQuotaExtension = models.StripeQuotaExtension;
 const ExplorerFaucet = models.ExplorerFaucet;
 const ExplorerV2Dex = models.ExplorerV2Dex;
 const V2DexPair = models.V2DexPair;
+const OrbitBatch = models.OrbitBatch;
+const OrbitChainConfig = models.OrbitChainConfig;
+const OrbitWithdrawal = models.OrbitWithdrawal;
+const OrbitDeposit = models.OrbitDeposit;
+
+/**
+ * Creates an orbit config for an explorer
+ * @param {string} userId - The user id
+ * @param {string} explorerId - The explorer id
+ * @param {Object} params - The parameters to create
+ * @returns {Promise<Object>} - The created orbit config
+ */
+const createOrbitConfig = async (userId, explorerId, params) => {
+    if (!userId || !explorerId || !params)
+        throw new Error('Missing parameter');
+
+    const explorer = await Explorer.findOne({
+        where: {
+            id: explorerId,
+            '$workspace.userId$': userId
+        },
+        include: {
+            model: Workspace,
+            as: 'workspace',
+            include: {
+                model: OrbitChainConfig,
+                as: 'orbitConfig'
+            }
+        }
+    });
+
+    if (!explorer)
+        throw new Error('Could not find explorer');
+
+    if (explorer.workspace.orbitConfig)
+        throw new Error('Orbit config already exists');
+    
+    return explorer.workspace.safeCreateOrbitConfig(params);
+}
+
+/**
+ * Updates an existing orbit config for an explorer
+ * @param {string} userId - The user id
+ * @param {string} explorerId - The explorer id
+ * @param {Object} params - The parameters to update
+ * @returns {Promise<Object>} - The updated orbit config
+ */
+const updateOrbitConfig = async (userId, explorerId, params) => {
+    if (!userId || !explorerId || !params)
+        throw new Error('Missing parameter');
+
+    const config = await OrbitChainConfig.findOne({
+        where: {
+            '$workspace.userId$': userId,
+            '$workspace.explorer.id$': explorerId
+        },
+        include: {
+            model: Workspace,
+            as: 'workspace',
+            include: {
+                model: Explorer,
+                as: 'explorer'
+            }
+        }
+    });
+
+    if (!config)
+        throw new Error('Could not find orbit config');
+
+    return config.safeUpdate(params);
+};
+
+/**
+ * Retrieves an orbit config for an explorer
+ * @param {string} userId - The user id
+ * @param {string} explorerId - The explorer id
+ * @returns {Promise<Object>} - The orbit config
+ */
+const getOrbitConfig = async (userId, explorerId) => {
+    if (!userId || !explorerId)
+        throw new Error('Missing parameter');
+
+    const explorer = await Explorer.findOne({
+        where: {
+            id: explorerId,
+            '$workspace.userId$': userId
+        },
+        include: {
+            model: Workspace,
+            as: 'workspace',
+            include: {
+                model: OrbitChainConfig,
+                as: 'orbitConfig'
+            }
+        }
+    });
+
+    if (!explorer || !explorer.workspace.orbitConfig)
+        return null
+
+    return explorer.workspace.orbitConfig;
+}
+
+/**
+ * Retrieves a list of orbit deposits for a workspace
+ * @param {string} workspaceId - The workspace id
+ * @param {number} page - The page number
+ * @param {number} itemsPerPage - The number of items per page
+ * @param {string} order - The order to sort by
+ * @returns {Promise<Array>} - A list of orbit deposits
+ */
+const getWorkspaceOrbitDeposits = async (workspaceId, page, itemsPerPage, order) => {
+    if (!workspaceId)
+        throw new Error('Missing parameter');
+    
+    const workspace = await Workspace.findByPk(workspaceId);
+    if (!workspace)
+        throw new Error('Could not find workspace');
+
+    return OrbitDeposit.findAndCountAll({
+        where: { workspaceId },
+        order: [['messageIndex', order]],
+        limit: parseInt(itemsPerPage),
+        offset: (parseInt(page) - 1) * parseInt(itemsPerPage)
+    });
+}
+
+/**
+ * Retrieves the l2 transaction containing an orbit withdrawal
+ * Data will be used to build claim calldata
+ * @param {string} workspaceId - The workspace id
+ * @param {string} hash - The hash of the transaction
+ * @param {number} messsageNumber - The message number of the withdrawal
+ * @returns {Promise<Object>} - The orbit withdrawal
+ */
+const getL2TransactionForOrbitWithdrawalClaim = async (workspaceId, hash, messsageNumber) => {
+    if (!workspaceId || !hash)
+        throw new Error('Missing parameter');
+
+    const withdrawal = await OrbitWithdrawal.findOne({
+        where: {
+            workspaceId,
+            l2TransactionHash: hash,
+            messageNumber: messsageNumber
+        },
+        include: [
+            {
+                model: Transaction,
+                as: 'l2Transaction',
+                include: [
+                    {
+                        model: TransactionReceipt,
+                        as: 'receipt',
+                    },
+                    {
+                        model: Workspace,
+                        as: 'workspace',
+                        include: {
+                            model: OrbitChainConfig,
+                            as: 'orbitConfig',
+                            attributes: ['outboxContract', 'parentChainRpcServer', 'parentChainId']
+                        }
+                    }
+                ]
+            },
+        ]
+    });
+
+    const logs = await withdrawal.l2Transaction.receipt.getLogs();
+
+    const log = logs.find(log => log.topics[0] === ORBIT_L2_TO_L1_LOG_TOPIC);
+
+    return { log, transaction: withdrawal.l2Transaction };
+};
+
+/**
+ * Retrieves an orbit withdrawal l2 transactionfor a workspace
+ * @param {string} workspaceId - The workspace id
+ * @param {string} hash - The hash of the transaction
+ * @returns {Promise<Object>} - The orbit withdrawal
+ */
+const getL2TransactionOrbitWithdrawals = (workspaceId, hash) => {
+    if (!workspaceId || !hash)
+        throw new Error('Missing parameter');
+
+    return OrbitWithdrawal.findAndCountAll({
+        where: {
+            workspaceId,
+            l2TransactionHash: hash
+        },
+        attributes: ['messageNumber', 'status', 'to', 'amount', 'l1TokenAddress', 'tokenSymbol', 'tokenDecimals'],
+    });
+};
+
+/**
+ * Retrieves a list of orbit withdrawals for a workspace
+ * @param {string} workspaceId - The workspace id
+ * @param {number} page - The page number
+ * @param {number} itemsPerPage - The number of items per page
+ * @param {string} order - The order to sort by
+ * @returns {Promise<Array>} - A list of orbit withdrawals
+ */
+const getWorkspaceOrbitWithdrawals = (workspaceId, page, itemsPerPage, order) => {
+    if (!workspaceId)
+        throw new Error('Missing parameter');
+
+    const sanitizedOrder = order === 'ASC' ? 'ASC' : 'DESC';
+    return OrbitWithdrawal.findAndCountAll({
+        where: {
+            workspaceId
+        },
+        attributes: ['to', 'amount', 'messageNumber', 'status', 'l1TokenAddress', 'tokenSymbol', 'tokenDecimals', 'timestamp', 'from', 'l2TransactionHash', 'l1TransactionHash'],
+        order: [['messageNumber', sanitizedOrder]],
+        limit: parseInt(itemsPerPage),
+        offset: (parseInt(page) - 1) * parseInt(itemsPerPage)
+    });
+};
+
+/**
+ * Retrieves a list of transactions for a specific batch
+ * @param {string} workspaceId - The workspace id
+ * @param {number} batchNumber - The batch number
+ * @param {number} page - The page number
+ * @param {number} itemsPerPage - The number of items per page
+ * @param {string} order - The order to sort by
+ * @param {string} orderBy - The field to order by
+ * @returns {Promise<Array>} - A list of orbit batch transactions
+ */
+const getWorkspaceOrbitBatchTransactions = async (workspaceId, batchNumber, page, itemsPerPage, order, orderBy, address) => {
+    if (!workspaceId || !batchNumber)
+        throw new Error('Missing parameter');
+    
+    const batch = await OrbitBatch.findOne({
+        where: {
+            workspaceId,
+            batchSequenceNumber: batchNumber
+        }
+    });
+    
+    if (!batch)
+        throw new Error('Could not find batch');
+
+    const total = await batch.countTransactions();
+    const items = await batch.getFilteredTransactions(page, itemsPerPage, order, orderBy, address);
+
+    return {
+        total,
+        items
+    };
+};
+
+/**
+ * Retrieves a list of blocks for a specific batch
+ * @param {string} workspaceId - The workspace id
+ * @param {number} batchNumber - The batch number
+ * @param {number} page - The page number
+ * @param {number} itemsPerPage - The number of items per page
+ * @param {string} order - The order to sort by
+ * @returns {Promise<Array>} - A list of orbit batch blocks
+ */
+const getOrbitBatchBlocks = async (workspaceId, batchNumber, page, itemsPerPage, order) => {
+    if (!workspaceId || !batchNumber)
+        throw new Error('Missing parameter');
+
+    const batch = await OrbitBatch.findOne({
+        where: {
+            workspaceId,
+            batchSequenceNumber: batchNumber
+        }
+    });
+
+    if (!batch)
+        throw new Error('Could not find batch');
+
+    return batch.getFilteredBlocks(page, itemsPerPage, order);
+};
+
+/**
+ * Retrieves an orbit batch by its sequence number for a workspace
+ * @param {string} workspaceId - The workspace id
+ * @param {number} batchNumber - The batch number
+ * @returns {Promise<Object>} - The orbit batch
+ */
+const getOrbitBatch = async (workspaceId, batchNumber) => {
+    if (!workspaceId || !batchNumber)
+        throw new Error('Missing parameter');
+
+    const batch = await OrbitBatch.findOne({
+        where: {
+            workspaceId,
+            batchSequenceNumber: batchNumber
+        },
+        attributes: [
+            'id',
+            'batchSequenceNumber',
+            'postedAt',
+            'confirmationStatus',
+            'parentChainBlockNumber',
+            'parentChainTxHash',
+            'beforeAcc',
+            'afterAcc',
+            [Sequelize.literal(`
+                (
+                    SELECT COUNT(t.id)
+                    FROM orbit_batches ob
+                    JOIN blocks b ON b."orbitBatchId" = ob.id
+                    JOIN transactions t ON t."blockId" = b.id
+                    WHERE ob."batchSequenceNumber" = ${Number(batchNumber)}
+                    AND ob."workspaceId" = ${Number(workspaceId)}
+                )::int
+            `), 'transactionCount'],
+            [Sequelize.literal(`
+                (
+                    SELECT COUNT(*)
+                    FROM orbit_batches ob
+                    JOIN blocks b ON b."orbitBatchId" = ob.id
+                    WHERE ob."batchSequenceNumber" = ${Number(batchNumber)}
+                    AND ob."workspaceId" = ${Number(workspaceId)}
+                )::int
+            `), 'blockCount']
+        ]
+    });
+
+    if (!batch)
+        throw new Error('Could not find batch');
+
+    return batch.toJSON();
+};
+
+/**
+ * Retrieves a list of orbit batches for a workspace
+ * @param {string} workspaceId - The workspace id
+ * @param {number} page - The page number
+ * @param {number} itemsPerPage - The number of items per page
+ * @param {string} order - The order to sort by
+ * @returns {Promise<Array>} - A list of orbit batches
+ */
+const getWorkspaceOrbitBatches = async (workspaceId, page, itemsPerPage, order) => {
+    if (!workspaceId)
+        throw new Error('Missing parameter');
+    
+    const workspace = await Workspace.findByPk(workspaceId);
+    if (!workspace)
+        throw new Error('Could not find workspace');
+
+    return workspace.getFilteredOrbitBatches(page, itemsPerPage, order);
+};
 
 /**
  * Return filtered native token balances of all active addresses (paginated)
@@ -424,7 +772,7 @@ const getTransactionFeeHistory = async (workspaceId, from, to) => {
     return workspace.getTransactionFeeHistory(from, to);
 };
 
-/*
+/**
     workspace.replace() is used to replace a workspace.
     We use this when we want to reset an explorer.
     Waiting for the data to be deleted can take a long time,
@@ -454,7 +802,7 @@ const replaceWorkspace = async (userId, workspaceId) => {
     return workspace.replace();
 }
 
-/*
+/**
     This method is used to get the block size history for a workspace.
 
     @param {number} workspaceId - The ID of the workspace
@@ -2395,20 +2743,20 @@ const getWorkspaceContractById = async (workspaceId, contractId) => {
 };
 
 const getWorkspaceBlock = async (workspaceId, number) => {
-    const workspace = await Workspace.findByPk(workspaceId, {
-        include: {
-            model: Explorer,
-            as: 'explorer',
-            include: {
-                model: StripeSubscription,
-                as: 'stripeSubscription',
-                include: 'stripePlan'
-            }
-        }
-    });
-
     const attributes = [
-        'id', 'number', 'timestamp', 'baseFeePerGas', 'gasUsed', 'transactionsCount', 'gasLimit', 'hash', 'miner', 'extraData', 'difficulty', 'raw', 'parentHash',
+        'id',
+        'number',
+        'timestamp',
+        'baseFeePerGas',
+        'gasUsed',
+        'transactionsCount',
+        'gasLimit',
+        'hash',
+        'miner',
+        'extraData',
+        'difficulty',
+        'raw',
+        'parentHash',
         [
             Sequelize.literal(`(
                 SELECT COUNT(*)::INTEGER
@@ -2419,16 +2767,27 @@ const getWorkspaceBlock = async (workspaceId, number) => {
         ]
     ];
 
-    if (workspace.explorer)
-        if (await workspace.explorer.canUseCapability('l1Explorer'))
-            attributes.push('l1BlockNumber');
+    const orbitConfig = await OrbitChainConfig.findOne({ where: { workspaceId } });
+    if (orbitConfig)
+        attributes.push('orbitStatus');
 
     const block = await Block.findOne({
         where: { number, workspaceId },
-        attributes
+        attributes, 
+        include: {
+            model: OrbitBatch,
+            as: 'orbitBatch',
+            attributes: [
+                'id',
+                'batchSequenceNumber',
+                'confirmationStatus',
+                'parentChainTxHash',
+                'parentChainBlockNumber'
+            ]
+        }
     });
 
-    return block ? block.toJSON() : null;
+    return block.toJSON();
 };
 
 const getWorkspaceBlocks = async (workspaceId, page = 1, itemsPerPage = 10, order = 'DESC') => {
@@ -3152,5 +3511,16 @@ module.exports = {
     canSetupAdmin: canSetupAdmin,
     isValidExplorerDomain: isValidExplorerDomain,
     getImportedAccounts: getImportedAccounts,
-    getFilteredNativeAccounts: getFilteredNativeAccounts
+    getFilteredNativeAccounts: getFilteredNativeAccounts,
+    getWorkspaceOrbitBatches: getWorkspaceOrbitBatches,
+    getOrbitBatch: getOrbitBatch,
+    getOrbitBatchBlocks: getOrbitBatchBlocks,
+    getWorkspaceOrbitBatchTransactions: getWorkspaceOrbitBatchTransactions,
+    getWorkspaceOrbitWithdrawals: getWorkspaceOrbitWithdrawals,
+    getL2TransactionOrbitWithdrawals: getL2TransactionOrbitWithdrawals,
+    getL2TransactionForOrbitWithdrawalClaim: getL2TransactionForOrbitWithdrawalClaim,
+    getWorkspaceOrbitDeposits: getWorkspaceOrbitDeposits,
+    updateOrbitConfig: updateOrbitConfig,
+    getOrbitConfig: getOrbitConfig,
+    createOrbitConfig: createOrbitConfig
 };

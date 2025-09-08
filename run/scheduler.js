@@ -63,4 +63,20 @@ const BLOCK_SYNC_MONITORING_INTERVAL = 60 * 1000;
         10,
         { every: BLOCK_SYNC_MONITORING_INTERVAL }
     );
+
+    await enqueue(
+        'finalizePendingOrbitBatches',
+        'finalizePendingOrbitBatches',
+        {},
+        10,
+        { every: 30 * 1000 }
+    );
+
+    await enqueue(
+        'checkOrbitMessageDeliveredLogs',
+        'checkOrbitMessageDeliveredLogs',
+        {},
+        10,
+        { every: 5 * 60 * 1000 }
+    );
 })();

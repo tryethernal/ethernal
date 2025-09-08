@@ -48,15 +48,6 @@
                             hide-details="auto"
                             v-model="currentExplorer.totalSupply"
                             label="Total Supply (in wei)"></v-text-field>
-                        <v-text-field
-                            density="compact"
-                            variant="outlined"
-                            :rules="[v => !v || isUrlValid(v) || 'Invalid URL']"
-                            persistent-hint
-                            placeholder="https://etherscan.io"
-                            v-model="currentExplorer.l1Explorer"
-                            :hint="currentExplorer.l1Explorer ? `L1 links will look like this: ${currentExplorer.l1Explorer}/block/1234` : `If the L1BlockNumber key is on the block object, this setting will be used to display a link to the L1 explorer.${capabilities.l1Explorer ? '' : ' Upgrade your plan to use it.'}`"
-                            label="L1 Explorer Base URL"></v-text-field>
                     </v-col>
                 </v-row>
                 <v-card-actions>
@@ -107,15 +98,12 @@ function updateExplorerSettings() {
     const settings = {
         name: currentExplorer.value.name,
         slug: currentExplorer.value.slug,
-        l1Explorer: currentExplorer.value.l1Explorer,
         rpcServer: currentExplorer.value.rpcServer
     };
     if (capabilities.value.nativeToken)
         settings['token'] = currentExplorer.value.token;
     if (capabilities.value.totalSupply)
         settings['totalSupply'] = currentExplorer.value.totalSupply;
-    if (capabilities.value.l1Explorer)
-        settings['l1Explorer'] = currentExplorer.value.l1Explorer;
     $server.updateExplorerSettings(currentExplorer.value.id, settings)
         .then(() => {
             successMessage.value = 'Settings updated.';
