@@ -27,7 +27,7 @@ module.exports = {
     const transaction = await queryInterface.sequelize.transaction();
     try {
       await queryInterface.removeColumn('orbit_withdrawals', 'workspaceId', { transaction });
-      await queryInterface.addColumn('orbit_withdrawals', 'orbiCthainConfigId', {
+      await queryInterface.addColumn('orbit_withdrawals', 'orbitChainConfigId', {
         type: Sequelize.INTEGER,
         allowNull: true,
         references: {
