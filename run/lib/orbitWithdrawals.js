@@ -3,7 +3,7 @@ const { encodeFunctionData } = require('viem');
 
 const { ContractConnector } = require('./rpc');
 
-const { NODE_INTERFACE_ADDRESS } = require('../constants/orbit');
+const { NODE_INTERFACE_ADDRESS } = require('../constants/orbit.js');
 
 const OUTBOX_ABI = require('../lib/abis/orbitOutbox.json');
 const iface = new ethers.utils.Interface(require('../lib/abis/arbsys.json'));
