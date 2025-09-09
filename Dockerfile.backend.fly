@@ -14,6 +14,7 @@ COPY run/api ./api
 COPY run/config ./config
 COPY run/jobs ./jobs
 COPY run/lib ./lib
+COPY run/constants ./constants
 COPY run/middlewares ./middlewares
 COPY run/models ./models
 COPY run/webhooks ./webhooks
