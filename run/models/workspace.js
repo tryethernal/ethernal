@@ -3460,6 +3460,21 @@ module.exports = (sequelize, DataTypes) => {
                 entities.token_transfers = entities.transaction_logs.flatMap(log => log.tokenTransfer).filter(tokenTransfer => !!tokenTransfer);
                 entities.token_balance_changes = entities.token_transfers.flatMap(tokenTransfer => tokenTransfer.tokenBalanceChanges).filter(tokenBalanceChange => !!tokenBalanceChange);
                 
+                // Get v2_dex_pool_reserves that reference the transaction_logs
+                const transactionLogIds = entities.transaction_logs.map(log => log.id);
+                if (transactionLogIds.length > 0) {
+                    const v2DexPoolReserves = await sequelize.query(
+                        `SELECT "transactionLogId" FROM v2_dex_pool_reserves WHERE "transactionLogId" IN (:transactionLogIds)`,
+                        {
+                            replacements: { transactionLogIds },
+                            type: QueryTypes.SELECT
+                        }
+                    );
+                    entities.v2_dex_pool_reserves = v2DexPoolReserves;
+                } else {
+                    entities.v2_dex_pool_reserves = [];
+                }
+                
                 // Fallback: find any additional token_transfers that might not be in the association chain
                 const transactionIds = entities.transactions.map(t => t.id);
                 if (transactionIds.length > 0) {
@@ -3518,6 +3533,15 @@ module.exports = (sequelize, DataTypes) => {
                 if (entities.token_balance_changes.length) {
                     await sequelize.query(`DELETE FROM token_balance_change_events WHERE "tokenBalanceChangeId" IN (:ids) AND "workspaceId" = :workspaceId`, {
                         replacements: { ids: entities.token_balance_changes.map(row => row.id), workspaceId: this.id },
+                        transaction
+                    });
+                }
+
+                // Delete v2_dex_pool_reserves first (they reference transaction_logs)
+                if (entities.v2_dex_pool_reserves.length) {
+                    const transactionLogIds = entities.v2_dex_pool_reserves.map(reserve => reserve.transactionLogId);
+                    await sequelize.query(`DELETE FROM v2_dex_pool_reserves WHERE "transactionLogId" IN (:transactionLogIds)`, {
+                        replacements: { transactionLogIds },
                         transaction
                     });
                 }
