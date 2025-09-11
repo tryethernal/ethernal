@@ -3456,9 +3456,36 @@ module.exports = (sequelize, DataTypes) => {
                 entities.contracts = entities.transactions.flatMap(transaction => transaction.createdContract).filter(contract => !!contract);
                 entities.transaction_receipts = entities.transactions.flatMap(transaction => transaction.receipt).filter(receipt => !!receipt && !!receipt.logs);
                 entities.transaction_logs = entities.transaction_receipts.flatMap(receipt => receipt.logs).filter(log => !!log);
-                // Get token_transfers from the association chain
-                entities.token_transfers = entities.transaction_logs.flatMap(log => log.tokenTransfer).filter(tokenTransfer => !!tokenTransfer);
-                entities.token_balance_changes = entities.token_transfers.flatMap(tokenTransfer => tokenTransfer.tokenBalanceChanges).filter(tokenBalanceChange => !!tokenBalanceChange);
+                // Get ALL token_transfers that reference the transactions we're deleting
+                const transactionIds = entities.transactions.map(t => t.id);
+                if (transactionIds.length > 0) {
+                    const allTokenTransfers = await sequelize.query(
+                        `SELECT id FROM token_transfers WHERE "transactionId" IN (:transactionIds) AND "workspaceId" = :workspaceId`,
+                        {
+                            replacements: { transactionIds, workspaceId: this.id },
+                            type: QueryTypes.SELECT
+                        }
+                    );
+                    entities.token_transfers = allTokenTransfers;
+                    
+                    // Get ALL token_balance_changes that reference these token_transfers
+                    const tokenTransferIds = entities.token_transfers.map(tt => tt.id);
+                    if (tokenTransferIds.length > 0) {
+                        const allTokenBalanceChanges = await sequelize.query(
+                            `SELECT id FROM token_balance_changes WHERE "tokenTransferId" IN (:tokenTransferIds) AND "workspaceId" = :workspaceId`,
+                            {
+                                replacements: { tokenTransferIds, workspaceId: this.id },
+                                type: QueryTypes.SELECT
+                            }
+                        );
+                        entities.token_balance_changes = allTokenBalanceChanges;
+                    } else {
+                        entities.token_balance_changes = [];
+                    }
+                } else {
+                    entities.token_transfers = [];
+                    entities.token_balance_changes = [];
+                }
                 
                 // Get v2_dex_pool_reserves that reference the transaction_logs
                 const transactionLogIds = entities.transaction_logs.map(log => log.id);
@@ -3473,37 +3500,6 @@ module.exports = (sequelize, DataTypes) => {
                     entities.v2_dex_pool_reserves = v2DexPoolReserves;
                 } else {
                     entities.v2_dex_pool_reserves = [];
-                }
-                
-                // Fallback: find any additional token_transfers that might not be in the association chain
-                const transactionIds = entities.transactions.map(t => t.id);
-                if (transactionIds.length > 0) {
-                    const foundTokenTransferIds = entities.token_transfers.map(tt => tt.id);
-                    const additionalTokenTransfers = await sequelize.query(
-                        `SELECT id FROM token_transfers WHERE "transactionId" IN (:transactionIds) AND "workspaceId" = :workspaceId AND id NOT IN (:foundIds)`,
-                        {
-                            replacements: { 
-                                transactionIds, 
-                                workspaceId: this.id,
-                                foundIds: foundTokenTransferIds.length > 0 ? foundTokenTransferIds : [0]
-                            },
-                            type: QueryTypes.SELECT
-                        }
-                    );
-                    entities.token_transfers = [...entities.token_transfers, ...additionalTokenTransfers];
-                    
-                    // Also find any additional token_balance_changes for these additional token_transfers
-                    if (additionalTokenTransfers.length > 0) {
-                        const additionalTokenTransferIds = additionalTokenTransfers.map(tt => tt.id);
-                        const additionalTokenBalanceChanges = await sequelize.query(
-                            `SELECT id FROM token_balance_changes WHERE "tokenTransferId" IN (:tokenTransferIds) AND "workspaceId" = :workspaceId`,
-                            {
-                                replacements: { tokenTransferIds: additionalTokenTransferIds, workspaceId: this.id },
-                                type: QueryTypes.SELECT
-                            }
-                        );
-                        entities.token_balance_changes = [...entities.token_balance_changes, ...additionalTokenBalanceChanges];
-                    }
                 }
 
                 for (const contract of entities.contracts)
