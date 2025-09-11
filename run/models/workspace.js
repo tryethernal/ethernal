@@ -3598,7 +3598,7 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    async safeDestroyOrbitData(transactiosn) {
+    async safeDestroyOrbitData(transaction) {
         await sequelize.models.OrbitBatch.destroy({
             where: { workspaceId: this.id },
             transaction
