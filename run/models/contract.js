@@ -48,6 +48,7 @@ module.exports = (sequelize, DataTypes) => {
       Contract.hasMany(models.V2DexPair, { foreignKey: 'pairContractId', as: 'pairs' });
       Contract.hasMany(models.V2DexPair, { foreignKey: 'token0ContractId', as: 'token0Pairs' });
       Contract.hasMany(models.V2DexPair, { foreignKey: 'token1ContractId', as: 'token1Pairs' });
+      Contract.hasOne(models.ExplorerV2Dex, { foreignKey: 'wrappedNativeTokenContractId', as: 'wrappedNativeTokenContract' });
     }
 
     safeCreateVerification(verificationData) {
@@ -502,6 +503,10 @@ module.exports = (sequelize, DataTypes) => {
         const token1Pairs = await sequelize.models.V2DexPair.findAll({ where: { token1ContractId: this.id }});
         for (let i = 0; i < token1Pairs.length; i++)
             await token1Pairs[i].safeDestroy(transaction);
+
+        const wrappedNativeTokenContract = await sequelize.models.ExplorerV2Dex.findAll({ where: { wrappedNativeTokenContractId: this.id }});
+        for (let i = 0; i < wrappedNativeTokenContract.length; i++)
+            await wrappedNativeTokenContract[i].safeDestroy(transaction);
 
         return this.destroy({ transaction });
     }
