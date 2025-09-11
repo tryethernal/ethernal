@@ -3641,7 +3641,7 @@ module.exports = (sequelize, DataTypes) => {
             for (let i = 0; i < accounts.length; i++)
                 await accounts[i].destroy({ transaction });
 
-            await this.safeDestroyOrbitData({ where: { workspaceId: this.id }}, transaction);
+            await this.safeDestroyOrbitData(transaction);
         };
 
         return transaction ?
