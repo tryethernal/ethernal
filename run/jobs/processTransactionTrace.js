@@ -54,6 +54,9 @@ module.exports = async job => {
     if (!transaction.workspace.explorer.stripeSubscription)
         return 'No active subscription';
 
+    if (!transaction.workspace.tracing)
+        return 'Tracing is not enabled';
+
     const tracer = new Tracer(transaction.workspace.rpcServer, db, transaction.workspace.tracing);
     await tracer.process(transaction);
 
