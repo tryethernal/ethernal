@@ -5,6 +5,7 @@ module.exports = {
     batchBlockSync: require('./batchBlockSync'),
     sendResetPasswordEmail: require('./sendResetPasswordEmail'),
     updateExplorerSyncingProcess: require('./updateExplorerSyncingProcess'),
+    updateApproximatedRecord: require('./updateApproximatedRecord'),
     receiptSync: require('./receiptSync'),
     removeStalledBlock: require('./removeStalledBlock'),
     increaseStripeBillingQuota: require('./increaseStripeBillingQuota'),
