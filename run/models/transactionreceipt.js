@@ -112,31 +112,41 @@ module.exports = (sequelize, DataTypes) => {
     blobGasUsed: {
         type: DataTypes.STRING,
         get() {
-            return String(this.getDataValue('blobGasUsed') || this.getDataValue('raw.blobGasUsed'));
+            this.getDataValue('blobGasUsed') || this.getDataValue('raw.blobGasUsed') ?
+                String(this.getDataValue('blobGasUsed') || this.getDataValue('raw.blobGasUsed')) :
+                null;
         }
     },
     blobGasPrice: {
         type: DataTypes.STRING,
         get() {
-            return String(this.getDataValue('blobGasPrice') || this.getDataValue('raw.blobGasPrice'));
+            this.getDataValue('blobGasPrice') || this.getDataValue('raw.blobGasPrice') ?
+                String(this.getDataValue('blobGasPrice') || this.getDataValue('raw.blobGasPrice')) :
+                null;
         }
     },
     timeboosted: {
         type: DataTypes.BOOLEAN,
         get() {
-            return this.getDataValue('timeboosted') || this.getDataValue('raw.timeboosted');
+            this.getDataValue('timeboosted') || this.getDataValue('raw.timeboosted') ?
+                String(this.getDataValue('timeboosted') || this.getDataValue('raw.timeboosted')) :
+                null;
         }
     },
     gasUsedForL1: {
         type: DataTypes.STRING,
         get() {
-            return String(this.getDataValue('gasUsedForL1') || this.getDataValue('raw.gasUsedForL1'));
+            this.getDataValue('gasUsedForL1') || this.getDataValue('raw.gasUsedForL1') ?
+                String(this.getDataValue('gasUsedForL1') || this.getDataValue('raw.gasUsedForL1')) :
+                null;
         }
     },
     effectiveGasPrice: {
         type: DataTypes.STRING,
         get() {
-            return String(this.getDataValue('effectiveGasPrice') || this.getDataValue('raw.effectiveGasPrice'));
+            this.getDataValue('effectiveGasPrice') || this.getDataValue('raw.effectiveGasPrice') ?
+                String(this.getDataValue('effectiveGasPrice') || this.getDataValue('raw.effectiveGasPrice')) :
+                null;
         }
     },
     raw: DataTypes.JSON
