@@ -3456,8 +3456,40 @@ module.exports = (sequelize, DataTypes) => {
                 entities.contracts = entities.transactions.flatMap(transaction => transaction.createdContract).filter(contract => !!contract);
                 entities.transaction_receipts = entities.transactions.flatMap(transaction => transaction.receipt).filter(receipt => !!receipt && !!receipt.logs);
                 entities.transaction_logs = entities.transaction_receipts.flatMap(receipt => receipt.logs).filter(log => !!log);
+                // Get token_transfers from the association chain
                 entities.token_transfers = entities.transaction_logs.flatMap(log => log.tokenTransfer).filter(tokenTransfer => !!tokenTransfer);
                 entities.token_balance_changes = entities.token_transfers.flatMap(tokenTransfer => tokenTransfer.tokenBalanceChanges).filter(tokenBalanceChange => !!tokenBalanceChange);
+                
+                // Fallback: find any additional token_transfers that might not be in the association chain
+                const transactionIds = entities.transactions.map(t => t.id);
+                if (transactionIds.length > 0) {
+                    const foundTokenTransferIds = entities.token_transfers.map(tt => tt.id);
+                    const additionalTokenTransfers = await sequelize.query(
+                        `SELECT id FROM token_transfers WHERE "transactionId" IN (:transactionIds) AND "workspaceId" = :workspaceId AND id NOT IN (:foundIds)`,
+                        {
+                            replacements: { 
+                                transactionIds, 
+                                workspaceId: this.id,
+                                foundIds: foundTokenTransferIds.length > 0 ? foundTokenTransferIds : [0]
+                            },
+                            type: QueryTypes.SELECT
+                        }
+                    );
+                    entities.token_transfers = [...entities.token_transfers, ...additionalTokenTransfers];
+                    
+                    // Also find any additional token_balance_changes for these additional token_transfers
+                    if (additionalTokenTransfers.length > 0) {
+                        const additionalTokenTransferIds = additionalTokenTransfers.map(tt => tt.id);
+                        const additionalTokenBalanceChanges = await sequelize.query(
+                            `SELECT id FROM token_balance_changes WHERE "tokenTransferId" IN (:tokenTransferIds) AND "workspaceId" = :workspaceId`,
+                            {
+                                replacements: { tokenTransferIds: additionalTokenTransferIds, workspaceId: this.id },
+                                type: QueryTypes.SELECT
+                            }
+                        );
+                        entities.token_balance_changes = [...entities.token_balance_changes, ...additionalTokenBalanceChanges];
+                    }
+                }
 
                 for (const contract of entities.contracts)
                     await contract.update({ transactionId: null }, { transaction });
@@ -3490,6 +3522,14 @@ module.exports = (sequelize, DataTypes) => {
                     });
                 }
 
+                // Delete in dependency order: child tables first, then parent tables
+                // 1. token_balance_changes (references token_transfers)
+                // 2. token_transfers (references transactions and transaction_logs)
+                // 3. transaction_logs (references transaction_receipts)
+                // 4. transaction_receipts (references transactions)
+                // 5. transaction_trace_steps (references transactions)
+                // 6. transactions (references blocks)
+                // 7. blocks
                 for (const table of ['token_balance_changes', 'token_transfers', 'transaction_logs', 'transaction_receipts', 'transaction_trace_steps', 'transactions', 'blocks']) {
                     if (entities[table].length) {
                         await sequelize.query(`DELETE FROM ${table} WHERE "id" IN (:ids) AND "workspaceId" = :workspaceId`, {
