@@ -259,7 +259,6 @@ jobs:
         run: |
           flyctl secrets set VERSION=${{ needs.create_release.outputs.current_version }} --stage -a ethernal
           flyctl secrets set VERSION=${{ needs.create_release.outputs.current_version }} --stage -a ethernal-pm2
-        
 
       - name: Release backend
         run: flyctl deploy -c fly.toml -i registry.fly.io/ethernal:${{ needs.create_release.outputs.current_version }}
