@@ -63,6 +63,15 @@ module.exports = async job => {
     if (!tracer.parsedTrace)
         return 'No trace';
 
-    return transaction.safeCreateTransactionTrace(tracer.parsedTrace);
+    try {
+        const trace = await transaction.safeCreateTransactionTrace(tracer.parsedTrace);
+        if (trace.error && trace.error.message.includes('debug_traceTransaction does not exist'))
+            await transaction.workspace.update({ tracing: null });
+        return trace;
+    } catch(error) {
+        if (error.error.message.includes('not enabled'))
+            await transaction.workspace.update({ tracing: null });
+        return error;
+    }
 };
 

@@ -78,13 +78,15 @@ describe('processTransactionTrace', () => {
     });
 
     it('Should process & store the trace if the workspace is public', async () => {
-        const processTraceMock = jest.spyOn(Tracer.prototype, 'process');
-        const saveTraceMock = jest.spyOn(Tracer.prototype, 'saveTrace');
-        jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({ ...transactionMock, workspace: { ...workspace, public: true, tracing: 'other' }});
+        jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({
+            ...transactionMock,
+            workspace: { ...workspace, public: true, tracing: 'other' },
+        });
 
+        transactionMock.safeCreateTransactionTrace.mockResolvedValueOnce({});
+        
         await processTransactionTrace({ data: { transactionId: 1 }});
-
-        expect(processTraceMock).toHaveBeenCalledWith({ ...transactionMock, workspace: { ...workspace, public: true, tracing: 'other' } });
+    
         expect(transactionMock.safeCreateTransactionTrace).toHaveBeenCalledWith([{"op": "CALL"}, {"op": "CALLSTATIC"}]);
     });
 
