@@ -142,9 +142,10 @@ module.exports = (sequelize, DataTypes) => {
         if (receipt)
             await receipt.safeDestroy(transaction);
 
-        const traceSteps = await this.getTraceSteps();
-        for (let i = 0; i < traceSteps.length; i++)
-            await traceSteps[i].destroy({ transaction });
+        sequelize.models.TransactionTraceStep.destroy({
+            where: { transactionId: this.id },
+            transaction
+        });
 
         const event = await this.getEvent();
         if (event)
