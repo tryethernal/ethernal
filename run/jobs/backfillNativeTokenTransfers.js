@@ -63,6 +63,9 @@ module.exports = async job => {
         ]
     });
 
+    if (!transaction.receipt)
+        return 'No receipt for transaction';
+
     const tokenTransfers = [];
 
     const rewardTokenTransfer = findRewardTokenTransfer(transaction);
