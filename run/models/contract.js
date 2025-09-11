@@ -63,7 +63,19 @@ module.exports = (sequelize, DataTypes) => {
                     {
                         workspaceId: this.workspaceId,
                         contractId: this.id,
-                        compilerVersion, evmVersion, runs, constructorArguments, libraries, contractName
+                        compilerVersion, 
+                        evmVersion, 
+                        runs: runs ? parseInt(runs) : null, 
+                        constructorArguments, 
+                        libraries: libraries ? (typeof libraries === 'string' ? (() => {
+                            try {
+                                return JSON.parse(libraries);
+                            } catch (e) {
+                                console.warn(`Invalid JSON in libraries field for contract ${this.id}:`, libraries);
+                                return null;
+                            }
+                        })() : libraries) : null, 
+                        contractName
                     }
                 ],
                 {
