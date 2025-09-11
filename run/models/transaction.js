@@ -150,6 +150,12 @@ module.exports = (sequelize, DataTypes) => {
         if (event)
             await event.destroy({ transaction });
 
+        // Delete token transfers that aren't handled by the receipt chain
+        // (like reward transfers created directly on the transaction)
+        const tokenTransfers = await this.getTokenTransfers();
+        for (let i = 0; i < tokenTransfers.length; i++)
+            await tokenTransfers[i].safeDestroy(transaction);
+
         const contract = await sequelize.models.Contract.findOne({ where: { transactionId: this.id }});
         if (contract)
             await contract.update({ transactionId: null }, { transaction });
