@@ -41,5 +41,6 @@ module.exports = {
     queueMonitoring: require('./queueMonitoring'),
     blockSyncMonitoring: require('./blockSyncMonitoring'),
     sendDiscordMessage: require('./sendDiscordMessage'),
+    sendDemoExplorerLink: require('./sendDemoExplorerLink'),
     backfillNativeTokenTransfers: require('./backfillNativeTokenTransfers')
 };
