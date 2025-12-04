@@ -58,10 +58,65 @@ const BASE_URL = '/api/explorers';
 const hasReachedTransactionQuota = jest.fn().mockResolvedValue(false);
 
 beforeEach(() => {
+    // Restore all mocks to their original implementations
+    // This is crucial to prevent persistent mocks from previous tests affecting current test
+    jest.restoreAllMocks();
     jest.clearAllMocks();
+    
+    // Explicitly restore spies that are commonly overridden with persistent mocks
+    // This ensures they start fresh for each test
+    if (jest.isMockFunction(db.getStripePlan)) {
+        db.getStripePlan.mockRestore();
+    }
+    if (jest.isMockFunction(db.getUser)) {
+        db.getUser.mockRestore();
+    }
+    if (jest.isMockFunction(db.getWorkspaceById)) {
+        db.getWorkspaceById.mockRestore();
+    }
+    if (jest.isMockFunction(db.createExplorerFromOptions)) {
+        db.createExplorerFromOptions.mockRestore();
+    }
+    
+    // Reset mock implementations that are overridden in individual tests
+    // This ensures tests don't affect each other when run together
+    authMiddleware.mockReset();
+    authMiddleware.mockImplementation((req, res, next) => {
+        req.body.data = { 
+            ...(req.body.data || {}),
+            uid: '123',
+            user: { id: 1 }
+        };
+        next();
+    });
+    
+    // Reset ProviderConnector if it was overridden, then restore default
+    ProviderConnector.mockReset();
     ProviderConnector.mockImplementation(() => ({
-        fetchNetworkId: jest.fn().mockResolvedValue(1)
+        fetchNetworkId: jest.fn().mockResolvedValue(1),
+        fetchRawBlockWithTransactions: jest.fn().mockResolvedValue({
+            number: '0x1',
+            transactions: []
+        }),
+        fetchBlockWithTransactions: jest.fn().mockResolvedValue({
+            number: 1,
+            transactions: []
+        }),
+        fetchTransactionReceipt: jest.fn().mockResolvedValue({
+            status: 1
+        })
     }));
+    
+    // Reset DexConnector if it was overridden, then restore default
+    DexConnector.mockReset();
+    DexConnector.mockImplementation(() => ({
+        getFactory: jest.fn().mockResolvedValue('0x123')
+    }));
+    
+    // Reset PM2 if it was overridden
+    PM2.mockReset();
+    
+    // Re-create spies that are needed by default
     jest.spyOn(db, 'getWorkspaceById').mockResolvedValue({ id: 1 });
 });
 
@@ -1223,7 +1278,7 @@ describe(`POST ${BASE_URL}`, () => {
 
     it('Should ignore the starting block param', (done) => {
         jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, workspaces: [{ id: 2 }] });
-        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ public: true, id: 1, capabilities: {}});
+        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ public: true, id: 1, capabilities: { allowAllChains: true }});
         jest.spyOn(db, 'createExplorerFromOptions').mockResolvedValueOnce({ id: 1 });
 
         request.post(BASE_URL)
@@ -1235,6 +1290,23 @@ describe(`POST ${BASE_URL}`, () => {
                     name: 'explorer',
                     networkId: 1
                 });
+                expect(body).toEqual({ id: 1 });
+                done();
+            });
+    });
+
+    it('Should create explorer for a non-allowed network id if stripe plan allows all chains', (done) => {
+        jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, workspaces: [{ id: 2 }] });
+        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ public: true, id: 1, capabilities: {}});
+        jest.spyOn(db, 'createExplorerFromOptions').mockResolvedValueOnce({ id: 1 });
+        ProviderConnector.mockImplementationOnce(() => ({
+            fetchNetworkId: jest.fn().mockResolvedValueOnce(1)
+        }));
+
+        request.post(BASE_URL)
+            .send({ data: { rpcServer: 'test.rpc', name: 'explorer', plan: 'slug' }})
+            .expect(200)
+            .then(({ body }) => {
                 expect(body).toEqual({ id: 1 });
                 done();
             });
@@ -1256,6 +1328,8 @@ describe(`POST ${BASE_URL}`, () => {
 
     it('Should fail if network id is not allowed', (done) => {
         jest.spyOn(db, 'getWorkspaceById').mockResolvedValueOnce({ id: 1, rpcServer: 'rpc' });
+        jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, workspaces: [{ id: 2 }] });
+        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ public: true, id: 1, capabilities: {}});
         ProviderConnector.mockImplementationOnce(() => ({
             fetchNetworkId: jest.fn().mockResolvedValueOnce(1)
         }));

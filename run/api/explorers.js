@@ -776,10 +776,6 @@ router.post('/', authMiddleware, async (req, res, next) => {
             return managedError(new Error(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`), req, res);
         }
 
-        const allowed = getNodeEnv() == 'development' ? true : await isChainAllowed(networkId);
-        if (!allowed)
-            return managedError(new Error('You can\'t create an explorer with this network id (' + networkId + '). If you\'d still like an explorer for this chain. Please reach out to contact@tryethernal.com, and we\'ll set one up for you.'), req, res);
-
         let options = {
             name: data.name,
             backendRpcServer,
@@ -852,6 +848,12 @@ router.post('/', authMiddleware, async (req, res, next) => {
                 else
                     return managedError(new Error(`Couldn't create subscription.`), req, res);
             }
+        }
+
+        if (!stripePlan || !stripePlan.capabilities.allowAllChains) {
+            const allowed = await isChainAllowed(networkId);
+            if (!allowed)
+                return managedError(new Error('You can\'t create an explorer with this network id (' + networkId + '). If you\'d still like an explorer for this chain. Please reach out to contact@tryethernal.com, and we\'ll set one up for you.'), req, res);
         }
 
         let explorer;
