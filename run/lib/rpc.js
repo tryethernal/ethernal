@@ -236,6 +236,54 @@ class ProviderConnector {
         return sanitize(rawTransaction);
     }
 
+    /**
+     * Fetch multiple transaction receipts in a single JSON-RPC batch request.
+     * Falls back to sequential fetching if batch request fails.
+     * @param {string[]} transactionHashes - Array of transaction hashes
+     * @returns {Promise<Object[]>} - Array of receipts (null for any that failed)
+     */
+    async fetchTransactionReceiptsBatch(transactionHashes) {
+        if (!transactionHashes || transactionHashes.length === 0) return [];
+
+        await this.checkRateLimit();
+
+        const batchRequest = transactionHashes.map((hash, i) => ({
+            jsonrpc: '2.0',
+            id: i,
+            method: 'eth_getTransactionReceipt',
+            params: [hash]
+        }));
+
+        try {
+            // Use provider's connection URL for direct fetch
+            const url = this.provider.connection ? this.provider.connection.url : this.provider._getConnection().url;
+            const response = await withTimeout(
+                fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(batchRequest)
+                }).then(r => r.json())
+            );
+
+            // Sort by id to maintain order, then extract results
+            const sortedResults = response.sort((a, b) => a.id - b.id);
+            return sortedResults.map(r => r.result ? sanitize(r.result) : null);
+        } catch (error) {
+            // Fallback: fetch sequentially if batch fails
+            logger.info('Batch receipt fetch failed, falling back to sequential', { error: error.message });
+            const receipts = [];
+            for (const hash of transactionHashes) {
+                try {
+                    const receipt = await this.fetchTransactionReceipt(hash);
+                    receipts.push(receipt);
+                } catch (e) {
+                    receipts.push(null);
+                }
+            }
+            return receipts;
+        }
+    }
+
     async fetchNetworkId() {
         const { chainId } = await withTimeout(this.provider.getNetwork());
         return chainId;

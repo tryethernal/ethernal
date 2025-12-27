@@ -1,11 +1,16 @@
 const { ProviderConnector } = require('../lib/rpc');
-const { Workspace, Explorer, StripeSubscription, RpcHealthCheck, IntegrityCheck, Block, OrbitChainConfig } = require('../models');
+const { Workspace, Explorer, StripeSubscription, RpcHealthCheck, IntegrityCheck, Block, OrbitChainConfig, TransactionReceipt } = require('../models');
 const db = require('../lib/firebase');
 const logger = require('../lib/logger');
 const { processRawRpcObject } = require('../lib/utils');
 const { enqueue, bulkEnqueue } = require('../lib/queue');
 const RateLimiter = require('../lib/rateLimiter');
 const constants = require('../constants/orbit');
+
+// Threshold for inline receipt fetching vs job queueing
+const INLINE_RECEIPT_THRESHOLD = 10;
+// Concurrency limit for parallel receipt storage
+const RECEIPT_STORAGE_CONCURRENCY = 5;
 
 module.exports = async job => {
     const data = job.data;
@@ -173,21 +178,59 @@ module.exports = async job => {
             return "Couldn't store block";
 
         const transactions = syncedBlock.transactions;
-        const jobs = [];
-        for (let i = 0; i < transactions.length; i++) {
-            const transaction = transactions[i];
-            jobs.push({
-                name: `receiptSync-${workspace.id}-${transaction.hash}`,
-                data: {
-                    transactionId: transaction.id,
-                    transactionHash: transaction.hash,
-                    workspaceId: workspace.id,
-                    source: data.source,
-                    rateLimited: data.rateLimited
-                }
-            });
+
+        // For blocks with few transactions, fetch receipts inline for lower latency
+        if (transactions.length > 0 && transactions.length <= INLINE_RECEIPT_THRESHOLD) {
+            // Fetch all receipts in a single batch RPC request
+            const receipts = await providerConnector.fetchTransactionReceiptsBatch(
+                transactions.map(tx => tx.hash)
+            );
+
+            // Store receipts in parallel with concurrency limit
+            for (let i = 0; i < transactions.length; i += RECEIPT_STORAGE_CONCURRENCY) {
+                const batch = transactions.slice(i, i + RECEIPT_STORAGE_CONCURRENCY);
+                await Promise.all(batch.map((tx, j) => {
+                    const receiptIndex = i + j;
+                    const receipt = receipts[receiptIndex];
+                    if (!receipt) {
+                        logger.warn(`Missing receipt for transaction ${tx.hash}`);
+                        return Promise.resolve();
+                    }
+                    const processedReceipt = processRawRpcObject(
+                        receipt,
+                        Object.keys(TransactionReceipt.rawAttributes).concat(['logs'])
+                    );
+                    processedReceipt.workspace = workspace;
+                    return tx.safeCreateReceipt(processedReceipt).catch(err => {
+                        logger.error(`Failed to store receipt for ${tx.hash}`, { error: err.message });
+                    });
+                }));
+            }
+        } else if (transactions.length > INLINE_RECEIPT_THRESHOLD) {
+            // For larger blocks, queue jobs with cached workspace data
+            const jobs = [];
+            for (let i = 0; i < transactions.length; i++) {
+                const transaction = transactions[i];
+                jobs.push({
+                    name: `receiptSync-${workspace.id}-${transaction.hash}`,
+                    data: {
+                        transactionId: transaction.id,
+                        transactionHash: transaction.hash,
+                        workspaceId: workspace.id,
+                        source: data.source,
+                        rateLimited: data.rateLimited,
+                        // Cache workspace data to avoid DB lookup in receiptSync
+                        cachedWorkspace: {
+                            rpcServer: workspace.rpcServer,
+                            rateLimitInterval: workspace.rateLimitInterval,
+                            rateLimitMaxInInterval: workspace.rateLimitMaxInInterval,
+                            public: workspace.public
+                        }
+                    }
+                });
+            }
+            await bulkEnqueue('receiptSync', jobs, job.opts.priority);
         }
-        await bulkEnqueue('receiptSync', jobs, job.opts.priority);
 
         return 'Block synced';
     } catch(error) {

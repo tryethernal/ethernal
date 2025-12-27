@@ -11,7 +11,17 @@ module.exports = async job => {
     if (!data.transactionHash || !data.workspaceId)
         return 'Missing parameter'
 
-    const include = [
+    // Use cached workspace data if available (passed from blockSync for faster processing)
+    const hasCachedWorkspace = data.cachedWorkspace && data.cachedWorkspace.rpcServer;
+
+    // When we have cached workspace data, use a lighter query that skips workspace includes
+    const include = hasCachedWorkspace ? [
+        {
+            model: TransactionReceipt,
+            as: 'receipt',
+            attributes: ['id']
+        }
+    ] : [
         {
             model: Workspace,
             as: 'workspace',
@@ -65,31 +75,50 @@ module.exports = async job => {
     if (transaction.receipt)
         return 'Receipt has already been synced';
 
-    if (!transaction.workspace)
-        return 'Missing workspace';
+    // Use cached workspace data or fetch from transaction
+    let rpcServer, rateLimitInterval, rateLimitMaxInInterval, isPublic;
 
-    const workspace = transaction.workspace;
+    if (hasCachedWorkspace) {
+        // Use cached data from blockSync - skip validation since blockSync already validated
+        rpcServer = data.cachedWorkspace.rpcServer;
+        rateLimitInterval = data.cachedWorkspace.rateLimitInterval;
+        rateLimitMaxInInterval = data.cachedWorkspace.rateLimitMaxInInterval;
+        isPublic = data.cachedWorkspace.public;
 
-    if (!workspace.public)
-        return 'Cannot sync on private workspace';
+        if (!isPublic)
+            return 'Cannot sync on private workspace';
+    } else {
+        // Fallback: full validation when no cached data
+        if (!transaction.workspace)
+            return 'Missing workspace';
 
-    if (!workspace.explorer)
-        return 'Inactive explorer';
+        const workspace = transaction.workspace;
 
-    if (!workspace.explorer.shouldSync)
-        return 'Disabled sync';
+        if (!workspace.public)
+            return 'Cannot sync on private workspace';
 
-    if (workspace.rpcHealthCheck && workspace.rpcHealthCheckEnabled && !workspace.rpcHealthCheck.isReachable)
-        return 'RPC is unreachable';
+        if (!workspace.explorer)
+            return 'Inactive explorer';
 
-    if (!workspace.explorer.stripeSubscription)
-        return 'No active subscription';
+        if (!workspace.explorer.shouldSync)
+            return 'Disabled sync';
+
+        if (workspace.rpcHealthCheck && workspace.rpcHealthCheckEnabled && !workspace.rpcHealthCheck.isReachable)
+            return 'RPC is unreachable';
+
+        if (!workspace.explorer.stripeSubscription)
+            return 'No active subscription';
+
+        rpcServer = workspace.rpcServer;
+        rateLimitInterval = workspace.rateLimitInterval;
+        rateLimitMaxInInterval = workspace.rateLimitMaxInInterval;
+    }
 
     let limiter;
-    if (data.rateLimited && workspace.rateLimitInterval && workspace.rateLimitMaxInInterval)
-        limiter = new RateLimiter(workspace.id, workspace.rateLimitInterval, workspace.rateLimitMaxInInterval);
+    if (data.rateLimited && rateLimitInterval && rateLimitMaxInInterval)
+        limiter = new RateLimiter(data.workspaceId, rateLimitInterval, rateLimitMaxInInterval);
 
-    const providerConnector = new ProviderConnector(workspace.rpcServer, limiter);
+    const providerConnector = new ProviderConnector(rpcServer, limiter);
 
     try {
         let receipt;
@@ -97,23 +126,25 @@ module.exports = async job => {
             receipt = await providerConnector.fetchTransactionReceipt(transaction.hash);
         } catch(error) {
             const priority = job.opts.priority || (data.source == 'cli-light' ? 1 : 10);
+            // Build job data, preserving cached workspace if available
+            const requeueData = {
+                transactionId: transaction.id,
+                transactionHash: transaction.hash,
+                workspaceId: data.workspaceId,
+                source: data.source,
+                rateLimited: !!data.rateLimited
+            };
+            if (data.cachedWorkspace) {
+                requeueData.cachedWorkspace = data.cachedWorkspace;
+            }
+
             if (error.message == 'Rate limited') {
-                return enqueue('receiptSync', `receiptSync-${workspace.id}-${transaction.hash}-${Date.now()}`, {
-                    transactionId: transaction.id,
-                    transactionHash: transaction.hash,
-                    workspaceId: workspace.id,
-                    source: data.source,
-                    rateLimited: !!data.rateLimited
-                }, priority, null, workspace.rateLimitInterval, !!data.rateLimited);
+                return enqueue('receiptSync', `receiptSync-${data.workspaceId}-${transaction.hash}-${Date.now()}`,
+                    requeueData, priority, null, rateLimitInterval, !!data.rateLimited);
             }
             else if (error.message.startsWith('Timed out after')) {
-                return enqueue('receiptSync', `receiptSync-${workspace.id}-${transaction.hash}-${Date.now()}`, {
-                    transactionId: transaction.id,
-                    transactionHash: transaction.hash,
-                    workspaceId: workspace.id,
-                    source: data.source,
-                    rateLimited: !!data.rateLimited
-                }, priority, null, workspace.rateLimitInterval || 5000, !!data.rateLimited);
+                return enqueue('receiptSync', `receiptSync-${data.workspaceId}-${transaction.hash}-${Date.now()}`,
+                    requeueData, priority, null, rateLimitInterval || 5000, !!data.rateLimited);
             }
             else
                 throw error;
@@ -127,12 +158,17 @@ module.exports = async job => {
             Object.keys(TransactionReceipt.rawAttributes).concat(['logs']),
         );
 
-        processedReceipt.workspace = workspace;
+        // For safeCreateReceipt, we need to pass workspace context for orbit processing
+        // When using cached data, construct a minimal workspace-like object
+        if (hasCachedWorkspace) {
+            processedReceipt.workspace = { id: data.workspaceId };
+        } else {
+            processedReceipt.workspace = transaction.workspace;
+        }
 
         return transaction.safeCreateReceipt(processedReceipt);
     } catch(error) {
         logger.error(error.message, { location: 'jobs.receiptSync', error, data });
-        // await db.incrementFailedAttempts(transaction.workspace.id);
         throw error;
-    } 
+    }
 };
