@@ -193,8 +193,26 @@ class WalletConnector {
 class ProviderConnector {
     constructor(server, limiter) {
         if (!server) throw '[ProviderConnector] Missing server parameter';
+        this.server = server; // Store original URL for batch requests
         this.provider = getProvider(server);
         this.limiter = limiter;
+    }
+
+    /**
+     * Get fetch options for the RPC URL, including auth headers if needed
+     * @returns {Object} - { url, headers }
+     */
+    _getFetchOptions() {
+        const rpcUrl = new URL(this.server);
+        const headers = { 'Content-Type': 'application/json' };
+
+        // Handle basic auth from URL credentials
+        if (rpcUrl.username || rpcUrl.password) {
+            const auth = Buffer.from(`${rpcUrl.username}:${rpcUrl.password}`).toString('base64');
+            headers['Authorization'] = `Basic ${auth}`;
+        }
+
+        return { url: rpcUrl.origin + rpcUrl.pathname, headers };
     }
 
     getBalance(address, block = 'latest') {
@@ -255,12 +273,17 @@ class ProviderConnector {
         }));
 
         try {
-            // Use provider's connection URL for direct fetch
-            const url = this.provider.connection ? this.provider.connection.url : this.provider._getConnection().url;
+            // Check if fetch is available (Node 18+)
+            if (typeof fetch === 'undefined') {
+                throw new Error('fetch not available');
+            }
+
+            // Use helper to get URL and auth headers
+            const { url, headers } = this._getFetchOptions();
             const response = await withTimeout(
                 fetch(url, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers,
                     body: JSON.stringify(batchRequest)
                 }).then(r => r.json())
             );

@@ -208,25 +208,33 @@ module.exports = async job => {
             }
         } else if (transactions.length > INLINE_RECEIPT_THRESHOLD) {
             // For larger blocks, queue jobs with cached workspace data
+            // Skip caching for orbit workspaces since they need full workspace context for receipt processing
+            const hasOrbitConfig = !!(workspace.orbitConfig || orbitChildConfigs.length > 0);
+
             const jobs = [];
             for (let i = 0; i < transactions.length; i++) {
                 const transaction = transactions[i];
+                const jobData = {
+                    transactionId: transaction.id,
+                    transactionHash: transaction.hash,
+                    workspaceId: workspace.id,
+                    source: data.source,
+                    rateLimited: data.rateLimited
+                };
+
+                // Only cache workspace data for non-orbit workspaces
+                if (!hasOrbitConfig) {
+                    jobData.cachedWorkspace = {
+                        rpcServer: workspace.rpcServer,
+                        rateLimitInterval: workspace.rateLimitInterval,
+                        rateLimitMaxInInterval: workspace.rateLimitMaxInInterval,
+                        public: workspace.public
+                    };
+                }
+
                 jobs.push({
                     name: `receiptSync-${workspace.id}-${transaction.hash}`,
-                    data: {
-                        transactionId: transaction.id,
-                        transactionHash: transaction.hash,
-                        workspaceId: workspace.id,
-                        source: data.source,
-                        rateLimited: data.rateLimited,
-                        // Cache workspace data to avoid DB lookup in receiptSync
-                        cachedWorkspace: {
-                            rpcServer: workspace.rpcServer,
-                            rateLimitInterval: workspace.rateLimitInterval,
-                            rateLimitMaxInInterval: workspace.rateLimitMaxInInterval,
-                            public: workspace.public
-                        }
-                    }
+                    data: jobData
                 });
             }
             await bulkEnqueue('receiptSync', jobs, job.opts.priority);

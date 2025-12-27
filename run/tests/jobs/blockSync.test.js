@@ -35,18 +35,103 @@ describe('blockSync', () => {
         safeCreatePartialBlock: mockSafeCreatePartialBlock
     });
 
-    it('Should queue transaction receipt processing', (done) => {
+    it('Should fetch receipts inline for small blocks (<=10 transactions)', (done) => {
+        const safeCreateReceipt = jest.fn().mockResolvedValue();
         mockSafeCreatePartialBlock.mockResolvedValue({ transactions: [
-            { id: 1, hash: '0x123' },
-            { id: 2, hash: '0x456' }
+            { id: 1, hash: '0x123', safeCreateReceipt },
+            { id: 2, hash: '0x456', safeCreateReceipt }
         ]});
 
         blockSync({ opts: { priority: 1 }, data : { userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
             .then(res => {
-                expect(bulkEnqueue).toHaveBeenCalledWith('receiptSync', [
-                    { name: 'receiptSync-1-0x123', data: { transactionId: 1, transactionHash: '0x123', workspaceId: 1, source: undefined, rateLimited: undefined }},
-                    { name: 'receiptSync-1-0x456', data: { transactionId: 2, transactionHash: '0x456', workspaceId: 1, source: undefined, rateLimited: undefined }}
-                ], 1);
+                // Should NOT queue jobs for small blocks
+                expect(bulkEnqueue).not.toHaveBeenCalled();
+                // Should call safeCreateReceipt inline
+                expect(safeCreateReceipt).toHaveBeenCalledTimes(2);
+                expect(res).toEqual('Block synced');
+                done();
+            });
+    });
+
+    it('Should queue receipt processing with cached workspace for large blocks (>10 transactions)', (done) => {
+        // Create 11 transactions to exceed threshold
+        const transactions = [];
+        for (let i = 0; i < 11; i++) {
+            transactions.push({ id: i + 1, hash: `0x${i.toString(16).padStart(3, '0')}` });
+        }
+        mockSafeCreatePartialBlock.mockResolvedValue({ transactions });
+
+        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+            id: 1,
+            rpcServer: 'http://localhost:8545',
+            rateLimitInterval: 1000,
+            rateLimitMaxInInterval: 10,
+            public: true,
+            rpcHealthCheck: {
+                isReachable: true
+            },
+            explorer: {
+                stripeSubscription: {},
+                shouldSync: true
+            },
+            safeCreatePartialBlock: mockSafeCreatePartialBlock
+        });
+
+        blockSync({ opts: { priority: 1 }, data : { userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
+            .then(res => {
+                expect(bulkEnqueue).toHaveBeenCalledWith('receiptSync', expect.arrayContaining([
+                    expect.objectContaining({
+                        name: 'receiptSync-1-0x000',
+                        data: expect.objectContaining({
+                            transactionId: 1,
+                            transactionHash: '0x000',
+                            workspaceId: 1,
+                            cachedWorkspace: {
+                                rpcServer: 'http://localhost:8545',
+                                rateLimitInterval: 1000,
+                                rateLimitMaxInInterval: 10,
+                                public: true
+                            }
+                        })
+                    })
+                ]), 1);
+                expect(res).toEqual('Block synced');
+                done();
+            });
+    });
+
+    it('Should not cache workspace for orbit workspaces', (done) => {
+        // Create 11 transactions to exceed threshold
+        const transactions = [];
+        for (let i = 0; i < 11; i++) {
+            transactions.push({ id: i + 1, hash: `0x${i.toString(16).padStart(3, '0')}` });
+        }
+        mockSafeCreatePartialBlock.mockResolvedValue({ transactions });
+
+        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+            id: 1,
+            rpcServer: 'http://localhost:8545',
+            public: true,
+            rpcHealthCheck: {
+                isReachable: true
+            },
+            explorer: {
+                stripeSubscription: {},
+                shouldSync: true
+            },
+            orbitConfig: { rollupContract: '0x123' }, // Has orbit config
+            safeCreatePartialBlock: mockSafeCreatePartialBlock
+        });
+
+        blockSync({ opts: { priority: 1 }, data : { userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
+            .then(res => {
+                expect(bulkEnqueue).toHaveBeenCalledWith('receiptSync', expect.arrayContaining([
+                    expect.objectContaining({
+                        data: expect.not.objectContaining({
+                            cachedWorkspace: expect.anything()
+                        })
+                    })
+                ]), 1);
                 expect(res).toEqual('Block synced');
                 done();
             });
