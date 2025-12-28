@@ -180,7 +180,8 @@ module.exports = async job => {
         const transactions = syncedBlock.transactions;
 
         // For blocks with few transactions, fetch receipts inline for lower latency
-        if (transactions.length > 0 && transactions.length <= INLINE_RECEIPT_THRESHOLD) {
+        // Only for public workspaces - private workspaces should go through receiptSync which enforces access control
+        if (transactions.length > 0 && transactions.length <= INLINE_RECEIPT_THRESHOLD && workspace.public) {
             // Fetch all receipts in a single batch RPC request
             const receipts = await providerConnector.fetchTransactionReceiptsBatch(
                 transactions.map(tx => tx.hash)
@@ -206,8 +207,8 @@ module.exports = async job => {
                     });
                 }));
             }
-        } else if (transactions.length > INLINE_RECEIPT_THRESHOLD) {
-            // For larger blocks, queue jobs with cached workspace data
+        } else if (transactions.length > 0) {
+            // For larger blocks (or private workspaces), queue jobs
             // Skip caching for orbit workspaces since they need full workspace context for receipt processing
             const hasOrbitConfig = !!(workspace.orbitConfig || orbitChildConfigs.length > 0);
 

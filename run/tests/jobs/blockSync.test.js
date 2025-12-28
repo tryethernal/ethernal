@@ -24,6 +24,7 @@ describe('blockSync', () => {
     jest.spyOn(Workspace, 'findOne').mockResolvedValue({
         id: 1,
         rpcServer: 'http://localhost:8545',
+        public: true,
         rpcHealthCheck: {
             isReachable: true
         },
