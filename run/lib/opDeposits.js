@@ -53,21 +53,26 @@ const parseOpaqueData = (opaqueData) => {
 /**
  * Get deposit data from a TransactionDeposited log
  * @param {Object} log - The log to parse
- * @returns {Object} Parsed deposit data
+ * @returns {Object|null} Parsed deposit data or null if parsing fails
  */
 const getTransactionDepositedData = (log) => {
-    const parsedLog = iface.parseLog({ topics: log.topics, data: log.data });
-    const opaqueData = parseOpaqueData(parsedLog.args.opaqueData);
+    try {
+        const parsedLog = iface.parseLog({ topics: log.topics, data: log.data });
+        const opaqueData = parseOpaqueData(parsedLog.args.opaqueData);
 
-    return {
-        from: parsedLog.args.from.toLowerCase(),
-        to: parsedLog.args.to.toLowerCase(),
-        version: parsedLog.args.version.toString(),
-        value: opaqueData.value,
-        gasLimit: opaqueData.gasLimit,
-        isCreation: opaqueData.isCreation,
-        data: opaqueData.data
-    };
+        return {
+            from: parsedLog.args.from.toLowerCase(),
+            to: parsedLog.args.to.toLowerCase(),
+            version: parsedLog.args.version.toString(),
+            value: opaqueData.value,
+            gasLimit: opaqueData.gasLimit,
+            isCreation: opaqueData.isCreation,
+            data: opaqueData.data
+        };
+    } catch (error) {
+        console.error('Error parsing TransactionDeposited log:', error.message);
+        return null;
+    }
 };
 
 /**

@@ -1,4 +1,5 @@
 const { ethers } = require('ethers');
+const fetch = require('node-fetch');
 
 /**
  * OP Stack Batch Parsing Library
@@ -138,8 +139,10 @@ const computeBlobVersionedHash = (kzgCommitment) => {
     const commitment = kzgCommitment.startsWith('0x') ? kzgCommitment : '0x' + kzgCommitment;
     // EIP-4844 uses SHA-256 for versioned hashes, not keccak256
     const hash = ethers.utils.sha256(commitment);
-    // Version 0x01 for KZG commitments
-    return '0x01' + hash.slice(4);
+    // Remove 0x prefix if present, then prepend version byte 0x01
+    const hashWithoutPrefix = hash.startsWith('0x') ? hash.slice(2) : hash;
+    // Version 0x01 for KZG commitments, result is 0x01 + 31 bytes of hash = 66 chars total
+    return '0x01' + hashWithoutPrefix.slice(0, 62);
 };
 
 /**

@@ -28,12 +28,6 @@ module.exports = (sequelize, DataTypes) => {
         'parentChainExplorer'
       ];
 
-      const supportedParentChains = await sequelize.models.Workspace.getAvailableTopOpParent();
-      const supportedParentChainIds = supportedParentChains.map(chain => chain.networkId);
-      if (!supportedParentChainIds.includes(params.parentChainId)) {
-        throw new Error(`Parent chain network is not supported yet. Available networks: ${supportedParentChainIds.join(', ')}`);
-      }
-
       const filteredParams = {};
       for (const [key, value] of Object.entries(params)) {
         if (allowedParams.includes(key)) {
@@ -41,10 +35,17 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
 
-      return this.update({
-        ...filteredParams,
-        parentWorkspaceId: supportedParentChains.find(chain => chain.networkId === params.parentChainId).id
-      });
+      // Only validate and update parentChainId if provided
+      if (params.parentChainId !== undefined) {
+        const supportedParentChains = await sequelize.models.Workspace.getAvailableTopOpParent();
+        const supportedParentChainIds = supportedParentChains.map(chain => chain.networkId);
+        if (!supportedParentChainIds.includes(params.parentChainId)) {
+          throw new Error(`Parent chain network is not supported yet. Available networks: ${supportedParentChainIds.join(', ')}`);
+        }
+        filteredParams.parentWorkspaceId = supportedParentChains.find(chain => chain.networkId === params.parentChainId).id;
+      }
+
+      return this.update(filteredParams);
     }
   }
 
@@ -68,6 +69,9 @@ module.exports = (sequelize, DataTypes) => {
     batchInboxAddress: {
       type: DataTypes.STRING(42),
       allowNull: false,
+      set(value) {
+        this.setDataValue('batchInboxAddress', value ? value.toLowerCase() : value);
+      },
       validate: {
         isEthereumAddress(value) {
           if (!/^0x[a-fA-F0-9]{40}$/.test(value)) {
@@ -79,6 +83,9 @@ module.exports = (sequelize, DataTypes) => {
     optimismPortalAddress: {
       type: DataTypes.STRING(42),
       allowNull: false,
+      set(value) {
+        this.setDataValue('optimismPortalAddress', value ? value.toLowerCase() : value);
+      },
       validate: {
         isEthereumAddress(value) {
           if (!/^0x[a-fA-F0-9]{40}$/.test(value)) {
@@ -90,6 +97,9 @@ module.exports = (sequelize, DataTypes) => {
     l2OutputOracleAddress: {
       type: DataTypes.STRING(42),
       allowNull: true,
+      set(value) {
+        this.setDataValue('l2OutputOracleAddress', value ? value.toLowerCase() : value);
+      },
       validate: {
         isEthereumAddress(value) {
           if (value && !/^0x[a-fA-F0-9]{40}$/.test(value)) {
@@ -101,6 +111,9 @@ module.exports = (sequelize, DataTypes) => {
     disputeGameFactoryAddress: {
       type: DataTypes.STRING(42),
       allowNull: true,
+      set(value) {
+        this.setDataValue('disputeGameFactoryAddress', value ? value.toLowerCase() : value);
+      },
       validate: {
         isEthereumAddress(value) {
           if (value && !/^0x[a-fA-F0-9]{40}$/.test(value)) {
@@ -112,6 +125,9 @@ module.exports = (sequelize, DataTypes) => {
     systemConfigAddress: {
       type: DataTypes.STRING(42),
       allowNull: true,
+      set(value) {
+        this.setDataValue('systemConfigAddress', value ? value.toLowerCase() : value);
+      },
       validate: {
         isEthereumAddress(value) {
           if (value && !/^0x[a-fA-F0-9]{40}$/.test(value)) {
@@ -124,6 +140,9 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING(42),
       allowNull: false,
       defaultValue: '0x4200000000000000000000000000000000000016',
+      set(value) {
+        this.setDataValue('l2ToL1MessagePasserAddress', value ? value.toLowerCase() : value);
+      },
       validate: {
         isEthereumAddress(value) {
           if (!/^0x[a-fA-F0-9]{40}$/.test(value)) {

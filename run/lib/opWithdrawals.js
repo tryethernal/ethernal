@@ -54,49 +54,64 @@ const isWithdrawalFinalizedLog = (log) => {
 /**
  * Get data from a MessagePassed log (L2 withdrawal initiation)
  * @param {Object} log - The log to parse
- * @returns {Object} Parsed withdrawal initiation data
+ * @returns {Object|null} Parsed withdrawal initiation data or null if parsing fails
  */
 const getMessagePassedData = (log) => {
-    const parsedLog = l2ToL1MessagePasserIface.parseLog({ topics: log.topics, data: log.data });
+    try {
+        const parsedLog = l2ToL1MessagePasserIface.parseLog({ topics: log.topics, data: log.data });
 
-    return {
-        nonce: parsedLog.args.nonce.toString(),
-        sender: parsedLog.args.sender.toLowerCase(),
-        target: parsedLog.args.target.toLowerCase(),
-        value: parsedLog.args.value.toString(),
-        gasLimit: parsedLog.args.gasLimit.toString(),
-        data: parsedLog.args.data,
-        withdrawalHash: parsedLog.args.withdrawalHash
-    };
+        return {
+            nonce: parsedLog.args.nonce.toString(),
+            sender: parsedLog.args.sender.toLowerCase(),
+            target: parsedLog.args.target.toLowerCase(),
+            value: parsedLog.args.value.toString(),
+            gasLimit: parsedLog.args.gasLimit.toString(),
+            data: parsedLog.args.data,
+            withdrawalHash: parsedLog.args.withdrawalHash
+        };
+    } catch (error) {
+        console.error('Error parsing MessagePassed log:', error.message);
+        return null;
+    }
 };
 
 /**
  * Get data from a WithdrawalProven log (L1)
  * @param {Object} log - The log to parse
- * @returns {Object} Parsed withdrawal proven data
+ * @returns {Object|null} Parsed withdrawal proven data or null if parsing fails
  */
 const getWithdrawalProvenData = (log) => {
-    const parsedLog = optimismPortalIface.parseLog({ topics: log.topics, data: log.data });
+    try {
+        const parsedLog = optimismPortalIface.parseLog({ topics: log.topics, data: log.data });
 
-    return {
-        withdrawalHash: parsedLog.args.withdrawalHash,
-        from: parsedLog.args.from.toLowerCase(),
-        to: parsedLog.args.to.toLowerCase()
-    };
+        return {
+            withdrawalHash: parsedLog.args.withdrawalHash,
+            from: parsedLog.args.from.toLowerCase(),
+            to: parsedLog.args.to.toLowerCase()
+        };
+    } catch (error) {
+        console.error('Error parsing WithdrawalProven log:', error.message);
+        return null;
+    }
 };
 
 /**
  * Get data from a WithdrawalFinalized log (L1)
  * @param {Object} log - The log to parse
- * @returns {Object} Parsed withdrawal finalized data
+ * @returns {Object|null} Parsed withdrawal finalized data or null if parsing fails
  */
 const getWithdrawalFinalizedData = (log) => {
-    const parsedLog = optimismPortalIface.parseLog({ topics: log.topics, data: log.data });
+    try {
+        const parsedLog = optimismPortalIface.parseLog({ topics: log.topics, data: log.data });
 
-    return {
-        withdrawalHash: parsedLog.args.withdrawalHash,
-        success: parsedLog.args.success
-    };
+        return {
+            withdrawalHash: parsedLog.args.withdrawalHash,
+            success: parsedLog.args.success
+        };
+    } catch (error) {
+        console.error('Error parsing WithdrawalFinalized log:', error.message);
+        return null;
+    }
 };
 
 /**

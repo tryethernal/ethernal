@@ -37,36 +37,46 @@ const isDisputeGameCreatedLog = (log) => {
 /**
  * Get data from an OutputProposed log (legacy)
  * @param {Object} log - The log to parse
- * @returns {Object} Parsed output data
+ * @returns {Object|null} Parsed output data or null if parsing fails
  */
 const getOutputProposedData = (log) => {
-    const parsedLog = l2OutputOracleIface.parseLog({ topics: log.topics, data: log.data });
+    try {
+        const parsedLog = l2OutputOracleIface.parseLog({ topics: log.topics, data: log.data });
 
-    return {
-        outputRoot: parsedLog.args.outputRoot,
-        l2OutputIndex: parsedLog.args.l2OutputIndex.toString(),
-        l2BlockNumber: parsedLog.args.l2BlockNumber.toString(),
-        l1Timestamp: parsedLog.args.l1Timestamp.toString()
-    };
+        return {
+            outputRoot: parsedLog.args.outputRoot,
+            l2OutputIndex: parsedLog.args.l2OutputIndex.toString(),
+            l2BlockNumber: parsedLog.args.l2BlockNumber.toString(),
+            l1Timestamp: parsedLog.args.l1Timestamp.toString()
+        };
+    } catch (error) {
+        console.error('Error parsing OutputProposed log:', error.message);
+        return null;
+    }
 };
 
 /**
  * Get data from a DisputeGameCreated log (modern/fault proofs)
  * @param {Object} log - The log to parse
- * @returns {Object} Parsed dispute game data
+ * @returns {Object|null} Parsed dispute game data or null if parsing fails
  */
 const getDisputeGameCreatedData = (log) => {
-    const parsedLog = disputeGameFactoryIface.parseLog({ topics: log.topics, data: log.data });
-    const rawGameType = parsedLog.args.gameType;
+    try {
+        const parsedLog = disputeGameFactoryIface.parseLog({ topics: log.topics, data: log.data });
+        const rawGameType = parsedLog.args.gameType;
 
-    return {
-        disputeProxy: parsedLog.args.disputeProxy.toLowerCase(),
-        // Convert BigNumber to primitive number for DB storage and JSON serialization
-        gameType: typeof rawGameType === 'object' && rawGameType !== null && typeof rawGameType.toNumber === 'function'
-            ? rawGameType.toNumber()
-            : Number(rawGameType),
-        rootClaim: parsedLog.args.rootClaim
-    };
+        return {
+            disputeProxy: parsedLog.args.disputeProxy.toLowerCase(),
+            // Convert BigNumber to primitive number for DB storage and JSON serialization
+            gameType: typeof rawGameType === 'object' && rawGameType !== null && typeof rawGameType.toNumber === 'function'
+                ? rawGameType.toNumber()
+                : Number(rawGameType),
+            rootClaim: parsedLog.args.rootClaim
+        };
+    } catch (error) {
+        console.error('Error parsing DisputeGameCreated log:', error.message);
+        return null;
+    }
 };
 
 /**
