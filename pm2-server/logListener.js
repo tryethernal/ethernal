@@ -1,3 +1,10 @@
+/**
+ * @fileoverview Orbit chain event listener process.
+ * Watches for L1 bridge events (deposits) and enqueues them for processing.
+ * Spawned as a PM2 process per explorer with Orbit integration.
+ * @module pm2-server/logListener
+ */
+
 const { enqueue } = require('./lib/queue');
 const { getClient } = require('./lib/client');
 const { getWorkspace } = require('./lib/workspace');

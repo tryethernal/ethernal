@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Workspace API client.
+ * Fetches workspace configuration from Ethernal backend.
+ * @module pm2-server/lib/workspace
+ */
+
 const axios = require('axios');
 const { getEthernalSecret, getApiHost } = require('./env');
 
