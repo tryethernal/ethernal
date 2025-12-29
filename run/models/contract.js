@@ -70,6 +70,18 @@ module.exports = (sequelize, DataTypes) => {
       Contract.hasOne(models.ExplorerV2Dex, { foreignKey: 'wrappedNativeTokenContractId', as: 'wrappedNativeTokenContract' });
     }
 
+    /**
+     * Creates contract verification with source files.
+     * @param {Object} verificationData - Verification parameters
+     * @param {string} verificationData.compilerVersion - Solidity compiler version
+     * @param {string} [verificationData.evmVersion='Default'] - EVM version
+     * @param {number} [verificationData.runs] - Optimizer runs
+     * @param {Object} verificationData.sources - Source files object
+     * @param {Object} [verificationData.libraries] - Library addresses
+     * @param {string} [verificationData.constructorArguments] - Constructor args
+     * @param {string} [verificationData.contractName] - Contract name
+     * @returns {Promise<ContractVerification>} Created verification
+     */
     safeCreateVerification(verificationData) {
         const { compilerVersion, evmVersion = 'Default', runs, sources, libraries, constructorArguments, contractName } = verificationData;
 
@@ -122,6 +134,12 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    /**
+     * Gets token holder count history for a date range.
+     * @param {string} from - Start date
+     * @param {string} to - End date
+     * @returns {Promise<Array>} Daily holder counts
+     */
     async getTokenHolderHistory(from, to) {
         if (!from || !to) throw new Error('Missing parameter');
 
@@ -178,6 +196,10 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    /**
+     * Gets the current circulating supply for a token contract.
+     * @returns {Promise<string>} Total circulating supply
+     */
     async getCurrentTokenCirculatingSupply() {
         const [{ sum: supply }] = await sequelize.query(`
             SELECT SUM(first_value) FROM (
