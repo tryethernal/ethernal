@@ -58,7 +58,7 @@
 
                     <template v-slot:item.l1TransactionHash="{ item }">
                         <span class="text-truncate" style="max-width: 120px; display: inline-block;">
-                            {{ item.l1TransactionHash.slice(0, 10) }}...{{ item.l1TransactionHash.slice(-6) }}
+                            {{ item.l1TransactionHash ? `${item.l1TransactionHash.slice(0, 10)}...${item.l1TransactionHash.slice(-6)}` : '-' }}
                         </span>
                     </template>
 

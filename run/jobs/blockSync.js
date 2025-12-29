@@ -1,5 +1,5 @@
 const { ProviderConnector } = require('../lib/rpc');
-const { Workspace, Explorer, StripeSubscription, RpcHealthCheck, IntegrityCheck, Block, OrbitChainConfig, OpChainConfig, OpBatch } = require('../models');
+const { Workspace, Explorer, StripeSubscription, RpcHealthCheck, IntegrityCheck, Block, OrbitChainConfig, OpChainConfig, OpBatch, sequelize } = require('../models');
 const db = require('../lib/firebase');
 const logger = require('../lib/logger');
 const { processRawRpcObject } = require('../lib/utils');
@@ -194,34 +194,38 @@ module.exports = async job => {
                     });
 
                     if (batchInfo) {
-                        // Get the next batch index
-                        const lastBatch = await OpBatch.findOne({
-                            where: { workspaceId: opConfig.workspaceId },
-                            order: [['batchIndex', 'DESC']]
-                        });
-                        const nextBatchIndex = lastBatch ? lastBatch.batchIndex + 1 : 0;
-
                         // Find the L1 transaction record if it exists
                         const l1Transaction = syncedBlock.transactions.find(t => t.hash === tx.hash);
 
-                        await OpBatch.create({
-                            workspaceId: opConfig.workspaceId,
-                            batchIndex: nextBatchIndex,
-                            l1BlockNumber: batchInfo.l1BlockNumber,
-                            l1TransactionHash: batchInfo.l1TransactionHash,
-                            l1TransactionId: l1Transaction ? l1Transaction.id : null,
-                            l1TransactionIndex: batchInfo.l1TransactionIndex,
-                            epochNumber: batchInfo.l1BlockNumber, // Epoch is typically the L1 block
-                            timestamp: tx.timestamp ? new Date(tx.timestamp * 1000) : new Date(),
-                            txCount: batchInfo.estimatedBlockCount || null,
-                            l2BlockStart: batchInfo.l2BlockStart,
-                            l2BlockEnd: batchInfo.l2BlockEnd,
-                            blobHash: batchInfo.blobHash,
-                            blobData: batchInfo.blobData,
-                            status: 'pending'
-                        });
+                        // Use transaction with lock to prevent race condition on batch index
+                        await sequelize.transaction(async (t) => {
+                            const lastBatch = await OpBatch.findOne({
+                                where: { workspaceId: opConfig.workspaceId },
+                                order: [['batchIndex', 'DESC']],
+                                lock: t.LOCK.UPDATE,
+                                transaction: t
+                            });
+                            const nextBatchIndex = lastBatch ? lastBatch.batchIndex + 1 : 0;
 
-                        logger.info(`Created OP batch ${nextBatchIndex} for L2 workspace ${opConfig.workspaceId} from L1 tx ${tx.hash}`);
+                            await OpBatch.create({
+                                workspaceId: opConfig.workspaceId,
+                                batchIndex: nextBatchIndex,
+                                l1BlockNumber: batchInfo.l1BlockNumber,
+                                l1TransactionHash: batchInfo.l1TransactionHash,
+                                l1TransactionId: l1Transaction ? l1Transaction.id : null,
+                                l1TransactionIndex: batchInfo.l1TransactionIndex,
+                                epochNumber: batchInfo.l1BlockNumber, // Epoch is typically the L1 block
+                                timestamp: tx.timestamp ? new Date(tx.timestamp * 1000) : new Date(),
+                                txCount: batchInfo.estimatedBlockCount || null,
+                                l2BlockStart: batchInfo.l2BlockStart,
+                                l2BlockEnd: batchInfo.l2BlockEnd,
+                                blobHash: batchInfo.blobHash,
+                                blobData: batchInfo.blobData,
+                                status: 'pending'
+                            }, { transaction: t });
+
+                            logger.info(`Created OP batch ${nextBatchIndex} for L2 workspace ${opConfig.workspaceId} from L1 tx ${tx.hash}`);
+                        });
                     }
                 } catch (error) {
                     logger.error(`Error processing OP batch for tx ${tx.hash}: ${error.message}`, { location: 'jobs.blockSync.opBatch', error });

@@ -62,7 +62,7 @@ describe('OpBatches API', () => {
                         total: 50
                     });
                     expect(db.getWorkspaceOpBatches).toHaveBeenCalledWith(
-                        1, '1', '10', 'DESC'
+                        1, 1, 10, 'DESC'
                     );
                     done();
                 })

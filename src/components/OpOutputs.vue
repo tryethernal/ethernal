@@ -30,7 +30,7 @@
 
                     <template v-slot:item.outputRoot="{ item }">
                         <span class="text-truncate" style="max-width: 160px; display: inline-block; font-family: monospace;">
-                            {{ item.outputRoot.slice(0, 12) }}...{{ item.outputRoot.slice(-8) }}
+                            {{ item.outputRoot ? `${item.outputRoot.slice(0, 12)}...${item.outputRoot.slice(-8)}` : '-' }}
                         </span>
                     </template>
 

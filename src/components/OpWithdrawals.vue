@@ -50,7 +50,7 @@
 
                     <template v-slot:item.withdrawalHash="{ item }">
                         <span class="text-truncate" style="max-width: 120px; display: inline-block;">
-                            {{ item.withdrawalHash.slice(0, 10) }}...{{ item.withdrawalHash.slice(-6) }}
+                            {{ item.withdrawalHash ? `${item.withdrawalHash.slice(0, 10)}...${item.withdrawalHash.slice(-6)}` : '-' }}
                         </span>
                     </template>
 

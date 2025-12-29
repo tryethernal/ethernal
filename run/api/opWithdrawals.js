@@ -2,7 +2,16 @@ const express = require('express');
 const router = express.Router();
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const db = require('../lib/firebase');
-const { unmanagedError } = require('../lib/errors');
+const { unmanagedError, managedError } = require('../lib/errors');
+
+/**
+ * Sanitize pagination parameters
+ */
+const sanitizePagination = (page, itemsPerPage, order) => ({
+    page: Math.max(1, parseInt(page) || 1),
+    itemsPerPage: Math.min(100, Math.max(1, parseInt(itemsPerPage) || 10)),
+    order: ['ASC', 'DESC'].includes(order?.toUpperCase()) ? order.toUpperCase() : 'DESC'
+});
 
 /**
  * Get paginated list of OP withdrawals for a workspace
@@ -15,7 +24,7 @@ router.get('/', workspaceAuthMiddleware, async (req, res, next) => {
     const data = { ...req.query, ...req.params };
 
     try {
-        const { page, itemsPerPage, order } = data;
+        const { page, itemsPerPage, order } = sanitizePagination(data.page, data.itemsPerPage, data.order);
         const { rows: items, count: total } = await db.getWorkspaceOpWithdrawals(data.workspace.id, page, itemsPerPage, order);
 
         res.status(200).json({ items, total });
@@ -35,6 +44,10 @@ router.get('/:hash', workspaceAuthMiddleware, async (req, res, next) => {
     try {
         const withdrawal = await db.getOpWithdrawalByL2Hash(data.workspace.id, data.hash);
 
+        if (!withdrawal) {
+            return res.status(404).json({ error: 'Withdrawal not found' });
+        }
+
         res.status(200).json(withdrawal);
     } catch (error) {
         unmanagedError(error, req, next);
@@ -51,6 +64,10 @@ router.get('/:hash/proof', workspaceAuthMiddleware, async (req, res, next) => {
 
     try {
         const proof = await db.getOpWithdrawalProof(data.workspace.id, data.hash);
+
+        if (!proof) {
+            return res.status(404).json({ error: 'Withdrawal proof not found' });
+        }
 
         res.status(200).json(proof);
     } catch (error) {

@@ -2,7 +2,16 @@ const express = require('express');
 const router = express.Router();
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const db = require('../lib/firebase');
-const { unmanagedError } = require('../lib/errors');
+const { unmanagedError, managedError } = require('../lib/errors');
+
+/**
+ * Sanitize pagination parameters
+ */
+const sanitizePagination = (page, itemsPerPage, order) => ({
+    page: Math.max(1, parseInt(page) || 1),
+    itemsPerPage: Math.min(100, Math.max(1, parseInt(itemsPerPage) || 10)),
+    order: ['ASC', 'DESC'].includes(order?.toUpperCase()) ? order.toUpperCase() : 'DESC'
+});
 
 /**
  * Get paginated list of OP deposits for a workspace
@@ -15,7 +24,7 @@ router.get('/', workspaceAuthMiddleware, async (req, res, next) => {
     const data = { ...req.query, ...req.params };
 
     try {
-        const { page, itemsPerPage, order } = data;
+        const { page, itemsPerPage, order } = sanitizePagination(data.page, data.itemsPerPage, data.order);
         const { rows: items, count: total } = await db.getWorkspaceOpDeposits(data.workspace.id, page, itemsPerPage, order);
 
         res.status(200).json({ items, total });
@@ -34,6 +43,10 @@ router.get('/:hash', workspaceAuthMiddleware, async (req, res, next) => {
 
     try {
         const deposit = await db.getOpDepositByL1Hash(data.workspace.id, data.hash);
+
+        if (!deposit) {
+            return res.status(404).json({ error: 'Deposit not found' });
+        }
 
         res.status(200).json(deposit);
     } catch (error) {

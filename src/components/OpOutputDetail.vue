@@ -42,7 +42,7 @@
                                 <tr>
                                     <td class="font-weight-medium">L1 Transaction</td>
                                     <td style="font-family: monospace;">
-                                        {{ output.l1TransactionHash.slice(0, 20) }}...{{ output.l1TransactionHash.slice(-16) }}
+                                        {{ output.l1TransactionHash ? `${output.l1TransactionHash.slice(0, 20)}...${output.l1TransactionHash.slice(-16)}` : '-' }}
                                     </td>
                                 </tr>
                                 <tr>

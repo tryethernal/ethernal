@@ -19,6 +19,13 @@ const FRAME_HEADER_SIZE = 23;
 // Derivation version byte
 const DERIVATION_VERSION_0 = 0;
 
+// EIP-4844 Blob versioned hash constants
+// See: https://eips.ethereum.org/EIPS/eip-4844#helpers
+const VERSIONED_HASH_VERSION_KZG = 0x01;  // Version byte for KZG commitments
+const SHA256_HASH_LENGTH_HEX = 64;         // SHA-256 produces 32 bytes = 64 hex chars
+const VERSIONED_HASH_LENGTH_BYTES = 32;    // 1 version byte + 31 hash bytes
+const VERSIONED_HASH_HASH_BYTES = 31;      // Bytes of hash to include (31 of 32)
+
 /**
  * Check if a transaction is a batch submission to the BatchInbox
  * @param {Object} tx - Transaction object
@@ -139,10 +146,13 @@ const computeBlobVersionedHash = (kzgCommitment) => {
     const commitment = kzgCommitment.startsWith('0x') ? kzgCommitment : '0x' + kzgCommitment;
     // EIP-4844 uses SHA-256 for versioned hashes, not keccak256
     const hash = ethers.utils.sha256(commitment);
-    // Remove 0x prefix if present, then prepend version byte 0x01
+    // Remove 0x prefix if present
     const hashWithoutPrefix = hash.startsWith('0x') ? hash.slice(2) : hash;
-    // Version 0x01 for KZG commitments, result is 0x01 + 31 bytes of hash = 66 chars total
-    return '0x01' + hashWithoutPrefix.slice(0, 62);
+    // Versioned hash = version byte + first 31 bytes of SHA-256 hash
+    // Result: 0x + version (2 hex) + 31 bytes (62 hex) = 66 chars total
+    const versionHex = VERSIONED_HASH_VERSION_KZG.toString(16).padStart(2, '0');
+    const truncatedHash = hashWithoutPrefix.slice(0, VERSIONED_HASH_HASH_BYTES * 2);
+    return '0x' + versionHex + truncatedHash;
 };
 
 /**
