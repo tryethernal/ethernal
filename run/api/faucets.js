@@ -1,3 +1,15 @@
+/**
+ * @fileoverview Faucet API endpoints.
+ * Manages testnet faucets: configuration, drips, and transaction history.
+ * @module api/faucets
+ *
+ * @route GET /:id/transactionHistory - Get faucet drip history
+ * @route POST /:id/drip - Request tokens from faucet
+ * @route PUT /:id - Update faucet configuration
+ * @route POST / - Create new faucet
+ * @route DELETE /:id - Delete faucet
+ */
+
 const express = require('express');
 const moment = require('moment');
 const router = express.Router();

@@ -1,3 +1,16 @@
+/**
+ * @fileoverview Explorer API endpoints.
+ * Manages explorer lifecycle: creation, configuration, syncing, and billing.
+ * @module api/explorers
+ *
+ * @route GET /:id/orbitConfig - Get Orbit L2 configuration
+ * @route POST / - Create new explorer
+ * @route PUT /:id - Update explorer settings
+ * @route DELETE /:id - Delete explorer
+ * @route POST /:id/sync - Start/stop block synchronization
+ * @route GET /:id/syncStatus - Get synchronization status
+ */
+
 const { getNodeEnv, getAppDomain, getDefaultPlanSlug, getDefaultExplorerTrialDays, getStripeSecretKey } = require('../lib/env');
 const stripe = require('stripe')(getStripeSecretKey());
 const express = require('express');

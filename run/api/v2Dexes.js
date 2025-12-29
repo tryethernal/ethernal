@@ -1,3 +1,15 @@
+/**
+ * @fileoverview Uniswap V2 DEX API endpoints.
+ * Manages DEX integration: pair discovery, swap quotes, and reserves.
+ * @module api/v2Dexes
+ *
+ * @route GET /:id/status - Get DEX sync status
+ * @route GET /:id/pairs - List discovered pairs
+ * @route GET /:id/quote - Get swap quote
+ * @route POST / - Create DEX integration
+ * @route DELETE /:id - Remove DEX integration
+ */
+
 const express = require('express');
 const router = express.Router();
 const db = require('../lib/firebase');

@@ -1,3 +1,15 @@
+/**
+ * @fileoverview Address API endpoints.
+ * Provides address-specific data: balances, transactions, token activity.
+ * @module api/addresses
+ *
+ * @route GET /:address/tokenTransferHistory - Get token transfer count over time
+ * @route GET /:address/tokenTransfers - Get token transfers for address
+ * @route GET /:address/transactions - Get transactions for address
+ * @route GET /:address/stats - Get address statistics
+ * @route GET /:address - Get address details
+ */
+
 const express = require('express');
 const router = express.Router();
 const db = require('../lib/firebase');

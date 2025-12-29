@@ -1,3 +1,14 @@
+/**
+ * @fileoverview Accounts API endpoints.
+ * Manages imported accounts with private keys and native token balances.
+ * @module api/accounts
+ *
+ * @route GET / - Get top native token holders
+ * @route GET /imported - Get imported accounts
+ * @route POST / - Import new account
+ * @route DELETE /:address - Remove imported account
+ */
+
 const express = require('express');
 const router = express.Router();
 const logger = require('../lib/logger');
