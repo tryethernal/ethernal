@@ -18,7 +18,9 @@ module.exports = {
           references: {
             model: 'workspaces',
             key: 'id'
-          }
+          },
+          onDelete: 'CASCADE',
+          onUpdate: 'CASCADE'
         },
         l1BlockNumber: {
           type: Sequelize.INTEGER,
@@ -34,7 +36,9 @@ module.exports = {
           references: {
             model: 'transactions',
             key: 'id'
-          }
+          },
+          onDelete: 'SET NULL',
+          onUpdate: 'CASCADE'
         },
         l2TransactionHash: {
           type: Sequelize.STRING(66),
@@ -46,7 +50,9 @@ module.exports = {
           references: {
             model: 'transactions',
             key: 'id'
-          }
+          },
+          onDelete: 'SET NULL',
+          onUpdate: 'CASCADE'
         },
         from: {
           type: Sequelize.STRING(42),
@@ -122,5 +128,6 @@ module.exports = {
 
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('op_deposits');
+    await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_op_deposits_status";');
   }
 };

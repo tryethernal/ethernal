@@ -42,7 +42,10 @@ module.exports = (sequelize, DataTypes) => {
     },
     l1TransactionHash: {
       type: DataTypes.STRING(66),
-      allowNull: false
+      allowNull: false,
+      set(value) {
+        this.setDataValue('l1TransactionHash', value ? value.toLowerCase() : value);
+      }
     },
     l1TransactionId: {
       type: DataTypes.INTEGER,
@@ -60,7 +63,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       set(value) {
         if (typeof value === 'number') {
-          this.setDataValue('timestamp', moment.unix(value).format());
+          this.setDataValue('timestamp', moment.unix(value).toDate());
         } else {
           this.setDataValue('timestamp', value);
         }

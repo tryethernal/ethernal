@@ -18,7 +18,9 @@ module.exports = {
           references: {
             model: 'workspaces',
             key: 'id'
-          }
+          },
+          onDelete: 'CASCADE',
+          onUpdate: 'CASCADE'
         },
         batchIndex: {
           type: Sequelize.INTEGER,
@@ -38,7 +40,9 @@ module.exports = {
           references: {
             model: 'transactions',
             key: 'id'
-          }
+          },
+          onDelete: 'SET NULL',
+          onUpdate: 'CASCADE'
         },
         l1TransactionIndex: {
           type: Sequelize.INTEGER,
@@ -117,5 +121,6 @@ module.exports = {
 
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('op_batches');
+    await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_op_batches_status";');
   }
 };

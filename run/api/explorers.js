@@ -208,7 +208,7 @@ router.put('/:id/opConfig', authMiddleware, async (req, res, next) => {
 
         res.status(200).json({ config });
     } catch (error) {
-        unmanagedError(error, req, res);
+        unmanagedError(error, req, next);
     }
 });
 
@@ -257,7 +257,7 @@ router.post('/:id/opConfig', authMiddleware, async (req, res, next) => {
 
         res.status(200).json({ config });
     } catch (error) {
-        unmanagedError(error, req, res);
+        unmanagedError(error, req, next);
     }
 });
 

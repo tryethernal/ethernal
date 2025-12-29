@@ -18,7 +18,9 @@ module.exports = {
           references: {
             model: 'workspaces',
             key: 'id'
-          }
+          },
+          onDelete: 'CASCADE',
+          onUpdate: 'CASCADE'
         },
         outputIndex: {
           type: Sequelize.INTEGER,
@@ -46,7 +48,9 @@ module.exports = {
           references: {
             model: 'transactions',
             key: 'id'
-          }
+          },
+          onDelete: 'SET NULL',
+          onUpdate: 'CASCADE'
         },
         proposer: {
           type: Sequelize.STRING(42),
@@ -113,5 +117,6 @@ module.exports = {
 
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('op_outputs');
+    await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_op_outputs_status";');
   }
 };

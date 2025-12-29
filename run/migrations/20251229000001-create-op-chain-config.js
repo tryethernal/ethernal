@@ -19,7 +19,9 @@ module.exports = {
           references: {
             model: 'workspaces',
             key: 'id'
-          }
+          },
+          onDelete: 'CASCADE',
+          onUpdate: 'CASCADE'
         },
         parentWorkspaceId: {
           type: Sequelize.INTEGER,
@@ -27,7 +29,9 @@ module.exports = {
           references: {
             model: 'workspaces',
             key: 'id'
-          }
+          },
+          onDelete: 'SET NULL',
+          onUpdate: 'CASCADE'
         },
         parentChainId: {
           type: Sequelize.INTEGER,

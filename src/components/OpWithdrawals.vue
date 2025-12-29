@@ -122,7 +122,7 @@ async function loadWithdrawals({ page, itemsPerPage, sortBy } = {}) {
     $server.getOpWithdrawals({
         page,
         itemsPerPage,
-        order: sortBy[0].order.toUpperCase()
+        order: sortBy[0]?.order?.toUpperCase() || 'DESC'
     }).then(({ data }) => {
         withdrawals.value = data.items;
         total.value = data.total;

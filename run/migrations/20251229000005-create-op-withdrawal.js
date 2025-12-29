@@ -18,7 +18,9 @@ module.exports = {
           references: {
             model: 'workspaces',
             key: 'id'
-          }
+          },
+          onDelete: 'CASCADE',
+          onUpdate: 'CASCADE'
         },
         withdrawalHash: {
           type: Sequelize.STRING(66),
@@ -42,7 +44,9 @@ module.exports = {
           references: {
             model: 'transactions',
             key: 'id'
-          }
+          },
+          onDelete: 'SET NULL',
+          onUpdate: 'CASCADE'
         },
         l1ProofTransactionHash: {
           type: Sequelize.STRING(66),
@@ -54,7 +58,9 @@ module.exports = {
           references: {
             model: 'transactions',
             key: 'id'
-          }
+          },
+          onDelete: 'SET NULL',
+          onUpdate: 'CASCADE'
         },
         l1FinalizeTransactionHash: {
           type: Sequelize.STRING(66),
@@ -66,7 +72,9 @@ module.exports = {
           references: {
             model: 'transactions',
             key: 'id'
-          }
+          },
+          onDelete: 'SET NULL',
+          onUpdate: 'CASCADE'
         },
         sender: {
           type: Sequelize.STRING(42),
@@ -145,5 +153,6 @@ module.exports = {
 
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('op_withdrawals');
+    await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_op_withdrawals_status";');
   }
 };

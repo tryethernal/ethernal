@@ -81,12 +81,11 @@ const getTransactionDepositedData = (log) => {
  * @returns {string} Derived L2 transaction hash
  */
 const deriveL2TransactionHash = ({ l1BlockNumber, l1TransactionHash, logIndex }) => {
-    // The deposit source hash is keccak256(abi.encode(l1BlockHash, l1LogIndex))
-    // Then the deposit tx hash is derived from that
-    // For simplicity, we use a deterministic hash based on the L1 tx hash and log index
+    // The deposit source hash is derived from L1 block info and log index
+    // We include l1BlockNumber, l1TransactionHash, and logIndex for uniqueness
     const encoded = ethers.utils.defaultAbiCoder.encode(
-        ['bytes32', 'uint256'],
-        [l1TransactionHash, logIndex]
+        ['uint256', 'bytes32', 'uint256'],
+        [l1BlockNumber, l1TransactionHash, logIndex]
     );
     return ethers.utils.keccak256(encoded);
 };

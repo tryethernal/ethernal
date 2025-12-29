@@ -57,10 +57,14 @@ const getOutputProposedData = (log) => {
  */
 const getDisputeGameCreatedData = (log) => {
     const parsedLog = disputeGameFactoryIface.parseLog({ topics: log.topics, data: log.data });
+    const rawGameType = parsedLog.args.gameType;
 
     return {
         disputeProxy: parsedLog.args.disputeProxy.toLowerCase(),
-        gameType: parsedLog.args.gameType,
+        // Convert BigNumber to primitive number for DB storage and JSON serialization
+        gameType: typeof rawGameType === 'object' && rawGameType !== null && typeof rawGameType.toNumber === 'function'
+            ? rawGameType.toNumber()
+            : Number(rawGameType),
         rootClaim: parsedLog.args.rootClaim
     };
 };

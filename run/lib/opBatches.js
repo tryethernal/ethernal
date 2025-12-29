@@ -136,7 +136,8 @@ const fetchBlobsFromBeacon = async (beaconUrl, slot, blobHashes) => {
  */
 const computeBlobVersionedHash = (kzgCommitment) => {
     const commitment = kzgCommitment.startsWith('0x') ? kzgCommitment : '0x' + kzgCommitment;
-    const hash = ethers.utils.keccak256(commitment);
+    // EIP-4844 uses SHA-256 for versioned hashes, not keccak256
+    const hash = ethers.utils.sha256(commitment);
     // Version 0x01 for KZG commitments
     return '0x01' + hash.slice(4);
 };

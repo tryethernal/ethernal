@@ -38,7 +38,10 @@ module.exports = (sequelize, DataTypes) => {
     withdrawalHash: {
       type: DataTypes.STRING(66),
       allowNull: false,
-      comment: 'Unique identifier for the withdrawal'
+      comment: 'Unique identifier for the withdrawal',
+      set(value) {
+        this.setDataValue('withdrawalHash', value ? value.toLowerCase() : value);
+      }
     },
     nonce: {
       type: DataTypes.STRING(78),
@@ -51,7 +54,10 @@ module.exports = (sequelize, DataTypes) => {
     },
     l2TransactionHash: {
       type: DataTypes.STRING(66),
-      allowNull: false
+      allowNull: false,
+      set(value) {
+        this.setDataValue('l2TransactionHash', value ? value.toLowerCase() : value);
+      }
     },
     l2TransactionId: {
       type: DataTypes.INTEGER,
@@ -106,7 +112,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       set(value) {
         if (typeof value === 'number') {
-          this.setDataValue('timestamp', moment.unix(value).format());
+          this.setDataValue('timestamp', moment.unix(value).toDate());
         } else {
           this.setDataValue('timestamp', value);
         }

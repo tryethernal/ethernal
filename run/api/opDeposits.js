@@ -9,7 +9,7 @@ const { unmanagedError } = require('../lib/errors');
  * @param {number} page - The page number
  * @param {number} itemsPerPage - The number of items per page
  * @param {string} order - The order to sort by
- * @returns {Promise<Array>} - A list of OP deposits
+ * @returns {Promise<Object>} - An object containing items (array of deposits) and total count
  */
 router.get('/', workspaceAuthMiddleware, async (req, res, next) => {
     const data = { ...req.query, ...req.params };
