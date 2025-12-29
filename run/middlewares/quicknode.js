@@ -1,7 +1,8 @@
-/*
-    Checks that it has been sent by Quiknode backend & that
-    Quiknode integration is enabled
-*/
+/**
+ * @fileoverview QuickNode middleware.
+ * Validates QuickNode backend authentication for marketplace integration.
+ * @module middlewares/quicknode
+ */
 
 const logger = require('../lib/logger');
 const { isQuicknodeEnabled } = require('../lib/flags');

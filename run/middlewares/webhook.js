@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Webhook authentication middleware.
+ * Validates API tokens for incoming webhook requests.
+ * @module middlewares/webhook
+ */
+
 const db = require('../lib/firebase');
 const { decrypt, decode } = require('../lib/crypto');
 const logger = require('../lib/logger');

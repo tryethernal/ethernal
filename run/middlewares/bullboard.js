@@ -1,6 +1,8 @@
-/*
-    This middleware sets up a basic auth mechanism to access the BullMQ UI at /bull
-*/
+/**
+ * @fileoverview Bull Board middleware.
+ * Basic auth protection for BullMQ dashboard at /bull endpoint.
+ * @module middlewares/bullboard
+ */
 
 const auth = require('basic-auth');
 const { getBullboardUsername, getBullboardPassword } = require('../lib/env');
