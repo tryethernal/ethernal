@@ -60,6 +60,14 @@ const getNativeBalanceChange = async (address, blockNumber, rpcServer) => {
     }
 }
 
+/**
+ * Gets the ERC20 token balance change for an address at a specific block.
+ * @param {string} address - Ethereum address to check
+ * @param {string} token - ERC20 token contract address
+ * @param {number} blockNumber - Block number to check at
+ * @param {string} rpcServer - RPC endpoint URL
+ * @returns {Promise<Object>} Balance change details with currentBalance, previousBalance, diff
+ */
 const getBalanceChange = async (address, token, blockNumber, rpcServer) => {
     let currentBalance = ethers.BigNumber.from('0');
     let previousBalance = ethers.BigNumber.from('0');

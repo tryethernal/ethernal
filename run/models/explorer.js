@@ -47,6 +47,17 @@ module.exports = (sequelize, DataTypes) => {
       Explorer.hasMany(models.ExplorerDomain, { foreignKey: 'explorerId', as: 'domains' });
     }
 
+    /**
+     * Creates a new explorer with sanitized data.
+     * @param {Object} explorer - Explorer configuration
+     * @param {number} explorer.userId - Admin user ID
+     * @param {number} explorer.workspaceId - Associated workspace ID
+     * @param {number} explorer.chainId - Blockchain chain ID
+     * @param {string} explorer.name - Explorer display name
+     * @param {string} explorer.rpcServer - RPC endpoint URL
+     * @param {string} explorer.slug - URL-friendly identifier
+     * @returns {Promise<Explorer>} Created explorer instance
+     */
     static safeCreateExplorer(explorer) {
         return Explorer.create(sanitize({
             userId: explorer.userId,
@@ -62,6 +73,12 @@ module.exports = (sequelize, DataTypes) => {
         }));
     }
 
+    /**
+     * Finds an explorer by its URL slug with all related data.
+     * Includes workspace, subscription, faucet, DEX, and domain info.
+     * @param {string} slug - Explorer slug
+     * @returns {Promise<Explorer|null>} Explorer with associations or null
+     */
     static findBySlug(slug) {
         return Explorer.findOne({
             attributes: ['id', 'chainId', 'domain', 'name', 'rpcServer', 'slug', 'token', 'themes', 'userId', 'workspaceId', 'gasAnalyticsEnabled', 'isDemo', 'totalSupply', 'displayTopAccounts'],
@@ -129,6 +146,11 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    /**
+     * Finds an explorer by custom domain with all related data.
+     * @param {string} domain - Custom domain name
+     * @returns {Promise<Explorer|null>} Explorer with associations or null
+     */
     static async findByDomain(domain) {
         const explorerDomain = await sequelize.models.ExplorerDomain.findOne({
             where: { domain },
@@ -265,14 +287,30 @@ module.exports = (sequelize, DataTypes) => {
             });
     }
 
+    /**
+     * Starts block synchronization for the explorer.
+     * @returns {Promise<Explorer>} Updated explorer
+     */
     startSync() {
         return this.update({ shouldSync: true });
     }
 
+    /**
+     * Stops block synchronization for the explorer.
+     * @returns {Promise<Explorer>} Updated explorer
+     */
     stopSync() {
         return this.update({ shouldSync: false });
     }
 
+    /**
+     * Creates a Uniswap V2 compatible DEX for the explorer.
+     * @param {string} routerAddress - DEX router contract address
+     * @param {string} factoryAddress - DEX factory contract address
+     * @param {string} wrappedNativeTokenAddress - WETH/WBNB contract address
+     * @returns {Promise<ExplorerV2Dex>} Created DEX instance
+     * @throws {Error} If explorer already has a DEX
+     */
     async safeCreateV2Dex(routerAddress, factoryAddress, wrappedNativeTokenAddress) {
         if (!routerAddress || !factoryAddress || !wrappedNativeTokenAddress)
             throw new Error('Missing parameter');
@@ -319,6 +357,14 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    /**
+     * Creates a faucet for the explorer with a generated wallet.
+     * @param {string} amount - Amount to dispense per request
+     * @param {number} interval - Cooldown interval between requests
+     * @param {Object} [transaction] - Sequelize transaction
+     * @returns {Promise<ExplorerFaucet>} Created faucet instance
+     * @throws {Error} If explorer already has a faucet
+     */
     async safeCreateFaucet(amount, interval, transaction) {
         if (!amount || !interval)
             throw new Error('Missing parameter');
@@ -331,6 +377,10 @@ module.exports = (sequelize, DataTypes) => {
         return this.createFaucet({ address, privateKey, amount, interval, active: true }, { transaction });
     }
 
+    /**
+     * Checks if the explorer is active with valid subscription.
+     * @returns {Promise<boolean>} True if active and within quota
+     */
     async isActive() {
         const subscription = await this.getStripeSubscription();
         const hasReachedTransactionQuota = await this.hasReachedTransactionQuota();
@@ -338,6 +388,10 @@ module.exports = (sequelize, DataTypes) => {
         return subscription && subscription.status == 'active' && !hasReachedTransactionQuota;
     }
 
+    /**
+     * Gets the transaction quota for this explorer.
+     * @returns {Promise<number>} Transaction quota limit
+     */
     async getTransactionQuota() {
         if (!this.shouldEnforceQuota)
             return 0;
@@ -351,6 +405,10 @@ module.exports = (sequelize, DataTypes) => {
         return stripeSubscription.stripePlan.capabilities.txLimit + extraQuota;
     }
 
+    /**
+     * Checks if transaction quota has been reached.
+     * @returns {Promise<boolean>} True if quota exceeded
+     */
     async hasReachedTransactionQuota() {
         if (!this.shouldEnforceQuota)
             return false;
@@ -364,6 +422,10 @@ module.exports = (sequelize, DataTypes) => {
         return baseQuota > 0 && stripeSubscription.transactionQuota > baseQuota + extraQuota;
     }
 
+    /**
+     * Checks if RPC has too many failed health check attempts.
+     * @returns {Promise<boolean>} True if within allowed attempts
+     */
     async hasTooManyFailedAttempts() {
         const workspace = await this.getWorkspace({ include: 'rpcHealthCheck' });
         if (workspace.rpcHealthCheck && workspace.rpcHealthCheck.failedAttempts <= MAX_RPC_ATTEMPTS)
@@ -371,6 +433,13 @@ module.exports = (sequelize, DataTypes) => {
         return false;
     }
 
+    /**
+     * Creates a custom domain for the explorer.
+     * @param {string} domain - Custom domain name
+     * @param {Object} [transaction] - Sequelize transaction
+     * @returns {Promise<ExplorerDomain>} Created domain
+     * @throws {Error} If domain is already in use
+     */
     async safeCreateDomain(domain, transaction) {
         if (!domain) throw new Error('Missing parameter');
 
@@ -384,6 +453,14 @@ module.exports = (sequelize, DataTypes) => {
         return this.createDomain({ domain }, { transaction });
     }
 
+    /**
+     * Creates a Stripe subscription for the explorer.
+     * @param {number} stripePlanId - Stripe plan ID
+     * @param {string} stripeId - Stripe subscription ID
+     * @param {Date} cycleEndsAt - Billing cycle end date
+     * @param {string} status - Subscription status (active, trial, trial_with_card)
+     * @returns {Promise<StripeSubscription>} Created subscription
+     */
     safeCreateSubscription(stripePlanId, stripeId, cycleEndsAt, status) {
         if (!stripePlanId || !cycleEndsAt || !status) throw new Error('Missing parameter');
 
@@ -393,6 +470,12 @@ module.exports = (sequelize, DataTypes) => {
         return this.createStripeSubscription({ stripePlanId, stripeId, cycleEndsAt, status });
     }
 
+    /**
+     * Migrates a demo explorer to a real user.
+     * @param {number} userId - Target user ID
+     * @param {Object} stripeSubscriptionData - Subscription data
+     * @returns {Promise<Explorer>} Updated explorer
+     */
     async migrateDemoTo(userId, stripeSubscriptionData) {
         if  (!userId || !stripeSubscriptionData) throw new Error('Missing parameter');
 
