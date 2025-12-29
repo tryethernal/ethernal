@@ -27,16 +27,18 @@
                         </v-col>
 
                         <v-col cols="12" md="6">
-                            <v-text-field
-                                v-model="config.parentChainId"
-                                label="L1 Chain ID (required)"
-                                type="number"
-                                required
-                                :rules="chainIdRules"
-                                :disabled="loading"
-                                placeholder="1"
-                                hint="e.g., 1 for Ethereum Mainnet, 11155111 for Sepolia"
+                            <v-select
+                                v-model="config.parentWorkspaceId"
+                                label="L1 Parent Workspace (required)"
+                                :items="parentOptions"
+                                item-title="displayName"
+                                item-value="id"
+                                :rules="parentWorkspaceRules"
+                                :disabled="loading || loadingParents"
+                                :loading="loadingParents"
+                                hint="Select the L1 chain workspace"
                                 persistent-hint
+                                no-data-text="No L1 parent workspaces available. Mark a workspace as 'Top L1 Parent' first."
                             />
                         </v-col>
                     </v-row>
@@ -198,8 +200,10 @@ const props = defineProps({
 const $server = inject('$server');
 
 const loading = ref(false);
+const loadingParents = ref(false);
 const errorMessage = ref('');
 const successMessage = ref('');
+const availableParents = ref([]);
 
 const config = ref({
     outputVersion: 0,
@@ -211,6 +215,13 @@ const outputVersionOptions = [
     { text: 'Fault Proofs (DisputeGameFactory)', value: 1 }
 ];
 
+const parentOptions = computed(() =>
+    availableParents.value.map(p => ({
+        ...p,
+        displayName: `${p.name} (Chain ID: ${p.networkId})`
+    }))
+);
+
 const addressRules = [
     v => !!v || 'Address is required',
     v => /^0x[a-fA-F0-9]{40}$/.test(v) || 'Must be a valid Ethereum address'
@@ -220,16 +231,25 @@ const optionalAddressRules = [
     v => !v || /^0x[a-fA-F0-9]{40}$/.test(v) || 'Must be a valid Ethereum address'
 ];
 
-const chainIdRules = [
-    v => !!v || 'Chain ID is required',
-    v => Number.isInteger(Number(v)) && Number(v) > 0 || 'Must be a positive integer'
+const parentWorkspaceRules = [
+    v => !!v || 'Parent workspace is required'
 ];
 
 const isConfigured = computed(() => {
-    return !!(config.value.parentChainId &&
+    return !!(config.value.parentWorkspaceId &&
            config.value.optimismPortalAddress &&
            config.value.batchInboxAddress);
 });
+
+function loadAvailableParents() {
+    loadingParents.value = true;
+    $server.getAvailableOpParents()
+        .then(({ data }) => {
+            availableParents.value = data.availableParents || [];
+        })
+        .catch(console.log)
+        .finally(() => loadingParents.value = false);
+}
 
 function loadConfig() {
     loading.value = true;
@@ -289,6 +309,7 @@ function updateConfig() {
 }
 
 onMounted(async () => {
+    loadAvailableParents();
     loadConfig();
 });
 </script>

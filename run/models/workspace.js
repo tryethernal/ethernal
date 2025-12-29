@@ -171,9 +171,22 @@ module.exports = (sequelize, DataTypes) => {
         ];
 
         const supportedParentChains = await sequelize.models.Workspace.getAvailableTopOpParent();
-        const supportedParentChainIds = supportedParentChains.map(chain => chain.networkId);
-        if (!supportedParentChainIds.includes(params.parentChainId)) {
-            throw new Error(`Parent chain network is not supported yet. Available networks: ${supportedParentChainIds.join(', ')}`);
+
+        let parentWorkspace;
+        // Support both parentWorkspaceId (new) and parentChainId (legacy)
+        if (params.parentWorkspaceId) {
+            parentWorkspace = supportedParentChains.find(chain => chain.id === params.parentWorkspaceId);
+            if (!parentWorkspace) {
+                throw new Error(`Selected parent workspace is not a valid L1 parent.`);
+            }
+        } else if (params.parentChainId) {
+            const supportedParentChainIds = supportedParentChains.map(chain => chain.networkId);
+            if (!supportedParentChainIds.includes(params.parentChainId)) {
+                throw new Error(`Parent chain network is not supported yet. Available networks: ${supportedParentChainIds.join(', ')}`);
+            }
+            parentWorkspace = supportedParentChains.find(chain => chain.networkId === params.parentChainId);
+        } else {
+            throw new Error('Parent workspace is required.');
         }
 
         const filteredParams = {};
@@ -185,8 +198,8 @@ module.exports = (sequelize, DataTypes) => {
 
         return sequelize.models.OpChainConfig.create({
             ...filteredParams,
-            parentChainId: params.parentChainId,
-            parentWorkspaceId: supportedParentChains.find(chain => chain.networkId === params.parentChainId).id,
+            parentChainId: parentWorkspace.networkId,
+            parentWorkspaceId: parentWorkspace.id,
             workspaceId: this.id
         });
     }

@@ -35,8 +35,16 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
 
-      // Only validate and update parentChainId if provided
-      if (params.parentChainId !== undefined) {
+      // Support both parentWorkspaceId (new) and parentChainId (legacy)
+      if (params.parentWorkspaceId !== undefined) {
+        const supportedParentChains = await sequelize.models.Workspace.getAvailableTopOpParent();
+        const parentWorkspace = supportedParentChains.find(chain => chain.id === params.parentWorkspaceId);
+        if (!parentWorkspace) {
+          throw new Error(`Selected parent workspace is not a valid L1 parent.`);
+        }
+        filteredParams.parentWorkspaceId = parentWorkspace.id;
+        filteredParams.parentChainId = parentWorkspace.networkId;
+      } else if (params.parentChainId !== undefined) {
         const supportedParentChains = await sequelize.models.Workspace.getAvailableTopOpParent();
         const supportedParentChainIds = supportedParentChains.map(chain => chain.networkId);
         if (!supportedParentChainIds.includes(params.parentChainId)) {

@@ -23,6 +23,20 @@ const secretMiddleware = require('../middlewares/secret');
  * @returns {Promise<object>} - The orbit config
  */
 
+/**
+ * Get available L1 parent workspaces for OP Stack configuration
+ * @returns {Promise<object>} - List of available parent workspaces
+ */
+router.get('/availableOpParents', authMiddleware, async (req, res, next) => {
+    try {
+        const availableParents = await db.getAvailableOpParents();
+
+        res.status(200).json({ availableParents });
+    } catch (error) {
+        return managedError(error, req, res);
+    }
+});
+
 router.get('/:id/orbitConfig', authMiddleware, async (req, res, next) => {
     const data = { ...req.query, ...req.params };
 
@@ -236,8 +250,8 @@ router.post('/:id/opConfig', authMiddleware, async (req, res, next) => {
         if (currentConfig)
             return managedError(new Error('There is already an OP config for this explorer.'), req, res);
 
-        if (!req.body.params.config.parentChainId)
-            return managedError(new Error('Parent chain ID is required.'), req, res);
+        if (!req.body.params.config.parentWorkspaceId && !req.body.params.config.parentChainId)
+            return managedError(new Error('Parent workspace is required.'), req, res);
 
         if (!req.body.params.config.batchInboxAddress)
             return managedError(new Error('Batch inbox address is required.'), req, res);
@@ -245,12 +259,14 @@ router.post('/:id/opConfig', authMiddleware, async (req, res, next) => {
         if (!req.body.params.config.optimismPortalAddress)
             return managedError(new Error('Optimism portal address is required.'), req, res);
 
+        let configParams = { ...req.body.params.config };
+        if (configParams.parentChainId) {
+            configParams.parentChainId = parseInt(configParams.parentChainId);
+        }
+
         let config;
         try {
-            config = await db.createOpConfig(req.body.data.user.id, data.id, {
-                ...req.body.params.config,
-                parentChainId: parseInt(req.body.params.config.parentChainId)
-            });
+            config = await db.createOpConfig(req.body.data.user.id, data.id, configParams);
         } catch(error) {
             return managedError(error, req, res);
         }

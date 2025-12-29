@@ -205,5 +205,6 @@ export default {
     getOpWithdrawalProof: vi.fn(),
     getOpConfig: vi.fn(),
     createOpConfig: vi.fn(),
-    updateOpConfig: vi.fn()
+    updateOpConfig: vi.fn(),
+    getAvailableOpParents: vi.fn().mockResolvedValue({ data: { availableParents: [] } })
 };

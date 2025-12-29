@@ -464,6 +464,15 @@ export default {
             },
 
             // OP Stack API methods
+            getAvailableOpParents() {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value
+                };
+                const resource = `${envStore.apiRoot}/api/explorers/availableOpParents`;
+                return axios.get(resource, { params });
+            },
+
             getOpConfig(explorerId) {
                 const params = {
                     firebaseUserId: firebaseUserId.value,

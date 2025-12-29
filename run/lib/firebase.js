@@ -240,6 +240,19 @@ const getOpConfig = async (userId, explorerId) => {
 }
 
 /**
+ * Retrieves available L1 parent workspaces for OP Stack configuration
+ * @returns {Promise<Array>} - List of available parent workspaces with id, name, and networkId
+ */
+const getAvailableOpParents = async () => {
+    const workspaces = await Workspace.getAvailableTopOpParent();
+    return workspaces.map(w => ({
+        id: w.id,
+        name: w.name,
+        networkId: w.networkId
+    }));
+}
+
+/**
  * Retrieves a list of orbit deposits for a workspace
  * @param {string} workspaceId - The workspace id
  * @param {number} page - The page number
@@ -3897,6 +3910,7 @@ module.exports = {
     updateOpConfig: updateOpConfig,
     getOpConfig: getOpConfig,
     createOpConfig: createOpConfig,
+    getAvailableOpParents: getAvailableOpParents,
     getWorkspaceOpBatches: getWorkspaceOpBatches,
     getOpBatch: getOpBatch,
     getOpBatchTransactions: getOpBatchTransactions,
