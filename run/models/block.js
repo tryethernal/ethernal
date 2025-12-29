@@ -1,3 +1,21 @@
+/**
+ * @fileoverview Block model - represents synchronized blockchain blocks.
+ * Stores block headers, metadata, and manages block-related events.
+ *
+ * @module models/Block
+ *
+ * @property {number} id - Primary key
+ * @property {number} workspaceId - Foreign key to workspace
+ * @property {number} number - Block number
+ * @property {string} hash - Block hash
+ * @property {Date} timestamp - Block timestamp
+ * @property {number} transactionsCount - Number of transactions in block
+ * @property {string} miner - Block miner/validator address
+ * @property {string} gasUsed - Total gas used
+ * @property {string} gasLimit - Block gas limit
+ * @property {string} baseFeePerGas - EIP-1559 base fee
+ */
+
 'use strict';
 const ethers = require('ethers');
 const {

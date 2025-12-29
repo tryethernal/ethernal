@@ -1,3 +1,22 @@
+/**
+ * @fileoverview Contract model - represents smart contracts.
+ * Stores contract data, ABIs, verification status, and token metadata.
+ * Handles ERC20/ERC721/ERC1155 token operations and analytics.
+ *
+ * @module models/Contract
+ *
+ * @property {number} id - Primary key
+ * @property {number} workspaceId - Foreign key to workspace
+ * @property {string} address - Contract address
+ * @property {string} name - Contract name
+ * @property {Object} abi - Contract ABI
+ * @property {Array<string>} patterns - Detected patterns (erc20, erc721, etc.)
+ * @property {string} tokenName - Token name (for tokens)
+ * @property {string} tokenSymbol - Token symbol (for tokens)
+ * @property {number} tokenDecimals - Token decimals (for tokens)
+ * @property {string} proxy - Implementation contract address (for proxies)
+ */
+
 'use strict';
 
 const {

@@ -1,3 +1,19 @@
+/**
+ * @fileoverview OrbitChainConfig model - Arbitrum Orbit L2 chain configuration.
+ * Stores contract addresses and parent chain settings for Orbit chains.
+ *
+ * @module models/OrbitChainConfig
+ *
+ * @property {number} id - Primary key
+ * @property {number} workspaceId - Foreign key to L2 workspace
+ * @property {number} parentWorkspaceId - Foreign key to parent chain workspace
+ * @property {string} rollupContract - Rollup contract address
+ * @property {string} sequencerInboxContract - Sequencer inbox address
+ * @property {string} outboxContract - Outbox contract address
+ * @property {string} bridgeContract - Bridge contract address
+ * @property {string} parentChainRpcServer - Parent chain RPC URL
+ */
+
 'use strict';
 const {
   Model

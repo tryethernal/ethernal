@@ -1,3 +1,16 @@
+/**
+ * @fileoverview Account model - stores imported/managed Ethereum accounts.
+ * Used for development/testing with private key storage.
+ *
+ * @module models/Account
+ *
+ * @property {number} id - Primary key
+ * @property {number} workspaceId - Foreign key to workspace
+ * @property {string} address - Account address
+ * @property {string} balance - Account balance
+ * @property {string} privateKey - Encrypted private key
+ */
+
 'use strict';
 const {
   Model

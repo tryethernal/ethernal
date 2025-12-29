@@ -1,3 +1,19 @@
+/**
+ * @fileoverview Workspace model - represents a blockchain network workspace.
+ * A workspace contains blocks, transactions, contracts, and configuration
+ * for a specific chain being explored.
+ *
+ * @module models/Workspace
+ *
+ * @property {number} id - Primary key
+ * @property {number} userId - Foreign key to owner user
+ * @property {string} name - Workspace name
+ * @property {string} rpcServer - RPC endpoint URL
+ * @property {number} networkId - Chain/network ID
+ * @property {boolean} public - Whether workspace is publicly accessible
+ * @property {string} tracing - Tracing mode (hardhat, other, null)
+ */
+
 'use strict';
 const {
   Model,

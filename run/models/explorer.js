@@ -1,3 +1,21 @@
+/**
+ * @fileoverview Explorer model - represents a public block explorer instance.
+ * An explorer is the public-facing configuration for a workspace,
+ * including theming, domains, subscriptions, and features.
+ *
+ * @module models/Explorer
+ *
+ * @property {number} id - Primary key
+ * @property {number} userId - Foreign key to admin user
+ * @property {number} workspaceId - Foreign key to workspace
+ * @property {string} name - Explorer display name
+ * @property {string} slug - URL-friendly identifier
+ * @property {number} chainId - Chain ID
+ * @property {string} rpcServer - RPC endpoint
+ * @property {Object} themes - UI theme configuration
+ * @property {boolean} isDemo - Whether this is a demo explorer
+ */
+
 'use strict';
 const {
   Model

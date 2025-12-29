@@ -1,14 +1,13 @@
-/*
-    This file contains all the methods to interact with
-    models from the API. They check for parameters,
-    make sure the required resources exist and can
-    be accessed by the user.
-    APIs should use methods from this file and not interact
-    with the models directly.
-    Background jobs do not need to use methods here and
-    can interact with the models directly, as they are not
-    exposed to the user.
-*/
+/**
+ * @fileoverview Database access layer for API endpoints.
+ * Provides methods to interact with Sequelize models from the API.
+ * Handles parameter validation, resource access control, and user authorization.
+ *
+ * APIs should use methods from this file and not interact with models directly.
+ * Background jobs can interact with models directly as they are not user-exposed.
+ *
+ * @module lib/firebase
+ */
 const Sequelize = require('sequelize');
 const { getDemoUserId, getMaxBlockForSyncReset } = require('./env');
 const models = require('../models');

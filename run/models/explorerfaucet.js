@@ -1,3 +1,18 @@
+/**
+ * @fileoverview ExplorerFaucet model - manages testnet faucet configuration.
+ * Handles drip amounts, intervals, and rate limiting per explorer.
+ *
+ * @module models/ExplorerFaucet
+ *
+ * @property {number} id - Primary key
+ * @property {number} explorerId - Foreign key to explorer
+ * @property {string} address - Faucet wallet address
+ * @property {string} privateKey - Encrypted faucet private key
+ * @property {string} amount - Drip amount per request
+ * @property {number} interval - Cooldown between drips (seconds)
+ * @property {boolean} active - Whether faucet is enabled
+ */
+
 'use strict';
 const {
   Model,

@@ -1,3 +1,17 @@
+/**
+ * @fileoverview BlockEvent model - TimescaleDB hypertable for block analytics.
+ * Stores denormalized block data for gas price and chain activity queries.
+ *
+ * @module models/BlockEvent
+ *
+ * @property {number} workspaceId - Workspace ID
+ * @property {number} blockId - Block ID
+ * @property {Date} timestamp - Event timestamp (primary key)
+ * @property {string} baseFeePerGas - EIP-1559 base fee
+ * @property {string} gasUsed - Total gas used in block
+ * @property {number} transactionCount - Number of transactions
+ */
+
 'use strict';
 const {
   Model

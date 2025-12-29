@@ -1,3 +1,23 @@
+/**
+ * @fileoverview Transaction model - represents blockchain transactions.
+ * Stores transaction data, receipts, token transfers, and trace information.
+ * Handles Orbit L2 chain events (batches, withdrawals, nodes).
+ *
+ * @module models/Transaction
+ *
+ * @property {number} id - Primary key
+ * @property {number} workspaceId - Foreign key to workspace
+ * @property {number} blockId - Foreign key to block
+ * @property {string} hash - Transaction hash
+ * @property {string} from - Sender address
+ * @property {string} to - Recipient address (null for contract creation)
+ * @property {string} value - ETH value transferred
+ * @property {string} data - Transaction input data
+ * @property {string} gasPrice - Gas price in wei
+ * @property {string} gasLimit - Gas limit
+ * @property {Date} timestamp - Transaction timestamp
+ */
+
 'use strict';
 const {
   Model,

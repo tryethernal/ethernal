@@ -1,3 +1,18 @@
+/**
+ * @fileoverview StripeSubscription model - manages billing subscriptions.
+ * Links explorers/users to Stripe subscription data and plans.
+ *
+ * @module models/StripeSubscription
+ *
+ * @property {number} id - Primary key
+ * @property {number} explorerId - Foreign key to explorer (nullable)
+ * @property {number} userId - Foreign key to user (nullable)
+ * @property {number} stripePlanId - Foreign key to plan
+ * @property {string} stripeId - Stripe subscription ID
+ * @property {boolean} isPendingCancelation - Whether scheduled for cancellation
+ * @property {number} cycleEndsAt - Timestamp of billing cycle end
+ */
+
 'use strict';
 const {
   Model

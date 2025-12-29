@@ -1,3 +1,16 @@
+/**
+ * @fileoverview FaucetDrip model - records individual faucet drip transactions.
+ * Tracks recipient address, amount, and transaction hash for each drip.
+ *
+ * @module models/FaucetDrip
+ *
+ * @property {number} id - Primary key
+ * @property {number} explorerFaucetId - Foreign key to faucet
+ * @property {string} address - Recipient address
+ * @property {string} amount - Drip amount
+ * @property {string} transactionHash - Transaction hash
+ */
+
 'use strict';
 const {
   Model

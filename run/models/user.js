@@ -1,3 +1,18 @@
+/**
+ * @fileoverview User model - represents authenticated users.
+ * Handles authentication, workspaces, API keys, and subscription management.
+ *
+ * @module models/User
+ *
+ * @property {number} id - Primary key
+ * @property {string} firebaseUserId - Firebase auth UID
+ * @property {string} email - User email address
+ * @property {string} plan - Subscription plan (free, premium)
+ * @property {string} apiKey - API key for programmatic access
+ * @property {number} currentWorkspaceId - Currently selected workspace
+ * @property {boolean} canTrial - Whether user can start a trial
+ */
+
 'use strict';
 const {
   Model, Sequelize

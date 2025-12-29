@@ -1,3 +1,16 @@
+/**
+ * @fileoverview V2DexPair model - represents Uniswap V2 style liquidity pairs.
+ * Tracks token pairs and links to reserve history.
+ *
+ * @module models/V2DexPair
+ *
+ * @property {number} id - Primary key
+ * @property {number} explorerV2DexId - Foreign key to DEX config
+ * @property {number} token0ContractId - Foreign key to token0 contract
+ * @property {number} token1ContractId - Foreign key to token1 contract
+ * @property {number} pairContractId - Foreign key to pair contract
+ */
+
 'use strict';
 const {
   Model
