@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Receipt sync job.
+ * Fetches transaction receipt from RPC and stores logs/events.
+ * @module jobs/receiptSync
+ */
+
 const { ProviderConnector } = require('../lib/rpc');
 const { Workspace, Explorer, StripeSubscription, Transaction, TransactionReceipt, RpcHealthCheck, OrbitChainConfig } = require('../models');
 const { processRawRpcObject } = require('../lib/utils');

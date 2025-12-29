@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Explorer sync check job.
+ * Enqueues sync status updates for all explorers.
+ * @module jobs/explorerSyncCheck
+ */
+
 const { Explorer } = require('../models');
 const { bulkEnqueue } = require('../lib/queue');
 

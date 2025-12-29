@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Batch contract delete job.
+ * Deletes a batch of contracts by their IDs.
+ * @module jobs/batchContractDelete
+ */
+
 const { Workspace } = require('../models');
 
 module.exports = async (job) => {

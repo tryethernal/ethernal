@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Password reset email job.
+ * Sends password reset link via Mailjet.
+ * @module jobs/sendResetPasswordEmail
+ */
+
 const Mailjet = require('node-mailjet');
 const logger = require('../lib/logger');
 const { encode } = require('../lib/crypto');

@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Transaction error processing job.
+ * Extracts and decodes revert reasons from failed transactions.
+ * @module jobs/processTransactionError
+ */
+
 const ethers = require('ethers');
 const db = require('../lib/firebase');
 const { sanitize } = require('../lib/utils');

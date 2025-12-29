@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Integrity check job.
+ * Detects missing blocks and gaps, enqueues recovery syncs.
+ * @module jobs/integrityCheck
+ */
+
 const models = require('../models');
 const { enqueue, bulkEnqueue } = require('../lib/queue');
 const { withTimeout } = require('../lib/utils');

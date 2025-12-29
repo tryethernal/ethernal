@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Batch block sync job.
+ * Enqueues blockSync jobs for a range of blocks (up to 500k at a time).
+ * @module jobs/batchBlockSync
+ */
+
 const { enqueue, bulkEnqueue } = require('../lib/queue');
 const MAX_CONCURRENT_BATCHES = 500000;
 
