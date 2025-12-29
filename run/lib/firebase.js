@@ -2445,6 +2445,15 @@ const getExplorerById = (userId, id, withDemo = false) => {
     });
 }
 
+/**
+ * Gets a user's explorers with pagination.
+ * @param {number} userId - The user ID
+ * @param {number} [page=1] - Page number
+ * @param {number} [itemsPerPage=10] - Items per page
+ * @param {string} [order='DESC'] - Sort order
+ * @param {string} [orderBy='id'] - Field to order by
+ * @returns {Promise<Object>} Object with items and total
+ */
 const getUserExplorers = async (userId, page = 1, itemsPerPage = 10, order = 'DESC', orderBy = 'id') => {
     if (!userId) throw new Error('Missing parameter');
 
@@ -2484,6 +2493,12 @@ const getUserExplorers = async (userId, page = 1, itemsPerPage = 10, order = 'DE
     };
 }
 
+/**
+ * Updates workspace RPC health check status.
+ * @param {number} workspaceId - The workspace ID
+ * @param {boolean} isReachable - Whether RPC is reachable
+ * @returns {Promise<RpcHealthCheck>}
+ */
 const updateWorkspaceRpcHealthCheck = async (workspaceId, isReachable) => {
     if (!workspaceId || isReachable === null || isReachable === undefined) throw new Error('Missing parameter');
 
@@ -2495,6 +2510,14 @@ const updateWorkspaceRpcHealthCheck = async (workspaceId, isReachable) => {
     return workspace.safeCreateOrUpdateRpcHealthCheck(isReachable);
 };
 
+/**
+ * Updates workspace integrity check status.
+ * @param {number} workspaceId - The workspace ID
+ * @param {Object} params - Check parameters
+ * @param {number} [params.blockId] - Block ID being checked
+ * @param {string} [params.status] - Check status
+ * @returns {Promise<IntegrityCheck>}
+ */
 const updateWorkspaceIntegrityCheck = async (workspaceId, { blockId, status }) => {
     if (!workspaceId || (!blockId && !status)) throw new Error('Missing parameter');
 
@@ -2505,6 +2528,11 @@ const updateWorkspaceIntegrityCheck = async (workspaceId, { blockId, status }) =
     return workspace.safeCreateOrUpdateIntegrityCheck({ blockId, status });
 };
 
+/**
+ * Gets a transaction with associations for processing.
+ * @param {number} transactionId - The transaction ID
+ * @returns {Promise<Transaction>}
+ */
 const getTransactionForProcessing = transactionId => {
     if (!transactionId) throw new Error('Missing parameter.');
 
@@ -2549,6 +2577,11 @@ const getTransactionForProcessing = transactionId => {
     });
 };
 
+/**
+ * Reverts a partial block if it's incomplete.
+ * @param {number} blockId - The block ID
+ * @returns {Promise<void>}
+ */
 const revertPartialBlock = async (blockId) => {
     if (!blockId) throw new Error('Missing parameter.');
 
@@ -2557,6 +2590,12 @@ const revertPartialBlock = async (blockId) => {
     return block ? block.revertIfPartial() : null;
 };
 
+/**
+ * Syncs a partial block to a workspace.
+ * @param {number} workspaceId - The workspace ID
+ * @param {Object} block - Block data
+ * @returns {Promise<Object|null>} The created block or null
+ */
 const syncPartialBlock = async (workspaceId, block) => {
     if (!workspaceId || !block) throw new Error('Missing parameter.');
 
@@ -2575,6 +2614,12 @@ const syncPartialBlock = async (workspaceId, block) => {
     return newBlock ? newBlock.toJSON() : null;
 };
 
+/**
+ * Syncs a full block with transactions to a workspace.
+ * @param {number} workspaceId - The workspace ID
+ * @param {Object} data - Block and transaction data
+ * @returns {Promise<Object|null>} The created block or null
+ */
 const syncFullBlock = async (workspaceId, data) => {
     if (!workspaceId || !data) throw new Error('Missing parameter.');
 
@@ -2594,6 +2639,20 @@ const syncFullBlock = async (workspaceId, data) => {
         return null;
 };
 
+/**
+ * Creates a new explorer.
+ * @param {number} userId - The user ID
+ * @param {number} workspaceId - The workspace ID
+ * @param {number} chainId - The chain ID
+ * @param {string} name - Explorer name
+ * @param {string} rpcServer - RPC URL
+ * @param {string} slug - URL slug
+ * @param {Object} themes - Theme configuration
+ * @param {string} totalSupply - Total supply
+ * @param {string} domain - Domain name
+ * @param {Object} token - Token configuration
+ * @returns {Promise<Object|null>} The created explorer or null
+ */
 const createExplorer = async (userId, workspaceId, chainId, name, rpcServer, slug, themes, totalSupply, domain, token) => {
     if (!userId || !workspaceId || !chainId || !name || !rpcServer || !slug)
         throw new Error('Missing parameter');
@@ -2613,6 +2672,12 @@ const createExplorer = async (userId, workspaceId, chainId, name, rpcServer, slu
     return explorer ? explorer.toJSON() : null;
 };
 
+/**
+ * Updates browser sync setting for a workspace.
+ * @param {number} workspaceId - The workspace ID
+ * @param {boolean} newValue - New browser sync value
+ * @returns {Promise<Workspace>}
+ */
 const updateBrowserSync = async (workspaceId, newValue) => {
     if (!workspaceId || newValue === undefined || newValue === null)
         throw new Error('Missing parameter');
@@ -2624,6 +2689,13 @@ const updateBrowserSync = async (workspaceId, newValue) => {
     return workspace.update({ browserSyncEnabled: newValue });
 };
 
+/**
+ * Updates user Firebase password hash.
+ * @param {string} email - User email
+ * @param {string} passwordSalt - Password salt
+ * @param {string} passwordHash - Password hash
+ * @returns {Promise<User>}
+ */
 const updateUserFirebaseHash = async (email, passwordSalt, passwordHash) => {
     if (!email || !passwordSalt || !passwordHash)
         throw new Error('Missing parameter');
@@ -2633,6 +2705,12 @@ const updateUserFirebaseHash = async (email, passwordSalt, passwordHash) => {
     return user.update({ passwordSalt, passwordHash });
 };
 
+/**
+ * Sets a user's password.
+ * @param {string} email - User email
+ * @param {string} password - New password
+ * @returns {Promise<User>}
+ */
 const setUserPassword = async (email, password) => {
     if (!email || !password)
         throw new Error('Missig parameter');
@@ -2647,11 +2725,21 @@ const setUserPassword = async (email, password) => {
     return user.update({ passwordHash, passwordSalt });
 };
 
+/**
+ * Gets a user by email.
+ * @param {string} email - User email
+ * @returns {Promise<Object|null>} The user or null
+ */
 const getUserByEmail = async (email) => {
     const user = await User.findOne({ where: { email: email }, include: 'currentWorkspace' });
     return user ? user.toJSON() : null;
 };
 
+/**
+ * Gets custom transaction function for a workspace.
+ * @param {number} workspaceId - The workspace ID
+ * @returns {Promise<string|null>} The function code or null
+ */
 const getCustomTransactionFunction = async (workspaceId) => {
     if (!workspaceId) throw new Error('Missing parameter');
 
@@ -2660,6 +2748,17 @@ const getCustomTransactionFunction = async (workspaceId) => {
     return await workspace.getCustomTransactionFunction();
 };
 
+/**
+ * Gets token transfers for an address.
+ * @param {number} workspaceId - The workspace ID
+ * @param {string} address - The address
+ * @param {number} page - Page number
+ * @param {number} itemsPerPage - Items per page
+ * @param {string} order - Sort order
+ * @param {string} orderBy - Field to order by
+ * @param {Array} tokenTypes - Token types to filter
+ * @returns {Promise<Object>} Token transfers with count
+ */
 const getAddressTokenTransfers = async (workspaceId, address, page, itemsPerPage, order, orderBy, tokenTypes) => {
     if (!workspaceId || !address) throw new Error('Missing parameter');
 
