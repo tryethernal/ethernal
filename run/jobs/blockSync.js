@@ -1,11 +1,12 @@
 const { ProviderConnector } = require('../lib/rpc');
-const { Workspace, Explorer, StripeSubscription, RpcHealthCheck, IntegrityCheck, Block, OrbitChainConfig } = require('../models');
+const { Workspace, Explorer, StripeSubscription, RpcHealthCheck, IntegrityCheck, Block, OrbitChainConfig, OpChainConfig, OpBatch } = require('../models');
 const db = require('../lib/firebase');
 const logger = require('../lib/logger');
 const { processRawRpcObject } = require('../lib/utils');
 const { enqueue, bulkEnqueue } = require('../lib/queue');
 const RateLimiter = require('../lib/rateLimiter');
 const constants = require('../constants/orbit');
+const { isBatchTransaction, getBatchInfo } = require('../lib/opBatches');
 
 module.exports = async job => {
     const data = job.data;
@@ -171,6 +172,62 @@ module.exports = async job => {
         const syncedBlock = await workspace.safeCreatePartialBlock(processedBlock);
         if (!syncedBlock)
             return "Couldn't store block";
+
+        // OP Stack batch detection - check if this L1 workspace has OP child chains
+        const opChildConfigs = await OpChainConfig.findAll({
+            where: { parentWorkspaceId: workspace.id }
+        });
+
+        for (const opConfig of opChildConfigs) {
+            if (!opConfig.batchInboxAddress) continue;
+
+            // Find transactions to the batch inbox address
+            const batchTxs = processedBlock.transactions.filter(tx =>
+                isBatchTransaction(tx, opConfig.batchInboxAddress)
+            );
+
+            for (const tx of batchTxs) {
+                try {
+                    const batchInfo = await getBatchInfo(tx, {
+                        batchInboxAddress: opConfig.batchInboxAddress,
+                        beaconUrl: workspace.beaconUrl
+                    });
+
+                    if (batchInfo) {
+                        // Get the next batch index
+                        const lastBatch = await OpBatch.findOne({
+                            where: { workspaceId: opConfig.workspaceId },
+                            order: [['batchIndex', 'DESC']]
+                        });
+                        const nextBatchIndex = lastBatch ? lastBatch.batchIndex + 1 : 0;
+
+                        // Find the L1 transaction record if it exists
+                        const l1Transaction = syncedBlock.transactions.find(t => t.hash === tx.hash);
+
+                        await OpBatch.create({
+                            workspaceId: opConfig.workspaceId,
+                            batchIndex: nextBatchIndex,
+                            l1BlockNumber: batchInfo.l1BlockNumber,
+                            l1TransactionHash: batchInfo.l1TransactionHash,
+                            l1TransactionId: l1Transaction ? l1Transaction.id : null,
+                            l1TransactionIndex: batchInfo.l1TransactionIndex,
+                            epochNumber: batchInfo.l1BlockNumber, // Epoch is typically the L1 block
+                            timestamp: tx.timestamp ? new Date(tx.timestamp * 1000) : new Date(),
+                            txCount: batchInfo.estimatedBlockCount || null,
+                            l2BlockStart: batchInfo.l2BlockStart,
+                            l2BlockEnd: batchInfo.l2BlockEnd,
+                            blobHash: batchInfo.blobHash,
+                            blobData: batchInfo.blobData,
+                            status: 'pending'
+                        });
+
+                        logger.info(`Created OP batch ${nextBatchIndex} for L2 workspace ${opConfig.workspaceId} from L1 tx ${tx.hash}`);
+                    }
+                } catch (error) {
+                    logger.error(`Error processing OP batch for tx ${tx.hash}: ${error.message}`, { location: 'jobs.blockSync.opBatch', error });
+                }
+            }
+        }
 
         const transactions = syncedBlock.transactions;
         const jobs = [];

@@ -154,6 +154,113 @@ router.post('/:id/orbitConfig', authMiddleware, async (req, res, next) => {
     }
 });
 
+/**
+ * Get OP Stack config
+ * @returns {Promise<object>} - The OP config
+ */
+router.get('/:id/opConfig', authMiddleware, async (req, res, next) => {
+    const data = { ...req.query, ...req.params };
+
+    try {
+        const opConfig = await db.getOpConfig(req.body.data.user.id, data.id);
+
+        res.status(200).json({ opConfig });
+    } catch (error) {
+        return managedError(error, req, res);
+    }
+});
+
+/**
+ * Update OP Stack config
+ * @param {object} config - The OP config to update
+ * @param {string} config.batchInboxAddress - Batch inbox address
+ * @param {string} config.optimismPortalAddress - Optimism portal address
+ * @param {string} config.l2OutputOracleAddress - L2 output oracle address (legacy)
+ * @param {string} config.disputeGameFactoryAddress - Dispute game factory address (modern)
+ * @param {string} config.systemConfigAddress - System config address
+ * @param {string} config.l2ToL1MessagePasserAddress - L2 to L1 message passer address
+ * @param {number} config.outputVersion - Output version (0 = legacy, 1 = fault proofs)
+ * @param {number} config.submissionInterval - Blocks between output submissions
+ * @param {number} config.finalizationPeriodSeconds - Challenge period in seconds
+ * @param {string} config.parentChainExplorer - Parent chain explorer URL
+ * @returns {Promise<object>} - The updated OP config
+ */
+router.put('/:id/opConfig', authMiddleware, async (req, res, next) => {
+    const data = { ...req.query, ...req.params };
+
+    try {
+        const currentConfig = await db.getOpConfig(req.body.data.user.id, data.id);
+        if (!currentConfig)
+            return managedError(new Error('There is no OP config for this explorer.'), req, res);
+
+        let params = { ...req.body.params };
+
+        if (params.config.parentChainId) {
+            params.config.parentChainId = parseInt(params.config.parentChainId);
+        }
+
+        let config;
+        try {
+            config = await db.updateOpConfig(req.body.data.user.id, data.id, params.config);
+        } catch(error) {
+            return managedError(error, req, res);
+        }
+
+        res.status(200).json({ config });
+    } catch (error) {
+        unmanagedError(error, req, res);
+    }
+});
+
+/**
+ * Create OP Stack config
+ * @param {object} config - The OP config to create
+ * @param {number} config.parentChainId - Parent chain network ID (e.g., 1 for Ethereum mainnet)
+ * @param {string} config.batchInboxAddress - Batch inbox address
+ * @param {string} config.optimismPortalAddress - Optimism portal address
+ * @param {string} config.l2OutputOracleAddress - L2 output oracle address (legacy)
+ * @param {string} config.disputeGameFactoryAddress - Dispute game factory address (modern)
+ * @param {string} config.systemConfigAddress - System config address
+ * @param {string} config.l2ToL1MessagePasserAddress - L2 to L1 message passer address
+ * @param {number} config.outputVersion - Output version (0 = legacy, 1 = fault proofs)
+ * @param {number} config.submissionInterval - Blocks between output submissions
+ * @param {number} config.finalizationPeriodSeconds - Challenge period in seconds
+ * @param {string} config.parentChainExplorer - Parent chain explorer URL
+ * @returns {Promise<object>} - The created OP config
+ */
+router.post('/:id/opConfig', authMiddleware, async (req, res, next) => {
+    const data = { ...req.query, ...req.params };
+
+    try {
+        const currentConfig = await db.getOpConfig(req.body.data.user.id, data.id);
+        if (currentConfig)
+            return managedError(new Error('There is already an OP config for this explorer.'), req, res);
+
+        if (!req.body.params.config.parentChainId)
+            return managedError(new Error('Parent chain ID is required.'), req, res);
+
+        if (!req.body.params.config.batchInboxAddress)
+            return managedError(new Error('Batch inbox address is required.'), req, res);
+
+        if (!req.body.params.config.optimismPortalAddress)
+            return managedError(new Error('Optimism portal address is required.'), req, res);
+
+        let config;
+        try {
+            config = await db.createOpConfig(req.body.data.user.id, data.id, {
+                ...req.body.params.config,
+                parentChainId: parseInt(req.body.params.config.parentChainId)
+            });
+        } catch(error) {
+            return managedError(error, req, res);
+        }
+
+        res.status(200).json({ config });
+    } catch (error) {
+        unmanagedError(error, req, res);
+    }
+});
+
 router.post('/:id/v2_dexes', authMiddleware, async (req, res, next) => {
     const data = req.body.data;
 

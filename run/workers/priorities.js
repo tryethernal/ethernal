@@ -11,7 +11,9 @@ const priorities = {
         'finalizePendingOrbitBatches',
         'checkOrbitMessageDeliveredLogs',
         'backfillOrbitMessageDeliveredLogs',
-        'storeOrbitDeposit'
+        'storeOrbitDeposit',
+        'finalizePendingOpOutputs',
+        'linkOpDepositsToL2Txs'
     ],
     'medium': [
         'processContract',

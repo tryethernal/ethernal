@@ -1,5 +1,5 @@
 const { ProviderConnector } = require('../lib/rpc');
-const { Workspace, Explorer, StripeSubscription, Transaction, TransactionReceipt, RpcHealthCheck, OrbitChainConfig } = require('../models');
+const { Workspace, Explorer, StripeSubscription, Transaction, TransactionReceipt, RpcHealthCheck, OrbitChainConfig, OpChainConfig } = require('../models');
 const { processRawRpcObject } = require('../lib/utils');
 const { enqueue } = require('../lib/queue');
 const RateLimiter = require('../lib/rateLimiter');
@@ -39,6 +39,14 @@ module.exports = async job => {
                 {
                     model: OrbitChainConfig,
                     as: 'orbitConfig'
+                },
+                {
+                    model: OpChainConfig,
+                    as: 'opChildConfigs'
+                },
+                {
+                    model: OpChainConfig,
+                    as: 'opConfig'
                 }
             ]
         },

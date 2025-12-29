@@ -1,0 +1,167 @@
+'use strict';
+const { Model } = require('sequelize');
+
+module.exports = (sequelize, DataTypes) => {
+  class OpChainConfig extends Model {
+    static associate(models) {
+      OpChainConfig.belongsTo(models.Workspace, {
+        foreignKey: 'workspaceId',
+        as: 'workspace'
+      });
+      OpChainConfig.belongsTo(models.Workspace, {
+        foreignKey: 'parentWorkspaceId',
+        as: 'parentWorkspace'
+      });
+    }
+
+    async safeUpdate(params) {
+      const allowedParams = [
+        'batchInboxAddress',
+        'optimismPortalAddress',
+        'l2OutputOracleAddress',
+        'disputeGameFactoryAddress',
+        'systemConfigAddress',
+        'l2ToL1MessagePasserAddress',
+        'outputVersion',
+        'submissionInterval',
+        'finalizationPeriodSeconds',
+        'parentChainExplorer'
+      ];
+
+      const supportedParentChains = await sequelize.models.Workspace.getAvailableTopOpParent();
+      const supportedParentChainIds = supportedParentChains.map(chain => chain.networkId);
+      if (!supportedParentChainIds.includes(params.parentChainId)) {
+        throw new Error(`Parent chain network is not supported yet. Available networks: ${supportedParentChainIds.join(', ')}`);
+      }
+
+      const filteredParams = {};
+      for (const [key, value] of Object.entries(params)) {
+        if (allowedParams.includes(key)) {
+          filteredParams[key] = value;
+        }
+      }
+
+      return this.update({
+        ...filteredParams,
+        parentWorkspaceId: supportedParentChains.find(chain => chain.networkId === params.parentChainId).id
+      });
+    }
+  }
+
+  OpChainConfig.init({
+    workspaceId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      unique: true
+    },
+    parentWorkspaceId: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    parentChainId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        min: 1
+      }
+    },
+    batchInboxAddress: {
+      type: DataTypes.STRING(42),
+      allowNull: false,
+      validate: {
+        isEthereumAddress(value) {
+          if (!/^0x[a-fA-F0-9]{40}$/.test(value)) {
+            throw new Error('Batch inbox address must be a valid Ethereum address');
+          }
+        }
+      }
+    },
+    optimismPortalAddress: {
+      type: DataTypes.STRING(42),
+      allowNull: false,
+      validate: {
+        isEthereumAddress(value) {
+          if (!/^0x[a-fA-F0-9]{40}$/.test(value)) {
+            throw new Error('Optimism portal address must be a valid Ethereum address');
+          }
+        }
+      }
+    },
+    l2OutputOracleAddress: {
+      type: DataTypes.STRING(42),
+      allowNull: true,
+      validate: {
+        isEthereumAddress(value) {
+          if (value && !/^0x[a-fA-F0-9]{40}$/.test(value)) {
+            throw new Error('L2 output oracle address must be a valid Ethereum address');
+          }
+        }
+      }
+    },
+    disputeGameFactoryAddress: {
+      type: DataTypes.STRING(42),
+      allowNull: true,
+      validate: {
+        isEthereumAddress(value) {
+          if (value && !/^0x[a-fA-F0-9]{40}$/.test(value)) {
+            throw new Error('Dispute game factory address must be a valid Ethereum address');
+          }
+        }
+      }
+    },
+    systemConfigAddress: {
+      type: DataTypes.STRING(42),
+      allowNull: true,
+      validate: {
+        isEthereumAddress(value) {
+          if (value && !/^0x[a-fA-F0-9]{40}$/.test(value)) {
+            throw new Error('System config address must be a valid Ethereum address');
+          }
+        }
+      }
+    },
+    l2ToL1MessagePasserAddress: {
+      type: DataTypes.STRING(42),
+      allowNull: false,
+      defaultValue: '0x4200000000000000000000000000000000000016',
+      validate: {
+        isEthereumAddress(value) {
+          if (!/^0x[a-fA-F0-9]{40}$/.test(value)) {
+            throw new Error('L2ToL1MessagePasser address must be a valid Ethereum address');
+          }
+        }
+      }
+    },
+    outputVersion: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+      validate: {
+        isIn: [[0, 1]]
+      },
+      comment: '0 = legacy (L2OutputOracle), 1 = fault proofs (DisputeGameFactory)'
+    },
+    submissionInterval: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      comment: 'Blocks between output submissions'
+    },
+    finalizationPeriodSeconds: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 604800,
+      comment: 'Challenge period in seconds (default: 7 days)'
+    },
+    parentChainExplorer: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: 'https://etherscan.io'
+    }
+  }, {
+    sequelize,
+    modelName: 'OpChainConfig',
+    tableName: 'op_chain_configs'
+  });
+
+  return OpChainConfig;
+};

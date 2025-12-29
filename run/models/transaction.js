@@ -13,6 +13,9 @@ const moment = require('moment');
 const { isOrbitNodeCreatedLog, isOrbitNodeConfirmedLog, isOrbitNodeRejectedLog, getOrbitCreatedNodeData, getOrbitConfirmedNodeData } = require('../lib/orbitNodes');
 const { isOrbitBatchDeliveredLog, getOrbitBatchDeliveredData } = require('../lib/orbitBatches');
 const { isWithdrawalLog, getWithdrawalData, isOutboxTransactionExecutedLog, getOutboxTransactionExecutedData, getWithdrawalTokenInfo } = require('../lib/orbitWithdrawals');
+const { isTransactionDepositedLog, getTransactionDepositedData, deriveL2TransactionHash } = require('../lib/opDeposits');
+const { isOutputProposedLog, isDisputeGameCreatedLog, getOutputProposedData, getDisputeGameCreatedData, calculateChallengePeriodEnd } = require('../lib/opOutputs');
+const { isMessagePassedLog, isWithdrawalProvenLog, isWithdrawalFinalizedLog, getMessagePassedData, getWithdrawalProvenData, getWithdrawalFinalizedData, L2_TO_L1_MESSAGE_PASSER_ADDRESS } = require('../lib/opWithdrawals');
 
 module.exports = (sequelize, DataTypes) => {
   class Transaction extends Model {
@@ -414,6 +417,214 @@ module.exports = (sequelize, DataTypes) => {
                             }
                             else if (isOrbitNodeRejectedLog(log)) {
                                 console.log('Node rejected', log);
+                            }
+                        }
+                    }
+                }
+
+                // OP Stack L1 event processing (when this L1 workspace has OP L2 children)
+                for (const opChildConfig of receipt.workspace.opChildConfigs || []) {
+                    // Detect deposits (TransactionDeposited events on OptimismPortal)
+                    if (opChildConfig.optimismPortalAddress && this.to?.toLowerCase() === opChildConfig.optimismPortalAddress.toLowerCase()) {
+                        for (const log of storedLogs) {
+                            if (isTransactionDepositedLog(log)) {
+                                try {
+                                    const depositData = getTransactionDepositedData(log);
+                                    const l2TxHash = deriveL2TransactionHash({
+                                        l1BlockNumber: receipt.blockNumber,
+                                        l1TransactionHash: this.hash,
+                                        logIndex: log.logIndex
+                                    });
+
+                                    await sequelize.models.OpDeposit.bulkCreate([{
+                                        workspaceId: opChildConfig.workspaceId,
+                                        l1BlockNumber: receipt.blockNumber,
+                                        l1TransactionHash: this.hash,
+                                        l1TransactionId: this.id,
+                                        l2TransactionHash: l2TxHash,
+                                        from: depositData.from,
+                                        to: depositData.to,
+                                        value: depositData.value,
+                                        gasLimit: depositData.gasLimit,
+                                        data: depositData.data,
+                                        isCreation: depositData.isCreation,
+                                        status: 'pending'
+                                    }], {
+                                        ignoreDuplicates: true,
+                                        returning: true,
+                                        transaction
+                                    });
+
+                                    logger.info(`Created OP deposit for L2 workspace ${opChildConfig.workspaceId} from L1 tx ${this.hash}`);
+                                } catch (error) {
+                                    logger.error(`Error processing OP deposit: ${error.message}`, { location: 'models.transaction.safeCreateReceipt.opDeposit', error });
+                                }
+                            }
+
+                            // Detect withdrawal proofs
+                            if (isWithdrawalProvenLog(log)) {
+                                try {
+                                    const provenData = getWithdrawalProvenData(log);
+                                    const withdrawal = await sequelize.models.OpWithdrawal.findOne({
+                                        where: {
+                                            workspaceId: opChildConfig.workspaceId,
+                                            withdrawalHash: provenData.withdrawalHash
+                                        }
+                                    });
+
+                                    if (withdrawal) {
+                                        await withdrawal.update({
+                                            status: 'proven',
+                                            l1ProofTransactionHash: this.hash,
+                                            provenAt: new Date()
+                                        }, { transaction });
+                                        logger.info(`OP withdrawal ${provenData.withdrawalHash} proven in tx ${this.hash}`);
+                                    }
+                                } catch (error) {
+                                    logger.error(`Error processing OP withdrawal proof: ${error.message}`, { location: 'models.transaction.safeCreateReceipt.opWithdrawalProven', error });
+                                }
+                            }
+
+                            // Detect withdrawal finalizations
+                            if (isWithdrawalFinalizedLog(log)) {
+                                try {
+                                    const finalizedData = getWithdrawalFinalizedData(log);
+                                    const withdrawal = await sequelize.models.OpWithdrawal.findOne({
+                                        where: {
+                                            workspaceId: opChildConfig.workspaceId,
+                                            withdrawalHash: finalizedData.withdrawalHash
+                                        }
+                                    });
+
+                                    if (withdrawal) {
+                                        await withdrawal.update({
+                                            status: 'finalized',
+                                            l1FinalizeTransactionHash: this.hash,
+                                            finalizedAt: new Date()
+                                        }, { transaction });
+                                        logger.info(`OP withdrawal ${finalizedData.withdrawalHash} finalized in tx ${this.hash}`);
+                                    }
+                                } catch (error) {
+                                    logger.error(`Error processing OP withdrawal finalization: ${error.message}`, { location: 'models.transaction.safeCreateReceipt.opWithdrawalFinalized', error });
+                                }
+                            }
+                        }
+                    }
+
+                    // Detect output proposals (L2OutputOracle - legacy)
+                    if (opChildConfig.l2OutputOracleAddress && this.to?.toLowerCase() === opChildConfig.l2OutputOracleAddress.toLowerCase()) {
+                        for (const log of storedLogs) {
+                            if (isOutputProposedLog(log)) {
+                                try {
+                                    const outputData = getOutputProposedData(log);
+                                    const challengePeriodEnds = calculateChallengePeriodEnd(
+                                        parseInt(outputData.l1Timestamp),
+                                        opChildConfig.challengePeriodSeconds || 604800
+                                    );
+
+                                    await sequelize.models.OpOutput.bulkCreate([{
+                                        workspaceId: opChildConfig.workspaceId,
+                                        outputIndex: parseInt(outputData.l2OutputIndex),
+                                        outputRoot: outputData.outputRoot,
+                                        l2BlockNumber: parseInt(outputData.l2BlockNumber),
+                                        l1BlockNumber: receipt.blockNumber,
+                                        l1TransactionHash: this.hash,
+                                        l1TransactionId: this.id,
+                                        proposer: this.from,
+                                        timestamp: new Date(parseInt(outputData.l1Timestamp) * 1000),
+                                        challengePeriodEnds: new Date(challengePeriodEnds * 1000),
+                                        status: 'proposed'
+                                    }], {
+                                        ignoreDuplicates: true,
+                                        returning: true,
+                                        transaction
+                                    });
+
+                                    logger.info(`Created OP output ${outputData.l2OutputIndex} for L2 workspace ${opChildConfig.workspaceId}`);
+                                } catch (error) {
+                                    logger.error(`Error processing OP output proposal: ${error.message}`, { location: 'models.transaction.safeCreateReceipt.opOutput', error });
+                                }
+                            }
+                        }
+                    }
+
+                    // Detect dispute game creation (DisputeGameFactory - modern/fault proofs)
+                    if (opChildConfig.disputeGameFactoryAddress && this.to?.toLowerCase() === opChildConfig.disputeGameFactoryAddress.toLowerCase()) {
+                        for (const log of storedLogs) {
+                            if (isDisputeGameCreatedLog(log)) {
+                                try {
+                                    const gameData = getDisputeGameCreatedData(log);
+                                    const lastOutput = await sequelize.models.OpOutput.findOne({
+                                        where: { workspaceId: opChildConfig.workspaceId },
+                                        order: [['outputIndex', 'DESC']]
+                                    });
+                                    const nextOutputIndex = lastOutput ? lastOutput.outputIndex + 1 : 0;
+
+                                    const challengePeriodEnds = calculateChallengePeriodEnd(
+                                        Math.floor(Date.now() / 1000),
+                                        opChildConfig.challengePeriodSeconds || 604800
+                                    );
+
+                                    await sequelize.models.OpOutput.bulkCreate([{
+                                        workspaceId: opChildConfig.workspaceId,
+                                        outputIndex: nextOutputIndex,
+                                        outputRoot: gameData.rootClaim,
+                                        l1BlockNumber: receipt.blockNumber,
+                                        l1TransactionHash: this.hash,
+                                        l1TransactionId: this.id,
+                                        proposer: this.from,
+                                        timestamp: new Date(),
+                                        challengePeriodEnds: new Date(challengePeriodEnds * 1000),
+                                        disputeGameAddress: gameData.disputeProxy,
+                                        gameType: gameData.gameType,
+                                        status: 'proposed'
+                                    }], {
+                                        ignoreDuplicates: true,
+                                        returning: true,
+                                        transaction
+                                    });
+
+                                    logger.info(`Created OP dispute game output for L2 workspace ${opChildConfig.workspaceId}`);
+                                } catch (error) {
+                                    logger.error(`Error processing OP dispute game: ${error.message}`, { location: 'models.transaction.safeCreateReceipt.opDisputeGame', error });
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // OP Stack L2 event processing (when this L2 workspace has an OP config)
+                if (receipt.workspace.opConfig) {
+                    // Detect withdrawal initiations (MessagePassed on L2ToL1MessagePasser)
+                    if (this.to?.toLowerCase() === L2_TO_L1_MESSAGE_PASSER_ADDRESS.toLowerCase()) {
+                        for (const log of storedLogs) {
+                            if (isMessagePassedLog(log)) {
+                                try {
+                                    const withdrawalData = getMessagePassedData(log);
+
+                                    await sequelize.models.OpWithdrawal.bulkCreate([{
+                                        workspaceId: receipt.workspace.id,
+                                        withdrawalHash: withdrawalData.withdrawalHash,
+                                        nonce: withdrawalData.nonce,
+                                        l2BlockNumber: receipt.blockNumber,
+                                        l2TransactionHash: this.hash,
+                                        l2TransactionId: this.id,
+                                        sender: withdrawalData.sender,
+                                        target: withdrawalData.target,
+                                        value: withdrawalData.value,
+                                        gasLimit: withdrawalData.gasLimit,
+                                        data: withdrawalData.data,
+                                        status: 'initiated'
+                                    }], {
+                                        ignoreDuplicates: true,
+                                        returning: true,
+                                        transaction
+                                    });
+
+                                    logger.info(`Created OP withdrawal ${withdrawalData.withdrawalHash} from L2 tx ${this.hash}`);
+                                } catch (error) {
+                                    logger.error(`Error processing OP withdrawal initiation: ${error.message}`, { location: 'models.transaction.safeCreateReceipt.opWithdrawal', error });
+                                }
                             }
                         }
                     }

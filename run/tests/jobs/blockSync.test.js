@@ -4,7 +4,7 @@ require('../mocks/lib/queue');
 require('../mocks/lib/firebase');
 require('../mocks/lib/transactions');
 require('../mocks/lib/logger');
-const { Workspace, OrbitChainConfig } = require('../mocks/models');
+const { Workspace, OrbitChainConfig, OpChainConfig } = require('../mocks/models');
 
 const db = require('../../lib/firebase');
 const { enqueue, bulkEnqueue } = require('../../lib/queue');
@@ -17,6 +17,8 @@ beforeEach(() => {
     jest.clearAllMocks();
     // Mock OrbitChainConfig.findAll for all tests
     jest.spyOn(OrbitChainConfig, 'findAll').mockResolvedValue([]);
+    // Mock OpChainConfig.findAll for all tests
+    jest.spyOn(OpChainConfig, 'findAll').mockResolvedValue([]);
 });
 
 describe('blockSync', () => {

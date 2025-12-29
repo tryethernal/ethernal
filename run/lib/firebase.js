@@ -37,6 +37,11 @@ const OrbitBatch = models.OrbitBatch;
 const OrbitChainConfig = models.OrbitChainConfig;
 const OrbitWithdrawal = models.OrbitWithdrawal;
 const OrbitDeposit = models.OrbitDeposit;
+const OpBatch = models.OpBatch;
+const OpChainConfig = models.OpChainConfig;
+const OpOutput = models.OpOutput;
+const OpDeposit = models.OpDeposit;
+const OpWithdrawal = models.OpWithdrawal;
 
 /**
  * Creates an orbit config for an explorer
@@ -134,6 +139,104 @@ const getOrbitConfig = async (userId, explorerId) => {
         return null
 
     return explorer.workspace.orbitConfig;
+}
+
+/**
+ * Creates an OP Stack config for an explorer
+ * @param {string} userId - The user id
+ * @param {string} explorerId - The explorer id
+ * @param {Object} params - The parameters to create
+ * @returns {Promise<Object>} - The created OP config
+ */
+const createOpConfig = async (userId, explorerId, params) => {
+    if (!userId || !explorerId || !params)
+        throw new Error('Missing parameter');
+
+    const explorer = await Explorer.findOne({
+        where: {
+            id: explorerId,
+            '$workspace.userId$': userId
+        },
+        include: {
+            model: Workspace,
+            as: 'workspace',
+            include: {
+                model: OpChainConfig,
+                as: 'opConfig'
+            }
+        }
+    });
+
+    if (!explorer)
+        throw new Error('Could not find explorer');
+
+    if (explorer.workspace.opConfig)
+        throw new Error('OP config already exists');
+
+    return explorer.workspace.safeCreateOpConfig(params);
+}
+
+/**
+ * Updates an existing OP Stack config for an explorer
+ * @param {string} userId - The user id
+ * @param {string} explorerId - The explorer id
+ * @param {Object} params - The parameters to update
+ * @returns {Promise<Object>} - The updated OP config
+ */
+const updateOpConfig = async (userId, explorerId, params) => {
+    if (!userId || !explorerId || !params)
+        throw new Error('Missing parameter');
+
+    const config = await OpChainConfig.findOne({
+        where: {
+            '$workspace.userId$': userId,
+            '$workspace.explorer.id$': explorerId
+        },
+        include: {
+            model: Workspace,
+            as: 'workspace',
+            include: {
+                model: Explorer,
+                as: 'explorer'
+            }
+        }
+    });
+
+    if (!config)
+        throw new Error('Could not find OP config');
+
+    return config.safeUpdate(params);
+};
+
+/**
+ * Retrieves an OP Stack config for an explorer
+ * @param {string} userId - The user id
+ * @param {string} explorerId - The explorer id
+ * @returns {Promise<Object>} - The OP config
+ */
+const getOpConfig = async (userId, explorerId) => {
+    if (!userId || !explorerId)
+        throw new Error('Missing parameter');
+
+    const explorer = await Explorer.findOne({
+        where: {
+            id: explorerId,
+            '$workspace.userId$': userId
+        },
+        include: {
+            model: Workspace,
+            as: 'workspace',
+            include: {
+                model: OpChainConfig,
+                as: 'opConfig'
+            }
+        }
+    });
+
+    if (!explorer || !explorer.workspace.opConfig)
+        return null
+
+    return explorer.workspace.opConfig;
 }
 
 /**
@@ -373,12 +476,280 @@ const getOrbitBatch = async (workspaceId, batchNumber) => {
 const getWorkspaceOrbitBatches = async (workspaceId, page, itemsPerPage, order) => {
     if (!workspaceId)
         throw new Error('Missing parameter');
-    
+
     const workspace = await Workspace.findByPk(workspaceId);
     if (!workspace)
         throw new Error('Could not find workspace');
 
     return workspace.getFilteredOrbitBatches(page, itemsPerPage, order);
+};
+
+// OP Stack Functions
+
+/**
+ * Retrieves a list of OP batches for a workspace
+ * @param {string} workspaceId - The workspace id
+ * @param {number} page - The page number
+ * @param {number} itemsPerPage - The number of items per page
+ * @param {string} order - The order to sort by
+ * @returns {Promise<Array>} - A list of OP batches
+ */
+const getWorkspaceOpBatches = async (workspaceId, page, itemsPerPage, order) => {
+    if (!workspaceId)
+        throw new Error('Missing parameter');
+
+    const sanitizedOrder = order === 'ASC' ? 'ASC' : 'DESC';
+    return OpBatch.findAndCountAll({
+        where: { workspaceId },
+        order: [['batchIndex', sanitizedOrder]],
+        limit: parseInt(itemsPerPage) || 10,
+        offset: ((parseInt(page) || 1) - 1) * (parseInt(itemsPerPage) || 10)
+    });
+};
+
+/**
+ * Retrieves an OP batch by its index for a workspace
+ * @param {string} workspaceId - The workspace id
+ * @param {number} batchIndex - The batch index
+ * @returns {Promise<Object>} - The OP batch
+ */
+const getOpBatch = async (workspaceId, batchIndex) => {
+    if (!workspaceId || batchIndex === undefined)
+        throw new Error('Missing parameter');
+
+    const batch = await OpBatch.findOne({
+        where: {
+            workspaceId,
+            batchIndex: parseInt(batchIndex)
+        }
+    });
+
+    if (!batch)
+        throw new Error('Could not find batch');
+
+    return batch.toJSON();
+};
+
+/**
+ * Retrieves L2 transactions for a specific OP batch
+ * @param {string} workspaceId - The workspace id
+ * @param {number} batchIndex - The batch index
+ * @param {number} page - The page number
+ * @param {number} itemsPerPage - The number of items per page
+ * @param {string} order - The order to sort by
+ * @returns {Promise<Object>} - List of transactions and total count
+ */
+const getOpBatchTransactions = async (workspaceId, batchIndex, page, itemsPerPage, order) => {
+    if (!workspaceId || batchIndex === undefined)
+        throw new Error('Missing parameter');
+
+    const batch = await OpBatch.findOne({
+        where: {
+            workspaceId,
+            batchIndex: parseInt(batchIndex)
+        }
+    });
+
+    if (!batch)
+        throw new Error('Could not find batch');
+
+    // If batch has L2 block range, query transactions in that range
+    if (batch.l2BlockStart !== null && batch.l2BlockEnd !== null) {
+        const sanitizedOrder = order === 'ASC' ? 'ASC' : 'DESC';
+        const result = await Transaction.findAndCountAll({
+            where: {
+                workspaceId,
+                blockNumber: {
+                    [Op.between]: [batch.l2BlockStart, batch.l2BlockEnd]
+                }
+            },
+            order: [['blockNumber', sanitizedOrder], ['transactionIndex', sanitizedOrder]],
+            limit: parseInt(itemsPerPage) || 10,
+            offset: ((parseInt(page) || 1) - 1) * (parseInt(itemsPerPage) || 10)
+        });
+        return { total: result.count, items: result.rows };
+    }
+
+    // Otherwise return empty result (batch blocks not yet linked)
+    return { total: 0, items: [] };
+};
+
+/**
+ * Retrieves a list of OP outputs for a workspace
+ * @param {string} workspaceId - The workspace id
+ * @param {number} page - The page number
+ * @param {number} itemsPerPage - The number of items per page
+ * @param {string} order - The order to sort by
+ * @returns {Promise<Array>} - A list of OP outputs
+ */
+const getWorkspaceOpOutputs = async (workspaceId, page, itemsPerPage, order) => {
+    if (!workspaceId)
+        throw new Error('Missing parameter');
+
+    const sanitizedOrder = order === 'ASC' ? 'ASC' : 'DESC';
+    return OpOutput.findAndCountAll({
+        where: { workspaceId },
+        order: [['outputIndex', sanitizedOrder]],
+        limit: parseInt(itemsPerPage) || 10,
+        offset: ((parseInt(page) || 1) - 1) * (parseInt(itemsPerPage) || 10)
+    });
+};
+
+/**
+ * Retrieves an OP output by its index for a workspace
+ * @param {string} workspaceId - The workspace id
+ * @param {number} outputIndex - The output index
+ * @returns {Promise<Object>} - The OP output
+ */
+const getOpOutput = async (workspaceId, outputIndex) => {
+    if (!workspaceId || outputIndex === undefined)
+        throw new Error('Missing parameter');
+
+    const output = await OpOutput.findOne({
+        where: {
+            workspaceId,
+            outputIndex: parseInt(outputIndex)
+        }
+    });
+
+    if (!output)
+        throw new Error('Could not find output');
+
+    return output.toJSON();
+};
+
+/**
+ * Retrieves a list of OP deposits for a workspace
+ * @param {string} workspaceId - The workspace id
+ * @param {number} page - The page number
+ * @param {number} itemsPerPage - The number of items per page
+ * @param {string} order - The order to sort by
+ * @returns {Promise<Array>} - A list of OP deposits
+ */
+const getWorkspaceOpDeposits = async (workspaceId, page, itemsPerPage, order) => {
+    if (!workspaceId)
+        throw new Error('Missing parameter');
+
+    const sanitizedOrder = order === 'ASC' ? 'ASC' : 'DESC';
+    return OpDeposit.findAndCountAll({
+        where: { workspaceId },
+        order: [['l1BlockNumber', sanitizedOrder]],
+        limit: parseInt(itemsPerPage) || 10,
+        offset: ((parseInt(page) || 1) - 1) * (parseInt(itemsPerPage) || 10)
+    });
+};
+
+/**
+ * Retrieves an OP deposit by L1 transaction hash
+ * @param {string} workspaceId - The workspace id
+ * @param {string} hash - The L1 transaction hash
+ * @returns {Promise<Object>} - The OP deposit
+ */
+const getOpDepositByL1Hash = async (workspaceId, hash) => {
+    if (!workspaceId || !hash)
+        throw new Error('Missing parameter');
+
+    const deposit = await OpDeposit.findOne({
+        where: {
+            workspaceId,
+            l1TransactionHash: hash.toLowerCase()
+        }
+    });
+
+    if (!deposit)
+        throw new Error('Could not find deposit');
+
+    return deposit.toJSON();
+};
+
+/**
+ * Retrieves a list of OP withdrawals for a workspace
+ * @param {string} workspaceId - The workspace id
+ * @param {number} page - The page number
+ * @param {number} itemsPerPage - The number of items per page
+ * @param {string} order - The order to sort by
+ * @returns {Promise<Array>} - A list of OP withdrawals
+ */
+const getWorkspaceOpWithdrawals = async (workspaceId, page, itemsPerPage, order) => {
+    if (!workspaceId)
+        throw new Error('Missing parameter');
+
+    const sanitizedOrder = order === 'ASC' ? 'ASC' : 'DESC';
+    return OpWithdrawal.findAndCountAll({
+        where: { workspaceId },
+        order: [['l2BlockNumber', sanitizedOrder]],
+        limit: parseInt(itemsPerPage) || 10,
+        offset: ((parseInt(page) || 1) - 1) * (parseInt(itemsPerPage) || 10)
+    });
+};
+
+/**
+ * Retrieves an OP withdrawal by L2 transaction hash
+ * @param {string} workspaceId - The workspace id
+ * @param {string} hash - The L2 transaction hash
+ * @returns {Promise<Object>} - The OP withdrawal
+ */
+const getOpWithdrawalByL2Hash = async (workspaceId, hash) => {
+    if (!workspaceId || !hash)
+        throw new Error('Missing parameter');
+
+    const withdrawal = await OpWithdrawal.findOne({
+        where: {
+            workspaceId,
+            l2TransactionHash: hash.toLowerCase()
+        }
+    });
+
+    if (!withdrawal)
+        throw new Error('Could not find withdrawal');
+
+    return withdrawal.toJSON();
+};
+
+/**
+ * Retrieves proof data for an OP withdrawal (for proving on L1)
+ * @param {string} workspaceId - The workspace id
+ * @param {string} hash - The L2 transaction hash
+ * @returns {Promise<Object>} - The withdrawal proof data
+ */
+const getOpWithdrawalProof = async (workspaceId, hash) => {
+    if (!workspaceId || !hash)
+        throw new Error('Missing parameter');
+
+    const withdrawal = await OpWithdrawal.findOne({
+        where: {
+            workspaceId,
+            l2TransactionHash: hash.toLowerCase()
+        },
+        include: [
+            {
+                model: Transaction,
+                as: 'l2Transaction',
+                include: [
+                    {
+                        model: TransactionReceipt,
+                        as: 'receipt'
+                    }
+                ]
+            }
+        ]
+    });
+
+    if (!withdrawal)
+        throw new Error('Could not find withdrawal');
+
+    // Return withdrawal data needed for proving
+    return {
+        withdrawalHash: withdrawal.withdrawalHash,
+        nonce: withdrawal.nonce,
+        sender: withdrawal.sender,
+        target: withdrawal.target,
+        value: withdrawal.value,
+        gasLimit: withdrawal.gasLimit,
+        data: withdrawal.data,
+        l2BlockNumber: withdrawal.l2BlockNumber,
+        status: withdrawal.status
+    };
 };
 
 /**
@@ -3522,5 +3893,18 @@ module.exports = {
     getWorkspaceOrbitDeposits: getWorkspaceOrbitDeposits,
     updateOrbitConfig: updateOrbitConfig,
     getOrbitConfig: getOrbitConfig,
-    createOrbitConfig: createOrbitConfig
+    createOrbitConfig: createOrbitConfig,
+    updateOpConfig: updateOpConfig,
+    getOpConfig: getOpConfig,
+    createOpConfig: createOpConfig,
+    getWorkspaceOpBatches: getWorkspaceOpBatches,
+    getOpBatch: getOpBatch,
+    getOpBatchTransactions: getOpBatchTransactions,
+    getWorkspaceOpOutputs: getWorkspaceOpOutputs,
+    getOpOutput: getOpOutput,
+    getWorkspaceOpDeposits: getWorkspaceOpDeposits,
+    getOpDepositByL1Hash: getOpDepositByL1Hash,
+    getWorkspaceOpWithdrawals: getWorkspaceOpWithdrawals,
+    getOpWithdrawalByL2Hash: getOpWithdrawalByL2Hash,
+    getOpWithdrawalProof: getOpWithdrawalProof
 };

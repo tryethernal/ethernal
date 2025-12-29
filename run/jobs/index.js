@@ -13,6 +13,8 @@ module.exports = {
     checkOrbitMessageDeliveredLogs: require('./checkOrbitMessageDeliveredLogs'),
     backfillOrbitMessageDeliveredLogs: require('./backfillOrbitMessageDeliveredLogs'),
     storeOrbitDeposit: require('./storeOrbitDeposit'),
+    finalizePendingOpOutputs: require('./finalizePendingOpOutputs'),
+    linkOpDepositsToL2Txs: require('./linkOpDepositsToL2Txs'),
 
     // Medium Priority
     processContract: require('./processContract'),

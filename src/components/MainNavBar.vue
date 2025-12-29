@@ -54,6 +54,18 @@
                         </template>
                     </v-list-item>
 
+                    <v-list-item v-if="currentWorkspaceStore.opConfig" :to="'/op/deposits'" title="OP Deposits" :color="route.path === '/op/deposits' ? 'primary' : undefined">
+                        <template v-slot:title>
+                            <span class="text-body-2">OP Deposits (L1→L2)</span>
+                        </template>
+                    </v-list-item>
+
+                    <v-list-item v-if="currentWorkspaceStore.opConfig" :to="'/op/withdrawals'" title="OP Withdrawals" :color="route.path === '/op/withdrawals' ? 'primary' : undefined">
+                        <template v-slot:title>
+                            <span class="text-body-2">OP Withdrawals (L2→L1)</span>
+                        </template>
+                    </v-list-item>
+
                     <v-list-item v-if="currentWorkspaceStore.tracing" :to="'/txsInternal'" title="Internal Transactions" :color="route.path === '/txsInternal' ? 'primary' : undefined">
                         <template v-slot:title>
                             <span class="text-body-2">Internal Transactions</span>
@@ -68,6 +80,18 @@
                     <v-list-item v-if="currentWorkspaceStore.orbitConfig" :to="'/batches'" title="View Batches" :color="route.path === '/batches' ? 'primary' : undefined">
                         <template v-slot:title>
                             <span class="text-body-2">View Batches</span>
+                        </template>
+                    </v-list-item>
+
+                    <v-list-item v-if="currentWorkspaceStore.opConfig" :to="'/op/batches'" title="OP Batches" :color="route.path === '/op/batches' ? 'primary' : undefined">
+                        <template v-slot:title>
+                            <span class="text-body-2">OP Batches</span>
+                        </template>
+                    </v-list-item>
+
+                    <v-list-item v-if="currentWorkspaceStore.opConfig" :to="'/op/outputs'" title="State Outputs" :color="route.path === '/op/outputs' ? 'primary' : undefined">
+                        <template v-slot:title>
+                            <span class="text-body-2">State Outputs</span>
                         </template>
                     </v-list-item>
 
@@ -267,6 +291,18 @@
                                 </template>
                             </v-list-item>
 
+                            <v-list-item v-if="currentWorkspaceStore.opConfig" :to="'/op/deposits'" title="OP Deposits">
+                                <template v-slot:title>
+                                    <span class="text-body-2">OP Deposits (L1→L2)</span>
+                                </template>
+                            </v-list-item>
+
+                            <v-list-item v-if="currentWorkspaceStore.opConfig" :to="'/op/withdrawals'" title="OP Withdrawals">
+                                <template v-slot:title>
+                                    <span class="text-body-2">OP Withdrawals (L2→L1)</span>
+                                </template>
+                            </v-list-item>
+
                             <v-list-item v-if="currentWorkspaceStore.tracing" :to="'/txsInternal'" title="Internal Transactions">
                                 <template v-slot:title>
                                     <span class="text-body-2">Internal Transactions</span>
@@ -283,6 +319,18 @@
                             <v-list-item v-if="currentWorkspaceStore.orbitConfig" :to="'/batches'" title="Batches">
                                 <template v-slot:title>
                                     <span class="text-body-2">View Batches</span>
+                                </template>
+                            </v-list-item>
+
+                            <v-list-item v-if="currentWorkspaceStore.opConfig" :to="'/op/batches'" title="OP Batches">
+                                <template v-slot:title>
+                                    <span class="text-body-2">OP Batches</span>
+                                </template>
+                            </v-list-item>
+
+                            <v-list-item v-if="currentWorkspaceStore.opConfig" :to="'/op/outputs'" title="State Outputs">
+                                <template v-slot:title>
+                                    <span class="text-body-2">State Outputs</span>
                                 </template>
                             </v-list-item>
 
