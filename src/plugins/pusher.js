@@ -1,3 +1,10 @@
+/**
+ * @fileoverview Pusher WebSocket plugin.
+ * Provides $pusher client for real-time updates via Soketi.
+ * Handles subscriptions for blocks, transactions, contracts, and sync events.
+ * @module plugins/pusher
+ */
+
 const Pusher = require('pusher-js');
 import { storeToRefs } from 'pinia';
 import { useEnvStore } from '../stores/env';

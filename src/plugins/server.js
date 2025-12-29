@@ -1,3 +1,10 @@
+/**
+ * @fileoverview Server plugin.
+ * Provides $server API client with all backend communication methods.
+ * Includes RPC utilities, contract interactions, and data fetching.
+ * @module plugins/server
+ */
+
 import { ethers } from 'ethers';
 import { storeToRefs } from 'pinia';
 import { useEnvStore } from '../stores/env';
