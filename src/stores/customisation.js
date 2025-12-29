@@ -1,3 +1,10 @@
+/**
+ * @fileoverview Customisation Pinia store.
+ * Manages white-label customizations loaded from explorer settings.
+ * Supports dynamic package loading and sandboxed function execution.
+ * @module stores/customisation
+ */
+
 import createWorkerBox from 'workerboxjs';
 import { defineStore } from 'pinia';
 
