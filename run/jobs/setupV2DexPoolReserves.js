@@ -1,3 +1,9 @@
+/**
+ * @fileoverview V2 DEX pool reserves setup job.
+ * Processes Sync event logs to track liquidity pool reserves over time.
+ * @module jobs/setupV2DexPoolReserves
+ */
+
 const { getV2PoolReserves } = require('../lib/abi');
 const { Op, literal } = require('sequelize');
 const { ExplorerV2Dex, TransactionLog, V2DexPair, TransactionReceipt, V2DexPoolReserve } = require('../models');

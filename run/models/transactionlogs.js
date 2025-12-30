@@ -1,3 +1,18 @@
+/**
+ * @fileoverview TransactionLog model - stores event logs emitted by transactions.
+ * Each log contains topics, data, and the emitting contract address.
+ *
+ * @module models/TransactionLog
+ *
+ * @property {number} id - Primary key
+ * @property {number} workspaceId - Foreign key to workspace
+ * @property {number} transactionReceiptId - Foreign key to receipt
+ * @property {string} address - Emitting contract address
+ * @property {Array<string>} topics - Log topics (indexed parameters)
+ * @property {string} data - Non-indexed log data
+ * @property {number} logIndex - Index within the transaction
+ */
+
 'use strict';
 const {
   Model,

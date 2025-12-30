@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Contract utilities.
+ * Provides ERC721 metadata formatting and token standard pattern detection.
+ * @module lib/contract
+ */
+
 import * as ethers from 'ethers';
 
 import SELECTORS from '../abis/selectors.json';

@@ -1,3 +1,10 @@
+/**
+ * @fileoverview Contract processing job.
+ * Detects token standards (ERC20/721/1155), fetches Etherscan metadata,
+ * decompiles bytecode, and stores contract data.
+ * @module jobs/processContract
+ */
+
 const axios = require('axios');
 const ethers = require('ethers');
 const { sanitize, withTimeout } = require('../lib/utils');

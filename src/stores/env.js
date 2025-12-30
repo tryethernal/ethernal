@@ -1,3 +1,10 @@
+/**
+ * @fileoverview Environment Pinia store.
+ * Manages environment configuration from Vite environment variables.
+ * Includes Soketi, PostHog, chain configs, and computed domain helpers.
+ * @module stores/env
+ */
+
 import { defineStore } from 'pinia';
 
 import { useUserStore } from './user';

@@ -16,6 +16,11 @@
         </v-row>
     </div>
 </template>
+/**
+ * @fileoverview Account settings page component.
+ * Displays and manages user account information including API token display and copy functionality.
+ * @component Account
+ */
 <script>
 import { mapStores } from 'pinia';
 import { useUserStore } from '@/stores/user';

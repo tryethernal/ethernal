@@ -34,6 +34,15 @@
     </div>
 </template>
 
+/**
+ * @fileoverview Contract read method component.
+ * Displays a single read-only contract method with input fields and query button.
+ * Handles calling view/pure functions and displaying results.
+ * @component ContractReadMethod
+ *
+ * @prop {Object} method - The ABI method definition with name, inputs, outputs
+ * @prop {Object} contract - The contract data with address and abi
+ */
 <script setup>
 import { ref, computed } from 'vue';
 import { readContract } from '@web3-onboard/wagmi';

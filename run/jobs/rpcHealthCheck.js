@@ -1,8 +1,8 @@
-/*
-    This job queries the RPC regularly to make sure it's up.
-    At the moment, we don't keep the history of healthchecks,
-    we just store the latest state & check timestamp.
-*/
+/**
+ * @fileoverview RPC health check job.
+ * Queries the RPC endpoint to verify reachability and stores status.
+ * @module jobs/rpcHealthCheck
+ */
 
 const models = require('../models');
 const db = require('../lib/firebase');

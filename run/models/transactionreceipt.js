@@ -1,3 +1,18 @@
+/**
+ * @fileoverview TransactionReceipt model - stores transaction execution results.
+ * Contains gas used, status, logs, and contract creation info.
+ *
+ * @module models/TransactionReceipt
+ *
+ * @property {number} id - Primary key
+ * @property {number} workspaceId - Foreign key to workspace
+ * @property {number} transactionId - Foreign key to transaction
+ * @property {string} status - Execution status (0=failed, 1=success)
+ * @property {string} gasUsed - Actual gas consumed
+ * @property {string} contractAddress - Created contract address (if applicable)
+ * @property {string} logsBloom - Bloom filter for logs
+ */
+
 'use strict';
 const {
   Model

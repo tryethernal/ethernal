@@ -1,14 +1,13 @@
-/*
-    This file contains all the methods to interact with
-    models from the API. They check for parameters,
-    make sure the required resources exist and can
-    be accessed by the user.
-    APIs should use methods from this file and not interact
-    with the models directly.
-    Background jobs do not need to use methods here and
-    can interact with the models directly, as they are not
-    exposed to the user.
-*/
+/**
+ * @fileoverview Database access layer for API endpoints.
+ * Provides methods to interact with Sequelize models from the API.
+ * Handles parameter validation, resource access control, and user authorization.
+ *
+ * APIs should use methods from this file and not interact with models directly.
+ * Background jobs can interact with models directly as they are not user-exposed.
+ *
+ * @module lib/firebase
+ */
 const Sequelize = require('sequelize');
 const { getDemoUserId, getMaxBlockForSyncReset } = require('./env');
 const models = require('../models');
@@ -584,15 +583,14 @@ const getTransactionTokenBalanceChanges = async (workspaceId, hash, page, itemsP
     return transaction.getTokenBalanceChanges(page, itemsPerPage);
 };
 
-/*
-    Returns the number of token transfers for an address in a given time range.
-
-    @param {number} workspaceId (mandatory) - The ID of the workspace
-    @param {string} address (mandatory) - The address to get the token transfer history for
-    @param {string} from (mandatory) - The start date
-    @param {string} to (mandatory) - The end date
-    @returns {Array} - The number of token transfers for the address in the given time range
-*/
+/**
+ * Returns the number of token transfers for an address in a given time range.
+ * @param {number} workspaceId - The ID of the workspace
+ * @param {string} address - The address to get the token transfer history for
+ * @param {string} from - The start date
+ * @param {string} to - The end date
+ * @returns {Promise<Array>} The number of token transfers for the address in the given time range
+ */
 const getAddressTokenTransferHistory = async (workspaceId, address, from, to) => {
     if (!workspaceId || !address || !from || !to)
         throw new Error('Missing parameter');
@@ -604,15 +602,14 @@ const getAddressTokenTransferHistory = async (workspaceId, address, from, to) =>
     return workspace.getAddressTokenTransferHistory(address, from, to);
 };
 
-/*
-    Returns the amount of transaction fees spent by an address in a given time range.
-
-    @param {number} workspaceId (mandatory) - The ID of the workspace
-    @param {string} address (mandatory) - The address to get the transaction fees for
-    @param {string} from (mandatory) - The start date
-    @param {string} to (mandatory) - The end date
-    @returns {Array} - The amount of transaction fees spent by the address in the given time range
-*/
+/**
+ * Returns the amount of transaction fees spent by an address in a given time range.
+ * @param {number} workspaceId - The ID of the workspace
+ * @param {string} address - The address to get the transaction fees for
+ * @param {string} from - The start date
+ * @param {string} to - The end date
+ * @returns {Promise<Array>} The amount of transaction fees spent by the address in the given time range
+ */
 const getAddressSpentTransactionFeeHistory = async (workspaceId, address, from, to) => {
     if (!workspaceId || !address || !from || !to)
         throw new Error('Missing parameter');
@@ -624,15 +621,14 @@ const getAddressSpentTransactionFeeHistory = async (workspaceId, address, from, 
     return workspace.getAddressSpentTransactionFeeHistory(address, from, to);
 };
 
-/*
-    Returns the number of transactions for an address in a given time range.
-
-    @param {number} workspaceId (mandatory) - The ID of the workspace
-    @param {string} address (mandatory) - The address to get the number of transactions for
-    @param {string} from (mandatory) - The start date
-    @param {string} to (mandatory) - The end date
-    @returns {Array} - The number of transactions for the address in the given time range
-*/
+/**
+ * Returns the number of transactions for an address in a given time range.
+ * @param {number} workspaceId - The ID of the workspace
+ * @param {string} address - The address to get the number of transactions for
+ * @param {string} from - The start date
+ * @param {string} to - The end date
+ * @returns {Promise<Array>} The number of transactions for the address in the given time range
+ */
 const getAddressTransactionHistory = async (workspaceId, address, from, to) => {
     if (!workspaceId || !address || !from || !to)
         throw new Error('Missing parameter');
@@ -644,13 +640,12 @@ const getAddressTransactionHistory = async (workspaceId, address, from, to) => {
     return workspace.getAddressTransactionHistory(address, from, to);
 };
 
-/*
-    Returns the number of transaction steps for an address.
-
-    @param {number} workspaceId (mandatory) - The ID of the workspace
-    @param {string} address (mandatory) - The address to get the number of transaction steps for
-    @returns {number} - The number of transaction steps for the address
-*/
+/**
+ * Returns the number of transaction steps for an address.
+ * @param {number} workspaceId - The ID of the workspace
+ * @param {string} address - The address to get the number of transaction steps for
+ * @returns {Promise<number>} The number of transaction steps for the address
+ */
 const countAddressTransactionTraceSteps = async (workspaceId, address) => {
     if (!workspaceId || !address)
         throw new Error('Missing parameter');
@@ -662,14 +657,14 @@ const countAddressTransactionTraceSteps = async (workspaceId, address) => {
     return workspace.countAddressTransactionTraceSteps(address);
 };
 
-/*
-    Returns all internal transactions involving an address. 
-
-    @param {number} workspaceId (mandatory) - The ID of the workspace
-    @param {string} address (mandatory) - The address to get the internal transactions for
-    @param {number} page (optional) - The page number
-    @param {number} itemsPerPage (optional) - The number of items per page
-*/
+/**
+ * Returns all internal transactions involving an address.
+ * @param {number} workspaceId - The ID of the workspace
+ * @param {string} address - The address to get the internal transactions for
+ * @param {number} [page] - The page number
+ * @param {number} [itemsPerPage] - The number of items per page
+ * @returns {Promise<Array>} Internal transactions for the address
+ */
 const getAddressTransactionTraceSteps = async (workspaceId, address, page, itemsPerPage) => {
     if (!workspaceId || !address)
         throw new Error('Missing parameter');
@@ -681,12 +676,11 @@ const getAddressTransactionTraceSteps = async (workspaceId, address, page, items
     return workspace.getAddressTransactionTraceSteps(address, page, itemsPerPage);
 };
 
-/*
-    This method is used to get the burnt fees for the last 24 hours for a workspace.
-
-    @param {number} workspaceId - The ID of the workspace
-    @returns {number} - The burnt fees for the last 24 hours
-*/
+/**
+ * Gets the burnt fees for the last 24 hours for a workspace.
+ * @param {number} workspaceId - The ID of the workspace
+ * @returns {Promise<number>} The burnt fees for the last 24 hours
+ */
 const getLast24hBurntFees = async (workspaceId) => {
     const workspace = await Workspace.findByPk(workspaceId);
     if (!workspace)
@@ -695,12 +689,11 @@ const getLast24hBurntFees = async (workspaceId) => {
     return workspace.getLast24hBurntFees();
 };
 
-/*
-    This method is used to get the total gas used for the last 24 hours for a workspace.
-
-    @param {number} workspaceId - The ID of the workspace
-    @returns {number} - The total gas used for the last 24 hours
-*/
+/**
+ * Gets the total gas used for the last 24 hours for a workspace.
+ * @param {number} workspaceId - The ID of the workspace
+ * @returns {Promise<number>} The total gas used for the last 24 hours
+ */
 const getLast24hTotalGasUsed = async (workspaceId) => {
     const workspace = await Workspace.findByPk(workspaceId);
     if (!workspace)
@@ -709,12 +702,11 @@ const getLast24hTotalGasUsed = async (workspaceId) => {
     return workspace.getLast24hTotalGasUsed();
 };
 
-/*
-    This method is used to get the gas utilization ratio for the last 24 hours for a workspace.
-
-    @param {number} workspaceId - The ID of the workspace
-    @returns {number} - The gas utilization ratio for the last 24 hours
-*/
+/**
+ * Gets the gas utilization ratio for the last 24 hours for a workspace.
+ * @param {number} workspaceId - The ID of the workspace
+ * @returns {Promise<number>} The gas utilization ratio for the last 24 hours
+ */
 const getLast24hGasUtilisationRatio = async (workspaceId) => {
     const workspace = await Workspace.findByPk(workspaceId);
     if (!workspace)
@@ -723,12 +715,11 @@ const getLast24hGasUtilisationRatio = async (workspaceId) => {
     return workspace.getLast24hGasUtilisationRatio();
 };
 
-/*
-    This method is used to get the average transaction fee for the last 24 hours for a workspace.
-
-    @param {number} workspaceId - The ID of the workspace
-    @returns {number} - The average transaction fee for the last 24 hours
-*/
+/**
+ * Gets the average transaction fee for the last 24 hours for a workspace.
+ * @param {number} workspaceId - The ID of the workspace
+ * @returns {Promise<number>} The average transaction fee for the last 24 hours
+ */
 const getLast24hAverageTransactionFee = async (workspaceId) => {
     const workspace = await Workspace.findByPk(workspaceId);
     if (!workspace)
@@ -737,12 +728,11 @@ const getLast24hAverageTransactionFee = async (workspaceId) => {
     return workspace.getLast24hAverageTransactionFee();
 };
 
-/*
-    This method is used to get the total transaction fees for the last 24 hours for a workspace.
-
-    @param {number} workspaceId - The ID of the workspace
-    @returns {number} - The total transaction fees for the last 24 hours
-*/
+/**
+ * Gets the total transaction fees for the last 24 hours for a workspace.
+ * @param {number} workspaceId - The ID of the workspace
+ * @returns {Promise<number>} The total transaction fees for the last 24 hours
+ */
 const getLast24hTransactionFees = async (workspaceId) => {
     const workspace = await Workspace.findByPk(workspaceId);
     if (!workspace)
@@ -751,16 +741,13 @@ const getLast24hTransactionFees = async (workspaceId) => {
     return workspace.getLast24hTransactionFees();
 };
 
-/*
-    This method is used to get the total transaction fees for a workspace.
-
-    @param {number} workspaceId - The ID of the workspace
-    @param {string} from - Start day
-    @param {string} to - End day
-    @returns {array} - The transaction fees
-        - day: The day of the transaction fees
-        - transactionFees: The total transaction fees for the day
-*/
+/**
+ * Gets the transaction fee history for a workspace.
+ * @param {number} workspaceId - The ID of the workspace
+ * @param {string} from - Start day
+ * @param {string} to - End day
+ * @returns {Promise<Array>} The transaction fees per day
+ */
 const getTransactionFeeHistory = async (workspaceId, from, to) => {
     if (!workspaceId || !from || !to)
         throw new Error('Missing parameter');
@@ -773,18 +760,12 @@ const getTransactionFeeHistory = async (workspaceId, from, to) => {
 };
 
 /**
-    workspace.replace() is used to replace a workspace.
-    We use this when we want to reset an explorer.
-    Waiting for the data to be deleted can take a long time,
-    so we replace the workspace with a new one, and delete the old one in the background.
-
-    This method safely calls workspace.replace() by making sure
-    the user is the owner of the workspace.
-
-    @param {number} userId - The ID of the user
-    @param {number} workspaceId - The ID of the workspace
-    @returns {object} - The duplicated (new) workspace
-*/
+ * Replaces a workspace with a new one for explorer reset.
+ * Deletes the old workspace in the background.
+ * @param {number} userId - The ID of the user
+ * @param {number} workspaceId - The ID of the workspace
+ * @returns {Promise<Object>} The duplicated (new) workspace
+ */
 const replaceWorkspace = async (userId, workspaceId) => {
     if (!userId || !workspaceId)
         throw new Error('Missing parameter');
@@ -803,15 +784,12 @@ const replaceWorkspace = async (userId, workspaceId) => {
 }
 
 /**
-    This method is used to get the block size history for a workspace.
-
-    @param {number} workspaceId - The ID of the workspace
-    @param {string} from - The start date of the block size history
-    @param {string} to - The end date of the block size history
-    @returns {array} - The block size history
-        - day: The day of the block size history
-        - size: The average block size for the day
-*/
+ * Gets the block size history for a workspace.
+ * @param {number} workspaceId - The ID of the workspace
+ * @param {string} from - The start date
+ * @param {string} to - The end date
+ * @returns {Promise<Array>} The block size history per day
+ */
 const getBlockSizeHistory = async (workspaceId, from, to) => {
     if (!workspaceId || !from || !to)
         throw new Error('Missing parameter');
@@ -823,16 +801,13 @@ const getBlockSizeHistory = async (workspaceId, from, to) => {
     return workspace.getBlockSizeHistory(from, to);
 };
 
-/*
-    This method is used to get the block time history for a workspace.
-
-    @param {number} workspaceId - The ID of the workspace
-    @param {string} from - The start date of the block time history
-    @param {string} to - The end date of the block time history
-    @returns {array} - The block time history
-        - day: The day of the block time history
-        - blockTime: The average block time for the day
-*/
+/**
+ * Gets the block time history for a workspace.
+ * @param {number} workspaceId - The ID of the workspace
+ * @param {string} from - The start date
+ * @param {string} to - The end date
+ * @returns {Promise<Array>} The block time history per day
+ */
 const getBlockTimeHistory = async (workspaceId, from, to) => {
     if (!workspaceId || !from || !to)
         throw new Error('Missing parameter');
@@ -844,19 +819,13 @@ const getBlockTimeHistory = async (workspaceId, from, to) => {
     return workspace.getBlockTimeHistory(from, to);
 };
 
-/*
-    This method is used to get the latest biggest gas spenders for a workspace
-    for a given interval (now - intervalInHours).
-
-    @param {number} workspaceId - The ID of the workspace
-    @param {number} intervalInHours - The interval in hours to get the gas spenders for
-    @param {number} limit - The limit of gas spenders to return
-    @returns {array} - The gas spenders
-        - from: The address of the gas spender
-        - gasUsed: The total gas used by the gas spender
-        - gasCost: Cost of total gas used
-        - percentUsed: The percentage of total gas used by the gas spender
-*/
+/**
+ * Gets the latest biggest gas spenders for a workspace.
+ * @param {number} workspaceId - The ID of the workspace
+ * @param {number} [intervalInHours=24] - The interval in hours
+ * @param {number} [limit=50] - The limit of gas spenders to return
+ * @returns {Promise<Array>} The gas spenders with gasUsed, gasCost, percentUsed
+ */
 const getLatestGasSpenders = async (workspaceId, intervalInHours = 24, limit = 50) => {
     if (!workspaceId)
         throw new Error('Missing parameter');
@@ -868,18 +837,13 @@ const getLatestGasSpenders = async (workspaceId, intervalInHours = 24, limit = 5
     return workspace.getLatestGasSpenders(intervalInHours, limit);
 };
 
-/*
-    This method is used to get the latest biggest gas consumers for a workspace
-    for a given interval (now - intervalInHours).
-
-    @param {number} workspaceId - The ID of the workspace
-    @param {number} intervalInHours - The interval in hours to get the gas consumers for
-    @param {number} limit - The limit of gas consumers to return
-    @returns {array} - The gas consumers
-        - to: The address of the gas consumer
-        - gasUsed: The total gas used by the gas consumer
-        - gasCost: Cost of total gas used
-*/
+/**
+ * Gets the latest biggest gas consumers for a workspace.
+ * @param {number} workspaceId - The ID of the workspace
+ * @param {number} [intervalInHours=24] - The interval in hours
+ * @param {number} [limit=50] - The limit of gas consumers to return
+ * @returns {Promise<Array>} The gas consumers with gasUsed, gasCost
+ */
 const getLatestGasConsumers = async (workspaceId, intervalInHours = 24, limit = 50) => {
     if (!workspaceId)
         throw new Error('Missing parameter');
@@ -891,16 +855,13 @@ const getLatestGasConsumers = async (workspaceId, intervalInHours = 24, limit = 
     return workspace.getLatestGasConsumers(intervalInHours, limit);
 };
 
-/*
-    This method is used to get the gas utilization ratio history for a workspace.
-
-    @param {number} workspaceId - The ID of the workspace
-    @param {string} from - The start date of the gas utilization ratio history
-    @param {string} to - The end date of the gas utilization ratio history
-    @returns {array} - The gas utilization ratio history
-        - day: The day of the gas utilization ratio history
-        - gasUtilizationRatio: The average gas utilization ratio for the day
-*/
+/**
+ * Gets the gas utilization ratio history for a workspace.
+ * @param {number} workspaceId - The ID of the workspace
+ * @param {string} from - The start date
+ * @param {string} to - The end date
+ * @returns {Promise<Array>} The gas utilization ratio history per day
+ */
 const getGasUtilizationRatioHistory = async (workspaceId, from, to) => {
     if (!workspaceId || !from || !to)
         throw new Error('Missing parameter');
@@ -912,16 +873,13 @@ const getGasUtilizationRatioHistory = async (workspaceId, from, to) => {
     return workspace.getGasUtilizationRatioHistory(from, to);
 };
 
-/*
-    This method is used to get the gas limit history for a workspace.
-
-    @param {number} workspaceId - The ID of the workspace
-    @param {string} from - The start date of the gas limit history
-    @param {string} to - The end date of the gas limit history
-    @returns {array} - The gas limit history
-        - day: The day of the gas limit history
-        - gasLimit: The average gas limit for the day
-*/
+/**
+ * Gets the gas limit history for a workspace.
+ * @param {number} workspaceId - The ID of the workspace
+ * @param {string} from - The start date
+ * @param {string} to - The end date
+ * @returns {Promise<Array>} The gas limit history per day
+ */
 const getGasLimitHistory = async (workspaceId, from, to) => {
     if (!workspaceId || !from || !to)
         throw new Error('Missing parameter');
@@ -933,24 +891,13 @@ const getGasLimitHistory = async (workspaceId, from, to) => {
     return workspace.getGasLimitHistory(from, to);
 };
 
-/*
-    This method is used to get the gas price history for a workspace.
-
-    @param {number} workspaceId - The ID of the workspace
-    @param {string} from - The start date of the gas price history
-    @param {string} to - The end date of the gas price history
-    @returns {array} - The gas price history
-        - day: The day of the gas price history
-        - minSlow: The minimum slow gas price
-        - slow: The average slow gas price
-        - maxSlow: The maximum slow gas price
-        - minAverage: The minimum average gas price
-        - average: The average average gas price
-        - maxAverage: The maximum average gas price
-        - minFast: The minimum fast gas price
-        - fast: The average fast gas price
-        - maxFast: The maximum fast gas price
-*/
+/**
+ * Gets the gas price history for a workspace.
+ * @param {number} workspaceId - The ID of the workspace
+ * @param {string} from - The start date
+ * @param {string} to - The end date
+ * @returns {Promise<Array>} The gas price history with slow/average/fast levels
+ */
 const getGasPriceHistory = async (workspaceId, from, to) => {
     if (!workspaceId || !from || !to)
         throw new Error('Missing parameter');
@@ -962,19 +909,12 @@ const getGasPriceHistory = async (workspaceId, from, to) => {
     return workspace.getGasPriceHistory(from, to);
 };
 
-/*
-    This method is used to get the latest gas stats for a workspace.
-
-    @param {number} workspaceId - The ID of the workspace
-    @param {number} intervalInMinutes - The interval in minutes to get the gas stats for
-    @returns {object} - The gas stats object
-        - averageBlockSize: The average block size in transactions
-        - averageUtilization: The average quantity of gas used per block
-        - averageBlockTime: The average block time in seconds
-        - latestBlockNumber: The number of the latest block used for this calculation
-        - baseFeePerGas: The base fee per gas for the latest block
-        - priorityFeePerGas: The three levels of priority fee per gas for the latest block (slow, average, fast)
-*/
+/**
+ * Gets the latest gas stats for a workspace.
+ * @param {number} workspaceId - The ID of the workspace
+ * @param {number} [intervalInMinutes=1] - The interval in minutes
+ * @returns {Promise<Object>} Gas stats with block size, utilization, block time, and fees
+ */
 const getLatestGasStats = async (workspaceId, intervalInMinutes = 1) => {
     const workspace = await Workspace.findByPk(workspaceId);
     if (!workspace)
@@ -983,6 +923,13 @@ const getLatestGasStats = async (workspaceId, intervalInMinutes = 1) => {
     return workspace.getLatestGasStats(intervalInMinutes);
 };
 
+/**
+ * Creates a Stripe subscription for a user.
+ * @param {number} userId - The user ID
+ * @param {Object} stripeSubscription - Stripe subscription object
+ * @param {Object} stripePlan - Stripe plan object
+ * @returns {Promise<StripeSubscription>} The created subscription
+ */
 const createUserStripeSubscription = (userId, stripeSubscription, stripePlan) => {
     if (!userId || !stripeSubscription || !stripePlan)
         throw new Error('Missing parameter');
@@ -995,6 +942,11 @@ const createUserStripeSubscription = (userId, stripeSubscription, stripePlan) =>
     });
 }
 
+/**
+ * Gets a user's Stripe subscription.
+ * @param {number} userId - The user ID
+ * @returns {Promise<StripeSubscription>} The user's subscription
+ */
 const getUserStripeSubscription = (userId) => {
     if (!userId)
         throw new Error('Missing parameter');
@@ -1004,6 +956,12 @@ const getUserStripeSubscription = (userId) => {
     });
 };
 
+/**
+ * Gets the count of trading pairs for a V2 DEX.
+ * @param {number} userId - The user ID
+ * @param {number} v2DexId - The DEX ID
+ * @returns {Promise<number>} The pair count
+ */
 const getV2DexPairCount = async (userId, v2DexId) => {
     if (!userId || !v2DexId)
         throw new Error('Missing parameter');
@@ -1025,6 +983,12 @@ const getV2DexPairCount = async (userId, v2DexId) => {
     return dex.countPairs();
 };
 
+/**
+ * Deletes a V2 DEX and all its pairs.
+ * @param {string} firebaseUserId - The Firebase user ID
+ * @param {number} v2DexId - The DEX ID
+ * @returns {Promise<void>}
+ */
 const deleteV2Dex = async (firebaseUserId, v2DexId) => {
     if (!firebaseUserId || !v2DexId)
         throw new Error('Missing parameter');
@@ -1046,6 +1010,12 @@ const deleteV2Dex = async (firebaseUserId, v2DexId) => {
     return dex.safeDestroy();
 };
 
+/**
+ * Deactivates a V2 DEX.
+ * @param {string} firebaseUserId - The Firebase user ID
+ * @param {number} v2DexId - The DEX ID
+ * @returns {Promise<ExplorerV2Dex>} The updated DEX
+ */
 const deactivateV2Dex = async (firebaseUserId, v2DexId) => {
     if (!firebaseUserId || !v2DexId)
         throw new Error('Missing parameter');
@@ -1067,6 +1037,12 @@ const deactivateV2Dex = async (firebaseUserId, v2DexId) => {
     return dex.update({ active: false });
 };
 
+/**
+ * Activates a V2 DEX.
+ * @param {string} firebaseUserId - The Firebase user ID
+ * @param {number} v2DexId - The DEX ID
+ * @returns {Promise<ExplorerV2Dex>} The updated DEX
+ */
 const activateV2Dex = async (firebaseUserId, v2DexId) => {
     if (!firebaseUserId || !v2DexId)
         throw new Error('Missing parameter');
@@ -1088,6 +1064,16 @@ const activateV2Dex = async (firebaseUserId, v2DexId) => {
     return dex.update({ active: true });
 };
 
+/**
+ * Gets a swap quote from a V2 DEX.
+ * @param {number} v2DexId - The DEX ID
+ * @param {string} from - Source token address
+ * @param {string} to - Destination token address
+ * @param {string} amount - Amount to swap
+ * @param {string} direction - Swap direction
+ * @param {number} slippageTolerance - Slippage tolerance percentage
+ * @returns {Promise<Object>} The swap quote
+ */
 const getV2DexQuote = async (v2DexId, from, to, amount, direction, slippageTolerance) => {
     if (!v2DexId || !from || !to || !amount)
         throw new Error('Missing parameter');
@@ -1099,6 +1085,11 @@ const getV2DexQuote = async (v2DexId, from, to, amount, direction, slippageToler
     return dex.getQuote(from, to, amount, direction, slippageTolerance);
 };
 
+/**
+ * Gets a V2 DEX by ID with pairs and explorer.
+ * @param {number} v2DexId - The DEX ID
+ * @returns {Promise<ExplorerV2Dex>} The DEX with associations
+ */
 const getExplorerV2Dex = (v2DexId) => {
     if (!v2DexId)
         throw new Error('Missing parameter');
@@ -1148,6 +1139,14 @@ const getExplorerV2Dex = (v2DexId) => {
     });
 };
 
+/**
+ * Creates a trading pair for a V2 DEX.
+ * @param {number} dexId - The DEX ID
+ * @param {string} token0 - First token address
+ * @param {string} token1 - Second token address
+ * @param {string} pair - Pair contract address
+ * @returns {Promise<V2DexPair>} The created pair
+ */
 const createV2DexPair = async (dexId, token0, token1, pair) => {
     if (!dexId || !token0 || !token1 ||!pair)
         throw new Error('Missing parameter');
@@ -1159,6 +1158,15 @@ const createV2DexPair = async (dexId, token0, token1, pair) => {
     return dex.safeCreatePair(token0, token1, pair);
 };
 
+/**
+ * Creates a V2 DEX for an explorer.
+ * @param {string} firebaseUserId - The Firebase user ID
+ * @param {number} explorerId - The explorer ID
+ * @param {string} routerAddress - Router contract address
+ * @param {string} routerFactoryAddress - Factory contract address
+ * @param {string} wrappedNativeTokenAddress - WETH/WBNB address
+ * @returns {Promise<ExplorerV2Dex>} The created DEX
+ */
 const createExplorerV2Dex = async (firebaseUserId, explorerId, routerAddress, routerFactoryAddress, wrappedNativeTokenAddress) => {
     if (!firebaseUserId || !explorerId || !routerAddress || !routerFactoryAddress || !wrappedNativeTokenAddress)
         throw new Error('Missing parameter');
@@ -1177,6 +1185,12 @@ const createExplorerV2Dex = async (firebaseUserId, explorerId, routerAddress, ro
     return explorer.safeCreateV2Dex(routerAddress, routerFactoryAddress, wrappedNativeTokenAddress);
 };
 
+/**
+ * Creates an explorer from configuration options.
+ * @param {number} userId - The user ID
+ * @param {Object} options - Explorer configuration options
+ * @returns {Promise<Explorer>} The created explorer
+ */
 const createExplorerFromOptions = async (userId, options) => {
     if (!userId || !options)
         throw new Error('Missing parameter');
@@ -1188,6 +1202,15 @@ const createExplorerFromOptions = async (userId, options) => {
     return user.createExplorerFromOptions(options);
 };
 
+/**
+ * Gets faucet transaction history.
+ * @param {number} faucetId - The faucet ID
+ * @param {number} page - Page number
+ * @param {number} itemsPerPage - Items per page
+ * @param {string} order - Sort order
+ * @param {string} orderBy - Field to order by
+ * @returns {Promise<Array>} Transaction history
+ */
 const getFaucetTransactionHistory = async (faucetId, page, itemsPerPage, order, orderBy) => {
     if (!faucetId)
         throw new Error('Missing parameter');
@@ -1199,6 +1222,13 @@ const getFaucetTransactionHistory = async (faucetId, page, itemsPerPage, order, 
     return faucet.getTransactionHistory(page, itemsPerPage, order, orderBy);
 };
 
+/**
+ * Gets faucet token volume over a time range.
+ * @param {number} faucetId - The faucet ID
+ * @param {string} from - Start date
+ * @param {string} to - End date
+ * @returns {Promise<Array>} Token volume history
+ */
 const getFaucetTokenVolume = async (faucetId, from, to) => {
     if (!faucetId)
         throw new Error('Missing parameter');
@@ -1210,6 +1240,13 @@ const getFaucetTokenVolume = async (faucetId, from, to) => {
     return faucet.getTokenVolume(from, to);
 };
 
+/**
+ * Gets faucet request volume over a time range.
+ * @param {number} faucetId - The faucet ID
+ * @param {string} from - Start date
+ * @param {string} to - End date
+ * @returns {Promise<Array>} Request volume history
+ */
 const getFaucetRequestVolume = async (faucetId, from, to) => {
     if (!faucetId)
         throw new Error('Missing parameter');
@@ -1221,6 +1258,12 @@ const getFaucetRequestVolume = async (faucetId, from, to) => {
     return faucet.getRequestVolume(from, to);
 };
 
+/**
+ * Deletes a faucet.
+ * @param {string} firebaseUserId - The Firebase user ID
+ * @param {number} faucetId - The faucet ID
+ * @returns {Promise<void>}
+ */
 const deleteFaucet = async (firebaseUserId, faucetId) => {
     if (!firebaseUserId || !faucetId)
         throw new Error('Missing parameter');
@@ -1243,6 +1286,12 @@ const deleteFaucet = async (firebaseUserId, faucetId) => {
     return faucet.safeDestroy();
 };
 
+/**
+ * Checks if a user owns a faucet.
+ * @param {string} firebaseUserId - The Firebase user ID
+ * @param {number} faucetId - The faucet ID
+ * @returns {Promise<boolean>} True if user owns the faucet
+ */
 const ownFaucet = async (firebaseUserId, faucetId) => {
     if (!firebaseUserId || !faucetId)
         throw new Error('Missing parameter');
@@ -1262,6 +1311,11 @@ const ownFaucet = async (firebaseUserId, faucetId) => {
     return !!faucet;
 };
 
+/**
+ * Gets the faucet for an explorer.
+ * @param {number} explorerId - The explorer ID
+ * @returns {Promise<ExplorerFaucet>} The faucet
+ */
 const getExplorerFaucet = async (explorerId) => {
     if (!explorerId)
         throw new Error('Missing parameter');
@@ -1273,6 +1327,14 @@ const getExplorerFaucet = async (explorerId) => {
     return explorer.getFaucet();
 };
 
+/**
+ * Creates a faucet drip record.
+ * @param {number} faucetId - The faucet ID
+ * @param {string} address - Recipient address
+ * @param {string} amount - Amount dripped
+ * @param {string} transactionHash - Transaction hash
+ * @returns {Promise<FaucetDrip>} The created drip
+ */
 const createFaucetDrip = async (faucetId, address, amount, transactionHash) => {
     if (!faucetId || !address || !amount || !transactionHash)
         throw new Error('Missing parameter');
@@ -1284,6 +1346,11 @@ const createFaucetDrip = async (faucetId, address, amount, transactionHash) => {
     return faucet.safeCreateDrip(address, amount, transactionHash);
 };
 
+/**
+ * Gets the private key for a faucet.
+ * @param {number} faucetId - The faucet ID
+ * @returns {Promise<string>} The encrypted private key
+ */
 const getFaucetPrivateKey = async (faucetId) => {
     if (!faucetId)
         throw new Error('Missing parameter');
@@ -1292,6 +1359,12 @@ const getFaucetPrivateKey = async (faucetId) => {
     return privateKey;
 };
 
+/**
+ * Gets the remaining cooldown time for an address.
+ * @param {number} faucetId - The faucet ID
+ * @param {string} address - The address to check
+ * @returns {Promise<number>} Remaining cooldown in seconds
+ */
 const getFaucetCooldown = async (faucetId, address) => {
     if (!faucetId || !address)
         throw new Error('Missing parameters');
@@ -1303,6 +1376,12 @@ const getFaucetCooldown = async (faucetId, address) => {
     return faucet.getCooldown(address);
 };
 
+/**
+ * Deactivates a faucet.
+ * @param {string} firebaseUserId - The Firebase user ID
+ * @param {number} faucetId - The faucet ID
+ * @returns {Promise<ExplorerFaucet>} The updated faucet
+ */
 const deactivateFaucet = async (firebaseUserId, faucetId) => {
     if (!firebaseUserId || !faucetId)
         throw new Error('Missing parameter');
@@ -1325,6 +1404,12 @@ const deactivateFaucet = async (firebaseUserId, faucetId) => {
     return faucet.deactivate();
 };
 
+/**
+ * Activates a faucet.
+ * @param {string} firebaseUserId - The Firebase user ID
+ * @param {number} faucetId - The faucet ID
+ * @returns {Promise<ExplorerFaucet>} The updated faucet
+ */
 const activateFaucet = async (firebaseUserId, faucetId) => {
     if (!firebaseUserId || !faucetId)
         throw new Error('Missing parameter');
@@ -1347,6 +1432,11 @@ const activateFaucet = async (firebaseUserId, faucetId) => {
     return faucet.activate();
 };
 
+/**
+ * Gets a faucet by ID with explorer and workspace.
+ * @param {number} id - The faucet ID
+ * @returns {Promise<ExplorerFaucet>} The faucet with associations
+ */
 const getFaucet = async (id) => {
     if (!id)
         throw new Error('Missing parameter');
@@ -1366,6 +1456,14 @@ const getFaucet = async (id) => {
     });
 };
 
+/**
+ * Updates faucet settings.
+ * @param {string} firebaseUserId - The Firebase user ID
+ * @param {number} faucetId - The faucet ID
+ * @param {string} amount - Drip amount
+ * @param {number} interval - Cooldown interval in seconds
+ * @returns {Promise<ExplorerFaucet>} The updated faucet
+ */
 const updateFaucet = async (firebaseUserId, faucetId, amount, interval) => {
     if (!firebaseUserId || !faucetId || !amount || !interval)
         throw new Error('Missing parameter');
@@ -1388,6 +1486,14 @@ const updateFaucet = async (firebaseUserId, faucetId, amount, interval) => {
     return faucet.safeUpdate(amount, interval);
 };
 
+/**
+ * Creates a faucet for an explorer.
+ * @param {string} firebaseUserId - The Firebase user ID
+ * @param {number} explorerId - The explorer ID
+ * @param {string} amount - Drip amount
+ * @param {number} interval - Cooldown interval in seconds
+ * @returns {Promise<ExplorerFaucet>} The created faucet
+ */
 const createFaucet = async (firebaseUserId, explorerId, amount, interval) => {
     if (!firebaseUserId || !explorerId || !amount || !interval)
         throw new Error('Missing parameter');
@@ -1406,6 +1512,11 @@ const createFaucet = async (firebaseUserId, explorerId, amount, interval) => {
     return explorer.safeCreateFaucet(amount, interval);
 };
 
+/**
+ * Gets the Stripe subscription for an explorer.
+ * @param {number} explorerId - The explorer ID
+ * @returns {Promise<StripeSubscription>} The subscription with plan
+ */
 const getStripeSubscription = async (explorerId) => {
     if (!explorerId)
         throw new Error('Missing parameter');
@@ -1416,6 +1527,10 @@ const getStripeSubscription = async (explorerId) => {
     });
 };
 
+/**
+ * Gets the quota extension Stripe plan.
+ * @returns {Promise<StripePlan>} The quota extension plan
+ */
 const getQuotaExtensionPlan = () => {
     return StripePlan.findOne({
         where: {
@@ -1425,6 +1540,11 @@ const getQuotaExtensionPlan = () => {
     })
 };
 
+/**
+ * Destroys a Stripe quota extension.
+ * @param {number} stripeSubscriptionId - The subscription ID
+ * @returns {Promise<void>}
+ */
 const destroyStripeQuotaExtension = async (stripeSubscriptionId) => {
     if (!stripeSubscriptionId)
         throw new Error('Missing parameter');
@@ -1436,6 +1556,12 @@ const destroyStripeQuotaExtension = async (stripeSubscriptionId) => {
     return stripeSubscription.safeDestroyStripeQuotaExtension();
 };
 
+/**
+ * Updates a Stripe quota extension.
+ * @param {number} stripeSubscriptionId - The subscription ID
+ * @param {number} quota - The new quota value
+ * @returns {Promise<StripeQuotaExtension>} The updated extension
+ */
 const updateStripeQuotaExtension = async (stripeSubscriptionId, quota) => {
     if (!stripeSubscriptionId || !quota)
         throw new Error('Missing parameter');
@@ -1447,6 +1573,14 @@ const updateStripeQuotaExtension = async (stripeSubscriptionId, quota) => {
     return stripeSubscription.safeUpdateStripeQuotaExtension(quota);
 };
 
+/**
+ * Creates a Stripe quota extension.
+ * @param {number} stripeSubscriptionId - The subscription ID
+ * @param {string} stripeId - The Stripe subscription ID
+ * @param {number} stripePlanId - The plan ID
+ * @param {number} quota - The quota value
+ * @returns {Promise<StripeQuotaExtension>} The created extension
+ */
 const createStripeQuotaExtension = async (stripeSubscriptionId, stripeId, stripePlanId, quota) => {
     if (!stripeSubscriptionId || !stripeId || !stripePlanId || !quota)
         throw new Error('Missing parameter');
@@ -1458,6 +1592,14 @@ const createStripeQuotaExtension = async (stripeSubscriptionId, stripeId, stripe
     return stripeSubscription.safeCreateStripeQuotaExtension(stripeId, stripePlanId, quota);
 };
 
+/**
+ * Gets transaction logs for a transaction.
+ * @param {number} workspaceId - The workspace ID
+ * @param {string} hash - The transaction hash
+ * @param {number} page - Page number
+ * @param {number} itemsPerPage - Items per page
+ * @returns {Promise<Object>} Object with count and logs array
+ */
 const getTransactionLogs = async (workspaceId, hash, page, itemsPerPage) => {
     if (!workspaceId || !hash)
         throw new Error('Missing parameter');
@@ -1471,6 +1613,12 @@ const getTransactionLogs = async (workspaceId, hash, page, itemsPerPage) => {
     return { count, logs };
 };
 
+/**
+ * Marks a workspace for deletion.
+ * @param {number} userId - The user ID
+ * @param {number} workspaceId - The workspace ID
+ * @returns {Promise<Workspace>} The updated workspace
+ */
 const markWorkspaceForDeletion = async (userId, workspaceId) => {
     if (!userId || !workspaceId)
         throw new Error('Missing parameter');
@@ -1488,6 +1636,13 @@ const markWorkspaceForDeletion = async (userId, workspaceId) => {
     return workspace.update({ pendingDeletion: true, public: false });
 };
 
+/**
+ * Updates a QuickNode subscription plan.
+ * @param {string} qnId - The QuickNode ID
+ * @param {string} qnEndpointId - The QuickNode endpoint ID
+ * @param {number} stripePlanId - The new plan ID
+ * @returns {Promise<StripeSubscription>} The updated subscription
+ */
 const updateQuicknodeSubscription = async (qnId, qnEndpointId, stripePlanId) => {
     if (!qnId || !qnEndpointId || !stripePlanId)
         throw new Error('Missing parameter');
@@ -1509,6 +1664,12 @@ const updateQuicknodeSubscription = async (qnId, qnEndpointId, stripePlanId) => 
     return explorer.stripeSubscription.update({ stripePlanId });
 };
 
+/**
+ * Finds an explorer by QuickNode credentials.
+ * @param {string} qnId - The QuickNode ID
+ * @param {string} qnEndpointId - The QuickNode endpoint ID
+ * @returns {Promise<Object|null>} The explorer or null
+ */
 const findQuicknodeExplorer = async (qnId, qnEndpointId) => {
     if (!qnId || !qnEndpointId)
         throw new Error('Missing parameter');
@@ -1531,6 +1692,11 @@ const findQuicknodeExplorer = async (qnId, qnEndpointId) => {
     return explorer ? explorer.toJSON() : null;
 };
 
+/**
+ * Finds a user by QuickNode ID.
+ * @param {string} qnId - The QuickNode ID
+ * @returns {Promise<Object|null>} The user or null
+ */
 const findQuicknodeUser = async (qnId) => {
     if (!qnId)
         throw new Error('Missing parameter');
@@ -1547,6 +1713,12 @@ const findQuicknodeUser = async (qnId) => {
     return user ? user.toJSON() : null;
 };
 
+/**
+ * Finds a workspace by QuickNode credentials.
+ * @param {string} qnId - The QuickNode ID
+ * @param {string} qnEndpointId - The QuickNode endpoint ID
+ * @returns {Promise<Workspace>} The workspace
+ */
 const findQuicknodeWorkspace = (qnId, qnEndpointId) => {
     if (!qnId || !qnEndpointId)
         throw new Error('Missing parameter');
@@ -1561,6 +1733,15 @@ const findQuicknodeWorkspace = (qnId, qnEndpointId) => {
     });
 };
 
+/**
+ * Creates a workspace for QuickNode integration.
+ * @param {string} qnId - The QuickNode ID
+ * @param {string} qnEndpointId - The QuickNode endpoint ID
+ * @param {string} name - Workspace name
+ * @param {string} rpcServer - RPC server URL
+ * @param {number} networkId - Network/chain ID
+ * @returns {Promise<Workspace>} The created workspace
+ */
 const createQuicknodeWorkspace = async (qnId, qnEndpointId, name, rpcServer, networkId) => {
     if (!qnId || !qnEndpointId || !name || !rpcServer || !networkId)
         throw new Error('Missing parameter');
@@ -1579,6 +1760,12 @@ const createQuicknodeWorkspace = async (qnId, qnEndpointId, name, rpcServer, net
     });
 };
 
+/**
+ * Checks if a workspace needs batch reset based on block count.
+ * @param {string} userId - The Firebase user ID
+ * @param {number} workspaceId - The workspace ID
+ * @returns {Promise<boolean>} True if reset is needed
+ */
 const workspaceNeedsBatchReset = async (userId, workspaceId) => {
     if (!userId || !workspaceId)
         throw new Error('Missing parameter');
@@ -1599,6 +1786,12 @@ const workspaceNeedsBatchReset = async (userId, workspaceId) => {
     return blocks.length == getMaxBlockForSyncReset();
 };
 
+/**
+ * Resets an explorer's transaction quota.
+ * @param {number} userId - The user ID
+ * @param {number} explorerId - The explorer ID
+ * @returns {Promise<Explorer>} The updated explorer
+ */
 const resetExplorerTransactionQuota = async (userId, explorerId) => {
     if (!userId || !explorerId)
         throw new Error('Missing parameter');
@@ -1616,6 +1809,11 @@ const resetExplorerTransactionQuota = async (userId, explorerId) => {
     return explorer.resetTransactionQuota();
 };
 
+/**
+ * Marks an explorer as a demo explorer.
+ * @param {number} explorerId - The explorer ID
+ * @returns {Promise<Explorer>} The updated explorer
+ */
 const makeExplorerDemo = async (explorerId) => {
     if (!explorerId) throw new Error('Missing parameter');
 
@@ -1626,6 +1824,13 @@ const makeExplorerDemo = async (explorerId) => {
     return explorer.update({ isDemo: true });
 };
 
+/**
+ * Migrates a demo explorer to a real user.
+ * @param {number} explorerId - The explorer ID
+ * @param {number} userId - The user ID
+ * @param {Object} stripeSubscription - Stripe subscription object
+ * @returns {Promise<Explorer>} The migrated explorer
+ */
 const migrateDemoExplorer = async (explorerId, userId, stripeSubscription) => {
     if (!explorerId || !userId || !stripeSubscription) throw new Error('Missing parameter');
 
@@ -1640,6 +1845,12 @@ const migrateDemoExplorer = async (explorerId, userId, stripeSubscription) => {
     return explorer.migrateDemoTo(userId, stripeSubscription);
 };
 
+/**
+ * Creates an explorer with its associated workspace.
+ * @param {number} userId - The user ID
+ * @param {Object} workspaceData - Workspace configuration
+ * @returns {Promise<Workspace>} The created workspace with explorer
+ */
 const createExplorerWithWorkspace = async (userId, workspaceData) => {
     if (!workspaceData) throw new Error('Missing parameter');
 
@@ -1650,6 +1861,11 @@ const createExplorerWithWorkspace = async (userId, workspaceData) => {
     return user.safeCreateWorkspaceWithExplorer(workspaceData);
 };
 
+/**
+ * Stops syncing for an explorer.
+ * @param {number} explorerId - The explorer ID
+ * @returns {Promise<Explorer>} The updated explorer
+ */
 const stopExplorerSync = async (explorerId) => {
     if (!explorerId) throw new Error('Missing parameter');
 
@@ -1660,6 +1876,11 @@ const stopExplorerSync = async (explorerId) => {
     return explorer.update({ shouldSync: false });
 };
 
+/**
+ * Starts syncing for an explorer.
+ * @param {number} explorerId - The explorer ID
+ * @returns {Promise<Explorer>} The updated explorer
+ */
 const startExplorerSync = async (explorerId) => {
     if (!explorerId) throw new Error('Missing parameter');
 
@@ -1670,6 +1891,11 @@ const startExplorerSync = async (explorerId) => {
     return explorer.update({ shouldSync: true });
 };
 
+/**
+ * Resets RPC health check failed attempts.
+ * @param {number} workspaceId - The workspace ID
+ * @returns {Promise<RpcHealthCheck|null>} The updated health check or null
+ */
 const resetFailedAttempts = async (workspaceId) => {
     if (!workspaceId) throw new Error('Missing parameter');
 
@@ -1683,6 +1909,11 @@ const resetFailedAttempts = async (workspaceId) => {
     return workspace.rpcHealthCheck.resetFailedAttempts();
 };
 
+/**
+ * Increments RPC health check failed attempts.
+ * @param {number} workspaceId - The workspace ID
+ * @returns {Promise<RpcHealthCheck|null>} The updated health check or null
+ */
 const incrementFailedAttempts = async (workspaceId) => {
     if (!workspaceId) throw new Error('Missing parameter');
 
@@ -1696,6 +1927,11 @@ const incrementFailedAttempts = async (workspaceId) => {
     return workspace.rpcHealthCheck.incrementFailedAttempts();
 };
 
+/**
+ * Checks if a user can sync blocks (based on plan and workspace count).
+ * @param {number} userId - The user ID
+ * @returns {Promise<boolean>} True if user can sync
+ */
 const canUserSyncBlock = async (userId) => {
     if (!userId) throw new Error('Missing parameter');
 
@@ -1709,6 +1945,12 @@ const canUserSyncBlock = async (userId) => {
     return true;
 };
 
+/**
+ * Deletes a workspace.
+ * @param {number} userId - The user ID
+ * @param {number} workspaceId - The workspace ID
+ * @returns {Promise<void>}
+ */
 const deleteWorkspace = async (userId, workspaceId) => {
     if (!userId || !workspaceId) throw new Error('Missing parameter');
 
@@ -1719,6 +1961,12 @@ const deleteWorkspace = async (userId, workspaceId) => {
     return workspace.safeDelete();
 };
 
+/**
+ * Stores a transaction receipt.
+ * @param {number} transactionId - The transaction ID
+ * @param {Object} receipt - The receipt data
+ * @returns {Promise<TransactionReceipt>} The created receipt
+ */
 const storeTransactionReceipt = async (transactionId, receipt) => {
     if (!transactionId || !receipt) throw new Error('Missing parameter');
 
@@ -1729,6 +1977,11 @@ const storeTransactionReceipt = async (transactionId, receipt) => {
     return transaction.safeCreateReceipt(receipt);
 };
 
+/**
+ * Disables trial mode for a user.
+ * @param {number} userId - The user ID
+ * @returns {Promise<User>} The updated user
+ */
 const disableUserTrial = async (userId) => {
     if (!userId) throw new Error('Missing parameter');
 
@@ -1740,6 +1993,12 @@ const disableUserTrial = async (userId) => {
     return user.disableTrialMode();
 };
 
+/**
+ * Gets an explorer domain by ID.
+ * @param {number} userId - The user ID
+ * @param {number} explorerDomainId - The domain ID
+ * @returns {Promise<Object|null>} The domain or null
+ */
 const getExplorerDomainById = async (userId, explorerDomainId) => {
     if (!userId || !explorerDomainId) throw new Error('Missing parameter');
 
@@ -1760,6 +2019,12 @@ const getExplorerDomainById = async (userId, explorerDomainId) => {
     return domain ? domain.toJSON() : null;
 };
 
+/**
+ * Deletes an explorer domain.
+ * @param {number} userId - The user ID
+ * @param {number} explorerDomainId - The domain ID
+ * @returns {Promise<void>}
+ */
 const deleteExplorerDomain = async (userId, explorerDomainId) => {
     if (!userId || !explorerDomainId) throw new Error('Missing parameter');
 
@@ -1782,6 +2047,12 @@ const deleteExplorerDomain = async (userId, explorerDomainId) => {
     return domain.destroy();
 };
 
+/**
+ * Creates a custom domain for an explorer.
+ * @param {number} explorerId - The explorer ID
+ * @param {string} domain - The domain name
+ * @returns {Promise<ExplorerDomain>} The created domain
+ */
 const createExplorerDomain = async (explorerId, domain) => {
     if (!explorerId || !domain) throw new Error('Missing parameter');
 
@@ -1793,6 +2064,12 @@ const createExplorerDomain = async (explorerId, domain) => {
     return explorer.safeCreateDomain(domain);
 };
 
+/**
+ * Deletes an explorer.
+ * @param {number} userId - The user ID
+ * @param {number} explorerId - The explorer ID
+ * @returns {Promise<void>}
+ */
 const deleteExplorer = async (userId, explorerId) => {
     if (!userId || !explorerId) throw new Error('Missing parameter');
 
@@ -1810,6 +2087,12 @@ const deleteExplorer = async (userId, explorerId) => {
     return explorer.safeDelete();
 };
 
+/**
+ * Creates an explorer from an existing workspace.
+ * @param {number} userId - The user ID
+ * @param {number} workspaceId - The workspace ID
+ * @returns {Promise<Explorer>} The created explorer
+ */
 const createExplorerFromWorkspace = async (userId, workspaceId) => {
     if (!userId || !workspaceId) throw new Error('Missing parameter');
 
@@ -1828,6 +2111,11 @@ const createExplorerFromWorkspace = async (userId, workspaceId) => {
     return explorer ? explorer.toJSON() : null;
 };
 
+/**
+ * Gets a contract by ID.
+ * @param {number} contractId - The contract ID
+ * @returns {Promise<Object|null>} The contract or null
+ */
 const getContractById = async (contractId) => {
     if (!contractId) throw new Error('Missing parameter');
 
@@ -1836,6 +2124,12 @@ const getContractById = async (contractId) => {
     return contract ? contract.toJSON() : null;
 };
 
+/**
+ * Deletes an explorer's subscription.
+ * @param {number} userId - The user ID
+ * @param {number} explorerId - The explorer ID
+ * @returns {Promise<void>}
+ */
 const deleteExplorerSubscription = async (userId, explorerId) => {
     if (!userId || !explorerId) throw new Error('Missing parameter');
 
@@ -1852,6 +2146,12 @@ const deleteExplorerSubscription = async (userId, explorerId) => {
     return explorer.safeDeleteSubscription();
 };
 
+/**
+ * Cancels an explorer's subscription at period end.
+ * @param {number} userId - The user ID
+ * @param {number} explorerId - The explorer ID
+ * @returns {Promise<StripeSubscription>}
+ */
 const cancelExplorerSubscription = async (userId, explorerId) => {
     if (!userId || !explorerId) throw new Error('Missing parameter');
 
@@ -1868,6 +2168,12 @@ const cancelExplorerSubscription = async (userId, explorerId) => {
     return explorer.safeCancelSubscription();
 };
 
+/**
+ * Reverts a pending subscription cancellation.
+ * @param {number} userId - The user ID
+ * @param {number} explorerId - The explorer ID
+ * @returns {Promise<StripeSubscription>}
+ */
 const revertExplorerSubscriptionCancelation = async (userId, explorerId) => {
     if (!userId || !explorerId) throw new Error('Missing parameter');
 
@@ -1884,6 +2190,14 @@ const revertExplorerSubscriptionCancelation = async (userId, explorerId) => {
     return explorer.safeRevertSubscriptionCancelation();
 };
 
+/**
+ * Updates an explorer's subscription plan.
+ * @param {number} userId - The user ID
+ * @param {number} explorerId - The explorer ID
+ * @param {number} stripePlanId - The new plan ID
+ * @param {Object} stripeSubscription - Stripe subscription object
+ * @returns {Promise<StripeSubscription>}
+ */
 const updateExplorerSubscription = async (userId, explorerId, stripePlanId, stripeSubscription) => {
     if (!userId || !explorerId || !stripePlanId) throw new Error('Missing parameter');
 
@@ -1923,6 +2237,14 @@ const updateExplorerSubscription = async (userId, explorerId, stripePlanId, stri
     return explorer.safeUpdateSubscription(stripePlanId, stripeId, cycleEndsAt, status);
 };
 
+/**
+ * Creates a subscription for an explorer.
+ * @param {number} userId - The user ID
+ * @param {number} explorerId - The explorer ID
+ * @param {number} stripePlanId - The plan ID
+ * @param {Object} stripeSubscription - Stripe subscription object
+ * @returns {Promise<StripeSubscription>}
+ */
 const createExplorerSubscription = async (userId, explorerId, stripePlanId, stripeSubscription) => {
     if (!userId || !explorerId || !stripePlanId) throw new Error('Missing parameter');
 
@@ -1956,6 +2278,10 @@ const createExplorerSubscription = async (userId, explorerId, stripePlanId, stri
     return explorer.safeCreateSubscription(stripePlanId, stripeId, cycleEndsAt, status);
 };
 
+/**
+ * Gets all public explorer plans.
+ * @returns {Promise<Array<StripePlan>>} Array of plans
+ */
 const getExplorerPlans = () => {
     return StripePlan.findAll({
         where: { public: true },
@@ -1964,6 +2290,13 @@ const getExplorerPlans = () => {
     });
 };
 
+/**
+ * Stores contract verification data.
+ * @param {number} workspaceId - The workspace ID
+ * @param {string} address - The contract address
+ * @param {Object} verificationData - Verification data
+ * @returns {Promise<ContractVerification>}
+ */
 const storeContractVerificationData = async (workspaceId, address, verificationData) => {
     if (!workspaceId || !address || !verificationData) throw new Error('Missing parameter');
 
@@ -1979,6 +2312,11 @@ const storeContractVerificationData = async (workspaceId, address, verificationD
     return contract.safeCreateVerification(verificationData);
 };
 
+/**
+ * Gets a Stripe plan by slug.
+ * @param {string} slug - The plan slug
+ * @returns {Promise<Object|null>} The plan or null
+ */
 const getStripePlan = async (slug) => {
     const plan = await StripePlan.findOne({
         where: { slug }
@@ -1986,6 +2324,12 @@ const getStripePlan = async (slug) => {
     return plan ? plan.toJSON() : null;
 }
 
+/**
+ * Updates explorer branding settings.
+ * @param {number} explorerId - The explorer ID
+ * @param {Object} branding - Branding configuration
+ * @returns {Promise<Explorer>}
+ */
 const updateExplorerBranding = async (explorerId, branding) => {
     if (!explorerId || !branding) throw new Error('Missing parameter');
 
@@ -1997,6 +2341,12 @@ const updateExplorerBranding = async (explorerId, branding) => {
     return explorer.safeUpdateBranding(branding);
 };
 
+/**
+ * Updates explorer settings.
+ * @param {number} explorerId - The explorer ID
+ * @param {Object} settings - Settings configuration
+ * @returns {Promise<Explorer>}
+ */
 const updateExplorerSettings = async (explorerId, settings) => {
     if (!explorerId || !settings) throw new Error('Missing parameter');
 
@@ -2007,6 +2357,12 @@ const updateExplorerSettings = async (explorerId, settings) => {
     return explorer.safeUpdateSettings(settings);
 };
 
+/**
+ * Updates the workspace for an explorer.
+ * @param {number} explorerId - The explorer ID
+ * @param {number} workspaceId - The new workspace ID
+ * @returns {Promise<Explorer>}
+ */
 const updateExplorerWorkspace = async (explorerId, workspaceId) => {
     if (!explorerId || !workspaceId) throw new Error('Missing parameter');
 
@@ -2024,6 +2380,13 @@ const updateExplorerWorkspace = async (explorerId, workspaceId) => {
     return explorer.update({ workspaceId: workspace.id, rpcServer: workspace.rpcServer, chainId: workspace.networkId });
 };
 
+/**
+ * Gets an explorer by ID.
+ * @param {number} userId - The user ID
+ * @param {number} id - The explorer ID
+ * @param {boolean} [withDemo=false] - Include demo explorers
+ * @returns {Promise<Explorer>}
+ */
 const getExplorerById = (userId, id, withDemo = false) => {
     if (!userId || !id) throw new Error('Missing parameter');
 
@@ -2082,6 +2445,15 @@ const getExplorerById = (userId, id, withDemo = false) => {
     });
 }
 
+/**
+ * Gets a user's explorers with pagination.
+ * @param {number} userId - The user ID
+ * @param {number} [page=1] - Page number
+ * @param {number} [itemsPerPage=10] - Items per page
+ * @param {string} [order='DESC'] - Sort order
+ * @param {string} [orderBy='id'] - Field to order by
+ * @returns {Promise<Object>} Object with items and total
+ */
 const getUserExplorers = async (userId, page = 1, itemsPerPage = 10, order = 'DESC', orderBy = 'id') => {
     if (!userId) throw new Error('Missing parameter');
 
@@ -2121,6 +2493,12 @@ const getUserExplorers = async (userId, page = 1, itemsPerPage = 10, order = 'DE
     };
 }
 
+/**
+ * Updates workspace RPC health check status.
+ * @param {number} workspaceId - The workspace ID
+ * @param {boolean} isReachable - Whether RPC is reachable
+ * @returns {Promise<RpcHealthCheck>}
+ */
 const updateWorkspaceRpcHealthCheck = async (workspaceId, isReachable) => {
     if (!workspaceId || isReachable === null || isReachable === undefined) throw new Error('Missing parameter');
 
@@ -2132,6 +2510,14 @@ const updateWorkspaceRpcHealthCheck = async (workspaceId, isReachable) => {
     return workspace.safeCreateOrUpdateRpcHealthCheck(isReachable);
 };
 
+/**
+ * Updates workspace integrity check status.
+ * @param {number} workspaceId - The workspace ID
+ * @param {Object} params - Check parameters
+ * @param {number} [params.blockId] - Block ID being checked
+ * @param {string} [params.status] - Check status
+ * @returns {Promise<IntegrityCheck>}
+ */
 const updateWorkspaceIntegrityCheck = async (workspaceId, { blockId, status }) => {
     if (!workspaceId || (!blockId && !status)) throw new Error('Missing parameter');
 
@@ -2142,6 +2528,11 @@ const updateWorkspaceIntegrityCheck = async (workspaceId, { blockId, status }) =
     return workspace.safeCreateOrUpdateIntegrityCheck({ blockId, status });
 };
 
+/**
+ * Gets a transaction with associations for processing.
+ * @param {number} transactionId - The transaction ID
+ * @returns {Promise<Transaction>}
+ */
 const getTransactionForProcessing = transactionId => {
     if (!transactionId) throw new Error('Missing parameter.');
 
@@ -2186,6 +2577,11 @@ const getTransactionForProcessing = transactionId => {
     });
 };
 
+/**
+ * Reverts a partial block if it's incomplete.
+ * @param {number} blockId - The block ID
+ * @returns {Promise<void>}
+ */
 const revertPartialBlock = async (blockId) => {
     if (!blockId) throw new Error('Missing parameter.');
 
@@ -2194,6 +2590,12 @@ const revertPartialBlock = async (blockId) => {
     return block ? block.revertIfPartial() : null;
 };
 
+/**
+ * Syncs a partial block to a workspace.
+ * @param {number} workspaceId - The workspace ID
+ * @param {Object} block - Block data
+ * @returns {Promise<Object|null>} The created block or null
+ */
 const syncPartialBlock = async (workspaceId, block) => {
     if (!workspaceId || !block) throw new Error('Missing parameter.');
 
@@ -2212,6 +2614,12 @@ const syncPartialBlock = async (workspaceId, block) => {
     return newBlock ? newBlock.toJSON() : null;
 };
 
+/**
+ * Syncs a full block with transactions to a workspace.
+ * @param {number} workspaceId - The workspace ID
+ * @param {Object} data - Block and transaction data
+ * @returns {Promise<Object|null>} The created block or null
+ */
 const syncFullBlock = async (workspaceId, data) => {
     if (!workspaceId || !data) throw new Error('Missing parameter.');
 
@@ -2231,6 +2639,20 @@ const syncFullBlock = async (workspaceId, data) => {
         return null;
 };
 
+/**
+ * Creates a new explorer.
+ * @param {number} userId - The user ID
+ * @param {number} workspaceId - The workspace ID
+ * @param {number} chainId - The chain ID
+ * @param {string} name - Explorer name
+ * @param {string} rpcServer - RPC URL
+ * @param {string} slug - URL slug
+ * @param {Object} themes - Theme configuration
+ * @param {string} totalSupply - Total supply
+ * @param {string} domain - Domain name
+ * @param {Object} token - Token configuration
+ * @returns {Promise<Object|null>} The created explorer or null
+ */
 const createExplorer = async (userId, workspaceId, chainId, name, rpcServer, slug, themes, totalSupply, domain, token) => {
     if (!userId || !workspaceId || !chainId || !name || !rpcServer || !slug)
         throw new Error('Missing parameter');
@@ -2250,6 +2672,12 @@ const createExplorer = async (userId, workspaceId, chainId, name, rpcServer, slu
     return explorer ? explorer.toJSON() : null;
 };
 
+/**
+ * Updates browser sync setting for a workspace.
+ * @param {number} workspaceId - The workspace ID
+ * @param {boolean} newValue - New browser sync value
+ * @returns {Promise<Workspace>}
+ */
 const updateBrowserSync = async (workspaceId, newValue) => {
     if (!workspaceId || newValue === undefined || newValue === null)
         throw new Error('Missing parameter');
@@ -2261,6 +2689,13 @@ const updateBrowserSync = async (workspaceId, newValue) => {
     return workspace.update({ browserSyncEnabled: newValue });
 };
 
+/**
+ * Updates user Firebase password hash.
+ * @param {string} email - User email
+ * @param {string} passwordSalt - Password salt
+ * @param {string} passwordHash - Password hash
+ * @returns {Promise<User>}
+ */
 const updateUserFirebaseHash = async (email, passwordSalt, passwordHash) => {
     if (!email || !passwordSalt || !passwordHash)
         throw new Error('Missing parameter');
@@ -2270,6 +2705,12 @@ const updateUserFirebaseHash = async (email, passwordSalt, passwordHash) => {
     return user.update({ passwordSalt, passwordHash });
 };
 
+/**
+ * Sets a user's password.
+ * @param {string} email - User email
+ * @param {string} password - New password
+ * @returns {Promise<User>}
+ */
 const setUserPassword = async (email, password) => {
     if (!email || !password)
         throw new Error('Missig parameter');
@@ -2284,11 +2725,21 @@ const setUserPassword = async (email, password) => {
     return user.update({ passwordHash, passwordSalt });
 };
 
+/**
+ * Gets a user by email.
+ * @param {string} email - User email
+ * @returns {Promise<Object|null>} The user or null
+ */
 const getUserByEmail = async (email) => {
     const user = await User.findOne({ where: { email: email }, include: 'currentWorkspace' });
     return user ? user.toJSON() : null;
 };
 
+/**
+ * Gets custom transaction function for a workspace.
+ * @param {number} workspaceId - The workspace ID
+ * @returns {Promise<string|null>} The function code or null
+ */
 const getCustomTransactionFunction = async (workspaceId) => {
     if (!workspaceId) throw new Error('Missing parameter');
 
@@ -2297,6 +2748,17 @@ const getCustomTransactionFunction = async (workspaceId) => {
     return await workspace.getCustomTransactionFunction();
 };
 
+/**
+ * Gets token transfers for an address.
+ * @param {number} workspaceId - The workspace ID
+ * @param {string} address - The address
+ * @param {number} page - Page number
+ * @param {number} itemsPerPage - Items per page
+ * @param {string} order - Sort order
+ * @param {string} orderBy - Field to order by
+ * @param {Array} tokenTypes - Token types to filter
+ * @returns {Promise<Object>} Token transfers with count
+ */
 const getAddressTokenTransfers = async (workspaceId, address, page, itemsPerPage, order, orderBy, tokenTypes) => {
     if (!workspaceId || !address) throw new Error('Missing parameter');
 
@@ -2313,6 +2775,12 @@ const getAddressTokenTransfers = async (workspaceId, address, page, itemsPerPage
     };
 };
 
+/**
+ * Gets transaction statistics for an address.
+ * @param {number} workspaceId - The workspace ID
+ * @param {string} address - The address
+ * @returns {Promise<Object>} Transaction stats
+ */
 const getAddressTransactionStats = async (workspaceId, address) => {
     if (!workspaceId || !address) throw new Error('Missing parameter');
 
@@ -2330,6 +2798,16 @@ const getAddressTransactionStats = async (workspaceId, address) => {
     return stats;
 };
 
+/**
+ * Gets token transfers for a transaction.
+ * @param {number} workspaceId - The workspace ID
+ * @param {string} transactionHash - Transaction hash
+ * @param {number} page - Page number
+ * @param {number} itemsPerPage - Items per page
+ * @param {string} order - Sort order
+ * @param {string} orderBy - Field to order by
+ * @returns {Promise<Object>} Token transfers
+ */
 const getTransactionTokenTransfers = async (workspaceId, transactionHash, page, itemsPerPage, order, orderBy) => {
     if (!workspaceId || !transactionHash) throw new Error('Missing parameter');
 
@@ -2346,6 +2824,14 @@ const getTransactionTokenTransfers = async (workspaceId, transactionHash, page, 
     return transaction.getFilteredTokenTransfers(page, itemsPerPage, order, orderBy);
 };
 
+/**
+ * Gets token holder history for a contract.
+ * @param {number} workspaceId - The workspace ID
+ * @param {string} address - Contract address
+ * @param {string} from - Start date
+ * @param {string} to - End date
+ * @returns {Promise<Array>} Holder history
+ */
 const getTokenHolderHistory = async (workspaceId, address, from, to) => {
     if (!workspaceId || !address || !from || !to) throw new Error('Missing parameter');
 
@@ -2358,6 +2844,14 @@ const getTokenHolderHistory = async (workspaceId, address, from, to) => {
     return contract.getTokenHolderHistory(from, to);
 };
 
+/**
+ * Gets token circulating supply history.
+ * @param {number} workspaceId - The workspace ID
+ * @param {string} address - Contract address
+ * @param {string} from - Start date
+ * @param {string} to - End date
+ * @returns {Promise<Array>} Supply history
+ */
 const getTokenCirculatingSupply = async (workspaceId, address, from, to) => {
     if (!workspaceId || !address || !from || !to) throw new Error('Missing parameter');
 
@@ -2370,6 +2864,15 @@ const getTokenCirculatingSupply = async (workspaceId, address, from, to) => {
     return contract.getTokenCirculatingSupply(from, to);
 };
 
+/**
+ * Gets token transfer volume.
+ * @param {number} workspaceId - The workspace ID
+ * @param {string} from - Start date
+ * @param {string} to - End date
+ * @param {string} [address] - Contract address
+ * @param {string} [type] - Token type
+ * @returns {Promise<Array>} Volume history
+ */
 const getTokenTransferVolume = async (workspaceId, from, to, address, type) => {
     if (!workspaceId || !from || !to) throw new Error('Missing parameter');
 
@@ -2384,6 +2887,16 @@ const getTokenTransferVolume = async (workspaceId, from, to, address, type) => {
     return workspace.getTokenTransferVolume(from, to, address, type);
 };
 
+/**
+ * Gets token holders for a contract.
+ * @param {number} workspaceId - The workspace ID
+ * @param {string} address - Contract address
+ * @param {number} page - Page number
+ * @param {number} itemsPerPage - Items per page
+ * @param {string} orderBy - Field to order by
+ * @param {string} order - Sort order
+ * @returns {Promise<Object>} Holders with total
+ */
 const getTokenHolders = async (workspaceId, address, page, itemsPerPage, orderBy, order) => {
     if (!workspaceId || !address) throw new Error('Missing parameter');
 
@@ -2402,6 +2915,12 @@ const getTokenHolders = async (workspaceId, address, page, itemsPerPage, orderBy
     };
 };
 
+/**
+ * Gets token statistics for a contract.
+ * @param {number} workspaceId - The workspace ID
+ * @param {string} address - Contract address
+ * @returns {Promise<Object>} Token stats
+ */
 const getTokenStats = async (workspaceId, address) => {
     if (!workspaceId || !address) throw new Error('Missing parameter');
 
@@ -2421,6 +2940,17 @@ const getTokenStats = async (workspaceId, address) => {
     };
 };
 
+/**
+ * Gets token transfers for a contract.
+ * @param {number} workspaceId - The workspace ID
+ * @param {string} address - Contract address
+ * @param {number} page - Page number
+ * @param {number} itemsPerPage - Items per page
+ * @param {string} orderBy - Field to order by
+ * @param {string} order - Sort order
+ * @param {number} [fromBlock] - Start block
+ * @returns {Promise<Object>} Token transfers
+ */
 const getTokenTransfers = async (workspaceId, address, page, itemsPerPage, orderBy, order, fromBlock) => {
     if (!workspaceId || !address) throw new Error('Missing parameter');
 
@@ -2435,6 +2965,11 @@ const getTokenTransfers = async (workspaceId, address, page, itemsPerPage, order
     return { items: rows.map(t => t.toJSON()) };
 };
 
+/**
+ * Gets a token transfer for processing.
+ * @param {number} tokenTransferId - Token transfer ID
+ * @returns {Promise<Object|null>} Token transfer or null
+ */
 const getTokenTransferForProcessing = async (tokenTransferId) => {
     if (!tokenTransferId) throw new Error('Missing parameter');
 
@@ -2462,6 +2997,17 @@ const getTokenTransferForProcessing = async (tokenTransferId) => {
     return tokenTransfer ? tokenTransfer.toJSON() : null;
 }
 
+/**
+ * Gets contract event logs.
+ * @param {number} workspaceId - The workspace ID
+ * @param {string} address - Contract address
+ * @param {string} signature - Event signature
+ * @param {number} page - Page number
+ * @param {number} itemsPerPage - Items per page
+ * @param {string} orderBy - Field to order by
+ * @param {string} order - Sort order
+ * @returns {Promise<Object>} Logs
+ */
 const getContractLogs = async (workspaceId, address, signature, page, itemsPerPage, orderBy, order) => {
     if (!workspaceId || !address) throw new Error('Missing parameter.');
 
@@ -2478,6 +3024,13 @@ const getContractLogs = async (workspaceId, address, signature, page, itemsPerPa
     };
 };
 
+/**
+ * Stores contract data.
+ * @param {number} workspaceId - The workspace ID
+ * @param {string} address - Contract address
+ * @param {Object} [data={}] - Contract data
+ * @returns {Promise<Object|null>} The contract or null
+ */
 const storeContractDataWithWorkspaceId = async (workspaceId, address, data = {}) => {
     if (!workspaceId || !address) throw new Error('Missing parameter.');
 
@@ -2494,6 +3047,12 @@ const storeContractDataWithWorkspaceId = async (workspaceId, address, data = {})
     return contract ? contract.toJSON() : null;
 };
 
+/**
+ * Gets a contract by workspace and address.
+ * @param {number} workspaceId - The workspace ID
+ * @param {string} address - Contract address
+ * @returns {Promise<Object|null>} The contract or null
+ */
 const getContractByWorkspaceId = async (workspaceId, address) => {
     const workspace = await Workspace.findByPk(workspaceId);
     const contract = await workspace.findContractByAddress(address);
@@ -2501,6 +3060,13 @@ const getContractByWorkspaceId = async (workspaceId, address) => {
     return contract ? contract.toJSON() : null;
 };
 
+/**
+ * Gets ERC721 token transfers by token ID.
+ * @param {number} workspaceId - The workspace ID
+ * @param {string} contractAddress - Contract address
+ * @param {string} tokenId - Token ID
+ * @returns {Promise<Array>} Token transfers
+ */
 const getErc721TokenTransfers = async (workspaceId, contractAddress, tokenId) => {
     const workspace = await Workspace.findByPk(workspaceId);
     const contract = await workspace.findContractByAddress(contractAddress);
@@ -2513,6 +3079,14 @@ const getErc721TokenTransfers = async (workspaceId, contractAddress, tokenId) =>
     return transfers.map(t => t.toJSON());
 };
 
+/**
+ * Updates an ERC721 token.
+ * @param {number} workspaceId - The workspace ID
+ * @param {string} contractAddress - Contract address
+ * @param {string} index - Token index
+ * @param {Object} fields - Fields to update
+ * @returns {Promise<ERC721Token>}
+ */
 const updateErc721Token = async (workspaceId, contractAddress, index, fields) => {
     if (!workspaceId || !contractAddress || !index || !fields) throw new Error('Missing parameter.');
 
@@ -2522,6 +3096,13 @@ const updateErc721Token = async (workspaceId, contractAddress, index, fields) =>
     return contract.safeUpdateErc721Token(index, fields);
 };
 
+/**
+ * Gets an ERC721 token by ID.
+ * @param {number} workspaceId - The workspace ID
+ * @param {string} contractAddress - Contract address
+ * @param {string} tokenId - Token ID
+ * @returns {Promise<Object|null>} The token or null
+ */
 const getContractErc721Token = async (workspaceId, contractAddress, tokenId) => {
     const workspace = await Workspace.findByPk(workspaceId);
     const contract = await workspace.findContractByAddress(contractAddress);
@@ -2531,6 +3112,16 @@ const getContractErc721Token = async (workspaceId, contractAddress, tokenId) => 
     return token ? token.toJSON() : null;
 };
 
+/**
+ * Gets ERC721 tokens for a contract.
+ * @param {number} workspaceId - The workspace ID
+ * @param {string} contractAddress - Contract address
+ * @param {number} page - Page number
+ * @param {number} itemsPerPage - Items per page
+ * @param {string} orderBy - Field to order by
+ * @param {string} order - Sort order
+ * @returns {Promise<Object>} Tokens with total
+ */
 const getContractErc721Tokens = async (workspaceId, contractAddress, page, itemsPerPage, orderBy, order) => {
     const workspace = await Workspace.findByPk(workspaceId);
     const contract = await workspace.findContractByAddress(contractAddress);
@@ -2544,6 +3135,13 @@ const getContractErc721Tokens = async (workspaceId, contractAddress, page, items
     };
 };
 
+/**
+ * Stores an ERC721 token.
+ * @param {number} workspaceId - The workspace ID
+ * @param {string} contractAddress - Contract address
+ * @param {Object} token - Token data
+ * @returns {Promise<ERC721Token>}
+ */
 const storeErc721Token = async (workspaceId, contractAddress, token) => {
     if (!workspaceId || !contractAddress || !token) throw new Error('Missing parameter.');
 
@@ -2553,12 +3151,25 @@ const storeErc721Token = async (workspaceId, contractAddress, token) => {
     return contract.safeCreateOrUpdateErc721Token(token);
 };
 
+/**
+ * Sets the remote flag for a workspace.
+ * @param {number} workspaceId - The workspace ID
+ * @param {boolean} flag - Remote flag value
+ * @returns {Promise<Workspace>}
+ */
 const setWorkspaceRemoteFlag = async (workspaceId, flag) => {
     const workspace = await Workspace.findByPk(workspaceId);
 
     return workspace.update({ isRemote: flag });
 };
 
+/**
+ * Gets cumulative deployed contract count.
+ * @param {number} workspaceId - The workspace ID
+ * @param {string} from - Start date
+ * @param {string} to - End date
+ * @returns {Promise<Array>} Count history
+ */
 const getCumulativeDeployedContractCount = async (workspaceId, from, to) => {
     if (!workspaceId || !from || !to) throw new Error('Missing parameter.');
 
@@ -2570,6 +3181,13 @@ const getCumulativeDeployedContractCount = async (workspaceId, from, to) => {
     return cumulativeDeployedContractCount;
 };
 
+/**
+ * Gets deployed contract count per day.
+ * @param {number} workspaceId - The workspace ID
+ * @param {string} from - Start date
+ * @param {string} to - End date
+ * @returns {Promise<Array>} Count history
+ */
 const getDeployedContractCount = async (workspaceId, from, to) => {
     if (!workspaceId || !from || !to) throw new Error('Missing parameter.');
 
@@ -2581,6 +3199,13 @@ const getDeployedContractCount = async (workspaceId, from, to) => {
     return deployedContractCount;
 };
 
+/**
+ * Gets unique wallet count per day.
+ * @param {number} workspaceId - The workspace ID
+ * @param {string} from - Start date
+ * @param {string} to - End date
+ * @returns {Promise<Array>} Count history
+ */
 const getUniqueWalletCount = async (workspaceId, from, to) => {
     if (!workspaceId || !from || !to) throw new Error('Missing parameter.');
 
@@ -2592,6 +3217,13 @@ const getUniqueWalletCount = async (workspaceId, from, to) => {
     return uniqueWalletCount;
 };
 
+/**
+ * Gets cumulative wallet count.
+ * @param {number} workspaceId - The workspace ID
+ * @param {string} from - Start date
+ * @param {string} to - End date
+ * @returns {Promise<Array>} Count history
+ */
 const getCumulativeWalletCount = async (workspaceId, from, to) => {
     if (!workspaceId || !from || !to) throw new Error('Missing parameter.');
 
@@ -2603,6 +3235,13 @@ const getCumulativeWalletCount = async (workspaceId, from, to) => {
     return cumulativeWalletCount;
 };
 
+/**
+ * Gets average gas price in date range.
+ * @param {number} workspaceId - The workspace ID
+ * @param {string} from - Start date
+ * @param {string} to - End date
+ * @returns {Promise<Array>} Average gas price history
+ */
 const getAverageGasPrice = async (workspaceId, from, to) => {
     if (!workspaceId || !from || !to) throw new Error('Missing parameter.');
 
@@ -2614,6 +3253,13 @@ const getAverageGasPrice = async (workspaceId, from, to) => {
     return avgGasPrice;
 };
 
+/**
+ * Gets average transaction fee in date range.
+ * @param {number} workspaceId - The workspace ID
+ * @param {string} from - Start date
+ * @param {string} to - End date
+ * @returns {Promise<Array>} Average fee history
+ */
 const getAverageTransactionFee = async (workspaceId, from, to) => {
     if (!workspaceId || !from || !to) throw new Error('Missing parameter.');
 
@@ -2625,6 +3271,13 @@ const getAverageTransactionFee = async (workspaceId, from, to) => {
     return avgTransactionFee;
 };
 
+/**
+ * Gets transaction volume in date range.
+ * @param {number} workspaceId - The workspace ID
+ * @param {string} from - Start date
+ * @param {string} to - End date
+ * @returns {Promise<Array>} Transaction volume history
+ */
 const getTransactionVolume = async (workspaceId, from, to) => {
     if (!workspaceId || !from || !to) throw new Error('Missing parameter.');
 
@@ -2636,6 +3289,11 @@ const getTransactionVolume = async (workspaceId, from, to) => {
     return transactions;
 };
 
+/**
+ * Gets count of active wallets in workspace.
+ * @param {number} workspaceId - The workspace ID
+ * @returns {Promise<number>} Active wallet count
+ */
 const getActiveWalletCount = async (workspaceId) => {
     if (!workspaceId) throw new Error('Missing parameter.');
 
@@ -2646,6 +3304,12 @@ const getActiveWalletCount = async (workspaceId) => {
     return workspace.countActiveWallets();
 };
 
+/**
+ * Gets total transaction count for workspace.
+ * @param {number} workspaceId - The workspace ID
+ * @param {string} [since] - Optional date to count from
+ * @returns {Promise<number>} Transaction count
+ */
 const getTotalTxCount = async (workspaceId, since) => {
     if (!workspaceId) throw new Error('Missing parameter.');
 
@@ -2656,6 +3320,13 @@ const getTotalTxCount = async (workspaceId, since) => {
     return workspace.getTransactionCount(since);
 };
 
+/**
+ * Gets latest token balances for an address.
+ * @param {number} workspaceId - The workspace ID
+ * @param {string} address - The wallet address
+ * @param {Array<string>} [tokenPatterns] - Token patterns to filter
+ * @returns {Promise<Array>} Token balances
+ */
 const getAddressLatestTokenBalances = async (workspaceId, address, tokenPatterns) => {
     if (!workspaceId|| !address) throw new Error('Missing parameter.');
 
@@ -2663,6 +3334,12 @@ const getAddressLatestTokenBalances = async (workspaceId, address, tokenPatterns
     return await workspace.safeFindLatestTokenBalances(address, tokenPatterns);
 };
 
+/**
+ * Searches for a contract by address.
+ * @param {number} workspaceId - The workspace ID
+ * @param {string} address - The address to search for
+ * @returns {Promise<Array>} Search results with type and data
+ */
 const searchForAddress = async (workspaceId, address) => {
     if (!workspaceId || !address) throw new Error('Missing parameter.');
 
@@ -2674,6 +3351,12 @@ const searchForAddress = async (workspaceId, address) => {
     }] : [];
 };
 
+/**
+ * Searches for transaction or block by hash.
+ * @param {number} workspaceId - The workspace ID
+ * @param {string} hash - The hash to search for
+ * @returns {Promise<Array>} Search results with type and data
+ */
 const searchForHash = async (workspaceId, hash) => {
     if (!workspaceId || !hash) throw new Error('Missing parameter.');
 
@@ -2693,6 +3376,12 @@ const searchForHash = async (workspaceId, hash) => {
     }
 };
 
+/**
+ * Searches for a block by number.
+ * @param {number} workspaceId - The workspace ID
+ * @param {number} number - The block number to search for
+ * @returns {Promise<Array>} Search results with type and data
+ */
 const searchForNumber = async (workspaceId, number) => {
     if (!workspaceId || !number) throw new Error('Missing parameter.');
 
@@ -2704,6 +3393,12 @@ const searchForNumber = async (workspaceId, number) => {
     }] : [];
 };
 
+/**
+ * Searches for contracts by text (name, symbol, etc).
+ * @param {number} workspaceId - The workspace ID
+ * @param {string} text - The text to search for
+ * @returns {Promise<Array>} Search results with type and data
+ */
 const searchForText = async (workspaceId, text) => {
     if (!workspaceId || !text) throw new Error('Missing parameter.');
 
@@ -2715,6 +3410,12 @@ const searchForText = async (workspaceId, text) => {
     }));
 };
 
+/**
+ * Gets a workspace by ID with user and explorer info.
+ * @param {number} workspaceId - The workspace ID
+ * @returns {Promise<Object>} The workspace object
+ * @throws {Error} If workspace not found
+ */
 const getWorkspaceById = async (workspaceId) => {
     if (!workspaceId)
         throw new Error('Missing parameter');
@@ -2736,12 +3437,24 @@ const getWorkspaceById = async (workspaceId) => {
     return workspace.toJSON();
 };
 
+/**
+ * Gets a contract by ID within a workspace.
+ * @param {number} workspaceId - The workspace ID
+ * @param {number} contractId - The contract ID
+ * @returns {Promise<Object|null>} The contract object or null
+ */
 const getWorkspaceContractById = async (workspaceId, contractId) => {
     const workspace = await Workspace.findByPk(workspaceId);
     const contract = await workspace.findContractById(contractId);
     return contract ? contract.toJSON() : null;
 };
 
+/**
+ * Gets a block by number within a workspace.
+ * @param {number} workspaceId - The workspace ID
+ * @param {number} number - The block number
+ * @returns {Promise<Object>} The block object with Orbit batch info
+ */
 const getWorkspaceBlock = async (workspaceId, number) => {
     const attributes = [
         'id',
@@ -2790,6 +3503,14 @@ const getWorkspaceBlock = async (workspaceId, number) => {
     return block.toJSON();
 };
 
+/**
+ * Gets paginated blocks for a workspace.
+ * @param {number} workspaceId - The workspace ID
+ * @param {number} [page=1] - Page number
+ * @param {number} [itemsPerPage=10] - Items per page
+ * @param {string} [order='DESC'] - Sort order
+ * @returns {Promise<Object>} Paginated block results
+ */
 const getWorkspaceBlocks = async (workspaceId, page = 1, itemsPerPage = 10, order = 'DESC') => {
     const workspace = await Workspace.findByPk(workspaceId);
     const blocks = await workspace.getFilteredBlocks(page, itemsPerPage, order);
@@ -2799,6 +3520,12 @@ const getWorkspaceBlocks = async (workspaceId, page = 1, itemsPerPage = 10, orde
     };
 };
 
+/**
+ * Gets a transaction by hash within a workspace.
+ * @param {number} workspaceId - The workspace ID
+ * @param {string} hash - The transaction hash
+ * @returns {Promise<Object|null>} The transaction object or null
+ */
 const getWorkspaceTransaction = async (workspaceId, hash) => {
     const workspace = await Workspace.findByPk(workspaceId);
     const transaction = await workspace.findTransaction(hash);
@@ -2806,6 +3533,17 @@ const getWorkspaceTransaction = async (workspaceId, hash) => {
     return transaction ? transaction.toJSON() : null;
 };
 
+/**
+ * Gets paginated transactions for a block.
+ * @param {number} workspaceId - The workspace ID
+ * @param {number} blockNumber - The block number
+ * @param {number} [page=1] - Page number
+ * @param {number} [itemsPerPage=10] - Items per page
+ * @param {string} [order='DESC'] - Sort order
+ * @param {string} [orderBy='timestamp'] - Field to order by
+ * @param {string} [withCount='true'] - Whether to include total count
+ * @returns {Promise<Object>} Paginated transaction results
+ */
 const getBlockTransactions = async (workspaceId, blockNumber, page = 1, itemsPerPage = 10, order = 'DESC', orderBy = 'timestamp', withCount = 'true') => {
     if (!workspaceId || !blockNumber)
         throw new Error('Missing parameters');
@@ -2864,6 +3602,16 @@ const getBlockTransactions = async (workspaceId, blockNumber, page = 1, itemsPer
     return res.rows && res.count !== null && res.count != undefined ? { ...res } : { rows: res };
 }
 
+/**
+ * Gets paginated transactions for a workspace.
+ * @param {number} workspaceId - The workspace ID
+ * @param {number} [page=1] - Page number
+ * @param {number} [itemsPerPage=10] - Items per page
+ * @param {string} [order='DESC'] - Sort order
+ * @param {string} [orderBy='blockNumber'] - Field to order by
+ * @param {string} [withCount='true'] - Whether to include total count
+ * @returns {Promise<Object>} Paginated transaction results
+ */
 const getWorkspaceTransactions = async (workspaceId, page = 1, itemsPerPage = 10, order = 'DESC', orderBy = 'blockNumber', withCount = 'true') => {
     const workspace = await Workspace.findByPk(workspaceId);
     if (!workspace)
@@ -2881,6 +3629,16 @@ const getWorkspaceTransactions = async (workspaceId, page = 1, itemsPerPage = 10
     };
 };
 
+/**
+ * Gets paginated transactions for an address.
+ * @param {number} workspaceId - The workspace ID
+ * @param {string} address - The address to get transactions for
+ * @param {number} page - Page number
+ * @param {number} itemsPerPage - Items per page
+ * @param {string} order - Sort order
+ * @param {string} orderBy - Field to order by
+ * @returns {Promise<Object>} Paginated transaction results
+ */
 const getAddressTransactions = async (workspaceId, address, page, itemsPerPage, order, orderBy) => {
     const workspace = await Workspace.findByPk(workspaceId);
     const transactions = await workspace.getFilteredTransactions(page, itemsPerPage, order, orderBy, address);
@@ -2893,14 +3651,30 @@ const getAddressTransactions = async (workspaceId, address, page, itemsPerPage, 
     };
 };
 
+/**
+ * Gets paginated contracts for a workspace.
+ * @param {number} workspaceId - The workspace ID
+ * @param {number} page - Page number
+ * @param {number} itemsPerPage - Items per page
+ * @param {string} orderBy - Field to order by
+ * @param {string} order - Sort order
+ * @param {string} [pattern] - Token pattern filter (erc20, erc721)
+ * @returns {Promise<Object>} Paginated contract results
+ */
 const getWorkspaceContracts = async (workspaceId, page, itemsPerPage, orderBy, order, pattern) => {
     const workspace = await Workspace.findByPk(workspaceId);
     const allowedPatterns = ['erc20', 'erc721'].indexOf(pattern) > -1 ? pattern : null;
     const contracts = await workspace.getFilteredContracts(page, itemsPerPage, orderBy, order, allowedPatterns);
-    
+
     return { items: contracts.map(c => c.toJSON()) }
 };
 
+/**
+ * Gets a contract by address within a workspace.
+ * @param {number} workspaceId - The workspace ID
+ * @param {string} address - The contract address
+ * @returns {Promise<Object|null>} The contract object or null
+ */
 const getWorkspaceContract = async (workspaceId, address) => {
     const workspace = await Workspace.findByPk(workspaceId);
 
@@ -2912,16 +3686,37 @@ const getWorkspaceContract = async (workspaceId, address) => {
     return contract ? contract.toJSON() : null;
 };
 
+/**
+ * Gets a user by database ID.
+ * @param {number} id - The user ID
+ * @returns {Promise<Object|null>} The user object or null
+ */
 const getUserById = async (id) => {
     const user = await User.findByPk(id);
     return user ? user.toJSON() : null;
 };
 
+/**
+ * Gets a user by Firebase auth ID.
+ * @param {string} id - The Firebase auth ID
+ * @param {Array<string>} [extraFields=[]] - Extra fields to include
+ * @returns {Promise<Object|null>} The user object or null
+ */
 const getUser = async (id, extraFields = []) => {
     const user = await User.findByAuthId(id, extraFields);
     return user ? user.toJSON() : null;
 };
 
+/**
+ * Creates a new user.
+ * @param {string} uid - The Firebase auth ID
+ * @param {Object} data - User data
+ * @param {string} data.email - User email
+ * @param {string} data.apiKey - API key
+ * @param {string} [data.stripeCustomerId] - Stripe customer ID
+ * @param {string} [data.plan] - User plan
+ * @returns {Promise<Object|null>} The created user or null
+ */
 const createUser = async (uid, data) => {
     if (!uid || !data) throw new Error('Missing parameter.');
 
@@ -2929,11 +3724,23 @@ const createUser = async (uid, data) => {
     return user ? user.toJSON() : null;
 };
 
+/**
+ * Gets all workspaces for a user.
+ * @param {string} userId - The Firebase auth ID
+ * @returns {Promise<Array>} Array of workspace objects
+ */
 const getUserWorkspaces = async (userId) => {
     const user = await User.findByAuthId(userId);
     return user.workspaces.map(w => w.toJSON());
 };
 
+/**
+ * Adds an integration to a workspace.
+ * @param {string} userId - The Firebase auth ID
+ * @param {string} workspace - The workspace name
+ * @param {string} integration - The integration name
+ * @returns {Promise<void>}
+ */
 const addIntegration = async (userId, workspace, integration) => {
     if (!userId || !workspace || !integration) throw new Error('Missing parameter.');
 
@@ -2941,6 +3748,13 @@ const addIntegration = async (userId, workspace, integration) => {
     await user.workspaces[0].addIntegration(integration);
 };
 
+/**
+ * Removes an integration from a workspace.
+ * @param {string} userId - The Firebase auth ID
+ * @param {string} workspace - The workspace name
+ * @param {string} integration - The integration name
+ * @returns {Promise<void>}
+ */
 const removeIntegration = async (userId, workspace, integration) => {
     if (!userId || !workspace || !integration) throw new Error('Missing parameter.');
 
@@ -2948,6 +3762,12 @@ const removeIntegration = async (userId, workspace, integration) => {
     await user.workspaces[0].removeIntegration(integration);
 };
 
+/**
+ * Creates a new workspace for a user.
+ * @param {string} userId - The Firebase auth ID
+ * @param {Object} data - Workspace data
+ * @returns {Promise<Object|null>} The created workspace or null
+ */
 const createWorkspace = async (userId, data) => {
     if (!userId || !data) throw new Error('Missing parameter.');
 
@@ -2956,6 +3776,12 @@ const createWorkspace = async (userId, data) => {
     return workspace ? workspace.toJSON() : null;
 };
 
+/**
+ * Gets a workspace by name for a user.
+ * @param {string} userId - The Firebase auth ID
+ * @param {string} workspaceName - The workspace name
+ * @returns {Promise<Object|null>} The workspace object or null
+ */
 const getWorkspaceByName = async (userId, workspaceName) => {
     const user = await User.findByAuthIdWithWorkspace(userId, workspaceName);
     if (!user)
@@ -2963,6 +3789,13 @@ const getWorkspaceByName = async (userId, workspaceName) => {
     return user.workspaces && user.workspaces.length ? user.workspaces[0].toJSON() : null;
 };
 
+/**
+ * Stores a block in a workspace.
+ * @param {string} userId - The Firebase auth ID
+ * @param {string} workspace - The workspace name
+ * @param {Object} block - Block data
+ * @returns {Promise<Object|null>} The created block or null if exists
+ */
 const storeBlock = async (userId, workspace, block) => {
     if (!userId || !workspace || !block) throw new Error('Missing parameter.');
 
@@ -2978,6 +3811,14 @@ const storeBlock = async (userId, workspace, block) => {
     }
 };
 
+/**
+ * Stores a transaction in a workspace.
+ * @param {string} userId - The Firebase auth ID
+ * @param {string} workspace - The workspace name
+ * @param {Object} transaction - Transaction data
+ * @returns {Promise<Object|null>} The created transaction or null if exists
+ * @throws {Error} If block not found
+ */
 const storeTransaction = async (userId, workspace, transaction) => {
     if (!userId || !workspace || !transaction) throw new Error('Missing parameter.');
 
@@ -2996,9 +3837,18 @@ const storeTransaction = async (userId, workspace, transaction) => {
     return newTransaction.toJSON();
 };
 
+/**
+ * Stores token transfers for a transaction.
+ * @param {string} userId - The Firebase auth ID
+ * @param {string} workspace - The workspace name
+ * @param {string} transactionHash - The transaction hash
+ * @param {Array} tokenTransfers - Array of token transfer objects
+ * @returns {Promise<void>}
+ * @throws {Error} If transaction not found
+ */
 const storeTransactionTokenTransfers = async (userId, workspace, transactionHash, tokenTransfers) => {
     if (!userId || !workspace || !transactionHash || !tokenTransfers) throw new Error('Missing parameter.');
-    
+
     if (tokenTransfers.length) {
         const user = await User.findByAuthIdWithWorkspace(userId, workspace);
         const transaction = await user.workspaces[0].findTransaction(transactionHash);
@@ -3011,6 +3861,15 @@ const storeTransactionTokenTransfers = async (userId, workspace, transactionHash
     }
 };
 
+/**
+ * Stores or updates contract data.
+ * @param {string} userId - The Firebase auth ID
+ * @param {string} workspace - The workspace name
+ * @param {string} address - The contract address
+ * @param {Object} data - Contract data
+ * @param {Object} [transaction] - Optional database transaction
+ * @returns {Promise<Object|null>} The contract object or null
+ */
 const storeContractData = async (userId, workspace, address, data, transaction) => {
     if (!userId || !workspace || !address || !data) throw new Error('Missing parameter.');
 
@@ -3019,11 +3878,18 @@ const storeContractData = async (userId, workspace, address, data, transaction) 
     return contract ? contract.toJSON() : null;
 };
 
+/**
+ * Gets a contract by user, workspace ID, and address.
+ * @param {number} userId - The user ID
+ * @param {number} workspaceId - The workspace ID
+ * @param {string} address - The contract address
+ * @returns {Promise<Object|null>} The contract object or null
+ */
 const getContract = async (userId, workspaceId, address) => {
     if (!userId || !workspaceId || !address) throw new Error('Missing parameter.');
 
     const user = await User.findByPk(parseInt(userId));
-    
+
     if (!user)
         return null;
 
@@ -3033,15 +3899,28 @@ const getContract = async (userId, workspaceId, address) => {
     return contract ? contract.toJSON() : null;
 };
 
+/**
+ * Gets contract data by user, workspace name, and address.
+ * @param {string} userId - The Firebase auth ID
+ * @param {string} workspace - The workspace name
+ * @param {string} address - The contract address
+ * @returns {Promise<Object|null>} The contract object or null
+ */
 const getContractData = async (userId, workspace, address) => {
     if (!userId || !workspace || !address) throw new Error('Missing parameter.');
-    
+
     const user = await User.findByAuthIdWithWorkspace(userId, workspace);
     const contract = await user.workspaces[0].findContractByAddress(address);
 
     return contract ? contract.toJSON() : null;
 };
 
+/**
+ * Gets a contract by hashed bytecode.
+ * @param {number} workspaceId - The workspace ID
+ * @param {string} hashedBytecode - The hashed bytecode
+ * @returns {Promise<Object|null>} The contract object or null
+ */
 const getContractByHashedBytecode = async (workspaceId, hashedBytecode) => {
     if (!workspaceId || !hashedBytecode) throw new Error('Missing parameter.');
 
@@ -3057,6 +3936,14 @@ const getContractByHashedBytecode = async (workspaceId, hashedBytecode) => {
     return contract ? contract.toJSON() : null;
 };
 
+/**
+ * Stores an account's private key.
+ * @param {string} userId - The Firebase auth ID
+ * @param {string} workspace - The workspace name
+ * @param {string} address - The account address
+ * @param {string} privateKey - The private key (encrypted)
+ * @returns {Promise<Object>} The account object
+ */
 const storeAccountPrivateKey = async (userId, workspace, address, privateKey) => {
     if (!userId || !workspace || !address || !privateKey) throw new Error('Missing parameter.');
 
@@ -3066,6 +3953,16 @@ const storeAccountPrivateKey = async (userId, workspace, address, privateKey) =>
     return account.toJSON();
 };
 
+/**
+ * Gets paginated imported accounts for a workspace.
+ * @param {string} userId - The Firebase auth ID
+ * @param {string} workspaceName - The workspace name
+ * @param {number} page - Page number
+ * @param {number} itemsPerPage - Items per page
+ * @param {string} orderBy - Field to order by
+ * @param {string} order - Sort order
+ * @returns {Promise<Object>} Paginated account results
+ */
 const getImportedAccounts = async (userId, workspaceName, page, itemsPerPage, orderBy, order) => {
     if (!userId || !workspaceName) throw new Error('Missing parameter.');
 
@@ -3081,6 +3978,15 @@ const getImportedAccounts = async (userId, workspaceName, page, itemsPerPage, or
     };
 };
 
+/**
+ * Stores a transaction trace.
+ * @param {string} userId - The Firebase auth ID
+ * @param {string} workspace - The workspace name
+ * @param {string} txHash - The transaction hash
+ * @param {Object} trace - The trace data
+ * @returns {Promise<Object>} The created trace
+ * @throws {Error} If transaction not found
+ */
 const storeTrace = async (userId, workspace, txHash, trace) => {
     if (!userId || !workspace || !txHash || !trace) throw new Error('Missing parameter.');
 
@@ -3093,6 +3999,15 @@ const storeTrace = async (userId, workspace, txHash, trace) => {
     return transaction.safeCreateTransactionTrace(trace);
 };
 
+/**
+ * Stores token balance changes for a transfer.
+ * @param {string} userId - The Firebase auth ID
+ * @param {string} workspace - The workspace name
+ * @param {number} tokenTransferId - The token transfer ID
+ * @param {Array} changes - Array of balance change objects
+ * @returns {Promise<void>}
+ * @throws {Error} If token transfer not found
+ */
 const storeTokenBalanceChanges = async (userId, workspace, tokenTransferId, changes) => {
     if (!userId || !workspace || !tokenTransferId || !changes) throw new Error('Missing parameter.');
 
@@ -3107,6 +4022,15 @@ const storeTokenBalanceChanges = async (userId, workspace, tokenTransferId, chan
     return changes.forEach(async change => await tokenTransfer.safeCreateBalanceChange(change));
 };
 
+/**
+ * Stores a failed transaction error message.
+ * @param {string} userId - The Firebase auth ID
+ * @param {string} workspace - The workspace name
+ * @param {string} transactionHash - The transaction hash
+ * @param {Object} error - Error object with parsed and message fields
+ * @returns {Promise<Object>} The updated transaction
+ * @throws {Error} If transaction not found
+ */
 const storeFailedTransactionError = async (userId, workspace, transactionHash, error) => {
     if (!userId || !workspace || !transactionHash || !error) throw new Error('Missing parameter.');
 
@@ -3126,6 +4050,14 @@ const storeFailedTransactionError = async (userId, workspace, transactionHash, e
     }
 };
 
+/**
+ * Updates an account's balance.
+ * @param {string} userId - The Firebase auth ID
+ * @param {string} workspace - The workspace name
+ * @param {string} address - The account address
+ * @param {string} balance - The new balance
+ * @returns {Promise<Object>} The updated account
+ */
 const updateAccountBalance = async (userId, workspace, address, balance) => {
     if (!userId || !workspace || !address || !balance) throw new Error('Missing parameter.');
 
@@ -3135,6 +4067,12 @@ const updateAccountBalance = async (userId, workspace, address, balance) => {
     return account.toJSON();
 };
 
+/**
+ * Sets the current workspace for a user.
+ * @param {string} userId - The Firebase auth ID
+ * @param {string} name - The workspace name
+ * @returns {Promise<Object>} The updated user
+ */
 const setCurrentWorkspace = async (userId, name) => {
     if (!userId || !name) throw new Error('Missing parameter.');
 
@@ -3144,6 +4082,13 @@ const setCurrentWorkspace = async (userId, name) => {
     return user.toJSON();
 };
 
+/**
+ * Removes a contract from a workspace.
+ * @param {string} userId - The Firebase auth ID
+ * @param {string} workspace - The workspace name
+ * @param {string} address - The contract address
+ * @returns {Promise<void>}
+ */
 const removeContract = async (userId, workspace, address) => {
     if (!userId || !workspace || !address) throw new Error('Missing parameter.');
 
@@ -3151,6 +4096,13 @@ const removeContract = async (userId, workspace, address) => {
     return user.workspaces[0].removeContractByAddress(address);
 };
 
+/**
+ * Updates workspace settings.
+ * @param {string} userId - The Firebase auth ID
+ * @param {string} workspace - The workspace name
+ * @param {Object} settings - New settings object
+ * @returns {Promise<Object>} The updated workspace
+ */
 const updateWorkspaceSettings = async (userId, workspace, settings) => {
     if (!userId || !workspace || !settings) throw new Error('Missing parameter.');
 
@@ -3159,6 +4111,13 @@ const updateWorkspaceSettings = async (userId, workspace, settings) => {
     return newWorkspace.toJSON();
 };
 
+/**
+ * Resets workspace data older than specified interval.
+ * @param {string} userId - The Firebase auth ID
+ * @param {string} workspace - The workspace name
+ * @param {number} [dayInterval] - Days to keep data
+ * @returns {Promise<void>}
+ */
 const resetWorkspace = async (userId, workspace, dayInterval) => {
     if (!userId || !String(workspace)) throw new Error('Missing parameter.');
 
@@ -3167,6 +4126,11 @@ const resetWorkspace = async (userId, workspace, dayInterval) => {
         await user.workspaces[0].reset(dayInterval);
 };
 
+/**
+ * Gets a user by Stripe customer ID.
+ * @param {string} stripeCustomerId - The Stripe customer ID
+ * @returns {Promise<Object|null>} The user object or null
+ */
 const getUserbyStripeCustomerId = async (stripeCustomerId) => {
     if (!stripeCustomerId) throw new Error('Missing parameter.');
 
@@ -3174,6 +4138,12 @@ const getUserbyStripeCustomerId = async (stripeCustomerId) => {
     return user ? user.toJSON() : null;
 };
 
+/**
+ * Gets unprocessed contracts in a workspace.
+ * @param {string} userId - The Firebase auth ID
+ * @param {string} workspace - The workspace name
+ * @returns {Promise<Array>} Array of unprocessed contracts
+ */
 const getUnprocessedContracts = async (userId, workspace) => {
     if (!userId || !workspace) throw new Error('Missing parameter.');
 
@@ -3182,6 +4152,11 @@ const getUnprocessedContracts = async (userId, workspace) => {
     return contracts.map(c => c.toJSON());
 };
 
+/**
+ * Checks if a user has premium plan.
+ * @param {string} userId - The Firebase auth ID
+ * @returns {Promise<boolean>} True if user is premium
+ */
 const isUserPremium = async (userId) => {
     if (!userId) throw new Error('Missing parameter.');
 
@@ -3189,6 +4164,15 @@ const isUserPremium = async (userId) => {
     return user.isPremium;
 };
 
+/**
+ * Checks if a user can sync a contract.
+ * Premium users and public workspaces can always sync.
+ * Free users limited to 10 contracts.
+ * @param {string} userId - The Firebase auth ID
+ * @param {string} workspaceName - The workspace name
+ * @param {string} address - The contract address
+ * @returns {Promise<boolean>} True if user can sync
+ */
 const canUserSyncContract = async (userId, workspaceName, address) => {
     if (!userId) throw new Error('Missing parameter.');
 
@@ -3218,6 +4202,13 @@ const canUserSyncContract = async (userId, workspaceName, address) => {
         return true;
 };
 
+/**
+ * Gets a transaction by hash.
+ * @param {string} userId - The Firebase auth ID
+ * @param {string} workspace - The workspace name
+ * @param {string} transactionHash - The transaction hash
+ * @returns {Promise<Object>} The transaction object
+ */
 const getTransaction = async (userId, workspace, transactionHash) => {
     if (!userId || !workspace || !transactionHash) throw new Error('Missing parameter.');
 
@@ -3225,6 +4216,12 @@ const getTransaction = async (userId, workspace, transactionHash) => {
     return user.workspaces[0].findTransaction(transactionHash);
 };
 
+/**
+ * Gets transactions that need processing.
+ * @param {string} uid - The Firebase auth ID
+ * @param {string} workspace - The workspace name
+ * @returns {Promise<Array>} Array of processable transactions
+ */
 const getProcessableTransactions = async (uid, workspace) => {
     if (!uid || !workspace) throw new Error('Missing parameter.');
 
@@ -3233,6 +4230,12 @@ const getProcessableTransactions = async (uid, workspace) => {
     return transactions.map(t => t.toJSON());
 };
 
+/**
+ * Gets failed transactions that can be reprocessed.
+ * @param {string} uid - The Firebase auth ID
+ * @param {string} workspace - The workspace name
+ * @returns {Promise<Array>} Array of failed processable transactions
+ */
 const getFailedProcessableTransactions = async (uid, workspace) => {
     if (!uid || !workspace) throw new Error('Missing parameter.');
 
@@ -3241,6 +4244,11 @@ const getFailedProcessableTransactions = async (uid, workspace) => {
     return transactions.map(t => t.toJSON());
 };
 
+/**
+ * Gets public explorer parameters by slug.
+ * @param {string} slug - The explorer slug
+ * @returns {Promise<Object|null>} The explorer object or null
+ */
 const getPublicExplorerParamsBySlug = async (slug) => {
    if (!slug) throw new Error('Missing parameter.');
 
@@ -3248,6 +4256,11 @@ const getPublicExplorerParamsBySlug = async (slug) => {
    return explorer ? explorer.toJSON() : null;
 };
 
+/**
+ * Gets public explorer parameters by domain.
+ * @param {string} domain - The explorer domain
+ * @returns {Promise<Object|null>} The explorer object or null
+ */
 const getPublicExplorerParamsByDomain = async (domain) => {
    if (!domain) throw new Error('Missing parameter.');
 
@@ -3255,6 +4268,13 @@ const getPublicExplorerParamsByDomain = async (domain) => {
    return explorer ? explorer.toJSON() : null;
 };
 
+/**
+ * Gets the deployment transaction for a contract.
+ * @param {number} userId - The user ID
+ * @param {number} workspaceId - The workspace ID
+ * @param {string} address - The contract address
+ * @returns {Promise<Object|null>} The deployment transaction or null
+ */
 const getContractDeploymentTxByAddress = async (userId, workspaceId, address) => {
     if (!userId || !workspaceId || !address) throw new Error('Missing parameter.');
 
@@ -3268,6 +4288,14 @@ const getContractDeploymentTxByAddress = async (userId, workspaceId, address) =>
     return transactions && transactions.length ? transactions[0].toJSON() : null;
 };
 
+/**
+ * Updates contract verification status.
+ * @param {number} userId - The user ID
+ * @param {number} workspaceId - The workspace ID
+ * @param {string} contractAddress - The contract address
+ * @param {string} status - Status: 'success', 'pending', or 'failed'
+ * @returns {Promise<Object|null>} The updated contract or null
+ */
 const updateContractVerificationStatus = async (userId, workspaceId, contractAddress, status) => {
     if (!userId || !workspaceId || !contractAddress || !status) throw new Error('Missing parameter.');
 
@@ -3280,6 +4308,13 @@ const updateContractVerificationStatus = async (userId, workspaceId, contractAdd
     return contract.toJSON();
 };
 
+/**
+ * Updates a user's subscription plan.
+ * @param {string} userId - The Firebase auth ID
+ * @param {string} plan - The plan: 'free' or 'premium'
+ * @returns {Promise<Object>} The updated user
+ * @throws {Error} If plan is invalid
+ */
 const updateUserPlan = async (userId, plan) => {
     if (!userId || !plan) throw new Error('Missing parameter.');
 
@@ -3291,6 +4326,13 @@ const updateUserPlan = async (userId, plan) => {
     return user.toJSON();
 };
 
+/**
+ * Gets transactions for a contract address.
+ * @param {string} userId - The Firebase auth ID
+ * @param {string} workspace - The workspace name
+ * @param {string} address - The contract address
+ * @returns {Promise<Array>} Array of transactions with receipts
+ */
 const getContractTransactions = async (userId, workspace, address) => {
     if (!userId || !workspace || !address) throw new Error('Missing parameter.');
 
@@ -3306,6 +4348,14 @@ const getContractTransactions = async (userId, workspace, address) => {
     return transactions.map(t => t.toJSON());
 }
 
+/**
+ * Fetches DEX trading pairs with their latest reserves.
+ * @param {number} explorerV2DexId - The DEX ID
+ * @param {number} [page=1] - Page number
+ * @param {number} [itemsPerPage=10] - Items per page
+ * @param {string} [order='DESC'] - Sort order
+ * @returns {Promise<Object>} Paginated pair results
+ */
 const fetchPairsWithLatestReserves = async (explorerV2DexId, page = 1, itemsPerPage = 10, order = 'DESC') => {
     if (!explorerV2DexId)
         throw new Error('Missing parameter.');

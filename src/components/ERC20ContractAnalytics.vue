@@ -48,6 +48,17 @@
     </v-card>
 </template>
 
+/**
+ * @fileoverview ERC-20 contract analytics component.
+ * Displays charts for transfer volume, circulating supply, and token holder history
+ * over a configurable date range.
+ * @component ERC20ContractAnalytics
+ *
+ * @prop {string} address - The token contract address
+ * @prop {number|string} [tokenDecimals=18] - Token decimal places
+ * @prop {string} tokenSymbol - Token symbol
+ * @prop {string} tokenType - Token type (erc20, erc721, etc.)
+ */
 <script setup>
 import { ref, inject } from 'vue';
 import { ethers } from 'ethers';

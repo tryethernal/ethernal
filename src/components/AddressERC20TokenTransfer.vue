@@ -10,6 +10,14 @@
     />
 </template>
 
+/**
+ * @fileoverview Address ERC-20 token transfers component.
+ * Displays a paginated table of ERC-20 token transfers for a specific contract address.
+ * @component AddressERC20TokenTransfer
+ *
+ * @prop {string} address - The contract address to show transfers for
+ * @prop {number} [count] - Total count of transfers for pagination
+ */
 <script setup>
 import { ref, inject, onMounted } from 'vue';
 import TokenTransfers from './TokenTransfers.vue';

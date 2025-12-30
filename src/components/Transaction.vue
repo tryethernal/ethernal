@@ -60,6 +60,14 @@
     </v-container>
 </template>
 
+/**
+ * @fileoverview Transaction detail page component.
+ * Displays comprehensive transaction information including overview, internal transactions,
+ * event logs, and state changes. Supports real-time updates via Pusher and URL hash navigation.
+ * @component Transaction
+ *
+ * @prop {string} hash - The transaction hash to display
+ */
 <script setup>
 import { ref, computed, onMounted, onUnmounted, watch, inject } from 'vue';
 import { useTheme } from 'vuetify';

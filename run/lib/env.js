@@ -1,4 +1,12 @@
+/**
+ * @fileoverview Environment variable accessors.
+ * Provides typed getters for all environment variables used in the application.
+ * Centralizes environment configuration to avoid direct process.env access.
+ * @module lib/env
+ */
+
 module.exports = {
+    /** @returns {string} Application domain (e.g., 'ethernal.io') */
     getAppDomain: () => process.env.APP_DOMAIN,
     getApiEndpoint:() => process.env.API_ENDPOINT,
     getDefaultPlanSlug: () => process.env.DEFAULT_PLAN_SLUG,

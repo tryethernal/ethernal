@@ -1,3 +1,9 @@
+/**
+ * @fileoverview V2 DEX processing job.
+ * Enqueues pair processing jobs for Uniswap V2-style DEX factories.
+ * @module jobs/processExplorerV2Dex
+ */
+
 const { ExplorerV2Dex, Explorer } = require('../models');
 const { getMaxV2DexPairsForTrial } = require('../lib/env');
 const { bulkEnqueue } = require('../lib/queue');

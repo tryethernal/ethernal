@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Viem chain definition helper.
+ * Creates custom chain configurations for Viem/Wagmi from RPC URL and chain ID.
+ * @module lib/chains
+ */
+
 import { defineChain } from 'viem';
 
 const defineCustomChain = (id, rpc) => {

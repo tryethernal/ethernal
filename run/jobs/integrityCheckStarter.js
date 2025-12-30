@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Integrity check starter job.
+ * Enqueues integrity checks for all active explorers with enabled checks.
+ * @module jobs/integrityCheckStarter
+ */
+
 const Sequelize = require('sequelize');
 const models = require('../models');
 const { enqueue } = require('../lib/queue');

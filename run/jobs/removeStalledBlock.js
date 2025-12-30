@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Stalled block removal job.
+ * Reverts blocks stuck in syncing state or triggers billing quota increase.
+ * @module jobs/removeStalledBlock
+ */
+
 const { Block } = require('../models');
 const { enqueue } = require('../lib/queue');
 

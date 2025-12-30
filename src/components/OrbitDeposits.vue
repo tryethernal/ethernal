@@ -69,6 +69,11 @@
     </v-container>
 </template>
 
+/**
+ * @fileoverview Orbit deposits list page component.
+ * Displays L1 to L2 cross-chain deposits with status and transaction links.
+ * @component OrbitDeposits
+ */
 <script setup>
 import { ref, reactive, inject } from 'vue';
 import HashLink from '@/components/HashLink.vue';
