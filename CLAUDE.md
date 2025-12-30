@@ -2,6 +2,28 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Quick Reference
+
+**When working on a task, check these first:**
+
+| Task Type | Key Files to Check |
+|-----------|-------------------|
+| API endpoint | `run/api/[feature].js`, `run/lib/firebase.js`, `src/plugins/server.js` |
+| New model | `run/models/`, `run/migrations/`, `run/lib/firebase.js` |
+| Background job | `run/jobs/[name].js`, `run/jobs/index.js`, `run/lib/queue.js` |
+| Frontend component | `src/components/`, `src/stores/`, `src/plugins/router.js` |
+| Auth/permissions | `run/middlewares/auth.js`, `run/middlewares/workspaceAuth.js` |
+| L2 integrations | `run/lib/orbit*.js`, `run/models/orbit*.js`, `pm2-server/logListener.js` |
+| Billing/Stripe | `run/webhooks/stripe.js`, `run/lib/stripe.js`, `run/api/stripe.js` |
+| Testing | `run/tests/mocks/`, `run/tests/api/`, `tests/unit/` |
+
+**Critical architectural insight:**
+- **Authorization** happens in middleware (`authMiddleware`, `workspaceAuthMiddleware`)
+- **firebase.js** is a data access layer abstracting Sequelize models (NOT an auth layer)
+- **Workspace** is the multi-tenancy boundary - all queries filter by workspaceId
+
+---
+
 ## Project Overview
 
 Ethernal is an open-source block explorer for EVM-based chains. It consists of a Vue 3 frontend and a Node.js/Express backend with PostgreSQL database.
@@ -29,13 +51,30 @@ npm run worker:low           # Start low priority worker
 ```
 
 ### Database Migrations
+
+**Against Docker database (local development):**
+```bash
+docker-compose -f docker-compose.dev.yml exec backend npx sequelize db:migrate
+docker-compose -f docker-compose.dev.yml exec backend npx sequelize db:seed:all
+```
+
+**Against local PostgreSQL (non-Docker):**
 ```bash
 cd run
 npx sequelize db:migrate     # Run migrations
 npx sequelize db:seed:all    # Run all seeders
 ```
 
-### Docker (self-hosted production)
+**Important:** Always use sequelize migrations, never run raw SQL for schema changes.
+
+### Docker Local Development
+```bash
+docker-compose -f docker-compose.dev.yml up -d    # Start full dev stack
+docker-compose -f docker-compose.dev.yml down     # Stop dev stack
+docker-compose -f docker-compose.dev.yml logs -f  # View logs
+```
+
+### Docker Self-Hosted Production
 ```bash
 make start   # Start production stack (generates env files on first run)
 make stop    # Stop all containers
@@ -43,7 +82,39 @@ make update  # Pull latest images and run migrations
 make nuke    # Remove everything including volumes
 ```
 
+---
+
 ## Architecture
+
+### Request Flow
+
+```
+Frontend (Vue Component)
+    ↓ $server plugin (src/plugins/server.js)
+    ↓ HTTP Request
+Backend API Route (run/api/*.js)
+    ↓ Middleware: authMiddleware OR workspaceAuthMiddleware
+    ↓ Sets: req.body.data.user, req.query.workspace
+firebase.js (Data access layer)
+    ↓ Abstracts Sequelize model queries
+Sequelize Models (run/models/)
+    ↓ Optional: enqueue background job
+BullMQ Workers → Jobs (run/jobs/)
+```
+
+### Entity Hierarchy
+
+```
+User (1)
+  └── Workspace (many)
+        ├── Explorer (1) - public-facing explorer instance
+        ├── Block (many)
+        ├── Transaction (many)
+        ├── Contract (many)
+        ├── TokenTransfer (many)
+        ├── OrbitChainConfig (1) - Arbitrum Orbit L2 config
+        └── OpChainConfig (1) - OP Stack L2 config
+```
 
 ### Frontend (`src/`)
 - **Vue 3** with Vuetify 3 for UI components
@@ -61,29 +132,348 @@ make nuke    # Remove everything including volumes
 - Background jobs in `run/jobs/` - block syncing, contract processing, token transfers
 - Workers in `run/workers/` - high/medium/low priority queues
 
-### Job Queue System
-Jobs are prioritized into three queues (high, medium, low) plus a dedicated `processHistoricalBlocks` queue. Workers process jobs like `blockSync`, `processContract`, `processTokenTransfer`.
+---
 
-### Key Models
-- `Explorer` - represents a blockchain explorer instance
-- `Block`, `Transaction`, `Contract` - core blockchain data
-- `TokenTransfer`, `ERC721Token` - token-related data
-- `User`, `Workspace` - user and workspace management
+## Data Access Patterns
+
+### firebase.js - The Data Access Layer
+
+`run/lib/firebase.js` is a large file (~4500 lines) that abstracts Sequelize model operations. It's used by API routes for:
+- Convenience functions over raw model queries
+- Consistent query patterns
+- Reusable CRUD operations
+
+**Note:** This is NOT an authorization layer. Authorization is handled by middleware.
+
+### Authorization Flow
+
+1. **authMiddleware** (`run/middlewares/auth.js`)
+   - Validates Firebase token OR API key from Authorization header
+   - Sets `req.body.data.user` and `req.body.data.uid`
+   - Used for user-scoped operations
+
+2. **workspaceAuthMiddleware** (`run/middlewares/workspaceAuth.js`)
+   - Extends authMiddleware
+   - Validates user owns the requested workspace
+   - Sets `req.query.workspace` with full workspace object
+   - Used for data queries (blocks, transactions, contracts)
+
+### API Route Pattern
+
+```javascript
+router.get('/:id', workspaceAuthMiddleware, async (req, res, next) => {
+    const data = { ...req.query, ...req.params };
+
+    try {
+        if (!data.required_field)
+            return managedError(new Error('Missing parameter'), req, res);
+
+        const result = await db.getWorkspaceData(
+            data.workspace.id,  // Always workspace-scoped
+            data.id,
+            data.page,
+            data.itemsPerPage
+        );
+
+        res.status(200).json(result);
+    } catch(error) {
+        unmanagedError(error, req, next);
+    }
+});
+```
+
+### Error Handling
+
+```javascript
+const { managedError, unmanagedError, managedWorkerError } = require('../lib/errors');
+
+// API: Expected/validation errors (400 status)
+managedError(new Error('User message'), req, res);
+
+// API: Unexpected exceptions (500, captured to Sentry)
+unmanagedError(error, req, next);
+
+// Jobs: Worker errors (logged with job context)
+managedWorkerError(error, jobName, jobData, workerName);
+```
+
+---
+
+## Job Queue System
+
+### Queue Priorities
+
+| Priority | Queue | Use Case |
+|----------|-------|----------|
+| High | `high` | Real-time sync: blockSync, receiptSync |
+| Medium | `medium` | Indexing: processContract, processTokenTransfer |
+| Low | `low` | Analytics, cleanup, non-urgent tasks |
+| Special | `processHistoricalBlocks` | Dedicated queue for historical sync |
+
+### Enqueue Pattern
+
+```javascript
+const { enqueue, bulkEnqueue } = require('../lib/queue');
+
+// Single job
+await enqueue(
+    'jobName',           // Queue/job name
+    `jobName-${id}`,     // Job ID (for deduplication)
+    { data },            // Job data
+    'high',              // Priority
+    null,                // Repeat config
+    1000,                // Delay in ms
+    true                 // unique: prevents duplicates
+);
+
+// Bulk enqueue (batches of 2000)
+await bulkEnqueue('jobName', [
+    { name: 'job-1', data: { ... } },
+    { name: 'job-2', data: { ... } }
+], 'medium');
+```
+
+### Common Job Chains
+
+```
+Block Sync Flow:
+blockSync → receiptSync → processContract → processTokenTransfer → balanceChanges
+
+L2 Event Flow:
+PM2 logListener → storeOrbitDeposit / checkOrbitMessageDeliveredLogs
+```
+
+### Job Naming Convention
+
+```
+${jobType}-${workspaceId}-${identifier}-${timestamp}
+
+Examples:
+- blockSync-123-1000-1703123456789
+- processContract-123-0xabc123...
+```
+
+---
+
+## L2 Chain Integrations
+
+### Architecture Overview
+
+Both Orbit (Arbitrum) and OP Stack follow the same pattern:
+
+```
+L2 Workspace
+    └── [Orbit/Op]ChainConfig
+          ├── Parent chain ID & RPC
+          ├── Contract addresses (portal, inbox, etc.)
+          └── Parent workspace reference
+                ↓
+PM2 logListener (pm2-server/logListener.js)
+    ├── Watches L1 events via RPC
+    └── Enqueues jobs for detected events
+                ↓
+Background Jobs
+    ├── storeOrbitDeposit / storeOpDeposit
+    ├── checkOrbitMessageDeliveredLogs
+    └── finalizePendingOrbitBatches
+                ↓
+Data Models
+    ├── [Orbit/Op]Batch - L1 batch submissions
+    ├── [Orbit/Op]Deposit - L1→L2 deposits
+    └── [Orbit/Op]Withdrawal - L2→L1 withdrawals
+```
+
+### Key Files
+
+| Component | Orbit | OP Stack |
+|-----------|-------|----------|
+| Config model | `run/models/orbitChainConfig.js` | `run/models/opChainConfig.js` |
+| Batch lib | `run/lib/orbitBatches.js` | `run/lib/opBatches.js` |
+| API routes | `run/api/orbitBatches.js`, `orbitDeposits.js` | `run/api/opBatches.js`, `opDeposits.js` |
+| Frontend | `src/components/OrbitBatches.vue` | `src/components/OpBatches.vue` |
+| Event listener | `pm2-server/logListener.js` | Same file |
+
+### Cross-Chain Event Detection
+
+L2 integrations watch L1 parent chain events:
+- **Deposits**: `TransactionDeposited` event on portal contract
+- **Batches**: Transactions to batch inbox address
+- **Withdrawals**: `MessagePassed` event on L2, then `WithdrawalFinalized` on L1
+
+---
+
+## Common Modification Patterns
+
+### Adding a New API Endpoint
+
+1. **Create route handler**: `run/api/[feature].js`
+   ```javascript
+   router.get('/:id', workspaceAuthMiddleware, async (req, res, next) => {
+       // ...
+   });
+   ```
+
+2. **Add data access function** (optional): `run/lib/firebase.js`
+
+3. **Register route**: `run/api/index.js`
+   ```javascript
+   router.use('/feature', require('./feature'));
+   ```
+
+4. **Add frontend method**: `src/plugins/server.js`
+   ```javascript
+   getFeature(id) { return this.get(`/feature/${id}`); }
+   ```
+
+5. **Create tests**: `run/tests/api/[feature].test.js`
+
+### Adding a New Model
+
+1. **Create model**: `run/models/[Feature].js`
+   ```javascript
+   module.exports = (sequelize, DataTypes) => {
+       class Feature extends Model {
+           static associate(models) {
+               Feature.belongsTo(models.Workspace);
+           }
+       }
+       Feature.init({ /* fields */ }, { sequelize, modelName: 'Feature' });
+       return Feature;
+   };
+   ```
+
+2. **Create migration**: `run/migrations/YYYYMMDDHHMMSS-create-feature.js`
+
+3. **Export model**: `run/models/index.js` (automatic)
+
+4. **Add CRUD functions**: `run/lib/firebase.js`
+
+5. **Create mock**: `run/tests/mocks/models/[Feature].js`
+
+### Adding a New Background Job
+
+1. **Create job handler**: `run/jobs/[jobName].js`
+   ```javascript
+   module.exports = async job => {
+       const { workspaceId, data } = job.data;
+       // Process job
+   };
+   ```
+
+2. **Register job**: `run/jobs/index.js`
+   ```javascript
+   module.exports = {
+       // ...existing jobs
+       jobName: require('./jobName')
+   };
+   ```
+
+3. **Enqueue from API or other job**:
+   ```javascript
+   await enqueue('jobName', `jobName-${id}`, { workspaceId, data });
+   ```
+
+### Adding a Frontend Component
+
+1. **Create component**: `src/components/[Feature].vue`
+
+2. **Use stores for state**:
+   ```javascript
+   import { useCurrentWorkspaceStore } from '@/stores/currentWorkspace';
+   const workspace = useCurrentWorkspaceStore();
+   ```
+
+3. **Add route** (if page): `src/plugins/router.js`
+
+4. **Create test**: `tests/unit/components/[Feature].spec.js`
+
+---
 
 ## Testing
 
-Frontend tests: `tests/unit/` directory, uses Vitest with Vue Test Utils
-Backend tests: `run/tests/` directory, uses Jest with supertest
+### Backend Tests (`run/tests/`)
 
-Run a single frontend test:
-```bash
-yarn test -- path/to/test.spec.js
+**Test Structure:**
+```
+run/tests/
+├── mocks/
+│   ├── lib/          # Library mocks (firebase, rpc, queue, lock)
+│   ├── models/       # Model mocks
+│   └── middlewares/  # Auth middleware mocks
+├── api/              # API route tests
+├── jobs/             # Job handler tests
+└── lib/              # Library function tests
 ```
 
-Run a single backend test:
+**Key Mock Files:**
+- `mocks/lib/firebase.js` - Auto-mocks all firebase.js exports
+- `mocks/models/index.js` - Centralizes model mocks
+- `mocks/middlewares/auth.js` - Injects uid='123' and user data
+- `mocks/middlewares/workspaceAuth.js` - Injects authenticated workspace
+
+**Running Tests:**
 ```bash
-cd run && npm test -- path/to/test.spec.js
+# Single test file
+cd run && npm test -- tests/api/faucets.test.js
+
+# With pattern matching
+cd run && npm test -- --testPathPattern=faucets
 ```
+
+### Frontend Tests (`tests/unit/`)
+
+```bash
+# Single test file
+yarn test -- ExplorerOpSettings
+
+# With watch mode
+yarn test -- --watch
+```
+
+### Writing API Tests
+
+```javascript
+require('../mocks/lib/queue');
+require('../mocks/lib/firebase');
+require('../mocks/models');
+
+const supertest = require('supertest');
+const app = require('../../app');
+const request = supertest(app);
+const db = require('../../lib/firebase');
+
+describe('GET /feature/:id', () => {
+    it('returns feature data', async () => {
+        jest.spyOn(db, 'getFeature').mockResolvedValueOnce({ id: 1, name: 'test' });
+
+        const res = await request.get('/api/feature/1')
+            .send({ data: { workspace: { id: 1 } } });
+
+        expect(res.status).toBe(200);
+        expect(res.body.name).toBe('test');
+    });
+});
+```
+
+---
+
+## Feature Locations
+
+| Feature | Backend API | Frontend Component | Models |
+|---------|-------------|-------------------|--------|
+| **Blocks** | `api/blocks.js` | `Block.vue`, `Blocks.vue` | `block.js` |
+| **Transactions** | `api/transactions.js` | `Transaction.vue`, `Transactions.vue` | `transaction.js` |
+| **Contracts** | `api/contracts.js` | `ContractDetails.vue`, `Contracts.vue` | `contract.js` |
+| **Token Transfers** | `api/modules/tokens.js` | `TokenTransfers.vue` | `tokentransfer.js` |
+| **Faucets** | `api/faucets.js` | `ExplorerFaucet.vue` | `explorerfaucet.js` |
+| **V2 DEX** | `api/v2Dexes.js` | `ExplorerDex.vue` | `explorerv2dex.js` |
+| **Billing** | `api/stripe.js`, `webhooks/stripe.js` | `ExplorerBilling.vue` | `stripesubscription.js` |
+| **Orbit L2** | `api/orbitBatches.js`, `orbitDeposits.js` | `OrbitBatches.vue`, `OrbitDeposits.vue` | `orbitBatch.js`, `orbitdeposit.js` |
+| **OP Stack L2** | `api/opBatches.js`, `opDeposits.js` | `OpBatches.vue`, `OpDeposits.vue` | `opBatch.js`, `opDeposit.js` |
+| **ERC721 NFTs** | `api/erc721Tokens.js`, `erc721Collections.js` | `ERC721Token.vue`, `ERC721Collection.vue` | `erc721token.js` |
+| **Contract Verification** | `api/contracts.js`, `lib/processContractVerification.js` | `ContractVerification.vue` | `ContractVerification.js` |
+
+---
 
 ## Code Style
 
@@ -102,19 +492,15 @@ Add a JSDoc comment block before the `<script>` or `<script setup>` tag:
 ```vue
 /**
  * @fileoverview Brief description of the component's purpose.
- * Additional details about functionality if needed.
  * @component ComponentName
  *
  * @prop {string} propName - Description of the prop
- * @prop {Object} [optionalProp] - Optional prop with brackets
  * @emits eventName - Description of when this event is emitted
  */
 <script setup>
 ```
 
 ### Backend Functions (Node.js)
-
-Add JSDoc before each exported function:
 
 ```javascript
 /**
@@ -126,50 +512,6 @@ Add JSDoc before each exported function:
  * @returns {Promise<ReturnType>} Description of return value
  * @throws {Error} When something fails
  */
-const myFunction = async (param1, options = {}) => {
-```
-
-### Sequelize Models
-
-Add file-level and class-level documentation:
-
-```javascript
-/**
- * @fileoverview Model description
- * @module models/ModelName
- */
-
-/**
- * ModelName model class.
- * Detailed description of what this model represents.
- *
- * @class ModelName
- * @extends Sequelize.Model
- *
- * @property {number} id - Primary key
- * @property {string} name - Description of the field
- */
-```
-
-### API Routes
-
-Document the route file and each endpoint:
-
-```javascript
-/**
- * @fileoverview API endpoints for resource management
- * @module api/resources
- */
-
-/**
- * GET /resources
- * Retrieves a paginated list of resources.
- *
- * @param {Object} req.query - Query parameters
- * @param {number} [req.query.page=1] - Page number
- * @returns {Object} { items: Resource[], total: number }
- */
-router.get('/', async (req, res) => {
 ```
 
 ### Key Documentation Tags
@@ -184,27 +526,31 @@ router.get('/', async (req, res) => {
 | `@throws` | Exceptions that may be thrown |
 | `@prop` | Vue component prop |
 | `@emits` | Vue component event |
-| `@property` | Object/class property |
+
+---
 
 ## Module Reference
-
-All source files include JSDoc documentation. Below is a reference of the main modules.
 
 ### Backend Core Libraries (`run/lib/`)
 
 | Module | Description |
 |--------|-------------|
+| `firebase.js` | Data access layer - abstracts Sequelize model operations |
 | `utils.js` | Common utilities (sanitize, slugify, BigNumber handling, sleep, timeout) |
 | `queue.js` | BullMQ job queue management (enqueue, bulkEnqueue) |
-| `rpc.js` | Ethereum RPC connectors (ProviderConnector, ContractConnector, Tracer, ERC721Connector) |
+| `rpc.js` | Ethereum RPC connectors (ProviderConnector, ContractConnector, Tracer) |
 | `crypto.js` | Encryption (AES-256), JWT encoding, Firebase Scrypt password hashing |
 | `pusher.js` | Real-time notifications via Pusher/Soketi WebSockets |
 | `pm2.js` | PM2 process management client for sync processes |
 | `logger.js` | Winston-based structured JSON logging |
 | `env.js` | Environment variable accessors |
 | `flags.js` | Feature flags (isSelfHosted, isPusherEnabled, isStripeEnabled, etc.) |
+| `errors.js` | Error handling utilities (managedError, unmanagedError) |
 | `abi.js` | ABI encoding/decoding, token standard detection (ERC20/721/1155) |
 | `trace.js` | Transaction trace parsing (debug_traceTransaction) |
+| `stripe.js` | Stripe subscription and billing utilities |
+| `orbitBatches.js` | Arbitrum Orbit batch detection and parsing |
+| `orbitWithdrawals.js` | Orbit withdrawal event handling |
 
 ### Backend Models (`run/models/`)
 
@@ -222,29 +568,9 @@ Core data models using Sequelize ORM:
 | `StripeSubscription` | Billing subscriptions |
 | `OrbitChainConfig` | Arbitrum Orbit L2 chain configuration |
 | `OpChainConfig` | OP Stack L2 chain configuration |
-
-### Backend API Routes (`run/api/`)
-
-RESTful endpoints grouped by resource:
-
-| Route File | Endpoints |
-|------------|-----------|
-| `blocks.js` | GET /blocks, GET /blocks/:number |
-| `transactions.js` | GET /transactions, GET /transactions/:hash |
-| `contracts.js` | GET /contracts, POST /contracts/:address/verify |
-| `explorers.js` | CRUD operations for explorer management |
-| `workspaces.js` | Workspace CRUD and settings |
-
-### Backend Jobs (`run/jobs/`)
-
-Background job handlers for async processing:
-
-| Job | Description |
-|-----|-------------|
-| `blockSync` | Synchronizes blocks from RPC to database |
-| `processContract` | Detects token standards, fetches metadata |
-| `processTokenTransfer` | Creates token transfer records from logs |
-| `integrityCheck` | Verifies block sequence integrity |
+| `OrbitBatch` | L2 batch submissions to L1 |
+| `OrbitDeposit` | L1→L2 deposit transactions |
+| `OrbitWithdrawal` | L2→L1 withdrawal messages |
 
 ### Frontend Plugins (`src/plugins/`)
 
