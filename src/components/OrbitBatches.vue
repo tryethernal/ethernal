@@ -79,6 +79,11 @@
     </v-container>
 </template>
 
+/**
+ * @fileoverview Orbit batches list page component.
+ * Displays L2 transaction batches posted to L1 with confirmation status and block ranges.
+ * @component OrbitBatches
+ */
 <script setup>
 import { ref, reactive, inject } from 'vue';
 import { useCurrentWorkspaceStore } from '@/stores/currentWorkspace';

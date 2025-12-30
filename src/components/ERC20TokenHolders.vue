@@ -42,6 +42,15 @@
     </v-data-table-server>
 </template>
 
+/**
+ * @fileoverview ERC-20 token holders component.
+ * Displays a paginated table of token holders with their balances and percentage shares.
+ * @component ERC20TokenHolders
+ *
+ * @prop {string} address - The token contract address
+ * @prop {string|number} tokenDecimals - Token decimal places
+ * @prop {string} tokenSymbol - Token symbol
+ */
 <script setup>
 import { ref, inject } from 'vue';
 import HashLink from './HashLink.vue';

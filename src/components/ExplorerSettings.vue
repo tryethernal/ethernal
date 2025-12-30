@@ -59,6 +59,14 @@
     </v-card>
 </template>
 
+/**
+ * @fileoverview Explorer settings form component.
+ * Manages core explorer configuration including name, RPC server, slug, native token, and total supply.
+ * @component ExplorerSettings
+ *
+ * @prop {Object} explorer - The explorer data object
+ * @emits updated - Emitted when settings are saved
+ */
 <script setup>
 import { ref, onMounted, inject } from 'vue';
 import { useEnvStore } from '../stores/env';

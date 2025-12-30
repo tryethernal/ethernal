@@ -49,6 +49,14 @@
     </v-data-table-server>
 </template>
 
+/**
+ * @fileoverview Contract logs (events) component.
+ * Displays paginated table of emitted events for a contract with real-time updates.
+ * Shows event method, transaction hash, block number, and timestamp.
+ * @component ContractLogs
+ *
+ * @prop {string} address - The contract address to show logs for
+ */
 <script setup>
 import { ref, watch, onUnmounted, inject, onMounted } from 'vue';
 import HashLink from './HashLink.vue';

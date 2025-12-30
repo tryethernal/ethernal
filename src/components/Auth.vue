@@ -134,6 +134,12 @@
     </v-layout>
 </template>
 
+/**
+ * @fileoverview Authentication page component.
+ * Handles user sign-in, sign-up, password reset, and forgotten password flows.
+ * Supports explorer token-based onboarding for new users.
+ * @component Auth
+ */
 <script>
 import { mapStores } from 'pinia';
 import { useUserStore } from '../stores/user';

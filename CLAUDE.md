@@ -91,6 +91,101 @@ cd run && npm test -- path/to/test.spec.js
 - Fix Vue console warnings (`[Vue warn]`)
 - Use `@/` alias for imports from `src/` in frontend code
 
+## Documentation Requirements
+
+All new files and functions must include JSDoc documentation. Use the `/**` format (not `/*`).
+
+### Vue Components (Frontend)
+
+Add a JSDoc comment block before the `<script>` or `<script setup>` tag:
+
+```vue
+/**
+ * @fileoverview Brief description of the component's purpose.
+ * Additional details about functionality if needed.
+ * @component ComponentName
+ *
+ * @prop {string} propName - Description of the prop
+ * @prop {Object} [optionalProp] - Optional prop with brackets
+ * @emits eventName - Description of when this event is emitted
+ */
+<script setup>
+```
+
+### Backend Functions (Node.js)
+
+Add JSDoc before each exported function:
+
+```javascript
+/**
+ * Brief description of what the function does.
+ *
+ * @param {string} param1 - Description of param1
+ * @param {Object} options - Configuration options
+ * @param {boolean} [options.optional] - Optional parameter
+ * @returns {Promise<ReturnType>} Description of return value
+ * @throws {Error} When something fails
+ */
+const myFunction = async (param1, options = {}) => {
+```
+
+### Sequelize Models
+
+Add file-level and class-level documentation:
+
+```javascript
+/**
+ * @fileoverview Model description
+ * @module models/ModelName
+ */
+
+/**
+ * ModelName model class.
+ * Detailed description of what this model represents.
+ *
+ * @class ModelName
+ * @extends Sequelize.Model
+ *
+ * @property {number} id - Primary key
+ * @property {string} name - Description of the field
+ */
+```
+
+### API Routes
+
+Document the route file and each endpoint:
+
+```javascript
+/**
+ * @fileoverview API endpoints for resource management
+ * @module api/resources
+ */
+
+/**
+ * GET /resources
+ * Retrieves a paginated list of resources.
+ *
+ * @param {Object} req.query - Query parameters
+ * @param {number} [req.query.page=1] - Page number
+ * @returns {Object} { items: Resource[], total: number }
+ */
+router.get('/', async (req, res) => {
+```
+
+### Key Documentation Tags
+
+| Tag | Usage |
+|-----|-------|
+| `@fileoverview` | File-level description (first line of JSDoc) |
+| `@module` | Module path for backend files |
+| `@component` | Vue component name |
+| `@param` | Function parameter with type and description |
+| `@returns` | Return value with type and description |
+| `@throws` | Exceptions that may be thrown |
+| `@prop` | Vue component prop |
+| `@emits` | Vue component event |
+| `@property` | Object/class property |
+
 ## Module Reference
 
 All source files include JSDoc documentation. Below is a reference of the main modules.
