@@ -30,6 +30,10 @@ module.exports = async job => {
             'user',
             'orbitConfig',
             {
+                model: OpChainConfig,
+                as: 'opChildConfigs'
+            },
+            {
                 model: Explorer,
                 as: 'explorer',
                 attributes: ['id', 'shouldSync'],
@@ -176,14 +180,43 @@ module.exports = async job => {
             processedBlock.transactionsCount = filteredTransactions.length;
         }
 
+        // OP Stack L1 filtering - only sync OP-relevant transactions
+        if (workspace.opChildConfigs && workspace.opChildConfigs.length > 0) {
+            let opContractAddresses = [];
+
+            for (const opConfig of workspace.opChildConfigs) {
+                if (opConfig.batchInboxAddress)
+                    opContractAddresses.push(opConfig.batchInboxAddress.toLowerCase());
+                if (opConfig.optimismPortalAddress)
+                    opContractAddresses.push(opConfig.optimismPortalAddress.toLowerCase());
+                if (opConfig.l2OutputOracleAddress)
+                    opContractAddresses.push(opConfig.l2OutputOracleAddress.toLowerCase());
+                if (opConfig.disputeGameFactoryAddress)
+                    opContractAddresses.push(opConfig.disputeGameFactoryAddress.toLowerCase());
+                if (opConfig.systemConfigAddress)
+                    opContractAddresses.push(opConfig.systemConfigAddress.toLowerCase());
+            }
+
+            opContractAddresses = [...new Set(opContractAddresses)];
+
+            const opFilteredTransactions = processedBlock.transactions.filter(tx => {
+                if (!tx.to) return false;
+                return opContractAddresses.includes(tx.to.toLowerCase());
+            });
+
+            if (opFilteredTransactions.length > 0)
+                logger.info(`OP filtered transactions: ${opFilteredTransactions.length}`);
+
+            processedBlock.transactions = opFilteredTransactions;
+            processedBlock.transactionsCount = opFilteredTransactions.length;
+        }
+
         const syncedBlock = await workspace.safeCreatePartialBlock(processedBlock);
         if (!syncedBlock)
             return "Couldn't store block";
 
-        // OP Stack batch detection - check if this L1 workspace has OP child chains
-        const opChildConfigs = await OpChainConfig.findAll({
-            where: { parentWorkspaceId: workspace.id }
-        });
+        // OP Stack batch detection - use already-loaded opChildConfigs
+        const opChildConfigs = workspace.opChildConfigs || [];
 
         for (const opConfig of opChildConfigs) {
             if (!opConfig.batchInboxAddress) continue;
