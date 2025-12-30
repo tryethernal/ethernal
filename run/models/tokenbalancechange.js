@@ -1,3 +1,18 @@
+/**
+ * @fileoverview TokenBalanceChange model - tracks token balance changes per address.
+ * Records balance diffs from token transfers for analytics and history.
+ *
+ * @module models/TokenBalanceChange
+ *
+ * @property {number} id - Primary key
+ * @property {number} workspaceId - Foreign key to workspace
+ * @property {number} transactionId - Foreign key to transaction
+ * @property {string} token - Token contract address
+ * @property {string} address - Account address with balance change
+ * @property {string} diff - Balance difference (positive or negative)
+ * @property {string} currentBalance - Balance after the transaction
+ */
+
 'use strict';
 const {
   Model,

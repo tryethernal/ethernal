@@ -1,3 +1,18 @@
+/**
+ * @fileoverview ContractVerification model - stores contract verification metadata.
+ * Contains compiler settings and links to source files.
+ *
+ * @module models/ContractVerification
+ *
+ * @property {number} id - Primary key
+ * @property {number} workspaceId - Foreign key to workspace
+ * @property {number} contractId - Foreign key to contract
+ * @property {string} compilerVersion - Solidity compiler version
+ * @property {string} evmVersion - Target EVM version
+ * @property {number} runs - Optimizer runs
+ * @property {Object} libraries - Linked library addresses
+ */
+
 'use strict';
 const {
   Model

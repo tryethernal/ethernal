@@ -28,6 +28,14 @@
     </v-card>
 </template>
 
+/**
+ * @fileoverview Contract details container component.
+ * Provides tabbed interface for viewing contract code, read methods, and write methods.
+ * Supports URL hash navigation and admin-only ABI import functionality.
+ * @component ContractDetails
+ *
+ * @prop {Object} contract - The contract data object
+ */
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue';
 import { useTheme } from 'vuetify';

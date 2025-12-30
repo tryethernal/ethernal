@@ -1,3 +1,15 @@
+/**
+ * @fileoverview V2DexPoolReserve model - TimescaleDB hypertable for pool reserve history.
+ * Tracks reserve changes over time for Uniswap V2 style pairs.
+ *
+ * @module models/V2DexPoolReserve
+ *
+ * @property {number} v2DexPairId - Foreign key to pair
+ * @property {Date} timestamp - Event timestamp (primary key)
+ * @property {string} reserve0 - Token0 reserve amount
+ * @property {string} reserve1 - Token1 reserve amount
+ */
+
 'use strict';
 const {
   Model

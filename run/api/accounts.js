@@ -1,3 +1,14 @@
+/**
+ * @fileoverview Accounts API endpoints.
+ * Manages imported accounts with private keys and native token balances.
+ * @module api/accounts
+ *
+ * @route GET / - Get filtered native token balances (paginated)
+ * @route GET /imported - Get imported accounts for current user
+ * @route POST /:address/syncBalance - Update account balance
+ * @route POST /:address/privateKey - Store encrypted private key for account
+ */
+
 const express = require('express');
 const router = express.Router();
 const logger = require('../lib/logger');

@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Data retention enforcement job.
+ * Enqueues workspace resets for workspaces with data retention limits.
+ * @module jobs/enforceDataRetentionForWorkspace
+ */
+
 const { Op } = require('sequelize');
 const { enqueue } = require('../lib/queue');
 const { Workspace, Explorer, StripeSubscription } = require('../models');

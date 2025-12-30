@@ -1,6 +1,17 @@
+/**
+ * @fileoverview Arbitrum Orbit batch event parsing utilities.
+ * Detects and extracts data from SequencerBatchDelivered events.
+ * @module lib/orbitBatches
+ */
+
 const { ethers } = require('ethers');
 const iface = new ethers.utils.Interface(require('../lib/abis/orbitSequencerInbox.json'));
 
+/**
+ * Checks if a log is a SequencerBatchDelivered event.
+ * @param {Object} log - Transaction log object
+ * @returns {boolean} True if log is a batch delivered event
+ */
 const isOrbitBatchDeliveredLog = (log) => {
     try {
         const batchDeliveredTopic = iface.getEventTopic('SequencerBatchDelivered');
@@ -10,6 +21,12 @@ const isOrbitBatchDeliveredLog = (log) => {
     }
 };
 
+/**
+ * Extracts batch data from a SequencerBatchDelivered event.
+ * @param {Object} log - Transaction log containing the event
+ * @param {Object} transaction - Parent transaction object
+ * @returns {Object} Parsed batch data including sequence number, accumulators, and metadata
+ */
 const getOrbitBatchDeliveredData = (log, transaction) => {
     const parsedLog = iface.parseLog(log);
     const parsedTransaction = iface.parseTransaction(transaction);

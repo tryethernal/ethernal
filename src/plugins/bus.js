@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Event bus plugin.
+ * Simple reactive event emitter for cross-component communication.
+ * @module plugins/bus
+ */
+
 import { reactive } from 'vue';
 
 const eventBus = reactive({ events: {} });

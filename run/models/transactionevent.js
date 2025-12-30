@@ -1,3 +1,17 @@
+/**
+ * @fileoverview TransactionEvent model - TimescaleDB hypertable for transaction analytics.
+ * Stores denormalized transaction data for time-series queries.
+ *
+ * @module models/TransactionEvent
+ *
+ * @property {number} workspaceId - Workspace ID
+ * @property {number} transactionId - Transaction ID
+ * @property {Date} timestamp - Event timestamp (primary key)
+ * @property {string} transactionFee - Total transaction fee
+ * @property {string} gasPrice - Gas price used
+ * @property {string} gasUsed - Gas consumed
+ */
+
 'use strict';
 const {
   Model

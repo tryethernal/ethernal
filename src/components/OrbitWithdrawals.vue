@@ -74,6 +74,11 @@
     </v-container>
 </template>
 
+/**
+ * @fileoverview Orbit withdrawals list page component.
+ * Displays L2 to L1 cross-chain withdrawals with status and claim functionality.
+ * @component OrbitWithdrawals
+ */
 <script setup>
 import { ref, reactive, inject } from 'vue';
 import HashLink from '@/components/HashLink.vue';

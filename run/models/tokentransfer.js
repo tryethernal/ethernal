@@ -1,3 +1,20 @@
+/**
+ * @fileoverview TokenTransfer model - represents ERC20/ERC721/ERC1155 token transfers.
+ * Tracks token movements extracted from transaction logs.
+ *
+ * @module models/TokenTransfer
+ *
+ * @property {number} id - Primary key
+ * @property {number} workspaceId - Foreign key to workspace
+ * @property {number} transactionId - Foreign key to transaction
+ * @property {string} src - Source address
+ * @property {string} dst - Destination address
+ * @property {string} token - Token contract address
+ * @property {string} amount - Transfer amount
+ * @property {string} tokenId - NFT token ID (for ERC721/1155)
+ * @property {boolean} isReward - Whether this is a validator reward
+ */
+
 'use strict';
 const {
   Model,

@@ -1,6 +1,8 @@
-/*
-    This middleware checks if the instance is self-hosted
-*/
+/**
+ * @fileoverview Self-hosted middleware.
+ * Gates routes that are only available on self-hosted instances.
+ * @module middlewares/selfHosted
+ */
 
 const logger = require('../lib/logger');
 const { isSelfHosted } = require('../lib/flags');

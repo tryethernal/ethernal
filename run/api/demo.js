@@ -1,3 +1,14 @@
+/**
+ * @fileoverview Demo explorer API endpoints.
+ * Creates and manages demo explorers for trial users.
+ * @module api/demo
+ *
+ * @route POST /explorers/:id/v2_dexes - Create V2 DEX for demo explorer
+ * @route GET /explorers - Get demo explorer by token
+ * @route POST /migrateExplorer - Migrate demo explorer to user account with trial
+ * @route POST /explorers - Create new demo explorer
+ */
+
 const express = require('express');
 const axios = require('axios');
 const { getDemoUserId, getDefaultPlanSlug, getAppDomain, getDemoTrialSlug, getStripeSecretKey, getDefaultExplorerTrialDays, whitelistedNetworkIdsForDemo, maxDemoExplorersForNetwork, getDiscordDemoExplorerChannelWebhook } = require('../lib/env');

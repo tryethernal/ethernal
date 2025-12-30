@@ -1,3 +1,35 @@
+/**
+ * @fileoverview Explorer API endpoints.
+ * Manages explorer lifecycle: creation, configuration, syncing, and billing.
+ * @module api/explorers
+ *
+ * @route GET / - Get user's explorers (paginated)
+ * @route GET /:id - Get explorer by ID
+ * @route POST / - Create new explorer
+ * @route DELETE /:id - Delete explorer
+ * @route GET /search - Search explorer by domain
+ * @route GET /:id/orbitConfig - Get Orbit L2 configuration
+ * @route PUT /:id/orbitConfig - Update Orbit L2 configuration
+ * @route POST /:id/orbitConfig - Create Orbit L2 configuration
+ * @route PUT /:id/startSync - Start block synchronization
+ * @route PUT /:id/stopSync - Stop block synchronization
+ * @route GET /:id/syncStatus - Get synchronization status
+ * @route POST /:id/settings - Update explorer settings
+ * @route POST /:id/branding - Update explorer branding
+ * @route POST /:id/domains - Add custom domain
+ * @route POST /:id/faucets - Create faucet for explorer
+ * @route POST /:id/v2_dexes - Create V2 DEX for explorer
+ * @route GET /billing - Get billing summary
+ * @route GET /plans - Get available subscription plans
+ * @route POST /:id/subscription - Create subscription
+ * @route PUT /:id/subscription - Update subscription
+ * @route DELETE /:id/subscription - Cancel subscription
+ * @route POST /:id/startTrial - Start trial subscription
+ * @route POST /:id/cryptoSubscription - Create crypto payment subscription
+ * @route PUT /:id/quotaExtension - Update quota extension
+ * @route DELETE /:id/quotaExtension - Remove quota extension
+ */
+
 const { getNodeEnv, getAppDomain, getDefaultPlanSlug, getDefaultExplorerTrialDays, getStripeSecretKey } = require('../lib/env');
 const stripe = require('stripe')(getStripeSecretKey());
 const express = require('express');

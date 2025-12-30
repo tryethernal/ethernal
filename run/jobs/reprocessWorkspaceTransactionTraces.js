@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Transaction trace reprocessing job.
+ * Enqueues trace processing for all transactions in a workspace.
+ * @module jobs/reprocessWorkspaceTransactionTraces
+ */
+
 const models = require('../models');
 const { bulkEnqueue } = require('../lib/queue');
 

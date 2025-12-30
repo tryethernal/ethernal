@@ -1,7 +1,8 @@
-/*
-    This sets up the middleware used for token auth
-    The actually code is in strategies/token.js to make it easier to unit test
-*/
+/**
+ * @fileoverview Passport token strategy middleware.
+ * Handles JWT token authentication via passport-custom.
+ * @module middlewares/passportTokenStrategy
+ */
 
 const passport = require('passport');
 const CustomStrategy = require('passport-custom');

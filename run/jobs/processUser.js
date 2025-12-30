@@ -1,3 +1,9 @@
+/**
+ * @fileoverview User processing job.
+ * Tracks new user signups in analytics and syncs to Ghost blog.
+ * @module jobs/processUser
+ */
+
 const GhostAdminAPI = require('@tryghost/admin-api');
 const Analytics = require('../lib/analytics');
 const { managedWorkerError } = require('../lib/errors');

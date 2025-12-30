@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Job handler exports.
+ * Aggregates all background job handlers organized by priority level.
+ * @module jobs
+ */
+
 module.exports = {
     // High priority
     blockSync: require('./blockSync'),

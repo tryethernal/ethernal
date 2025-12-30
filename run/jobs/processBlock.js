@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Block processing job.
+ * Creates block events with gas analytics data (fee history).
+ * @module jobs/processBlock
+ */
+
 const { Block, Workspace } = require('../models');
 const { sanitize } = require('../lib/utils');
 

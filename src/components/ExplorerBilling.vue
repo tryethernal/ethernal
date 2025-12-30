@@ -26,6 +26,15 @@
     </v-card>
 </template>
 
+/**
+ * @fileoverview Explorer billing component.
+ * Displays subscription status, plan management, and quota usage.
+ * @component ExplorerBilling
+ *
+ * @prop {Object} explorer - The explorer data object
+ * @prop {boolean} [sso=false] - Whether user is authenticated via SSO
+ * @emits updated - Emitted when billing settings change
+ */
 <script setup>
 import { ref, computed, inject } from 'vue';
 import UpdateExplorerPlanModal from './UpdateExplorerPlanModal.vue';

@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Authentication middleware.
+ * Validates Firebase tokens or API keys from Authorization header.
+ * @module middlewares/auth
+ */
+
 const { getAuth } = require('firebase-admin/auth');
 const Sentry = require('@sentry/node');
 const db = require('../lib/firebase');

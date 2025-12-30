@@ -1,3 +1,14 @@
+/**
+ * @fileoverview Block API endpoints.
+ * Provides routes for retrieving blocks, syncing block ranges, and getting block transactions.
+ * @module api/blocks
+ *
+ * @route GET /:number/transactions - Get transactions for a block
+ * @route POST /syncRange - Sync a range of blocks
+ * @route GET /:number - Get block by number
+ * @route GET / - List blocks with pagination
+ */
+
 const express = require('express');
 const { stringifyBns, sanitize } = require('../lib/utils');
 const { getAppDomain } = require('../lib/env');

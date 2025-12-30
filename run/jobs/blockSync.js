@@ -1,3 +1,10 @@
+/**
+ * @fileoverview Block sync job.
+ * Fetches a single block from RPC and stores it with transactions.
+ * Enqueues receipt sync jobs for each transaction.
+ * @module jobs/blockSync
+ */
+
 const { ProviderConnector } = require('../lib/rpc');
 const { Workspace, Explorer, StripeSubscription, RpcHealthCheck, IntegrityCheck, Block, OrbitChainConfig, OpChainConfig, OpBatch, sequelize } = require('../models');
 const db = require('../lib/firebase');

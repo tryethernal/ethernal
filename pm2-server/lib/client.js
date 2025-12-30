@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Viem client factory.
+ * Creates Viem public clients for RPC connections with auth support.
+ * @module pm2-server/lib/client
+ */
+
 const { createPublicClient, http, defineChain, webSocket } = require('viem');
 
 const getProvider = (_rpcServer) => {

@@ -59,6 +59,13 @@
         </v-card>
     </v-dialog>
 </template>
+/**
+ * @fileoverview Create explorer modal component.
+ * Dialog for creating a new public explorer with plan selection and workspace configuration.
+ * @component CreateExplorerModal
+ *
+ * @emits explorerCreated - Emitted when a new explorer is successfully created
+ */
 <script setup>
 import { ref, inject } from 'vue';
 import { useUserStore } from '../stores/user';

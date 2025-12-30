@@ -1,3 +1,17 @@
+/**
+ * @fileoverview ContractSource model - stores verified contract source files.
+ * Each source file is linked to a contract verification record.
+ *
+ * @module models/ContractSource
+ *
+ * @property {number} id - Primary key
+ * @property {number} workspaceId - Foreign key to workspace
+ * @property {number} contractId - Foreign key to contract
+ * @property {number} contractVerificationId - Foreign key to verification
+ * @property {string} fileName - Source file name
+ * @property {string} content - Source file content
+ */
+
 'use strict';
 const {
   Model

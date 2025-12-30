@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Setup router plugin.
+ * Routes for self-hosted instance initial setup wizard.
+ * @module plugins/setupRouter
+ */
+
 import { createWebHistory, createRouter } from 'vue-router';
 import SelfHostedSetup from '../components/SelfHostedSetup.vue';
 

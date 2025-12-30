@@ -1,3 +1,9 @@
+/**
+ * @fileoverview MetaMask transaction utilities.
+ * Provides helpers for sending transactions via MetaMask window.ethereum.
+ * @module lib/metamask
+ */
+
 const ethers = require('ethers');
 
 export const sendTransaction = ({ ethereum, address, abi, signature, params, options }) => {

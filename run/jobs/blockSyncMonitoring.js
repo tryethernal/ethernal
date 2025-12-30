@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Block sync monitoring job.
+ * Checks if explorers are falling behind and creates OpsGenie alerts.
+ * @module jobs/blockSyncMonitoring
+ */
+
 const { Sequelize } = require('sequelize');
 const { Explorer, StripeSubscription, StripePlan, Workspace } = require('../models');
 const logger = require('../lib/logger');

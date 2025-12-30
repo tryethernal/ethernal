@@ -1,3 +1,16 @@
+/**
+ * @fileoverview OrbitDeposit model - tracks L1→L2 deposits on Orbit chains.
+ * Stores deposit info and finalization status.
+ *
+ * @module models/OrbitDeposit
+ *
+ * @property {number} id - Primary key
+ * @property {number} workspaceId - Foreign key to L2 workspace
+ * @property {string} l1TransactionHash - L1 deposit transaction hash
+ * @property {string} l2TransactionHash - L2 finalization transaction hash
+ * @property {string} status - pending/confirmed
+ */
+
 'use strict';
 const { Model } = require('sequelize');
 const moment = require('moment');

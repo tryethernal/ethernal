@@ -1,3 +1,10 @@
+/**
+ * @fileoverview Main Vue Router plugin.
+ * Defines all application routes including Etherscan-compatible paths.
+ * Routes for blocks, transactions, addresses, contracts, tokens, explorers.
+ * @module plugins/router
+ */
+
 import { createWebHistory, createRouter } from 'vue-router';
 import Blocks from '../components/Blocks.vue';
 import Block from '../components/Block.vue';

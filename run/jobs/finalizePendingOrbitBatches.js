@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Orbit batch finalization job.
+ * Confirms pending batches once parent chain reaches safe block.
+ * @module jobs/finalizePendingOrbitBatches
+ */
+
 const logger = require('../lib/logger');
 const { OrbitBatch, Workspace } = require('../models');
 const { Op } = require('sequelize');

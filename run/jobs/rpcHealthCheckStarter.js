@@ -1,3 +1,9 @@
+/**
+ * @fileoverview RPC health check starter job.
+ * Enqueues health checks for all workspaces with enabled RPC monitoring.
+ * @module jobs/rpcHealthCheckStarter
+ */
+
 const { Workspace, Explorer, StripeSubscription } = require('../models');
 const { enqueue } = require('../lib/queue');
 

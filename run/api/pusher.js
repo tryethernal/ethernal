@@ -1,3 +1,11 @@
+/**
+ * @fileoverview Pusher/Soketi WebSocket API endpoints.
+ * Handles channel authorization for real-time updates.
+ * @module api/pusher
+ *
+ * @route POST /authorization - Authorize WebSocket channel subscription
+ */
+
 const express = require('express');
 const { pusher } = require('../lib/pusher');
 const { managedError, unmanagedError } = require('../lib/errors');

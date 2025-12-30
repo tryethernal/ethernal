@@ -1,3 +1,21 @@
+/**
+ * @fileoverview Block model - represents synchronized blockchain blocks.
+ * Stores block headers, metadata, and manages block-related events.
+ *
+ * @module models/Block
+ *
+ * @property {number} id - Primary key
+ * @property {number} workspaceId - Foreign key to workspace
+ * @property {number} number - Block number
+ * @property {string} hash - Block hash
+ * @property {Date} timestamp - Block timestamp
+ * @property {number} transactionsCount - Number of transactions in block
+ * @property {string} miner - Block miner/validator address
+ * @property {string} gasUsed - Total gas used
+ * @property {string} gasLimit - Block gas limit
+ * @property {string} baseFeePerGas - EIP-1559 base fee
+ */
+
 'use strict';
 const ethers = require('ethers');
 const {
@@ -29,6 +47,11 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
+    /**
+     * Safely destroys the block along with its transactions and event.
+     * @param {Object} transaction - Sequelize transaction
+     * @returns {Promise<void>}
+     */
     async safeDestroy(transaction) {
       const transactions = await this.getTransactions();
       for (let i = 0; i < transactions.length; i++)
@@ -41,6 +64,12 @@ module.exports = (sequelize, DataTypes) => {
       return this.destroy({ transaction });
     }
 
+    /**
+     * Creates a block event record for analytics.
+     * @param {Object} event - Event data with gas metrics
+     * @param {Object} [transaction] - Sequelize transaction
+     * @returns {Promise<BlockEvent>}
+     */
     safeCreateEvent(event, transaction) {
       return sequelize.models.BlockEvent.bulkCreate(
         [
@@ -65,6 +94,11 @@ module.exports = (sequelize, DataTypes) => {
       );
     }
 
+    /**
+     * Reverts the block if it's only partially synced.
+     * Destroys the block and its transactions if syncing is incomplete.
+     * @returns {Promise<void>}
+     */
     async revertIfPartial() {
         const transactions = await this.getTransactions();
         const isSyncing = transactions.map(t => t.isSyncing).length > 0 || transactions.length != this.transactionsCount;
@@ -78,6 +112,12 @@ module.exports = (sequelize, DataTypes) => {
         );
     }
 
+    /**
+     * Post-creation hook for triggering real-time updates and background jobs.
+     * Enqueues block processing and transaction trace jobs for public workspaces.
+     * @param {Object} options - Hook options with optional transaction
+     * @returns {Promise<void>}
+     */
     async afterCreate(options) {
         const afterCreateFn = async () => {
             if (Date.now() / 1000 - this.timestamp < 60 * 10)

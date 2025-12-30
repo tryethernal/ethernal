@@ -9,6 +9,16 @@
     />
 </template>
 
+/**
+ * @fileoverview ERC-721 token transfers component.
+ * Wrapper for TokenTransfers that fetches and displays NFT transfers
+ * for a collection or specific token ID.
+ * @component ERC721TokenTransfers
+ *
+ * @prop {string} address - The NFT contract address
+ * @prop {string} [tokenId] - Optional token ID to filter transfers
+ * @prop {Array} [headers] - Custom table headers configuration
+ */
 <script setup>
 import { ref } from 'vue';
 import { inject } from 'vue';

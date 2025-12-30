@@ -1,3 +1,23 @@
+/**
+ * @fileoverview Transaction model - represents blockchain transactions.
+ * Stores transaction data, receipts, token transfers, and trace information.
+ * Handles Orbit L2 chain events (batches, withdrawals, nodes).
+ *
+ * @module models/Transaction
+ *
+ * @property {number} id - Primary key
+ * @property {number} workspaceId - Foreign key to workspace
+ * @property {number} blockId - Foreign key to block
+ * @property {string} hash - Transaction hash
+ * @property {string} from - Sender address
+ * @property {string} to - Recipient address (null for contract creation)
+ * @property {string} value - ETH value transferred
+ * @property {string} data - Transaction input data
+ * @property {string} gasPrice - Gas price in wei
+ * @property {string} gasLimit - Gas limit
+ * @property {Date} timestamp - Transaction timestamp
+ */
+
 'use strict';
 const {
   Model,
@@ -140,6 +160,12 @@ module.exports = (sequelize, DataTypes) => {
         return processedTokenBalanceChanges;
     }
 
+    /**
+     * Safely destroys the transaction along with all related records.
+     * Destroys receipt, trace steps, event, token transfers, and unlinks created contract.
+     * @param {Object} transaction - Sequelize transaction
+     * @returns {Promise<void>}
+     */
     async safeDestroy(transaction) {
         const receipt = await this.getReceipt();
         if (receipt)
@@ -167,6 +193,13 @@ module.exports = (sequelize, DataTypes) => {
         return this.destroy({ transaction });
     }
 
+    /**
+     * Creates a transaction receipt and processes its logs.
+     * Updates transaction state to ready and triggers real-time updates.
+     * @param {Object} receipt - Receipt data with logs
+     * @returns {Promise<TransactionReceipt>} The created receipt
+     * @throws {Error} If receipt parameter is missing
+     */
     async safeCreateReceipt(receipt) {
         if (!receipt) throw new Error('Missing parameter');
 
@@ -751,6 +784,14 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    /**
+     * Gets paginated token transfers for this transaction.
+     * @param {number} [page=1] - Page number
+     * @param {number} [itemsPerPage=10] - Items per page
+     * @param {string} [order='DESC'] - Sort order
+     * @param {string} [orderBy='id'] - Field to order by
+     * @returns {Promise<Object>} Paginated token transfer results
+     */
     async getFilteredTokenTransfers(page = 1, itemsPerPage = 10, order = 'DESC', orderBy = 'id') {
         const result = await sequelize.models.TokenTransfer.findAndCountAll({
             where: { transactionId: this.id, isReward: false },
@@ -794,6 +835,10 @@ module.exports = (sequelize, DataTypes) => {
         };
     }
 
+    /**
+     * Counts the number of token transfers for this transaction.
+     * @returns {Promise<number>} Token transfer count
+     */
     async countTokenTransfers() {
         const [{ count }] = await sequelize.query(`
             SELECT COUNT(*)::int
@@ -807,6 +852,10 @@ module.exports = (sequelize, DataTypes) => {
         return count;
     }
 
+    /**
+     * Gets the contract associated with this transaction's to address.
+     * @returns {Promise<Contract|null>} The contract or null
+     */
     getContract() {
         return sequelize.models.Contract.findOne({
             where: {
@@ -816,6 +865,14 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    /**
+     * Updates the transaction's method details.
+     * @param {Object} methodDetails - Method details
+     * @param {string} methodDetails.label - Method label
+     * @param {string} methodDetails.name - Method name
+     * @param {string} methodDetails.signature - Method signature
+     * @returns {Promise<Transaction>} Updated transaction
+     */
     updateMethodDetails(methodDetails) {
         return this.update(sanitize({
             methodLabel: methodDetails.label,
@@ -824,6 +881,11 @@ module.exports = (sequelize, DataTypes) => {
         }));
     }
 
+    /**
+     * Creates a token transfer record for this transaction.
+     * @param {Object} tokenTransfer - Token transfer data
+     * @returns {Promise<TokenTransfer>} Created token transfer
+     */
     safeCreateTokenTransfer(tokenTransfer) {
         return this.createTokenTransfer(sanitize({
             workspaceId: this.workspaceId,
@@ -835,6 +897,13 @@ module.exports = (sequelize, DataTypes) => {
         }));
     }
 
+    /**
+     * Updates the transaction with a failed transaction error.
+     * @param {Object} error - Error object
+     * @param {boolean} error.parsed - Whether error was parsed
+     * @param {string} error.message - Error message
+     * @returns {Promise<Transaction>} Updated transaction
+     */
     updateFailedTransactionError(error) {
         return this.update({
             parsedError: error.parsed ? error.message : null,
@@ -842,12 +911,22 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    /**
+     * Updates the transaction's storage data.
+     * @param {Object} data - Storage data
+     * @returns {Promise<Transaction>} Updated transaction
+     */
     safeUpdateStorage(data) {
         return this.update({
             storage: data
         });
     }
 
+    /**
+     * Triggers real-time events for the transaction.
+     * Pushes updates to frontend subscribers.
+     * @returns {Promise<void>}
+     */
     async triggerEvents() {
         const data = {
             hash: this.hash,

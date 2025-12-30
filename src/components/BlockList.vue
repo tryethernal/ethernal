@@ -65,6 +65,16 @@
     </v-data-table-server>
 </template>
 
+/**
+ * @fileoverview Block list component.
+ * Displays a paginated, sortable table of blockchain blocks with real-time updates.
+ * Shows block number, timestamp, transaction count, gas usage, and fee recipient.
+ * Supports both regular block listing and Orbit batch-specific block listing.
+ * @component BlockList
+ *
+ * @prop {boolean} [dense] - Whether to use compact table styling
+ * @prop {number} [batchNumber] - Orbit batch number to filter blocks by
+ */
 <script setup>
 import { ref, reactive, onMounted, onBeforeUnmount, inject } from 'vue';
 

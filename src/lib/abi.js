@@ -1,3 +1,10 @@
+/**
+ * @fileoverview ABI utilities.
+ * Provides functions to find ABIs by event topic or function selector.
+ * Includes log decoding and function call parsing helpers.
+ * @module lib/abi
+ */
+
 const ethers = require('ethers');
 
 const SELECTORS = require('../abis/selectors.json');

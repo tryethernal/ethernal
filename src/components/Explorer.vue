@@ -36,6 +36,15 @@
     </v-container>
 </template>
 
+/**
+ * @fileoverview Explorer settings container component.
+ * Provides tabbed navigation for explorer configuration including general settings,
+ * faucet, DEX, and Orbit chain configuration.
+ * @component Explorer
+ *
+ * @prop {string|number} id - The explorer ID
+ * @prop {boolean} [sso=false] - Whether user is authenticated via SSO
+ */
 <script setup>
 import { computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';

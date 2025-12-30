@@ -1,3 +1,10 @@
+/**
+ * @fileoverview RPC client utilities.
+ * Provides ethers.js provider factory and contract connectors.
+ * Includes ERC20, ERC721, and Uniswap V2 DEX router connectors.
+ * @module lib/rpc
+ */
+
 const ethers = require('ethers');
 const axios = require('axios');
 import { sanitize } from './utils';

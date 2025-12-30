@@ -1,3 +1,11 @@
+/**
+ * @fileoverview Caddy reverse proxy API endpoints.
+ * Used by Caddy for on-demand TLS certificate provisioning.
+ * @module api/caddy
+ *
+ * @route GET /validDomain - Check if domain should get SSL certificate
+ */
+
 const express = require('express');
 const router = express.Router();
 const db = require('../lib/firebase');

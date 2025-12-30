@@ -1,3 +1,16 @@
+/**
+ * @fileoverview User API endpoints.
+ * Handles authentication, profile management, API keys, and subscriptions.
+ * @module api/users
+ *
+ * @route POST /signup - Create new user account
+ * @route POST /signin - Authenticate user
+ * @route GET /me - Get current user profile
+ * @route PUT /me - Update user settings
+ * @route POST /apiToken - Generate API token
+ * @route POST /resetPassword - Send password reset email
+ */
+
 const { getStripeSecretKey } = require('../lib/env');
 const stripe = require('stripe')(getStripeSecretKey());
 const Analytics = require('../lib/analytics');
