@@ -4,10 +4,14 @@
  * @module api/addresses
  *
  * @route GET /:address/tokenTransferHistory - Get token transfer count over time
+ * @route GET /:address/spentTransactionFeeHistory - Get transaction fees spent over time
+ * @route GET /:address/transactionHistory - Get transaction count over time
+ * @route GET /:address/internalTransactions - Get internal transactions for address
  * @route GET /:address/tokenTransfers - Get token transfers for address
+ * @route GET /:address/stats - Get address transaction statistics
+ * @route GET /:address/nativeTokenBalance - Get current native token balance
+ * @route GET /:address/balances - Get latest token balances
  * @route GET /:address/transactions - Get transactions for address
- * @route GET /:address/stats - Get address statistics
- * @route GET /:address - Get address details
  */
 
 const express = require('express');

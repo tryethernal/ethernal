@@ -3,10 +3,10 @@
  * Manages imported accounts with private keys and native token balances.
  * @module api/accounts
  *
- * @route GET / - Get top native token holders
- * @route GET /imported - Get imported accounts
- * @route POST / - Import new account
- * @route DELETE /:address - Remove imported account
+ * @route GET / - Get filtered native token balances (paginated)
+ * @route GET /imported - Get imported accounts for current user
+ * @route POST /:address/syncBalance - Update account balance
+ * @route POST /:address/privateKey - Store encrypted private key for account
  */
 
 const express = require('express');

@@ -6,13 +6,13 @@
 
 module.exports = {
     /** @returns {boolean} True if running in self-hosted mode */
-    isSelfHosted: () => process.env.SELF_HOSTED,
+    isSelfHosted: () => !!process.env.SELF_HOSTED,
 
     /** @returns {boolean} True if Pusher/Soketi is configured and enabled */
     isPusherEnabled: () => !!process.env.SOKETI_DEFAULT_APP_ID && !!process.env.SOKETI_DEFAULT_APP_KEY && !!process.env.SOKETI_DEFAULT_APP_SECRET && !!process.env.SOKETI_HOST && !!process.env.SOKETI_PORT,
 
     /** @returns {boolean} True if Stripe billing is configured */
-    isStripeEnabled: () => process.env.STRIPE_WEBHOOK_SECRET && process.env.STRIPE_SECRET_KEY,
+    isStripeEnabled: () => !!(process.env.STRIPE_WEBHOOK_SECRET && process.env.STRIPE_SECRET_KEY),
 
     /** @returns {boolean} True if Firebase authentication is enabled */
     isFirebaseAuthEnabled: () => !!process.env.ENABLE_FIREBASE_AUTH,
@@ -21,7 +21,7 @@ module.exports = {
     isGoogleApiEnabled: () => !!process.env.GOOGLE_API_KEY,
 
     /** @returns {boolean} True if Approximated SSL is configured */
-    isApproximatedEnabled: () => process.env.APPROXIMATED_API_KEY && process.env.APPROXIMATED_TARGET_IP,
+    isApproximatedEnabled: () => !!(process.env.APPROXIMATED_API_KEY && process.env.APPROXIMATED_TARGET_IP),
 
     /** @returns {boolean} True if NODE_ENV is 'production' */
     isProductionEnvironment: () => process.env.NODE_ENV == 'production',

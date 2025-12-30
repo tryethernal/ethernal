@@ -4,9 +4,14 @@
  * @module api/faucets
  *
  * @route GET /:id/transactionHistory - Get faucet drip history
+ * @route GET /:id/tokenVolume - Get token volume over time
+ * @route GET /:id/requestVolume - Get request volume over time
+ * @route GET /:id/privateKey - Get faucet wallet private key (owner only)
+ * @route GET /:id/balance - Get current faucet balance
  * @route POST /:id/drip - Request tokens from faucet
- * @route PUT /:id - Update faucet configuration
- * @route POST / - Create new faucet
+ * @route PUT /:id - Update faucet amount and interval
+ * @route PUT /:id/activate - Activate faucet
+ * @route PUT /:id/deactivate - Deactivate faucet
  * @route DELETE /:id - Delete faucet
  */
 
