@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Frontend utility functions.
+ * Display helpers for gas prices, percentages, colors, and data formatting.
+ * @module lib/utils
+ */
+
 const Web3 = require('web3');
 const ethers = require('ethers');
 // const BigNumber = ethers.BigNumber;

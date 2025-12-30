@@ -1,3 +1,13 @@
+/**
+ * @fileoverview Search API endpoints.
+ * Provides search functionality for icons, addresses, transactions, and blocks.
+ * @module api/search
+ *
+ * @route GET /icons - Search Material Design icons
+ * @route GET /fonts - Search Google Fonts
+ * @route GET / - Universal search (blocks, transactions, addresses, contracts)
+ */
+
 const express = require('express');
 const { isGoogleApiEnabled } = require('../lib/flags');
 const axios = require('axios');

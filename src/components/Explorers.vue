@@ -95,6 +95,12 @@
     </v-container>
 </template>
 
+/**
+ * @fileoverview Explorers list page component.
+ * Displays a paginated table of user's public explorers with creation modal.
+ * Shows explorer name, domain, workspace, subscription status, and sync state.
+ * @component Explorers
+ */
 <script setup>
 import { ref, reactive, computed, onMounted, inject } from 'vue';
 import { useRoute } from 'vue-router';

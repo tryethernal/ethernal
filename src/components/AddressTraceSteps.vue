@@ -8,6 +8,14 @@
         @update:options="fetchAddressTraceSteps" />
 </template>
 
+/**
+ * @fileoverview Address trace steps (internal transactions) component.
+ * Displays a paginated table of internal transactions for an address.
+ * @component AddressTraceSteps
+ *
+ * @prop {string} address - The Ethereum address to show internal transactions for
+ * @prop {boolean} [dense] - Whether to use dense table styling
+ */
 <script setup>
 import { ref } from 'vue';
 import { inject } from 'vue';

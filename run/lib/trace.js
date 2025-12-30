@@ -1,6 +1,29 @@
+/**
+ * @fileoverview Transaction trace parsing utilities.
+ * Parses EVM execution traces from debug_traceTransaction into structured call data.
+ * @module lib/trace
+ */
+
 const ethers = require('ethers');
 const { sanitize, withTimeout } = require('./utils');
 
+/**
+ * Parses an EVM execution trace into a structured array of call operations.
+ * Extracts CALL, CALLCODE, DELEGATECALL, STATICCALL, CREATE, and CREATE2 operations.
+ *
+ * @param {string} from - Transaction sender address (used for CREATE2 address computation)
+ * @param {Object} trace - Raw trace from debug_traceTransaction
+ * @param {Array<Object>} trace.structLogs - Array of EVM execution steps
+ * @param {ethers.providers.Provider} provider - Ethers provider for fetching contract bytecode
+ * @returns {Promise<Array<Object>|null>} Parsed trace operations or null if no structLogs
+ * @returns {string} returns[].op - Operation type (CALL, DELEGATECALL, etc.)
+ * @returns {string} returns[].address - Target contract address
+ * @returns {string} returns[].input - Call input data
+ * @returns {string} returns[].returnData - Call return data
+ * @returns {number} returns[].depth - Call stack depth
+ * @returns {string|null} returns[].value - ETH value transferred (for CALL/CALLCODE)
+ * @returns {string|null} returns[].contractHashedBytecode - Keccak256 of contract bytecode
+ */
 exports.parseTrace = async (from, trace, provider) => {
     const opCodes = ['CALL', 'CALLCODE', 'DELEGATECALL', 'STATICCALL', 'CREATE', 'CREATE2'];
     if (!trace.structLogs)

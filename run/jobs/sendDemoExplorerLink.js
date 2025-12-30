@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Demo explorer email job.
+ * Sends welcome email with explorer link via Mailjet.
+ * @module jobs/sendDemoExplorerLink
+ */
+
 const Mailjet = require('node-mailjet');
 const logger = require('../lib/logger');
 const { getAppDomain, getMailjetPublicKey, getMailjetPrivateKey, getDemoExplorerSender } = require('../lib/env');

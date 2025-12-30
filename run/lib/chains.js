@@ -1,9 +1,24 @@
+/**
+ * @fileoverview Chain validation for demo explorer creation.
+ * Fetches and caches list of forbidden chain IDs.
+ * @module lib/chains
+ */
+
 const axios = require('axios');
 
+/** @type {Object|null} Cached forbidden chains object */
 let forbiddenChainsCache = null;
+/** @type {number} Timestamp of last cache update */
 let forbiddenChainsCacheTime = 0;
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+/** @constant {number} Cache duration in milliseconds (5 minutes) */
+const CACHE_DURATION = 5 * 60 * 1000;
 
+/**
+ * Fetches the list of forbidden chain IDs from remote config.
+ * Uses caching to avoid repeated network requests.
+ * @returns {Promise<Object>} Object with chain IDs as keys
+ * @private
+ */
 async function fetchForbiddenChains() {
   // Use cache if not expired
   if (forbiddenChainsCache && Date.now() - forbiddenChainsCacheTime < CACHE_DURATION) {

@@ -57,6 +57,14 @@
     </div>
 </template>
 
+/**
+ * @fileoverview Contract code display component.
+ * Shows contract ABI, bytecode, and assembly with syntax highlighting.
+ * Includes contract verification form and verification status display.
+ * @component ContractCode
+ *
+ * @prop {Object} contract - The contract data object with abi, bytecode, asm, and verification
+ */
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import 'highlight.js/styles/vs2015.css';

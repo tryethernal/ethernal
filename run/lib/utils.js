@@ -1,16 +1,49 @@
+/**
+ * @fileoverview Common utility functions used throughout the backend.
+ * Provides helpers for data sanitization, string manipulation, BigNumber handling,
+ * and ERC721 metadata formatting.
+ * @module lib/utils
+ */
+
 const ethers = require('ethers');
 
+/** @constant {number} Default timeout for promises in milliseconds */
 const DEFAULT_PROMISE_TIMEOUT = 10 * 1000;
 
+/**
+ * Calculates the average of an array of numbers.
+ *
+ * @param {number[]} arr - Array of numbers to average
+ * @returns {number} Rounded average value
+ * @example
+ * avg([1, 2, 3, 4, 5]); // returns 3
+ */
 const avg = (arr) => {
     const sum = arr.reduce((a, v) => a + v);
     return Math.round(sum/arr.length);
 };
 
+/**
+ * Pauses execution for a specified duration.
+ *
+ * @param {number} ms - Duration to sleep in milliseconds
+ * @returns {Promise<void>} Resolves after the specified delay
+ * @example
+ * await sleep(1000); // waits 1 second
+ */
 const sleep = (ms) => {
     return new Promise((r) => setTimeout(r, ms))
 };
 
+/**
+ * Validates that a string represents a valid positive BigNumber in wei.
+ *
+ * @param {string} str - String to validate as a BigNumber
+ * @returns {boolean} True if valid positive wei amount, false otherwise
+ * @example
+ * validateBNString('1000000000000000000'); // returns true (1 ETH in wei)
+ * validateBNString('-100'); // returns false
+ */
 const validateBNString = (str) => {
     try {
         const bn = ethers.BigNumber.from(str);
@@ -20,6 +53,16 @@ const validateBNString = (str) => {
     }
 }
 
+/**
+ * Converts scientific notation (e-notation) to a regular number string.
+ * Handles both positive and negative exponents.
+ *
+ * @param {string|number} num - Number in scientific notation
+ * @returns {string} Number as a regular decimal string
+ * @example
+ * eToNumber('1.5e18'); // returns '1500000000000000000'
+ * eToNumber('1e-5'); // returns '0.00001'
+ */
 const eToNumber = (num) => {
     let sign = "";
     (num += "").charAt(0) === "-" && (num = num.substring(1), sign = "-");
@@ -49,8 +92,35 @@ const eToNumber = (num) => {
     return sign + n;
 };
 
+/**
+ * Gets the current Node.js environment.
+ *
+ * @returns {string|undefined} Value of NODE_ENV environment variable
+ */
 const getEnv = () => process.env.NODE_ENV;
 
+/**
+ * Formats ERC721 NFT metadata into a structured object with categorized attributes.
+ * Converts IPFS URLs to HTTP gateway URLs and organizes attributes by type.
+ *
+ * @param {string|number} tokenId - The token ID
+ * @param {Object} metadata - Raw NFT metadata object
+ * @param {string} [metadata.name] - Token name
+ * @param {string} [metadata.image] - Image URL (supports ipfs:// protocol)
+ * @param {string} [metadata.image_data] - Raw SVG or HTML image data
+ * @param {string} [metadata.background_color] - Background color hex
+ * @param {string} [metadata.external_url] - External link
+ * @param {string} [metadata.description] - Token description
+ * @param {Array<Object>} [metadata.attributes] - Array of attribute objects
+ * @returns {Object} Formatted metadata with categorized attributes
+ * @returns {string} returns.name - Token name or fallback "#tokenId"
+ * @returns {string} returns.image_data - HTML img tag or raw image data
+ * @returns {Array} returns.properties - String-value attributes
+ * @returns {Array} returns.levels - Numeric attributes without display_type
+ * @returns {Array} returns.boosts - Boost percentage/number attributes
+ * @returns {Array} returns.stats - Numeric attributes with display_type 'number'
+ * @returns {Array} returns.dates - Date-type attributes
+ */
 const formatErc721Metadata = (tokenId, metadata) => {
     if (!metadata || tokenId === null || tokenId === undefined)
         return {};
@@ -104,6 +174,21 @@ const formatErc721Metadata = (tokenId, metadata) => {
     return { background_color: metadata.background_color, name, image_data, external_url: metadata.external_url, description: metadata.description, properties, levels, boosts, stats, dates };
 };
 
+/**
+ * Processes an RPC response object by separating known fields from raw data.
+ * Known fields are stored directly, unknown fields go into a 'raw' object.
+ *
+ * @param {Object} obj - RPC response object to process
+ * @param {string[]} storedKeys - Keys to store as direct properties
+ * @param {string[]} [excludeFromRaw=[]] - Keys to exclude from both stored and raw
+ * @returns {Object} Processed object with stored keys and raw object
+ * @example
+ * processRawRpcObject(
+ *   { hash: '0x...', number: 1, custom: 'value' },
+ *   ['hash', 'number']
+ * );
+ * // returns { hash: '0x...', number: 1, raw: { custom: 'value' } }
+ */
 const processRawRpcObject = (obj, storedKeys, excludeFromRaw = []) => {
     const rawKeys = Object.keys(obj).filter(k => storedKeys.indexOf(k) == -1 && excludeFromRaw.indexOf(k) == -1);
     const processedObj = {};
@@ -116,7 +201,17 @@ const processRawRpcObject = (obj, storedKeys, excludeFromRaw = []) => {
     return { ..._sanitize(processedObj), raw: _sanitize(raw) };
 };
 
-// https://gist.github.com/hagemann/382adfc57adbd5af078dc93feef01fe1
+/**
+ * Converts a string to a URL-friendly slug.
+ * Handles special characters, accents, and spaces.
+ *
+ * @param {string} string - String to slugify
+ * @returns {string} URL-safe slug
+ * @see https://gist.github.com/hagemann/382adfc57adbd5af078dc93feef01fe1
+ * @example
+ * slugify('Hello World!'); // returns 'hello-world'
+ * slugify('Café & Restaurant'); // returns 'cafe-and-restaurant'
+ */
 const slugify = (string) => {
     const a = 'àáâäæãåāăąçćčđďèéêëēėęěğǵḧîïíīįìıİłḿñńǹňôöòóœøōõőṕŕřßśšşșťțûüùúūǘůűųẃẍÿýžźż·/_,:;'
     const b = 'aaaaaaaaaacccddeeeeeeeegghiiiiiiiilmnnnnoooooooooprrsssssttuuuuuuuuuwxyyzzz------'
@@ -132,6 +227,16 @@ const slugify = (string) => {
       .replace(/-+$/, '') // Trim - from end of text
 };
 
+/**
+ * Wraps a promise with a timeout. Rejects if the promise doesn't resolve within the delay.
+ *
+ * @param {Promise} promise - Promise to wrap with timeout
+ * @param {number} [delay=10000] - Timeout in milliseconds
+ * @returns {Promise} Resolves with promise result or rejects on timeout
+ * @throws {Error} "Timed out after {delay} ms." if timeout exceeded
+ * @example
+ * await withTimeout(fetchData(), 5000); // times out after 5 seconds
+ */
 const withTimeout = (promise, delay = DEFAULT_PROMISE_TIMEOUT) => {
     const timeout = new Promise((resolve, reject) =>
         setTimeout(
@@ -145,6 +250,12 @@ const withTimeout = (promise, delay = DEFAULT_PROMISE_TIMEOUT) => {
     ]);
 }
 
+/**
+ * Checks if an object is a stringified ethers BigNumber.
+ *
+ * @param {Object} obj - Object to check
+ * @returns {boolean} True if object has BigNumber structure { type: 'BigNumber', hex: '...' }
+ */
 const isStringifiedBN = function(obj) {
     if (!obj)
         return false;
@@ -153,6 +264,12 @@ const isStringifiedBN = function(obj) {
     && !!obj['hex'];
 };
 
+/**
+ * Checks if a string is valid JSON.
+ *
+ * @param {string} obj - String to check
+ * @returns {boolean} True if string can be parsed as JSON
+ */
 const _isJson = function(obj) {
     try {
         JSON.parse(obj);
@@ -162,6 +279,20 @@ const _isJson = function(obj) {
     }
 };
 
+/**
+ * Sanitizes an object from RPC responses.
+ * - Removes null/undefined values
+ * - Lowercases Ethereum addresses
+ * - Converts hex strings to integers for known numeric fields
+ * - Converts BigNumber objects to strings
+ *
+ * @param {Object} obj - Object to sanitize
+ * @param {boolean} [numberization=true] - Whether to convert hex to numbers
+ * @returns {Object} Sanitized object
+ * @example
+ * _sanitize({ blockNumber: '0x10', hash: '0xABC...', extra: null });
+ * // returns { blockNumber: 16, hash: '0xabc...' }
+ */
 const _sanitize = (obj, numberization = true) => {
     const numberize = [
         'number',
@@ -212,6 +343,13 @@ const _sanitize = (obj, numberization = true) => {
     );
 };
 
+/**
+ * Converts a value to its string representation.
+ * Handles BigNumbers, objects with toString(), and primitives.
+ *
+ * @param {*} obj - Value to stringify
+ * @returns {string|null} String representation or null if input is falsy
+ */
 const stringify = (obj) => {
     if (!obj)
         return null;
@@ -223,6 +361,13 @@ const stringify = (obj) => {
         return String(obj);
 };
 
+/**
+ * Converts all BigNumber values in an object to strings.
+ * Non-function properties are preserved as-is if not BigNumbers.
+ *
+ * @param {Object} obj - Object containing potential BigNumber values
+ * @returns {Object} New object with BigNumbers converted to strings
+ */
 const _stringifyBns = (obj) => {
     var res = {}
     for (const key in obj) {

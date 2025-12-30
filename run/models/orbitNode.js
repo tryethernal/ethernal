@@ -1,3 +1,16 @@
+/**
+ * @fileoverview OrbitNode model - represents Arbitrum Orbit rollup nodes/assertions.
+ * Tracks node creation, confirmation, and rejection events.
+ *
+ * @module models/OrbitNode
+ *
+ * @property {number} id - Primary key
+ * @property {number} workspaceId - Foreign key to L2 workspace
+ * @property {string} nodeNum - Node number in the chain
+ * @property {string} nodeHash - Node hash
+ * @property {boolean} confirmed - Whether node is confirmed
+ */
+
 'use strict';
 const { Model, Op } = require('sequelize');
 

@@ -49,6 +49,11 @@
     </v-container>
 </template>
 
+/**
+ * @fileoverview ERC-721 collections list page component.
+ * Displays a paginated table of all NFT collections with real-time updates.
+ * @component ERC721Collections
+ */
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
 import HashLink from '@/components/HashLink.vue';

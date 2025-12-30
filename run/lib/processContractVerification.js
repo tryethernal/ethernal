@@ -1,3 +1,16 @@
+/**
+ * @fileoverview Solidity contract verification processor.
+ * Compiles source code and compares bytecode against deployed contracts.
+ * @module lib/processContractVerification
+ */
+
+/**
+ * Strips metadata from bytecode, handling nested contract bytecodes.
+ * @param {string} baseBytecode - The base bytecode to strip
+ * @param {Array<Object>} includedBytecodes - Array of nested contract bytecode info
+ * @returns {string} Bytecode with metadata removed
+ * @private
+ */
 const stripBytecodeMetadata = (baseBytecode, includedBytecodes) => {
     let baseBytecodeCopy = baseBytecode;
     for (let i = 0; i < includedBytecodes.length; i++) {
@@ -10,6 +23,12 @@ const stripBytecodeMetadata = (baseBytecode, includedBytecodes) => {
     return strippedBytecode
 }
 
+/**
+ * Removes CBOR-encoded metadata from the end of bytecode.
+ * @param {string} bytecode - Contract bytecode
+ * @returns {string} Bytecode without metadata section
+ * @private
+ */
 const removeMetadata = (bytecode) => {
     // Last 2 bytes contains metadata length
     const metadataLength = parseInt(bytecode.slice(bytecode.length - 4, bytecode.length), 16) * 2;
@@ -18,6 +37,23 @@ const removeMetadata = (bytecode) => {
     return bytecode.slice(0, bytecode.length - 4 - metadataLength);
 };
 
+/**
+ * Verifies a smart contract by compiling source code and comparing bytecode.
+ * @param {Object} db - Database interface (firebase.js)
+ * @param {Object} payload - Verification payload
+ * @param {Object} payload.code - Source code object with sources and optional libraries
+ * @param {string} payload.compilerVersion - Solidity compiler version (e.g., "v0.8.19+commit.7dd6d404")
+ * @param {string} payload.contractAddress - Address of deployed contract
+ * @param {string} [payload.constructorArguments] - ABI-encoded constructor arguments
+ * @param {Object} payload.publicExplorerParams - User and workspace identifiers
+ * @param {string} payload.contractName - Name of the contract to verify
+ * @param {boolean} [payload.optimizer] - Whether optimizer was enabled
+ * @param {number} [payload.runs] - Number of optimizer runs
+ * @param {string} [payload.evmVersion] - Target EVM version
+ * @param {boolean} [payload.viaIR] - Whether IR compilation pipeline was used
+ * @returns {Promise<{verificationSucceded: boolean}>} Verification result
+ * @throws {Error} If verification fails for any reason
+ */
 module.exports = async function(db, payload) {
     const VALID_EVM_VERSIONS = ['homestead', 'tangerineWhistle', 'spuriousDragon', 'byzantium', 'constantinople', 'petersburg', 'istanbul', 'berlin', 'london', 'paris', 'shanghai', 'cancun'];
     const solc = require('solc');

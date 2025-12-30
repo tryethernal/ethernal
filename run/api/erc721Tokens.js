@@ -1,3 +1,13 @@
+/**
+ * @fileoverview ERC721 Token API endpoints.
+ * Provides individual NFT data: transfers, metadata, and refresh.
+ * @module api/erc721Tokens
+ *
+ * @route GET /:address/:tokenId/transfers - Get NFT transfer history
+ * @route GET /:address/:tokenId - Get NFT details and metadata
+ * @route POST /:address/:tokenId/reload - Refresh NFT metadata
+ */
+
 const express = require('express');
 const axios = require('axios');
 const router = express.Router();

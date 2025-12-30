@@ -1,3 +1,9 @@
+/**
+ * @fileoverview ERC721 token reload job.
+ * Refreshes NFT metadata, URI, and owner from the blockchain.
+ * @module jobs/reloadErc721Token
+ */
+
 const axios = require('axios');
 const db = require('../lib/firebase');
 const { ERC721Connector } = require('../lib/rpc');

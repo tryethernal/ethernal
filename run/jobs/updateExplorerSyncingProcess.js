@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Explorer sync process update job.
+ * Manages PM2 processes for explorer block syncing based on status.
+ * @module jobs/updateExplorerSyncingProcess
+ */
+
 const { Explorer, Workspace, RpcHealthCheck, StripeSubscription, StripePlan } = require('../models');
 const PM2 = require('../lib/pm2');
 

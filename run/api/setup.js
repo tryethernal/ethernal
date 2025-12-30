@@ -1,3 +1,11 @@
+/**
+ * @fileoverview Self-hosted setup API endpoints.
+ * Handles initial admin account creation for self-hosted instances.
+ * @module api/setup
+ *
+ * @route POST /admin - Create initial admin user (self-hosted only)
+ */
+
 const express = require('express');
 const router = express.Router();
 const db = require('../lib/firebase');

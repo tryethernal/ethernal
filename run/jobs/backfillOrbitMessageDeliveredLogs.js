@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Orbit message backfill job.
+ * Scans L1 for MessageDelivered events to backfill deposits.
+ * @module jobs/backfillOrbitMessageDeliveredLogs
+ */
+
 const logger = require('../lib/logger');
 const { enqueue } = require('../lib/queue');
 

@@ -1,3 +1,11 @@
+/**
+ * @fileoverview Orbit Deposits API endpoints.
+ * Lists L1→L2 deposits for Arbitrum Orbit chains.
+ * @module api/orbitDeposits
+ *
+ * @route GET / - List all deposits (paginated)
+ */
+
 const express = require('express');
 const router = express.Router();
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');

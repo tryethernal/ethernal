@@ -65,6 +65,12 @@
         </v-card>
     </v-container>
 </template>
+/**
+ * @fileoverview Contracts list page component.
+ * Displays paginated list of deployed contracts with real-time updates.
+ * Supports contract import and removal for admin users.
+ * @component Contracts
+ */
 <script>
 import { mapStores } from 'pinia';
 import { useCurrentWorkspaceStore } from '@/stores/currentWorkspace';

@@ -75,6 +75,17 @@
         </template>
     </v-data-table-server>
 </template>
+/**
+ * @fileoverview Transactions list component.
+ * Displays a paginated, sortable table of transactions with real-time updates.
+ * Shows hash, method, block, timestamp, from/to addresses, value, and fee.
+ * @component TransactionsList
+ *
+ * @prop {boolean} [dense=false] - Whether to use compact table styling
+ * @prop {string} [address] - Filter transactions by address
+ * @prop {boolean} [withCount=true] - Whether to show item count
+ * @emits listUpdated - Emitted when the transaction list is updated
+ */
 <script setup>
 import { ethers } from 'ethers';
 import { shallowRef, ref, onMounted, onUnmounted, inject, defineEmits, watch } from 'vue';

@@ -1,3 +1,19 @@
+/**
+ * @fileoverview Workspace model - represents a blockchain network workspace.
+ * A workspace contains blocks, transactions, contracts, and configuration
+ * for a specific chain being explored.
+ *
+ * @module models/Workspace
+ *
+ * @property {number} id - Primary key
+ * @property {number} userId - Foreign key to owner user
+ * @property {string} name - Workspace name
+ * @property {string} rpcServer - RPC endpoint URL
+ * @property {number} networkId - Chain/network ID
+ * @property {boolean} public - Whether workspace is publicly accessible
+ * @property {string} tracing - Tracing mode (hardhat, other, null)
+ */
+
 'use strict';
 const {
   Model,
@@ -44,6 +60,11 @@ module.exports = (sequelize, DataTypes) => {
       Workspace.hasMany(models.OrbitDeposit, { foreignKey: 'workspaceId', as: 'orbitDeposits' });
     }
 
+    /**
+     * Finds a public workspace by ID.
+     * @param {number} id - The workspace ID
+     * @returns {Promise<Workspace|null>} The workspace or null
+     */
     static findPublicWorkspaceById(id) {
         return Workspace.findOne({
             where: {
@@ -53,6 +74,12 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    /**
+     * Finds a workspace by user ID and name.
+     * @param {number} userId - The user ID
+     * @param {string} name - The workspace name
+     * @returns {Promise<Workspace|null>} The workspace or null
+     */
     static findByUserIdAndName(userId, name) {
         return Workspace.findOne({
             where: {
@@ -62,10 +89,18 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    /**
+     * Gets all top-level Orbit parent workspaces.
+     * @returns {Promise<Array<Workspace>>} Array of parent workspaces
+     */
     static async getAvailableTopOrbitParent() {
         return Workspace.findAll({ where: { isTopOrbitParent: true } });
     }
 
+    /**
+     * Creates a Viem public client for RPC interactions.
+     * @returns {PublicClient} Viem public client instance
+     */
     getViemPublicClient() {
         const fetchOptions = () => {
             const rpcServer = new URL(this.rpcServer);
@@ -98,10 +133,22 @@ module.exports = (sequelize, DataTypes) => {
         return createPublicClient({ chain, transport });
     }
 
+    /**
+     * Creates a provider connector for RPC interactions.
+     * @returns {ProviderConnector} Provider connector instance
+     */
     getProvider() {
         return new ProviderConnector(this.rpcServer);
     }
 
+    /**
+     * Safely creates an Orbit chain configuration.
+     * @param {Object} params - Configuration parameters
+     * @param {string} params.parentChainRpcServer - Parent chain RPC URL
+     * @param {string} params.rollupContract - Rollup contract address
+     * @returns {Promise<OrbitChainConfig>} Created config
+     * @throws {Error} If parent chain network not supported
+     */
     async safeCreateOrbitConfig(params) {
         const allowedParams = [
             'parentChainRpcServer',
@@ -145,6 +192,10 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    /**
+     * Gets the latest confirmed block for Orbit chain.
+     * @returns {Promise<Block|null>} The latest confirmed block
+     */
     async getOrbitLatestConfirmedBlock() {
         const orbitNode = await sequelize.models.OrbitNode.findOne({
             where: {
@@ -165,6 +216,10 @@ module.exports = (sequelize, DataTypes) => {
         return block;
     }
 
+    /**
+     * Checks if this workspace is an Orbit parent chain.
+     * @returns {Promise<boolean>} True if parent chain with config
+     */
     async isOrbitParent() {
         const childConfigs = await this.getOrbitChildConfigs();
         const parentConfig = await this.getOrbitConfig();
@@ -172,6 +227,12 @@ module.exports = (sequelize, DataTypes) => {
         return childConfigs.length > 0 && parentConfig;
     }
 
+    /**
+     * Safely creates an Orbit batch and links blocks to it.
+     * @param {Object} batch - Batch data
+     * @param {Object} [transaction] - Sequelize transaction
+     * @returns {Promise<OrbitBatch>} Created batch
+     */
     async safeCreateOrbitBatch(batch, transaction) {
         const [createdBatch] = await sequelize.models.OrbitBatch.bulkCreate([batch], {
             ignoreDuplicates: true,
@@ -197,6 +258,13 @@ module.exports = (sequelize, DataTypes) => {
         return createdBatch;
     }
 
+    /**
+     * Gets paginated Orbit batches with transaction counts.
+     * @param {number} [page=1] - Page number
+     * @param {number} [itemsPerPage=10] - Items per page
+     * @param {string} [order='DESC'] - Sort order
+     * @returns {Promise<Object>} Paginated batch results
+     */
     async getFilteredOrbitBatches(page = 1, itemsPerPage = 10, order = 'DESC') {
         const sanitizedOrder = ['asc', 'desc'].includes(order.toLowerCase()) ? order.toLowerCase() : 'desc';
         const offset = (page - 1) * itemsPerPage;
@@ -679,14 +747,13 @@ module.exports = (sequelize, DataTypes) => {
         return processedResult;
     }
 
-    /*
-        Returns the number of token transfers for an address in a given time range.
-
-        @param {string} address (mandatory) - The address to get the token transfer history for
-        @param {string} from (mandatory) - The start date
-        @param {string} to (mandatory) - The end date
-        @returns {Array} - The number of token transfers for the address in the given time range
-    */
+    /**
+     * Returns the number of token transfers for an address in a given time range.
+     * @param {string} address - The address to get the token transfer history for
+     * @param {string} from - The start date
+     * @param {string} to - The end date
+     * @returns {Promise<Array>} The number of token transfers for the address in the given time range
+     */
     async getAddressTokenTransferHistory(address, from, to) {
         if (!address || !from || !to)
             throw new Error('Missing parameter');
@@ -737,14 +804,13 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    /*
-        Returns the amount of transaction fees spent by an address in a given time range.
-
-        @param {string} address (mandatory) - The address to get the transaction fees for
-        @param {string} from (mandatory) - The start date
-        @param {string} to (mandatory) - The end date
-        @returns {Array} - The amount of transaction fees spent by the address in the given time range
-    */
+    /**
+     * Returns the amount of transaction fees spent by an address in a given time range.
+     * @param {string} address - The address to get the transaction fees for
+     * @param {string} from - The start date
+     * @param {string} to - The end date
+     * @returns {Promise<Array>} The amount of transaction fees spent by the address in the given time range
+     */
     async getAddressSpentTransactionFeeHistory(address, from, to) {
         if (!address || !from || !to)
             throw new Error('Missing parameter');
@@ -787,14 +853,13 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    /*
-        Returns the number of transactions for an address in a given time range.
-
-        @param {string} address (mandatory) - The address to get the number of transactions for
-        @param {string} from (mandatory) - The start date
-        @param {string} to (mandatory) - The end date
-        @returns {Array} - The number of transactions for the address in the given time range
-    */
+    /**
+     * Returns the number of transactions for an address in a given time range.
+     * @param {string} address - The address to get the number of transactions for
+     * @param {string} from - The start date
+     * @param {string} to - The end date
+     * @returns {Promise<Array>} The number of transactions for the address in the given time range
+     */
     async getAddressTransactionHistory(address, from, to) {
         if (!address || !from || !to)
             throw new Error('Missing parameter');
@@ -837,15 +902,12 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    /*
-        Returns the number of transaction steps for an address.
-
-        Based off of getAddressTransactionTraceSteps.
-        Probably can be optimized, but performances are still really good now.
-
-        @param {string} address (mandatory) - The address to get the number of transaction steps for
-        @returns {number} - The number of transaction steps for the address
-    */
+    /**
+     * Returns the number of transaction steps for an address.
+     * Based off of getAddressTransactionTraceSteps.
+     * @param {string} address - The address to get the number of transaction steps for
+     * @returns {Promise<number>} The number of transaction steps for the address
+     */
     async countAddressTransactionTraceSteps(address) {
         if (!address)
             throw new Error('Missing parameter');
@@ -964,20 +1026,14 @@ module.exports = (sequelize, DataTypes) => {
         return result.count
     }
 
-    /*
-        Returns internal transactions involving an address.
-        On top of the transaction_trace_steps rows, it also returns a relation_type column, which can be:
-            - 'self': The step is the address itself
-            - 'parent': A step that called the address
-            - 'child': A step that was called by the address
-        It also returns a parent_step_id column, which is the id of the parent step.
-        When parent_step_id is null, it means the contract "to" address called this step,
-        otherwise the step 
-
-        @param {string} address (mandatory) - The address to get the internal transactions for
-        @param {number} page (optional, default: 1) - The page number
-        @param {number} itemsPerPage (optional, default: 50) - The number of items per page
-    */
+    /**
+     * Returns internal transactions involving an address.
+     * On top of the transaction_trace_steps rows, it also returns a relation_type column.
+     * @param {string} address - The address to get the internal transactions for
+     * @param {number} [page=1] - The page number
+     * @param {number} [itemsPerPage=50] - The number of items per page
+     * @returns {Promise<Array>} Internal transaction results
+     */
     async getAddressTransactionTraceSteps(address, page = 1, itemsPerPage = 50) {
         if (!address)
             throw new Error('Missing parameter');
@@ -1163,11 +1219,10 @@ module.exports = (sequelize, DataTypes) => {
         return queryResult.burntFees;
     }
 
-    /*
-        This method is used to get the total gas used for the last 24 hours for a workspace.
-
-        @returns {number} - The total gas used for the last 24 hours
-    */
+    /**
+     * Gets the total gas used for the last 24 hours for a workspace.
+     * @returns {Promise<number>} The total gas used for the last 24 hours
+     */
     async getLast24hTotalGasUsed() {
         const [queryResult] = await sequelize.query(`
             SELECT
@@ -1188,11 +1243,10 @@ module.exports = (sequelize, DataTypes) => {
         return queryResult.totalGasUsed;
     }
 
-    /*
-        This method is used to get the gas utilization ratio for the last 24 hours for a workspace.
-
-        @returns {number} - The gas utilization ratio for the last 24 hours
-    */
+    /**
+     * Gets the gas utilization ratio for the last 24 hours for a workspace.
+     * @returns {Promise<number>} The gas utilization ratio for the last 24 hours
+     */
     async getLast24hGasUtilisationRatio() {
         const [queryResult] = await sequelize.query(`
             SELECT
@@ -1213,11 +1267,10 @@ module.exports = (sequelize, DataTypes) => {
 
     }
 
-    /*
-        This method is used to get the average transaction fee for the last 24 hours for a workspace.
-
-        @returns {number} - The average transaction fee for the last 24 hours
-    */
+    /**
+     * Gets the average transaction fee for the last 24 hours for a workspace.
+     * @returns {Promise<number>} The average transaction fee for the last 24 hours
+     */
     async getLast24hAverageTransactionFee() {
         const [avgTransactionFee] = await sequelize.query(`
             SELECT
@@ -1238,11 +1291,10 @@ module.exports = (sequelize, DataTypes) => {
         return avgTransactionFee.avg;
     }
 
-    /*
-        This method is used to get the total transaction fees for the last 24 hours for a workspace.
-
-        @returns {number} - The total transaction fees for the last 24 hours
-    */
+    /**
+     * Gets the total transaction fees for the last 24 hours for a workspace.
+     * @returns {Promise<number>} The total transaction fees for the last 24 hours
+     */
     async getLast24hTransactionFees() {
         const [transactionFees] = await sequelize.query(`
             SELECT
@@ -1263,15 +1315,12 @@ module.exports = (sequelize, DataTypes) => {
         return transactionFees.transactionFees;
     }
 
-    /*
-        This method is used to get the total transaction fees daily for a workspace.
-
-        @param {string} from - Start day
-        @param {string} to - End day
-        @returns {array} - The transaction fees
-            - day: The day of the transaction fees
-            - transactionFees: The average transaction fees for the day
-    */
+    /**
+     * Gets the total transaction fees daily for a workspace.
+     * @param {string} from - Start day
+     * @param {string} to - End day
+     * @returns {Promise<Array>} The transaction fees per day
+     */
     async getTransactionFeeHistory(from, to) {
         if (!from || !to)
             throw new Error('Missing parameter');
@@ -1306,16 +1355,12 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    /*
-        This method is used to replace a workspace with a new empty one.
-        We use this when we want to reset an explorer.
-        Waiting for the data to be deleted can take a long time,
-        so we replace the workspace with a new one, and delete the old one in the background.
-        We make sure the workspace has been marked for deletion first, in order to avoid
-        accidental deletions.
-
-        @returns {object} - The duplicated (new) workspace
-    */
+    /**
+     * Replaces a workspace with a new empty one.
+     * Used when resetting an explorer - the old workspace is deleted in background.
+     * @returns {Promise<Workspace>} The duplicated (new) workspace
+     * @throws {Error} If workspace not marked for pending deletion
+     */
     async replace() {
         if (!this.pendingDeletion)
             throw new Error('You can only replace a workspace that needs to be deleted');
@@ -1357,15 +1402,12 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    /*
-        This method is used to get the block size history for a workspace.
-
-        @param {string} from - The start date of the block size history
-        @param {string} to - The end date of the block size history
-        @returns {array} - The block size history
-            - day: The day of the block size history
-            - size: The average block size for the day
-    */
+    /**
+     * Gets the block size history for a workspace.
+     * @param {string} from - The start date
+     * @param {string} to - The end date
+     * @returns {Promise<Array>} The block size history per day
+     */
     async getBlockSizeHistory(from, to) {
         if (!from || !to)
             throw new Error('Missing parameter');
@@ -1400,15 +1442,12 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    /*
-        This method is used to get the block time history for a workspace.
-
-        @param {string} from - The start date of the block time history
-        @param {string} to - The end date of the block time history
-        @returns {array} - The block time history
-            - day: The day of the block time history
-            - blockTime: The average block time for the day
-    */
+    /**
+     * Gets the block time history for a workspace.
+     * @param {string} from - The start date
+     * @param {string} to - The end date
+     * @returns {Promise<Array>} The block time history per day
+     */
     async getBlockTimeHistory(from, to) {
         if (!from || !to)
             throw new Error('Missing parameter');
@@ -1463,18 +1502,12 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    /*
-        This method is used to get the latest biggest gas spenders for a workspace
-        for a given interval (now - intervalInHours).
-
-        @param {number} intervalInHours - The interval in hours to get the gas spenders for
-        @param {number} limit - The limit of gas spenders to return
-        @returns {array} - The gas spenders
-            - from: The address of the gas spender
-            - gasUsed: The total gas used by the gas spender
-            - gasCost: Cost of total gas used
-            - percentUsed: The percentage of total gas used by the gas spender
-    */
+    /**
+     * Gets the latest biggest gas spenders for a given interval.
+     * @param {number} [intervalInHours=24] - The interval in hours
+     * @param {number} [limit=50] - The limit of gas spenders to return
+     * @returns {Promise<Array>} The gas spenders with gasUsed, gasCost, percentUsed
+     */
     getLatestGasSpenders(intervalInHours = 24, limit = 50) {
         return sequelize.query(`
             WITH total_gas AS (
@@ -1501,18 +1534,12 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    /*
-        This method is used to get the latest biggest gas consumers for a workspace
-        for a given interval (now - intervalInHours).
-
-        @param {number} intervalInHours - The interval in hours to get the gas consumers for
-        @param {number} limit - The limit of gas consumers to return
-        @returns {array} - The gas consumers
-            - to: The address of the gas consumer
-            - gasUsed: The total gas used by the gas consumer
-            - gasCost: Cost of total gas used
-            - percentUsed: The percentage of total gas used by the gas consumer
-    */
+    /**
+     * Gets the latest biggest gas consumers for a given interval.
+     * @param {number} [intervalInHours=24] - The interval in hours
+     * @param {number} [limit=50] - The limit of gas consumers to return
+     * @returns {Promise<Array>} The gas consumers with gasUsed, gasCost, percentUsed
+     */
     getLatestGasConsumers(intervalInHours = 24, limit = 50) {
         return sequelize.query(`
             WITH total_gas AS (
@@ -1540,15 +1567,12 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    /*
-        This method is used to get the gas utilization ratio history for a workspace.
-
-        @param {string} from - The start date of the gas utilization ratio history
-        @param {string} to - The end date of the gas utilization ratio history
-        @returns {array} - The gas utilization ratio history
-            - day: The day of the gas utilization ratio history
-            - gasUtilizationRatio: The average gas utilization ratio for the day
-    */
+    /**
+     * Gets the gas utilization ratio history for a workspace.
+     * @param {string} from - The start date
+     * @param {string} to - The end date
+     * @returns {Promise<Array>} The gas utilization ratio history per day
+     */
     getGasUtilizationRatioHistory(from, to) {
         if (!from || !to)
             throw new Error('Missing parameter');
@@ -1569,15 +1593,12 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    /*
-        This method is used to get the gas limit history for a workspace.
-
-        @param {string} from - The start date of the gas limit history
-        @param {string} to - The end date of the gas limit history
-        @returns {array} - The gas limit history
-            - day: The day of the gas limit history
-            - gasLimit: The average gas limit for the day
-    */
+    /**
+     * Gets the gas limit history for a workspace.
+     * @param {string} from - The start date
+     * @param {string} to - The end date
+     * @returns {Promise<Array>} The gas limit history per day
+     */
     getGasLimitHistory(from, to) {
         if (!from || !to)
             throw new Error('Missing parameter');
@@ -1598,23 +1619,12 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    /*
-        This method is used to get the gas price history for a workspace.
-
-        @param {string} from - The start date of the gas price history
-        @param {string} to - The end date of the gas price history
-        @returns {array} - The gas price history
-            - day: The day of the gas price history
-            - minSlow: The minimum slow gas price
-            - slow: The average slow gas price
-            - maxSlow: The maximum slow gas price
-            - minAverage: The minimum average gas price
-            - average: The average average gas price
-            - maxAverage: The maximum average gas price
-            - minFast: The minimum fast gas price
-            - fast: The average fast gas price
-            - maxFast: The maximum fast gas price
-    */
+    /**
+     * Gets the gas price history for a workspace.
+     * @param {string} from - The start date
+     * @param {string} to - The end date
+     * @returns {Promise<Array>} The gas price history with slow/average/fast metrics per day
+     */
     getGasPriceHistory(from, to) {
         if (!from || !to)
             throw new Error('Missing parameter');
@@ -1643,18 +1653,11 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    /*
-        This method is used to get the latest gas stats for a workspace.
-
-        @param {number} intervalInMinutes - The interval in minutes to get the gas stats for
-        @returns {object} - The gas stats object
-            - averageBlockSize: The average block size in transactions
-            - averageUtilization: The average quantity of gas used per block
-            - averageBlockTime: The average block time in seconds
-            - latestBlockNumber: The number of the latest block used for this calculation
-            - baseFeePerGas: The base fee per gas for the latest block
-            - priorityFeePerGas: The three levels of priority fee per gas for the latest block (slow, average, fast)
-    */
+    /**
+     * Gets the latest gas stats for a workspace.
+     * @param {number} [intervalInMinutes=1] - The interval in minutes
+     * @returns {Promise<Object>} Gas stats including block size, utilization, block time, base fee, and priority fees
+     */
     async getLatestGasStats(intervalInMinutes = 1) {
         const [latestBlockEvents] = await sequelize.query(`
             SELECT * FROM block_events
@@ -1693,6 +1696,10 @@ module.exports = (sequelize, DataTypes) => {
         };
     }
 
+    /**
+     * Gets the latest block where all transactions are ready.
+     * @returns {Promise<Object>} The latest ready block with number and timestamp
+     */
     async getLatestReadyBlock() {
         const [latestReadyBlock] = await sequelize.query(`
             SELECT number, timestamp

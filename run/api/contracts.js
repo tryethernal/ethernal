@@ -1,3 +1,17 @@
+/**
+ * @fileoverview Contract API endpoints.
+ * Provides routes for contract verification, token analytics, and ABI management.
+ * @module api/contracts
+ *
+ * @route GET /verified - List verified contracts
+ * @route GET /:address/holderHistory - Get token holder count history
+ * @route GET /:address/circulatingSupply - Get token circulating supply
+ * @route GET /:address/holders - Get token holders with balances
+ * @route GET /:address/transfers - Get token transfers
+ * @route GET /:address/logs - Get contract event logs
+ * @route POST /:address/verify - Submit verification request
+ */
+
 const express = require('express');
 const router = express.Router();
 const logger = require('../lib/logger');

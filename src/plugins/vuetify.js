@@ -1,3 +1,10 @@
+/**
+ * @fileoverview Vuetify UI framework plugin.
+ * Configures Vuetify 3 with light/dark themes and Iconify icons.
+ * Includes lab components for VStepperVertical and VTreeview.
+ * @module plugins/vuetify
+ */
+
 import '@/styles/main.scss';
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'

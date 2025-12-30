@@ -57,6 +57,15 @@
     </template>
 </template>
 
+/**
+ * @fileoverview Explorer general settings page component.
+ * Main configuration page for an explorer including settings, sync status, billing,
+ * domains, branding, and danger zone sections.
+ * @component ExplorerGeneral
+ *
+ * @prop {string|number} id - The explorer ID
+ * @prop {boolean} [sso=false] - Whether user is authenticated via SSO
+ */
 <script setup>
 import { ref, computed, watch, onBeforeUnmount, inject } from 'vue';
 import { useRoute } from 'vue-router';

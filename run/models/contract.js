@@ -1,3 +1,22 @@
+/**
+ * @fileoverview Contract model - represents smart contracts.
+ * Stores contract data, ABIs, verification status, and token metadata.
+ * Handles ERC20/ERC721/ERC1155 token operations and analytics.
+ *
+ * @module models/Contract
+ *
+ * @property {number} id - Primary key
+ * @property {number} workspaceId - Foreign key to workspace
+ * @property {string} address - Contract address
+ * @property {string} name - Contract name
+ * @property {Object} abi - Contract ABI
+ * @property {Array<string>} patterns - Detected patterns (erc20, erc721, etc.)
+ * @property {string} tokenName - Token name (for tokens)
+ * @property {string} tokenSymbol - Token symbol (for tokens)
+ * @property {number} tokenDecimals - Token decimals (for tokens)
+ * @property {string} proxy - Implementation contract address (for proxies)
+ */
+
 'use strict';
 
 const {
@@ -51,6 +70,18 @@ module.exports = (sequelize, DataTypes) => {
       Contract.hasOne(models.ExplorerV2Dex, { foreignKey: 'wrappedNativeTokenContractId', as: 'wrappedNativeTokenContract' });
     }
 
+    /**
+     * Creates contract verification with source files.
+     * @param {Object} verificationData - Verification parameters
+     * @param {string} verificationData.compilerVersion - Solidity compiler version
+     * @param {string} [verificationData.evmVersion='Default'] - EVM version
+     * @param {number} [verificationData.runs] - Optimizer runs
+     * @param {Object} verificationData.sources - Source files object
+     * @param {Object} [verificationData.libraries] - Library addresses
+     * @param {string} [verificationData.constructorArguments] - Constructor args
+     * @param {string} [verificationData.contractName] - Contract name
+     * @returns {Promise<ContractVerification>} Created verification
+     */
     safeCreateVerification(verificationData) {
         const { compilerVersion, evmVersion = 'Default', runs, sources, libraries, constructorArguments, contractName } = verificationData;
 
@@ -103,6 +134,12 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    /**
+     * Gets token holder count history for a date range.
+     * @param {string} from - Start date
+     * @param {string} to - End date
+     * @returns {Promise<Array>} Daily holder counts
+     */
     async getTokenHolderHistory(from, to) {
         if (!from || !to) throw new Error('Missing parameter');
 
@@ -159,6 +196,10 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    /**
+     * Gets the current circulating supply for a token contract.
+     * @returns {Promise<string>} Total circulating supply
+     */
     async getCurrentTokenCirculatingSupply() {
         const [{ sum: supply }] = await sequelize.query(`
             SELECT SUM(first_value) FROM (

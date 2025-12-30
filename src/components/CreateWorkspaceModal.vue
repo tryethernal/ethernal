@@ -9,6 +9,11 @@
     </v-card>
 </v-dialog>
 </template>
+/**
+ * @fileoverview Create workspace modal component.
+ * Dialog wrapper for creating a new workspace with promise-based open/resolve pattern.
+ * @component CreateWorkspaceModal
+ */
 <script setup>
 import { ref, inject } from 'vue';
 import { useRouter } from 'vue-router';

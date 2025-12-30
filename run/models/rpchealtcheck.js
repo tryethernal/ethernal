@@ -1,3 +1,15 @@
+/**
+ * @fileoverview RpcHealthCheck model - tracks RPC endpoint availability.
+ * Monitors failed attempts and marks unreachable workspaces.
+ *
+ * @module models/RpcHealthCheck
+ *
+ * @property {number} id - Primary key
+ * @property {number} workspaceId - Foreign key to workspace
+ * @property {number} failedAttempts - Consecutive failed RPC calls
+ * @property {boolean} isReachable - Whether RPC is currently reachable
+ */
+
 'use strict';
 const {
   Model

@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Token transfer processing job.
+ * Calculates balance changes for token transfers (ERC20/721 and native).
+ * @module jobs/processTokenTransfer
+ */
+
 const { TokenTransfer, Workspace, Transaction } = require('../models');
 const { getBalanceChange, getNativeBalanceChange } = require('../lib/rpc');
 const logger = require('../lib/logger');

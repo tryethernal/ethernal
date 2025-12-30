@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Main API router - mounts all route modules.
+ * Conditionally enables Stripe, demo, and marketing routes based on flags.
+ * @module api/index
+ */
+
 const express = require('express');
 const { isStripeEnabled, isDemoEnabled, isSelfHosted } = require('../lib/flags');
 const router = express.Router();

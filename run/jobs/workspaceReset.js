@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Workspace reset job.
+ * Deletes blocks and contracts within a date range for data retention.
+ * @module jobs/workspaceReset
+ */
+
 const Sequelize = require('sequelize');
 const { Workspace } = require('../models');
 const { bulkEnqueue } = require('../lib/queue');

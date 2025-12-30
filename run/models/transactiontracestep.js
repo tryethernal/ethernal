@@ -1,3 +1,19 @@
+/**
+ * @fileoverview TransactionTraceStep model - stores internal transaction trace steps.
+ * Records CALL, DELEGATECALL, STATICCALL, CREATE operations from trace.
+ *
+ * @module models/TransactionTraceStep
+ *
+ * @property {number} id - Primary key
+ * @property {number} workspaceId - Foreign key to workspace
+ * @property {number} transactionId - Foreign key to transaction
+ * @property {string} op - Operation type (CALL, DELEGATECALL, etc.)
+ * @property {string} address - Target contract address
+ * @property {number} depth - Call stack depth
+ * @property {string} input - Call input data
+ * @property {string} returnData - Call return data
+ */
+
 'use strict';
 const {
   Model,

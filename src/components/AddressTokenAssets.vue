@@ -30,6 +30,13 @@
   </div>
 </template>
 
+/**
+ * @fileoverview Address token assets component.
+ * Displays a table of ERC-20 token balances held by an address.
+ * @component AddressTokenAssets
+ *
+ * @prop {string} address - The Ethereum address to show token balances for
+ */
 <script setup>
 import { ref, onMounted, inject } from 'vue';
 import HashLink from './HashLink.vue';

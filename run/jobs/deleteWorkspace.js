@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Workspace deletion job.
+ * Permanently deletes a workspace marked for deletion.
+ * @module jobs/deleteWorkspace
+ */
+
 const { Workspace } = require('../models');
 const { getMaxBlockForSyncReset, getMaxContractForReset } = require('../lib/env');
 const { enqueue } = require('../lib/queue');

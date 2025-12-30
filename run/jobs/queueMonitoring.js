@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Queue monitoring job.
+ * Monitors BullMQ queue performance and creates alerts on issues.
+ * @module jobs/queueMonitoring
+ */
+
 const { Queue } = require('bullmq');
 const connection = require('../lib/redis');
 const logger = require('../lib/logger');
