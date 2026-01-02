@@ -2,6 +2,8 @@ const { ethers } = require('ethers');
 const fetch = require('node-fetch');
 const zlib = require('zlib');
 const { RLP } = require('@ethersproject/rlp');
+const { Op } = require('sequelize');
+const logger = require('./logger');
 
 /**
  * OP Stack Batch Parsing Library
@@ -29,6 +31,11 @@ const CHANNEL_VERSION_BROTLI = 0x01;
 // Batch type bytes
 const BATCH_TYPE_SINGULAR = 0x00;
 const BATCH_TYPE_SPAN = 0x01;
+
+// Span batch header field sizes
+const PARENT_CHECK_BYTES = 20;      // First 20 bytes of parent L2 block hash
+const L1_ORIGIN_CHECK_BYTES = 20;   // First 20 bytes of L1 origin hash
+const DEFAULT_L2_BLOCK_TIME = 2;    // Default L2 block time in seconds
 
 // EIP-4844 Blob versioned hash constants
 // See: https://eips.ethereum.org/EIPS/eip-4844#helpers
@@ -308,15 +315,15 @@ const parseSpanBatchHeader = (batchData) => {
         const l1OriginNum = readVarint(batchData, offset);
         offset += l1OriginNum.bytesRead;
 
-        // parent_check (20 bytes)
-        if (offset + 20 > batchData.length) return null;
-        const parentCheck = '0x' + batchData.slice(offset, offset + 20).toString('hex');
-        offset += 20;
+        // parent_check (PARENT_CHECK_BYTES bytes)
+        if (offset + PARENT_CHECK_BYTES > batchData.length) return null;
+        const parentCheck = '0x' + batchData.slice(offset, offset + PARENT_CHECK_BYTES).toString('hex');
+        offset += PARENT_CHECK_BYTES;
 
-        // l1_origin_check (20 bytes)
-        if (offset + 20 > batchData.length) return null;
-        const l1OriginCheck = '0x' + batchData.slice(offset, offset + 20).toString('hex');
-        offset += 20;
+        // l1_origin_check (L1_ORIGIN_CHECK_BYTES bytes)
+        if (offset + L1_ORIGIN_CHECK_BYTES > batchData.length) return null;
+        const l1OriginCheck = '0x' + batchData.slice(offset, offset + L1_ORIGIN_CHECK_BYTES).toString('hex');
+        offset += L1_ORIGIN_CHECK_BYTES;
 
         // block_count (varint)
         const blockCount = readVarint(batchData, offset);
@@ -330,6 +337,7 @@ const parseSpanBatchHeader = (batchData) => {
             blockCount: blockCount.value
         };
     } catch (error) {
+        logger.warn('Failed to parse span batch header', { location: 'lib.opBatches.parseSpanBatchHeader', error: error.message });
         return null;
     }
 };
@@ -347,6 +355,7 @@ const parseSingularBatchHeader = (batchData) => {
         const decoded = RLP.decode('0x' + batchData.toString('hex'));
 
         if (!Array.isArray(decoded) || decoded.length < 4) {
+            logger.warn('Invalid singular batch format', { location: 'lib.opBatches.parseSingularBatchHeader', decodedLength: decoded?.length });
             return null;
         }
 
@@ -360,6 +369,7 @@ const parseSingularBatchHeader = (batchData) => {
             blockCount: 1 // Singular batch = 1 block
         };
     } catch (error) {
+        logger.warn('Failed to parse singular batch header', { location: 'lib.opBatches.parseSingularBatchHeader', error: error.message });
         return null;
     }
 };
@@ -372,8 +382,8 @@ const parseSingularBatchHeader = (batchData) => {
  */
 const findL2BlockByTimestamp = async (workspaceId, timestamp) => {
     try {
+        // Lazy load to avoid circular dependency
         const { Block } = require('../models');
-        const { Op } = require('sequelize');
 
         const block = await Block.findOne({
             where: {
@@ -387,6 +397,7 @@ const findL2BlockByTimestamp = async (workspaceId, timestamp) => {
 
         return block ? block.number : null;
     } catch (error) {
+        logger.warn('Failed to find L2 block by timestamp', { location: 'lib.opBatches.findL2BlockByTimestamp', workspaceId, timestamp, error: error.message });
         return null;
     }
 };
@@ -403,7 +414,7 @@ const findL2BlockByTimestamp = async (workspaceId, timestamp) => {
  * @returns {Promise<Object|null>} { start, end, blockCount } or null if unable to parse
  */
 const extractL2BlockRange = async (frames, options = {}) => {
-    const { workspaceId, l1Timestamp, l2BlockTime = 2, l2GenesisTimestamp } = options;
+    const { workspaceId, l1Timestamp, l2BlockTime = DEFAULT_L2_BLOCK_TIME, l2GenesisTimestamp } = options;
 
     // 1. Reassemble channel from frames
     const channelData = reassembleChannel(frames);

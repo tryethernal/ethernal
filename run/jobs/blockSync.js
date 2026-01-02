@@ -219,6 +219,11 @@ module.exports = async job => {
         // OP Stack batch detection - use already-loaded opChildConfigs
         const opChildConfigs = workspace.opChildConfigs || [];
 
+        // Get L1 block timestamp for batch parsing (outside loop for efficiency)
+        const l1Timestamp = typeof processedBlock.timestamp === 'string' && processedBlock.timestamp.startsWith('0x')
+            ? parseInt(processedBlock.timestamp, 16)
+            : Number(processedBlock.timestamp);
+
         for (const opConfig of opChildConfigs) {
             if (!opConfig.batchInboxAddress) continue;
 
@@ -226,11 +231,6 @@ module.exports = async job => {
             const batchTxs = processedBlock.transactions.filter(tx =>
                 isBatchTransaction(tx, opConfig.batchInboxAddress)
             );
-
-            // Get L1 block timestamp for batch parsing
-            const l1Timestamp = typeof processedBlock.timestamp === 'string' && processedBlock.timestamp.startsWith('0x')
-                ? parseInt(processedBlock.timestamp, 16)
-                : Number(processedBlock.timestamp);
 
             for (const tx of batchTxs) {
                 try {

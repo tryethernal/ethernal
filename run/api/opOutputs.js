@@ -3,15 +3,7 @@ const router = express.Router();
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const db = require('../lib/firebase');
 const { unmanagedError, managedError } = require('../lib/errors');
-
-/**
- * Sanitize pagination parameters
- */
-const sanitizePagination = (page, itemsPerPage, order) => ({
-    page: Math.max(1, parseInt(page) || 1),
-    itemsPerPage: Math.min(100, Math.max(1, parseInt(itemsPerPage) || 10)),
-    order: ['ASC', 'DESC'].includes(order?.toUpperCase()) ? order.toUpperCase() : 'DESC'
-});
+const { sanitizePagination } = require('../lib/utils');
 
 /**
  * Get paginated list of OP outputs for a workspace
