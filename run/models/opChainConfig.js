@@ -183,6 +183,12 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       defaultValue: 'https://etherscan.io'
+    },
+    l2BlockTime: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 2,
+      comment: 'L2 block time in seconds (default: 2 for OP Stack)'
     }
   }, {
     sequelize,

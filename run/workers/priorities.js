@@ -13,6 +13,7 @@ const priorities = {
         'backfillOrbitMessageDeliveredLogs',
         'storeOrbitDeposit',
         'finalizePendingOpOutputs',
+        'finalizePendingOpBatches',
         'linkOpDepositsToL2Txs'
     ],
     'medium': [

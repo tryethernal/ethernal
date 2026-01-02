@@ -20,6 +20,7 @@ module.exports = {
     backfillOrbitMessageDeliveredLogs: require('./backfillOrbitMessageDeliveredLogs'),
     storeOrbitDeposit: require('./storeOrbitDeposit'),
     finalizePendingOpOutputs: require('./finalizePendingOpOutputs'),
+    finalizePendingOpBatches: require('./finalizePendingOpBatches'),
     linkOpDepositsToL2Txs: require('./linkOpDepositsToL2Txs'),
 
     // Medium Priority

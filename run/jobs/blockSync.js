@@ -22,6 +22,7 @@ module.exports = async job => {
         return 'Missing parameter';
 
     const workspace = await Workspace.findOne({
+        subQuery: false,
         where: {
             name: data.workspace,
             '$user.firebaseUserId$': data.userId
@@ -226,11 +227,19 @@ module.exports = async job => {
                 isBatchTransaction(tx, opConfig.batchInboxAddress)
             );
 
+            // Get L1 block timestamp for batch parsing
+            const l1Timestamp = typeof processedBlock.timestamp === 'string' && processedBlock.timestamp.startsWith('0x')
+                ? parseInt(processedBlock.timestamp, 16)
+                : Number(processedBlock.timestamp);
+
             for (const tx of batchTxs) {
                 try {
                     const batchInfo = await getBatchInfo(tx, {
                         batchInboxAddress: opConfig.batchInboxAddress,
-                        beaconUrl: workspace.beaconUrl
+                        beaconUrl: workspace.beaconUrl,
+                        workspaceId: opConfig.workspaceId,
+                        l1Timestamp: l1Timestamp,
+                        l2BlockTime: opConfig.l2BlockTime || 2
                     });
 
                     if (batchInfo) {
@@ -247,16 +256,24 @@ module.exports = async job => {
                             });
                             const nextBatchIndex = lastBatch ? lastBatch.batchIndex + 1 : 0;
 
+                            // Convert hex values to integers
+                            const l1BlockNumber = typeof batchInfo.l1BlockNumber === 'string' && batchInfo.l1BlockNumber.startsWith('0x')
+                                ? parseInt(batchInfo.l1BlockNumber, 16)
+                                : Number(batchInfo.l1BlockNumber);
+                            const l1TransactionIndex = typeof batchInfo.l1TransactionIndex === 'string' && batchInfo.l1TransactionIndex.startsWith('0x')
+                                ? parseInt(batchInfo.l1TransactionIndex, 16)
+                                : Number(batchInfo.l1TransactionIndex);
+
                             await OpBatch.create({
                                 workspaceId: opConfig.workspaceId,
                                 batchIndex: nextBatchIndex,
-                                l1BlockNumber: batchInfo.l1BlockNumber,
+                                l1BlockNumber: l1BlockNumber,
                                 l1TransactionHash: batchInfo.l1TransactionHash,
                                 l1TransactionId: l1Transaction ? l1Transaction.id : null,
-                                l1TransactionIndex: batchInfo.l1TransactionIndex,
-                                epochNumber: batchInfo.l1BlockNumber, // Epoch is typically the L1 block
+                                l1TransactionIndex: l1TransactionIndex,
+                                epochNumber: l1BlockNumber, // Epoch is typically the L1 block
                                 timestamp: tx.timestamp ? new Date(tx.timestamp * 1000) : new Date(),
-                                txCount: batchInfo.estimatedBlockCount || null,
+                                txCount: batchInfo.blockCount || null,
                                 l2BlockStart: batchInfo.l2BlockStart,
                                 l2BlockEnd: batchInfo.l2BlockEnd,
                                 blobHash: batchInfo.blobHash,

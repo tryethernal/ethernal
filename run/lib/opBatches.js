@@ -1,5 +1,7 @@
 const { ethers } = require('ethers');
 const fetch = require('node-fetch');
+const zlib = require('zlib');
+const { RLP } = require('@ethersproject/rlp');
 
 /**
  * OP Stack Batch Parsing Library
@@ -11,6 +13,7 @@ const fetch = require('node-fetch');
  *
  * Batch format follows the OP Stack derivation spec:
  * https://specs.optimism.io/protocol/derivation.html
+ * https://specs.optimism.io/protocol/delta/span-batches.html
  */
 
 // Channel frame header size: channel_id (16) + frame_number (2) + frame_data_length (4) + is_last (1)
@@ -18,6 +21,14 @@ const FRAME_HEADER_SIZE = 23;
 
 // Derivation version byte
 const DERIVATION_VERSION_0 = 0;
+
+// Channel compression versions
+const CHANNEL_VERSION_ZLIB = 0x00;
+const CHANNEL_VERSION_BROTLI = 0x01;
+
+// Batch type bytes
+const BATCH_TYPE_SINGULAR = 0x00;
+const BATCH_TYPE_SPAN = 0x01;
 
 // EIP-4844 Blob versioned hash constants
 // See: https://eips.ethereum.org/EIPS/eip-4844#helpers
@@ -182,31 +193,291 @@ const parseBatchData = (batchData) => {
 };
 
 /**
- * Extract L2 block range from parsed batch frames
- * This requires decompressing the channel data and parsing span batches
- * @param {Array} frames - Parsed channel frames
- * @returns {Object|null} L2 block range { start, end } or null if unable to parse
+ * Reassemble channel data from frames
+ * Frames must be from the same channel (same channelId)
+ * @param {Array} frames - Array of parsed frames
+ * @returns {Buffer|null} Complete channel data or null if incomplete
  */
-const extractL2BlockRange = async (frames) => {
-    // Full implementation would:
-    // 1. Reassemble channel from frames
-    // 2. Decompress channel data (zlib for legacy, brotli for newer)
-    // 3. Parse span batch or singular batch format
-    // 4. Extract exact L2 block numbers
+const reassembleChannel = (frames) => {
+    if (!frames || frames.length === 0) return null;
 
-    // For now, return null to indicate parsing not complete
-    // The background job will link batches to L2 blocks via timestamps
-    return null;
+    // Check if we have a complete channel (must have isLast frame)
+    const hasLastFrame = frames.some(f => f.isLast);
+    if (!hasLastFrame) return null;
+
+    // Sort frames by frame number
+    const sortedFrames = [...frames].sort((a, b) => a.frameNumber - b.frameNumber);
+
+    // Verify we have a contiguous sequence starting from 0
+    for (let i = 0; i < sortedFrames.length; i++) {
+        if (sortedFrames[i].frameNumber !== i) {
+            // Missing frame in sequence
+            return null;
+        }
+    }
+
+    // Concatenate frame data
+    const buffers = sortedFrames.map(f => {
+        const data = f.frameData.startsWith('0x') ? f.frameData.slice(2) : f.frameData;
+        return Buffer.from(data, 'hex');
+    });
+
+    return Buffer.concat(buffers);
+};
+
+/**
+ * Decompress channel data based on version byte
+ * @param {Buffer} channelData - Raw channel data (first byte is version)
+ * @returns {Buffer|null} Decompressed batch data or null on failure
+ */
+const decompressChannelData = (channelData) => {
+    if (!channelData || channelData.length === 0) return null;
+
+    const versionByte = channelData[0];
+    const compressedData = channelData.slice(1);
+
+    try {
+        if (versionByte === CHANNEL_VERSION_ZLIB) {
+            // zlib decompression (legacy)
+            return zlib.inflateSync(compressedData);
+        } else if (versionByte === CHANNEL_VERSION_BROTLI) {
+            // brotli decompression (Fjord+)
+            return zlib.brotliDecompressSync(compressedData);
+        } else {
+            // Unknown version
+            return null;
+        }
+    } catch (error) {
+        // Decompression failed
+        return null;
+    }
+};
+
+/**
+ * Read an unsigned varint (Base128) from a buffer
+ * Used for parsing span batch fields
+ * @param {Buffer} buffer - Data buffer
+ * @param {number} offset - Starting offset
+ * @returns {Object} { value: number, bytesRead: number }
+ */
+const readVarint = (buffer, offset) => {
+    let value = 0;
+    let bytesRead = 0;
+    let shift = 0;
+
+    while (offset + bytesRead < buffer.length) {
+        const byte = buffer[offset + bytesRead];
+        bytesRead++;
+
+        value |= (byte & 0x7F) << shift;
+        shift += 7;
+
+        if ((byte & 0x80) === 0) {
+            break;
+        }
+
+        // Prevent overflow for very large varints
+        if (bytesRead > 10) {
+            throw new Error('Varint too long');
+        }
+    }
+
+    return { value, bytesRead };
+};
+
+/**
+ * Parse span batch header to extract block count and timestamps
+ * Span batch format (after type byte):
+ * - rel_timestamp (varint)
+ * - l1_origin_num (varint)
+ * - parent_check (20 bytes)
+ * - l1_origin_check (20 bytes)
+ * - block_count (varint)
+ * @param {Buffer} batchData - Decompressed batch data (after type byte)
+ * @returns {Object|null} Parsed header or null on failure
+ */
+const parseSpanBatchHeader = (batchData) => {
+    try {
+        let offset = 0;
+
+        // rel_timestamp (varint)
+        const relTimestamp = readVarint(batchData, offset);
+        offset += relTimestamp.bytesRead;
+
+        // l1_origin_num (varint)
+        const l1OriginNum = readVarint(batchData, offset);
+        offset += l1OriginNum.bytesRead;
+
+        // parent_check (20 bytes)
+        if (offset + 20 > batchData.length) return null;
+        const parentCheck = '0x' + batchData.slice(offset, offset + 20).toString('hex');
+        offset += 20;
+
+        // l1_origin_check (20 bytes)
+        if (offset + 20 > batchData.length) return null;
+        const l1OriginCheck = '0x' + batchData.slice(offset, offset + 20).toString('hex');
+        offset += 20;
+
+        // block_count (varint)
+        const blockCount = readVarint(batchData, offset);
+        offset += blockCount.bytesRead;
+
+        return {
+            relTimestamp: relTimestamp.value,
+            l1OriginNum: l1OriginNum.value,
+            parentCheck,
+            l1OriginCheck,
+            blockCount: blockCount.value
+        };
+    } catch (error) {
+        return null;
+    }
+};
+
+/**
+ * Parse singular batch (v0) header
+ * Singular batch format (RLP encoded):
+ * [parent_hash, epoch_number, epoch_hash, timestamp, transaction_list]
+ * @param {Buffer} batchData - Decompressed batch data (after type byte)
+ * @returns {Object|null} Parsed header or null on failure
+ */
+const parseSingularBatchHeader = (batchData) => {
+    try {
+        // Singular batches are RLP encoded
+        const decoded = RLP.decode('0x' + batchData.toString('hex'));
+
+        if (!Array.isArray(decoded) || decoded.length < 4) {
+            return null;
+        }
+
+        const [parentHash, epochNumber, epochHash, timestamp] = decoded;
+
+        return {
+            parentHash,
+            epochNumber: parseInt(epochNumber, 16),
+            epochHash,
+            timestamp: parseInt(timestamp, 16),
+            blockCount: 1 // Singular batch = 1 block
+        };
+    } catch (error) {
+        return null;
+    }
+};
+
+/**
+ * Find L2 block by timestamp from database
+ * @param {number} workspaceId - L2 workspace ID
+ * @param {number} timestamp - Unix timestamp in seconds
+ * @returns {Promise<number|null>} Block number or null
+ */
+const findL2BlockByTimestamp = async (workspaceId, timestamp) => {
+    try {
+        const { Block } = require('../models');
+        const { Op } = require('sequelize');
+
+        const block = await Block.findOne({
+            where: {
+                workspaceId,
+                timestamp: { [Op.lte]: new Date(timestamp * 1000) }
+            },
+            order: [['timestamp', 'DESC']],
+            attributes: ['number', 'timestamp'],
+            limit: 1
+        });
+
+        return block ? block.number : null;
+    } catch (error) {
+        return null;
+    }
+};
+
+/**
+ * Extract L2 block range from parsed batch frames
+ * Parses channel data, decompresses, and extracts block count
+ * @param {Array} frames - Parsed channel frames
+ * @param {Object} options - Options for block calculation
+ * @param {number} options.workspaceId - L2 workspace ID for DB lookup
+ * @param {number} options.l1Timestamp - L1 block timestamp (Unix seconds)
+ * @param {number} options.l2BlockTime - L2 block time in seconds (default: 2)
+ * @param {number} options.l2GenesisTimestamp - Optional L2 genesis timestamp
+ * @returns {Promise<Object|null>} { start, end, blockCount } or null if unable to parse
+ */
+const extractL2BlockRange = async (frames, options = {}) => {
+    const { workspaceId, l1Timestamp, l2BlockTime = 2, l2GenesisTimestamp } = options;
+
+    // 1. Reassemble channel from frames
+    const channelData = reassembleChannel(frames);
+    if (!channelData) return null;
+
+    // 2. Decompress channel data
+    const batchData = decompressChannelData(channelData);
+    if (!batchData || batchData.length === 0) return null;
+
+    // 3. Parse batch type and header
+    const batchType = batchData[0];
+    let blockCount = 1;
+    let batchTimestamp = l1Timestamp;
+
+    if (batchType === BATCH_TYPE_SPAN) {
+        const header = parseSpanBatchHeader(batchData.slice(1));
+        if (!header) return null;
+
+        blockCount = header.blockCount;
+        // For span batches, rel_timestamp is relative to genesis
+        // We use l1Timestamp as approximation since we may not have genesis
+        if (l2GenesisTimestamp) {
+            batchTimestamp = l2GenesisTimestamp + header.relTimestamp;
+        }
+    } else if (batchType === BATCH_TYPE_SINGULAR) {
+        const header = parseSingularBatchHeader(batchData.slice(1));
+        if (!header) return null;
+
+        blockCount = 1;
+        batchTimestamp = header.timestamp || l1Timestamp;
+    } else {
+        // Unknown batch type
+        return null;
+    }
+
+    // 4. Calculate L2 block range
+    let l2BlockStart = null;
+
+    // Try database lookup first
+    if (workspaceId && batchTimestamp) {
+        l2BlockStart = await findL2BlockByTimestamp(workspaceId, batchTimestamp);
+    }
+
+    // If we have a starting block, calculate the range
+    if (l2BlockStart !== null) {
+        return {
+            start: l2BlockStart,
+            end: l2BlockStart + blockCount - 1,
+            blockCount
+        };
+    }
+
+    // Return blockCount even if we can't determine exact blocks
+    // This allows backfilling later
+    return {
+        start: null,
+        end: null,
+        blockCount
+    };
 };
 
 /**
  * Get batch info from a transaction
  * @param {Object} tx - Transaction object
- * @param {Object} options - Options including batchInboxAddress and beaconUrl
+ * @param {Object} options - Options for batch parsing
+ * @param {string} options.batchInboxAddress - BatchInbox contract address
+ * @param {string} options.beaconUrl - Beacon node URL for blob fetching
+ * @param {number} options.workspaceId - L2 workspace ID for block lookup
+ * @param {number} options.l1Timestamp - L1 block timestamp (Unix seconds)
+ * @param {number} options.l2BlockTime - L2 block time in seconds
  * @returns {Promise<Object>} Batch information
  */
 const getBatchInfo = async (tx, options = {}) => {
-    const { batchInboxAddress, beaconUrl } = options;
+    const { batchInboxAddress, beaconUrl, workspaceId, l1Timestamp, l2BlockTime } = options;
 
     if (!isBatchTransaction(tx, batchInboxAddress)) {
         return null;
@@ -222,7 +493,14 @@ const getBatchInfo = async (tx, options = {}) => {
         blobData: null,
         l2BlockStart: null,
         l2BlockEnd: null,
-        txCount: null
+        blockCount: null
+    };
+
+    // Options to pass to extractL2BlockRange
+    const extractOptions = {
+        workspaceId,
+        l1Timestamp: l1Timestamp || tx.timestamp,
+        l2BlockTime: l2BlockTime || 2
     };
 
     if (batchInfo.isBlob) {
@@ -235,8 +513,16 @@ const getBatchInfo = async (tx, options = {}) => {
                 const blobs = await fetchBlobsFromBeacon(beaconUrl, tx.slot, tx.blobVersionedHashes);
                 if (blobs.length > 0) {
                     batchInfo.blobData = blobs[0].data;
-                    const parsed = parseBatchData(blobs[0].data);
-                    batchInfo.estimatedBlockCount = parsed.estimatedBlockCount;
+                    // Parse blob data as frames and extract block range
+                    const frames = parseFramesFromCalldata(blobs[0].data);
+                    if (frames.length > 0) {
+                        const blockRange = await extractL2BlockRange(frames, extractOptions);
+                        if (blockRange) {
+                            batchInfo.l2BlockStart = blockRange.start;
+                            batchInfo.l2BlockEnd = blockRange.end;
+                            batchInfo.blockCount = blockRange.blockCount;
+                        }
+                    }
                 }
             }
         }
@@ -247,14 +533,12 @@ const getBatchInfo = async (tx, options = {}) => {
             batchInfo.frameCount = frames.length;
 
             // Try to extract L2 block range
-            const blockRange = await extractL2BlockRange(frames);
+            const blockRange = await extractL2BlockRange(frames, extractOptions);
             if (blockRange) {
                 batchInfo.l2BlockStart = blockRange.start;
                 batchInfo.l2BlockEnd = blockRange.end;
+                batchInfo.blockCount = blockRange.blockCount;
             }
-
-            const parsed = parseBatchData(tx.input);
-            batchInfo.estimatedBlockCount = parsed.estimatedBlockCount;
         }
     }
 
@@ -279,8 +563,18 @@ module.exports = {
     fetchBlobsFromBeacon,
     computeBlobVersionedHash,
     parseBatchData,
+    reassembleChannel,
+    decompressChannelData,
+    readVarint,
+    parseSpanBatchHeader,
+    parseSingularBatchHeader,
+    findL2BlockByTimestamp,
     extractL2BlockRange,
     getBatchInfo,
     getBatchInboxAddress,
-    DERIVATION_VERSION_0
+    DERIVATION_VERSION_0,
+    CHANNEL_VERSION_ZLIB,
+    CHANNEL_VERSION_BROTLI,
+    BATCH_TYPE_SINGULAR,
+    BATCH_TYPE_SPAN
 };
