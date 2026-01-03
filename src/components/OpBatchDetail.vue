@@ -1,110 +1,51 @@
 <template>
-    <v-container>
-        <v-row>
-            <v-col cols="12">
-                <h2 class="text-h6 font-weight-medium">Batch #{{ batchIndex }}</h2>
-                <v-divider class="my-4"></v-divider>
-            </v-col>
-        </v-row>
+    <v-container fluid>
+        <h2 class="text-h6 font-weight-medium">
+            Batch <span class="text-grey-darken-1">#{{ $route.params.batchIndex }}</span>
+        </h2>
+        <v-divider class="my-4"></v-divider>
 
-        <v-row v-if="loading">
-            <v-col cols="12" class="text-center">
-                <v-progress-circular indeterminate color="primary"></v-progress-circular>
-            </v-col>
-        </v-row>
+        <template v-if="loading">
+            <v-card>
+                <v-card-text>
+                    <v-skeleton-loader type="list-item-three-line"></v-skeleton-loader>
+                    <v-skeleton-loader type="list-item-three-line"></v-skeleton-loader>
+                    <v-skeleton-loader type="list-item-three-line"></v-skeleton-loader>
+                </v-card-text>
+            </v-card>
+        </template>
+        <template v-else-if="batch && !loading">
+            <BaseChipGroup v-model="selectedTab" mandatory>
+                <v-chip label size="small" value="overview">Overview</v-chip>
+                <v-chip label size="small" value="transactions">Transactions</v-chip>
+            </BaseChipGroup>
 
-        <v-row v-else-if="batch">
-            <v-col cols="12" md="6">
-                <v-card>
-                    <v-card-title>Batch Information</v-card-title>
-                    <v-card-text>
-                        <v-table density="compact">
-                            <tbody>
-                                <tr>
-                                    <td class="font-weight-medium">Batch Index</td>
-                                    <td>#{{ batch.batchIndex.toLocaleString() }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="font-weight-medium">L1 Block</td>
-                                    <td>
-                                        <a :href="l1BlockUrl" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
-                                            {{ batch.l1BlockNumber.toLocaleString() }}
-                                            <v-icon size="x-small" class="ml-1">mdi-open-in-new</v-icon>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="font-weight-medium">L1 Transaction</td>
-                                    <td>
-                                        <a :href="l1TransactionUrl" target="_blank" rel="noopener noreferrer" class="text-decoration-none text-truncate" style="max-width: 200px; display: inline-block; font-family: monospace;">
-                                            {{ batch.l1TransactionHash }}
-                                            <v-icon size="x-small" class="ml-1">mdi-open-in-new</v-icon>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="font-weight-medium">L2 Block Range</td>
-                                    <td v-if="batch.l2BlockStart !== null">
-                                        {{ batch.l2BlockStart.toLocaleString() }} - {{ batch.l2BlockEnd.toLocaleString() }}
-                                    </td>
-                                    <td v-else class="text-medium-emphasis">Pending</td>
-                                </tr>
-                                <tr>
-                                    <td class="font-weight-medium">Timestamp</td>
-                                    <td>{{ $dt.shortDate(batch.timestamp) }} ({{ $dt.fromNow(batch.timestamp) }})</td>
-                                </tr>
-                                <tr>
-                                    <td class="font-weight-medium">Status</td>
-                                    <td>
-                                        <v-chip :color="statusColors[batch.status]">
-                                            {{ statusLabels[batch.status] }}
-                                        </v-chip>
-                                    </td>
-                                </tr>
-                                <tr v-if="batch.blobHash">
-                                    <td class="font-weight-medium">Blob Hash</td>
-                                    <td style="font-family: monospace;">
-                                        <a :href="blobViewerUrl" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
-                                            {{ batch.blobHash }}
-                                            <v-icon size="x-small" class="ml-1">mdi-open-in-new</v-icon>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr v-if="batch.dataContainer">
-                                    <td class="font-weight-medium">Data Container</td>
-                                    <td>
-                                        <v-chip size="small" :color="batch.dataContainer === 'in_blob4844' ? 'primary' : 'secondary'">
-                                            {{ dataContainerLabels[batch.dataContainer] }}
-                                        </v-chip>
-                                    </td>
-                                </tr>
-                                <tr v-if="batch.txCount">
-                                    <td class="font-weight-medium">Transaction Count</td>
-                                    <td>{{ batch.txCount.toLocaleString() }}</td>
-                                </tr>
-                            </tbody>
-                        </v-table>
-                    </v-card-text>
-                </v-card>
-            </v-col>
-        </v-row>
+            <OpBatchOverview
+                v-if="selectedTab === 'overview'"
+                :batch="batch"
+            />
 
-        <v-row v-if="batch && batch.l2BlockStart !== null">
-            <v-col cols="12">
-                <v-card class="mt-4">
-                    <v-card-title>Transactions in Batch</v-card-title>
-                    <v-card-text>
-                        <TransactionsList :opBatchIndex="parseInt(batchIndex)" :withCount="true" />
-                    </v-card-text>
-                </v-card>
-            </v-col>
-        </v-row>
+            <OpBatchTransactions
+                v-if="selectedTab === 'transactions'"
+                :batchIndex="Number(batch.batchIndex)"
+            />
+        </template>
+        <template v-else>
+            <v-card>
+                <v-card-text>
+                    <p>Couldn't find batch #{{ $route.params.batchIndex }}</p>
+                </v-card-text>
+            </v-card>
+        </template>
     </v-container>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, inject } from 'vue';
-import TransactionsList from '@/components/TransactionsList.vue';
+import { ref, onMounted, inject, watch } from 'vue';
+import { useRouter } from 'vue-router';
+import BaseChipGroup from './base/BaseChipGroup.vue';
+import OpBatchOverview from './OpBatchOverview.vue';
+import OpBatchTransactions from './OpBatchTransactions.vue';
 
 const props = defineProps({
     batchIndex: {
@@ -114,59 +55,59 @@ const props = defineProps({
 });
 
 const $server = inject('$server');
-const $dt = inject('$dt');
+const router = useRouter();
 
-const loading = ref(true);
+const selectedTab = ref('overview');
+
+// Reactive data
+const loading = ref(false);
 const batch = ref(null);
+const error = ref(null);
 
-const blobViewerUrl = computed(() => {
-    if (!batch.value?.blobHash) return '';
-    const explorer = batch.value.parentChainExplorer || 'https://etherscan.io';
-    return `${explorer}/blob/${batch.value.blobHash}`;
-});
-
-const l1TransactionUrl = computed(() => {
-    if (!batch.value?.l1TransactionHash) return '';
-    const explorer = batch.value.parentChainExplorer || 'https://etherscan.io';
-    return `${explorer}/tx/${batch.value.l1TransactionHash}`;
-});
-
-const l1BlockUrl = computed(() => {
-    if (!batch.value?.l1BlockNumber) return '';
-    const explorer = batch.value.parentChainExplorer || 'https://etherscan.io';
-    return `${explorer}/block/${batch.value.l1BlockNumber}`;
-});
-
-const statusColors = {
-    pending: 'warning',
-    confirmed: 'info',
-    finalized: 'success'
-};
-
-const statusLabels = {
-    pending: 'Pending',
-    confirmed: 'Confirmed',
-    finalized: 'Finalized'
-};
-
-const dataContainerLabels = {
-    in_blob4844: 'EIP-4844 Blob',
-    in_calldata: 'Calldata'
-};
-
-async function loadBatch() {
+// Methods
+function loadBatch() {
     loading.value = true;
-    try {
-        const { data } = await $server.getOpBatchDetail(props.batchIndex);
-        batch.value = data;
-    } catch (error) {
-        console.error('Error loading batch:', error);
-    } finally {
-        loading.value = false;
-    }
+    error.value = null;
+
+    $server.getOpBatchDetail(props.batchIndex)
+        .then(response => batch.value = response.data)
+        .catch(console.log)
+        .finally(() => loading.value = false);
 }
 
+const checkUrlHash = () => {
+    if (window.location.hash === '#transactions') {
+        selectedTab.value = 'transactions';
+    } else {
+        selectedTab.value = 'overview';
+    }
+};
+
+// Watch with optimization
+watch(() => props.batchIndex, (batchIndex) => {
+    // Reset state when hash changes
+    if (batchIndex !== props.batchIndex) {
+        batch.value = null;
+    }
+
+    loadBatch(batchIndex);
+}, { immediate: true });
+
+watch(() => selectedTab.value, (newTab) => {
+    const currentPath = router.currentRoute.value.fullPath.split('#')[0];
+    let hash = '';
+
+    if (newTab === 'transactions') {
+        hash = '#transactions';
+    }
+
+    router.replace(currentPath + hash);
+});
+
 onMounted(() => {
-    loadBatch();
+    checkUrlHash();
+    router.afterEach(() => {
+        checkUrlHash();
+    });
 });
 </script>
