@@ -11,7 +11,7 @@ const logger = require('../lib/logger');
 
 module.exports = async job => {
     const data = job.data || {};
-    const { workspaceId, fromBlock, toBlock, batchSize = 10000 } = data;
+    const { workspaceId, fromBlock, toBlock, batchSize = 10 } = data;
 
     try {
         // Get OP chain config

@@ -6,27 +6,16 @@
 
 const { ethers } = require('ethers');
 
-// Event signatures - keccak256 of event signature
+// Compute event signature from function signature string
+const computeEventSignature = (signature) => ethers.utils.id(signature);
+
+// Event signatures - computed keccak256 hashes
 const EVENT_SIGNATURES = {
     // TransactionDeposited(address indexed from, address indexed to, uint256 indexed version, bytes opaqueData)
-    TRANSACTION_DEPOSITED: '0xb3813568d9991fc951961fcb4c784893574240a28925604d09fc577c55bb7c32',
-
-    // DisputeGameCreated(address indexed disputeProxy, uint32 indexed gameType, bytes32 indexed rootClaim)
-    DISPUTE_GAME_CREATED: '0x5b565efe82411da98814f356d0e7bcb8f0c5b2c3f9e9b6b4d7f2e4e3b7b8c9a1',
-
-    // OutputProposed(bytes32 indexed outputRoot, uint256 indexed l2OutputIndex, uint256 indexed l2BlockNumber, uint256 l1Timestamp)
-    OUTPUT_PROPOSED: '0xa7aaf2512769da4e444e3de247be2564225c2e7a8f74cfe528e46e17d24868e2'
-};
-
-// Compute actual signatures to verify
-const computeEventSignature = (signature) => {
-    return ethers.utils.id(signature);
-};
-
-// Verify and update signatures (for debugging)
-const COMPUTED_SIGNATURES = {
     TRANSACTION_DEPOSITED: computeEventSignature('TransactionDeposited(address,address,uint256,bytes)'),
+    // DisputeGameCreated(address indexed disputeProxy, uint32 indexed gameType, bytes32 indexed rootClaim)
     DISPUTE_GAME_CREATED: computeEventSignature('DisputeGameCreated(address,uint32,bytes32)'),
+    // OutputProposed(bytes32 indexed outputRoot, uint256 indexed l2OutputIndex, uint256 indexed l2BlockNumber, uint256 l1Timestamp)
     OUTPUT_PROPOSED: computeEventSignature('OutputProposed(bytes32,uint256,uint256,uint256)')
 };
 
@@ -142,7 +131,7 @@ const isTransactionDepositedEvent = (log, optimismPortalAddress) => {
     if (!log.address || !optimismPortalAddress) return false;
 
     return log.address.toLowerCase() === optimismPortalAddress.toLowerCase() &&
-           log.topics[0].toLowerCase() === COMPUTED_SIGNATURES.TRANSACTION_DEPOSITED.toLowerCase();
+           log.topics[0].toLowerCase() === EVENT_SIGNATURES.TRANSACTION_DEPOSITED.toLowerCase();
 };
 
 /**
@@ -156,7 +145,7 @@ const isDisputeGameCreatedEvent = (log, disputeGameFactoryAddress) => {
     if (!log.address || !disputeGameFactoryAddress) return false;
 
     return log.address.toLowerCase() === disputeGameFactoryAddress.toLowerCase() &&
-           log.topics[0].toLowerCase() === COMPUTED_SIGNATURES.DISPUTE_GAME_CREATED.toLowerCase();
+           log.topics[0].toLowerCase() === EVENT_SIGNATURES.DISPUTE_GAME_CREATED.toLowerCase();
 };
 
 /**
@@ -170,11 +159,11 @@ const isOutputProposedEvent = (log, l2OutputOracleAddress) => {
     if (!log.address || !l2OutputOracleAddress) return false;
 
     return log.address.toLowerCase() === l2OutputOracleAddress.toLowerCase() &&
-           log.topics[0].toLowerCase() === COMPUTED_SIGNATURES.OUTPUT_PROPOSED.toLowerCase();
+           log.topics[0].toLowerCase() === EVENT_SIGNATURES.OUTPUT_PROPOSED.toLowerCase();
 };
 
 module.exports = {
-    EVENT_SIGNATURES: COMPUTED_SIGNATURES,
+    EVENT_SIGNATURES,
     parseTransactionDeposited,
     parseDisputeGameCreated,
     parseOutputProposed,
