@@ -26,14 +26,20 @@
                                 </tr>
                                 <tr>
                                     <td class="font-weight-medium">L1 Block</td>
-                                    <td>{{ batch.l1BlockNumber.toLocaleString() }}</td>
+                                    <td>
+                                        <a :href="l1BlockUrl" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
+                                            {{ batch.l1BlockNumber.toLocaleString() }}
+                                            <v-icon size="x-small" class="ml-1">mdi-open-in-new</v-icon>
+                                        </a>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td class="font-weight-medium">L1 Transaction</td>
                                     <td>
-                                        <span class="text-truncate" style="max-width: 200px; display: inline-block; font-family: monospace;">
+                                        <a :href="l1TransactionUrl" target="_blank" rel="noopener noreferrer" class="text-decoration-none text-truncate" style="max-width: 200px; display: inline-block; font-family: monospace;">
                                             {{ batch.l1TransactionHash }}
-                                        </span>
+                                            <v-icon size="x-small" class="ml-1">mdi-open-in-new</v-icon>
+                                        </a>
                                     </td>
                                 </tr>
                                 <tr>
@@ -57,7 +63,24 @@
                                 </tr>
                                 <tr v-if="batch.blobHash">
                                     <td class="font-weight-medium">Blob Hash</td>
-                                    <td style="font-family: monospace;">{{ batch.blobHash }}</td>
+                                    <td style="font-family: monospace;">
+                                        <a :href="blobViewerUrl" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
+                                            {{ batch.blobHash }}
+                                            <v-icon size="x-small" class="ml-1">mdi-open-in-new</v-icon>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr v-if="batch.dataContainer">
+                                    <td class="font-weight-medium">Data Container</td>
+                                    <td>
+                                        <v-chip size="small" :color="batch.dataContainer === 'in_blob4844' ? 'primary' : 'secondary'">
+                                            {{ dataContainerLabels[batch.dataContainer] }}
+                                        </v-chip>
+                                    </td>
+                                </tr>
+                                <tr v-if="batch.txCount">
+                                    <td class="font-weight-medium">Transaction Count</td>
+                                    <td>{{ batch.txCount.toLocaleString() }}</td>
                                 </tr>
                             </tbody>
                         </v-table>
@@ -71,46 +94,7 @@
                 <v-card class="mt-4">
                     <v-card-title>Transactions in Batch</v-card-title>
                     <v-card-text>
-                        <v-data-table-server
-                            :loading="loadingTransactions"
-                            :items="transactions"
-                            :items-length="transactionTotal"
-                            :sort-by="txOptions.sortBy"
-                            :must-sort="true"
-                            items-per-page-text="Transactions per page:"
-                            last-icon=""
-                            first-icon=""
-                            :items-per-page-options="[
-                                { value: 10, title: '10' },
-                                { value: 25, title: '25' },
-                                { value: 100, title: '100' }
-                            ]"
-                            :headers="txHeaders"
-                            @update:options="loadTransactions">
-
-                            <template v-slot:item.hash="{ item }">
-                                <HashLink :type="'tx'" :hash="item.hash" />
-                            </template>
-
-                            <template v-slot:item.blockNumber="{ item }">
-                                <HashLink :type="'block'" :hash="item.blockNumber" />
-                            </template>
-
-                            <template v-slot:item.from="{ item }">
-                                <HashLink :type="'address'" :hash="item.from" :withTokenName="true" />
-                            </template>
-
-                            <template v-slot:item.to="{ item }">
-                                <HashLink v-if="item.to" :type="'address'" :hash="item.to" :withTokenName="true" />
-                                <span v-else class="text-medium-emphasis">Contract Creation</span>
-                            </template>
-
-                            <template v-slot:no-data>
-                                <div class="text-center pa-4">
-                                    No transactions found in this batch
-                                </div>
-                            </template>
-                        </v-data-table-server>
+                        <TransactionsList :opBatchIndex="parseInt(batchIndex)" :withCount="true" />
                     </v-card-text>
                 </v-card>
             </v-col>
@@ -119,8 +103,8 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, inject } from 'vue';
-import HashLink from '@/components/HashLink.vue';
+import { ref, computed, onMounted, inject } from 'vue';
+import TransactionsList from '@/components/TransactionsList.vue';
 
 const props = defineProps({
     batchIndex: {
@@ -133,23 +117,25 @@ const $server = inject('$server');
 const $dt = inject('$dt');
 
 const loading = ref(true);
-const loadingTransactions = ref(false);
 const batch = ref(null);
-const transactions = ref([]);
-const transactionTotal = ref(0);
 
-const txOptions = reactive({
-    page: 1,
-    itemsPerPage: 10,
-    sortBy: [{ key: 'blockNumber', order: 'desc' }]
+const blobViewerUrl = computed(() => {
+    if (!batch.value?.blobHash) return '';
+    const explorer = batch.value.parentChainExplorer || 'https://etherscan.io';
+    return `${explorer}/blob/${batch.value.blobHash}`;
 });
 
-const txHeaders = [
-    { title: 'Transaction Hash', key: 'hash', sortable: false },
-    { title: 'Block', key: 'blockNumber', sortable: true },
-    { title: 'From', key: 'from', sortable: false },
-    { title: 'To', key: 'to', sortable: false }
-];
+const l1TransactionUrl = computed(() => {
+    if (!batch.value?.l1TransactionHash) return '';
+    const explorer = batch.value.parentChainExplorer || 'https://etherscan.io';
+    return `${explorer}/tx/${batch.value.l1TransactionHash}`;
+});
+
+const l1BlockUrl = computed(() => {
+    if (!batch.value?.l1BlockNumber) return '';
+    const explorer = batch.value.parentChainExplorer || 'https://etherscan.io';
+    return `${explorer}/block/${batch.value.l1BlockNumber}`;
+});
 
 const statusColors = {
     pending: 'warning',
@@ -163,6 +149,11 @@ const statusLabels = {
     finalized: 'Finalized'
 };
 
+const dataContainerLabels = {
+    in_blob4844: 'EIP-4844 Blob',
+    in_calldata: 'Calldata'
+};
+
 async function loadBatch() {
     loading.value = true;
     try {
@@ -172,27 +163,6 @@ async function loadBatch() {
         console.error('Error loading batch:', error);
     } finally {
         loading.value = false;
-    }
-}
-
-async function loadTransactions({ page, itemsPerPage, sortBy } = {}) {
-    if (!page || !itemsPerPage || !sortBy || !sortBy.length) return;
-
-    loadingTransactions.value = true;
-    Object.assign(txOptions, { page, itemsPerPage, sortBy });
-
-    try {
-        const { data } = await $server.getOpBatchTransactions(props.batchIndex, {
-            page,
-            itemsPerPage,
-            order: sortBy[0].order.toUpperCase()
-        });
-        transactions.value = data.items;
-        transactionTotal.value = data.total;
-    } catch (error) {
-        console.error('Error loading transactions:', error);
-    } finally {
-        loadingTransactions.value = false;
     }
 }
 

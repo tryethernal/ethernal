@@ -25,7 +25,9 @@ module.exports = (sequelize, DataTypes) => {
         'outputVersion',
         'submissionInterval',
         'finalizationPeriodSeconds',
-        'parentChainExplorer'
+        'parentChainExplorer',
+        'beaconUrl',
+        'l2GenesisTimestamp'
       ];
 
       const filteredParams = {};
@@ -189,6 +191,16 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: 2,
       comment: 'L2 block time in seconds (default: 2 for OP Stack)'
+    },
+    beaconUrl: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      comment: 'Beacon node URL for fetching blob data (e.g., https://beacon.example.com)'
+    },
+    l2GenesisTimestamp: {
+      type: DataTypes.BIGINT,
+      allowNull: true,
+      comment: 'L2 genesis block timestamp (Unix seconds) for block range calculation'
     }
   }, {
     sequelize,

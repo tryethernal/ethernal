@@ -80,6 +80,11 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
       comment: 'Parsed blob content for L2 block extraction'
     },
+    dataContainer: {
+      type: DataTypes.ENUM('in_blob4844', 'in_calldata'),
+      allowNull: true,
+      comment: 'Where batch data is stored: in_blob4844 (EIP-4844 blob) or in_calldata (tx calldata)'
+    },
     status: {
       type: DataTypes.ENUM('pending', 'confirmed', 'finalized'),
       allowNull: false,

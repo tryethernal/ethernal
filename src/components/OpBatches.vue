@@ -62,6 +62,12 @@
                         </span>
                     </template>
 
+                    <template v-slot:item.dataContainer="{ item }">
+                        <v-chip size="x-small" :color="item.dataContainer === 'in_blob4844' ? 'primary' : 'secondary'">
+                            {{ dataContainerLabels[item.dataContainer] || '-' }}
+                        </v-chip>
+                    </template>
+
                     <template v-slot:no-data>
                         <div class="text-center pa-4">
                             No batches found
@@ -95,6 +101,7 @@ const headers = [
     { title: 'L2 Block Range', key: 'l2BlockRange', sortable: false },
     { title: 'Tx Count', key: 'txCount', sortable: false },
     { title: 'Timestamp', key: 'timestamp', sortable: false },
+    { title: 'Data', key: 'dataContainer', sortable: false },
     { title: 'Status', key: 'status', sortable: false },
     { title: 'L1 Transaction', key: 'l1TransactionHash', sortable: false }
 ];
@@ -109,6 +116,11 @@ const statusLabels = {
     pending: 'Pending',
     confirmed: 'Confirmed',
     finalized: 'Finalized'
+};
+
+const dataContainerLabels = {
+    in_blob4844: 'Blob',
+    in_calldata: 'Calldata'
 };
 
 async function loadBatches({ page, itemsPerPage, sortBy } = {}) {

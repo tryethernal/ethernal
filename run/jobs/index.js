@@ -22,6 +22,8 @@ module.exports = {
     finalizePendingOpOutputs: require('./finalizePendingOpOutputs'),
     finalizePendingOpBatches: require('./finalizePendingOpBatches'),
     linkOpDepositsToL2Txs: require('./linkOpDepositsToL2Txs'),
+    storeOpDeposit: require('./storeOpDeposit'),
+    storeOpOutput: require('./storeOpOutput'),
 
     // Medium Priority
     processContract: require('./processContract'),
@@ -52,5 +54,8 @@ module.exports = {
     blockSyncMonitoring: require('./blockSyncMonitoring'),
     sendDiscordMessage: require('./sendDiscordMessage'),
     sendDemoExplorerLink: require('./sendDemoExplorerLink'),
-    backfillNativeTokenTransfers: require('./backfillNativeTokenTransfers')
+    backfillNativeTokenTransfers: require('./backfillNativeTokenTransfers'),
+    backfillOpBatchBlockRanges: require('./backfillOpBatchBlockRanges'),
+    backfillOpDeposits: require('./backfillOpDeposits'),
+    backfillOpOutputs: require('./backfillOpOutputs')
 };

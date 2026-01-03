@@ -44,6 +44,22 @@ const SHA256_HASH_LENGTH_HEX = 64;         // SHA-256 produces 32 bytes = 64 hex
 const VERSIONED_HASH_LENGTH_BYTES = 32;    // 1 version byte + 31 hash bytes
 const VERSIONED_HASH_HASH_BYTES = 31;      // Bytes of hash to include (31 of 32)
 
+// Ethereum mainnet Beacon Chain genesis timestamp and slot time
+// Beacon Chain genesis: Dec 1, 2020, 12:00:23 PM UTC
+const ETHEREUM_BEACON_GENESIS_TIMESTAMP = 1606824023;
+const ETHEREUM_SLOT_TIME = 12;                 // 12 seconds per slot
+
+/**
+ * Calculate the Ethereum beacon slot from a block timestamp
+ * Slots are calculated from Beacon Chain genesis (Dec 1, 2020)
+ * @param {number} timestamp - Unix timestamp in seconds
+ * @returns {number|null} Slot number or null if before genesis
+ */
+const calculateSlotFromTimestamp = (timestamp) => {
+    if (timestamp < ETHEREUM_BEACON_GENESIS_TIMESTAMP) return null;
+    return Math.floor((timestamp - ETHEREUM_BEACON_GENESIS_TIMESTAMP) / ETHEREUM_SLOT_TIME);
+};
+
 /**
  * Check if a transaction is a batch submission to the BatchInbox
  * @param {Object} tx - Transaction object
@@ -157,20 +173,233 @@ const fetchBlobsFromBeacon = async (beaconUrl, slot, blobHashes) => {
 
 /**
  * Compute the versioned hash from a KZG commitment
+ * Per EIP-4844: kzg_to_versioned_hash(commitment) = VERSIONED_HASH_VERSION_KZG + sha256(commitment)[1:]
  * @param {string} kzgCommitment - The KZG commitment (hex string)
  * @returns {string} Versioned hash
  */
 const computeBlobVersionedHash = (kzgCommitment) => {
     const commitment = kzgCommitment.startsWith('0x') ? kzgCommitment : '0x' + kzgCommitment;
-    // EIP-4844 uses SHA-256 for versioned hashes, not keccak256
+    // EIP-4844 uses SHA-256 for versioned hashes
     const hash = ethers.utils.sha256(commitment);
-    // Remove 0x prefix if present
+    // Remove 0x prefix
     const hashWithoutPrefix = hash.startsWith('0x') ? hash.slice(2) : hash;
-    // Versioned hash = version byte + first 31 bytes of SHA-256 hash
-    // Result: 0x + version (2 hex) + 31 bytes (62 hex) = 66 chars total
+    // Versioned hash = version byte + bytes 1-31 of SHA-256 hash (skip first byte)
+    // sha256 produces 32 bytes = 64 hex chars
+    // We skip the first byte (2 hex chars) and take the rest (31 bytes = 62 hex chars)
     const versionHex = VERSIONED_HASH_VERSION_KZG.toString(16).padStart(2, '0');
-    const truncatedHash = hashWithoutPrefix.slice(0, VERSIONED_HASH_HASH_BYTES * 2);
+    const truncatedHash = hashWithoutPrefix.slice(2); // Skip first byte (2 hex chars)
     return '0x' + versionHex + truncatedHash;
+};
+
+/**
+ * Decode blob data to extract the actual data payload
+ * OP Stack blobs use a special encoding to ensure each 32-byte field element
+ * fits within the BLS12-381 scalar field modulus.
+ *
+ * Encoding format (from op-service/eth/blob.go):
+ * - Element 0 is special:
+ *   - Byte 0: 6-bit encoded chunk (high 2 bits must be 00)
+ *   - Byte 1: version (must be 0)
+ *   - Bytes 2-4: output length (24-bit big-endian)
+ *   - Bytes 5-31: first 27 bytes of actual data
+ * - Elements 1-4095:
+ *   - Byte 0: 6-bit encoded chunk (high 2 bits must be 00)
+ *   - Bytes 1-31: 31 bytes of data
+ * - Every 4 elements (round), 6-bit chunks are reassembled into 3 output bytes
+ *
+ * @param {string} blobHex - Raw blob data as hex string
+ * @returns {Buffer} Decoded data buffer
+ */
+const decodeBlobData = (blobHex) => {
+    const blob = blobHex.startsWith('0x') ? blobHex.slice(2) : blobHex;
+    const blobBuffer = Buffer.from(blob, 'hex');
+
+    const FIELD_ELEMENTS = 4096;
+    const FIELD_SIZE = 32;
+    const ROUNDS = 1024;
+    const EXPECTED_BLOB_SIZE = FIELD_ELEMENTS * FIELD_SIZE;  // 131072 bytes
+
+    // Validate blob size
+    if (blobBuffer.length !== EXPECTED_BLOB_SIZE) {
+        logger.warn('Invalid blob size', {
+            location: 'lib.opBatches.decodeBlobData',
+            expected: EXPECTED_BLOB_SIZE,
+            actual: blobBuffer.length
+        });
+        return Buffer.alloc(0);
+    }
+
+    // Check version byte (blob[1] must be 0)
+    const version = blobBuffer[1];
+    if (version !== 0) {
+        logger.warn('Invalid blob encoding version', { location: 'lib.opBatches.decodeBlobData', version });
+        return Buffer.alloc(0);
+    }
+
+    // Check that high 2 bits of first byte are 0 (valid field element)
+    if ((blobBuffer[0] & 0xC0) !== 0) {
+        logger.warn('Invalid field element in blob', { location: 'lib.opBatches.decodeBlobData' });
+        return Buffer.alloc(0);
+    }
+
+    // Read 24-bit big-endian output length from bytes 2-4
+    const outputLen = (blobBuffer[2] << 16) | (blobBuffer[3] << 8) | blobBuffer[4];
+
+    // MaxBlobDataSize = (4*31+3)*1024 - 4 = 130044 bytes
+    const MAX_BLOB_DATA_SIZE = 130044;
+    if (outputLen > MAX_BLOB_DATA_SIZE) {
+        logger.warn('Blob output length exceeds max size', {
+            location: 'lib.opBatches.decodeBlobData',
+            outputLen,
+            maxSize: MAX_BLOB_DATA_SIZE
+        });
+        return Buffer.alloc(0);
+    }
+
+    const outputBuffer = Buffer.alloc(MAX_BLOB_DATA_SIZE);
+    let opos = 0;  // Output position
+    let ipos = 0;  // Input position (element index)
+
+    // Round 0 is special - element 0 bytes 5-31 go to output (27 bytes)
+    // because bytes 0-4 contain version + length
+    blobBuffer.copy(outputBuffer, opos, 5, 32);  // Element 0, bytes 5-31
+    opos += 27;
+
+    // Collect 6-bit chunks from elements 0-3 for round 0
+    const encodedByte = [];
+    encodedByte[0] = blobBuffer[0] & 0x3F;  // Element 0
+
+    // Process elements 1, 2, 3 of round 0
+    for (let j = 1; j < 4 && opos < outputLen; j++) {
+        const elemStart = j * FIELD_SIZE;
+        // Check high 2 bits are 0
+        if ((blobBuffer[elemStart] & 0xC0) !== 0) {
+            logger.warn('Invalid field element', { location: 'lib.opBatches.decodeBlobData', element: j });
+            return Buffer.alloc(0);
+        }
+        encodedByte[j] = blobBuffer[elemStart] & 0x3F;
+        // Copy 31 bytes from element j
+        const copyLen = Math.min(31, outputLen - opos);
+        blobBuffer.copy(outputBuffer, opos, elemStart + 1, elemStart + 1 + copyLen);
+        opos += 31;
+    }
+    ipos = 4;
+
+    // Reassemble bytes from round 0's 6-bit chunks
+    if (opos >= 28) {
+        reassembleBytes(outputBuffer, encodedByte, 27);
+    }
+
+    // Process remaining rounds (1 to 1023)
+    for (let round = 1; round < ROUNDS && opos < outputLen; round++) {
+        for (let j = 0; j < 4; j++) {
+            const elemStart = ipos * FIELD_SIZE;
+            if ((blobBuffer[elemStart] & 0xC0) !== 0) {
+                logger.warn('Invalid field element', { location: 'lib.opBatches.decodeBlobData', element: ipos });
+                return Buffer.alloc(0);
+            }
+            encodedByte[j] = blobBuffer[elemStart] & 0x3F;
+            const copyLen = Math.min(31, outputLen - opos);
+            if (copyLen > 0) {
+                blobBuffer.copy(outputBuffer, opos, elemStart + 1, elemStart + 1 + copyLen);
+            }
+            opos += 31;
+            ipos++;
+        }
+
+        // Reassemble bytes for this round
+        const reassemblePos = round * 31 * 4 + 27;  // Position of first reassembled byte
+        if (reassemblePos < outputLen) {
+            reassembleBytes(outputBuffer, encodedByte, reassemblePos);
+        }
+    }
+
+    return outputBuffer.slice(0, outputLen);
+};
+
+/**
+ * Reassemble 3 bytes from 4 6-bit encoded values and write to output buffer
+ * @param {Buffer} output - Output buffer
+ * @param {number[]} encoded - Array of 4 6-bit values
+ * @param {number} pos - Position to write first reassembled byte
+ */
+const reassembleBytes = (output, encoded, pos) => {
+    // Combine 4 * 6 bits = 24 bits = 3 bytes
+    // Layout: [enc[0]:6][enc[1]:6][enc[2]:6][enc[3]:6]
+    // Reconstructs: byte0 = enc[0]<<2 | enc[1]>>4
+    //               byte1 = (enc[1]&0xF)<<4 | enc[2]>>2
+    //               byte2 = (enc[2]&0x3)<<6 | enc[3]
+    output[pos] = ((encoded[0] << 2) | (encoded[1] >> 4)) & 0xFF;
+    output[pos + 1] = (((encoded[1] & 0x0F) << 4) | (encoded[2] >> 2)) & 0xFF;
+    output[pos + 2] = (((encoded[2] & 0x03) << 6) | encoded[3]) & 0xFF;
+};
+
+/**
+ * Parse channel frames from blob data
+ * First decodes the blob, then parses frames from the decoded data
+ * @param {string} blobHex - Raw blob data as hex string
+ * @returns {Array} Array of parsed frames
+ */
+const parseFramesFromBlob = (blobHex) => {
+    try {
+        const decodedData = decodeBlobData(blobHex);
+        if (decodedData.length === 0) {
+            return [];
+        }
+
+        // The decoded blob data has a derivation version prefix (byte 0 = 0x00)
+        // Same format as calldata, so we can use parseFramesFromCalldata
+        const hexData = '0x' + decodedData.toString('hex');
+        return parseFramesFromCalldata(hexData);
+    } catch (error) {
+        logger.warn('Failed to parse frames from blob', { location: 'lib.opBatches.parseFramesFromBlob', error: error.message });
+        return [];
+    }
+};
+
+/**
+ * Parse frames directly from a buffer (no version byte)
+ * Used for blob data which doesn't have the derivation version prefix
+ * @param {Buffer} data - Frame data buffer
+ * @returns {Array} Array of parsed frames
+ */
+const parseFramesDirectly = (data) => {
+    const frames = [];
+    let offset = 0;
+
+    while (offset < data.length) {
+        // Need at least frame header (23 bytes)
+        if (offset + FRAME_HEADER_SIZE > data.length) break;
+
+        // Parse frame header
+        const channelId = '0x' + data.slice(offset, offset + 16).toString('hex');
+        offset += 16;
+
+        const frameNumber = data.readUInt16BE(offset);
+        offset += 2;
+
+        const frameDataLength = data.readUInt32BE(offset);
+        offset += 4;
+
+        // Check if we have enough data for frame content + is_last byte
+        if (offset + frameDataLength + 1 > data.length) break;
+
+        const frameData = '0x' + data.slice(offset, offset + frameDataLength).toString('hex');
+        offset += frameDataLength;
+
+        const isLast = data[offset] === 1;
+        offset += 1;
+
+        frames.push({
+            channelId,
+            frameNumber,
+            frameDataLength,
+            frameData,
+            isLast
+        });
+    }
+
+    return frames;
 };
 
 /**
@@ -234,28 +463,52 @@ const reassembleChannel = (frames) => {
 
 /**
  * Decompress channel data based on version byte
- * @param {Buffer} channelData - Raw channel data (first byte is version)
+ * Channel data can have two formats:
+ * 1. Version prefix format: first byte is 0x00 (zlib) or 0x01 (brotli)
+ * 2. Raw zlib: first byte is 0x78 (zlib magic) - no version prefix
+ * @param {Buffer} channelData - Raw channel data
  * @returns {Buffer|null} Decompressed batch data or null on failure
  */
 const decompressChannelData = (channelData) => {
     if (!channelData || channelData.length === 0) return null;
 
-    const versionByte = channelData[0];
-    const compressedData = channelData.slice(1);
+    const firstByte = channelData[0];
 
     try {
-        if (versionByte === CHANNEL_VERSION_ZLIB) {
-            // zlib decompression (legacy)
+        // Check if first byte is zlib magic (0x78) - raw zlib without version prefix
+        // 0x78 0x01, 0x78 0x9C, 0x78 0xDA are common zlib headers
+        if (firstByte === 0x78) {
+            return zlib.inflateSync(channelData);
+        }
+
+        // Version prefix format
+        const compressedData = channelData.slice(1);
+
+        if (firstByte === CHANNEL_VERSION_ZLIB) {
+            // zlib decompression (legacy with version prefix)
             return zlib.inflateSync(compressedData);
-        } else if (versionByte === CHANNEL_VERSION_BROTLI) {
+        } else if (firstByte === CHANNEL_VERSION_BROTLI) {
             // brotli decompression (Fjord+)
             return zlib.brotliDecompressSync(compressedData);
         } else {
-            // Unknown version
-            return null;
+            // Unknown format - try raw brotli as fallback
+            try {
+                return zlib.brotliDecompressSync(channelData);
+            } catch {
+                logger.warn('Unknown channel compression format', {
+                    location: 'lib.opBatches.decompressChannelData',
+                    firstByte: '0x' + firstByte.toString(16)
+                });
+                return null;
+            }
         }
     } catch (error) {
         // Decompression failed
+        logger.debug('Channel decompression failed', {
+            location: 'lib.opBatches.decompressChannelData',
+            firstByte: '0x' + firstByte.toString(16),
+            error: error.message
+        });
         return null;
     }
 };
@@ -416,9 +669,28 @@ const findL2BlockByTimestamp = async (workspaceId, timestamp) => {
 const extractL2BlockRange = async (frames, options = {}) => {
     const { workspaceId, l1Timestamp, l2BlockTime = DEFAULT_L2_BLOCK_TIME, l2GenesisTimestamp } = options;
 
+    if (!frames || frames.length === 0) {
+        logger.debug('No frames to extract block range from', { location: 'lib.opBatches.extractL2BlockRange' });
+        return null;
+    }
+
+    // Check if channel is complete
+    const hasLastFrame = frames.some(f => f.isLast);
+    if (!hasLastFrame) {
+        // This is expected for large batches that span multiple transactions
+        logger.debug('Incomplete channel - no isLast frame', {
+            location: 'lib.opBatches.extractL2BlockRange',
+            frameCount: frames.length,
+            frameNumbers: frames.map(f => f.frameNumber)
+        });
+    }
+
     // 1. Reassemble channel from frames
     const channelData = reassembleChannel(frames);
-    if (!channelData) return null;
+    if (!channelData) {
+        // Channel is incomplete - this is expected for multi-blob batches
+        return null;
+    }
 
     // 2. Decompress channel data
     const batchData = decompressChannelData(channelData);
@@ -485,10 +757,11 @@ const extractL2BlockRange = async (frames, options = {}) => {
  * @param {number} options.workspaceId - L2 workspace ID for block lookup
  * @param {number} options.l1Timestamp - L1 block timestamp (Unix seconds)
  * @param {number} options.l2BlockTime - L2 block time in seconds
+ * @param {number} options.l2GenesisTimestamp - L2 genesis timestamp for block calculation
  * @returns {Promise<Object>} Batch information
  */
 const getBatchInfo = async (tx, options = {}) => {
-    const { batchInboxAddress, beaconUrl, workspaceId, l1Timestamp, l2BlockTime } = options;
+    const { batchInboxAddress, beaconUrl, workspaceId, l1Timestamp, l2BlockTime, l2GenesisTimestamp } = options;
 
     if (!isBatchTransaction(tx, batchInboxAddress)) {
         return null;
@@ -507,11 +780,15 @@ const getBatchInfo = async (tx, options = {}) => {
         blockCount: null
     };
 
+    // Calculate L1 timestamp
+    const effectiveL1Timestamp = l1Timestamp || tx.timestamp;
+
     // Options to pass to extractL2BlockRange
     const extractOptions = {
         workspaceId,
-        l1Timestamp: l1Timestamp || tx.timestamp,
-        l2BlockTime: l2BlockTime || 2
+        l1Timestamp: effectiveL1Timestamp,
+        l2BlockTime: l2BlockTime || DEFAULT_L2_BLOCK_TIME,
+        l2GenesisTimestamp
     };
 
     if (batchInfo.isBlob) {
@@ -520,18 +797,22 @@ const getBatchInfo = async (tx, options = {}) => {
             batchInfo.blobHash = tx.blobVersionedHashes[0];
 
             // Attempt to fetch blob data if beacon URL is available
-            if (beaconUrl && tx.slot) {
-                const blobs = await fetchBlobsFromBeacon(beaconUrl, tx.slot, tx.blobVersionedHashes);
-                if (blobs.length > 0) {
-                    batchInfo.blobData = blobs[0].data;
-                    // Parse blob data as frames and extract block range
-                    const frames = parseFramesFromCalldata(blobs[0].data);
-                    if (frames.length > 0) {
-                        const blockRange = await extractL2BlockRange(frames, extractOptions);
-                        if (blockRange) {
-                            batchInfo.l2BlockStart = blockRange.start;
-                            batchInfo.l2BlockEnd = blockRange.end;
-                            batchInfo.blockCount = blockRange.blockCount;
+            if (beaconUrl) {
+                // Calculate slot from L1 timestamp if not provided
+                const slot = tx.slot || calculateSlotFromTimestamp(effectiveL1Timestamp);
+                if (slot) {
+                    const blobs = await fetchBlobsFromBeacon(beaconUrl, slot, tx.blobVersionedHashes);
+                    if (blobs.length > 0) {
+                        batchInfo.blobData = blobs[0].data;
+                        // Parse blob data as frames and extract block range
+                        const frames = parseFramesFromBlob(blobs[0].data);
+                        if (frames.length > 0) {
+                            const blockRange = await extractL2BlockRange(frames, extractOptions);
+                            if (blockRange) {
+                                batchInfo.l2BlockStart = blockRange.start;
+                                batchInfo.l2BlockEnd = blockRange.end;
+                                batchInfo.blockCount = blockRange.blockCount;
+                            }
                         }
                     }
                 }
@@ -571,6 +852,9 @@ module.exports = {
     isBatchTransaction,
     isBlobTransaction,
     parseFramesFromCalldata,
+    parseFramesFromBlob,
+    parseFramesDirectly,
+    decodeBlobData,
     fetchBlobsFromBeacon,
     computeBlobVersionedHash,
     parseBatchData,
@@ -583,9 +867,12 @@ module.exports = {
     extractL2BlockRange,
     getBatchInfo,
     getBatchInboxAddress,
+    calculateSlotFromTimestamp,
     DERIVATION_VERSION_0,
     CHANNEL_VERSION_ZLIB,
     CHANNEL_VERSION_BROTLI,
     BATCH_TYPE_SINGULAR,
-    BATCH_TYPE_SPAN
+    BATCH_TYPE_SPAN,
+    ETHEREUM_BEACON_GENESIS_TIMESTAMP,
+    ETHEREUM_SLOT_TIME
 };

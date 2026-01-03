@@ -236,10 +236,11 @@ module.exports = async job => {
                 try {
                     const batchInfo = await getBatchInfo(tx, {
                         batchInboxAddress: opConfig.batchInboxAddress,
-                        beaconUrl: workspace.beaconUrl,
+                        beaconUrl: opConfig.beaconUrl,
                         workspaceId: opConfig.workspaceId,
                         l1Timestamp: l1Timestamp,
-                        l2BlockTime: opConfig.l2BlockTime || 2
+                        l2BlockTime: opConfig.l2BlockTime || 2,
+                        l2GenesisTimestamp: opConfig.l2GenesisTimestamp
                     });
 
                     if (batchInfo) {
@@ -264,6 +265,38 @@ module.exports = async job => {
                                 ? parseInt(batchInfo.l1TransactionIndex, 16)
                                 : Number(batchInfo.l1TransactionIndex);
 
+                            // Calculate L2 block range using sequential approach (like Blockscout)
+                            // Each batch covers a contiguous range of L2 blocks
+                            let l2BlockStart = batchInfo.l2BlockStart;
+                            let l2BlockEnd = batchInfo.l2BlockEnd;
+                            let txCount = batchInfo.blockCount;
+
+                            // If batch parsing didn't give us block ranges, calculate from L2 chain
+                            if (l2BlockStart === null && opConfig.workspaceId) {
+                                // Get the latest L2 block as the batch end
+                                const latestL2Block = await Block.findOne({
+                                    where: { workspaceId: opConfig.workspaceId },
+                                    order: [['number', 'DESC']],
+                                    attributes: ['number'],
+                                    transaction: t
+                                });
+
+                                if (latestL2Block) {
+                                    l2BlockEnd = latestL2Block.number;
+
+                                    // l2BlockStart = previous batch's l2BlockEnd + 1, or 0 for first batch
+                                    if (lastBatch && lastBatch.l2BlockEnd !== null) {
+                                        l2BlockStart = lastBatch.l2BlockEnd + 1;
+                                    } else {
+                                        // First batch - start from 0 or use block count estimation
+                                        l2BlockStart = 0;
+                                    }
+
+                                    txCount = l2BlockEnd - l2BlockStart + 1;
+                                    logger.info(`Calculated L2 block range for batch ${nextBatchIndex}: ${l2BlockStart}-${l2BlockEnd} (${txCount} blocks)`, { location: 'jobs.blockSync.opBatch' });
+                                }
+                            }
+
                             await OpBatch.create({
                                 workspaceId: opConfig.workspaceId,
                                 batchIndex: nextBatchIndex,
@@ -273,11 +306,12 @@ module.exports = async job => {
                                 l1TransactionIndex: l1TransactionIndex,
                                 epochNumber: l1BlockNumber, // Epoch is typically the L1 block
                                 timestamp: tx.timestamp ? new Date(tx.timestamp * 1000) : new Date(),
-                                txCount: batchInfo.blockCount || null,
-                                l2BlockStart: batchInfo.l2BlockStart,
-                                l2BlockEnd: batchInfo.l2BlockEnd,
+                                txCount: txCount,
+                                l2BlockStart: l2BlockStart,
+                                l2BlockEnd: l2BlockEnd,
                                 blobHash: batchInfo.blobHash,
                                 blobData: batchInfo.blobData,
+                                dataContainer: batchInfo.blobHash ? 'in_blob4844' : 'in_calldata',
                                 status: 'pending'
                             }, { transaction: t });
 

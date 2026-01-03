@@ -103,7 +103,8 @@ const props = defineProps({
     address: String,
     withCount: Boolean,
     totalCount: Number,
-    batchNumber: Number
+    batchNumber: Number,
+    opBatchIndex: Number
 });
 const emit = defineEmits(['listUpdated']);
 
@@ -156,6 +157,8 @@ const getQuery = (page, itemsPerPage, sortBy) => {
         return $server.getAddressTransactions(props.address, { page, itemsPerPage, orderBy: sortBy[0].key, order: sortBy[0].order }, !props.dense && !!props.withCount);
     else if (props.batchNumber)
         return $server.getOrbitBatchTransactions(props.batchNumber, { page, itemsPerPage, orderBy: sortBy[0].key, order: sortBy[0].order }, !props.dense && !!props.withCount);
+    else if (props.opBatchIndex !== undefined && props.opBatchIndex !== null)
+        return $server.getOpBatchTransactions(props.opBatchIndex, { page, itemsPerPage, order: sortBy[0].order.toUpperCase() });
     else
         return $server.getTransactions({ page, itemsPerPage, orderBy: sortBy[0].key, order: sortBy[0].order }, !props.dense && !!props.withCount);
 };

@@ -539,7 +539,15 @@ const getOpBatch = async (workspaceId, batchIndex) => {
     if (!batch)
         throw new Error('Could not find batch');
 
-    return batch.toJSON();
+    // Get the OpChainConfig to include parentChainExplorer for blob links
+    const opConfig = await OpChainConfig.findOne({
+        where: { workspaceId },
+        attributes: ['parentChainExplorer']
+    });
+
+    const result = batch.toJSON();
+    result.parentChainExplorer = opConfig?.parentChainExplorer || 'https://etherscan.io';
+    return result;
 };
 
 /**
