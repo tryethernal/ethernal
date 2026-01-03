@@ -679,7 +679,15 @@ const getOpOutput = async (workspaceId, outputIndex) => {
     if (!output)
         throw new Error('Could not find output');
 
-    return output.toJSON();
+    // Get the OpChainConfig to include parentChainExplorer for L1 links
+    const opConfig = await OpChainConfig.findOne({
+        where: { workspaceId },
+        attributes: ['parentChainExplorer']
+    });
+
+    const result = output.toJSON();
+    result.parentChainExplorer = opConfig?.parentChainExplorer || 'https://eth.blockscout.com';
+    return result;
 };
 
 /**
