@@ -176,7 +176,7 @@ module.exports = async job => {
                             data: depositData.data,
                             isCreation: depositData.isCreation,
                             timestamp: transaction.timestamp || new Date()
-                        }, 'high');
+                        }, 1);
                         logger.info(`Detected OP deposit in tx ${transaction.hash}`, { location: 'jobs.receiptSync.opEvents' });
                     } catch (error) {
                         logger.error(`Error processing OP deposit event: ${error.message}`, { location: 'jobs.receiptSync.opEvents', error });
@@ -198,7 +198,7 @@ module.exports = async job => {
                             timestamp: transaction.timestamp || new Date(),
                             disputeGameAddress: gameData.disputeGameAddress,
                             gameType: gameData.gameType
-                        }, 'high');
+                        }, 1);
                         logger.info(`Detected OP dispute game in tx ${transaction.hash}`, { location: 'jobs.receiptSync.opEvents' });
                     } catch (error) {
                         logger.error(`Error processing OP dispute game event: ${error.message}`, { location: 'jobs.receiptSync.opEvents', error });
@@ -219,7 +219,7 @@ module.exports = async job => {
                             l1TransactionId: transaction.id,
                             proposer: transaction.from,
                             timestamp: transaction.timestamp || new Date()
-                        }, 'high');
+                        }, 1);
                         logger.info(`Detected OP output proposal in tx ${transaction.hash}`, { location: 'jobs.receiptSync.opEvents' });
                     } catch (error) {
                         logger.error(`Error processing OP output event: ${error.message}`, { location: 'jobs.receiptSync.opEvents', error });

@@ -32,8 +32,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     l2BlockNumber: {
       type: DataTypes.INTEGER,
-      allowNull: false,
-      comment: 'L2 block this output covers'
+      allowNull: true,
+      comment: 'L2 block this output covers (null for dispute games until resolved)'
     },
     l1BlockNumber: {
       type: DataTypes.INTEGER,
