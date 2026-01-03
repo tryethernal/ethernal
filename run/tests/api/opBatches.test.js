@@ -137,4 +137,41 @@ describe('OpBatches API', () => {
                 .catch(done);
         });
     });
+
+    describe(`GET ${BASE_URL}/:batchIndex/blocks`, () => {
+        it('should return blocks for a batch', (done) => {
+            const mockData = {
+                total: 10,
+                items: [
+                    { id: 1, number: 1000, transactionsCount: 5 },
+                    { id: 2, number: 1001, transactionsCount: 3 }
+                ]
+            };
+
+            db.getOpBatchBlocks.mockResolvedValue(mockData);
+
+            request.get(`${BASE_URL}/100/blocks`)
+                .query({ page: 1, itemsPerPage: 10, order: 'DESC' })
+                .expect(200)
+                .then(({ body }) => {
+                    expect(body).toEqual(mockData);
+                    expect(db.getOpBatchBlocks).toHaveBeenCalledWith(1, '100', 1, 10, 'DESC');
+                    done();
+                })
+                .catch(done);
+        });
+
+        it('should handle errors when fetching blocks', (done) => {
+            const error = new Error('Could not find batch');
+            db.getOpBatchBlocks.mockRejectedValue(error);
+
+            request.get(`${BASE_URL}/999/blocks`)
+                .expect(400)
+                .then(({ body }) => {
+                    expect(body).toEqual({ error: 'Could not find batch' });
+                    done();
+                })
+                .catch(done);
+        });
+    });
 });

@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const db = require('../lib/firebase');
-const { unmanagedError, managedError } = require('../lib/errors');
+const { unmanagedError } = require('../lib/errors');
 const { sanitizePagination } = require('../lib/utils');
 
 /**

@@ -10,6 +10,9 @@ const { OpBatch, OpChainConfig, Block } = require('../models');
 const { Op } = require('sequelize');
 const logger = require('../lib/logger');
 
+// Process batches in chunks to avoid memory issues with large datasets
+const BATCH_CHUNK_SIZE = 1000;
+
 module.exports = async job => {
     const data = job.data || {};
     const { workspaceId } = data;
@@ -28,13 +31,12 @@ module.exports = async job => {
 
         for (const opConfig of opConfigs) {
             try {
-                // Get all batches for this workspace, ordered by batchIndex
-                const batches = await OpBatch.findAll({
-                    where: { workspaceId: opConfig.workspaceId },
-                    order: [['batchIndex', 'ASC']]
+                // Get total batch count for this workspace
+                const totalBatches = await OpBatch.count({
+                    where: { workspaceId: opConfig.workspaceId }
                 });
 
-                if (batches.length === 0) {
+                if (totalBatches === 0) {
                     logger.info(`No batches found for workspace ${opConfig.workspaceId}`, { location: 'jobs.backfillOpBatchBlockRanges' });
                     continue;
                 }
@@ -52,56 +54,70 @@ module.exports = async job => {
                 }
 
                 const latestBlockNumber = latestL2Block.number;
-                const batchCount = batches.length;
 
-                logger.info(`Backfilling ${batchCount} batches for workspace ${opConfig.workspaceId}, latest L2 block: ${latestBlockNumber}`, { location: 'jobs.backfillOpBatchBlockRanges' });
+                logger.info(`Backfilling ${totalBatches} batches for workspace ${opConfig.workspaceId}, latest L2 block: ${latestBlockNumber}`, { location: 'jobs.backfillOpBatchBlockRanges' });
 
-                // Calculate block ranges for each batch
-                // Approach: Distribute blocks proportionally across batches
-                // Each batch covers: (latestBlockNumber + 1) / batchCount blocks on average
-                const avgBlocksPerBatch = Math.ceil((latestBlockNumber + 1) / batchCount);
+                // Calculate average blocks per batch
+                const avgBlocksPerBatch = Math.ceil((latestBlockNumber + 1) / totalBatches);
 
                 let currentBlockStart = 0;
                 let updated = 0;
+                let processedCount = 0;
 
-                for (let i = 0; i < batches.length; i++) {
-                    const batch = batches[i];
-
-                    // Skip if already has block range
-                    if (batch.l2BlockStart !== null && batch.l2BlockEnd !== null) {
-                        currentBlockStart = batch.l2BlockEnd + 1;
-                        continue;
-                    }
-
-                    // Calculate end block for this batch
-                    let l2BlockEnd;
-                    if (i === batches.length - 1) {
-                        // Last batch gets all remaining blocks
-                        l2BlockEnd = latestBlockNumber;
-                    } else {
-                        // Use average, but make sure we don't exceed the latest block
-                        l2BlockEnd = Math.min(currentBlockStart + avgBlocksPerBatch - 1, latestBlockNumber);
-                    }
-
-                    // Ensure valid range
-                    if (currentBlockStart > latestBlockNumber) {
-                        logger.warn(`Batch ${batch.batchIndex} start block ${currentBlockStart} exceeds latest L2 block ${latestBlockNumber}`, { location: 'jobs.backfillOpBatchBlockRanges' });
-                        totalFailed++;
-                        continue;
-                    }
-
-                    const txCount = l2BlockEnd - currentBlockStart + 1;
-
-                    await batch.update({
-                        l2BlockStart: currentBlockStart,
-                        l2BlockEnd: l2BlockEnd,
-                        txCount: txCount
+                // Process batches in chunks to avoid memory issues
+                while (processedCount < totalBatches) {
+                    const batches = await OpBatch.findAll({
+                        where: { workspaceId: opConfig.workspaceId },
+                        order: [['batchIndex', 'ASC']],
+                        limit: BATCH_CHUNK_SIZE,
+                        offset: processedCount
                     });
 
-                    logger.info(`Updated batch ${batch.batchIndex}: blocks ${currentBlockStart}-${l2BlockEnd} (${txCount} blocks)`, { location: 'jobs.backfillOpBatchBlockRanges' });
+                    if (batches.length === 0) break;
 
-                    currentBlockStart = l2BlockEnd + 1;
-                    updated++;
+                    for (let i = 0; i < batches.length; i++) {
+                        const batch = batches[i];
+                        const globalIndex = processedCount + i;
+
+                        // Skip if already has block range
+                        if (batch.l2BlockStart !== null && batch.l2BlockEnd !== null) {
+                            currentBlockStart = batch.l2BlockEnd + 1;
+                            continue;
+                        }
+
+                        // Calculate end block for this batch
+                        let l2BlockEnd;
+                        if (globalIndex === totalBatches - 1) {
+                            // Last batch gets all remaining blocks
+                            l2BlockEnd = latestBlockNumber;
+                        } else {
+                            // Use average, but make sure we don't exceed the latest block
+                            l2BlockEnd = Math.min(currentBlockStart + avgBlocksPerBatch - 1, latestBlockNumber);
+                        }
+
+                        // Ensure valid range
+                        if (currentBlockStart > latestBlockNumber) {
+                            logger.warn(`Batch ${batch.batchIndex} start block ${currentBlockStart} exceeds latest L2 block ${latestBlockNumber}`, { location: 'jobs.backfillOpBatchBlockRanges' });
+                            totalFailed++;
+                            continue;
+                        }
+
+                        const txCount = l2BlockEnd - currentBlockStart + 1;
+
+                        await batch.update({
+                            l2BlockStart: currentBlockStart,
+                            l2BlockEnd: l2BlockEnd,
+                            txCount: txCount
+                        });
+
+                        logger.info(`Updated batch ${batch.batchIndex}: blocks ${currentBlockStart}-${l2BlockEnd} (${txCount} blocks)`, { location: 'jobs.backfillOpBatchBlockRanges' });
+
+                        currentBlockStart = l2BlockEnd + 1;
+                        updated++;
+                    }
+
+                    processedCount += batches.length;
+                    logger.info(`Processed ${processedCount}/${totalBatches} batches for workspace ${opConfig.workspaceId}`, { location: 'jobs.backfillOpBatchBlockRanges' });
                 }
 
                 totalUpdated += updated;
