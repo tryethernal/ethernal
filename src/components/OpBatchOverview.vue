@@ -152,7 +152,7 @@ const dataContainerLabels = {
 };
 
 const parentChainExplorer = computed(() => {
-    return props.batch.parentChainExplorer || 'https://etherscan.io';
+    return props.batch.parentChainExplorer || 'https://eth.blockscout.com';
 });
 
 const l1TransactionUrl = computed(() => {

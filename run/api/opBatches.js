@@ -67,4 +67,25 @@ router.get('/:batchIndex/transactions', workspaceAuthMiddleware, async (req, res
     }
 });
 
+/**
+ * Get paginated list of L2 blocks for a specific OP batch
+ * @param {number} batchIndex - The batch index
+ * @param {number} page - The page number
+ * @param {number} itemsPerPage - The number of items per page
+ * @param {string} order - The order to sort by
+ * @returns {Promise<Array>} - A list of L2 blocks in the batch
+ */
+router.get('/:batchIndex/blocks', workspaceAuthMiddleware, async (req, res, next) => {
+    const data = { ...req.query, ...req.params };
+
+    try {
+        const { page, itemsPerPage, order } = sanitizePagination(data.page, data.itemsPerPage, data.order);
+        const { total, items } = await db.getOpBatchBlocks(data.workspace.id, data.batchIndex, page, itemsPerPage, order);
+
+        res.status(200).json({ total, items });
+    } catch (error) {
+        unmanagedError(error, req, next);
+    }
+});
+
 module.exports = router;

@@ -546,7 +546,7 @@ const getOpBatch = async (workspaceId, batchIndex) => {
     });
 
     const result = batch.toJSON();
-    result.parentChainExplorer = opConfig?.parentChainExplorer || 'https://etherscan.io';
+    result.parentChainExplorer = opConfig?.parentChainExplorer || 'https://eth.blockscout.com';
     return result;
 };
 
@@ -584,6 +584,50 @@ const getOpBatchTransactions = async (workspaceId, batchIndex, page, itemsPerPag
                 }
             },
             order: [['blockNumber', sanitizedOrder], ['transactionIndex', sanitizedOrder]],
+            limit: parseInt(itemsPerPage) || 10,
+            offset: ((parseInt(page) || 1) - 1) * (parseInt(itemsPerPage) || 10)
+        });
+        return { total: result.count, items: result.rows };
+    }
+
+    // Otherwise return empty result (batch blocks not yet linked)
+    return { total: 0, items: [] };
+};
+
+/**
+ * Retrieves L2 blocks for a specific OP batch
+ * @param {string} workspaceId - The workspace id
+ * @param {number} batchIndex - The batch index
+ * @param {number} page - The page number
+ * @param {number} itemsPerPage - The number of items per page
+ * @param {string} order - The order to sort by
+ * @returns {Promise<Object>} - List of blocks and total count
+ */
+const getOpBatchBlocks = async (workspaceId, batchIndex, page, itemsPerPage, order) => {
+    if (!workspaceId || batchIndex === undefined)
+        throw new Error('Missing parameter');
+
+    const batch = await OpBatch.findOne({
+        where: {
+            workspaceId,
+            batchIndex: parseInt(batchIndex)
+        }
+    });
+
+    if (!batch)
+        throw new Error('Could not find batch');
+
+    // If batch has L2 block range, query blocks in that range
+    if (batch.l2BlockStart !== null && batch.l2BlockEnd !== null) {
+        const sanitizedOrder = order === 'ASC' ? 'ASC' : 'DESC';
+        const result = await Block.findAndCountAll({
+            where: {
+                workspaceId,
+                number: {
+                    [Op.between]: [batch.l2BlockStart, batch.l2BlockEnd]
+                }
+            },
+            order: [['number', sanitizedOrder]],
             limit: parseInt(itemsPerPage) || 10,
             offset: ((parseInt(page) || 1) - 1) * (parseInt(itemsPerPage) || 10)
         });
@@ -4972,6 +5016,7 @@ module.exports = {
     getWorkspaceOpBatches: getWorkspaceOpBatches,
     getOpBatch: getOpBatch,
     getOpBatchTransactions: getOpBatchTransactions,
+    getOpBatchBlocks: getOpBatchBlocks,
     getWorkspaceOpOutputs: getWorkspaceOpOutputs,
     getOpOutput: getOpOutput,
     getWorkspaceOpDeposits: getWorkspaceOpDeposits,

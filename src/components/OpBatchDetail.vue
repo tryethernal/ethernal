@@ -17,12 +17,18 @@
         <template v-else-if="batch && !loading">
             <BaseChipGroup v-model="selectedTab" mandatory>
                 <v-chip label size="small" value="overview">Overview</v-chip>
+                <v-chip label size="small" value="blocks">Blocks</v-chip>
                 <v-chip label size="small" value="transactions">Transactions</v-chip>
             </BaseChipGroup>
 
             <OpBatchOverview
                 v-if="selectedTab === 'overview'"
                 :batch="batch"
+            />
+
+            <OpBatchBlocks
+                v-if="selectedTab === 'blocks'"
+                :batchIndex="Number(batch.batchIndex)"
             />
 
             <OpBatchTransactions
@@ -45,6 +51,7 @@ import { ref, onMounted, inject, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import BaseChipGroup from './base/BaseChipGroup.vue';
 import OpBatchOverview from './OpBatchOverview.vue';
+import OpBatchBlocks from './OpBatchBlocks.vue';
 import OpBatchTransactions from './OpBatchTransactions.vue';
 
 const props = defineProps({
@@ -76,7 +83,9 @@ function loadBatch() {
 }
 
 const checkUrlHash = () => {
-    if (window.location.hash === '#transactions') {
+    if (window.location.hash === '#blocks') {
+        selectedTab.value = 'blocks';
+    } else if (window.location.hash === '#transactions') {
         selectedTab.value = 'transactions';
     } else {
         selectedTab.value = 'overview';
@@ -97,7 +106,9 @@ watch(() => selectedTab.value, (newTab) => {
     const currentPath = router.currentRoute.value.fullPath.split('#')[0];
     let hash = '';
 
-    if (newTab === 'transactions') {
+    if (newTab === 'blocks') {
+        hash = '#blocks';
+    } else if (newTab === 'transactions') {
         hash = '#transactions';
     }
 

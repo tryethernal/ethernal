@@ -588,6 +588,16 @@ export default {
                 return axios.get(resource, { params });
             },
 
+            getOpBatchBlocks(options) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    ...options
+                };
+                const resource = `${envStore.apiRoot}/api/opBatches/${options.batchIndex}/blocks`;
+                return axios.get(resource, { params });
+            },
+
             getOpOutputs(options) {
                 const params = {
                     firebaseUserId: firebaseUserId.value,
