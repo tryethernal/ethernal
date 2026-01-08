@@ -1,7 +1,7 @@
 <template>
     <v-container fluid>
         <h2 class="text-h6 font-weight-medium">
-            State Output <span class="text-grey-darken-1">#{{ $route.params.outputIndex }}</span>
+            State Output <span class="text-grey-darken-1">#{{ props.outputIndex }}</span>
         </h2>
         <v-divider class="my-4"></v-divider>
 
@@ -27,7 +27,7 @@
         <template v-else>
             <v-card>
                 <v-card-text>
-                    <p>Couldn't find state output #{{ $route.params.outputIndex }}</p>
+                    <p>Couldn't find state output #{{ props.outputIndex }}</p>
                 </v-card-text>
             </v-card>
         </template>

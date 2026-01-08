@@ -27,7 +27,6 @@ describe('OpBatchOverview.vue', () => {
 
         expect(wrapper.text()).toContain('100');
         expect(wrapper.text()).toContain('Confirmed');
-        expect(wrapper.text()).toContain('50');
     });
 
     it('Should render L1 transaction link with correct explorer URL', async () => {

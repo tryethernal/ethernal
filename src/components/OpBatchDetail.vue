@@ -1,7 +1,7 @@
 <template>
     <v-container fluid>
         <h2 class="text-h6 font-weight-medium">
-            Batch <span class="text-grey-darken-1">#{{ $route.params.batchIndex }}</span>
+            Batch <span class="text-grey-darken-1">#{{ batchIndex }}</span>
         </h2>
         <v-divider class="my-4"></v-divider>
 
@@ -39,7 +39,7 @@
         <template v-else>
             <v-card>
                 <v-card-text>
-                    <p>Couldn't find batch #{{ $route.params.batchIndex }}</p>
+                    <p>Couldn't find batch #{{ props.batchIndex }}</p>
                 </v-card-text>
             </v-card>
         </template>

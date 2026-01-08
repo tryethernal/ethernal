@@ -1,4 +1,4 @@
-<template>
+.<template>
     <v-container fluid>
         <h2 class="text-h6 font-weight-medium">
             Batch <span class="text-grey-darken-1">#{{ $route.params.batchNumber }}</span>
