@@ -1,5 +1,18 @@
 import OpBatchDetail from '@/components/OpBatchDetail.vue';
 
+vi.mock('vue-router', () => ({
+    useRouter: vi.fn(() => ({
+        afterEach: vi.fn(),
+        currentRoute: {
+            value: {
+                fullPath: '/batch/100',
+                split: vi.fn(() => ['/batch/100'])
+            }
+        }
+    }))
+}));
+
+
 describe('OpBatchDetail.vue', () => {
     it('Should call getOpBatchDetail on mount', async () => {
         vi.spyOn(server, 'getOpBatchDetail')
@@ -13,7 +26,8 @@ describe('OpBatchDetail.vue', () => {
                 batchIndex: '100'
             },
             global: {
-                stubs: ['Hash-Link', 'router-link', 'HashLink']
+                stubs: ['Hash-Link', 'router-link', 'HashLink'],
+                provide: { $router: router }
             }
         });
 
