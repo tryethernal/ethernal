@@ -91,6 +91,7 @@ describe('finalizePendingOrbitBatches', () => {
             await finalizePendingOrbitBatches();
 
             expect(Workspace.findAll).toHaveBeenCalledWith({
+                include: ['orbitChildConfigs'],
                 where: { isTopL1Parent: true }
             });
         });
@@ -155,6 +156,7 @@ describe('finalizePendingOrbitBatches', () => {
             await finalizePendingOrbitBatches();
 
             expect(Workspace.findAll).toHaveBeenCalledWith({
+                include: ['orbitChildConfigs'],
                 where: { isTopL1Parent: true }
             });
         });
