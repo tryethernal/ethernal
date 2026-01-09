@@ -49,6 +49,7 @@ const { getSupportedOpNetworks, isOpNetworkSupported } = require('../lib/opNetwo
 const authMiddleware = require('../middlewares/auth');
 const stripeMiddleware = require('../middlewares/stripe');
 const secretMiddleware = require('../middlewares/secret');
+const { SYNC_FAILURE_THRESHOLD } = require('../lib/syncHelpers');
 
 /**
  * Get orbit config for a given explorer
@@ -516,7 +517,7 @@ router.post('/:slug/syncFailure', secretMiddleware, async (req, res, next) => {
             attempts: result.attempts,
             message: result.disabled
                 ? `Sync auto-disabled after ${result.attempts} failures`
-                : `Failure recorded (attempt ${result.attempts}/3)`
+                : `Failure recorded (attempt ${result.attempts}/${SYNC_FAILURE_THRESHOLD})`
         });
     } catch(error) {
         unmanagedError(error, req, next);

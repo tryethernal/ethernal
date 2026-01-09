@@ -14,6 +14,7 @@ const { enqueue, bulkEnqueue } = require('../lib/queue');
 const RateLimiter = require('../lib/rateLimiter');
 const constants = require('../constants/orbit');
 const { isBatchTransaction, getBatchInfo } = require('../lib/opBatches');
+const { reportRpcFailure } = require('../lib/syncHelpers');
 
 module.exports = async job => {
     const data = job.data;
@@ -92,26 +93,10 @@ module.exports = async job => {
         } catch(error) {
             const priority = job.opts.priority || (data.source == 'cli-light' ? 1 : 10);
 
-            // Report RPC failure to explorer (except for rate limiting which is expected)
-            if (error.message != 'Rate limited' && workspace.explorer && workspace.explorer.shouldSync) {
-                try {
-                    const result = await workspace.explorer.incrementSyncFailures('rpc_error');
-                    if (result.disabled) {
-                        logger.info({
-                            message: 'Explorer auto-disabled due to RPC failures in blockSync',
-                            explorerId: workspace.explorer.id,
-                            workspaceId: workspace.id,
-                            attempts: result.attempts
-                        });
-                        return 'Sync disabled due to repeated RPC failures';
-                    }
-                } catch (reportError) {
-                    logger.warn({
-                        message: 'Failed to report sync failure',
-                        error: reportError.message,
-                        workspaceId: workspace.id
-                    });
-                }
+            // Report RPC failure to explorer (excludes rate limiting and timeouts)
+            const failureResult = await reportRpcFailure(error, workspace.explorer, 'blockSync', workspace.id);
+            if (failureResult.shouldStop) {
+                return failureResult.message;
             }
 
             if (error.message == 'Rate limited') {
