@@ -17,28 +17,28 @@
             </v-card-title>
 
             <v-card-text>
-                <v-form v-model="isConfigured" @submit.prevent="saveOrUpdateConfig">
+                <v-form v-model="isFormValid" @submit.prevent="saveOrUpdateConfig">
                     <v-row>
                         <v-col cols="12">
                             <v-alert class="mb-3" variant="tonal" type="info" density="compact">
                                 Configure the L1 parent chain details. This workspace should be your L2 OP Stack chain,
-                                and you need to specify the L1 parent chain contracts and RPC.
+                                and you need to specify the L1 parent chain contracts.
                             </v-alert>
                         </v-col>
 
                         <v-col cols="12" md="6">
                             <v-select
-                                v-model="config.parentWorkspaceId"
-                                label="L1 Parent Workspace (required)"
-                                :items="parentOptions"
-                                item-title="displayName"
-                                item-value="id"
-                                :rules="parentWorkspaceRules"
-                                :disabled="loading || loadingParents"
-                                :loading="loadingParents"
-                                hint="Select the L1 chain workspace"
+                                v-model="config.networkId"
+                                label="L1 Parent Network (required)"
+                                :items="availableNetworks"
+                                item-title="name"
+                                item-value="networkId"
+                                :rules="networkRules"
+                                :disabled="loading || loadingNetworks || !!config.id"
+                                :loading="loadingNetworks"
+                                hint="Select the L1 chain for your OP Stack rollup"
                                 persistent-hint
-                                no-data-text="No L1 parent workspaces available. Mark a workspace as 'Top L1 Parent' first."
+                                no-data-text="No supported networks available."
                             />
                         </v-col>
                     </v-row>
@@ -200,12 +200,14 @@ const props = defineProps({
 const $server = inject('$server');
 
 const loading = ref(false);
-const loadingParents = ref(false);
+const loadingNetworks = ref(false);
 const errorMessage = ref('');
 const successMessage = ref('');
-const availableParents = ref([]);
+const availableNetworks = ref([]);
+const isFormValid = ref(false);
 
 const config = ref({
+    networkId: null,
     outputVersion: 0,
     l2ToL1MessagePasserAddress: '0x4200000000000000000000000000000000000016'
 });
@@ -214,13 +216,6 @@ const outputVersionOptions = [
     { text: 'Legacy (L2OutputOracle)', value: 0 },
     { text: 'Fault Proofs (DisputeGameFactory)', value: 1 }
 ];
-
-const parentOptions = computed(() =>
-    availableParents.value.map(p => ({
-        ...p,
-        displayName: `${p.name} (Chain ID: ${p.networkId})`
-    }))
-);
 
 const addressRules = [
     v => !!v || 'Address is required',
@@ -231,24 +226,28 @@ const optionalAddressRules = [
     v => !v || /^0x[a-fA-F0-9]{40}$/.test(v) || 'Must be a valid Ethereum address'
 ];
 
-const parentWorkspaceRules = [
-    v => !!v || 'Parent workspace is required'
+const networkRules = [
+    v => !!v || 'Network selection is required'
 ];
 
 const isConfigured = computed(() => {
-    return !!(config.value.parentWorkspaceId &&
+    return !!(config.value.networkId &&
            config.value.optimismPortalAddress &&
            config.value.batchInboxAddress);
 });
 
-function loadAvailableParents() {
-    loadingParents.value = true;
+function loadAvailableNetworks() {
+    loadingNetworks.value = true;
     $server.getAvailableOpParents()
         .then(({ data }) => {
-            availableParents.value = data.availableParents || [];
+            availableNetworks.value = data.availableNetworks || [];
+            // Auto-select if only one network available and no config yet
+            if (availableNetworks.value.length === 1 && !config.value.networkId && !config.value.id) {
+                config.value.networkId = availableNetworks.value[0].networkId;
+            }
         })
         .catch(console.log)
-        .finally(() => loadingParents.value = false);
+        .finally(() => loadingNetworks.value = false);
 }
 
 function loadConfig() {
@@ -258,7 +257,9 @@ function loadConfig() {
             if (data.opConfig) {
                 config.value = {
                     ...config.value,
-                    ...data.opConfig
+                    ...data.opConfig,
+                    // Map parentChainId to networkId for the form
+                    networkId: data.opConfig.parentChainId
                 };
             }
         })
@@ -281,7 +282,11 @@ function createConfig() {
 
     $server.createOpConfig(props.explorerId, config.value)
         .then(({ data: { config: newConfig } }) => {
-            config.value = { ...config.value, ...newConfig };
+            config.value = {
+                ...config.value,
+                ...newConfig,
+                networkId: newConfig.parentChainId
+            };
             successMessage.value = 'OP Stack configuration created.';
         })
         .catch(error => errorMessage.value = error.response && error.response.data || 'Error while creating configuration. Please retry.')
@@ -296,9 +301,17 @@ function updateConfig() {
     errorMessage.value = '';
     successMessage.value = '';
 
-    $server.updateOpConfig(props.explorerId, config.value)
+    // Don't send networkId on updates - it can't be changed
+    const updatePayload = { ...config.value };
+    delete updatePayload.networkId;
+
+    $server.updateOpConfig(props.explorerId, updatePayload)
         .then(({ data: { config: updatedConfig } }) => {
-            config.value = { ...config.value, ...updatedConfig };
+            config.value = {
+                ...config.value,
+                ...updatedConfig,
+                networkId: updatedConfig.parentChainId
+            };
             successMessage.value = 'OP Stack configuration saved.';
         })
         .catch(error => errorMessage.value = error.response && error.response.data || 'Error while saving configuration. Please retry.')
@@ -309,7 +322,7 @@ function updateConfig() {
 }
 
 onMounted(async () => {
-    loadAvailableParents();
+    loadAvailableNetworks();
     loadConfig();
 });
 </script>
