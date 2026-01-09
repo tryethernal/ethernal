@@ -45,6 +45,7 @@ const { bulkEnqueue } = require('../lib/queue');
 const PM2 = require('../lib/pm2');
 const db = require('../lib/firebase');
 const { isChainAllowed } = require('../lib/chains');
+const { getSupportedOpNetworks, isOpNetworkSupported } = require('../lib/opNetworks');
 const authMiddleware = require('../middlewares/auth');
 const stripeMiddleware = require('../middlewares/stripe');
 const secretMiddleware = require('../middlewares/secret');
@@ -56,14 +57,15 @@ const secretMiddleware = require('../middlewares/secret');
  */
 
 /**
- * Get available L1 parent workspaces for OP Stack configuration
- * @returns {Promise<object>} - List of available parent workspaces
+ * Get available L1 networks for OP Stack configuration
+ * Returns hardcoded list of supported networks (not internal workspace details)
+ * @returns {Promise<object>} - List of supported networks with networkId, name, explorerUrl
  */
 router.get('/availableOpParents', authMiddleware, async (req, res, next) => {
     try {
-        const availableParents = await db.getAvailableOpParents();
+        const availableNetworks = getSupportedOpNetworks();
 
-        res.status(200).json({ availableParents });
+        res.status(200).json({ availableNetworks });
     } catch (error) {
         return managedError(error, req, res);
     }
@@ -282,8 +284,13 @@ router.post('/:id/opConfig', authMiddleware, async (req, res, next) => {
         if (currentConfig)
             return managedError(new Error('There is already an OP config for this explorer.'), req, res);
 
-        if (!req.body.params.config.parentWorkspaceId && !req.body.params.config.parentChainId)
-            return managedError(new Error('Parent workspace is required.'), req, res);
+        // Validate networkId is provided and supported
+        if (!req.body.params.config.networkId)
+            return managedError(new Error('Network selection is required.'), req, res);
+
+        const networkId = parseInt(req.body.params.config.networkId);
+        if (!isOpNetworkSupported(networkId))
+            return managedError(new Error('Selected network is not supported. Only Ethereum Mainnet is currently available.'), req, res);
 
         if (!req.body.params.config.batchInboxAddress)
             return managedError(new Error('Batch inbox address is required.'), req, res);
@@ -291,10 +298,10 @@ router.post('/:id/opConfig', authMiddleware, async (req, res, next) => {
         if (!req.body.params.config.optimismPortalAddress)
             return managedError(new Error('Optimism portal address is required.'), req, res);
 
+        // Convert networkId to parentChainId for model layer
         let configParams = { ...req.body.params.config };
-        if (configParams.parentChainId) {
-            configParams.parentChainId = parseInt(configParams.parentChainId);
-        }
+        configParams.parentChainId = networkId;
+        delete configParams.networkId;
 
         let config;
         try {

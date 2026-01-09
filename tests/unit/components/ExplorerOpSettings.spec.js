@@ -5,7 +5,7 @@ describe('ExplorerOpSettings.vue', () => {
         vi.spyOn(server, 'getOpConfig')
             .mockResolvedValue({ data: null });
         vi.spyOn(server, 'getAvailableOpParents')
-            .mockResolvedValue({ data: { availableParents: [] } });
+            .mockResolvedValue({ data: { availableNetworks: [] } });
 
         mount(ExplorerOpSettings, {
             global: {
@@ -19,16 +19,15 @@ describe('ExplorerOpSettings.vue', () => {
         expect(server.getAvailableOpParents).toHaveBeenCalled();
     });
 
-    it('Should display parent workspaces in dropdown', async () => {
-        const mockParents = [
-            { id: 1, name: 'Ethereum Mainnet', networkId: 1 },
-            { id: 2, name: 'Sepolia', networkId: 11155111 }
+    it('Should display network selection dropdown', async () => {
+        const mockNetworks = [
+            { networkId: 1, name: 'Ethereum Mainnet', explorerUrl: 'https://etherscan.io' }
         ];
 
         vi.spyOn(server, 'getOpConfig')
             .mockResolvedValue({ data: null });
         vi.spyOn(server, 'getAvailableOpParents')
-            .mockResolvedValue({ data: { availableParents: mockParents } });
+            .mockResolvedValue({ data: { availableNetworks: mockNetworks } });
 
         const wrapper = mount(ExplorerOpSettings, {
             global: {
@@ -38,6 +37,6 @@ describe('ExplorerOpSettings.vue', () => {
 
         await new Promise(process.nextTick);
 
-        expect(wrapper.text()).toContain('L1 Parent Workspace');
+        expect(wrapper.text()).toContain('L1 Parent Network');
     });
 });
