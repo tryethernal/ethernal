@@ -1,11 +1,15 @@
 /**
  * @fileoverview Explorer sync process update job.
  * Manages PM2 processes for explorer block syncing based on status.
+ * Auto-disables sync after repeated RPC failures with exponential backoff recovery.
  * @module jobs/updateExplorerSyncingProcess
  */
 
 const { Explorer, Workspace, RpcHealthCheck, StripeSubscription, StripePlan } = require('../models');
 const PM2 = require('../lib/pm2');
+const logger = require('../lib/logger');
+
+const SYNC_FAILURE_THRESHOLD = 3;
 
 module.exports = async job => {
     const data = job.data;
@@ -57,7 +61,19 @@ module.exports = async job => {
         }
         else if (explorer.workspace.rpcHealthCheck && !explorer.workspace.rpcHealthCheck.isReachable && existingProcess) {
             await pm2.delete(explorer.slug);
-            return 'Process deleted: RPC is not reachable.';
+            // Track RPC failure and potentially auto-disable
+            const result = await explorer.incrementSyncFailures('rpc_unreachable');
+            if (result.disabled) {
+                logger.info({
+                    message: 'Explorer auto-disabled due to RPC failures',
+                    explorerId: explorer.id,
+                    explorerSlug: explorer.slug,
+                    attempts: result.attempts,
+                    reason: 'rpc_unreachable'
+                });
+                return `Process deleted and sync auto-disabled after ${result.attempts} RPC failures.`;
+            }
+            return `Process deleted: RPC is not reachable (attempt ${result.attempts}/${SYNC_FAILURE_THRESHOLD}).`;
         }
         else if (!explorer.shouldSync && existingProcess) {
             await pm2.delete(explorer.slug);
@@ -69,17 +85,41 @@ module.exports = async job => {
         }
         else if (explorer.shouldSync && !existingProcess) {
             await pm2.start(explorer.slug, explorer.workspaceId);
+            // Reset failure counter on successful start
+            if (explorer.syncFailedAttempts > 0) {
+                await explorer.update({ syncFailedAttempts: 0 });
+            }
             return 'Process started.';
         }
         else if (explorer.shouldSync && existingProcess && existingProcess.pm2_env.status == 'stopped') {
             await pm2.resume(explorer.slug, explorer.workspaceId);
+            // Reset failure counter on successful resume
+            if (explorer.syncFailedAttempts > 0) {
+                await explorer.update({ syncFailedAttempts: 0 });
+            }
             return 'Process resumed.';
         }
         else
             return 'No process change.';
     } catch(error) {
-        if (error.message.startsWith('Timed out after'))
+        if (error.message.startsWith('Timed out after')) {
+            // Track timeout as a failure if explorer exists and sync is enabled
+            if (explorer && explorer.shouldSync) {
+                const result = await explorer.incrementSyncFailures('pm2_timeout');
+                if (result.disabled) {
+                    logger.info({
+                        message: 'Explorer auto-disabled due to PM2 timeouts',
+                        explorerId: explorer.id,
+                        explorerSlug: explorer.slug,
+                        attempts: result.attempts,
+                        reason: 'pm2_timeout'
+                    });
+                    return `Timed out and sync auto-disabled after ${result.attempts} failures.`;
+                }
+                return `Timed out (attempt ${result.attempts}/${SYNC_FAILURE_THRESHOLD})`;
+            }
             return 'Timed out';
+        }
         else
             throw error;
     }

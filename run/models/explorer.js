@@ -31,6 +31,15 @@ const IUniswapV2Router02 = require('../lib/abis/IUniswapV2Router02.json');
 const IUniswapV2Factory = require('../lib/abis/IUniswapV2Factory.json');
 const MAX_RPC_ATTEMPTS = 3;
 
+// Sync failure auto-disable configuration
+const SYNC_FAILURE_THRESHOLD = 3;
+const RECOVERY_BACKOFF_SCHEDULE = [
+    5 * 60 * 1000,       // 5 minutes
+    15 * 60 * 1000,      // 15 minutes
+    60 * 60 * 1000,      // 1 hour
+    6 * 60 * 60 * 1000   // 6 hours (max)
+];
+
 module.exports = (sequelize, DataTypes) => {
   class Explorer extends Model {
     /**
@@ -299,10 +308,18 @@ module.exports = (sequelize, DataTypes) => {
 
     /**
      * Starts block synchronization for the explorer.
+     * Resets all failure tracking when manually enabling sync.
      * @returns {Promise<Explorer>} Updated explorer
      */
-    startSync() {
-        return this.update({ shouldSync: true });
+    async startSync() {
+        await this.update({
+            shouldSync: true,
+            syncFailedAttempts: 0,
+            syncDisabledAt: null,
+            syncDisabledReason: null,
+            nextRecoveryCheckAt: null
+        });
+        return this;
     }
 
     /**
@@ -311,6 +328,101 @@ module.exports = (sequelize, DataTypes) => {
      */
     stopSync() {
         return this.update({ shouldSync: false });
+    }
+
+    /**
+     * Increments the sync failure counter and auto-disables if threshold reached.
+     * @param {string} [reason='rpc_unreachable'] - Reason for the failure
+     * @returns {Promise<{disabled: boolean, attempts: number}>} Result with disable status
+     */
+    async incrementSyncFailures(reason = 'rpc_unreachable') {
+        const newCount = (this.syncFailedAttempts || 0) + 1;
+        await this.update({ syncFailedAttempts: newCount });
+
+        if (newCount >= SYNC_FAILURE_THRESHOLD) {
+            await this.autoDisableSync(reason);
+            return { disabled: true, attempts: newCount };
+        }
+        return { disabled: false, attempts: newCount };
+    }
+
+    /**
+     * Auto-disables sync and schedules first recovery check.
+     * @param {string} reason - Reason for disabling (e.g., 'rpc_unreachable')
+     * @returns {Promise<Explorer>} Updated explorer
+     */
+    async autoDisableSync(reason) {
+        const nextCheck = new Date(Date.now() + RECOVERY_BACKOFF_SCHEDULE[0]);
+        await this.update({
+            shouldSync: false,
+            syncDisabledAt: new Date(),
+            syncDisabledReason: reason,
+            nextRecoveryCheckAt: nextCheck
+        });
+        return this;
+    }
+
+    /**
+     * Resets all sync failure tracking state.
+     * @returns {Promise<Explorer>} Updated explorer
+     */
+    async resetSyncState() {
+        await this.update({
+            syncFailedAttempts: 0,
+            syncDisabledAt: null,
+            syncDisabledReason: null,
+            nextRecoveryCheckAt: null
+        });
+        return this;
+    }
+
+    /**
+     * Schedules the next recovery check using exponential backoff.
+     * Backoff schedule: 5m -> 15m -> 1h -> 6h (max)
+     * @returns {Promise<Explorer>} Updated explorer
+     */
+    async scheduleNextRecoveryCheck() {
+        if (!this.syncDisabledAt) {
+            return this;
+        }
+
+        const timeSinceDisabled = Date.now() - new Date(this.syncDisabledAt).getTime();
+        let cumulativeTime = 0;
+        let backoffIndex = 0;
+
+        // Find which backoff interval we should use based on time since disabled
+        for (let i = 0; i < RECOVERY_BACKOFF_SCHEDULE.length; i++) {
+            cumulativeTime += RECOVERY_BACKOFF_SCHEDULE[i];
+            if (timeSinceDisabled < cumulativeTime) {
+                backoffIndex = i;
+                break;
+            }
+            backoffIndex = i;
+        }
+
+        // Cap at max backoff (last element)
+        if (backoffIndex >= RECOVERY_BACKOFF_SCHEDULE.length) {
+            backoffIndex = RECOVERY_BACKOFF_SCHEDULE.length - 1;
+        }
+
+        const nextCheck = new Date(Date.now() + RECOVERY_BACKOFF_SCHEDULE[backoffIndex]);
+        await this.update({ nextRecoveryCheckAt: nextCheck });
+        return this;
+    }
+
+    /**
+     * Re-enables sync after successful recovery check.
+     * @returns {Promise<Explorer>} Updated explorer
+     */
+    async enableSyncAfterRecovery() {
+        await this.update({
+            shouldSync: true,
+            syncFailedAttempts: 0,
+            syncDisabledAt: null,
+            syncDisabledReason: null,
+            nextRecoveryCheckAt: null
+        });
+        return this;
     }
 
     /**
@@ -690,7 +802,11 @@ module.exports = (sequelize, DataTypes) => {
     shouldEnforceQuota: DataTypes.BOOLEAN,
     isDemo: DataTypes.BOOLEAN,
     gasAnalyticsEnabled: DataTypes.BOOLEAN,
-    displayTopAccounts: DataTypes.BOOLEAN
+    displayTopAccounts: DataTypes.BOOLEAN,
+    syncFailedAttempts: DataTypes.INTEGER,
+    syncDisabledAt: DataTypes.DATE,
+    syncDisabledReason: DataTypes.STRING,
+    nextRecoveryCheckAt: DataTypes.DATE
   }, {
     hooks: {
         afterCreate(explorer, options) {
