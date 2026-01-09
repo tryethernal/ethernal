@@ -52,7 +52,8 @@ const priorities = {
         'backfillNativeTokenTransfers',
         'backfillOpBatchBlockRanges',
         'backfillOpDeposits',
-        'backfillOpOutputs'
+        'backfillOpOutputs',
+        'syncRecoveryCheck'
     ]
 }
 

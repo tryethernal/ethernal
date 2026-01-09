@@ -45,6 +45,7 @@ module.exports = {
     rpcHealthCheck: require('./rpcHealthCheck'),
     rpcHealthCheckStarter: require('./rpcHealthCheckStarter'),
     explorerSyncCheck: require('./explorerSyncCheck'),
+    syncRecoveryCheck: require('./syncRecoveryCheck'),
     workspaceReset: require('./workspaceReset'),
     batchBlockDelete: require('./batchBlockDelete'),
     batchContractDelete: require('./batchContractDelete'),
