@@ -14,6 +14,7 @@ const { enqueue, bulkEnqueue } = require('../lib/queue');
 const RateLimiter = require('../lib/rateLimiter');
 const constants = require('../constants/orbit');
 const { isBatchTransaction, getBatchInfo } = require('../lib/opBatches');
+const { reportRpcFailure } = require('../lib/syncHelpers');
 
 module.exports = async job => {
     const data = job.data;
@@ -91,6 +92,13 @@ module.exports = async job => {
             block = await providerConnector.fetchRawBlockWithTransactions(data.blockNumber);
         } catch(error) {
             const priority = job.opts.priority || (data.source == 'cli-light' ? 1 : 10);
+
+            // Report RPC failure to explorer (excludes rate limiting and timeouts)
+            const failureResult = await reportRpcFailure(error, workspace.explorer, 'blockSync', workspace.id);
+            if (failureResult.shouldStop) {
+                return failureResult.message;
+            }
+
             if (error.message == 'Rate limited') {
                 return enqueue('blockSync', `blockSync-${workspace.id}-${data.blockNumber}-${Date.now()}`, {
                     userId: workspace.user.firebaseUserId,
