@@ -7,6 +7,7 @@
                     <v-tab id="faucetTab" value="faucet">Faucet</v-tab>
                     <v-tab id="dexTab" value="dex">Dex</v-tab>
                     <v-tab id="orbitTab" value="orbit">Orbit Chain</v-tab>
+                    <v-tab id="opStackTab" value="opStack">OP Stack</v-tab>
                 </v-tabs>
 
                 <v-tabs-window v-model="tab">
@@ -24,6 +25,10 @@
 
                     <v-tabs-window-item value="orbit">
                         <Explorer-Orbit-Settings :explorerId="id" :sso="sso" />
+                    </v-tabs-window-item>
+
+                    <v-tabs-window-item value="opStack">
+                        <Explorer-Op-Settings :explorerId="id" :sso="sso" />
                     </v-tabs-window-item>
                 </v-tabs-window>
             </v-card-text>
@@ -47,6 +52,7 @@ import ExplorerGeneral from './ExplorerGeneral.vue';
 import ExplorerFaucetSettings from './ExplorerFaucetSettings.vue';
 import ExplorerDexSettings from './ExplorerDexSettings.vue';
 import ExplorerOrbitSettings from './ExplorerOrbitSettings.vue';
+import ExplorerOpSettings from './ExplorerOpSettings.vue';
 
 // Define props
 const props = defineProps({

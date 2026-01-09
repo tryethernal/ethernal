@@ -20,6 +20,11 @@ jest.mock('../../../models/index.js', () => ({
     OrbitChainConfig: require('./OrbitChainConfig').OrbitChainConfig,
     OrbitDeposit: require('./OrbitDeposit').OrbitDeposit,
     OrbitWithdrawal: require('./OrbitWithdrawal').OrbitWithdrawal,
+    OpChainConfig: require('./OpChainConfig').OpChainConfig,
+    OpBatch: require('./OpBatch').OpBatch,
+    OpOutput: require('./OpOutput').OpOutput,
+    OpDeposit: require('./OpDeposit').OpDeposit,
+    OpWithdrawal: require('./OpWithdrawal').OpWithdrawal,
     sequelize: {
         transaction: jest.fn(cb => cb()),
         literal: jest.fn(sql => sql)
@@ -47,6 +52,11 @@ const { OrbitBatch } = require('./OrbitBatch');
 const { OrbitChainConfig } = require('./OrbitChainConfig');
 const { OrbitDeposit } = require('./OrbitDeposit');
 const { OrbitWithdrawal } = require('./OrbitWithdrawal');
+const { OpChainConfig } = require('./OpChainConfig');
+const { OpBatch } = require('./OpBatch');
+const { OpOutput } = require('./OpOutput');
+const { OpDeposit } = require('./OpDeposit');
+const { OpWithdrawal } = require('./OpWithdrawal');
 
 module.exports = {
     Transaction,
@@ -72,5 +82,10 @@ module.exports = {
     OrbitBatch,
     OrbitChainConfig,
     OrbitDeposit,
-    OrbitWithdrawal
+    OrbitWithdrawal,
+    OpChainConfig,
+    OpBatch,
+    OpOutput,
+    OpDeposit,
+    OpWithdrawal
 };

@@ -74,6 +74,7 @@
  *
  * @prop {boolean} [dense] - Whether to use compact table styling
  * @prop {number} [batchNumber] - Orbit batch number to filter blocks by
+ * @prop {number} [opBatchIndex] - OP batch index to filter blocks by
  */
 <script setup>
 import { ref, reactive, onMounted, onBeforeUnmount, inject } from 'vue';
@@ -81,6 +82,10 @@ import { ref, reactive, onMounted, onBeforeUnmount, inject } from 'vue';
 const props = defineProps({
     dense: Boolean,
     batchNumber: {
+        type: Number,
+        required: false
+    },
+    opBatchIndex: {
         type: Number,
         required: false
     }
@@ -142,9 +147,14 @@ const getBlocks = ({ page, itemsPerPage, sortBy } = {}) => {
         sortBy
     });
 
-    const fn = props.batchNumber ?
-        $server.getOrbitBatchBlocks({ batchNumber: props.batchNumber, page, itemsPerPage, orderBy: sortBy[0].key, order: sortBy[0].order }) :
-        $server.getBlocks({ page, itemsPerPage, orderBy: sortBy[0].key, order: sortBy[0].order });
+    let fn;
+    if (props.batchNumber) {
+        fn = $server.getOrbitBatchBlocks({ batchNumber: props.batchNumber, page, itemsPerPage, orderBy: sortBy[0].key, order: sortBy[0].order });
+    } else if (props.opBatchIndex !== undefined && props.opBatchIndex !== null) {
+        fn = $server.getOpBatchBlocks({ batchIndex: props.opBatchIndex, page, itemsPerPage, orderBy: sortBy[0].key, order: sortBy[0].order });
+    } else {
+        fn = $server.getBlocks({ page, itemsPerPage, orderBy: sortBy[0].key, order: sortBy[0].order });
+    }
 
     fn.then(({ data }) => {
         blocks.value = data.items;

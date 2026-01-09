@@ -470,6 +470,153 @@ export default {
                 return axios.get(resource, { params });
             },
 
+            // OP Stack API methods
+            getAvailableOpParents() {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value
+                };
+                const resource = `${envStore.apiRoot}/api/explorers/availableOpParents`;
+                return axios.get(resource, { params });
+            },
+
+            getOpConfig(explorerId) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    explorerId
+                };
+                const resource = `${envStore.apiRoot}/api/explorers/${explorerId}/opConfig`;
+                return axios.get(resource, { params });
+            },
+
+            createOpConfig(explorerId, config) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    explorerId,
+                    config
+                }
+                const resource = `${envStore.apiRoot}/api/explorers/${explorerId}/opConfig`;
+                return axios.post(resource, { params });
+            },
+
+            updateOpConfig(explorerId, config) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    explorerId,
+                    config
+                }
+                const resource = `${envStore.apiRoot}/api/explorers/${explorerId}/opConfig`;
+                return axios.put(resource, { params });
+            },
+
+            getOpDeposits(options) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    ...options
+                };
+                const resource = `${envStore.apiRoot}/api/opDeposits`;
+                return axios.get(resource, { params });
+            },
+
+            getOpDepositByL1Hash(hash) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value
+                };
+                const resource = `${envStore.apiRoot}/api/opDeposits/${hash}`;
+                return axios.get(resource, { params });
+            },
+
+            getOpWithdrawals(options) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    ...options
+                };
+                const resource = `${envStore.apiRoot}/api/opWithdrawals`;
+                return axios.get(resource, { params });
+            },
+
+            getOpWithdrawalByL2Hash(hash) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value
+                };
+                const resource = `${envStore.apiRoot}/api/opWithdrawals/${hash}`;
+                return axios.get(resource, { params });
+            },
+
+            getOpWithdrawalProof(hash) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value
+                };
+                const resource = `${envStore.apiRoot}/api/opWithdrawals/${hash}/proof`;
+                return axios.get(resource, { params });
+            },
+
+            getOpBatches(options) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    ...options
+                };
+                const resource = `${envStore.apiRoot}/api/opBatches`;
+                return axios.get(resource, { params });
+            },
+
+            getOpBatchDetail(batchIndex) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value
+                };
+                const resource = `${envStore.apiRoot}/api/opBatches/${batchIndex}`;
+                return axios.get(resource, { params });
+            },
+
+            getOpBatchTransactions(batchIndex, options) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    ...options
+                };
+                const resource = `${envStore.apiRoot}/api/opBatches/${batchIndex}/transactions`;
+                return axios.get(resource, { params });
+            },
+
+            getOpBatchBlocks(options) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    ...options
+                };
+                const resource = `${envStore.apiRoot}/api/opBatches/${options.batchIndex}/blocks`;
+                return axios.get(resource, { params });
+            },
+
+            getOpOutputs(options) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    ...options
+                };
+                const resource = `${envStore.apiRoot}/api/opOutputs`;
+                return axios.get(resource, { params });
+            },
+
+            getOpOutputDetail(outputIndex) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value
+                };
+                const resource = `${envStore.apiRoot}/api/opOutputs/${outputIndex}`;
+                return axios.get(resource, { params });
+            },
+
             setupAdmin(email, password) {
                 const resource = `${envStore.apiRoot}/api/setup/admin`;
                 return axios.post(resource, { data: { email, password } });
