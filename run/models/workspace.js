@@ -227,11 +227,13 @@ module.exports = (sequelize, DataTypes) => {
                 throw new Error(`Selected parent workspace is not a valid L1 parent.`);
             }
         } else if (params.parentChainId) {
-            const supportedParentChainIds = supportedParentChains.map(chain => chain.networkId);
-            if (!supportedParentChainIds.includes(params.parentChainId)) {
+            // Convert to string for comparison since networkId is stored as STRING in database
+            const parentChainIdStr = String(params.parentChainId);
+            const supportedParentChainIds = supportedParentChains.map(chain => String(chain.networkId));
+            if (!supportedParentChainIds.includes(parentChainIdStr)) {
                 throw new Error(`Parent chain network is not supported yet. Available networks: ${supportedParentChainIds.join(', ')}`);
             }
-            parentWorkspace = supportedParentChains.find(chain => chain.networkId === params.parentChainId);
+            parentWorkspace = supportedParentChains.find(chain => String(chain.networkId) === parentChainIdStr);
         } else {
             throw new Error('Parent workspace is required.');
         }
