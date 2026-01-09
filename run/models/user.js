@@ -183,6 +183,14 @@ module.exports = (sequelize, DataTypes) => {
                         {
                             model: sequelize.models.RpcHealthCheck,
                             as: 'rpcHealthCheck'
+                        },
+                        {
+                            model: sequelize.models.OrbitChainConfig,
+                            as: 'orbitConfig'
+                        },
+                        {
+                            model: sequelize.models.OpChainConfig,
+                            as: 'opConfig'
                         }
                     ]
                 },

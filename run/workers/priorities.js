@@ -11,7 +11,12 @@ const priorities = {
         'finalizePendingOrbitBatches',
         'checkOrbitMessageDeliveredLogs',
         'backfillOrbitMessageDeliveredLogs',
-        'storeOrbitDeposit'
+        'storeOrbitDeposit',
+        'finalizePendingOpOutputs',
+        'finalizePendingOpBatches',
+        'linkOpDepositsToL2Txs',
+        'storeOpDeposit',
+        'storeOpOutput'
     ],
     'medium': [
         'processContract',
@@ -44,7 +49,10 @@ const priorities = {
         'monitorOrbitBatches',
         'discoverOrbitBatches',
         'sendDiscordMessage',
-        'backfillNativeTokenTransfers'
+        'backfillNativeTokenTransfers',
+        'backfillOpBatchBlockRanges',
+        'backfillOpDeposits',
+        'backfillOpOutputs'
     ]
 }
 

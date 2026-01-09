@@ -58,6 +58,13 @@ module.exports = (sequelize, DataTypes) => {
       Workspace.hasMany(models.OrbitBatch, { foreignKey: 'workspaceId', as: 'orbitBatches' });
       Workspace.hasMany(models.OrbitChainConfig, { foreignKey: 'parentWorkspaceId', as: 'orbitChildConfigs' });
       Workspace.hasMany(models.OrbitDeposit, { foreignKey: 'workspaceId', as: 'orbitDeposits' });
+      // OP Stack associations
+      Workspace.hasOne(models.OpChainConfig, { foreignKey: 'workspaceId', as: 'opConfig' });
+      Workspace.hasMany(models.OpChainConfig, { foreignKey: 'parentWorkspaceId', as: 'opChildConfigs' });
+      Workspace.hasMany(models.OpBatch, { foreignKey: 'workspaceId', as: 'opBatches' });
+      Workspace.hasMany(models.OpOutput, { foreignKey: 'workspaceId', as: 'opOutputs' });
+      Workspace.hasMany(models.OpDeposit, { foreignKey: 'workspaceId', as: 'opDeposits' });
+      Workspace.hasMany(models.OpWithdrawal, { foreignKey: 'workspaceId', as: 'opWithdrawals' });
     }
 
     /**
@@ -94,7 +101,11 @@ module.exports = (sequelize, DataTypes) => {
      * @returns {Promise<Array<Workspace>>} Array of parent workspaces
      */
     static async getAvailableTopOrbitParent() {
-        return Workspace.findAll({ where: { isTopOrbitParent: true } });
+        return Workspace.findAll({ where: { isTopL1Parent: true } });
+    }
+
+    static async getAvailableTopOpParent() {
+        return Workspace.findAll({ where: { isTopL1Parent: true } });
     }
 
     /**
@@ -188,6 +199,54 @@ module.exports = (sequelize, DataTypes) => {
         return sequelize.models.OrbitChainConfig.create({
             ...filteredParams,
             parentWorkspaceId: supportedParentChains.find(chain => chain.networkId === params.parentChainId).id,
+            workspaceId: this.id
+        });
+    }
+
+    async safeCreateOpConfig(params) {
+        const allowedParams = [
+            'batchInboxAddress',
+            'optimismPortalAddress',
+            'l2OutputOracleAddress',
+            'disputeGameFactoryAddress',
+            'systemConfigAddress',
+            'l2ToL1MessagePasserAddress',
+            'outputVersion',
+            'submissionInterval',
+            'finalizationPeriodSeconds',
+            'parentChainExplorer'
+        ];
+
+        const supportedParentChains = await sequelize.models.Workspace.getAvailableTopOpParent();
+
+        let parentWorkspace;
+        // Support both parentWorkspaceId (new) and parentChainId (legacy)
+        if (params.parentWorkspaceId) {
+            parentWorkspace = supportedParentChains.find(chain => chain.id === params.parentWorkspaceId);
+            if (!parentWorkspace) {
+                throw new Error(`Selected parent workspace is not a valid L1 parent.`);
+            }
+        } else if (params.parentChainId) {
+            const supportedParentChainIds = supportedParentChains.map(chain => chain.networkId);
+            if (!supportedParentChainIds.includes(params.parentChainId)) {
+                throw new Error(`Parent chain network is not supported yet. Available networks: ${supportedParentChainIds.join(', ')}`);
+            }
+            parentWorkspace = supportedParentChains.find(chain => chain.networkId === params.parentChainId);
+        } else {
+            throw new Error('Parent workspace is required.');
+        }
+
+        const filteredParams = {};
+        for (const [key, value] of Object.entries(params)) {
+            if (allowedParams.includes(key)) {
+                filteredParams[key] = value;
+            }
+        }
+
+        return sequelize.models.OpChainConfig.create({
+            ...filteredParams,
+            parentChainId: parentWorkspace.networkId,
+            parentWorkspaceId: parentWorkspace.id,
             workspaceId: this.id
         });
     }

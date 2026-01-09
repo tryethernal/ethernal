@@ -10,7 +10,10 @@ const { Op } = require('sequelize');
 
 module.exports = async () => {
 
-    const workspaces = await Workspace.findAll({ where: { isTopOrbitParent: true } });
+    const workspaces = await Workspace.findAll({
+        where: { isTopL1Parent: true },
+        include: ['orbitChildConfigs']
+    });
 
     let allPendingBatches = [];
     for (const workspace of workspaces) {

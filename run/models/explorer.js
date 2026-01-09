@@ -126,6 +126,11 @@ module.exports = (sequelize, DataTypes) => {
                             model: sequelize.models.OrbitChainConfig,
                             as: 'orbitConfig',
                             attributes: ['parentChainExplorer']
+                        },
+                        {
+                            model: sequelize.models.OpChainConfig,
+                            as: 'opConfig',
+                            attributes: ['parentChainExplorer']
                         }
                     ]
                 },
@@ -197,6 +202,11 @@ module.exports = (sequelize, DataTypes) => {
                                 {
                                     model: sequelize.models.OrbitChainConfig,
                                     as: 'orbitConfig',
+                                    attributes: ['parentChainExplorer']
+                                },
+                                {
+                                    model: sequelize.models.OpChainConfig,
+                                    as: 'opConfig',
                                     attributes: ['parentChainExplorer']
                                 }
                             ]

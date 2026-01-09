@@ -79,4 +79,29 @@ const BLOCK_SYNC_MONITORING_INTERVAL = 60 * 1000;
         10,
         { every: 5 * 60 * 1000 }
     );
+
+    // OP Stack jobs
+    await enqueue(
+        'finalizePendingOpBatches',
+        'finalizePendingOpBatches',
+        {},
+        10,
+        { every: 30 * 1000 } // Check every 30 seconds
+    );
+
+    await enqueue(
+        'finalizePendingOpOutputs',
+        'finalizePendingOpOutputs',
+        {},
+        10,
+        { every: 60 * 1000 } // Check every minute
+    );
+
+    await enqueue(
+        'linkOpDepositsToL2Txs',
+        'linkOpDepositsToL2Txs',
+        {},
+        10,
+        { every: 30 * 1000 } // Check every 30 seconds
+    );
 })();

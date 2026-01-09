@@ -39,7 +39,8 @@ export const useCurrentWorkspaceStore = defineStore('currentWorkspace', {
         chainSlug: null,
         storageEnabled: null,
         wagmiConfig: null,
-        orbitConfig: null
+        orbitConfig: null,
+        opConfig: null
     }),
 
     actions: {

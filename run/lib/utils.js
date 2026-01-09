@@ -381,6 +381,24 @@ const _stringifyBns = (obj) => {
     return res;
 };
 
+/**
+ * Sanitize pagination parameters for API requests
+ * @param {string|number} page - Page number (1-indexed)
+ * @param {string|number} itemsPerPage - Items per page
+ * @param {string} order - Sort order (ASC or DESC)
+ * @param {Object} options - Additional options
+ * @param {number} options.maxItems - Maximum items per page (default: 100)
+ * @returns {Object} Sanitized { page, itemsPerPage, order }
+ */
+const sanitizePagination = (page, itemsPerPage, order, options = {}) => {
+    const { maxItems = 100 } = options;
+    return {
+        page: Math.max(1, parseInt(page) || 1),
+        itemsPerPage: Math.min(maxItems, Math.max(1, parseInt(itemsPerPage) || 10)),
+        order: ['ASC', 'DESC'].includes(order?.toUpperCase()) ? order.toUpperCase() : 'DESC'
+    };
+};
+
 module.exports = {
     sanitize: _sanitize,
     stringifyBns: _stringifyBns,
@@ -394,5 +412,6 @@ module.exports = {
     validateBNString,
     sleep,
     avg,
-    eToNumber
+    eToNumber,
+    sanitizePagination
 };
