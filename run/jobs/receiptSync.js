@@ -10,6 +10,7 @@ const { processRawRpcObject } = require('../lib/utils');
 const { enqueue } = require('../lib/queue');
 const RateLimiter = require('../lib/rateLimiter');
 const logger = require('../lib/logger');
+const { reportRpcFailure } = require('../lib/syncHelpers');
 const {
     isTransactionDepositedEvent,
     isDisputeGameCreatedEvent,
@@ -119,6 +120,13 @@ module.exports = async job => {
             receipt = await providerConnector.fetchTransactionReceipt(transaction.hash);
         } catch(error) {
             const priority = job.opts.priority || (data.source == 'cli-light' ? 1 : 10);
+
+            // Report RPC failure to explorer (excludes rate limiting and timeouts)
+            const failureResult = await reportRpcFailure(error, workspace.explorer, 'receiptSync', workspace.id);
+            if (failureResult.shouldStop) {
+                return failureResult.message;
+            }
+
             if (error.message == 'Rate limited') {
                 return enqueue('receiptSync', `receiptSync-${workspace.id}-${transaction.hash}-${Date.now()}`, {
                     transactionId: transaction.id,

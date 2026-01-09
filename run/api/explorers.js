@@ -49,6 +49,7 @@ const { getSupportedOpNetworks, isOpNetworkSupported } = require('../lib/opNetwo
 const authMiddleware = require('../middlewares/auth');
 const stripeMiddleware = require('../middlewares/stripe');
 const secretMiddleware = require('../middlewares/secret');
+const { SYNC_FAILURE_THRESHOLD } = require('../lib/syncHelpers');
 
 /**
  * Get orbit config for a given explorer
@@ -476,6 +477,48 @@ router.post('/syncExplorers', secretMiddleware, async (req, res, next) => {
         await bulkEnqueue('updateExplorerSyncingProcess', jobs);
 
         res.sendStatus(200);
+    } catch(error) {
+        unmanagedError(error, req, next);
+    }
+});
+
+/**
+ * Report a sync failure for an explorer
+ * Used by PM2 server and sync jobs to report RPC failures
+ * @route POST /api/explorers/:slug/syncFailure
+ * @param {string} slug - Explorer slug
+ * @param {string} reason - Failure reason (e.g., 'rpc_error', 'rpc_unreachable')
+ * @param {string} source - Source of the failure (e.g., 'pm2', 'blockSync', 'receiptSync')
+ * @returns {object} - Result with disabled status, attempts count, and message
+ */
+router.post('/:slug/syncFailure', secretMiddleware, async (req, res, next) => {
+    try {
+        const { slug } = req.params;
+        const { reason, source } = req.body;
+
+        const explorer = await Explorer.findOne({ where: { slug } });
+        if (!explorer) {
+            return res.status(404).json({ error: 'Explorer not found' });
+        }
+
+        const result = await explorer.incrementSyncFailures(reason || 'rpc_error');
+
+        logger.info({
+            message: 'Sync failure reported',
+            explorerSlug: slug,
+            reason: reason || 'rpc_error',
+            source: source || 'unknown',
+            attempts: result.attempts,
+            disabled: result.disabled
+        });
+
+        res.status(200).json({
+            disabled: result.disabled,
+            attempts: result.attempts,
+            message: result.disabled
+                ? `Sync auto-disabled after ${result.attempts} failures`
+                : `Failure recorded (attempt ${result.attempts}/${SYNC_FAILURE_THRESHOLD})`
+        });
     } catch(error) {
         unmanagedError(error, req, next);
     }
