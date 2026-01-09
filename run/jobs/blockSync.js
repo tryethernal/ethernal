@@ -91,6 +91,29 @@ module.exports = async job => {
             block = await providerConnector.fetchRawBlockWithTransactions(data.blockNumber);
         } catch(error) {
             const priority = job.opts.priority || (data.source == 'cli-light' ? 1 : 10);
+
+            // Report RPC failure to explorer (except for rate limiting which is expected)
+            if (error.message != 'Rate limited' && workspace.explorer && workspace.explorer.shouldSync) {
+                try {
+                    const result = await workspace.explorer.incrementSyncFailures('rpc_error');
+                    if (result.disabled) {
+                        logger.info({
+                            message: 'Explorer auto-disabled due to RPC failures in blockSync',
+                            explorerId: workspace.explorer.id,
+                            workspaceId: workspace.id,
+                            attempts: result.attempts
+                        });
+                        return 'Sync disabled due to repeated RPC failures';
+                    }
+                } catch (reportError) {
+                    logger.warn({
+                        message: 'Failed to report sync failure',
+                        error: reportError.message,
+                        workspaceId: workspace.id
+                    });
+                }
+            }
+
             if (error.message == 'Rate limited') {
                 return enqueue('blockSync', `blockSync-${workspace.id}-${data.blockNumber}-${Date.now()}`, {
                     userId: workspace.user.firebaseUserId,

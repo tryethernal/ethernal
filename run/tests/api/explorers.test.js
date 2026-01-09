@@ -412,6 +412,90 @@ describe(`POST ${BASE_URL}/syncExplorers`, () => {
     });
 });
 
+describe(`POST ${BASE_URL}/:slug/syncFailure`, () => {
+    it('Should return 401 if no secret provided', (done) => {
+        request.post(`${BASE_URL}/test-explorer/syncFailure`)
+            .send({ reason: 'rpc_error', source: 'blockSync' })
+            .expect(401)
+            .then(() => done());
+    });
+
+    it('Should return 401 if invalid secret provided', (done) => {
+        request.post(`${BASE_URL}/test-explorer/syncFailure?secret=invalid`)
+            .send({ reason: 'rpc_error', source: 'blockSync' })
+            .expect(401)
+            .then(() => done());
+    });
+
+    it('Should return 404 if explorer not found', (done) => {
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce(null);
+        request.post(`${BASE_URL}/nonexistent/syncFailure?secret=secret`)
+            .send({ reason: 'rpc_error', source: 'blockSync' })
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.error).toEqual('Explorer not found');
+                done();
+            });
+    });
+
+    it('Should increment failure counter and return result', (done) => {
+        const mockIncrementSyncFailures = jest.fn().mockResolvedValue({ disabled: false, attempts: 1 });
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({
+            id: 1,
+            slug: 'test-explorer',
+            incrementSyncFailures: mockIncrementSyncFailures
+        });
+
+        request.post(`${BASE_URL}/test-explorer/syncFailure?secret=secret`)
+            .send({ reason: 'rpc_error', source: 'blockSync' })
+            .expect(200)
+            .then(({ body }) => {
+                expect(mockIncrementSyncFailures).toHaveBeenCalledWith('rpc_error');
+                expect(body.disabled).toBe(false);
+                expect(body.attempts).toBe(1);
+                expect(body.message).toContain('Failure recorded');
+                done();
+            });
+    });
+
+    it('Should auto-disable after threshold and return disabled status', (done) => {
+        const mockIncrementSyncFailures = jest.fn().mockResolvedValue({ disabled: true, attempts: 3 });
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({
+            id: 1,
+            slug: 'test-explorer',
+            incrementSyncFailures: mockIncrementSyncFailures
+        });
+
+        request.post(`${BASE_URL}/test-explorer/syncFailure?secret=secret`)
+            .send({ reason: 'rpc_unreachable', source: 'pm2' })
+            .expect(200)
+            .then(({ body }) => {
+                expect(mockIncrementSyncFailures).toHaveBeenCalledWith('rpc_unreachable');
+                expect(body.disabled).toBe(true);
+                expect(body.attempts).toBe(3);
+                expect(body.message).toContain('auto-disabled');
+                done();
+            });
+    });
+
+    it('Should use default reason if not provided', (done) => {
+        const mockIncrementSyncFailures = jest.fn().mockResolvedValue({ disabled: false, attempts: 1 });
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({
+            id: 1,
+            slug: 'test-explorer',
+            incrementSyncFailures: mockIncrementSyncFailures
+        });
+
+        request.post(`${BASE_URL}/test-explorer/syncFailure?secret=secret`)
+            .send({})
+            .expect(200)
+            .then(() => {
+                expect(mockIncrementSyncFailures).toHaveBeenCalledWith('rpc_error');
+                done();
+            });
+    });
+});
+
 describe(`PUT ${BASE_URL}/:id/stopSync`, () => {
     it('Should return an error if cannot find explorer', (done) => {
         jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce(null);
