@@ -210,6 +210,24 @@ describe('updateExplorerSyncingProcess', () => {
             });
     });
 
+    it('Should delete if no workspace', (done) => {
+        PM2.mockImplementationOnce(() => ({
+            delete: jest.fn(),
+            find: jest.fn().mockResolvedValue({ data: { pm2_env: { status: 'online' }}})
+        }));
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({
+            slug: 'test-explorer',
+            stripeSubscription: {},
+            workspace: null
+        });
+
+        updateExplorerSyncingProcess({ data: { explorerSlug: 'explorer' }})
+            .then(res => {
+                expect(res).toEqual('Process deleted: no workspace.');
+                done();
+            });
+    });
+
     it('Should delete if sync is disabled', (done) => {
         PM2.mockImplementationOnce(() => ({
             delete: jest.fn(),

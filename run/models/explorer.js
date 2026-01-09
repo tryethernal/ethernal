@@ -33,12 +33,15 @@ const MAX_RPC_ATTEMPTS = 3;
 
 // Sync failure auto-disable configuration
 const SYNC_FAILURE_THRESHOLD = 3;
+const MAX_RECOVERY_ATTEMPTS = 10;
 const RECOVERY_BACKOFF_SCHEDULE = [
     5 * 60 * 1000,       // 5 minutes
     15 * 60 * 1000,      // 15 minutes
     60 * 60 * 1000,      // 1 hour
     6 * 60 * 60 * 1000   // 6 hours (max)
 ];
+// Stagger recovery checks to avoid thundering herd (random jitter up to 2 minutes)
+const RECOVERY_JITTER_MAX = 2 * 60 * 1000;
 
 module.exports = (sequelize, DataTypes) => {
   class Explorer extends Model {
@@ -317,6 +320,7 @@ module.exports = (sequelize, DataTypes) => {
             syncFailedAttempts: 0,
             syncDisabledAt: null,
             syncDisabledReason: null,
+            recoveryAttempts: 0,
             nextRecoveryCheckAt: null
         });
         return this;
@@ -332,82 +336,76 @@ module.exports = (sequelize, DataTypes) => {
 
     /**
      * Increments the sync failure counter and auto-disables if threshold reached.
+     * Uses atomic increment to avoid race conditions.
      * @param {string} [reason='rpc_unreachable'] - Reason for the failure
      * @returns {Promise<{disabled: boolean, attempts: number}>} Result with disable status
      */
     async incrementSyncFailures(reason = 'rpc_unreachable') {
-        const newCount = (this.syncFailedAttempts || 0) + 1;
-        await this.update({ syncFailedAttempts: newCount });
+        // Use atomic increment to avoid race conditions
+        await this.increment('syncFailedAttempts');
+        await this.reload();
 
-        if (newCount >= SYNC_FAILURE_THRESHOLD) {
+        if (this.syncFailedAttempts >= SYNC_FAILURE_THRESHOLD) {
             await this.autoDisableSync(reason);
-            return { disabled: true, attempts: newCount };
+            return { disabled: true, attempts: this.syncFailedAttempts };
         }
-        return { disabled: false, attempts: newCount };
+        return { disabled: false, attempts: this.syncFailedAttempts };
     }
 
     /**
      * Auto-disables sync and schedules first recovery check.
+     * Adds random jitter to avoid thundering herd when many explorers are disabled at once.
      * @param {string} reason - Reason for disabling (e.g., 'rpc_unreachable')
      * @returns {Promise<Explorer>} Updated explorer
      */
     async autoDisableSync(reason) {
-        const nextCheck = new Date(Date.now() + RECOVERY_BACKOFF_SCHEDULE[0]);
+        // Add random jitter to stagger recovery checks
+        const jitter = Math.floor(Math.random() * RECOVERY_JITTER_MAX);
+        const nextCheck = new Date(Date.now() + RECOVERY_BACKOFF_SCHEDULE[0] + jitter);
         await this.update({
             shouldSync: false,
             syncDisabledAt: new Date(),
             syncDisabledReason: reason,
+            recoveryAttempts: 0,
             nextRecoveryCheckAt: nextCheck
         });
         return this;
     }
 
     /**
-     * Resets all sync failure tracking state.
-     * @returns {Promise<Explorer>} Updated explorer
-     */
-    async resetSyncState() {
-        await this.update({
-            syncFailedAttempts: 0,
-            syncDisabledAt: null,
-            syncDisabledReason: null,
-            nextRecoveryCheckAt: null
-        });
-        return this;
-    }
-
-    /**
      * Schedules the next recovery check using exponential backoff.
+     * Increments recovery attempts and returns null if max attempts reached.
      * Backoff schedule: 5m -> 15m -> 1h -> 6h (max)
-     * @returns {Promise<Explorer>} Updated explorer
+     * @returns {Promise<{scheduled: boolean, attempts: number, maxReached: boolean}>} Result
      */
     async scheduleNextRecoveryCheck() {
         if (!this.syncDisabledAt) {
-            return this;
+            return { scheduled: false, attempts: 0, maxReached: false };
         }
 
-        const timeSinceDisabled = Date.now() - new Date(this.syncDisabledAt).getTime();
-        let cumulativeTime = 0;
-        let backoffIndex = 0;
+        const newAttempts = (this.recoveryAttempts || 0) + 1;
 
-        // Find which backoff interval we should use based on time since disabled
-        for (let i = 0; i < RECOVERY_BACKOFF_SCHEDULE.length; i++) {
-            cumulativeTime += RECOVERY_BACKOFF_SCHEDULE[i];
-            if (timeSinceDisabled < cumulativeTime) {
-                backoffIndex = i;
-                break;
-            }
-            backoffIndex = i;
+        // Check if max recovery attempts reached
+        if (newAttempts >= MAX_RECOVERY_ATTEMPTS) {
+            await this.update({
+                recoveryAttempts: newAttempts,
+                nextRecoveryCheckAt: null,
+                syncDisabledReason: 'max_recovery_attempts_reached'
+            });
+            return { scheduled: false, attempts: newAttempts, maxReached: true };
         }
 
-        // Cap at max backoff (last element)
-        if (backoffIndex >= RECOVERY_BACKOFF_SCHEDULE.length) {
-            backoffIndex = RECOVERY_BACKOFF_SCHEDULE.length - 1;
-        }
+        // Use recovery attempts as index, capped at max backoff
+        const backoffIndex = Math.min(newAttempts - 1, RECOVERY_BACKOFF_SCHEDULE.length - 1);
+        // Add random jitter to stagger recovery checks
+        const jitter = Math.floor(Math.random() * RECOVERY_JITTER_MAX);
+        const nextCheck = new Date(Date.now() + RECOVERY_BACKOFF_SCHEDULE[backoffIndex] + jitter);
 
-        const nextCheck = new Date(Date.now() + RECOVERY_BACKOFF_SCHEDULE[backoffIndex]);
-        await this.update({ nextRecoveryCheckAt: nextCheck });
-        return this;
+        await this.update({
+            recoveryAttempts: newAttempts,
+            nextRecoveryCheckAt: nextCheck
+        });
+        return { scheduled: true, attempts: newAttempts, maxReached: false };
     }
 
     /**
@@ -420,6 +418,7 @@ module.exports = (sequelize, DataTypes) => {
             syncFailedAttempts: 0,
             syncDisabledAt: null,
             syncDisabledReason: null,
+            recoveryAttempts: 0,
             nextRecoveryCheckAt: null
         });
         return this;
@@ -806,6 +805,7 @@ module.exports = (sequelize, DataTypes) => {
     syncFailedAttempts: DataTypes.INTEGER,
     syncDisabledAt: DataTypes.DATE,
     syncDisabledReason: DataTypes.STRING,
+    recoveryAttempts: DataTypes.INTEGER,
     nextRecoveryCheckAt: DataTypes.DATE
   }, {
     hooks: {

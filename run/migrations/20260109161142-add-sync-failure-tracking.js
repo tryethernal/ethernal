@@ -20,6 +20,12 @@ module.exports = {
         allowNull: true
       }, { transaction });
 
+      await queryInterface.addColumn('explorers', 'recoveryAttempts', {
+        type: Sequelize.DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+      }, { transaction });
+
       await queryInterface.addColumn('explorers', 'nextRecoveryCheckAt', {
         type: Sequelize.DataTypes.DATE,
         allowNull: true
@@ -47,6 +53,7 @@ module.exports = {
       await queryInterface.removeColumn('explorers', 'syncFailedAttempts', { transaction });
       await queryInterface.removeColumn('explorers', 'syncDisabledAt', { transaction });
       await queryInterface.removeColumn('explorers', 'syncDisabledReason', { transaction });
+      await queryInterface.removeColumn('explorers', 'recoveryAttempts', { transaction });
       await queryInterface.removeColumn('explorers', 'nextRecoveryCheckAt', { transaction });
 
       await transaction.commit();

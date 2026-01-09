@@ -9,6 +9,7 @@ const { Explorer, Workspace, RpcHealthCheck, StripeSubscription, StripePlan } = 
 const PM2 = require('../lib/pm2');
 const logger = require('../lib/logger');
 
+// Must match SYNC_FAILURE_THRESHOLD in explorer.js
 const SYNC_FAILURE_THRESHOLD = 3;
 
 module.exports = async job => {
@@ -23,17 +24,21 @@ module.exports = async job => {
             {
                 model: Workspace,
                 as: 'workspace',
+                required: false,
                 include: {
                     model: RpcHealthCheck,
-                    as: 'rpcHealthCheck'
+                    as: 'rpcHealthCheck',
+                    required: false
                 }
             },
             {
                 model: StripeSubscription,
                 as: 'stripeSubscription',
+                required: false,
                 include: {
                     model: StripePlan,
-                    as: 'stripePlan'
+                    as: 'stripePlan',
+                    required: false
                 }
             }
         ]
@@ -59,7 +64,11 @@ module.exports = async job => {
             await pm2.delete(explorer.slug);
             return 'Process deleted: no subscription.';
         }
-        else if (explorer.workspace.rpcHealthCheck && !explorer.workspace.rpcHealthCheck.isReachable && existingProcess) {
+        else if (explorer && !explorer.workspace) {
+            await pm2.delete(explorer.slug);
+            return 'Process deleted: no workspace.';
+        }
+        else if (explorer.workspace && explorer.workspace.rpcHealthCheck && !explorer.workspace.rpcHealthCheck.isReachable && existingProcess) {
             await pm2.delete(explorer.slug);
             // Track RPC failure and potentially auto-disable
             const result = await explorer.incrementSyncFailures('rpc_unreachable');
