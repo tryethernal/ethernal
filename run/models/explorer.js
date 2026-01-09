@@ -31,6 +31,18 @@ const IUniswapV2Router02 = require('../lib/abis/IUniswapV2Router02.json');
 const IUniswapV2Factory = require('../lib/abis/IUniswapV2Factory.json');
 const MAX_RPC_ATTEMPTS = 3;
 
+// Sync failure auto-disable configuration
+const SYNC_FAILURE_THRESHOLD = 3;
+const MAX_RECOVERY_ATTEMPTS = 10;
+const RECOVERY_BACKOFF_SCHEDULE = [
+    5 * 60 * 1000,       // 5 minutes
+    15 * 60 * 1000,      // 15 minutes
+    60 * 60 * 1000,      // 1 hour
+    6 * 60 * 60 * 1000   // 6 hours (max)
+];
+// Stagger recovery checks to avoid thundering herd (random jitter up to 2 minutes)
+const RECOVERY_JITTER_MAX = 2 * 60 * 1000;
+
 module.exports = (sequelize, DataTypes) => {
   class Explorer extends Model {
     /**
@@ -299,10 +311,19 @@ module.exports = (sequelize, DataTypes) => {
 
     /**
      * Starts block synchronization for the explorer.
+     * Resets all failure tracking when manually enabling sync.
      * @returns {Promise<Explorer>} Updated explorer
      */
-    startSync() {
-        return this.update({ shouldSync: true });
+    async startSync() {
+        await this.update({
+            shouldSync: true,
+            syncFailedAttempts: 0,
+            syncDisabledAt: null,
+            syncDisabledReason: null,
+            recoveryAttempts: 0,
+            nextRecoveryCheckAt: null
+        });
+        return this;
     }
 
     /**
@@ -311,6 +332,96 @@ module.exports = (sequelize, DataTypes) => {
      */
     stopSync() {
         return this.update({ shouldSync: false });
+    }
+
+    /**
+     * Increments the sync failure counter and auto-disables if threshold reached.
+     * Uses atomic increment to avoid race conditions.
+     * @param {string} [reason='rpc_unreachable'] - Reason for the failure
+     * @returns {Promise<{disabled: boolean, attempts: number}>} Result with disable status
+     */
+    async incrementSyncFailures(reason = 'rpc_unreachable') {
+        // Use atomic increment to avoid race conditions
+        await this.increment('syncFailedAttempts');
+        await this.reload();
+
+        if (this.syncFailedAttempts >= SYNC_FAILURE_THRESHOLD) {
+            await this.autoDisableSync(reason);
+            return { disabled: true, attempts: this.syncFailedAttempts };
+        }
+        return { disabled: false, attempts: this.syncFailedAttempts };
+    }
+
+    /**
+     * Auto-disables sync and schedules first recovery check.
+     * Adds random jitter to avoid thundering herd when many explorers are disabled at once.
+     * @param {string} reason - Reason for disabling (e.g., 'rpc_unreachable')
+     * @returns {Promise<Explorer>} Updated explorer
+     */
+    async autoDisableSync(reason) {
+        // Add random jitter to stagger recovery checks
+        const jitter = Math.floor(Math.random() * RECOVERY_JITTER_MAX);
+        const nextCheck = new Date(Date.now() + RECOVERY_BACKOFF_SCHEDULE[0] + jitter);
+        await this.update({
+            shouldSync: false,
+            syncDisabledAt: new Date(),
+            syncDisabledReason: reason,
+            recoveryAttempts: 0,
+            nextRecoveryCheckAt: nextCheck
+        });
+        return this;
+    }
+
+    /**
+     * Schedules the next recovery check using exponential backoff.
+     * Increments recovery attempts and returns null if max attempts reached.
+     * Backoff schedule: 5m -> 15m -> 1h -> 6h (max)
+     * @returns {Promise<{scheduled: boolean, attempts: number, maxReached: boolean}>} Result
+     */
+    async scheduleNextRecoveryCheck() {
+        if (!this.syncDisabledAt) {
+            return { scheduled: false, attempts: 0, maxReached: false };
+        }
+
+        const newAttempts = (this.recoveryAttempts || 0) + 1;
+
+        // Check if max recovery attempts reached
+        if (newAttempts >= MAX_RECOVERY_ATTEMPTS) {
+            await this.update({
+                recoveryAttempts: newAttempts,
+                nextRecoveryCheckAt: null,
+                syncDisabledReason: 'max_recovery_attempts_reached'
+            });
+            return { scheduled: false, attempts: newAttempts, maxReached: true };
+        }
+
+        // Use recovery attempts as index, capped at max backoff
+        const backoffIndex = Math.min(newAttempts - 1, RECOVERY_BACKOFF_SCHEDULE.length - 1);
+        // Add random jitter to stagger recovery checks
+        const jitter = Math.floor(Math.random() * RECOVERY_JITTER_MAX);
+        const nextCheck = new Date(Date.now() + RECOVERY_BACKOFF_SCHEDULE[backoffIndex] + jitter);
+
+        await this.update({
+            recoveryAttempts: newAttempts,
+            nextRecoveryCheckAt: nextCheck
+        });
+        return { scheduled: true, attempts: newAttempts, maxReached: false };
+    }
+
+    /**
+     * Re-enables sync after successful recovery check.
+     * @returns {Promise<Explorer>} Updated explorer
+     */
+    async enableSyncAfterRecovery() {
+        await this.update({
+            shouldSync: true,
+            syncFailedAttempts: 0,
+            syncDisabledAt: null,
+            syncDisabledReason: null,
+            recoveryAttempts: 0,
+            nextRecoveryCheckAt: null
+        });
+        return this;
     }
 
     /**
@@ -690,7 +801,12 @@ module.exports = (sequelize, DataTypes) => {
     shouldEnforceQuota: DataTypes.BOOLEAN,
     isDemo: DataTypes.BOOLEAN,
     gasAnalyticsEnabled: DataTypes.BOOLEAN,
-    displayTopAccounts: DataTypes.BOOLEAN
+    displayTopAccounts: DataTypes.BOOLEAN,
+    syncFailedAttempts: DataTypes.INTEGER,
+    syncDisabledAt: DataTypes.DATE,
+    syncDisabledReason: DataTypes.STRING,
+    recoveryAttempts: DataTypes.INTEGER,
+    nextRecoveryCheckAt: DataTypes.DATE
   }, {
     hooks: {
         afterCreate(explorer, options) {

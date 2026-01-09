@@ -49,7 +49,9 @@ jest.mock('../../../lib/rpc', () => {
             fetchTransactionReceipt: jest.fn()
                 .mockResolvedValue({
                     status: 1
-                })
+                }),
+            fetchLatestBlock: jest.fn()
+                .mockResolvedValue({ number: 100 })
         })),
         ERC721Connector: jest.fn().mockImplementation(() => ({
             fetchAndStoreAllTokens: jest.fn().mockResolvedValue(true),
