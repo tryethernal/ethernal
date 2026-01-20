@@ -35,7 +35,7 @@ exports[`Block.vue > Should show block details 1`] = `
           <div class="v-list-item__content" data-no-activator="">
             <!---->
             <!---->
-            <div data-v-f92441a2="" class="v-list-item-title text-body-2">12 345 678</div>
+            <div data-v-f92441a2="" class="v-list-item-title text-body-2">12,345,678</div>
           </div>
           <!---->
         </div>
@@ -52,7 +52,7 @@ exports[`Block.vue > Should show block details 1`] = `
           <div class="v-list-item__content" data-no-activator="">
             <!---->
             <!---->
-            <div data-v-f92441a2="" class="v-list-item-title text-body-2"><a data-v-f92441a2="" class="text-decoration-none">12 345</a></div>
+            <div data-v-f92441a2="" class="v-list-item-title text-body-2"><a data-v-f92441a2="" class="text-decoration-none">12,345</a></div>
           </div>
           <!---->
         </div>
@@ -160,7 +160,7 @@ exports[`Block.vue > Should show block details 1`] = `
           <div class="v-list-item__content" data-no-activator="">
             <!---->
             <!---->
-            <div data-v-f92441a2="" class="v-list-item-title text-body-2">12 345</div>
+            <div data-v-f92441a2="" class="v-list-item-title text-body-2">12,345</div>
           </div>
           <!---->
         </div>
@@ -177,7 +177,7 @@ exports[`Block.vue > Should show block details 1`] = `
           <div class="v-list-item__content" data-no-activator="">
             <!---->
             <!---->
-            <div data-v-f92441a2="" class="v-list-item-title text-body-2">987 654 321</div>
+            <div data-v-f92441a2="" class="v-list-item-title text-body-2">987,654,321</div>
           </div>
           <!---->
         </div>
@@ -212,7 +212,7 @@ exports[`Block.vue > Should show block details 1`] = `
           <div class="v-list-item__content" data-no-activator="">
             <!---->
             <!---->
-            <div data-v-f92441a2="" class="v-list-item-title text-body-2">21 000 <span data-v-f92441a2="" class="text-medium-emphasis"> (0,07%) </span></div>
+            <div data-v-f92441a2="" class="v-list-item-title text-body-2">21,000 <span data-v-f92441a2="" class="text-medium-emphasis"> (0,07%) </span></div>
           </div>
           <!---->
         </div>
@@ -229,7 +229,7 @@ exports[`Block.vue > Should show block details 1`] = `
           <div class="v-list-item__content" data-no-activator="">
             <!---->
             <!---->
-            <div data-v-f92441a2="" class="v-list-item-title text-body-2">30 000 000</div>
+            <div data-v-f92441a2="" class="v-list-item-title text-body-2">30,000,000</div>
           </div>
           <!---->
         </div>
@@ -448,7 +448,7 @@ exports[`Block.vue > Should show block details without orbit data 1`] = `
           <div class="v-list-item__content" data-no-activator="">
             <!---->
             <!---->
-            <div data-v-f92441a2="" class="v-list-item-title text-body-2">12 345 678</div>
+            <div data-v-f92441a2="" class="v-list-item-title text-body-2">12,345,678</div>
           </div>
           <!---->
         </div>
@@ -522,7 +522,7 @@ exports[`Block.vue > Should show block details without orbit data 1`] = `
           <div class="v-list-item__content" data-no-activator="">
             <!---->
             <!---->
-            <div data-v-f92441a2="" class="v-list-item-title text-body-2">12 345</div>
+            <div data-v-f92441a2="" class="v-list-item-title text-body-2">12,345</div>
           </div>
           <!---->
         </div>
@@ -539,7 +539,7 @@ exports[`Block.vue > Should show block details without orbit data 1`] = `
           <div class="v-list-item__content" data-no-activator="">
             <!---->
             <!---->
-            <div data-v-f92441a2="" class="v-list-item-title text-body-2">987 654 321</div>
+            <div data-v-f92441a2="" class="v-list-item-title text-body-2">987,654,321</div>
           </div>
           <!---->
         </div>
@@ -574,7 +574,7 @@ exports[`Block.vue > Should show block details without orbit data 1`] = `
           <div class="v-list-item__content" data-no-activator="">
             <!---->
             <!---->
-            <div data-v-f92441a2="" class="v-list-item-title text-body-2">21 000 <span data-v-f92441a2="" class="text-medium-emphasis"> (0,07%) </span></div>
+            <div data-v-f92441a2="" class="v-list-item-title text-body-2">21,000 <span data-v-f92441a2="" class="text-medium-emphasis"> (0,07%) </span></div>
           </div>
           <!---->
         </div>
@@ -591,7 +591,7 @@ exports[`Block.vue > Should show block details without orbit data 1`] = `
           <div class="v-list-item__content" data-no-activator="">
             <!---->
             <!---->
-            <div data-v-f92441a2="" class="v-list-item-title text-body-2">30 000 000</div>
+            <div data-v-f92441a2="" class="v-list-item-title text-body-2">30,000,000</div>
           </div>
           <!---->
         </div>

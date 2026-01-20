@@ -13,6 +13,17 @@ import FromWei from '@/filters/FromWei';
 import dt from '@/filters/dt';
 import { vi } from 'vitest';
 
+// Mock toLocaleString to use consistent en-US locale for snapshot testing
+const originalToLocaleString = Number.prototype.toLocaleString;
+Number.prototype.toLocaleString = function(locales, options) {
+    return originalToLocaleString.call(this, 'en-US', options);
+};
+
+const originalDateToLocaleString = Date.prototype.toLocaleString;
+Date.prototype.toLocaleString = function(locales, options) {
+    return originalDateToLocaleString.call(this, 'en-US', options);
+};
+
 const ethernal = {
     colors: {
         primary: '#3D95CE',

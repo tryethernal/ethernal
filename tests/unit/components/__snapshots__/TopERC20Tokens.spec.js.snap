@@ -585,7 +585,7 @@ exports[`TopERC20Tokens.vue > Should show the component with data 1`] = `
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">Test Token</td>
                 <td class="v-data-table__td v-data-table-column--align-start">TEST</td>
-                <td class="v-data-table__td v-data-table-column--align-start">1 000</td>
+                <td class="v-data-table__td v-data-table-column--align-start">1,000</td>
               </tr>
               <!---->
               <tr class="v-data-table__tr">
@@ -594,7 +594,7 @@ exports[`TopERC20Tokens.vue > Should show the component with data 1`] = `
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">Another Token</td>
                 <td class="v-data-table__td v-data-table-column--align-start">ATK</td>
-                <td class="v-data-table__td v-data-table-column--align-start">2 000</td>
+                <td class="v-data-table__td v-data-table-column--align-start">2,000</td>
               </tr>
               <!---->
               <!---->
@@ -761,7 +761,7 @@ exports[`TopERC20Tokens.vue > Should update tokens when changing page options 1`
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">Page Two Token</td>
                 <td class="v-data-table__td v-data-table-column--align-start">PTT</td>
-                <td class="v-data-table__td v-data-table-column--align-start">3 000</td>
+                <td class="v-data-table__td v-data-table-column--align-start">3,000</td>
               </tr>
               <!---->
               <!---->
