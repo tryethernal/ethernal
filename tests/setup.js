@@ -13,15 +13,20 @@ import FromWei from '@/filters/FromWei';
 import dt from '@/filters/dt';
 import { vi } from 'vitest';
 
-// Mock toLocaleString to use consistent en-US locale for snapshot testing
-const originalToLocaleString = Number.prototype.toLocaleString;
+// Mock toLocaleString methods to use consistent en-US locale for snapshot testing
+const originalNumberToLocaleString = Number.prototype.toLocaleString;
 Number.prototype.toLocaleString = function(locales, options) {
-    return originalToLocaleString.call(this, 'en-US', options);
+    return originalNumberToLocaleString.call(this, 'en-US', options);
 };
 
 const originalDateToLocaleString = Date.prototype.toLocaleString;
 Date.prototype.toLocaleString = function(locales, options) {
     return originalDateToLocaleString.call(this, 'en-US', options);
+};
+
+const originalDateToLocaleDateString = Date.prototype.toLocaleDateString;
+Date.prototype.toLocaleDateString = function(locales, options) {
+    return originalDateToLocaleDateString.call(this, 'en-US', options);
 };
 
 const ethernal = {

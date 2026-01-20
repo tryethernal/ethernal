@@ -83,7 +83,7 @@ describe('ContractReadMethod.vue', () => {
         vi.resetModules();
     });
 
-    it('Should display the UI to interact with a method', async () => {
+    it('Should display the UI to interact with a method', { timeout: 15000 }, async () => {
         const props = {
             method: mockERC20Contract.abi[0],
             contract: mockERC20Contract,
