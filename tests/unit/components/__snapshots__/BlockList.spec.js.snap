@@ -57,7 +57,7 @@ exports[`BlockList.vue > Should display pending blocks 1`] = `
             <!--teleport end--><a data-v-95d592a2="" style="text-decoration: none;">2</a>
           </td>
           <td class="v-data-table__td v-data-table-column--align-start">
-            <div data-v-95d592a2="" class="my-2 text-left">05/06 7:11:26 PM<br data-v-95d592a2=""><small data-v-95d592a2="" class="text-caption text-medium-emphasis">3 months ago</small></div>
+            <div data-v-95d592a2="" class="my-2 text-left">05/06 7:11:26 PM<br data-v-95d592a2=""><small data-v-95d592a2="" class="text-caption text-medium-emphasis">il y a 3 mois</small></div>
           </td>
           <td class="v-data-table__td v-data-table-column--align-start"><a data-v-95d592a2="" style="text-decoration: none;">
               <!--v-if-->
@@ -86,7 +86,7 @@ exports[`BlockList.vue > Should display pending blocks 1`] = `
             <!--teleport end--><a data-v-95d592a2="" style="text-decoration: none;">1</a>
           </td>
           <td class="v-data-table__td v-data-table-column--align-start">
-            <div data-v-95d592a2="" class="my-2 text-left">05/06 7:11:26 PM<br data-v-95d592a2=""><small data-v-95d592a2="" class="text-caption text-medium-emphasis">3 months ago</small></div>
+            <div data-v-95d592a2="" class="my-2 text-left">05/06 7:11:26 PM<br data-v-95d592a2=""><small data-v-95d592a2="" class="text-caption text-medium-emphasis">il y a 3 mois</small></div>
           </td>
           <td class="v-data-table__td v-data-table-column--align-start"><a data-v-95d592a2="" style="text-decoration: none;">
               <!--v-if-->
@@ -251,7 +251,7 @@ exports[`BlockList.vue > Should show the blocks list 1`] = `
             <!--teleport end--><a data-v-95d592a2="" style="text-decoration: none;">2</a>
           </td>
           <td class="v-data-table__td v-data-table-column--align-start">
-            <div data-v-95d592a2="" class="my-2 text-left">05/06 7:11:26 PM<br data-v-95d592a2=""><small data-v-95d592a2="" class="text-caption text-medium-emphasis">3 months ago</small></div>
+            <div data-v-95d592a2="" class="my-2 text-left">05/06 7:11:26 PM<br data-v-95d592a2=""><small data-v-95d592a2="" class="text-caption text-medium-emphasis">il y a 3 mois</small></div>
           </td>
           <td class="v-data-table__td v-data-table-column--align-start"><a data-v-95d592a2="" style="text-decoration: none;">
               <!--v-if-->
@@ -280,7 +280,7 @@ exports[`BlockList.vue > Should show the blocks list 1`] = `
             <!--teleport end--><a data-v-95d592a2="" style="text-decoration: none;">1</a>
           </td>
           <td class="v-data-table__td v-data-table-column--align-start">
-            <div data-v-95d592a2="" class="my-2 text-left">05/06 7:11:26 PM<br data-v-95d592a2=""><small data-v-95d592a2="" class="text-caption text-medium-emphasis">3 months ago</small></div>
+            <div data-v-95d592a2="" class="my-2 text-left">05/06 7:11:26 PM<br data-v-95d592a2=""><small data-v-95d592a2="" class="text-caption text-medium-emphasis">il y a 3 mois</small></div>
           </td>
           <td class="v-data-table__td v-data-table-column--align-start"><a data-v-95d592a2="" style="text-decoration: none;">
               <!--v-if-->
@@ -413,7 +413,7 @@ exports[`BlockList.vue > Should show the dense blocks list 1`] = `
             <!--teleport end--><a data-v-95d592a2="" style="text-decoration: none;">2</a>
           </td>
           <td class="v-data-table__td v-data-table-column--align-start">
-            <div data-v-95d592a2="" class="my-2 text-left">05/06 7:11:26 PM<br data-v-95d592a2=""><small data-v-95d592a2="" class="text-caption text-medium-emphasis">3 months ago</small></div>
+            <div data-v-95d592a2="" class="my-2 text-left">05/06 7:11:26 PM<br data-v-95d592a2=""><small data-v-95d592a2="" class="text-caption text-medium-emphasis">il y a 3 mois</small></div>
           </td>
           <td class="v-data-table__td v-data-table-column--align-start"><a data-v-95d592a2="" style="text-decoration: none;"> transactions</a></td>
         </tr>
@@ -425,7 +425,7 @@ exports[`BlockList.vue > Should show the dense blocks list 1`] = `
             <!--teleport end--><a data-v-95d592a2="" style="text-decoration: none;">1</a>
           </td>
           <td class="v-data-table__td v-data-table-column--align-start">
-            <div data-v-95d592a2="" class="my-2 text-left">05/06 7:11:26 PM<br data-v-95d592a2=""><small data-v-95d592a2="" class="text-caption text-medium-emphasis">3 months ago</small></div>
+            <div data-v-95d592a2="" class="my-2 text-left">05/06 7:11:26 PM<br data-v-95d592a2=""><small data-v-95d592a2="" class="text-caption text-medium-emphasis">il y a 3 mois</small></div>
           </td>
           <td class="v-data-table__td v-data-table-column--align-start"><a data-v-95d592a2="" style="text-decoration: none;"> transactions</a></td>
         </tr>

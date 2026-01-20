@@ -30,7 +30,7 @@ exports[`ExplorerQuotaManagementModal.vue > Should display base cost simulation 
     <div class="v-card-text">
       <!--v-if-->
       <!--v-if-->
-      <p> Your plan includes 100,000 transactions per month. If you need more, you can extend your quota here. If set, your quota extension will automatically be renewed every month, but you can adjust or remove it anytime. Increases will be charged for right away, and decreases will result in a prorated credit applied to your future invoices. </p><b>Current Quota:</b> 100,000 base + 20,000 extra = 120,000 txs
+      <p> Your plan includes 100 000 transactions per month. If you need more, you can extend your quota here. If set, your quota extension will automatically be renewed every month, but you can adjust or remove it anytime. Increases will be charged for right away, and decreases will result in a prorated credit applied to your future invoices. </p><b>Current Quota:</b> 100 000 base + 20 000 extra = 120 000 txs
       <hr class="v-divider v-theme--light mt-2 mb-4" aria-orientation="horizontal" role="separator">
       <form class="v-form" novalidate="">
         <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field v-text-field--suffixed">
@@ -93,21 +93,21 @@ exports[`ExplorerQuotaManagementModal.vue > Should display base cost simulation 
               </thead>
               <tbody>
                 <tr>
-                  <td>100,000 txs</td>
+                  <td>100 000 txs</td>
                   <td>$0.005</td>
-                  <td>100,000</td>
+                  <td>100 000</td>
                   <td>$500</td>
                 </tr>
                 <tr>
-                  <td>1,000,000 txs</td>
+                  <td>1 000 000 txs</td>
                   <td>$0.0007</td>
-                  <td>900,000</td>
+                  <td>900 000</td>
                   <td>$630</td>
                 </tr>
                 <tr>
-                  <td>10,000,000 txs</td>
+                  <td>10 000 000 txs</td>
                   <td>$0.00015</td>
-                  <td>3,100,000</td>
+                  <td>3 100 000</td>
                   <td>$465</td>
                 </tr>
                 <tr>
@@ -121,8 +121,8 @@ exports[`ExplorerQuotaManagementModal.vue > Should display base cost simulation 
                 <tr>
                   <td></td>
                   <td></td>
-                  <td class="font-weight-bold">4,100,000</td>
-                  <td class="font-weight-bold">$1,595</td>
+                  <td class="font-weight-bold">4 100 000</td>
+                  <td class="font-weight-bold">$1 595</td>
                 </tr>
               </tfoot>
             </table>
@@ -172,7 +172,7 @@ exports[`ExplorerQuotaManagementModal.vue > Should display current quota info 1`
     <div class="v-card-text">
       <!--v-if-->
       <!--v-if-->
-      <p> Your plan includes 100,000 transactions per month. If you need more, you can extend your quota here. If set, your quota extension will automatically be renewed every month, but you can adjust or remove it anytime. Increases will be charged for right away, and decreases will result in a prorated credit applied to your future invoices. </p><b>Current Quota:</b> 100,000 base + 20,000 extra = 120,000 txs
+      <p> Your plan includes 100 000 transactions per month. If you need more, you can extend your quota here. If set, your quota extension will automatically be renewed every month, but you can adjust or remove it anytime. Increases will be charged for right away, and decreases will result in a prorated credit applied to your future invoices. </p><b>Current Quota:</b> 100 000 base + 20 000 extra = 120 000 txs
       <hr class="v-divider v-theme--light mt-2 mb-4" aria-orientation="horizontal" role="separator">
       <form class="v-form" novalidate="">
         <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field v-text-field--suffixed">
@@ -235,19 +235,19 @@ exports[`ExplorerQuotaManagementModal.vue > Should display current quota info 1`
               </thead>
               <tbody>
                 <tr>
-                  <td>100,000 txs</td>
+                  <td>100 000 txs</td>
                   <td>$0.005</td>
-                  <td>100,000</td>
+                  <td>100 000</td>
                   <td>$500</td>
                 </tr>
                 <tr>
-                  <td>1,000,000 txs</td>
+                  <td>1 000 000 txs</td>
                   <td>$0.0007</td>
-                  <td>20,000</td>
+                  <td>20 000</td>
                   <td>$14</td>
                 </tr>
                 <tr>
-                  <td>10,000,000 txs</td>
+                  <td>10 000 000 txs</td>
                   <td>$0.00015</td>
                   <td>0</td>
                   <td>$0</td>
@@ -263,7 +263,7 @@ exports[`ExplorerQuotaManagementModal.vue > Should display current quota info 1`
                 <tr>
                   <td></td>
                   <td></td>
-                  <td class="font-weight-bold">120,000</td>
+                  <td class="font-weight-bold">120 000</td>
                   <td class="font-weight-bold">$514</td>
                 </tr>
               </tfoot>

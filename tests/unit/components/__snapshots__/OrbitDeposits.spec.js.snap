@@ -413,13 +413,13 @@ exports[`OrbitDeposits.vue > Should show the deposits component with data 1`] = 
             <tbody class="v-data-table__tbody" role="rowgroup">
               <!---->
               <tr class="v-data-table__tr">
-                <td class="v-data-table__td v-data-table-column--align-start"><a class="text-decoration-none" href="https://etherscan.io/block/12345" target="_blank">12,345 <i class="mdi-open-in-new mdi v-icon notranslate v-theme--light v-icon--size-x-small" aria-hidden="true"></i></a></td>
+                <td class="v-data-table__td v-data-table-column--align-start"><a class="text-decoration-none" href="https://etherscan.io/block/12345" target="_blank">12 345 <i class="mdi-open-in-new mdi v-icon notranslate v-theme--light v-icon--size-x-small" aria-hidden="true"></i></a></td>
                 <td class="v-data-table__td v-data-table-column--align-start">1</td>
                 <td class="v-data-table__td v-data-table-column--align-start">
                   <hash-link-stub type="tx" hash="0xabcdef1234567890abcdef1234567890abcdef12" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">
-                  <div class="my-2 text-left">01/15 11:30:00 AM<br><small>in 1 year</small></div>
+                  <div class="my-2 text-left">01/15 11:30:00 AM<br><small>dans 1 an</small></div>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start"><span class="v-chip v-theme--light text-success v-chip--density-default v-chip--size-default v-chip--variant-tonal" draggable="false"><!----><span class="v-chip__underlay"></span>
                   <!---->
@@ -432,11 +432,11 @@ exports[`OrbitDeposits.vue > Should show the deposits component with data 1`] = 
               </tr>
               <!---->
               <tr class="v-data-table__tr">
-                <td class="v-data-table__td v-data-table-column--align-start"><a class="text-decoration-none" href="https://etherscan.io/block/12346" target="_blank">12,346 <i class="mdi-open-in-new mdi v-icon notranslate v-theme--light v-icon--size-x-small" aria-hidden="true"></i></a></td>
+                <td class="v-data-table__td v-data-table-column--align-start"><a class="text-decoration-none" href="https://etherscan.io/block/12346" target="_blank">12 346 <i class="mdi-open-in-new mdi v-icon notranslate v-theme--light v-icon--size-x-small" aria-hidden="true"></i></a></td>
                 <td class="v-data-table__td v-data-table-column--align-start">2</td>
                 <td class="v-data-table__td v-data-table-column--align-start"><span>N/A</span></td>
                 <td class="v-data-table__td v-data-table-column--align-start">
-                  <div class="my-2 text-left">01/15 12:00:00 PM<br><small>in 1 year</small></div>
+                  <div class="my-2 text-left">01/15 12:00:00 PM<br><small>dans 1 an</small></div>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start"><span class="v-chip v-theme--light text-warning v-chip--density-default v-chip--size-default v-chip--variant-tonal" draggable="false"><!----><span class="v-chip__underlay"></span>
                   <!---->
@@ -449,13 +449,13 @@ exports[`OrbitDeposits.vue > Should show the deposits component with data 1`] = 
               </tr>
               <!---->
               <tr class="v-data-table__tr">
-                <td class="v-data-table__td v-data-table-column--align-start"><a class="text-decoration-none" href="https://etherscan.io/block/12347" target="_blank">12,347 <i class="mdi-open-in-new mdi v-icon notranslate v-theme--light v-icon--size-x-small" aria-hidden="true"></i></a></td>
+                <td class="v-data-table__td v-data-table-column--align-start"><a class="text-decoration-none" href="https://etherscan.io/block/12347" target="_blank">12 347 <i class="mdi-open-in-new mdi v-icon notranslate v-theme--light v-icon--size-x-small" aria-hidden="true"></i></a></td>
                 <td class="v-data-table__td v-data-table-column--align-start">3</td>
                 <td class="v-data-table__td v-data-table-column--align-start">
                   <hash-link-stub type="tx" hash="0xfedcba0987654321fedcba0987654321fedcba09" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">
-                  <div class="my-2 text-left">01/15 12:30:00 PM<br><small>in 1 year</small></div>
+                  <div class="my-2 text-left">01/15 12:30:00 PM<br><small>dans 1 an</small></div>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start"><span class="v-chip v-theme--light text-error v-chip--density-default v-chip--size-default v-chip--variant-tonal" draggable="false"><!----><span class="v-chip__underlay"></span>
                   <!---->

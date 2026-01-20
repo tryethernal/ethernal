@@ -223,7 +223,7 @@ exports[`TransactionsList.vue > Should display the list 1`] = `
           </td>
           <td class="v-data-table__td v-data-table-column--align-start"><a data-v-40c8aafa="" style="text-decoration: none;">1</a></td>
           <td class="v-data-table__td v-data-table-column--align-start">
-            <div data-v-40c8aafa="" class="my-2 text-left">05/06 7:11:26 PM<br data-v-40c8aafa=""><small data-v-40c8aafa="" class="text-caption text-medium-emphasis">3 months ago</small></div>
+            <div data-v-40c8aafa="" class="my-2 text-left">05/06 7:11:26 PM<br data-v-40c8aafa=""><small data-v-40c8aafa="" class="text-caption text-medium-emphasis">il y a 3 mois</small></div>
           </td>
           <td class="v-data-table__td v-data-table-column--align-start">
             <!--v-if-->
@@ -255,7 +255,7 @@ exports[`TransactionsList.vue > Should display the list 1`] = `
           </td>
           <td class="v-data-table__td v-data-table-column--align-start"><a data-v-40c8aafa="" style="text-decoration: none;">1</a></td>
           <td class="v-data-table__td v-data-table-column--align-start">
-            <div data-v-40c8aafa="" class="my-2 text-left">05/06 7:11:26 PM<br data-v-40c8aafa=""><small data-v-40c8aafa="" class="text-caption text-medium-emphasis">3 months ago</small></div>
+            <div data-v-40c8aafa="" class="my-2 text-left">05/06 7:11:26 PM<br data-v-40c8aafa=""><small data-v-40c8aafa="" class="text-caption text-medium-emphasis">il y a 3 mois</small></div>
           </td>
           <td class="v-data-table__td v-data-table-column--align-start">
             <!--v-if-->

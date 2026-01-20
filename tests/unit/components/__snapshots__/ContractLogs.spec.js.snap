@@ -49,7 +49,7 @@ exports[`ContractLogs.vue > Should show the contract logs table 1`] = `
           </td>
           <td class="v-data-table__td v-data-table-column--align-start"><a class="text-decoration-none">1</a></td>
           <td class="v-data-table__td v-data-table-column--align-start">
-            <div class="my-2 text-left">03/20 11:00:00 AM<br><small class="text-caption text-medium-emphasis">in 1 year</small></div>
+            <div class="my-2 text-left">03/20 11:00:00 AM<br><small class="text-caption text-medium-emphasis">dans 1 an</small></div>
           </td>
         </tr>
         <!---->

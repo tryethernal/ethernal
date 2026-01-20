@@ -424,7 +424,7 @@ exports[`TopNFT.vue > Should show the component with data 1`] = `
                   <!----></span></span>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">500</td>
-                <td class="v-data-table__td v-data-table-column--align-start">1,000</td>
+                <td class="v-data-table__td v-data-table-column--align-start">1 000</td>
               </tr>
               <!---->
               <!---->
@@ -599,7 +599,7 @@ exports[`TopNFT.vue > Should update NFTs when options change 1`] = `
                   <!----></span></span>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">500</td>
-                <td class="v-data-table__td v-data-table-column--align-start">1,000</td>
+                <td class="v-data-table__td v-data-table-column--align-start">1 000</td>
               </tr>
               <!---->
               <!---->

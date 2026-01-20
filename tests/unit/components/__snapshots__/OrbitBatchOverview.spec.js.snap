@@ -62,7 +62,7 @@ exports[`OrbitBatchOverview.vue > Should show the component with challenged batc
         <div class="v-list-item__content" data-no-activator="">
           <!---->
           <!---->
-          <div class="v-list-item-title text-body-2">01/03 10:15:00 AM<span class="text-medium-emphasis"> (in 1 year)</span></div>
+          <div class="v-list-item-title text-body-2">01/03 10:15:00 AM<span class="text-medium-emphasis"> (dans 1 an)</span></div>
         </div>
         <!---->
       </div>
@@ -114,7 +114,7 @@ exports[`OrbitBatchOverview.vue > Should show the component with challenged batc
         <div class="v-list-item__content" data-no-activator="">
           <!---->
           <!---->
-          <div class="v-list-item-title text-body-2"><a class="text-decoration-none" href="https://etherscan.io/block/98765" target="_blank">98,765 <i class="mdi-open-in-new mdi v-icon notranslate v-theme--light v-icon--size-x-small" aria-hidden="true"></i></a></div>
+          <div class="v-list-item-title text-body-2"><a class="text-decoration-none" href="https://etherscan.io/block/98765" target="_blank">98 765 <i class="mdi-open-in-new mdi v-icon notranslate v-theme--light v-icon--size-x-small" aria-hidden="true"></i></a></div>
         </div>
         <!---->
       </div>
@@ -213,7 +213,7 @@ exports[`OrbitBatchOverview.vue > Should show the component with confirmed batch
         <div class="v-list-item__content" data-no-activator="">
           <!---->
           <!---->
-          <div class="v-list-item-title text-body-2">01/01 1:00:00 PM<span class="text-medium-emphasis"> (in 1 year)</span></div>
+          <div class="v-list-item-title text-body-2">01/01 1:00:00 PM<span class="text-medium-emphasis"> (dans 1 an)</span></div>
         </div>
         <!---->
       </div>
@@ -265,7 +265,7 @@ exports[`OrbitBatchOverview.vue > Should show the component with confirmed batch
         <div class="v-list-item__content" data-no-activator="">
           <!---->
           <!---->
-          <div class="v-list-item-title text-body-2"><a class="text-decoration-none" href="https://etherscan.io/block/12345" target="_blank">12,345 <i class="mdi-open-in-new mdi v-icon notranslate v-theme--light v-icon--size-x-small" aria-hidden="true"></i></a></div>
+          <div class="v-list-item-title text-body-2"><a class="text-decoration-none" href="https://etherscan.io/block/12345" target="_blank">12 345 <i class="mdi-open-in-new mdi v-icon notranslate v-theme--light v-icon--size-x-small" aria-hidden="true"></i></a></div>
         </div>
         <!---->
       </div>
@@ -364,7 +364,7 @@ exports[`OrbitBatchOverview.vue > Should show the component with pending batch d
         <div class="v-list-item__content" data-no-activator="">
           <!---->
           <!---->
-          <div class="v-list-item-title text-body-2">01/02 4:30:00 PM<span class="text-medium-emphasis"> (in 1 year)</span></div>
+          <div class="v-list-item-title text-body-2">01/02 4:30:00 PM<span class="text-medium-emphasis"> (dans 1 an)</span></div>
         </div>
         <!---->
       </div>
@@ -416,7 +416,7 @@ exports[`OrbitBatchOverview.vue > Should show the component with pending batch d
         <div class="v-list-item__content" data-no-activator="">
           <!---->
           <!---->
-          <div class="v-list-item-title text-body-2"><a class="text-decoration-none" href="https://etherscan.io/block/54321" target="_blank">54,321 <i class="mdi-open-in-new mdi v-icon notranslate v-theme--light v-icon--size-x-small" aria-hidden="true"></i></a></div>
+          <div class="v-list-item-title text-body-2"><a class="text-decoration-none" href="https://etherscan.io/block/54321" target="_blank">54 321 <i class="mdi-open-in-new mdi v-icon notranslate v-theme--light v-icon--size-x-small" aria-hidden="true"></i></a></div>
         </div>
         <!---->
       </div>

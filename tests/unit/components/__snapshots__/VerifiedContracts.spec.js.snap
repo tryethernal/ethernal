@@ -298,7 +298,7 @@ exports[`VerifiedContracts.vue > Should handle pagination updates 1`] = `
                   <!--teleport start-->
                   <!--teleport end-->
                 </td>
-                <td class="v-data-table__td v-data-table-column--align-start">03/20 11:00:00 AM<br><small class="text-caption text-medium-emphasis">in 1 year</small></td>
+                <td class="v-data-table__td v-data-table-column--align-start">03/20 11:00:00 AM<br><small class="text-caption text-medium-emphasis">dans 1 an</small></td>
                 <td class="v-data-table__td v-data-table-column--align-start"><span class="v-chip v-theme--light text-success v-chip--density-default v-chip--size-small v-chip--variant-tonal mr-2" draggable="false"><!----><span class="v-chip__underlay"></span>
                   <!---->
                   <!---->
@@ -511,7 +511,7 @@ exports[`VerifiedContracts.vue > Should show verified contracts with stats and t
                   <!--teleport start-->
                   <!--teleport end-->
                 </td>
-                <td class="v-data-table__td v-data-table-column--align-start">03/20 11:00:00 AM<br><small class="text-caption text-medium-emphasis">in 1 year</small></td>
+                <td class="v-data-table__td v-data-table-column--align-start">03/20 11:00:00 AM<br><small class="text-caption text-medium-emphasis">dans 1 an</small></td>
                 <td class="v-data-table__td v-data-table-column--align-start"><span class="v-chip v-theme--light text-success v-chip--density-default v-chip--size-small v-chip--variant-tonal mr-2" draggable="false"><!----><span class="v-chip__underlay"></span>
                   <!---->
                   <!---->
