@@ -82,10 +82,10 @@ exports[`OrbitBatches.vue > Should show the component with batches data 1`] = `
                   <!---->
                   <!----></span>
                 </td>
-                <td class="v-data-table__td v-data-table-column--align-start"><a class="text-decoration-none" href="https://etherscan.io/block/12345" target="_blank">12 345 <i class="mdi-open-in-new mdi v-icon notranslate v-theme--light v-icon--size-x-small" aria-hidden="true"></i></a></td>
+                <td class="v-data-table__td v-data-table-column--align-start"><a class="text-decoration-none" href="https://etherscan.io/block/12345" target="_blank">12,345 <i class="mdi-open-in-new mdi v-icon notranslate v-theme--light v-icon--size-x-small" aria-hidden="true"></i></a></td>
                 <td class="v-data-table__td v-data-table-column--align-start"><a class="text-decoration-none" href="https://etherscan.io/tx/0x1234567890abcdef1234567890abcdef12345678" target="_blank">0x1234567890abcdef1... <i class="mdi-open-in-new mdi v-icon notranslate v-theme--light v-icon--size-x-small" aria-hidden="true"></i></a></td>
                 <td class="v-data-table__td v-data-table-column--align-start">
-                  <div class="text-left">01/01 1:00:00 AM<br><small class="text-caption text-medium-emphasis">dans 1 an</small></div>
+                  <div class="text-left">01/01 1:00:00 AM<br><small class="text-caption text-medium-emphasis">in 1 year</small></div>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start"><span class="font-weight-medium">5</span></td>
               </tr>
@@ -101,10 +101,10 @@ exports[`OrbitBatches.vue > Should show the component with batches data 1`] = `
                   <!---->
                   <!----></span>
                 </td>
-                <td class="v-data-table__td v-data-table-column--align-start"><a class="text-decoration-none" href="https://etherscan.io/block/12346" target="_blank">12 346 <i class="mdi-open-in-new mdi v-icon notranslate v-theme--light v-icon--size-x-small" aria-hidden="true"></i></a></td>
+                <td class="v-data-table__td v-data-table-column--align-start"><a class="text-decoration-none" href="https://etherscan.io/block/12346" target="_blank">12,346 <i class="mdi-open-in-new mdi v-icon notranslate v-theme--light v-icon--size-x-small" aria-hidden="true"></i></a></td>
                 <td class="v-data-table__td v-data-table-column--align-start"><a class="text-decoration-none" href="https://etherscan.io/tx/0xabcdef1234567890abcdef1234567890abcdef12" target="_blank">0xabcdef1234567890a... <i class="mdi-open-in-new mdi v-icon notranslate v-theme--light v-icon--size-x-small" aria-hidden="true"></i></a></td>
                 <td class="v-data-table__td v-data-table-column--align-start">
-                  <div class="text-left">01/01 2:00:00 AM<br><small class="text-caption text-medium-emphasis">dans 1 an</small></div>
+                  <div class="text-left">01/01 2:00:00 AM<br><small class="text-caption text-medium-emphasis">in 1 year</small></div>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start"><span class="font-weight-medium">3</span></td>
               </tr>
@@ -287,10 +287,10 @@ exports[`OrbitBatches.vue > Should show the component with challenged status 1`]
                   <!---->
                   <!----></span>
                 </td>
-                <td class="v-data-table__td v-data-table-column--align-start"><a class="text-decoration-none" href="https://etherscan.io/block/12345" target="_blank">12 345 <i class="mdi-open-in-new mdi v-icon notranslate v-theme--light v-icon--size-x-small" aria-hidden="true"></i></a></td>
+                <td class="v-data-table__td v-data-table-column--align-start"><a class="text-decoration-none" href="https://etherscan.io/block/12345" target="_blank">12,345 <i class="mdi-open-in-new mdi v-icon notranslate v-theme--light v-icon--size-x-small" aria-hidden="true"></i></a></td>
                 <td class="v-data-table__td v-data-table-column--align-start"><a class="text-decoration-none" href="https://etherscan.io/tx/0x1234567890abcdef1234567890abcdef12345678" target="_blank">0x1234567890abcdef1... <i class="mdi-open-in-new mdi v-icon notranslate v-theme--light v-icon--size-x-small" aria-hidden="true"></i></a></td>
                 <td class="v-data-table__td v-data-table-column--align-start">
-                  <div class="text-left">01/01 1:00:00 AM<br><small class="text-caption text-medium-emphasis">dans 1 an</small></div>
+                  <div class="text-left">01/01 1:00:00 AM<br><small class="text-caption text-medium-emphasis">in 1 year</small></div>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start"><span class="font-weight-medium">0</span></td>
               </tr>

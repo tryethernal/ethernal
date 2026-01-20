@@ -442,7 +442,7 @@ exports[`OrbitWithdrawals.vue > Should show the component with withdrawals data 
                   <hash-link-stub type="tx" hash="0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">
-                  <div class="my-2 text-left">01/01 1:00:00 AM<br><small>dans 1 an</small></div>
+                  <div class="my-2 text-left">01/01 1:00:00 AM<br><small>in 1 year</small></div>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">1 ETH <a href="https://etherscan.io/token/0x1111111111111111111111111111111111111111" target="_blank"><i class="mdi-open-in-new mdi v-icon notranslate v-theme--light v-icon--size-x-small" aria-hidden="true"></i></a></td>
                 <td class="v-data-table__td v-data-table-column--align-start"><a class="text-decoration-none">Ready for relay</a></td>
@@ -458,7 +458,7 @@ exports[`OrbitWithdrawals.vue > Should show the component with withdrawals data 
                   <hash-link-stub type="tx" hash="0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef" fullhash="false" withname="true" notcopiable="false" withtokenname="false" xshash="false" unlink="false" loadcontract="false"></hash-link-stub>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">
-                  <div class="my-2 text-left">01/02 1:00:00 AM<br><small>dans 1 an</small></div>
+                  <div class="my-2 text-left">01/02 1:00:00 AM<br><small>in 1 year</small></div>
                 </td>
                 <td class="v-data-table__td v-data-table-column--align-start">2 USDC <a href="https://etherscan.io/token/0x2222222222222222222222222222222222222222" target="_blank"><i class="mdi-open-in-new mdi v-icon notranslate v-theme--light v-icon--size-x-small" aria-hidden="true"></i></a></td>
                 <td class="v-data-table__td v-data-table-column--align-start"><span class="v-chip v-theme--light text-success v-chip--density-default v-chip--size-default v-chip--variant-tonal" draggable="false"><!----><span class="v-chip__underlay"></span>
