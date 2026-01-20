@@ -22,7 +22,7 @@ exports[`OverviewStats.vue > Should handle server errors gracefully 1`] = `
   <div data-v-1ebb31f3="" class="v-card-text">
     <div data-v-1ebb31f3="" class="v-row stats-grid">
       <div data-v-1ebb31f3="" class="v-col-sm-6 v-col-12 stat-item d-flex flex-column">
-        <stat-number-stub data-v-1ebb31f3="" title="Latest Block" loading="false" long="false" raw="true" border="false" icon="mdi-cube-outline" value="12,345"></stat-number-stub>
+        <stat-number-stub data-v-1ebb31f3="" title="Latest Block" loading="false" long="false" raw="true" border="false" icon="mdi-cube-outline" value="12 345"></stat-number-stub>
         <hr data-v-1ebb31f3="" class="v-divider v-theme--light mt-5" aria-orientation="horizontal" role="separator" width="90%">
       </div>
       <div data-v-1ebb31f3="" class="v-col-sm-6 v-col-12 stat-item d-flex flex-column">
@@ -69,7 +69,7 @@ exports[`OverviewStats.vue > Should hide dividers correctly on different screen 
   <div data-v-1ebb31f3="" class="v-card-text">
     <div data-v-1ebb31f3="" class="v-row stats-grid">
       <div data-v-1ebb31f3="" class="v-col-sm-6 v-col-12 stat-item d-flex flex-column">
-        <stat-number-stub data-v-1ebb31f3="" title="Latest Block" loading="false" long="false" raw="true" border="false" icon="mdi-cube-outline" value="12,345"></stat-number-stub>
+        <stat-number-stub data-v-1ebb31f3="" title="Latest Block" loading="false" long="false" raw="true" border="false" icon="mdi-cube-outline" value="12 345"></stat-number-stub>
         <hr data-v-1ebb31f3="" class="v-divider v-theme--light mt-5" aria-orientation="horizontal" role="separator" width="90%">
       </div>
       <div data-v-1ebb31f3="" class="v-col-sm-6 v-col-12 stat-item d-flex flex-column">
@@ -116,7 +116,7 @@ exports[`OverviewStats.vue > Should not show total supply when not available 1`]
   <div data-v-1ebb31f3="" class="v-card-text">
     <div data-v-1ebb31f3="" class="v-row stats-grid">
       <div data-v-1ebb31f3="" class="v-col-sm-6 v-col-12 stat-item d-flex flex-column">
-        <stat-number-stub data-v-1ebb31f3="" title="Latest Block" loading="false" long="false" raw="true" border="false" icon="mdi-cube-outline" value="12,345"></stat-number-stub>
+        <stat-number-stub data-v-1ebb31f3="" title="Latest Block" loading="false" long="false" raw="true" border="false" icon="mdi-cube-outline" value="12 345"></stat-number-stub>
         <hr data-v-1ebb31f3="" class="v-divider v-theme--light mt-5" aria-orientation="horizontal" role="separator" width="90%">
       </div>
       <div data-v-1ebb31f3="" class="v-col-sm-6 v-col-12 stat-item d-flex flex-column">
@@ -255,7 +255,7 @@ exports[`OverviewStats.vue > Should show the component with all stats 1`] = `
   <div data-v-1ebb31f3="" class="v-card-text">
     <div data-v-1ebb31f3="" class="v-row stats-grid">
       <div data-v-1ebb31f3="" class="v-col-sm-6 v-col-12 stat-item d-flex flex-column">
-        <stat-number-stub data-v-1ebb31f3="" title="Latest Block" loading="false" long="false" raw="true" border="false" icon="mdi-cube-outline" value="12,345"></stat-number-stub>
+        <stat-number-stub data-v-1ebb31f3="" title="Latest Block" loading="false" long="false" raw="true" border="false" icon="mdi-cube-outline" value="12 345"></stat-number-stub>
         <hr data-v-1ebb31f3="" class="v-divider v-theme--light mt-5" aria-orientation="horizontal" role="separator" width="90%">
       </div>
       <div data-v-1ebb31f3="" class="v-col-sm-6 v-col-12 stat-item d-flex flex-column">

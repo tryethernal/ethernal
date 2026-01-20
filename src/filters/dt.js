@@ -13,7 +13,7 @@ export default {
 
         const relative = DateTime
             .fromISO(timestamp)
-            .toRelative({ round: true });
+            .toRelative({ round: true, locale: 'en' });
 
         return relative.match(/seconds/) ? 'a few seconds ago' : relative;
     },
