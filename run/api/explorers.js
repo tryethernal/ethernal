@@ -328,6 +328,14 @@ router.post('/:id/orbitConfig', authMiddleware, async (req, res, next) => {
         try {
             config = await db.createOrbitConfig(userId, data.id, configParams);
         } catch(error) {
+            // Clean up orphaned custom L1 parent if config creation fails
+            if (hasNewCustomL1 && configParams.parentWorkspaceId) {
+                try {
+                    await db.deleteCustomL1Parent(userId, configParams.parentWorkspaceId);
+                } catch(cleanupError) {
+                    // Log but don't fail on cleanup error
+                }
+            }
             return managedError(error, req, res);
         }
 
@@ -343,7 +351,7 @@ router.post('/:id/orbitConfig', authMiddleware, async (req, res, next) => {
 
         res.status(200).json({ config });
     } catch (error) {
-        unmanagedError(error, req, res);
+        unmanagedError(error, req, next);
     }
 });
 
@@ -499,6 +507,14 @@ router.post('/:id/opConfig', authMiddleware, async (req, res, next) => {
         try {
             config = await db.createOpConfig(userId, data.id, configParams);
         } catch(error) {
+            // Clean up orphaned custom L1 parent if config creation fails
+            if (hasNewCustomL1 && configParams.parentWorkspaceId) {
+                try {
+                    await db.deleteCustomL1Parent(userId, configParams.parentWorkspaceId);
+                } catch(cleanupError) {
+                    // Log but don't fail on cleanup error
+                }
+            }
             return managedError(error, req, res);
         }
 
