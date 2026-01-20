@@ -61,17 +61,22 @@ module.exports = async job => {
     if (!workspace)
         return 'Invalid workspace.';
 
-    if (!workspace.explorer)
-        return 'No active explorer for this workspace';
+    // Custom L1 parents don't require explorer/subscription - they sync for their L2 children
+    const isCustomL1Parent = workspace.isCustomL1Parent === true;
 
-    if (!workspace.explorer.shouldSync)
-        return 'Sync is disabled';
+    if (!isCustomL1Parent) {
+        if (!workspace.explorer)
+            return 'No active explorer for this workspace';
 
-    if (workspace.rpcHealthCheckEnabled && workspace.rpcHealthCheck && !workspace.rpcHealthCheck.isReachable)
-        return 'RPC is not reachable';
+        if (!workspace.explorer.shouldSync)
+            return 'Sync is disabled';
 
-    if (!workspace.explorer.stripeSubscription)
-        return 'No active subscription';
+        if (workspace.rpcHealthCheckEnabled && workspace.rpcHealthCheck && !workspace.rpcHealthCheck.isReachable)
+            return 'RPC is not reachable';
+
+        if (!workspace.explorer.stripeSubscription)
+            return 'No active subscription';
+    }
 
     if (workspace.browserSyncEnabled)
         await db.updateBrowserSync(workspace.id, false);

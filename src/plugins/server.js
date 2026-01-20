@@ -480,6 +480,36 @@ export default {
                 return axios.get(resource, { params });
             },
 
+            // Custom L1 Parent API methods
+            getAvailableL1Parents() {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value
+                };
+                const resource = `${envStore.apiRoot}/api/explorers/availableL1Parents`;
+                return axios.get(resource, { params });
+            },
+
+            createCustomL1Parent(name, backendRpcServer) {
+                const data = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    name,
+                    backendRpcServer
+                };
+                const resource = `${envStore.apiRoot}/api/explorers/customL1Parent`;
+                return axios.post(resource, { data });
+            },
+
+            deleteCustomL1Parent(id) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value
+                };
+                const resource = `${envStore.apiRoot}/api/explorers/customL1Parent/${id}`;
+                return axios.delete(resource, { params, data: { data: params } });
+            },
+
             getOpConfig(explorerId) {
                 const params = {
                     firebaseUserId: firebaseUserId.value,

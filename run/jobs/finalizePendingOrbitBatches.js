@@ -10,8 +10,14 @@ const { Op } = require('sequelize');
 
 module.exports = async () => {
 
+    // Find all L1 parent workspaces (both public and custom)
     const workspaces = await Workspace.findAll({
-        where: { isTopL1Parent: true },
+        where: {
+            [Op.or]: [
+                { isTopL1Parent: true },
+                { isCustomL1Parent: true }
+            ]
+        },
         include: ['orbitChildConfigs']
     });
 

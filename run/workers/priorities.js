@@ -16,7 +16,8 @@ const priorities = {
         'finalizePendingOpBatches',
         'linkOpDepositsToL2Txs',
         'storeOpDeposit',
-        'storeOpOutput'
+        'storeOpOutput',
+        'startCustomL1ParentSync'
     ],
     'medium': [
         'processContract',
