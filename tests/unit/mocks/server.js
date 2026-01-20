@@ -206,5 +206,8 @@ export default {
     getOpConfig: vi.fn(),
     createOpConfig: vi.fn(),
     updateOpConfig: vi.fn(),
-    getAvailableOpParents: vi.fn().mockResolvedValue({ data: { availableParents: [] } })
+    getAvailableOpParents: vi.fn().mockResolvedValue({ data: { availableParents: [] } }),
+    getAvailableL1Parents: vi.fn().mockResolvedValue({ data: { publicParents: [], customParents: [] } }),
+    createCustomL1Parent: vi.fn(),
+    deleteCustomL1Parent: vi.fn()
 };
