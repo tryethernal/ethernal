@@ -109,6 +109,85 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     /**
+     * Alias for getAvailableTopOrbitParent for backwards compatibility.
+     * @returns {Promise<Array<Workspace>>} Array of parent workspaces
+     */
+    static async getAvailableTopOrbitParentIds() {
+        return Workspace.getAvailableTopOrbitParent();
+    }
+
+    /**
+     * Gets all available L1 parent workspaces for a user.
+     * Returns public L1s (isTopL1Parent) and user's custom L1s (isCustomL1Parent).
+     * @param {number} userId - The user ID
+     * @returns {Promise<Object>} Object with publicParents and customParents arrays
+     */
+    static async getAvailableL1Parents(userId) {
+        const publicParents = await Workspace.findAll({
+            where: { isTopL1Parent: true },
+            attributes: ['id', 'name', 'networkId', 'rpcServer']
+        });
+
+        const customParents = userId ? await Workspace.findAll({
+            where: {
+                isCustomL1Parent: true,
+                userId: userId
+            },
+            attributes: ['id', 'name', 'networkId', 'rpcServer']
+        }) : [];
+
+        return { publicParents, customParents };
+    }
+
+    /**
+     * Creates a custom L1 parent workspace for a user.
+     * @param {number} userId - The user ID
+     * @param {Object} params - The workspace parameters
+     * @param {string} params.name - The name of the L1 parent
+     * @param {string} params.rpcServer - The RPC server URL (used for backend sync)
+     * @param {string} params.networkId - The network ID (auto-fetched if not provided)
+     * @returns {Promise<Workspace>} The created workspace
+     */
+    static async createCustomL1Parent(userId, { name, rpcServer, networkId }) {
+        if (!userId || !name || !rpcServer)
+            throw new Error('Missing required parameters');
+
+        return Workspace.create({
+            userId,
+            name,
+            rpcServer,
+            networkId,
+            chain: 'ethereum',
+            public: true,
+            isCustomL1Parent: true
+        });
+    }
+
+    /**
+     * Checks if a custom L1 parent can be deleted (no L2 children).
+     * @param {number} userId - The user ID
+     * @param {number} workspaceId - The workspace ID
+     * @returns {Promise<boolean>} True if can be deleted
+     */
+    async canDeleteCustomL1Parent(userId) {
+        if (!this.isCustomL1Parent || this.userId !== userId) {
+            return false;
+        }
+
+        // Check for Orbit L2 children
+        const orbitChildren = await sequelize.models.OrbitChainConfig.count({
+            where: { parentWorkspaceId: this.id }
+        });
+
+        // Check for OP Stack L2 children
+        const opChildren = await sequelize.models.OpChainConfig.count({
+            where: { parentWorkspaceId: this.id }
+        });
+
+        return orbitChildren === 0 && opChildren === 0;
+    }
+
+    /**
      * Creates a Viem public client for RPC interactions.
      * @returns {PublicClient} Viem public client instance
      */
@@ -160,7 +239,7 @@ module.exports = (sequelize, DataTypes) => {
      * @returns {Promise<OrbitChainConfig>} Created config
      * @throws {Error} If parent chain network not supported
      */
-    async safeCreateOrbitConfig(params) {
+    async safeCreateOrbitConfig(params, userId) {
         const allowedParams = [
             'parentChainRpcServer',
             'parentChainExplorer',
@@ -183,10 +262,33 @@ module.exports = (sequelize, DataTypes) => {
             'parentMessageCountShift'
         ];
 
-        const supportedParentChains = await sequelize.models.Workspace.getAvailableTopOrbitParentIds();
-        const supportedParentChainIds = supportedParentChains.map(chain => chain.networkId);
-        if (!supportedParentChainIds.includes(params.parentChainId)) {
-            throw new Error(`Parent chain network is not supported yet. Available networks: ${supportedParentChainIds.join(', ')}`);
+        let parentWorkspace;
+
+        // Support both parentWorkspaceId (new, for custom L1 parents) and parentChainId (legacy, for public L1s)
+        if (params.parentWorkspaceId) {
+            // Custom L1 parent specified by workspace ID
+            parentWorkspace = await sequelize.models.Workspace.findOne({
+                where: {
+                    id: params.parentWorkspaceId,
+                    [Op.or]: [
+                        { isTopL1Parent: true },
+                        { isCustomL1Parent: true, userId: userId }
+                    ]
+                }
+            });
+            if (!parentWorkspace) {
+                throw new Error('Selected parent workspace is not a valid L1 parent.');
+            }
+        } else if (params.parentChainId) {
+            // Public L1 parent specified by network ID (legacy behavior)
+            const supportedParentChains = await sequelize.models.Workspace.getAvailableTopOrbitParentIds();
+            const supportedParentChainIds = supportedParentChains.map(chain => chain.networkId);
+            if (!supportedParentChainIds.includes(params.parentChainId)) {
+                throw new Error(`Parent chain network is not supported yet. Available networks: ${supportedParentChainIds.join(', ')}`);
+            }
+            parentWorkspace = supportedParentChains.find(chain => chain.networkId === params.parentChainId);
+        } else {
+            throw new Error('Parent chain is required.');
         }
 
         const filteredParams = {};
@@ -195,15 +297,15 @@ module.exports = (sequelize, DataTypes) => {
               filteredParams[key] = value;
             }
         }
-    
+
         return sequelize.models.OrbitChainConfig.create({
             ...filteredParams,
-            parentWorkspaceId: supportedParentChains.find(chain => chain.networkId === params.parentChainId).id,
+            parentWorkspaceId: parentWorkspace.id,
             workspaceId: this.id
         });
     }
 
-    async safeCreateOpConfig(params) {
+    async safeCreateOpConfig(params, userId) {
         const allowedParams = [
             'batchInboxAddress',
             'optimismPortalAddress',
@@ -217,17 +319,26 @@ module.exports = (sequelize, DataTypes) => {
             'parentChainExplorer'
         ];
 
-        const supportedParentChains = await sequelize.models.Workspace.getAvailableTopOpParent();
-
         let parentWorkspace;
-        // Support both parentWorkspaceId (new) and parentChainId (legacy)
+
+        // Support both parentWorkspaceId (new, for custom L1 parents) and parentChainId (legacy, for public L1s)
         if (params.parentWorkspaceId) {
-            parentWorkspace = supportedParentChains.find(chain => chain.id === params.parentWorkspaceId);
+            // Check if it's a valid L1 parent (public or user's custom)
+            parentWorkspace = await sequelize.models.Workspace.findOne({
+                where: {
+                    id: params.parentWorkspaceId,
+                    [Op.or]: [
+                        { isTopL1Parent: true },
+                        { isCustomL1Parent: true, userId: userId }
+                    ]
+                }
+            });
             if (!parentWorkspace) {
-                throw new Error(`Selected parent workspace is not a valid L1 parent.`);
+                throw new Error('Selected parent workspace is not a valid L1 parent.');
             }
         } else if (params.parentChainId) {
-            // Convert to string for comparison since networkId is stored as STRING in database
+            // Public L1 parent specified by network ID (legacy behavior)
+            const supportedParentChains = await sequelize.models.Workspace.getAvailableTopOpParent();
             const parentChainIdStr = String(params.parentChainId);
             const supportedParentChainIds = supportedParentChains.map(chain => String(chain.networkId));
             if (!supportedParentChainIds.includes(parentChainIdStr)) {
@@ -235,7 +346,7 @@ module.exports = (sequelize, DataTypes) => {
             }
             parentWorkspace = supportedParentChains.find(chain => String(chain.networkId) === parentChainIdStr);
         } else {
-            throw new Error('Parent workspace is required.');
+            throw new Error('Parent chain is required.');
         }
 
         const filteredParams = {};
@@ -3913,7 +4024,9 @@ module.exports = (sequelize, DataTypes) => {
     },
     rateLimitInterval: DataTypes.INTEGER,
     rateLimitMaxInInterval: DataTypes.INTEGER,
-    processNativeTokenTransfers: DataTypes.BOOLEAN
+    processNativeTokenTransfers: DataTypes.BOOLEAN,
+    isTopL1Parent: DataTypes.BOOLEAN,
+    isCustomL1Parent: DataTypes.BOOLEAN
   }, {
     hooks: {
         afterCreate(workspace, options) {

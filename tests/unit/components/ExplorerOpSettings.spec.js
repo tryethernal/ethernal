@@ -1,13 +1,16 @@
 import ExplorerOpSettings from '@/components/ExplorerOpSettings.vue';
 
 describe('ExplorerOpSettings.vue', () => {
-    it('Should call getOpConfig and getAvailableOpParents on mount', async () => {
+    it('Should call getOpConfig and getAvailableL1Parents on mount', async () => {
         vi.spyOn(server, 'getOpConfig')
             .mockResolvedValue({ data: null });
-        vi.spyOn(server, 'getAvailableOpParents')
-            .mockResolvedValue({ data: { availableNetworks: [] } });
+        vi.spyOn(server, 'getAvailableL1Parents')
+            .mockResolvedValue({ data: { publicParents: [], customParents: [] } });
 
         mount(ExplorerOpSettings, {
+            props: {
+                explorerId: 1
+            },
             global: {
                 stubs: ['Hash-Link', 'router-link', 'HashLink']
             }
@@ -16,20 +19,23 @@ describe('ExplorerOpSettings.vue', () => {
         await new Promise(process.nextTick);
 
         expect(server.getOpConfig).toHaveBeenCalled();
-        expect(server.getAvailableOpParents).toHaveBeenCalled();
+        expect(server.getAvailableL1Parents).toHaveBeenCalled();
     });
 
-    it('Should display network selection dropdown', async () => {
-        const mockNetworks = [
-            { networkId: 1, name: 'Ethereum Mainnet', explorerUrl: 'https://etherscan.io' }
+    it('Should display L1 parent chain selection', async () => {
+        const mockPublicParents = [
+            { networkId: 1, name: 'Ethereum Mainnet' }
         ];
 
         vi.spyOn(server, 'getOpConfig')
             .mockResolvedValue({ data: null });
-        vi.spyOn(server, 'getAvailableOpParents')
-            .mockResolvedValue({ data: { availableNetworks: mockNetworks } });
+        vi.spyOn(server, 'getAvailableL1Parents')
+            .mockResolvedValue({ data: { publicParents: mockPublicParents, customParents: [] } });
 
         const wrapper = mount(ExplorerOpSettings, {
+            props: {
+                explorerId: 1
+            },
             global: {
                 stubs: ['Hash-Link', 'router-link', 'HashLink']
             }
@@ -37,6 +43,6 @@ describe('ExplorerOpSettings.vue', () => {
 
         await new Promise(process.nextTick);
 
-        expect(wrapper.text()).toContain('L1 Parent Network');
+        expect(wrapper.text()).toContain('L1 Parent Chain');
     });
 });
