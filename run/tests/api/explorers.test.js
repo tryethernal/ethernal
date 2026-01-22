@@ -1747,7 +1747,7 @@ describe(`GET ${BASE_URL}/:id/orbitConfig`, () => {
 });
 
 describe(`POST ${BASE_URL}/:id/orbitConfig`, () => {
-    it('Should create orbit config', (done) => {
+    it('Should create orbit config with existing custom L1 parent', (done) => {
         authMiddleware.mockImplementation((req, res, next) => {
             req.body.data = Object.assign({}, req.body.data || {}, {
                 user: { id: 1 }
@@ -1758,34 +1758,38 @@ describe(`POST ${BASE_URL}/:id/orbitConfig`, () => {
         ProviderConnector.mockImplementation(() => ({
             fetchNetworkId: jest.fn().mockResolvedValue(1)
         }));
-        jest.spyOn(db, 'createOrbitConfig').mockResolvedValueOnce({ 
-            id: 1, 
-            parentChainRpcServer: 'https://rpc.example.com',
+        jest.spyOn(db, 'createOrbitConfig').mockResolvedValueOnce({
+            id: 1,
+            parentChainRpcServer: 'https://frontend-rpc.example.com',
             parentChainId: 1,
+            parentWorkspaceId: 10,
             rollupContract: '0x123'
         });
 
         request.post(`${BASE_URL}/1/orbitConfig`)
-            .send({ 
-                params: { 
-                    config: { 
-                        parentChainRpcServer: 'https://rpc.example.com',
+            .send({
+                params: {
+                    config: {
+                        parentWorkspaceId: 10,
+                        parentChainRpcServer: 'https://frontend-rpc.example.com',
                         rollupContract: '0x123'
                     }
                 }
             })
             .expect(200)
             .then(({ body }) => {
-                expect(body).toEqual({ 
-                    config: { 
-                        id: 1, 
-                        parentChainRpcServer: 'https://rpc.example.com',
+                expect(body).toEqual({
+                    config: {
+                        id: 1,
+                        parentChainRpcServer: 'https://frontend-rpc.example.com',
                         parentChainId: 1,
+                        parentWorkspaceId: 10,
                         rollupContract: '0x123'
                     }
                 });
                 expect(db.createOrbitConfig).toHaveBeenCalledWith(1, '1', {
-                    parentChainRpcServer: 'https://rpc.example.com',
+                    parentWorkspaceId: 10,
+                    parentChainRpcServer: 'https://frontend-rpc.example.com',
                     rollupContract: '0x123',
                     parentChainId: 1
                 });
@@ -1803,9 +1807,10 @@ describe(`POST ${BASE_URL}/:id/orbitConfig`, () => {
         jest.spyOn(db, 'getOrbitConfig').mockResolvedValueOnce({ id: 1 });
 
         request.post(`${BASE_URL}/1/orbitConfig`)
-            .send({ 
-                params: { 
-                    config: { 
+            .send({
+                params: {
+                    config: {
+                        parentWorkspaceId: 10,
                         parentChainRpcServer: 'https://rpc.example.com'
                     }
                 }
@@ -1813,6 +1818,31 @@ describe(`POST ${BASE_URL}/:id/orbitConfig`, () => {
             .expect(400)
             .then(({ text }) => {
                 expect(text).toEqual('There is already an orbit config for this explorer.');
+                done();
+            });
+    });
+
+    it('Should return an error if parent chain selection is missing', (done) => {
+        authMiddleware.mockImplementation((req, res, next) => {
+            req.body.data = Object.assign({}, req.body.data || {}, {
+                user: { id: 1 }
+            });
+            next();
+        });
+        jest.spyOn(db, 'getOrbitConfig').mockResolvedValueOnce(null);
+
+        request.post(`${BASE_URL}/1/orbitConfig`)
+            .send({
+                params: {
+                    config: {
+                        parentChainRpcServer: 'https://rpc.example.com',
+                        rollupContract: '0x123'
+                    }
+                }
+            })
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual('Parent chain selection is required. Provide parentWorkspaceId or customL1 details.');
                 done();
             });
     });
@@ -1827,16 +1857,17 @@ describe(`POST ${BASE_URL}/:id/orbitConfig`, () => {
         jest.spyOn(db, 'getOrbitConfig').mockResolvedValueOnce(null);
 
         request.post(`${BASE_URL}/1/orbitConfig`)
-            .send({ 
-                params: { 
-                    config: { 
+            .send({
+                params: {
+                    config: {
+                        parentWorkspaceId: 10,
                         rollupContract: '0x123'
                     }
                 }
             })
             .expect(400)
             .then(({ text }) => {
-                expect(text).toEqual('Parent chain rpc server is required.');
+                expect(text).toEqual('Parent chain RPC server is required (for browser-based withdrawal claims).');
                 done();
             });
     });
@@ -1854,16 +1885,17 @@ describe(`POST ${BASE_URL}/:id/orbitConfig`, () => {
         }));
 
         request.post(`${BASE_URL}/1/orbitConfig`)
-            .send({ 
-                params: { 
-                    config: { 
+            .send({
+                params: {
+                    config: {
+                        parentWorkspaceId: 10,
                         parentChainRpcServer: 'https://invalid-rpc.example.com'
                     }
                 }
             })
             .expect(400)
             .then(({ text }) => {
-                expect(text).toEqual(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`);
+                expect(text).toEqual(`Our servers can't query this RPC, please use an RPC that is reachable from the internet.`);
                 done();
             });
     });

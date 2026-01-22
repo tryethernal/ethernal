@@ -92,7 +92,12 @@ describe('finalizePendingOrbitBatches', () => {
 
             expect(Workspace.findAll).toHaveBeenCalledWith({
                 include: ['orbitChildConfigs'],
-                where: { isTopL1Parent: true }
+                where: {
+                    [require('sequelize').Op.or]: [
+                        { isTopL1Parent: true },
+                        { isCustomL1Parent: true }
+                    ]
+                }
             });
         });
 
@@ -157,7 +162,12 @@ describe('finalizePendingOrbitBatches', () => {
 
             expect(Workspace.findAll).toHaveBeenCalledWith({
                 include: ['orbitChildConfigs'],
-                where: { isTopL1Parent: true }
+                where: {
+                    [require('sequelize').Op.or]: [
+                        { isTopL1Parent: true },
+                        { isCustomL1Parent: true }
+                    ]
+                }
             });
         });
     });

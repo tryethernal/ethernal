@@ -9,6 +9,8 @@ export default defineConfig({
         environment: 'jsdom',
         globals: true,
         setupFiles: ['./tests/setup.js'],
+        include: ['tests/**/*.spec.js'],
+        exclude: ['run/**', 'node_modules/**'],
         server: {
             deps: {
                 inline: ['vuetify', '@web3-onboard/wagmi']

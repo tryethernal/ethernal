@@ -74,7 +74,7 @@ const createOrbitConfig = async (userId, explorerId, params) => {
     if (explorer.workspace.orbitConfig)
         throw new Error('Orbit config already exists');
     
-    return explorer.workspace.safeCreateOrbitConfig(params);
+    return explorer.workspace.safeCreateOrbitConfig(params, userId);
 }
 
 /**
@@ -172,7 +172,7 @@ const createOpConfig = async (userId, explorerId, params) => {
     if (explorer.workspace.opConfig)
         throw new Error('OP config already exists');
 
-    return explorer.workspace.safeCreateOpConfig(params);
+    return explorer.workspace.safeCreateOpConfig(params, userId);
 }
 
 /**
@@ -4811,6 +4811,64 @@ const fetchPairsWithLatestReserves = async (explorerV2DexId, page = 1, itemsPerP
     return explorerV2Dex.getPairsWithLatestReserves(page, itemsPerPage, order);
 };
 
+/**
+ * Gets all available L1 parent workspaces for a user.
+ * Returns both public L1s and user's custom L1s.
+ * @param {number} userId - The user ID
+ * @returns {Promise<Object>} Object with publicParents and customParents arrays
+ */
+const getAvailableL1Parents = async (userId) => {
+    if (!userId)
+        throw new Error('Missing parameter');
+
+    return Workspace.getAvailableL1Parents(userId);
+};
+
+/**
+ * Creates a custom L1 parent workspace for a user.
+ * @param {number} userId - The user ID
+ * @param {Object} params - The workspace parameters
+ * @param {string} params.name - The name of the L1 parent
+ * @param {string} params.rpcServer - The RPC server URL
+ * @param {string} params.networkId - The network ID
+ * @returns {Promise<Workspace>} The created workspace
+ */
+const createCustomL1Parent = async (userId, { name, rpcServer, networkId }) => {
+    if (!userId || !name || !rpcServer || !networkId)
+        throw new Error('Missing parameter');
+
+    return Workspace.createCustomL1Parent(userId, { name, rpcServer, networkId });
+};
+
+/**
+ * Deletes a custom L1 parent workspace if it has no L2 children.
+ * @param {number} userId - The user ID
+ * @param {number} workspaceId - The workspace ID
+ * @returns {Promise<boolean>} True if deleted
+ */
+const deleteCustomL1Parent = async (userId, workspaceId) => {
+    if (!userId || !workspaceId)
+        throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findOne({
+        where: {
+            id: workspaceId,
+            userId: userId,
+            isCustomL1Parent: true
+        }
+    });
+
+    if (!workspace)
+        throw new Error('Custom L1 parent workspace not found');
+
+    const canDelete = await workspace.canDeleteCustomL1Parent(userId);
+    if (!canDelete)
+        throw new Error('Cannot delete custom L1 parent with L2 children. Delete the L2 configurations first.');
+
+    await workspace.destroy();
+    return true;
+};
+
 module.exports = {
     storeBlock: storeBlock,
     storeTransaction: storeTransaction,
@@ -5021,6 +5079,9 @@ module.exports = {
     getOpConfig: getOpConfig,
     createOpConfig: createOpConfig,
     getAvailableOpParents: getAvailableOpParents,
+    getAvailableL1Parents: getAvailableL1Parents,
+    createCustomL1Parent: createCustomL1Parent,
+    deleteCustomL1Parent: deleteCustomL1Parent,
     getWorkspaceOpBatches: getWorkspaceOpBatches,
     getOpBatch: getOpBatch,
     getOpBatchTransactions: getOpBatchTransactions,

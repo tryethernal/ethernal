@@ -72,6 +72,91 @@ router.get('/availableOpParents', authMiddleware, async (req, res, next) => {
     }
 });
 
+/**
+ * Get available L1 parent workspaces for the user
+ * Returns public L1s (Ethereum Mainnet, Arbitrum One) and user's custom L1s
+ * @returns {Promise<object>} - Object with publicParents and customParents arrays
+ */
+router.get('/availableL1Parents', authMiddleware, async (req, res, next) => {
+    try {
+        const { publicParents, customParents } = await db.getAvailableL1Parents(req.body.data.user.id);
+
+        res.status(200).json({ publicParents, customParents });
+    } catch (error) {
+        return managedError(error, req, res);
+    }
+});
+
+/**
+ * Create a custom L1 parent workspace
+ * @param {string} name - Name for the custom L1 parent
+ * @param {string} backendRpcServer - RPC server URL for backend sync
+ * @returns {Promise<object>} - The created workspace
+ */
+router.post('/customL1Parent', authMiddleware, async (req, res, next) => {
+    const data = req.body.data;
+
+    try {
+        if (!data.name || !data.backendRpcServer)
+            return managedError(new Error('Missing parameters. Name and backend RPC server are required.'), req, res);
+
+        // Validate RPC and fetch network ID
+        let networkId;
+        const provider = new ProviderConnector(data.backendRpcServer);
+        try {
+            networkId = await withTimeout(provider.fetchNetworkId());
+            if (!networkId)
+                throw 'Error';
+        } catch(error) {
+            return managedError(new Error(`Our servers can't query this RPC, please use an RPC that is reachable from the internet.`), req, res);
+        }
+
+        let workspace;
+        try {
+            workspace = await db.createCustomL1Parent(data.user.id, {
+                name: data.name,
+                rpcServer: data.backendRpcServer,
+                networkId: networkId
+            });
+        } catch(error) {
+            if (error.name === 'SequelizeUniqueConstraintError') {
+                return managedError(new Error(`A workspace with name "${data.name}" already exists. Please choose a different name.`), req, res);
+            }
+            throw error;
+        }
+
+        res.status(200).json({
+            id: workspace.id,
+            name: workspace.name,
+            networkId: workspace.networkId,
+            rpcServer: workspace.rpcServer
+        });
+    } catch(error) {
+        unmanagedError(error, req, next);
+    }
+});
+
+/**
+ * Delete a custom L1 parent workspace
+ * Fails if the workspace has L2 children (Orbit or OP Stack configs)
+ * @param {number} id - Workspace ID
+ * @returns {Promise<void>} - 200 on success
+ */
+router.delete('/customL1Parent/:id', authMiddleware, async (req, res, next) => {
+    try {
+        if (!req.params.id)
+            return managedError(new Error('Missing parameters.'), req, res);
+
+        await db.deleteCustomL1Parent(req.body.data.user.id, parseInt(req.params.id));
+
+        res.sendStatus(200);
+    } catch(error) {
+        if (error.message.includes('Cannot delete') || error.message.includes('not found'))
+            return managedError(error, req, res);
+        unmanagedError(error, req, next);
+    }
+});
+
 router.get('/:id/orbitConfig', authMiddleware, async (req, res, next) => {
     const data = { ...req.query, ...req.params };
 
@@ -177,29 +262,96 @@ router.post('/:id/orbitConfig', authMiddleware, async (req, res, next) => {
         if (currentConfig)
             return managedError(new Error('There is already an orbit config for this explorer.'), req, res);
 
-        if (!req.body.params.config.parentChainRpcServer)
-            return managedError(new Error('Parent chain rpc server is required.'), req, res);
+        const configInput = req.body.params.config;
+        const userId = req.body.data.user.id;
 
+        // Validate parent chain selection:
+        // - parentWorkspaceId: existing public or custom L1 parent
+        // - customL1: { name, rpcServer } for creating new custom L1 inline
+        // Note: Orbit always requires parentChainRpcServer (frontend RPC for browser withdrawal claims)
+        const hasExistingParent = !!configInput.parentWorkspaceId;
+        const hasNewCustomL1 = configInput.customL1 && configInput.customL1.name && configInput.customL1.rpcServer;
+
+        if (!hasExistingParent && !hasNewCustomL1)
+            return managedError(new Error('Parent chain selection is required. Provide parentWorkspaceId or customL1 details.'), req, res);
+
+        if (!configInput.parentChainRpcServer)
+            return managedError(new Error('Parent chain RPC server is required (for browser-based withdrawal claims).'), req, res);
+
+        // Validate the frontend RPC is reachable
         let networkId;
-        const provider = new ProviderConnector(req.body.params.config.parentChainRpcServer);
+        const provider = new ProviderConnector(configInput.parentChainRpcServer);
         try {
             networkId = await withTimeout(provider.fetchNetworkId());
             if (!networkId)
                 throw 'Error';
         } catch(error) {
-            return managedError(new Error(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`), req, res);
+            return managedError(new Error(`Our servers can't query this RPC, please use an RPC that is reachable from the internet.`), req, res);
+        }
+
+        // Prepare config params for model layer
+        let configParams = { ...configInput, parentChainId: networkId };
+
+        // Handle custom L1 parent creation inline
+        if (hasNewCustomL1) {
+            // Validate backend RPC and fetch network ID
+            let backendNetworkId;
+            const backendProvider = new ProviderConnector(configInput.customL1.rpcServer);
+            try {
+                backendNetworkId = await withTimeout(backendProvider.fetchNetworkId());
+                if (!backendNetworkId)
+                    throw 'Error';
+            } catch(error) {
+                return managedError(new Error(`Our servers can't query the backend RPC, please use an RPC that is reachable from the internet.`), req, res);
+            }
+
+            // Create the custom L1 parent workspace
+            let customL1Workspace;
+            try {
+                customL1Workspace = await db.createCustomL1Parent(userId, {
+                    name: configInput.customL1.name,
+                    rpcServer: configInput.customL1.rpcServer,
+                    networkId: backendNetworkId
+                });
+            } catch(error) {
+                if (error.name === 'SequelizeUniqueConstraintError') {
+                    return managedError(new Error(`A workspace with name "${configInput.customL1.name}" already exists. Please choose a different name.`), req, res);
+                }
+                throw error;
+            }
+
+            configParams.parentWorkspaceId = customL1Workspace.id;
+            delete configParams.customL1;
         }
 
         let config;
         try {
-            config = await db.createOrbitConfig(req.body.data.user.id, data.id, { ...req.body.params.config, parentChainId: networkId });
+            config = await db.createOrbitConfig(userId, data.id, configParams);
         } catch(error) {
+            // Clean up orphaned custom L1 parent if config creation fails
+            if (hasNewCustomL1 && configParams.parentWorkspaceId) {
+                try {
+                    await db.deleteCustomL1Parent(userId, configParams.parentWorkspaceId);
+                } catch(cleanupError) {
+                    // Log but don't fail on cleanup error
+                }
+            }
             return managedError(error, req, res);
+        }
+
+        // Start sync for custom L1 parent if applicable
+        if (config.parentWorkspaceId) {
+            await enqueue(
+                'startCustomL1ParentSync',
+                `startCustomL1ParentSync-${config.parentWorkspaceId}`,
+                { workspaceId: config.parentWorkspaceId },
+                1
+            );
         }
 
         res.status(200).json({ config });
     } catch (error) {
-        unmanagedError(error, req, res);
+        unmanagedError(error, req, next);
     }
 });
 
@@ -285,30 +437,95 @@ router.post('/:id/opConfig', authMiddleware, async (req, res, next) => {
         if (currentConfig)
             return managedError(new Error('There is already an OP config for this explorer.'), req, res);
 
-        // Validate networkId is provided and supported
-        if (!req.body.params.config.networkId)
-            return managedError(new Error('Network selection is required.'), req, res);
+        const configInput = req.body.params.config;
+        const userId = req.body.data.user.id;
 
-        const networkId = parseInt(req.body.params.config.networkId);
-        if (!isOpNetworkSupported(networkId))
-            return managedError(new Error('Selected network is not supported. Only Ethereum Mainnet is currently available.'), req, res);
+        // Validate parent chain selection:
+        // - networkId: public L1 (legacy)
+        // - parentWorkspaceId: existing custom L1 parent
+        // - customL1: { name, rpcServer } for creating new custom L1 inline
+        const hasPublicL1 = !!configInput.networkId;
+        const hasExistingCustomL1 = !!configInput.parentWorkspaceId;
+        const hasNewCustomL1 = configInput.customL1 && configInput.customL1.name && configInput.customL1.rpcServer;
 
-        if (!req.body.params.config.batchInboxAddress)
+        if (!hasPublicL1 && !hasExistingCustomL1 && !hasNewCustomL1)
+            return managedError(new Error('Parent chain selection is required. Provide networkId, parentWorkspaceId, or customL1 details.'), req, res);
+
+        // If using public L1 via networkId, validate it's supported
+        if (hasPublicL1 && !hasExistingCustomL1 && !hasNewCustomL1) {
+            const networkId = parseInt(configInput.networkId);
+            if (!isOpNetworkSupported(networkId))
+                return managedError(new Error('Selected network is not supported. Only Ethereum Mainnet is currently available.'), req, res);
+        }
+
+        if (!configInput.batchInboxAddress)
             return managedError(new Error('Batch inbox address is required.'), req, res);
 
-        if (!req.body.params.config.optimismPortalAddress)
+        if (!configInput.optimismPortalAddress)
             return managedError(new Error('Optimism portal address is required.'), req, res);
 
-        // Convert networkId to parentChainId for model layer
-        let configParams = { ...req.body.params.config };
-        configParams.parentChainId = networkId;
+        // Prepare config params for model layer
+        let configParams = { ...configInput };
+
+        // Handle custom L1 parent creation inline
+        if (hasNewCustomL1) {
+            // Validate RPC and fetch network ID
+            let networkId;
+            const provider = new ProviderConnector(configInput.customL1.rpcServer);
+            try {
+                networkId = await withTimeout(provider.fetchNetworkId());
+                if (!networkId)
+                    throw 'Error';
+            } catch(error) {
+                return managedError(new Error(`Our servers can't query this RPC, please use an RPC that is reachable from the internet.`), req, res);
+            }
+
+            // Create the custom L1 parent workspace
+            let customL1Workspace;
+            try {
+                customL1Workspace = await db.createCustomL1Parent(userId, {
+                    name: configInput.customL1.name,
+                    rpcServer: configInput.customL1.rpcServer,
+                    networkId: networkId
+                });
+            } catch(error) {
+                if (error.name === 'SequelizeUniqueConstraintError') {
+                    return managedError(new Error(`A workspace with name "${configInput.customL1.name}" already exists. Please choose a different name.`), req, res);
+                }
+                throw error;
+            }
+
+            configParams.parentWorkspaceId = customL1Workspace.id;
+            delete configParams.customL1;
+        } else if (hasPublicL1 && !hasExistingCustomL1) {
+            // Convert networkId to parentChainId for legacy public L1 path
+            configParams.parentChainId = parseInt(configInput.networkId);
+        }
         delete configParams.networkId;
 
         let config;
         try {
-            config = await db.createOpConfig(req.body.data.user.id, data.id, configParams);
+            config = await db.createOpConfig(userId, data.id, configParams);
         } catch(error) {
+            // Clean up orphaned custom L1 parent if config creation fails
+            if (hasNewCustomL1 && configParams.parentWorkspaceId) {
+                try {
+                    await db.deleteCustomL1Parent(userId, configParams.parentWorkspaceId);
+                } catch(cleanupError) {
+                    // Log but don't fail on cleanup error
+                }
+            }
             return managedError(error, req, res);
+        }
+
+        // Start sync for custom L1 parent if applicable
+        if (config.parentWorkspaceId) {
+            await enqueue(
+                'startCustomL1ParentSync',
+                `startCustomL1ParentSync-${config.parentWorkspaceId}`,
+                { workspaceId: config.parentWorkspaceId },
+                1
+            );
         }
 
         res.status(200).json({ config });
