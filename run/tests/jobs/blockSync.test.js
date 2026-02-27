@@ -413,6 +413,40 @@ describe('blockSync', () => {
             });
     });
 
+    it('Should use fast path with findByPk when workspaceId is provided', (done) => {
+        mockSafeCreatePartialBlock.mockResolvedValue({ transactions: [
+            { id: 1, hash: '0x123' }
+        ]});
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
+            id: 1,
+            rpcServer: 'http://localhost:8545',
+            safeCreatePartialBlock: mockSafeCreatePartialBlock
+        });
+
+        blockSync({ opts: { priority: 1 }, data: { workspaceId: 1, blockNumber: 1, source: 'batchSync', rateLimited: true }})
+            .then(res => {
+                expect(Workspace.findByPk).toHaveBeenCalledWith(1, expect.objectContaining({
+                    include: expect.arrayContaining([
+                        'user',
+                        'orbitConfig',
+                        expect.objectContaining({ as: 'opChildConfigs' })
+                    ])
+                }));
+                // Should NOT call findOne (normal path)
+                expect(Workspace.findOne).not.toHaveBeenCalled();
+                expect(res).toEqual('Block synced');
+                done();
+            });
+    });
+
+    it('Should return Missing parameter on fast path when blockNumber is missing', (done) => {
+        blockSync({ opts: { priority: 1 }, data: { workspaceId: 1 }})
+            .then(res => {
+                expect(res).toEqual('Missing parameter');
+                done();
+            });
+    });
+
     it('Should fail if block cannot be found', (done) => {
         ProviderConnector.mockImplementationOnce(() => ({
             fetchRawBlockWithTransactions: jest.fn().mockResolvedValue(null)

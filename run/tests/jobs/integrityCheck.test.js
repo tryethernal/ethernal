@@ -132,10 +132,11 @@ describe('integrityCheck', () => {
 
         await integrityCheck(job);
 
-        expect(enqueue).toHaveBeenCalledWith('batchBlockSync', 'batchBlockSync-1-1-4', {
+        expect(enqueue).toHaveBeenCalledWith('batchBlockSync', 'batchBlockSync-1-2-4', {
             userId: '123',
             workspace: 'hardhat',
-            from: 1,
+            workspaceId: 1,
+            from: 2,
             to: 4,
             source: 'recovery'
         });
@@ -162,10 +163,11 @@ describe('integrityCheck', () => {
 
         expect(bulkEnqueue).toHaveBeenCalledWith('batchBlockSync', [
             {
-                name: 'batchBlockSync-1-1-5', 
+                name: 'batchBlockSync-1-1-5',
                 data: {
                     userId: '123',
                     workspace: 'hardhat',
+                    workspaceId: 1,
                     from: 1,
                     to: 5,
                     source: 'integrityCheck'
@@ -176,6 +178,7 @@ describe('integrityCheck', () => {
                 data: {
                     userId: '123',
                     workspace: 'hardhat',
+                    workspaceId: 1,
                     from: 8,
                     to: 8,
                     source: 'integrityCheck'
