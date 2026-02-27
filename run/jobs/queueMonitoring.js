@@ -1,6 +1,7 @@
 /**
  * @fileoverview Queue monitoring job.
- * Monitors BullMQ queue performance and creates alerts on issues.
+ * Monitors BullMQ queue performance, liveness, and failure rates, and creates
+ * OpsGenie alerts with dedup keys to prevent alert storms.
  * @module jobs/queueMonitoring
  */
 
@@ -11,10 +12,31 @@ const { createIncident } = require('../lib/opsgenie');
 const { maxTimeWithoutEnqueuedJob, queueMonitoringMaxProcessingTime, queueMonitoringHighProcessingTimeThreshold, queueMonitoringHighWaitingJobCountThreshold, queueMonitoringMaxWaitingJobCount } = require('../lib/env');
 
 const monitoredPerformances = [
-    'blockSync', 'receiptSync'
+    'blockSync', 'receiptSync',
+    'processBlock', 'batchBlockSync',
+    'processContract', 'processTokenTransfer', 'processTransactionTrace'
 ];
 
 const monitoredActivity = ['blockSync'];
+
+/**
+ * Computes the p95 processing time (in seconds) from an array of completed jobs.
+ * Returns 0 if no valid jobs are provided.
+ * @param {Array<Object>} jobs - BullMQ completed job objects
+ * @returns {number} The 95th percentile processing time in seconds
+ */
+const computeP95ProcessingTime = (jobs) => {
+    const times = jobs
+        .filter(j => j && j.finishedOn && j.processedOn)
+        .map(j => (j.finishedOn - j.processedOn) / 1000)
+        .sort((a, b) => a - b);
+
+    if (times.length === 0)
+        return 0;
+
+    const index = Math.ceil(times.length * 0.95) - 1;
+    return times[index];
+};
 
 module.exports = async () => {
     if (!maxTimeWithoutEnqueuedJob() || !queueMonitoringMaxProcessingTime() || !queueMonitoringHighProcessingTimeThreshold() || !queueMonitoringHighWaitingJobCountThreshold() || !queueMonitoringMaxWaitingJobCount()) {
@@ -29,8 +51,13 @@ module.exports = async () => {
         const completedJobs = await queue.getCompleted();
         const latestJob = completedJobs[0];
 
-        if (latestJob.timestamp < Date.now() - maxTimeWithoutEnqueuedJob() * 1000) {
-            await createIncident(`${queueName} queue issue (no jobs enqueued)`, `Latest job timestamp: ${new Date(latestJob.timestamp).toISOString()}`);
+        if (latestJob && latestJob.timestamp < Date.now() - maxTimeWithoutEnqueuedJob() * 1000) {
+            await createIncident(
+                `${queueName} queue issue (no jobs enqueued)`,
+                `Latest job timestamp: ${new Date(latestJob.timestamp).toISOString()}`,
+                'P1',
+                { alias: `queue-activity-${queueName}` }
+            );
             incidentCreated = true;
         }
     }
@@ -39,22 +66,41 @@ module.exports = async () => {
         const queue = new Queue(queueName, { connection });
         const completedJobs = await queue.getCompleted();
 
-        const averageProcessingTime = completedJobs.reduce((a, b) => {
-            return b && b.finishedOn ? a + (b.finishedOn - b.processedOn) / 1000 : a;
-        }, 0) / completedJobs.length;
+        const p95ProcessingTime = computeP95ProcessingTime(completedJobs);
 
         const waitingJobCount = await queue.getWaitingCount();
         const delayedJobCount = await queue.getDelayedCount();
+        const failedJobCount = await queue.getFailedCount();
 
-        logger.info('Queue monitoring', { queueName, averageProcessingTime, waitingJobCount, delayedJobCount });
+        logger.info('Queue monitoring', { queueName, p95ProcessingTime, waitingJobCount, delayedJobCount, failedJobCount });
 
         if (
-            averageProcessingTime > queueMonitoringMaxProcessingTime() ||
+            p95ProcessingTime > queueMonitoringMaxProcessingTime() ||
             waitingJobCount >= queueMonitoringMaxWaitingJobCount() ||
-            (averageProcessingTime >= queueMonitoringHighProcessingTimeThreshold() && waitingJobCount >= queueMonitoringHighWaitingJobCountThreshold())
+            (p95ProcessingTime >= queueMonitoringHighProcessingTimeThreshold() && waitingJobCount >= queueMonitoringHighWaitingJobCountThreshold())
         ) {
-            await createIncident(`${queueName} queue issue (performance)`, `Waiting job count: ${waitingJobCount} - Delayed job count: ${delayedJobCount} - Average processing time: ${averageProcessingTime}s`);
+            await createIncident(
+                `${queueName} queue issue (performance)`,
+                `Waiting: ${waitingJobCount} - Delayed: ${delayedJobCount} - Failed: ${failedJobCount} - P95 processing time: ${p95ProcessingTime.toFixed(2)}s`,
+                'P1',
+                { alias: `queue-performance-${queueName}` }
+            );
             incidentCreated = true;
+        }
+
+        if (failedJobCount > 0) {
+            const failedJobs = await queue.getFailed(0, 99);
+            const recentFailures = failedJobs.filter(j => j && j.finishedOn && j.finishedOn > Date.now() - 5 * 60 * 1000);
+
+            if (recentFailures.length >= 10) {
+                await createIncident(
+                    `${queueName} queue issue (failures)`,
+                    `${recentFailures.length} failed jobs in the last 5 minutes`,
+                    'P2',
+                    { alias: `queue-failures-${queueName}` }
+                );
+                incidentCreated = true;
+            }
         }
     }
 
