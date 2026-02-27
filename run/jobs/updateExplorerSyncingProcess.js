@@ -112,20 +112,14 @@ module.exports = async job => {
             return 'No process change.';
     } catch(error) {
         if (error.message.startsWith('Timed out after')) {
-            // Track timeout as a failure if explorer exists and sync is enabled
-            if (explorer && explorer.shouldSync) {
-                const result = await explorer.incrementSyncFailures('pm2_timeout');
-                if (result.disabled) {
-                    logger.info({
-                        message: 'Explorer auto-disabled due to PM2 timeouts',
-                        explorerId: explorer.id,
-                        explorerSlug: explorer.slug,
-                        attempts: result.attempts,
-                        reason: 'pm2_timeout'
-                    });
-                    return `Timed out and sync auto-disabled after ${result.attempts} failures.`;
-                }
-                return `Timed out (attempt ${result.attempts}/${SYNC_FAILURE_THRESHOLD})`;
+            // PM2 timeouts are transient infrastructure issues, not explorer-level problems.
+            // Only log them — don't count towards auto-disable (only rpc_unreachable should).
+            if (explorer) {
+                logger.warn({
+                    message: 'PM2 timed out for explorer sync process',
+                    explorerId: explorer.id,
+                    explorerSlug: explorer.slug
+                });
             }
             return 'Timed out';
         }
