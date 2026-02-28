@@ -81,7 +81,7 @@ module.exports = async job => {
             raw: true
         });
 
-        const existingSet = new Set(existingBlocks.map(b => b.number));
+        const existingSet = new Set(existingBlocks.map(b => Number(b.number)));
 
         const jobs = [];
         for (let i = from; i <= end; i++) {

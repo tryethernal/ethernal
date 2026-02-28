@@ -33,6 +33,10 @@ module.exports = async job => {
                 {
                     model: OpChainConfig,
                     as: 'opChildConfigs'
+                },
+                {
+                    model: Explorer,
+                    as: 'explorer'
                 }
             ]
         });

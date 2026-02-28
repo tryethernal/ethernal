@@ -420,6 +420,7 @@ describe('blockSync', () => {
         jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
             id: 1,
             rpcServer: 'http://localhost:8545',
+            explorer: { shouldSync: true },
             safeCreatePartialBlock: mockSafeCreatePartialBlock
         });
 
@@ -429,7 +430,8 @@ describe('blockSync', () => {
                     include: expect.arrayContaining([
                         'user',
                         'orbitConfig',
-                        expect.objectContaining({ as: 'opChildConfigs' })
+                        expect.objectContaining({ as: 'opChildConfigs' }),
+                        expect.objectContaining({ as: 'explorer' })
                     ])
                 }));
                 // Should NOT call findOne (normal path)
