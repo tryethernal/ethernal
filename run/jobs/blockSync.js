@@ -37,6 +37,11 @@ module.exports = async job => {
                 {
                     model: Explorer,
                     as: 'explorer'
+                },
+                {
+                    model: IntegrityCheck,
+                    as: 'integrityCheck',
+                    attributes: ['id', 'isHealthy', 'isRecovering']
                 }
             ]
         });
@@ -106,12 +111,12 @@ module.exports = async job => {
 
         if (workspace.browserSyncEnabled)
             await db.updateBrowserSync(workspace.id, false);
-
-        if (data.source == 'recovery' && workspace.integrityCheck && workspace.integrityCheck.isHealthy)
-            await db.updateWorkspaceIntegrityCheck(workspace.id, { status: 'recovering' });
-        else if (data.source != 'recovery' && workspace.integrityCheck && workspace.integrityCheck.isRecovering)
-            await db.updateWorkspaceIntegrityCheck(workspace.id, { status: 'healthy' });
     }
+
+    if (data.source == 'recovery' && workspace.integrityCheck && workspace.integrityCheck.isHealthy)
+        await db.updateWorkspaceIntegrityCheck(workspace.id, { status: 'recovering' });
+    else if (data.source != 'recovery' && workspace.integrityCheck && workspace.integrityCheck.isRecovering)
+        await db.updateWorkspaceIntegrityCheck(workspace.id, { status: 'healthy' });
 
     let limiter;
     if (data.rateLimited && workspace.rateLimitInterval && workspace.rateLimitMaxInInterval)

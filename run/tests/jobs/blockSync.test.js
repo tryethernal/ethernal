@@ -431,7 +431,8 @@ describe('blockSync', () => {
                         'user',
                         'orbitConfig',
                         expect.objectContaining({ as: 'opChildConfigs' }),
-                        expect.objectContaining({ as: 'explorer' })
+                        expect.objectContaining({ as: 'explorer' }),
+                        expect.objectContaining({ as: 'integrityCheck' })
                     ])
                 }));
                 // Should NOT call findOne (normal path)
