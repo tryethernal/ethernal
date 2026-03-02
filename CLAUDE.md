@@ -730,3 +730,21 @@ Process management server for blockchain synchronization:
 ## Workflow
 
 - **Always create a PR after completing work.** Once a feature, bugfix, or any code change is done, create a pull request targeting `develop`. This triggers an automated review process.
+
+### End-of-Session Flow
+
+Use `/wrapup` when a feature branch is ready. It runs these steps in order:
+
+1. **`/refactor`** — PR-scoped code quality cleanup (jscpd, knip, code-simplifier). Only touches files changed on the current branch vs `develop`.
+2. **`/update-claudemd`** — Updates documentation if new patterns were introduced.
+3. **Create PR** — Pushes the branch and creates a PR targeting `develop`.
+
+### Release Flow
+
+After PRs are merged into `develop`, use `/deploy` to release:
+
+1. Generates changelog from commits since last tag
+2. Bumps version in `package.json`
+3. Tags and pushes to `develop`
+4. Syncs `master` with `develop`
+5. CI handles Docker builds and deployment
