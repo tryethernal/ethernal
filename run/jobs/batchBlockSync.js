@@ -1,11 +1,18 @@
 /**
  * @fileoverview Batch block sync job.
- * Enqueues blockSync jobs for a range of blocks (up to 500k at a time).
+ * Enqueues blockSync jobs for a range of blocks in manageable chunks.
+ * Pre-filters already-synced blocks and validates workspace once per chunk
+ * to reduce DB load compared to per-job validation in blockSync.
  * @module jobs/batchBlockSync
  */
 
 const { enqueue, bulkEnqueue } = require('../lib/queue');
-const MAX_CONCURRENT_BATCHES = 500000;
+const { Workspace, Explorer, StripeSubscription, RpcHealthCheck, Block } = require('../models');
+const { Op } = require('sequelize');
+const logger = require('../lib/logger');
+
+const CHUNK_SIZE = 5000;
+const RECHUNK_DELAY = 3000;
 
 module.exports = async job => {
     const data = job.data;
@@ -14,15 +21,92 @@ module.exports = async job => {
         return 'Missing parameter.';
     }
 
-    const start = parseInt(data.from);
-    let end = parseInt(data.to);
+    const from = parseInt(data.from);
+    const to = parseInt(data.to);
 
-    if (end - start >= MAX_CONCURRENT_BATCHES)
-        end = start + MAX_CONCURRENT_BATCHES;
+    if (from > to)
+        return 'Invalid range.';
 
-    if (end >= start) {
+    const end = Math.min(from + CHUNK_SIZE - 1, to);
+
+    // If workspaceId is provided, validate workspace and pre-filter existing blocks
+    let workspaceId = data.workspaceId || null;
+    if (workspaceId) {
+        const workspace = await Workspace.findByPk(workspaceId, {
+            include: [
+                {
+                    model: Explorer,
+                    as: 'explorer',
+                    attributes: ['id', 'shouldSync'],
+                    include: {
+                        model: StripeSubscription,
+                        as: 'stripeSubscription',
+                        attributes: ['id']
+                    }
+                },
+                {
+                    model: RpcHealthCheck,
+                    as: 'rpcHealthCheck',
+                    attributes: ['id', 'isReachable']
+                }
+            ]
+        });
+
+        if (!workspace)
+            return 'Invalid workspace.';
+
+        const isCustomL1Parent = workspace.isCustomL1Parent === true;
+
+        if (!isCustomL1Parent) {
+            if (!workspace.explorer)
+                return 'No active explorer for this workspace';
+
+            if (!workspace.explorer.shouldSync)
+                return 'Sync is disabled';
+
+            if (workspace.rpcHealthCheckEnabled && workspace.rpcHealthCheck && !workspace.rpcHealthCheck.isReachable)
+                return 'RPC is not reachable';
+
+            if (!workspace.explorer.stripeSubscription)
+                return 'No active subscription';
+        }
+
+        // Pre-filter: find blocks that already exist in this range
+        const existingBlocks = await Block.findAll({
+            where: {
+                workspaceId,
+                number: { [Op.between]: [from, end] }
+            },
+            attributes: ['number'],
+            raw: true
+        });
+
+        const existingSet = new Set(existingBlocks.map(b => Number(b.number)));
+
         const jobs = [];
-        for (let i = start; i <= end; i++) {
+        for (let i = from; i <= end; i++) {
+            if (existingSet.has(i)) continue;
+            jobs.push({
+                name: `blockSync-batch-${data.userId}-${data.workspace}-${i}`,
+                data: {
+                    userId: data.userId,
+                    workspace: data.workspace,
+                    workspaceId,
+                    blockNumber: i,
+                    source: data.source || 'batchSync',
+                    rateLimited: true
+                }
+            });
+        }
+
+        if (jobs.length > 0)
+            await bulkEnqueue('blockSync', jobs);
+
+        logger.info(`batchBlockSync: enqueued ${jobs.length}/${end - from + 1} blocks (${existingBlocks.length} skipped) for workspace ${workspaceId}, range ${from}-${end}`);
+    } else {
+        // Backward compat: old jobs without workspaceId, enqueue all blocks
+        const jobs = [];
+        for (let i = from; i <= end; i++) {
             jobs.push({
                 name: `blockSync-batch-${data.userId}-${data.workspace}-${i}`,
                 data: {
@@ -35,15 +119,20 @@ module.exports = async job => {
             });
         }
 
-        await bulkEnqueue('blockSync', jobs);
+        if (jobs.length > 0)
+            await bulkEnqueue('blockSync', jobs);
+    }
 
-        if (parseInt(data.to) - start >= MAX_CONCURRENT_BATCHES)
-            await enqueue('batchBlockSync', `batchBlockSync-${data.userId}-${data.workspace}-${end}-${parseInt(data.to)}`, {
-                userId: data.userId,
-                workspace: data.workspace,
-                from: end,
-                to: parseInt(data.to),
-                source: data.source || 'batchSync'
-            });
+    // Self-re-enqueue for remaining blocks with delay for backpressure
+    const nextStart = end + 1;
+    if (nextStart <= to) {
+        await enqueue('batchBlockSync', `batchBlockSync-${data.userId}-${data.workspace}-${nextStart}-${to}`, {
+            userId: data.userId,
+            workspace: data.workspace,
+            workspaceId,
+            from: nextStart,
+            to,
+            source: data.source || 'batchSync'
+        }, null, null, RECHUNK_DELAY);
     }
 };

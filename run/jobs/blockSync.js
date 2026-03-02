@@ -19,67 +19,99 @@ const { reportRpcFailure } = require('../lib/syncHelpers');
 module.exports = async job => {
     const data = job.data;
 
-    if (!data.userId || !data.workspace || data.blockNumber === undefined || data.blockNumber === null)
-        return 'Missing parameter';
+    let workspace;
 
-    const workspace = await Workspace.findOne({
-        subQuery: false,
-        where: {
-            name: data.workspace,
-            '$user.firebaseUserId$': data.userId
-        },
-        include: [
-            'user',
-            'orbitConfig',
-            {
-                model: OpChainConfig,
-                as: 'opChildConfigs'
-            },
-            {
-                model: Explorer,
-                as: 'explorer',
-                attributes: ['id', 'shouldSync'],
-                include: {
-                    model: StripeSubscription,
-                    as: 'stripeSubscription',
-                    attributes: ['id']
+    if (data.workspaceId) {
+        // Fast path: batch-sourced job, workspace already validated by batchBlockSync
+        if (data.blockNumber === undefined || data.blockNumber === null)
+            return 'Missing parameter';
+
+        workspace = await Workspace.findByPk(data.workspaceId, {
+            include: [
+                'user',
+                'orbitConfig',
+                {
+                    model: OpChainConfig,
+                    as: 'opChildConfigs'
+                },
+                {
+                    model: Explorer,
+                    as: 'explorer'
+                },
+                {
+                    model: IntegrityCheck,
+                    as: 'integrityCheck',
+                    attributes: ['id', 'isHealthy', 'isRecovering']
                 }
+            ]
+        });
+
+        if (!workspace)
+            return 'Invalid workspace.';
+    } else {
+        // Normal path: real-time sync, full validation
+        if (!data.userId || !data.workspace || data.blockNumber === undefined || data.blockNumber === null)
+            return 'Missing parameter';
+
+        workspace = await Workspace.findOne({
+            subQuery: false,
+            where: {
+                name: data.workspace,
+                '$user.firebaseUserId$': data.userId
             },
-            {
-                model: RpcHealthCheck,
-                as: 'rpcHealthCheck',
-                attributes: ['id', 'isReachable']
-            },
-            {
-                model: IntegrityCheck,
-                as: 'integrityCheck',
-                attributes: ['id', 'isHealthy', 'isRecovering']
-            }
-        ]
-    });
+            include: [
+                'user',
+                'orbitConfig',
+                {
+                    model: OpChainConfig,
+                    as: 'opChildConfigs'
+                },
+                {
+                    model: Explorer,
+                    as: 'explorer',
+                    attributes: ['id', 'shouldSync'],
+                    include: {
+                        model: StripeSubscription,
+                        as: 'stripeSubscription',
+                        attributes: ['id']
+                    }
+                },
+                {
+                    model: RpcHealthCheck,
+                    as: 'rpcHealthCheck',
+                    attributes: ['id', 'isReachable']
+                },
+                {
+                    model: IntegrityCheck,
+                    as: 'integrityCheck',
+                    attributes: ['id', 'isHealthy', 'isRecovering']
+                }
+            ]
+        });
 
-    if (!workspace)
-        return 'Invalid workspace.';
+        if (!workspace)
+            return 'Invalid workspace.';
 
-    // Custom L1 parents don't require explorer/subscription - they sync for their L2 children
-    const isCustomL1Parent = workspace.isCustomL1Parent === true;
+        // Custom L1 parents don't require explorer/subscription - they sync for their L2 children
+        const isCustomL1Parent = workspace.isCustomL1Parent === true;
 
-    if (!isCustomL1Parent) {
-        if (!workspace.explorer)
-            return 'No active explorer for this workspace';
+        if (!isCustomL1Parent) {
+            if (!workspace.explorer)
+                return 'No active explorer for this workspace';
 
-        if (!workspace.explorer.shouldSync)
-            return 'Sync is disabled';
+            if (!workspace.explorer.shouldSync)
+                return 'Sync is disabled';
 
-        if (workspace.rpcHealthCheckEnabled && workspace.rpcHealthCheck && !workspace.rpcHealthCheck.isReachable)
-            return 'RPC is not reachable';
+            if (workspace.rpcHealthCheckEnabled && workspace.rpcHealthCheck && !workspace.rpcHealthCheck.isReachable)
+                return 'RPC is not reachable';
 
-        if (!workspace.explorer.stripeSubscription)
-            return 'No active subscription';
+            if (!workspace.explorer.stripeSubscription)
+                return 'No active subscription';
+        }
+
+        if (workspace.browserSyncEnabled)
+            await db.updateBrowserSync(workspace.id, false);
     }
-
-    if (workspace.browserSyncEnabled)
-        await db.updateBrowserSync(workspace.id, false);
 
     if (data.source == 'recovery' && workspace.integrityCheck && workspace.integrityCheck.isHealthy)
         await db.updateWorkspaceIntegrityCheck(workspace.id, { status: 'recovering' });

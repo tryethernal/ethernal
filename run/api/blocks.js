@@ -50,6 +50,7 @@ router.post('/syncRange', authMiddleware, async (req, res, next) => {
         await enqueue('batchBlockSync', `batchBlockSync-${data.uid}-${data.workspace}-${data.from}-${data.to}`, {
             userId: data.uid,
             workspace: data.workspace,
+            workspaceId: workspace.id,
             from: data.from,
             to: data.to,
         });
