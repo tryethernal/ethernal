@@ -724,3 +724,9 @@ Process management server for blockchain synchronization:
 | `app.js` | Express server with PM2 management endpoints |
 | `logListener.js` | Event listener for Orbit/OP Stack L1 events |
 | `lib/pm2.js` | PM2 process control functions |
+
+---
+
+## Workflow
+
+- **Always create a PR after completing work.** Once a feature, bugfix, or any code change is done, create a pull request targeting `develop`. This triggers an automated review process.
