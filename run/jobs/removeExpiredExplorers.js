@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Expired explorer cleanup job.
+ * Deletes explorers that have exceeded their plan's expiration period.
+ * @module jobs/removeExpiredExplorers
+ */
+
 const { Op } = require('sequelize');
 const { Explorer, StripeSubscription, StripePlan, Workspace } = require('../models');
 const { enqueue } = require('../lib/queue');

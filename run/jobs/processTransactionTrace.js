@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Transaction trace processing job.
+ * Fetches and stores debug traces (internal transactions) for transactions.
+ * @module jobs/processTransactionTrace
+ */
+
 const db = require('../lib/firebase');
 const { Transaction, Workspace, User, Explorer, RpcHealthCheck } = require('../models');
 const { Tracer } = require('../lib/rpc');

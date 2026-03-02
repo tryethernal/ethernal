@@ -45,6 +45,11 @@
     </v-container>
 </template>
 
+/**
+ * @fileoverview ERC-20 tokens list page component.
+ * Displays a paginated table of all ERC-20 tokens with real-time updates.
+ * @component Tokens
+ */
 <script setup>
 import { ref, onMounted, onUnmounted, inject } from 'vue';
 import HashLink from '@/components/HashLink.vue';

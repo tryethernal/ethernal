@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Orbit log listener startup job.
+ * Starts PM2 processes to listen for bridge events on parent chains.
+ * @module jobs/checkOrbitMessageDeliveredLogs
+ */
+
 const { Op } = require('sequelize');
 
 const { ORBIT_BRIDGE_MESSAGE_DELIVERED_EVENT_ABI } = require('../constants/orbit');

@@ -62,19 +62,19 @@ describe('finalizePendingOrbitBatches', () => {
             }
         ];
 
-        // Mock workspaces with isTopOrbitParent: true
+        // Mock workspaces with isTopL1Parent: true
         mockWorkspaces = [
             {
                 id: 1,
                 name: 'Parent Workspace 1',
-                isTopOrbitParent: true,
+                isTopL1Parent: true,
                 orbitChildConfigs: mockOrbitChildConfigs,
                 getViemPublicClient: jest.fn().mockReturnValue(mockViemClient)
             },
             {
                 id: 2,
                 name: 'Parent Workspace 2',
-                isTopOrbitParent: true,
+                isTopL1Parent: true,
                 orbitChildConfigs: [],
                 getViemPublicClient: jest.fn().mockReturnValue(mockViemClient)
             }
@@ -87,11 +87,17 @@ describe('finalizePendingOrbitBatches', () => {
     });
 
     describe('basic functionality', () => {
-        it('should find workspaces with isTopOrbitParent: true', async () => {
+        it('should find workspaces with isTopL1Parent: true', async () => {
             await finalizePendingOrbitBatches();
 
             expect(Workspace.findAll).toHaveBeenCalledWith({
-                where: { isTopOrbitParent: true }
+                include: ['orbitChildConfigs'],
+                where: {
+                    [require('sequelize').Op.or]: [
+                        { isTopL1Parent: true },
+                        { isCustomL1Parent: true }
+                    ]
+                }
             });
         });
 
@@ -143,7 +149,7 @@ describe('finalizePendingOrbitBatches', () => {
             const mockWorkspace2 = {
                 id: 2,
                 name: 'Parent Workspace 2',
-                isTopOrbitParent: true,
+                isTopL1Parent: true,
                 orbitChildConfigs: [],
                 getViemPublicClient: jest.fn().mockReturnValue({
                     getBlock: jest.fn().mockResolvedValue({ number: 2000 })
@@ -155,7 +161,13 @@ describe('finalizePendingOrbitBatches', () => {
             await finalizePendingOrbitBatches();
 
             expect(Workspace.findAll).toHaveBeenCalledWith({
-                where: { isTopOrbitParent: true }
+                include: ['orbitChildConfigs'],
+                where: {
+                    [require('sequelize').Op.or]: [
+                        { isTopL1Parent: true },
+                        { isCustomL1Parent: true }
+                    ]
+                }
             });
         });
     });

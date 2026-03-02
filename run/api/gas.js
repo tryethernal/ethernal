@@ -1,3 +1,12 @@
+/**
+ * @fileoverview Gas analytics API endpoints.
+ * Provides gas price statistics and block utilization data.
+ * @module api/gas
+ *
+ * @route GET /stats - Get current gas prices and block metrics
+ * @route GET /history - Get historical gas price data
+ */
+
 const express = require('express');
 const router = express.Router();
 const db = require('../lib/firebase');

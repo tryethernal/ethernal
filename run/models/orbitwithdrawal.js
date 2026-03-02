@@ -1,3 +1,16 @@
+/**
+ * @fileoverview OrbitWithdrawal model - tracks L2→L1 withdrawals on Orbit chains.
+ * Stores withdrawal info, challenge period status, and claim state.
+ *
+ * @module models/OrbitWithdrawal
+ *
+ * @property {number} id - Primary key
+ * @property {number} workspaceId - Foreign key to L2 workspace
+ * @property {string} l2TransactionHash - L2 withdrawal transaction hash
+ * @property {number} messageNumber - L2→L1 message number
+ * @property {string} status - waiting/ready/relayed
+ */
+
 'use strict';
 const { Model } = require('sequelize');
 const moment = require('moment');

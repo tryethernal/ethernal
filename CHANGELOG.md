@@ -4,6 +4,43 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.12.3] - 2026-03-02
+### Changed
+- Optimized batch block sync for smaller chunks, pre-filtering, and reduced database load
+
+## [5.12.2] - 2026-02-27
+### Changed
+- Better queue monitoring
+
+## [5.12.1] - 2026-02-27
+### Changed
+- Better queue monitoring
+
+## [5.12.0] - 2026-01-22
+### Added
+- Custom L1 network for Orbit/OP chains
+
+## [5.11.1] - 2026-01-09
+### Changed
+- We now collect rpc errors in more places for faster detection of unreachable rpcs
+
+## [5.11.0] - 2026-01-09
+### Added
+- More efficient system to track and deactivate unreachable rpcs. Will save resources for pm2 instances
+
+## [5.10.1] - 2026-01-09
+### Changed
+- Selection of parent workspace for OP stack is easier for user. They can just pick the network, we handle picking our workspace internally.
+
+## [5.10.0] - 2026-01-09
+### Added
+- Op stack full support. Easy to setup, just go to the settings page of your explorer, "Op Stack" tab, fill out contract addresses, and indexing will start right away. 
+Explorer will track all OP related informations:
+  - L1 => L2 deposits
+  - L2 => L1 withdrawals
+  - Batches with included blocks, transactions, blob, etc...
+  - State output with proposer, dispute info, etc...
+
 ## [5.9.24] - 2025-12-04
 ### Changed
 - Allow all chain params

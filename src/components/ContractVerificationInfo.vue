@@ -52,6 +52,14 @@
     </div>
 </template>
 
+/**
+ * @fileoverview Contract verification info component.
+ * Displays verified contract details including compiler version, optimizer settings,
+ * source code viewer, constructor arguments, and library addresses.
+ * @component ContractVerificationInfo
+ *
+ * @prop {Object} contract - The contract data with verification details
+ */
 <script setup>
 import { ref, computed } from 'vue';
 import FormattedSolVar from './FormattedSolVar.vue';

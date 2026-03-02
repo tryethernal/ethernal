@@ -1,3 +1,9 @@
+/**
+ * @fileoverview BullMQ queue utilities for PM2 server.
+ * Provides enqueue function to add jobs to the main Ethernal queue.
+ * @module pm2-server/lib/queue
+ */
+
 const Redis = require('ioredis');
 const { Queue } = require('bullmq');
 

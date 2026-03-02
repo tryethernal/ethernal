@@ -23,6 +23,14 @@
     </v-list-item>
 </template>
 
+/**
+ * @fileoverview Explorer domain list item component.
+ * Displays a single custom domain with DNS verification status and actions.
+ * @component ExplorerDomain
+ *
+ * @prop {Object} domain - The domain data object
+ * @emits deleted - Emitted when domain is deleted
+ */
 <script setup>
 import { ref, computed, inject, onMounted } from 'vue';
 import ExplorerDomainDNSInfoModal from './ExplorerDomainDNSInfoModal.vue';

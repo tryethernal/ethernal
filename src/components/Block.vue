@@ -51,6 +51,14 @@
     </v-container>
 </template>
 
+/**
+ * @fileoverview Block detail page component.
+ * Displays block information including overview and transaction list with tab navigation.
+ * Supports real-time updates via Pusher when new transactions are added to the block.
+ * @component Block
+ *
+ * @prop {string|number} number - The block number to display
+ */
 <script setup>
 import { ref, computed, watch, onMounted, onBeforeUnmount, inject } from 'vue';
 import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';

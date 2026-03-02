@@ -1,3 +1,9 @@
+/**
+ * @fileoverview PM2 Server Express application.
+ * Provides REST API for managing PM2 processes (log listeners, RPC server proxies).
+ * @module pm2-server/app
+ */
+
 const express = require('express');
 const app = express();
 const pm2 = require('./lib/pm2.js');

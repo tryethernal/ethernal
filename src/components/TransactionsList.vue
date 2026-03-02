@@ -75,6 +75,17 @@
         </template>
     </v-data-table-server>
 </template>
+/**
+ * @fileoverview Transactions list component.
+ * Displays a paginated, sortable table of transactions with real-time updates.
+ * Shows hash, method, block, timestamp, from/to addresses, value, and fee.
+ * @component TransactionsList
+ *
+ * @prop {boolean} [dense=false] - Whether to use compact table styling
+ * @prop {string} [address] - Filter transactions by address
+ * @prop {boolean} [withCount=true] - Whether to show item count
+ * @emits listUpdated - Emitted when the transaction list is updated
+ */
 <script setup>
 import { ethers } from 'ethers';
 import { shallowRef, ref, onMounted, onUnmounted, inject, defineEmits, watch } from 'vue';
@@ -92,7 +103,8 @@ const props = defineProps({
     address: String,
     withCount: Boolean,
     totalCount: Number,
-    batchNumber: Number
+    batchNumber: Number,
+    opBatchIndex: Number
 });
 const emit = defineEmits(['listUpdated']);
 
@@ -145,6 +157,8 @@ const getQuery = (page, itemsPerPage, sortBy) => {
         return $server.getAddressTransactions(props.address, { page, itemsPerPage, orderBy: sortBy[0].key, order: sortBy[0].order }, !props.dense && !!props.withCount);
     else if (props.batchNumber)
         return $server.getOrbitBatchTransactions(props.batchNumber, { page, itemsPerPage, orderBy: sortBy[0].key, order: sortBy[0].order }, !props.dense && !!props.withCount);
+    else if (props.opBatchIndex !== undefined && props.opBatchIndex !== null)
+        return $server.getOpBatchTransactions(props.opBatchIndex, { page, itemsPerPage, order: sortBy[0].order.toUpperCase() });
     else
         return $server.getTransactions({ page, itemsPerPage, orderBy: sortBy[0].key, order: sortBy[0].order }, !props.dense && !!props.withCount);
 };

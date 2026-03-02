@@ -49,6 +49,16 @@
     </div>
 </template>
 
+/**
+ * @fileoverview Contract read/write methods container component.
+ * Displays filterable list of contract methods with call options configuration.
+ * Switches between read and write methods based on forceTab prop.
+ * @component ContractReadWrite
+ *
+ * @prop {Object} contract - The contract data with address and abi
+ * @prop {string} [forceTab='read'] - Which tab to display ('read' | 'write')
+ * @emits update-filtered-counts - Emitted with count of filtered read/write methods
+ */
 <script setup>
 import { ref, computed, watch } from 'vue';
 

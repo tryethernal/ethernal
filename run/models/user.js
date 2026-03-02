@@ -1,3 +1,18 @@
+/**
+ * @fileoverview User model - represents authenticated users.
+ * Handles authentication, workspaces, API keys, and subscription management.
+ *
+ * @module models/User
+ *
+ * @property {number} id - Primary key
+ * @property {string} firebaseUserId - Firebase auth UID
+ * @property {string} email - User email address
+ * @property {string} plan - Subscription plan (free, premium)
+ * @property {string} apiKey - API key for programmatic access
+ * @property {number} currentWorkspaceId - Currently selected workspace
+ * @property {boolean} canTrial - Whether user can start a trial
+ */
+
 'use strict';
 const {
   Model, Sequelize
@@ -28,6 +43,12 @@ module.exports = (sequelize, DataTypes) => {
       User.hasOne(models.StripeSubscription, { foreignKey: 'userId', as: 'stripeSubscription' });
     }
 
+    /**
+     * Finds a user by Firebase auth ID with workspaces and current explorer.
+     * @param {string} firebaseUserId - Firebase authentication UID
+     * @param {Array<string>} [extraFields=[]] - Additional user fields to include
+     * @returns {Promise<User|null>} User with workspaces and explorer data
+     */
     static async findByAuthId(firebaseUserId, extraFields = []) {
         const currentExplorerAttributes = ['id', 'chainId', 'domain', 'isDemo', 'name', 'rpcServer', 'shouldSync', 'slug', 'themes', 'userId', 'workspaceId', 'gasAnalyticsEnabled', 'displayTopAccounts'];
         const user = await User.findOne({ where: { firebaseUserId }, include: 'currentWorkspace' })
@@ -105,6 +126,11 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    /**
+     * Finds a user by Stripe customer ID.
+     * @param {string} stripeCustomerId - Stripe customer identifier
+     * @returns {Promise<User|null>} User with workspaces
+     */
     static findByStripeCustomerId(stripeCustomerId) {
         return User.findOne({
             where: {
@@ -115,6 +141,12 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    /**
+     * Finds a user by auth ID with a specific workspace loaded.
+     * @param {string} firebaseUserId - Firebase authentication UID
+     * @param {string} workspaceName - Name of workspace to include
+     * @returns {Promise<User|null>} User with specified workspace
+     */
     static findByAuthIdWithWorkspace(firebaseUserId, workspaceName) {
         const Workspace = sequelize.models.Workspace;
         return User.findOne({
@@ -151,6 +183,14 @@ module.exports = (sequelize, DataTypes) => {
                         {
                             model: sequelize.models.RpcHealthCheck,
                             as: 'rpcHealthCheck'
+                        },
+                        {
+                            model: sequelize.models.OrbitChainConfig,
+                            as: 'orbitConfig'
+                        },
+                        {
+                            model: sequelize.models.OpChainConfig,
+                            as: 'opConfig'
                         }
                     ]
                 },
@@ -159,6 +199,13 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    /**
+     * Creates an admin user for self-hosted instances.
+     * @param {string} email - Admin email address
+     * @param {string} password - Admin password
+     * @returns {Promise<User>} Created admin user
+     * @throws {Error} If not self-hosted or email exists
+     */
     static async createAdmin(email, password) {
         if (!isSelfHosted())
             throw new Error('This feature is only available on self-hosted instances');
@@ -186,6 +233,20 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    /**
+     * Creates a new user with all required data.
+     * @param {string} firebaseUserId - Firebase authentication UID
+     * @param {string} email - User email address
+     * @param {string} apiKey - Encrypted API key
+     * @param {string} stripeCustomerId - Stripe customer ID
+     * @param {string} plan - Subscription plan
+     * @param {number} [explorerSubscriptionId] - Explorer subscription ID
+     * @param {string} [passwordHash] - Hashed password for self-hosted
+     * @param {string} [passwordSalt] - Password salt for self-hosted
+     * @param {string} [qnId] - QuickNode ID
+     * @returns {Promise<User>} Created user
+     * @throws {Error} If email already registered
+     */
     static async safeCreate(firebaseUserId, email, apiKey, stripeCustomerId, plan, explorerSubscriptionId, passwordHash, passwordSalt, qnId) {
         if (!firebaseUserId || !email || !apiKey || !stripeCustomerId || !plan) throw new Error('[User.createUser] Missing parameter');
 
@@ -214,6 +275,23 @@ module.exports = (sequelize, DataTypes) => {
         }));
     }
 
+    /**
+     * Creates an explorer with workspace from configuration options.
+     * @param {Object} options - Explorer configuration
+     * @param {string} options.backendRpcServer - Backend RPC URL
+     * @param {string} [options.frontendRpcServer] - Frontend RPC URL
+     * @param {string} options.name - Explorer name
+     * @param {number} options.networkId - Chain ID
+     * @param {string} [options.chain='ethereum'] - Chain type
+     * @param {string} [options.tracing='other'] - Tracing type
+     * @param {Object} [options.faucet] - Faucet configuration
+     * @param {string} [options.token] - Native token symbol
+     * @param {string} [options.slug] - URL slug
+     * @param {string} [options.totalSupply] - Total supply (wei string)
+     * @param {boolean} [options.isDemo=false] - Whether demo explorer
+     * @param {Object} [options.subscription] - Stripe subscription data
+     * @returns {Promise<Explorer>} Created explorer
+     */
     createExplorerFromOptions({ backendRpcServer, frontendRpcServer, name, networkId, chain = 'ethereum', tracing = 'other', faucet, token, slug, totalSupply, branding, qnEndpointId, domains = [], isDemo = false, subscription, integrityCheckStartBlockNumber }) {
         if (!backendRpcServer || !name || !networkId)
             throw new Error('Missing parameters');
@@ -295,6 +373,10 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    /**
+     * Generates a JWT API token for the user.
+     * @returns {string} Encoded JWT token with API key and user ID
+     */
     getApiToken() {
         return encode({
             apiKey: decrypt(this.apiKey),
@@ -302,6 +384,10 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    /**
+     * Disables trial mode for the user.
+     * @returns {Promise<User>} Updated user
+     */
     disableTrialMode() {
         return this.update({ canTrial: false });
     }

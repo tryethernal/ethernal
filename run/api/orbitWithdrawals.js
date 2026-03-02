@@ -1,3 +1,13 @@
+/**
+ * @fileoverview Orbit Withdrawals API endpoints.
+ * Manages L2→L1 withdrawals for Arbitrum Orbit chains.
+ * @module api/orbitWithdrawals
+ *
+ * @route GET /:hash/claimCalldata - Get calldata to claim a withdrawal on L1
+ * @route GET /:hash - Get withdrawals for a specific transaction
+ * @route GET / - List all withdrawals (paginated)
+ */
+
 const express = require('express');
 const router = express.Router();
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');

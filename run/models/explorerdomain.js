@@ -1,3 +1,14 @@
+/**
+ * @fileoverview ExplorerDomain model - manages custom domains for explorers.
+ * Allows explorers to use custom domain names with SSL.
+ *
+ * @module models/ExplorerDomain
+ *
+ * @property {number} id - Primary key
+ * @property {number} explorerId - Foreign key to explorer
+ * @property {string} domain - Custom domain name
+ */
+
 'use strict';
 const {
   Model

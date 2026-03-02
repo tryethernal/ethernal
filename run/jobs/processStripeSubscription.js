@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Stripe subscription processing job.
+ * Manages PM2 processes when subscription status changes.
+ * @module jobs/processStripeSubscription
+ */
+
 const { Explorer } = require('../models');
 const PM2 = require('../lib/pm2');
 

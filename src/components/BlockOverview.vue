@@ -299,6 +299,16 @@
     </div>
 </template>
 
+/**
+ * @fileoverview Block overview component.
+ * Displays detailed information about a single block including height, timestamp,
+ * transaction count, validator, gas usage, fees, and technical details like hashes
+ * and roots. Supports Orbit L2 batch information display.
+ * @component BlockOverview
+ *
+ * @prop {Object} block - The block data object to display
+ * @emits change-tab - Emitted when user clicks to switch to transactions tab
+ */
 <script setup>
 import { inject } from 'vue';
 import { useExplorerStore } from '../stores/explorer';

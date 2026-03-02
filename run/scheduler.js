@@ -3,6 +3,7 @@ const { enqueue } = require('./lib/queue');
 const INTEGRITY_CHECK_INTERVAL = 5 * 60 * 1000;
 const RPC_HEALTH_CHECK_INTERVAL = 5 * 60 * 1000;
 const SUBSCRIPTION_CHECK_INTERVAL = 5 * 60 * 1000;
+const SYNC_RECOVERY_CHECK_INTERVAL = 5 * 60 * 1000;
 const QUEUE_MONITORING_INTERVAL = 60 * 1000;
 const CANCEL_DEMO_INTERVAL = 60 * 60 * 1000;
 const BLOCK_SYNC_MONITORING_INTERVAL = 60 * 1000;
@@ -49,6 +50,14 @@ const BLOCK_SYNC_MONITORING_INTERVAL = 60 * 1000;
     );
 
     await enqueue(
+        'syncRecoveryCheck',
+        'syncRecoveryCheck',
+        {},
+        10,
+        { every: SYNC_RECOVERY_CHECK_INTERVAL }
+    );
+
+    await enqueue(
         'queueMonitoring',
         'queueMonitoring',
         {},
@@ -78,5 +87,30 @@ const BLOCK_SYNC_MONITORING_INTERVAL = 60 * 1000;
         {},
         10,
         { every: 5 * 60 * 1000 }
+    );
+
+    // OP Stack jobs
+    await enqueue(
+        'finalizePendingOpBatches',
+        'finalizePendingOpBatches',
+        {},
+        10,
+        { every: 30 * 1000 } // Check every 30 seconds
+    );
+
+    await enqueue(
+        'finalizePendingOpOutputs',
+        'finalizePendingOpOutputs',
+        {},
+        10,
+        { every: 60 * 1000 } // Check every minute
+    );
+
+    await enqueue(
+        'linkOpDepositsToL2Txs',
+        'linkOpDepositsToL2Txs',
+        {},
+        10,
+        { every: 30 * 1000 } // Check every 30 seconds
     );
 })();

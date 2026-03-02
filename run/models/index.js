@@ -1,3 +1,10 @@
+/**
+ * @fileoverview Sequelize model loader and association setup.
+ * Automatically loads all model files in the directory and sets up associations.
+ * Exports a db object containing all models and the Sequelize instance.
+ * @module models/index
+ */
+
 'use strict';
 
 const fs = require('fs');

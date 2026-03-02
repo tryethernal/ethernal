@@ -1,3 +1,15 @@
+/**
+ * @fileoverview CustomField model - stores custom code/functions for workspaces.
+ * Used for package imports and global function definitions.
+ *
+ * @module models/CustomField
+ *
+ * @property {number} id - Primary key
+ * @property {number} workspaceId - Foreign key to workspace
+ * @property {string} function - Custom function code
+ * @property {string} location - Where used (global, package)
+ */
+
 'use strict';
 const {
   Model

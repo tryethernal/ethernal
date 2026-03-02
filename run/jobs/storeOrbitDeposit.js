@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Orbit deposit storage job.
+ * Stores L1→L2 deposit records from bridge events.
+ * @module jobs/storeOrbitDeposit
+ */
+
 const { OrbitDeposit } = require('../models');
 
 module.exports = async (job) => {

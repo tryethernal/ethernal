@@ -1,3 +1,10 @@
+/**
+ * @fileoverview Current Workspace Pinia store.
+ * Manages active workspace state including RPC server, browser sync, and chain config.
+ * Provides Viem wallet/public clients and Wagmi configuration.
+ * @module stores/currentWorkspace
+ */
+
 import * as Sentry from "@sentry/vue";
 import { defineStore } from 'pinia';
 import { createWalletClient, http, webSocket, defineChain, createPublicClient, custom } from 'viem';
@@ -32,7 +39,8 @@ export const useCurrentWorkspaceStore = defineStore('currentWorkspace', {
         chainSlug: null,
         storageEnabled: null,
         wagmiConfig: null,
-        orbitConfig: null
+        orbitConfig: null,
+        opConfig: null
     }),
 
     actions: {

@@ -31,6 +31,16 @@
     </div>
 </template>
 
+/**
+ * @fileoverview Contract file explorer component.
+ * Displays a tree view of verified contract source files with search functionality.
+ * Supports expand/collapse all and file selection.
+ * @component ContractFileExplorer
+ *
+ * @prop {Array} sources - Array of source files with fileName and content
+ * @prop {string} [selectedFile=''] - Currently selected file path
+ * @emits select-file - Emitted when a file is selected with file data
+ */
 <script setup>
 import { ref, computed, watch } from 'vue';
 

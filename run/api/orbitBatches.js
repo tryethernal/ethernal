@@ -1,3 +1,14 @@
+/**
+ * @fileoverview Orbit Batches API endpoints.
+ * Provides L2 batch data for Arbitrum Orbit chains.
+ * @module api/orbitBatches
+ *
+ * @route GET /:batchNumber/transactions - Get transactions in a batch
+ * @route GET /:batchNumber/blocks - Get blocks in a batch
+ * @route GET /:batchNumber - Get batch details
+ * @route GET / - List all batches (paginated)
+ */
+
 const express = require('express');
 const router = express.Router();
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');

@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Stripe billing integration handlers.
+ * Processes subscription lifecycle events: creation, updates, cancellation, renewals.
+ * @module lib/stripe
+ */
+
 const { getStripeSecretKey } = require('./env');
 const stripe = require('stripe')(getStripeSecretKey());
 const Analytics = require('./analytics');
@@ -6,6 +12,13 @@ const { enqueue } = require('./queue');
 const models = require('../models');
 const analytics = new Analytics();
 
+/**
+ * Handles subscription cycle renewal from Stripe invoice.
+ * Resets explorer transaction quota for the new billing period.
+ * @param {Object} stripeInvoice - Stripe invoice object
+ * @returns {Promise<string|undefined>} Error message if renewal failed
+ * @private
+ */
 const renewSubscriptionCycle = async (stripeInvoice) => {
     if (stripeInvoice.billing_reason != 'subscription_cycle' && stripeInvoice.billing_reason != 'subscription_create')
         return 'Subscription is not renewing';
@@ -28,6 +41,13 @@ const renewSubscriptionCycle = async (stripeInvoice) => {
     await db.resetExplorerTransactionQuota(user.id, explorer.id);
 };
 
+/**
+ * Handles subscription deletion/cancellation.
+ * Removes subscription record from explorer.
+ * @param {Object} stripeSubscription - Stripe subscription object
+ * @returns {Promise<string|undefined>} Error message if deletion failed
+ * @private
+ */
 const deleteExplorerSubscription = async (stripeSubscription) => {
     if (stripeSubscription.status != 'canceled')
         return 'Subscription is not canceled';
@@ -48,6 +68,13 @@ const deleteExplorerSubscription = async (stripeSubscription) => {
     await db.deleteExplorerSubscription(user.id, explorerId);
 }
 
+/**
+ * Updates or creates an explorer subscription.
+ * Handles plan changes, demo migrations, and cancellation reversals.
+ * @param {Object} stripeSubscription - Stripe subscription object
+ * @returns {Promise<string|undefined>} Status message or error
+ * @private
+ */
 const updateExplorerSubscription = async (stripeSubscription) => {
     if (['active', 'trialing'].indexOf(stripeSubscription.status) == -1)
         return 'Inactive subscription';
@@ -104,6 +131,13 @@ const updateExplorerSubscription = async (stripeSubscription) => {
         await db.disableUserTrial(user.id);
 }
 
+/**
+ * Updates user's plan based on subscription status.
+ * @param {Object} stripeSubscription - Stripe subscription object
+ * @returns {Promise<boolean>} True if plan was updated
+ * @throws {Error} If user not found or plan update fails
+ * @private
+ */
 const updatePlan = async (stripeSubscription) => {
     const user = await db.getUserbyStripeCustomerId(stripeSubscription.customer);
 
@@ -132,6 +166,12 @@ const updatePlan = async (stripeSubscription) => {
 }
 
 module.exports = {
+    /**
+     * Handles Stripe subscription update webhook events.
+     * Routes to explorer or user plan update based on metadata.
+     * @param {Object} data - Stripe subscription object
+     * @returns {Promise<string|boolean|undefined>} Result of the update operation
+     */
     handleStripeSubscriptionUpdate: async (data) => {
         if (data.metadata.explorerId)
             return await updateExplorerSubscription(data);
@@ -139,6 +179,12 @@ module.exports = {
             await updatePlan(data);
     },
 
+    /**
+     * Handles Stripe subscription deletion webhook events.
+     * Routes to explorer or user plan deletion based on metadata.
+     * @param {Object} data - Stripe subscription object
+     * @returns {Promise<string|undefined>} Result of the deletion operation
+     */
     handleStripeSubscriptionDeletion: async (data) => {
         if (data.metadata.explorerId)
             return await deleteExplorerSubscription(data);
@@ -146,6 +192,12 @@ module.exports = {
             await updatePlan(data);
     },
 
+    /**
+     * Handles Stripe invoice payment success webhook events.
+     * Processes subscription creation and renewal cycles.
+     * @param {Object} data - Stripe invoice object
+     * @returns {Promise<string|boolean|undefined>} Result of the payment handling
+     */
     handleStripePaymentSucceeded: async (data) => {
         if (data.billing_reason == 'subscription_create') {
             const subscriptionId = data.subscription;

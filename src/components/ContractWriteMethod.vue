@@ -55,6 +55,19 @@
     </div>
 </template>
 
+/**
+ * @fileoverview Contract write method component.
+ * Displays a single state-changing contract method with input fields and query button.
+ * Supports both Metamask and loaded account transactions with optional simulation.
+ * @component ContractWriteMethod
+ *
+ * @prop {Object} method - The ABI method definition with name, inputs
+ * @prop {Object} contract - The contract data with address and abi
+ * @prop {string} signature - The method signature
+ * @prop {string} senderMode - Sender mode ('metamask' | 'accounts')
+ * @prop {Object} options - Call options (from, gasLimit, gasPrice)
+ * @prop {boolean} active - Whether the method is active/callable
+ */
 <script setup>
 import { ref, computed } from 'vue';
 import Web3 from 'web3';

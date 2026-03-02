@@ -1,3 +1,9 @@
+/**
+ * @fileoverview V2 DEX pair processing job.
+ * Creates pair records with token associations for DEX pools.
+ * @module jobs/processExplorerV2DexPair
+ */
+
 const { ExplorerV2Dex, Explorer, V2DexPair } = require('../models');
 const db = require('../lib/firebase');
 const { DexFactoryConnector } = require('../lib/rpc');

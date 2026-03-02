@@ -1,8 +1,8 @@
-/*
-    This middleware checks that Stripe is enabled.
-    If not, a 404 is sent
-*/
-
+/**
+ * @fileoverview Stripe middleware.
+ * Gates routes that require Stripe billing integration.
+ * @module middlewares/stripe
+ */
 
 const logger = require('../lib/logger');
 const { isStripeEnabled } = require('../lib/flags');

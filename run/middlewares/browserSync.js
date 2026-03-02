@@ -1,11 +1,8 @@
-/*
-    This middleware tries to prevent conflicts between browser sync & external sync.
-    It does 2 things:
-    1. Throws an error if the browser tries to sync something on a workspace where browser sync has been explicitely disabled
-    2. Disable browser sync if we receive a sync from something that is not the browser
-
-    Not sure if it's a good idea to have a middleware updating the db but it's pretty convenient...
-*/
+/**
+ * @fileoverview Browser sync middleware.
+ * Prevents conflicts between browser sync and external sync sources.
+ * @module middlewares/browserSync
+ */
 
 const db = require('../lib/firebase');
 const logger = require('../lib/logger');

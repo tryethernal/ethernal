@@ -1,3 +1,13 @@
+/**
+ * @fileoverview Marketing API endpoints.
+ * Handles user feedback and product roadmap integration.
+ * @module api/marketing
+ *
+ * @route POST /feedback - Submit user feedback to Discord
+ * @route GET /productRoadToken - Get ProductRoad SSO token
+ * @route GET / - Get workspace remote status
+ */
+
 const jwt = require('jsonwebtoken');
 const axios = require('axios');
 const express = require('express');

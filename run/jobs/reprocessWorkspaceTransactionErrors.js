@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Transaction error reprocessing job.
+ * Enqueues error processing for all transactions in a workspace.
+ * @module jobs/reprocessWorkspaceTransactionErrors
+ */
+
 const models = require('../models');
 const { bulkEnqueue } = require('../lib/queue');
 

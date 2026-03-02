@@ -212,6 +212,23 @@
     </v-data-table-server>
 </template>
 
+/**
+ * @fileoverview Token transfers table component.
+ * Displays a paginated, sortable table of token transfers (ERC-20, ERC-721, ERC-1155).
+ * Shows transfer details including hash, block, addresses, amounts, and NFT previews.
+ * @component TokenTransfers
+ *
+ * @prop {Array} transfers - Array of transfer objects to display
+ * @prop {Array} headers - Table header configuration
+ * @prop {boolean} [loading=false] - Loading state
+ * @prop {Array} [sortBy=[]] - Sort configuration
+ * @prop {number} [count=0] - Total count for pagination
+ * @prop {string} [address=''] - Current address for "self" chip display
+ * @prop {string} [density='default'] - Table density ('default' | 'compact')
+ * @prop {string} [noDataText='No token transfers found'] - Empty state text
+ * @prop {boolean} [withCount=true] - Whether to show item count
+ * @emits update:options - Emitted when pagination/sort options change
+ */
 <script setup>
 import { ref, computed, watch, inject } from 'vue';
 import { formatContractPattern } from '@/lib/utils';

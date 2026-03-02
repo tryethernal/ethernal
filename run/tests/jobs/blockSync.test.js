@@ -4,7 +4,7 @@ require('../mocks/lib/queue');
 require('../mocks/lib/firebase');
 require('../mocks/lib/transactions');
 require('../mocks/lib/logger');
-const { Workspace, OrbitChainConfig } = require('../mocks/models');
+const { Workspace, OrbitChainConfig, OpChainConfig } = require('../mocks/models');
 
 const db = require('../../lib/firebase');
 const { enqueue, bulkEnqueue } = require('../../lib/queue');
@@ -17,6 +17,8 @@ beforeEach(() => {
     jest.clearAllMocks();
     // Mock OrbitChainConfig.findAll for all tests
     jest.spyOn(OrbitChainConfig, 'findAll').mockResolvedValue([]);
+    // Mock OpChainConfig.findAll for all tests
+    jest.spyOn(OpChainConfig, 'findAll').mockResolvedValue([]);
 });
 
 describe('blockSync', () => {
@@ -493,6 +495,43 @@ describe('blockSync', () => {
         blockSync({ opts: { priority: 1 }, data : { userId: '123', workspace: 'My Workspace', blockNumber: 1, source: 'api' }})
             .then(() => {
                 expect(db.updateWorkspaceIntegrityCheck).toHaveBeenCalledWith(1, { status: 'healthy' });
+                done();
+            });
+    });
+
+    it('Should use fast path with findByPk when workspaceId is provided', (done) => {
+        mockSafeCreatePartialBlock.mockResolvedValue({ transactions: [
+            { id: 1, hash: '0x123' }
+        ]});
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
+            id: 1,
+            rpcServer: 'http://localhost:8545',
+            explorer: { shouldSync: true },
+            safeCreatePartialBlock: mockSafeCreatePartialBlock
+        });
+
+        blockSync({ opts: { priority: 1 }, data: { workspaceId: 1, blockNumber: 1, source: 'batchSync', rateLimited: true }})
+            .then(res => {
+                expect(Workspace.findByPk).toHaveBeenCalledWith(1, expect.objectContaining({
+                    include: expect.arrayContaining([
+                        'user',
+                        'orbitConfig',
+                        expect.objectContaining({ as: 'opChildConfigs' }),
+                        expect.objectContaining({ as: 'explorer' }),
+                        expect.objectContaining({ as: 'integrityCheck' })
+                    ])
+                }));
+                // Should NOT call findOne (normal path)
+                expect(Workspace.findOne).not.toHaveBeenCalled();
+                expect(res).toEqual('Block synced');
+                done();
+            });
+    });
+
+    it('Should return Missing parameter on fast path when blockNumber is missing', (done) => {
+        blockSync({ opts: { priority: 1 }, data: { workspaceId: 1 }})
+            .then(res => {
+                expect(res).toEqual('Missing parameter');
                 done();
             });
     });

@@ -1,3 +1,10 @@
+/**
+ * @fileoverview PM2 process management utilities.
+ * Provides promisified wrappers for PM2 operations.
+ * Used to manage log listener and RPC server proxy processes.
+ * @module pm2-server/lib/pm2
+ */
+
 const pm2 = require('pm2');
 
 const list = () => {

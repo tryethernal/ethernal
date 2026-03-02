@@ -1,3 +1,16 @@
+/**
+ * @fileoverview OrbitBatch model - represents Arbitrum Orbit transaction batches.
+ * Tracks batches posted by the sequencer to the parent chain.
+ *
+ * @module models/OrbitBatch
+ *
+ * @property {number} id - Primary key
+ * @property {number} workspaceId - Foreign key to L2 workspace
+ * @property {number} batchSequenceNumber - Unique batch sequence number
+ * @property {string} parentChainTxHash - Parent chain posting transaction hash
+ * @property {string} confirmationStatus - pending/finalized
+ */
+
 'use strict';
 const { Model } = require('sequelize');
 const { Op } = require('sequelize');

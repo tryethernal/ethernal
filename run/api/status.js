@@ -1,3 +1,11 @@
+/**
+ * @fileoverview Status page API endpoints.
+ * Provides health status for workspace sync and RPC connectivity.
+ * @module api/status
+ *
+ * @route GET / - Get workspace sync and RPC health status
+ */
+
 const express = require('express');
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const { sanitize } = require('../lib/utils');

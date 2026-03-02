@@ -1,10 +1,25 @@
+/**
+ * @fileoverview Orbit batch finalization job.
+ * Confirms pending batches once parent chain reaches safe block.
+ * @module jobs/finalizePendingOrbitBatches
+ */
+
 const logger = require('../lib/logger');
 const { OrbitBatch, Workspace } = require('../models');
 const { Op } = require('sequelize');
 
 module.exports = async () => {
 
-    const workspaces = await Workspace.findAll({ where: { isTopOrbitParent: true } });
+    // Find all L1 parent workspaces (both public and custom)
+    const workspaces = await Workspace.findAll({
+        where: {
+            [Op.or]: [
+                { isTopL1Parent: true },
+                { isCustomL1Parent: true }
+            ]
+        },
+        include: ['orbitChildConfigs']
+    });
 
     let allPendingBatches = [];
     for (const workspace of workspaces) {

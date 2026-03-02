@@ -135,6 +135,15 @@
     </v-container>
 </template>
 
+/**
+ * @fileoverview Address detail page component.
+ * Displays comprehensive information about an Ethereum address including transactions,
+ * token transfers, internal transactions, contract details (if applicable), events, and analytics.
+ * Supports tab navigation with URL hash synchronization.
+ * @component Address
+ *
+ * @prop {string} address - The Ethereum address to display
+ */
 <script setup>
 import { ref, computed, watch, onMounted, onBeforeUnmount, inject } from 'vue';
 import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';

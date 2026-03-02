@@ -1,3 +1,21 @@
+/**
+ * @fileoverview Explorer model - represents a public block explorer instance.
+ * An explorer is the public-facing configuration for a workspace,
+ * including theming, domains, subscriptions, and features.
+ *
+ * @module models/Explorer
+ *
+ * @property {number} id - Primary key
+ * @property {number} userId - Foreign key to admin user
+ * @property {number} workspaceId - Foreign key to workspace
+ * @property {string} name - Explorer display name
+ * @property {string} slug - URL-friendly identifier
+ * @property {number} chainId - Chain ID
+ * @property {string} rpcServer - RPC endpoint
+ * @property {Object} themes - UI theme configuration
+ * @property {boolean} isDemo - Whether this is a demo explorer
+ */
+
 'use strict';
 const {
   Model
@@ -12,6 +30,18 @@ const analytics = new Analytics();
 const IUniswapV2Router02 = require('../lib/abis/IUniswapV2Router02.json');
 const IUniswapV2Factory = require('../lib/abis/IUniswapV2Factory.json');
 const MAX_RPC_ATTEMPTS = 3;
+
+// Sync failure auto-disable configuration
+const SYNC_FAILURE_THRESHOLD = 3;
+const MAX_RECOVERY_ATTEMPTS = 10;
+const RECOVERY_BACKOFF_SCHEDULE = [
+    5 * 60 * 1000,       // 5 minutes
+    15 * 60 * 1000,      // 15 minutes
+    60 * 60 * 1000,      // 1 hour
+    6 * 60 * 60 * 1000   // 6 hours (max)
+];
+// Stagger recovery checks to avoid thundering herd (random jitter up to 2 minutes)
+const RECOVERY_JITTER_MAX = 2 * 60 * 1000;
 
 module.exports = (sequelize, DataTypes) => {
   class Explorer extends Model {
@@ -29,6 +59,17 @@ module.exports = (sequelize, DataTypes) => {
       Explorer.hasMany(models.ExplorerDomain, { foreignKey: 'explorerId', as: 'domains' });
     }
 
+    /**
+     * Creates a new explorer with sanitized data.
+     * @param {Object} explorer - Explorer configuration
+     * @param {number} explorer.userId - Admin user ID
+     * @param {number} explorer.workspaceId - Associated workspace ID
+     * @param {number} explorer.chainId - Blockchain chain ID
+     * @param {string} explorer.name - Explorer display name
+     * @param {string} explorer.rpcServer - RPC endpoint URL
+     * @param {string} explorer.slug - URL-friendly identifier
+     * @returns {Promise<Explorer>} Created explorer instance
+     */
     static safeCreateExplorer(explorer) {
         return Explorer.create(sanitize({
             userId: explorer.userId,
@@ -44,6 +85,12 @@ module.exports = (sequelize, DataTypes) => {
         }));
     }
 
+    /**
+     * Finds an explorer by its URL slug with all related data.
+     * Includes workspace, subscription, faucet, DEX, and domain info.
+     * @param {string} slug - Explorer slug
+     * @returns {Promise<Explorer|null>} Explorer with associations or null
+     */
     static findBySlug(slug) {
         return Explorer.findOne({
             attributes: ['id', 'chainId', 'domain', 'name', 'rpcServer', 'slug', 'token', 'themes', 'userId', 'workspaceId', 'gasAnalyticsEnabled', 'isDemo', 'totalSupply', 'displayTopAccounts'],
@@ -91,6 +138,11 @@ module.exports = (sequelize, DataTypes) => {
                             model: sequelize.models.OrbitChainConfig,
                             as: 'orbitConfig',
                             attributes: ['parentChainExplorer']
+                        },
+                        {
+                            model: sequelize.models.OpChainConfig,
+                            as: 'opConfig',
+                            attributes: ['parentChainExplorer']
                         }
                     ]
                 },
@@ -111,6 +163,11 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    /**
+     * Finds an explorer by custom domain with all related data.
+     * @param {string} domain - Custom domain name
+     * @returns {Promise<Explorer|null>} Explorer with associations or null
+     */
     static async findByDomain(domain) {
         const explorerDomain = await sequelize.models.ExplorerDomain.findOne({
             where: { domain },
@@ -157,6 +214,11 @@ module.exports = (sequelize, DataTypes) => {
                                 {
                                     model: sequelize.models.OrbitChainConfig,
                                     as: 'orbitConfig',
+                                    attributes: ['parentChainExplorer']
+                                },
+                                {
+                                    model: sequelize.models.OpChainConfig,
+                                    as: 'opConfig',
                                     attributes: ['parentChainExplorer']
                                 }
                             ]
@@ -247,14 +309,129 @@ module.exports = (sequelize, DataTypes) => {
             });
     }
 
-    startSync() {
-        return this.update({ shouldSync: true });
+    /**
+     * Starts block synchronization for the explorer.
+     * Resets all failure tracking when manually enabling sync.
+     * @returns {Promise<Explorer>} Updated explorer
+     */
+    async startSync() {
+        await this.update({
+            shouldSync: true,
+            syncFailedAttempts: 0,
+            syncDisabledAt: null,
+            syncDisabledReason: null,
+            recoveryAttempts: 0,
+            nextRecoveryCheckAt: null
+        });
+        return this;
     }
 
+    /**
+     * Stops block synchronization for the explorer.
+     * @returns {Promise<Explorer>} Updated explorer
+     */
     stopSync() {
         return this.update({ shouldSync: false });
     }
 
+    /**
+     * Increments the sync failure counter and auto-disables if threshold reached.
+     * Uses atomic increment to avoid race conditions.
+     * @param {string} [reason='rpc_unreachable'] - Reason for the failure
+     * @returns {Promise<{disabled: boolean, attempts: number}>} Result with disable status
+     */
+    async incrementSyncFailures(reason = 'rpc_unreachable') {
+        // Use atomic increment to avoid race conditions
+        await this.increment('syncFailedAttempts');
+        await this.reload();
+
+        if (this.syncFailedAttempts >= SYNC_FAILURE_THRESHOLD) {
+            await this.autoDisableSync(reason);
+            return { disabled: true, attempts: this.syncFailedAttempts };
+        }
+        return { disabled: false, attempts: this.syncFailedAttempts };
+    }
+
+    /**
+     * Auto-disables sync and schedules first recovery check.
+     * Adds random jitter to avoid thundering herd when many explorers are disabled at once.
+     * @param {string} reason - Reason for disabling (e.g., 'rpc_unreachable')
+     * @returns {Promise<Explorer>} Updated explorer
+     */
+    async autoDisableSync(reason) {
+        // Add random jitter to stagger recovery checks
+        const jitter = Math.floor(Math.random() * RECOVERY_JITTER_MAX);
+        const nextCheck = new Date(Date.now() + RECOVERY_BACKOFF_SCHEDULE[0] + jitter);
+        await this.update({
+            shouldSync: false,
+            syncDisabledAt: new Date(),
+            syncDisabledReason: reason,
+            recoveryAttempts: 0,
+            nextRecoveryCheckAt: nextCheck
+        });
+        return this;
+    }
+
+    /**
+     * Schedules the next recovery check using exponential backoff.
+     * Increments recovery attempts and returns null if max attempts reached.
+     * Backoff schedule: 5m -> 15m -> 1h -> 6h (max)
+     * @returns {Promise<{scheduled: boolean, attempts: number, maxReached: boolean}>} Result
+     */
+    async scheduleNextRecoveryCheck() {
+        if (!this.syncDisabledAt) {
+            return { scheduled: false, attempts: 0, maxReached: false };
+        }
+
+        const newAttempts = (this.recoveryAttempts || 0) + 1;
+
+        // Check if max recovery attempts reached
+        if (newAttempts >= MAX_RECOVERY_ATTEMPTS) {
+            await this.update({
+                recoveryAttempts: newAttempts,
+                nextRecoveryCheckAt: null,
+                syncDisabledReason: 'max_recovery_attempts_reached'
+            });
+            return { scheduled: false, attempts: newAttempts, maxReached: true };
+        }
+
+        // Use recovery attempts as index, capped at max backoff
+        const backoffIndex = Math.min(newAttempts - 1, RECOVERY_BACKOFF_SCHEDULE.length - 1);
+        // Add random jitter to stagger recovery checks
+        const jitter = Math.floor(Math.random() * RECOVERY_JITTER_MAX);
+        const nextCheck = new Date(Date.now() + RECOVERY_BACKOFF_SCHEDULE[backoffIndex] + jitter);
+
+        await this.update({
+            recoveryAttempts: newAttempts,
+            nextRecoveryCheckAt: nextCheck
+        });
+        return { scheduled: true, attempts: newAttempts, maxReached: false };
+    }
+
+    /**
+     * Re-enables sync after successful recovery check.
+     * @returns {Promise<Explorer>} Updated explorer
+     */
+    async enableSyncAfterRecovery() {
+        await this.update({
+            shouldSync: true,
+            syncFailedAttempts: 0,
+            syncDisabledAt: null,
+            syncDisabledReason: null,
+            recoveryAttempts: 0,
+            nextRecoveryCheckAt: null
+        });
+        return this;
+    }
+
+    /**
+     * Creates a Uniswap V2 compatible DEX for the explorer.
+     * @param {string} routerAddress - DEX router contract address
+     * @param {string} factoryAddress - DEX factory contract address
+     * @param {string} wrappedNativeTokenAddress - WETH/WBNB contract address
+     * @returns {Promise<ExplorerV2Dex>} Created DEX instance
+     * @throws {Error} If explorer already has a DEX
+     */
     async safeCreateV2Dex(routerAddress, factoryAddress, wrappedNativeTokenAddress) {
         if (!routerAddress || !factoryAddress || !wrappedNativeTokenAddress)
             throw new Error('Missing parameter');
@@ -301,6 +478,14 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    /**
+     * Creates a faucet for the explorer with a generated wallet.
+     * @param {string} amount - Amount to dispense per request
+     * @param {number} interval - Cooldown interval between requests
+     * @param {Object} [transaction] - Sequelize transaction
+     * @returns {Promise<ExplorerFaucet>} Created faucet instance
+     * @throws {Error} If explorer already has a faucet
+     */
     async safeCreateFaucet(amount, interval, transaction) {
         if (!amount || !interval)
             throw new Error('Missing parameter');
@@ -313,6 +498,10 @@ module.exports = (sequelize, DataTypes) => {
         return this.createFaucet({ address, privateKey, amount, interval, active: true }, { transaction });
     }
 
+    /**
+     * Checks if the explorer is active with valid subscription.
+     * @returns {Promise<boolean>} True if active and within quota
+     */
     async isActive() {
         const subscription = await this.getStripeSubscription();
         const hasReachedTransactionQuota = await this.hasReachedTransactionQuota();
@@ -320,6 +509,10 @@ module.exports = (sequelize, DataTypes) => {
         return subscription && subscription.status == 'active' && !hasReachedTransactionQuota;
     }
 
+    /**
+     * Gets the transaction quota for this explorer.
+     * @returns {Promise<number>} Transaction quota limit
+     */
     async getTransactionQuota() {
         if (!this.shouldEnforceQuota)
             return 0;
@@ -333,6 +526,10 @@ module.exports = (sequelize, DataTypes) => {
         return stripeSubscription.stripePlan.capabilities.txLimit + extraQuota;
     }
 
+    /**
+     * Checks if transaction quota has been reached.
+     * @returns {Promise<boolean>} True if quota exceeded
+     */
     async hasReachedTransactionQuota() {
         if (!this.shouldEnforceQuota)
             return false;
@@ -346,6 +543,10 @@ module.exports = (sequelize, DataTypes) => {
         return baseQuota > 0 && stripeSubscription.transactionQuota > baseQuota + extraQuota;
     }
 
+    /**
+     * Checks if RPC has too many failed health check attempts.
+     * @returns {Promise<boolean>} True if within allowed attempts
+     */
     async hasTooManyFailedAttempts() {
         const workspace = await this.getWorkspace({ include: 'rpcHealthCheck' });
         if (workspace.rpcHealthCheck && workspace.rpcHealthCheck.failedAttempts <= MAX_RPC_ATTEMPTS)
@@ -353,6 +554,13 @@ module.exports = (sequelize, DataTypes) => {
         return false;
     }
 
+    /**
+     * Creates a custom domain for the explorer.
+     * @param {string} domain - Custom domain name
+     * @param {Object} [transaction] - Sequelize transaction
+     * @returns {Promise<ExplorerDomain>} Created domain
+     * @throws {Error} If domain is already in use
+     */
     async safeCreateDomain(domain, transaction) {
         if (!domain) throw new Error('Missing parameter');
 
@@ -366,6 +574,14 @@ module.exports = (sequelize, DataTypes) => {
         return this.createDomain({ domain }, { transaction });
     }
 
+    /**
+     * Creates a Stripe subscription for the explorer.
+     * @param {number} stripePlanId - Stripe plan ID
+     * @param {string} stripeId - Stripe subscription ID
+     * @param {Date} cycleEndsAt - Billing cycle end date
+     * @param {string} status - Subscription status (active, trial, trial_with_card)
+     * @returns {Promise<StripeSubscription>} Created subscription
+     */
     safeCreateSubscription(stripePlanId, stripeId, cycleEndsAt, status) {
         if (!stripePlanId || !cycleEndsAt || !status) throw new Error('Missing parameter');
 
@@ -375,6 +591,12 @@ module.exports = (sequelize, DataTypes) => {
         return this.createStripeSubscription({ stripePlanId, stripeId, cycleEndsAt, status });
     }
 
+    /**
+     * Migrates a demo explorer to a real user.
+     * @param {number} userId - Target user ID
+     * @param {Object} stripeSubscriptionData - Subscription data
+     * @returns {Promise<Explorer>} Updated explorer
+     */
     async migrateDemoTo(userId, stripeSubscriptionData) {
         if  (!userId || !stripeSubscriptionData) throw new Error('Missing parameter');
 
@@ -579,7 +801,12 @@ module.exports = (sequelize, DataTypes) => {
     shouldEnforceQuota: DataTypes.BOOLEAN,
     isDemo: DataTypes.BOOLEAN,
     gasAnalyticsEnabled: DataTypes.BOOLEAN,
-    displayTopAccounts: DataTypes.BOOLEAN
+    displayTopAccounts: DataTypes.BOOLEAN,
+    syncFailedAttempts: DataTypes.INTEGER,
+    syncDisabledAt: DataTypes.DATE,
+    syncDisabledReason: DataTypes.STRING,
+    recoveryAttempts: DataTypes.INTEGER,
+    nextRecoveryCheckAt: DataTypes.DATE
   }, {
     hooks: {
         afterCreate(explorer, options) {

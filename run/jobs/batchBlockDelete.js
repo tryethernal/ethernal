@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Batch block delete job.
+ * Deletes a batch of blocks by their IDs.
+ * @module jobs/batchBlockDelete
+ */
+
 const { Workspace } = require('../models');
 
 module.exports = async (job) => {

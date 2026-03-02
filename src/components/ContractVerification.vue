@@ -179,6 +179,15 @@
     </v-card>
 </template>
 
+/**
+ * @fileoverview Contract verification form component.
+ * Provides form for verifying Solidity contracts with compiler settings,
+ * source file upload, library linking, and constructor arguments.
+ * @component ContractVerification
+ *
+ * @prop {string} address - The contract address to verify
+ * @emits contractVerified - Emitted with verification data when verification succeeds
+ */
 <script setup>
 import { ref, reactive, onMounted , inject } from 'vue';
 import { sanitize } from '../lib/utils';
