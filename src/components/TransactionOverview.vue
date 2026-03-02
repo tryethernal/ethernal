@@ -83,9 +83,9 @@
             <v-list-item-title class="text-body-2">
               <router-link v-if="transaction.blockNumber" style="text-decoration: none;" :to="'/block/' + transaction.blockNumber">{{ commify(transaction.blockNumber) }}</router-link>
               <span v-else>-</span>
-              <span v-if="currentWorkspaceStore.currentBlock && currentWorkspaceStore.currentBlock.number && transaction.blockNumber" class="ml-2 confirmation-text">
+              <span v-if="blockConfirmations > 0" class="ml-2 confirmation-text">
                 <v-chip size="small" :color="theme.global.current.value.dark ? 'grey-lighten-1' : 'grey-darken-2'"class="font-weight-medium mr-2" density="comfortable">
-                  {{ commify(currentWorkspaceStore.currentBlock.number - transaction.blockNumber) }} Block Confirmations
+                  {{ commify(blockConfirmations) }} Block Confirmations
                 </v-chip>
               </span>
             </v-list-item-title>
@@ -502,7 +502,7 @@
 </template>
 
 <script setup>
-import { computed, inject, onErrorCaptured } from 'vue';
+import { computed, inject, onErrorCaptured, onMounted, onUnmounted } from 'vue';
 import * as ethers from 'ethers';
 import { useExplorerStore } from '../stores/explorer';
 import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
@@ -530,11 +530,35 @@ const emit = defineEmits(['error']);
 // Inject all required globals
 const $fromWei = inject('$fromWei');
 const $dt = inject('$dt');
+const $pusher = inject('$pusher');
 
 // Stores
 const explorerStore = useExplorerStore();
 const currentWorkspaceStore = useCurrentWorkspaceStore();
 const theme = useTheme();
+
+// Keep current block updated via Pusher
+const onBlock = block => {
+    if (block.number > (currentWorkspaceStore.currentBlock?.number || 0))
+        currentWorkspaceStore.updateCurrentBlock(block);
+};
+let pusherChannel = null;
+
+onMounted(() => {
+    pusherChannel = $pusher.onNewBlock(onBlock);
+});
+
+onUnmounted(() => {
+    if (pusherChannel)
+        pusherChannel.unbind('new', onBlock);
+});
+
+// Block confirmations - reactive and never negative
+const blockConfirmations = computed(() => {
+  if (!currentWorkspaceStore.currentBlock || !currentWorkspaceStore.currentBlock.number || !props.transaction.blockNumber)
+    return 0;
+  return Math.max(0, currentWorkspaceStore.currentBlock.number - props.transaction.blockNumber);
+});
 
 // Cache frequently accessed values
 const cachedGasPrices = new Map();

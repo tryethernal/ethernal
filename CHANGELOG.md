@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.12.5] - 2026-03-02
+### Fixed
+- Block confirmations on transaction page now update in real-time instead of staying fixed at page load value
+
 ## [5.12.4] - 2026-03-02
 ### Changed
 - Faster receipt syncing with batch RPC calls and inline storage for small blocks
