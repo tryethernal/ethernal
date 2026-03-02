@@ -2,7 +2,7 @@
 
 Automate the release process for Ethernal. This command handles everything after PRs are merged into `develop`: changelog, version bump, tagging, pushing, and syncing master.
 
-**IMPORTANT:** Follow every step in order. Do NOT skip guard checks. Do NOT commit or push without explicit user approval.
+**IMPORTANT:** Follow every step in order. Do NOT skip guard checks. Proceed through all steps without asking for user approval — apply changelog, version bump, commit, tag, push, and sync master autonomously.
 
 ## Step 1: Guard Checks
 
@@ -81,7 +81,7 @@ Display the chosen bump type and the resulting new version number to the user. D
    - Description of fix
    ```
 
-4. Show the draft to the user and ask for approval. The user may edit the draft or ask for changes. Do NOT proceed until the user approves.
+4. Proceed directly — do not ask for user approval on the changelog draft.
 
 ## Step 5: Apply Changes
 
