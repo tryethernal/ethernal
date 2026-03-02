@@ -247,4 +247,95 @@ describe('receiptSync', () => {
                 done();
             });
     });
+
+    it('Should use cached workspace data when available', (done) => {
+        const safeCreateReceipt = jest.fn().mockResolvedValueOnce();
+        // With cachedWorkspace, the query should NOT include workspace
+        jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({
+            id: 1,
+            // No workspace included in response - simulating lighter query
+            safeCreateReceipt
+        });
+        ProviderConnector.mockImplementationOnce(() => ({
+            fetchTransactionReceipt: jest.fn().mockResolvedValueOnce({ blockNumber: 1, transactionHash: '0x123' })
+        }));
+
+        receiptSync({ data: {
+            transactionId: 1,
+            transactionHash: '0x123',
+            workspaceId: 1,
+            cachedWorkspace: {
+                rpcServer: 'http://cached-rpc',
+                rateLimitInterval: 1000,
+                rateLimitMaxInInterval: 10,
+                public: true
+            }
+        }})
+            .then(() => {
+                expect(safeCreateReceipt).toHaveBeenCalledWith({
+                    blockNumber: 1,
+                    raw: { transactionHash: '0x123' },
+                    workspace: { id: 1, orbitConfig: null, orbitChildConfigs: [] }
+                });
+                done();
+            });
+    });
+
+    it('Should return error for private workspace with cached data', (done) => {
+        jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({
+            id: 1
+            // No receipt - so it won't return early
+        });
+
+        receiptSync({ data: {
+            transactionId: 1,
+            transactionHash: '0x123',
+            workspaceId: 1,
+            cachedWorkspace: {
+                rpcServer: 'http://cached-rpc',
+                public: false
+            }
+        }})
+            .then(res => {
+                expect(res).toEqual('Cannot sync on private workspace');
+                done();
+            });
+    });
+
+    it('Should preserve cached workspace in re-enqueue on timeout', (done) => {
+        jest.spyOn(Date, 'now').mockImplementation(() => 1609459200000);
+        jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({
+            id: 1,
+            hash: '0x123'
+        });
+        ProviderConnector.mockImplementationOnce(() => ({
+            fetchTransactionReceipt: jest.fn().mockRejectedValueOnce({ message: 'Timed out after 10000ms' })
+        }));
+
+        const cachedWorkspace = {
+            rpcServer: 'http://cached-rpc',
+            rateLimitInterval: 1000,
+            rateLimitMaxInInterval: 10,
+            public: true
+        };
+
+        receiptSync({ opts: { priority: 1 }, data: {
+            transactionId: 1,
+            transactionHash: '0x123',
+            workspaceId: 1,
+            source: 'api',
+            cachedWorkspace
+        }})
+            .then(() => {
+                expect(enqueue).toHaveBeenCalledWith('receiptSync', 'receiptSync-1-0x123-1609459200000', {
+                    transactionHash: '0x123',
+                    transactionId: 1,
+                    workspaceId: 1,
+                    source: 'api',
+                    rateLimited: false,
+                    cachedWorkspace
+                }, 1, null, 1000, false);
+                done();
+            });
+    });
 });
