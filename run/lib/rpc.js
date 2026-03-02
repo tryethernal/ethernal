@@ -256,8 +256,26 @@ class ProviderConnector {
      */
     constructor(server, limiter) {
         if (!server) throw '[ProviderConnector] Missing server parameter';
+        this.server = server; // Store original URL for batch requests
         this.provider = getProvider(server);
         this.limiter = limiter;
+    }
+
+    /**
+     * Get fetch options for the RPC URL, including auth headers if needed
+     * @returns {Object} - { url, headers }
+     */
+    _getFetchOptions() {
+        const rpcUrl = new URL(this.server);
+        const headers = { 'Content-Type': 'application/json' };
+
+        // Handle basic auth from URL credentials
+        if (rpcUrl.username || rpcUrl.password) {
+            const auth = Buffer.from(`${rpcUrl.username}:${rpcUrl.password}`).toString('base64');
+            headers['Authorization'] = `Basic ${auth}`;
+        }
+
+        return { url: rpcUrl.origin + rpcUrl.pathname + rpcUrl.search, headers };
     }
 
     getBalance(address, block = 'latest') {
@@ -297,6 +315,79 @@ class ProviderConnector {
 
         const rawTransaction = await withTimeout(this.provider.send('eth_getTransactionReceipt', [transactionHash]));
         return sanitize(rawTransaction);
+    }
+
+    /**
+     * Fetch multiple transaction receipts in a single JSON-RPC batch request.
+     * Falls back to sequential fetching if batch request fails.
+     * @param {string[]} transactionHashes - Array of transaction hashes
+     * @returns {Promise<Object[]>} - Array of receipts (null for any that failed)
+     */
+    async fetchTransactionReceiptsBatch(transactionHashes) {
+        if (!transactionHashes || transactionHashes.length === 0) return [];
+
+        // Rate limit check counts as 1 HTTP request (batch is a single HTTP call to the provider)
+        await this.checkRateLimit();
+
+        const batchRequest = transactionHashes.map((hash, i) => ({
+            jsonrpc: '2.0',
+            id: i,
+            method: 'eth_getTransactionReceipt',
+            params: [hash]
+        }));
+
+        try {
+            // Check if fetch is available (Node 18+)
+            if (typeof fetch === 'undefined') {
+                throw new Error('fetch not available');
+            }
+
+            // Use helper to get URL and auth headers
+            const { url, headers } = this._getFetchOptions();
+            const httpResponse = await withTimeout(
+                fetch(url, {
+                    method: 'POST',
+                    headers,
+                    body: JSON.stringify(batchRequest)
+                })
+            );
+
+            if (!httpResponse.ok) {
+                throw new Error(`Batch RPC request failed with status ${httpResponse.status}`);
+            }
+
+            const response = await httpResponse.json();
+
+            // Validate the response is an array (batch JSON-RPC should return an array)
+            if (!Array.isArray(response)) {
+                throw new Error('Batch RPC response is not an array');
+            }
+
+            // Map results by id for safe ordering regardless of response order
+            const resultsById = new Map(response.map(r => [r.id, r]));
+            return transactionHashes.map((hash, i) => {
+                const r = resultsById.get(i);
+                if (!r) return null;
+                if (r.error) {
+                    logger.warn('RPC error in batch receipt result', { id: i, hash, error: r.error });
+                    return null;
+                }
+                return r.result ? sanitize(r.result) : null;
+            });
+        } catch (error) {
+            // Fallback: fetch sequentially if batch fails
+            logger.info('Batch receipt fetch failed, falling back to sequential', { error: error.message });
+            const receipts = [];
+            for (const hash of transactionHashes) {
+                try {
+                    const receipt = await this.fetchTransactionReceipt(hash);
+                    receipts.push(receipt);
+                } catch (e) {
+                    receipts.push(null);
+                }
+            }
+            return receipts;
+        }
     }
 
     async fetchNetworkId() {
