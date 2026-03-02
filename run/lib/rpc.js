@@ -343,13 +343,24 @@ class ProviderConnector {
 
             // Use helper to get URL and auth headers
             const { url, headers } = this._getFetchOptions();
-            const response = await withTimeout(
+            const httpResponse = await withTimeout(
                 fetch(url, {
                     method: 'POST',
                     headers,
                     body: JSON.stringify(batchRequest)
-                }).then(r => r.json())
+                })
             );
+
+            if (!httpResponse.ok) {
+                throw new Error(`Batch RPC request failed with status ${httpResponse.status}`);
+            }
+
+            const response = await httpResponse.json();
+
+            // Validate the response is an array (batch JSON-RPC should return an array)
+            if (!Array.isArray(response)) {
+                throw new Error('Batch RPC response is not an array');
+            }
 
             // Sort by id to maintain order, then extract results
             const sortedResults = response.sort((a, b) => a.id - b.id);

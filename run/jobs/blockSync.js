@@ -379,30 +379,65 @@ module.exports = async job => {
         // For blocks with few transactions, fetch receipts inline for lower latency
         // Only for public workspaces - private workspaces should go through receiptSync which enforces access control
         if (transactions.length > 0 && transactions.length <= INLINE_RECEIPT_THRESHOLD && workspace.public) {
-            // Fetch all receipts in a single batch RPC request
-            const receipts = await providerConnector.fetchTransactionReceiptsBatch(
-                transactions.map(tx => tx.hash)
-            );
+            try {
+                // Fetch all receipts in a single batch RPC request
+                const receipts = await providerConnector.fetchTransactionReceiptsBatch(
+                    transactions.map(tx => tx.hash)
+                );
 
-            // Store receipts in parallel with concurrency limit
-            for (let i = 0; i < transactions.length; i += RECEIPT_STORAGE_CONCURRENCY) {
-                const batch = transactions.slice(i, i + RECEIPT_STORAGE_CONCURRENCY);
-                await Promise.all(batch.map((tx, j) => {
-                    const receiptIndex = i + j;
-                    const receipt = receipts[receiptIndex];
-                    if (!receipt) {
-                        logger.warn(`Missing receipt for transaction ${tx.hash}`);
-                        return Promise.resolve();
+                // Store receipts in parallel with concurrency limit
+                const failedTxHashes = [];
+                for (let i = 0; i < transactions.length; i += RECEIPT_STORAGE_CONCURRENCY) {
+                    const batch = transactions.slice(i, i + RECEIPT_STORAGE_CONCURRENCY);
+                    await Promise.all(batch.map(async (tx, j) => {
+                        const receiptIndex = i + j;
+                        const receipt = receipts[receiptIndex];
+                        if (!receipt) {
+                            failedTxHashes.push(tx);
+                            return;
+                        }
+                        const processedReceipt = processRawRpcObject(
+                            receipt,
+                            Object.keys(TransactionReceipt.rawAttributes).concat(['logs'])
+                        );
+                        processedReceipt.workspace = workspace;
+                        try {
+                            await tx.safeCreateReceipt(processedReceipt);
+                        } catch (err) {
+                            logger.error(`Failed to store receipt for ${tx.hash}`, { error: err.message });
+                            failedTxHashes.push(tx);
+                        }
+                    }));
+                }
+
+                // Queue receiptSync jobs for any that failed inline
+                if (failedTxHashes.length > 0) {
+                    const failedJobs = failedTxHashes.map(tx => ({
+                        name: `receiptSync-${workspace.id}-${tx.hash}`,
+                        data: {
+                            transactionId: tx.id,
+                            transactionHash: tx.hash,
+                            workspaceId: workspace.id,
+                            source: data.source,
+                            rateLimited: data.rateLimited
+                        }
+                    }));
+                    await bulkEnqueue('receiptSync', failedJobs, job.opts.priority);
+                }
+            } catch (error) {
+                // Batch fetch failed entirely - fall back to queueing receiptSync jobs
+                logger.warn('Inline receipt fetch failed, falling back to receiptSync jobs', { error: error.message });
+                const fallbackJobs = transactions.map(tx => ({
+                    name: `receiptSync-${workspace.id}-${tx.hash}`,
+                    data: {
+                        transactionId: tx.id,
+                        transactionHash: tx.hash,
+                        workspaceId: workspace.id,
+                        source: data.source,
+                        rateLimited: data.rateLimited
                     }
-                    const processedReceipt = processRawRpcObject(
-                        receipt,
-                        Object.keys(TransactionReceipt.rawAttributes).concat(['logs'])
-                    );
-                    processedReceipt.workspace = workspace;
-                    return tx.safeCreateReceipt(processedReceipt).catch(err => {
-                        logger.error(`Failed to store receipt for ${tx.hash}`, { error: err.message });
-                    });
                 }));
+                await bulkEnqueue('receiptSync', fallbackJobs, job.opts.priority);
             }
         } else if (transactions.length > 0) {
             // For larger blocks (or private workspaces), queue jobs

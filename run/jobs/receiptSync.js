@@ -192,8 +192,10 @@ module.exports = async job => {
 
         // For safeCreateReceipt, we need to pass workspace context for orbit processing
         // When using cached data, construct a minimal workspace-like object
+        // Note: cached path is only used for non-orbit workspaces (blockSync skips caching for orbit),
+        // so safe defaults for orbit fields are sufficient
         if (hasCachedWorkspace) {
-            processedReceipt.workspace = { id: data.workspaceId };
+            processedReceipt.workspace = { id: data.workspaceId, orbitConfig: null, orbitChildConfigs: [] };
         } else {
             processedReceipt.workspace = transaction.workspace;
         }

@@ -275,7 +275,7 @@ describe('receiptSync', () => {
                 expect(safeCreateReceipt).toHaveBeenCalledWith({
                     blockNumber: 1,
                     raw: { transactionHash: '0x123' },
-                    workspace: { id: 1 }
+                    workspace: { id: 1, orbitConfig: null, orbitChildConfigs: [] }
                 });
                 done();
             });
