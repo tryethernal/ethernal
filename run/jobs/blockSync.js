@@ -385,6 +385,9 @@ module.exports = async job => {
                     transactions.map(tx => tx.hash)
                 );
 
+                // Ensure orbit associations are set for safeCreateReceipt
+                workspace.orbitChildConfigs = orbitChildConfigs || [];
+
                 // Store receipts in parallel with concurrency limit
                 const failedTxHashes = [];
                 for (let i = 0; i < transactions.length; i += RECEIPT_STORAGE_CONCURRENCY) {
