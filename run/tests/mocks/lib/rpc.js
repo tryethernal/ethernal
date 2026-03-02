@@ -50,6 +50,12 @@ jest.mock('../../../lib/rpc', () => {
                 .mockResolvedValue({
                     status: 1
                 }),
+            fetchTransactionReceiptsBatch: jest.fn()
+                .mockResolvedValue([
+                    { status: 1, blockNumber: 1, logs: [] },
+                    { status: 1, blockNumber: 1, logs: [] },
+                    { status: 1, blockNumber: 1, logs: [] }
+                ]),
             fetchLatestBlock: jest.fn()
                 .mockResolvedValue({ number: 100 })
         })),
