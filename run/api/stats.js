@@ -1,3 +1,14 @@
+/**
+ * @fileoverview Statistics API endpoints.
+ * Provides analytics data for tokens, transactions, and workspace activity.
+ * @module api/stats
+ *
+ * @route GET /topTokensByHolders - Get tokens ranked by holder count
+ * @route GET /topTokensByTransfers - Get tokens ranked by transfer count
+ * @route GET /cumulativeTransactionCount - Get transaction count over time
+ * @route GET /cumulativeWalletCount - Get wallet count over time
+ */
+
 const express = require('express');
 const router = express.Router();
 const db = require('../lib/firebase');

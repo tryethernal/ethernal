@@ -1,9 +1,17 @@
+/**
+ * @fileoverview Contract processing job.
+ * Detects token standards (ERC20/721/1155), fetches Etherscan metadata,
+ * decompiles bytecode, and stores contract data.
+ * @module jobs/processContract
+ */
+
 const axios = require('axios');
 const ethers = require('ethers');
 const { sanitize, withTimeout } = require('../lib/utils');
 const yasold = require('../lib/yasold');
 const { contractFn } = require('../lib/codeRunner');
 const db = require('../lib/firebase');
+const { detectStandard } = require('../lib/abi');
 const { ContractConnector, ERC721Connector } = require('../lib/rpc');
 const { Workspace, Contract, CustomField } = require('../models');
 const { getScannerKey } = require('../lib/env');
@@ -12,10 +20,20 @@ const { trigger } = require('../lib/pusher');
 
 const findPatterns = async (rpcServer, contractAddress, abi) => {
     let tokenData = { patterns: [] };
+
+    let isErc20, isErc721, isErc1155;
+
+    if (abi && abi.length > 0) {
+        const fns = detectStandard(abi);
+        if (fns.isERC20) isErc20 = true;
+        if (fns.isERC721) isErc721 = true;
+        if (fns.isERC1155) isErc1155 = true;
+    }
+
     const contract = new ContractConnector(rpcServer, contractAddress, abi);
-    const isErc20 = await contract.isErc20();
-    const isErc721 = await contract.isErc721();
-    const isErc1155 = await contract.isErc1155();
+    if (!isErc20) isErc20 = await contract.isErc20();
+    if (!isErc721) isErc721 = await contract.isErc721();
+    if (!isErc1155) isErc1155 = await contract.isErc1155();
 
     if (isErc20 || isErc721 || isErc1155) {
         tokenData = sanitize({
@@ -174,6 +192,7 @@ module.exports = async job => {
     else
         bytecode = contract.bytecode;
 
+
     if (bytecode == '0x')
         return contract.safeDestroy();
 
@@ -201,6 +220,7 @@ module.exports = async job => {
 
     const abi = contract.abi || scannerMetadata.abi;
     let tokenData = {};
+
     if (workspace.public) {
         try {
             tokenData = await findPatterns(workspace.rpcServer, contract.address, abi);

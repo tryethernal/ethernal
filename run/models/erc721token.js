@@ -1,3 +1,18 @@
+/**
+ * @fileoverview Erc721Token model - represents individual ERC721 NFT tokens.
+ * Stores token ownership, URI, and metadata.
+ *
+ * @module models/Erc721Token
+ *
+ * @property {number} id - Primary key
+ * @property {number} workspaceId - Foreign key to workspace
+ * @property {number} contractId - Foreign key to NFT contract
+ * @property {string} tokenId - NFT token ID
+ * @property {string} owner - Current owner address
+ * @property {string} URI - Token metadata URI
+ * @property {Object} metadata - Parsed metadata (name, image, attributes)
+ */
+
 'use strict';
 const {
   Model,

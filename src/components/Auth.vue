@@ -93,7 +93,7 @@
                                         v => !!v || 'Email is required',
                                         v => /.+@.+\..+/.test(v) || 'Email must be valid',
                                     ]"
-                                    required v-model="email" name="email" label="Email" type="text"></v-text-field>
+                                    required class="mt-3" v-model="email" name="email" label="Email" type="text"></v-text-field>
 
                                 <v-card-actions class="px-0">
                                     <div style="float: left;">
@@ -134,6 +134,12 @@
     </v-layout>
 </template>
 
+/**
+ * @fileoverview Authentication page component.
+ * Handles user sign-in, sign-up, password reset, and forgotten password flows.
+ * Supports explorer token-based onboarding for new users.
+ * @component Auth
+ */
 <script>
 import { mapStores } from 'pinia';
 import { useUserStore } from '../stores/user';

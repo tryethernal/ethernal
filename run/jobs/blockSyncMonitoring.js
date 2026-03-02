@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Block sync monitoring job.
+ * Checks if explorers are falling behind and creates OpsGenie alerts.
+ * @module jobs/blockSyncMonitoring
+ */
+
 const { Sequelize } = require('sequelize');
 const { Explorer, StripeSubscription, StripePlan, Workspace } = require('../models');
 const logger = require('../lib/logger');
@@ -57,7 +63,12 @@ module.exports = async () => {
         const blockNumberDiff = parseInt(latestRemoteBlock.number) - parseInt(latestLocalBlock.number);
 
         if (blockNumberDiff >= maxBlockNumberDiff())
-            await createIncident(`Block sync is behind`, `Explorer: ${explorer.name} (#${explorer.id}) - Diff: ${blockNumberDiff} - Remote: ${latestRemoteBlock.number} - Local: ${latestLocalBlock.number}`);
+            await createIncident(
+                `Block sync is behind`,
+                `Explorer: ${explorer.name} (#${explorer.id}) - Diff: ${blockNumberDiff} - Remote: ${latestRemoteBlock.number} - Local: ${latestLocalBlock.number}`,
+                'P1',
+                { alias: `block-sync-behind-${explorer.id}` }
+            );
         else
             logger.info(`Block sync is OK`, { id: explorer.id, name: explorer.name, diff: parseInt(latestRemoteBlock.number) - parseInt(latestLocalBlock.number) });
     }

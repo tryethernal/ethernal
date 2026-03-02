@@ -1,3 +1,18 @@
+/**
+ * @fileoverview TransactionReceipt model - stores transaction execution results.
+ * Contains gas used, status, logs, and contract creation info.
+ *
+ * @module models/TransactionReceipt
+ *
+ * @property {number} id - Primary key
+ * @property {number} workspaceId - Foreign key to workspace
+ * @property {number} transactionId - Foreign key to transaction
+ * @property {string} status - Execution status (0=failed, 1=success)
+ * @property {string} gasUsed - Actual gas consumed
+ * @property {string} contractAddress - Created contract address (if applicable)
+ * @property {string} logsBloom - Bloom filter for logs
+ */
+
 'use strict';
 const {
   Model
@@ -28,7 +43,7 @@ module.exports = (sequelize, DataTypes) => {
 
     async insertAnalyticEvent(sequelizeTransaction) {
         const transaction = await this.getTransaction();
-        const gasPrice = this.raw.effectiveGasPrice || this.raw.gasPrice || transaction.gasPrice;
+        const gasPrice = this.effectiveGasPrice || this.raw.gasPrice || transaction.gasPrice;
         const transactionFee = BigNumber.from(this.gasUsed.toString()).mul(BigNumber.from(gasPrice.toString()));
 
         return sequelize.models.TransactionEvent.create({
@@ -109,6 +124,46 @@ module.exports = (sequelize, DataTypes) => {
     type: DataTypes.INTEGER,
     transactionId: DataTypes.INTEGER,
     workspaceId: DataTypes.INTEGER,
+    blobGasUsed: {
+        type: DataTypes.STRING,
+        get() {
+            this.getDataValue('blobGasUsed') || this.getDataValue('raw.blobGasUsed') ?
+                String(this.getDataValue('blobGasUsed') || this.getDataValue('raw.blobGasUsed')) :
+                null;
+        }
+    },
+    blobGasPrice: {
+        type: DataTypes.STRING,
+        get() {
+            this.getDataValue('blobGasPrice') || this.getDataValue('raw.blobGasPrice') ?
+                String(this.getDataValue('blobGasPrice') || this.getDataValue('raw.blobGasPrice')) :
+                null;
+        }
+    },
+    timeboosted: {
+        type: DataTypes.BOOLEAN,
+        get() {
+            this.getDataValue('timeboosted') || this.getDataValue('raw.timeboosted') ?
+                String(this.getDataValue('timeboosted') || this.getDataValue('raw.timeboosted')) :
+                null;
+        }
+    },
+    gasUsedForL1: {
+        type: DataTypes.STRING,
+        get() {
+            this.getDataValue('gasUsedForL1') || this.getDataValue('raw.gasUsedForL1') ?
+                String(this.getDataValue('gasUsedForL1') || this.getDataValue('raw.gasUsedForL1')) :
+                null;
+        }
+    },
+    effectiveGasPrice: {
+        type: DataTypes.STRING,
+        get() {
+            this.getDataValue('effectiveGasPrice') || this.getDataValue('raw.effectiveGasPrice') ?
+                String(this.getDataValue('effectiveGasPrice') || this.getDataValue('raw.effectiveGasPrice')) :
+                null;
+        }
+    },
     raw: DataTypes.JSON
   }, {
     hooks: {

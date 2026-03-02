@@ -4,6 +4,218 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.12.3] - 2026-03-02
+### Changed
+- Optimized batch block sync for smaller chunks, pre-filtering, and reduced database load
+
+## [5.12.2] - 2026-02-27
+### Changed
+- Better queue monitoring
+
+## [5.12.1] - 2026-02-27
+### Changed
+- Better queue monitoring
+
+## [5.12.0] - 2026-01-22
+### Added
+- Custom L1 network for Orbit/OP chains
+
+## [5.11.1] - 2026-01-09
+### Changed
+- We now collect rpc errors in more places for faster detection of unreachable rpcs
+
+## [5.11.0] - 2026-01-09
+### Added
+- More efficient system to track and deactivate unreachable rpcs. Will save resources for pm2 instances
+
+## [5.10.1] - 2026-01-09
+### Changed
+- Selection of parent workspace for OP stack is easier for user. They can just pick the network, we handle picking our workspace internally.
+
+## [5.10.0] - 2026-01-09
+### Added
+- Op stack full support. Easy to setup, just go to the settings page of your explorer, "Op Stack" tab, fill out contract addresses, and indexing will start right away. 
+Explorer will track all OP related informations:
+  - L1 => L2 deposits
+  - L2 => L1 withdrawals
+  - Batches with included blocks, transactions, blob, etc...
+  - State output with proposer, dispute info, etc...
+
+## [5.9.24] - 2025-12-04
+### Changed
+- Allow all chain params
+
+## [5.9.23] - 2025-09-11
+### Changed
+- Avoid unnessary trace processing
+
+## [5.9.22] - 2025-09-11
+### Fixed
+- Better trace step detroy when destroying a proctransaction
+
+## [5.9.21] - 2025-09-11
+### Fixed
+- Handle token transfer deletion when reverting partial block
+
+## [5.9.20] - 2025-09-11
+### Fixed
+- Receipt sync
+
+## [5.9.19] - 2025-09-11
+### Fixed
+- Contract verification insertion
+
+## [5.9.18] - 2025-09-11
+### Fixed
+- Contract deletion
+
+## [5.9.17] - 2025-09-11
+### Fixed
+- Contract deletion
+
+## [5.9.16] - 2025-09-11
+### Fixed
+- Workspace cleanup on delete
+
+## [5.9.15] - 2025-09-11
+### Fixed
+- Transaction trace processing
+
+## [5.9.14] - 2025-09-11
+### Fixed
+- Orbit data deletion
+
+## [5.9.13] - 2025-09-11
+### Fixed
+- Orbit data deletion
+- Token transfer backfilling^
+
+## [5.9.12] - 2025-09-11
+### Fixed
+- Block deletion (token transfers)
+
+## [5.9.11] - 2025-09-11
+### Fixed
+- Block deletion (dex pool reserves)
+
+## [5.9.10] - 2025-09-11
+### Fixed
+- Tagging
+
+## [5.9.9] - 2025-09-11
+### Fixed
+- Block deletion
+
+## [5.9.8] - 2025-09-11
+### Fixed
+- Domain name setup
+
+## [5.9.7] - 2025-09-11
+### Fixed
+- Accidentally broke email job
+
+## [5.9.6] - 2025-09-09
+### Fixed
+- PM2
+
+## [5.9.5] - 2025-09-09
+### Fixed
+- Fly file
+
+## [5.9.4] - 2025-09-09
+### Fixed
+
+- Docker
+## [5.9.3] - 2025-09-08
+### Fixed
+- Docker
+
+## [5.9.2] - 2025-09-08
+### Fixed
+- Deployment
+
+## [5.9.1] - 2025-09-08
+### Changed
+- Hide "More" sections for non-orbit configs
+
+## [5.9.0] - 2025-09-08
+### Added
+- Orbit tracking:
+ - Batches
+ - Withdrawals / Claim
+ - Deposits
+
+## [5.8.2] - 2025-09-02
+### Changed
+- Optional IC
+
+## [5.8.1] - 2025-08-23
+### Changed
+- Improve token transfers UI for NFTs
+
+## [5.8.0] - 2025-08-23
+### Changed
+- Better token type detection
+
+### Fixed
+- Bug when displaying call results with 0/false
+
+## [5.7.3] - 2025-08-23
+### Changed
+- Switched to Mailjet
+
+## [5.7.2] - 2025-08-13
+### Fixed
+- Self hosted env file generation
+
+## [5.7.1] - 2025-08-13
+### Fixed
+- Frontend tests
+
+## [5.7.0] - 2025-08-13
+### Changed
+- Switched to Mailgun
+
+## [5.6.10] - 2025-08-04
+### Fixed
+- Tentative fix for wallet mismatch
+
+## [5.6.9] - 2025-08-04
+### Fixed
+- Contract interaction result display
+
+## [5.6.8] - 2025-08-04
+### Fixed
+- Contract interaction result display
+
+## [5.6.7] - 2025-08-04
+### Changed
+- Clearer "To" label on transaction pages
+
+## [5.6.6] - 2025-08-04
+### Fixed
+- Contract interaction result display
+
+## [5.6.5] - 2025-08-02
+### Changed
+- Default baseFeePerGas if it doesn't exist
+
+## [5.6.4] - 2025-08-02
+### Changed
+- Better duplicate insertion handling
+
+## [5.6.3] - 2025-08-02
+### Fixed
+- Logging
+
+## [5.6.2] - 2025-08-02
+### Added
+- Error logging
+
+## [5.6.1] - 2025-08-02
+### Fixed
+- Receipt sync edge case bugs
+
 ## [5.6.0] - 2025-08-01
 ### Added
 - Gradual "Top Accounts" page release

@@ -21,6 +21,11 @@
     </v-container>
 </template>
 
+/**
+ * @fileoverview Transactions page component.
+ * Displays 24-hour transaction statistics and a paginated transaction list.
+ * @component Transactions
+ */
 <script setup>
 import { DateTime } from 'luxon';
 import TransactionsList from './TransactionsList.vue';

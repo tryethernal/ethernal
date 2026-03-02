@@ -1,3 +1,16 @@
+/**
+ * @fileoverview ExplorerV2Dex model - Uniswap V2 DEX configuration for explorers.
+ * Manages router address, pairs, and swap quote calculations.
+ *
+ * @module models/ExplorerV2Dex
+ *
+ * @property {number} id - Primary key
+ * @property {number} explorerId - Foreign key to explorer
+ * @property {string} routerAddress - Uniswap V2 router address
+ * @property {number} wrappedNativeTokenContractId - Foreign key to WETH contract
+ * @property {boolean} active - Whether DEX integration is enabled
+ */
+
 'use strict';
 const {
   Model

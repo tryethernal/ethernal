@@ -1,3 +1,17 @@
+/**
+ * @fileoverview TokenBalanceChangeEvent model - TimescaleDB hypertable for balance analytics.
+ * Stores denormalized balance change data for holder history queries.
+ *
+ * @module models/TokenBalanceChangeEvent
+ *
+ * @property {number} workspaceId - Workspace ID
+ * @property {number} tokenBalanceChangeId - Balance change ID
+ * @property {Date} timestamp - Event timestamp (primary key)
+ * @property {string} token - Token contract address
+ * @property {string} address - Account address
+ * @property {string} currentBalance - Balance after change
+ */
+
 'use strict';
 const {
   Model

@@ -1,8 +1,8 @@
-/*
-    Ethernal uses approximated.app to allow custom domains for public explorers users.
-    If you want to manage DNS records inapp, you can signup there, create a cluster,
-    register a domain name in the explorer settings and point the domain to your cluster address.
-*/
+/**
+ * @fileoverview Approximated.app DNS record job.
+ * Manages custom domain DNS records via Approximated.app integration.
+ * @module jobs/updateApproximatedRecord
+ */
 
 const axios = require('axios');
 const models = require('../models');

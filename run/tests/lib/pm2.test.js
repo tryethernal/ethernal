@@ -10,6 +10,24 @@ beforeEach(() => jest.clearAllMocks());
 const host = 'http://pm2';
 const secret = 'secret';
 
+describe('startLogListener', () => {
+    it('Should throw an error if missing parameter', () => {
+        const pm2 = new PM2(host, secret);
+        expect(() => pm2.startLogListener()).toThrow('Missing parameter');
+    });
+
+    it('Should start log listener', (done) => {
+        jest.spyOn(axios, 'post').mockResolvedValueOnce({ data: null });
+
+        const pm2 = new PM2(host, secret);
+        pm2.startLogListener('slug', '{"key": "value"}')
+            .then(() => {
+                expect(axios.post).toHaveBeenCalledWith('http://pm2/log-listener?secret=secret', { slug: 'slug', jsonArgs: '{"key": "value"}' });
+                done();
+            });
+    });
+});
+
 describe('reset', () => {
     it('Should throw an error if missing parameter', (done) => {
         const pm2 = new PM2(host, secret);

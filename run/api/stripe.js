@@ -1,3 +1,14 @@
+/**
+ * @fileoverview Stripe billing API endpoints.
+ * Handles checkout sessions, subscriptions, and customer portal.
+ * @module api/stripe
+ *
+ * @route POST /createUserCheckoutSession - Start user subscription checkout
+ * @route POST /createExplorerCheckoutSession - Start explorer subscription checkout
+ * @route POST /createBillingPortalSession - Open Stripe customer portal
+ * @route GET /plans - List available subscription plans
+ */
+
 const express = require('express');
 const { getAppUrl, getStripeSecretKey, getStripePremiumPriceId } = require('../lib/env');
 const stripe = require('stripe')(getStripeSecretKey());

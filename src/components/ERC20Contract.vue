@@ -121,6 +121,16 @@
     </v-container>
 </template>
 
+/**
+ * @fileoverview ERC-20 token contract page component.
+ * Displays token information including transfers, holders, contract details, and analytics.
+ * Supports tab navigation with URL query parameter synchronization.
+ * @component ERC20Contract
+ *
+ * @prop {string} address - The token contract address
+ * @prop {Object} contract - The contract data object
+ * @prop {boolean} loadingContract - Whether the contract is still loading
+ */
 <script setup>
 import { ref, computed, watch, inject } from 'vue';
 import { useRoute, useRouter } from 'vue-router';

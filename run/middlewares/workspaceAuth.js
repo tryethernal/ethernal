@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Workspace authentication middleware.
+ * Validates access to workspace data based on ownership and public status.
+ * @module middlewares/workspaceAuth
+ */
+
 const { getAuth, connectAuthEmulator } = require('firebase-admin/auth');
 const db = require('../lib/firebase');
 const { sanitize, getEnv }  = require('../lib/utils');

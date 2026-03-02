@@ -1,3 +1,11 @@
+/**
+ * @fileoverview External data API endpoints.
+ * Proxies requests to external services (Solidity compiler list).
+ * @module api/external
+ *
+ * @route GET /compilers - Get list of Solidity compiler versions
+ */
+
 const express = require('express');
 const router = express.Router();
 const axios = require('axios');

@@ -1,14 +1,9 @@
 /**
- * This job is used to backfill native token transfers for a workspace.
+ * @fileoverview Native token transfer backfill job.
+ * Creates token transfer records for ETH transfers from tx value and traces.
+ * @module jobs/backfillNativeTokenTransfers
+ */
 
- - Get each transaction for a workspace
- - Get the native token transfer for the transaction,
- - Create the token transfer from:
-    - value field
-    - trace steps
-    - reward
-**/
- 
 const { Transaction, TokenTransfer, TransactionTraceStep, TokenBalanceChange, TokenTransferEvent } = require('../models');
 const { sequelize } = require('../models');
 const ethers = require('ethers');
@@ -62,6 +57,9 @@ module.exports = async job => {
             }
         ]
     });
+
+    if (!transaction.receipt)
+        return 'No receipt for transaction';
 
     const tokenTransfers = [];
 

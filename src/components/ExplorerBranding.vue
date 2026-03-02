@@ -88,6 +88,15 @@
     </v-card>
 </template>
 
+/**
+ * @fileoverview Explorer branding customization component.
+ * Allows configuring theme colors, logo, favicon, and font for a public explorer.
+ * @component ExplorerBranding
+ *
+ * @prop {Object} explorer - The explorer data object
+ * @prop {boolean} [disabled=false] - Whether branding is disabled (plan limitation)
+ * @emits updated - Emitted when branding settings are updated
+ */
 <script>
 import { useTheme } from 'vuetify';
 

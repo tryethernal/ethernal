@@ -6,6 +6,8 @@
                     <v-tab id="generalTab" value="general">General</v-tab>
                     <v-tab id="faucetTab" value="faucet">Faucet</v-tab>
                     <v-tab id="dexTab" value="dex">Dex</v-tab>
+                    <v-tab id="orbitTab" value="orbit">Orbit Chain</v-tab>
+                    <v-tab id="opStackTab" value="opStack">OP Stack</v-tab>
                 </v-tabs>
 
                 <v-tabs-window v-model="tab">
@@ -20,18 +22,37 @@
                     <v-tabs-window-item value="dex">
                         <Explorer-Dex-Settings :explorerId="id" :sso="sso" />
                     </v-tabs-window-item>
+
+                    <v-tabs-window-item value="orbit">
+                        <Explorer-Orbit-Settings :explorerId="id" :sso="sso" />
+                    </v-tabs-window-item>
+
+                    <v-tabs-window-item value="opStack">
+                        <Explorer-Op-Settings :explorerId="id" :sso="sso" />
+                    </v-tabs-window-item>
                 </v-tabs-window>
             </v-card-text>
         </v-card>
     </v-container>
 </template>
 
+/**
+ * @fileoverview Explorer settings container component.
+ * Provides tabbed navigation for explorer configuration including general settings,
+ * faucet, DEX, and Orbit chain configuration.
+ * @component Explorer
+ *
+ * @prop {string|number} id - The explorer ID
+ * @prop {boolean} [sso=false] - Whether user is authenticated via SSO
+ */
 <script setup>
 import { computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import ExplorerGeneral from './ExplorerGeneral.vue';
 import ExplorerFaucetSettings from './ExplorerFaucetSettings.vue';
 import ExplorerDexSettings from './ExplorerDexSettings.vue';
+import ExplorerOrbitSettings from './ExplorerOrbitSettings.vue';
+import ExplorerOpSettings from './ExplorerOpSettings.vue';
 
 // Define props
 const props = defineProps({

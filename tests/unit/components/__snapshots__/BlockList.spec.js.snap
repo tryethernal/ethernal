@@ -117,7 +117,7 @@ exports[`BlockList.vue > Should display pending blocks 1`] = `
   <hr class="v-divider v-theme--light" aria-orientation="horizontal" role="separator">
   <div class="v-data-table-footer">
     <!---->
-    <div class="v-data-table-footer__items-per-page"><span>Rows per page:</span>
+    <div class="v-data-table-footer__items-per-page"><span>Blocks per page:</span>
       <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field v-select v-select--single v-select--selected">
         <!---->
         <div class="v-input__control">
@@ -311,7 +311,7 @@ exports[`BlockList.vue > Should show the blocks list 1`] = `
   <hr class="v-divider v-theme--light" aria-orientation="horizontal" role="separator">
   <div class="v-data-table-footer">
     <!---->
-    <div class="v-data-table-footer__items-per-page"><span>Rows per page:</span>
+    <div class="v-data-table-footer__items-per-page"><span>Blocks per page:</span>
       <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field v-select v-select--single v-select--selected">
         <!---->
         <div class="v-input__control">
@@ -497,7 +497,7 @@ exports[`BlockList.vue > should show the loading message when empty blocks list 
   <hr class="v-divider v-theme--light" aria-orientation="horizontal" role="separator">
   <div class="v-data-table-footer">
     <!---->
-    <div class="v-data-table-footer__items-per-page"><span>Rows per page:</span>
+    <div class="v-data-table-footer__items-per-page"><span>Blocks per page:</span>
       <div class="v-input v-input--horizontal v-input--center-affix v-input--density-compact v-theme--light v-locale--is-ltr v-input--dirty v-text-field v-select v-select--single v-select--selected">
         <!---->
         <div class="v-input__control">

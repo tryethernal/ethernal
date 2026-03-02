@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Integrity check job.
+ * Detects missing blocks and gaps, enqueues recovery syncs.
+ * @module jobs/integrityCheck
+ */
+
 const models = require('../models');
 const { enqueue, bulkEnqueue } = require('../lib/queue');
 const { withTimeout } = require('../lib/utils');
@@ -23,7 +29,15 @@ module.exports = async job => {
                 include: { model: models.Block, as: 'block' }
             },
             { model: models.User, as: 'user' },
-            { model: models.Explorer, as: 'explorer' },
+            {
+                model: models.Explorer,
+                as: 'explorer',
+                include: {
+                    model: models.StripeSubscription,
+                    as: 'stripeSubscription',
+                    include: { model: models.StripePlan, as: 'stripePlan' }
+                }
+            }
         ]
     });
 
@@ -38,6 +52,12 @@ module.exports = async job => {
 
     if (!workspace.explorer)
         return 'Should have an explorer associated';
+
+    if (workspace.explorer.stripeSubscription &&
+        workspace.explorer.stripeSubscription.stripePlan &&
+        workspace.explorer.stripeSubscription.stripePlan.capabilities.skipIntegrityCheck
+    )
+        return 'Integrity check disabled on this plan';
 
     if (workspace.explorer.isDemo)
         return 'No check on demo explorers';
@@ -96,13 +116,17 @@ module.exports = async job => {
     */
     const diff = moment.unix(latestBlock.timestamp).diff(moment(latestReadyBlock.timestamp), 'seconds');
     if (diff > DELAY_BEFORE_RECOVERY) {
-        await enqueue('batchBlockSync', `batchBlockSync-${workspace.id}-${latestReadyBlock.number}-${latestBlock.number}`, {
-            userId: workspace.user.firebaseUserId,
-            workspace: workspace.name,
-            from: latestReadyBlock.number,
-            to: latestBlock.number,
-            source: 'recovery'
-        });
+        const recoveryStart = latestReadyBlock.number + 1;
+        if (recoveryStart <= latestBlock.number) {
+            await enqueue('batchBlockSync', `batchBlockSync-${workspace.id}-${recoveryStart}-${latestBlock.number}`, {
+                userId: workspace.user.firebaseUserId,
+                workspace: workspace.name,
+                workspaceId: workspace.id,
+                from: recoveryStart,
+                to: latestBlock.number,
+                source: 'recovery'
+            });
+        }
     }
 
     const gaps = await workspace.findBlockGapsV2(lowerBlock.number, latestBlock.number);
@@ -117,6 +141,7 @@ module.exports = async job => {
                     data: {
                         userId: workspace.user.firebaseUserId,
                         workspace: workspace.name,
+                        workspaceId: workspace.id,
                         from: gap.blockStart,
                         to: gap.blockEnd,
                         source: 'integrityCheck'

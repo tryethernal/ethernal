@@ -1,3 +1,10 @@
+/**
+ * @fileoverview Transaction trace parser.
+ * Parses EVM trace structLogs into human-readable call operations.
+ * Handles CALL, CALLCODE, DELEGATECALL, STATICCALL, CREATE, CREATE2 opcodes.
+ * @module lib/trace
+ */
+
 const ethers = require('ethers');
 
 export const parseTrace = async (from, trace, provider) => {

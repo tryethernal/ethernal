@@ -1,3 +1,15 @@
+/**
+ * @fileoverview Workspace API endpoints.
+ * Manages workspaces including token transfers, settings, and sync configuration.
+ * @module api/workspaces
+ *
+ * @route GET /:id/tokenTransfers - Get workspace token transfers
+ * @route PUT /:id - Update workspace settings
+ * @route PUT /:id/rpcServer - Update RPC server
+ * @route POST /:id/reset - Reset workspace data
+ * @route DELETE /:id - Delete workspace
+ */
+
 const express = require('express');
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const authMiddleware = require('../middlewares/auth');

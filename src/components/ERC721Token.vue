@@ -238,6 +238,15 @@
     </v-container>
 </template>
 
+/**
+ * @fileoverview ERC-721 token detail page component.
+ * Displays individual NFT details including image, metadata attributes (properties, levels,
+ * boosts, stats, dates), owner info, and transfer history.
+ * @component ERC721Token
+ *
+ * @prop {string} hash - The NFT contract address
+ * @prop {string} tokenId - The token ID
+ */
 <script setup>
 import { ref, computed, watch, inject, shallowRef } from 'vue';
 import moment from 'moment';

@@ -11,7 +11,21 @@
                             </div>
                         </template>
                         <v-list-item-title class="text-body-2">
-                            {{ block.number && commify(block.number) }}
+                            {{ block.number.toLocaleString() }}
+                        </v-list-item-title>
+                    </v-list-item>
+
+                    <v-list-item v-if="block.orbitBatch" class="d-flex flex-column flex-sm-row">
+                        <template v-slot:prepend>
+                            <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;">
+                                <v-icon size="small" color="grey" class="mr-1" v-tooltip="'Batch number'">mdi-help-circle-outline</v-icon>
+                                Batch:
+                            </div>
+                        </template>
+                        <v-list-item-title class="text-body-2">
+                            <router-link :to="`/batches/${block.orbitBatch.batchSequenceNumber}`" class="text-decoration-none">
+                                {{ Number(block.orbitBatch.batchSequenceNumber).toLocaleString() }}
+                            </router-link>
                         </v-list-item-title>
                     </v-list-item>
 
@@ -44,7 +58,18 @@
                         </v-list-item-title>
                     </v-list-item>
 
-                    <v-divider class="mx-4"></v-divider>
+                    <v-list-item v-if="block.orbitStatus" class="d-flex flex-column flex-sm-row">
+                        <template v-slot:prepend>
+                            <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;">
+                                <v-icon size="small" color="grey" class="mr-1" v-tooltip="'Batch lifecycle status'">mdi-help-circle-outline</v-icon>
+                                Status:
+                            </div>
+                        </template>
+                        <v-list-item-title class="text-body-2">
+                            <OrbitBlockStatus :status="block.orbitStatus" />
+                        </v-list-item-title>
+                    </v-list-item>
+
                     <v-list-item class="d-flex flex-column flex-sm-row">
                         <template v-slot:prepend>
                             <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;">
@@ -57,6 +82,27 @@
                             <span v-else>-</span>
                         </v-list-item-title>
                     </v-list-item>
+
+                    <template v-if="block.orbitBatch">
+                        <v-divider class="mx-4 mb-2"></v-divider>
+
+                        <v-list-item class="d-flex flex-column flex-sm-row">
+                            <template v-slot:prepend>
+                                <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;">
+                                    <v-icon size="small" color="grey" class="mr-1" v-tooltip="'L1 transaction containing this batch commitment'">mdi-help-circle-outline</v-icon>
+                                    Commitment tx:
+                                </div>
+                            </template>
+                            <v-list-item-title class="text-body-2">
+                                <a class="text-decoration-none" :href="`${currentWorkspaceStore.orbitConfig.parentChainExplorer}/tx/${block.orbitBatch.parentChainTxHash}`" target="_blank">
+                                    {{ block.orbitBatch.parentChainTxHash }}
+                                    <v-icon size="x-small" color="primary" class="pb-1">mdi-open-in-new</v-icon>
+                                </a>
+                            </v-list-item-title>
+                        </v-list-item>
+                    </template>
+                    
+                    <v-divider class="mx-4 mb-2"></v-divider>
 
                     <v-list-item class="d-flex flex-column flex-sm-row">
                         <template v-slot:prepend>
@@ -90,11 +136,11 @@
                             </div>
                         </template>
                         <v-list-item-title class="text-body-2">
-                            {{ block.raw && block.raw.size ? `${parseInt(block.raw.size).toLocaleString()} bytes` : '-' }}
+                            {{ block.size ? `${parseInt(block.size).toLocaleString()} bytes` : '-' }}
                         </v-list-item-title>
                     </v-list-item>
 
-                    <v-divider class="mx-4"></v-divider>
+                    <v-divider class="mx-4 mb-2"></v-divider>
 
                     <v-list-item class="d-flex flex-column flex-sm-row">
                         <template v-slot:prepend>
@@ -173,23 +219,6 @@
                             <span v-else>-</span>
                         </v-list-item-title>
                     </v-list-item>
-
-                    <template v-if="explorerStore.l1Explorer && block.l1BlockNumber">
-                        <v-list-item>
-                            <template v-slot:prepend>
-                                <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;">
-                                    <v-icon size="small" color="grey" class="mr-1" v-tooltip="'The corresponding L1 block for this L2 block'">mdi-help-circle-outline</v-icon>
-                                    L1 Block:
-                                </div>
-                            </template>
-                            <v-list-item-title class="text-body-2">
-                                <a class="text-decoration-none" :href="`${explorerStore.l1Explorer}/block/${block.l1BlockNumber}`" target="_blank">
-                                    {{ commify(block.l1BlockNumber) }}
-                                    <v-icon size="x-small" color="primary" class="pb-1">mdi-open-in-new</v-icon>
-                                </a>
-                            </v-list-item-title>
-                        </v-list-item>
-                    </template>
                 </v-list>
             </v-card-text>
         </v-card>
@@ -227,7 +256,7 @@
                     </v-list-item>
 
                     <!-- Sha3Uncles -->
-                    <v-list-item v-if="block.raw && block.raw.sha3Uncles" class="d-flex flex-column flex-sm-row">
+                    <v-list-item v-if="block.sha3Uncles" class="d-flex flex-column flex-sm-row">
                         <template v-slot:prepend>
                             <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;">
                                 <v-icon size="small" color="grey" class="mr-1" v-tooltip="'The SHA3 hash of the uncle blocks in this block'">mdi-help-circle-outline</v-icon>
@@ -235,12 +264,12 @@
                             </div>
                         </template>
                         <v-list-item-title class="text-body-2 text-truncate" style="overflow-wrap: break-word;">
-                            {{ block.raw.sha3Uncles }}
+                            {{ block.sha3Uncles }}
                         </v-list-item-title>
                     </v-list-item>
 
                     <!-- State Root -->
-                    <v-list-item v-if="block.raw && block.raw.stateRoot" class="d-flex flex-column flex-sm-row">
+                    <v-list-item v-if="block.stateRoot" class="d-flex flex-column flex-sm-row">
                         <template v-slot:prepend>
                             <div class="text-subtitle-2 font-weight-medium text-grey-darken-1" style="width: 180px;">
                                 <v-icon size="small" color="grey" class="mr-1" v-tooltip="'The root of the state trie after this block'">mdi-help-circle-outline</v-icon>
@@ -248,7 +277,7 @@
                             </div>
                         </template>
                         <v-list-item-title class="text-body-2 text-truncate" style="overflow-wrap: break-word;">
-                            {{ block.raw.stateRoot }}
+                            {{ block.stateRoot }}
                         </v-list-item-title>
                     </v-list-item>
 
@@ -270,6 +299,16 @@
     </div>
 </template>
 
+/**
+ * @fileoverview Block overview component.
+ * Displays detailed information about a single block including height, timestamp,
+ * transaction count, validator, gas usage, fees, and technical details like hashes
+ * and roots. Supports Orbit L2 batch information display.
+ * @component BlockOverview
+ *
+ * @prop {Object} block - The block data object to display
+ * @emits change-tab - Emitted when user clicks to switch to transactions tab
+ */
 <script setup>
 import { inject } from 'vue';
 import { useExplorerStore } from '../stores/explorer';
@@ -277,6 +316,7 @@ import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
 import { utils } from 'ethers';
 import HashLink from './HashLink.vue';
 import ExpandableText from './ExpandableText.vue';
+import OrbitBlockStatus from './OrbitBlockStatus.vue';
 
 // Get Vue instance to access global properties
 const $dt = inject('$dt');
@@ -296,6 +336,18 @@ const emit = defineEmits(['change-tab']);
 // Stores
 const explorerStore = useExplorerStore();
 const currentWorkspaceStore = useCurrentWorkspaceStore();
+
+const l1StatusColors = {
+    pending: 'warning',
+    challenged: 'error',
+    confirmed: 'success',
+};
+
+const l1StatusLabels = {
+    pending: 'Unfinalized',
+    challenged: 'Challenged',
+    confirmed: 'Finalized'
+};
 // Methods
 const commify = utils.commify;
 

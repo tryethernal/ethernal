@@ -1,0 +1,122 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`OrbitBatchDetail.vue > Should show batch data with overview tab selected by default 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <h2 class="text-h6 font-weight-medium"> Batch <span class="text-grey-darken-1">#123</span></h2>
+  <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator">
+  <base-chip-group-stub modelvalue="overview" mandatory=""></base-chip-group-stub>
+  <orbit-batch-overview-stub batch="[object Object]"></orbit-batch-overview-stub>
+  <!--v-if-->
+  <!--v-if-->
+</div>"
+`;
+
+exports[`OrbitBatchDetail.vue > Should show blocks tab when hash is #blocks 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <h2 class="text-h6 font-weight-medium"> Batch <span class="text-grey-darken-1">#123</span></h2>
+  <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator">
+  <base-chip-group-stub modelvalue="blocks" mandatory=""></base-chip-group-stub>
+  <!--v-if-->
+  <orbit-batch-blocks-stub batchnumber="123"></orbit-batch-blocks-stub>
+  <!--v-if-->
+</div>"
+`;
+
+exports[`OrbitBatchDetail.vue > Should show error state when batch is not found 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <h2 class="text-h6 font-weight-medium"> Batch <span class="text-grey-darken-1">#999</span></h2>
+  <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-text">
+      <p>Couldn't find batch #999</p>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+</div>"
+`;
+
+exports[`OrbitBatchDetail.vue > Should show loading state 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <h2 class="text-h6 font-weight-medium"> Batch <span class="text-grey-darken-1">#123</span></h2>
+  <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator">
+  <div class="v-card v-theme--light v-card--density-default v-card--variant-elevated">
+    <!---->
+    <div class="v-card__loader">
+      <div class="v-progress-linear v-theme--light v-locale--is-ltr" style="top: 0px; height: 0px; --v-progress-linear-height: 2px;" role="progressbar" aria-hidden="true" aria-valuemin="0" aria-valuemax="100">
+        <!---->
+        <div class="v-progress-linear__background"></div>
+        <div class="v-progress-linear__buffer" style="width: 0%;"></div>
+        <transition-stub name="fade-transition" appear="false" persisted="false" css="true">
+          <div class="v-progress-linear__indeterminate">
+            <div class="v-progress-linear__indeterminate long"></div>
+            <div class="v-progress-linear__indeterminate short"></div>
+          </div>
+        </transition-stub>
+        <!---->
+      </div>
+    </div>
+    <!---->
+    <!---->
+    <div class="v-card-text">
+      <div class="v-skeleton-loader v-theme--light" arialive="polite" arialabel="Loading..." role="alert">
+        <div class="v-skeleton-loader__bone v-skeleton-loader__list-item-three-line">
+          <div class="v-skeleton-loader__bone v-skeleton-loader__paragraph">
+            <div class="v-skeleton-loader__bone v-skeleton-loader__text"></div>
+            <div class="v-skeleton-loader__bone v-skeleton-loader__text"></div>
+            <div class="v-skeleton-loader__bone v-skeleton-loader__text"></div>
+          </div>
+        </div>
+      </div>
+      <div class="v-skeleton-loader v-theme--light" arialive="polite" arialabel="Loading..." role="alert">
+        <div class="v-skeleton-loader__bone v-skeleton-loader__list-item-three-line">
+          <div class="v-skeleton-loader__bone v-skeleton-loader__paragraph">
+            <div class="v-skeleton-loader__bone v-skeleton-loader__text"></div>
+            <div class="v-skeleton-loader__bone v-skeleton-loader__text"></div>
+            <div class="v-skeleton-loader__bone v-skeleton-loader__text"></div>
+          </div>
+        </div>
+      </div>
+      <div class="v-skeleton-loader v-theme--light" arialive="polite" arialabel="Loading..." role="alert">
+        <div class="v-skeleton-loader__bone v-skeleton-loader__list-item-three-line">
+          <div class="v-skeleton-loader__bone v-skeleton-loader__paragraph">
+            <div class="v-skeleton-loader__bone v-skeleton-loader__text"></div>
+            <div class="v-skeleton-loader__bone v-skeleton-loader__text"></div>
+            <div class="v-skeleton-loader__bone v-skeleton-loader__text"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!---->
+    <!----><span class="v-card__underlay"></span>
+  </div>
+</div>"
+`;
+
+exports[`OrbitBatchDetail.vue > Should show transactions tab when hash is #transactions 1`] = `
+"<div class="v-container v-container--fluid v-locale--is-ltr">
+  <h2 class="text-h6 font-weight-medium"> Batch <span class="text-grey-darken-1">#123</span></h2>
+  <hr class="v-divider v-theme--light my-4" aria-orientation="horizontal" role="separator">
+  <base-chip-group-stub modelvalue="transactions" mandatory=""></base-chip-group-stub>
+  <!--v-if-->
+  <!--v-if-->
+  <orbit-batch-transactions-stub batchnumber="123"></orbit-batch-transactions-stub>
+</div>"
+`;

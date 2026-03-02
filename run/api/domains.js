@@ -1,3 +1,12 @@
+/**
+ * @fileoverview Custom domain API endpoints.
+ * Manages custom domain configuration and SSL provisioning via Approximated.
+ * @module api/domains
+ *
+ * @route DELETE /:id - Remove custom domain
+ * @route POST / - Add custom domain to explorer
+ */
+
 const express = require('express');
 const axios = require('axios');
 const router = express.Router();

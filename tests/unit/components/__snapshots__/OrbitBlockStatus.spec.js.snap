@@ -1,0 +1,93 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`OrbitBlockStatus.vue > Should show confirmed_on_parent_chain status 1`] = `
+"<span class="v-chip v-chip--label v-theme--light text-success v-chip--density-default v-chip--size-default v-chip--variant-outlined" draggable="false"><!----><span class="v-chip__underlay"></span>
+<!---->
+<div class="v-chip__prepend"><i class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success mr-1" aria-hidden="true"></i></div>
+<div class="v-chip__content" data-no-activator=""> Processed on rollup </div>
+<!---->
+<!----></span>
+<i class="mdi-arrow-right-thick mdi v-icon notranslate v-theme--light v-icon--size-default text-success mx-2" aria-hidden="true"></i>
+<span class="v-chip v-chip--label v-theme--light text-success v-chip--density-default v-chip--size-default v-chip--variant-outlined" draggable="false"><!----><span class="v-chip__underlay"></span>
+<!---->
+<div class="v-chip__prepend"><i class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success mr-1" aria-hidden="true"></i></div>
+<div class="v-chip__content" data-no-activator=""> Sent to parent chain </div>
+<!---->
+<!----></span>
+<i class="mdi-arrow-right-thick mdi v-icon notranslate v-theme--light v-icon--size-default text-grey mx-2" aria-hidden="true"></i>
+<span class="v-chip v-chip--label v-theme--light text-warning v-chip--density-default v-chip--size-default v-chip--variant-outlined" draggable="false"><!----><span class="v-chip__underlay"></span>
+<!---->
+<div class="v-chip__prepend"><i class="mdi-clock-outline mdi v-icon notranslate v-theme--light v-icon--size-default text-warning mr-1" aria-hidden="true"></i></div>
+<div class="v-chip__content" data-no-activator=""> Confirmed on parent chain </div>
+<!---->
+<!----></span>"
+`;
+
+exports[`OrbitBlockStatus.vue > Should show finalized_on_parent status 1`] = `
+"<span class="v-chip v-chip--label v-theme--light text-success v-chip--density-default v-chip--size-default v-chip--variant-outlined" draggable="false"><!----><span class="v-chip__underlay"></span>
+<!---->
+<div class="v-chip__prepend"><i class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success mr-1" aria-hidden="true"></i></div>
+<div class="v-chip__content" data-no-activator=""> Processed on rollup </div>
+<!---->
+<!----></span>
+<i class="mdi-arrow-right-thick mdi v-icon notranslate v-theme--light v-icon--size-default text-success mx-2" aria-hidden="true"></i>
+<span class="v-chip v-chip--label v-theme--light text-success v-chip--density-default v-chip--size-default v-chip--variant-outlined" draggable="false"><!----><span class="v-chip__underlay"></span>
+<!---->
+<div class="v-chip__prepend"><i class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success mr-1" aria-hidden="true"></i></div>
+<div class="v-chip__content" data-no-activator=""> Sent to parent chain </div>
+<!---->
+<!----></span>
+<i class="mdi-arrow-right-thick mdi v-icon notranslate v-theme--light v-icon--size-default text-success mx-2" aria-hidden="true"></i>
+<span class="v-chip v-chip--label v-theme--light text-success v-chip--density-default v-chip--size-default v-chip--variant-outlined" draggable="false"><!----><span class="v-chip__underlay"></span>
+<!---->
+<div class="v-chip__prepend"><i class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success mr-1" aria-hidden="true"></i></div>
+<div class="v-chip__content" data-no-activator=""> Confirmed on parent chain </div>
+<!---->
+<!----></span>"
+`;
+
+exports[`OrbitBlockStatus.vue > Should show pending_on_parent status 1`] = `
+"<span class="v-chip v-chip--label v-theme--light text-success v-chip--density-default v-chip--size-default v-chip--variant-outlined" draggable="false"><!----><span class="v-chip__underlay"></span>
+<!---->
+<div class="v-chip__prepend"><i class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success mr-1" aria-hidden="true"></i></div>
+<div class="v-chip__content" data-no-activator=""> Processed on rollup </div>
+<!---->
+<!----></span>
+<i class="mdi-arrow-right-thick mdi v-icon notranslate v-theme--light v-icon--size-default text-success mx-2" aria-hidden="true"></i>
+<span class="v-chip v-chip--label v-theme--light text-warning v-chip--density-default v-chip--size-default v-chip--variant-outlined" draggable="false"><!----><span class="v-chip__underlay"></span>
+<!---->
+<div class="v-chip__prepend"><i class="mdi-clock-outline mdi v-icon notranslate v-theme--light v-icon--size-default text-warning mr-1" aria-hidden="true"></i></div>
+<div class="v-chip__content" data-no-activator=""> Sent to parent chain </div>
+<!---->
+<!----></span>
+<i class="mdi-arrow-right-thick mdi v-icon notranslate v-theme--light v-icon--size-default text-grey mx-2" aria-hidden="true"></i>
+<span class="v-chip v-chip--label v-theme--light text-grey v-chip--density-default v-chip--size-default v-chip--variant-outlined" draggable="false"><!----><span class="v-chip__underlay"></span>
+<!---->
+<!---->
+<div class="v-chip__content" data-no-activator=""> Confirmed on parent chain </div>
+<!---->
+<!----></span>"
+`;
+
+exports[`OrbitBlockStatus.vue > Should show processed_on_rollup status 1`] = `
+"<span class="v-chip v-chip--label v-theme--light text-success v-chip--density-default v-chip--size-default v-chip--variant-outlined" draggable="false"><!----><span class="v-chip__underlay"></span>
+<!---->
+<div class="v-chip__prepend"><i class="mdi-check mdi v-icon notranslate v-theme--light v-icon--size-default text-success mr-1" aria-hidden="true"></i></div>
+<div class="v-chip__content" data-no-activator=""> Processed on rollup </div>
+<!---->
+<!----></span>
+<i class="mdi-arrow-right-thick mdi v-icon notranslate v-theme--light v-icon--size-default text-grey mx-2" aria-hidden="true"></i>
+<span class="v-chip v-chip--label v-theme--light text-grey v-chip--density-default v-chip--size-default v-chip--variant-outlined" draggable="false"><!----><span class="v-chip__underlay"></span>
+<!---->
+<!---->
+<div class="v-chip__content" data-no-activator=""> Sent to parent chain </div>
+<!---->
+<!----></span>
+<i class="mdi-arrow-right-thick mdi v-icon notranslate v-theme--light v-icon--size-default text-grey mx-2" aria-hidden="true"></i>
+<span class="v-chip v-chip--label v-theme--light text-grey v-chip--density-default v-chip--size-default v-chip--variant-outlined" draggable="false"><!----><span class="v-chip__underlay"></span>
+<!---->
+<!---->
+<div class="v-chip__content" data-no-activator=""> Confirmed on parent chain </div>
+<!---->
+<!----></span>"
+`;

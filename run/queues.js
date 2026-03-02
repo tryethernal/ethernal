@@ -6,7 +6,7 @@ const queues = {};
 priorities['high'].forEach(jobName => {
     queues[jobName] = new Queue(jobName, {
         defaultJobOptions: {
-            attempts: 5,
+            attempts: 50,
             removeOnComplete: {
                 count: 100,
                 age: 4 * 60
@@ -26,7 +26,7 @@ priorities['high'].forEach(jobName => {
 priorities['medium'].forEach(jobName => {
     queues[jobName] = new Queue(jobName, {
         defaultJobOptions: {
-            attempts: 20,
+            attempts: 40,
             removeOnComplete: 20,
             timeout: 30000,
             backoff: {

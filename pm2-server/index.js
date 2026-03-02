@@ -1,3 +1,9 @@
+/**
+ * @fileoverview PM2 Server entry point.
+ * Starts Express server and triggers explorer sync on startup.
+ * @module pm2-server/index
+ */
+
 const axios = require('axios');
 const app = require('./app.js');
 

@@ -1,4 +1,12 @@
+/**
+ * @fileoverview Environment variable accessors.
+ * Provides typed getters for all environment variables used in the application.
+ * Centralizes environment configuration to avoid direct process.env access.
+ * @module lib/env
+ */
+
 module.exports = {
+    /** @returns {string} Application domain (e.g., 'ethernal.io') */
     getAppDomain: () => process.env.APP_DOMAIN,
     getApiEndpoint:() => process.env.API_ENDPOINT,
     getDefaultPlanSlug: () => process.env.DEFAULT_PLAN_SLUG,
@@ -51,8 +59,6 @@ module.exports = {
     getSecret: () => process.env.SECRET,
     getAuthSecret: () => process.env.AUTH_SECRET,
     getHistoricalBlocksProcessingConcurrency: () => parseInt(process.env.HISTORICAL_BLOCKS_PROCESSING_CONCURRENCY) || 50,
-    getSendgridApiKey: () => process.env.SENDGRID_API_KEY,
-    getSendgridSender: () => process.env.SENDGRID_SENDER,
     getFirebaseSignerKey: () => process.env.FIREBASE_SIGNER_KEY,
     getFirebaseSaltSeparator: () => process.env.FIREBASE_SALT_SEPARATOR,
     getFirebaseRounds: () => parseInt(process.env.FIREBASE_ROUNDS),
@@ -66,4 +72,8 @@ module.exports = {
     getMaxNumberToInsert: () => parseInt(process.env.MAX_NUMBER_TO_INSERT || 1),
     getDemoExplorerSender: () => process.env.DEMO_EXPLORER_SENDER,
     getDiscordDemoExplorerChannelWebhook: () => process.env.DISCORD_DEMO_EXPLORER_CHANNEL_WEBHOOK,
+    getMailjetPublicKey: () => process.env.MAILJET_PUBLIC_KEY,
+    getMailjetPrivateKey: () => process.env.MAILJET_PRIVATE_KEY,
+    getMailjetSender: () => process.env.MAILJET_SENDER,
+    getEnv: (env) => process.env[env]
 };

@@ -180,5 +180,34 @@ export default {
 
     syncBalance: () => {
         return new Promise((resolve) => resolve({ success: true }));
-    }
+    },
+
+    getOrbitBatchDetail: vi.fn(),
+    getOrbitBatches: vi.fn().mockResolvedValue({ data: { items: [], total: 0 } }),
+    getOrbitDeposits: vi.fn(),
+    getL2TransactionWithdrawals: vi.fn(),
+    getOrbitWithdrawalClaimCallData: vi.fn(),
+    getOrbitWithdrawals: vi.fn(),
+    getOrbitConfig: vi.fn(),
+    createOrbitConfig: vi.fn(),
+    updateOrbitConfig: vi.fn(),
+    getOpBatches: vi.fn().mockResolvedValue({ data: { items: [], total: 0 } }),
+    getOpBatch: vi.fn(),
+    getOpBatchDetail: vi.fn().mockResolvedValue({ data: null }),
+    getOpBatchTransactions: vi.fn().mockResolvedValue({ data: { items: [], total: 0 } }),
+    getOpOutputs: vi.fn().mockResolvedValue({ data: { items: [], total: 0 } }),
+    getOpOutput: vi.fn(),
+    getOpOutputDetail: vi.fn().mockResolvedValue({ data: null }),
+    getOpDeposits: vi.fn().mockResolvedValue({ data: { items: [], total: 0 } }),
+    getOpDeposit: vi.fn(),
+    getOpWithdrawals: vi.fn().mockResolvedValue({ data: { items: [], total: 0 } }),
+    getOpWithdrawal: vi.fn(),
+    getOpWithdrawalProof: vi.fn(),
+    getOpConfig: vi.fn(),
+    createOpConfig: vi.fn(),
+    updateOpConfig: vi.fn(),
+    getAvailableOpParents: vi.fn().mockResolvedValue({ data: { availableParents: [] } }),
+    getAvailableL1Parents: vi.fn().mockResolvedValue({ data: { publicParents: [], customParents: [] } }),
+    createCustomL1Parent: vi.fn(),
+    deleteCustomL1Parent: vi.fn()
 };

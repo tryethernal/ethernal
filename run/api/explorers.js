@@ -1,4 +1,36 @@
-const { getAppDomain, getDefaultPlanSlug, getDefaultExplorerTrialDays, getStripeSecretKey } = require('../lib/env');
+/**
+ * @fileoverview Explorer API endpoints.
+ * Manages explorer lifecycle: creation, configuration, syncing, and billing.
+ * @module api/explorers
+ *
+ * @route GET / - Get user's explorers (paginated)
+ * @route GET /:id - Get explorer by ID
+ * @route POST / - Create new explorer
+ * @route DELETE /:id - Delete explorer
+ * @route GET /search - Search explorer by domain
+ * @route GET /:id/orbitConfig - Get Orbit L2 configuration
+ * @route PUT /:id/orbitConfig - Update Orbit L2 configuration
+ * @route POST /:id/orbitConfig - Create Orbit L2 configuration
+ * @route PUT /:id/startSync - Start block synchronization
+ * @route PUT /:id/stopSync - Stop block synchronization
+ * @route GET /:id/syncStatus - Get synchronization status
+ * @route POST /:id/settings - Update explorer settings
+ * @route POST /:id/branding - Update explorer branding
+ * @route POST /:id/domains - Add custom domain
+ * @route POST /:id/faucets - Create faucet for explorer
+ * @route POST /:id/v2_dexes - Create V2 DEX for explorer
+ * @route GET /billing - Get billing summary
+ * @route GET /plans - Get available subscription plans
+ * @route POST /:id/subscription - Create subscription
+ * @route PUT /:id/subscription - Update subscription
+ * @route DELETE /:id/subscription - Cancel subscription
+ * @route POST /:id/startTrial - Start trial subscription
+ * @route POST /:id/cryptoSubscription - Create crypto payment subscription
+ * @route PUT /:id/quotaExtension - Update quota extension
+ * @route DELETE /:id/quotaExtension - Remove quota extension
+ */
+
+const { getNodeEnv, getAppDomain, getDefaultPlanSlug, getDefaultExplorerTrialDays, getStripeSecretKey } = require('../lib/env');
 const stripe = require('stripe')(getStripeSecretKey());
 const express = require('express');
 const router = express.Router();
@@ -13,9 +45,494 @@ const { bulkEnqueue } = require('../lib/queue');
 const PM2 = require('../lib/pm2');
 const db = require('../lib/firebase');
 const { isChainAllowed } = require('../lib/chains');
+const { getSupportedOpNetworks, isOpNetworkSupported } = require('../lib/opNetworks');
 const authMiddleware = require('../middlewares/auth');
 const stripeMiddleware = require('../middlewares/stripe');
 const secretMiddleware = require('../middlewares/secret');
+const { SYNC_FAILURE_THRESHOLD } = require('../lib/syncHelpers');
+
+/**
+ * Get orbit config for a given explorer
+ * @param {string} id - The explorer id
+ * @returns {Promise<object>} - The orbit config
+ */
+
+/**
+ * Get available L1 networks for OP Stack configuration
+ * Returns hardcoded list of supported networks (not internal workspace details)
+ * @returns {Promise<object>} - List of supported networks with networkId, name, explorerUrl
+ */
+router.get('/availableOpParents', authMiddleware, async (req, res, next) => {
+    try {
+        const availableNetworks = getSupportedOpNetworks();
+
+        res.status(200).json({ availableNetworks });
+    } catch (error) {
+        return managedError(error, req, res);
+    }
+});
+
+/**
+ * Get available L1 parent workspaces for the user
+ * Returns public L1s (Ethereum Mainnet, Arbitrum One) and user's custom L1s
+ * @returns {Promise<object>} - Object with publicParents and customParents arrays
+ */
+router.get('/availableL1Parents', authMiddleware, async (req, res, next) => {
+    try {
+        const { publicParents, customParents } = await db.getAvailableL1Parents(req.body.data.user.id);
+
+        res.status(200).json({ publicParents, customParents });
+    } catch (error) {
+        return managedError(error, req, res);
+    }
+});
+
+/**
+ * Create a custom L1 parent workspace
+ * @param {string} name - Name for the custom L1 parent
+ * @param {string} backendRpcServer - RPC server URL for backend sync
+ * @returns {Promise<object>} - The created workspace
+ */
+router.post('/customL1Parent', authMiddleware, async (req, res, next) => {
+    const data = req.body.data;
+
+    try {
+        if (!data.name || !data.backendRpcServer)
+            return managedError(new Error('Missing parameters. Name and backend RPC server are required.'), req, res);
+
+        // Validate RPC and fetch network ID
+        let networkId;
+        const provider = new ProviderConnector(data.backendRpcServer);
+        try {
+            networkId = await withTimeout(provider.fetchNetworkId());
+            if (!networkId)
+                throw 'Error';
+        } catch(error) {
+            return managedError(new Error(`Our servers can't query this RPC, please use an RPC that is reachable from the internet.`), req, res);
+        }
+
+        let workspace;
+        try {
+            workspace = await db.createCustomL1Parent(data.user.id, {
+                name: data.name,
+                rpcServer: data.backendRpcServer,
+                networkId: networkId
+            });
+        } catch(error) {
+            if (error.name === 'SequelizeUniqueConstraintError') {
+                return managedError(new Error(`A workspace with name "${data.name}" already exists. Please choose a different name.`), req, res);
+            }
+            throw error;
+        }
+
+        res.status(200).json({
+            id: workspace.id,
+            name: workspace.name,
+            networkId: workspace.networkId,
+            rpcServer: workspace.rpcServer
+        });
+    } catch(error) {
+        unmanagedError(error, req, next);
+    }
+});
+
+/**
+ * Delete a custom L1 parent workspace
+ * Fails if the workspace has L2 children (Orbit or OP Stack configs)
+ * @param {number} id - Workspace ID
+ * @returns {Promise<void>} - 200 on success
+ */
+router.delete('/customL1Parent/:id', authMiddleware, async (req, res, next) => {
+    try {
+        if (!req.params.id)
+            return managedError(new Error('Missing parameters.'), req, res);
+
+        await db.deleteCustomL1Parent(req.body.data.user.id, parseInt(req.params.id));
+
+        res.sendStatus(200);
+    } catch(error) {
+        if (error.message.includes('Cannot delete') || error.message.includes('not found'))
+            return managedError(error, req, res);
+        unmanagedError(error, req, next);
+    }
+});
+
+router.get('/:id/orbitConfig', authMiddleware, async (req, res, next) => {
+    const data = { ...req.query, ...req.params };
+
+    try {
+        const orbitConfig = await db.getOrbitConfig(req.body.data.user.id, data.id);
+
+        res.status(200).json({ orbitConfig });
+    } catch (error) {
+        return managedError(error, req, res);
+    }
+});
+
+/**
+ * Update orbit config
+ * @param {object} config - The orbit config to update
+ * @param {string} config.parentChainRpcServer - RPC to use when sending claim transactions
+ * @param {string} config.parentChainExplorer - Explorer to use when linking to parent chain blocks/transactions
+ * @param {string} config.rollupContract - Rollup contract address
+ * @param {string} config.bridgeContract - Bridge contract address
+ * @param {string} config.inboxContract - Inbox contract address
+ * @param {string} config.sequencerInboxContract - Sequencer inbox contract address
+ * @param {string} config.outboxContract - Outbox contract address
+ * @param {string} config.l1GatewayRouter - L1 gateway router contract address
+ * @param {string} config.l1Erc20Gateway - L1 ERC20 gateway contract address
+ * @param {string} config.l1WethGateway - L1 WETH gateway contract address
+ * @param {string} config.l1CustomGateway - L1 custom gateway contract address
+ * @param {string} config.l2GatewayRouter - L2 gateway router contract address
+ * @param {string} config.l2Erc20Gateway - L2 ERC20 gateway contract address
+ * @param {string} config.l2WethGateway - L2 WETH gateway contract address
+ * @param {string} config.l2CustomGateway - L2 custom gateway contract address
+ * @param {string} config.challengeManagerContract - Challenge manager contract address
+ * @param {string} config.validatorWalletCreatorContract - Validator wallet creator contract address
+ * @param {string} config.stakeToken - Stake token address
+ * @param {string} config.parentMessageCountShift - The number of blocks to shift when counting messages
+ * @returns {Promise<object>} - The updated orbit config
+ */
+router.put('/:id/orbitConfig', authMiddleware, async (req, res, next) => {
+    const data = { ...req.query, ...req.params };
+
+    try {
+        const currentConfig = await db.getOrbitConfig(req.body.data.user.id, data.id);
+        if (!currentConfig)
+            return managedError(new Error('There is no orbit config for this explorer.'), req, res);
+
+        let params = { ...req.body.params };
+
+        if (params.config.parentChainRpcServer) {
+            let networkId;
+            const provider = new ProviderConnector(params.config.parentChainRpcServer);
+            try {
+                networkId = await withTimeout(provider.fetchNetworkId());
+                if (!networkId)
+                    throw 'Error';
+            } catch(error) {
+                return managedError(new Error(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`), req, res);
+            }
+
+            params.config.parentChainId = networkId;
+        }
+
+        let config;
+        try {
+            config = await db.updateOrbitConfig(req.body.data.user.id, data.id, params.config);
+        } catch(error) {
+            return managedError(error, req, res);
+        }
+
+        res.status(200).json({ config });
+    } catch (error) {
+        unmanagedError(error, req, res);
+    }
+});
+
+/**
+ * Create orbit config
+ * @param {object} config - The orbit config to create
+ * @param {string} config.parentChainRpcServer - RPC to use when sending claim transactions
+ * @param {string} config.parentChainExplorer - Explorer to use when linking to parent chain blocks/transactions
+ * @param {string} config.rollupContract - Rollup contract address
+ * @param {string} config.bridgeContract - Bridge contract address
+ * @param {string} config.inboxContract - Inbox contract address
+ * @param {string} config.sequencerInboxContract - Sequencer inbox contract address
+ * @param {string} config.outboxContract - Outbox contract address
+ * @param {string} config.l1GatewayRouter - L1 gateway router contract address
+ * @param {string} config.l1Erc20Gateway - L1 ERC20 gateway contract address
+ * @param {string} config.l1WethGateway - L1 WETH gateway contract address
+ * @param {string} config.l1CustomGateway - L1 custom gateway contract address
+ * @param {string} config.l2GatewayRouter - L2 gateway router contract address
+ * @param {string} config.l2Erc20Gateway - L2 ERC20 gateway contract address
+ * @param {string} config.l2WethGateway - L2 WETH gateway contract address
+ * @param {string} config.l2CustomGateway - L2 custom gateway contract address
+ * @param {string} config.challengeManagerContract - Challenge manager contract address
+ * @param {string} config.validatorWalletCreatorContract - Validator wallet creator contract address
+ * @param {string} config.stakeToken - Stake token address
+ * @param {string} config.parentMessageCountShift - The number of blocks to shift when counting messages
+ * @returns {Promise<object>} - The updated orbit config
+ */
+router.post('/:id/orbitConfig', authMiddleware, async (req, res, next) => {
+    const data = { ...req.query, ...req.params };
+
+    try {
+        const currentConfig = await db.getOrbitConfig(req.body.data.user.id, data.id);
+        if (currentConfig)
+            return managedError(new Error('There is already an orbit config for this explorer.'), req, res);
+
+        const configInput = req.body.params.config;
+        const userId = req.body.data.user.id;
+
+        // Validate parent chain selection:
+        // - parentWorkspaceId: existing public or custom L1 parent
+        // - customL1: { name, rpcServer } for creating new custom L1 inline
+        // Note: Orbit always requires parentChainRpcServer (frontend RPC for browser withdrawal claims)
+        const hasExistingParent = !!configInput.parentWorkspaceId;
+        const hasNewCustomL1 = configInput.customL1 && configInput.customL1.name && configInput.customL1.rpcServer;
+
+        if (!hasExistingParent && !hasNewCustomL1)
+            return managedError(new Error('Parent chain selection is required. Provide parentWorkspaceId or customL1 details.'), req, res);
+
+        if (!configInput.parentChainRpcServer)
+            return managedError(new Error('Parent chain RPC server is required (for browser-based withdrawal claims).'), req, res);
+
+        // Validate the frontend RPC is reachable
+        let networkId;
+        const provider = new ProviderConnector(configInput.parentChainRpcServer);
+        try {
+            networkId = await withTimeout(provider.fetchNetworkId());
+            if (!networkId)
+                throw 'Error';
+        } catch(error) {
+            return managedError(new Error(`Our servers can't query this RPC, please use an RPC that is reachable from the internet.`), req, res);
+        }
+
+        // Prepare config params for model layer
+        let configParams = { ...configInput, parentChainId: networkId };
+
+        // Handle custom L1 parent creation inline
+        if (hasNewCustomL1) {
+            // Validate backend RPC and fetch network ID
+            let backendNetworkId;
+            const backendProvider = new ProviderConnector(configInput.customL1.rpcServer);
+            try {
+                backendNetworkId = await withTimeout(backendProvider.fetchNetworkId());
+                if (!backendNetworkId)
+                    throw 'Error';
+            } catch(error) {
+                return managedError(new Error(`Our servers can't query the backend RPC, please use an RPC that is reachable from the internet.`), req, res);
+            }
+
+            // Create the custom L1 parent workspace
+            let customL1Workspace;
+            try {
+                customL1Workspace = await db.createCustomL1Parent(userId, {
+                    name: configInput.customL1.name,
+                    rpcServer: configInput.customL1.rpcServer,
+                    networkId: backendNetworkId
+                });
+            } catch(error) {
+                if (error.name === 'SequelizeUniqueConstraintError') {
+                    return managedError(new Error(`A workspace with name "${configInput.customL1.name}" already exists. Please choose a different name.`), req, res);
+                }
+                throw error;
+            }
+
+            configParams.parentWorkspaceId = customL1Workspace.id;
+            delete configParams.customL1;
+        }
+
+        let config;
+        try {
+            config = await db.createOrbitConfig(userId, data.id, configParams);
+        } catch(error) {
+            // Clean up orphaned custom L1 parent if config creation fails
+            if (hasNewCustomL1 && configParams.parentWorkspaceId) {
+                try {
+                    await db.deleteCustomL1Parent(userId, configParams.parentWorkspaceId);
+                } catch(cleanupError) {
+                    // Log but don't fail on cleanup error
+                }
+            }
+            return managedError(error, req, res);
+        }
+
+        // Start sync for custom L1 parent if applicable
+        if (config.parentWorkspaceId) {
+            await enqueue(
+                'startCustomL1ParentSync',
+                `startCustomL1ParentSync-${config.parentWorkspaceId}`,
+                { workspaceId: config.parentWorkspaceId },
+                1
+            );
+        }
+
+        res.status(200).json({ config });
+    } catch (error) {
+        unmanagedError(error, req, next);
+    }
+});
+
+/**
+ * Get OP Stack config
+ * @returns {Promise<object>} - The OP config
+ */
+router.get('/:id/opConfig', authMiddleware, async (req, res, next) => {
+    const data = { ...req.query, ...req.params };
+
+    try {
+        const opConfig = await db.getOpConfig(req.body.data.user.id, data.id);
+
+        res.status(200).json({ opConfig });
+    } catch (error) {
+        return managedError(error, req, res);
+    }
+});
+
+/**
+ * Update OP Stack config
+ * @param {object} config - The OP config to update
+ * @param {string} config.batchInboxAddress - Batch inbox address
+ * @param {string} config.optimismPortalAddress - Optimism portal address
+ * @param {string} config.l2OutputOracleAddress - L2 output oracle address (legacy)
+ * @param {string} config.disputeGameFactoryAddress - Dispute game factory address (modern)
+ * @param {string} config.systemConfigAddress - System config address
+ * @param {string} config.l2ToL1MessagePasserAddress - L2 to L1 message passer address
+ * @param {number} config.outputVersion - Output version (0 = legacy, 1 = fault proofs)
+ * @param {number} config.submissionInterval - Blocks between output submissions
+ * @param {number} config.finalizationPeriodSeconds - Challenge period in seconds
+ * @param {string} config.parentChainExplorer - Parent chain explorer URL
+ * @returns {Promise<object>} - The updated OP config
+ */
+router.put('/:id/opConfig', authMiddleware, async (req, res, next) => {
+    const data = { ...req.query, ...req.params };
+
+    try {
+        const currentConfig = await db.getOpConfig(req.body.data.user.id, data.id);
+        if (!currentConfig)
+            return managedError(new Error('There is no OP config for this explorer.'), req, res);
+
+        let params = { ...req.body.params };
+
+        if (params.config.parentChainId) {
+            params.config.parentChainId = parseInt(params.config.parentChainId);
+        }
+
+        let config;
+        try {
+            config = await db.updateOpConfig(req.body.data.user.id, data.id, params.config);
+        } catch(error) {
+            return managedError(error, req, res);
+        }
+
+        res.status(200).json({ config });
+    } catch (error) {
+        unmanagedError(error, req, next);
+    }
+});
+
+/**
+ * Create OP Stack config
+ * @param {object} config - The OP config to create
+ * @param {number} config.parentChainId - Parent chain network ID (e.g., 1 for Ethereum mainnet)
+ * @param {string} config.batchInboxAddress - Batch inbox address
+ * @param {string} config.optimismPortalAddress - Optimism portal address
+ * @param {string} config.l2OutputOracleAddress - L2 output oracle address (legacy)
+ * @param {string} config.disputeGameFactoryAddress - Dispute game factory address (modern)
+ * @param {string} config.systemConfigAddress - System config address
+ * @param {string} config.l2ToL1MessagePasserAddress - L2 to L1 message passer address
+ * @param {number} config.outputVersion - Output version (0 = legacy, 1 = fault proofs)
+ * @param {number} config.submissionInterval - Blocks between output submissions
+ * @param {number} config.finalizationPeriodSeconds - Challenge period in seconds
+ * @param {string} config.parentChainExplorer - Parent chain explorer URL
+ * @returns {Promise<object>} - The created OP config
+ */
+router.post('/:id/opConfig', authMiddleware, async (req, res, next) => {
+    const data = { ...req.query, ...req.params };
+
+    try {
+        const currentConfig = await db.getOpConfig(req.body.data.user.id, data.id);
+        if (currentConfig)
+            return managedError(new Error('There is already an OP config for this explorer.'), req, res);
+
+        const configInput = req.body.params.config;
+        const userId = req.body.data.user.id;
+
+        // Validate parent chain selection:
+        // - networkId: public L1 (legacy)
+        // - parentWorkspaceId: existing custom L1 parent
+        // - customL1: { name, rpcServer } for creating new custom L1 inline
+        const hasPublicL1 = !!configInput.networkId;
+        const hasExistingCustomL1 = !!configInput.parentWorkspaceId;
+        const hasNewCustomL1 = configInput.customL1 && configInput.customL1.name && configInput.customL1.rpcServer;
+
+        if (!hasPublicL1 && !hasExistingCustomL1 && !hasNewCustomL1)
+            return managedError(new Error('Parent chain selection is required. Provide networkId, parentWorkspaceId, or customL1 details.'), req, res);
+
+        // If using public L1 via networkId, validate it's supported
+        if (hasPublicL1 && !hasExistingCustomL1 && !hasNewCustomL1) {
+            const networkId = parseInt(configInput.networkId);
+            if (!isOpNetworkSupported(networkId))
+                return managedError(new Error('Selected network is not supported. Only Ethereum Mainnet is currently available.'), req, res);
+        }
+
+        if (!configInput.batchInboxAddress)
+            return managedError(new Error('Batch inbox address is required.'), req, res);
+
+        if (!configInput.optimismPortalAddress)
+            return managedError(new Error('Optimism portal address is required.'), req, res);
+
+        // Prepare config params for model layer
+        let configParams = { ...configInput };
+
+        // Handle custom L1 parent creation inline
+        if (hasNewCustomL1) {
+            // Validate RPC and fetch network ID
+            let networkId;
+            const provider = new ProviderConnector(configInput.customL1.rpcServer);
+            try {
+                networkId = await withTimeout(provider.fetchNetworkId());
+                if (!networkId)
+                    throw 'Error';
+            } catch(error) {
+                return managedError(new Error(`Our servers can't query this RPC, please use an RPC that is reachable from the internet.`), req, res);
+            }
+
+            // Create the custom L1 parent workspace
+            let customL1Workspace;
+            try {
+                customL1Workspace = await db.createCustomL1Parent(userId, {
+                    name: configInput.customL1.name,
+                    rpcServer: configInput.customL1.rpcServer,
+                    networkId: networkId
+                });
+            } catch(error) {
+                if (error.name === 'SequelizeUniqueConstraintError') {
+                    return managedError(new Error(`A workspace with name "${configInput.customL1.name}" already exists. Please choose a different name.`), req, res);
+                }
+                throw error;
+            }
+
+            configParams.parentWorkspaceId = customL1Workspace.id;
+            delete configParams.customL1;
+        } else if (hasPublicL1 && !hasExistingCustomL1) {
+            // Convert networkId to parentChainId for legacy public L1 path
+            configParams.parentChainId = parseInt(configInput.networkId);
+        }
+        delete configParams.networkId;
+
+        let config;
+        try {
+            config = await db.createOpConfig(userId, data.id, configParams);
+        } catch(error) {
+            // Clean up orphaned custom L1 parent if config creation fails
+            if (hasNewCustomL1 && configParams.parentWorkspaceId) {
+                try {
+                    await db.deleteCustomL1Parent(userId, configParams.parentWorkspaceId);
+                } catch(cleanupError) {
+                    // Log but don't fail on cleanup error
+                }
+            }
+            return managedError(error, req, res);
+        }
+
+        // Start sync for custom L1 parent if applicable
+        if (config.parentWorkspaceId) {
+            await enqueue(
+                'startCustomL1ParentSync',
+                `startCustomL1ParentSync-${config.parentWorkspaceId}`,
+                { workspaceId: config.parentWorkspaceId },
+                1
+            );
+        }
+
+        res.status(200).json({ config });
+    } catch (error) {
+        unmanagedError(error, req, next);
+    }
+});
 
 router.post('/:id/v2_dexes', authMiddleware, async (req, res, next) => {
     const data = req.body.data;
@@ -177,6 +694,48 @@ router.post('/syncExplorers', secretMiddleware, async (req, res, next) => {
         await bulkEnqueue('updateExplorerSyncingProcess', jobs);
 
         res.sendStatus(200);
+    } catch(error) {
+        unmanagedError(error, req, next);
+    }
+});
+
+/**
+ * Report a sync failure for an explorer
+ * Used by PM2 server and sync jobs to report RPC failures
+ * @route POST /api/explorers/:slug/syncFailure
+ * @param {string} slug - Explorer slug
+ * @param {string} reason - Failure reason (e.g., 'rpc_error', 'rpc_unreachable')
+ * @param {string} source - Source of the failure (e.g., 'pm2', 'blockSync', 'receiptSync')
+ * @returns {object} - Result with disabled status, attempts count, and message
+ */
+router.post('/:slug/syncFailure', secretMiddleware, async (req, res, next) => {
+    try {
+        const { slug } = req.params;
+        const { reason, source } = req.body;
+
+        const explorer = await Explorer.findOne({ where: { slug } });
+        if (!explorer) {
+            return res.status(404).json({ error: 'Explorer not found' });
+        }
+
+        const result = await explorer.incrementSyncFailures(reason || 'rpc_error');
+
+        logger.info({
+            message: 'Sync failure reported',
+            explorerSlug: slug,
+            reason: reason || 'rpc_error',
+            source: source || 'unknown',
+            attempts: result.attempts,
+            disabled: result.disabled
+        });
+
+        res.status(200).json({
+            disabled: result.disabled,
+            attempts: result.attempts,
+            message: result.disabled
+                ? `Sync auto-disabled after ${result.attempts} failures`
+                : `Failure recorded (attempt ${result.attempts}/${SYNC_FAILURE_THRESHOLD})`
+        });
     } catch(error) {
         unmanagedError(error, req, next);
     }
@@ -639,10 +1198,6 @@ router.post('/', authMiddleware, async (req, res, next) => {
             return managedError(new Error(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`), req, res);
         }
 
-        const allowed = await isChainAllowed(networkId);
-        if (!allowed)
-            return managedError(new Error('You can\'t create an explorer with this network id (' + networkId + '). If you\'d still like an explorer for this chain. Please reach out to contact@tryethernal.com, and we\'ll set one up for you.'), req, res);
-
         let options = {
             name: data.name,
             backendRpcServer,
@@ -661,7 +1216,6 @@ router.post('/', authMiddleware, async (req, res, next) => {
         options['token'] = data.token;
         options['slug'] = data.slug;
         options['totalSupply'] = data.totalSupply;
-        options['l1Explorer'] = data.l1Explorer;
         options['branding'] = data.branding;
 
         const usingDefaultPlan = !data.plan && (!isStripeEnabled() || user.canUseDemoPlan);
@@ -716,6 +1270,12 @@ router.post('/', authMiddleware, async (req, res, next) => {
                 else
                     return managedError(new Error(`Couldn't create subscription.`), req, res);
             }
+        }
+
+        if (!stripePlan || !stripePlan.capabilities.allowAllChains) {
+            const allowed = await isChainAllowed(networkId);
+            if (!allowed)
+                return managedError(new Error('You can\'t create an explorer with this network id (' + networkId + '). If you\'d still like an explorer for this chain. Please reach out to contact@tryethernal.com, and we\'ll set one up for you.'), req, res);
         }
 
         let explorer;
@@ -812,7 +1372,6 @@ router.get('/search', async (req, res, next) => {
             chainId: explorer.chainId,
             domain: explorer.domain,
             domains: explorer.domains,
-            l1Explorer: explorer.l1Explorer,
             name: explorer.name,
             rpcServer: explorer.rpcServer,
             slug: explorer.slug,

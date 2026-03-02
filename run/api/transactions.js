@@ -1,3 +1,16 @@
+/**
+ * @fileoverview Transaction API endpoints.
+ * Provides routes for retrieving, syncing, and processing transactions.
+ * @module api/transactions
+ *
+ * @route GET /:hash/traceSteps - Get internal transaction trace steps
+ * @route GET /:hash/tokenTransfers - Get token transfers for a transaction
+ * @route GET /:hash/tokenBalanceChanges - Get token balance changes
+ * @route GET /:hash/logs - Get transaction logs
+ * @route GET /:hash - Get transaction by hash
+ * @route GET / - List transactions with pagination
+ */
+
 const express = require('express');
 const logger = require('../lib/logger');
 const { stringifyBns, sanitize } = require('../lib/utils');

@@ -1,3 +1,22 @@
+/**
+ * @fileoverview Contract model - represents smart contracts.
+ * Stores contract data, ABIs, verification status, and token metadata.
+ * Handles ERC20/ERC721/ERC1155 token operations and analytics.
+ *
+ * @module models/Contract
+ *
+ * @property {number} id - Primary key
+ * @property {number} workspaceId - Foreign key to workspace
+ * @property {string} address - Contract address
+ * @property {string} name - Contract name
+ * @property {Object} abi - Contract ABI
+ * @property {Array<string>} patterns - Detected patterns (erc20, erc721, etc.)
+ * @property {string} tokenName - Token name (for tokens)
+ * @property {string} tokenSymbol - Token symbol (for tokens)
+ * @property {number} tokenDecimals - Token decimals (for tokens)
+ * @property {string} proxy - Implementation contract address (for proxies)
+ */
+
 'use strict';
 
 const {
@@ -45,8 +64,24 @@ module.exports = (sequelize, DataTypes) => {
       });
       Contract.hasOne(models.ContractVerification, { foreignKey: 'contractId', as: 'verification' });
       Contract.hasMany(models.ContractSource, { foreignKey: 'contractId', as: 'sources' });
+      Contract.hasMany(models.V2DexPair, { foreignKey: 'pairContractId', as: 'pairs' });
+      Contract.hasMany(models.V2DexPair, { foreignKey: 'token0ContractId', as: 'token0Pairs' });
+      Contract.hasMany(models.V2DexPair, { foreignKey: 'token1ContractId', as: 'token1Pairs' });
+      Contract.hasOne(models.ExplorerV2Dex, { foreignKey: 'wrappedNativeTokenContractId', as: 'wrappedNativeTokenContract' });
     }
 
+    /**
+     * Creates contract verification with source files.
+     * @param {Object} verificationData - Verification parameters
+     * @param {string} verificationData.compilerVersion - Solidity compiler version
+     * @param {string} [verificationData.evmVersion='Default'] - EVM version
+     * @param {number} [verificationData.runs] - Optimizer runs
+     * @param {Object} verificationData.sources - Source files object
+     * @param {Object} [verificationData.libraries] - Library addresses
+     * @param {string} [verificationData.constructorArguments] - Constructor args
+     * @param {string} [verificationData.contractName] - Contract name
+     * @returns {Promise<ContractVerification>} Created verification
+     */
     safeCreateVerification(verificationData) {
         const { compilerVersion, evmVersion = 'Default', runs, sources, libraries, constructorArguments, contractName } = verificationData;
 
@@ -59,7 +94,19 @@ module.exports = (sequelize, DataTypes) => {
                     {
                         workspaceId: this.workspaceId,
                         contractId: this.id,
-                        compilerVersion, evmVersion, runs, constructorArguments, libraries, contractName
+                        compilerVersion, 
+                        evmVersion, 
+                        runs: runs ? parseInt(runs) : null, 
+                        constructorArguments, 
+                        libraries: libraries ? (typeof libraries === 'string' ? (() => {
+                            try {
+                                return JSON.parse(libraries);
+                            } catch (e) {
+                                console.warn(`Invalid JSON in libraries field for contract ${this.id}:`, libraries);
+                                return null;
+                            }
+                        })() : libraries) : null, 
+                        contractName
                     }
                 ],
                 {
@@ -87,6 +134,12 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    /**
+     * Gets token holder count history for a date range.
+     * @param {string} from - Start date
+     * @param {string} to - End date
+     * @returns {Promise<Array>} Daily holder counts
+     */
     async getTokenHolderHistory(from, to) {
         if (!from || !to) throw new Error('Missing parameter');
 
@@ -143,6 +196,10 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    /**
+     * Gets the current circulating supply for a token contract.
+     * @returns {Promise<string>} Total circulating supply
+     */
     async getCurrentTokenCirculatingSupply() {
         const [{ sum: supply }] = await sequelize.query(`
             SELECT SUM(first_value) FROM (
@@ -488,6 +545,22 @@ module.exports = (sequelize, DataTypes) => {
         for (let i = 0; i < tokens.length; i++)
             await tokens[i].destroy({ transaction });
 
+        const pairs = await sequelize.models.V2DexPair.findAll({ where: { pairContractId: this.id }});
+        for (let i = 0; i < pairs.length; i++)
+            await pairs[i].safeDestroy(transaction);
+
+        const token0Pairs = await sequelize.models.V2DexPair.findAll({ where: { token0ContractId: this.id }});
+        for (let i = 0; i < token0Pairs.length; i++)
+            await token0Pairs[i].safeDestroy(transaction);
+
+        const token1Pairs = await sequelize.models.V2DexPair.findAll({ where: { token1ContractId: this.id }});
+        for (let i = 0; i < token1Pairs.length; i++)
+            await token1Pairs[i].safeDestroy(transaction);
+
+        const wrappedNativeTokenContract = await sequelize.models.ExplorerV2Dex.findAll({ where: { wrappedNativeTokenContractId: this.id }});
+        for (let i = 0; i < wrappedNativeTokenContract.length; i++)
+            await wrappedNativeTokenContract[i].safeDestroy(transaction);
+
         return this.destroy({ transaction });
     }
   }
@@ -574,7 +647,10 @@ module.exports = (sequelize, DataTypes) => {
                 afterCreateFn();
         },
 
-        afterSave(contract) {
+        async afterSave(contract) {
+            if (contract._changed.has('abi'))
+                await enqueue('processContract', `processContract-${contract.id}`, { contractId: contract.id });
+
             trigger(`private-contracts;workspace=${contract.workspaceId}`, 'new', null);
             trigger(`private-transactions;workspace=${contract.workspaceId};address=${contract.address}`, 'new', null);
 

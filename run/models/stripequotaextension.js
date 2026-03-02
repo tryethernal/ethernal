@@ -1,3 +1,16 @@
+/**
+ * @fileoverview StripeQuotaExtension model - additional transaction quota purchases.
+ * Extends base subscription limits with one-time quota additions.
+ *
+ * @module models/StripeQuotaExtension
+ *
+ * @property {number} id - Primary key
+ * @property {number} stripeSubscriptionId - Foreign key to subscription
+ * @property {number} stripePlanId - Foreign key to plan
+ * @property {string} stripeId - Stripe product ID
+ * @property {number} quota - Additional quota amount
+ */
+
 'use strict';
 const {
   Model

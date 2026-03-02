@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Transaction processing utilities.
+ * Handles function signature parsing, transaction syncing, and error extraction.
+ * @module lib/transactions
+ */
+
 const ethers = require('ethers');
 const moment = require('moment');
 const db = require('./firebase');
@@ -7,6 +13,13 @@ const { withTimeout } = require('./utils');
 
 const NETWORK_TIMEOUT = 10 * 1000;
 
+/**
+ * Extracts the function signature from a transaction using its ABI.
+ * @param {Object} transaction - The transaction object
+ * @param {Array<Object>} abi - Contract ABI array
+ * @returns {string|null} Human-readable function signature or null if not found
+ * @private
+ */
 const _getFunctionSignatureForTransaction = (transaction, abi) => {
     try {
         if (!transaction || !abi)
@@ -24,6 +37,15 @@ const _getFunctionSignatureForTransaction = (transaction, abi) => {
     }
 };
 
+/**
+ * Formats a transaction for synchronization with the database.
+ * @param {string} uid - User's Firebase UID
+ * @param {string} workspace - Workspace name
+ * @param {Object} transaction - Raw transaction object
+ * @param {Object} receipt - Transaction receipt object
+ * @param {string|number} timestamp - Block timestamp
+ * @returns {Promise<Object>} Sanitized transaction object ready for storage
+ */
 const getTxSynced = async (uid, workspace, transaction, receipt, timestamp) => {
     const sTransactionReceipt = receipt ? _stringifyBns(_sanitize(receipt)) : null;
     const sTransaction = _stringifyBns(_sanitize(transaction));
@@ -43,6 +65,12 @@ const getTxSynced = async (uid, workspace, transaction, receipt, timestamp) => {
     });
 };
 
+/**
+ * Processes multiple transactions for additional data extraction.
+ * Handles contract storage, token transfers, tracing, and error parsing.
+ * @param {Array<number>} transactionIds - Array of transaction database IDs to process
+ * @returns {Promise<void>}
+ */
 const processTransactions = async (transactionIds) => {
     for (let i = 0; i < transactionIds.length; i++) {
         let contract;

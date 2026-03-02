@@ -1,3 +1,12 @@
+/**
+ * @fileoverview ERC721 Collection API endpoints.
+ * Provides NFT collection data: total supply, gallery, and metadata.
+ * @module api/erc721Collections
+ *
+ * @route GET /:address/totalSupply - Get collection total supply
+ * @route GET /:address/gallery - Get collection gallery (paginated)
+ */
+
 const express = require('express');
 const router = express.Router();
 const db = require('../lib/firebase');

@@ -1,3 +1,10 @@
+/**
+ * @fileoverview Main Vue Router plugin.
+ * Defines all application routes including Etherscan-compatible paths.
+ * Routes for blocks, transactions, addresses, contracts, tokens, explorers.
+ * @module plugins/router
+ */
+
 import { createWebHistory, createRouter } from 'vue-router';
 import Blocks from '../components/Blocks.vue';
 import Block from '../components/Block.vue';
@@ -29,6 +36,17 @@ import WorkspaceNFTTransfer from '../components/WorkspaceNFTTransfer.vue';
 import TokenContract from '../components/TokenContract.vue';
 import VerifiedContracts from '@/components/VerifiedContracts.vue'
 import AccountList from '@/components/AccountList.vue'
+import OrbitBatches from '@/components/OrbitBatches.vue'
+import OrbitBatchDetail from '@/components/OrbitBatchDetail.vue'
+import OrbitWithdrawals from '@/components/OrbitWithdrawals.vue'
+import OrbitWithdrawal from '@/components/OrbitWithdrawal.vue'
+import OrbitDeposits from '@/components/OrbitDeposits.vue'
+import OpBatches from '@/components/OpBatches.vue'
+import OpBatchDetail from '@/components/OpBatchDetail.vue'
+import OpOutputs from '@/components/OpOutputs.vue'
+import OpOutputDetail from '@/components/OpOutputDetail.vue'
+import OpWithdrawals from '@/components/OpWithdrawals.vue'
+import OpDeposits from '@/components/OpDeposits.vue'
 
 import { useEnvStore } from '../stores/env';
 
@@ -71,6 +89,9 @@ const ESRoutes = [
     { path: '/charts', component: ExplorerAnalytics, beforeEnter: redirectIfLoggedOut },
     { path: '/contractsverified', component: VerifiedContracts, beforeEnter: redirectIfLoggedOut },
     { path: '/tx/:hash', component: Transaction, props: true, beforeEnter: redirectIfLoggedOut },
+    { path: '/txsExit', component: OrbitWithdrawals, beforeEnter: redirectIfLoggedOut },
+    { path: '/txsDeposits', component: OrbitDeposits, beforeEnter: redirectIfLoggedOut },
+    { path: '/messagerelayer', component: OrbitWithdrawal, beforeEnter: redirectIfLoggedOut }
 ]
 
 const routes = [
@@ -104,6 +125,18 @@ const routes = [
     { path: '/faucet', component: ExplorerFaucet, beforeEnter: redirectIfLoggedOut },
     { path: '/dex', component: ExplorerDex, beforeEnter: redirectIfLoggedOut },
     { path: '/bridge', component: ExplorerBridge, beforeEnter: redirectIfLoggedOut },
+    { path: '/batches', component: OrbitBatches, name: 'orbit-batches', beforeEnter: redirectIfLoggedOut },
+    { path: '/batch/:batchNumber', component: OrbitBatchDetail, name: 'orbit-batch-detail', props: true, beforeEnter: redirectIfLoggedOut },
+    { path: '/withdrawals', component: OrbitWithdrawals, name: 'orbit-withdrawals', beforeEnter: redirectIfLoggedOut },
+    { path: '/deposits', component: OrbitDeposits, name: 'orbit-deposits', beforeEnter: redirectIfLoggedOut },
+    { path: '/txn-withdrawal', component: OrbitWithdrawal, beforeEnter: redirectIfLoggedOut },
+    // OP Stack routes
+    { path: '/op/batches', component: OpBatches, name: 'opBatches', beforeEnter: redirectIfLoggedOut },
+    { path: '/op/batches/:batchIndex', component: OpBatchDetail, name: 'opBatchDetail', props: true, beforeEnter: redirectIfLoggedOut },
+    { path: '/op/outputs', component: OpOutputs, name: 'opOutputs', beforeEnter: redirectIfLoggedOut },
+    { path: '/op/outputs/:outputIndex', component: OpOutputDetail, name: 'opOutputDetail', props: true, beforeEnter: redirectIfLoggedOut },
+    { path: '/op/withdrawals', component: OpWithdrawals, name: 'opWithdrawals', beforeEnter: redirectIfLoggedOut },
+    { path: '/op/deposits', component: OpDeposits, name: 'opDeposits', beforeEnter: redirectIfLoggedOut },
     { path: '/:pathMatch(.*)*', name: 'not-found', component: Overview, beforeEnter: redirectIfLoggedOut }
 ];
 

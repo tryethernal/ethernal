@@ -65,6 +65,18 @@
     </v-row>
 </template>
 
+/**
+ * @fileoverview Address header component.
+ * Displays overview information for an address including balance, contract info,
+ * and transaction statistics (first/last transaction timestamps).
+ * @component AddressHeader
+ *
+ * @prop {boolean} loadingBalance - Whether balance is still loading
+ * @prop {boolean} loadingStats - Whether stats are still loading
+ * @prop {string|number} balance - Native token balance in wei
+ * @prop {Object} [contract] - Contract data if address is a contract
+ * @prop {Object} [addressTransactionStats] - Transaction statistics for the address
+ */
 <script setup>
 import { inject } from 'vue';
 import HashLink from './HashLink.vue';

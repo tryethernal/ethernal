@@ -1,23 +1,37 @@
-const sgMail = require('@sendgrid/mail');
-const { getAppDomain, getSendgridApiKey, getDemoExplorerSender } = require('../lib/env');
-const { isSendgridEnabled } = require('../lib/flags');
+/**
+ * @fileoverview Demo explorer email job.
+ * Sends welcome email with explorer link via Mailjet.
+ * @module jobs/sendDemoExplorerLink
+ */
+
+const Mailjet = require('node-mailjet');
+const logger = require('../lib/logger');
+const { getAppDomain, getMailjetPublicKey, getMailjetPrivateKey, getDemoExplorerSender } = require('../lib/env');
+const { isMailjetEnabled } = require('../lib/flags');
 
 module.exports = async (job) => {
     const { email, explorerSlug } = job.data;
 
-    if (!isSendgridEnabled())
-        throw new Error('Sendgrid has not been enabled.');
+    if (!isMailjetEnabled())
+        throw new Error('Mailjet has not been enabled.');
 
-    sgMail.setApiKey(getSendgridApiKey());
+    const mailjet = Mailjet.apiConnect(getMailjetPublicKey(), getMailjetPrivateKey());
 
     const explorerLink = `https://${explorerSlug}.${getAppDomain()}`;
 
-    return sgMail.send({
-        to: email,
-        from: getDemoExplorerSender(),
-        subject: 'Your Ethernal demo explorer is ready',
-        text: `
-            Hello,
+    await mailjet.post('send', { version: 'v3.1' })
+        .request({
+            Messages: [
+                {
+                    From: {
+                        Email: getDemoExplorerSender(),
+                        Name: 'Antoine'
+                    },
+                    To: [{
+                        Email: email
+                    }],
+                    Subject: 'Your Ethernal demo explorer is ready',
+                    TextPart: `Hello,
 
             Your Ethernal demo explorer is ready. You can access it at ${explorerLink}.
 
@@ -27,12 +41,18 @@ module.exports = async (job) => {
 
             The Ethernal team
         `,
-        html: `
+                    HTMLPart: `
             <p>Hello,</p>
             <p>Your Ethernal demo explorer is ready. You can access it at <a href="${explorerLink}">${explorerLink}</a>.</p>
             <p>Feel free to reply to this email if you have any questions!</p>
             <p>Regards,</p>
             <p>The Ethernal team</p>
         `
+            }
+        ]
+    })
+    .catch(error => {
+        logger.error(error);
+        throw error;
     });
 }

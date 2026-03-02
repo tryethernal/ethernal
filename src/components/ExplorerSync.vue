@@ -25,6 +25,13 @@
     </v-card>
 </template>
 
+/**
+ * @fileoverview Explorer sync status component.
+ * Displays block synchronization status and controls for starting/stopping sync.
+ * @component ExplorerSync
+ *
+ * @prop {Object} explorer - The explorer data object
+ */
 <script>
 import { mapStores } from 'pinia';
 import { useEnvStore } from '../stores/env';

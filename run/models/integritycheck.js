@@ -1,3 +1,15 @@
+/**
+ * @fileoverview IntegrityCheck model - tracks blockchain data integrity status.
+ * Monitors sync health and recovery state for workspaces.
+ *
+ * @module models/IntegrityCheck
+ *
+ * @property {number} id - Primary key
+ * @property {number} workspaceId - Foreign key to workspace
+ * @property {number} blockId - Last checked block
+ * @property {string} status - healthy/recovering
+ */
+
 'use strict';
 const {
   Model

@@ -1,3 +1,11 @@
+/**
+ * @fileoverview Transaction Trace Steps API endpoints.
+ * Lists internal transactions (CALL, DELEGATECALL, etc.) across workspace.
+ * @module api/transactionTraceSteps
+ *
+ * @route GET / - List all internal transactions (paginated)
+ */
+
 const express = require('express');
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const router = express.Router();

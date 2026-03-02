@@ -45,6 +45,14 @@
     </v-card>
 </template>
 
+/**
+ * @fileoverview Address analytics component.
+ * Displays charts for transaction history, transaction fees, and token transfers
+ * for a specific address over a configurable date range.
+ * @component AddressAnalytics
+ *
+ * @prop {string} address - The Ethereum address to show analytics for
+ */
 <script setup>
 import { ref, inject } from 'vue';
 import { ethers } from 'ethers';

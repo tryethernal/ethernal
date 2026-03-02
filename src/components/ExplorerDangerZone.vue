@@ -22,6 +22,13 @@
     </v-sheet>
 </template>
 
+/**
+ * @fileoverview Explorer danger zone component.
+ * Provides destructive actions like deleting the explorer.
+ * @component ExplorerDangerZone
+ *
+ * @prop {Object} explorer - The explorer data object
+ */
 <script>
 import { mapStores } from 'pinia';
 import { useEnvStore } from '../stores/env';

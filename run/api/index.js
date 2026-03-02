@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Main API router - mounts all route modules.
+ * Conditionally enables Stripe, demo, and marketing routes based on flags.
+ * @module api/index
+ */
+
 const express = require('express');
 const { isStripeEnabled, isDemoEnabled, isSelfHosted } = require('../lib/flags');
 const router = express.Router();
@@ -23,6 +29,14 @@ const v2Dexes = require('./v2Dexes');
 const gas = require('./gas');
 const transactionTraceSteps = require('./transactionTraceSteps');
 const caddy = require('./caddy');
+const orbitBatches = require('./orbitBatches');
+const orbitWithdrawals = require('./orbitWithdrawals');
+const orbitDeposits = require('./orbitDeposits');
+const opBatches = require('./opBatches');
+const opOutputs = require('./opOutputs');
+const opDeposits = require('./opDeposits');
+const opWithdrawals = require('./opWithdrawals');
+
 router.use('/blocks', blocks);
 router.use('/contracts', contracts);
 router.use('/transactions', transactions);
@@ -45,6 +59,13 @@ router.use('/v2_dexes', v2Dexes);
 router.use('/gas', gas);
 router.use('/transactionTraceSteps', transactionTraceSteps);
 router.use('/caddy', caddy);
+router.use('/orbitBatches', orbitBatches);
+router.use('/orbitWithdrawals', orbitWithdrawals);
+router.use('/orbitDeposits', orbitDeposits);
+router.use('/opBatches', opBatches);
+router.use('/opOutputs', opOutputs);
+router.use('/opDeposits', opDeposits);
+router.use('/opWithdrawals', opWithdrawals);
 
 if (isDemoEnabled()) {
     const demo = require('./demo');

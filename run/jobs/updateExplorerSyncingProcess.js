@@ -1,5 +1,16 @@
+/**
+ * @fileoverview Explorer sync process update job.
+ * Manages PM2 processes for explorer block syncing based on status.
+ * Auto-disables sync after repeated RPC failures with exponential backoff recovery.
+ * @module jobs/updateExplorerSyncingProcess
+ */
+
 const { Explorer, Workspace, RpcHealthCheck, StripeSubscription, StripePlan } = require('../models');
 const PM2 = require('../lib/pm2');
+const logger = require('../lib/logger');
+
+// Must match SYNC_FAILURE_THRESHOLD in explorer.js
+const SYNC_FAILURE_THRESHOLD = 3;
 
 module.exports = async job => {
     const data = job.data;
@@ -13,17 +24,21 @@ module.exports = async job => {
             {
                 model: Workspace,
                 as: 'workspace',
+                required: false,
                 include: {
                     model: RpcHealthCheck,
-                    as: 'rpcHealthCheck'
+                    as: 'rpcHealthCheck',
+                    required: false
                 }
             },
             {
                 model: StripeSubscription,
                 as: 'stripeSubscription',
+                required: false,
                 include: {
                     model: StripePlan,
-                    as: 'stripePlan'
+                    as: 'stripePlan',
+                    required: false
                 }
             }
         ]
@@ -49,9 +64,25 @@ module.exports = async job => {
             await pm2.delete(explorer.slug);
             return 'Process deleted: no subscription.';
         }
-        else if (explorer.workspace.rpcHealthCheck && !explorer.workspace.rpcHealthCheck.isReachable && existingProcess) {
+        else if (explorer && !explorer.workspace) {
             await pm2.delete(explorer.slug);
-            return 'Process deleted: RPC is not reachable.';
+            return 'Process deleted: no workspace.';
+        }
+        else if (explorer.workspace && explorer.workspace.rpcHealthCheck && !explorer.workspace.rpcHealthCheck.isReachable && existingProcess) {
+            await pm2.delete(explorer.slug);
+            // Track RPC failure and potentially auto-disable
+            const result = await explorer.incrementSyncFailures('rpc_unreachable');
+            if (result.disabled) {
+                logger.info({
+                    message: 'Explorer auto-disabled due to RPC failures',
+                    explorerId: explorer.id,
+                    explorerSlug: explorer.slug,
+                    attempts: result.attempts,
+                    reason: 'rpc_unreachable'
+                });
+                return `Process deleted and sync auto-disabled after ${result.attempts} RPC failures.`;
+            }
+            return `Process deleted: RPC is not reachable (attempt ${result.attempts}/${SYNC_FAILURE_THRESHOLD}).`;
         }
         else if (!explorer.shouldSync && existingProcess) {
             await pm2.delete(explorer.slug);
@@ -63,17 +94,35 @@ module.exports = async job => {
         }
         else if (explorer.shouldSync && !existingProcess) {
             await pm2.start(explorer.slug, explorer.workspaceId);
+            // Reset failure counter on successful start
+            if (explorer.syncFailedAttempts > 0) {
+                await explorer.update({ syncFailedAttempts: 0 });
+            }
             return 'Process started.';
         }
         else if (explorer.shouldSync && existingProcess && existingProcess.pm2_env.status == 'stopped') {
             await pm2.resume(explorer.slug, explorer.workspaceId);
+            // Reset failure counter on successful resume
+            if (explorer.syncFailedAttempts > 0) {
+                await explorer.update({ syncFailedAttempts: 0 });
+            }
             return 'Process resumed.';
         }
         else
             return 'No process change.';
     } catch(error) {
-        if (error.message.startsWith('Timed out after'))
+        if (error.message.startsWith('Timed out after')) {
+            // PM2 timeouts are transient infrastructure issues, not explorer-level problems.
+            // Only log them — don't count towards auto-disable (only rpc_unreachable should).
+            if (explorer) {
+                logger.warn({
+                    message: 'PM2 timed out for explorer sync process',
+                    explorerId: explorer.id,
+                    explorerSlug: explorer.slug
+                });
+            }
             return 'Timed out';
+        }
         else
             throw error;
     }
