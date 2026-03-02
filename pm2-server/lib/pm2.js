@@ -1,3 +1,10 @@
+/**
+ * @fileoverview PM2 process management utilities.
+ * Provides promisified wrappers for PM2 operations.
+ * Used to manage log listener and RPC server proxy processes.
+ * @module pm2-server/lib/pm2
+ */
+
 const pm2 = require('pm2');
 
 const list = () => {
@@ -131,6 +138,34 @@ const _delete = (slug) => {
     });
 };
 
+const startLogListener = (slug, jsonArgs) => {
+    return new Promise((resolve, reject) => {
+        if (!slug || !jsonArgs) reject(new Error('Missing parameter'));
+
+        pm2.connect(error => {
+            if (error) reject(new Error(error));
+
+            const options = {
+                name: slug,
+                script: 'node',
+                args: ['logListener.js', jsonArgs],
+                interpreter: 'none',
+                log_type: 'json'
+            };
+
+            pm2.start(options, (error) => {
+                if (error) reject(new Error(error));
+
+                pm2.describe(slug, (error, process) => {
+                    if (error) reject(new Error(error));
+
+                    resolve(process[0]);
+                });
+            });
+        });
+    });
+};
+
 const start = (slug, workspaceId) => {
     return new Promise((resolve, reject) => {
         if (!slug || !workspaceId) reject(new Error('Missing parameter'));
@@ -159,4 +194,4 @@ const start = (slug, workspaceId) => {
     });
 };
 
-module.exports = { list, show, stop, reload, restart, delete: _delete, start, resume };
+module.exports = { list, show, stop, reload, restart, delete: _delete, start, resume, startLogListener };

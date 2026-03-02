@@ -111,6 +111,16 @@
     </v-container>
 </template>
 
+/**
+ * @fileoverview ERC-721 collection page component.
+ * Displays NFT collection information including transfers, holders, inventory gallery,
+ * and contract details. Supports URL hash navigation between tabs.
+ * @component ERC721Collection
+ *
+ * @prop {string} address - The NFT collection contract address
+ * @prop {Object} contract - The contract data object
+ * @prop {boolean} loadingContract - Whether the contract is still loading
+ */
 <script setup>
 import { ref, computed, watch, inject, onMounted, onBeforeUnmount } from 'vue';
 import { formatNumber, formatContractPattern } from '@/lib/utils';

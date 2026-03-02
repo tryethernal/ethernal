@@ -1,23 +1,38 @@
+/**
+ * @fileoverview PM2 Server Express application.
+ * Provides REST API for managing PM2 processes (log listeners, RPC server proxies).
+ * @module pm2-server/app
+ */
+
 const express = require('express');
 const app = express();
 const pm2 = require('./lib/pm2.js');
+const { secretMiddleware } = require('./lib/middleware.js');
 
 const bodyParser = require('body-parser')
 app.use(bodyParser.json());
 
 const commands = ['stop', 'reload', 'restart', 'delete', 'resume'];
 
-const secretMiddleware = (req, res, next) => {
-    if (req.query.secret == process.env.SECRET)
-        next();
-    else
-        return res.status(401).send('Invalid secret');
-};
-
 const handleError = (res, error) => {
     console.log(error);
     return res.status(400).send(error.message);
 };
+
+app.post('/log-listener', secretMiddleware, async (req, res) => {
+    const data = req.body;
+
+    try {
+        if (!data.slug || !data.jsonArgs)
+            throw new Error('Missing parameter');
+
+        const pm2Process = await pm2.startLogListener(data.slug, data.jsonArgs);
+
+        return res.status(200).send(pm2Process);
+    } catch(error) {
+        handleError(res, error);
+    }
+});
 
 app.get('/processes', secretMiddleware, async (req, res) => {
     try {

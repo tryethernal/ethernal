@@ -1,3 +1,10 @@
+/**
+ * @fileoverview Firebase authentication plugin.
+ * Provides $db client for Firebase auth token management.
+ * Configures Firebase app with development emulator support.
+ * @module plugins/firebase
+ */
+
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/database';

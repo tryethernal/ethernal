@@ -9,7 +9,7 @@ const explorer = {
     token: 'ETL',
     stripeSubscription: {
         stripePlan: {
-            capabilities: { nativeToken: true, totalSupply: true, l1Explorer: true }
+            capabilities: { nativeToken: true, totalSupply: true }
         }
     }
 };

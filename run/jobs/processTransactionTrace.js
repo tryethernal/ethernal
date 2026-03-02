@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Transaction trace processing job.
+ * Fetches and stores debug traces (internal transactions) for transactions.
+ * @module jobs/processTransactionTrace
+ */
+
 const db = require('../lib/firebase');
 const { Transaction, Workspace, User, Explorer, RpcHealthCheck } = require('../models');
 const { Tracer } = require('../lib/rpc');
@@ -54,6 +60,9 @@ module.exports = async job => {
     if (!transaction.workspace.explorer.stripeSubscription)
         return 'No active subscription';
 
+    if (!transaction.workspace.tracing)
+        return 'Tracing is not enabled';
+
     const tracer = new Tracer(transaction.workspace.rpcServer, db, transaction.workspace.tracing);
     await tracer.process(transaction);
 
@@ -63,6 +72,15 @@ module.exports = async job => {
     if (!tracer.parsedTrace)
         return 'No trace';
 
-    return transaction.safeCreateTransactionTrace(tracer.parsedTrace);
+    try {
+        const trace = await transaction.safeCreateTransactionTrace(tracer.parsedTrace);
+        if (trace.error && trace.error.message.includes('debug_traceTransaction does not exist'))
+            await transaction.workspace.update({ tracing: null });
+        return trace;
+    } catch(error) {
+        if (error.error.message.includes('not enabled'))
+            await transaction.workspace.update({ tracing: null });
+        return error;
+    }
 };
 

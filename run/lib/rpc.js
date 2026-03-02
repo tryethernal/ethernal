@@ -1,3 +1,10 @@
+/**
+ * @fileoverview Ethereum RPC client connectors and utilities.
+ * Provides classes for interacting with blockchain nodes, contracts, and DEXes.
+ * Includes transaction tracing, balance queries, and token standard detection.
+ * @module lib/rpc
+ */
+
 const ethers = require('ethers');
 const { Token, CurrencyAmount, TradeType, Percent } = require('@uniswap/sdk-core');
 const { Pair, Trade, Route } = require('@uniswap/v2-sdk');
@@ -17,6 +24,18 @@ const ERC721_ENUMERABLE_ABI = require('./abis/erc721Enumerable.json');
 const ERC721_METADATA_ABI = require('./abis/erc721Metadata.json');
 const ALL_ABIS = ERC721_ABI.concat(ERC20_ABI, ERC721_ENUMERABLE_ABI, ERC721_METADATA_ABI, ERC1155_ABI);
 
+/**
+ * Gets the native token (ETH) balance change for an address at a specific block.
+ *
+ * @param {string} address - Ethereum address to check
+ * @param {number} blockNumber - Block number to check at
+ * @param {string} rpcServer - RPC endpoint URL
+ * @returns {Promise<Object>} Balance change details
+ * @returns {string} returns.address - The address checked
+ * @returns {string} returns.currentBalance - Balance at blockNumber
+ * @returns {string} returns.previousBalance - Balance at blockNumber-1
+ * @returns {string} returns.diff - Difference between current and previous
+ */
 const getNativeBalanceChange = async (address, blockNumber, rpcServer) => {
     const provider = new ProviderConnector(rpcServer);
     
@@ -41,6 +60,14 @@ const getNativeBalanceChange = async (address, blockNumber, rpcServer) => {
     }
 }
 
+/**
+ * Gets the ERC20 token balance change for an address at a specific block.
+ * @param {string} address - Ethereum address to check
+ * @param {string} token - ERC20 token contract address
+ * @param {number} blockNumber - Block number to check at
+ * @param {string} rpcServer - RPC endpoint URL
+ * @returns {Promise<Object>} Balance change details with currentBalance, previousBalance, diff
+ */
 const getBalanceChange = async (address, token, blockNumber, rpcServer) => {
     let currentBalance = ethers.BigNumber.from('0');
     let previousBalance = ethers.BigNumber.from('0');
@@ -107,8 +134,16 @@ const getBalanceChange = async (address, token, blockNumber, rpcServer) => {
     };
 }
 
+/** @type {Object<string, ethers.providers.Provider>} Cache of provider instances by URL */
 let providers = {};
 
+/**
+ * Gets or creates a cached ethers provider for an RPC URL.
+ * Supports HTTP, HTTPS, WS, and WSS protocols with optional basic auth.
+ *
+ * @param {string} url - RPC endpoint URL
+ * @returns {ethers.providers.JsonRpcProvider|ethers.providers.WebSocketProvider} Provider instance
+ */
 const getProvider = function(url) {
     if (providers[url])
         return providers[url];
@@ -135,6 +170,12 @@ const getProvider = function(url) {
     return providers[url];
 };
 
+/**
+ * Connector for Uniswap V2 Factory contracts.
+ * Provides methods to query pair information.
+ *
+ * @class DexFactoryConnector
+ */
 class DexFactoryConnector {
     constructor(server, address) {
         if (!server || !address)
@@ -163,6 +204,11 @@ class DexFactoryConnector {
     }
 }
 
+/**
+ * Connector for Uniswap V2 Router contracts.
+ *
+ * @class DexConnector
+ */
 class DexConnector {
     constructor(server, address) {
         if (!server || !address)
@@ -176,7 +222,12 @@ class DexConnector {
     }
 }
 
-
+/**
+ * Wallet connector for sending transactions.
+ * Used primarily for faucet functionality.
+ *
+ * @class WalletConnector
+ */
 class WalletConnector {
     constructor(server, privateKey) {
         if (!server || !privateKey)
@@ -190,7 +241,19 @@ class WalletConnector {
     }
 }
 
+/**
+ * Provider connector for basic blockchain queries.
+ * Supports rate limiting and provides methods for fetching blocks, transactions, and balances.
+ *
+ * @class ProviderConnector
+ */
 class ProviderConnector {
+    /**
+     * Creates a ProviderConnector instance.
+     *
+     * @param {string} server - RPC endpoint URL
+     * @param {Object} [limiter] - Optional rate limiter instance
+     */
     constructor(server, limiter) {
         if (!server) throw '[ProviderConnector] Missing server parameter';
         this.provider = getProvider(server);
@@ -232,12 +295,8 @@ class ProviderConnector {
     async fetchTransactionReceipt(transactionHash) {
         await this.checkRateLimit();
 
-        try {
-            return await withTimeout(this.provider.getTransactionReceipt(transactionHash));
-        } catch(error) {
-            const rawTransaction = await withTimeout(this.provider.send('eth_getTransactionReceipt', [transactionHash]));
-            return sanitize(rawTransaction);
-        }
+        const rawTransaction = await withTimeout(this.provider.send('eth_getTransactionReceipt', [transactionHash]));
+        return sanitize(rawTransaction);
     }
 
     async fetchNetworkId() {
@@ -246,6 +305,12 @@ class ProviderConnector {
     }
 }
 
+/**
+ * Transaction tracer for debugging and call tracing.
+ * Supports both Geth-style (callTracer) and other node tracing formats.
+ *
+ * @class Tracer
+ */
 class Tracer {
 
     #ERRORS_TO_IGNORE = [-32601, -32000];
@@ -343,8 +408,16 @@ class Tracer {
     }
 }
 
+/**
+ * General-purpose smart contract connector.
+ * Provides methods for detecting token standards, reading contract state,
+ * and interacting with ERC20/ERC721/ERC1155 contracts.
+ *
+ * @class ContractConnector
+ */
 class ContractConnector {
 
+    /** ERC165 interface IDs for token standard detection */
      INTERFACE_IDS = {
          '721': '0x80ac58cd',
          '721Metadata': '0x5b5e139f',
@@ -486,8 +559,22 @@ class ContractConnector {
     }
 }
 
+/**
+ * Specialized connector for ERC721 NFT contracts.
+ * Extends ContractConnector with NFT-specific methods like tokenURI and enumeration.
+ *
+ * @class ERC721Connector
+ * @extends ContractConnector
+ */
 class ERC721Connector extends ContractConnector {
 
+    /**
+     * Creates an ERC721Connector instance.
+     *
+     * @param {string} server - RPC endpoint URL
+     * @param {string} address - NFT contract address
+     * @param {Array<Object>} [abi] - Optional custom ABI
+     */
     constructor(server, address, abi) {
         if (!server || !address) throw '[ERC721Connector] Missing parameter';
 

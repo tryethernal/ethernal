@@ -7,11 +7,229 @@ jest.mock('sequelize', () => ({
 }));
 require('../mocks/lib/env');
 require('../mocks/lib/queue');
-const { ExplorerV2Dex, ExplorerFaucet, Workspace, Block, User, workspace, Explorer, ExplorerDomain, StripePlan, Transaction, StripeSubscription, Contract } = require('../mocks/models');
+const { ORBIT_L2_TO_L1_LOG_TOPIC } = require('../../constants/orbit');
+const { ExplorerV2Dex, ExplorerFaucet, Workspace, Block, User, workspace, Explorer, ExplorerDomain, StripePlan, Transaction, StripeSubscription, Contract, OrbitBatch, OrbitWithdrawal, OrbitChainConfig } = require('../mocks/models');
 const db = require('../../lib/firebase');
 const env = require('../../lib/env');
 
 beforeEach(() => jest.clearAllMocks());
+
+describe('createOrbitConfig', () => {
+    it('Should create the orbit config', (done) => {
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({
+            workspace: {
+                safeCreateOrbitConfig: jest.fn().mockResolvedValueOnce({ id: 1, parentChainRpcServer: 'https://rpc.example.com' })
+            }
+        });
+        jest.spyOn(OrbitChainConfig, 'create').mockResolvedValueOnce({id: 1, parentChainRpcServer: 'https://rpc.example.com', workspace: {} });
+
+        db.createOrbitConfig(1, '1', { parentChainRpcServer: 'https://rpc.example.com' })
+            .then((res) => {
+                expect(res).toEqual({ id: 1, parentChainRpcServer: 'https://rpc.example.com' });
+                done();
+            });
+    });
+
+    it('Should throw an error if the config already exists', (done) => {
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({
+            workspace: {
+                orbitConfig: { id: 1, parentChainRpcServer: 'https://rpc.example.com' }
+            }
+        });
+
+        db.createOrbitConfig(1, '1', { parentChainRpcServer: 'https://rpc.example.com' })
+            .catch((res) => {
+                expect(res).toEqual(new Error('Orbit config already exists'));
+                done();
+            });
+    });
+});
+
+describe('updateOrbitConfig', () => {
+    it('Should update the orbit config', (done) => {
+        jest.spyOn(OrbitChainConfig, 'findOne').mockResolvedValueOnce({
+            safeUpdate: jest.fn().mockResolvedValueOnce({ id: 1, parentChainRpcServer: 'https://rpc.example.com' })
+        });
+
+        db.updateOrbitConfig(1, '1', { parentChainRpcServer: 'https://rpc.example.com' })
+            .then((res) => {
+                expect(res).toEqual({ id: 1, parentChainRpcServer: 'https://rpc.example.com' });
+                done();
+            });
+    });
+
+    it('Should throw an error if no config', (done) => {
+        jest.spyOn(OrbitChainConfig, 'findOne').mockResolvedValueOnce(null);
+
+        db.updateOrbitConfig(1, '1', { parentChainRpcServer: 'https://rpc.example.com' })
+            .catch((res) => {
+                expect(res).toEqual(new Error('Could not find orbit config'));
+                done();
+            });
+    });
+});
+
+describe('getOrbitConfig', () => {
+    it('Should return the orbit config', (done) => {
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({
+            workspace: {
+                orbitConfig: { id: 1, parentChainRpcServer: 'https://rpc.example.com' }
+            }
+        });
+
+        db.getOrbitConfig(1, '1')
+            .then((res) => {
+                expect(res).toEqual({ id: 1, parentChainRpcServer: 'https://rpc.example.com' });
+                done();
+            });
+    });
+});
+
+describe('getL2TransactionForOrbitWithdrawalClaim', () => {
+    it('Should return the l2 transaction for orbit withdrawal claim', (done) => {
+        jest.spyOn(OrbitWithdrawal, 'findOne').mockResolvedValueOnce({
+            l2Transaction: {
+                receipt: {
+                    getLogs: jest.fn().mockResolvedValueOnce([{
+                        topics: [ORBIT_L2_TO_L1_LOG_TOPIC],
+                        data: '0x456'
+                    }])
+                }
+            }
+        });
+
+        db.getL2TransactionForOrbitWithdrawalClaim(1, '0x123')
+            .then((res) => {
+                expect(res).toEqual({
+                    log: {
+                        topics: [ORBIT_L2_TO_L1_LOG_TOPIC],
+                        data: '0x456'
+                    },
+                    transaction: {
+                        receipt: expect.any(Object)
+                    }
+                });
+                done();
+            });
+    });
+});
+
+describe('getWorkspaceOrbitWithdrawals', () => {
+    it('Should return the workspace orbit withdrawals', (done) => {
+        jest.spyOn(OrbitWithdrawal, 'findAndCountAll').mockResolvedValueOnce({
+            count: 10,
+            rows: [{ id: 1, batchSequenceNumber: 120, confirmationStatus: 'confirmed' }]
+        });
+
+        db.getWorkspaceOrbitWithdrawals(1)
+            .then((res) => {
+                expect(res).toEqual({
+                    count: 10,
+                    rows: [{ id: 1, batchSequenceNumber: 120, confirmationStatus: 'confirmed' }]
+                });
+                done();
+            });
+    });
+});
+
+describe('getWorkspaceOrbitBatchTransactions', () => {
+    it('Should return the workspace orbit batch transactions', (done) => {
+        jest.spyOn(OrbitBatch, 'findOne').mockResolvedValueOnce({
+            countTransactions: jest.fn().mockResolvedValueOnce(10),
+            getFilteredTransactions: jest.fn().mockResolvedValueOnce([{
+                id: 1,
+                batchSequenceNumber: 120,
+                confirmationStatus: 'confirmed'
+            }])
+        });
+        db.getWorkspaceOrbitBatchTransactions(1, 120)
+            .then((res) => {
+                expect(res).toEqual({
+                    total: 10,
+                    items: [{
+                        id: 1,
+                        batchSequenceNumber: 120,
+                        confirmationStatus: 'confirmed'
+                    }]
+                });
+                done();
+            });
+    });
+});
+
+describe('getOrbitBatchBlocks', () => {
+    it('Should return the orbit batch blocks', (done) => {
+        jest.spyOn(OrbitBatch, 'findOne').mockResolvedValueOnce({
+            getFilteredBlocks: jest.fn().mockResolvedValueOnce([{
+                id: 1,
+                batchSequenceNumber: 120,
+                confirmationStatus: 'confirmed'
+            }])
+        });
+
+        db.getOrbitBatchBlocks(1, 120)
+            .then((res) => {
+                expect(res).toEqual([{
+                    id: 1,
+                    batchSequenceNumber: 120,
+                    confirmationStatus: 'confirmed'
+                }]);
+                done();
+            });
+    });
+});
+
+describe('getOrbitBatch', () => {
+    it('Should return the orbit batch', (done) => {
+        jest.spyOn(OrbitBatch, 'findOne').mockResolvedValueOnce({
+            toJSON: jest.fn().mockResolvedValueOnce({
+                id: 1,
+                batchSequenceNumber: 120,
+                confirmationStatus: 'confirmed'
+            })
+        });
+
+        db.getOrbitBatch(1, 120)
+            .then((res) => {
+                expect(res).toEqual({
+                    id: 1,
+                    batchSequenceNumber: 120,
+                    confirmationStatus: 'confirmed'
+                });
+                done();
+            });
+    });
+});
+
+describe('getWorkspaceOrbitBatches', () => {
+    it('Should return the workspace orbit batches', (done) => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
+            getFilteredOrbitBatches: jest.fn().mockResolvedValueOnce([{
+                id: 1,
+                batchSequenceNumber: 120,
+                confirmationStatus: 'confirmed'
+            }])
+        });
+        db.getWorkspaceOrbitBatches(1)
+            .then((res) => {
+                expect(res).toEqual([{
+                    id: 1,
+                    batchSequenceNumber: 120,
+                    confirmationStatus: 'confirmed'
+                }]);
+                done();
+            });
+    });
+
+    it('Should throw an error if no workspace', (done) => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce(null);
+        db.getWorkspaceOrbitBatches(1)
+            .catch(error => {
+                expect(error).toEqual(new Error('Could not find workspace'));
+                done();
+            });
+    });
+});
 
 describe('getFilteredNativeAccounts', () => {
     it('Should return the filtered native accounts', (done) => {

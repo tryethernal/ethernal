@@ -46,7 +46,7 @@ describe(`POST ${BASE_URL}/syncRange`, () => {
     });
 
     it('Should enqueue a batchBlockSync task', (done) => {
-        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValue({ name: 'My Workspace', public: true });
+        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValue({ id: 1, name: 'My Workspace', public: true });
         request.post(`${BASE_URL}/syncRange`)
             .send({ data: { workspace: 'My Workspace', from: 1, to: 10 }})
             .expect(200)
@@ -54,6 +54,7 @@ describe(`POST ${BASE_URL}/syncRange`, () => {
                 expect(enqueue).toHaveBeenCalledWith('batchBlockSync', expect.anything(), {
                     userId: '123',
                     workspace: 'My Workspace',
+                    workspaceId: 1,
                     from: 1,
                     to: 10,
                 });

@@ -1,3 +1,10 @@
+/**
+ * @fileoverview Wallet Pinia store.
+ * Manages Web3 wallet connection state using Web3-Onboard/Wagmi.
+ * Tracks connected address, chain ID, and native token balance.
+ * @module stores/wallet
+ */
+
 import { ref, computed } from 'vue';
 import { defineStore } from 'pinia';
 import { getBalance } from '@web3-onboard/wagmi';

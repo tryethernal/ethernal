@@ -66,6 +66,14 @@
     </v-container>
 </template>
 
+/**
+ * @fileoverview Contract interaction page component.
+ * Provides interface for calling contract read and write methods with configurable
+ * call options (gas, sender). Supports both wallet and RPC-based interactions.
+ * @component ContractInteraction
+ *
+ * @prop {string} address - The contract address to interact with
+ */
 <script>
 const ethers = require('ethers');
 import { sanitize } from '../lib/utils';

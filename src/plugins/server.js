@@ -1,3 +1,10 @@
+/**
+ * @fileoverview Server plugin.
+ * Provides $server API client with all backend communication methods.
+ * Includes RPC utilities, contract interactions, and data fetching.
+ * @module plugins/server
+ */
+
 import { ethers } from 'ethers';
 import { storeToRefs } from 'pinia';
 import { useEnvStore } from '../stores/env';
@@ -352,6 +359,294 @@ export default {
         );
 
         const $server = {
+            createOrbitConfig(explorerId, config) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    explorerId,
+                    config
+                }
+                const resource = `${envStore.apiRoot}/api/explorers/${explorerId}/orbitConfig`;
+                return axios.post(resource, { params });
+            },
+
+            updateOrbitConfig(explorerId, config) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    explorerId,
+                    config
+                }
+                const resource = `${envStore.apiRoot}/api/explorers/${explorerId}/orbitConfig`;
+                return axios.put(resource, { params });
+            },
+
+            getOrbitConfig(explorerId) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    explorerId
+                };
+                const resource = `${envStore.apiRoot}/api/explorers/${explorerId}/orbitConfig`;
+                return axios.get(resource, { params });
+            },
+
+            getOrbitDeposits(options) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    ...options
+                };
+                const resource = `${envStore.apiRoot}/api/orbitDeposits`;
+                return axios.get(resource, { params });
+            },
+
+            getOrbitWithdrawalClaimCallData(hash, messageNumber) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    messageNumber
+                };
+                const resource = `${envStore.apiRoot}/api/orbitWithdrawals/${hash}/claimCalldata`;
+                return axios.get(resource, { params });
+            },
+
+            getL2TransactionWithdrawals(hash) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    hash
+                };
+                const resource = `${envStore.apiRoot}/api/orbitWithdrawals/${hash}`;
+                return axios.get(resource, { params });
+            },
+
+            getOrbitWithdrawals(options) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    ...options
+                };
+                const resource = `${envStore.apiRoot}/api/orbitWithdrawals`;
+                return axios.get(resource, { params });
+            },
+
+            getOrbitBatchTransactions(batchNumber, options) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    ...options
+                };
+                const resource = `${envStore.apiRoot}/api/orbitBatches/${batchNumber}/transactions`;
+                return axios.get(resource, { params });
+            },
+
+            getOrbitBatchBlocks(options) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    ...options
+                };
+                const resource = `${envStore.apiRoot}/api/orbitBatches/${options.batchNumber}/blocks`;
+                return axios.get(resource, { params });
+            },
+
+            getOrbitBatches(options) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    ...options
+                };
+                const resource = `${envStore.apiRoot}/api/orbitBatches`;
+                return axios.get(resource, { params });
+            },
+
+            getOrbitBatchDetail(batchNumber) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value
+                };
+                const resource = `${envStore.apiRoot}/api/orbitBatches/${batchNumber}`;
+                return axios.get(resource, { params });
+            },
+
+            // OP Stack API methods
+            getAvailableOpParents() {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value
+                };
+                const resource = `${envStore.apiRoot}/api/explorers/availableOpParents`;
+                return axios.get(resource, { params });
+            },
+
+            // Custom L1 Parent API methods
+            getAvailableL1Parents() {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value
+                };
+                const resource = `${envStore.apiRoot}/api/explorers/availableL1Parents`;
+                return axios.get(resource, { params });
+            },
+
+            createCustomL1Parent(name, backendRpcServer) {
+                const data = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    name,
+                    backendRpcServer
+                };
+                const resource = `${envStore.apiRoot}/api/explorers/customL1Parent`;
+                return axios.post(resource, { data });
+            },
+
+            deleteCustomL1Parent(id) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value
+                };
+                const resource = `${envStore.apiRoot}/api/explorers/customL1Parent/${id}`;
+                return axios.delete(resource, { params, data: { data: params } });
+            },
+
+            getOpConfig(explorerId) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    explorerId
+                };
+                const resource = `${envStore.apiRoot}/api/explorers/${explorerId}/opConfig`;
+                return axios.get(resource, { params });
+            },
+
+            createOpConfig(explorerId, config) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    explorerId,
+                    config
+                }
+                const resource = `${envStore.apiRoot}/api/explorers/${explorerId}/opConfig`;
+                return axios.post(resource, { params });
+            },
+
+            updateOpConfig(explorerId, config) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    explorerId,
+                    config
+                }
+                const resource = `${envStore.apiRoot}/api/explorers/${explorerId}/opConfig`;
+                return axios.put(resource, { params });
+            },
+
+            getOpDeposits(options) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    ...options
+                };
+                const resource = `${envStore.apiRoot}/api/opDeposits`;
+                return axios.get(resource, { params });
+            },
+
+            getOpDepositByL1Hash(hash) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value
+                };
+                const resource = `${envStore.apiRoot}/api/opDeposits/${hash}`;
+                return axios.get(resource, { params });
+            },
+
+            getOpWithdrawals(options) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    ...options
+                };
+                const resource = `${envStore.apiRoot}/api/opWithdrawals`;
+                return axios.get(resource, { params });
+            },
+
+            getOpWithdrawalByL2Hash(hash) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value
+                };
+                const resource = `${envStore.apiRoot}/api/opWithdrawals/${hash}`;
+                return axios.get(resource, { params });
+            },
+
+            getOpWithdrawalProof(hash) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value
+                };
+                const resource = `${envStore.apiRoot}/api/opWithdrawals/${hash}/proof`;
+                return axios.get(resource, { params });
+            },
+
+            getOpBatches(options) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    ...options
+                };
+                const resource = `${envStore.apiRoot}/api/opBatches`;
+                return axios.get(resource, { params });
+            },
+
+            getOpBatchDetail(batchIndex) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value
+                };
+                const resource = `${envStore.apiRoot}/api/opBatches/${batchIndex}`;
+                return axios.get(resource, { params });
+            },
+
+            getOpBatchTransactions(batchIndex, options) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    ...options
+                };
+                const resource = `${envStore.apiRoot}/api/opBatches/${batchIndex}/transactions`;
+                return axios.get(resource, { params });
+            },
+
+            getOpBatchBlocks(options) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    ...options
+                };
+                const resource = `${envStore.apiRoot}/api/opBatches/${options.batchIndex}/blocks`;
+                return axios.get(resource, { params });
+            },
+
+            getOpOutputs(options) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
+                    ...options
+                };
+                const resource = `${envStore.apiRoot}/api/opOutputs`;
+                return axios.get(resource, { params });
+            },
+
+            getOpOutputDetail(outputIndex) {
+                const params = {
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value
+                };
+                const resource = `${envStore.apiRoot}/api/opOutputs/${outputIndex}`;
+                return axios.get(resource, { params });
+            },
+
             setupAdmin(email, password) {
                 const resource = `${envStore.apiRoot}/api/setup/admin`;
                 return axios.post(resource, { data: { email, password } });
@@ -1729,7 +2024,7 @@ export default {
                         .catch(reject)
                 });
             },
-            transferErc721Token: serverFunctions.transferErc721Token
+            transferErc721Token: serverFunctions.transferErc721Token,
         };
 
         app.config.globalProperties.$server = $server;

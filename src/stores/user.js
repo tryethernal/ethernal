@@ -1,3 +1,10 @@
+/**
+ * @fileoverview User Pinia store.
+ * Manages authenticated user state including plan, onboarding, and API token.
+ * Integrates with Sentry, Smartsupp, and feedback services.
+ * @module stores/user
+ */
+
 import * as Sentry from '@sentry/vue';
 import { defineStore } from 'pinia';
 

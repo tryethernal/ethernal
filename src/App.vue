@@ -272,7 +272,9 @@ function setupPublicExplorer(explorer) {
         gasLimit: explorer.workspace.gasLimit,
         functions: explorer.workspace.functions,
         packages: explorer.workspace.packages,
-        tracing: explorer.workspace.tracing
+        tracing: explorer.workspace.tracing,
+        orbitConfig: explorer.workspace.orbitConfig,
+        opConfig: explorer.workspace.opConfig
     });
 }
 

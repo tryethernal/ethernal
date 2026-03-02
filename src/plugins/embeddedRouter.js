@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Embedded router plugin.
+ * Routes for embedded widgets like transaction trace viewer.
+ * @module plugins/embeddedRouter
+ */
+
 import { createWebHistory, createRouter } from 'vue-router';
 import DemoExplorerSetupEmbedded from '../components/DemoExplorerSetupEmbedded.vue';
 import TransactionTraceEmbedded from '../components/TransactionTraceEmbedded.vue';

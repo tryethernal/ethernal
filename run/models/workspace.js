@@ -1,3 +1,19 @@
+/**
+ * @fileoverview Workspace model - represents a blockchain network workspace.
+ * A workspace contains blocks, transactions, contracts, and configuration
+ * for a specific chain being explored.
+ *
+ * @module models/Workspace
+ *
+ * @property {number} id - Primary key
+ * @property {number} userId - Foreign key to owner user
+ * @property {string} name - Workspace name
+ * @property {string} rpcServer - RPC endpoint URL
+ * @property {number} networkId - Chain/network ID
+ * @property {boolean} public - Whether workspace is publicly accessible
+ * @property {string} tracing - Tracing mode (hardhat, other, null)
+ */
+
 'use strict';
 const {
   Model,
@@ -38,8 +54,24 @@ module.exports = (sequelize, DataTypes) => {
       Workspace.hasMany(models.CustomField, { foreignKey: 'workspaceId', as: 'packages', scope: { location: 'package' } });
       Workspace.hasMany(models.CustomField, { foreignKey: 'workspaceId', as: 'functions', scope: { location: 'global' } });
       Workspace.hasMany(models.TransactionTraceStep, { foreignKey: 'workspaceId', as: 'transactionTraceSteps' });
+      Workspace.hasOne(models.OrbitChainConfig, { foreignKey: 'workspaceId', as: 'orbitConfig' });
+      Workspace.hasMany(models.OrbitBatch, { foreignKey: 'workspaceId', as: 'orbitBatches' });
+      Workspace.hasMany(models.OrbitChainConfig, { foreignKey: 'parentWorkspaceId', as: 'orbitChildConfigs' });
+      Workspace.hasMany(models.OrbitDeposit, { foreignKey: 'workspaceId', as: 'orbitDeposits' });
+      // OP Stack associations
+      Workspace.hasOne(models.OpChainConfig, { foreignKey: 'workspaceId', as: 'opConfig' });
+      Workspace.hasMany(models.OpChainConfig, { foreignKey: 'parentWorkspaceId', as: 'opChildConfigs' });
+      Workspace.hasMany(models.OpBatch, { foreignKey: 'workspaceId', as: 'opBatches' });
+      Workspace.hasMany(models.OpOutput, { foreignKey: 'workspaceId', as: 'opOutputs' });
+      Workspace.hasMany(models.OpDeposit, { foreignKey: 'workspaceId', as: 'opDeposits' });
+      Workspace.hasMany(models.OpWithdrawal, { foreignKey: 'workspaceId', as: 'opWithdrawals' });
     }
 
+    /**
+     * Finds a public workspace by ID.
+     * @param {number} id - The workspace ID
+     * @returns {Promise<Workspace|null>} The workspace or null
+     */
     static findPublicWorkspaceById(id) {
         return Workspace.findOne({
             where: {
@@ -49,6 +81,12 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    /**
+     * Finds a workspace by user ID and name.
+     * @param {number} userId - The user ID
+     * @param {string} name - The workspace name
+     * @returns {Promise<Workspace|null>} The workspace or null
+     */
     static findByUserIdAndName(userId, name) {
         return Workspace.findOne({
             where: {
@@ -58,6 +96,101 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    /**
+     * Gets all top-level Orbit parent workspaces.
+     * @returns {Promise<Array<Workspace>>} Array of parent workspaces
+     */
+    static async getAvailableTopOrbitParent() {
+        return Workspace.findAll({ where: { isTopL1Parent: true } });
+    }
+
+    static async getAvailableTopOpParent() {
+        return Workspace.findAll({ where: { isTopL1Parent: true } });
+    }
+
+    /**
+     * Alias for getAvailableTopOrbitParent for backwards compatibility.
+     * @returns {Promise<Array<Workspace>>} Array of parent workspaces
+     */
+    static async getAvailableTopOrbitParentIds() {
+        return Workspace.getAvailableTopOrbitParent();
+    }
+
+    /**
+     * Gets all available L1 parent workspaces for a user.
+     * Returns public L1s (isTopL1Parent) and user's custom L1s (isCustomL1Parent).
+     * @param {number} userId - The user ID
+     * @returns {Promise<Object>} Object with publicParents and customParents arrays
+     */
+    static async getAvailableL1Parents(userId) {
+        const publicParents = await Workspace.findAll({
+            where: { isTopL1Parent: true },
+            attributes: ['id', 'name', 'networkId', 'rpcServer']
+        });
+
+        const customParents = userId ? await Workspace.findAll({
+            where: {
+                isCustomL1Parent: true,
+                userId: userId
+            },
+            attributes: ['id', 'name', 'networkId', 'rpcServer']
+        }) : [];
+
+        return { publicParents, customParents };
+    }
+
+    /**
+     * Creates a custom L1 parent workspace for a user.
+     * @param {number} userId - The user ID
+     * @param {Object} params - The workspace parameters
+     * @param {string} params.name - The name of the L1 parent
+     * @param {string} params.rpcServer - The RPC server URL (used for backend sync)
+     * @param {string} params.networkId - The network ID (auto-fetched if not provided)
+     * @returns {Promise<Workspace>} The created workspace
+     */
+    static async createCustomL1Parent(userId, { name, rpcServer, networkId }) {
+        if (!userId || !name || !rpcServer)
+            throw new Error('Missing required parameters');
+
+        return Workspace.create({
+            userId,
+            name,
+            rpcServer,
+            networkId,
+            chain: 'ethereum',
+            public: true,
+            isCustomL1Parent: true
+        });
+    }
+
+    /**
+     * Checks if a custom L1 parent can be deleted (no L2 children).
+     * @param {number} userId - The user ID
+     * @param {number} workspaceId - The workspace ID
+     * @returns {Promise<boolean>} True if can be deleted
+     */
+    async canDeleteCustomL1Parent(userId) {
+        if (!this.isCustomL1Parent || this.userId !== userId) {
+            return false;
+        }
+
+        // Check for Orbit L2 children
+        const orbitChildren = await sequelize.models.OrbitChainConfig.count({
+            where: { parentWorkspaceId: this.id }
+        });
+
+        // Check for OP Stack L2 children
+        const opChildren = await sequelize.models.OpChainConfig.count({
+            where: { parentWorkspaceId: this.id }
+        });
+
+        return orbitChildren === 0 && opChildren === 0;
+    }
+
+    /**
+     * Creates a Viem public client for RPC interactions.
+     * @returns {PublicClient} Viem public client instance
+     */
     getViemPublicClient() {
         const fetchOptions = () => {
             const rpcServer = new URL(this.rpcServer);
@@ -90,8 +223,270 @@ module.exports = (sequelize, DataTypes) => {
         return createPublicClient({ chain, transport });
     }
 
+    /**
+     * Creates a provider connector for RPC interactions.
+     * @returns {ProviderConnector} Provider connector instance
+     */
     getProvider() {
         return new ProviderConnector(this.rpcServer);
+    }
+
+    /**
+     * Safely creates an Orbit chain configuration.
+     * @param {Object} params - Configuration parameters
+     * @param {string} params.parentChainRpcServer - Parent chain RPC URL
+     * @param {string} params.rollupContract - Rollup contract address
+     * @returns {Promise<OrbitChainConfig>} Created config
+     * @throws {Error} If parent chain network not supported
+     */
+    async safeCreateOrbitConfig(params, userId) {
+        const allowedParams = [
+            'parentChainRpcServer',
+            'parentChainExplorer',
+            'rollupContract',
+            'bridgeContract',
+            'inboxContract',
+            'sequencerInboxContract',
+            'outboxContract',
+            'l1GatewayRouter',
+            'l1Erc20Gateway',
+            'l1WethGateway',
+            'l1CustomGateway',
+            'l2GatewayRouter',
+            'l2Erc20Gateway',
+            'l2WethGateway',
+            'l2CustomGateway',
+            'challengeManagerContract',
+            'validatorWalletCreatorContract',
+            'stakeToken',
+            'parentMessageCountShift'
+        ];
+
+        let parentWorkspace;
+
+        // Support both parentWorkspaceId (new, for custom L1 parents) and parentChainId (legacy, for public L1s)
+        if (params.parentWorkspaceId) {
+            // Custom L1 parent specified by workspace ID
+            parentWorkspace = await sequelize.models.Workspace.findOne({
+                where: {
+                    id: params.parentWorkspaceId,
+                    [Op.or]: [
+                        { isTopL1Parent: true },
+                        { isCustomL1Parent: true, userId: userId }
+                    ]
+                }
+            });
+            if (!parentWorkspace) {
+                throw new Error('Selected parent workspace is not a valid L1 parent.');
+            }
+        } else if (params.parentChainId) {
+            // Public L1 parent specified by network ID (legacy behavior)
+            const supportedParentChains = await sequelize.models.Workspace.getAvailableTopOrbitParentIds();
+            const supportedParentChainIds = supportedParentChains.map(chain => chain.networkId);
+            if (!supportedParentChainIds.includes(params.parentChainId)) {
+                throw new Error(`Parent chain network is not supported yet. Available networks: ${supportedParentChainIds.join(', ')}`);
+            }
+            parentWorkspace = supportedParentChains.find(chain => chain.networkId === params.parentChainId);
+        } else {
+            throw new Error('Parent chain is required.');
+        }
+
+        const filteredParams = {};
+        for (const [key, value] of Object.entries(params)) {
+            if (allowedParams.includes(key)) {
+              filteredParams[key] = value;
+            }
+        }
+
+        return sequelize.models.OrbitChainConfig.create({
+            ...filteredParams,
+            parentWorkspaceId: parentWorkspace.id,
+            workspaceId: this.id
+        });
+    }
+
+    async safeCreateOpConfig(params, userId) {
+        const allowedParams = [
+            'batchInboxAddress',
+            'optimismPortalAddress',
+            'l2OutputOracleAddress',
+            'disputeGameFactoryAddress',
+            'systemConfigAddress',
+            'l2ToL1MessagePasserAddress',
+            'outputVersion',
+            'submissionInterval',
+            'finalizationPeriodSeconds',
+            'parentChainExplorer'
+        ];
+
+        let parentWorkspace;
+
+        // Support both parentWorkspaceId (new, for custom L1 parents) and parentChainId (legacy, for public L1s)
+        if (params.parentWorkspaceId) {
+            // Check if it's a valid L1 parent (public or user's custom)
+            parentWorkspace = await sequelize.models.Workspace.findOne({
+                where: {
+                    id: params.parentWorkspaceId,
+                    [Op.or]: [
+                        { isTopL1Parent: true },
+                        { isCustomL1Parent: true, userId: userId }
+                    ]
+                }
+            });
+            if (!parentWorkspace) {
+                throw new Error('Selected parent workspace is not a valid L1 parent.');
+            }
+        } else if (params.parentChainId) {
+            // Public L1 parent specified by network ID (legacy behavior)
+            const supportedParentChains = await sequelize.models.Workspace.getAvailableTopOpParent();
+            const parentChainIdStr = String(params.parentChainId);
+            const supportedParentChainIds = supportedParentChains.map(chain => String(chain.networkId));
+            if (!supportedParentChainIds.includes(parentChainIdStr)) {
+                throw new Error(`Parent chain network is not supported yet. Available networks: ${supportedParentChainIds.join(', ')}`);
+            }
+            parentWorkspace = supportedParentChains.find(chain => String(chain.networkId) === parentChainIdStr);
+        } else {
+            throw new Error('Parent chain is required.');
+        }
+
+        const filteredParams = {};
+        for (const [key, value] of Object.entries(params)) {
+            if (allowedParams.includes(key)) {
+                filteredParams[key] = value;
+            }
+        }
+
+        return sequelize.models.OpChainConfig.create({
+            ...filteredParams,
+            parentChainId: parentWorkspace.networkId,
+            parentWorkspaceId: parentWorkspace.id,
+            workspaceId: this.id
+        });
+    }
+
+    /**
+     * Gets the latest confirmed block for Orbit chain.
+     * @returns {Promise<Block|null>} The latest confirmed block
+     */
+    async getOrbitLatestConfirmedBlock() {
+        const orbitNode = await sequelize.models.OrbitNode.findOne({
+            where: {
+                workspaceId: this.id,
+                status: 'confirmed'
+            },
+            limit: 1,
+            order: [['nodeNum', 'DESC']]
+        });
+
+        const block = await sequelize.models.Block.findOne({
+            where: {
+                workspaceId: this.id,
+                hash: orbitNode.confirmedBlockHash
+            },
+        });
+
+        return block;
+    }
+
+    /**
+     * Checks if this workspace is an Orbit parent chain.
+     * @returns {Promise<boolean>} True if parent chain with config
+     */
+    async isOrbitParent() {
+        const childConfigs = await this.getOrbitChildConfigs();
+        const parentConfig = await this.getOrbitConfig();
+
+        return childConfigs.length > 0 && parentConfig;
+    }
+
+    /**
+     * Safely creates an Orbit batch and links blocks to it.
+     * @param {Object} batch - Batch data
+     * @param {Object} [transaction] - Sequelize transaction
+     * @returns {Promise<OrbitBatch>} Created batch
+     */
+    async safeCreateOrbitBatch(batch, transaction) {
+        const [createdBatch] = await sequelize.models.OrbitBatch.bulkCreate([batch], {
+            ignoreDuplicates: true,
+            returning: true,
+            transaction
+        });
+
+        const batchBlocks = [];
+        const blocks = await sequelize.models.Block.findAll({
+            where: {
+                workspaceId: this.id,
+                number: { [Op.between]: [batch.prevMessageCount, batch.newMessageCount - 1] }
+            }
+        });
+        for (const block of blocks) {
+            batchBlocks.push({
+                blockId: block.id,
+                batchId: createdBatch.id
+            });
+        }
+        await sequelize.models.OrbitBatchBlock.bulkCreate(batchBlocks, { transaction });
+
+        return createdBatch;
+    }
+
+    /**
+     * Gets paginated Orbit batches with transaction counts.
+     * @param {number} [page=1] - Page number
+     * @param {number} [itemsPerPage=10] - Items per page
+     * @param {string} [order='DESC'] - Sort order
+     * @returns {Promise<Object>} Paginated batch results
+     */
+    async getFilteredOrbitBatches(page = 1, itemsPerPage = 10, order = 'DESC') {
+        const sanitizedOrder = ['asc', 'desc'].includes(order.toLowerCase()) ? order.toLowerCase() : 'desc';
+        const offset = (page - 1) * itemsPerPage;
+
+        const [rows, countResult] = await Promise.all([
+            sequelize.query(`
+                SELECT 
+                    ob.id,
+                    ob."confirmationStatus",
+                    ob."batchSequenceNumber",
+                    ob."parentChainBlockNumber",
+                    ob."parentChainTxHash",
+                    ob."postedAt",
+                    COALESCE(tc.count, 0)::integer AS "transactionCount"
+                FROM orbit_batches ob
+                LEFT JOIN LATERAL (
+                    SELECT COUNT(*) AS count
+                    FROM blocks b
+                    JOIN transactions t ON t."blockId" = b.id
+                    WHERE b."orbitBatchId" = ob.id
+                ) tc ON true
+                WHERE ob."workspaceId" = :workspaceId
+                ORDER BY ob."batchSequenceNumber" ${sanitizedOrder}
+                LIMIT :limit OFFSET :offset;
+
+            `, {
+                replacements: {
+                    workspaceId: this.id,
+                    limit: itemsPerPage,
+                    offset: offset
+                },
+                type: sequelize.QueryTypes.SELECT,
+                logging: console.log
+            }),
+            sequelize.query(`
+                SELECT COUNT(*)::integer as count
+                FROM orbit_batches ob
+                WHERE ob."workspaceId" = :workspaceId
+            `, {
+                replacements: {
+                    workspaceId: this.id
+                },
+                type: sequelize.QueryTypes.SELECT
+            })
+        ]);
+
+        return {
+            rows: rows,
+            count: countResult[0].count
+        };
     }
 
     /**
@@ -318,8 +713,7 @@ module.exports = (sequelize, DataTypes) => {
             WHERE "to" IS NULL AND "workspaceId" = :workspaceId;
         `, {
             replacements: { workspaceId: this.id },
-            type: QueryTypes.SELECT,
-            logging: console.log
+            type: QueryTypes.SELECT
         });
 
         return result;
@@ -525,14 +919,13 @@ module.exports = (sequelize, DataTypes) => {
         return processedResult;
     }
 
-    /*
-        Returns the number of token transfers for an address in a given time range.
-
-        @param {string} address (mandatory) - The address to get the token transfer history for
-        @param {string} from (mandatory) - The start date
-        @param {string} to (mandatory) - The end date
-        @returns {Array} - The number of token transfers for the address in the given time range
-    */
+    /**
+     * Returns the number of token transfers for an address in a given time range.
+     * @param {string} address - The address to get the token transfer history for
+     * @param {string} from - The start date
+     * @param {string} to - The end date
+     * @returns {Promise<Array>} The number of token transfers for the address in the given time range
+     */
     async getAddressTokenTransferHistory(address, from, to) {
         if (!address || !from || !to)
             throw new Error('Missing parameter');
@@ -583,14 +976,13 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    /*
-        Returns the amount of transaction fees spent by an address in a given time range.
-
-        @param {string} address (mandatory) - The address to get the transaction fees for
-        @param {string} from (mandatory) - The start date
-        @param {string} to (mandatory) - The end date
-        @returns {Array} - The amount of transaction fees spent by the address in the given time range
-    */
+    /**
+     * Returns the amount of transaction fees spent by an address in a given time range.
+     * @param {string} address - The address to get the transaction fees for
+     * @param {string} from - The start date
+     * @param {string} to - The end date
+     * @returns {Promise<Array>} The amount of transaction fees spent by the address in the given time range
+     */
     async getAddressSpentTransactionFeeHistory(address, from, to) {
         if (!address || !from || !to)
             throw new Error('Missing parameter');
@@ -633,14 +1025,13 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    /*
-        Returns the number of transactions for an address in a given time range.
-
-        @param {string} address (mandatory) - The address to get the number of transactions for
-        @param {string} from (mandatory) - The start date
-        @param {string} to (mandatory) - The end date
-        @returns {Array} - The number of transactions for the address in the given time range
-    */
+    /**
+     * Returns the number of transactions for an address in a given time range.
+     * @param {string} address - The address to get the number of transactions for
+     * @param {string} from - The start date
+     * @param {string} to - The end date
+     * @returns {Promise<Array>} The number of transactions for the address in the given time range
+     */
     async getAddressTransactionHistory(address, from, to) {
         if (!address || !from || !to)
             throw new Error('Missing parameter');
@@ -683,15 +1074,12 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    /*
-        Returns the number of transaction steps for an address.
-
-        Based off of getAddressTransactionTraceSteps.
-        Probably can be optimized, but performances are still really good now.
-
-        @param {string} address (mandatory) - The address to get the number of transaction steps for
-        @returns {number} - The number of transaction steps for the address
-    */
+    /**
+     * Returns the number of transaction steps for an address.
+     * Based off of getAddressTransactionTraceSteps.
+     * @param {string} address - The address to get the number of transaction steps for
+     * @returns {Promise<number>} The number of transaction steps for the address
+     */
     async countAddressTransactionTraceSteps(address) {
         if (!address)
             throw new Error('Missing parameter');
@@ -810,20 +1198,14 @@ module.exports = (sequelize, DataTypes) => {
         return result.count
     }
 
-    /*
-        Returns internal transactions involving an address.
-        On top of the transaction_trace_steps rows, it also returns a relation_type column, which can be:
-            - 'self': The step is the address itself
-            - 'parent': A step that called the address
-            - 'child': A step that was called by the address
-        It also returns a parent_step_id column, which is the id of the parent step.
-        When parent_step_id is null, it means the contract "to" address called this step,
-        otherwise the step 
-
-        @param {string} address (mandatory) - The address to get the internal transactions for
-        @param {number} page (optional, default: 1) - The page number
-        @param {number} itemsPerPage (optional, default: 50) - The number of items per page
-    */
+    /**
+     * Returns internal transactions involving an address.
+     * On top of the transaction_trace_steps rows, it also returns a relation_type column.
+     * @param {string} address - The address to get the internal transactions for
+     * @param {number} [page=1] - The page number
+     * @param {number} [itemsPerPage=50] - The number of items per page
+     * @returns {Promise<Array>} Internal transaction results
+     */
     async getAddressTransactionTraceSteps(address, page = 1, itemsPerPage = 50) {
         if (!address)
             throw new Error('Missing parameter');
@@ -1009,11 +1391,10 @@ module.exports = (sequelize, DataTypes) => {
         return queryResult.burntFees;
     }
 
-    /*
-        This method is used to get the total gas used for the last 24 hours for a workspace.
-
-        @returns {number} - The total gas used for the last 24 hours
-    */
+    /**
+     * Gets the total gas used for the last 24 hours for a workspace.
+     * @returns {Promise<number>} The total gas used for the last 24 hours
+     */
     async getLast24hTotalGasUsed() {
         const [queryResult] = await sequelize.query(`
             SELECT
@@ -1034,11 +1415,10 @@ module.exports = (sequelize, DataTypes) => {
         return queryResult.totalGasUsed;
     }
 
-    /*
-        This method is used to get the gas utilization ratio for the last 24 hours for a workspace.
-
-        @returns {number} - The gas utilization ratio for the last 24 hours
-    */
+    /**
+     * Gets the gas utilization ratio for the last 24 hours for a workspace.
+     * @returns {Promise<number>} The gas utilization ratio for the last 24 hours
+     */
     async getLast24hGasUtilisationRatio() {
         const [queryResult] = await sequelize.query(`
             SELECT
@@ -1059,11 +1439,10 @@ module.exports = (sequelize, DataTypes) => {
 
     }
 
-    /*
-        This method is used to get the average transaction fee for the last 24 hours for a workspace.
-
-        @returns {number} - The average transaction fee for the last 24 hours
-    */
+    /**
+     * Gets the average transaction fee for the last 24 hours for a workspace.
+     * @returns {Promise<number>} The average transaction fee for the last 24 hours
+     */
     async getLast24hAverageTransactionFee() {
         const [avgTransactionFee] = await sequelize.query(`
             SELECT
@@ -1084,11 +1463,10 @@ module.exports = (sequelize, DataTypes) => {
         return avgTransactionFee.avg;
     }
 
-    /*
-        This method is used to get the total transaction fees for the last 24 hours for a workspace.
-
-        @returns {number} - The total transaction fees for the last 24 hours
-    */
+    /**
+     * Gets the total transaction fees for the last 24 hours for a workspace.
+     * @returns {Promise<number>} The total transaction fees for the last 24 hours
+     */
     async getLast24hTransactionFees() {
         const [transactionFees] = await sequelize.query(`
             SELECT
@@ -1109,15 +1487,12 @@ module.exports = (sequelize, DataTypes) => {
         return transactionFees.transactionFees;
     }
 
-    /*
-        This method is used to get the total transaction fees daily for a workspace.
-
-        @param {string} from - Start day
-        @param {string} to - End day
-        @returns {array} - The transaction fees
-            - day: The day of the transaction fees
-            - transactionFees: The average transaction fees for the day
-    */
+    /**
+     * Gets the total transaction fees daily for a workspace.
+     * @param {string} from - Start day
+     * @param {string} to - End day
+     * @returns {Promise<Array>} The transaction fees per day
+     */
     async getTransactionFeeHistory(from, to) {
         if (!from || !to)
             throw new Error('Missing parameter');
@@ -1152,16 +1527,12 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    /*
-        This method is used to replace a workspace with a new empty one.
-        We use this when we want to reset an explorer.
-        Waiting for the data to be deleted can take a long time,
-        so we replace the workspace with a new one, and delete the old one in the background.
-        We make sure the workspace has been marked for deletion first, in order to avoid
-        accidental deletions.
-
-        @returns {object} - The duplicated (new) workspace
-    */
+    /**
+     * Replaces a workspace with a new empty one.
+     * Used when resetting an explorer - the old workspace is deleted in background.
+     * @returns {Promise<Workspace>} The duplicated (new) workspace
+     * @throws {Error} If workspace not marked for pending deletion
+     */
     async replace() {
         if (!this.pendingDeletion)
             throw new Error('You can only replace a workspace that needs to be deleted');
@@ -1182,14 +1553,19 @@ module.exports = (sequelize, DataTypes) => {
                 emitMissedBlocks: this.emitMissedBlocks,
                 skipFirstBlock: this.skipFirstBlock,
                 rateLimitInterval: this.rateLimitInterval,
-                rateLimitMaxInInterval: this.rateLimitMaxInInterval
+                rateLimitMaxInInterval: this.rateLimitMaxInInterval,
+                public: this.public
             }, { transaction });
-
+ 
             if (explorer)
                 await explorer.update({ workspaceId: duplicatedWorkspace.id }, { transaction });
 
             if (user.currentWorkspaceId == this.id)
                 await user.update({ currentWorkspaceId: duplicatedWorkspace.id }, { transaction });
+
+            const orbitConfig = await this.getOrbitConfig();
+            if (orbitConfig)
+                await orbitConfig.update({ workspaceId: duplicatedWorkspace.id }, { transaction });
 
             const newName = `Pending deletion - (Previously ${this.name} - #${this.id})`;
             await this.update({ name: newName }, { transaction });
@@ -1198,15 +1574,12 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    /*
-        This method is used to get the block size history for a workspace.
-
-        @param {string} from - The start date of the block size history
-        @param {string} to - The end date of the block size history
-        @returns {array} - The block size history
-            - day: The day of the block size history
-            - size: The average block size for the day
-    */
+    /**
+     * Gets the block size history for a workspace.
+     * @param {string} from - The start date
+     * @param {string} to - The end date
+     * @returns {Promise<Array>} The block size history per day
+     */
     async getBlockSizeHistory(from, to) {
         if (!from || !to)
             throw new Error('Missing parameter');
@@ -1241,15 +1614,12 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    /*
-        This method is used to get the block time history for a workspace.
-
-        @param {string} from - The start date of the block time history
-        @param {string} to - The end date of the block time history
-        @returns {array} - The block time history
-            - day: The day of the block time history
-            - blockTime: The average block time for the day
-    */
+    /**
+     * Gets the block time history for a workspace.
+     * @param {string} from - The start date
+     * @param {string} to - The end date
+     * @returns {Promise<Array>} The block time history per day
+     */
     async getBlockTimeHistory(from, to) {
         if (!from || !to)
             throw new Error('Missing parameter');
@@ -1304,18 +1674,12 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    /*
-        This method is used to get the latest biggest gas spenders for a workspace
-        for a given interval (now - intervalInHours).
-
-        @param {number} intervalInHours - The interval in hours to get the gas spenders for
-        @param {number} limit - The limit of gas spenders to return
-        @returns {array} - The gas spenders
-            - from: The address of the gas spender
-            - gasUsed: The total gas used by the gas spender
-            - gasCost: Cost of total gas used
-            - percentUsed: The percentage of total gas used by the gas spender
-    */
+    /**
+     * Gets the latest biggest gas spenders for a given interval.
+     * @param {number} [intervalInHours=24] - The interval in hours
+     * @param {number} [limit=50] - The limit of gas spenders to return
+     * @returns {Promise<Array>} The gas spenders with gasUsed, gasCost, percentUsed
+     */
     getLatestGasSpenders(intervalInHours = 24, limit = 50) {
         return sequelize.query(`
             WITH total_gas AS (
@@ -1342,18 +1706,12 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    /*
-        This method is used to get the latest biggest gas consumers for a workspace
-        for a given interval (now - intervalInHours).
-
-        @param {number} intervalInHours - The interval in hours to get the gas consumers for
-        @param {number} limit - The limit of gas consumers to return
-        @returns {array} - The gas consumers
-            - to: The address of the gas consumer
-            - gasUsed: The total gas used by the gas consumer
-            - gasCost: Cost of total gas used
-            - percentUsed: The percentage of total gas used by the gas consumer
-    */
+    /**
+     * Gets the latest biggest gas consumers for a given interval.
+     * @param {number} [intervalInHours=24] - The interval in hours
+     * @param {number} [limit=50] - The limit of gas consumers to return
+     * @returns {Promise<Array>} The gas consumers with gasUsed, gasCost, percentUsed
+     */
     getLatestGasConsumers(intervalInHours = 24, limit = 50) {
         return sequelize.query(`
             WITH total_gas AS (
@@ -1381,15 +1739,12 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    /*
-        This method is used to get the gas utilization ratio history for a workspace.
-
-        @param {string} from - The start date of the gas utilization ratio history
-        @param {string} to - The end date of the gas utilization ratio history
-        @returns {array} - The gas utilization ratio history
-            - day: The day of the gas utilization ratio history
-            - gasUtilizationRatio: The average gas utilization ratio for the day
-    */
+    /**
+     * Gets the gas utilization ratio history for a workspace.
+     * @param {string} from - The start date
+     * @param {string} to - The end date
+     * @returns {Promise<Array>} The gas utilization ratio history per day
+     */
     getGasUtilizationRatioHistory(from, to) {
         if (!from || !to)
             throw new Error('Missing parameter');
@@ -1410,15 +1765,12 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    /*
-        This method is used to get the gas limit history for a workspace.
-
-        @param {string} from - The start date of the gas limit history
-        @param {string} to - The end date of the gas limit history
-        @returns {array} - The gas limit history
-            - day: The day of the gas limit history
-            - gasLimit: The average gas limit for the day
-    */
+    /**
+     * Gets the gas limit history for a workspace.
+     * @param {string} from - The start date
+     * @param {string} to - The end date
+     * @returns {Promise<Array>} The gas limit history per day
+     */
     getGasLimitHistory(from, to) {
         if (!from || !to)
             throw new Error('Missing parameter');
@@ -1439,23 +1791,12 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    /*
-        This method is used to get the gas price history for a workspace.
-
-        @param {string} from - The start date of the gas price history
-        @param {string} to - The end date of the gas price history
-        @returns {array} - The gas price history
-            - day: The day of the gas price history
-            - minSlow: The minimum slow gas price
-            - slow: The average slow gas price
-            - maxSlow: The maximum slow gas price
-            - minAverage: The minimum average gas price
-            - average: The average average gas price
-            - maxAverage: The maximum average gas price
-            - minFast: The minimum fast gas price
-            - fast: The average fast gas price
-            - maxFast: The maximum fast gas price
-    */
+    /**
+     * Gets the gas price history for a workspace.
+     * @param {string} from - The start date
+     * @param {string} to - The end date
+     * @returns {Promise<Array>} The gas price history with slow/average/fast metrics per day
+     */
     getGasPriceHistory(from, to) {
         if (!from || !to)
             throw new Error('Missing parameter');
@@ -1484,18 +1825,11 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    /*
-        This method is used to get the latest gas stats for a workspace.
-
-        @param {number} intervalInMinutes - The interval in minutes to get the gas stats for
-        @returns {object} - The gas stats object
-            - averageBlockSize: The average block size in transactions
-            - averageUtilization: The average quantity of gas used per block
-            - averageBlockTime: The average block time in seconds
-            - latestBlockNumber: The number of the latest block used for this calculation
-            - baseFeePerGas: The base fee per gas for the latest block
-            - priorityFeePerGas: The three levels of priority fee per gas for the latest block (slow, average, fast)
-    */
+    /**
+     * Gets the latest gas stats for a workspace.
+     * @param {number} [intervalInMinutes=1] - The interval in minutes
+     * @returns {Promise<Object>} Gas stats including block size, utilization, block time, base fee, and priority fees
+     */
     async getLatestGasStats(intervalInMinutes = 1) {
         const [latestBlockEvents] = await sequelize.query(`
             SELECT * FROM block_events
@@ -1534,6 +1868,10 @@ module.exports = (sequelize, DataTypes) => {
         };
     }
 
+    /**
+     * Gets the latest block where all transactions are ready.
+     * @returns {Promise<Object>} The latest ready block with number and timestamp
+     */
     async getLatestReadyBlock() {
         const [latestReadyBlock] = await sequelize.query(`
             SELECT number, timestamp
@@ -1585,6 +1923,7 @@ module.exports = (sequelize, DataTypes) => {
             }
             await this.reset(null, transaction);
             await sequelize.models.CustomField.destroy({ where: { workspaceId: this.id }}, { transaction });
+            await sequelize.models.TransactionTraceStep.destroy({ where: { workspaceId: this.id }}, { transaction });
             await this.destroy({ transaction });
 
             await transaction.commit();
@@ -2464,7 +2803,10 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     getFilteredTransactions(page = 1, itemsPerPage = 10, order = 'DESC', orderBy = 'blockNumber', address) {
-        const where = address ? { [Op.or]: [{ to: address.toLowerCase() }, { from: address.toLowerCase() }] } : {};
+        let where = {};
+        if (address)
+            where = { [Op.or]: [{ to: address.toLowerCase() }, { from: address.toLowerCase() }] };
+
         return this.getTransactions({
             where: where,
             offset: (page - 1) * itemsPerPage,
@@ -2474,7 +2816,7 @@ module.exports = (sequelize, DataTypes) => {
             include: [
                 {
                     model: sequelize.models.TransactionReceipt,
-                    attributes: ['gasUsed', 'status', 'contractAddress', [sequelize.json('raw.root'), 'root'], 'gasUsed', 'cumulativeGasUsed', [sequelize.json('raw.effectiveGasPrice'), 'effectiveGasPrice']],
+                    attributes: ['gasUsed', 'status', 'contractAddress', [sequelize.json('raw.root'), 'root'], 'cumulativeGasUsed', [sequelize.json('raw.effectiveGasPrice'), 'effectiveGasPrice']],
                     as: 'receipt',
                     include: {
                         model: sequelize.models.Contract,
@@ -2552,6 +2894,24 @@ module.exports = (sequelize, DataTypes) => {
                         v: processed.v,
                         value: processed.value,
                         state: 'syncing',
+                        gas: processed.gas,
+                        maxFeePerGas: processed.maxFeePerGas,
+                        maxPriorityFeePerGas: processed.maxPriorityFeePerGas,
+                        accessList: processed.accessList,
+                        yParity: processed.yParity,
+                        blobVersionedHashes: processed.blobVersionedHashes,
+                        maxFeePerBlobGas: processed.maxFeePerBlobGas,
+                        logsBloom: processed.logsBloom,
+                        mixHash: processed.mixHash,
+                        receiptsRoot: processed.receiptsRoot,
+                        sendCount: processed.sendCount,
+                        sendRoot: processed.sendRoot,
+                        sha3Uncles: processed.sha3Uncles,
+                        size: processed.size,
+                        stateRoot: processed.stateRoot,
+                        transactionsRoot: processed.transactionsRoot,
+                        withdrawals: processed.withdrawals,
+                        requestId: processed.requestId,
                         raw: processed.raw
                     });
                 });
@@ -2574,6 +2934,16 @@ module.exports = (sequelize, DataTypes) => {
                             transactionsCount: block.transactions ? block.transactions.length : 0,
                             state: 'ready',
                             l1BlockNumber: block.l1BlockNumber,
+                            logsBloom: block.logsBloom,
+                            mixHash: block.mixHash,
+                            receiptsRoot: block.receiptsRoot,
+                            sendCount: block.sendCount,
+                            sendRoot: block.sendRoot,
+                            sha3Uncles: block.sha3Uncles,
+                            size: block.size,
+                            stateRoot: block.stateRoot,
+                            transactionsRoot: block.transactionsRoot,
+                            withdrawals: block.withdrawals,
                             raw: block.raw,
                         })
                     ],
@@ -2599,6 +2969,24 @@ module.exports = (sequelize, DataTypes) => {
                     returning: true,
                     transaction: sequelizeTransaction
                 });
+
+                const orbitConfig = await sequelize.models.OrbitChainConfig.findOne({ where: { workspaceId: this.id } });
+                if (orbitConfig) {
+                    const orbitBatch = await sequelize.models.OrbitBatch.findOne({
+                        where: {
+                            workspaceId: this.id,
+                            prevMessageCount: { [Op.lte]: block.number },
+                            newMessageCount: { [Op.gt]: block.number }
+                        }
+                    });
+
+                    if (orbitBatch) {
+                        await orbitBatch.safeUpdateBlocks({
+                            parentMessageCountShift: orbitConfig.parentMessageCountShift,
+                            transaction: sequelizeTransaction
+                        });
+                    }
+                }
 
                 return { ...createdBlock, transactions: storedTransactions };
             } catch(error) {
@@ -2772,6 +3160,13 @@ module.exports = (sequelize, DataTypes) => {
                 type_: transaction.type,
                 v: transaction.v,
                 value: transaction.value,
+                gas: transaction.gas,
+                maxFeePerGas: transaction.maxFeePerGas,
+                maxPriorityFeePerGas: transaction.maxPriorityFeePerGas,
+                accessList: transaction.accessList,
+                yParity: transaction.yParity,
+                blobVersionedHashes: transaction.blobVersionedHashes,
+                maxFeePerBlobGas: transaction.maxFeePerBlobGas,
                 raw: transaction
             }), { transaction: sequelizeTransaction });
 
@@ -2826,6 +3221,9 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async safeCreateOrUpdateContract(contract, transaction) {
+        if (contract.address.toLowerCase() === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
+            return null;
+
         const contracts = await this.getContracts({ where: { address: contract.address.toLowerCase() }});
         const existingContract = contracts[0];
 
@@ -2938,62 +3336,72 @@ module.exports = (sequelize, DataTypes) => {
 
     async findTransaction(hash) {
         const blockAttributes = ['gasLimit', 'timestamp', 'baseFeePerGas'];
-        const explorer = await this.getExplorer({
-            include: {
-                model: sequelize.models.StripeSubscription,
-                as: 'stripeSubscription',
-                include: 'stripePlan'
-            }
-        });
+        const transactionAttributes = ['id', 'blockNumber', 'data', 'parsedError', 'rawError', 'from', 'formattedBalanceChanges', 'gasLimit', 'gasPrice', 'hash', 'timestamp', 'to', 'value', 'storage', 'workspaceId', 'raw', 'state', 'transactionIndex', 'nonce', 'type', 'methodDetails',
+            'gas', 'maxFeePerGas', 'maxPriorityFeePerGas', 'accessList', 'yParity', 'blobVersionedHashes', 'maxFeePerBlobGas',
+            [
+                Sequelize.literal(`
+                    (
+                        SELECT COUNT(*)
+                        FROM token_transfers
+                        WHERE token_transfers."transactionId" = "Transaction".id
+                        AND token_transfers."isReward" = false
+                    )::int
+                `), 'tokenTransferCount'
+            ],
+            [
+                Sequelize.literal(`
+                    (
+                        SELECT COUNT(*)
+                        FROM token_balance_changes
+                        WHERE token_balance_changes."transactionId" = "Transaction".id
+                    )::int
+                `), 'tokenBalanceChangeCount'
+            ],
+            [
+                Sequelize.literal(`
+                    (
+                        SELECT COUNT(*)
+                        FROM transaction_trace_steps
+                        WHERE transaction_trace_steps."transactionId" = "Transaction".id
+                    )::int
+                `), 'internalTransactionCount'
+            ]
+        ];
+        const receiptAttributes = ['gasUsed', 'status', 'contractAddress', [sequelize.json('raw.root'), 'root'], 'cumulativeGasUsed', 'raw', 'effectiveGasPrice',
+            'timeboosted', 'gasUsedForL1', 'blobGasUsed', 'blobGasPrice',
+            [Sequelize.literal(`
+                (SELECT COUNT(*)
+                FROM transaction_logs
+                WHERE transaction_logs."transactionReceiptId" = "receipt".id)::int
+            `), 'logCount']
+        ];
+        const blockInclude = [];
 
-        if (explorer && await explorer.canUseCapability('l1Explorer')) {
-            blockAttributes.push('l1BlockNumber')
-        };
+        const orbitConfig = await this.getOrbitConfig();
+        if (orbitConfig) {
+            blockAttributes.push('orbitStatus');
+            blockInclude.push({
+                model: sequelize.models.OrbitBatch,
+                as: 'orbitBatch',
+                attributes: ['batchSequenceNumber', 'confirmationStatus', 'parentChainTxHash'],
+                include: {
+                    model: sequelize.models.OrbitNode,
+                    as: 'orbitNode',
+                    attributes: ['id']
+                }
+            });
+            receiptAttributes.push('timeboosted', 'gasUsedForL1');
+        }
 
         const transactions = await this.getTransactions({
             where: {
                 hash: hash
             },
-            attributes: ['id', 'blockNumber', 'data', 'parsedError', 'rawError', 'from', 'formattedBalanceChanges', 'gasLimit', 'gasPrice', 'hash', 'timestamp', 'to', 'value', 'storage', 'workspaceId', 'raw', 'state', 'transactionIndex', 'nonce', 'type', 'methodDetails',
-                [
-                    Sequelize.literal(`
-                        (
-                            SELECT COUNT(*)
-                            FROM token_transfers
-                            WHERE token_transfers."transactionId" = "Transaction".id
-                            AND token_transfers."isReward" = false
-                        )::int
-                    `), 'tokenTransferCount'
-                ],
-                [
-                    Sequelize.literal(`
-                        (
-                            SELECT COUNT(*)
-                            FROM token_balance_changes
-                            WHERE token_balance_changes."transactionId" = "Transaction".id
-                        )::int
-                    `), 'tokenBalanceChangeCount'
-                ],
-                [
-                    Sequelize.literal(`
-                        (
-                            SELECT COUNT(*)
-                            FROM transaction_trace_steps
-                            WHERE transaction_trace_steps."transactionId" = "Transaction".id
-                        )::int
-                    `), 'internalTransactionCount'
-                ]
-            ],
+            attributes: transactionAttributes,
             include: [
                 {
                     model: sequelize.models.TransactionReceipt,
-                    attributes: ['gasUsed', 'status', 'contractAddress', [sequelize.json('raw.root'), 'root'], 'cumulativeGasUsed', 'raw', [sequelize.json('raw.effectiveGasPrice'), 'effectiveGasPrice'],
-                        [Sequelize.literal(`
-                            (SELECT COUNT(*)
-                            FROM transaction_logs
-                            WHERE transaction_logs."transactionReceiptId" = "receipt".id)::int
-                        `), 'logCount']
-                    ],
+                    attributes: receiptAttributes,
                     as: 'receipt',
                     include: {
                         model: sequelize.models.Contract,
@@ -3013,7 +3421,8 @@ module.exports = (sequelize, DataTypes) => {
                 {
                     model: sequelize.models.Block,
                     attributes: blockAttributes,
-                    as: 'block'
+                    as: 'block',
+                    include: blockInclude
                 },
                 {
                     model: sequelize.models.Contract,
@@ -3227,8 +3636,51 @@ module.exports = (sequelize, DataTypes) => {
                 entities.contracts = entities.transactions.flatMap(transaction => transaction.createdContract).filter(contract => !!contract);
                 entities.transaction_receipts = entities.transactions.flatMap(transaction => transaction.receipt).filter(receipt => !!receipt && !!receipt.logs);
                 entities.transaction_logs = entities.transaction_receipts.flatMap(receipt => receipt.logs).filter(log => !!log);
-                entities.token_transfers = entities.transaction_logs.flatMap(log => log.tokenTransfer).filter(tokenTransfer => !!tokenTransfer);
-                entities.token_balance_changes = entities.token_transfers.flatMap(tokenTransfer => tokenTransfer.tokenBalanceChanges).filter(tokenBalanceChange => !!tokenBalanceChange);
+                // Get ALL token_transfers that reference the transactions we're deleting
+                const transactionIds = entities.transactions.map(t => t.id);
+                if (transactionIds.length > 0) {
+                    const allTokenTransfers = await sequelize.query(
+                        `SELECT id FROM token_transfers WHERE "transactionId" IN (:transactionIds) AND "workspaceId" = :workspaceId`,
+                        {
+                            replacements: { transactionIds, workspaceId: this.id },
+                            type: QueryTypes.SELECT
+                        }
+                    );
+                    entities.token_transfers = allTokenTransfers;
+                    
+                    // Get ALL token_balance_changes that reference these token_transfers
+                    const tokenTransferIds = entities.token_transfers.map(tt => tt.id);
+                    if (tokenTransferIds.length > 0) {
+                        const allTokenBalanceChanges = await sequelize.query(
+                            `SELECT id FROM token_balance_changes WHERE "tokenTransferId" IN (:tokenTransferIds) AND "workspaceId" = :workspaceId`,
+                            {
+                                replacements: { tokenTransferIds, workspaceId: this.id },
+                                type: QueryTypes.SELECT
+                            }
+                        );
+                        entities.token_balance_changes = allTokenBalanceChanges;
+                    } else {
+                        entities.token_balance_changes = [];
+                    }
+                } else {
+                    entities.token_transfers = [];
+                    entities.token_balance_changes = [];
+                }
+                
+                // Get v2_dex_pool_reserves that reference the transaction_logs
+                const transactionLogIds = entities.transaction_logs.map(log => log.id);
+                if (transactionLogIds.length > 0) {
+                    const v2DexPoolReserves = await sequelize.query(
+                        `SELECT "transactionLogId" FROM v2_dex_pool_reserves WHERE "transactionLogId" IN (:transactionLogIds)`,
+                        {
+                            replacements: { transactionLogIds },
+                            type: QueryTypes.SELECT
+                        }
+                    );
+                    entities.v2_dex_pool_reserves = v2DexPoolReserves;
+                } else {
+                    entities.v2_dex_pool_reserves = [];
+                }
 
                 for (const contract of entities.contracts)
                     await contract.update({ transactionId: null }, { transaction });
@@ -3261,6 +3713,23 @@ module.exports = (sequelize, DataTypes) => {
                     });
                 }
 
+                // Delete v2_dex_pool_reserves first (they reference transaction_logs)
+                if (entities.v2_dex_pool_reserves.length) {
+                    const transactionLogIds = entities.v2_dex_pool_reserves.map(reserve => reserve.transactionLogId);
+                    await sequelize.query(`DELETE FROM v2_dex_pool_reserves WHERE "transactionLogId" IN (:transactionLogIds)`, {
+                        replacements: { transactionLogIds },
+                        transaction
+                    });
+                }
+
+                // Delete in dependency order: child tables first, then parent tables
+                // 1. token_balance_changes (references token_transfers)
+                // 2. token_transfers (references transactions and transaction_logs)
+                // 3. transaction_logs (references transaction_receipts)
+                // 4. transaction_receipts (references transactions)
+                // 5. transaction_trace_steps (references transactions)
+                // 6. transactions (references blocks)
+                // 7. blocks
                 for (const table of ['token_balance_changes', 'token_transfers', 'transaction_logs', 'transaction_receipts', 'transaction_trace_steps', 'transactions', 'blocks']) {
                     if (entities[table].length) {
                         await sequelize.query(`DELETE FROM ${table} WHERE "id" IN (:ids) AND "workspaceId" = :workspaceId`, {
@@ -3309,6 +3778,28 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    async safeDestroyOrbitData(transaction) {
+        await sequelize.models.OrbitBatch.destroy({
+            where: { workspaceId: this.id },
+            transaction
+        });
+
+        await sequelize.models.OrbitDeposit.destroy({
+            where: { workspaceId: this.id },
+            transaction
+        });
+
+        await sequelize.models.OrbitWithdrawal.destroy({
+            where: { workspaceId: this.id },
+            transaction
+        });
+
+        await sequelize.models.OrbitNode.destroy({
+            where: { workspaceId: this.id },
+            transaction
+        });
+    }
+
     async reset(dayInterval, transaction) {
         const filter = { where: { workspaceId: this.id }};
         if (dayInterval)
@@ -3330,6 +3821,7 @@ module.exports = (sequelize, DataTypes) => {
             for (let i = 0; i < accounts.length; i++)
                 await accounts[i].destroy({ transaction });
 
+            await this.safeDestroyOrbitData(transaction);
         };
 
         return transaction ?
@@ -3522,17 +4014,19 @@ module.exports = (sequelize, DataTypes) => {
     skipFirstBlock: DataTypes.BOOLEAN,
     qnEndpointId: DataTypes.STRING,
     integrityCheckStartBlockNumber: {
-        type: DataTypes.INTEGER,
-        get() {
-            const blockNumber = this.getDataValue('integrityCheckStartBlockNumber');
-            return blockNumber !== null && blockNumber !== undefined ?
-                Math.max(this.getDataValue('integrityCheckStartBlockNumber'), 0) :
-                null;
-        }
+      type: DataTypes.INTEGER,
+      get() {
+        const blockNumber = this.getDataValue('integrityCheckStartBlockNumber');
+        return blockNumber !== null && blockNumber !== undefined ?
+          Math.max(this.getDataValue('integrityCheckStartBlockNumber'), 0) :
+          null;
+      }
     },
     rateLimitInterval: DataTypes.INTEGER,
     rateLimitMaxInInterval: DataTypes.INTEGER,
-    processNativeTokenTransfers: DataTypes.BOOLEAN
+    processNativeTokenTransfers: DataTypes.BOOLEAN,
+    isTopL1Parent: DataTypes.BOOLEAN,
+    isCustomL1Parent: DataTypes.BOOLEAN
   }, {
     hooks: {
         afterCreate(workspace, options) {

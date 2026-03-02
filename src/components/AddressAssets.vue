@@ -22,6 +22,14 @@
     />
 </template>
 
+/**
+ * @fileoverview Address assets container component.
+ * Provides tab navigation between token assets (ERC-20) and NFT gallery (ERC-721/1155).
+ * Supports URL hash-based navigation for deep linking to asset types.
+ * @component AddressAssets
+ *
+ * @prop {string} address - The Ethereum address to show assets for
+ */
 <script setup>
 import { ref, watch, onMounted, onUnmounted } from 'vue';
 import AddressTokenAssets from './AddressTokenAssets.vue';

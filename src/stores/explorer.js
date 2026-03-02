@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Explorer Pinia store.
+ * Manages current explorer instance state including domain, themes, and features.
+ * @module stores/explorer
+ */
+
 import { defineStore } from 'pinia';
 
 export const useExplorerStore = defineStore('explorer', {
@@ -7,7 +13,6 @@ export const useExplorerStore = defineStore('explorer', {
         name: null,
         rpcServer: null,
         token: 'ETH',
-        l1Explorer: null,
         domain: null,
         domains: [],
         themes: {},

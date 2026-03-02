@@ -24,7 +24,7 @@
                     <v-divider class="my-4"></v-divider>
 
                     <v-row v-for="method in filteredMethods" :key="`${method.name}-${method.inputs?.map(i => i.type).join('-') || ''}`" class="pb-4">
-                        <v-col lg="6" md="6" sm="12">
+                        <v-col cols="12">
                             <template v-if="forceTab === 'read'">
                                 <Contract-Read-Method
                                     :contract="contract"
@@ -49,6 +49,16 @@
     </div>
 </template>
 
+/**
+ * @fileoverview Contract read/write methods container component.
+ * Displays filterable list of contract methods with call options configuration.
+ * Switches between read and write methods based on forceTab prop.
+ * @component ContractReadWrite
+ *
+ * @prop {Object} contract - The contract data with address and abi
+ * @prop {string} [forceTab='read'] - Which tab to display ('read' | 'write')
+ * @emits update-filtered-counts - Emitted with count of filtered read/write methods
+ */
 <script setup>
 import { ref, computed, watch } from 'vue';
 

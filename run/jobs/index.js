@@ -1,3 +1,8 @@
+/**
+ * @fileoverview Job handler exports.
+ * Aggregates all background job handlers organized by priority level.
+ * @module jobs
+ */
 
 module.exports = {
     // High priority
@@ -10,6 +15,16 @@ module.exports = {
     receiptSync: require('./receiptSync'),
     removeStalledBlock: require('./removeStalledBlock'),
     increaseStripeBillingQuota: require('./increaseStripeBillingQuota'),
+    finalizePendingOrbitBatches: require('./finalizePendingOrbitBatches'),
+    checkOrbitMessageDeliveredLogs: require('./checkOrbitMessageDeliveredLogs'),
+    backfillOrbitMessageDeliveredLogs: require('./backfillOrbitMessageDeliveredLogs'),
+    storeOrbitDeposit: require('./storeOrbitDeposit'),
+    finalizePendingOpOutputs: require('./finalizePendingOpOutputs'),
+    finalizePendingOpBatches: require('./finalizePendingOpBatches'),
+    linkOpDepositsToL2Txs: require('./linkOpDepositsToL2Txs'),
+    storeOpDeposit: require('./storeOpDeposit'),
+    storeOpOutput: require('./storeOpOutput'),
+    startCustomL1ParentSync: require('./startCustomL1ParentSync'),
 
     // Medium Priority
     processContract: require('./processContract'),
@@ -31,6 +46,7 @@ module.exports = {
     rpcHealthCheck: require('./rpcHealthCheck'),
     rpcHealthCheckStarter: require('./rpcHealthCheckStarter'),
     explorerSyncCheck: require('./explorerSyncCheck'),
+    syncRecoveryCheck: require('./syncRecoveryCheck'),
     workspaceReset: require('./workspaceReset'),
     batchBlockDelete: require('./batchBlockDelete'),
     batchContractDelete: require('./batchContractDelete'),
@@ -38,7 +54,10 @@ module.exports = {
     deleteWorkspace: require('./deleteWorkspace'),
     queueMonitoring: require('./queueMonitoring'),
     blockSyncMonitoring: require('./blockSyncMonitoring'),
-    sendDemoExplorerLink: require('./sendDemoExplorerLink'),
     sendDiscordMessage: require('./sendDiscordMessage'),
-    backfillNativeTokenTransfers: require('./backfillNativeTokenTransfers')
+    sendDemoExplorerLink: require('./sendDemoExplorerLink'),
+    backfillNativeTokenTransfers: require('./backfillNativeTokenTransfers'),
+    backfillOpBatchBlockRanges: require('./backfillOpBatchBlockRanges'),
+    backfillOpDeposits: require('./backfillOpDeposits'),
+    backfillOpOutputs: require('./backfillOpOutputs')
 };

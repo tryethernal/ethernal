@@ -50,6 +50,15 @@
     </v-row>
 </template>
 
+/**
+ * @fileoverview Token header component.
+ * Displays token overview information including total supply, holder count,
+ * transfer count, contract address, and decimals.
+ * @component TokenHeader
+ *
+ * @prop {Object} contract - The token contract data
+ * @prop {Object} stats - Token statistics (tokenHolderCount, tokenTransferCount)
+ */
 <script setup>
 import { formatNumber } from '@/lib/utils';
 import HashLink from './HashLink.vue';

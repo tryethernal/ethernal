@@ -1,6 +1,8 @@
-/*
-    This middleware checks that the secret is present in the query
-*/
+/**
+ * @fileoverview Secret middleware.
+ * Validates internal API secret for protected endpoints.
+ * @module middlewares/secret
+ */
 
 const logger = require('../lib/logger');
 const { getSecret } = require('../lib/env');

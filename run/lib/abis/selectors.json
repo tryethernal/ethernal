@@ -35,7 +35,7 @@
         "errors": []
     },
 
-    "erc155": {
+    "erc1155": {
         "functions": [
             "0x00fdd58ea",
             "0x4e1273f46",

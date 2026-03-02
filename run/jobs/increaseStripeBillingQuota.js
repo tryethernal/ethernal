@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Stripe billing quota job.
+ * Increments transaction quota and reports metered billing usage.
+ * @module jobs/increaseStripeBillingQuota
+ */
+
 const { getStripeSecretKey } = require('../lib/env');
 const stripe = require('stripe')(getStripeSecretKey());
 const { Block, Workspace, Explorer, StripeSubscription } = require('../models');

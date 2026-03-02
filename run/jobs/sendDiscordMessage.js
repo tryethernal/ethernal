@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Discord message job.
+ * Sends messages to Discord webhooks for notifications.
+ * @module jobs/sendDiscordMessage
+ */
+
 const axios = require('axios');
 
 module.exports = async (job) => {

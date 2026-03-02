@@ -1,7 +1,20 @@
+/**
+ * @fileoverview User API endpoints.
+ * Handles authentication, profile management, API keys, and subscriptions.
+ * @module api/users
+ *
+ * @route POST /signup - Create new user account
+ * @route POST /signin - Authenticate user
+ * @route GET /me - Get current user profile
+ * @route PUT /me - Update user settings
+ * @route POST /apiToken - Generate API token
+ * @route POST /resetPassword - Send password reset email
+ */
+
 const { getStripeSecretKey } = require('../lib/env');
 const stripe = require('stripe')(getStripeSecretKey());
 const Analytics = require('../lib/analytics');
-const { isStripeEnabled, isSendgridEnabled, isFirebaseAuthEnabled } = require('../lib/flags');
+const { isStripeEnabled, isMailjetEnabled, isFirebaseAuthEnabled } = require('../lib/flags');
 const { getAuth } = require('firebase-admin/auth');
 const uuidAPIKey = require('uuid-apikey');
 const express = require('express');
@@ -89,8 +102,8 @@ router.post('/sendResetPasswordEmail', async (req, res, next) => {
     const data = req.body;
 
     try {
-        if (!isSendgridEnabled())
-            return managedError(new Error('Sendgrid has not been enabled.'), req, res);
+        if (!isMailjetEnabled())
+            return managedError(new Error('Mailjet has not been enabled.'), req, res);
 
         if (!data.email)
             return managedError(new Error('Missing parameter.'), req, res);

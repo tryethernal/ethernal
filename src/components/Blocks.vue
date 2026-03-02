@@ -21,6 +21,12 @@
     </v-container>
 </template>
 
+/**
+ * @fileoverview Blocks page component.
+ * Displays the main blocks listing page with 24-hour statistics including
+ * network utilization, total gas used, and burnt fees.
+ * @component Blocks
+ */
 <script setup>
 import BlockList from './BlockList.vue';
 import StatNumber from './StatNumber.vue';

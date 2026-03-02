@@ -1,3 +1,17 @@
+/**
+ * @fileoverview TokenTransferEvent model - TimescaleDB hypertable for token transfer analytics.
+ * Stores denormalized token transfer data for time-series queries.
+ *
+ * @module models/TokenTransferEvent
+ *
+ * @property {number} workspaceId - Workspace ID
+ * @property {number} tokenTransferId - Token transfer ID
+ * @property {Date} timestamp - Event timestamp (primary key)
+ * @property {string} amount - Transfer amount
+ * @property {string} token - Token contract address
+ * @property {string} tokenType - Token type (erc20, erc721, erc1155)
+ */
+
 'use strict';
 const {
   Model

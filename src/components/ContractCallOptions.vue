@@ -53,6 +53,18 @@
         </v-row>
     </div>
 </template>
+/**
+ * @fileoverview Contract call options component.
+ * Provides UI for selecting transaction sender (loaded accounts vs Metamask),
+ * and configuring gas price/limit for contract method calls.
+ * @component ContractCallOptions
+ *
+ * @prop {Array} accounts - List of available accounts
+ * @prop {boolean} loading - Loading state
+ * @emits senderSourceChanged - Emitted when sender mode changes ('accounts' | 'metamask')
+ * @emits callOptionChanged - Emitted when call options (from, gasLimit, gasPrice) change
+ * @emits rpcConnectionStatusChanged - Emitted when RPC connection status changes
+ */
 <script>
 import { mapStores, storeToRefs } from 'pinia';
 import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';

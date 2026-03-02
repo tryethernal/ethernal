@@ -25,6 +25,17 @@
         @update:options="getTransfers" />
 </template>
 
+/**
+ * @fileoverview Address token transfers component.
+ * Displays a filterable paginated list of token transfers (ERC-20, ERC-721, ERC-1155)
+ * for a specific address with type filtering chips.
+ * @component AddressTokenTransfers
+ *
+ * @prop {string} address - The Ethereum address to show transfers for
+ * @prop {number} [erc20Count] - Count of ERC-20 transfers
+ * @prop {number} [erc721Count] - Count of ERC-721 transfers
+ * @prop {number} [erc1155Count] - Count of ERC-1155 transfers
+ */
 <script setup>
 import { ref, onMounted, inject, watch } from 'vue';
 import TokenTransfers from './TokenTransfers.vue';

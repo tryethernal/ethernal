@@ -1,3 +1,17 @@
+/**
+ * @fileoverview StripePlan model - defines subscription plans and capabilities.
+ * Links Stripe price IDs to feature capabilities.
+ *
+ * @module models/StripePlan
+ *
+ * @property {number} id - Primary key
+ * @property {string} slug - Plan identifier (e.g., 'pro', 'enterprise')
+ * @property {string} name - Display name
+ * @property {string} stripePriceId - Stripe price ID
+ * @property {Object} capabilities - Feature flags and limits
+ * @property {number} price - Price in cents
+ */
+
 'use strict';
 const {
   Model

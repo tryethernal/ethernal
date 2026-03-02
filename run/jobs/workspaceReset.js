@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Workspace reset job.
+ * Deletes blocks and contracts within a date range for data retention.
+ * @module jobs/workspaceReset
+ */
+
 const Sequelize = require('sequelize');
 const { Workspace } = require('../models');
 const { bulkEnqueue } = require('../lib/queue');
@@ -5,6 +11,7 @@ const { getMaxBlockForSyncReset, getMaxContractForReset } = require('../lib/env'
 const Op = Sequelize.Op;
 
 module.exports = async (job) => {
+    console.log('workspaceReset');
     const data = job.data;
 
     if (!data.workspaceId || !data.from || !data.to)
@@ -18,6 +25,9 @@ module.exports = async (job) => {
     const workspace = await Workspace.findByPk(data.workspaceId);
     if (!workspace)
         throw new Error('Cannot find workspace');
+
+    console.log('destroying orbit data for workspace', data.workspaceId);
+    await workspace.safeDestroyOrbitData();
 
     const blocks = await workspace.getBlocks({ where, attributes: ['id'] });
     const blockIds = blocks.map(b => b.id);

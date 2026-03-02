@@ -83,6 +83,11 @@ describe('blockSyncMonitoring', () => {
             }
         }]);
         await blockSyncMonitoring();
-        expect(createIncident).toHaveBeenCalledWith('Block sync is behind', 'Explorer: Explorer (#1) - Diff: 99 - Remote: 100 - Local: 1');
+        expect(createIncident).toHaveBeenCalledWith(
+            'Block sync is behind',
+            'Explorer: Explorer (#1) - Diff: 99 - Remote: 100 - Local: 1',
+            'P1',
+            { alias: 'block-sync-behind-1' }
+        );
     });
 }); 

@@ -1,7 +1,8 @@
-/*
-    This sets up the middleware used for email/password auth
-    The actually code is in strategies/local.js to make it easier to unit test
-*/
+/**
+ * @fileoverview Passport local strategy middleware.
+ * Handles email/password authentication via passport-local.
+ * @module middlewares/passportLocalStrategy
+ */
 
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
