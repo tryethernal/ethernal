@@ -539,7 +539,7 @@ const theme = useTheme();
 
 // Keep current block updated via Pusher
 const onBlock = block => {
-    if (block.number > currentWorkspaceStore.currentBlock.number)
+    if (block.number > (currentWorkspaceStore.currentBlock?.number || 0))
         currentWorkspaceStore.updateCurrentBlock(block);
 };
 let pusherChannel = null;
