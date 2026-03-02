@@ -436,9 +436,11 @@ function updateConfig() {
     errorMessage.value = '';
     successMessage.value = '';
 
-    // Don't send networkId on updates - it can't be changed
+    // Don't send parent chain fields on updates - they can't be changed
     const updatePayload = { ...config.value };
     delete updatePayload.networkId;
+    delete updatePayload.parentWorkspaceId;
+    delete updatePayload.parentChainId;
 
     $server.updateOpConfig(props.explorerId, updatePayload)
         .then(({ data: { config: updatedConfig } }) => {
