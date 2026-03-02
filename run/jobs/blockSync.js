@@ -407,7 +407,7 @@ module.exports = async job => {
                         try {
                             await tx.safeCreateReceipt(processedReceipt);
                         } catch (err) {
-                            logger.error(`Failed to store receipt for ${tx.hash}`, { error: err.message });
+                            logger.error(`Failed to store receipt for ${tx.hash}`, { location: 'jobs.blockSync.inlineReceipt', error: err.message, hash: tx.hash });
                             failedTxHashes.push(tx);
                         }
                     }));

@@ -275,7 +275,7 @@ class ProviderConnector {
             headers['Authorization'] = `Basic ${auth}`;
         }
 
-        return { url: rpcUrl.origin + rpcUrl.pathname, headers };
+        return { url: rpcUrl.origin + rpcUrl.pathname + rpcUrl.search, headers };
     }
 
     getBalance(address, block = 'latest') {
@@ -326,6 +326,7 @@ class ProviderConnector {
     async fetchTransactionReceiptsBatch(transactionHashes) {
         if (!transactionHashes || transactionHashes.length === 0) return [];
 
+        // Rate limit check counts as 1 HTTP request (batch is a single HTTP call to the provider)
         await this.checkRateLimit();
 
         const batchRequest = transactionHashes.map((hash, i) => ({
@@ -362,9 +363,17 @@ class ProviderConnector {
                 throw new Error('Batch RPC response is not an array');
             }
 
-            // Sort by id to maintain order, then extract results
-            const sortedResults = response.sort((a, b) => a.id - b.id);
-            return sortedResults.map(r => r.result ? sanitize(r.result) : null);
+            // Map results by id for safe ordering regardless of response order
+            const resultsById = new Map(response.map(r => [r.id, r]));
+            return transactionHashes.map((hash, i) => {
+                const r = resultsById.get(i);
+                if (!r) return null;
+                if (r.error) {
+                    logger.warn('RPC error in batch receipt result', { id: i, hash, error: r.error });
+                    return null;
+                }
+                return r.result ? sanitize(r.result) : null;
+            });
         } catch (error) {
             // Fallback: fetch sequentially if batch fails
             logger.info('Batch receipt fetch failed, falling back to sequential', { error: error.message });
