@@ -28,44 +28,20 @@ describe('updateExplorerSyncingProcess', () => {
             });
     });
 
-    it('Should track timeout as failure when sync is enabled', (done) => {
+    it('Should not auto-disable on timeout when sync is enabled', (done) => {
         PM2.mockImplementationOnce(() => ({
             find: jest.fn().mockRejectedValueOnce(new Error('Timed out after 10000ms.'))
         }));
-        const mockIncrementSyncFailures = jest.fn().mockResolvedValue({ disabled: false, attempts: 1 });
         jest.spyOn(Explorer, 'findOne').mockResolvedValue({
             id: 1,
             slug: 'slug',
             workspaceId: 1,
-            shouldSync: true,
-            incrementSyncFailures: mockIncrementSyncFailures
+            shouldSync: true
         });
 
         updateExplorerSyncingProcess({ data: { explorerSlug: 'explorer' }})
             .then(res => {
-                expect(mockIncrementSyncFailures).toHaveBeenCalledWith('pm2_timeout');
-                expect(res).toEqual('Timed out (attempt 1/3)');
-                done();
-            });
-    });
-
-    it('Should auto-disable sync after 3 timeouts', (done) => {
-        PM2.mockImplementationOnce(() => ({
-            find: jest.fn().mockRejectedValueOnce(new Error('Timed out after 10000ms.'))
-        }));
-        const mockIncrementSyncFailures = jest.fn().mockResolvedValue({ disabled: true, attempts: 3 });
-        jest.spyOn(Explorer, 'findOne').mockResolvedValue({
-            id: 1,
-            slug: 'slug',
-            workspaceId: 1,
-            shouldSync: true,
-            incrementSyncFailures: mockIncrementSyncFailures
-        });
-
-        updateExplorerSyncingProcess({ data: { explorerSlug: 'explorer' }})
-            .then(res => {
-                expect(mockIncrementSyncFailures).toHaveBeenCalledWith('pm2_timeout');
-                expect(res).toEqual('Timed out and sync auto-disabled after 3 failures.');
+                expect(res).toEqual('Timed out');
                 done();
             });
     });

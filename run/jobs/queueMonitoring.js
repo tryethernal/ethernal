@@ -11,11 +11,7 @@ const logger = require('../lib/logger');
 const { createIncident } = require('../lib/opsgenie');
 const { maxTimeWithoutEnqueuedJob, queueMonitoringMaxProcessingTime, queueMonitoringHighProcessingTimeThreshold, queueMonitoringHighWaitingJobCountThreshold, queueMonitoringMaxWaitingJobCount } = require('../lib/env');
 
-const monitoredPerformances = [
-    'blockSync', 'receiptSync',
-    'processBlock', 'batchBlockSync',
-    'processContract', 'processTokenTransfer', 'processTransactionTrace'
-];
+const monitoredPerformances = ['blockSync', 'receiptSync'];
 
 const monitoredActivity = ['blockSync'];
 
