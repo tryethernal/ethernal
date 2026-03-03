@@ -28,7 +28,7 @@
 
                     <template v-slot:item.l2TransactionHash="{ item }">
                         <HashLink v-if="item.l2TransactionHash" :type="'tx'" :hash="item.l2TransactionHash" />
-                        <span v-else class="text-medium-emphasis">Pending</span>
+                        <v-chip v-else color="warning" size="small">Pending</v-chip>
                     </template>
 
                     <template v-slot:item.from="{ item }">
@@ -40,19 +40,12 @@
                     </template>
 
                     <template v-slot:item.value="{ item }">
-                        {{ $fromWei(item.value, 18) }} {{ explorer.token || 'ETH' }}
-                    </template>
-
-                    <template v-slot:item.status="{ item }">
-                        <v-chip :color="statusColors[item.status]">
-                            {{ statusLabels[item.status] }}
-                        </v-chip>
+                        {{ $fromWei(item.value, 18, false) }}  {{ explorer.token || 'ETH' }}
                     </template>
 
                     <template v-slot:item.l1TransactionHash="{ item }">
-                        <span class="text-truncate" style="max-width: 120px; display: inline-block;">
-                            {{ item.l1TransactionHash ? `${item.l1TransactionHash.slice(0, 10)}...${item.l1TransactionHash.slice(-6)}` : '-' }}
-                        </span>
+                        <HashLink v-if="item.l1TransactionHash" :type="'tx'" :hash="item.l1TransactionHash" :unlink="true" />
+                        <span v-else>-</span>
                     </template>
 
                     <template v-slot:no-data>
@@ -92,21 +85,8 @@ const headers = [
     { title: 'From', key: 'from', sortable: false },
     { title: 'To', key: 'to', sortable: false },
     { title: 'Value', key: 'value', sortable: false },
-    { title: 'Status', key: 'status', sortable: false },
     { title: 'L1 Transaction', key: 'l1TransactionHash', sortable: false }
 ];
-
-const statusColors = {
-    pending: 'warning',
-    confirmed: 'success',
-    failed: 'error'
-};
-
-const statusLabels = {
-    pending: 'Pending',
-    confirmed: 'Confirmed',
-    failed: 'Failed'
-};
 
 async function loadDeposits({ page, itemsPerPage, sortBy } = {}) {
     loading.value = true;
