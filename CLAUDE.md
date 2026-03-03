@@ -615,6 +615,7 @@ When running queries against the production database:
 - Preserve existing code comments unless completely irrelevant after changes
 - Fix Vue console warnings (`[Vue warn]`)
 - Use `@/` alias for imports from `src/` in frontend code
+- Delete one-off scripts after use — don't leave them in the repo unless they're reusable
 
 ## Documentation Requirements
 
