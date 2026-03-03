@@ -1,6 +1,8 @@
-# Wrapup
+# Wrapup Ethernal
 
-End-of-session cleanup that runs refactoring, documentation updates, and creates a PR. This replaces the global wrapup which deploys — in Ethernal, deploy happens after merge via `/deploy`.
+End-of-session cleanup that runs refactoring, documentation updates, and creates a PR.
+
+**CRITICAL:** This is the Ethernal project wrapup command. It creates a PR — it does NOT deploy. Use `/deploy` after merge to release. If you see a global wrapup command (for Capo), ignore it — always use THIS project-level command.
 
 **IMPORTANT:** Execute all steps in order without asking for user approval between steps.
 

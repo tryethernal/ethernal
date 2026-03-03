@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.13.1] - 2026-03-03
+### Fixed
+- OP Stack log listener and Orbit log listener not starting due to missing scripts in PM2 Docker image
+
 ## [5.13.0] - 2026-03-03
 ### Added
 - OP Stack deposit detection via dedicated log listener, catching deposits through intermediary contracts (e.g. L1StandardBridge) that were previously missed

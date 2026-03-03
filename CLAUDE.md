@@ -13,7 +13,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | Background job | `run/jobs/[name].js`, `run/jobs/index.js`, `run/lib/queue.js` |
 | Frontend component | `src/components/`, `src/stores/`, `src/plugins/router.js` |
 | Auth/permissions | `run/middlewares/auth.js`, `run/middlewares/workspaceAuth.js` |
-| L2 integrations | `run/lib/orbit*.js`, `run/models/orbit*.js`, `pm2-server/logListener.js` |
+| L2 integrations | `run/lib/orbit*.js`, `run/lib/op*.js`, `pm2-server/logListener.js`, `pm2-server/opLogListener.js` |
 | Billing/Stripe | `run/webhooks/stripe.js`, `run/lib/stripe.js`, `run/api/stripe.js` |
 | Testing | `run/tests/mocks/`, `run/tests/api/`, `tests/unit/` |
 | Database schema | `.claude/references/SCHEMA.md` (complete model reference) |
@@ -242,6 +242,7 @@ blockSync → receiptSync → processContract → processTokenTransfer → balan
 
 L2 Event Flow:
 PM2 logListener → storeOrbitDeposit / checkOrbitMessageDeliveredLogs
+PM2 opLogListener → storeOpDeposit / checkOpDepositLogs
 ```
 
 ### Job Naming Convention
@@ -614,6 +615,7 @@ When running queries against the production database:
 - Preserve existing code comments unless completely irrelevant after changes
 - Fix Vue console warnings (`[Vue warn]`)
 - Use `@/` alias for imports from `src/` in frontend code
+- Delete one-off scripts after use — don't leave them in the repo unless they're reusable
 
 ## Documentation Requirements
 
@@ -735,7 +737,8 @@ Process management server for blockchain synchronization:
 | File | Description |
 |------|-------------|
 | `app.js` | Express server with PM2 management endpoints |
-| `logListener.js` | Event listener for Orbit/OP Stack L1 events |
+| `logListener.js` | Event listener for Orbit L1 bridge events |
+| `opLogListener.js` | Event listener for OP Stack L1 deposit events |
 | `lib/pm2.js` | PM2 process control functions |
 
 ---
@@ -746,7 +749,7 @@ Process management server for blockchain synchronization:
 
 ### End-of-Session Flow
 
-Use `/wrapup` when a feature branch is ready. It runs these steps in order:
+Use `/wrapup` (the **Ethernal** project command, not the global one) when a feature branch is ready. It runs these steps in order:
 
 1. **`/refactor`** — PR-scoped code quality cleanup (jscpd, knip, code-simplifier). Only touches files changed on the current branch vs `develop`.
 2. **`/update-claudemd`** — Updates documentation if new patterns were introduced.
@@ -754,10 +757,12 @@ Use `/wrapup` when a feature branch is ready. It runs these steps in order:
 
 ### Release Flow
 
-After PRs are merged into `develop`, use `/deploy` to release:
+After PRs are merged into `develop`, use `/deploy` (the **Ethernal** project command) to release:
 
 1. Generates changelog from commits since last tag
-2. Bumps version in `package.json`
-3. Tags and pushes to `develop`
-4. Syncs `master` with `develop`
-5. CI handles Docker builds and deployment
+2. Bumps version via `npm version {major|minor|patch} --message '%s'` (updates package.json + tags)
+3. Pushes tag and branch to `develop`
+4. Syncs `master` with `develop` (`git merge --no-ff`)
+5. CI handles Docker builds and deployment — completion is determined by `release_back` and `release_front` jobs (other jobs like `build_and_push_*` are side builds and don't block the deploy)
+
+When user says "merge and deploy", merge the PR with `gh pr merge --squash --admin` first, then run the deploy flow.
