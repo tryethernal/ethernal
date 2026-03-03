@@ -194,4 +194,32 @@ const start = (slug, workspaceId) => {
     });
 };
 
-module.exports = { list, show, stop, reload, restart, delete: _delete, start, resume, startLogListener };
+const startOpLogListener = (slug, jsonArgs) => {
+    return new Promise((resolve, reject) => {
+        if (!slug || !jsonArgs) reject(new Error('Missing parameter'));
+
+        pm2.connect(error => {
+            if (error) reject(new Error(error));
+
+            const options = {
+                name: slug,
+                script: 'node',
+                args: ['opLogListener.js', jsonArgs],
+                interpreter: 'none',
+                log_type: 'json'
+            };
+
+            pm2.start(options, (error) => {
+                if (error) reject(new Error(error));
+
+                pm2.describe(slug, (error, process) => {
+                    if (error) reject(new Error(error));
+
+                    resolve(process[0]);
+                });
+            });
+        });
+    });
+};
+
+module.exports = { list, show, stop, reload, restart, delete: _delete, start, resume, startLogListener, startOpLogListener };
