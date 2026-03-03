@@ -34,6 +34,21 @@ app.post('/log-listener', secretMiddleware, async (req, res) => {
     }
 });
 
+app.post('/op-log-listener', secretMiddleware, async (req, res) => {
+    const data = req.body;
+
+    try {
+        if (!data.slug || !data.jsonArgs)
+            throw new Error('Missing parameter');
+
+        const pm2Process = await pm2.startOpLogListener(data.slug, data.jsonArgs);
+
+        return res.status(200).send(pm2Process);
+    } catch(error) {
+        handleError(res, error);
+    }
+});
+
 app.get('/processes', secretMiddleware, async (req, res) => {
     try {
         const processes = await pm2.list()

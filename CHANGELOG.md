@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.13.0] - 2026-03-03
+### Added
+- OP Stack deposit detection via dedicated log listener, catching deposits through intermediary contracts (e.g. L1StandardBridge) that were previously missed
+
 ## [5.12.6] - 2026-03-02
 ### Fixed
 - OP Stack settings update failing with "Selected parent workspace is not a valid L1 parent" for custom L1 parents

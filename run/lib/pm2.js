@@ -135,7 +135,7 @@ class PM2 {
 
     /**
      * Starts a log listener process for event-driven synchronization.
-     * Used for Orbit/OP Stack chains to listen for specific events.
+     * Used for Orbit chains to listen for specific bridge events.
      *
      * @param {string} slug - Process identifier (e.g., 'logListener-123')
      * @param {string} jsonArgs - JSON string of listener configuration
@@ -145,6 +145,21 @@ class PM2 {
         if (!slug || !jsonArgs) throw new Error('Missing parameter');
 
         const resource = `${this.host}/log-listener?secret=${this.secret}`;
+        return withTimeout(axios.post(resource, { slug, jsonArgs }));
+    }
+
+    /**
+     * Starts an OP Stack log listener process for deposit event detection.
+     * Watches the optimism portal for TransactionDeposited events.
+     *
+     * @param {string} slug - Process identifier (e.g., 'opLogListener-123')
+     * @param {string} jsonArgs - JSON string of listener configuration
+     * @returns {Promise<Object>} Axios response
+     */
+    startOpLogListener(slug, jsonArgs) {
+        if (!slug || !jsonArgs) throw new Error('Missing parameter');
+
+        const resource = `${this.host}/op-log-listener?secret=${this.secret}`;
         return withTimeout(axios.post(resource, { slug, jsonArgs }));
     }
 }
