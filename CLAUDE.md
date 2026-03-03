@@ -269,13 +269,14 @@ L2 Workspace
           ├── Contract addresses (portal, inbox, etc.)
           └── Parent workspace reference
                 ↓
-PM2 logListener (pm2-server/logListener.js)
-    ├── Watches L1 events via RPC
+PM2 Log Listeners
+    ├── logListener.js - Orbit bridge events
+    ├── opLogListener.js - OP TransactionDeposited events
     └── Enqueues jobs for detected events
                 ↓
 Background Jobs
     ├── storeOrbitDeposit / storeOpDeposit
-    ├── checkOrbitMessageDeliveredLogs
+    ├── checkOrbitMessageDeliveredLogs / checkOpDepositLogs
     └── finalizePendingOrbitBatches
                 ↓
 Data Models
@@ -292,7 +293,7 @@ Data Models
 | Batch lib | `run/lib/orbitBatches.js` | `run/lib/opBatches.js` |
 | API routes | `run/api/orbitBatches.js`, `orbitDeposits.js` | `run/api/opBatches.js`, `opDeposits.js` |
 | Frontend | `src/components/OrbitBatches.vue` | `src/components/OpBatches.vue` |
-| Event listener | `pm2-server/logListener.js` | Same file |
+| Event listener | `pm2-server/logListener.js` | `pm2-server/opLogListener.js` |
 
 ### Cross-Chain Event Detection
 
@@ -593,6 +594,18 @@ describe('GET /feature/:id', () => {
 | `isQuicknodeEnabled()` | `QUICKNODE_CREDENTIALS` |
 | `isMailjetEnabled()` | `MAILJET_PUBLIC_KEY`, `MAILJET_PRIVATE_KEY` |
 | `isApproximatedEnabled()` | `APPROXIMATED_API_KEY`, `APPROXIMATED_TARGET_IP` |
+
+---
+
+## Production Database Operations
+
+When running queries against the production database:
+
+1. **Always check row counts first** before DELETE/UPDATE — run a `SELECT count(*)` to understand the scope
+2. **Batch large operations** — if more than ~10K rows will be affected, batch in chunks of 10K with separate transactions to avoid connection timeouts
+3. **Check FK dependencies** before deleting — query `information_schema.table_constraints` to find child tables that need to be cleaned first
+4. **Use `SET CONSTRAINTS ALL DEFERRED`** inside transactions when deleting across related tables
+5. **Connection timeouts** — the production DB drops connections on queries running longer than ~2-3 minutes; keep individual operations under that threshold
 
 ---
 
