@@ -763,6 +763,6 @@ After PRs are merged into `develop`, use `/deploy` (the **Ethernal** project com
 2. Bumps version via `npm version {major|minor|patch} --message '%s'` (updates package.json + tags)
 3. Pushes tag and branch to `develop`
 4. Syncs `master` with `develop` (`git merge --no-ff`)
-5. CI handles Docker builds and deployment
+5. CI handles Docker builds and deployment — completion is determined by `release_back` and `release_front` jobs (other jobs like `build_and_push_*` are side builds and don't block the deploy)
 
 When user says "merge and deploy", merge the PR with `gh pr merge --squash --admin` first, then run the deploy flow.
