@@ -13,7 +13,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | Background job | `run/jobs/[name].js`, `run/jobs/index.js`, `run/lib/queue.js` |
 | Frontend component | `src/components/`, `src/stores/`, `src/plugins/router.js` |
 | Auth/permissions | `run/middlewares/auth.js`, `run/middlewares/workspaceAuth.js` |
-| L2 integrations | `run/lib/orbit*.js`, `run/models/orbit*.js`, `pm2-server/logListener.js` |
+| L2 integrations | `run/lib/orbit*.js`, `run/lib/op*.js`, `pm2-server/logListener.js`, `pm2-server/opLogListener.js` |
 | Billing/Stripe | `run/webhooks/stripe.js`, `run/lib/stripe.js`, `run/api/stripe.js` |
 | Testing | `run/tests/mocks/`, `run/tests/api/`, `tests/unit/` |
 | Database schema | `.claude/references/SCHEMA.md` (complete model reference) |
@@ -242,6 +242,7 @@ blockSync → receiptSync → processContract → processTokenTransfer → balan
 
 L2 Event Flow:
 PM2 logListener → storeOrbitDeposit / checkOrbitMessageDeliveredLogs
+PM2 opLogListener → storeOpDeposit / checkOpDepositLogs
 ```
 
 ### Job Naming Convention
@@ -735,7 +736,8 @@ Process management server for blockchain synchronization:
 | File | Description |
 |------|-------------|
 | `app.js` | Express server with PM2 management endpoints |
-| `logListener.js` | Event listener for Orbit/OP Stack L1 events |
+| `logListener.js` | Event listener for Orbit L1 bridge events |
+| `opLogListener.js` | Event listener for OP Stack L1 deposit events |
 | `lib/pm2.js` | PM2 process control functions |
 
 ---
