@@ -18,6 +18,7 @@ const priorities = {
         'storeOpDeposit',
         'storeOpOutput',
         'checkOpDepositLogs',
+        'checkCustomL1ParentSync',
         'startCustomL1ParentSync'
     ],
     'medium': [
