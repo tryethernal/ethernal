@@ -17,6 +17,7 @@ const priorities = {
         'linkOpDepositsToL2Txs',
         'storeOpDeposit',
         'storeOpOutput',
+        'checkOpDepositLogs',
         'startCustomL1ParentSync'
     ],
     'medium': [

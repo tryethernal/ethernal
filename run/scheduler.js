@@ -89,6 +89,14 @@ const BLOCK_SYNC_MONITORING_INTERVAL = 60 * 1000;
         { every: 5 * 60 * 1000 }
     );
 
+    await enqueue(
+        'checkOpDepositLogs',
+        'checkOpDepositLogs',
+        {},
+        10,
+        { every: 5 * 60 * 1000 }
+    );
+
     // OP Stack jobs
     await enqueue(
         'finalizePendingOpBatches',
