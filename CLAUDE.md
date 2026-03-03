@@ -748,7 +748,7 @@ Process management server for blockchain synchronization:
 
 ### End-of-Session Flow
 
-Use `/wrapup` when a feature branch is ready. It runs these steps in order:
+Use `/wrapup` (the **Ethernal** project command, not the global one) when a feature branch is ready. It runs these steps in order:
 
 1. **`/refactor`** — PR-scoped code quality cleanup (jscpd, knip, code-simplifier). Only touches files changed on the current branch vs `develop`.
 2. **`/update-claudemd`** — Updates documentation if new patterns were introduced.
@@ -756,10 +756,12 @@ Use `/wrapup` when a feature branch is ready. It runs these steps in order:
 
 ### Release Flow
 
-After PRs are merged into `develop`, use `/deploy` to release:
+After PRs are merged into `develop`, use `/deploy` (the **Ethernal** project command) to release:
 
 1. Generates changelog from commits since last tag
-2. Bumps version in `package.json`
-3. Tags and pushes to `develop`
-4. Syncs `master` with `develop`
+2. Bumps version via `npm version {major|minor|patch} --message '%s'` (updates package.json + tags)
+3. Pushes tag and branch to `develop`
+4. Syncs `master` with `develop` (`git merge --no-ff`)
 5. CI handles Docker builds and deployment
+
+When user says "merge and deploy", merge the PR with `gh pr merge --squash --admin` first, then run the deploy flow.
