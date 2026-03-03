@@ -88,4 +88,7 @@ getWorkspace(parentWorkspaceId).then(({ workspace }) => {
         onLogs,
         onError
     });
+}).catch((error) => {
+    console.error(`Failed to start OP log listener for workspace ${parentWorkspaceId}:`, error);
+    process.exit(1);
 });
