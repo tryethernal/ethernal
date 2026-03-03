@@ -25,6 +25,7 @@ module.exports = {
     storeOpDeposit: require('./storeOpDeposit'),
     storeOpOutput: require('./storeOpOutput'),
     checkOpDepositLogs: require('./checkOpDepositLogs'),
+    checkCustomL1ParentSync: require('./checkCustomL1ParentSync'),
     startCustomL1ParentSync: require('./startCustomL1ParentSync'),
 
     // Medium Priority
