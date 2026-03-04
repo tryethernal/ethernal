@@ -4,7 +4,7 @@
         :class="['reveal', { visible: isVisible }]"
     >
         <v-row align="center" :class="['feature-row', compact ? 'my-8' : 'my-10']">
-            <v-col cols="12" md="6" :class="reverse ? 'feature-image' : 'feature-text'">
+            <v-col cols="12" md="6" :class="reverse ? 'feature-image' : 'feature-text'" :style="reverse ? { order: isMobile ? 2 : undefined } : {}">
                 <div v-if="!reverse || hasImage || hasVisual" :class="reverse ? '' : 'pr-md-10'">
                     <template v-if="!reverse">
                         <template v-if="inlineIcon && icon">
@@ -30,7 +30,7 @@
                     </template>
                 </div>
             </v-col>
-            <v-col cols="12" md="6" :class="reverse ? 'feature-text' : 'feature-image'">
+            <v-col cols="12" md="6" :class="reverse ? 'feature-text' : 'feature-image'" :style="reverse ? { order: isMobile ? 1 : undefined } : {}">
                 <div v-if="reverse || hasImage || hasVisual" :class="reverse ? 'pl-md-10' : ''">
                     <template v-if="reverse">
                         <template v-if="inlineIcon && icon">
@@ -61,7 +61,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, ref, onMounted, onUnmounted } from 'vue';
 import { useScrollReveal } from '@/composables/useScrollReveal';
 
 const props = defineProps({
@@ -78,4 +78,9 @@ const slots = defineSlots();
 const hasImage = computed(() => !!props.image);
 const hasVisual = computed(() => !!slots.visual);
 const { elementRef, isVisible } = useScrollReveal();
+
+const isMobile = ref(false);
+function checkMobile() { isMobile.value = window.innerWidth <= 960; }
+onMounted(() => { checkMobile(); window.addEventListener('resize', checkMobile); });
+onUnmounted(() => window.removeEventListener('resize', checkMobile));
 </script>

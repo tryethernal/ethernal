@@ -751,6 +751,16 @@ Process management server for blockchain synchronization:
 
 - **Always create a PR after completing work.** Once a feature, bugfix, or any code change is done, create a pull request targeting `develop`. This triggers an automated review process.
 
+### Code Review (CodeAnt AI)
+
+Creating a PR automatically triggers a CodeAnt AI review. When asked to check review comments:
+
+1. **Fetch both top-level and inline comments** using `gh api repos/tryethernal/ethernal/pulls/{number}/reviews` and `gh api repos/tryethernal/ethernal/pulls/{number}/comments`.
+2. **Take comments seriously** — most flagged issues are legitimate. Fix them.
+3. **Always verify before acting** — check that the issue actually exists in the code. The reviewer can be wrong. For example, it may flag missing files that actually exist, or claim a check is missing when it's already there.
+4. **Challenge incorrect comments** — if a review comment is wrong, say so explicitly to the user (e.g., "This comment is incorrect because X") rather than silently making unnecessary changes.
+5. **Never remove working code to satisfy a review bot** — if code references real assets, API endpoints, or patterns that work correctly, do not replace them based on a reviewer assumption.
+
 ### End-of-Session Flow
 
 Use `/wrapup` (the **Ethernal** project command, not the global one) when a feature branch is ready. It runs these steps in order:
