@@ -1,6 +1,16 @@
-version: '3.8'
-
 services:
+  landing:
+    image: node:20-alpine
+    working_dir: /app
+    ports:
+      - "8174:8174"
+    volumes:
+      - ./landing:/app
+      - landing_node_modules:/app/node_modules
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0 --port 8174"
+    networks:
+      - ethernal-network
+
   frontend:
     build:
       context: .
@@ -87,7 +97,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "8432:5432"
     networks:
       - ethernal-network
 
@@ -97,14 +107,14 @@ services:
     volumes:
       - redis_data:/data
     ports:
-      - "6379:6379"
+      - "8379:6379"
     networks:
       - ethernal-network
 
   soketi:
     image: quay.io/soketi/soketi:1.6.1-16-debian
     ports:
-      - "6001:6001"
+      - "8001:6001"
     env_file: ./run/.env
     networks:
       - ethernal-network
@@ -141,7 +151,7 @@ services:
       - ADMIN_USERS=postgres,admin
       - MAX_CLIENT_CONN=1000
     ports:
-      - "5433:5432"
+      - "8433:5432"
     depends_on:
       - postgres
     networks:
@@ -153,4 +163,5 @@ networks:
 
 volumes:
   postgres_data:
-  redis_data: 
+  redis_data:
+  landing_node_modules:
