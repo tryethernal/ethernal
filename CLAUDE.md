@@ -773,6 +773,42 @@ When user says "merge and deploy", merge the PR with `gh pr merge --squash --adm
 
 ---
 
+## Landing Site (`landing/`)
+
+Standalone Vue 3 + Vuetify 3 marketing site, separate from the main app frontend.
+
+### Commands
+
+```bash
+cd landing
+npm run dev          # Dev server (default port 5173)
+npm run build        # Production build to dist/
+```
+
+### Structure
+
+| Directory | Purpose |
+|-----------|---------|
+| `src/components/` | Reusable landing components (Navbar, Footer, Hero, Features, Pricing, etc.) |
+| `src/pages/` | Route-level pages (HomePage, PricingPage, ContactPage, integration pages) |
+| `src/styles/landing.scss` | Global styles, `.landing-section` spacing, button classes |
+| `src/composables/` | Vue composables (useScrollReveal) |
+| `brand-kit/` | Brand specification (JSON + visual audit HTML) |
+
+### Key Patterns
+
+- **FeatureSection.vue**: Reusable component with `#visual` slot for browser preview mockups, supports `inline-icon`, `compact`, `:reverse` props
+- **Browser preview mockup**: macOS-style window chrome (`.preview-header`, `.dot.red/.yellow/.green`, `.preview-url-bar`, `.preview-body`)
+- **Page structure**: `LandingLayout` wrapper → `page-title-bar` header → content sections → `LandingCTA`
+- **API calls**: Use `import.meta.env.VITE_APP_URL` (defaults to `https://app.ethernal.com`, override via `VITE_APP_URL` env var or `.env.development`)
+- **Mega menu navbar**: 3-column dropdown (Development Tools, Infrastructure, L2 Rollups) with icons and descriptions
+
+### Docker Dev
+
+The landing service runs in Docker compose on port 8174. Set `VITE_APP_URL` in `.env.development` to point to the local backend (port 8888).
+
+---
+
 ## Marketing & Brand Kit
 
 When creating or editing marketing materials (landing pages, blog posts, emails, social content, ad copy), follow the brand kit specifications.
