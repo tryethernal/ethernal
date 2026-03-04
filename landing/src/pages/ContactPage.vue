@@ -78,21 +78,21 @@
                             <v-icon size="20" color="#5DAAE0" class="mr-3">mdi-forum-outline</v-icon>
                             <div>
                                 <div class="contact-info-label">Discord</div>
-                                <a href="https://discord.gg/jYCER6Mh" target="_blank" class="contact-info-value">Join our community</a>
+                                <a href="https://discord.gg/jYCER6Mh" target="_blank" rel="noopener noreferrer" class="contact-info-value">Join our community</a>
                             </div>
                         </div>
                         <div class="contact-info-item">
                             <v-icon size="20" color="#5DAAE0" class="mr-3">mdi-book-open-variant</v-icon>
                             <div>
                                 <div class="contact-info-label">Documentation</div>
-                                <a href="https://doc.tryethernal.com" target="_blank" class="contact-info-value">doc.tryethernal.com</a>
+                                <a href="https://doc.tryethernal.com" target="_blank" rel="noopener noreferrer" class="contact-info-value">doc.tryethernal.com</a>
                             </div>
                         </div>
                         <div class="contact-info-item">
                             <v-icon size="20" color="#5DAAE0" class="mr-3">mdi-github</v-icon>
                             <div>
                                 <div class="contact-info-label">GitHub</div>
-                                <a href="https://github.com/tryethernal/ethernal" target="_blank" class="contact-info-value">tryethernal/ethernal</a>
+                                <a href="https://github.com/tryethernal/ethernal" target="_blank" rel="noopener noreferrer" class="contact-info-value">tryethernal/ethernal</a>
                             </div>
                         </div>
                     </div>
@@ -123,11 +123,12 @@ async function onSubmit() {
     if (!valid.value) return;
     loading.value = true;
     try {
-        await fetch(`${import.meta.env.VITE_APP_URL}/api/contact`, {
+        const res = await fetch(`${import.meta.env.VITE_APP_URL}/api/contact`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ data: form })
         });
+        if (!res.ok) throw new Error('Server error');
         success.value = true;
     } catch {
         alert('Error sending message. Please email us directly at contact@tryethernal.com');

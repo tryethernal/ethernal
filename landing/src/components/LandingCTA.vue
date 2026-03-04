@@ -23,6 +23,7 @@
                     class="btn-outline cta-btn"
                     href="https://doc.tryethernal.com"
                     target="_blank"
+                    rel="noopener noreferrer"
                     rounded="xl"
                 >
                     Read the Docs

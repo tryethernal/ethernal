@@ -514,7 +514,7 @@ const PreviewAPI = markRaw({
             ]),
             h('div', { class: 'mock-api-code' }, [
                 codeLine(1, 'curl -X POST https://app.ethernal.com/api/explorers \\', false),
-                codeLine(2, '  -H "Authorization: Bearer sk_live_..." \\', false),
+                codeLine(2, '  -H "Authorization: Bearer YOUR_API_KEY" \\', false),
                 codeLine(3, '  -H "Content-Type: application/json" \\', false),
                 codeLine(4, '  -d \'{', false),
                 codeLine(5, '    "name": "My Chain Explorer",', true),

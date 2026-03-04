@@ -17,7 +17,7 @@
                     <div class="d-flex flex-column ga-2">
                         <router-link to="/transaction-tracing" class="footer-link">Transaction Tracing</router-link>
                         <router-link to="/pricing" class="footer-link">Pricing</router-link>
-                        <a href="https://doc.tryethernal.com" target="_blank" class="footer-link">Docs</a>
+                        <a href="https://doc.tryethernal.com" target="_blank" rel="noopener noreferrer" class="footer-link">Docs</a>
                     </div>
                 </v-col>
 
@@ -46,10 +46,10 @@
                 <v-col cols="6" sm="6" md="2" lg="3">
                     <div class="footer-heading">Resources</div>
                     <div class="d-flex flex-column ga-2">
-                        <a href="https://github.com/tryethernal/ethernal" target="_blank" class="footer-link">GitHub</a>
-                        <a href="https://discord.gg/jYCER6Mh" target="_blank" class="footer-link">Discord</a>
-                        <a href="https://doc.tryethernal.com" target="_blank" class="footer-link">Documentation</a>
-                        <a href="https://blog.tryethernal.com" target="_blank" class="footer-link">Blog</a>
+                        <a href="https://github.com/tryethernal/ethernal" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub</a>
+                        <a href="https://discord.gg/jYCER6Mh" target="_blank" rel="noopener noreferrer" class="footer-link">Discord</a>
+                        <a href="https://doc.tryethernal.com" target="_blank" rel="noopener noreferrer" class="footer-link">Documentation</a>
+                        <a href="https://blog.tryethernal.com" target="_blank" rel="noopener noreferrer" class="footer-link">Blog</a>
                         <router-link to="/contact-us" class="footer-link">Contact</router-link>
                     </div>
 

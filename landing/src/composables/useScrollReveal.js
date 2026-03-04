@@ -1,4 +1,4 @@
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, nextTick } from 'vue';
 
 /**
  * IntersectionObserver composable for one-time fade-in animations.
@@ -11,7 +11,8 @@ export function useScrollReveal(options = {}) {
     const isVisible = ref(false);
     let observer = null;
 
-    onMounted(() => {
+    onMounted(async () => {
+        await nextTick();
         if (!elementRef.value) return;
         observer = new IntersectionObserver(([entry]) => {
             if (entry.isIntersecting) {

@@ -16,6 +16,7 @@
                             class="btn-primary"
                             href="https://github.com/tryethernal/ethernal"
                             target="_blank"
+                            rel="noopener noreferrer"
                             rounded="lg"
                         >
                             <svg fill="currentColor" height="18" width="18" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" class="mr-2">
@@ -28,6 +29,7 @@
                             class="btn-outline"
                             href="https://doc.tryethernal.com"
                             target="_blank"
+                            rel="noopener noreferrer"
                             rounded="lg"
                         >
                             Read the Docs
