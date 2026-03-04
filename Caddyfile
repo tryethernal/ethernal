@@ -50,6 +50,18 @@
         reverse_proxy ethernal.internal:8080
     }
 
+    handle /ingest/* {
+        reverse_proxy https://app.posthog.com {
+            header_up Host app.posthog.com
+        }
+    }
+
+    handle /api/2/* {
+        reverse_proxy https://sentry.tryethernal.com {
+            header_up Host sentry.tryethernal.com
+        }
+    }
+
     @fallbackApi {
         path /api*
     }
@@ -69,9 +81,9 @@
     }
 
     handle {
-        reverse_proxy tryethernal.netlify.app {
-            header_up Host tryethernal.netlify.app
-        }
+        root * /srv/landing
+        try_files {path} /index.html
+        file_server
     }
 
     encode gzip
