@@ -46,7 +46,9 @@ cd run
 npm start                    # Start server with nodemon
 npm test                     # Run Jest tests
 npm run test:update          # Update snapshots
-npm run worker:highmedium    # Start high+medium priority worker
+npm run worker:high          # Start high priority worker (real-time sync)
+npm run worker:medium        # Start medium priority worker (indexing)
+npm run worker:highmedium    # Start combined high+medium worker (legacy)
 npm run worker:low           # Start low priority worker
 ```
 
@@ -154,7 +156,7 @@ User (1)
 - API routes in `run/api/` - RESTful endpoints for blocks, transactions, contracts, explorers
 - Sequelize models in `run/models/`
 - Background jobs in `run/jobs/` - block syncing, contract processing, token transfers
-- Workers in `run/workers/` - high+medium combined, low, and historical block processing queues
+- Workers in `run/workers/` - separate high, medium, low, and historical block processing queues
 
 ---
 
@@ -229,12 +231,12 @@ managedWorkerError(error, jobName, jobData, workerName);
 
 | Priority | Queue | Worker | Use Case |
 |----------|-------|--------|----------|
-| High | `high` | `highMediumPriority.js` | Real-time sync: blockSync, receiptSync |
-| Medium | `medium` | `highMediumPriority.js` | Indexing: processContract, processTokenTransfer |
+| High | `high` | `highPriority.js` | Real-time sync: blockSync, receiptSync, deposits |
+| Medium | `medium` | `mediumPriority.js` | Indexing: processContract, processTokenTransfer, L2 finalization |
 | Low | `low` | `lowPriority.js` | Analytics, cleanup, non-urgent tasks |
 | Special | `processHistoricalBlocks` | `processHistoricalBlocks.js` | Dedicated queue for historical sync |
 
-**Note:** High and medium priority queues run in a single combined worker process. Medium tier has extended `lockDuration` (300s) and `maxStalledCount` (5) for longer-running indexing jobs.
+**Note:** High and medium run as separate processes for event loop isolation. `highMediumPriority.js` still exists as a combined entry point for backward compatibility. Medium tier has extended `lockDuration` (300s) and `maxStalledCount` (5) for longer-running indexing jobs.
 
 ### Enqueue Pattern
 
@@ -715,6 +717,7 @@ Add a JSDoc comment block before the `<script>` or `<script setup>` tag:
 | `stripe.js` | Stripe subscription and billing utilities |
 | `orbitBatches.js` | Arbitrum Orbit batch detection and parsing |
 | `orbitWithdrawals.js` | Orbit withdrawal event handling |
+| `workspaceCache.js` | LRU cache for workspace data (30s TTL, used by hot-path jobs) |
 
 ### Backend Models (`run/models/`)
 

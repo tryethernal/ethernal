@@ -1,0 +1,34 @@
+/**
+ * @fileoverview High-priority worker process.
+ * Handles real-time sync jobs: blockSync, receiptSync, deposits.
+ * Runs as a separate process from medium-priority for event loop isolation.
+ * @module workers/highPriority
+ */
+
+require('../instrument');
+const Sentry = require('@sentry/node');
+const { getApps, initializeApp } = require('firebase-admin/app');
+if (!getApps().length) initializeApp();
+const { Worker, MetricsTime } = require('bullmq');
+const connection = require('../lib/redis');
+const jobs = require('../jobs');
+const logger = require('../lib/logger');
+const priorities = require('./priorities.js');
+const { managedWorkerError } = require('../lib/errors');
+
+priorities['high'].forEach(jobName => {
+    const worker = new Worker(
+        jobName,
+        job => Sentry.startSpan({ name: jobName }, () => jobs[jobName](job)),
+        {
+            concurrency: 50,
+            connection,
+            metrics: {
+                maxDataPoints: MetricsTime.ONE_WEEK * 2,
+            }
+        }
+    );
+    worker.on('failed', (job, error) => managedWorkerError(error, jobName, job.data, 'highPriority'));
+
+    logger.info(`Started worker "${jobName}" - Priority: high`);
+});

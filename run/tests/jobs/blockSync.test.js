@@ -398,14 +398,14 @@ describe('blockSync', () => {
                 stripeSubscription: {},
                 shouldSync: true
             },
+            orbitChildConfigs: [
+                {
+                    rollupContract: '0x1234567890123456789012345678901234567890',
+                    bridgeContract: '0x0987654321098765432109876543210987654321'
+                }
+            ],
             safeCreatePartialBlock: mockSafeCreatePartialBlock
         });
-        jest.spyOn(OrbitChainConfig, 'findAll').mockResolvedValue([
-            {
-                rollupContract: '0x1234567890123456789012345678901234567890',
-                bridgeContract: '0x0987654321098765432109876543210987654321'
-            }
-        ]);
         
         ProviderConnector.mockImplementationOnce(() => ({
             fetchRawBlockWithTransactions: jest.fn(() => ({
