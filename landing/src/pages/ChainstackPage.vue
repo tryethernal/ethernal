@@ -12,7 +12,7 @@
             <FeatureSection inline-icon compact icon="mdi-server" title="Works with Any Chainstack Node" description="Whether you're running a dedicated node, elastic API, or a custom network on Chainstack, Ethernal connects via standard JSON-RPC. Just paste your endpoint URL.">
                 <template #visual>
                     <div class="browser-preview">
-                        <div class="preview-header"><div class="d-flex align-center ga-2"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="preview-url-bar"><v-icon size="12" style="color: #64748B;">mdi-lock</v-icon>app.ethernal.com/workspace/settings</div><div style="width: 42px;"></div></div>
+                        <div class="preview-header"><div class="d-flex align-center ga-2"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="preview-url-bar"><v-icon size="12" style="color: #64748B;">mdi-lock</v-icon>app.tryethernal.com/workspace/settings</div><div style="width: 42px;"></div></div>
                         <div class="preview-body">
                             <div class="mock-settings">
                                 <div class="mock-field"><div class="mock-field-label">RPC URL</div><div class="mock-field-input"><span class="mock-field-prefix"><v-icon size="12" style="color: #64748B;">mdi-link-variant</v-icon></span>https://nd-123-456-789.p2pify.com/abc123</div></div>
@@ -27,7 +27,7 @@
             <FeatureSection inline-icon compact icon="mdi-palette" title="Branded Explorer" description="Custom domain, logo, and color scheme. Give your Chainstack-powered network a professional block explorer that matches your brand identity." :reverse="true">
                 <template #visual>
                     <div class="browser-preview">
-                        <div class="preview-header"><div class="d-flex align-center ga-2"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="preview-url-bar"><v-icon size="12" style="color: #64748B;">mdi-lock</v-icon>app.ethernal.com/explorer/branding</div><div style="width: 42px;"></div></div>
+                        <div class="preview-header"><div class="d-flex align-center ga-2"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="preview-url-bar"><v-icon size="12" style="color: #64748B;">mdi-lock</v-icon>app.tryethernal.com/explorer/branding</div><div style="width: 42px;"></div></div>
                         <div class="preview-body">
                             <div class="mock-branding-setup">
                                 <div class="mock-field"><div class="mock-field-label">Explorer Name</div><div class="mock-field-input">MyChain Explorer</div></div>

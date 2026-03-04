@@ -61,7 +61,7 @@ defineProps({
     features: { type: Array, default: () => [] },
     highlighted: { type: Boolean, default: false },
     ctaText: { type: String, default: 'Get Started' },
-    ctaUrl: { type: String, default: 'https://app.ethernal.com/auth' }
+    ctaUrl: { type: String, default: 'https://app.tryethernal.com/auth' }
 });
 </script>
 
