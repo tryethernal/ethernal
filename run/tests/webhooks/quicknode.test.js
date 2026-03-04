@@ -259,7 +259,7 @@ describe(`POST ${BASE_URL}/provision`, () => {
             .send(data)
             .expect(200)
             .then(({ body }) => {
-                expect(body).toEqual({ status: 'success', 'access-url': 'explorer', 'dashboard-url': 'a/webhooks/quicknode/sso' });
+                expect(body).toEqual({ status: 'success', 'access-url': 'explorer', 'dashboard-url': 'ethernal.com/webhooks/quicknode/sso' });
                 done();
             });
     });
