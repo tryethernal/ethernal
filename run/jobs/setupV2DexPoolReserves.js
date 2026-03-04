@@ -66,7 +66,7 @@ module.exports = async job => {
         });
     }
 
-    const MAX_INSERT_SIZE = 10;
+    const MAX_INSERT_SIZE = 500;
     for (let i = 0; i < batch.length; i += MAX_INSERT_SIZE) {
         await V2DexPoolReserve.bulkCreate(batch.slice(i, i + MAX_INSERT_SIZE));
     }

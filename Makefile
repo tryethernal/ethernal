@@ -28,13 +28,15 @@ start:
 
 stop:
 	@echo "Stopping and cleaning up all containers and networks..."
-	docker compose -f docker-compose.prod.yml down --remove-orphans 
+	docker compose -f docker-compose.prod.yml --env-file .env.docker-compose.prod down --remove-orphans
 
 nuke:
 	@echo "Nuking everything: containers, networks, volumes, and generated env/config files..."
 	docker compose -f docker-compose.prod.yml down --remove-orphans --volumes
-	rm -f .env.prod run/.env.prod pm2-server/.env.prod
+	rm -f run/.env.prod pm2-server/.env.prod
+	rm -f .env.docker-compose.prod .env.postgres.prod .env.soketi.prod
 	rm -f pgbouncer/.env.pgbouncer.prod pgbouncer/userlist.txt pgbouncer/pgbouncer.ini
+	rm -f Caddyfile
 
 update:
 	@echo "Pulling latest images for all services..."
@@ -46,7 +48,7 @@ update:
 	@echo "Running sequelize migrations in backend container..."
 	docker compose -f docker-compose.prod.yml --env-file .env.docker-compose.prod exec backend npx sequelize db:migrate
 	@echo "Running sequelize seeds in backend container..."
-	docker compose -f docker-compose.prod.yml --env-file .env.docker-compose.prod exec backend npx sequelize db:seed
+	docker compose -f docker-compose.prod.yml --env-file .env.docker-compose.prod exec backend npx sequelize db:seed:all
 
 info:
 	@sh -c '\

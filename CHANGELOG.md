@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.15.0] - 2026-03-04
+### Changed
+- Add composite DB indexes for transaction_logs and token_transfers hot-path queries
+- Parallelize RPC calls in balance queries and contract standard detection (2-4x faster)
+- Split high and medium priority workers into separate processes for event loop isolation
+- Replace N+1 queries with bulk operations in OP/Orbit finalization and deposit linking jobs
+- Add cross-job LRU bytecode cache for Tracer (60-80% fewer eth_getCode RPC calls)
+- Decouple OP batch detection from blockSync into separate medium-priority job
+- Increase V2 DEX batch insert size from 10 to 500
+- Filter explorerSyncCheck to only load active explorers
+- Cursor-based pagination for reprocessWorkspaceTransactionTraces/Errors
+- Move L2 finalization jobs to medium priority, removeStalledBlock to high
+
+### Fixed
+- Update README and fix Makefile for self-hosted setup
+
 ## [5.14.4] - 2026-03-04
 ### Changed
 - Remove unused frontend Soketi env vars, derive WebSocket params from window.location

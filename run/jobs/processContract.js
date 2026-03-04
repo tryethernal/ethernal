@@ -31,32 +31,52 @@ const findPatterns = async (rpcServer, contractAddress, abi) => {
     }
 
     const contract = new ContractConnector(rpcServer, contractAddress, abi);
-    if (!isErc20) isErc20 = await contract.isErc20();
-    if (!isErc721) isErc721 = await contract.isErc721();
-    if (!isErc1155) isErc1155 = await contract.isErc1155();
+
+    // Detect token standards in parallel
+    const [erc20Res, erc721Res, erc1155Res] = await Promise.all([
+        isErc20 ? true : contract.isErc20(),
+        isErc721 ? true : contract.isErc721(),
+        isErc1155 ? true : contract.isErc1155()
+    ]);
+    isErc20 = erc20Res;
+    isErc721 = erc721Res;
+    isErc1155 = erc1155Res;
 
     if (isErc20 || isErc721 || isErc1155) {
+        // Fetch metadata + proxy detection in parallel
+        const [decimals, symbol, name, totalSupply, isProxy] = await Promise.allSettled([
+            contract.decimals(),
+            contract.symbol(),
+            contract.name(),
+            contract.totalSupply(),
+            contract.isProxy()
+        ]);
+
         tokenData = sanitize({
             ...tokenData,
-            tokenDecimals: await contract.decimals(),
-            tokenSymbol: await contract.symbol(),
-            tokenName: await contract.name(),
-            tokenTotalSupply: await contract.totalSupply(),
+            tokenDecimals: decimals.status === 'fulfilled' ? decimals.value : null,
+            tokenSymbol: symbol.status === 'fulfilled' ? symbol.value : null,
+            tokenName: name.status === 'fulfilled' ? name.value : null,
+            tokenTotalSupply: totalSupply.status === 'fulfilled' ? totalSupply.value : null,
         });
 
         if (isErc20) tokenData.patterns.push('erc20');
         if (isErc721) tokenData.patterns.push('erc721');
         if (isErc1155) tokenData.patterns.push('erc1155');
 
-        const isProxy = await contract.isProxy();
-        if (isProxy)
+        if (isProxy.status === 'fulfilled' && isProxy.value)
             tokenData.patterns.push('proxy');
     }
 
     if (isErc721) {
         const erc721Connector = new ERC721Connector(rpcServer, contractAddress, abi);
-        const has721Metadata = await erc721Connector.hasMetadata();
-        const has721Enumerable = await erc721Connector.isEnumerable();
+        const [metadataResult, enumerableResult] = await Promise.allSettled([
+            erc721Connector.hasMetadata(),
+            erc721Connector.isEnumerable()
+        ]);
+
+        const has721Metadata = metadataResult.status === 'fulfilled' ? metadataResult.value : false;
+        const has721Enumerable = enumerableResult.status === 'fulfilled' ? enumerableResult.value : false;
 
         tokenData = sanitize({ ...tokenData, has721Metadata, has721Enumerable });
     }

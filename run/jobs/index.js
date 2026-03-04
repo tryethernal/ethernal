@@ -29,6 +29,7 @@ module.exports = {
     startCustomL1ParentSync: require('./startCustomL1ParentSync'),
 
     // Medium Priority
+    processOpBatch: require('./processOpBatch'),
     processContract: require('./processContract'),
     processTransactionTrace: require('./processTransactionTrace'),
     processTransactionError: require('./processTransactionError'),

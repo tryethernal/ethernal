@@ -1,17 +1,16 @@
+/**
+ * @fileoverview OP deposit linking job.
+ * Links L1 deposits to their corresponding L2 transactions.
+ * Uses batch lookup instead of N individual queries for efficiency.
+ * @module jobs/linkOpDepositsToL2Txs
+ */
+
 const { Op } = require('sequelize');
 const { OpDeposit, Transaction } = require('../models');
 const logger = require('../lib/logger');
 
-/**
- * Background job to link L1 deposits to their corresponding L2 transactions.
- * This job runs periodically and tries to find L2 transactions for pending deposits.
- *
- * The L2 transaction hash is derived from the L1 transaction hash and log index,
- * so we can look it up directly once the L2 block is synced.
- */
 module.exports = async job => {
     try {
-        // Find all pending deposits that don't have an L2 transaction linked
         const depositsToLink = await OpDeposit.findAll({
             where: {
                 status: 'pending',
@@ -20,40 +19,42 @@ module.exports = async job => {
                     [Op.ne]: null
                 }
             },
-            limit: 100 // Process in batches
+            limit: 100
         });
 
-        if (depositsToLink.length === 0) {
+        if (depositsToLink.length === 0)
             return 'No deposits to link';
-        }
+
+        // Batch lookup: single query for all L2 transaction hashes
+        const hashes = depositsToLink.map(d => d.l2TransactionHash.toLowerCase());
+        const l2Txs = await Transaction.findAll({
+            where: { hash: { [Op.in]: hashes } },
+            attributes: ['id', 'hash', 'workspaceId']
+        });
+        const txByHash = new Map(l2Txs.map(tx => [tx.hash.toLowerCase(), tx]));
 
         let linkedCount = 0;
         for (const deposit of depositsToLink) {
-            try {
-                // Try to find the L2 transaction
-                const l2Transaction = await Transaction.findOne({
-                    where: {
-                        workspaceId: deposit.workspaceId,
-                        hash: deposit.l2TransactionHash.toLowerCase()
-                    }
-                });
-
-                if (l2Transaction) {
+            const l2Tx = txByHash.get(deposit.l2TransactionHash.toLowerCase());
+            if (l2Tx && l2Tx.workspaceId === deposit.workspaceId) {
+                try {
                     await deposit.update({
-                        l2TransactionId: l2Transaction.id,
+                        l2TransactionId: l2Tx.id,
                         status: 'confirmed'
                     });
                     linkedCount++;
-                    logger.info(`Linked OP deposit to L2 tx ${l2Transaction.hash} for workspace ${deposit.workspaceId}`);
+                } catch (error) {
+                    logger.error(`Error linking OP deposit ${deposit.id}: ${error.message}`, {
+                        location: 'jobs.linkOpDepositsToL2Txs',
+                        error,
+                        depositId: deposit.id
+                    });
                 }
-            } catch (error) {
-                logger.error(`Error linking OP deposit ${deposit.id}: ${error.message}`, {
-                    location: 'jobs.linkOpDepositsToL2Txs',
-                    error,
-                    depositId: deposit.id
-                });
             }
         }
+
+        if (linkedCount > 0)
+            logger.info(`Linked ${linkedCount} OP deposits to L2 transactions`);
 
         return `Linked ${linkedCount} OP deposits to L2 transactions`;
     } catch (error) {
