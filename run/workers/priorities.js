@@ -8,20 +8,15 @@ const priorities = {
         'sendResetPasswordEmail',
         'updateExplorerSyncingProcess',
         'receiptSync',
-        'finalizePendingOrbitBatches',
-        'checkOrbitMessageDeliveredLogs',
-        'backfillOrbitMessageDeliveredLogs',
         'storeOrbitDeposit',
-        'finalizePendingOpOutputs',
-        'finalizePendingOpBatches',
-        'linkOpDepositsToL2Txs',
         'storeOpDeposit',
         'storeOpOutput',
-        'checkOpDepositLogs',
         'checkCustomL1ParentSync',
-        'startCustomL1ParentSync'
+        'startCustomL1ParentSync',
+        'removeStalledBlock'
     ],
     'medium': [
+        'processOpBatch',
         'processContract',
         'processTransactionTrace',
         'processTransactionError',
@@ -31,7 +26,14 @@ const priorities = {
         'reprocessWorkspaceTransactionErrors',
         'processExplorerV2Dex',
         'processExplorerV2DexPair',
-        'setupV2DexPoolReserves'
+        'setupV2DexPoolReserves',
+        'finalizePendingOrbitBatches',
+        'checkOrbitMessageDeliveredLogs',
+        'backfillOrbitMessageDeliveredLogs',
+        'finalizePendingOpOutputs',
+        'finalizePendingOpBatches',
+        'linkOpDepositsToL2Txs',
+        'checkOpDepositLogs'
     ],
     'low': [
         'processUser',
@@ -46,7 +48,6 @@ const priorities = {
         'batchContractDelete',
         'removeExpiredExplorers',
         'deleteWorkspace',
-        'removeStalledBlock',
         'queueMonitoring',
         'blockSyncMonitoring',
         'monitorOrbitBatches',
@@ -62,7 +63,7 @@ const priorities = {
 
 if (!isSelfHosted()) {
     priorities.high.push('updateApproximatedRecord', 'increaseStripeBillingQuota');
-    priorities.low.push('sendDemoExplorerLink', 'sendDiscordMessage');
+    priorities.low.push('sendDemoExplorerLink');
 }
 
 module.exports = priorities;

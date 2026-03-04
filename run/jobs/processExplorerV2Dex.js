@@ -34,9 +34,12 @@ module.exports = async job => {
     const dexFactoryConnector = new DexFactoryConnector(rpcServer, dex.factoryAddress);
     const pairLength = await dexFactoryConnector.allPairsLength();
 
-    const pairsToProcess = subscription ? 
-        (subscription.isTrialing || dex.explorer.isDemo ? Math.min(getMaxV2DexPairsForTrial(), pairLength) : pairLength) :
-        0;
+    let pairsToProcess = 0;
+    if (subscription) {
+        pairsToProcess = subscription.isTrialing || dex.explorer.isDemo
+            ? Math.min(getMaxV2DexPairsForTrial(), pairLength)
+            : pairLength;
+    }
 
     const currentPairCount = await dex.countPairs();
 
@@ -44,7 +47,7 @@ module.exports = async job => {
         return `All pairs processed ${currentPairCount} / ${pairLength}`;
 
     const jobs = [];
-    for (let i = 0; i < pairsToProcess; i++) {
+    for (let i = currentPairCount; i < pairsToProcess; i++) {
         jobs.push({
             name: `processExplorerV2DexPair-${dex.id}-${i}`,
             data: {
