@@ -110,44 +110,18 @@ jobs:
           tag: ${{ steps.get_changelog.outputs.version }}
           token: ${{ secrets.GITHUB_TOKEN }}
 
-  deploy_front:
+  deploy_caddy:
     if: startsWith(github.ref, 'refs/tags/v')
     needs: [create_release]
     runs-on: ubuntu-latest
     environment: production
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+      - uses: actions/checkout@v3
 
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18
+      - uses: superfly/flyctl-actions/setup-flyctl@master
 
-      - name: Install deps & build
-        run: cd landing && npm ci && npm run build
-
-      - uses: nwtgck/actions-netlify@v2.0.0
-        id: netlify_deploy
-        with:
-          publish-dir: './landing/dist'
-          deploy-message: 'Deploying commit ${{ github.sha }}'
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-
-      - name: Store deploy id
-        id: store_deploy_id
-        run: |
-          ID=$(echo ${{ steps.netlify_deploy.outputs.deploy-url }} | sed 's/https:\/\/\(.*\)--tryethernal\.netlify\.app/\1/')
-          echo $ID > deploy_id.txt
-
-      - name: Upload deploy ID
-        uses: actions/upload-artifact@v4
-        with:
-          name: netlify_deploy_id
-          path: deploy_id.txt
+      - name: Deploy Caddy
+        run: flyctl deploy -c fly.caddy.toml
 
   deploy_back_amd64:
     if: startsWith(github.ref, 'refs/tags/v')
@@ -180,7 +154,7 @@ jobs:
         run: |
           flyctl auth docker
           ./build-prod-images-amd64.sh ${{ needs.create_release.outputs.current_version }}
-  
+
   deploy_back_arm64:
     if: startsWith(github.ref, 'refs/tags/v')
     needs: [create_release]
@@ -196,7 +170,7 @@ jobs:
           docker buildx create --use
           docker buildx inspect --bootstrap
         shell: bash
-      
+
       - name: Log in to Docker Hub
         run: |
           echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
@@ -206,25 +180,9 @@ jobs:
           flyctl auth docker
           ./build-prod-images-arm64.sh ${{ needs.create_release.outputs.current_version }}
 
-  release_front:
-    if: startsWith(github.ref, 'refs/tags/v')
-    needs: [deploy_front, deploy_back_amd64]
-    runs-on: ubuntu-latest
-    environment: production
-    steps:
-      - name: Download Deploy ID
-        uses: actions/download-artifact@v4
-        with:
-          name: netlify_deploy_id
-
-      - name: Release deploy
-        run: |
-          deploy_id=$(cat deploy_id.txt)
-          curl -H "Authorization: Bearer ${{ secrets.NETLIFY_AUTH_TOKEN }}" -X POST -d {} https://api.netlify.com/api/v1/sites/${{ secrets.NETLIFY_SITE_ID }}/deploys/$deploy_id/restore
-
   release_back:
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: [deploy_front, deploy_back_amd64, create_release]
+    needs: [deploy_back_amd64, create_release]
     runs-on: ubuntu-latest
     environment: production
     steps:

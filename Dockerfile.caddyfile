@@ -1,5 +1,13 @@
+# Build landing
+FROM node:18-alpine AS landing-build
+WORKDIR /app
+COPY landing/package.json landing/package-lock.json ./
+RUN npm ci
+COPY landing/ ./
+RUN npm run build
+
+# Caddy with landing static files
 FROM caddy:2.7.6-alpine
-
 COPY Caddyfile /etc/caddy/Caddyfile
-
+COPY --from=landing-build /app/dist /srv/landing
 CMD ["caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile"]
