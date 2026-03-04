@@ -43,29 +43,14 @@ services:
     networks:
       - ethernal-network
 
-  high_priority_worker:
+  high_medium_priority_worker:
     build:
       context: .
       dockerfile: Dockerfile.backend
     volumes:
       - ./run:/app
       - ./run/.env:/app/.env
-    command: npm run worker:high
-    env_file: ./run/.env
-    depends_on:
-      - postgres
-      - redis
-    networks:
-      - ethernal-network
-
-  medium_priority_worker:
-    build:
-      context: .
-      dockerfile: Dockerfile.backend
-    volumes:
-      - ./run:/app
-      - ./run/.env:/app/.env
-    command: npm run worker:medium
+    command: npm run worker:highmedium
     env_file: ./run/.env
     depends_on:
       - postgres
