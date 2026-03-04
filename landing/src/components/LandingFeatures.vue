@@ -772,25 +772,31 @@ const featuresRight = computed(() => features.slice(splitIndex));
 /* Mobile: stack */
 @media (max-width: 960px) {
     .feature-list-grid {
-        grid-template-columns: 1fr;
         display: flex;
-        flex-direction: row;
+        flex-wrap: nowrap;
         overflow-x: auto;
         gap: 0;
-        margin-bottom: 24px;
+        margin-bottom: 16px;
         -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+    .feature-list-grid::-webkit-scrollbar {
+        display: none;
     }
     .feature-list {
+        display: flex;
         flex-direction: row;
-        overflow-x: auto;
+        flex-wrap: nowrap;
         gap: 0;
-        -webkit-overflow-scrolling: touch;
+        flex-shrink: 0;
     }
     .feature-item {
         flex-direction: column;
-        gap: 8px;
-        min-width: 140px;
-        padding: 12px;
+        gap: 6px;
+        min-width: 120px;
+        max-width: 120px;
+        padding: 10px 8px;
     }
     .feature-item-indicator {
         width: 100%;
@@ -807,8 +813,17 @@ const featuresRight = computed(() => features.slice(splitIndex));
         width: 100%;
         height: 100%;
     }
+    .feature-item-title {
+        font-size: 0.8rem;
+    }
     .feature-item-desc {
         display: none;
+    }
+    .preview-body {
+        padding: 12px;
+        min-height: 220px;
+        font-size: 10px;
+        overflow-x: auto;
     }
 }
 
@@ -951,5 +966,24 @@ const featuresRight = computed(() => features.slice(splitIndex));
 
 @media (prefers-reduced-motion: reduce) {
     .pulse-dot { animation: none; }
+}
+
+@media (max-width: 960px) {
+    .mock-table-header, .mock-table-row {
+        grid-template-columns: 1fr 0.6fr 1fr 1fr;
+        font-size: 10px;
+    }
+    .mock-table-header span:nth-child(5),
+    .mock-table-row span:nth-child(5),
+    .mock-table-header span:nth-child(6),
+    .mock-table-row span:nth-child(6) {
+        display: none;
+    }
+    .mock-charts-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .chart-value { font-size: 14px; }
+    .mock-nft-grid { grid-template-columns: 1fr 1fr; }
+    .mock-contract-meta { grid-template-columns: 1fr; }
+    .mock-color-grid { grid-template-columns: 1fr; }
+    .mock-l2-tbl-header, .mock-l2-tbl-row { font-size: 10px; }
 }
 </style>
