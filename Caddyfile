@@ -88,9 +88,9 @@
     }
 
     handle {
-        reverse_proxy tryethernal.netlify.app {
-            header_up Host tryethernal.netlify.app
-        }
+        root * /srv/app
+        try_files {path} /index.html
+        file_server
     }
 
     encode gzip
