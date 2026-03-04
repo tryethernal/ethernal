@@ -46,8 +46,7 @@ cd run
 npm start                    # Start server with nodemon
 npm test                     # Run Jest tests
 npm run test:update          # Update snapshots
-npm run worker:high          # Start high priority worker
-npm run worker:medium        # Start medium priority worker
+npm run worker:highmedium    # Start high+medium priority worker
 npm run worker:low           # Start low priority worker
 ```
 
@@ -155,7 +154,7 @@ User (1)
 - API routes in `run/api/` - RESTful endpoints for blocks, transactions, contracts, explorers
 - Sequelize models in `run/models/`
 - Background jobs in `run/jobs/` - block syncing, contract processing, token transfers
-- Workers in `run/workers/` - high/medium/low priority queues
+- Workers in `run/workers/` - high+medium combined, low, and historical block processing queues
 
 ---
 
@@ -228,12 +227,14 @@ managedWorkerError(error, jobName, jobData, workerName);
 
 ### Queue Priorities
 
-| Priority | Queue | Use Case |
-|----------|-------|----------|
-| High | `high` | Real-time sync: blockSync, receiptSync |
-| Medium | `medium` | Indexing: processContract, processTokenTransfer |
-| Low | `low` | Analytics, cleanup, non-urgent tasks |
-| Special | `processHistoricalBlocks` | Dedicated queue for historical sync |
+| Priority | Queue | Worker | Use Case |
+|----------|-------|--------|----------|
+| High | `high` | `highMediumPriority.js` | Real-time sync: blockSync, receiptSync |
+| Medium | `medium` | `highMediumPriority.js` | Indexing: processContract, processTokenTransfer |
+| Low | `low` | `lowPriority.js` | Analytics, cleanup, non-urgent tasks |
+| Special | `processHistoricalBlocks` | `processHistoricalBlocks.js` | Dedicated queue for historical sync |
+
+**Note:** High and medium priority queues run in a single combined worker process. Medium tier has extended `lockDuration` (300s) and `maxStalledCount` (5) for longer-running indexing jobs.
 
 ### Enqueue Pattern
 
@@ -515,7 +516,7 @@ describe('GET /feature/:id', () => {
 | `AUTH_SECRET` | Authentication secret | Required |
 | `NODE_ENV` | Environment (development, production) | development |
 | `APP_DOMAIN` | Application domain (e.g., ethernal.io) | Required |
-| `APP_URL` | Full application URL | Required |
+| `APP_URL` | Full application URL (derived from `APP_DOMAIN` if not set) | Optional (cloud) / Required (self-hosted) |
 
 ### Soketi/Pusher (Real-time Updates)
 
@@ -603,7 +604,6 @@ describe('GET /feature/:id', () => {
 | `LOG_LEVEL` | Logging level | info |
 | `VERSION` | Application version | - |
 | `SELF_HOSTED` | Self-hosted mode flag | - |
-| `SERVE_FRONTEND` | Serve frontend from backend | - |
 | `MAX_BLOCK_FOR_SYNC_RESET` | Max blocks for sync reset | 10 |
 | `MAX_CONTRACT_FOR_RESET` | Max contracts for reset | 5 |
 

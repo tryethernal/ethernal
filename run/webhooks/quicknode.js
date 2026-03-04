@@ -1,5 +1,5 @@
 const express = require('express');
-const { getStripeSecretKey, getApiEndpoint, getAppUrl } = require('../lib/env');
+const { getStripeSecretKey, getAppUrl } = require('../lib/env');
 const stripe = require('stripe')(getStripeSecretKey());
 const { randomUUID } = require('crypto');
 const uuidAPIKey = require('uuid-apikey');
@@ -147,7 +147,7 @@ router.post('/provision', quicknodeMiddleware, async (req, res) => {
             current_period_end: new Date().setDate(new Date().getDate() + 30) / 1000
         });
 
-        res.status(200).send({ status: 'success', 'access-url': explorer.domain, 'dashboard-url': `${getApiEndpoint()}/webhooks/quicknode/sso` });
+        res.status(200).send({ status: 'success', 'access-url': explorer.domain, 'dashboard-url': `${getAppUrl()}/webhooks/quicknode/sso` });
     } catch(error) {
         logger.error(error.message, { location: 'webhooks.quicknode.provision', error: error });
         res.status(401).send(error.message);

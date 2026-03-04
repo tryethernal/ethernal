@@ -17,9 +17,8 @@ kill_timeout = "5s"
 
 [processes]
   api = "node index.js"
-  hpworker = "node workers/highPriority.js"
+  worker = "node workers/highMediumPriority.js"
   lpworker = "node workers/lowPriority.js"
-  mpworker = "node workers/mediumPriority.js"
   phworker = "node workers/processHistoricalBlocks.js"
 
 [[services]]
