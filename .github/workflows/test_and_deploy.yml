@@ -126,35 +126,12 @@ jobs:
           node-version: 18
 
       - name: Install deps & build
-        run: yarn && yarn build
-        env:
-          VITE_API_ROOT: ${{ secrets.API_ROOT }}
-          VITE_ENABLE_BILLING: true
-          VITE_MAIN_DOMAIN: ${{ secrets.MAIN_DOMAIN }}
-          VITE_ENABLE_ANALYTICS: true
-          VITE_ENABLE_MARKETING: true
-          VITE_ENABLE_DEMO: true
-          VITE_POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY }}
-          VITE_POSTHOG_API_HOST: ${{ secrets.POSTHOG_API_HOST }}
-          VITE_SOKETI_HOST: ${{ secrets.SOKETI_HOST }}
-          VITE_SOKETI_PORT: ${{ secrets.SOKETI_PORT }}
-          VITE_SOKETI_FORCE_TLS: ${{ secrets.SOKETI_FORCE_TLS }}
-          VITE_PUSHER_KEY: ${{ secrets.PUSHER_KEY }}
-          VITE_FEEDBACK_FIN_ENDPOINT: ${{ secrets.FEEDBACK_FIN_ENDPOINT }}
-          VITE_VERSION: ${{ needs.create_release.outputs.current_version }}
-          VITE_SENTRY_DSN_SECRET: ${{ secrets.SENTRY_DSN_SECRET }}
-          VITE_SENTRY_DSN_PROJECT_ID: ${{ secrets.SENTRY_DSN_PROJECT_ID }}
-          COMMIT_REF: ${{ github.sha }}
-          SENTRY_URL: ${{ secrets.SENTRY_URL }}
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
-          SENTRY_RELEASE: ${{ needs.create_release.outputs.release_name }}
+        run: cd landing && npm ci && npm run build
 
       - uses: nwtgck/actions-netlify@v2.0.0
         id: netlify_deploy
         with:
-          publish-dir: './dist'
+          publish-dir: './landing/dist'
           deploy-message: 'Deploying commit ${{ github.sha }}'
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
