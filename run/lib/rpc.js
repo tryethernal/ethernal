@@ -6,6 +6,7 @@
  */
 
 const ethers = require('ethers');
+const LRUCache = require('lru-cache');
 const { Token, CurrencyAmount, TradeType, Percent } = require('@uniswap/sdk-core');
 const { Pair, Trade, Route } = require('@uniswap/v2-sdk');
 const { parseTrace, processTrace } = require('./trace');
@@ -13,6 +14,9 @@ const { bulkEnqueue } = require('./queue');
 const logger = require('./logger');
 const { withTimeout, sanitize } = require('../lib/utils');
 const abiChecker = require('../lib/contract');
+
+/** Module-level bytecode cache shared across Tracer instances (immutable data) */
+const bytecodeCache = new LRUCache({ max: 5000, ttl: 3600000 });
 
 const ERC721_ABI = require('./abis/erc721.json');
 const ERC20_ABI = require('./abis/erc20.json');
@@ -40,8 +44,10 @@ const getNativeBalanceChange = async (address, blockNumber, rpcServer) => {
     const provider = new ProviderConnector(rpcServer);
     
     try {
-        const currentBalance = blockNumber > 0 ? await provider.getBalance(address, blockNumber) : ethers.BigNumber.from('0');
-        const previousBalance = blockNumber > 1 ? await provider.getBalance(address, blockNumber - 1) : ethers.BigNumber.from('0');
+        const [currentBalance, previousBalance] = await Promise.all([
+            blockNumber > 0 ? provider.getBalance(address, blockNumber) : Promise.resolve(ethers.BigNumber.from('0')),
+            blockNumber > 1 ? provider.getBalance(address, blockNumber - 1) : Promise.resolve(ethers.BigNumber.from('0'))
+        ]);
 
         return {
             address: address,
@@ -50,11 +56,11 @@ const getNativeBalanceChange = async (address, blockNumber, rpcServer) => {
             diff: currentBalance.sub(previousBalance).toString()
         };
     } catch (error) {
-        logger.error('Error getting native balance change', { 
-            location: 'lib.rpc.getNativeBalanceChange', 
-            error: error.message, 
-            address, 
-            blockNumber 
+        logger.error('Error getting native balance change', {
+            location: 'lib.rpc.getNativeBalanceChange',
+            error: error.message,
+            address,
+            blockNumber
         });
         throw error;
     }
@@ -69,69 +75,47 @@ const getNativeBalanceChange = async (address, blockNumber, rpcServer) => {
  * @returns {Promise<Object>} Balance change details with currentBalance, previousBalance, diff
  */
 const getBalanceChange = async (address, token, blockNumber, rpcServer) => {
-    let currentBalance = ethers.BigNumber.from('0');
-    let previousBalance = ethers.BigNumber.from('0');
     const abi = ['function balanceOf(address owner) view returns (uint256)'];
     const contract = new ContractConnector(rpcServer, token, abi);
 
-    try {
-        const options = {
-            from: null,
-            blockTag: blockNumber
-        };
-
-        const res = await contract.callReadMethod('balanceOf(address)', { 0: address }, options);
-
+    const parseBalanceResult = (res) => {
         if (ethers.BigNumber.isBigNumber(res[0]))
-            currentBalance = res[0];
-        else if (res.startsWith && res.startsWith('call revert exception'))
-            currentBalance = ethers.BigNumber.from('0');
-        else
-            throw new Error(res);
+            return res[0];
+        if (res.startsWith && res.startsWith('call revert exception'))
+            return ethers.BigNumber.from('0');
+        throw new Error(res);
+    };
+
+    try {
+        const currentOptions = { from: null, blockTag: blockNumber };
+        const previousOptions = { from: null, blockTag: Math.max(1, parseInt(blockNumber) - 1) };
+
+        const [currentRes, previousRes] = await Promise.all([
+            contract.callReadMethod('balanceOf(address)', { 0: address }, currentOptions),
+            blockNumber > 1
+                ? contract.callReadMethod('balanceOf(address)', { 0: address }, previousOptions)
+                : Promise.resolve([ethers.BigNumber.from('0')])
+        ]);
+
+        const currentBalance = parseBalanceResult(currentRes);
+        const previousBalance = parseBalanceResult(previousRes);
+
+        return {
+            address: address,
+            currentBalance: currentBalance.toString(),
+            previousBalance: previousBalance.toString(),
+            diff: currentBalance.sub(previousBalance).toString()
+        };
     } catch(error) {
-        logger.error('Error getting current balance', { 
-            location: 'lib.rpc.getBalanceChange', 
-            error: error.message, 
-            address, 
-            token, 
-            blockNumber 
+        logger.error('Error getting balance change', {
+            location: 'lib.rpc.getBalanceChange',
+            error: error.message,
+            address,
+            token,
+            blockNumber
         });
         throw error;
     }
-
-    if (blockNumber > 1) {
-        try {
-            const options = {
-                from: null,
-                blockTag: Math.max(1, parseInt(blockNumber) - 1)
-            };
-
-            const res = await contract.callReadMethod('balanceOf(address)', { 0: address }, options);
-
-            if (ethers.BigNumber.isBigNumber(res[0]))
-                previousBalance = res[0];
-            else if (res.startsWith && res.startsWith('call revert exception'))
-                previousBalance = ethers.BigNumber.from('0');
-            else
-                throw new Error(res);
-        } catch(error) {
-            logger.error('Error getting previous balance', { 
-                location: 'lib.rpc.getBalanceChange', 
-                error: error.message, 
-                address, 
-                token, 
-                blockNumber 
-            });
-            throw error;
-        }
-    }
-
-    return {
-        address: address,
-        currentBalance: currentBalance.toString(),
-        previousBalance: previousBalance.toString(),
-        diff: currentBalance.sub(previousBalance).toString()
-    };
 }
 
 /** @type {Object<string, ethers.providers.Provider>} Cache of provider instances by URL */
@@ -405,7 +389,6 @@ class ProviderConnector {
 class Tracer {
 
     #ERRORS_TO_IGNORE = [-32601, -32000];
-    #bytecodes = {};
 
     constructor(server, db, type = 'other') {
         if (!server) throw '[Tracer] Missing parameter';
@@ -441,8 +424,11 @@ class Tracer {
     }
 
     async recursiveTraceParser(step, depth = 1) {
-        const bytecode = this.#bytecodes[step.to] || await withTimeout(this.provider.getCode(step.to));
-        this.#bytecodes[step.to] = bytecode;
+        let bytecode = bytecodeCache.get(step.to);
+        if (!bytecode) {
+            bytecode = await withTimeout(this.provider.getCode(step.to));
+            bytecodeCache.set(step.to, bytecode);
+        }
         this.parsedTrace.push(sanitize({
             value: step.value,
             op: step.type,

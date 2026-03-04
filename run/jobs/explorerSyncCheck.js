@@ -8,7 +8,7 @@ const { Explorer } = require('../models');
 const { bulkEnqueue } = require('../lib/queue');
 
 module.exports = async () => {
-    const explorers = await Explorer.findAll();
+    const explorers = await Explorer.findAll({ where: { shouldSync: true } });
 
     const jobs = explorers.map(e => ({
         name: `updateExplorerSyncingProcess-${e.id}`,
