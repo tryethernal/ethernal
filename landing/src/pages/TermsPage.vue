@@ -12,12 +12,12 @@
                 <div class="legal-content">
                     <h2>1. Acceptance of Terms</h2>
                     <p>By accessing or using the Ethernal service ("Service"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, you may not use the Service.</p>
-                    <p>Ethernal is operated by Antoine Rachez ("we," "us," or "our"). The Service is available at app.ethernal.com and through self-hosted installations.</p>
+                    <p>Ethernal is operated by Antoine Rachez ("we," "us," or "our"). The Service is available at app.tryethernal.com and through self-hosted installations.</p>
 
                     <h2>2. Description of Service</h2>
                     <p>Ethernal provides a block explorer for EVM-compatible blockchains. The Service includes:</p>
                     <ul>
-                        <li>Hosted block explorers at app.ethernal.com</li>
+                        <li>Hosted block explorers at app.tryethernal.com</li>
                         <li>Public-facing explorers on custom domains</li>
                         <li>Self-hosted installations via open-source code</li>
                         <li>API access for programmatic interaction</li>
@@ -49,7 +49,7 @@
                     <p>You retain ownership of any custom branding, configuration, or content you upload to the Service.</p>
 
                     <h2>8. Open Source License</h2>
-                    <p>The Ethernal software is available under the MIT License. These Terms govern use of the hosted Service at app.ethernal.com, not self-hosted installations which are governed by the MIT License.</p>
+                    <p>The Ethernal software is available under the MIT License. These Terms govern use of the hosted Service at app.tryethernal.com, not self-hosted installations which are governed by the MIT License.</p>
 
                     <h2>9. Service Availability</h2>
                     <p>We strive to maintain high availability but do not guarantee uninterrupted access to the Service. We may perform maintenance, updates, or experience downtime. We will make reasonable efforts to notify users of planned maintenance.</p>

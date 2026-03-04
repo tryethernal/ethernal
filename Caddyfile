@@ -80,8 +80,15 @@
         }
     }
 
-    handle {
+    @landing host tryethernal.com www.tryethernal.com
+    handle @landing {
         root * /srv/landing
+        try_files {path} /index.html
+        file_server
+    }
+
+    handle {
+        root * /srv/app
         try_files {path} /index.html
         file_server
     }
