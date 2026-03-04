@@ -6,8 +6,29 @@ RUN npm ci
 COPY landing/ ./
 RUN npm run build
 
-# Caddy with landing static files
+# Build app frontend
+FROM node:18-alpine AS app-build
+RUN apk add --no-cache python3 make g++ gcc
+WORKDIR /app
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile --network-timeout 100000
+COPY public/ ./public/
+COPY src/ ./src/
+COPY index.html ./
+COPY vite.config.js ./
+COPY babel.config.js ./
+COPY vue.config.js ./
+COPY ads.txt ./
+COPY .env* ./
+COPY jsconfig.json ./
+COPY .firebaserc ./
+ENV NODE_ENV=production
+RUN yarn build
+
+# Caddy with static files
 FROM caddy:2.7.6-alpine
 COPY Caddyfile /etc/caddy/Caddyfile
 COPY --from=landing-build /app/dist /srv/landing
+COPY --from=app-build /app/dist /srv/app
+COPY --from=app-build /app/ads.txt /srv/app/ads.txt
 CMD ["caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile"]
