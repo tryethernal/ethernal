@@ -70,10 +70,13 @@ const findPatterns = async (rpcServer, contractAddress, abi) => {
 
     if (isErc721) {
         const erc721Connector = new ERC721Connector(rpcServer, contractAddress, abi);
-        const [has721Metadata, has721Enumerable] = await Promise.all([
+        const [metadataResult, enumerableResult] = await Promise.allSettled([
             erc721Connector.hasMetadata(),
             erc721Connector.isEnumerable()
         ]);
+
+        const has721Metadata = metadataResult.status === 'fulfilled' ? metadataResult.value : false;
+        const has721Enumerable = enumerableResult.status === 'fulfilled' ? enumerableResult.value : false;
 
         tokenData = sanitize({ ...tokenData, has721Metadata, has721Enumerable });
     }

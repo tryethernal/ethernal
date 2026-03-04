@@ -31,7 +31,7 @@ module.exports = async job => {
             where: { hash: { [Op.in]: hashes } },
             attributes: ['id', 'hash', 'workspaceId']
         });
-        const txByHash = new Map(l2Txs.map(tx => [tx.hash, tx]));
+        const txByHash = new Map(l2Txs.map(tx => [tx.hash.toLowerCase(), tx]));
 
         let linkedCount = 0;
         for (const deposit of depositsToLink) {

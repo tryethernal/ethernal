@@ -15,7 +15,6 @@ const RateLimiter = require('../lib/rateLimiter');
 const constants = require('../constants/orbit');
 const { isBatchTransaction } = require('../lib/opBatches');
 const { reportRpcFailure } = require('../lib/syncHelpers');
-const { getCachedWorkspace } = require('../lib/workspaceCache');
 
 // Threshold for inline receipt fetching vs job queueing
 const INLINE_RECEIPT_THRESHOLD = 10;
@@ -32,29 +31,26 @@ module.exports = async job => {
         if (data.blockNumber === undefined || data.blockNumber === null)
             return 'Missing parameter';
 
-        workspace = await getCachedWorkspace(data.workspaceId, () =>
-            Workspace.findByPk(data.workspaceId, {
-                include: [
-                    'user',
-                    'orbitConfig',
-                    'orbitChildConfigs',
-                    {
-                        model: OpChainConfig,
-                        as: 'opChildConfigs'
-                    },
-                    {
-                        model: Explorer,
-                        as: 'explorer'
-                    },
-                    {
-                        model: IntegrityCheck,
-                        as: 'integrityCheck',
-                        attributes: ['id', 'isHealthy', 'isRecovering']
-                    }
-                ]
-            }),
-            'blockSync-fast'
-        );
+        workspace = await Workspace.findByPk(data.workspaceId, {
+            include: [
+                'user',
+                'orbitConfig',
+                'orbitChildConfigs',
+                {
+                    model: OpChainConfig,
+                    as: 'opChildConfigs'
+                },
+                {
+                    model: Explorer,
+                    as: 'explorer'
+                },
+                {
+                    model: IntegrityCheck,
+                    as: 'integrityCheck',
+                    attributes: ['id', 'isHealthy', 'isRecovering']
+                }
+            ]
+        });
 
         if (!workspace)
             return 'Invalid workspace.';
