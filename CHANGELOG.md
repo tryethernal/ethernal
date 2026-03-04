@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.14.0] - 2026-03-04
+### Added
+- Landing site with Vue 3 + Vuetify (marketing pages, pricing, integration pages, L2 support pages)
+- Mobile-responsive feature showcase, integration pages, and pricing cards
+- Demo explorer form with RPC URL validation
+- Brand kit specification and product marketing context
+
+### Changed
+- Docker compose dev ports remapped to 8000 range to avoid OrbStack conflicts
+
 ## [5.13.3] - 2026-03-03
 ### Fixed
 - OP deposits page showing value unit twice (e.g. "2.1 ether ether")
