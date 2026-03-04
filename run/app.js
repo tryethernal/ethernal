@@ -1,9 +1,8 @@
-const { getSentryDsn, getServeFrontend } = require('./lib/env');
+const { getSentryDsn } = require('./lib/env');
 require('./instrument');
 const express = require('express');
 const app = express();
 
-const path = require('path');
 const { initializeApp } = require('firebase-admin/app');
 
 const cors = require('cors');
@@ -65,13 +64,6 @@ app.use('/api', api);
 app.use('/webhooks', webhooks);
 
 app.use('/bull', bullboardMiddleware, serverAdapter.getRouter());
-
-if (getServeFrontend()) {
-    app.use(express.static('dist'));
-    app.get('*', (req, res) => {
-        res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
-    });
-}
 
 if (getSentryDsn()) {
     const Sentry = require('@sentry/node');

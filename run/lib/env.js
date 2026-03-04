@@ -8,14 +8,12 @@
 module.exports = {
     /** @returns {string} Application domain (e.g., 'ethernal.io') */
     getAppDomain: () => process.env.APP_DOMAIN,
-    getApiEndpoint:() => process.env.API_ENDPOINT,
     getDefaultPlanSlug: () => process.env.DEFAULT_PLAN_SLUG,
-    getAppUrl: () => process.env.APP_URL,
+    getAppUrl: () => process.env.APP_URL || (process.env.APP_DOMAIN ? `https://app.${process.env.APP_DOMAIN}` : undefined),
     getScannerKey: (scanner) => process.env[`${scanner}_API_TOKEN`],
     getNodeEnv: () => process.env.NODE_ENV,
     getGhostApiKey: () => process.env.GHOST_API_KEY,
     getGhostEndpoint: () => process.env.GHOST_ENDPOINT,
-    getMixpanelApiToken: () => process.env.MIXPANEL_API_TOKEN,
     getPm2Host: () => process.env.PM2_HOST,
     getPm2Secret: () => process.env.PM2_SECRET,
     getDemoUserId: () => process.env.DEMO_USER_ID,
@@ -53,7 +51,6 @@ module.exports = {
     getCounterNamespace: () => process.env.COUNTER_NAMESPACE,
     whitelistedNetworkIdsForDemo: () => process.env.WHITELISTED_NETWORK_IDS_FOR_DEMO,
     maxDemoExplorersForNetwork: () => parseInt(process.env.MAX_DEMO_EXPLORERS_FOR_NETWORK) || 3,
-    getServeFrontend: () => !!process.env.SERVE_FRONTEND,
     getBullboardUsername: () => process.env.BULLBOARD_USERNAME,
     getBullboardPassword: () => process.env.BULLBOARD_PASSWORD,
     getSecret: () => process.env.SECRET,

@@ -9,8 +9,7 @@
     "test:update": "jest -u",
     "test:handles": "jest  --detectOpenHandles",
     "test:coverage": "jest --coverage",
-    "worker:high": "nodemon ./workers/highPriority.js",
-    "worker:medium": "nodemon ./workers/mediumPriority.js",
+    "worker:highmedium": "nodemon ./workers/highMediumPriority.js",
     "worker:low": "nodemon ./workers/lowPriority.js"
   },
   "engines": {
