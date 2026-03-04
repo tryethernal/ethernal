@@ -50,7 +50,7 @@
             <FeatureSection inline-icon compact icon="mdi-history" title="Historical Test Runs" description="Each CI run creates a timestamped workspace. Compare contract behavior across commits, track gas usage regressions, and keep an audit trail of your test history.">
                 <template #visual>
                     <div class="browser-preview">
-                        <div class="preview-header"><div class="d-flex align-center ga-2"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="preview-url-bar"><v-icon size="12" style="color: #64748B;">mdi-lock</v-icon>app.ethernal.com/workspaces</div><div style="width: 42px;"></div></div>
+                        <div class="preview-header"><div class="d-flex align-center ga-2"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="preview-url-bar"><v-icon size="12" style="color: #64748B;">mdi-lock</v-icon>app.tryethernal.com/workspaces</div><div style="width: 42px;"></div></div>
                         <div class="preview-body">
                             <div class="mock-workspaces">
                                 <div class="mock-ws"><span class="ws-name">CI #847 <span class="ws-branch">main</span></span><span class="ws-status pass">14 txns</span><span class="ws-time">2 min ago</span></div>
