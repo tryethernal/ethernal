@@ -8,9 +8,6 @@
             <!-- Desktop nav -->
             <nav class="navbar-links d-none d-md-flex">
                 <router-link to="/features" class="nav-link">Features</router-link>
-                <router-link to="/pricing" class="nav-link">Pricing</router-link>
-                <a href="https://doc.tryethernal.com" target="_blank" rel="noopener noreferrer" class="nav-link">Docs</a>
-                <router-link to="/contact-us" class="nav-link">Contact</router-link>
 
                 <v-menu open-on-hover :close-on-content-click="true" :open-delay="0" :close-delay="150">
                     <template v-slot:activator="{ props }">
@@ -89,6 +86,45 @@
                         </div>
                     </div>
                 </v-menu>
+
+                <v-menu open-on-hover :close-on-content-click="true" :open-delay="0" :close-delay="150">
+                    <template v-slot:activator="{ props }">
+                        <span class="nav-link" v-bind="props" style="cursor: pointer;">
+                            Use Cases
+                            <v-icon size="16" class="ml-1" style="opacity: 0.5;">mdi-chevron-down</v-icon>
+                        </span>
+                    </template>
+                    <div class="mega-menu">
+                        <div class="mega-menu-inner">
+                            <div class="mega-col">
+                                <router-link to="/developers" class="mega-item">
+                                    <v-icon size="20" class="mega-item-icon" style="color: #FBBF24;">mdi-code-braces</v-icon>
+                                    <div>
+                                        <div class="mega-item-name">Developers</div>
+                                        <div class="mega-item-desc">Debug and explore local chains</div>
+                                    </div>
+                                </router-link>
+                                <router-link to="/teams" class="mega-item">
+                                    <v-icon size="20" class="mega-item-icon" style="color: #3D95CE;">mdi-account-group</v-icon>
+                                    <div>
+                                        <div class="mega-item-name">Teams</div>
+                                        <div class="mega-item-desc">Shared testnet explorer</div>
+                                    </div>
+                                </router-link>
+                                <router-link to="/app-chains" class="mega-item">
+                                    <v-icon size="20" class="mega-item-icon" style="color: #10B981;">mdi-link-variant</v-icon>
+                                    <div>
+                                        <div class="mega-item-name">App Chains</div>
+                                        <div class="mega-item-desc">White-label for L1s and L2s</div>
+                                    </div>
+                                </router-link>
+                            </div>
+                        </div>
+                    </div>
+                </v-menu>
+
+                <router-link to="/pricing" class="nav-link">Pricing</router-link>
+                <router-link to="/contact-us" class="nav-link">Contact</router-link>
             </nav>
 
             <!-- Desktop CTAs -->
@@ -113,32 +149,30 @@
     <v-navigation-drawer v-model="drawer" temporary location="right" color="#111827" width="280">
         <v-list nav class="pa-4">
             <v-list-item to="/features" title="Features" @click="drawer = false" />
-            <v-list-item to="/pricing" title="Pricing" @click="drawer = false" />
-            <v-list-item href="https://doc.tryethernal.com" target="_blank" rel="noopener noreferrer" title="Docs" @click="drawer = false" />
-            <v-list-item to="/contact-us" title="Contact" @click="drawer = false" />
 
             <v-divider class="my-3" style="border-color: rgba(61,149,206,0.08);" />
 
-            <v-list-subheader style="color: #64748B;">Development Tools</v-list-subheader>
+            <v-list-subheader style="color: #64748B;">Integrations</v-list-subheader>
             <v-list-item to="/hardhat-block-explorer" title="Hardhat" @click="drawer = false" prepend-icon="mdi-hammer-wrench" />
             <v-list-item to="/anvil-block-explorer" title="Anvil" @click="drawer = false" prepend-icon="mdi-anvil" />
             <v-list-item to="/ganache-block-explorer" title="Ganache" @click="drawer = false" prepend-icon="mdi-cube-outline" />
             <v-list-item to="/github-actions" title="GitHub Actions" @click="drawer = false" prepend-icon="mdi-github" />
-
-            <v-list-subheader style="color: #64748B;">Infrastructure</v-list-subheader>
             <v-list-item to="/kaleido" title="Kaleido" @click="drawer = false" prepend-icon="mdi-cloud" />
             <v-list-item to="/chainstack" title="Chainstack" @click="drawer = false" prepend-icon="mdi-server" />
-
-            <v-list-subheader style="color: #64748B;">L2 Rollups</v-list-subheader>
             <v-list-item to="/arbitrum-orbit" title="Arbitrum Orbit" @click="drawer = false" prepend-icon="mdi-transit-connection-variant" />
             <v-list-item to="/op-stack" title="OP Stack" @click="drawer = false" prepend-icon="mdi-layers-triple" />
 
             <v-divider class="my-3" style="border-color: rgba(61,149,206,0.08);" />
 
             <v-list-subheader style="color: #64748B;">Use Cases</v-list-subheader>
-            <v-list-item to="/features" title="Developers" @click="drawer = false" />
-            <v-list-item to="/teams" title="Teams" @click="drawer = false" />
-            <v-list-item to="/app-chains" title="App Chains" @click="drawer = false" />
+            <v-list-item to="/developers" title="Developers" @click="drawer = false" prepend-icon="mdi-code-braces" />
+            <v-list-item to="/teams" title="Teams" @click="drawer = false" prepend-icon="mdi-account-group" />
+            <v-list-item to="/app-chains" title="App Chains" @click="drawer = false" prepend-icon="mdi-link-variant" />
+
+            <v-divider class="my-3" style="border-color: rgba(61,149,206,0.08);" />
+
+            <v-list-item to="/pricing" title="Pricing" @click="drawer = false" />
+            <v-list-item to="/contact-us" title="Contact" @click="drawer = false" />
 
             <v-divider class="my-3" style="border-color: rgba(61,149,206,0.08);" />
 
