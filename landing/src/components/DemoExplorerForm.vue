@@ -86,8 +86,10 @@ const loading = ref(false);
 const errorMsg = ref('');
 
 function isUrlValid(url) {
-    try { new URL(url); return true; }
-    catch { return false; }
+    try {
+        const parsed = new URL(url);
+        return ['http:', 'https:'].includes(parsed.protocol);
+    } catch { return false; }
 }
 
 function onRpcSubmit() {
