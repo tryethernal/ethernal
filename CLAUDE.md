@@ -87,6 +87,30 @@ make nuke    # Remove everything including volumes
 
 ## Architecture
 
+### Caddy Reverse Proxy (Fly.io)
+
+All traffic goes through Caddy on Fly.io (`ethernal-caddy` app, `fly.caddy.toml`):
+
+```
+*.tryethernal.com / custom domains
+  → Caddy (ethernal-caddy on Fly.io)
+    → /api*          → ethernal.internal:8080 (backend)
+    → /app*          → ethernal-soketi:6001 (websocket)
+    → /bull*         → ethernal.internal:8080 (queue UI)
+    → /ingest/*      → app.posthog.com (analytics proxy)
+    → /api/2/*       → sentry.tryethernal.com (error tracking proxy)
+    → tryethernal.com → file_server from /srv/landing (landing site)
+    → everything else → file_server from /srv/app (app frontend)
+```
+
+**Key files:** `Caddyfile`, `Dockerfile.caddyfile`, `fly.caddy.toml`
+
+- `Dockerfile.caddyfile` builds both the landing (`landing/`) and app frontend (`src/`) into the Caddy image
+- Landing served for `tryethernal.com` and `www.tryethernal.com` only; all other domains get the app frontend
+- Caddy handles on-demand TLS for explorer subdomains and custom domains
+- Self-hosted users generate their own Caddyfile via `generate-env-files.sh` (unaffected)
+- Caddy deploys via `flyctl deploy -c fly.caddy.toml` (also runs in CI as `deploy_caddy` job)
+
 ### Request Flow
 
 ```
