@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.14.4] - 2026-03-04
+### Changed
+- Remove unused frontend Soketi env vars, derive WebSocket params from window.location
+- Remove dead API_ENDPOINT, SERVE_FRONTEND, and MIXPANEL_API_TOKEN env vars
+- Make APP_URL optional for cloud deployments (derived from APP_DOMAIN)
+- Merge high and medium priority workers into single process, reducing Fly.io machines from 5 to 4
+
 ## [5.14.3] - 2026-03-04
 ### Changed
 - Serve both landing and app frontend from Caddy on Fly.io, fully removing Netlify dependency
