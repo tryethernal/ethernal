@@ -80,10 +80,17 @@
         }
     }
 
-    handle {
+    @landing host tryethernal.com www.tryethernal.com
+    handle @landing {
         root * /srv/landing
         try_files {path} /index.html
         file_server
+    }
+
+    handle {
+        reverse_proxy tryethernal.netlify.app {
+            header_up Host tryethernal.netlify.app
+        }
     }
 
     encode gzip
