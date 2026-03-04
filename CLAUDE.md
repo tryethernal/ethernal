@@ -266,6 +266,7 @@ await bulkEnqueue('jobName', [
 ```
 Block Sync Flow:
 blockSync → receiptSync → processContract → processTokenTransfer → balanceChanges
+blockSync → processOpBatch (OP batch detection, decoupled from sync path)
 
 L2 Event Flow:
 PM2 logListener → storeOrbitDeposit / checkOrbitMessageDeliveredLogs
@@ -717,7 +718,7 @@ Add a JSDoc comment block before the `<script>` or `<script setup>` tag:
 | `stripe.js` | Stripe subscription and billing utilities |
 | `orbitBatches.js` | Arbitrum Orbit batch detection and parsing |
 | `orbitWithdrawals.js` | Orbit withdrawal event handling |
-| `workspaceCache.js` | LRU cache for workspace data (30s TTL, used by hot-path jobs) |
+| `opBatches.js` | OP Stack batch detection and parsing |
 
 ### Backend Models (`run/models/`)
 
