@@ -114,7 +114,7 @@
         <v-list nav class="pa-4">
             <v-list-item to="/features" title="Features" @click="drawer = false" />
             <v-list-item to="/pricing" title="Pricing" @click="drawer = false" />
-            <v-list-item href="https://doc.tryethernal.com" target="_blank" title="Docs" @click="drawer = false" />
+            <v-list-item href="https://doc.tryethernal.com" target="_blank" rel="noopener noreferrer" title="Docs" @click="drawer = false" />
             <v-list-item to="/contact-us" title="Contact" @click="drawer = false" />
 
             <v-divider class="my-3" style="border-color: rgba(61,149,206,0.08);" />
