@@ -10,6 +10,8 @@
     "test:handles": "jest  --detectOpenHandles",
     "test:coverage": "jest --coverage",
     "worker:highmedium": "nodemon ./workers/highMediumPriority.js",
+    "worker:high": "nodemon ./workers/highPriority.js",
+    "worker:medium": "nodemon ./workers/mediumPriority.js",
     "worker:low": "nodemon ./workers/lowPriority.js"
   },
   "engines": {
@@ -40,6 +42,7 @@
     "firebase-scrypt": "^2.2.0",
     "ioredis": "^5.4.1",
     "jsonwebtoken": "^8.5.1",
+    "lru-cache": "^7.18.3",
     "mixpanel": "^0.16.0",
     "momentjs": "^2.0.0",
     "node-mailjet": "^6.0.9",

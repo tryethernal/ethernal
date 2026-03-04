@@ -6,7 +6,7 @@
  * @module jobs/backfillOpBatchBlockRanges
  */
 
-const { OpBatch, OpChainConfig, Block } = require('../models');
+const { OpBatch, OpChainConfig, Block, sequelize } = require('../models');
 const { Op } = require('sequelize');
 const logger = require('../lib/logger');
 
@@ -75,6 +75,9 @@ module.exports = async job => {
 
                     if (batches.length === 0) break;
 
+                    // Collect updates for bulk flush
+                    const pendingUpdates = [];
+
                     for (let i = 0; i < batches.length; i++) {
                         const batch = batches[i];
                         const globalIndex = processedCount + i;
@@ -85,17 +88,13 @@ module.exports = async job => {
                             continue;
                         }
 
-                        // Calculate end block for this batch
                         let l2BlockEnd;
                         if (globalIndex === totalBatches - 1) {
-                            // Last batch gets all remaining blocks
                             l2BlockEnd = latestBlockNumber;
                         } else {
-                            // Use average, but make sure we don't exceed the latest block
                             l2BlockEnd = Math.min(currentBlockStart + avgBlocksPerBatch - 1, latestBlockNumber);
                         }
 
-                        // Ensure valid range
                         if (currentBlockStart > latestBlockNumber) {
                             logger.warn(`Batch ${batch.batchIndex} start block ${currentBlockStart} exceeds latest L2 block ${latestBlockNumber}`, { location: 'jobs.backfillOpBatchBlockRanges' });
                             totalFailed++;
@@ -103,17 +102,24 @@ module.exports = async job => {
                         }
 
                         const txCount = l2BlockEnd - currentBlockStart + 1;
-
-                        await batch.update({
-                            l2BlockStart: currentBlockStart,
-                            l2BlockEnd: l2BlockEnd,
-                            txCount: txCount
-                        });
-
-                        logger.info(`Updated batch ${batch.batchIndex}: blocks ${currentBlockStart}-${l2BlockEnd} (${txCount} blocks)`, { location: 'jobs.backfillOpBatchBlockRanges' });
-
+                        pendingUpdates.push({ id: batch.id, l2BlockStart: currentBlockStart, l2BlockEnd, txCount });
                         currentBlockStart = l2BlockEnd + 1;
                         updated++;
+                    }
+
+                    // Bulk update using raw SQL with VALUES for efficiency
+                    if (pendingUpdates.length > 0) {
+                        const values = pendingUpdates.map(u =>
+                            `(${u.id}, ${u.l2BlockStart}, ${u.l2BlockEnd}, ${u.txCount})`
+                        ).join(', ');
+                        await sequelize.query(`
+                            UPDATE op_batches AS b SET
+                                "l2BlockStart" = v.l2_block_start,
+                                "l2BlockEnd" = v.l2_block_end,
+                                "txCount" = v.tx_count
+                            FROM (VALUES ${values}) AS v(id, l2_block_start, l2_block_end, tx_count)
+                            WHERE b.id = v.id
+                        `);
                     }
 
                     processedCount += batches.length;

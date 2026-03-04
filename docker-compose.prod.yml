@@ -59,16 +59,28 @@ services:
     restart: always
     env_file: ./run/.env.prod
 
-  high_medium_priority_worker:
+  high_priority_worker:
     networks:
       - ethernal
-    container_name: highMediumPriority
+    container_name: highPriority
     depends_on:
       - postgres
       - redis
     restart: always
     image: antoinedc44/ethernal-backend:latest
-    command: node workers/highMediumPriority.js
+    command: node workers/highPriority.js
+    env_file: ./run/.env.prod
+
+  medium_priority_worker:
+    networks:
+      - ethernal
+    container_name: mediumPriority
+    depends_on:
+      - postgres
+      - redis
+    restart: always
+    image: antoinedc44/ethernal-backend:latest
+    command: node workers/mediumPriority.js
     env_file: ./run/.env.prod
 
   low_priority_worker:

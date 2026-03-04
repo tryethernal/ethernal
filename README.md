@@ -91,6 +91,12 @@ After setup, you'll see a summary like:
 
 ---
 
+## 📖 Documentation
+
+Full documentation is available at [doc.tryethernal.com](https://doc.tryethernal.com).
+
+---
+
 ## 📡 API
 
 Ethernal exposes a powerful API for programmatic access to your blockchain data and explorer features.
@@ -113,7 +119,8 @@ If you need additional endpoints or have suggestions for improvements, **pull re
 - `make start` – Start or restart Ethernal (with env/config generation)
 - `make stop` – Stop and clean up all containers and networks
 - `make update` – Pull latest images and apply migrations/seeds
-- `make nuke` – Remove all containers, volumes, and generated config files (all data will be list)
+- `make nuke` – Remove all containers, volumes, and generated config files (all data will be lost)
+- `make info` – Display connection details and setup URLs
 
 ---
 
@@ -123,29 +130,6 @@ If you need additional endpoints or have suggestions for improvements, **pull re
 If you want to customize advanced settings, you can edit the relevant files after the initial setup.
 
 Below are the main configuration files and the variables they contain:
-
----
-
-### Frontend Environment Variables (`.env.prod`)
-
-| Variable                  | Description                              | Default                |
-|---------------------------|------------------------------------------|------------------------|
-| VITE_VERSION              | Version of the application               | -                      |
-| VITE_API_ROOT             | Root URL for API endpoints               | https://api.example.com|
-| VITE_MAIN_DOMAIN          | Main domain for the application          | example.com            |
-| VITE_PUSHER_KEY           | Pusher API key for real-time updates     | -                      |
-| VITE_SOKETI_HOST          | Soketi server host for WebSocket         | -                      |
-| VITE_SOKETI_PORT          | Soketi server port                       | -                      |
-| VITE_SOKETI_FORCE_TLS     | Force TLS for Soketi                     | -                      |
-| VITE_POSTHOG_API_KEY      | PostHog API key for analytics            | -                      |
-| VITE_POSTHOG_API_HOST     | PostHog API host                         | -                      |
-| VITE_ENABLE_ANALYTICS     | Enable/disable analytics features        | false                  |
-| VITE_ENABLE_DEMO          | Enable/disable demo features             | false                  |
-| VITE_ENABLE_BILLING       | Enable/disable billing features          | false                  |
-| VITE_ENABLE_MARKETING     | Enable/disable marketing features        | false                  |
-| VITE_SENTRY_DSN_SECRET    | Sentry DSN secret for error tracking     | -                      |
-| VITE_SENTRY_DSN_PROJECT_ID| Sentry project ID                        | -                      |
-| VITE_FEEDBACK_FIN_ENDPOINT| Endpoint for feedback collection         | -                      |
 
 ---
 
@@ -260,7 +244,7 @@ Support Ethernal's development by subscribing to [a paid plan](https://www.tryet
 We'd love to hear from you!
 
 - **Twitter:** [@tryethernal](https://twitter.com/tryethernal)
-- **Discord:** [Join our community](https://discord.gg/jEAprf45jj)
+- **Discord:** [Join our community](https://discord.gg/jYCER6Mh)
 - **Email:** contact@tryethernal.com
 
 ---

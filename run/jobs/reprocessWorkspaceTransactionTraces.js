@@ -1,13 +1,15 @@
 /**
  * @fileoverview Transaction trace reprocessing job.
  * Enqueues trace processing for all transactions in a workspace.
+ * Uses cursor-based pagination to avoid loading all transactions into memory.
  * @module jobs/reprocessWorkspaceTransactionTraces
  */
 
-const models = require('../models');
+const { Op } = require('sequelize');
+const { Workspace, Transaction } = require('../models');
 const { bulkEnqueue } = require('../lib/queue');
 
-const Workspace = models.Workspace;
+const PAGE_SIZE = 5000;
 
 module.exports = async job => {
     const data = job.data;
@@ -20,18 +22,31 @@ module.exports = async job => {
     if (!workspace.public)
         return 'Not allowed on private workspaces';
 
-    const transactions = await workspace.getTransactions();
+    let lastId = 0;
+    let totalEnqueued = 0;
 
-    const batches = [];
-    for (let i = 0; i < transactions.length; i++) {
-        const transaction = transactions[i];
-        batches.push({
-            name: `processTransactionTrace-${data.workspaceId}-${transaction.hash}`,
-            data: { transactionId: transaction.id }
+    while (true) {
+        const transactions = await Transaction.findAll({
+            where: {
+                workspaceId: data.workspaceId,
+                id: { [Op.gt]: lastId }
+            },
+            attributes: ['id', 'hash'],
+            order: [['id', 'ASC']],
+            limit: PAGE_SIZE
         });
+
+        if (transactions.length === 0) break;
+
+        const batches = transactions.map(tx => ({
+            name: `processTransactionTrace-${data.workspaceId}-${tx.hash}`,
+            data: { transactionId: tx.id }
+        }));
+
+        await bulkEnqueue('processTransactionTrace', batches);
+        totalEnqueued += transactions.length;
+        lastId = transactions[transactions.length - 1].id;
     }
 
-    await bulkEnqueue('processTransactionTrace', batches);
-
-    return true;
+    return `Enqueued ${totalEnqueued} trace jobs`;
 };

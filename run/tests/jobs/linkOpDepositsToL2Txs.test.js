@@ -5,7 +5,6 @@ require('../mocks/models');
 const { OpDeposit, Transaction } = require('../mocks/models');
 const linkOpDepositsToL2Txs = require('../../jobs/linkOpDepositsToL2Txs');
 
-// Mock dependencies
 jest.mock('../../lib/queue');
 jest.mock('../../lib/logger');
 
@@ -44,7 +43,7 @@ describe('linkOpDepositsToL2Txs', () => {
         ];
 
         OpDeposit.findAll.mockResolvedValue(mockDeposits);
-        Transaction.findOne.mockResolvedValue(mockL2Transaction);
+        Transaction.findAll.mockResolvedValue([mockL2Transaction]);
     });
 
     describe('basic functionality', () => {
@@ -61,14 +60,12 @@ describe('linkOpDepositsToL2Txs', () => {
             });
         });
 
-        it('should look up L2 transaction by hash', async () => {
+        it('should batch lookup L2 transactions by hash', async () => {
             await linkOpDepositsToL2Txs();
 
-            expect(Transaction.findOne).toHaveBeenCalledWith({
-                where: {
-                    workspaceId: 101,
-                    hash: ('0x' + 'a'.repeat(64)).toLowerCase()
-                }
+            expect(Transaction.findAll).toHaveBeenCalledWith({
+                where: { hash: { [require('sequelize').Op.in]: expect.any(Array) } },
+                attributes: ['id', 'hash', 'workspaceId']
             });
         });
 
@@ -82,6 +79,11 @@ describe('linkOpDepositsToL2Txs', () => {
         });
 
         it('should return count of linked deposits', async () => {
+            Transaction.findAll.mockResolvedValue([
+                mockL2Transaction,
+                { id: 1002, workspaceId: 101, hash: '0x' + 'b'.repeat(64) }
+            ]);
+
             const result = await linkOpDepositsToL2Txs();
 
             expect(result).toBe('Linked 2 OP deposits to L2 transactions');
@@ -100,7 +102,7 @@ describe('linkOpDepositsToL2Txs', () => {
 
     describe('L2 transaction not found', () => {
         it('should not update deposit when L2 transaction is not found', async () => {
-            Transaction.findOne.mockResolvedValue(null);
+            Transaction.findAll.mockResolvedValue([]);
 
             const result = await linkOpDepositsToL2Txs();
 
@@ -111,9 +113,8 @@ describe('linkOpDepositsToL2Txs', () => {
 
     describe('mixed results', () => {
         it('should only count deposits that were actually linked', async () => {
-            Transaction.findOne
-                .mockResolvedValueOnce(mockL2Transaction) // First deposit found
-                .mockResolvedValueOnce(null); // Second deposit not found
+            // Only first deposit's L2 tx found
+            Transaction.findAll.mockResolvedValue([mockL2Transaction]);
 
             const result = await linkOpDepositsToL2Txs();
 
@@ -131,6 +132,10 @@ describe('linkOpDepositsToL2Txs', () => {
         });
 
         it('should continue processing if one deposit fails', async () => {
+            Transaction.findAll.mockResolvedValue([
+                mockL2Transaction,
+                { id: 1002, workspaceId: 101, hash: '0x' + 'b'.repeat(64) }
+            ]);
             mockDeposits[0].update.mockRejectedValue(new Error('Update failed'));
 
             const result = await linkOpDepositsToL2Txs();

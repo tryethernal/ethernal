@@ -18,7 +18,7 @@ module.exports = async () => {
         }]
     });
 
-    let allConfirmedBatches = [];
+    let totalConfirmed = 0;
 
     for (const opConfig of opConfigs) {
         try {
@@ -30,22 +30,23 @@ module.exports = async () => {
 
             logger.info(`Validating OP batches for workspace ${opConfig.workspaceId} against safe block ${safeBlock.number}`);
 
-            const pendingBatches = await OpBatch.findAll({
-                where: {
-                    workspaceId: opConfig.workspaceId,
-                    status: 'pending',
-                    l1BlockNumber: {
-                        [Op.lte]: Number(safeBlock.number)
+            const [confirmedCount] = await OpBatch.update(
+                { status: 'confirmed' },
+                {
+                    where: {
+                        workspaceId: opConfig.workspaceId,
+                        status: 'pending',
+                        l1BlockNumber: {
+                            [Op.lte]: Number(safeBlock.number)
+                        }
                     }
                 }
-            });
+            );
 
-            for (const batch of pendingBatches) {
-                await batch.update({ status: 'confirmed' });
-                logger.info(`Confirmed OP batch ${batch.batchIndex} for workspace ${opConfig.workspaceId}`);
-            }
+            if (confirmedCount > 0)
+                logger.info(`Confirmed ${confirmedCount} OP batches for workspace ${opConfig.workspaceId}`);
 
-            allConfirmedBatches = allConfirmedBatches.concat(pendingBatches);
+            totalConfirmed += confirmedCount;
         } catch (error) {
             logger.error(`Error finalizing OP batches for config ${opConfig.id}: ${error.message}`, {
                 location: 'jobs.finalizePendingOpBatches',
@@ -55,5 +56,5 @@ module.exports = async () => {
         }
     }
 
-    return `Confirmed ${allConfirmedBatches.length} OP batches`;
+    return `Confirmed ${totalConfirmed} OP batches`;
 };
