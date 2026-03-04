@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ethernal Brand Kit</title>
+<link href="https://fonts.googleapis.com/css2?family=Exo:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@mdi/font@7/css/materialdesignicons.min.css" rel="stylesheet">
+<style>
+  :root {
+    --primary: #3D95CE;
+    --primary-light: #5DAAE0;
+    --primary-dark: #29648E;
+    --bg-base: #0B1120;
+    --bg-card: #111827;
+    --bg-card-hover: #1A2234;
+    --bg-surface: #151D2E;
+    --text-primary: #F1F5F9;
+    --text-secondary: #94A3B8;
+    --text-muted: #64748B;
+    --border-subtle: rgba(61, 149, 206, 0.22);
+    --border-glow: rgba(61, 149, 206, 0.4);
+    --success: #22C55E;
+    --error: #E72732;
+    --warning: #E78227;
+    --info: #2196F3;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Roboto', sans-serif;
+    background: var(--bg-base);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.6;
+  }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+  /* Header */
+  .kit-header {
+    padding: 80px 0 40px;
+    border-bottom: 1px solid var(--border-subtle);
+    margin-bottom: 60px;
+  }
+  .kit-header h1 {
+    font-family: 'Exo', sans-serif;
+    font-size: 2.8rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+  .kit-header p { color: var(--text-secondary); font-size: 1.1rem; }
+  .kit-header .date { color: var(--text-muted); font-size: 13px; margin-top: 12px; }
+
+  /* Section */
+  section { margin-bottom: 72px; }
+  section h2 {
+    font-family: 'Exo', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+  }
+  section .section-desc {
+    color: var(--text-secondary);
+    margin-bottom: 28px;
+    font-size: 0.95rem;
+  }
+  section h3 {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-bottom: 12px;
+    margin-top: 28px;
+  }
+
+  /* Color swatches */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; }
+  .color-swatch {
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border-subtle);
+    background: var(--bg-card);
+  }
+  .color-swatch .swatch-color {
+    height: 80px;
+    display: flex;
+    align-items: flex-end;
+    padding: 8px 12px;
+  }
+  .color-swatch .swatch-info { padding: 12px; }
+  .color-swatch .swatch-name { font-weight: 500; font-size: 14px; }
+  .color-swatch .swatch-hex { color: var(--text-muted); font-size: 13px; font-family: 'JetBrains Mono', monospace; }
+  .color-swatch .swatch-usage { color: var(--text-secondary); font-size: 12px; margin-top: 4px; }
+
+  /* Logo section */
+  .logo-demos { display: flex; gap: 24px; flex-wrap: wrap; margin-top: 16px; }
+  .logo-demo {
+    padding: 40px 48px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border-subtle);
+    min-width: 240px;
+  }
+  .logo-demo .logo-text {
+    font-family: 'Exo', sans-serif;
+    font-weight: 600;
+    font-size: 2rem;
+  }
+  .logo-demo-label {
+    text-align: center;
+    margin-top: 8px;
+    color: var(--text-muted);
+    font-size: 12px;
+  }
+
+  /* Typography */
+  .type-specimen {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 28px;
+    margin-bottom: 16px;
+  }
+  .type-specimen .type-family {
+    font-size: 13px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+  }
+  .type-specimen .type-preview { margin-bottom: 16px; }
+  .type-specimen .type-weights { display: flex; gap: 24px; flex-wrap: wrap; }
+  .type-specimen .type-weight {
+    font-size: 14px;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .type-specimen .type-weight span { font-size: 20px; color: var(--text-primary); }
+
+  /* Scale */
+  .scale-row {
+    display: flex;
+    align-items: baseline;
+    gap: 20px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .scale-row .scale-label {
+    width: 160px;
+    flex-shrink: 0;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .scale-row .scale-sample { font-family: 'Exo', sans-serif; }
+
+  /* Buttons */
+  .button-grid { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+  .btn-demo {
+    padding: 12px 28px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  .btn-demo.primary {
+    background: linear-gradient(90deg, var(--primary), var(--primary-light));
+    color: white;
+    letter-spacing: 0.3px;
+  }
+  .btn-demo.primary:hover { box-shadow: 0 4px 20px rgba(61, 149, 206, 0.4); }
+  .btn-demo.outline {
+    background: transparent;
+    border: 1px solid rgba(51, 65, 85, 0.8);
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+  .btn-demo.outline:hover { border-color: rgba(100, 116, 139, 0.6); background: rgba(61, 149, 206, 0.06); }
+  .btn-demo.pill {
+    background: linear-gradient(90deg, var(--primary), var(--primary-light));
+    color: white;
+    border-radius: 100px;
+    padding: 10px 24px;
+    font-size: 14px;
+  }
+
+  /* Cards */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+  .card-demo {
+    padding: 28px;
+    border-radius: 16px;
+  }
+  .card-demo.glass {
+    background: rgba(17, 24, 39, 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border-subtle);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+  }
+  .card-demo.glow {
+    background: rgba(17, 24, 39, 0.8);
+    border: 1px solid var(--border-glow);
+    box-shadow: 0 0 40px rgba(61, 149, 206, 0.12), 0 4px 24px rgba(0, 0, 0, 0.3);
+  }
+  .card-demo h4 { font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; }
+  .card-demo p { color: var(--text-secondary); font-size: 0.95rem; }
+
+  /* Terminal */
+  .terminal-demo {
+    background: #0D1117;
+    border: 1px solid rgba(61, 149, 206, 0.2);
+    border-radius: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    overflow: hidden;
+    max-width: 560px;
+  }
+  .terminal-demo .header {
+    background: #161B22;
+    padding: 12px 16px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .terminal-demo .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .terminal-demo .dot.r { background: #FF5F57; }
+  .terminal-demo .dot.y { background: #FEBC2E; }
+  .terminal-demo .dot.g { background: #28C840; }
+  .terminal-demo .title { color: #64748B; font-size: 12px; margin-left: 8px; }
+  .terminal-demo .body { padding: 20px; color: #8B949E; font-size: 14px; line-height: 1.8; }
+  .terminal-demo .prompt { color: #58A6FF; }
+  .terminal-demo .cmd { color: #E6EDF3; }
+  .terminal-demo .comment { color: #484F58; }
+
+  /* Icons */
+  .icon-grid { display: flex; gap: 20px; flex-wrap: wrap; }
+  .icon-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 20px;
+    border-radius: 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    min-width: 100px;
+  }
+  .icon-item .mdi { font-size: 24px; color: var(--primary-light); }
+  .icon-item .icon-label { font-size: 11px; color: var(--text-muted); text-align: center; }
+
+  /* SVG icon */
+  .svg-icon-demo {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    border-radius: 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+  }
+  .svg-icon-demo svg { flex-shrink: 0; }
+  .svg-icon-demo .icon-info { font-size: 13px; color: var(--text-secondary); }
+  .svg-icon-demo .icon-info strong { color: var(--text-primary); }
+
+  /* Gradient text demo */
+  .gradient-text-demo {
+    background: linear-gradient(90deg, var(--primary), var(--primary-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Voice */
+  .voice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 700px) { .voice-grid { grid-template-columns: 1fr; } }
+  .voice-card {
+    padding: 24px;
+    border-radius: 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+  }
+  .voice-card h4 { font-size: 14px; font-weight: 600; margin-bottom: 12px; }
+  .voice-card ul { list-style: none; padding: 0; }
+  .voice-card li {
+    padding: 6px 0;
+    font-size: 14px;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .voice-card li .mdi { font-size: 16px; flex-shrink: 0; margin-top: 2px; }
+  .voice-card.do li .mdi { color: var(--success); }
+  .voice-card.dont li .mdi { color: var(--error); }
+
+  /* Messaging */
+  .message-item {
+    padding: 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    margin-bottom: 12px;
+  }
+  .message-item .msg-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+  .message-item .msg-text { font-size: 1.1rem; font-weight: 500; }
+
+  /* Avatar */
+  .avatar-grid { display: flex; gap: 16px; flex-wrap: wrap; }
+  .avatar-demo {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 15px;
+    color: white;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
+  }
+
+  .toc {
+    position: fixed;
+    right: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 100;
+  }
+  .toc a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .toc a:hover { color: var(--primary-light); background: rgba(61, 149, 206, 0.1); }
+
+  @media (max-width: 1300px) { .toc { display: none; } }
+
+  /* Footer */
+  .kit-footer {
+    border-top: 1px solid var(--border-subtle);
+    padding: 40px 0;
+    margin-top: 60px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+</style>
+</head>
+<body>
+
+<nav class="toc">
+  <a href="#logo">Logo</a>
+  <a href="#colors">Colors</a>
+  <a href="#typography">Typography</a>
+  <a href="#buttons">Buttons</a>
+  <a href="#cards">Cards</a>
+  <a href="#terminal">Terminal</a>
+  <a href="#icons">Icons</a>
+  <a href="#imagery">Imagery</a>
+  <a href="#voice">Voice</a>
+  <a href="#messaging">Messaging</a>
+</nav>
+
+<div class="container">
+
+  <header class="kit-header">
+    <h1><span class="gradient-text-demo">Ethernal</span> Brand Kit</h1>
+    <p>Visual identity, design tokens, voice guidelines, and component specs.</p>
+    <div class="date">Last updated: March 4, 2026</div>
+  </header>
+
+  <!-- LOGO -->
+  <section id="logo">
+    <h2>Logo</h2>
+    <p class="section-desc">The Ethernal logo is a wordmark only — the word "Ethernal" set in Exo 600. There is no icon, symbol, or emblem. Never fabricate one.</p>
+
+    <div class="logo-demos">
+      <div>
+        <div class="logo-demo" style="background: var(--bg-card);">
+          <span class="logo-text" style="color: white;">Ethernal</span>
+        </div>
+        <div class="logo-demo-label">White on dark</div>
+      </div>
+      <div>
+        <div class="logo-demo" style="background: #F5F5F5;">
+          <span class="logo-text" style="color: #3D95CE;">Ethernal</span>
+        </div>
+        <div class="logo-demo-label">Primary on light</div>
+      </div>
+      <div>
+        <div class="logo-demo" style="background: var(--bg-card);">
+          <span class="logo-text gradient-text-demo">Ethernal</span>
+        </div>
+        <div class="logo-demo-label">Gradient (special use)</div>
+      </div>
+    </div>
+
+    <h3>Rules</h3>
+    <ul style="color: var(--text-secondary); font-size: 14px; padding-left: 20px;">
+      <li>Never add icons or symbols before/after the wordmark</li>
+      <li>Never use fonts other than Exo</li>
+      <li>Never stretch, skew, rotate, or add drop shadows</li>
+      <li>Maintain 0.5em minimum clear space on all sides</li>
+    </ul>
+  </section>
+
+  <!-- COLORS -->
+  <section id="colors">
+    <h2>Colors</h2>
+    <p class="section-desc">Core palette across light theme (app), dark theme (landing/marketing), and semantic colors.</p>
+
+    <h3>Primary</h3>
+    <div class="color-grid">
+      <div class="color-swatch">
+        <div class="swatch-color" style="background: #3D95CE;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Primary</div>
+          <div class="swatch-hex">#3D95CE</div>
+          <div class="swatch-usage">CTAs, links, accent elements</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-color" style="background: #5DAAE0;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Primary Light</div>
+          <div class="swatch-hex">#5DAAE0</div>
+          <div class="swatch-usage">Dark mode primary, gradient end</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-color" style="background: #29648E;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Primary Dark / Accent</div>
+          <div class="swatch-hex">#29648E</div>
+          <div class="swatch-usage">Hover states, deep accents</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-color" style="background: linear-gradient(90deg, #3D95CE, #5DAAE0);"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Primary Gradient</div>
+          <div class="swatch-hex">90deg, #3D95CE → #5DAAE0</div>
+          <div class="swatch-usage">CTA buttons, hero text, badges</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Dark Theme</h3>
+    <div class="color-grid">
+      <div class="color-swatch">
+        <div class="swatch-color" style="background: #0B1120;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Background</div>
+          <div class="swatch-hex">#0B1120</div>
+          <div class="swatch-usage">Page background</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-color" style="background: #111827;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Card</div>
+          <div class="swatch-hex">#111827</div>
+          <div class="swatch-usage">Card backgrounds, surfaces</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-color" style="background: #1A2234;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Card Hover</div>
+          <div class="swatch-hex">#1A2234</div>
+          <div class="swatch-usage">Interactive card hover state</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-color" style="background: #151D2E;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Surface</div>
+          <div class="swatch-hex">#151D2E</div>
+          <div class="swatch-usage">Elevated surfaces</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Text</h3>
+    <div class="color-grid">
+      <div class="color-swatch">
+        <div class="swatch-color" style="background: #F1F5F9;"><span style="color: #0B1120; font-size: 12px; font-family: monospace;">Aa</span></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Primary Text</div>
+          <div class="swatch-hex">#F1F5F9</div>
+          <div class="swatch-usage">Headlines, body text</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-color" style="background: #94A3B8;"><span style="color: #0B1120; font-size: 12px; font-family: monospace;">Aa</span></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Secondary Text</div>
+          <div class="swatch-hex">#94A3B8</div>
+          <div class="swatch-usage">Descriptions, subtitles</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-color" style="background: #64748B;"><span style="color: white; font-size: 12px; font-family: monospace;">Aa</span></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Muted Text</div>
+          <div class="swatch-hex">#64748B</div>
+          <div class="swatch-usage">Captions, labels, meta</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Semantic</h3>
+    <div class="color-grid">
+      <div class="color-swatch">
+        <div class="swatch-color" style="background: #22C55E;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Success</div>
+          <div class="swatch-hex">#22C55E</div>
+          <div class="swatch-usage">Check marks, trust badges</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-color" style="background: #E72732;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Error</div>
+          <div class="swatch-hex">#E72732</div>
+          <div class="swatch-usage">Errors, destructive actions</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-color" style="background: #E78227;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Warning</div>
+          <div class="swatch-hex">#E78227</div>
+          <div class="swatch-usage">Warnings, attention</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-color" style="background: #2196F3;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Info</div>
+          <div class="swatch-hex">#2196F3</div>
+          <div class="swatch-usage">Informational elements</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Borders</h3>
+    <div class="color-grid">
+      <div class="color-swatch">
+        <div class="swatch-color" style="background: var(--bg-card); border: 1px solid rgba(61, 149, 206, 0.22);"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Subtle</div>
+          <div class="swatch-hex">rgba(61, 149, 206, 0.22)</div>
+          <div class="swatch-usage">Card borders, dividers</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-color" style="background: var(--bg-card); border: 1px solid rgba(61, 149, 206, 0.4);"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Glow</div>
+          <div class="swatch-hex">rgba(61, 149, 206, 0.4)</div>
+          <div class="swatch-usage">Highlighted cards, focus states</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TYPOGRAPHY -->
+  <section id="typography">
+    <h2>Typography</h2>
+    <p class="section-desc">Three font families: Exo for headings, Roboto for body, JetBrains Mono for code.</p>
+
+    <div class="type-specimen">
+      <div class="type-family">Exo — Headings & Logo</div>
+      <div class="type-preview" style="font-family: 'Exo', sans-serif; font-size: 2rem; font-weight: 700; letter-spacing: -0.02em;">
+        Etherscan for your blockchain
+      </div>
+      <div class="type-weights">
+        <div class="type-weight"><span style="font-family: 'Exo'; font-weight: 400;">Aa</span> 400 Regular</div>
+        <div class="type-weight"><span style="font-family: 'Exo'; font-weight: 500;">Aa</span> 500 Medium</div>
+        <div class="type-weight"><span style="font-family: 'Exo'; font-weight: 600;">Aa</span> 600 Semi-bold (logo)</div>
+        <div class="type-weight"><span style="font-family: 'Exo'; font-weight: 700;">Aa</span> 700 Bold (headlines)</div>
+      </div>
+    </div>
+
+    <div class="type-specimen">
+      <div class="type-family">Roboto — Body & UI</div>
+      <div class="type-preview" style="font-family: 'Roboto', sans-serif; font-size: 1.1rem; color: var(--text-secondary); line-height: 1.7;">
+        Deploy a fully-featured block explorer in 5 minutes. Just paste your RPC URL. Open source, self-hostable, works with any EVM chain.
+      </div>
+      <div class="type-weights">
+        <div class="type-weight"><span style="font-family: 'Roboto'; font-weight: 300;">Aa</span> 300 Light</div>
+        <div class="type-weight"><span style="font-family: 'Roboto'; font-weight: 400;">Aa</span> 400 Regular</div>
+        <div class="type-weight"><span style="font-family: 'Roboto'; font-weight: 500;">Aa</span> 500 Medium</div>
+        <div class="type-weight"><span style="font-family: 'Roboto'; font-weight: 700;">Aa</span> 700 Bold</div>
+      </div>
+    </div>
+
+    <div class="type-specimen">
+      <div class="type-family">JetBrains Mono — Code & Terminal</div>
+      <div class="type-preview" style="font-family: 'JetBrains Mono', monospace; font-size: 14px; color: #E6EDF3; line-height: 1.8;">
+        <span style="color: #58A6FF;">$ </span>git clone https://github.com/tryethernal/ethernal.git
+      </div>
+    </div>
+
+    <h3>Type Scale</h3>
+    <div class="scale-row">
+      <div class="scale-label">Hero headline</div>
+      <div class="scale-sample" style="font-size: clamp(2.2rem, 5vw, 3.5rem); font-weight: 700; letter-spacing: -0.02em;">Etherscan</div>
+    </div>
+    <div class="scale-row">
+      <div class="scale-label">Section headline</div>
+      <div class="scale-sample" style="font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 700; letter-spacing: -0.02em;">Everything you need</div>
+    </div>
+    <div class="scale-row">
+      <div class="scale-label">Card title</div>
+      <div class="scale-sample" style="font-size: 1.15rem; font-weight: 600;">Transaction Tracing</div>
+    </div>
+    <div class="scale-row">
+      <div class="scale-label">Body</div>
+      <div class="scale-sample" style="font-size: 1.05rem; font-weight: 400; font-family: 'Roboto'; color: var(--text-secondary);">Debug transactions with full call traces.</div>
+    </div>
+    <div class="scale-row">
+      <div class="scale-label">Small / Caption</div>
+      <div class="scale-sample" style="font-size: 13px; font-weight: 400; font-family: 'Roboto'; color: var(--text-muted);">Made with care in France 🍷</div>
+    </div>
+    <div class="scale-row">
+      <div class="scale-label">Uppercase label</div>
+      <div class="scale-sample" style="font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted);">Most Popular</div>
+    </div>
+  </section>
+
+  <!-- BUTTONS -->
+  <section id="buttons">
+    <h2>Buttons</h2>
+    <p class="section-desc">Three button styles: gradient primary, outline secondary, and pill CTA.</p>
+
+    <div class="button-grid" style="margin-bottom: 20px;">
+      <button class="btn-demo primary">Get Started Free <span class="mdi mdi-arrow-right"></span></button>
+      <button class="btn-demo outline">Read the Docs</button>
+      <button class="btn-demo pill">Get Started</button>
+    </div>
+
+    <h3>Specs</h3>
+    <div style="font-size: 13px; color: var(--text-secondary); font-family: 'JetBrains Mono', monospace; line-height: 2;">
+      Primary: background linear-gradient(90deg, #3D95CE, #5DAAE0), color white, weight 600<br>
+      Outline: border 1px solid rgba(51,65,85,0.8), color #F1F5F9, weight 500<br>
+      Pill CTA: same as primary + border-radius 100px, padding 10px 24px
+    </div>
+  </section>
+
+  <!-- CARDS -->
+  <section id="cards">
+    <h2>Cards</h2>
+    <p class="section-desc">Two card variants: glass (default) and glow (highlighted). Both use glassmorphism with backdrop blur.</p>
+
+    <div class="card-grid">
+      <div class="card-demo glass">
+        <h4>Glass Card</h4>
+        <p>Default card style with subtle border and backdrop blur. Used for feature cards, testimonials, pricing.</p>
+      </div>
+      <div class="card-demo glow">
+        <h4>Glow Card</h4>
+        <p>Highlighted variant with stronger border and ambient glow shadow. Used for the featured pricing tier.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TERMINAL -->
+  <section id="terminal">
+    <h2>Terminal</h2>
+    <p class="section-desc">macOS-style terminal for code examples. Dark background, colored syntax.</p>
+
+    <div class="terminal-demo">
+      <div class="header">
+        <div class="dot r"></div>
+        <div class="dot y"></div>
+        <div class="dot g"></div>
+        <div class="title">bash — ethernal</div>
+      </div>
+      <div class="body">
+        <div><span class="comment"># Clone & start in under a minute</span></div>
+        <div><span class="prompt">$ </span><span class="cmd">git clone https://github.com/tryethernal/ethernal.git</span></div>
+        <div><span class="prompt">$ </span><span class="cmd">cd ethernal</span></div>
+        <div><span class="prompt">$ </span><span class="cmd">make start</span></div>
+        <div style="margin-top: 12px;"><span class="comment"># That's it. Your explorer is running.</span></div>
+        <div style="margin-top: 8px;"><span class="prompt">█</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ICONS -->
+  <section id="icons">
+    <h2>Icons</h2>
+    <p class="section-desc">MDI icons for UI, custom SVG for GitHub. No generic placeholder icons — use text labels or the Ethernal wordmark.</p>
+
+    <h3>Common MDI Icons</h3>
+    <div class="icon-grid" style="margin-bottom: 24px;">
+      <div class="icon-item"><span class="mdi mdi-check-circle" style="color: #22C55E;"></span><div class="icon-label">check-circle<br>(trust badges)</div></div>
+      <div class="icon-item"><span class="mdi mdi-arrow-right"></span><div class="icon-label">arrow-right<br>(CTAs)</div></div>
+      <div class="icon-item"><span class="mdi mdi-chevron-down"></span><div class="icon-label">chevron-down<br>(dropdowns)</div></div>
+      <div class="icon-item"><span class="mdi mdi-link-variant"></span><div class="icon-label">link-variant<br>(RPC input)</div></div>
+      <div class="icon-item"><span class="mdi mdi-lock"></span><div class="icon-label">lock<br>(browser bar)</div></div>
+      <div class="icon-item"><span class="mdi mdi-code-tags"></span><div class="icon-label">code-tags<br>(open source)</div></div>
+      <div class="icon-item"><span class="mdi mdi-menu"></span><div class="icon-label">menu<br>(mobile nav)</div></div>
+    </div>
+
+    <h3>Custom SVG — GitHub</h3>
+    <div class="svg-icon-demo">
+      <svg fill="currentColor" height="32" width="32" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" style="color: var(--text-primary);">
+        <path d="M208.31,75.68A59.78,59.78,0,0,0,202.93,28,8,8,0,0,0,196,24a59.75,59.75,0,0,0-48,24H124A59.75,59.75,0,0,0,76,24a8,8,0,0,0-6.93,4,59.78,59.78,0,0,0-5.38,47.68A58.14,58.14,0,0,0,56,104v8a56.06,56.06,0,0,0,48.44,55.47A39.8,39.8,0,0,0,96,192v8H72a24,24,0,0,1-24-24A40,40,0,0,0,8,136a8,8,0,0,0,0,16,24,24,0,0,1,24,24,40,40,0,0,0,40,40H96v16a8,8,0,0,0,16,0V192a24,24,0,0,1,48,0v40a8,8,0,0,0,16,0V192a39.8,39.8,0,0,0-8.44-24.53A56.06,56.06,0,0,0,216,112v-8A58.14,58.14,0,0,0,208.31,75.68ZM200,112a40,40,0,0,1-40,40H112a40,40,0,0,1-40-40v-8a41.74,41.74,0,0,1,6.9-22.48A8,8,0,0,0,80,73.83a43.81,43.81,0,0,1,.79-33.58,43.88,43.88,0,0,1,32.32,20.06A8,8,0,0,0,119.82,64h32.35a8,8,0,0,0,6.74-3.69,43.87,43.87,0,0,1,32.32-20.06A43.81,43.81,0,0,1,192,73.83a8.09,8.09,0,0,0,1,7.65A41.72,41.72,0,0,1,200,104Z"/>
+      </svg>
+      <div class="icon-info">
+        <strong>GitHub Icon</strong><br>
+        Phosphor-style SVG, 256x256 viewBox. Used in navbar, open-source section, and footer.
+      </div>
+    </div>
+  </section>
+
+  <!-- IMAGERY -->
+  <section id="imagery">
+    <h2>Imagery</h2>
+    <p class="section-desc">No stock photos. Use code, terminal previews, browser mockups, and UI screenshots.</p>
+
+    <h3>Browser Preview</h3>
+    <div style="color: var(--text-secondary); font-size: 14px; margin-bottom: 20px;">
+      macOS-style window chrome with red/yellow/green dots, lock icon + domain in URL bar, dark glass background.
+    </div>
+
+    <h3>Avatars</h3>
+    <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 12px;">Initials with gradient backgrounds, 48px round, for testimonial authors.</p>
+    <div class="avatar-grid">
+      <div class="avatar-demo" style="background: linear-gradient(135deg, #3D95CE, rgba(61, 149, 206, 0.6));">AC</div>
+      <div class="avatar-demo" style="background: linear-gradient(135deg, #6366F1, #A855F7);">SK</div>
+      <div class="avatar-demo" style="background: linear-gradient(135deg, #10B981, #14B8A6);">JP</div>
+    </div>
+
+    <h3>Partner Logos</h3>
+    <p style="color: var(--text-secondary); font-size: 14px;">
+      Text initials with colored circles (pill style) — not actual logos. Consensys, Rakuten, Zilliqa, Primex, Entangle, Smart Trade.
+    </p>
+  </section>
+
+  <!-- VOICE -->
+  <section id="voice">
+    <h2>Voice & Tone</h2>
+    <p class="section-desc">Direct, confident, developer-friendly. No hype, no jargon for its own sake. Technical but approachable.</p>
+
+    <div class="voice-grid">
+      <div class="voice-card do">
+        <h4 style="color: #22C55E;">Do</h4>
+        <ul>
+          <li><span class="mdi mdi-check-circle"></span> Use concrete numbers (5 minutes, 10K blocks)</li>
+          <li><span class="mdi mdi-check-circle"></span> Show code examples and terminal commands</li>
+          <li><span class="mdi mdi-check-circle"></span> Address the reader directly (you, your)</li>
+          <li><span class="mdi mdi-check-circle"></span> Be specific about what Ethernal does</li>
+          <li><span class="mdi mdi-check-circle"></span> Use developer terminology correctly</li>
+          <li><span class="mdi mdi-check-circle"></span> Short sentences, lead with the benefit</li>
+        </ul>
+      </div>
+      <div class="voice-card dont">
+        <h4 style="color: #E72732;">Don't</h4>
+        <ul>
+          <li><span class="mdi mdi-close-circle"></span> Use hype words (revolutionary, game-changing)</li>
+          <li><span class="mdi mdi-close-circle"></span> Overuse emojis (🍷 in footer is the only one)</li>
+          <li><span class="mdi mdi-close-circle"></span> Make claims without proof</li>
+          <li><span class="mdi mdi-close-circle"></span> Use jargon without purpose</li>
+          <li><span class="mdi mdi-close-circle"></span> Sound corporate or stiff</li>
+          <li><span class="mdi mdi-close-circle"></span> Use generic placeholder icons</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Headline Patterns</h3>
+    <div style="color: var(--text-secondary); font-size: 14px; line-height: 2;">
+      <code style="color: var(--primary-light);">[Benefit] for your [thing]</code> → "Etherscan for your blockchain"<br>
+      <code style="color: var(--primary-light);">[Action] in [timeframe]</code> → "Deploy in 5 minutes"<br>
+      <code style="color: var(--primary-light);">Built for [audience]</code> → "Built for Developers"<br>
+      <code style="color: var(--primary-light);">[Statement]. [Support].</code> → "Built in the open. MIT licensed."
+    </div>
+  </section>
+
+  <!-- MESSAGING -->
+  <section id="messaging">
+    <h2>Key Messaging</h2>
+    <p class="section-desc">Core messages used across all marketing materials.</p>
+
+    <div class="message-item">
+      <div class="msg-label">Tagline</div>
+      <div class="msg-text" style="font-family: 'Exo', sans-serif; font-size: 1.4rem;">
+        <span class="gradient-text-demo">Etherscan</span> for your blockchain
+      </div>
+    </div>
+
+    <div class="message-item">
+      <div class="msg-label">Value Propositions</div>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px;">
+        <span style="background: rgba(61,149,206,0.1); border: 1px solid rgba(61,149,206,0.25); color: #5DAAE0; padding: 6px 14px; border-radius: 100px; font-size: 13px;">Deploy in 5 minutes</span>
+        <span style="background: rgba(61,149,206,0.1); border: 1px solid rgba(61,149,206,0.25); color: #5DAAE0; padding: 6px 14px; border-radius: 100px; font-size: 13px;">Open source, MIT licensed</span>
+        <span style="background: rgba(61,149,206,0.1); border: 1px solid rgba(61,149,206,0.25); color: #5DAAE0; padding: 6px 14px; border-radius: 100px; font-size: 13px;">Works with any EVM chain</span>
+        <span style="background: rgba(61,149,206,0.1); border: 1px solid rgba(61,149,206,0.25); color: #5DAAE0; padding: 6px 14px; border-radius: 100px; font-size: 13px;">Self-hostable with Docker</span>
+        <span style="background: rgba(61,149,206,0.1); border: 1px solid rgba(61,149,206,0.25); color: #5DAAE0; padding: 6px 14px; border-radius: 100px; font-size: 13px;">Full branding control</span>
+      </div>
+    </div>
+
+    <div class="message-item">
+      <div class="msg-label">Trust Badges</div>
+      <div style="display: flex; gap: 20px; margin-top: 8px; color: var(--text-secondary); font-size: 14px;">
+        <span><span class="mdi mdi-check-circle" style="color: #22C55E; margin-right: 6px;"></span>No credit card required</span>
+        <span><span class="mdi mdi-check-circle" style="color: #22C55E; margin-right: 6px;"></span>7-day free trial</span>
+        <span><span class="mdi mdi-check-circle" style="color: #22C55E; margin-right: 6px;"></span>MIT licensed</span>
+      </div>
+    </div>
+
+    <div class="message-item">
+      <div class="msg-label">Social Proof</div>
+      <div class="msg-text" style="font-size: 0.95rem; color: var(--text-secondary);">
+        Trusted by teams at <strong style="color: var(--text-primary);">Consensys</strong>, <strong style="color: var(--text-primary);">Rakuten</strong>, <strong style="color: var(--text-primary);">Zilliqa</strong>, <strong style="color: var(--text-primary);">Primex</strong>, <strong style="color: var(--text-primary);">Entangle</strong>, <strong style="color: var(--text-primary);">Smart Trade</strong>
+      </div>
+    </div>
+
+    <div class="message-item">
+      <div class="msg-label">CTAs</div>
+      <div style="display: flex; gap: 12px; margin-top: 8px;">
+        <button class="btn-demo primary" style="font-size: 14px; padding: 10px 20px;">Get Started Free <span class="mdi mdi-arrow-right"></span></button>
+        <button class="btn-demo outline" style="font-size: 14px; padding: 10px 20px;">Read the Docs</button>
+      </div>
+    </div>
+
+    <div class="message-item">
+      <div class="msg-label">Links</div>
+      <div style="font-size: 13px; font-family: 'JetBrains Mono', monospace; color: var(--text-secondary); line-height: 2;">
+        App: https://app.ethernal.com<br>
+        GitHub: https://github.com/tryethernal/ethernal<br>
+        Docs: https://doc.tryethernal.com<br>
+        Discord: https://discord.gg/jYCER6Mh<br>
+        Blog: https://blog.tryethernal.com<br>
+        Contact: contact@tryethernal.com
+      </div>
+    </div>
+  </section>
+
+  <footer class="kit-footer">
+    <div style="font-family: 'Exo', sans-serif; font-weight: 600; font-size: 1.2rem; margin-bottom: 8px;">Ethernal</div>
+    Made with care in France 🍷
+  </footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,387 @@
+{
+  "brand": {
+    "name": "Ethernal",
+    "tagline": "Etherscan for your blockchain",
+    "description": "Open-source block explorer for EVM-based chains",
+    "origin": "Made with care in France 🍷",
+    "website": "https://tryethernal.com",
+    "app_url": "https://app.ethernal.com",
+    "github": "https://github.com/tryethernal/ethernal",
+    "discord": "https://discord.gg/jYCER6Mh",
+    "docs": "https://doc.tryethernal.com",
+    "blog": "https://blog.tryethernal.com",
+    "contact_email": "contact@tryethernal.com"
+  },
+
+  "logo": {
+    "type": "wordmark",
+    "text": "Ethernal",
+    "font_family": "Exo",
+    "font_weight": 600,
+    "usage_notes": "The logo is TEXT ONLY — the word 'Ethernal' in Exo 600. There is NO icon, symbol, or SVG logo. Never fabricate one.",
+    "variants": {
+      "primary": { "color": "#3D95CE", "usage": "On light backgrounds, in-app" },
+      "white": { "color": "#FFFFFF", "usage": "On dark backgrounds, landing page, marketing" },
+      "gradient": { "background": "linear-gradient(90deg, #3D95CE, #5DAAE0)", "usage": "Special emphasis, hero text" }
+    },
+    "minimum_clear_space": "0.5em on all sides",
+    "forbidden": [
+      "Do not add icons or symbols before/after the wordmark",
+      "Do not use fonts other than Exo",
+      "Do not stretch, skew, or rotate the wordmark",
+      "Do not use drop shadows or outlines on the wordmark"
+    ]
+  },
+
+  "colors": {
+    "primary": {
+      "default": "#3D95CE",
+      "light": "#5DAAE0",
+      "dark": "#29648E",
+      "gradient": "linear-gradient(90deg, #3D95CE, #5DAAE0)",
+      "usage": "Primary CTAs, links, accent elements, gradient text"
+    },
+    "semantic": {
+      "success": "#22C55E",
+      "error": "#E72732",
+      "warning": "#E78227",
+      "info": "#2196F3"
+    },
+    "dark_theme": {
+      "background": "#0B1120",
+      "card": "#111827",
+      "card_hover": "#1A2234",
+      "surface": "#151D2E",
+      "navbar": "rgba(11, 17, 32, 0.8)"
+    },
+    "light_theme": {
+      "background": "#F5F5F5",
+      "primary": "#3D95CE",
+      "secondary": "#424242",
+      "accent": "#29648E"
+    },
+    "text": {
+      "primary": "#F1F5F9",
+      "secondary": "#94A3B8",
+      "muted": "#64748B",
+      "on_primary": "#FFFFFF"
+    },
+    "borders": {
+      "subtle": "rgba(61, 149, 206, 0.22)",
+      "glow": "rgba(61, 149, 206, 0.4)",
+      "section_divider": "rgba(61, 149, 206, 0.08)"
+    }
+  },
+
+  "typography": {
+    "heading": {
+      "family": "Exo",
+      "weights": [400, 500, 600, 700],
+      "usage": "Page headlines, section titles, logo, pricing amounts",
+      "google_fonts_url": "https://fonts.googleapis.com/css2?family=Exo:wght@400;500;600;700&display=swap"
+    },
+    "body": {
+      "family": "Roboto",
+      "weights": [300, 400, 500, 700],
+      "usage": "Body text, descriptions, UI elements, buttons",
+      "google_fonts_url": "https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+    },
+    "monospace": {
+      "family": "JetBrains Mono",
+      "fallback": "Fira Code, monospace",
+      "usage": "Code blocks, terminal previews, technical content"
+    },
+    "scale": {
+      "hero_headline": "clamp(2.2rem, 5vw, 3.5rem)",
+      "section_headline": "clamp(1.8rem, 4vw, 2.8rem)",
+      "card_title": "1.15rem",
+      "body": "1.05rem",
+      "small": "0.875rem",
+      "caption": "13px"
+    },
+    "style_notes": {
+      "letter_spacing_headlines": "-0.02em",
+      "line_height_body": "1.7",
+      "uppercase_labels": "12px, font-weight 600, letter-spacing 0.1em"
+    }
+  },
+
+  "icons": {
+    "library": "Material Design Icons (MDI) via @mdi/font",
+    "secondary_library": "Iconify with Arcticons set",
+    "custom_svgs": {
+      "github": {
+        "viewBox": "0 0 256 256",
+        "path": "M208.31,75.68A59.78,59.78,0,0,0,202.93,28,8,8,0,0,0,196,24a59.75,59.75,0,0,0-48,24H124A59.75,59.75,0,0,0,76,24a8,8,0,0,0-6.93,4,59.78,59.78,0,0,0-5.38,47.68A58.14,58.14,0,0,0,56,104v8a56.06,56.06,0,0,0,48.44,55.47A39.8,39.8,0,0,0,96,192v8H72a24,24,0,0,1-24-24A40,40,0,0,0,8,136a8,8,0,0,0,0,16,24,24,0,0,1,24,24,40,40,0,0,0,40,40H96v16a8,8,0,0,0,16,0V192a24,24,0,0,1,48,0v40a8,8,0,0,0,16,0V192a39.8,39.8,0,0,0-8.44-24.53A56.06,56.06,0,0,0,216,112v-8A58.14,58.14,0,0,0,208.31,75.68ZM200,112a40,40,0,0,1-40,40H112a40,40,0,0,1-40-40v-8a41.74,41.74,0,0,1,6.9-22.48A8,8,0,0,0,80,73.83a43.81,43.81,0,0,1,.79-33.58,43.88,43.88,0,0,1,32.32,20.06A8,8,0,0,0,119.82,64h32.35a8,8,0,0,0,6.74-3.69,43.87,43.87,0,0,1,32.32-20.06A43.81,43.81,0,0,1,192,73.83a8.09,8.09,0,0,0,1,7.65A41.72,41.72,0,0,1,200,104Z",
+        "usage": "Navbar, open-source section, footer links"
+      }
+    },
+    "common_mdi_icons": {
+      "check_circle": "mdi-check-circle (color: #22C55E) — trust badges, feature lists",
+      "arrow_right": "mdi-arrow-right — CTA buttons",
+      "chevron_down": "mdi-chevron-down — dropdown menus",
+      "link": "mdi-link-variant — RPC URL input prefix",
+      "lock": "mdi-lock — browser preview URL bar",
+      "code_tags": "mdi-code-tags — open source badge",
+      "menu": "mdi-menu — mobile hamburger"
+    }
+  },
+
+  "components": {
+    "buttons": {
+      "primary": {
+        "background": "linear-gradient(90deg, #3D95CE, #5DAAE0)",
+        "color": "#FFFFFF",
+        "font_weight": 600,
+        "letter_spacing": "0.3px",
+        "hover_shadow": "0 4px 20px rgba(61, 149, 206, 0.4)",
+        "border_radius": "8px (lg) or pill (rounded-xl for CTA)"
+      },
+      "outline": {
+        "background": "transparent",
+        "border": "1px solid rgba(51, 65, 85, 0.8)",
+        "color": "#F1F5F9",
+        "font_weight": 500,
+        "hover_border": "rgba(100, 116, 139, 0.6)",
+        "hover_bg": "rgba(61, 149, 206, 0.06)"
+      },
+      "navbar_cta": {
+        "background": "linear-gradient(90deg, #3D95CE, #5DAAE0)",
+        "border_radius": "100px (pill)",
+        "padding": "8px 20px",
+        "font_size": "14px"
+      }
+    },
+    "cards": {
+      "glass": {
+        "background": "rgba(17, 24, 39, 0.7)",
+        "backdrop_filter": "blur(12px)",
+        "border": "1px solid rgba(61, 149, 206, 0.22)",
+        "border_radius": "16px",
+        "shadow": "0 4px 24px rgba(0, 0, 0, 0.3)",
+        "hover_shadow": "0 8px 32px rgba(61, 149, 206, 0.15), 0 4px 24px rgba(0, 0, 0, 0.3)"
+      },
+      "glow": {
+        "background": "rgba(17, 24, 39, 0.8)",
+        "border": "1px solid rgba(61, 149, 206, 0.4)",
+        "shadow": "0 0 40px rgba(61, 149, 206, 0.12), 0 4px 24px rgba(0, 0, 0, 0.3)",
+        "usage": "Highlighted pricing card, featured items"
+      }
+    },
+    "terminal": {
+      "background": "#0D1117",
+      "header_bg": "#161B22",
+      "border": "1px solid rgba(61, 149, 206, 0.2)",
+      "border_radius": "12px",
+      "font_family": "JetBrains Mono",
+      "dots": { "red": "#FF5F57", "yellow": "#FEBC2E", "green": "#28C840" },
+      "text_colors": { "prompt": "#58A6FF", "command": "#E6EDF3", "comment": "#484F58" }
+    },
+    "pill_badge": {
+      "background": "rgba(61, 149, 206, 0.1)",
+      "border": "1px solid rgba(61, 149, 206, 0.25)",
+      "color": "#5DAAE0",
+      "border_radius": "100px",
+      "font_size": "13px",
+      "font_weight": 500,
+      "usage": "Subpage labels (USE CASE, INTEGRATION, FEATURE)"
+    },
+    "gradient_text": {
+      "background": "linear-gradient(90deg, #3D95CE, #5DAAE0)",
+      "background_clip": "text",
+      "text_fill_color": "transparent",
+      "usage": "Hero headline keyword, section headline accents"
+    }
+  },
+
+  "spacing": {
+    "section_padding": "100px 0 (desktop), 60px 0 (mobile)",
+    "container_max_width": "1200px (content), 1280px (hero)",
+    "card_padding": "28px-32px",
+    "gap_small": "8px",
+    "gap_medium": "16px",
+    "gap_large": "24px"
+  },
+
+  "imagery": {
+    "style": "No stock photos. Use code, terminal previews, and UI mockups instead.",
+    "browser_preview": {
+      "style": "macOS-style window chrome with red/yellow/green dots",
+      "url_bar": "Lock icon + domain text",
+      "background": "Dark glass with border"
+    },
+    "avatars": {
+      "style": "Initials with gradient backgrounds, 48px round",
+      "gradients": [
+        "linear-gradient(135deg, #3D95CE, rgba(61, 149, 206, 0.6))",
+        "linear-gradient(135deg, #6366F1, #A855F7)",
+        "linear-gradient(135deg, #10B981, #14B8A6)"
+      ]
+    },
+    "partner_logos": "Text initials with colored circles (pill style), not actual logos"
+  },
+
+  "visual_guidelines": {
+    "overview": "All visuals use browser preview mockups with consistent styling. No screenshots, stock photos, or placeholder images.",
+    "browser_preview_frame": {
+      "container": {
+        "background": "rgba(17, 24, 39, 0.7)",
+        "backdrop_filter": "blur(16px)",
+        "border": "1px solid rgba(61, 149, 206, 0.22)",
+        "border_radius": "16px",
+        "overflow": "hidden",
+        "box_shadow": "0 25px 60px rgba(0, 0, 0, 0.4)"
+      },
+      "header": {
+        "background": "#161B22",
+        "padding": "12px 16px",
+        "layout": "flex, space-between, center",
+        "border_bottom": "1px solid rgba(61, 149, 206, 0.12)",
+        "dots": { "size": "10px", "red": "#FF5F56", "yellow": "#FEBC2E", "green": "#28C840" },
+        "url_bar": {
+          "background": "rgba(11, 17, 32, 0.8)",
+          "border_radius": "6px",
+          "padding": "4px 12px",
+          "font": "JetBrains Mono, 11px",
+          "color": "#64748B",
+          "prefix_icon": "mdi-lock (12px, #64748B)"
+        }
+      },
+      "body": {
+        "padding": "20px",
+        "font": "JetBrains Mono / Roboto, 12px"
+      }
+    },
+    "mockup_patterns": {
+      "terminal": {
+        "usage": "CLI commands, installation steps, workflow configs",
+        "prompt_color": "#58A6FF",
+        "command_color": "#E6EDF3",
+        "comment_color": "#484F58",
+        "success_color": "#22C55E",
+        "line_height": "1.8"
+      },
+      "data_table": {
+        "usage": "Lists of transactions, deposits, batches, token transfers",
+        "header": "uppercase, 10px, #64748B, letter-spacing 0.06em",
+        "row_border": "1px solid rgba(61, 149, 206, 0.05)",
+        "hash_color": "#5DAAE0",
+        "address_color": "#94A3B8",
+        "value_color": "#F1F5F9"
+      },
+      "status_chips": {
+        "usage": "Status indicators (Success, Pending, Reverted, etc.)",
+        "base": "padding 2px 10px, border-radius 4px, font-size 10px, font-weight 600",
+        "success": { "bg": "rgba(34, 197, 94, 0.1)", "color": "#22C55E", "border": "rgba(34, 197, 94, 0.2)" },
+        "error": { "bg": "rgba(239, 68, 68, 0.1)", "color": "#EF4444", "border": "rgba(239, 68, 68, 0.2)" },
+        "pending": { "bg": "rgba(251, 191, 36, 0.1)", "color": "#FBBF24", "border": "rgba(251, 191, 36, 0.2)" },
+        "info": { "bg": "rgba(61, 149, 206, 0.1)", "color": "#5DAAE0", "border": "rgba(61, 149, 206, 0.2)" }
+      },
+      "type_badges": {
+        "usage": "Token types, data formats (ERC-20, ERC-721, Blob, Calldata)",
+        "erc20": { "bg": "rgba(34, 197, 94, 0.1)", "color": "#22C55E" },
+        "erc721": { "bg": "rgba(168, 85, 247, 0.1)", "color": "#A78BFA" },
+        "erc1155": { "bg": "rgba(251, 191, 36, 0.1)", "color": "#FBBF24" }
+      },
+      "form_fields": {
+        "usage": "Settings forms, configuration UIs",
+        "label": "uppercase, 10px, #64748B, letter-spacing 0.06em",
+        "input": {
+          "padding": "8px 12px",
+          "border_radius": "6px",
+          "background": "rgba(11, 17, 32, 0.6)",
+          "border": "1px solid rgba(61, 149, 206, 0.12)",
+          "color": "#CBD5E1",
+          "font": "JetBrains Mono, 11px"
+        }
+      },
+      "call_trace": {
+        "usage": "Transaction debug traces with call trees",
+        "opcodes": {
+          "CALL": { "bg": "rgba(61, 149, 206, 0.12)", "color": "#3D95CE" },
+          "STATICCALL": { "bg": "rgba(167, 139, 250, 0.12)", "color": "#A78BFA" },
+          "LOG": { "bg": "rgba(45, 212, 191, 0.12)", "color": "#2DD4BF" },
+          "REVERT": { "bg": "rgba(239, 68, 68, 0.12)", "color": "#EF4444" }
+        },
+        "indent_step": "20px",
+        "address_color": "#5DAAE0",
+        "method_color": "#CBD5E1",
+        "gas_color": "#64748B"
+      },
+      "stepper": {
+        "usage": "Lifecycle stages (deposit, withdrawal, transaction finality)",
+        "connector": "2px solid, rgba(61, 149, 206, 0.15) inactive, #3D95CE active",
+        "step_dot": "20px circle",
+        "completed_color": "#22C55E",
+        "active_color": "#3D95CE",
+        "pending_color": "#334155"
+      },
+      "stats_cards": {
+        "usage": "Dashboard metrics, analytics summaries",
+        "background": "rgba(11, 17, 32, 0.5)",
+        "border": "1px solid rgba(61, 149, 206, 0.08)",
+        "border_radius": "8px",
+        "padding": "12px",
+        "label": "uppercase, 10px, #64748B",
+        "value": "#F1F5F9, 14-18px, font-weight 600"
+      }
+    },
+    "consistency_rules": [
+      "Every FeatureSection uses browser preview mockups in the #visual slot",
+      "All mockups use the same browser frame (dots + URL bar + body)",
+      "Use real-looking data (addresses, hashes, amounts) not Lorem Ipsum",
+      "Keep font sizes small (10-13px) to feel like a real UI",
+      "Use the standard color palette for all mockup elements",
+      "Status indicators always use the defined chip pattern",
+      "Tables use grid layout with consistent column sizing",
+      "Truncate addresses as 0x1234…5678 (first 4 + last 4 hex chars)",
+      "Include URL bar text that matches the feature context"
+    ]
+  },
+
+  "voice": {
+    "tone": ["Direct", "Confident", "Developer-friendly", "Honest"],
+    "style": ["Short sentences", "Lead with benefit", "Show don't tell", "Code over marketing speak"],
+    "personality": ["Technical but approachable", "Practical", "Quietly confident", "Slight wit"],
+    "do": [
+      "Use concrete numbers (5 minutes, 10K blocks)",
+      "Show code examples and terminal commands",
+      "Address the reader directly (you, your)",
+      "Be specific about what Ethernal does",
+      "Use developer terminology correctly"
+    ],
+    "dont": [
+      "Use empty hype words (revolutionary, game-changing, next-gen)",
+      "Overuse emojis (🍷 in footer is the only one)",
+      "Make claims without proof",
+      "Use jargon without purpose",
+      "Sound corporate or stiff",
+      "Use em dashes (—) or double hyphens (--) in copy. Rewrite sentences to avoid them."
+    ],
+    "headline_patterns": [
+      "[Benefit] for your [thing]",
+      "[Action] in [timeframe]",
+      "Built for [audience]",
+      "[Simple statement]. [Supporting statement]."
+    ]
+  },
+
+  "messaging": {
+    "hero": "Etherscan for your blockchain",
+    "value_props": [
+      "Deploy in 5 minutes",
+      "Open source, MIT licensed",
+      "Works with any EVM chain",
+      "Self-hostable with Docker",
+      "Full branding control"
+    ],
+    "trust_badges": [
+      "No credit card required",
+      "7-day free trial",
+      "MIT licensed"
+    ],
+    "cta_primary": "Get Started Free",
+    "cta_secondary": "Read the Docs",
+    "social_proof": "Trusted by teams at Consensys, Rakuten, Zilliqa, Primex, Entangle, Smart Trade"
+  }
+}
