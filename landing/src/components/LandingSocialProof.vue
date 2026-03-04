@@ -22,11 +22,10 @@
                             "{{ testimonial.quote }}"
                         </p>
                         <div class="d-flex align-center ga-4 mt-auto">
-                            <img
-                                :src="testimonial.avatar"
-                                :alt="testimonial.name"
+                            <div
                                 class="testimonial-avatar"
-                            />
+                                :aria-label="testimonial.name"
+                            >{{ testimonial.initials }}</div>
                             <div>
                                 <div style="color: #F1F5F9; font-size: 15px; font-weight: 600;">{{ testimonial.name }}</div>
                                 <div style="color: #64748B; font-size: 13px;">{{ testimonial.role }}</div>
@@ -45,19 +44,19 @@ const testimonials = [
         quote: 'Ethernal is exactly what we needed for our L2. Set up took 10 minutes and our community had a fully branded explorer the same day.',
         name: 'Alex C.',
         role: 'CTO, DeFi Protocol',
-        avatar: '/avatars/alex.png'
+        initials: 'AC'
     },
     {
         quote: 'We replaced our custom-built explorer with Ethernal. The transaction tracing alone saved our team hours of debugging every week.',
         name: 'Sarah K.',
         role: 'Lead Engineer, Web3 Startup',
-        avatar: '/avatars/sarah.png'
+        initials: 'SK'
     },
     {
         quote: 'The self-hosted option was the deciding factor. We run it on our own infra with Docker and have full control over our data.',
         name: 'James P.',
         role: 'DevOps, Enterprise Chain',
-        avatar: '/avatars/james.png'
+        initials: 'JP'
     }
 ];
 </script>
@@ -94,7 +93,14 @@ const testimonials = [
     height: 48px;
     border-radius: 50%;
     flex-shrink: 0;
-    object-fit: cover;
     border: 2px solid rgba(61, 149, 206, 0.22);
+    background: linear-gradient(135deg, #3D95CE, #5DAAE0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
 }
 </style>

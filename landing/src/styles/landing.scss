@@ -285,6 +285,9 @@ body {
 
 // Reduced motion
 @media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
     .reveal, .reveal-left, .reveal-right {
         opacity: 1;
         transform: none;

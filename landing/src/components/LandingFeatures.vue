@@ -435,12 +435,12 @@ function l2Row(block, from, value, status, success) {
 const PreviewNFTGallery = markRaw({
     render() {
         const nfts = [
-            { id: '#7804', collection: 'CryptoFunks', img: '/nft/punk1.png' },
-            { id: '#3100', collection: 'Bored Ape Brunch Club', img: '/nft/ape1.png' },
-            { id: '#8857', collection: 'Kazuki', img: '/nft/anime1.png' },
-            { id: '#1234', collection: 'CryptoFunks', img: '/nft/alien1.png' },
-            { id: '#5621', collection: 'Noodles', img: '/nft/doodle1.png' },
-            { id: '#9901', collection: 'Bored Ape Brunch Club', img: '/nft/ape2.png' },
+            { id: '#7804', collection: 'CryptoFunks', color: '#6366F1' },
+            { id: '#3100', collection: 'Bored Ape Brunch Club', color: '#F59E0B' },
+            { id: '#8857', collection: 'Kazuki', color: '#EC4899' },
+            { id: '#1234', collection: 'CryptoFunks', color: '#10B981' },
+            { id: '#5621', collection: 'Noodles', color: '#3B82F6' },
+            { id: '#9901', collection: 'Bored Ape Brunch Club', color: '#EF4444' },
         ];
         return h('div', { class: 'mock-nft-gallery' }, [
             h('div', { class: 'mock-nft-header' }, [
@@ -449,8 +449,11 @@ const PreviewNFTGallery = markRaw({
             ]),
             h('div', { class: 'mock-nft-grid' }, nfts.map(nft =>
                 h('div', { class: 'mock-nft-card' }, [
-                    h('div', { class: 'mock-nft-image' }, [
-                        h('img', { src: nft.img, alt: nft.collection + ' ' + nft.id, class: 'mock-nft-img' }),
+                    h('div', {
+                        class: 'mock-nft-image',
+                        style: `background: linear-gradient(135deg, ${nft.color}, ${nft.color}88); display: flex; align-items: center; justify-content: center;`,
+                    }, [
+                        h('span', { style: 'font-size: 18px; font-weight: 700; color: rgba(255,255,255,0.7);' }, nft.id),
                     ]),
                     h('div', { class: 'mock-nft-info' }, [
                         h('span', { class: 'mock-nft-name' }, nft.collection + ' ' + nft.id),
@@ -907,7 +910,7 @@ const featuresRight = computed(() => features.slice(splitIndex));
 .mock-nft-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
 .mock-nft-card { border-radius: 10px; background: rgba(11, 17, 32, 0.5); border: 1px solid rgba(61, 149, 206, 0.08); overflow: hidden; }
 .mock-nft-image { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
-.mock-nft-img { width: 100%; height: 100%; object-fit: cover; }
+
 .mock-nft-info { padding: 8px 10px; }
 .mock-nft-name { display: block; color: #F1F5F9; font-size: 10px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .mock-nft-owner { display: block; color: #64748B; font-size: 9px; margin-top: 2px; }
