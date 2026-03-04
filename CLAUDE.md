@@ -617,6 +617,10 @@ When running queries against the production database:
 - Use `@/` alias for imports from `src/` in frontend code
 - Delete one-off scripts after use — don't leave them in the repo unless they're reusable
 
+## Design Resources
+
+- Browse quality design components, animations, and 3D elements at: https://21st.dev/community/components
+
 ## Documentation Requirements
 
 All new files and functions must include JSDoc documentation. Use the `/**` format (not `/*`).
@@ -747,6 +751,16 @@ Process management server for blockchain synchronization:
 
 - **Always create a PR after completing work.** Once a feature, bugfix, or any code change is done, create a pull request targeting `develop`. This triggers an automated review process.
 
+### Code Review (CodeAnt AI)
+
+Creating a PR automatically triggers a CodeAnt AI review. When asked to check review comments:
+
+1. **Fetch both top-level and inline comments** using `gh api repos/tryethernal/ethernal/pulls/{number}/reviews` and `gh api repos/tryethernal/ethernal/pulls/{number}/comments`.
+2. **Take comments seriously** — most flagged issues are legitimate. Fix them.
+3. **Always verify before acting** — check that the issue actually exists in the code. The reviewer can be wrong. For example, it may flag missing files that actually exist, or claim a check is missing when it's already there.
+4. **Challenge incorrect comments** — if a review comment is wrong, say so explicitly to the user (e.g., "This comment is incorrect because X") rather than silently making unnecessary changes.
+5. **Never remove working code to satisfy a review bot** — if code references real assets, API endpoints, or patterns that work correctly, do not replace them based on a reviewer assumption.
+
 ### End-of-Session Flow
 
 Use `/wrapup` (the **Ethernal** project command, not the global one) when a feature branch is ready. It runs these steps in order:
@@ -766,3 +780,84 @@ After PRs are merged into `develop`, use `/deploy` (the **Ethernal** project com
 5. CI handles Docker builds and deployment — completion is determined by `release_back` and `release_front` jobs (other jobs like `build_and_push_*` are side builds and don't block the deploy)
 
 When user says "merge and deploy", merge the PR with `gh pr merge --squash --admin` first, then run the deploy flow.
+
+---
+
+## Landing Site (`landing/`)
+
+Standalone Vue 3 + Vuetify 3 marketing site, separate from the main app frontend.
+
+### Commands
+
+```bash
+cd landing
+npm run dev          # Dev server (default port 5173)
+npm run build        # Production build to dist/
+```
+
+### Structure
+
+| Directory | Purpose |
+|-----------|---------|
+| `src/components/` | Reusable landing components (Navbar, Footer, Hero, Features, Pricing, etc.) |
+| `src/pages/` | Route-level pages (HomePage, PricingPage, ContactPage, integration pages) |
+| `src/styles/landing.scss` | Global styles, `.landing-section` spacing, button classes |
+| `src/composables/` | Vue composables (useScrollReveal) |
+| `brand-kit/` | Brand specification (JSON + visual audit HTML) |
+
+### Key Patterns
+
+- **FeatureSection.vue**: Reusable component with `#visual` slot for browser preview mockups, supports `inline-icon`, `compact`, `:reverse` props
+- **Browser preview mockup**: macOS-style window chrome (`.preview-header`, `.dot.red/.yellow/.green`, `.preview-url-bar`, `.preview-body`)
+- **Page structure**: `LandingLayout` wrapper → `page-title-bar` header → content sections → `LandingCTA`
+- **API calls**: Use `import.meta.env.VITE_APP_URL` (defaults to `https://app.ethernal.com`, override via `VITE_APP_URL` env var or `.env.development`)
+- **Mega menu navbar**: 3-column dropdown (Development Tools, Infrastructure, L2 Rollups) with icons and descriptions
+
+### Docker Dev
+
+The landing service runs in Docker compose on port 8174. Set `VITE_APP_URL` in `.env.development` to point to the local backend (port 8888).
+
+---
+
+## Marketing & Brand Kit
+
+When creating or editing marketing materials (landing pages, blog posts, emails, social content, ad copy), follow the brand kit specifications.
+
+### Key Files
+
+| File | Purpose |
+|------|---------|
+| `landing/brand-kit/brand-kit.json` | Machine-readable brand spec (colors, typography, components, voice rules) |
+| `landing/brand-kit/index.html` | Visual audit page — open in browser to review all brand elements |
+| `.agents/product-marketing-context.md` | Product positioning, personas, competitive landscape, messaging |
+
+### Brand Rules (Quick Reference)
+
+**Logo:** Text-only wordmark "Ethernal" in Exo 600. NO icon/symbol/SVG exists — never fabricate one.
+
+**Colors:**
+- Primary: `#3D95CE`, Light: `#5DAAE0`, Dark: `#29648E`
+- Gradient: `linear-gradient(90deg, #3D95CE, #5DAAE0)` — for CTAs and accent text
+- Dark backgrounds: `#0B1120` (base), `#111827` (card), `#151D2E` (surface)
+- Text: `#F1F5F9` (primary), `#94A3B8` (secondary), `#64748B` (muted)
+- Borders: `rgba(61, 149, 206, 0.22)` (subtle), `rgba(61, 149, 206, 0.4)` (glow)
+
+**Typography:**
+- Headings: Exo (600-700), letter-spacing -0.02em
+- Body: Roboto (400-500), line-height 1.7
+- Code: JetBrains Mono
+
+**Voice:** Direct, confident, developer-friendly. Short sentences. Lead with benefit. No hype words (revolutionary, game-changing). Use concrete numbers. Show code over marketing speak. Only emoji is 🍷 in footer. Never use em dashes (—) or double hyphens (--) in copy; rewrite sentences to avoid them.
+
+**Tagline:** "Etherscan for your blockchain"
+
+**Trust badges:** No credit card required · 7-day free trial · MIT licensed
+
+**Social proof:** Consensys, Rakuten, Zilliqa, Primex, Entangle, Smart Trade
+
+**Key URLs:**
+- App: `https://app.ethernal.com`
+- Docs: `https://doc.tryethernal.com`
+- GitHub: `https://github.com/tryethernal/ethernal`
+- Discord: `https://discord.gg/jYCER6Mh`
+- Blog: `https://blog.tryethernal.com`
