@@ -4,6 +4,7 @@
  * @module lib/queue
  */
 
+const Sentry = require('@sentry/node');
 const queues = require("../queues");
 const { sanitize } = require("./utils");
 
@@ -26,7 +27,14 @@ const MAX_BATCH_SIZE = 2000;
  */
 const enqueue = (queueName, jobName, data, priority = 1, repeat, delay, unique) => {
     const jobId = unique ? jobName : null;
-    return queues[queueName].add(jobName, data, sanitize({ priority, repeat, jobId, delay }));
+    return Sentry.startSpan({
+        op: 'queue.publish',
+        name: queueName,
+        attributes: {
+            'messaging.destination.name': queueName,
+            'messaging.message.id': jobName,
+        }
+    }, () => queues[queueName].add(jobName, data, sanitize({ priority, repeat, jobId, delay })));
 };
 
 /**

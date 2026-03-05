@@ -112,6 +112,15 @@ All traffic goes through Caddy on Fly.io (`ethernal-caddy` app, `fly.caddy.toml`
 - Self-hosted users generate their own Caddyfile via `generate-env-files.sh` (unaffected)
 - Caddy deploys via `flyctl deploy -c fly.caddy.toml` (also runs in CI as `deploy_caddy` job)
 
+### Sentry Error & Performance Monitoring
+
+Self-hosted Sentry (v26.2.1) runs on a Hetzner CCX33 at `sentry.tryethernal.com`. Credentials in `.credentials.local`.
+
+- **Backend**: `instrument.js` initializes `@sentry/node` using `SENTRY_DSN` env var (Fly.io secret). Workers wrap jobs in `Sentry.startSpan()` with `op: 'queue.process'` for Queue Monitoring.
+- **Frontend**: `@sentry/vue` initialized in `main.js` using `VITE_SENTRY_*` env vars. These are passed as build args to `Dockerfile.caddyfile` from GitHub secrets in CI.
+- **Queue monitoring**: `enqueue()` in `run/lib/queue.js` wraps with `op: 'queue.publish'` spans. All 4 workers use `op: 'queue.process'` spans with `messaging.destination.name` and `messaging.message.id` attributes.
+- **Proxy**: Caddy on Fly.io proxies `/api/2/*` to `sentry.tryethernal.com` so frontend events route through the explorer's own domain.
+
 ### Request Flow
 
 ```
