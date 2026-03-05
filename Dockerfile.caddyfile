@@ -10,6 +10,15 @@ RUN npm run build
 FROM node:18-alpine AS app-build
 RUN apk add --no-cache python3 make g++ gcc
 WORKDIR /app
+
+ARG VITE_SENTRY_DSN_SECRET
+ARG VITE_SENTRY_DSN_PROJECT_ID
+ARG VITE_SENTRY_AUTH_TOKEN
+ARG VITE_SENTRY_ORG
+ARG VITE_SENTRY_PROJECT
+ARG VITE_SENTRY_URL
+ARG VITE_SENTRY_ENABLED
+
 COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile --network-timeout 100000
 COPY public/ ./public/
@@ -22,7 +31,14 @@ COPY ads.txt ./
 COPY .env* ./
 COPY jsconfig.json ./
 COPY .firebaserc ./
-ENV NODE_ENV=production
+ENV NODE_ENV=production \
+    VITE_SENTRY_DSN_SECRET=$VITE_SENTRY_DSN_SECRET \
+    VITE_SENTRY_DSN_PROJECT_ID=$VITE_SENTRY_DSN_PROJECT_ID \
+    VITE_SENTRY_AUTH_TOKEN=$VITE_SENTRY_AUTH_TOKEN \
+    VITE_SENTRY_ORG=$VITE_SENTRY_ORG \
+    VITE_SENTRY_PROJECT=$VITE_SENTRY_PROJECT \
+    VITE_SENTRY_URL=$VITE_SENTRY_URL \
+    VITE_SENTRY_ENABLED=$VITE_SENTRY_ENABLED
 RUN yarn build
 
 # Caddy with static files

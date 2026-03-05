@@ -10,13 +10,14 @@ const { managedWorkerError } = require('../lib/errors');
 priorities['low'].forEach(jobName => {
     const worker = new Worker(
         jobName,
-        job => {
-            return Sentry.startSpan(
-                { name: jobName }, () => {
-                    return jobs[jobName](job)
-                }
-            )
-        },
+        job => Sentry.startSpan({
+            op: 'queue.process',
+            name: jobName,
+            attributes: {
+                'messaging.destination.name': jobName,
+                'messaging.message.id': job.id,
+            }
+        }, () => jobs[jobName](job)),
         {
             concurrency: 10,
             maxStalledCount: 5,
