@@ -121,7 +121,15 @@ jobs:
       - uses: superfly/flyctl-actions/setup-flyctl@master
 
       - name: Deploy Caddy
-        run: flyctl deploy -c fly.caddy.toml
+        run: |
+          flyctl deploy -c fly.caddy.toml \
+            --build-arg VITE_SENTRY_DSN_SECRET=${{ secrets.VITE_SENTRY_DSN_SECRET }} \
+            --build-arg VITE_SENTRY_DSN_PROJECT_ID=${{ secrets.VITE_SENTRY_DSN_PROJECT_ID }} \
+            --build-arg VITE_SENTRY_AUTH_TOKEN=${{ secrets.VITE_SENTRY_AUTH_TOKEN }} \
+            --build-arg VITE_SENTRY_ORG=${{ secrets.VITE_SENTRY_ORG }} \
+            --build-arg VITE_SENTRY_PROJECT=${{ secrets.VITE_SENTRY_PROJECT }} \
+            --build-arg VITE_SENTRY_URL=${{ secrets.VITE_SENTRY_URL }} \
+            --build-arg VITE_SENTRY_ENABLED=${{ secrets.VITE_SENTRY_ENABLED }}
 
   deploy_back_amd64:
     if: startsWith(github.ref, 'refs/tags/v')

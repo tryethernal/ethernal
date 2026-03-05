@@ -8,13 +8,14 @@ const { getHistoricalBlocksProcessingConcurrency } = require('../lib/env');
 
 const worker = new Worker(
     'processHistoricalBlocks',
-    job => {
-        return Sentry.startSpan(
-            { name: 'processHistoricalBlocks' }, () => {
-                return jobs['processBlock'](job)
-            }
-        )
-    },
+    job => Sentry.startSpan({
+        op: 'queue.process',
+        name: 'processHistoricalBlocks',
+        attributes: {
+            'messaging.destination.name': 'processHistoricalBlocks',
+            'messaging.message.id': job.id,
+        }
+    }, () => jobs['processBlock'](job)),
     {
         concurrency: getHistoricalBlocksProcessingConcurrency(),
         connection,
