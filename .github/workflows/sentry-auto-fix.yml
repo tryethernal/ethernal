@@ -12,6 +12,7 @@ permissions:
   contents: write
   issues: write
   pull-requests: write
+  id-token: write
 
 concurrency:
   group: sentry-fix-${{ github.event.issue.number || github.event.pull_request.number }}
@@ -67,7 +68,7 @@ jobs:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           label_trigger: sentry
           claude_args: "--model claude-sonnet-4-20250514 --max-turns 50"
-          direct_prompt: |
+          prompt: |
             You are an autonomous error-fixing agent for the Ethernal project — an EVM block explorer.
             A Sentry error has been auto-reported as GitHub issue #${{ github.event.issue.number }}.
 
@@ -250,7 +251,7 @@ jobs:
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           claude_args: "--model claude-sonnet-4-20250514 --max-turns 50"
-          direct_prompt: |
+          prompt: |
             You are processing code review feedback on PR #${{ steps.pr_info.outputs.pr_number }} (branch: ${{ steps.pr_info.outputs.branch }}).
 
             ## Step 1: Fetch Review Comments
