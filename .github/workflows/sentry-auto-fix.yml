@@ -2,7 +2,12 @@ name: Sentry Auto-Fix
 
 on:
   issues:
-    types: [opened, labeled]
+    types: [labeled]
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: 'Issue number to triage'
+        required: true
   pull_request_review:
     types: [submitted]
   pull_request_review_thread:
@@ -19,19 +24,41 @@ permissions:
 jobs:
   triage-and-fix:
     concurrency:
-      group: sentry-triage-${{ github.event.issue.number }}
+      group: sentry-triage-${{ github.event.issue.number || github.event.inputs.issue_number }}
       cancel-in-progress: false
     if: >
-      github.event_name == 'issues' &&
-      contains(github.event.issue.labels.*.name, 'sentry') &&
-      !contains(github.event.issue.labels.*.name, 'needs-human') &&
-      github.event.sender.login != 'github-actions[bot]' &&
-      github.event.sender.login != 'claude[bot]' &&
-      (github.event.sender.login == 'antoinedc' ||
-       github.event.sender.type == 'Bot')
+      (
+        (github.event_name == 'issues' &&
+         contains(github.event.issue.labels.*.name, 'sentry') &&
+         !contains(github.event.issue.labels.*.name, 'needs-human') &&
+         github.event.sender.login != 'github-actions[bot]' &&
+         github.event.sender.login != 'claude[bot]' &&
+         (github.event.sender.login == 'antoinedc' ||
+          github.event.sender.type == 'Bot'))
+        ||
+        github.event_name == 'workflow_dispatch'
+      )
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
+      - name: Get issue info
+        id: issue_info
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            ISSUE_NUM="${{ github.event.inputs.issue_number }}"
+          else
+            ISSUE_NUM="${{ github.event.issue.number }}"
+          fi
+          echo "number=$ISSUE_NUM" >> $GITHUB_OUTPUT
+
+          ISSUE_DATA=$(gh issue view "$ISSUE_NUM" --repo ${{ github.repository }} --json title,body)
+          echo "title=$(echo "$ISSUE_DATA" | jq -r '.title')" >> $GITHUB_OUTPUT
+
+          # Save body to file to avoid escaping issues
+          echo "$ISSUE_DATA" | jq -r '.body' > /tmp/issue-body.txt
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
@@ -72,7 +99,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Extract Sentry issue ID from issue body
-          SENTRY_ISSUE_ID=$(echo '${{ github.event.issue.body }}' | grep -oP 'sentry\.tryethernal\.com/organizations/sentry/issues/\K\d+' | head -1)
+          SENTRY_ISSUE_ID=$(grep -oP 'sentry\.tryethernal\.com/organizations/sentry/issues/\K\d+' /tmp/issue-body.txt | head -1)
           CONTEXT=""
 
           if [ -n "$SENTRY_ISSUE_ID" ]; then
@@ -127,12 +154,12 @@ jobs:
           show_full_output: true
           prompt: |
             You are an autonomous error-fixing agent for the Ethernal project — an EVM block explorer.
-            A Sentry error has been auto-reported as GitHub issue #${{ github.event.issue.number }}.
+            A Sentry error has been auto-reported as GitHub issue #${{ steps.issue_info.outputs.number }}.
 
             ## Issue Details
-            Title: ${{ github.event.issue.title }}
+            Title: ${{ steps.issue_info.outputs.title }}
             Body:
-            ${{ github.event.issue.body }}
+            $(cat /tmp/issue-body.txt)
 
             ## Regression Context
             $(cat /tmp/regression-context.txt)
@@ -162,7 +189,7 @@ jobs:
             - It's expected behavior (e.g., user input validation errors)
             - It's a third-party/network error we can't control
             - It's already fixed on the develop branch
-            Close with: `gh issue close ${{ github.event.issue.number }} --comment "Closing: [reason]"`
+            Close with: `gh issue close ${{ steps.issue_info.outputs.number }} --comment "Closing: [reason]"`
 
             **ESCALATE** if:
             - It involves security, data corruption, or data loss
@@ -171,8 +198,8 @@ jobs:
             - The fix would require architectural changes
             Escalate with:
             ```
-            gh issue edit ${{ github.event.issue.number }} --add-label "needs-human"
-            gh issue comment ${{ github.event.issue.number }} --body "Escalating: [reason]. @antoinedc please review."
+            gh issue edit ${{ steps.issue_info.outputs.number }} --add-label "needs-human"
+            gh issue comment ${{ steps.issue_info.outputs.number }} --body "Escalating: [reason]. @antoinedc please review."
             ```
 
             **AUTO-FIX** if:
@@ -181,20 +208,20 @@ jobs:
             - The fix is contained (1-3 files) and low risk
 
             ### 3. Fix (only if AUTO-FIX)
-            - Create a branch: `git checkout -b fix/sentry-${{ github.event.issue.number }}`
+            - Create a branch: `git checkout -b fix/sentry-${{ steps.issue_info.outputs.number }}`
             - Implement the minimal fix needed
             - Run relevant tests:
               - Backend: `cd run && npm test -- --testPathPattern=<relevant_test>`
               - Frontend: `yarn test -- <relevant_test>`
             - If tests fail, fix them. If you can't fix them, escalate instead.
             - Commit with a clear message explaining the fix
-            - Push: `git push origin fix/sentry-${{ github.event.issue.number }}`
+            - Push: `git push origin fix/sentry-${{ steps.issue_info.outputs.number }}`
             - Create PR:
               ```
               gh pr create \
                 --title "fix: [brief description]" \
                 --body "## Summary
-              Fixes #${{ github.event.issue.number }}
+              Fixes #${{ steps.issue_info.outputs.number }}
 
               **Sentry Error:** [error type and message]
               **Root Cause:** [what caused it]
