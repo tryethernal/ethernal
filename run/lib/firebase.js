@@ -3827,7 +3827,7 @@ const searchForHash = async (workspaceId, hash) => {
  * @returns {Promise<Array>} Search results with type and data
  */
 const searchForNumber = async (workspaceId, number) => {
-    if (!workspaceId || !number) throw new Error('Missing parameter.');
+    if (!workspaceId || number === null || number === undefined) throw new Error('Missing parameter.');
 
     // Validate that the input is actually a number, not a hash or other string
     const parsedNumber = parseInt(number, 10);
