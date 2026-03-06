@@ -3,6 +3,11 @@ name: Sentry Auto-Fix
 on:
   issues:
     types: [labeled]
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: 'Issue number to triage'
+        required: true
   pull_request_review:
     types: [submitted]
   issue_comment:
@@ -14,23 +19,44 @@ permissions:
   pull-requests: write
   id-token: write
 
-concurrency:
-  group: sentry-fix-${{ github.event.issue.number || github.event.pull_request.number }}
-  cancel-in-progress: false
-
 jobs:
   triage-and-fix:
+    concurrency:
+      group: sentry-triage-${{ github.event.issue.number || github.event.inputs.issue_number }}
+      cancel-in-progress: false
     if: >
-      github.event_name == 'issues' &&
-      contains(github.event.issue.labels.*.name, 'sentry') &&
-      !contains(github.event.issue.labels.*.name, 'needs-human') &&
-      github.event.sender.login != 'github-actions[bot]' &&
-      github.event.sender.login != 'claude[bot]' &&
-      (github.event.sender.login == 'antoinedc' ||
-       github.event.sender.type == 'Bot')
+      (
+        (github.event_name == 'issues' &&
+         contains(github.event.issue.labels.*.name, 'sentry') &&
+         !contains(github.event.issue.labels.*.name, 'needs-human') &&
+         github.event.sender.login != 'github-actions[bot]' &&
+         github.event.sender.login != 'claude[bot]' &&
+         (github.event.sender.login == 'antoinedc' ||
+          github.event.sender.type == 'Bot'))
+        ||
+        github.event_name == 'workflow_dispatch'
+      )
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
+      - name: Get issue info
+        id: issue_info
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            ISSUE_NUM="${{ github.event.inputs.issue_number }}"
+          else
+            ISSUE_NUM="${{ github.event.issue.number }}"
+          fi
+          echo "number=$ISSUE_NUM" >> $GITHUB_OUTPUT
+
+          ISSUE_DATA=$(gh issue view "$ISSUE_NUM" --repo ${{ github.repository }} --json title,body)
+          echo "title=$(echo "$ISSUE_DATA" | jq -r '.title')" >> $GITHUB_OUTPUT
+
+          # Save body to file to avoid escaping issues
+          echo "$ISSUE_DATA" | jq -r '.body' > /tmp/issue-body.txt
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
@@ -64,6 +90,58 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
+      - name: Check for regression
+        id: regression
+        env:
+          SENTRY_API_TOKEN: ${{ secrets.SENTRY_API_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Extract Sentry issue ID from issue body
+          SENTRY_ISSUE_ID=$(grep -oP 'sentry\.tryethernal\.com/organizations/sentry/issues/\K\d+' /tmp/issue-body.txt | head -1)
+          CONTEXT=""
+
+          if [ -n "$SENTRY_ISSUE_ID" ]; then
+            # Check if Sentry marks this as a regression
+            IS_REGRESSION=$(curl -s \
+              "https://sentry.tryethernal.com/api/0/issues/$SENTRY_ISSUE_ID/" \
+              -H "Authorization: Bearer $SENTRY_API_TOKEN" | jq -r '.isRegression // false')
+
+            if [ "$IS_REGRESSION" = "true" ]; then
+              # Search for previous closed issues with the same Sentry issue ID
+              PREV_ISSUES=$(gh issue list --label sentry --state closed --limit 20 --json number,title,body \
+                --jq "[.[] | select(.body | contains(\"issues/$SENTRY_ISSUE_ID/\")) | {number, title}]")
+
+              # Find linked PRs for those issues
+              PREV_PRS=""
+              for ISSUE_NUM in $(echo "$PREV_ISSUES" | jq -r '.[].number'); do
+                PR=$(gh pr list --state merged --search "Fixes #$ISSUE_NUM" --json number,title,url \
+                  --jq '.[0] | "PR #\(.number): \(.title) (\(.url))"' 2>/dev/null)
+                if [ -n "$PR" ]; then
+                  PREV_PRS="$PREV_PRS\n- $PR (fixed issue #$ISSUE_NUM)"
+                fi
+              done
+
+              if [ -n "$PREV_PRS" ]; then
+                CONTEXT="⚠️ **REGRESSION**: This error was previously fixed and has recurred.
+
+          Previous fix attempts:
+          $(echo -e "$PREV_PRS")
+
+          Review the previous PRs to understand what was tried before. The previous fix was insufficient — identify WHY it regressed and ensure your new fix addresses the root cause more thoroughly."
+              else
+                CONTEXT="⚠️ **REGRESSION**: Sentry reports this error was previously resolved but has recurred. Search git history for related fixes."
+              fi
+            fi
+          fi
+
+          # Save to file to avoid shell escaping issues
+          echo "$CONTEXT" > /tmp/regression-context.txt
+          if [ -n "$CONTEXT" ]; then
+            echo "is_regression=true" >> $GITHUB_OUTPUT
+          else
+            echo "is_regression=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Claude Code - Triage and Fix
         uses: anthropics/claude-code-action@v1
         with:
@@ -74,12 +152,15 @@ jobs:
           show_full_output: true
           prompt: |
             You are an autonomous error-fixing agent for the Ethernal project — an EVM block explorer.
-            A Sentry error has been auto-reported as GitHub issue #${{ github.event.issue.number }}.
+            A Sentry error has been auto-reported as GitHub issue #${{ steps.issue_info.outputs.number }}.
 
             ## Issue Details
-            Title: ${{ github.event.issue.title }}
+            Title: ${{ steps.issue_info.outputs.title }}
             Body:
-            ${{ github.event.issue.body }}
+            $(cat /tmp/issue-body.txt)
+
+            ## Regression Context
+            $(cat /tmp/regression-context.txt)
 
             ## Your Task
 
@@ -106,7 +187,7 @@ jobs:
             - It's expected behavior (e.g., user input validation errors)
             - It's a third-party/network error we can't control
             - It's already fixed on the develop branch
-            Close with: `gh issue close ${{ github.event.issue.number }} --comment "Closing: [reason]"`
+            Close with: `gh issue close ${{ steps.issue_info.outputs.number }} --comment "Closing: [reason]"`
 
             **ESCALATE** if:
             - It involves security, data corruption, or data loss
@@ -115,8 +196,8 @@ jobs:
             - The fix would require architectural changes
             Escalate with:
             ```
-            gh issue edit ${{ github.event.issue.number }} --add-label "needs-human"
-            gh issue comment ${{ github.event.issue.number }} --body "Escalating: [reason]. @antoinedc please review."
+            gh issue edit ${{ steps.issue_info.outputs.number }} --add-label "needs-human"
+            gh issue comment ${{ steps.issue_info.outputs.number }} --body "Escalating: [reason]. @antoinedc please review."
             ```
 
             **AUTO-FIX** if:
@@ -125,24 +206,25 @@ jobs:
             - The fix is contained (1-3 files) and low risk
 
             ### 3. Fix (only if AUTO-FIX)
-            - Create a branch: `git checkout -b fix/sentry-${{ github.event.issue.number }}`
+            - Create a branch: `git checkout -b fix/sentry-${{ steps.issue_info.outputs.number }}`
             - Implement the minimal fix needed
             - Run relevant tests:
               - Backend: `cd run && npm test -- --testPathPattern=<relevant_test>`
               - Frontend: `yarn test -- <relevant_test>`
             - If tests fail, fix them. If you can't fix them, escalate instead.
             - Commit with a clear message explaining the fix
-            - Push: `git push origin fix/sentry-${{ github.event.issue.number }}`
+            - Push: `git push origin fix/sentry-${{ steps.issue_info.outputs.number }}`
             - Create PR:
               ```
               gh pr create \
                 --title "fix: [brief description]" \
                 --body "## Summary
-              Fixes #${{ github.event.issue.number }}
+              Fixes #${{ steps.issue_info.outputs.number }}
 
               **Sentry Error:** [error type and message]
               **Root Cause:** [what caused it]
               **Fix:** [what was changed and why]
+              **Regression:** [If regression, link to previous PR and explain why the previous fix was insufficient]
 
               ## Test plan
               - [ ] Relevant unit tests pass
@@ -165,6 +247,9 @@ jobs:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
   process-review:
+    concurrency:
+      group: sentry-review-${{ github.event.issue.number || github.event.pull_request.number }}
+      cancel-in-progress: true
     if: >
       (
         (github.event_name == 'pull_request_review' &&
@@ -183,6 +268,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
+      - name: Debounce
+        run: sleep 30
+
       - name: Get PR info
         id: pr_info
         run: |
@@ -416,3 +504,30 @@ jobs:
           git checkout develop
 
           echo "Deployed v$NEW_VERSION"
+
+      - name: Resolve Sentry issue
+        if: steps.check_sentry.outputs.is_sentry == 'true' && steps.merge_check.outputs.ready == 'true' && steps.ci_check.outputs.passed == 'true'
+        env:
+          SENTRY_API_TOKEN: ${{ secrets.SENTRY_API_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Get the linked GitHub issue number from the PR body ("Fixes #N")
+          ISSUE_NUMBER=$(gh pr view ${{ steps.pr_info.outputs.pr_number }} --repo ${{ github.repository }} --json body -q '.body' | grep -oP 'Fixes #\K\d+' | head -1)
+          if [ -z "$ISSUE_NUMBER" ]; then
+            echo "No linked issue found in PR body, skipping Sentry resolution"
+            exit 0
+          fi
+
+          # Extract Sentry issue ID from the GitHub issue body
+          SENTRY_ISSUE_ID=$(gh issue view "$ISSUE_NUMBER" --repo ${{ github.repository }} --json body -q '.body' | grep -oP 'sentry\.tryethernal\.com/organizations/sentry/issues/\K\d+' | head -1)
+          if [ -z "$SENTRY_ISSUE_ID" ]; then
+            echo "No Sentry issue ID found in issue #$ISSUE_NUMBER body, skipping"
+            exit 0
+          fi
+
+          echo "Resolving Sentry issue $SENTRY_ISSUE_ID (from GitHub issue #$ISSUE_NUMBER)"
+          curl -s -X PUT \
+            "https://sentry.tryethernal.com/api/0/issues/$SENTRY_ISSUE_ID/" \
+            -H "Authorization: Bearer $SENTRY_API_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d '{"status": "resolved"}' | jq '{status, statusDetails}'
