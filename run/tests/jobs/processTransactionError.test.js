@@ -149,6 +149,21 @@ describe('processTransactionError', () => {
         expect(db.storeFailedTransactionError).toHaveBeenCalledWith('123', 'hardhat', Transaction.hash, { parsed: true, message: 'error: execution reverted' });
     });
 
+    it('Should store plain text error when error.response is not valid JSON', async () => {
+        getProvider.mockImplementationOnce(() => ({
+            call: jest.fn().mockRejectedValue({
+                response: 'error: connection refused'
+            })
+        }));
+
+        const transaction = { ...Transaction, receipt: { status: 0, ...Transaction.receipt }, workspace: { ...workspace, public: true }};
+        jest.spyOn(db, 'getTransactionForProcessing').mockResolvedValueOnce(transaction);
+
+        await processTransactionError({ data: { transactionId: 1 }});
+
+        expect(db.storeFailedTransactionError).toHaveBeenCalledWith('123', 'hardhat', Transaction.hash, { parsed: true, message: 'error: connection refused' });
+    });
+
     it('Should not process the error for private workspaces', async () => {
         jest.spyOn(db, 'getTransactionForProcessing').mockResolvedValueOnce({ ...Transaction, receipt: {}, workspace });
 

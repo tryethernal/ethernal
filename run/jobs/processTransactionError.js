@@ -67,11 +67,16 @@ module.exports = async job => {
             }
         }
         else if (error.response) {
-            const parsed = JSON.parse(error.response);
-            if (parsed.error && parsed.error.message)
-                errorObject = { parsed: true, message: parsed.error.message };
-            else
-                errorObject = { parsed: false, message: parsed };
+            try {
+                const parsed = JSON.parse(error.response);
+                if (parsed.error && parsed.error.message)
+                    errorObject = { parsed: true, message: parsed.error.message };
+                else
+                    errorObject = { parsed: false, message: parsed };
+            } catch(parseError) {
+                // If response is not valid JSON, treat it as a plain text error message
+                errorObject = { parsed: true, message: error.response };
+            }
         }
         else if (error.reason) {
             let message = error.reason;
