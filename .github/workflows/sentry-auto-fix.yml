@@ -271,9 +271,17 @@ jobs:
             ## Step 2: Process Each Comment
 
             For each review comment:
-            - If it's a valid issue → fix it, commit, and push
-            - If it's incorrect → reply on the PR explaining why
+            - If it's a valid issue → fix it, commit, push, and react with 👍
+            - If it's incorrect → reply on the PR explaining why, and react with 👎
             - If it's unclear → ask for clarification in a reply
+
+            React to Greptile comments using the GitHub API to train its learning system:
+            ```bash
+            # 👍 for valid comments you're fixing
+            gh api repos/${{ github.repository }}/issues/comments/{comment_id}/reactions -f content='+1'
+            # 👎 for incorrect or irrelevant comments
+            gh api repos/${{ github.repository }}/issues/comments/{comment_id}/reactions -f content='-1'
+            ```
 
             Take comments seriously but verify they're correct before acting.
             NEVER remove working code to satisfy a review bot.
