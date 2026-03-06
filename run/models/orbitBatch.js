@@ -166,13 +166,13 @@ module.exports = (sequelize, DataTypes) => {
 
             return sequelize.models.Block.update(
                 { orbitBatchId: this.id },
-                { 
+                {
                     where: {
                         workspaceId: this.workspaceId,
                         number: { [Op.between]: [fromBlock, toBlock] }
-                    }
-                },
-                { transaction }
+                    },
+                    transaction
+                }
             );
         }
 
