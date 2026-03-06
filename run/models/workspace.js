@@ -3146,7 +3146,7 @@ module.exports = (sequelize, DataTypes) => {
                 rawError: transaction.rawError,
                 from: transaction.from,
                 gasLimit: transaction.gasLimit,
-                gasPrice: transaction.gasPrice,
+                gasPrice: transaction.gasPrice || transaction.maxFeePerGas || '0',
                 hash: transaction.hash,
                 methodLabel: transaction.methodLabel,
                 methodName: transaction.methodName,
