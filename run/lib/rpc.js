@@ -282,8 +282,38 @@ class ProviderConnector {
     async fetchRawBlockWithTransactions(blockNumber) {
         await this.checkRateLimit();
 
-        const res = await withTimeout(this.provider.send('eth_getBlockByNumber', [`0x${blockNumber.toString(16)}`, true]))
-        return res ? sanitize(res) : null;
+        try {
+            const res = await withTimeout(this.provider.send('eth_getBlockByNumber', [`0x${blockNumber.toString(16)}`, true]));
+            return res ? sanitize(res) : null;
+        } catch (error) {
+            // Handle RPC provider limitations gracefully
+
+            // Rate limiting
+            if (error.error && error.error.code === -32005) {
+                logger.warn('RPC rate limited during block fetch', {
+                    blockNumber,
+                    error: error.error.message
+                });
+                throw new Error('Rate limited');
+            }
+
+            // Block size/complexity limits
+            if (error.error && error.error.code === -32603) {
+                const message = error.error.message || '';
+                if (message.includes('too many transactions') ||
+                    message.includes('block too large') ||
+                    message.includes('block size limit')) {
+                    logger.warn('RPC provider block size limit exceeded', {
+                        blockNumber,
+                        error: error.error.message
+                    });
+                    return null; // Return null so blockSync can handle gracefully
+                }
+            }
+
+            // Re-throw other errors
+            throw error;
+        }
     }
 
     async fetchBlockWithTransactions(blockNumber) {
@@ -413,10 +443,9 @@ class Tracer {
                 error: error
             };
 
-        // Handle -32603 (Internal error) more selectively - only ignore for known safe cases
+        // Handle -32603 (Internal error) selectively - only ignore block size/complexity limits
         if (error.error && error.error.code === -32603) {
             const message = error.error.message || '';
-            // Only ignore if it's clearly about block size/complexity limits
             if (message.includes('too many transactions') ||
                 message.includes('block too large') ||
                 message.includes('block size limit')) {
@@ -426,15 +455,6 @@ class Tracer {
                     error: error
                 };
             }
-        }
-
-        // Handle -32005 (Rate limited) - gracefully handle rate limiting
-        if (error.error && error.error.code === -32005) {
-            return this.error = {
-                code: `Error code "${error.error.code}".`,
-                message: error.error.message,
-                error: error
-            };
         }
 
         throw error;
