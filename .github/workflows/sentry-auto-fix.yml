@@ -332,8 +332,31 @@ jobs:
             echo "PR is not ready to merge. Skipping merge and deploy."
           fi
 
-      - name: Merge PR
+      - name: Wait for CI checks
+        id: ci_check
         if: steps.check_sentry.outputs.is_sentry == 'true' && steps.merge_check.outputs.ready == 'true'
+        run: |
+          echo "Waiting for CI checks to complete on PR #${{ steps.pr_info.outputs.pr_number }}..."
+          for i in $(seq 1 60); do
+            STATUS=$(gh pr checks ${{ steps.pr_info.outputs.pr_number }} --repo ${{ github.repository }} --json name,state --jq '[.[] | select(.name != "process-review" and .name != "triage-and-fix" and .name != "Greptile Review")] | jq -r 'if length == 0 then "pass" elif [.[] | select(.state != "SUCCESS" and .state != "SKIPPED")] | length == 0 then "pass" elif [.[] | select(.state == "FAILURE")] | length > 0 then "fail" else "pending" end')
+            echo "Check $i/60: $STATUS"
+            if [ "$STATUS" = "pass" ]; then
+              echo "passed=true" >> $GITHUB_OUTPUT
+              exit 0
+            elif [ "$STATUS" = "fail" ]; then
+              echo "CI checks failed. Skipping merge."
+              echo "passed=false" >> $GITHUB_OUTPUT
+              exit 0
+            fi
+            sleep 30
+          done
+          echo "CI checks timed out after 30 minutes."
+          echo "passed=false" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+
+      - name: Merge PR
+        if: steps.check_sentry.outputs.is_sentry == 'true' && steps.merge_check.outputs.ready == 'true' && steps.ci_check.outputs.passed == 'true'
         run: |
           gh pr merge ${{ steps.pr_info.outputs.pr_number }} \
             --squash --admin --delete-branch \
@@ -342,7 +365,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_PAT }}
 
       - name: Deploy
-        if: steps.check_sentry.outputs.is_sentry == 'true' && steps.merge_check.outputs.ready == 'true'
+        if: steps.check_sentry.outputs.is_sentry == 'true' && steps.merge_check.outputs.ready == 'true' && steps.ci_check.outputs.passed == 'true'
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
         run: |
