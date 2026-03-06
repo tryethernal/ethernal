@@ -3228,7 +3228,7 @@ module.exports = (sequelize, DataTypes) => {
         const maxRetries = 3;
         const baseDelay = 100; // milliseconds
 
-        for (let attempt = 0; attempt < maxRetries; attempt++) {
+        for (let attempt = 1; attempt <= maxRetries; attempt++) {
             try {
                 const contracts = await this.getContracts({ where: { address: contract.address.toLowerCase() }});
                 const existingContract = contracts[0];
@@ -3286,13 +3286,16 @@ module.exports = (sequelize, DataTypes) => {
                     (error.original?.code === '25P02' || // PostgreSQL InFailedSqlTransaction
                      error.message.includes('current transaction is aborted'));
 
-                if ((isDeadlock || isAbortedTransaction) && attempt < maxRetries - 1) {
+                // Only retry if we haven't reached max retries and it's a deadlock/aborted transaction
+                const canRetry = (isDeadlock || isAbortedTransaction) && attempt < maxRetries;
+
+                if (canRetry) {
                     // If transaction is aborted, we cannot retry with the same transaction
                     if (isAbortedTransaction && transaction) {
                         logger.error(`Transaction aborted due to deadlock in safeCreateOrUpdateContract. Retry ineffective with outer transaction.`, {
                             location: 'models.workspace.safeCreateOrUpdateContract',
                             contractAddress: contract.address,
-                            attempt: attempt + 1,
+                            attempt: attempt,
                             error: error.message,
                             note: 'Caller should handle deadlock and retry with fresh transaction'
                         });
@@ -3305,11 +3308,11 @@ module.exports = (sequelize, DataTypes) => {
                     }
 
                     // Exponential backoff with jitter to prevent thundering herd
-                    const delay = baseDelay * Math.pow(2, attempt) + Math.random() * 50;
-                    logger.warn(`Deadlock detected in safeCreateOrUpdateContract, retrying in ${delay}ms (attempt ${attempt + 1}/${maxRetries})`, {
+                    const delay = baseDelay * Math.pow(2, attempt - 1) + Math.random() * 50;
+                    logger.warn(`Deadlock detected in safeCreateOrUpdateContract, retrying in ${delay}ms (attempt ${attempt}/${maxRetries})`, {
                         location: 'models.workspace.safeCreateOrUpdateContract',
                         contractAddress: contract.address,
-                        attempt: attempt + 1,
+                        attempt: attempt,
                         error: error.message,
                         errorType: isAbortedTransaction ? 'aborted_transaction' : 'deadlock'
                     });
@@ -3320,53 +3323,6 @@ module.exports = (sequelize, DataTypes) => {
                 // If not a deadlock or max retries reached, re-throw the error
                 throw error;
             }
-        }
-
-        // Final attempt without retry logic
-        const contracts = await this.getContracts({ where: { address: contract.address.toLowerCase() }});
-        const existingContract = contracts[0];
-
-        const newContract = sanitize({
-            hashedBytecode: contract.hashedBytecode,
-            abi: contract.abi,
-            address: contract.address,
-            name: contract.name,
-            imported: contract.imported,
-            patterns: contract.patterns,
-            processed: contract.processed,
-            proxy: contract.proxy,
-            timestamp: contract.timestamp,
-            tokenDecimals: contract.tokenDecimals,
-            tokenName: contract.tokenName,
-            tokenSymbol: contract.tokenSymbol,
-            tokenTotalSupply: contract.tokenTotalSupply,
-            watchedPaths: contract.watchedPaths,
-            has721Metadata: contract.has721Metadata,
-            has721Enumerable: contract.has721Enumerable,
-            ast: contract.ast,
-            bytecode: contract.bytecode,
-            asm: contract.asm
-        });
-
-        if (existingContract)
-            return existingContract.update(newContract, { transaction })
-        else {
-            const [_contract] = await sequelize.models.Contract.bulkCreate(
-                [
-                    {
-                        ...newContract,
-                        workspaceId: this.id,
-                        transactionId: contract.transactionId
-                    },
-                ],
-                {
-                    ignoreDuplicates: true,
-                    individualHooks: true,
-                    returning: true,
-                    transaction
-                }
-            );
-            return _contract;
         }
     }
     async safeCreateOrUpdateAccount(account) {
