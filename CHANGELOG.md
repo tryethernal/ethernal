@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.16.15] - 2026-03-06
+### Fixed
+- fix: prevent race condition in safeCreateOrUpdateContract causing unique constraint error (#500)
+- fix: prevent database connection timeouts in increaseStripeBillingQuota job (#499)
+
+
 ## [5.16.14] - 2026-03-06
 ### Fixed
 - fix: prevent database connection timeouts in increaseStripeBillingQuota job (#499)
