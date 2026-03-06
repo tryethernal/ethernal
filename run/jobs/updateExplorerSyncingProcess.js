@@ -18,31 +18,47 @@ module.exports = async job => {
     if (!data.explorerSlug)
         return 'Missing parameter.';
 
-    const explorer = await Explorer.findOne({
-        where: { slug: data.explorerSlug },
-        include: [
-            {
-                model: Workspace,
-                as: 'workspace',
-                required: false,
-                include: {
-                    model: RpcHealthCheck,
-                    as: 'rpcHealthCheck',
-                    required: false
+    let explorer;
+    try {
+        explorer = await Explorer.findOne({
+            where: { slug: data.explorerSlug },
+            include: [
+                {
+                    model: Workspace,
+                    as: 'workspace',
+                    required: false,
+                    include: {
+                        model: RpcHealthCheck,
+                        as: 'rpcHealthCheck',
+                        required: false
+                    }
+                },
+                {
+                    model: StripeSubscription,
+                    as: 'stripeSubscription',
+                    required: false,
+                    include: {
+                        model: StripePlan,
+                        as: 'stripePlan',
+                        required: false
+                    }
                 }
-            },
-            {
-                model: StripeSubscription,
-                as: 'stripeSubscription',
-                required: false,
-                include: {
-                    model: StripePlan,
-                    as: 'stripePlan',
-                    required: false
-                }
-            }
-        ]
-    });
+            ]
+        });
+    } catch(error) {
+        if (error.message && error.message.includes('Connection terminated unexpectedly')) {
+            // Database connection errors are transient infrastructure issues, not job-level problems.
+            // Handle gracefully like PM2 timeouts - log but don't fail the job.
+            logger.warn({
+                message: 'Database connection terminated during explorer lookup',
+                explorerSlug: data.explorerSlug,
+                error: error.message
+            });
+            return 'Database connection terminated';
+        }
+        else
+            throw error;
+    }
 
     try {
 

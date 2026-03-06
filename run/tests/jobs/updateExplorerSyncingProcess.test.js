@@ -327,4 +327,14 @@ describe('updateExplorerSyncingProcess', () => {
                 done();
             });
     });
+
+    it('Should handle database connection errors gracefully', (done) => {
+        jest.spyOn(Explorer, 'findOne').mockRejectedValueOnce(new Error('Connection terminated unexpectedly'));
+
+        updateExplorerSyncingProcess({ data: { explorerSlug: 'explorer' }})
+            .then(res => {
+                expect(res).toEqual('Database connection terminated');
+                done();
+            });
+    });
 });
