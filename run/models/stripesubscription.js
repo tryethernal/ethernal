@@ -128,7 +128,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       afterCreate(stripeSubscription, options) {
         const afterCreateFn = async () => {
-          const explorer = await stripeSubscription.getExplorer({ include: ['workspace', 'admin'] });
+          const explorer = await stripeSubscription.getExplorer({ include: ['workspace'] });
           if (!explorer || explorer.workspace.qnEndpointId) return;
           const stripePlan = await stripeSubscription.getStripePlan();
           analytics.track(explorer.userId, 'explorer:subscription_create', {
@@ -140,8 +140,7 @@ module.exports = (sequelize, DataTypes) => {
           await explorer.startSync();
           if (explorer.workspace.integrityCheckStartBlockNumber)
             return enqueue('blockSync', `blockSync-${explorer.workspace.id}-${explorer.workspace.integrityCheckStartBlockNumber}`, {
-              userId: explorer.admin.firebaseUserId,
-              workspace: explorer.workspace.name,
+              workspaceId: explorer.workspace.id,
               blockNumber: explorer.workspace.integrityCheckStartBlockNumber,
               source: 'subscriptionStart'
             }, 1);

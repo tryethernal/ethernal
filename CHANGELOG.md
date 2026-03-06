@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.16.1] - 2026-03-06
+### Fixed
+- Reduce Sentry trace/profile sample rate from 100% to 10% to prevent Relay overload
+- Optimize blockSync DB query performance with fast path for sequential blocks
+- Add null check in getWorkspaceBlock to prevent TypeError
+- Wait for CI checks before merging sentry auto-fix PRs
+- Use PAT for merge/deploy steps to bypass branch protection
+
+### Changed
+- Make sentry auto-fix merge/deploy conditional on Claude's review assessment
+- Restrict sentry workflow to trusted senders only
+
 ## [5.16.0] - 2026-03-06
 ### Added
 - Automated Sentry error triage and fix pipeline via GitHub Actions

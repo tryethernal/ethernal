@@ -27,7 +27,7 @@ module.exports = async job => {
     let workspace;
 
     if (data.workspaceId) {
-        // Fast path: batch-sourced job, workspace already validated by batchBlockSync
+        // Fast path: uses workspaceId for optimized database lookup
         if (data.blockNumber === undefined || data.blockNumber === null)
             return 'Missing parameter';
 
@@ -42,7 +42,18 @@ module.exports = async job => {
                 },
                 {
                     model: Explorer,
-                    as: 'explorer'
+                    as: 'explorer',
+                    attributes: ['id', 'shouldSync'],
+                    include: {
+                        model: StripeSubscription,
+                        as: 'stripeSubscription',
+                        attributes: ['id']
+                    }
+                },
+                {
+                    model: RpcHealthCheck,
+                    as: 'rpcHealthCheck',
+                    attributes: ['id', 'isReachable']
                 },
                 {
                     model: IntegrityCheck,
@@ -54,6 +65,30 @@ module.exports = async job => {
 
         if (!workspace)
             return 'Invalid workspace.';
+
+        // API source requires the same validations as the slow path
+        if (data.source === 'api') {
+            // Custom L1 parents don't require explorer/subscription - they sync for their L2 children
+            const isCustomL1Parent = workspace.isCustomL1Parent === true;
+
+            if (!isCustomL1Parent) {
+                if (!workspace.explorer)
+                    return 'No active explorer for this workspace';
+
+                if (!workspace.explorer.shouldSync)
+                    return 'Sync is disabled';
+
+                if (workspace.rpcHealthCheckEnabled && workspace.rpcHealthCheck && !workspace.rpcHealthCheck.isReachable)
+                    return 'RPC is not reachable';
+
+                if (!workspace.explorer.stripeSubscription)
+                    return 'No active subscription';
+            }
+        }
+
+        // Disable browser sync to prevent concurrent syncing from both browser and server
+        if (workspace.browserSyncEnabled)
+            await db.updateBrowserSync(workspace.id, false);
     } else {
         // Normal path: real-time sync, full validation
         if (!data.userId || !data.workspace || data.blockNumber === undefined || data.blockNumber === null)
@@ -145,8 +180,7 @@ module.exports = async job => {
 
             if (error.message == 'Rate limited') {
                 return enqueue('blockSync', `blockSync-${workspace.id}-${data.blockNumber}-${Date.now()}`, {
-                    userId: workspace.user.firebaseUserId,
-                    workspace: workspace.name,
+                    workspaceId: workspace.id,
                     blockNumber: data.blockNumber,
                     source: data.source,
                     rateLimited: !!data.rateLimited
@@ -154,8 +188,7 @@ module.exports = async job => {
             }
             else if (error.message.startsWith('Timed out after')) {
                 return enqueue('blockSync', `blockSync-${workspace.id}-${data.blockNumber}-${Date.now()}`, {
-                    userId: workspace.user.firebaseUserId,
-                    workspace: workspace.name,
+                    workspaceId: workspace.id,
                     blockNumber: data.blockNumber,
                     source: data.source,
                     rateLimited: !!data.rateLimited

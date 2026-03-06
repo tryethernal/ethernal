@@ -87,8 +87,7 @@ describe('integrityCheck', () => {
         await integrityCheck(job);
 
         expect(enqueue).toHaveBeenCalledWith('blockSync', 'blockSync-1-5', {
-            userId: '123',
-            workspace: 'hardhat',
+            workspaceId: 1,
             blockNumber: 5,
             source: 'integrityCheck'
         }, 1);
