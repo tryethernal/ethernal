@@ -28,7 +28,6 @@ jobs:
       (
         (github.event_name == 'issues' &&
          contains(github.event.issue.labels.*.name, 'sentry') &&
-         !contains(github.event.issue.labels.*.name, 'needs-human') &&
          github.event.sender.login != 'github-actions[bot]' &&
          github.event.sender.login != 'claude[bot]' &&
          (github.event.sender.login == 'antoinedc' ||
@@ -181,6 +180,11 @@ jobs:
               NEVER write to this database. SELECT queries only.
 
             ### 2. Triage (choose ONE action)
+
+            **IMPORTANT**: If the issue already has the `needs-human` label, it was flagged as a sustained infrastructure error (high volume of connection errors outside of a deploy). In this case, ALWAYS choose **AUTO-FIX** — investigate the root cause (check DB health, connection pool stats, Fly.io status) and attempt a fix. Also notify @antoinedc:
+            ```
+            gh issue comment ${{ steps.issue_info.outputs.number }} --body "🚨 Sustained infra errors detected (not correlated with a deploy). Investigating and attempting a fix. @antoinedc please monitor."
+            ```
 
             **CLOSE** the issue if:
             - It's a duplicate of an existing issue
