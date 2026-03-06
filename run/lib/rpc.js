@@ -413,10 +413,9 @@ class Tracer {
                 error: error
             };
 
-        // Handle -32603 (Internal error) more selectively - only ignore for known safe cases
+        // Handle -32603 (Internal error) selectively - only ignore block size/complexity limits
         if (error.error && error.error.code === -32603) {
             const message = error.error.message || '';
-            // Only ignore if it's clearly about block size/complexity limits
             if (message.includes('too many transactions') ||
                 message.includes('block too large') ||
                 message.includes('block size limit')) {
@@ -426,15 +425,6 @@ class Tracer {
                     error: error
                 };
             }
-        }
-
-        // Handle -32005 (Rate limited) - gracefully handle rate limiting
-        if (error.error && error.error.code === -32005) {
-            return this.error = {
-                code: `Error code "${error.error.code}".`,
-                message: error.error.message,
-                error: error
-            };
         }
 
         throw error;

@@ -5,6 +5,8 @@ on:
     types: [labeled]
   pull_request_review:
     types: [submitted]
+  pull_request_review_thread:
+    types: [resolved]
   issue_comment:
     types: [created]
 
@@ -168,6 +170,9 @@ jobs:
     if: >
       (
         (github.event_name == 'pull_request_review' &&
+         startsWith(github.event.pull_request.head.ref, 'fix/sentry-'))
+        ||
+        (github.event_name == 'pull_request_review_thread' &&
          startsWith(github.event.pull_request.head.ref, 'fix/sentry-'))
         ||
         (github.event_name == 'issue_comment' &&
