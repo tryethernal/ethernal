@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.16.16] - 2026-03-06
+### Fixed
+- fix: handle database connection errors in updateExplorerSyncingProcess job (#480)
+- fix: prevent race condition in safeCreateOrUpdateContract causing unique constraint error (#500)
+- fix: prevent database connection timeouts in increaseStripeBillingQuota job (#499)
+- fix: handle invalid JSON in processTransactionError job (#494)
+- fix: handle database connection errors in Explorer quota methods (#490)
+- fix: add retry logic for database connection errors in removeStalledBlock (#492)
+- fix: apply gasPrice fallback in bulk transaction creation (#482)
+
+
 ## [5.16.15] - 2026-03-06
 ### Fixed
 - fix: prevent race condition in safeCreateOrUpdateContract causing unique constraint error (#500)
