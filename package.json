@@ -1,6 +1,6 @@
 {
   "name": "ethernal",
-  "version": "5.16.6",
+  "version": "5.16.7",
   "private": true,
   "type": "module",
   "scripts": {
