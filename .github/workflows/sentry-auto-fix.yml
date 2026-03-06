@@ -261,50 +261,48 @@ jobs:
           prompt: |
             You are processing code review feedback on PR #${{ steps.pr_info.outputs.pr_number }} (branch: ${{ steps.pr_info.outputs.branch }}).
 
-            ## Step 1: Fetch Review Comments
+            ## Step 1: Fetch All Comments
 
             ```bash
+            # Fetch formal PR reviews
             gh api repos/${{ github.repository }}/pulls/${{ steps.pr_info.outputs.pr_number }}/reviews
+            # Fetch inline review comments
             gh api repos/${{ github.repository }}/pulls/${{ steps.pr_info.outputs.pr_number }}/comments
+            # Fetch issue-level comments (where Greptile posts its summary)
+            gh api repos/${{ github.repository }}/issues/${{ steps.pr_info.outputs.pr_number }}/comments
             ```
 
-            ## Step 2: Process Each Comment
+            ## Step 2: React to Every Greptile Comment
 
-            For each review comment:
-            - If it's a valid issue → fix it, commit, push, and react with 👍
-            - If it's incorrect → reply on the PR explaining why, and react with 👎
-            - If it's unclear → ask for clarification in a reply
-
-            React to Greptile comments using the GitHub API to train its learning system:
+            For EVERY comment from `greptile-apps[bot]`, you MUST react using the GitHub API:
             ```bash
-            # 👍 for valid comments you're fixing
+            # 👍 for clean reviews or valid comments you're fixing
             gh api repos/${{ github.repository }}/issues/comments/{comment_id}/reactions -f content='+1'
             # 👎 for incorrect or irrelevant comments
             gh api repos/${{ github.repository }}/issues/comments/{comment_id}/reactions -f content='-1'
             ```
+            If the review summary is clean (no issues flagged), react with 👍.
+
+            ## Step 3: Process Review Comments
+
+            For each review comment that flags an issue:
+            - If it's a valid issue → fix it, commit, push, and react with 👍
+            - If it's incorrect → reply on the PR explaining why, and react with 👎
+            - If it's unclear → ask for clarification in a reply
 
             Take comments seriously but verify they're correct before acting.
             NEVER remove working code to satisfy a review bot.
             NEVER modify: `run/api/stripe.js`, `run/webhooks/stripe.js`, `run/lib/stripe.js`, `run/middlewares/auth.js`, `run/lib/crypto.js`
 
-            ## Step 3: Check Approval Status
+            ## Step 4: Merge and Clean Up
 
-            ```bash
-            gh pr view ${{ steps.pr_info.outputs.pr_number }} --json reviewDecision -q '.reviewDecision'
-            ```
+            After processing all comments:
 
-            ### If APPROVED:
+            1. If there are unresolved issues you couldn't fix, do NOT merge. Push your fixes and stop.
 
-            1. **Refactor** — Get changed files and run quality checks:
+            2. If all issues are resolved (or there were no issues to fix), merge and deploy:
                ```bash
-               git diff --name-only develop...HEAD
-               ```
-               Run jscpd on changed directories, run knip and filter to changed files.
-               Fix any issues found, commit as "refactor: code quality cleanup".
-
-            2. **Merge the PR**:
-               ```bash
-               gh pr merge ${{ steps.pr_info.outputs.pr_number }} --squash --admin
+               gh pr merge ${{ steps.pr_info.outputs.pr_number }} --squash --admin --delete-branch
                ```
 
             3. **Deploy** — Follow the full deploy flow:
@@ -323,19 +321,10 @@ jobs:
                  ```bash
                  git checkout master
                  git pull origin master
-                 git merge develop --no-ff -m "Merge branch 'develop'"
+                 git merge develop --no-ff -m "Merge develop into master for v{VERSION}"
                  git push origin master
                  git checkout develop
                  ```
-
-            ### If CHANGES_REQUESTED:
-            - Only fix the requested changes
-            - Do NOT merge or deploy
-            - Commit fixes and push to the PR branch
-
-            ### If no decision yet:
-            - Process any comments that need addressing
-            - Do NOT merge or deploy
         env:
           SENTRY_API_TOKEN: ${{ secrets.SENTRY_API_TOKEN }}
           PROD_DATABASE_URL_READONLY: ${{ secrets.PROD_DATABASE_URL_READONLY }}
