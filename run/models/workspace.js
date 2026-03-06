@@ -2879,7 +2879,7 @@ module.exports = (sequelize, DataTypes) => {
                         rawError: processed.rawError,
                         from: processed.from,
                         gasLimit: processed.gasLimit || block.gasLimit,
-                        gasPrice: processed.gasPrice,
+                        gasPrice: processed.gasPrice || processed.maxFeePerGas || '0',
                         hash: processed.hash,
                         methodLabel: processed.methodLabel,
                         methodName: processed.methodName,
