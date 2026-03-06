@@ -6,6 +6,7 @@
 
 const { Block, Workspace } = require('../models');
 const { sanitize } = require('../lib/utils');
+const { SequelizeDatabaseError } = require('sequelize');
 
 module.exports = async job => {
     const data = job.data;
@@ -13,13 +14,22 @@ module.exports = async job => {
     if (!data.blockId)
         return 'Missing parameter';
 
-    const block = await Block.findByPk(data.blockId, {
-        include: {
-            model: Workspace,
-            as: 'workspace',
-            include: 'explorer'
+    let block;
+    try {
+        block = await Block.findByPk(data.blockId, {
+            include: {
+                model: Workspace,
+                as: 'workspace',
+                include: 'explorer'
+            }
+        });
+    } catch (error) {
+        if (error instanceof SequelizeDatabaseError) {
+            // Throw retryable error for connection issues to allow BullMQ retry
+            throw new Error(`Database connection error for block ${data.blockId}: ${error.message}`);
         }
-    });
+        throw error;
+    }
 
     if (!block)
         return 'Cannot find block';

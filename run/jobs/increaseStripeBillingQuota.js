@@ -7,6 +7,7 @@
 const { getStripeSecretKey } = require('../lib/env');
 const stripe = require('stripe')(getStripeSecretKey());
 const { Block, Workspace, Explorer, StripeSubscription } = require('../models');
+const { SequelizeDatabaseError } = require('sequelize');
 
 module.exports = async job => {
     const data = job.data;
@@ -14,24 +15,33 @@ module.exports = async job => {
     if (!data.blockId)
         return 'Missing parameter';
 
-    const block = await Block.findByPk(data.blockId, {
-        include: [
-            {
-                model: Workspace,
-                as: 'workspace',
-                include: {
-                    model: Explorer,
-                    as: 'explorer',
+    let block;
+    try {
+        block = await Block.findByPk(data.blockId, {
+            include: [
+                {
+                    model: Workspace,
+                    as: 'workspace',
                     include: {
-                        model: StripeSubscription,
-                        as: 'stripeSubscription',
-                        include: 'stripePlan'
+                        model: Explorer,
+                        as: 'explorer',
+                        include: {
+                            model: StripeSubscription,
+                            as: 'stripeSubscription',
+                            include: 'stripePlan'
+                        }
                     }
-                }
-            },
-            'transactions'
-        ]
-    });
+                },
+                'transactions'
+            ]
+        });
+    } catch (error) {
+        if (error instanceof SequelizeDatabaseError) {
+            // Throw retryable error for connection issues to allow BullMQ retry
+            throw new Error(`Database connection error for block ${data.blockId}: ${error.message}`);
+        }
+        throw error;
+    }
 
     if (!block)
         return 'Cannot find block';
