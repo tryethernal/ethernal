@@ -65,6 +65,58 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
+      - name: Check for regression
+        id: regression
+        env:
+          SENTRY_API_TOKEN: ${{ secrets.SENTRY_API_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Extract Sentry issue ID from issue body
+          SENTRY_ISSUE_ID=$(echo '${{ github.event.issue.body }}' | grep -oP 'sentry\.tryethernal\.com/organizations/sentry/issues/\K\d+' | head -1)
+          CONTEXT=""
+
+          if [ -n "$SENTRY_ISSUE_ID" ]; then
+            # Check if Sentry marks this as a regression
+            IS_REGRESSION=$(curl -s \
+              "https://sentry.tryethernal.com/api/0/issues/$SENTRY_ISSUE_ID/" \
+              -H "Authorization: Bearer $SENTRY_API_TOKEN" | jq -r '.isRegression // false')
+
+            if [ "$IS_REGRESSION" = "true" ]; then
+              # Search for previous closed issues with the same Sentry issue ID
+              PREV_ISSUES=$(gh issue list --label sentry --state closed --limit 20 --json number,title,body \
+                --jq "[.[] | select(.body | contains(\"issues/$SENTRY_ISSUE_ID/\")) | {number, title}]")
+
+              # Find linked PRs for those issues
+              PREV_PRS=""
+              for ISSUE_NUM in $(echo "$PREV_ISSUES" | jq -r '.[].number'); do
+                PR=$(gh pr list --state merged --search "Fixes #$ISSUE_NUM" --json number,title,url \
+                  --jq '.[0] | "PR #\(.number): \(.title) (\(.url))"' 2>/dev/null)
+                if [ -n "$PR" ]; then
+                  PREV_PRS="$PREV_PRS\n- $PR (fixed issue #$ISSUE_NUM)"
+                fi
+              done
+
+              if [ -n "$PREV_PRS" ]; then
+                CONTEXT="⚠️ **REGRESSION**: This error was previously fixed and has recurred.
+
+          Previous fix attempts:
+          $(echo -e "$PREV_PRS")
+
+          Review the previous PRs to understand what was tried before. The previous fix was insufficient — identify WHY it regressed and ensure your new fix addresses the root cause more thoroughly."
+              else
+                CONTEXT="⚠️ **REGRESSION**: Sentry reports this error was previously resolved but has recurred. Search git history for related fixes."
+              fi
+            fi
+          fi
+
+          # Save to file to avoid shell escaping issues
+          echo "$CONTEXT" > /tmp/regression-context.txt
+          if [ -n "$CONTEXT" ]; then
+            echo "is_regression=true" >> $GITHUB_OUTPUT
+          else
+            echo "is_regression=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Claude Code - Triage and Fix
         uses: anthropics/claude-code-action@v1
         with:
@@ -81,6 +133,9 @@ jobs:
             Title: ${{ github.event.issue.title }}
             Body:
             ${{ github.event.issue.body }}
+
+            ## Regression Context
+            $(cat /tmp/regression-context.txt)
 
             ## Your Task
 
@@ -144,6 +199,7 @@ jobs:
               **Sentry Error:** [error type and message]
               **Root Cause:** [what caused it]
               **Fix:** [what was changed and why]
+              **Regression:** [If regression, link to previous PR and explain why the previous fix was insufficient]
 
               ## Test plan
               - [ ] Relevant unit tests pass
