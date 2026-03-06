@@ -42,6 +42,15 @@ describe('processBlock', () => {
             });
     });
 
+    it('Should throw error when database connection fails', async () => {
+        const dbError = new Error('Connection terminated unexpectedly');
+        jest.spyOn(Block, 'findByPk').mockRejectedValueOnce(dbError);
+
+        await expect(processBlock({ data: { blockId: 1 }}))
+            .rejects
+            .toThrow('Connection terminated unexpectedly');
+    });
+
     it('Should return the created block event', (done) => {
         jest.spyOn(Block, 'findByPk').mockResolvedValueOnce({
             safeCreateEvent: jest.fn().mockResolvedValueOnce({ id: 1 }),
