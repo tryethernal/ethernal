@@ -16,12 +16,11 @@ permissions:
   pull-requests: write
   id-token: write
 
-concurrency:
-  group: sentry-fix-${{ github.event.issue.number || github.event.pull_request.number }}
-  cancel-in-progress: false
-
 jobs:
   triage-and-fix:
+    concurrency:
+      group: sentry-triage-${{ github.event.issue.number }}
+      cancel-in-progress: false
     if: >
       github.event_name == 'issues' &&
       contains(github.event.issue.labels.*.name, 'sentry') &&
@@ -167,6 +166,9 @@ jobs:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
   process-review:
+    concurrency:
+      group: sentry-review-${{ github.event.issue.number || github.event.pull_request.number }}
+      cancel-in-progress: true
     if: >
       (
         (github.event_name == 'pull_request_review' &&
@@ -188,6 +190,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
+      - name: Debounce
+        run: sleep 30
+
       - name: Get PR info
         id: pr_info
         run: |
