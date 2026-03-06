@@ -2960,7 +2960,6 @@ module.exports = (sequelize, DataTypes) => {
                 const transactionsToInsert = transactions.map(t => {
                     return {
                         ...t,
-                        gasPrice: t.gasPrice || t.maxFeePerGas || '0',
                         blockId: createdBlock.id
                     }
                 });
