@@ -134,6 +134,23 @@ describe('processTransactionError', () => {
         expect(db.storeFailedTransactionError).toHaveBeenCalledWith('123', 'hardhat', Transaction.hash, { parsed: false, message: { message: 'Helloooooo' } });
     });
 
+    it('Should handle invalid JSON in error.body gracefully', async () => {
+        getProvider.mockImplementationOnce(() => ({
+            call: jest.fn().mockRejectedValue({
+                error: {
+                    body: 'error' // Non-JSON content that would cause "Unexpected token e in JSON at position 0"
+                }
+            })
+        }));
+
+        const transaction = { ...Transaction, receipt: { status: 0, ...Transaction.receipt }, workspace: { ...workspace, public: true } };
+        jest.spyOn(db, 'getTransactionForProcessing').mockResolvedValueOnce(transaction);
+
+        await processTransactionError({ data: { transactionId: 1 }});
+
+        expect(db.storeFailedTransactionError).toHaveBeenCalledWith('123', 'hardhat', Transaction.hash, { parsed: false, message: 'error' });
+    });
+
     it('Should not process the error for private workspaces', async () => {
         jest.spyOn(db, 'getTransactionForProcessing').mockResolvedValueOnce({ ...Transaction, receipt: {}, workspace });
 
