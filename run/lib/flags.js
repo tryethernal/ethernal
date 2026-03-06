@@ -36,5 +36,8 @@ module.exports = {
     isQuicknodeEnabled: () => !!process.env.QUICKNODE_CREDENTIALS,
 
     /** @returns {boolean} True if Mailjet email is configured */
-    isMailjetEnabled: () => !!process.env.MAILJET_PUBLIC_KEY && !!process.env.MAILJET_PRIVATE_KEY
+    isMailjetEnabled: () => !!process.env.MAILJET_PUBLIC_KEY && !!process.env.MAILJET_PRIVATE_KEY,
+
+    /** @returns {boolean} True if Sentry pipeline dashboard is enabled */
+    isSentryPipelineEnabled: () => !!process.env.ENABLE_SENTRY_PIPELINE
 };

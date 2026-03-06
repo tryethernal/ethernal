@@ -17,6 +17,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | Billing/Stripe | `run/webhooks/stripe.js`, `run/lib/stripe.js`, `run/api/stripe.js` |
 | Testing | `run/tests/mocks/`, `run/tests/api/`, `tests/unit/` |
 | Database schema | `.claude/references/SCHEMA.md` (complete model reference) |
+| Sentry pipeline | `run/api/sentryPipeline.js`, `run/webhooks/githubActions.js`, `src/components/SentryDashboard.vue` |
 
 **Critical architectural insight:**
 - **Authorization** happens in middleware (`authMiddleware`, `workspaceAuthMiddleware`)
@@ -121,6 +122,8 @@ Self-hosted Sentry (v26.2.1) runs on a Hetzner CCX33 at `sentry.tryethernal.com`
 - **Queue monitoring**: `enqueue()` in `run/lib/queue.js` wraps with `op: 'queue.publish'` spans. All 4 workers use `op: 'queue.process'` spans with `messaging.destination.name` and `messaging.message.id` attributes.
 - **Proxy**: Caddy on Fly.io proxies `/api/2/*` to `sentry.tryethernal.com` so frontend events route through the explorer's own domain.
 - **Auto-fix pipeline**: `.github/workflows/sentry-auto-fix.yml` — Sentry alert rules create GitHub issues with `sentry` label on: new errors (≥2 occurrences in 1h), regressions (previously resolved errors recurring). Claude Code triages (close/escalate/fix), creates fix PRs, processes code review (including Greptile thread resolutions with 30s debounce), merges+deploys when approved, then resolves the Sentry issue via API. Protected files (Stripe, auth, crypto) are never auto-modified. GitHub App `ethernal-sentry` on `tryethernal` org powers the Sentry↔GitHub integration.
+- **Proactive scanner**: `.github/workflows/sentry-scanner.yml` — hourly cron queries all unresolved Sentry issues, Claude evaluates which are actionable, creates GitHub issues (feeding into auto-fix pipeline), auto-resolves transient errors.
+- **Pipeline dashboard**: `src/components/SentryDashboard.vue` — real-time dashboard at `/sentry-dashboard` showing pipeline runs, stats, and Claude conversation logs. Behind `ENABLE_SENTRY_PIPELINE` feature flag. Webhook at `POST /webhooks/github-actions` receives status updates from workflows. Model: `SentryPipelineRun`.
 - **Sentry CLI access**: Use `ssh root@157.90.154.200` then `cd /opt/sentry && docker compose --env-file .env --env-file .env.custom exec -T web sentry shell` for Django shell access (manage tokens, project configs, etc.). API token with full scopes stored as `SENTRY_API_TOKEN` GitHub secret.
 
 ### Request Flow
@@ -514,6 +517,7 @@ describe('GET /feature/:id', () => {
 | **OP Stack L2** | `api/opBatches.js`, `opDeposits.js` | `OpBatches.vue`, `OpDeposits.vue` | `opBatch.js`, `opDeposit.js` |
 | **ERC721 NFTs** | `api/erc721Tokens.js`, `erc721Collections.js` | `ERC721Token.vue`, `ERC721Collection.vue` | `erc721token.js` |
 | **Contract Verification** | `api/contracts.js`, `lib/processContractVerification.js` | `ContractVerification.vue` | `ContractVerification.js` |
+| **Sentry Pipeline** | `api/sentryPipeline.js`, `webhooks/githubActions.js` | `SentryDashboard.vue`, `SentryPipelineRunDetail.vue` | `sentrypipelinerun.js` |
 
 ---
 
@@ -620,6 +624,8 @@ describe('GET /feature/:id', () => {
 | `SELF_HOSTED` | Self-hosted mode flag | - |
 | `MAX_BLOCK_FOR_SYNC_RESET` | Max blocks for sync reset | 10 |
 | `MAX_CONTRACT_FOR_RESET` | Max contracts for reset | 5 |
+| `ENABLE_SENTRY_PIPELINE` | Enable Sentry pipeline dashboard and webhook | - |
+| `GITHUB_ACTIONS_WEBHOOK_SECRET` | Shared secret for GitHub Actions webhook auth | - |
 
 ### Feature Flags (from `run/lib/flags.js`)
 
@@ -633,6 +639,7 @@ describe('GET /feature/:id', () => {
 | `isQuicknodeEnabled()` | `QUICKNODE_CREDENTIALS` |
 | `isMailjetEnabled()` | `MAILJET_PUBLIC_KEY`, `MAILJET_PRIVATE_KEY` |
 | `isApproximatedEnabled()` | `APPROXIMATED_API_KEY`, `APPROXIMATED_TARGET_IP` |
+| `isSentryPipelineEnabled()` | `ENABLE_SENTRY_PIPELINE` |
 
 ---
 

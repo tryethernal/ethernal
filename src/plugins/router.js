@@ -47,6 +47,7 @@ import OpOutputs from '@/components/OpOutputs.vue'
 import OpOutputDetail from '@/components/OpOutputDetail.vue'
 import OpWithdrawals from '@/components/OpWithdrawals.vue'
 import OpDeposits from '@/components/OpDeposits.vue'
+import SentryDashboard from '@/components/SentryDashboard.vue'
 
 import { useEnvStore } from '../stores/env';
 
@@ -137,6 +138,8 @@ const routes = [
     { path: '/op/outputs/:outputIndex', component: OpOutputDetail, name: 'opOutputDetail', props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/op/withdrawals', component: OpWithdrawals, name: 'opWithdrawals', beforeEnter: redirectIfLoggedOut },
     { path: '/op/deposits', component: OpDeposits, name: 'opDeposits', beforeEnter: redirectIfLoggedOut },
+    // Sentry pipeline dashboard
+    { path: '/sentry-dashboard', name: 'sentryDashboard', component: SentryDashboard, beforeEnter: redirectIfLoggedOut },
     { path: '/:pathMatch(.*)*', name: 'not-found', component: Overview, beforeEnter: redirectIfLoggedOut }
 ];
 

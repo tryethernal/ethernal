@@ -41,6 +41,7 @@ const OpChainConfig = models.OpChainConfig;
 const OpOutput = models.OpOutput;
 const OpDeposit = models.OpDeposit;
 const OpWithdrawal = models.OpWithdrawal;
+const SentryPipelineRun = models.SentryPipelineRun;
 
 /**
  * Creates an orbit config for an explorer
@@ -4875,6 +4876,98 @@ const deleteCustomL1Parent = async (userId, workspaceId) => {
     return true;
 };
 
+/**
+ * Retrieves paginated sentry pipeline runs, excluding conversationLog for list views.
+ * @param {number} page - Page number (1-indexed)
+ * @param {number} itemsPerPage - Items per page
+ * @param {string} [status] - Filter by status
+ * @returns {Promise<{items: Object[], total: number}>}
+ */
+const getSentryPipelineRuns = async (page = 1, itemsPerPage = 25, status) => {
+    const where = {};
+    if (status) where.status = status;
+
+    const { rows, count } = await SentryPipelineRun.findAndCountAll({
+        where,
+        attributes: { exclude: ['conversationLog'] },
+        order: [['createdAt', 'DESC']],
+        offset: (page - 1) * itemsPerPage,
+        limit: itemsPerPage
+    });
+
+    return { items: rows.map(r => r.toJSON()), total: count };
+};
+
+/**
+ * Retrieves a single sentry pipeline run with full conversationLog.
+ * @param {number} id - Run ID
+ * @returns {Promise<Object|null>}
+ */
+const getSentryPipelineRun = async (id) => {
+    const run = await SentryPipelineRun.findByPk(id);
+    return run ? run.toJSON() : null;
+};
+
+/**
+ * Retrieves aggregated stats for the sentry pipeline.
+ * @param {string} [period] - Time period: '24h', '7d', '30d' (default '7d')
+ * @returns {Promise<Object>} Stats object with counts and rates
+ */
+const getSentryPipelineStats = async (period = '7d') => {
+    const periodMap = { '24h': 1, '7d': 7, '30d': 30 };
+    const days = periodMap[period] || 7;
+    const since = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+
+    const runs = await SentryPipelineRun.findAll({
+        where: { createdAt: { [Op.gte]: since } },
+        attributes: ['status', 'duration']
+    });
+
+    const total = runs.length;
+    const completed = runs.filter(r => r.status === 'completed').length;
+    const failed = runs.filter(r => r.status === 'failed').length;
+    const closed = runs.filter(r => r.status === 'closed').length;
+    const escalated = runs.filter(r => r.status === 'escalated').length;
+    const active = runs.filter(r => !['completed', 'failed', 'closed', 'escalated'].includes(r.status)).length;
+
+    const durations = runs.filter(r => r.duration).map(r => r.duration);
+    const avgDuration = durations.length ? Math.round(durations.reduce((a, b) => a + b, 0) / durations.length) : 0;
+
+    return {
+        total,
+        completed,
+        failed,
+        closed,
+        escalated,
+        active,
+        successRate: total > 0 ? Math.round((completed / total) * 100) : 0,
+        avgDuration
+    };
+};
+
+/**
+ * Upserts a sentry pipeline run by workflowRunId or githubIssueNumber.
+ * @param {Object} data - Run data
+ * @returns {Promise<Object>} The upserted run
+ */
+const upsertSentryPipelineRun = async (data) => {
+    let run;
+    if (data.workflowRunId) {
+        run = await SentryPipelineRun.findOne({ where: { workflowRunId: data.workflowRunId } });
+    }
+    if (!run && data.githubIssueNumber) {
+        run = await SentryPipelineRun.findOne({ where: { githubIssueNumber: data.githubIssueNumber } });
+    }
+
+    if (run) {
+        await run.update(data);
+    } else {
+        run = await SentryPipelineRun.create(data);
+    }
+
+    return run.toJSON();
+};
+
 module.exports = {
     storeBlock: storeBlock,
     storeTransaction: storeTransaction,
@@ -5067,6 +5160,10 @@ module.exports = {
     getTopTokensByHolders: getTopTokensByHolders,
     createAdmin: createAdmin,
     canSetupAdmin: canSetupAdmin,
+    getSentryPipelineRuns: getSentryPipelineRuns,
+    getSentryPipelineRun: getSentryPipelineRun,
+    getSentryPipelineStats: getSentryPipelineStats,
+    upsertSentryPipelineRun: upsertSentryPipelineRun,
     isValidExplorerDomain: isValidExplorerDomain,
     getImportedAccounts: getImportedAccounts,
     getFilteredNativeAccounts: getFilteredNativeAccounts,
