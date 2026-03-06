@@ -255,6 +255,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Claude Code - Process Review
+        id: claude_review
         if: steps.check_sentry.outputs.is_sentry == 'true'
         uses: anthropics/claude-code-action@v1
         with:
@@ -282,8 +283,9 @@ jobs:
             ```bash
             # 👍 for clean reviews or valid comments you're fixing
             gh api repos/${{ github.repository }}/issues/comments/{comment_id}/reactions -f content='+1'
-            # 👎 for incorrect or irrelevant comments
-            gh api repos/${{ github.repository }}/issues/comments/{comment_id}/reactions -f content='-1'
+            # For inline review comments, use the pulls comments endpoint:
+            gh api repos/${{ github.repository }}/pulls/comments/{comment_id}/reactions -f content='+1'
+            # 👎 for incorrect or irrelevant comments (same endpoints with '-1')
             ```
             If the review summary is clean (no issues flagged), react with 👍.
 
@@ -298,17 +300,40 @@ jobs:
             NEVER remove working code to satisfy a review bot.
             NEVER modify: `run/api/stripe.js`, `run/webhooks/stripe.js`, `run/lib/stripe.js`, `run/middlewares/auth.js`, `run/lib/crypto.js`
 
-            ## Step 4: Report
+            ## Step 4: Signal Merge Readiness
 
-            After processing all comments, write a short summary of what you did.
-            If there are unresolved issues you couldn't fix, say so clearly.
+            After processing ALL comments, determine if the PR is ready to merge:
+            - **READY**: All review issues have been addressed (fixed or correctly dismissed)
+            - **NOT READY**: There are unresolved issues you couldn't fix, or you asked for clarification
+
+            You MUST run this command at the very end:
+            ```bash
+            # If ALL issues are resolved:
+            echo "READY_TO_MERGE" > /tmp/merge-status
+
+            # If there are unresolved issues:
+            echo "NOT_READY" > /tmp/merge-status
+            ```
+
+            Then write a short summary of what you did. If not ready, explain what remains.
         env:
           SENTRY_API_TOKEN: ${{ secrets.SENTRY_API_TOKEN }}
           PROD_DATABASE_URL_READONLY: ${{ secrets.PROD_DATABASE_URL_READONLY }}
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
-      - name: Merge PR
+      - name: Check merge readiness
+        id: merge_check
         if: steps.check_sentry.outputs.is_sentry == 'true'
+        run: |
+          if [ -f /tmp/merge-status ] && grep -q "READY_TO_MERGE" /tmp/merge-status; then
+            echo "ready=true" >> $GITHUB_OUTPUT
+          else
+            echo "ready=false" >> $GITHUB_OUTPUT
+            echo "PR is not ready to merge. Skipping merge and deploy."
+          fi
+
+      - name: Merge PR
+        if: steps.check_sentry.outputs.is_sentry == 'true' && steps.merge_check.outputs.ready == 'true'
         run: |
           gh pr merge ${{ steps.pr_info.outputs.pr_number }} \
             --squash --admin --delete-branch \
@@ -317,7 +342,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Deploy
-        if: steps.check_sentry.outputs.is_sentry == 'true'
+        if: steps.check_sentry.outputs.is_sentry == 'true' && steps.merge_check.outputs.ready == 'true'
         run: |
           git checkout develop
           git pull origin develop
