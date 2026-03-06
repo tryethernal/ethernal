@@ -6,7 +6,7 @@
 
 const { Block } = require('../models');
 const { enqueue } = require('../lib/queue');
-const { SequelizeDatabaseError } = require('sequelize');
+const { SequelizeDatabaseError, ConnectionError: SequelizeConnectionError } = require('sequelize');
 
 module.exports = async (job) => {
     const data = job.data;
@@ -20,7 +20,7 @@ module.exports = async (job) => {
             include: ['transactions']
         });
     } catch (error) {
-        if (error instanceof SequelizeDatabaseError) {
+        if (error instanceof SequelizeDatabaseError || error instanceof SequelizeConnectionError) {
             // Throw retryable error for connection issues to allow BullMQ retry
             throw new Error(`Database connection error for block ${data.blockId}: ${error.message}`);
         }

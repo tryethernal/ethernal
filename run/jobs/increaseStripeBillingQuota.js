@@ -7,7 +7,7 @@
 const { getStripeSecretKey } = require('../lib/env');
 const stripe = require('stripe')(getStripeSecretKey());
 const { Block, Workspace, Explorer, StripeSubscription } = require('../models');
-const { SequelizeDatabaseError } = require('sequelize');
+const { SequelizeDatabaseError, ConnectionError: SequelizeConnectionError } = require('sequelize');
 
 module.exports = async job => {
     const data = job.data;
@@ -36,7 +36,7 @@ module.exports = async job => {
             ]
         });
     } catch (error) {
-        if (error instanceof SequelizeDatabaseError) {
+        if (error instanceof SequelizeDatabaseError || error instanceof SequelizeConnectionError) {
             // Throw retryable error for connection issues to allow BullMQ retry
             throw new Error(`Database connection error for block ${data.blockId}: ${error.message}`);
         }
