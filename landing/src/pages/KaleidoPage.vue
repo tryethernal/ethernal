@@ -12,7 +12,7 @@
             <FeatureSection inline-icon compact icon="mdi-link-variant" title="Connect Your Kaleido Node" description="Copy your Kaleido RPC URL from the console, paste it into Ethernal, and your explorer is live. Works with both public and permissioned Kaleido environments.">
                 <template #visual>
                     <div class="browser-preview">
-                        <div class="preview-header"><div class="d-flex align-center ga-2"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="preview-url-bar"><v-icon size="12" style="color: #64748B;">mdi-lock</v-icon>app.ethernal.com/workspace/settings</div><div style="width: 42px;"></div></div>
+                        <div class="preview-header"><div class="d-flex align-center ga-2"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="preview-url-bar"><v-icon size="12" style="color: #64748B;">mdi-lock</v-icon>app.tryethernal.com/workspace/settings</div><div style="width: 42px;"></div></div>
                         <div class="preview-body">
                             <div class="mock-settings">
                                 <div class="mock-field"><div class="mock-field-label">RPC URL</div><div class="mock-field-input"><span class="mock-field-prefix"><v-icon size="12" style="color: #64748B;">mdi-link-variant</v-icon></span>https://u0xyz123-u0abc456-rpc.us0-aws.kaleido.io</div></div>
