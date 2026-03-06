@@ -282,8 +282,54 @@ class ProviderConnector {
     async fetchRawBlockWithTransactions(blockNumber) {
         await this.checkRateLimit();
 
-        const res = await withTimeout(this.provider.send('eth_getBlockByNumber', [`0x${blockNumber.toString(16)}`, true]))
-        return res ? sanitize(res) : null;
+        try {
+            const res = await withTimeout(this.provider.send('eth_getBlockByNumber', [`0x${blockNumber.toString(16)}`, true]));
+            return res ? sanitize(res) : null;
+        } catch (error) {
+            // Handle RPC providers that limit transaction count per block request
+            if (error.message && error.message.includes('too many transactions to fetch')) {
+                logger.warn('RPC transaction limit exceeded, falling back to block without transactions', {
+                    location: 'lib.rpc.fetchRawBlockWithTransactions',
+                    blockNumber,
+                    error: error.message
+                });
+
+                // Fetch block without full transaction objects (just hashes)
+                const blockWithHashes = await withTimeout(this.provider.send('eth_getBlockByNumber', [`0x${blockNumber.toString(16)}`, false]));
+
+                if (!blockWithHashes) return null;
+
+                // If there are no transactions, return as-is
+                if (!blockWithHashes.transactions || blockWithHashes.transactions.length === 0) {
+                    return sanitize(blockWithHashes);
+                }
+
+                // Fetch full transaction objects individually
+                const txHashes = blockWithHashes.transactions;
+                const fullTransactions = [];
+
+                for (const hash of txHashes) {
+                    try {
+                        const tx = await withTimeout(this.provider.send('eth_getTransactionByHash', [hash]));
+                        if (tx) fullTransactions.push(tx);
+                    } catch (txError) {
+                        logger.warn('Failed to fetch individual transaction', {
+                            location: 'lib.rpc.fetchRawBlockWithTransactions',
+                            hash,
+                            error: txError.message
+                        });
+                        // Continue with other transactions rather than failing entirely
+                    }
+                }
+
+                // Replace transaction hashes with full transaction objects
+                blockWithHashes.transactions = fullTransactions;
+                return sanitize(blockWithHashes);
+            }
+
+            // Re-throw other errors
+            throw error;
+        }
     }
 
     async fetchBlockWithTransactions(blockNumber) {
