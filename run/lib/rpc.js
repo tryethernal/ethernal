@@ -388,7 +388,7 @@ class ProviderConnector {
  */
 class Tracer {
 
-    #ERRORS_TO_IGNORE = [-32601, -32000];
+    #ERRORS_TO_IGNORE = [-32601, -32000, -32005, -32603];
 
     constructor(server, db, type = 'other') {
         if (!server) throw '[Tracer] Missing parameter';
