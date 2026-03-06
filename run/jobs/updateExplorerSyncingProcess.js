@@ -18,45 +18,31 @@ module.exports = async job => {
     if (!data.explorerSlug)
         return 'Missing parameter.';
 
-    let explorer;
-    try {
-        explorer = await Explorer.findOne({
-            where: { slug: data.explorerSlug },
-            include: [
-                {
-                    model: Workspace,
-                    as: 'workspace',
-                    required: false,
-                    include: {
-                        model: RpcHealthCheck,
-                        as: 'rpcHealthCheck',
-                        required: false
-                    }
-                },
-                {
-                    model: StripeSubscription,
-                    as: 'stripeSubscription',
-                    required: false,
-                    include: {
-                        model: StripePlan,
-                        as: 'stripePlan',
-                        required: false
-                    }
+    const explorer = await Explorer.findOne({
+        where: { slug: data.explorerSlug },
+        include: [
+            {
+                model: Workspace,
+                as: 'workspace',
+                required: false,
+                include: {
+                    model: RpcHealthCheck,
+                    as: 'rpcHealthCheck',
+                    required: false
                 }
-            ]
-        });
-    } catch(error) {
-        if (error.message && error.message.includes('Connection terminated unexpectedly')) {
-            // Database connection errors are transient infrastructure issues, not job-level problems.
-            // Log the warning then re-throw so BullMQ's retry mechanism handles it.
-            logger.warn({
-                message: 'Database connection terminated during explorer lookup',
-                explorerSlug: data.explorerSlug,
-                error: error.message
-            });
-        }
-        throw error;
-    }
+            },
+            {
+                model: StripeSubscription,
+                as: 'stripeSubscription',
+                required: false,
+                include: {
+                    model: StripePlan,
+                    as: 'stripePlan',
+                    required: false
+                }
+            }
+        ]
+    });
 
     try {
 
