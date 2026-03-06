@@ -3944,7 +3944,7 @@ const getWorkspaceBlock = async (workspaceId, number) => {
         }
     });
 
-    return block.toJSON();
+    return block ? block.toJSON() : null;
 };
 
 /**

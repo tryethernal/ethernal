@@ -138,6 +138,17 @@ describe(`GET ${BASE_URL}/:number`, () => {
                 done();
             });
     });
+
+    it('Should return null when block not found', (done) => {
+        jest.spyOn(db, 'getWorkspaceBlock').mockResolvedValue(null);
+        request.get(`${BASE_URL}/latest`)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toBeNull();
+                expect(db.getWorkspaceBlock).toHaveBeenCalledWith(1, 'latest');
+                done();
+            });
+    });
 });
 
 describe(`GET ${BASE_URL}`, () => {

@@ -3162,6 +3162,15 @@ describe('getWorkspaceBlock', () => {
                 done();
             });
     });
+
+    it('Should return null when block not found', (done) => {
+        jest.spyOn(Block, 'findOne').mockResolvedValueOnce(null);
+        db.getWorkspaceBlock(1, 'latest')
+            .then(block => {
+                expect(block).toBeNull();
+                done();
+            });
+    });
 });
 
 describe('getWorkspaceBlocks', () => {
