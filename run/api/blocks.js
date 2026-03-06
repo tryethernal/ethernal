@@ -112,8 +112,7 @@ router.post('/', [authMiddleware, browserSyncMiddleware], async (req, res, next)
                 return managedError(new Error('Missing block number.'), req, res);
 
             await enqueue(`blockSync`, `blockSync-${workspace.id}-${block.number}`, {
-                userId: data.uid,
-                workspace: data.workspace,
+                workspaceId: workspace.id,
                 blockNumber: data.block.number,
                 source: 'api'
             }, 1);

@@ -99,14 +99,13 @@ describe(`POST ${BASE_URL}`, () => {
     });
 
     it('Should enqueue server side block sync', (done) => {
-        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValue({ name: 'My Workspace', public: true });
+        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValue({ id: 1, name: 'My Workspace', public: true });
         request.post(`${BASE_URL}/?serverSync=true`)
             .send({ data: { workspace: 'My Workspace', block: { number: 123 }}})
             .expect(200)
             .then(() => {
                 expect(enqueue).toHaveBeenCalledWith('blockSync', expect.anything(), {
-                    userId: '123',
-                    workspace: 'My Workspace',
+                    workspaceId: 1,
                     blockNumber: 123,
                     source: 'api'
                 }, expect.anything());
