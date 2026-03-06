@@ -3224,7 +3224,10 @@ module.exports = (sequelize, DataTypes) => {
         if (contract.address.toLowerCase() === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
             return null;
 
-        const contracts = await this.getContracts({ where: { address: contract.address.toLowerCase() }});
+        const contracts = await this.getContracts({
+            where: { address: contract.address.toLowerCase() },
+            transaction
+        });
         const existingContract = contracts[0];
 
         const newContract = sanitize({
