@@ -2,7 +2,7 @@ name: Sentry Auto-Fix
 
 on:
   issues:
-    types: [opened, labeled]
+    types: [labeled]
   pull_request_review:
     types: [submitted]
   issue_comment:
