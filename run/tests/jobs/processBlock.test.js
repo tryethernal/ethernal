@@ -1,4 +1,5 @@
 require('../mocks/lib/queue');
+require('../mocks/lib/logger');
 const { Block } = require('../mocks/models');
 
 const processBlock = require('../../jobs/processBlock');
@@ -40,6 +41,15 @@ describe('processBlock', () => {
                 expect(res).toEqual('Sync is disabled');
                 done();
             });
+    });
+
+    it('Should throw error when database connection fails', async () => {
+        const dbError = new Error('Connection terminated unexpectedly');
+        jest.spyOn(Block, 'findByPk').mockRejectedValueOnce(dbError);
+
+        await expect(processBlock({ data: { blockId: 1 }}))
+            .rejects
+            .toThrow('Connection terminated unexpectedly');
     });
 
     it('Should return the created block event', (done) => {
