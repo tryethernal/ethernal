@@ -163,8 +163,7 @@ describe('blockSync', () => {
         blockSync({ opts: { priority: 1 }, data : { source: 'cli-light', userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
             .then(() => {
                 expect(enqueue).toHaveBeenCalledWith('blockSync', 'blockSync-1-1-1609459200000', {
-                    userId: 'abc',
-                    workspace: 'ws',
+                    workspaceId: 1,
                     blockNumber: 1,
                     source: 'cli-light',
                     rateLimited: false
@@ -198,8 +197,7 @@ describe('blockSync', () => {
         blockSync({ opts: { priority: 1 }, data : { source: 'cli-light', rateLimited: true, userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
             .then(() => {
                 expect(enqueue).toHaveBeenCalledWith('blockSync', 'blockSync-1-1-1609459200000', {
-                    userId: 'abc',
-                    workspace: 'ws',
+                    workspaceId: 1,
                     blockNumber: 1,
                     source: 'cli-light',
                     rateLimited: true
