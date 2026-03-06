@@ -190,7 +190,7 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" = "issue_comment" ]; then
             PR_NUMBER="${{ github.event.issue.number }}"
-            BRANCH=$(gh pr view "$PR_NUMBER" --json headRefName -q '.headRefName')
+            BRANCH=$(gh pr view "$PR_NUMBER" --repo ${{ github.repository }} --json headRefName -q '.headRefName')
           else
             PR_NUMBER="${{ github.event.pull_request.number }}"
             BRANCH="${{ github.event.pull_request.head.ref }}"
