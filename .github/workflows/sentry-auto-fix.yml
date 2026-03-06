@@ -12,6 +12,7 @@ permissions:
   contents: write
   issues: write
   pull-requests: write
+  id-token: write
 
 concurrency:
   group: sentry-fix-${{ github.event.issue.number || github.event.pull_request.number }}
@@ -24,7 +25,9 @@ jobs:
       contains(github.event.issue.labels.*.name, 'sentry') &&
       !contains(github.event.issue.labels.*.name, 'needs-human') &&
       github.event.sender.login != 'github-actions[bot]' &&
-      github.event.sender.login != 'claude[bot]'
+      github.event.sender.login != 'claude[bot]' &&
+      (github.event.sender.login == 'antoinedc' ||
+       github.event.sender.type == 'Bot')
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -66,8 +69,10 @@ jobs:
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           label_trigger: sentry
-          claude_args: "--model claude-sonnet-4-20250514 --max-turns 50"
-          direct_prompt: |
+          allowed_bots: "ethernal-sentry[bot]"
+          claude_args: "--model claude-sonnet-4-20250514 --max-turns 50 --allowedTools Bash,Read,Write,Edit,Glob,Grep"
+          show_full_output: true
+          prompt: |
             You are an autonomous error-fixing agent for the Ethernal project — an EVM block explorer.
             A Sentry error has been auto-reported as GitHub issue #${{ github.event.issue.number }}.
 
@@ -151,6 +156,7 @@ jobs:
             - NEVER modify files in: `run/api/stripe.js`, `run/webhooks/stripe.js`, `run/lib/stripe.js`, `run/middlewares/auth.js`, `run/lib/crypto.js`
             - NEVER write to the production database
             - NEVER skip running tests
+            - NEVER close the issue manually — GitHub auto-closes it when the PR with "Fixes #N" is merged
             - Keep fixes minimal — don't refactor surrounding code
             - If uncertain about the fix, escalate rather than guess
         env:
@@ -172,6 +178,10 @@ jobs:
         (github.event_name == 'issue_comment' &&
          github.event.issue.pull_request &&
          contains(github.event.comment.body, '@claude'))
+        ||
+        (github.event_name == 'issue_comment' &&
+         github.event.issue.pull_request &&
+         github.event.sender.login == 'greptile-apps[bot]')
       ) &&
       github.event.sender.login != 'github-actions[bot]' &&
       github.event.sender.login != 'claude[bot]'
@@ -183,7 +193,7 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" = "issue_comment" ]; then
             PR_NUMBER="${{ github.event.issue.number }}"
-            BRANCH=$(gh pr view "$PR_NUMBER" --json headRefName -q '.headRefName')
+            BRANCH=$(gh pr view "$PR_NUMBER" --repo ${{ github.repository }} --json headRefName -q '.headRefName')
           else
             PR_NUMBER="${{ github.event.pull_request.number }}"
             BRANCH="${{ github.event.pull_request.head.ref }}"
@@ -245,82 +255,168 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Claude Code - Process Review
+        id: claude_review
         if: steps.check_sentry.outputs.is_sentry == 'true'
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          claude_args: "--model claude-sonnet-4-20250514 --max-turns 50"
-          direct_prompt: |
+          allowed_bots: "ethernal-sentry[bot],greptile-apps[bot]"
+          claude_args: "--model claude-sonnet-4-20250514 --max-turns 50 --allowedTools Bash,Read,Write,Edit,Glob,Grep"
+          show_full_output: true
+          prompt: |
             You are processing code review feedback on PR #${{ steps.pr_info.outputs.pr_number }} (branch: ${{ steps.pr_info.outputs.branch }}).
 
-            ## Step 1: Fetch Review Comments
+            ## Step 1: Fetch All Comments
 
             ```bash
+            # Fetch formal PR reviews
             gh api repos/${{ github.repository }}/pulls/${{ steps.pr_info.outputs.pr_number }}/reviews
+            # Fetch inline review comments
             gh api repos/${{ github.repository }}/pulls/${{ steps.pr_info.outputs.pr_number }}/comments
+            # Fetch issue-level comments (where Greptile posts its summary)
+            gh api repos/${{ github.repository }}/issues/${{ steps.pr_info.outputs.pr_number }}/comments
             ```
 
-            ## Step 2: Process Each Comment
+            ## Step 2: React to Every Greptile Comment
 
-            For each review comment:
-            - If it's a valid issue → fix it, commit, and push
-            - If it's incorrect → reply on the PR explaining why
+            For EVERY comment from `greptile-apps[bot]`, you MUST react using the GitHub API:
+            ```bash
+            # 👍 for clean reviews or valid comments you're fixing
+            gh api repos/${{ github.repository }}/issues/comments/{comment_id}/reactions -f content='+1'
+            # For inline review comments, use the pulls comments endpoint:
+            gh api repos/${{ github.repository }}/pulls/comments/{comment_id}/reactions -f content='+1'
+            # 👎 for incorrect or irrelevant comments (same endpoints with '-1')
+            ```
+            If the review summary is clean (no issues flagged), react with 👍.
+
+            ## Step 3: Process Review Comments
+
+            For each review comment that flags an issue:
+            - If it's a valid issue → fix it, commit, push, and react with 👍
+            - If it's incorrect → reply on the PR explaining why, and react with 👎
             - If it's unclear → ask for clarification in a reply
 
             Take comments seriously but verify they're correct before acting.
             NEVER remove working code to satisfy a review bot.
             NEVER modify: `run/api/stripe.js`, `run/webhooks/stripe.js`, `run/lib/stripe.js`, `run/middlewares/auth.js`, `run/lib/crypto.js`
 
-            ## Step 3: Check Approval Status
+            ## Step 4: Signal Merge Readiness
 
+            After processing ALL comments, determine if the PR is ready to merge:
+            - **READY**: All review issues have been addressed (fixed or correctly dismissed)
+            - **NOT READY**: There are unresolved issues you couldn't fix, or you asked for clarification
+
+            You MUST run this command at the very end:
             ```bash
-            gh pr view ${{ steps.pr_info.outputs.pr_number }} --json reviewDecision -q '.reviewDecision'
+            # If ALL issues are resolved:
+            echo "READY_TO_MERGE" > /tmp/merge-status
+
+            # If there are unresolved issues:
+            echo "NOT_READY" > /tmp/merge-status
             ```
 
-            ### If APPROVED:
-
-            1. **Refactor** — Get changed files and run quality checks:
-               ```bash
-               git diff --name-only develop...HEAD
-               ```
-               Run jscpd on changed directories, run knip and filter to changed files.
-               Fix any issues found, commit as "refactor: code quality cleanup".
-
-            2. **Merge the PR**:
-               ```bash
-               gh pr merge ${{ steps.pr_info.outputs.pr_number }} --squash --admin
-               ```
-
-            3. **Deploy** — Follow the full deploy flow:
-               ```bash
-               git checkout develop
-               git pull origin develop
-               ```
-               - Get last tag: `git describe --tags --abbrev=0`
-               - Get commits since: `git log --oneline {LAST_TAG}..HEAD`
-               - Filter out "update changelog", bare version numbers, "Merge branch" commits
-               - Update CHANGELOG.md with categorized entry (Added/Changed/Fixed)
-               - Commit changelog: `git add CHANGELOG.md && git commit -m "update changelog"`
-               - Bump version: `npm version patch --message '%s'`
-               - Push: `git push origin v{VERSION} && git push origin develop`
-               - Sync master:
-                 ```bash
-                 git checkout master
-                 git pull origin master
-                 git merge develop --no-ff -m "Merge branch 'develop'"
-                 git push origin master
-                 git checkout develop
-                 ```
-
-            ### If CHANGES_REQUESTED:
-            - Only fix the requested changes
-            - Do NOT merge or deploy
-            - Commit fixes and push to the PR branch
-
-            ### If no decision yet:
-            - Process any comments that need addressing
-            - Do NOT merge or deploy
+            Then write a short summary of what you did. If not ready, explain what remains.
         env:
           SENTRY_API_TOKEN: ${{ secrets.SENTRY_API_TOKEN }}
           PROD_DATABASE_URL_READONLY: ${{ secrets.PROD_DATABASE_URL_READONLY }}
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      - name: Check merge readiness
+        id: merge_check
+        if: steps.check_sentry.outputs.is_sentry == 'true'
+        run: |
+          if [ -f /tmp/merge-status ] && grep -q "READY_TO_MERGE" /tmp/merge-status; then
+            echo "ready=true" >> $GITHUB_OUTPUT
+          else
+            echo "ready=false" >> $GITHUB_OUTPUT
+            echo "PR is not ready to merge. Skipping merge and deploy."
+          fi
+
+      - name: Wait for CI checks
+        id: ci_check
+        if: steps.check_sentry.outputs.is_sentry == 'true' && steps.merge_check.outputs.ready == 'true'
+        run: |
+          echo "Waiting for CI checks to complete on PR #${{ steps.pr_info.outputs.pr_number }}..."
+          for i in $(seq 1 60); do
+            STATUS=$(gh pr checks ${{ steps.pr_info.outputs.pr_number }} --repo ${{ github.repository }} --json name,state --jq '[.[] | select(.name != "process-review" and .name != "triage-and-fix" and .name != "Greptile Review")] | jq -r 'if length == 0 then "pass" elif [.[] | select(.state != "SUCCESS" and .state != "SKIPPED")] | length == 0 then "pass" elif [.[] | select(.state == "FAILURE")] | length > 0 then "fail" else "pending" end')
+            echo "Check $i/60: $STATUS"
+            if [ "$STATUS" = "pass" ]; then
+              echo "passed=true" >> $GITHUB_OUTPUT
+              exit 0
+            elif [ "$STATUS" = "fail" ]; then
+              echo "CI checks failed. Skipping merge."
+              echo "passed=false" >> $GITHUB_OUTPUT
+              exit 0
+            fi
+            sleep 30
+          done
+          echo "CI checks timed out after 30 minutes."
+          echo "passed=false" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+
+      - name: Merge PR
+        if: steps.check_sentry.outputs.is_sentry == 'true' && steps.merge_check.outputs.ready == 'true' && steps.ci_check.outputs.passed == 'true'
+        run: |
+          gh pr merge ${{ steps.pr_info.outputs.pr_number }} \
+            --squash --admin --delete-branch \
+            --repo ${{ github.repository }}
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+
+      - name: Deploy
+        if: steps.check_sentry.outputs.is_sentry == 'true' && steps.merge_check.outputs.ready == 'true' && steps.ci_check.outputs.passed == 'true'
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: |
+          git remote set-url origin "https://x-access-token:${GH_PAT}@github.com/${{ github.repository }}.git"
+          git checkout develop
+          git pull origin develop
+
+          LAST_TAG=$(git describe --tags --abbrev=0)
+          echo "Last tag: $LAST_TAG"
+
+          # Get commits since last tag, filter out release machinery
+          COMMITS=$(git log --oneline "$LAST_TAG..HEAD" | grep -viE '^[a-f0-9]+ (update changelog|[0-9]+\.[0-9]+\.[0-9]+|Merge branch)' || true)
+          echo "Commits since $LAST_TAG:"
+          echo "$COMMITS"
+
+          if [ -z "$COMMITS" ]; then
+            echo "No meaningful commits to deploy"
+            exit 0
+          fi
+
+          # Generate changelog entry
+          VERSION_DATE=$(date +%Y-%m-%d)
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
+          NEW_VERSION="$MAJOR.$MINOR.$((PATCH + 1))"
+
+          CHANGELOG_ENTRY="## [$NEW_VERSION] - $VERSION_DATE
+          ### Fixed
+          $(echo "$COMMITS" | sed 's/^[a-f0-9]* /- /')"
+
+          # Insert after header (line 5)
+          head -5 CHANGELOG.md > CHANGELOG.tmp
+          echo "" >> CHANGELOG.tmp
+          echo "$CHANGELOG_ENTRY" >> CHANGELOG.tmp
+          echo "" >> CHANGELOG.tmp
+          tail -n +6 CHANGELOG.md >> CHANGELOG.tmp
+          mv CHANGELOG.tmp CHANGELOG.md
+
+          git add CHANGELOG.md
+          git commit -m "update changelog"
+
+          npm version patch --message '%s'
+
+          git push origin "v$NEW_VERSION"
+          git push origin develop
+
+          # Sync master
+          git checkout master
+          git pull origin master
+          git merge develop --no-ff -m "Merge develop into master for v$NEW_VERSION"
+          git push origin master
+          git checkout develop
+
+          echo "Deployed v$NEW_VERSION"

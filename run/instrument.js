@@ -13,8 +13,8 @@ if (getSentryDsn()) {
             nodeProfilingIntegration(),
             Sentry.postgresIntegration
         ],
-        tracesSampleRate: 1.0,
-        profilesSampleRate: 1.0
+        tracesSampleRate: 0.1,
+        profilesSampleRate: 0.1
     });
     
     logger.info('Started Sentry instrumentation');

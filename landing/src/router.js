@@ -6,7 +6,7 @@ const routes = [
     { path: '/contact-us', component: () => import('./pages/ContactPage.vue') },
     { path: '/transaction-tracing', component: () => import('./pages/TransactionTracingPage.vue') },
     { path: '/features', component: () => import('./pages/FeaturesPage.vue') },
-    { path: '/developers', component: () => import('./pages/DevelopersPage.vue') },
+    { path: '/developers', redirect: '/features' },
     { path: '/teams', component: () => import('./pages/TeamsPage.vue') },
     { path: '/app-chains', component: () => import('./pages/AppChainsPage.vue') },
     { path: '/hardhat-block-explorer', component: () => import('./pages/HardhatPage.vue') },
