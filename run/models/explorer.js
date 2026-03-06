@@ -517,13 +517,24 @@ module.exports = (sequelize, DataTypes) => {
         if (!this.shouldEnforceQuota)
             return 0;
 
-        const stripeSubscription = await this.getStripeSubscription({ include: ['stripePlan', 'stripeQuotaExtension']});
-        if (!stripeSubscription)
-            return 0;
+        try {
+            const stripeSubscription = await this.getStripeSubscription({ include: ['stripePlan', 'stripeQuotaExtension']});
+            if (!stripeSubscription)
+                return 0;
 
-        const extraQuota = stripeSubscription.stripeQuotaExtension && stripeSubscription.stripeQuotaExtension.quota;
+            const extraQuota = stripeSubscription.stripeQuotaExtension && stripeSubscription.stripeQuotaExtension.quota;
 
-        return stripeSubscription.stripePlan.capabilities.txLimit + extraQuota;
+            return stripeSubscription.stripePlan.capabilities.txLimit + extraQuota;
+        } catch (error) {
+            // Handle database connection errors gracefully
+            if (error.name === 'SequelizeDatabaseError' && error.message.includes('Connection terminated unexpectedly')) {
+                console.warn(`Database connection error in getTransactionQuota for explorer ${this.id}: ${error.message}`);
+                // Return 0 as safe default when quota cannot be determined
+                return 0;
+            }
+            // Re-throw other unexpected errors
+            throw error;
+        }
     }
 
     /**
@@ -534,13 +545,24 @@ module.exports = (sequelize, DataTypes) => {
         if (!this.shouldEnforceQuota)
             return false;
 
-        const stripeSubscription = await this.getStripeSubscription({ include: ['stripePlan', 'stripeQuotaExtension']});
-        if (!stripeSubscription)
-            return false;
+        try {
+            const stripeSubscription = await this.getStripeSubscription({ include: ['stripePlan', 'stripeQuotaExtension']});
+            if (!stripeSubscription)
+                return false;
 
-        const baseQuota = stripeSubscription.stripePlan.capabilities.txLimit;
-        const extraQuota = stripeSubscription.stripeQuotaExtension && stripeSubscription.stripeQuotaExtension.quota;
-        return baseQuota > 0 && stripeSubscription.transactionQuota > baseQuota + extraQuota;
+            const baseQuota = stripeSubscription.stripePlan.capabilities.txLimit;
+            const extraQuota = stripeSubscription.stripeQuotaExtension && stripeSubscription.stripeQuotaExtension.quota;
+            return baseQuota > 0 && stripeSubscription.transactionQuota > baseQuota + extraQuota;
+        } catch (error) {
+            // Handle database connection errors gracefully
+            if (error.name === 'SequelizeDatabaseError' && error.message.includes('Connection terminated unexpectedly')) {
+                console.warn(`Database connection error in hasReachedTransactionQuota for explorer ${this.id}: ${error.message}`);
+                // Return false (quota not reached) as safe default to avoid disrupting sync processes
+                return false;
+            }
+            // Re-throw other unexpected errors
+            throw error;
+        }
     }
 
     /**
