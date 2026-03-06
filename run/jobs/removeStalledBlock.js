@@ -40,8 +40,6 @@ async function withDatabaseRetry(operation, maxRetries = 3) {
             await new Promise(resolve => setTimeout(resolve, delay));
         }
     }
-
-    throw lastError;
 }
 
 module.exports = async (job) => {
