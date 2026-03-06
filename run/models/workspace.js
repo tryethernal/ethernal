@@ -3220,57 +3220,86 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+
     async safeCreateOrUpdateContract(contract, transaction) {
         if (contract.address.toLowerCase() === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
             return null;
 
-        const contracts = await this.getContracts({ where: { address: contract.address.toLowerCase() }});
-        const existingContract = contracts[0];
+        const maxRetries = 3;
+        const baseDelay = 100; // milliseconds
 
-        const newContract = sanitize({
-            hashedBytecode: contract.hashedBytecode,
-            abi: contract.abi,
-            address: contract.address,
-            name: contract.name,
-            imported: contract.imported,
-            patterns: contract.patterns,
-            processed: contract.processed,
-            proxy: contract.proxy,
-            timestamp: contract.timestamp,
-            tokenDecimals: contract.tokenDecimals,
-            tokenName: contract.tokenName,
-            tokenSymbol: contract.tokenSymbol,
-            tokenTotalSupply: contract.tokenTotalSupply,
-            watchedPaths: contract.watchedPaths,
-            has721Metadata: contract.has721Metadata,
-            has721Enumerable: contract.has721Enumerable,
-            ast: contract.ast,
-            bytecode: contract.bytecode,
-            asm: contract.asm
-        });
+        for (let attempt = 0; attempt <= maxRetries; attempt++) {
+            try {
+                const contracts = await this.getContracts({ where: { address: contract.address.toLowerCase() }});
+                const existingContract = contracts[0];
 
-        if (existingContract)
-            return existingContract.update(newContract, { transaction })
-        else {
-            const [_contract] = await sequelize.models.Contract.bulkCreate(
-                [
-                    {
-                        ...newContract,
-                        workspaceId: this.id,
-                        transactionId: contract.transactionId
-                    },
-                ],
-                {
-                    ignoreDuplicates: true,
-                    individualHooks: true,
-                    returning: true,
-                    transaction
+                const newContract = sanitize({
+                    hashedBytecode: contract.hashedBytecode,
+                    abi: contract.abi,
+                    address: contract.address,
+                    name: contract.name,
+                    imported: contract.imported,
+                    patterns: contract.patterns,
+                    processed: contract.processed,
+                    proxy: contract.proxy,
+                    timestamp: contract.timestamp,
+                    tokenDecimals: contract.tokenDecimals,
+                    tokenName: contract.tokenName,
+                    tokenSymbol: contract.tokenSymbol,
+                    tokenTotalSupply: contract.tokenTotalSupply,
+                    watchedPaths: contract.watchedPaths,
+                    has721Metadata: contract.has721Metadata,
+                    has721Enumerable: contract.has721Enumerable,
+                    ast: contract.ast,
+                    bytecode: contract.bytecode,
+                    asm: contract.asm
+                });
+
+                if (existingContract)
+                    return existingContract.update(newContract, { transaction })
+                else {
+                    const [_contract] = await sequelize.models.Contract.bulkCreate(
+                        [
+                            {
+                                ...newContract,
+                                workspaceId: this.id,
+                                transactionId: contract.transactionId
+                            },
+                        ],
+                        {
+                            ignoreDuplicates: true,
+                            individualHooks: true,
+                            returning: true,
+                            transaction
+                        }
+                    );
+                    return _contract;
                 }
-            );
-            return _contract;
+            } catch (error) {
+                // Check if this is a database deadlock error
+                const isDeadlock = error.name === 'SequelizeDatabaseError' &&
+                    (error.message.includes('deadlock detected') ||
+                     error.message.includes('deadlock') ||
+                     error.original?.code === '40P01'); // PostgreSQL deadlock error code
+
+                if (isDeadlock && attempt < maxRetries) {
+                    // Exponential backoff with jitter to prevent thundering herd
+                    const delay = baseDelay * Math.pow(2, attempt) + Math.random() * 50;
+                    logger.warn(`Deadlock detected in safeCreateOrUpdateContract, retrying in ${delay}ms (attempt ${attempt + 1}/${maxRetries + 1})`, {
+                        location: 'models.workspace.safeCreateOrUpdateContract',
+                        contractAddress: contract.address,
+                        attempt: attempt + 1,
+                        error: error.message
+                    });
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    continue;
+                }
+
+                // If not a deadlock or max retries reached, re-throw the error
+                throw error;
+            }
         }
     }
-
     async safeCreateOrUpdateAccount(account) {
         const accounts = await this.getAccounts({ where: { address: account.address.toLowerCase() }});
         const existingAccount = accounts[0];
