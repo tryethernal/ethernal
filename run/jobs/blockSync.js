@@ -42,7 +42,18 @@ module.exports = async job => {
                 },
                 {
                     model: Explorer,
-                    as: 'explorer'
+                    as: 'explorer',
+                    attributes: ['id', 'shouldSync'],
+                    include: {
+                        model: StripeSubscription,
+                        as: 'stripeSubscription',
+                        attributes: ['id']
+                    }
+                },
+                {
+                    model: RpcHealthCheck,
+                    as: 'rpcHealthCheck',
+                    attributes: ['id', 'isReachable']
                 },
                 {
                     model: IntegrityCheck,
@@ -54,6 +65,26 @@ module.exports = async job => {
 
         if (!workspace)
             return 'Invalid workspace.';
+
+        // API source requires the same validations as the slow path
+        if (data.source === 'api') {
+            // Custom L1 parents don't require explorer/subscription - they sync for their L2 children
+            const isCustomL1Parent = workspace.isCustomL1Parent === true;
+
+            if (!isCustomL1Parent) {
+                if (!workspace.explorer)
+                    return 'No active explorer for this workspace';
+
+                if (!workspace.explorer.shouldSync)
+                    return 'Sync is disabled';
+
+                if (workspace.rpcHealthCheckEnabled && workspace.rpcHealthCheck && !workspace.rpcHealthCheck.isReachable)
+                    return 'RPC is not reachable';
+
+                if (!workspace.explorer.stripeSubscription)
+                    return 'No active subscription';
+            }
+        }
 
         // Disable browser sync to prevent concurrent syncing from both browser and server
         if (workspace.browserSyncEnabled)
