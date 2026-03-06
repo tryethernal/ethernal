@@ -17,6 +17,7 @@ run/seeders/private/
 run/dump.rdb
 docs/
 screenshots/
+!landing/public/screenshots/
 
 functions/report*
 start_explorer.js
