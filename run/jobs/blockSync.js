@@ -262,7 +262,37 @@ module.exports = async job => {
             processedBlock.transactionsCount = filteredTransactions.length;
         }
 
-        const syncedBlock = await workspace.safeCreatePartialBlock(processedBlock);
+        // Retry logic for database connection errors
+        const retryDatabaseOperation = async (operation, maxRetries = 3) => {
+            for (let attempt = 1; attempt <= maxRetries; attempt++) {
+                try {
+                    return await operation();
+                } catch (error) {
+                    const isConnectionError = error.message.includes('Connection terminated unexpectedly') ||
+                                            error.message.includes('connection is closed') ||
+                                            error.message.includes('server closed the connection unexpectedly');
+
+                    if (isConnectionError && attempt < maxRetries) {
+                        logger.warn(`Database connection error on attempt ${attempt}, retrying...`, {
+                            location: 'jobs.blockSync.retryDatabaseOperation',
+                            error: error.message,
+                            attempt,
+                            maxRetries,
+                            blockNumber: data.blockNumber,
+                            workspaceId: workspace.id
+                        });
+
+                        // Exponential backoff: wait 1s, 2s, then 4s
+                        const backoffMs = Math.pow(2, attempt - 1) * 1000;
+                        await new Promise(resolve => setTimeout(resolve, backoffMs));
+                        continue;
+                    }
+                    throw error;
+                }
+            }
+        };
+
+        const syncedBlock = await retryDatabaseOperation(() => workspace.safeCreatePartialBlock(processedBlock));
         if (!syncedBlock)
             return "Couldn't store block";
 
