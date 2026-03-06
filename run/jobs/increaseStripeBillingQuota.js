@@ -7,7 +7,7 @@
 const { getStripeSecretKey } = require('../lib/env');
 const stripe = require('stripe')(getStripeSecretKey());
 const { Block, Workspace, Explorer, StripeSubscription } = require('../models');
-const { SequelizeDatabaseError, ConnectionError: SequelizeConnectionError } = require('sequelize');
+const { DatabaseError: SequelizeDatabaseError, ConnectionError: SequelizeConnectionError } = require('sequelize');
 
 module.exports = async job => {
     const data = job.data;
