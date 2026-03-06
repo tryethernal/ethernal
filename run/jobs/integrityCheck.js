@@ -92,8 +92,7 @@ module.exports = async job => {
     });
     if (!lowerBlock) {
         return enqueue(`blockSync`, `blockSync-${workspace.id}-${workspace.integrityCheckStartBlockNumber}`, {
-            userId: workspace.user.firebaseUserId,
-            workspace: workspace.name,
+            workspaceId: workspace.id,
             blockNumber: workspace.integrityCheckStartBlockNumber,
             source: 'integrityCheck'
         }, 1);

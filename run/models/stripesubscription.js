@@ -140,8 +140,7 @@ module.exports = (sequelize, DataTypes) => {
           await explorer.startSync();
           if (explorer.workspace.integrityCheckStartBlockNumber)
             return enqueue('blockSync', `blockSync-${explorer.workspace.id}-${explorer.workspace.integrityCheckStartBlockNumber}`, {
-              userId: explorer.admin.firebaseUserId,
-              workspace: explorer.workspace.name,
+              workspaceId: explorer.workspace.id,
               blockNumber: explorer.workspace.integrityCheckStartBlockNumber,
               source: 'subscriptionStart'
             }, 1);
