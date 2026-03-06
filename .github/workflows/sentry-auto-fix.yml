@@ -187,7 +187,7 @@ jobs:
             - It's expected behavior (e.g., user input validation errors)
             - It's a third-party/network error we can't control
             - It's already fixed on the develop branch
-            - It's a transient infrastructure error (database connection drops, ECONNRESET, "Connection terminated unexpectedly", SequelizeConnectionError, SequelizeConnectionRefusedError). These happen during app restarts/deploys and resolve themselves. Do NOT add retry logic or try-catch wrappers for these — BullMQ already handles retries at the job level.
+            - It's a transient infrastructure error (database connection drops, ECONNRESET, "Connection terminated unexpectedly", SequelizeConnectionError, SequelizeConnectionRefusedError) — BUT first verify it correlates with a recent deploy/restart by checking: `flyctl releases -a ethernal --json | jq '.[0:3]'`. If the error timestamps align with a release within the last 10 minutes, it's transient → close. If there's NO recent deploy and connection errors persist, ESCALATE instead — it may be a real infra issue. Do NOT add retry logic or try-catch wrappers for these — BullMQ already handles retries at the job level.
             Close with: `gh issue close ${{ steps.issue_info.outputs.number }} --comment "Closing: [reason]"`
 
             **ESCALATE** if:
