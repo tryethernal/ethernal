@@ -11,7 +11,7 @@
             <v-container style="max-width: 800px;">
                 <div class="legal-content">
                     <h2>1. Introduction</h2>
-                    <p>This Privacy Policy explains how Ethernal, operated by Antoine Rachez ("we," "us," or "our"), collects, uses, and protects your personal information when you use our service at app.ethernal.com and related services (the "Service").</p>
+                    <p>This Privacy Policy explains how Ethernal, operated by Antoine Rachez ("we," "us," or "our"), collects, uses, and protects your personal information when you use our service at app.tryethernal.com and related services (the "Service").</p>
 
                     <h2>2. Information We Collect</h2>
                     <h3>Account Information</h3>

@@ -27,6 +27,11 @@
 
             <p style="color: #64748B; font-size: 14px; min-height: 40px;" class="mb-6 mt-2">{{ subtitle }}</p>
 
+            <div v-if="quota" class="quota-pill mb-5">
+                <v-icon size="14" class="mr-1" style="color: #5DAAE0;">mdi-database-outline</v-icon>
+                {{ quota }}
+            </div>
+
             <div>
                 <div
                     v-for="feature in features"
@@ -59,9 +64,10 @@ defineProps({
     price: { type: [Number, String], required: true },
     subtitle: { type: String, default: '' },
     features: { type: Array, default: () => [] },
+    quota: { type: String, default: '' },
     highlighted: { type: Boolean, default: false },
     ctaText: { type: String, default: 'Get Started' },
-    ctaUrl: { type: String, default: 'https://app.ethernal.com/auth' }
+    ctaUrl: { type: String, default: 'https://app.tryethernal.com/auth' }
 });
 </script>
 
@@ -124,6 +130,19 @@ defineProps({
     color: #F1F5F9;
     letter-spacing: -0.02em;
     line-height: 1;
+}
+
+.quota-pill {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 14px;
+    border-radius: 8px;
+    background: rgba(61, 149, 206, 0.08);
+    border: 1px solid rgba(61, 149, 206, 0.18);
+    color: #CBD5E1;
+    font-size: 13px;
+    font-weight: 600;
 }
 
 .pricing-cta {

@@ -8,9 +8,6 @@
             <!-- Desktop nav -->
             <nav class="navbar-links d-none d-md-flex">
                 <router-link to="/features" class="nav-link">Features</router-link>
-                <router-link to="/pricing" class="nav-link">Pricing</router-link>
-                <a href="https://doc.tryethernal.com" target="_blank" rel="noopener noreferrer" class="nav-link">Docs</a>
-                <router-link to="/contact-us" class="nav-link">Contact</router-link>
 
                 <v-menu open-on-hover :close-on-content-click="true" :open-delay="0" :close-delay="150">
                     <template v-slot:activator="{ props }">
@@ -89,6 +86,45 @@
                         </div>
                     </div>
                 </v-menu>
+
+                <v-menu open-on-hover :close-on-content-click="true" :open-delay="0" :close-delay="150">
+                    <template v-slot:activator="{ props }">
+                        <span class="nav-link" v-bind="props" style="cursor: pointer;">
+                            Use Cases
+                            <v-icon size="16" class="ml-1" style="opacity: 0.5;">mdi-chevron-down</v-icon>
+                        </span>
+                    </template>
+                    <div class="mega-menu">
+                        <div class="mega-menu-inner">
+                            <div class="mega-col">
+                                <router-link to="/developers" class="mega-item">
+                                    <v-icon size="20" class="mega-item-icon" style="color: #FBBF24;">mdi-code-braces</v-icon>
+                                    <div>
+                                        <div class="mega-item-name">Developers</div>
+                                        <div class="mega-item-desc">Debug and explore local chains</div>
+                                    </div>
+                                </router-link>
+                                <router-link to="/teams" class="mega-item">
+                                    <v-icon size="20" class="mega-item-icon" style="color: #3D95CE;">mdi-account-group</v-icon>
+                                    <div>
+                                        <div class="mega-item-name">Teams</div>
+                                        <div class="mega-item-desc">Shared testnet explorer</div>
+                                    </div>
+                                </router-link>
+                                <router-link to="/app-chains" class="mega-item">
+                                    <v-icon size="20" class="mega-item-icon" style="color: #10B981;">mdi-link-variant</v-icon>
+                                    <div>
+                                        <div class="mega-item-name">App Chains</div>
+                                        <div class="mega-item-desc">White-label for L1s and L2s</div>
+                                    </div>
+                                </router-link>
+                            </div>
+                        </div>
+                    </div>
+                </v-menu>
+
+                <router-link to="/pricing" class="nav-link">Pricing</router-link>
+                <router-link to="/contact-us" class="nav-link">Contact</router-link>
             </nav>
 
             <!-- Desktop CTAs -->
@@ -98,8 +134,8 @@
                         <path d="M208.31,75.68A59.78,59.78,0,0,0,202.93,28,8,8,0,0,0,196,24a59.75,59.75,0,0,0-48,24H124A59.75,59.75,0,0,0,76,24a8,8,0,0,0-6.93,4,59.78,59.78,0,0,0-5.38,47.68A58.14,58.14,0,0,0,56,104v8a56.06,56.06,0,0,0,48.44,55.47A39.8,39.8,0,0,0,96,192v8H72a24,24,0,0,1-24-24A40,40,0,0,0,8,136a8,8,0,0,0,0,16,24,24,0,0,1,24,24,40,40,0,0,0,40,40H96v16a8,8,0,0,0,16,0V192a24,24,0,0,1,48,0v40a8,8,0,0,0,16,0V192a39.8,39.8,0,0,0-8.44-24.53A56.06,56.06,0,0,0,216,112v-8A58.14,58.14,0,0,0,208.31,75.68ZM200,112a40,40,0,0,1-40,40H112a40,40,0,0,1-40-40v-8a41.74,41.74,0,0,1,6.9-22.48A8,8,0,0,0,80,73.83a43.81,43.81,0,0,1,.79-33.58,43.88,43.88,0,0,1,32.32,20.06A8,8,0,0,0,119.82,64h32.35a8,8,0,0,0,6.74-3.69,43.87,43.87,0,0,1,32.32-20.06A43.81,43.81,0,0,1,192,73.83a8.09,8.09,0,0,0,1,7.65A41.72,41.72,0,0,1,200,104Z"/>
                     </svg>
                 </a>
-                <a href="https://app.ethernal.com/auth" class="nav-link" style="font-weight: 500;">Log in</a>
-                <a href="https://app.ethernal.com/auth" class="navbar-cta">Get Started</a>
+                <a href="https://app.tryethernal.com/auth" class="nav-link" style="font-weight: 500;">Log in</a>
+                <a href="https://app.tryethernal.com/auth" class="navbar-cta">Get Started</a>
             </div>
 
             <!-- Mobile hamburger -->
@@ -113,38 +149,36 @@
     <v-navigation-drawer v-model="drawer" temporary location="right" color="#111827" width="280">
         <v-list nav class="pa-4">
             <v-list-item to="/features" title="Features" @click="drawer = false" />
-            <v-list-item to="/pricing" title="Pricing" @click="drawer = false" />
-            <v-list-item href="https://doc.tryethernal.com" target="_blank" rel="noopener noreferrer" title="Docs" @click="drawer = false" />
-            <v-list-item to="/contact-us" title="Contact" @click="drawer = false" />
 
             <v-divider class="my-3" style="border-color: rgba(61,149,206,0.08);" />
 
-            <v-list-subheader style="color: #64748B;">Development Tools</v-list-subheader>
+            <v-list-subheader style="color: #64748B;">Integrations</v-list-subheader>
             <v-list-item to="/hardhat-block-explorer" title="Hardhat" @click="drawer = false" prepend-icon="mdi-hammer-wrench" />
             <v-list-item to="/anvil-block-explorer" title="Anvil" @click="drawer = false" prepend-icon="mdi-anvil" />
             <v-list-item to="/ganache-block-explorer" title="Ganache" @click="drawer = false" prepend-icon="mdi-cube-outline" />
             <v-list-item to="/github-actions" title="GitHub Actions" @click="drawer = false" prepend-icon="mdi-github" />
-
-            <v-list-subheader style="color: #64748B;">Infrastructure</v-list-subheader>
             <v-list-item to="/kaleido" title="Kaleido" @click="drawer = false" prepend-icon="mdi-cloud" />
             <v-list-item to="/chainstack" title="Chainstack" @click="drawer = false" prepend-icon="mdi-server" />
-
-            <v-list-subheader style="color: #64748B;">L2 Rollups</v-list-subheader>
             <v-list-item to="/arbitrum-orbit" title="Arbitrum Orbit" @click="drawer = false" prepend-icon="mdi-transit-connection-variant" />
             <v-list-item to="/op-stack" title="OP Stack" @click="drawer = false" prepend-icon="mdi-layers-triple" />
 
             <v-divider class="my-3" style="border-color: rgba(61,149,206,0.08);" />
 
             <v-list-subheader style="color: #64748B;">Use Cases</v-list-subheader>
-            <v-list-item to="/features" title="Developers" @click="drawer = false" />
-            <v-list-item to="/teams" title="Teams" @click="drawer = false" />
-            <v-list-item to="/app-chains" title="App Chains" @click="drawer = false" />
+            <v-list-item to="/developers" title="Developers" @click="drawer = false" prepend-icon="mdi-code-braces" />
+            <v-list-item to="/teams" title="Teams" @click="drawer = false" prepend-icon="mdi-account-group" />
+            <v-list-item to="/app-chains" title="App Chains" @click="drawer = false" prepend-icon="mdi-link-variant" />
+
+            <v-divider class="my-3" style="border-color: rgba(61,149,206,0.08);" />
+
+            <v-list-item to="/pricing" title="Pricing" @click="drawer = false" />
+            <v-list-item to="/contact-us" title="Contact" @click="drawer = false" />
 
             <v-divider class="my-3" style="border-color: rgba(61,149,206,0.08);" />
 
             <div class="pa-2 d-flex flex-column ga-2">
-                <v-btn block class="btn-outline" href="https://app.ethernal.com/auth" rounded="lg">Log In</v-btn>
-                <v-btn block class="btn-primary" href="https://app.ethernal.com/auth" rounded="lg">Get Started</v-btn>
+                <v-btn block class="btn-outline" href="https://app.tryethernal.com/auth" rounded="lg">Log In</v-btn>
+                <v-btn block class="btn-primary" href="https://app.tryethernal.com/auth" rounded="lg">Get Started</v-btn>
             </div>
         </v-list>
     </v-navigation-drawer>
