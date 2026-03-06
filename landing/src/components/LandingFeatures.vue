@@ -513,7 +513,7 @@ const PreviewAPI = markRaw({
                 h('span', { class: 'mock-api-endpoint' }, '/api/explorers'),
             ]),
             h('div', { class: 'mock-api-code' }, [
-                codeLine(1, 'curl -X POST https://app.tryethernal.com/api/explorers \\', false),
+                codeLine(1, 'curl -X POST https://app.ethernal.com/api/explorers \\', false),
                 codeLine(2, '  -H "Authorization: Bearer YOUR_API_KEY" \\', false),
                 codeLine(3, '  -H "Content-Type: application/json" \\', false),
                 codeLine(4, '  -d \'{', false),
@@ -597,7 +597,7 @@ const features = [
     {
         title: 'API Support',
         desc: 'Create and manage explorers programmatically. Spin up a fully configured explorer with a single API call.',
-        url: 'app.tryethernal.com/api/explorers',
+        url: 'app.ethernal.com/api/explorers',
         component: PreviewAPI,
     },
 ];

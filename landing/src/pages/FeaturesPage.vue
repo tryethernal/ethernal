@@ -127,7 +127,7 @@
             <FeatureSection inline-icon compact icon="mdi-palette" title="Custom Branding" description="Your logo, colors, domain, and theme. Make the explorer indistinguishable from a first-party product. Supports custom CSS for full control." :reverse="true">
                 <template #visual>
                     <div class="browser-preview">
-                        <div class="preview-header"><div class="d-flex align-center ga-2"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="preview-url-bar"><v-icon size="12" style="color: #64748B;">mdi-lock</v-icon>app.tryethernal.com/explorer/branding</div><div style="width: 42px;"></div></div>
+                        <div class="preview-header"><div class="d-flex align-center ga-2"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="preview-url-bar"><v-icon size="12" style="color: #64748B;">mdi-lock</v-icon>app.ethernal.com/explorer/branding</div><div style="width: 42px;"></div></div>
                         <div class="preview-body">
                             <div class="mock-branding-setup">
                                 <div class="mock-field"><div class="mock-field-label">Explorer Name</div><div class="mock-field-input">MyChain Explorer</div></div>
@@ -198,7 +198,7 @@
             <FeatureSection inline-icon compact icon="mdi-api" title="API Support" description="Create and manage explorers programmatically. Spin up a fully configured explorer with a single API call. Ideal for automated deployments and CI/CD pipelines." :reverse="true">
                 <template #visual>
                     <div class="browser-preview">
-                        <div class="preview-header"><div class="d-flex align-center ga-2"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="preview-url-bar"><v-icon size="12" style="color: #64748B;">mdi-lock</v-icon>app.tryethernal.com/api/explorers</div><div style="width: 42px;"></div></div>
+                        <div class="preview-header"><div class="d-flex align-center ga-2"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="preview-url-bar"><v-icon size="12" style="color: #64748B;">mdi-lock</v-icon>app.ethernal.com/api/explorers</div><div style="width: 42px;"></div></div>
                         <div class="preview-body terminal-mock">
                             <div class="code-line"><span class="t-comment">// Create an explorer via API</span></div>
                             <div class="code-line"><span class="t-cmd">POST</span> <span class="t-str">/api/explorers</span></div>

@@ -64,44 +64,44 @@ defineProps({
 
 const publicPlans = [
     {
-        name: 'Starter',
+        name: 'Free',
         price: 0,
-        subtitle: 'Basic explorer with ads',
-        quota: 'Unlimited transactions',
+        subtitle: 'For testing and personal projects',
         features: [
+            '1 explorer',
+            '10,000 blocks',
+            'Transaction decoding',
             'Contract verification',
-            'Token & NFT tracking',
-            'Testnet faucet',
             'Ethernal branding'
         ],
         ctaText: 'Start Free'
     },
     {
-        name: 'Team',
+        name: 'Starter',
         price: 150,
-        subtitle: 'For teams sharing a testnet',
+        subtitle: 'For teams launching a chain',
         highlighted: true,
-        quota: '100k transactions included',
         features: [
-            'Everything in Starter',
+            '1 explorer',
+            'Unlimited blocks',
             'Custom domain',
-            'Custom native token',
-            'No ads',
-            'L2 bridge support',
+            'Custom branding',
+            'Token transfers',
+            'Analytics dashboard',
             '7-day free trial'
         ],
         ctaText: 'Start Trial'
     },
     {
-        name: 'App Chain',
+        name: 'Growth',
         price: 500,
-        subtitle: 'White-label for L1s and L2s',
-        quota: '5M transactions included',
+        subtitle: 'For production chains',
         features: [
-            'Everything in Team',
-            'Custom branding & themes',
-            'Total supply display',
-            'Status page',
+            '3 explorers',
+            'Unlimited blocks',
+            'Everything in Starter',
+            'NFT gallery',
+            'L2 bridge support',
             'Priority support',
             '7-day free trial'
         ],
@@ -110,13 +110,13 @@ const publicPlans = [
     {
         name: 'Enterprise',
         price: 'Custom',
-        subtitle: 'For high-volume chains',
-        quota: 'Unlimited transactions',
+        subtitle: 'For large-scale deployments',
         features: [
-            'Everything in App Chain',
-            'Multiple explorers',
-            'Custom integrations',
-            'Dedicated support'
+            'Unlimited explorers',
+            'Unlimited blocks',
+            'Everything in Growth',
+            'Dedicated support',
+            'Custom integrations'
         ],
         ctaText: 'Contact Us',
         ctaUrl: '/contact-us'
@@ -130,21 +130,24 @@ const privatePlans = [
         subtitle: 'For local development',
         features: [
             '1 workspace',
-            'Unlimited blocks',
-            'Transaction decoding & tracing',
+            '10,000 blocks',
+            'Transaction decoding',
             'Contract interaction',
-            'Hardhat / Anvil sync',
-            'Analytics'
+            'Hardhat / Anvil sync'
         ],
         ctaText: 'Start Free'
     },
     {
         name: 'Pro',
         price: 20,
-        subtitle: 'For multiple projects',
+        subtitle: 'For professional developers',
         features: [
+            'Unlimited workspaces',
+            'Unlimited blocks',
             'Everything in Free',
-            'Unlimited workspaces'
+            'Transaction tracing',
+            'Storage access',
+            'Advanced analytics'
         ],
         ctaText: 'Get Pro'
     }
