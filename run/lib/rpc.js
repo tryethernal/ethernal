@@ -388,7 +388,7 @@ class ProviderConnector {
  */
 class Tracer {
 
-    #ERRORS_TO_IGNORE = [-32601, -32000];
+    #ERRORS_TO_IGNORE = [-32601, -32000, -32005];
 
     constructor(server, db, type = 'other') {
         if (!server) throw '[Tracer] Missing parameter';
@@ -412,6 +412,30 @@ class Tracer {
                 message: error.error.message,
                 error: error
             };
+
+        // Handle -32603 (Internal error) more selectively - only ignore for known safe cases
+        if (error.error && error.error.code === -32603) {
+            const message = error.error.message || '';
+            // Only ignore if it's clearly about block size/complexity limits
+            if (message.includes('too many transactions') ||
+                message.includes('block too large') ||
+                message.includes('block size limit')) {
+                return this.error = {
+                    code: `Error code "${error.error.code}".`,
+                    message: error.error.message,
+                    error: error
+                };
+            }
+        }
+
+        // Handle -32005 (Rate limited) - gracefully handle rate limiting
+        if (error.error && error.error.code === -32005) {
+            return this.error = {
+                code: `Error code "${error.error.code}".`,
+                message: error.error.message,
+                error: error
+            };
+        }
 
         throw error;
     }
