@@ -48,16 +48,14 @@ module.exports = async job => {
     } catch(error) {
         if (error.message && error.message.includes('Connection terminated unexpectedly')) {
             // Database connection errors are transient infrastructure issues, not job-level problems.
-            // Handle gracefully like PM2 timeouts - log but don't fail the job.
+            // Log the warning then re-throw so BullMQ's retry mechanism handles it.
             logger.warn({
                 message: 'Database connection terminated during explorer lookup',
                 explorerSlug: data.explorerSlug,
                 error: error.message
             });
-            return 'Database connection terminated';
         }
-        else
-            throw error;
+        throw error;
     }
 
     try {
