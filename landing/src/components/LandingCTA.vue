@@ -12,7 +12,7 @@
                 <v-btn
                     size="x-large"
                     class="btn-primary cta-btn"
-                    href="https://app.ethernal.com/auth"
+                    href="https://app.tryethernal.com/auth"
                     rounded="xl"
                 >
                     Get Started Free
