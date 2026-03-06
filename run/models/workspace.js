@@ -2970,14 +2970,15 @@ module.exports = (sequelize, DataTypes) => {
                     transaction: sequelizeTransaction
                 });
 
-                const orbitConfig = await sequelize.models.OrbitChainConfig.findOne({ where: { workspaceId: this.id } });
+                const orbitConfig = await sequelize.models.OrbitChainConfig.findOne({ where: { workspaceId: this.id }, transaction: sequelizeTransaction });
                 if (orbitConfig) {
                     const orbitBatch = await sequelize.models.OrbitBatch.findOne({
                         where: {
                             workspaceId: this.id,
                             prevMessageCount: { [Op.lte]: block.number },
                             newMessageCount: { [Op.gt]: block.number }
-                        }
+                        },
+                        transaction: sequelizeTransaction
                     });
 
                     if (orbitBatch) {
