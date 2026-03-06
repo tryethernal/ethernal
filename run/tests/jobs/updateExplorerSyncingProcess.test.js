@@ -328,12 +328,13 @@ describe('updateExplorerSyncingProcess', () => {
             });
     });
 
-    it('Should handle database connection errors gracefully', (done) => {
-        jest.spyOn(Explorer, 'findOne').mockRejectedValueOnce(new Error('Connection terminated unexpectedly'));
+    it('Should re-throw database connection errors so BullMQ can retry', (done) => {
+        const connectionError = new Error('Connection terminated unexpectedly');
+        jest.spyOn(Explorer, 'findOne').mockRejectedValueOnce(connectionError);
 
         updateExplorerSyncingProcess({ data: { explorerSlug: 'explorer' }})
-            .then(res => {
-                expect(res).toEqual('Database connection terminated');
+            .catch(err => {
+                expect(err).toBe(connectionError);
                 done();
             });
     });
