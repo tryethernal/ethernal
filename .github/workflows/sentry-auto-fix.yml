@@ -370,6 +370,33 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
 
+      - name: Resolve Sentry issue
+        if: steps.check_sentry.outputs.is_sentry == 'true' && steps.merge_check.outputs.ready == 'true' && steps.ci_check.outputs.passed == 'true'
+        env:
+          SENTRY_API_TOKEN: ${{ secrets.SENTRY_API_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Get the linked GitHub issue number from the PR body ("Fixes #N")
+          ISSUE_NUMBER=$(gh pr view ${{ steps.pr_info.outputs.pr_number }} --repo ${{ github.repository }} --json body -q '.body' | grep -oP 'Fixes #\K\d+' | head -1)
+          if [ -z "$ISSUE_NUMBER" ]; then
+            echo "No linked issue found in PR body, skipping Sentry resolution"
+            exit 0
+          fi
+
+          # Extract Sentry issue ID from the GitHub issue body
+          SENTRY_ISSUE_ID=$(gh issue view "$ISSUE_NUMBER" --repo ${{ github.repository }} --json body -q '.body' | grep -oP 'sentry\.tryethernal\.com/organizations/sentry/issues/\K\d+' | head -1)
+          if [ -z "$SENTRY_ISSUE_ID" ]; then
+            echo "No Sentry issue ID found in issue #$ISSUE_NUMBER body, skipping"
+            exit 0
+          fi
+
+          echo "Resolving Sentry issue $SENTRY_ISSUE_ID (from GitHub issue #$ISSUE_NUMBER)"
+          curl -s -X PUT \
+            "https://sentry.tryethernal.com/api/0/issues/$SENTRY_ISSUE_ID/" \
+            -H "Authorization: Bearer $SENTRY_API_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d '{"status": "resolved"}' | jq '{status, statusDetails}'
+
       - name: Deploy
         if: steps.check_sentry.outputs.is_sentry == 'true' && steps.merge_check.outputs.ready == 'true' && steps.ci_check.outputs.passed == 'true'
         env:
