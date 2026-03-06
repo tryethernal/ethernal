@@ -27,7 +27,7 @@ module.exports = async job => {
     let workspace;
 
     if (data.workspaceId) {
-        // Fast path: batch-sourced job, workspace already validated by batchBlockSync
+        // Fast path: uses workspaceId for optimized database lookup
         if (data.blockNumber === undefined || data.blockNumber === null)
             return 'Missing parameter';
 
@@ -54,6 +54,10 @@ module.exports = async job => {
 
         if (!workspace)
             return 'Invalid workspace.';
+
+        // Disable browser sync for API-sourced jobs to prevent concurrent syncing
+        if (data.source === 'api' && workspace.browserSyncEnabled)
+            await db.updateBrowserSync(workspace.id, false);
     } else {
         // Normal path: real-time sync, full validation
         if (!data.userId || !data.workspace || data.blockNumber === undefined || data.blockNumber === null)
