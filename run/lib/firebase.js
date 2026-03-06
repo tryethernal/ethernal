@@ -3831,7 +3831,7 @@ const searchForNumber = async (workspaceId, number) => {
 
     // Validate that the input is actually a number, not a hash or other string
     const parsedNumber = parseInt(number, 10);
-    if (isNaN(parsedNumber) || parsedNumber < 0 || parsedNumber.toString() !== number.toString()) {
+    if (isNaN(parsedNumber) || parsedNumber < 0 || !(/^\d+$/.test(number.toString()))) {
         return [];
     }
 
