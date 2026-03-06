@@ -3829,8 +3829,14 @@ const searchForHash = async (workspaceId, hash) => {
 const searchForNumber = async (workspaceId, number) => {
     if (!workspaceId || !number) throw new Error('Missing parameter.');
 
+    // Validate that the input is actually a number, not a hash or other string
+    const parsedNumber = parseInt(number, 10);
+    if (isNaN(parsedNumber) || parsedNumber < 0 || parsedNumber.toString() !== number.toString()) {
+        return [];
+    }
+
     const workspace = await Workspace.findByPk(workspaceId);
-    const block = await workspace.findBlockByNumber(number, true);
+    const block = await workspace.findBlockByNumber(parsedNumber, true);
     return block ? [{
         type: 'block',
         data: block.toJSON()
