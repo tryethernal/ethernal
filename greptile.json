@@ -1,0 +1,9 @@
+{
+  "statusCheck": true,
+  "fixWithAI": true,
+  "triggerOnUpdates": true,
+  "updateExistingSummaryComment": true,
+  "hideFooter": true,
+  "strictness": 2,
+  "commentTypes": ["logic", "syntax", "security"]
+}
