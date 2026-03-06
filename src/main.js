@@ -46,7 +46,7 @@ const createVueApp = (rootComponent, options) => {
                 Sentry.browserTracingIntegration({ router }),
                 Sentry.browserProfilingIntegration(),
             ],
-            tracesSampleRate: 1.0,
+            tracesSampleRate: 0.1,
             tracePropagationTargets: [/.*/],
             enabled: !!import.meta.env.VITE_SENTRY_ENABLED
         });
