@@ -1,4 +1,5 @@
 require('../mocks/lib/queue');
+require('../mocks/lib/logger');
 const { Block } = require('../mocks/models');
 
 const processBlock = require('../../jobs/processBlock');
