@@ -153,6 +153,7 @@ jobs:
             - NEVER modify files in: `run/api/stripe.js`, `run/webhooks/stripe.js`, `run/lib/stripe.js`, `run/middlewares/auth.js`, `run/lib/crypto.js`
             - NEVER write to the production database
             - NEVER skip running tests
+            - NEVER close the issue manually — GitHub auto-closes it when the PR with "Fixes #N" is merged
             - Keep fixes minimal — don't refactor surrounding code
             - If uncertain about the fix, escalate rather than guess
         env:
