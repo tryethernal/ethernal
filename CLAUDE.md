@@ -120,7 +120,8 @@ Self-hosted Sentry (v26.2.1) runs on a Hetzner CCX33 at `sentry.tryethernal.com`
 - **Frontend**: `@sentry/vue` initialized in `main.js` using `VITE_SENTRY_*` env vars. These are passed as build args to `Dockerfile.caddyfile` from GitHub secrets in CI.
 - **Queue monitoring**: `enqueue()` in `run/lib/queue.js` wraps with `op: 'queue.publish'` spans. All 4 workers use `op: 'queue.process'` spans with `messaging.destination.name` and `messaging.message.id` attributes.
 - **Proxy**: Caddy on Fly.io proxies `/api/2/*` to `sentry.tryethernal.com` so frontend events route through the explorer's own domain.
-- **Auto-fix pipeline**: `.github/workflows/sentry-auto-fix.yml` — when Sentry alert rules detect errors (≥2 occurrences), they auto-create GitHub issues with `sentry` label. Claude Code then triages (close/escalate/fix), creates fix PRs, processes code review, and merges+deploys when approved. Protected files (Stripe, auth, crypto) are never auto-modified. GitHub App `ethernal-sentry` on `tryethernal` org powers the Sentry↔GitHub integration.
+- **Auto-fix pipeline**: `.github/workflows/sentry-auto-fix.yml` — Sentry alert rules create GitHub issues with `sentry` label on: new errors (≥2 occurrences in 1h), regressions (previously resolved errors recurring). Claude Code triages (close/escalate/fix), creates fix PRs, processes code review (including Greptile thread resolutions with 30s debounce), merges+deploys when approved, then resolves the Sentry issue via API. Protected files (Stripe, auth, crypto) are never auto-modified. GitHub App `ethernal-sentry` on `tryethernal` org powers the Sentry↔GitHub integration.
+- **Sentry CLI access**: Use `ssh root@157.90.154.200` then `cd /opt/sentry && docker compose --env-file .env --env-file .env.custom exec -T web sentry shell` for Django shell access (manage tokens, project configs, etc.). API token with full scopes stored as `SENTRY_API_TOKEN` GitHub secret.
 
 ### Request Flow
 
