@@ -55,8 +55,8 @@ module.exports = async job => {
         if (!workspace)
             return 'Invalid workspace.';
 
-        // Disable browser sync for API-sourced jobs to prevent concurrent syncing
-        if (data.source === 'api' && workspace.browserSyncEnabled)
+        // Disable browser sync to prevent concurrent syncing from both browser and server
+        if (workspace.browserSyncEnabled)
             await db.updateBrowserSync(workspace.id, false);
     } else {
         // Normal path: real-time sync, full validation
@@ -149,8 +149,7 @@ module.exports = async job => {
 
             if (error.message == 'Rate limited') {
                 return enqueue('blockSync', `blockSync-${workspace.id}-${data.blockNumber}-${Date.now()}`, {
-                    userId: workspace.user.firebaseUserId,
-                    workspace: workspace.name,
+                    workspaceId: workspace.id,
                     blockNumber: data.blockNumber,
                     source: data.source,
                     rateLimited: !!data.rateLimited
@@ -158,8 +157,7 @@ module.exports = async job => {
             }
             else if (error.message.startsWith('Timed out after')) {
                 return enqueue('blockSync', `blockSync-${workspace.id}-${data.blockNumber}-${Date.now()}`, {
-                    userId: workspace.user.firebaseUserId,
-                    workspace: workspace.name,
+                    workspaceId: workspace.id,
                     blockNumber: data.blockNumber,
                     source: data.source,
                     rateLimited: !!data.rateLimited
