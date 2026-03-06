@@ -296,40 +296,74 @@ jobs:
             NEVER remove working code to satisfy a review bot.
             NEVER modify: `run/api/stripe.js`, `run/webhooks/stripe.js`, `run/lib/stripe.js`, `run/middlewares/auth.js`, `run/lib/crypto.js`
 
-            ## Step 4: Merge and Clean Up
+            ## Step 4: Report
 
-            After processing all comments:
-
-            1. If there are unresolved issues you couldn't fix, do NOT merge. Push your fixes and stop.
-
-            2. If all issues are resolved (or there were no issues to fix), merge immediately.
-               The `--admin` flag bypasses branch protection rules, so you CAN merge even if you authored the PR.
-               Do NOT skip this step. Do NOT wait for human approval. Just run:
-               ```bash
-               gh pr merge ${{ steps.pr_info.outputs.pr_number }} --squash --admin --delete-branch
-               ```
-
-            3. **Deploy** — Follow the full deploy flow:
-               ```bash
-               git checkout develop
-               git pull origin develop
-               ```
-               - Get last tag: `git describe --tags --abbrev=0`
-               - Get commits since: `git log --oneline {LAST_TAG}..HEAD`
-               - Filter out "update changelog", bare version numbers, "Merge branch" commits
-               - Update CHANGELOG.md with categorized entry (Added/Changed/Fixed)
-               - Commit changelog: `git add CHANGELOG.md && git commit -m "update changelog"`
-               - Bump version: `npm version patch --message '%s'`
-               - Push: `git push origin v{VERSION} && git push origin develop`
-               - Sync master:
-                 ```bash
-                 git checkout master
-                 git pull origin master
-                 git merge develop --no-ff -m "Merge develop into master for v{VERSION}"
-                 git push origin master
-                 git checkout develop
-                 ```
+            After processing all comments, write a short summary of what you did.
+            If there are unresolved issues you couldn't fix, say so clearly.
         env:
           SENTRY_API_TOKEN: ${{ secrets.SENTRY_API_TOKEN }}
           PROD_DATABASE_URL_READONLY: ${{ secrets.PROD_DATABASE_URL_READONLY }}
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      - name: Merge PR
+        if: steps.check_sentry.outputs.is_sentry == 'true'
+        run: |
+          gh pr merge ${{ steps.pr_info.outputs.pr_number }} \
+            --squash --admin --delete-branch \
+            --repo ${{ github.repository }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Deploy
+        if: steps.check_sentry.outputs.is_sentry == 'true'
+        run: |
+          git checkout develop
+          git pull origin develop
+
+          LAST_TAG=$(git describe --tags --abbrev=0)
+          echo "Last tag: $LAST_TAG"
+
+          # Get commits since last tag, filter out release machinery
+          COMMITS=$(git log --oneline "$LAST_TAG..HEAD" | grep -viE '^[a-f0-9]+ (update changelog|[0-9]+\.[0-9]+\.[0-9]+|Merge branch)' || true)
+          echo "Commits since $LAST_TAG:"
+          echo "$COMMITS"
+
+          if [ -z "$COMMITS" ]; then
+            echo "No meaningful commits to deploy"
+            exit 0
+          fi
+
+          # Generate changelog entry
+          VERSION_DATE=$(date +%Y-%m-%d)
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
+          NEW_VERSION="$MAJOR.$MINOR.$((PATCH + 1))"
+
+          CHANGELOG_ENTRY="## [$NEW_VERSION] - $VERSION_DATE
+          ### Fixed
+          $(echo "$COMMITS" | sed 's/^[a-f0-9]* /- /')"
+
+          # Insert after header (line 5)
+          head -5 CHANGELOG.md > CHANGELOG.tmp
+          echo "" >> CHANGELOG.tmp
+          echo "$CHANGELOG_ENTRY" >> CHANGELOG.tmp
+          echo "" >> CHANGELOG.tmp
+          tail -n +6 CHANGELOG.md >> CHANGELOG.tmp
+          mv CHANGELOG.tmp CHANGELOG.md
+
+          git add CHANGELOG.md
+          git commit -m "update changelog"
+
+          npm version patch --message '%s'
+
+          git push origin "v$NEW_VERSION"
+          git push origin develop
+
+          # Sync master
+          git checkout master
+          git pull origin master
+          git merge develop --no-ff -m "Merge develop into master for v$NEW_VERSION"
+          git push origin master
+          git checkout develop
+
+          echo "Deployed v$NEW_VERSION"
