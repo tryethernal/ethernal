@@ -2960,7 +2960,9 @@ module.exports = (sequelize, DataTypes) => {
                 const transactionsToInsert = transactions.map(t => {
                     return {
                         ...t,
-                        blockId: createdBlock.id
+                        blockId: createdBlock.id,
+                        // Additional safety check for gasPrice to prevent null constraint violation
+                        gasPrice: t.gasPrice || '0'
                     }
                 });
 
