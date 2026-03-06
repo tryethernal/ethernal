@@ -527,7 +527,7 @@ module.exports = (sequelize, DataTypes) => {
             return stripeSubscription.stripePlan.capabilities.txLimit + extraQuota;
         } catch (error) {
             // Handle database connection errors gracefully
-            if (error.name === 'SequelizeDatabaseError' && error.message.includes('Connection terminated unexpectedly')) {
+            if (error.name === 'SequelizeDatabaseError' || error.name === 'SequelizeConnectionError') {
                 console.warn(`Database connection error in getTransactionQuota for explorer ${this.id}: ${error.message}`);
                 // Return 0 as safe default when quota cannot be determined
                 return 0;
@@ -555,7 +555,7 @@ module.exports = (sequelize, DataTypes) => {
             return baseQuota > 0 && stripeSubscription.transactionQuota > baseQuota + extraQuota;
         } catch (error) {
             // Handle database connection errors gracefully
-            if (error.name === 'SequelizeDatabaseError' && error.message.includes('Connection terminated unexpectedly')) {
+            if (error.name === 'SequelizeDatabaseError' || error.name === 'SequelizeConnectionError') {
                 console.warn(`Database connection error in hasReachedTransactionQuota for explorer ${this.id}: ${error.message}`);
                 // Return false (quota not reached) as safe default to avoid disrupting sync processes
                 return false;
