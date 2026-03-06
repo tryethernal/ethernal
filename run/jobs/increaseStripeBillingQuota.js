@@ -14,23 +14,10 @@ module.exports = async job => {
     if (!data.blockId)
         return 'Missing parameter';
 
+    // Break complex query into smaller parts to prevent database connection timeouts
+    // First, fetch the block with transactions only
     const block = await Block.findByPk(data.blockId, {
-        include: [
-            {
-                model: Workspace,
-                as: 'workspace',
-                include: {
-                    model: Explorer,
-                    as: 'explorer',
-                    include: {
-                        model: StripeSubscription,
-                        as: 'stripeSubscription',
-                        include: 'stripePlan'
-                    }
-                }
-            },
-            'transactions'
-        ]
+        include: ['transactions']
     });
 
     if (!block)
@@ -42,10 +29,23 @@ module.exports = async job => {
     if (!block.transactions.length)
         return 'Block is empty';
 
-    if (!block.workspace.explorer)
+    // Fetch workspace with explorer and stripe subscription separately
+    const workspace = await Workspace.findByPk(block.workspaceId, {
+        include: {
+            model: Explorer,
+            as: 'explorer',
+            include: {
+                model: StripeSubscription,
+                as: 'stripeSubscription',
+                include: 'stripePlan'
+            }
+        }
+    });
+
+    if (!workspace || !workspace.explorer)
         return 'No explorer';
 
-    const stripeSubscription = block.workspace.explorer.stripeSubscription;
+    const stripeSubscription = workspace.explorer.stripeSubscription;
 
     if (!stripeSubscription)
         return 'No active subscription';
