@@ -12,7 +12,7 @@ const { managedError, unmanagedError } = require('../lib/errors');
 const { isPusherEnabled, isSentryPipelineEnabled } = require('../lib/flags');
 const router = express.Router();
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
-const authMiddleware = require('../middlewares/auth');
+const sentryDashboardAuth = require('../middlewares/sentryDashboardAuth');
 
 const presenceMiddleware = async (req, res, next) => {
     try {
@@ -35,7 +35,7 @@ router.post('/authorization', [presenceMiddleware], async (req, res, next) => {
             if (!isSentryPipelineEnabled())
                 return managedError(new Error('Sentry pipeline is not enabled'), req, res);
 
-            return authMiddleware(req, res, () => {
+            return sentryDashboardAuth(req, res, () => {
                 const authResponse = pusher.authorizeChannel(socketId, channel);
                 res.status(200).send(authResponse);
             });

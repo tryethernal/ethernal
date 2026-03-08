@@ -138,12 +138,6 @@ export default {
                 return () => pusher.unsubscribe(channelString);
             },
 
-            onSentryPipelineUpdated(handler, context) {
-                const channelString = 'private-sentry-pipeline';
-                const channel = pusher.subscribe(channelString);
-                channel.bind('updated', handler, context);
-                return () => pusher.unsubscribe(channelString);
-            }
         }
 
         app.config.globalProperties.$pusher = $pusher;

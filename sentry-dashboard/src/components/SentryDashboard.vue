@@ -134,11 +134,10 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted, inject, watch } from 'vue';
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import SentryPipelineRunDetail from './SentryPipelineRunDetail.vue';
-
-const $server = inject('$server');
-const $pusher = inject('$pusher');
+import { getRuns, getRun, getStats } from '@/lib/api.js';
+import { initPusher, onPipelineUpdated, destroy as destroyPusher } from '@/lib/pusher.js';
 
 const loading = ref(false);
 const runs = ref([]);
@@ -219,7 +218,7 @@ async function loadRuns(options = {}) {
     try {
         const page = options.page || 1;
         const itemsPerPage = options.itemsPerPage || 25;
-        const res = await $server.getSentryPipelineRuns({ page, itemsPerPage });
+        const res = await getRuns({ page, itemsPerPage });
         runs.value = res.data.items;
         total.value = res.data.total;
     } catch (e) {
@@ -230,7 +229,7 @@ async function loadRuns(options = {}) {
 
 async function loadStats() {
     try {
-        const res = await $server.getSentryPipelineStats({ period: period.value });
+        const res = await getStats({ period: period.value });
         stats.value = res.data;
     } catch (e) {
         console.error('Failed to load pipeline stats', e);
@@ -239,7 +238,7 @@ async function loadStats() {
 
 async function openDetail(id) {
     try {
-        const res = await $server.getSentryPipelineRun(id);
+        const res = await getRun(id);
         selectedRun.value = res.data;
         showDetail.value = true;
     } catch (e) {
@@ -256,16 +255,17 @@ watch(period, loadStats);
 onMounted(async () => {
     await refresh();
 
-    // Subscribe to real-time updates
     try {
-        const channel = 'private-sentry-pipeline';
-        unsubscribePusher = $pusher.onSentryPipelineUpdated?.(() => {
-            refresh();
-            // Also refresh detail view if open
-            if (showDetail.value && selectedRun.value) {
-                openDetail(selectedRun.value.id);
-            }
-        });
+        const soketiKey = import.meta.env.VITE_SOKETI_KEY;
+        if (soketiKey) {
+            initPusher(soketiKey);
+            unsubscribePusher = onPipelineUpdated(() => {
+                refresh();
+                if (showDetail.value && selectedRun.value) {
+                    openDetail(selectedRun.value.id);
+                }
+            });
+        }
     } catch (e) {
         // Pusher may not be available
     }
@@ -273,6 +273,7 @@ onMounted(async () => {
 
 onUnmounted(() => {
     if (unsubscribePusher) unsubscribePusher();
+    destroyPusher();
 });
 </script>
 

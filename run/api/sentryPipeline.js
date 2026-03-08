@@ -11,10 +11,10 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../lib/firebase');
-const authMiddleware = require('../middlewares/auth');
+const sentryDashboardAuth = require('../middlewares/sentryDashboardAuth');
 const { unmanagedError } = require('../lib/errors');
 
-router.get('/runs', authMiddleware, async (req, res, next) => {
+router.get('/runs', sentryDashboardAuth, async (req, res, next) => {
     try {
         const { page = 1, itemsPerPage = 25, status } = req.query;
         const result = await db.getSentryPipelineRuns(
@@ -28,7 +28,7 @@ router.get('/runs', authMiddleware, async (req, res, next) => {
     }
 });
 
-router.get('/runs/:id', authMiddleware, async (req, res, next) => {
+router.get('/runs/:id', sentryDashboardAuth, async (req, res, next) => {
     try {
         const run = await db.getSentryPipelineRun(parseInt(req.params.id));
         if (!run)
@@ -39,7 +39,7 @@ router.get('/runs/:id', authMiddleware, async (req, res, next) => {
     }
 });
 
-router.get('/stats', authMiddleware, async (req, res, next) => {
+router.get('/stats', sentryDashboardAuth, async (req, res, next) => {
     try {
         const { period = '7d' } = req.query;
         const stats = await db.getSentryPipelineStats(period);

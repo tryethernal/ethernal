@@ -4955,7 +4955,7 @@ const upsertSentryPipelineRun = async (data) => {
     if (data.workflowRunId) {
         run = await SentryPipelineRun.findOne({ where: { workflowRunId: data.workflowRunId } });
     }
-    if (!run && data.githubIssueNumber) {
+    if (!run && data.githubIssueNumber != null && data.githubIssueNumber !== 0) {
         run = await SentryPipelineRun.findOne({ where: { githubIssueNumber: data.githubIssueNumber } });
     }
 

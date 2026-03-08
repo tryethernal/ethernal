@@ -3,7 +3,7 @@ process.env.ENABLE_SENTRY_PIPELINE = 'true';
 require('../mocks/lib/queue');
 require('../mocks/lib/firebase');
 require('../mocks/models');
-require('../mocks/middlewares/auth');
+require('../mocks/middlewares/sentryDashboardAuth');
 const db = require('../../lib/firebase');
 
 const supertest = require('supertest');

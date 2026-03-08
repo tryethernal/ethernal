@@ -2024,20 +2024,6 @@ export default {
                         .catch(reject)
                 });
             },
-            // Sentry pipeline dashboard
-            getSentryPipelineRuns(params) {
-                const resource = `${envStore.apiRoot}/api/sentryPipeline/runs`;
-                return axios.get(resource, { params: { firebaseUserId: firebaseUserId.value, ...params } });
-            },
-            getSentryPipelineRun(id) {
-                const resource = `${envStore.apiRoot}/api/sentryPipeline/runs/${id}`;
-                return axios.get(resource, { params: { firebaseUserId: firebaseUserId.value } });
-            },
-            getSentryPipelineStats(params) {
-                const resource = `${envStore.apiRoot}/api/sentryPipeline/stats`;
-                return axios.get(resource, { params: { firebaseUserId: firebaseUserId.value, ...params } });
-            },
-
             transferErc721Token: serverFunctions.transferErc721Token,
         };
 

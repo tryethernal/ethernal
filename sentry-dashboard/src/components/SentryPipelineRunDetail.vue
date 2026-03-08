@@ -99,7 +99,7 @@
                 <div class="text-caption text-medium-emphasis mb-2">Claude Conversation</div>
                 <SentryConversationViewer
                     :conversation-log="run.conversationLog"
-                    :auto-scroll="isActive" />
+                    :auto-scroll="true" />
             </v-card-text>
         </v-card>
     </v-dialog>
@@ -169,7 +169,7 @@ function stepColor(step) {
 function stepIcon(step) {
     if (!props.run) return undefined;
     if (isStepComplete(step)) return 'mdi-check';
-    if (props.run.status === 'failed' && step === props.run.status) return 'mdi-alert-circle';
+    if (props.run.status === 'failed' && stepOrder.indexOf(step) === activeStepIndex.value) return 'mdi-alert-circle';
     return undefined;
 }
 

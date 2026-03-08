@@ -42,7 +42,7 @@ router.post('/', githubActionsWebhookMiddleware, async (req, res) => {
         if (workflowRunId) {
             run = await SentryPipelineRun.findOne({ where: { workflowRunId } });
         }
-        if (!run && githubIssueNumber) {
+        if (!run && githubIssueNumber != null && githubIssueNumber !== 0) {
             run = await SentryPipelineRun.findOne({ where: { githubIssueNumber } });
         }
 
