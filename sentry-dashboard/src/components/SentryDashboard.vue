@@ -175,12 +175,12 @@ const kanbanColumns = computed(() => {
     return columns.map(col => ({
         ...col,
         runs: runs.value.filter(r => {
-            if (col.status === 'completed') return ['completed', 'closed', 'escalated'].includes(r.status);
+            if (col.status === 'completed') return ['completed', 'closed', 'escalated', 'failed'].includes(r.status);
             if (col.status === 'reviewing') return ['reviewing', 'merging', 'deploying'].includes(r.status);
             return r.status === col.status;
         }),
         count: runs.value.filter(r => {
-            if (col.status === 'completed') return ['completed', 'closed', 'escalated'].includes(r.status);
+            if (col.status === 'completed') return ['completed', 'closed', 'escalated', 'failed'].includes(r.status);
             if (col.status === 'reviewing') return ['reviewing', 'merging', 'deploying'].includes(r.status);
             return r.status === col.status;
         }).length

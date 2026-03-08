@@ -4,7 +4,14 @@
  * @module middlewares/sentryDashboardAuth
  */
 
+const { timingSafeEqual } = require('crypto');
 const logger = require('../lib/logger');
+
+const safeEqual = (a, b) => {
+    const bufA = Buffer.from(String(a));
+    const bufB = Buffer.from(String(b));
+    return bufA.length === bufB.length && timingSafeEqual(bufA, bufB);
+};
 
 module.exports = (req, res, next) => {
     const authHeader = req.headers['authorization'];
@@ -27,7 +34,7 @@ module.exports = (req, res, next) => {
             return res.status(500).send('Server misconfigured');
         }
 
-        if (username === expectedUsername && password === expectedPassword) {
+        if (safeEqual(username, expectedUsername) && safeEqual(password, expectedPassword)) {
             return next();
         }
 
