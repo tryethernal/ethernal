@@ -4940,7 +4940,7 @@ const getSentryPipelineStats = async (period = '7d') => {
         closed,
         escalated,
         active,
-        successRate: total > 0 ? Math.round((completed / total) * 100) : 0,
+        successRate: (completed + failed + closed + escalated) > 0 ? Math.round((completed / (completed + failed + closed + escalated)) * 100) : 0,
         avgDuration
     };
 };

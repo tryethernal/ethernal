@@ -102,5 +102,6 @@ module.exports = {
 
   async down(queryInterface) {
     await queryInterface.dropTable('sentry_pipeline_runs');
+    await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_sentry_pipeline_runs_status"');
   }
 };
