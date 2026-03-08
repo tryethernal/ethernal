@@ -24,7 +24,9 @@ module.exports = (req, res, next) => {
     try {
         const base64Credentials = authHeader.split(' ')[1];
         const credentials = Buffer.from(base64Credentials, 'base64').toString('utf8');
-        const [username, password] = credentials.split(':');
+        const colonIndex = credentials.indexOf(':');
+        const username = credentials.slice(0, colonIndex);
+        const password = credentials.slice(colonIndex + 1);
 
         const expectedUsername = process.env.SENTRY_DASHBOARD_USERNAME;
         const expectedPassword = process.env.SENTRY_DASHBOARD_PASSWORD;

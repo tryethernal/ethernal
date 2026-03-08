@@ -146,6 +146,8 @@ const stats = ref({ total: 0, completed: 0, failed: 0, active: 0, successRate: 0
 const period = ref('7d');
 const showDetail = ref(false);
 const selectedRun = ref(null);
+const currentPage = ref(1);
+const currentItemsPerPage = ref(25);
 let unsubscribePusher = null;
 
 const tableHeaders = [
@@ -216,8 +218,10 @@ function formatDuration(seconds) {
 async function loadRuns(options = {}) {
     loading.value = true;
     try {
-        const page = options.page || 1;
-        const itemsPerPage = options.itemsPerPage || 25;
+        const page = options.page || currentPage.value;
+        const itemsPerPage = options.itemsPerPage || currentItemsPerPage.value;
+        currentPage.value = page;
+        currentItemsPerPage.value = itemsPerPage;
         const res = await getRuns({ page, itemsPerPage });
         runs.value = res.data.items;
         total.value = res.data.total;
