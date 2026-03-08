@@ -89,7 +89,7 @@ watch(() => props.conversationLog, () => {
     if (props.autoScroll) scrollToBottom();
 }, { immediate: true });
 
-onMounted(() => scrollToBottom());
+onMounted(() => { if (props.autoScroll) scrollToBottom(); });
 </script>
 
 <style scoped>
