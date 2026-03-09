@@ -677,6 +677,7 @@ jobs:
 
           LAST_TAG=$(git describe --tags --abbrev=0)
           echo "Last tag: $LAST_TAG"
+          echo "last_tag=$LAST_TAG" >> "$GITHUB_OUTPUT"
 
           # Get commits since last tag, filter out release machinery
           COMMITS=$(git log --oneline "$LAST_TAG..HEAD" | grep -viE '^[a-f0-9]+ (update changelog|[0-9]+\.[0-9]+\.[0-9]+|Merge branch)' || true)
@@ -793,8 +794,8 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SENTRY_API_TOKEN: ${{ secrets.SENTRY_API_TOKEN }}
         run: |
-          # Find all other PRs included in this release besides the current hotfix PR
-          LAST_TAG=$(git describe --tags --abbrev=0 HEAD~1 2>/dev/null || git describe --tags --abbrev=0)
+          # Use pre-deploy tag captured by the deploy step
+          LAST_TAG=${{ steps.deploy_hotfix.outputs.last_tag }}
           HOTFIX_PR=${{ steps.pr_info.outputs.pr_number }}
           PR_NUMBERS=$(git log --oneline "$LAST_TAG..HEAD" | grep -oP '#\K\d+' | grep -v "^${HOTFIX_PR}$" || true)
 
