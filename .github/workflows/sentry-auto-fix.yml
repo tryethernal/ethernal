@@ -662,6 +662,7 @@ jobs:
             }"
 
       - name: Deploy (hotfix)
+        id: deploy_hotfix
         if: >
           steps.check_sentry.outputs.is_sentry == 'true' &&
           steps.merge_check.outputs.ready == 'true' &&
@@ -724,9 +725,7 @@ jobs:
 
       - name: Notify dashboard - deploying (hotfix)
         if: >
-          steps.check_sentry.outputs.is_sentry == 'true' &&
-          steps.merge_check.outputs.ready == 'true' &&
-          steps.ci_check.outputs.passed == 'true' &&
+          steps.deploy_hotfix.conclusion == 'success' &&
           steps.hotfix_check.outputs.is_hotfix == '1'
         continue-on-error: true
         run: |
@@ -742,9 +741,7 @@ jobs:
 
       - name: Resolve Sentry issue (hotfix)
         if: >
-          steps.check_sentry.outputs.is_sentry == 'true' &&
-          steps.merge_check.outputs.ready == 'true' &&
-          steps.ci_check.outputs.passed == 'true' &&
+          steps.deploy_hotfix.conclusion == 'success' &&
           steps.hotfix_check.outputs.is_hotfix == '1'
         env:
           SENTRY_API_TOKEN: ${{ secrets.SENTRY_API_TOKEN }}
@@ -772,9 +769,7 @@ jobs:
 
       - name: Notify dashboard - completed (hotfix)
         if: >
-          steps.check_sentry.outputs.is_sentry == 'true' &&
-          steps.merge_check.outputs.ready == 'true' &&
-          steps.ci_check.outputs.passed == 'true' &&
+          steps.deploy_hotfix.conclusion == 'success' &&
           steps.hotfix_check.outputs.is_hotfix == '1'
         continue-on-error: true
         run: |
