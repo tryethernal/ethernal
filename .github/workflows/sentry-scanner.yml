@@ -3,7 +3,7 @@ name: Sentry Proactive Scanner
 on:
   schedule:
     - cron: '0 * * * *'
-    - cron: '0 */6 * * *'
+    - cron: '0 6 * * *'
   workflow_dispatch:
     inputs:
       scan_type:
@@ -180,7 +180,7 @@ jobs:
   scan-performance:
     if: >-
       github.event_name == 'workflow_dispatch' && (github.event.inputs.scan_type == 'performance' || github.event.inputs.scan_type == 'both')
-      || github.event.schedule == '0 */6 * * *'
+      || github.event.schedule == '0 6 * * *'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -246,21 +246,21 @@ jobs:
             Get the slowest backend transactions (p95 > 2s):
 
             ```bash
-            curl -s "https://sentry.tryethernal.com/api/0/organizations/sentry/events/?field=transaction&field=p95(transaction.duration)&field=p75(transaction.duration)&field=count()&field=failure_rate()&query=event.type:transaction+project:ethernal-backend&statsPeriod=6h&sort=-p95_transaction_duration&per_page=20" \
+            curl -s "https://sentry.tryethernal.com/api/0/organizations/sentry/events/?field=transaction&field=p95(transaction.duration)&field=p75(transaction.duration)&field=count()&field=failure_rate()&query=event.type:transaction+project:ethernal-backend&statsPeriod=24h&sort=-p95_transaction_duration&per_page=20" \
               -H "Authorization: Bearer $SENTRY_API_TOKEN" | jq '.data'
             ```
 
             Get the slowest frontend transactions:
 
             ```bash
-            curl -s "https://sentry.tryethernal.com/api/0/organizations/sentry/events/?field=transaction&field=p95(transaction.duration)&field=p75(transaction.duration)&field=count()&field=failure_rate()&query=event.type:transaction+project:ethernal-frontend&statsPeriod=6h&sort=-p95_transaction_duration&per_page=20" \
+            curl -s "https://sentry.tryethernal.com/api/0/organizations/sentry/events/?field=transaction&field=p95(transaction.duration)&field=p75(transaction.duration)&field=count()&field=failure_rate()&query=event.type:transaction+project:ethernal-frontend&statsPeriod=24h&sort=-p95_transaction_duration&per_page=20" \
               -H "Authorization: Bearer $SENTRY_API_TOKEN" | jq '.data'
             ```
 
             ## Step 3: Check for slow database spans
 
             ```bash
-            curl -s "https://sentry.tryethernal.com/api/0/organizations/sentry/events/?field=transaction&field=avg(spans.db)&field=max(spans.db)&field=count()&query=event.type:transaction+project:ethernal-backend+spans.db:>1000&statsPeriod=6h&sort=-avg_spans_db&per_page=20" \
+            curl -s "https://sentry.tryethernal.com/api/0/organizations/sentry/events/?field=transaction&field=avg(spans.db)&field=max(spans.db)&field=count()&query=event.type:transaction+project:ethernal-backend+spans.db:>1000&statsPeriod=24h&sort=-avg_spans_db&per_page=20" \
               -H "Authorization: Bearer $SENTRY_API_TOKEN" | jq '.data'
             ```
 
@@ -289,7 +289,7 @@ jobs:
             **CREATE GITHUB ISSUE** (high impact):
             - N+1 queries with 50+ events — these are real hotspots
             - Slow DB queries (p95 > 2s) on frequently-hit endpoints
-            - Transaction p95 > 5s with 100+ events in 6h
+            - Transaction p95 > 5s with 100+ events in 24h
             - Endpoint regressions (significant p95 increase)
             - Consecutive DB queries where parallelization would save > 500ms
 
@@ -317,7 +317,7 @@ jobs:
 
             **Project:** [ethernal-backend|ethernal-frontend]
             **Type:** [N+1 Query | Slow DB | Slow Transaction | Regression | ...]
-            **Impact:** [events in 6h] events, p95: [Xms]
+            **Impact:** [events in 24h] events, p95: [Xms]
             **Transaction:** \`[transaction name]\`
             **Link:** https://sentry.tryethernal.com/organizations/sentry/issues/[ID]/
 
