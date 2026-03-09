@@ -192,8 +192,9 @@ const kanbanColumns = computed(() => {
 function statusColor(status) {
     const colors = {
         discovered: 'blue', triaging: 'orange', fixing: 'purple',
-        reviewing: 'cyan', merging: 'teal', deploying: 'lime',
-        completed: 'green', closed: 'grey', escalated: 'amber', failed: 'red'
+        reviewing: 'cyan', merging: 'teal', merged: 'indigo',
+        deploying: 'lime', completed: 'green', closed: 'grey',
+        escalated: 'amber', failed: 'red'
     };
     return colors[status] || 'grey';
 }
