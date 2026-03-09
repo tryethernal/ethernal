@@ -29,8 +29,9 @@ jobs:
     if: >
       (
         (github.event_name == 'issues' &&
+         github.event.action == 'labeled' &&
          contains(github.event.issue.labels.*.name, 'sentry') &&
-         github.event.sender.login != 'claude[bot]')
+         !contains(github.event.issue.labels.*.name, 'needs-human'))
         ||
         github.event_name == 'workflow_dispatch'
       )
