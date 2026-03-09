@@ -711,8 +711,8 @@ jobs:
 
           npm version patch --message '%s'
 
-          git push origin "v$NEW_VERSION"
           git push origin develop
+          git push origin "v$NEW_VERSION"
 
           # Sync master
           git checkout master
@@ -783,3 +783,64 @@ jobs:
               \"currentStep\": \"Fix deployed and Sentry issue resolved (hotfix)\",
               \"completedAt\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"
             }"
+
+      - name: Resolve swept-in non-hotfix Sentry issues
+        if: >
+          steps.deploy_hotfix.conclusion == 'success' &&
+          steps.hotfix_check.outputs.is_hotfix == '1'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SENTRY_API_TOKEN: ${{ secrets.SENTRY_API_TOKEN }}
+        run: |
+          # Find all other PRs included in this release besides the current hotfix PR
+          LAST_TAG=$(git describe --tags --abbrev=0 HEAD~1 2>/dev/null || git describe --tags --abbrev=0)
+          HOTFIX_PR=${{ steps.pr_info.outputs.pr_number }}
+          PR_NUMBERS=$(git log --oneline "$LAST_TAG..HEAD" | grep -oP '#\K\d+' | grep -v "^${HOTFIX_PR}$" || true)
+
+          if [ -z "$PR_NUMBERS" ]; then
+            echo "No other PRs swept into this hotfix release"
+            exit 0
+          fi
+
+          echo "Found swept-in PRs: $PR_NUMBERS"
+
+          for PR_NUM in $PR_NUMBERS; do
+            echo "--- Processing swept-in PR #$PR_NUM ---"
+
+            ISSUE_NUMBER=$(gh pr view "$PR_NUM" --repo ${{ github.repository }} --json body -q '.body' 2>/dev/null | grep -oP 'Fixes #\K\d+' | head -1 || true)
+            if [ -z "$ISSUE_NUMBER" ]; then
+              echo "No linked issue in PR #$PR_NUM, skipping"
+              continue
+            fi
+
+            IS_SENTRY=$(gh issue view "$ISSUE_NUMBER" --repo ${{ github.repository }} --json labels -q '.labels[].name' 2>/dev/null | grep -c '^sentry$' || true)
+            if [ "$IS_SENTRY" = "0" ]; then
+              echo "Issue #$ISSUE_NUMBER is not a sentry issue, skipping"
+              continue
+            fi
+
+            SENTRY_ISSUE_ID=$(gh issue view "$ISSUE_NUMBER" --repo ${{ github.repository }} --json body -q '.body' | grep -oP 'sentry\.tryethernal\.com/organizations/sentry/issues/\K\d+' | head -1 || true)
+            if [ -z "$SENTRY_ISSUE_ID" ]; then
+              echo "No Sentry issue ID in issue #$ISSUE_NUMBER, skipping"
+              continue
+            fi
+
+            echo "Resolving swept-in Sentry issue $SENTRY_ISSUE_ID (issue #$ISSUE_NUMBER, PR #$PR_NUM)"
+            curl -s -X PUT \
+              "https://sentry.tryethernal.com/api/0/issues/$SENTRY_ISSUE_ID/" \
+              -H "Authorization: Bearer $SENTRY_API_TOKEN" \
+              -H "Content-Type: application/json" \
+              -d '{"status": "resolved"}' | jq '{status, statusDetails}'
+
+            curl -s -X POST "${{ secrets.APP_URL }}/webhooks/github-actions" \
+              -H "Authorization: Bearer ${{ secrets.ETHERNAL_WEBHOOK_SECRET }}" \
+              -H "Content-Type: application/json" \
+              -d "{
+                \"githubIssueNumber\": ${ISSUE_NUMBER},
+                \"githubPrNumber\": ${PR_NUM},
+                \"status\": \"completed\",
+                \"currentStep\": \"Fix deployed via hotfix release\",
+                \"completedAt\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"
+              }"
+          done

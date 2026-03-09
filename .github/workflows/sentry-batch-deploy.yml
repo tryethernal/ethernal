@@ -93,8 +93,8 @@ jobs:
 
           npm version patch --message '%s'
 
-          git push origin "v$NEW_VERSION"
           git push origin develop
+          git push origin "v$NEW_VERSION"
 
           # Sync master
           git checkout master
