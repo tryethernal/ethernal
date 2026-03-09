@@ -3,6 +3,7 @@
  * Provides read access to pipeline run data for the dashboard UI.
  * @module api/sentryPipeline
  *
+ * @route GET /runs/active - List all active (non-terminal) pipeline runs
  * @route GET /runs - List paginated pipeline runs
  * @route GET /runs/:id - Get single run with conversation log
  * @route GET /stats - Get aggregated pipeline statistics
@@ -13,6 +14,15 @@ const router = express.Router();
 const db = require('../lib/firebase');
 const sentryDashboardAuth = require('../middlewares/sentryDashboardAuth');
 const { unmanagedError } = require('../lib/errors');
+
+router.get('/runs/active', sentryDashboardAuth, async (req, res, next) => {
+    try {
+        const runs = await db.getActiveSentryPipelineRuns();
+        res.status(200).json(runs);
+    } catch (error) {
+        unmanagedError(error, req, next);
+    }
+});
 
 router.get('/runs', sentryDashboardAuth, async (req, res, next) => {
     try {

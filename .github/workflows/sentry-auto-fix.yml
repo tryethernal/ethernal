@@ -168,6 +168,19 @@ jobs:
             echo "is_regression=false" >> $GITHUB_OUTPUT
           fi
 
+      - name: Start conversation streamer
+        if: steps.existing_pr.outputs.exists != 'true'
+        continue-on-error: true
+        run: |
+          chmod +x .github/scripts/stream-conversation.sh
+          .github/scripts/stream-conversation.sh &
+          echo $! > /tmp/streamer-pid
+        env:
+          WEBHOOK_URL: ${{ secrets.APP_URL }}/webhooks/github-actions
+          WEBHOOK_SECRET: ${{ secrets.ETHERNAL_WEBHOOK_SECRET }}
+          WORKFLOW_RUN_ID: ${{ github.run_id }}
+          GITHUB_ISSUE_NUMBER: ${{ steps.issue_info.outputs.number }}
+
       - name: Claude Code - Triage and Fix
         if: steps.existing_pr.outputs.exists != 'true'
         uses: anthropics/claude-code-action@v1
@@ -289,6 +302,14 @@ jobs:
           SENTRY_API_TOKEN: ${{ secrets.SENTRY_API_TOKEN }}
           PROD_DATABASE_URL_READONLY: ${{ secrets.PROD_DATABASE_URL_READONLY }}
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      - name: Stop conversation streamer
+        if: always()
+        continue-on-error: true
+        run: |
+          if [ -f /tmp/streamer-pid ]; then
+            kill $(cat /tmp/streamer-pid) 2>/dev/null || true
+          fi
 
       - name: Extract conversation log
         id: conversation
@@ -519,6 +540,19 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
+      - name: Start conversation streamer
+        if: steps.check_sentry.outputs.is_sentry == 'true'
+        continue-on-error: true
+        run: |
+          chmod +x .github/scripts/stream-conversation.sh
+          .github/scripts/stream-conversation.sh &
+          echo $! > /tmp/streamer-pid
+        env:
+          WEBHOOK_URL: ${{ secrets.APP_URL }}/webhooks/github-actions
+          WEBHOOK_SECRET: ${{ secrets.ETHERNAL_WEBHOOK_SECRET }}
+          WORKFLOW_RUN_ID: ${{ github.run_id }}
+          GITHUB_ISSUE_NUMBER: ${{ steps.pr_info.outputs.pr_number }}
+
       - name: Claude Code - Process Review
         id: claude_review
         if: steps.check_sentry.outputs.is_sentry == 'true'
@@ -596,6 +630,14 @@ jobs:
           SENTRY_API_TOKEN: ${{ secrets.SENTRY_API_TOKEN }}
           PROD_DATABASE_URL_READONLY: ${{ secrets.PROD_DATABASE_URL_READONLY }}
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      - name: Stop conversation streamer
+        if: always()
+        continue-on-error: true
+        run: |
+          if [ -f /tmp/streamer-pid ]; then
+            kill $(cat /tmp/streamer-pid) 2>/dev/null || true
+          fi
 
       - name: Check merge readiness
         id: merge_check
