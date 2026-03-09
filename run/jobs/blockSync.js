@@ -201,8 +201,8 @@ module.exports = async job => {
 
         // Load orbit configurations only when needed to avoid N+1 queries
         let orbitChildConfigs = [];
-        if (!workspace.orbitConfig && !workspace.orbitChildConfigs) {
-            // Only reload if orbit configurations haven't been loaded yet
+        if (workspace.isCustomL1Parent) {
+            // Only reload for workspaces that are L1 parents (potentially have orbit configs)
             await workspace.reload({
                 include: ['orbitConfig', 'orbitChildConfigs']
             });
@@ -267,9 +267,12 @@ module.exports = async job => {
         if (!syncedBlock)
             return "Couldn't store block";
 
+        // Calculate hasOrbitConfig before OP reload to avoid it being wiped
+        const hasOrbitConfig = !!(workspace.orbitConfig || orbitChildConfigs.length > 0);
+
         // OP Stack batch detection - enqueue as separate jobs to avoid blocking sync
         // Load OP configurations only when needed to avoid N+1 queries
-        if (!workspace.opChildConfigs) {
+        if (workspace.isCustomL1Parent) {
             await workspace.reload({
                 include: [{
                     model: OpChainConfig,
@@ -384,7 +387,6 @@ module.exports = async job => {
         } else if (transactions.length > 0) {
             // For larger blocks (or private workspaces), queue jobs
             // Skip caching for orbit workspaces since they need full workspace context for receipt processing
-            const hasOrbitConfig = !!(workspace.orbitConfig || orbitChildConfigs.length > 0);
 
             const jobs = [];
             for (let i = 0; i < transactions.length; i++) {
