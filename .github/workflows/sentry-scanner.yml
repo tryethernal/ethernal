@@ -13,7 +13,7 @@ permissions:
 jobs:
   scan:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -37,7 +37,7 @@ jobs:
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          claude_args: "--model claude-sonnet-4-20250514 --max-turns 40 --allowedTools Bash,Read,Glob,Grep"
+          claude_args: "--model claude-sonnet-4-20250514 --max-turns 60 --allowedTools Bash,Read,Glob,Grep"
           show_full_output: true
           prompt: |
             You are a proactive Sentry scanner for the Ethernal project. Your job is to scan ALL unresolved Sentry issues (errors AND performance) and decide which ones need GitHub issues created.
@@ -47,63 +47,51 @@ jobs:
             Backend project: ethernal-backend (id=2)
             Frontend project: ethernal-frontend (id=3)
 
-            **IMPORTANT**: This Sentry instance (v26.2.1) only supports `statsPeriod` values of `24h` and `14d`. Do NOT use `1h` — it will return an error.
+            **IMPORTANT API NOTES for this Sentry instance (v26.2.1)**:
+            - Only `statsPeriod` values of `24h` and `14d` work. Do NOT use `1h`.
+            - Always save curl output to a temp file first, then process with jq. Do NOT pipe curl directly to jq — it fails intermittently.
+            - Pattern: `curl -s -o /tmp/resp.json "URL" -H "Authorization: Bearer $SENTRY_API_TOKEN" && jq '...' /tmp/resp.json`
 
             ## Step 1: Query Sentry for all unresolved issues
 
-            Query both projects for errors and performance issues (24h window):
+            Run ALL 6 queries in a single bash command to save turns. Save each to a temp file:
 
             ```bash
-            # Backend errors
-            curl -s "https://sentry.tryethernal.com/api/0/projects/sentry/ethernal-backend/issues/?query=is:unresolved+issue.category:error&statsPeriod=24h&limit=100" \
-              -H "Authorization: Bearer $SENTRY_API_TOKEN" | jq '[.[] | {id, title, level, count, firstSeen, lastSeen, shortId, project: "ethernal-backend", category: "error"}]'
+            AUTH="Authorization: Bearer $SENTRY_API_TOKEN"
+            BASE="https://sentry.tryethernal.com/api/0/projects/sentry"
 
-            # Backend performance issues
-            curl -s "https://sentry.tryethernal.com/api/0/projects/sentry/ethernal-backend/issues/?query=is:unresolved+issue.category:performance&statsPeriod=24h&limit=100" \
-              -H "Authorization: Bearer $SENTRY_API_TOKEN" | jq '[.[] | {id, title, level, count, firstSeen, lastSeen, shortId, project: "ethernal-backend", category: "performance"}]'
+            curl -s -o /tmp/be_err.json "$BASE/ethernal-backend/issues/?query=is:unresolved+issue.category:error&statsPeriod=24h&limit=100" -H "$AUTH"
+            curl -s -o /tmp/be_perf.json "$BASE/ethernal-backend/issues/?query=is:unresolved+issue.category:performance&statsPeriod=24h&limit=100" -H "$AUTH"
+            curl -s -o /tmp/be_reg.json "$BASE/ethernal-backend/issues/?query=is:regressed&limit=50" -H "$AUTH"
+            curl -s -o /tmp/fe_err.json "$BASE/ethernal-frontend/issues/?query=is:unresolved+issue.category:error&statsPeriod=24h&limit=100" -H "$AUTH"
+            curl -s -o /tmp/fe_perf.json "$BASE/ethernal-frontend/issues/?query=is:unresolved+issue.category:performance&statsPeriod=24h&limit=100" -H "$AUTH"
+            curl -s -o /tmp/fe_reg.json "$BASE/ethernal-frontend/issues/?query=is:regressed&limit=50" -H "$AUTH"
 
-            # Backend regressed issues (may overlap — deduplicate by id)
-            curl -s "https://sentry.tryethernal.com/api/0/projects/sentry/ethernal-backend/issues/?query=is:regressed&limit=50" \
-              -H "Authorization: Bearer $SENTRY_API_TOKEN" | jq '[.[] | {id, title, level, count, firstSeen, lastSeen, shortId, project: "ethernal-backend", category: "regressed"}]'
-
-            # Frontend errors
-            curl -s "https://sentry.tryethernal.com/api/0/projects/sentry/ethernal-frontend/issues/?query=is:unresolved+issue.category:error&statsPeriod=24h&limit=100" \
-              -H "Authorization: Bearer $SENTRY_API_TOKEN" | jq '[.[] | {id, title, level, count, firstSeen, lastSeen, shortId, project: "ethernal-frontend", category: "error"}]'
-
-            # Frontend performance issues
-            curl -s "https://sentry.tryethernal.com/api/0/projects/sentry/ethernal-frontend/issues/?query=is:unresolved+issue.category:performance&statsPeriod=24h&limit=100" \
-              -H "Authorization: Bearer $SENTRY_API_TOKEN" | jq '[.[] | {id, title, level, count, firstSeen, lastSeen, shortId, project: "ethernal-frontend", category: "performance"}]'
-
-            # Frontend regressed issues (may overlap — deduplicate by id)
-            curl -s "https://sentry.tryethernal.com/api/0/projects/sentry/ethernal-frontend/issues/?query=is:regressed&limit=50" \
-              -H "Authorization: Bearer $SENTRY_API_TOKEN" | jq '[.[] | {id, title, level, count, firstSeen, lastSeen, shortId, project: "ethernal-frontend", category: "regressed"}]'
+            echo "=== Backend Errors ===" && jq '[.[] | {id, title, count, lastSeen, shortId}]' /tmp/be_err.json
+            echo "=== Backend Performance ===" && jq '[.[] | {id, title, count, lastSeen, shortId}]' /tmp/be_perf.json
+            echo "=== Backend Regressed ===" && jq '[.[] | {id, title, count, lastSeen, shortId}]' /tmp/be_reg.json
+            echo "=== Frontend Errors ===" && jq '[.[] | {id, title, count, lastSeen, shortId}]' /tmp/fe_err.json
+            echo "=== Frontend Performance ===" && jq '[.[] | {id, title, count, lastSeen, shortId}]' /tmp/fe_perf.json
+            echo "=== Frontend Regressed ===" && jq '[.[] | {id, title, count, lastSeen, shortId}]' /tmp/fe_reg.json
             ```
 
             Deduplicate by `(project, id)` — regressed issues may appear in both the error/performance and regressed queries.
 
             ## Step 2: Filter already-tracked issues
 
+            In the SAME bash call, also fetch existing GitHub sentry issues:
             ```bash
-            gh issue list --label sentry --state all --limit 200 --json number,title,body -q '.[].body' | grep -c "issues/SENTRY_ID/"
+            gh issue list --label sentry --state all --limit 200 --json number,title,body -q '.[].body' > /tmp/gh_issues.txt
             ```
+            For each Sentry issue, check: `grep -c "issues/SENTRY_ID/" /tmp/gh_issues.txt`
             Skip any issue that already has a GitHub issue (open or closed).
 
             ## Step 3: Evaluate each new issue
 
-            For each new issue, fetch the latest event for context:
+            For each new issue that passes the filter, fetch event context. Use temp files:
             ```bash
-            curl -s "https://sentry.tryethernal.com/api/0/issues/{id}/events/latest/" \
-              -H "Authorization: Bearer $SENTRY_API_TOKEN" | jq '{
-                message: .message,
-                tags: [.tags[] | select(.key == "transaction" or .key == "url") | {key, value}],
-                exception: .entries[0].data.values[0].stacktrace.frames[-3:]
-              }'
-            ```
-
-            Also check if it's a regression:
-            ```bash
-            curl -s "https://sentry.tryethernal.com/api/0/issues/{id}/" \
-              -H "Authorization: Bearer $SENTRY_API_TOKEN" | jq '{isRegression: .isRegression, status: .status}'
+            curl -s -o /tmp/event.json "https://sentry.tryethernal.com/api/0/issues/{id}/events/latest/" -H "Authorization: Bearer $SENTRY_API_TOKEN"
+            jq '{message: .message, tags: [.tags[]? | select(.key == "transaction" or .key == "url") | {key, value}], exception: .entries[0]?.data.values[0]?.stacktrace.frames[-3:]?}' /tmp/event.json
             ```
 
             Then categorize into ONE of:
@@ -117,7 +105,7 @@ jobs:
             - Performance issues on endpoints that no longer exist
             - Performance issues with 0 events in the last 24h that are stale
 
-            To resolve: `curl -s -X PUT "https://sentry.tryethernal.com/api/0/issues/{id}/" -H "Authorization: Bearer $SENTRY_API_TOKEN" -H "Content-Type: application/json" -d '{"status": "resolved", "statusDetails": {"inCommit": false}}'`
+            To resolve: `curl -s -X PUT "https://sentry.tryethernal.com/api/0/issues/{id}/" -H "Authorization: Bearer $SENTRY_API_TOKEN" -H "Content-Type: application/json" -d '{"status": "resolved"}'`
 
             ### CREATE GITHUB ISSUE (prioritized)
             **Priority 1 — Regressions** (always create, regardless of event count):
@@ -204,9 +192,9 @@ jobs:
 
             For regressions, prefix the title with "(regression)" e.g. `Sentry (regression): [title]` or `Perf (regression): [title]`.
 
-            **IMPORTANT: Stagger issue creation.** After each `gh issue create`, sleep 90 seconds before creating the next:
+            **IMPORTANT: Stagger issue creation.** After each `gh issue create`, sleep 30 seconds before creating the next:
             ```bash
-            sleep 90
+            sleep 30
             ```
             This prevents concurrent workflow storms.
 
