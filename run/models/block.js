@@ -135,13 +135,6 @@ module.exports = (sequelize, DataTypes) => {
         }
 
         return false;
-
-        await sequelize.transaction(
-          { deferrable: Sequelize.Deferrable.SET_DEFERRED },
-          async transaction => this.safeDestroy(transaction)
-        );
-
-        return true;
     }
 
     /**
