@@ -55,7 +55,7 @@ module.exports = async () => {
     // Monitor activity - check for recent job enqueue
     for (const queueName of monitoredActivity) {
         const queue = getQueue(queueName);
-        const completedJobs = await queue.getCompleted();
+        const completedJobs = await queue.getCompleted(0, 0); // Only get the latest job
         const latestJob = completedJobs[0];
 
         if (latestJob && latestJob.timestamp < Date.now() - maxTimeWithoutEnqueuedJob() * 1000) {
@@ -77,7 +77,7 @@ module.exports = async () => {
 
             // Fetch all queue stats in parallel for this queue
             const [completedJobs, waitingJobCount, delayedJobCount, failedJobCount] = await Promise.all([
-                queue.getCompleted(),
+                queue.getCompleted(0, 99), // Limit to 100 jobs for P95 calculation
                 queue.getWaitingCount(),
                 queue.getDelayedCount(),
                 queue.getFailedCount()
