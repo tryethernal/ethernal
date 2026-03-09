@@ -598,6 +598,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_PAT }}
 
       - name: Merge PR
+        id: merge_pr
         if: steps.check_sentry.outputs.is_sentry == 'true' && steps.merge_check.outputs.ready == 'true' && steps.ci_check.outputs.passed == 'true'
         run: |
           gh pr merge ${{ steps.pr_info.outputs.pr_number }} \
@@ -608,7 +609,7 @@ jobs:
 
       - name: Check hotfix label
         id: hotfix_check
-        if: steps.check_sentry.outputs.is_sentry == 'true' && steps.merge_check.outputs.ready == 'true' && steps.ci_check.outputs.passed == 'true'
+        if: steps.merge_pr.conclusion == 'success'
         run: |
           ISSUE_NUMBER=$(gh pr view ${{ steps.pr_info.outputs.pr_number }} --repo ${{ github.repository }} --json body -q '.body' | grep -oP 'Fixes #\K\d+' | head -1)
           IS_HOTFIX=0
@@ -625,9 +626,7 @@ jobs:
 
       - name: Notify dashboard - merged (batch deploy)
         if: >
-          steps.check_sentry.outputs.is_sentry == 'true' &&
-          steps.merge_check.outputs.ready == 'true' &&
-          steps.ci_check.outputs.passed == 'true' &&
+          steps.merge_pr.conclusion == 'success' &&
           steps.hotfix_check.outputs.is_hotfix == '0'
         continue-on-error: true
         run: |
@@ -645,9 +644,7 @@ jobs:
 
       - name: Notify dashboard - merging (hotfix)
         if: >
-          steps.check_sentry.outputs.is_sentry == 'true' &&
-          steps.merge_check.outputs.ready == 'true' &&
-          steps.ci_check.outputs.passed == 'true' &&
+          steps.merge_pr.conclusion == 'success' &&
           steps.hotfix_check.outputs.is_hotfix == '1'
         continue-on-error: true
         run: |
@@ -664,9 +661,7 @@ jobs:
       - name: Deploy (hotfix)
         id: deploy_hotfix
         if: >
-          steps.check_sentry.outputs.is_sentry == 'true' &&
-          steps.merge_check.outputs.ready == 'true' &&
-          steps.ci_check.outputs.passed == 'true' &&
+          steps.merge_pr.conclusion == 'success' &&
           steps.hotfix_check.outputs.is_hotfix == '1'
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
@@ -797,7 +792,7 @@ jobs:
           # Use pre-deploy tag captured by the deploy step
           LAST_TAG=${{ steps.deploy_hotfix.outputs.last_tag }}
           HOTFIX_PR=${{ steps.pr_info.outputs.pr_number }}
-          PR_NUMBERS=$(git log --oneline "$LAST_TAG..HEAD" | grep -oP '#\K\d+' | grep -v "^${HOTFIX_PR}$" || true)
+          PR_NUMBERS=$(git log --oneline "$LAST_TAG..HEAD" | grep -viE '^[a-f0-9]+ (update changelog|[0-9]+\.[0-9]+\.[0-9]+|Merge branch)' | grep -oP '#\K\d+' | grep -v "^${HOTFIX_PR}$" || true)
 
           if [ -z "$PR_NUMBERS" ]; then
             echo "No other PRs swept into this hotfix release"

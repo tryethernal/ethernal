@@ -115,8 +115,8 @@ jobs:
         run: |
           LAST_TAG=${{ steps.deploy.outputs.last_tag }}
 
-          # Extract PR numbers from squash merge commit messages (e.g. "Fix foo (#123)")
-          PR_NUMBERS=$(git log --oneline "$LAST_TAG..HEAD" | grep -oP '#\K\d+' || true)
+          # Extract PR numbers from squash merge commit messages, filtering release machinery
+          PR_NUMBERS=$(git log --oneline "$LAST_TAG..HEAD" | grep -viE '^[a-f0-9]+ (update changelog|[0-9]+\.[0-9]+\.[0-9]+|Merge branch)' | grep -oP '#\K\d+' || true)
 
           if [ -z "$PR_NUMBERS" ]; then
             echo "No PR references found in commits"
