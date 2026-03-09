@@ -78,6 +78,7 @@ module.exports = async job => {
                     model: require('../models').OrbitChainConfig,
                     as: 'orbitChildConfigs',
                     attributes: [
+                        'workspaceId',
                         'rollupContract',
                         'sequencerInboxContract',
                         'bridgeContract',
@@ -91,7 +92,9 @@ module.exports = async job => {
                         'l2GatewayRouter',
                         'l2Erc20Gateway',
                         'l2WethGateway',
-                        'l2CustomGateway'
+                        'l2CustomGateway',
+                        'topParentChainBlockValidationType',
+                        'parentMessageCountShift'
                     ]
                 },
                 {
@@ -102,7 +105,10 @@ module.exports = async job => {
                         'batchInboxAddress',
                         'beaconUrl',
                         'l2BlockTime',
-                        'l2GenesisTimestamp'
+                        'l2GenesisTimestamp',
+                        'optimismPortalAddress',
+                        'l2OutputOracleAddress',
+                        'disputeGameFactoryAddress'
                     ]
                 }
             ]
@@ -196,6 +202,7 @@ module.exports = async job => {
                     model: require('../models').OrbitChainConfig,
                     as: 'orbitChildConfigs',
                     attributes: [
+                        'workspaceId',
                         'rollupContract',
                         'sequencerInboxContract',
                         'bridgeContract',
@@ -209,7 +216,9 @@ module.exports = async job => {
                         'l2GatewayRouter',
                         'l2Erc20Gateway',
                         'l2WethGateway',
-                        'l2CustomGateway'
+                        'l2CustomGateway',
+                        'topParentChainBlockValidationType',
+                        'parentMessageCountShift'
                     ]
                 },
                 {
@@ -220,7 +229,10 @@ module.exports = async job => {
                         'batchInboxAddress',
                         'beaconUrl',
                         'l2BlockTime',
-                        'l2GenesisTimestamp'
+                        'l2GenesisTimestamp',
+                        'optimismPortalAddress',
+                        'l2OutputOracleAddress',
+                        'disputeGameFactoryAddress'
                     ]
                 }
             ]
