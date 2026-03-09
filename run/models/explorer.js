@@ -534,7 +534,11 @@ module.exports = (sequelize, DataTypes) => {
         if (!this.shouldEnforceQuota)
             return false;
 
-        const stripeSubscription = await this.getStripeSubscription({ include: ['stripePlan', 'stripeQuotaExtension']});
+        // Reuse eagerly loaded data if already present, otherwise fetch it
+        const stripeSubscription = (this.stripeSubscription && this.stripeSubscription.stripePlan && this.stripeSubscription.stripeQuotaExtension !== undefined)
+            ? this.stripeSubscription
+            : await this.getStripeSubscription({ include: ['stripePlan', 'stripeQuotaExtension'] });
+
         if (!stripeSubscription)
             return false;
 
