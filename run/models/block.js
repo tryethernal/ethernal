@@ -96,8 +96,8 @@ module.exports = (sequelize, DataTypes) => {
 
     /**
      * Reverts the block if it's only partially synced.
-     * Destroys the block and its transactions if syncing is incomplete.
-     * @returns {Promise<void>}
+     * Destroys the block and its transactions if syncing is incomplete or transaction count mismatches.
+     * @returns {Promise<boolean>} True if block was reverted, false otherwise
      */
     async revertIfPartial() {
         // Use efficient count queries instead of loading all transactions
@@ -118,12 +118,14 @@ module.exports = (sequelize, DataTypes) => {
         const isSyncing = syncingTransactionCount > 0 || currentTransactionCount !== this.transactionsCount;
 
         if (!isSyncing)
-          return;
+          return false;
 
-        return sequelize.transaction(
+        await sequelize.transaction(
           { deferrable: Sequelize.Deferrable.SET_DEFERRED },
           async transaction => this.safeDestroy(transaction)
         );
+
+        return true;
     }
 
     /**

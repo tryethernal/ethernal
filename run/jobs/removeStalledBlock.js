@@ -4,7 +4,7 @@
  * @module jobs/removeStalledBlock
  */
 
-const { Block, Transaction } = require('../models');
+const { Block } = require('../models');
 const { enqueue } = require('../lib/queue');
 
 module.exports = async (job) => {
@@ -17,20 +17,15 @@ module.exports = async (job) => {
     if (!block)
         return 'Could not find block';
 
-    // Check if any transactions are syncing using efficient count query
-    const syncingTransactionCount = await Transaction.count({
-        where: {
-            blockId: data.blockId,
-            isSyncing: true
-        }
-    });
+    // Let revertIfPartial() handle all the checking logic to avoid redundant queries
+    const wasReverted = await block.revertIfPartial();
 
-    if (syncingTransactionCount > 0) {
-        await block.revertIfPartial();
+    if (wasReverted) {
         return `Removed stalled block ${block.id} - Workspace ${block.workspaceId} - #${block.number}`;
     }
-    else
+    else {
         await enqueue('increaseStripeBillingQuota', `increaseStripeBillingQuota-${data.blockId}-${block.workspaceId}`, { blockId: data.blockId });
+    }
 
     return true;
 };

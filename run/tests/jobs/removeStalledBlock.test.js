@@ -1,5 +1,5 @@
 require('../mocks/lib/queue');
-const { Block, Transaction } = require('../mocks/models');
+const { Block } = require('../mocks/models');
 
 const removeStalledBlock = require('../../jobs/removeStalledBlock');
 const { enqueue } = require('../../lib/queue');
@@ -8,16 +8,15 @@ beforeEach(() => jest.clearAllMocks());
 
 describe('removeStalledBlock', () => {
     it('Should enqueue for quota increase if block is ready', (done) => {
-        const revertIfPartial = jest.fn();
+        const revertIfPartial = jest.fn().mockResolvedValue(false); // Block doesn't need reverting
         jest.spyOn(Block, 'findByPk').mockResolvedValue({
             workspaceId: 1,
             revertIfPartial
         });
-        jest.spyOn(Transaction, 'count').mockResolvedValue(0); // No syncing transactions
 
         removeStalledBlock({ data: { blockId: 1 }})
             .then(res => {
-                expect(revertIfPartial).not.toHaveBeenCalled();
+                expect(revertIfPartial).toHaveBeenCalled();
                 expect(enqueue).toHaveBeenCalledWith('increaseStripeBillingQuota', 'increaseStripeBillingQuota-1-1', { blockId: 1 });
                 expect(res).toEqual(true);
                 done();
@@ -25,14 +24,13 @@ describe('removeStalledBlock', () => {
     });
 
     it('Should revert of block has pending txs', (done) => {
-        const revertIfPartial = jest.fn();
+        const revertIfPartial = jest.fn().mockResolvedValue(true); // Block was reverted
         jest.spyOn(Block, 'findByPk').mockResolvedValue({
             id: 1,
             workspaceId: 1,
             number: 1,
             revertIfPartial
         });
-        jest.spyOn(Transaction, 'count').mockResolvedValue(1); // Has syncing transactions
 
         removeStalledBlock({ data: { blockId: 1 }})
             .then(res => {
