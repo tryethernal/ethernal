@@ -208,11 +208,12 @@ module.exports = (sequelize, DataTypes) => {
             // Prevents race condition with workspace reset operations that delete transactions
             const transactionExists = await sequelize.models.Transaction.findByPk(this.id, {
                 attributes: ['id'],
+                lock: transaction.LOCK.UPDATE,
                 transaction
             });
 
             if (!transactionExists) {
-                throw new Error('Transaction was deleted during receipt processing');
+                return 'Transaction no longer exists';
             }
 
             await this.update({ state: 'ready' }, { transaction });
