@@ -8,6 +8,7 @@ on:
 permissions:
   contents: read
   issues: write
+  id-token: write
 
 jobs:
   scan-sentry:
@@ -36,7 +37,6 @@ jobs:
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          direct_prompt: true
           claude_args: "--model claude-sonnet-4-20250514 --max-turns 30 --allowedTools Bash,Read,Glob,Grep"
           show_full_output: true
           prompt: |
