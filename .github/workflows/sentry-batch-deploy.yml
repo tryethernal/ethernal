@@ -5,6 +5,10 @@ on:
     - cron: '0 * * * *'
   workflow_dispatch: {}
 
+concurrency:
+  group: sentry-batch-deploy
+  cancel-in-progress: false
+
 permissions:
   contents: write
   issues: write
