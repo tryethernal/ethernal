@@ -225,7 +225,7 @@ module.exports = async job => {
 
             // Build workspace object with lazily loaded L2 configs for safeCreateReceipt
             processedReceipt.workspace = {
-                ...transaction.workspace.get({ plain: true }),
+                ...(transaction.workspace.get ? transaction.workspace.get({ plain: true }) : { ...transaction.workspace }),
                 orbitConfig,
                 orbitChildConfigs,
                 opConfig,
