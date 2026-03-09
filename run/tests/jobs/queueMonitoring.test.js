@@ -20,6 +20,15 @@ jest.mock('bullmq', () => ({
 jest.mock('../../lib/redis', () => ({
     zcard: jest.fn().mockResolvedValue(0),
     unlink: jest.fn().mockResolvedValue(1),
+    pipeline: jest.fn().mockReturnValue({
+        zcard: jest.fn().mockReturnThis(),
+        unlink: jest.fn().mockReturnThis(),
+        exec: jest.fn().mockResolvedValue([
+            [null, 0], // Mock result for zcard operations - [error, result] format
+            [null, 0],
+            [null, 0]
+        ])
+    })
 }));
 
 const queueMonitoring = require('../../jobs/queueMonitoring');
