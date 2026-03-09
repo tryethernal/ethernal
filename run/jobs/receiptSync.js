@@ -56,23 +56,8 @@ module.exports = async job => {
                     model: RpcHealthCheck,
                     as: 'rpcHealthCheck',
                     attributes: ['isReachable']
-                },
-                {
-                    model: OrbitChainConfig,
-                    as: 'orbitChildConfigs'
-                },
-                {
-                    model: OrbitChainConfig,
-                    as: 'orbitConfig'
-                },
-                {
-                    model: OpChainConfig,
-                    as: 'opChildConfigs'
-                },
-                {
-                    model: OpChainConfig,
-                    as: 'opConfig'
                 }
+                // Removed orbit/OP config includes - they will be loaded lazily if needed
             ]
         },
         {
@@ -190,14 +175,62 @@ module.exports = async job => {
             Object.keys(TransactionReceipt.rawAttributes).concat(['logs']),
         );
 
-        // For safeCreateReceipt, we need to pass workspace context for orbit processing
+        // For safeCreateReceipt, we need to pass workspace context for L2 processing
         // When using cached data, construct a minimal workspace-like object
-        // Note: cached path is only used for non-orbit workspaces (blockSync skips caching for orbit),
-        // so safe defaults for orbit fields are sufficient
+        // Note: cached path is only used for non-L2 workspaces (blockSync skips caching for orbit/OP),
+        // so safe defaults for L2 fields are sufficient
         if (hasCachedWorkspace) {
-            processedReceipt.workspace = { id: data.workspaceId, orbitConfig: null, orbitChildConfigs: [] };
+            processedReceipt.workspace = {
+                id: data.workspaceId,
+                orbitConfig: null,
+                orbitChildConfigs: [],
+                opConfig: null,
+                opChildConfigs: []
+            };
         } else {
-            processedReceipt.workspace = transaction.workspace;
+            // Lazy load all L2 configs only if we have logs that might contain events
+            let orbitConfig = null;
+            let orbitChildConfigs = [];
+            let opConfig = null;
+            let opChildConfigs = [];
+
+            if (processedReceipt.logs && processedReceipt.logs.length > 0) {
+                // Query all L2 configs in a single call when we have logs to process
+                const workspaceWithL2Configs = await Workspace.findByPk(data.workspaceId, {
+                    attributes: ['id'],
+                    include: [
+                        {
+                            model: OrbitChainConfig,
+                            as: 'orbitConfig'
+                        },
+                        {
+                            model: OrbitChainConfig,
+                            as: 'orbitChildConfigs'
+                        },
+                        {
+                            model: OpChainConfig,
+                            as: 'opConfig'
+                        },
+                        {
+                            model: OpChainConfig,
+                            as: 'opChildConfigs'
+                        }
+                    ]
+                });
+                orbitConfig = workspaceWithL2Configs?.orbitConfig || null;
+                orbitChildConfigs = workspaceWithL2Configs?.orbitChildConfigs || [];
+                opConfig = workspaceWithL2Configs?.opConfig || null;
+                opChildConfigs = workspaceWithL2Configs?.opChildConfigs || [];
+            }
+
+            // Build workspace object with lazily loaded L2 configs for safeCreateReceipt
+            processedReceipt.workspace = {
+                ...(transaction.workspace.get ? transaction.workspace.get({ plain: true }) : { ...transaction.workspace }),
+                orbitConfig,
+                orbitChildConfigs,
+                opConfig,
+                opChildConfigs
+            };
         }
 
         const savedReceipt = await transaction.safeCreateReceipt(processedReceipt);
@@ -207,9 +240,9 @@ module.exports = async job => {
             return savedReceipt;
         }
 
-        // OP Stack event detection - check for deposits and outputs
-        // Only available when we have the full workspace with OP config includes
-        const opChildConfigs = (!hasCachedWorkspace && transaction.workspace && transaction.workspace.opChildConfigs) ? transaction.workspace.opChildConfigs : [];
+        // OP Stack event detection - use the already loaded configs for queue jobs
+        // Note: opChildConfigs are already loaded above before safeCreateReceipt
+        const opChildConfigs = (!hasCachedWorkspace && processedReceipt.workspace && processedReceipt.workspace.opChildConfigs) ? processedReceipt.workspace.opChildConfigs : [];
 
         for (const opConfig of opChildConfigs) {
             if (!processedReceipt.logs || processedReceipt.logs.length === 0) continue;
