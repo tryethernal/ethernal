@@ -238,7 +238,11 @@ describe('receiptSync', () => {
                             stripeSubscription: { status: 'active' }
                         },
                         public: true,
-                        rpcServer: 'rpc'
+                        rpcServer: 'rpc',
+                        orbitConfig: null,
+                        orbitChildConfigs: [],
+                        opConfig: null,
+                        opChildConfigs: []
                     }
                 });
                 done();
