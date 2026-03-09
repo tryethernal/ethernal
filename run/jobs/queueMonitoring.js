@@ -43,8 +43,18 @@ module.exports = async () => {
 
     let incidentCreated = false;
 
+    // Cache queue instances to avoid repeated instantiation
+    const queueCache = new Map();
+    const getQueue = (queueName) => {
+        if (!queueCache.has(queueName)) {
+            queueCache.set(queueName, new Queue(queueName, { connection: redis }));
+        }
+        return queueCache.get(queueName);
+    };
+
+    // Monitor activity - check for recent job enqueue
     for (const queueName of monitoredActivity) {
-        const queue = new Queue(queueName, { connection: redis });
+        const queue = getQueue(queueName);
         const completedJobs = await queue.getCompleted();
         const latestJob = completedJobs[0];
 
@@ -59,44 +69,68 @@ module.exports = async () => {
         }
     }
 
-    for (const queueName of monitoredPerformances) {
-        const queue = new Queue(queueName, { connection: redis });
-        const completedJobs = await queue.getCompleted();
+    // Monitor performance - batch queue stats collection for all monitored queues
+    if (monitoredPerformances.length > 0) {
+        // Collect queue stats in parallel to reduce sequential Redis calls
+        const queueStatsPromises = monitoredPerformances.map(async (queueName) => {
+            const queue = getQueue(queueName);
 
-        const p95ProcessingTime = computeP95ProcessingTime(completedJobs);
+            // Fetch all queue stats in parallel for this queue
+            const [completedJobs, waitingJobCount, delayedJobCount, failedJobCount] = await Promise.all([
+                queue.getCompleted(),
+                queue.getWaitingCount(),
+                queue.getDelayedCount(),
+                queue.getFailedCount()
+            ]);
 
-        const waitingJobCount = await queue.getWaitingCount();
-        const delayedJobCount = await queue.getDelayedCount();
-        const failedJobCount = await queue.getFailedCount();
+            const p95ProcessingTime = computeP95ProcessingTime(completedJobs);
 
-        logger.info('Queue monitoring', { queueName, p95ProcessingTime, waitingJobCount, delayedJobCount, failedJobCount });
+            return {
+                queueName,
+                completedJobs,
+                waitingJobCount,
+                delayedJobCount,
+                failedJobCount,
+                p95ProcessingTime
+            };
+        });
 
-        if (
-            p95ProcessingTime > queueMonitoringMaxProcessingTime() ||
-            waitingJobCount >= queueMonitoringMaxWaitingJobCount() ||
-            (p95ProcessingTime >= queueMonitoringHighProcessingTimeThreshold() && waitingJobCount >= queueMonitoringHighWaitingJobCountThreshold())
-        ) {
-            await createIncident(
-                `${queueName} queue issue (performance)`,
-                `Waiting: ${waitingJobCount} - Delayed: ${delayedJobCount} - Failed: ${failedJobCount} - P95 processing time: ${p95ProcessingTime.toFixed(2)}s`,
-                'P1',
-                { alias: `queue-performance-${queueName}` }
-            );
-            incidentCreated = true;
-        }
+        const allQueueStats = await Promise.all(queueStatsPromises);
 
-        if (failedJobCount > 0) {
-            const failedJobs = await queue.getFailed(0, 99);
-            const recentFailures = failedJobs.filter(j => j && j.finishedOn && j.finishedOn > Date.now() - 5 * 60 * 1000);
+        // Process results and create incidents
+        for (const stats of allQueueStats) {
+            const { queueName, completedJobs, waitingJobCount, delayedJobCount, failedJobCount, p95ProcessingTime } = stats;
 
-            if (recentFailures.length >= 10) {
+            logger.info('Queue monitoring', { queueName, p95ProcessingTime, waitingJobCount, delayedJobCount, failedJobCount });
+
+            if (
+                p95ProcessingTime > queueMonitoringMaxProcessingTime() ||
+                waitingJobCount >= queueMonitoringMaxWaitingJobCount() ||
+                (p95ProcessingTime >= queueMonitoringHighProcessingTimeThreshold() && waitingJobCount >= queueMonitoringHighWaitingJobCountThreshold())
+            ) {
                 await createIncident(
-                    `${queueName} queue issue (failures)`,
-                    `${recentFailures.length} failed jobs in the last 5 minutes`,
-                    'P2',
-                    { alias: `queue-failures-${queueName}` }
+                    `${queueName} queue issue (performance)`,
+                    `Waiting: ${waitingJobCount} - Delayed: ${delayedJobCount} - Failed: ${failedJobCount} - P95 processing time: ${p95ProcessingTime.toFixed(2)}s`,
+                    'P1',
+                    { alias: `queue-performance-${queueName}` }
                 );
                 incidentCreated = true;
+            }
+
+            if (failedJobCount > 0) {
+                const queue = getQueue(queueName);
+                const failedJobs = await queue.getFailed(0, 99);
+                const recentFailures = failedJobs.filter(j => j && j.finishedOn && j.finishedOn > Date.now() - 5 * 60 * 1000);
+
+                if (recentFailures.length >= 10) {
+                    await createIncident(
+                        `${queueName} queue issue (failures)`,
+                        `${recentFailures.length} failed jobs in the last 5 minutes`,
+                        'P2',
+                        { alias: `queue-failures-${queueName}` }
+                    );
+                    incidentCreated = true;
+                }
             }
         }
     }
@@ -104,13 +138,41 @@ module.exports = async () => {
     // Clean up legacy BullMQ v4 'priority' sorted sets that leak memory.
     // BullMQ v5 uses 'prioritized' instead, but orphaned entries accumulate
     // in the old 'priority' key and can consume gigabytes of Redis memory.
+    // Use Redis pipeline to batch all cleanup operations.
     const allQueues = [...priorities['high'], ...priorities['medium'], ...priorities['low'], 'processHistoricalBlocks'];
-    for (const queueName of allQueues) {
-        const key = `bull:${queueName}:priority`;
-        const count = await redis.zcard(key);
-        if (count > 0) {
-            await redis.unlink(key);
-            logger.info('Cleaned legacy priority key', { queueName, entriesRemoved: count });
+    if (allQueues.length > 0) {
+        const pipeline = redis.pipeline();
+
+        // Build pipeline with all zcard commands
+        allQueues.forEach(queueName => {
+            const key = `bull:${queueName}:priority`;
+            pipeline.zcard(key);
+        });
+
+        const zcardResults = await pipeline.exec();
+
+        // Build second pipeline for unlinking keys with entries
+        const unlinkPipeline = redis.pipeline();
+        const keysToUnlink = [];
+
+        zcardResults.forEach((result, index) => {
+            if (!result[0]) { // No error
+                const count = result[1];
+                const queueName = allQueues[index];
+                const key = `bull:${queueName}:priority`;
+
+                if (count > 0) {
+                    unlinkPipeline.unlink(key);
+                    keysToUnlink.push({ queueName, entriesRemoved: count });
+                }
+            }
+        });
+
+        if (keysToUnlink.length > 0) {
+            await unlinkPipeline.exec();
+            keysToUnlink.forEach(({ queueName, entriesRemoved }) => {
+                logger.info('Cleaned legacy priority key', { queueName, entriesRemoved });
+            });
         }
     }
 
