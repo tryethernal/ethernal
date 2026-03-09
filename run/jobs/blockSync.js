@@ -32,7 +32,7 @@ module.exports = async job => {
             return 'Missing parameter';
 
         workspace = await Workspace.findByPk(data.workspaceId, {
-            attributes: ['id', 'name', 'rpcServer', 'browserSyncEnabled', 'isCustomL1Parent', 'rpcHealthCheckEnabled', 'public', 'rateLimitInterval', 'rateLimitMaxInInterval'],
+            attributes: ['id', 'name', 'rpcServer', 'browserSyncEnabled', 'isCustomL1Parent', 'isTopL1Parent', 'rpcHealthCheckEnabled', 'public', 'rateLimitInterval', 'rateLimitMaxInInterval'],
             include: [
                 {
                     model: Explorer,
@@ -90,7 +90,7 @@ module.exports = async job => {
 
         workspace = await Workspace.findOne({
             subQuery: false,
-            attributes: ['id', 'name', 'rpcServer', 'browserSyncEnabled', 'isCustomL1Parent', 'rpcHealthCheckEnabled', 'public', 'rateLimitInterval', 'rateLimitMaxInInterval'],
+            attributes: ['id', 'name', 'rpcServer', 'browserSyncEnabled', 'isCustomL1Parent', 'isTopL1Parent', 'rpcHealthCheckEnabled', 'public', 'rateLimitInterval', 'rateLimitMaxInInterval'],
             where: {
                 name: data.workspace,
                 '$user.firebaseUserId$': data.userId
@@ -201,8 +201,8 @@ module.exports = async job => {
 
         // Load orbit configurations only when needed to avoid N+1 queries
         let orbitChildConfigs = [];
-        if (workspace.isCustomL1Parent) {
-            // Only reload for workspaces that are L1 parents (potentially have orbit configs)
+        if (workspace.isCustomL1Parent || workspace.isTopL1Parent) {
+            // Reload for workspaces that could have orbit configurations
             await workspace.reload({
                 include: ['orbitConfig', 'orbitChildConfigs']
             });
@@ -272,13 +272,17 @@ module.exports = async job => {
 
         // OP Stack batch detection - enqueue as separate jobs to avoid blocking sync
         // Load OP configurations only when needed to avoid N+1 queries
-        if (workspace.isCustomL1Parent) {
+        // Save orbitConfig before reload to prevent it being wiped
+        const orbitConfigSnapshot = workspace.orbitConfig;
+        if (workspace.isCustomL1Parent || workspace.isTopL1Parent) {
             await workspace.reload({
                 include: [{
                     model: OpChainConfig,
                     as: 'opChildConfigs'
                 }]
             });
+            // Restore orbitConfig that was wiped by the reload
+            workspace.orbitConfig = orbitConfigSnapshot;
         }
         const opChildConfigs = workspace.opChildConfigs || [];
         if (opChildConfigs.length > 0) {
