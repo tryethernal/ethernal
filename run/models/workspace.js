@@ -2972,7 +2972,8 @@ module.exports = (sequelize, DataTypes) => {
                     transaction: sequelizeTransaction
                 });
 
-                const orbitConfig = await sequelize.models.OrbitChainConfig.findOne({ where: { workspaceId: this.id }, transaction: sequelizeTransaction });
+                // Use already-loaded orbitConfig from workspace query to avoid redundant DB lookup
+                const orbitConfig = this.orbitConfig;
                 if (orbitConfig) {
                     const orbitBatch = await sequelize.models.OrbitBatch.findOne({
                         where: {
