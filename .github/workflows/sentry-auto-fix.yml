@@ -266,6 +266,60 @@ jobs:
           PROD_DATABASE_URL_READONLY: ${{ secrets.PROD_DATABASE_URL_READONLY }}
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
+      - name: Extract conversation log
+        id: conversation
+        if: always()
+        continue-on-error: true
+        run: |
+          LOG_FILE="/home/runner/work/_temp/claude-execution-output.json"
+          if [ ! -f "$LOG_FILE" ]; then
+            echo "[]" > /tmp/conversation-log.json
+            exit 0
+          fi
+
+          python3 << 'PYEOF'
+          import json
+          with open("/home/runner/work/_temp/claude-execution-output.json") as f:
+              data = json.load(f)
+
+          log = []
+          messages = data if isinstance(data, list) else [data]
+          for msg in messages:
+              if not isinstance(msg, dict):
+                  continue
+              role = msg.get("role", msg.get("type", ""))
+              if role in ("system", "preset"):
+                  continue
+              content = msg.get("content", [])
+              if isinstance(content, str):
+                  log.append({"role": role, "text": content})
+                  continue
+              if not isinstance(content, list):
+                  content = [content] if isinstance(content, dict) else []
+              for block in content:
+                  if not isinstance(block, dict):
+                      continue
+                  btype = block.get("type", "")
+                  if btype == "text":
+                      log.append({"role": role, "text": block.get("text", "")})
+                  elif btype == "tool_use":
+                      inp = block.get("input", {})
+                      log.append({
+                          "role": role,
+                          "tool": block.get("name", ""),
+                          "input": (inp.get("command") or inp.get("description") or str(inp))[:500]
+                      })
+                  elif btype == "tool_result":
+                      cv = block.get("content", "")
+                      if isinstance(cv, list):
+                          cv = " ".join(b.get("text", "") for b in cv if isinstance(b, dict))
+                      log.append({"role": "tool", "output": str(cv)[:1000]})
+          log = log[-200:]
+          with open("/tmp/conversation-log.json", "w") as f:
+              json.dump(log, f)
+          print(f"Extracted {len(log)} conversation entries")
+          PYEOF
+
       - name: Notify dashboard - post-triage
         if: always()
         continue-on-error: true
@@ -293,16 +347,26 @@ jobs:
             fi
           fi
 
-          curl -s -X POST "${{ secrets.APP_URL }}/webhooks/github-actions" \
+          # Build payload with conversation log
+          CONV_LOG=$(cat /tmp/conversation-log.json 2>/dev/null || echo "[]")
+          jq -n \
+            --argjson runId "${{ github.run_id }}" \
+            --argjson issueNum "${{ steps.issue_info.outputs.number }}" \
+            --arg status "$STATUS" \
+            --arg step "$STEP" \
+            --arg decision "$DECISION" \
+            --argjson convLog "$CONV_LOG" \
+            '{
+              workflowRunId: $runId,
+              githubIssueNumber: $issueNum,
+              status: $status,
+              currentStep: $step,
+              triageDecision: $decision,
+              conversationLog: $convLog
+            }' | curl -s -X POST "${{ secrets.APP_URL }}/webhooks/github-actions" \
             -H "Authorization: Bearer ${{ secrets.ETHERNAL_WEBHOOK_SECRET }}" \
             -H "Content-Type: application/json" \
-            -d "{
-              \"workflowRunId\": ${{ github.run_id }},
-              \"githubIssueNumber\": ${{ steps.issue_info.outputs.number }},
-              \"status\": \"$STATUS\",
-              \"currentStep\": \"$STEP\",
-              \"triageDecision\": \"$DECISION\"
-            }"
+            -d @-
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
