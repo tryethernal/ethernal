@@ -5,7 +5,7 @@
  * @module jobs/updateExplorerSyncingProcess
  */
 
-const { Explorer, Workspace, RpcHealthCheck, StripeSubscription, StripePlan } = require('../models');
+const { Explorer, Workspace, RpcHealthCheck, StripeSubscription, StripePlan, StripeQuotaExtension } = require('../models');
 const PM2 = require('../lib/pm2');
 const logger = require('../lib/logger');
 
@@ -35,11 +35,18 @@ module.exports = async job => {
                 model: StripeSubscription,
                 as: 'stripeSubscription',
                 required: false,
-                include: {
-                    model: StripePlan,
-                    as: 'stripePlan',
-                    required: false
-                }
+                include: [
+                    {
+                        model: StripePlan,
+                        as: 'stripePlan',
+                        required: false
+                    },
+                    {
+                        model: StripeQuotaExtension,
+                        as: 'stripeQuotaExtension',
+                        required: false
+                    }
+                ]
             }
         ]
     });

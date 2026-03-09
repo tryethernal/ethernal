@@ -204,6 +204,18 @@ module.exports = (sequelize, DataTypes) => {
         if (!receipt) throw new Error('Missing parameter');
 
         return sequelize.transaction(async transaction => {
+            // Check if this transaction still exists before proceeding
+            // Prevents race condition with workspace reset operations that delete transactions
+            const transactionExists = await sequelize.models.Transaction.findByPk(this.id, {
+                attributes: ['id'],
+                lock: transaction.LOCK.UPDATE,
+                transaction
+            });
+
+            if (!transactionExists) {
+                return 'Transaction no longer exists';
+            }
+
             await this.update({ state: 'ready' }, { transaction });
 
             const [storedReceipt] = await sequelize.models.TransactionReceipt.bulkCreate(
@@ -552,7 +564,7 @@ module.exports = (sequelize, DataTypes) => {
                                     const outputData = getOutputProposedData(log);
                                     const challengePeriodEnds = calculateChallengePeriodEnd(
                                         parseInt(outputData.l1Timestamp),
-                                        opChildConfig.challengePeriodSeconds || 604800
+                                        opChildConfig.finalizationPeriodSeconds || 604800
                                     );
 
                                     await sequelize.models.OpOutput.bulkCreate([{
@@ -595,7 +607,7 @@ module.exports = (sequelize, DataTypes) => {
 
                                     const challengePeriodEnds = calculateChallengePeriodEnd(
                                         Math.floor(Date.now() / 1000),
-                                        opChildConfig.challengePeriodSeconds || 604800
+                                        opChildConfig.finalizationPeriodSeconds || 604800
                                     );
 
                                     await sequelize.models.OpOutput.bulkCreate([{
