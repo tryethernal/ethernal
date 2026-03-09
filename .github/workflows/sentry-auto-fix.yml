@@ -604,7 +604,12 @@ jobs:
           GREPTILE_COMMENT=$(gh api repos/${{ github.repository }}/issues/${{ steps.pr_info.outputs.pr_number }}/comments \
             --jq '[.[] | select(.user.login == "greptile-apps[bot]")] | last | .body // ""')
 
-          SCORE=$(echo "$GREPTILE_COMMENT" | grep -oP '(\d)\/5' | head -1 | cut -d'/' -f1)
+          # Greptile formats as "<h3>Confidence Score: X/5</h3>" — anchor to that
+          SCORE=$(echo "$GREPTILE_COMMENT" | grep -oP '(?i)confidence\s+score[:\s]*\K\d(?=/5)' | head -1)
+          # Fallback: last X/5 occurrence (summary score appears after per-file scores)
+          if [ -z "$SCORE" ]; then
+            SCORE=$(echo "$GREPTILE_COMMENT" | grep -oP '\d(?=/5)' | tail -1)
+          fi
 
           if [ -z "$SCORE" ]; then
             echo "No confidence score found, proceeding"
@@ -914,6 +919,14 @@ jobs:
             MERGEABLE=$(gh pr view "$PR_NUM" --repo ${{ github.repository }} --json mergeable -q '.mergeable')
             if [ "$MERGEABLE" != "MERGEABLE" ]; then
               echo "PR #$PR_NUM is $MERGEABLE, skipping"
+              continue
+            fi
+
+            # Skip PRs flagged for human review
+            HAS_NEEDS_HUMAN=$(gh pr view "$PR_NUM" --repo ${{ github.repository }} --json labels \
+              -q '[.labels[].name] | any(. == "needs-human")')
+            if [ "$HAS_NEEDS_HUMAN" = "true" ]; then
+              echo "PR #$PR_NUM has needs-human label, skipping"
               continue
             fi
 
