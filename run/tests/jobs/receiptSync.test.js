@@ -15,7 +15,7 @@ const receiptSync = require('../../jobs/receiptSync');
 beforeEach(() => jest.resetAllMocks());
 
 describe('receiptSync', () => {
-    it('Should throw an error if receipt is not available', (done) => {
+    it('Should return if receipt is not available', (done) => {
         jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({
             workspace: {
                 id: 1,
@@ -32,8 +32,8 @@ describe('receiptSync', () => {
         }));
 
         receiptSync({ data : { transactionId: 1, transactionHash: '0x123', workspaceId: 1 }})
-            .catch(error => {
-                expect(error.message).toEqual('Failed to fetch receipt');
+            .then(res => {
+                expect(res).toEqual('Receipt not available');
                 done();
             });
     });
@@ -165,9 +165,6 @@ describe('receiptSync', () => {
                 }
             }
         });
-        ProviderConnector.mockImplementationOnce(() => ({
-            fetchTransactionReceipt: jest.fn().mockResolvedValue(null)
-        }));
 
         receiptSync({ data : { transactionId: 1, transactionHash: '0x123', workspaceId: 1 }})
             .then(res => {

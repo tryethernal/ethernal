@@ -183,7 +183,7 @@ module.exports = async job => {
         }
 
         if (!receipt)
-            throw new Error('Failed to fetch receipt');
+            return 'Receipt not available';
 
         let processedReceipt = processRawRpcObject(
             receipt,
