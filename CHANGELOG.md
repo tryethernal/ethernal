@@ -4,6 +4,82 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.7] - 2026-03-09
+### Fixed
+- fix: address PR #518 review — confidence regex and recover-stuck label check (#520)
+- fix: harden sentry pipeline with dedup, confidence gate, stagger, and stuck PR recovery (#518)
+- fix: add additional gasPrice null safety check before Transaction.bulkCreate (#495)
+- fix: optimize Redis queries in queueMonitoring job to eliminate N+1 pattern (#512)
+- Merge master into develop to resolve CHANGELOG divergence
+- feat: batch deploy for sentry auto-fix pipeline (#514)
+- Merge develop into master for v5.17.1
+- Merge develop into master for v5.17.0
+- Merge develop into master for v5.16.17
+- Merge develop into master for v5.16.16
+- Merge develop into master for v5.16.15
+- Merge develop into master for v5.16.14
+- Merge develop into master for v5.16.13
+- Merge develop into master for v5.16.12
+- Merge develop into master for v5.16.11
+- Merge develop into master for v5.16.10
+- Merge develop into master for v5.16.9
+- Merge develop into master for v5.16.8
+- Merge develop into master for v5.16.7
+- Merge develop into master for v5.16.6
+- Merge develop into master for v5.16.5
+- Merge develop into master for v5.16.4
+- Merge develop into master for v5.16.3
+- Merge develop into master for v5.16.2
+- Merge develop into master: fix landing images
+- Merge develop into master: add landing images
+- Merge develop into master for v5.16.1
+- Merge develop into master for v5.15.2
+- fix: use CREATE INDEX CONCURRENTLY for performance indexes migration
+- Merge develop into master for v5.15.1
+
+
+## [5.17.6] - 2026-03-09
+### Fixed
+- fix: replace virtual field with actual database column in Transaction query (#517)
+
+
+## [5.17.5] - 2026-03-09
+### Fixed
+- fix: use actual database column instead of virtual field in Transaction query (#516)
+
+
+## [5.17.4] - 2026-03-09
+### Fixed
+- fix: optimize removeStalledBlock job database queries (#510)
+
+
+## [5.17.3] - 2026-03-09
+### Fixed
+- fix: add 30-second timeout for RPC calls in processBlock job (#511)
+- fix: add null check in _sanitize function to prevent TypeError (#509)
+- fix: send Claude conversation log to sentry dashboard webhook
+- Hetzner maintenance banner and page (March 10) (#508)
+- fix: route /webhooks* to backend in Caddy and allow scanner issues in auto-fix
+- chore: change performance scan to daily at 6am UTC
+- feat: add performance scanning to Sentry scanner workflow
+- fix: add id-token permission and remove deprecated direct_prompt from sentry scanner
+- docs: update CLAUDE.md with CI migrations and Redis/BullMQ gotcha
+- ci: run database migrations automatically before deploy
+
+
+## [5.17.2] - 2026-03-09
+### Fixed
+- fix: add null check in _sanitize function to prevent TypeError (#509)
+- fix: send Claude conversation log to sentry dashboard webhook
+- Hetzner maintenance banner and page (March 10) (#508)
+- fix: route /webhooks* to backend in Caddy and allow scanner issues in auto-fix
+- chore: change performance scan to daily at 6am UTC
+- feat: add performance scanning to Sentry scanner workflow
+- fix: add id-token permission and remove deprecated direct_prompt from sentry scanner
+- docs: update CLAUDE.md with CI migrations and Redis/BullMQ gotcha
+- ci: run database migrations automatically before deploy
+
+
 ## [5.17.0] - 2026-03-09
 ### Added
 - Sentry proactive scanner and auto-fix pipeline dashboard (#502)

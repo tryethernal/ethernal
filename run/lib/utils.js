@@ -286,14 +286,18 @@ const _isJson = function(obj) {
  * - Converts hex strings to integers for known numeric fields
  * - Converts BigNumber objects to strings
  *
- * @param {Object} obj - Object to sanitize
+ * @param {Object|null|undefined} obj - Object to sanitize
  * @param {boolean} [numberization=true] - Whether to convert hex to numbers
- * @returns {Object} Sanitized object
+ * @returns {Object|null} Sanitized object, or null if input is null/undefined
  * @example
  * _sanitize({ blockNumber: '0x10', hash: '0xABC...', extra: null });
  * // returns { blockNumber: 16, hash: '0xabc...' }
  */
 const _sanitize = (obj, numberization = true) => {
+    if (obj == null) {
+        return null;
+    }
+
     const numberize = [
         'number',
         'difficulty',

@@ -96,20 +96,45 @@ module.exports = (sequelize, DataTypes) => {
 
     /**
      * Reverts the block if it's only partially synced.
-     * Destroys the block and its transactions if syncing is incomplete.
-     * @returns {Promise<void>}
+     * Destroys the block and its transactions if syncing is incomplete or transaction count mismatches.
+     * @returns {Promise<boolean>} True if block was reverted, false otherwise
      */
     async revertIfPartial() {
-        const transactions = await this.getTransactions();
-        const isSyncing = transactions.map(t => t.isSyncing).length > 0 || transactions.length != this.transactionsCount;
+        // Check for syncing transactions first
+        const syncingTransactionCount = await sequelize.models.Transaction.count({
+            where: {
+                blockId: this.id,
+                state: 'syncing'
+            }
+        });
 
-        if (!isSyncing)
-          return;
+        // Short-circuit if we already know we need to revert
+        if (syncingTransactionCount > 0) {
+            await sequelize.transaction(
+                { deferrable: Sequelize.Deferrable.SET_DEFERRED },
+                async transaction => this.safeDestroy(transaction)
+            );
+            return true;
+        }
 
-        return sequelize.transaction(
-          { deferrable: Sequelize.Deferrable.SET_DEFERRED },
-          async transaction => this.safeDestroy(transaction)
-        );
+        // Only check transaction count if transactionsCount is available and no transactions are syncing
+        if (this.transactionsCount !== null && this.transactionsCount !== undefined) {
+            const currentTransactionCount = await sequelize.models.Transaction.count({
+                where: {
+                    blockId: this.id
+                }
+            });
+
+            if (currentTransactionCount !== this.transactionsCount) {
+                await sequelize.transaction(
+                    { deferrable: Sequelize.Deferrable.SET_DEFERRED },
+                    async transaction => this.safeDestroy(transaction)
+                );
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
