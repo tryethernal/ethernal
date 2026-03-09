@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.13] - 2026-03-09
+### Fixed
+- fix: remove transactions_state_idx migration (partial index already exists)
+- fix: optimize OP batch transaction lookup to prevent O(n²) performance regression (#550)
+
 ## [5.17.12] - 2026-03-09
 ### Fixed
 - fix: optimize workspace query in blockSync to reduce excessive joins (#542)
