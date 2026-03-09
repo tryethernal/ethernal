@@ -32,7 +32,7 @@ module.exports = async job => {
             return 'Missing parameter';
 
         workspace = await Workspace.findByPk(data.workspaceId, {
-            attributes: ['id', 'name', 'rpcServer', 'browserSyncEnabled', 'isCustomL1Parent', 'rpcHealthCheckEnabled'],
+            attributes: ['id', 'name', 'rpcServer', 'browserSyncEnabled', 'isCustomL1Parent', 'rpcHealthCheckEnabled', 'public', 'rateLimitInterval', 'rateLimitMaxInInterval'],
             include: [
                 {
                     model: Explorer,
@@ -96,7 +96,7 @@ module.exports = async job => {
 
         workspace = await Workspace.findOne({
             subQuery: false,
-            attributes: ['id', 'name', 'rpcServer', 'browserSyncEnabled', 'isCustomL1Parent', 'rpcHealthCheckEnabled'],
+            attributes: ['id', 'name', 'rpcServer', 'browserSyncEnabled', 'isCustomL1Parent', 'rpcHealthCheckEnabled', 'public', 'rateLimitInterval', 'rateLimitMaxInInterval'],
             where: {
                 name: data.workspace,
                 '$user.firebaseUserId$': data.userId
