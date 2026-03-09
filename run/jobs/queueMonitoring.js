@@ -6,10 +6,11 @@
  */
 
 const { Queue } = require('bullmq');
-const connection = require('../lib/redis');
+const redis = require('../lib/redis');
 const logger = require('../lib/logger');
 const { createIncident } = require('../lib/opsgenie');
 const { maxTimeWithoutEnqueuedJob, queueMonitoringMaxProcessingTime, queueMonitoringHighProcessingTimeThreshold, queueMonitoringHighWaitingJobCountThreshold, queueMonitoringMaxWaitingJobCount } = require('../lib/env');
+const priorities = require('../workers/priorities');
 
 const monitoredPerformances = ['blockSync', 'receiptSync'];
 
@@ -43,7 +44,7 @@ module.exports = async () => {
     let incidentCreated = false;
 
     for (const queueName of monitoredActivity) {
-        const queue = new Queue(queueName, { connection });
+        const queue = new Queue(queueName, { connection: redis });
         const completedJobs = await queue.getCompleted();
         const latestJob = completedJobs[0];
 
@@ -59,7 +60,7 @@ module.exports = async () => {
     }
 
     for (const queueName of monitoredPerformances) {
-        const queue = new Queue(queueName, { connection });
+        const queue = new Queue(queueName, { connection: redis });
         const completedJobs = await queue.getCompleted();
 
         const p95ProcessingTime = computeP95ProcessingTime(completedJobs);
@@ -97,6 +98,19 @@ module.exports = async () => {
                 );
                 incidentCreated = true;
             }
+        }
+    }
+
+    // Clean up legacy BullMQ v4 'priority' sorted sets that leak memory.
+    // BullMQ v5 uses 'prioritized' instead, but orphaned entries accumulate
+    // in the old 'priority' key and can consume gigabytes of Redis memory.
+    const allQueues = [...priorities['high'], ...priorities['medium'], ...priorities['low'], 'processHistoricalBlocks'];
+    for (const queueName of allQueues) {
+        const key = `bull:${queueName}:priority`;
+        const count = await redis.zcard(key);
+        if (count > 0) {
+            await redis.unlink(key);
+            logger.info('Cleaned legacy priority key', { queueName, entriesRemoved: count });
         }
     }
 
