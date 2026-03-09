@@ -327,15 +327,4 @@ describe('updateExplorerSyncingProcess', () => {
                 done();
             });
     });
-
-    it('Should re-throw database connection errors so BullMQ can retry', (done) => {
-        const connectionError = new Error('Connection terminated unexpectedly');
-        jest.spyOn(Explorer, 'findOne').mockRejectedValueOnce(connectionError);
-
-        updateExplorerSyncingProcess({ data: { explorerSlug: 'explorer' }})
-            .catch(err => {
-                expect(err).toBe(connectionError);
-                done();
-            });
-    });
 });

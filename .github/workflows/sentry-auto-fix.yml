@@ -28,7 +28,6 @@ jobs:
       (
         (github.event_name == 'issues' &&
          contains(github.event.issue.labels.*.name, 'sentry') &&
-         !contains(github.event.issue.labels.*.name, 'needs-human') &&
          github.event.sender.login != 'github-actions[bot]' &&
          github.event.sender.login != 'claude[bot]' &&
          (github.event.sender.login == 'antoinedc' ||
@@ -89,6 +88,20 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Notify dashboard - triaging
+        if: always()
+        continue-on-error: true
+        run: |
+          curl -s -X POST "${{ secrets.APP_URL }}/webhooks/github-actions" \
+            -H "Authorization: Bearer ${{ secrets.ETHERNAL_WEBHOOK_SECRET }}" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"workflowRunId\": ${{ github.run_id }},
+              \"githubIssueNumber\": ${{ steps.issue_info.outputs.number }},
+              \"status\": \"triaging\",
+              \"currentStep\": \"Claude is investigating the error\"
+            }"
 
       - name: Check for regression
         id: regression
@@ -182,11 +195,17 @@ jobs:
 
             ### 2. Triage (choose ONE action)
 
+            **IMPORTANT**: If the issue already has the `needs-human` label, it was flagged as a sustained infrastructure error (high volume of connection errors outside of a deploy). In this case, ALWAYS choose **AUTO-FIX** — investigate the root cause (check DB health, connection pool stats, Fly.io status) and attempt a fix. Also notify @antoinedc:
+            ```
+            gh issue comment ${{ steps.issue_info.outputs.number }} --body "🚨 Sustained infra errors detected (not correlated with a deploy). Investigating and attempting a fix. @antoinedc please monitor."
+            ```
+
             **CLOSE** the issue if:
             - It's a duplicate of an existing issue
             - It's expected behavior (e.g., user input validation errors)
             - It's a third-party/network error we can't control
             - It's already fixed on the develop branch
+            - It's a transient infrastructure error (database connection drops, ECONNRESET, "Connection terminated unexpectedly", SequelizeConnectionError, SequelizeConnectionRefusedError) — BUT first verify it correlates with a recent deploy/restart by checking: `flyctl releases -a ethernal --json | jq '.[0:3]'`. If the error timestamps align with a release within the last 10 minutes, it's transient → close. If there's NO recent deploy and connection errors persist, ESCALATE instead — it may be a real infra issue. Do NOT add retry logic or try-catch wrappers for these — BullMQ already handles retries at the job level.
             Close with: `gh issue close ${{ steps.issue_info.outputs.number }} --comment "Closing: [reason]"`
 
             **ESCALATE** if:
@@ -241,10 +260,88 @@ jobs:
             - NEVER close the issue manually — GitHub auto-closes it when the PR with "Fixes #N" is merged
             - Keep fixes minimal — don't refactor surrounding code
             - If uncertain about the fix, escalate rather than guess
+            - NEVER add retry/reconnection logic for database connection errors — BullMQ already handles retries. Adding in-job retry creates double-retry complexity.
+            - NEVER silently catch and swallow database errors with fallback values — this masks real issues. Let errors propagate so BullMQ retries the job.
+            - NEVER split working database queries into multiple queries to "prevent timeouts" — timeouts are solved by indexes, not query splitting.
+            - NEVER wrap entire job functions in try-catch just to log and re-throw — this adds no value.
         env:
           SENTRY_API_TOKEN: ${{ secrets.SENTRY_API_TOKEN }}
           PROD_DATABASE_URL_READONLY: ${{ secrets.PROD_DATABASE_URL_READONLY }}
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      - name: Notify dashboard - post-triage
+        if: always()
+        continue-on-error: true
+        run: |
+          # Determine status based on whether a PR branch exists
+          if git ls-remote --heads origin "fix/sentry-${{ steps.issue_info.outputs.number }}" | grep -q .; then
+            STATUS="fixing"
+            STEP="Claude created a fix branch"
+            DECISION="auto-fix"
+          else
+            # Check if issue was closed
+            ISSUE_STATE=$(gh issue view ${{ steps.issue_info.outputs.number }} --repo ${{ github.repository }} --json state -q '.state')
+            if [ "$ISSUE_STATE" = "CLOSED" ]; then
+              STATUS="closed"
+              STEP="Issue was closed by Claude"
+              DECISION="close"
+            elif gh issue view ${{ steps.issue_info.outputs.number }} --repo ${{ github.repository }} --json labels -q '.labels[].name' | grep -q "needs-human"; then
+              STATUS="escalated"
+              STEP="Escalated to human"
+              DECISION="escalate"
+            else
+              STATUS="failed"
+              STEP="Triage completed without action"
+              DECISION="unknown"
+            fi
+          fi
+
+          curl -s -X POST "${{ secrets.APP_URL }}/webhooks/github-actions" \
+            -H "Authorization: Bearer ${{ secrets.ETHERNAL_WEBHOOK_SECRET }}" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"workflowRunId\": ${{ github.run_id }},
+              \"githubIssueNumber\": ${{ steps.issue_info.outputs.number }},
+              \"status\": \"$STATUS\",
+              \"currentStep\": \"$STEP\",
+              \"triageDecision\": \"$DECISION\"
+            }"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Notify dashboard - PR created
+        if: always()
+        continue-on-error: true
+        run: |
+          PR_NUMBER=$(gh pr list --head "fix/sentry-${{ steps.issue_info.outputs.number }}" --json number -q '.[0].number' 2>/dev/null)
+          if [ -n "$PR_NUMBER" ]; then
+            curl -s -X POST "${{ secrets.APP_URL }}/webhooks/github-actions" \
+              -H "Authorization: Bearer ${{ secrets.ETHERNAL_WEBHOOK_SECRET }}" \
+              -H "Content-Type: application/json" \
+              -d "{
+                \"workflowRunId\": ${{ github.run_id }},
+                \"githubIssueNumber\": ${{ steps.issue_info.outputs.number }},
+                \"githubPrNumber\": $PR_NUMBER,
+                \"status\": \"reviewing\",
+                \"currentStep\": \"PR #$PR_NUMBER awaiting review\"
+              }"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Notify dashboard - failure
+        if: failure()
+        continue-on-error: true
+        run: |
+          curl -s -X POST "${{ secrets.APP_URL }}/webhooks/github-actions" \
+            -H "Authorization: Bearer ${{ secrets.ETHERNAL_WEBHOOK_SECRET }}" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"workflowRunId\": ${{ github.run_id }},
+              \"githubIssueNumber\": ${{ steps.issue_info.outputs.number }},
+              \"status\": \"failed\",
+              \"currentStep\": \"Workflow failed\"
+            }"
 
   process-review:
     concurrency:
@@ -448,6 +545,24 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
 
+      - name: Notify dashboard - merging
+        if: steps.check_sentry.outputs.is_sentry == 'true' && steps.merge_check.outputs.ready == 'true' && steps.ci_check.outputs.passed == 'true'
+        continue-on-error: true
+        run: |
+          # Extract linked issue number from PR body
+          ISSUE_NUMBER=$(gh pr view ${{ steps.pr_info.outputs.pr_number }} --repo ${{ github.repository }} --json body -q '.body' | grep -oP 'Fixes #\K\d+' | head -1)
+          curl -s -X POST "${{ secrets.APP_URL }}/webhooks/github-actions" \
+            -H "Authorization: Bearer ${{ secrets.ETHERNAL_WEBHOOK_SECRET }}" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"githubIssueNumber\": ${ISSUE_NUMBER:-0},
+              \"githubPrNumber\": ${{ steps.pr_info.outputs.pr_number }},
+              \"status\": \"merging\",
+              \"currentStep\": \"PR merged, deploying\"
+            }"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Deploy
         if: steps.check_sentry.outputs.is_sentry == 'true' && steps.merge_check.outputs.ready == 'true' && steps.ci_check.outputs.passed == 'true'
         env:
@@ -505,6 +620,23 @@ jobs:
 
           echo "Deployed v$NEW_VERSION"
 
+      - name: Notify dashboard - deploying
+        if: steps.check_sentry.outputs.is_sentry == 'true' && steps.merge_check.outputs.ready == 'true' && steps.ci_check.outputs.passed == 'true'
+        continue-on-error: true
+        run: |
+          ISSUE_NUMBER=$(gh pr view ${{ steps.pr_info.outputs.pr_number }} --repo ${{ github.repository }} --json body -q '.body' | grep -oP 'Fixes #\K\d+' | head -1)
+          curl -s -X POST "${{ secrets.APP_URL }}/webhooks/github-actions" \
+            -H "Authorization: Bearer ${{ secrets.ETHERNAL_WEBHOOK_SECRET }}" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"githubIssueNumber\": ${ISSUE_NUMBER:-0},
+              \"githubPrNumber\": ${{ steps.pr_info.outputs.pr_number }},
+              \"status\": \"deploying\",
+              \"currentStep\": \"Deploying to production\"
+            }"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Resolve Sentry issue
         if: steps.check_sentry.outputs.is_sentry == 'true' && steps.merge_check.outputs.ready == 'true' && steps.ci_check.outputs.passed == 'true'
         env:
@@ -531,3 +663,21 @@ jobs:
             -H "Authorization: Bearer $SENTRY_API_TOKEN" \
             -H "Content-Type: application/json" \
             -d '{"status": "resolved"}' | jq '{status, statusDetails}'
+
+      - name: Notify dashboard - completed
+        if: steps.check_sentry.outputs.is_sentry == 'true' && steps.merge_check.outputs.ready == 'true' && steps.ci_check.outputs.passed == 'true'
+        continue-on-error: true
+        run: |
+          ISSUE_NUMBER=$(gh pr view ${{ steps.pr_info.outputs.pr_number }} --repo ${{ github.repository }} --json body -q '.body' | grep -oP 'Fixes #\K\d+' | head -1)
+          curl -s -X POST "${{ secrets.APP_URL }}/webhooks/github-actions" \
+            -H "Authorization: Bearer ${{ secrets.ETHERNAL_WEBHOOK_SECRET }}" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"githubIssueNumber\": ${ISSUE_NUMBER:-0},
+              \"githubPrNumber\": ${{ steps.pr_info.outputs.pr_number }},
+              \"status\": \"completed\",
+              \"currentStep\": \"Fix deployed and Sentry issue resolved\",
+              \"completedAt\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"
+            }"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
