@@ -1,13 +1,15 @@
 /**
  * @fileoverview Router for Sentry Dashboard standalone app.
+ * Three routes: live view, session history, and session detail.
  * @module router
  */
 
 import { createWebHistory, createRouter } from 'vue-router';
-import SentryDashboard from './components/SentryDashboard.vue';
 
 const routes = [
-    { path: '/', name: 'dashboard', component: SentryDashboard }
+    { path: '/', name: 'live', component: () => import('./components/LiveView.vue') },
+    { path: '/history', name: 'history', component: () => import('./components/SessionHistory.vue') },
+    { path: '/session/:id', name: 'session', component: () => import('./components/SessionDetail.vue') }
 ];
 
 export default createRouter({

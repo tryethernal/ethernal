@@ -17,7 +17,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | Billing/Stripe | `run/webhooks/stripe.js`, `run/lib/stripe.js`, `run/api/stripe.js` |
 | Testing | `run/tests/mocks/`, `run/tests/api/`, `tests/unit/` |
 | Database schema | `.claude/references/SCHEMA.md` (complete model reference) |
-| Sentry pipeline | `run/api/sentryPipeline.js`, `run/webhooks/githubActions.js`, `sentry-dashboard/` |
+| Sentry pipeline | `run/api/sentryPipeline.js`, `run/webhooks/githubActions.js`, `.github/scripts/stream-conversation.sh`, `sentry-dashboard/` |
 
 **Critical architectural insight:**
 - **Authorization** happens in middleware (`authMiddleware`, `workspaceAuthMiddleware`)
@@ -126,7 +126,7 @@ Self-hosted Sentry (v26.2.1) runs on a Hetzner CCX33 at `sentry.tryethernal.com`
 - **Auto-fix pipeline**: `.github/workflows/sentry-auto-fix.yml` — Sentry alert rules create GitHub issues with `sentry` label on: new errors (≥2 occurrences in 1h), regressions (previously resolved errors recurring). Claude Code triages (close/escalate/fix), creates fix PRs, processes code review (including Greptile thread resolutions with 30s debounce), merges when approved. Non-hotfix PRs get status `merged` and await batch deploy; issues with `hotfix` label deploy inline immediately. Protected files (Stripe, auth, crypto) are never auto-modified. GitHub App `ethernal-sentry` on `tryethernal` org powers the Sentry↔GitHub integration. **Safeguards**: Dedup check prevents duplicate PRs for the same issue; Greptile confidence threshold (3/5) gates auto-merge (low scores get `needs-human` label); stuck PR recovery job runs every 2h to merge PRs that passed CI but got stuck.
 - **Batch deploy**: `.github/workflows/sentry-batch-deploy.yml` — hourly cron batches all pending commits since last tag into a single release (changelog, version bump, master sync). Resolves linked Sentry issues and notifies dashboard for each. Also supports `workflow_dispatch` for manual triggers.
 - **Proactive scanner**: `.github/workflows/sentry-scanner.yml` — single hourly cron job scanning both errors and performance issues (using `statsPeriod=24h` — Sentry v26.2.1 only supports `24h`/`14d`). Also queries `is:regressed` explicitly to prioritize regressions regardless of event count. Claude evaluates which are actionable, creates GitHub issues (feeding into auto-fix pipeline), auto-resolves transient errors. Limited to 3 issues per scan with 90s stagger between creations to prevent workflow storms.
-- **Pipeline dashboard**: Standalone Vue 3 app at `sentry-dashboard/` served at `/sentry-dashboard` path. Protected by HTTP Basic Auth (Caddy `basicauth` for static files, `sentryDashboardAuth` middleware for API). Real-time updates via Pusher. Behind `ENABLE_SENTRY_PIPELINE` feature flag. Webhook at `POST /webhooks/github-actions` receives status updates from workflows. Model: `SentryPipelineRun`. Dev: `docker compose -f docker-compose.dev.yml up -d sentry-dashboard` (port 8175).
+- **Sessions dashboard**: Standalone Vue 3 app at `sentry-dashboard/` served at `/sentry-dashboard` path. Three views: **Live** (iTerm-like split panes of active Claude sessions with real-time turn streaming), **History** (paginated table of past sessions), **Session Detail** (full conversation viewer). Protected by HTTP Basic Auth. Real-time updates via Pusher (`turn-added` for incremental conversation turns, `updated` for status changes). Webhook at `POST /webhooks/github-actions` receives status updates and supports `appendTurns` for atomic JSONB array append. Streaming sidecar at `.github/scripts/stream-conversation.sh` polls `claude-execution-output.json` every 5s during GitHub Actions runs. Model: `SentryPipelineRun`. Dev: `docker compose -f docker-compose.dev.yml up -d sentry-dashboard` (port 8175).
 - **Sentry CLI access**: Use `ssh root@157.90.154.200` then `cd /opt/sentry && docker compose --env-file .env --env-file .env.custom exec -T web sentry shell` for Django shell access (manage tokens, project configs, etc.). API token with full scopes stored as `SENTRY_API_TOKEN` GitHub secret.
 
 ### Request Flow
@@ -522,7 +522,7 @@ describe('GET /feature/:id', () => {
 | **OP Stack L2** | `api/opBatches.js`, `opDeposits.js` | `OpBatches.vue`, `OpDeposits.vue` | `opBatch.js`, `opDeposit.js` |
 | **ERC721 NFTs** | `api/erc721Tokens.js`, `erc721Collections.js` | `ERC721Token.vue`, `ERC721Collection.vue` | `erc721token.js` |
 | **Contract Verification** | `api/contracts.js`, `lib/processContractVerification.js` | `ContractVerification.vue` | `ContractVerification.js` |
-| **Sentry Pipeline** | `api/sentryPipeline.js`, `webhooks/githubActions.js` | `sentry-dashboard/` (standalone app) | `sentrypipelinerun.js` |
+| **Sessions Dashboard** | `api/sentryPipeline.js`, `webhooks/githubActions.js` | `sentry-dashboard/` (`LiveView`, `SessionHistory`, `SessionDetail`, `ConversationViewer`) | `sentrypipelinerun.js` |
 
 ---
 

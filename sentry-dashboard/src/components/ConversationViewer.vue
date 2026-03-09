@@ -1,14 +1,17 @@
 /**
  * @fileoverview Terminal-style viewer for Claude conversation logs.
  * Compact continuous terminal with syntax highlighting and infinite scroll.
- * @component SentryConversationViewer
+ * Supports streaming mode for live session updates.
+ * @component ConversationViewer
  *
  * @prop {Array} conversationLog - Array of conversation turn objects
  * @prop {boolean} autoScroll - Whether to auto-scroll to bottom on open / update
+ * @prop {boolean} streaming - When true, always auto-scroll when new items arrive
+ * @expose appendTurns - Method to push new turns reactively (for streaming)
  */
 <template>
     <div class="terminal" ref="terminal" @scroll="onScroll">
-        <div v-if="!conversationLog || conversationLog.length === 0" class="empty-state">
+        <div v-if="!internalTurns || internalTurns.length === 0" class="empty-state">
             <span class="prompt">$</span> No conversation log available
         </div>
 
@@ -37,16 +40,18 @@ const PAGE_SIZE = 50;
 
 const props = defineProps({
     conversationLog: { type: Array, default: () => [] },
-    autoScroll: { type: Boolean, default: false }
+    autoScroll: { type: Boolean, default: false },
+    streaming: { type: Boolean, default: false }
 });
 
 const terminal = ref(null);
 const loadingMore = ref(false);
 const startIndex = ref(0);
+const internalTurns = ref([]);
 
-const totalItems = computed(() => props.conversationLog?.length || 0);
+const totalItems = computed(() => internalTurns.value.length);
 const hasMore = computed(() => startIndex.value > 0);
-const visibleItems = computed(() => props.conversationLog?.slice(startIndex.value) || []);
+const visibleItems = computed(() => internalTurns.value.slice(startIndex.value));
 
 function initStartIndex() {
     startIndex.value = Math.max(0, totalItems.value - PAGE_SIZE);
@@ -72,6 +77,22 @@ function scrollToBottom() {
     nextTick(() => { if (terminal.value) terminal.value.scrollTop = terminal.value.scrollHeight; });
 }
 
+/**
+ * Append new turns to the internal turns array.
+ * Used by parent components to push streaming updates.
+ *
+ * @param {Array} turns - Array of turn objects to append
+ */
+function appendTurns(turns) {
+    if (!turns || !turns.length) return;
+    internalTurns.value = [...internalTurns.value, ...turns];
+    // Keep visible window including new items
+    if (totalItems.value > PAGE_SIZE && startIndex.value > 0) {
+        startIndex.value = Math.max(0, totalItems.value - PAGE_SIZE);
+    }
+    if (props.streaming) scrollToBottom();
+}
+
 function dotClass(turn) {
     if (turn.tool) return 'dot-tool';
     if (turn.role === 'user') return 'dot-user';
@@ -84,12 +105,15 @@ function formatContent(content) {
     catch { return String(content); }
 }
 
-watch(() => props.conversationLog, () => {
+watch(() => props.conversationLog, (newLog) => {
+    internalTurns.value = newLog ? [...newLog] : [];
     initStartIndex();
-    if (props.autoScroll) scrollToBottom();
+    if (props.autoScroll || props.streaming) scrollToBottom();
 }, { immediate: true });
 
-onMounted(() => { if (props.autoScroll) scrollToBottom(); });
+onMounted(() => { if (props.autoScroll || props.streaming) scrollToBottom(); });
+
+defineExpose({ appendTurns });
 </script>
 
 <style scoped>
@@ -97,13 +121,14 @@ onMounted(() => { if (props.autoScroll) scrollToBottom(); });
     background: #0a0e17;
     border-radius: 6px;
     padding: 12px 14px;
-    max-height: 600px;
     overflow-y: auto;
     font-family: 'JetBrains Mono', 'Fira Code', monospace;
     font-size: 12px;
     line-height: 1.5;
     scrollbar-width: thin;
     scrollbar-color: #1e293b #0a0e17;
+    flex: 1;
+    min-height: 0;
 }
 .terminal::-webkit-scrollbar { width: 5px; }
 .terminal::-webkit-scrollbar-track { background: #0a0e17; }

@@ -41,7 +41,22 @@ export function onPipelineUpdated(handler) {
     const channelString = 'private-sentry-pipeline';
     const channel = pusher.subscribe(channelString);
     channel.bind('updated', handler);
-    return () => pusher.unsubscribe(channelString);
+    return () => channel.unbind('updated', handler);
+}
+
+/**
+ * Subscribe to sentry pipeline turn-added events.
+ *
+ * @param {Function} handler - Callback when new turns are added to a session
+ * @returns {Function} Unsubscribe function
+ */
+export function onTurnAdded(handler) {
+    if (!pusher) return () => {};
+
+    const channelString = 'private-sentry-pipeline';
+    const channel = pusher.subscribe(channelString);
+    channel.bind('turn-added', handler);
+    return () => channel.unbind('turn-added', handler);
 }
 
 /**
