@@ -254,6 +254,8 @@ managedWorkerError(error, jobName, jobData, workerName);
 
 **Note:** High and medium run as separate processes for event loop isolation. `highMediumPriority.js` still exists as a combined entry point for backward compatibility. Medium tier has extended `lockDuration` (300s) and `maxStalledCount` (5) for longer-running indexing jobs.
 
+**Redis/BullMQ gotcha:** Legacy `bull:*:priority` sorted sets (from BullMQ v4) accumulate orphaned entries that are never cleaned up. BullMQ v5 uses `prioritized` instead. The `queueMonitoring` job periodically cleans these legacy keys to prevent Redis OOM. If Redis hits `maxmemory` with `noeviction` policy, all queue processing stops because BullMQ can't write.
+
 ### Enqueue Pattern
 
 ```javascript
@@ -829,7 +831,11 @@ After PRs are merged into `develop`, use `/deploy` (the **Ethernal** project com
 2. Bumps version via `npm version {major|minor|patch} --message '%s'` (updates package.json + tags)
 3. Pushes tag and branch to `develop`
 4. Syncs `master` with `develop` (`git merge --no-ff`)
-5. CI handles Docker builds and deployment — completion is determined by `release_back` and `release_front` jobs (other jobs like `build_and_push_*` are side builds and don't block the deploy)
+5. CI handles the rest: tests → create_release → **run_migrations** → deploy (caddy + backend + release)
+
+**Migrations run automatically in CI** (`run_migrations` job) after tests pass but before deploy. They use `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD` GitHub secrets. Migrations must always be backwards-compatible (additive only — no renames/drops without a two-phase approach).
+
+The deploy is determined by `release_back` and `release_front` jobs (other jobs like `build_and_push_*` are side builds and don't block).
 
 When user says "merge and deploy", merge the PR with `gh pr merge --squash --admin` first, then run the deploy flow.
 

@@ -1,46 +1,70 @@
 <template>
     <v-app :style="styles">
-        <v-overlay persistent class="d-flex justify-center align-center" :model-value="isOverlayActive" scrim="primary" :opacity="0.2">
-            <v-progress-circular
-                indeterminate
-                size="64"
-                color="primary"
-            ></v-progress-circular>
-        </v-overlay>
+        <!-- Maintenance page: shown during the maintenance window -->
+        <template v-if="isMaintenanceWindow">
+            <v-container class="fill-height d-flex align-center justify-center">
+                <v-card max-width="500" class="text-center pa-8" variant="outlined">
+                    <v-icon size="48" color="warning" class="mb-4">mdi-wrench</v-icon>
+                    <v-card-title class="text-h5 mb-2">Scheduled Maintenance</v-card-title>
+                    <v-card-text class="text-body-1">
+                        <p>We're performing scheduled maintenance and the app is temporarily unavailable.</p>
+                        <v-chip color="warning" variant="tonal" class="mt-4 mb-2">
+                            March 10, 8:45 &ndash; 9:45 AM UTC
+                        </v-chip>
+                        <p class="mt-4">We'll be back shortly.</p>
+                    </v-card-text>
+                </v-card>
+            </v-container>
+        </template>
 
-        <v-overlay persistent class="d-flex justify-center align-center" :model-value="isWalletConnecting" scrim="primary" :opacity="0.2">
-        </v-overlay>
+        <!-- Normal app: shown outside the maintenance window -->
+        <template v-else>
+            <v-overlay persistent class="d-flex justify-center align-center" :model-value="isOverlayActive" scrim="primary" :opacity="0.2">
+                <v-progress-circular
+                    indeterminate
+                    size="64"
+                    color="primary"
+                ></v-progress-circular>
+            </v-overlay>
 
-        <v-system-bar height="40" v-html="banner" v-if="banner" class="d-flex justify-start font-weight-bold" color="primary"></v-system-bar>
+            <v-overlay persistent class="d-flex justify-center align-center" :model-value="isWalletConnecting" scrim="primary" :opacity="0.2">
+            </v-overlay>
 
-        <component :is="appBarComponent" :styles="styles" @toggleMenu="toggleMenu" v-if="canDisplaySides"></component>
+            <v-system-bar height="40" v-if="showMaintenanceBanner" class="d-flex justify-center font-weight-bold" color="warning">
+                Scheduled maintenance on March 10, 8:45 &ndash; 9:45 AM UTC. The app may be temporarily unavailable during this window.
+            </v-system-bar>
 
-        <MainNavBar
-            v-if="canDisplaySides"
-            :styles="styles"
-            :logo="logo"
-            :ethereum="ethereum"
-            :links="links"
-            :prAuthToken="prAuthToken"
-            :mobile="$vuetify.display.mobile"
-            v-model:drawer="drawer"
-        />
+            <v-system-bar height="40" v-html="banner" v-if="banner" class="d-flex justify-start font-weight-bold" color="primary"></v-system-bar>
 
-        <Migrate-Explorer-Modal ref="migrateExplorerModal" v-if="explorerToken || justMigrated" />
-        <Demo-Explorer-Migration-Modal ref="demoExplorerMigrationModal" />
-        <Onboarding-Modal ref="onboardingModal" />
-        <Browser-Sync-Explainer-Modal ref="browserSyncExplainerModal" v-if="currentWorkspaceStore.browserSyncEnabled" />
+            <component :is="appBarComponent" :styles="styles" @toggleMenu="toggleMenu" v-if="canDisplaySides"></component>
 
-        <v-main>
-            <component :is="routerComponent"></component>
-        </v-main>
+            <MainNavBar
+                v-if="canDisplaySides"
+                :styles="styles"
+                :logo="logo"
+                :ethereum="ethereum"
+                :links="links"
+                :prAuthToken="prAuthToken"
+                :mobile="$vuetify.display.mobile"
+                v-model:drawer="drawer"
+            />
 
-        <component :is="isPrivateExplorer ? PrivateExplorerFooter : PublicExplorerFooter" v-if="canDisplaySides" />
+            <Migrate-Explorer-Modal ref="migrateExplorerModal" v-if="explorerToken || justMigrated" />
+            <Demo-Explorer-Migration-Modal ref="demoExplorerMigrationModal" />
+            <Onboarding-Modal ref="onboardingModal" />
+            <Browser-Sync-Explainer-Modal ref="browserSyncExplainerModal" v-if="currentWorkspaceStore.browserSyncEnabled" />
+
+            <v-main>
+                <component :is="routerComponent"></component>
+            </v-main>
+
+            <component :is="isPrivateExplorer ? PrivateExplorerFooter : PublicExplorerFooter" v-if="canDisplaySides" />
+        </template>
     </v-app>
 </template>
 
 <script setup>
-import { ref, shallowRef, computed, defineComponent, onMounted, onBeforeUnmount, inject } from 'vue';
+import { ref, shallowRef, computed, watch, defineComponent, onMounted, onBeforeUnmount, onUnmounted, inject } from 'vue';
 import { useTheme } from 'vuetify';
 import WebFont from 'webfontloader';
 import detectEthereumProvider from '@metamask/detect-provider';
@@ -86,6 +110,20 @@ const browserSyncExplainerModal = ref();
 
 const $server = inject('$server');
 const $pusher = inject('$pusher');
+
+// Maintenance window: March 10, 2026 8:45-9:45 AM UTC (temporary, remove after March 10)
+const MAINTENANCE_START = new Date('2026-03-10T08:45:00Z').getTime();
+const MAINTENANCE_END = new Date('2026-03-10T09:45:00Z').getTime();
+const now = ref(Date.now());
+let maintenanceTimer;
+onMounted(() => { maintenanceTimer = setInterval(() => { now.value = Date.now(); }, 30000); });
+onUnmounted(() => { clearInterval(maintenanceTimer); });
+const showMaintenanceBanner = computed(() => now.value < MAINTENANCE_START);
+const isMaintenanceWindow = computed(() => now.value >= MAINTENANCE_START && now.value < MAINTENANCE_END);
+// Auto-reload when maintenance window ends so the app initializes properly
+watch(isMaintenanceWindow, (inMaintenance, wasMaintenance) => {
+    if (wasMaintenance && !inMaintenance) window.location.reload();
+});
 
 // Computed properties
 const isAuthPage = computed(() => window.location.pathname.indexOf('/auth') > -1);
@@ -332,6 +370,9 @@ function lightenColor(hex, percent) {
 }
 
 onMounted(() => {
+    // Skip all app initialization during maintenance window
+    if (isMaintenanceWindow.value) return;
+
     document.addEventListener('click', handleClickEvent);
     detectEthereumProvider().then(provider => {
         if (!provider || provider !== window.ethereum) return;
@@ -400,4 +441,5 @@ a:not(.v-list-item) {
     width: 100%;
     padding: 0 16px;
 }
+
 </style>
