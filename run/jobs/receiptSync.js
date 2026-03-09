@@ -175,10 +175,10 @@ module.exports = async job => {
             Object.keys(TransactionReceipt.rawAttributes).concat(['logs']),
         );
 
-        // For safeCreateReceipt, we need to pass workspace context for orbit processing
+        // For safeCreateReceipt, we need to pass workspace context for L2 processing
         // When using cached data, construct a minimal workspace-like object
-        // Note: cached path is only used for non-orbit workspaces (blockSync skips caching for orbit),
-        // so safe defaults for orbit fields are sufficient
+        // Note: cached path is only used for non-L2 workspaces (blockSync skips caching for orbit/OP),
+        // so safe defaults for L2 fields are sufficient
         if (hasCachedWorkspace) {
             processedReceipt.workspace = {
                 id: data.workspaceId,
