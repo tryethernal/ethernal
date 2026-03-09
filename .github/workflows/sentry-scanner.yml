@@ -134,6 +134,14 @@ jobs:
             *Created by Sentry Scanner*"
             ```
 
+            **IMPORTANT: Stagger issue creation.** After each `gh issue create`, sleep 90 seconds before creating the next:
+            ```bash
+            sleep 90
+            ```
+            This prevents concurrent workflow storms.
+
+            **Limit to 3 issues per scan.** If more than 3 issues qualify, create only the top 3 by event count. The rest will be picked up in the next hourly scan.
+
             ## Step 5: Notify dashboard
 
             For each issue created, notify the dashboard webhook:
