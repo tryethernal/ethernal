@@ -554,7 +554,10 @@ jobs:
                ```
             3. If it's **incorrect** → reply on the PR explaining why it's wrong, and react with 👎:
                ```bash
+               # For inline review comments:
                gh api repos/${{ github.repository }}/pulls/comments/{comment_id}/reactions -f content='-1'
+               # For issue-level comments:
+               gh api repos/${{ github.repository }}/issues/comments/{comment_id}/reactions -f content='-1'
                ```
             4. If it's unclear → ask for clarification in a reply (no reaction yet)
 
