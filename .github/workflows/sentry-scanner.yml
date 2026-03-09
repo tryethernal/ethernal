@@ -73,6 +73,10 @@ jobs:
             # Frontend performance issues
             curl -s "https://sentry.tryethernal.com/api/0/projects/sentry/ethernal-frontend/issues/?query=is:unresolved+issue.category:performance&statsPeriod=24h&limit=100" \
               -H "Authorization: Bearer $SENTRY_API_TOKEN" | jq '[.[] | {id, title, level, count, firstSeen, lastSeen, shortId, project: "ethernal-frontend", category: "performance"}]'
+
+            # Frontend regressed issues (may overlap — deduplicate by id)
+            curl -s "https://sentry.tryethernal.com/api/0/projects/sentry/ethernal-frontend/issues/?query=is:regressed&limit=50" \
+              -H "Authorization: Bearer $SENTRY_API_TOKEN" | jq '[.[] | {id, title, level, count, firstSeen, lastSeen, shortId, project: "ethernal-frontend", category: "regressed"}]'
             ```
 
             Deduplicate by `(project, id)` — regressed issues may appear in both the error/performance and regressed queries.
@@ -188,7 +192,6 @@ jobs:
 
             ### Suggested Fix
             [Concrete suggestion: add eager loading, use Promise.all, add index, batch queries, etc.]
-            Read the relevant source code (under run/) before suggesting fixes.
 
             ### Evidence
             \`\`\`
