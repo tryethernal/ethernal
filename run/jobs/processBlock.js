@@ -6,6 +6,7 @@
 
 const { Block, Workspace } = require('../models');
 const { sanitize, withTimeout } = require('../lib/utils');
+const logger = require('../lib/logger');
 
 module.exports = async job => {
     const data = job.data;
@@ -55,6 +56,8 @@ module.exports = async job => {
         } catch (error) {
             if (error.code == -32601)
                 await block.workspace.explorer.update({ gasAnalyticsEnabled: false });
+            else
+                logger.warn(`getFeeHistory failed for block ${block.number}: ${error.message}`);
         }
     }
 
