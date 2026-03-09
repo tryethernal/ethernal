@@ -58,7 +58,6 @@ module.exports = async job => {
                     model: require('../models').OrbitChainConfig,
                     as: 'orbitConfig',
                     attributes: [
-                        'parentWorkspaceId',
                         'rollupContract',
                         'sequencerInboxContract',
                         'bridgeContract',
@@ -93,9 +92,7 @@ module.exports = async job => {
                         'l2GatewayRouter',
                         'l2Erc20Gateway',
                         'l2WethGateway',
-                        'l2CustomGateway',
-                        'topParentChainBlockValidationType',
-                        'parentMessageCountShift'
+                        'l2CustomGateway'
                     ]
                 },
                 {
@@ -106,11 +103,7 @@ module.exports = async job => {
                         'batchInboxAddress',
                         'beaconUrl',
                         'l2BlockTime',
-                        'l2GenesisTimestamp',
-                        'optimismPortalAddress',
-                        'l2OutputOracleAddress',
-                        'disputeGameFactoryAddress',
-                        'finalizationPeriodSeconds'
+                        'l2GenesisTimestamp'
                     ]
                 }
             ]
@@ -184,7 +177,6 @@ module.exports = async job => {
                     model: require('../models').OrbitChainConfig,
                     as: 'orbitConfig',
                     attributes: [
-                        'parentWorkspaceId',
                         'rollupContract',
                         'sequencerInboxContract',
                         'bridgeContract',
@@ -219,9 +211,7 @@ module.exports = async job => {
                         'l2GatewayRouter',
                         'l2Erc20Gateway',
                         'l2WethGateway',
-                        'l2CustomGateway',
-                        'topParentChainBlockValidationType',
-                        'parentMessageCountShift'
+                        'l2CustomGateway'
                     ]
                 },
                 {
@@ -232,11 +222,7 @@ module.exports = async job => {
                         'batchInboxAddress',
                         'beaconUrl',
                         'l2BlockTime',
-                        'l2GenesisTimestamp',
-                        'optimismPortalAddress',
-                        'l2OutputOracleAddress',
-                        'disputeGameFactoryAddress',
-                        'finalizationPeriodSeconds'
+                        'l2GenesisTimestamp'
                     ]
                 }
             ]
