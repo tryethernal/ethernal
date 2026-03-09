@@ -100,26 +100,41 @@ module.exports = (sequelize, DataTypes) => {
      * @returns {Promise<boolean>} True if block was reverted, false otherwise
      */
     async revertIfPartial() {
-        // Use efficient count queries instead of loading all transactions
-        const [syncingTransactionCount, currentTransactionCount] = await Promise.all([
-            sequelize.models.Transaction.count({
-                where: {
-                    blockId: this.id,
-                    isSyncing: true
-                }
-            }),
-            sequelize.models.Transaction.count({
+        // Check for syncing transactions first
+        const syncingTransactionCount = await sequelize.models.Transaction.count({
+            where: {
+                blockId: this.id,
+                isSyncing: true
+            }
+        });
+
+        // Short-circuit if we already know we need to revert
+        if (syncingTransactionCount > 0) {
+            await sequelize.transaction(
+                { deferrable: Sequelize.Deferrable.SET_DEFERRED },
+                async transaction => this.safeDestroy(transaction)
+            );
+            return true;
+        }
+
+        // Only check transaction count if transactionsCount is available and no transactions are syncing
+        if (this.transactionsCount !== null && this.transactionsCount !== undefined) {
+            const currentTransactionCount = await sequelize.models.Transaction.count({
                 where: {
                     blockId: this.id
                 }
-            })
-        ]);
+            });
 
-        const isSyncing = syncingTransactionCount > 0 ||
-            (this.transactionsCount !== null && this.transactionsCount !== undefined && currentTransactionCount !== this.transactionsCount);
+            if (currentTransactionCount !== this.transactionsCount) {
+                await sequelize.transaction(
+                    { deferrable: Sequelize.Deferrable.SET_DEFERRED },
+                    async transaction => this.safeDestroy(transaction)
+                );
+                return true;
+            }
+        }
 
-        if (!isSyncing)
-          return false;
+        return false;
 
         await sequelize.transaction(
           { deferrable: Sequelize.Deferrable.SET_DEFERRED },
