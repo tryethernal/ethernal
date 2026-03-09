@@ -238,7 +238,11 @@ describe('receiptSync', () => {
                             stripeSubscription: { status: 'active' }
                         },
                         public: true,
-                        rpcServer: 'rpc'
+                        rpcServer: 'rpc',
+                        orbitConfig: null,
+                        orbitChildConfigs: [],
+                        opConfig: null,
+                        opChildConfigs: []
                     }
                 });
                 done();
@@ -272,7 +276,7 @@ describe('receiptSync', () => {
                 expect(safeCreateReceipt).toHaveBeenCalledWith({
                     blockNumber: 1,
                     raw: { transactionHash: '0x123' },
-                    workspace: { id: 1, orbitConfig: null, orbitChildConfigs: [] }
+                    workspace: { id: 1, orbitConfig: null, orbitChildConfigs: [], opConfig: null, opChildConfigs: [] }
                 });
                 done();
             });
