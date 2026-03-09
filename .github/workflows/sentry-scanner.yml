@@ -1,0 +1,164 @@
+name: Sentry Proactive Scanner
+
+on:
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  scan-sentry:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            CLAUDE.md
+            run/
+            .github/
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Add known hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H 157.90.154.200 >> ~/.ssh/known_hosts
+
+      - name: Claude Code - Scan Sentry
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          direct_prompt: true
+          claude_args: "--model claude-sonnet-4-20250514 --max-turns 30 --allowedTools Bash,Read,Glob,Grep"
+          show_full_output: true
+          prompt: |
+            You are a proactive Sentry scanner for the Ethernal project. Your job is to scan ALL unresolved Sentry issues and decide which ones need GitHub issues created.
+
+            ## Step 1: Query Sentry for unresolved issues
+
+            Query both projects for issues with events in the last hour:
+
+            ```bash
+            # Backend issues
+            curl -s "https://sentry.tryethernal.com/api/0/projects/sentry/ethernal-backend/issues/?query=is:unresolved&statsPeriod=1h&limit=100" \
+              -H "Authorization: Bearer $SENTRY_API_TOKEN" | jq '[.[] | {id, title, level, count, firstSeen, lastSeen, shortId, project: "ethernal-backend"}]'
+
+            # Frontend issues
+            curl -s "https://sentry.tryethernal.com/api/0/projects/sentry/ethernal-frontend/issues/?query=is:unresolved&statsPeriod=1h&limit=100" \
+              -H "Authorization: Bearer $SENTRY_API_TOKEN" | jq '[.[] | {id, title, level, count, firstSeen, lastSeen, shortId, project: "ethernal-frontend"}]'
+            ```
+
+            ## Step 2: Filter already-tracked issues
+
+            For each issue found, check if a GitHub issue already exists:
+            ```bash
+            gh issue list --label sentry --state all --limit 200 --json number,title,body -q '.[].body' | grep -c "issues/SENTRY_ID/"
+            ```
+            Skip any issue that already has a GitHub issue (open or closed).
+
+            ## Step 3: Evaluate each new issue
+
+            For each new issue, fetch the latest event for context:
+            ```bash
+            curl -s "https://sentry.tryethernal.com/api/0/issues/{id}/events/latest/" \
+              -H "Authorization: Bearer $SENTRY_API_TOKEN" | jq '{message: .message, tags: [.tags[] | select(.key == "transaction" or .key == "url") | {key, value}], exception: .entries[0].data.values[0].stacktrace.frames[-3:]}'
+            ```
+
+            Then categorize into ONE of:
+
+            **AUTO-SKIP + RESOLVE in Sentry** (close with reason):
+            - Connection/transient errors (SequelizeConnectionError, ECONNRESET, "Connection terminated unexpectedly") — UNLESS 30+ events in the last hour
+            - Rate limiting errors
+            - Expected validation errors (user input)
+            - Third-party service errors we can't control
+            - Low-impact edge cases (deprecated browser, obscure user input)
+
+            To resolve: `curl -s -X PUT "https://sentry.tryethernal.com/api/0/issues/{id}/" -H "Authorization: Bearer $SENTRY_API_TOKEN" -H "Content-Type: application/json" -d '{"status": "resolved", "statusDetails": {"inCommit": false}}'`
+
+            **CREATE GITHUB ISSUE** (for the auto-fix pipeline to pick up):
+            - Null/type errors, unhandled promise rejections
+            - Regressions (previously resolved errors recurring)
+            - Systematic issues with 5+ events in the last hour
+            - Any error that indicates a code bug
+
+            **SKIP** (leave unresolved in Sentry, don't create issue):
+            - Issues with fewer than 2 events (might be one-off)
+            - Issues that need more data to evaluate
+
+            ## Step 4: Create GitHub issues
+
+            For each issue that needs fixing, create a GitHub issue:
+            ```bash
+            gh issue create \
+              --title "Sentry: [error title]" \
+              --label "sentry" \
+              --label "[backend|frontend]" \
+              --body "## Sentry Error
+
+            **Project:** [ethernal-backend|ethernal-frontend]
+            **Level:** [error|warning]
+            **Events (1h):** [count]
+            **Link:** https://sentry.tryethernal.com/organizations/sentry/issues/[ID]/
+
+            ### Error
+            \`\`\`
+            [error message and key stack trace frames]
+            \`\`\`
+
+            ### Context
+            [any relevant tags, transaction name, or URL]
+
+            ---
+            *Created by Sentry Scanner*"
+            ```
+
+            ## Step 5: Notify dashboard
+
+            For each issue created, notify the dashboard webhook:
+            ```bash
+            curl -s -X POST "$APP_URL/webhooks/github-actions" \
+              -H "Authorization: Bearer $ETHERNAL_WEBHOOK_SECRET" \
+              -H "Content-Type: application/json" \
+              -d "{
+                \"githubIssueNumber\": ISSUE_NUMBER,
+                \"sentryIssueId\": \"SENTRY_ID\",
+                \"sentryProject\": \"PROJECT\",
+                \"sentryTitle\": \"TITLE\",
+                \"sentryLevel\": \"LEVEL\",
+                \"sentryEventCount\": COUNT,
+                \"sentryLink\": \"https://sentry.tryethernal.com/organizations/sentry/issues/SENTRY_ID/\",
+                \"status\": \"discovered\",
+                \"currentStep\": \"Discovered by scanner\"
+              }"
+            ```
+
+            ## Step 6: Print summary
+
+            At the end, print a summary:
+            ```
+            === Sentry Scanner Summary ===
+            Scanned: X issues
+            Created: Y GitHub issues
+            Auto-resolved: Z Sentry issues
+            Skipped (already tracked): A
+            Skipped (not actionable): B
+            ```
+
+            ## Rules
+            - NEVER create duplicate GitHub issues — always check first
+            - Be conservative: only create issues for clear code bugs
+            - When resolving in Sentry, always include a reason
+            - Keep issue descriptions concise but include enough for the auto-fix agent
+        env:
+          SENTRY_API_TOKEN: ${{ secrets.SENTRY_API_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          APP_URL: ${{ secrets.APP_URL }}
+          ETHERNAL_WEBHOOK_SECRET: ${{ secrets.ETHERNAL_WEBHOOK_SECRET }}
