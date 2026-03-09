@@ -294,6 +294,11 @@ const _isJson = function(obj) {
  * // returns { blockNumber: 16, hash: '0xabc...' }
  */
 const _sanitize = (obj, numberization = true) => {
+    // Handle null or undefined inputs
+    if (obj == null) {
+        return obj;
+    }
+
     const numberize = [
         'number',
         'difficulty',
