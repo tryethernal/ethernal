@@ -9,7 +9,7 @@
 
 const express = require('express');
 const router = express.Router();
-const { SentryPipelineRun } = require('../models');
+const { SentryPipelineRun, sequelize } = require('../models');
 const { trigger } = require('../lib/pusher');
 const { isPusherEnabled } = require('../lib/flags');
 const githubActionsWebhookMiddleware = require('../middlewares/githubActionsWebhook');
@@ -33,6 +33,7 @@ router.post('/', githubActionsWebhookMiddleware, async (req, res) => {
             triageReason,
             fixSummary,
             conversationLog,
+            appendTurns,
             duration,
             completedAt
         } = req.body;
@@ -72,9 +73,30 @@ router.post('/', githubActionsWebhookMiddleware, async (req, res) => {
             run = await SentryPipelineRun.create(updateData);
         }
 
+        // Atomically append turns to conversationLog via raw SQL
+        if (appendTurns && Array.isArray(appendTurns) && appendTurns.length > 0 && run) {
+            await sequelize.query(
+                `UPDATE sentry_pipeline_runs
+                 SET "conversationLog" = COALESCE("conversationLog", '[]'::jsonb) || $appendTurns::jsonb,
+                     "updatedAt" = NOW()
+                 WHERE id = $id`,
+                {
+                    bind: { appendTurns: JSON.stringify(appendTurns), id: run.id },
+                    type: sequelize.QueryTypes.UPDATE
+                }
+            );
+
+            if (isPusherEnabled()) {
+                trigger('private-sentry-pipeline', 'turn-added', {
+                    id: run.id,
+                    turns: appendTurns
+                });
+            }
+        }
+
         // Notify dashboard via Pusher
         if (isPusherEnabled()) {
-            trigger(`private-sentry-pipeline`, 'updated', {
+            trigger('private-sentry-pipeline', 'updated', {
                 id: run.id,
                 status: run.status,
                 currentStep: run.currentStep,

@@ -4901,6 +4901,23 @@ const getSentryPipelineRuns = async (page = 1, itemsPerPage = 25, status) => {
 };
 
 /**
+ * Retrieves all active (non-terminal) sentry pipeline runs with conversationLog.
+ * Active means status is not completed, closed, escalated, or failed.
+ *
+ * @returns {Promise<Object[]>} Array of active run objects
+ */
+const getActiveSentryPipelineRuns = async () => {
+    const runs = await SentryPipelineRun.findAll({
+        where: {
+            status: { [Op.notIn]: ['completed', 'closed', 'escalated', 'failed'] }
+        },
+        order: [['createdAt', 'DESC']]
+    });
+
+    return runs.map(r => r.toJSON());
+};
+
+/**
  * Retrieves a single sentry pipeline run with full conversationLog.
  * @param {number} id - Run ID
  * @returns {Promise<Object|null>}
@@ -5163,6 +5180,7 @@ module.exports = {
     createAdmin: createAdmin,
     canSetupAdmin: canSetupAdmin,
     getSentryPipelineRuns: getSentryPipelineRuns,
+    getActiveSentryPipelineRuns: getActiveSentryPipelineRuns,
     getSentryPipelineRun: getSentryPipelineRun,
     getSentryPipelineStats: getSentryPipelineStats,
     upsertSentryPipelineRun: upsertSentryPipelineRun,

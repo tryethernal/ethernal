@@ -18,6 +18,10 @@ export function getRun(id) {
     return client.get(`/runs/${id}`);
 }
 
+export function getActiveRuns() {
+    return client.get('/runs/active');
+}
+
 export function getStats(params) {
     return client.get('/stats', { params });
 }
