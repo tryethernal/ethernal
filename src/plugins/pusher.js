@@ -136,7 +136,8 @@ export default {
                 const channel = pusher.subscribe(channelString);
                 channel.bind('new', handler, context);
                 return () => pusher.unsubscribe(channelString);
-            }
+            },
+
         }
 
         app.config.globalProperties.$pusher = $pusher;

@@ -17,6 +17,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | Billing/Stripe | `run/webhooks/stripe.js`, `run/lib/stripe.js`, `run/api/stripe.js` |
 | Testing | `run/tests/mocks/`, `run/tests/api/`, `tests/unit/` |
 | Database schema | `.claude/references/SCHEMA.md` (complete model reference) |
+| Sentry pipeline | `run/api/sentryPipeline.js`, `run/webhooks/githubActions.js`, `sentry-dashboard/` |
 
 **Critical architectural insight:**
 - **Authorization** happens in middleware (`authMiddleware`, `workspaceAuthMiddleware`)
@@ -31,49 +32,51 @@ Ethernal is an open-source block explorer for EVM-based chains. It consists of a
 
 ## Common Commands
 
-### Frontend (root directory)
+**All local development runs through Docker Compose.** Never run app services (frontend, backend, workers, landing, sentry-dashboard) directly via bare `npm`/`yarn` commands outside Docker. Use `docker compose -f docker-compose.dev.yml exec <service>` to run commands inside containers.
+
+### Docker Local Development
 ```bash
-yarn dev          # Start dev server with Vite
-yarn build        # Production build
-yarn test         # Run Vitest tests
-yarn test:update  # Update test snapshots
-yarn lint         # ESLint with auto-fix
+docker compose -f docker-compose.dev.yml up -d              # Start full dev stack
+docker compose -f docker-compose.dev.yml down                # Stop dev stack
+docker compose -f docker-compose.dev.yml logs -f             # View logs
+docker compose -f docker-compose.dev.yml up -d backend       # Start single service
+docker compose -f docker-compose.dev.yml restart backend     # Restart a service
 ```
 
-### Backend (run/ directory)
+### Frontend
 ```bash
-cd run
-npm start                    # Start server with nodemon
-npm test                     # Run Jest tests
-npm run test:update          # Update snapshots
-npm run worker:high          # Start high priority worker (real-time sync)
-npm run worker:medium        # Start medium priority worker (indexing)
-npm run worker:highmedium    # Start combined high+medium worker (legacy)
-npm run worker:low           # Start low priority worker
+docker compose -f docker-compose.dev.yml exec frontend yarn test             # Run Vitest tests
+docker compose -f docker-compose.dev.yml exec frontend yarn test:update      # Update test snapshots
+docker compose -f docker-compose.dev.yml exec frontend yarn lint             # ESLint with auto-fix
+docker compose -f docker-compose.dev.yml exec frontend yarn build            # Production build
+```
+
+### Backend
+```bash
+docker compose -f docker-compose.dev.yml exec backend npm test                              # Run Jest tests
+docker compose -f docker-compose.dev.yml exec backend npm run test:update                   # Update snapshots
+docker compose -f docker-compose.dev.yml exec backend npm test -- tests/api/faucets.test.js # Single test file
+docker compose -f docker-compose.dev.yml exec backend npm test -- --testPathPattern=faucets # Pattern matching
 ```
 
 ### Database Migrations
-
-**Against Docker database (local development):**
 ```bash
-docker-compose -f docker-compose.dev.yml exec backend npx sequelize db:migrate
-docker-compose -f docker-compose.dev.yml exec backend npx sequelize db:seed:all
-```
-
-**Against local PostgreSQL (non-Docker):**
-```bash
-cd run
-npx sequelize db:migrate     # Run migrations
-npx sequelize db:seed:all    # Run all seeders
+docker compose -f docker-compose.dev.yml exec backend npx sequelize db:migrate
+docker compose -f docker-compose.dev.yml exec backend npx sequelize db:seed:all
 ```
 
 **Important:** Always use sequelize migrations, never run raw SQL for schema changes.
 
-### Docker Local Development
+### Landing Site
 ```bash
-docker-compose -f docker-compose.dev.yml up -d    # Start full dev stack
-docker-compose -f docker-compose.dev.yml down     # Stop dev stack
-docker-compose -f docker-compose.dev.yml logs -f  # View logs
+docker compose -f docker-compose.dev.yml up -d landing       # Start (port 8174)
+docker compose -f docker-compose.dev.yml exec landing npm run build  # Production build
+```
+
+### Sentry Dashboard
+```bash
+docker compose -f docker-compose.dev.yml up -d sentry-dashboard       # Start (port 8175)
+docker compose -f docker-compose.dev.yml exec sentry-dashboard npm run build  # Production build
 ```
 
 ### Docker Self-Hosted Production
@@ -121,6 +124,8 @@ Self-hosted Sentry (v26.2.1) runs on a Hetzner CCX33 at `sentry.tryethernal.com`
 - **Queue monitoring**: `enqueue()` in `run/lib/queue.js` wraps with `op: 'queue.publish'` spans. All 4 workers use `op: 'queue.process'` spans with `messaging.destination.name` and `messaging.message.id` attributes.
 - **Proxy**: Caddy on Fly.io proxies `/api/2/*` to `sentry.tryethernal.com` so frontend events route through the explorer's own domain.
 - **Auto-fix pipeline**: `.github/workflows/sentry-auto-fix.yml` — Sentry alert rules create GitHub issues with `sentry` label on: new errors (≥2 occurrences in 1h), regressions (previously resolved errors recurring). Claude Code triages (close/escalate/fix), creates fix PRs, processes code review (including Greptile thread resolutions with 30s debounce), merges+deploys when approved, then resolves the Sentry issue via API. Protected files (Stripe, auth, crypto) are never auto-modified. GitHub App `ethernal-sentry` on `tryethernal` org powers the Sentry↔GitHub integration.
+- **Proactive scanner**: `.github/workflows/sentry-scanner.yml` — hourly cron queries all unresolved Sentry issues, Claude evaluates which are actionable, creates GitHub issues (feeding into auto-fix pipeline), auto-resolves transient errors.
+- **Pipeline dashboard**: Standalone Vue 3 app at `sentry-dashboard/` served at `/sentry-dashboard` path. Protected by HTTP Basic Auth (Caddy `basicauth` for static files, `sentryDashboardAuth` middleware for API). Real-time updates via Pusher. Behind `ENABLE_SENTRY_PIPELINE` feature flag. Webhook at `POST /webhooks/github-actions` receives status updates from workflows. Model: `SentryPipelineRun`. Dev: `docker compose -f docker-compose.dev.yml up -d sentry-dashboard` (port 8175).
 - **Sentry CLI access**: Use `ssh root@157.90.154.200` then `cd /opt/sentry && docker compose --env-file .env --env-file .env.custom exec -T web sentry shell` for Django shell access (manage tokens, project configs, etc.). API token with full scopes stored as `SENTRY_API_TOKEN` GitHub secret.
 
 ### Request Flow
@@ -456,20 +461,20 @@ run/tests/
 **Running Tests:**
 ```bash
 # Single test file
-cd run && npm test -- tests/api/faucets.test.js
+docker compose -f docker-compose.dev.yml exec backend npm test -- tests/api/faucets.test.js
 
 # With pattern matching
-cd run && npm test -- --testPathPattern=faucets
+docker compose -f docker-compose.dev.yml exec backend npm test -- --testPathPattern=faucets
 ```
 
 ### Frontend Tests (`tests/unit/`)
 
 ```bash
 # Single test file
-yarn test -- ExplorerOpSettings
+docker compose -f docker-compose.dev.yml exec frontend yarn test -- ExplorerOpSettings
 
 # With watch mode
-yarn test -- --watch
+docker compose -f docker-compose.dev.yml exec frontend yarn test -- --watch
 ```
 
 ### Writing API Tests
@@ -514,6 +519,7 @@ describe('GET /feature/:id', () => {
 | **OP Stack L2** | `api/opBatches.js`, `opDeposits.js` | `OpBatches.vue`, `OpDeposits.vue` | `opBatch.js`, `opDeposit.js` |
 | **ERC721 NFTs** | `api/erc721Tokens.js`, `erc721Collections.js` | `ERC721Token.vue`, `ERC721Collection.vue` | `erc721token.js` |
 | **Contract Verification** | `api/contracts.js`, `lib/processContractVerification.js` | `ContractVerification.vue` | `ContractVerification.js` |
+| **Sentry Pipeline** | `api/sentryPipeline.js`, `webhooks/githubActions.js` | `sentry-dashboard/` (standalone app) | `sentrypipelinerun.js` |
 
 ---
 
@@ -620,6 +626,11 @@ describe('GET /feature/:id', () => {
 | `SELF_HOSTED` | Self-hosted mode flag | - |
 | `MAX_BLOCK_FOR_SYNC_RESET` | Max blocks for sync reset | 10 |
 | `MAX_CONTRACT_FOR_RESET` | Max contracts for reset | 5 |
+| `ENABLE_SENTRY_PIPELINE` | Enable Sentry pipeline dashboard and webhook | - |
+| `GITHUB_ACTIONS_WEBHOOK_SECRET` | Shared secret for GitHub Actions webhook auth | - |
+| `SENTRY_DASHBOARD_USERNAME` | Basic Auth username for Sentry Dashboard API | - |
+| `SENTRY_DASHBOARD_PASSWORD` | Basic Auth password for Sentry Dashboard API | - |
+| `SENTRY_DASHBOARD_PASSWORD_HASH` | Bcrypt hash of password for Caddy basicauth | - |
 
 ### Feature Flags (from `run/lib/flags.js`)
 
@@ -633,6 +644,7 @@ describe('GET /feature/:id', () => {
 | `isQuicknodeEnabled()` | `QUICKNODE_CREDENTIALS` |
 | `isMailjetEnabled()` | `MAILJET_PUBLIC_KEY`, `MAILJET_PRIVATE_KEY` |
 | `isApproximatedEnabled()` | `APPROXIMATED_API_KEY`, `APPROXIMATED_TARGET_IP` |
+| `isSentryPipelineEnabled()` | `ENABLE_SENTRY_PIPELINE` |
 
 ---
 
@@ -650,6 +662,7 @@ When running queries against the production database:
 
 ## Code Style
 
+- **All local dev commands must run through Docker Compose.** Never run `npm test`, `yarn dev`, `npm start`, or similar directly on the host. Always use `docker compose -f docker-compose.dev.yml exec <service> <command>`. This applies to frontend, backend, landing, sentry-dashboard, and workers. The only exception is `docker compose` commands themselves (up, down, logs, exec, etc.).
 - Preserve existing code comments unless completely irrelevant after changes
 - Fix Vue console warnings (`[Vue warn]`)
 - Use `@/` alias for imports from `src/` in frontend code
@@ -829,9 +842,8 @@ Standalone Vue 3 + Vuetify 3 marketing site, separate from the main app frontend
 ### Commands
 
 ```bash
-cd landing
-npm run dev          # Dev server (default port 5173)
-npm run build        # Production build to dist/
+docker compose -f docker-compose.dev.yml up -d landing        # Dev server (port 8174)
+docker compose -f docker-compose.dev.yml exec landing npm run build  # Production build to dist/
 ```
 
 ### Structure
