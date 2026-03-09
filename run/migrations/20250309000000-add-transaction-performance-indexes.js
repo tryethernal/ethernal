@@ -11,27 +11,10 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     const transaction = await queryInterface.sequelize.transaction();
     try {
-      // Add index on blockId for faster transaction counts by block
-      await queryInterface.addIndex(
-        'transactions',
-        {
-          fields: ['blockId'],
-          name: 'transactions_blockId_idx',
-          transaction
-        }
-      );
-
-      // Add index on state for faster filtering by transaction state
-      await queryInterface.addIndex(
-        'transactions',
-        {
-          fields: ['state'],
-          name: 'transactions_state_idx',
-          transaction
-        }
-      );
-
       // Add composite index on (blockId, state) for optimal removeStalledBlock performance
+      // This single index handles both queries:
+      // 1. COUNT WHERE blockId=? AND state='syncing'
+      // 2. COUNT WHERE blockId=? (via leftmost prefix matching)
       await queryInterface.addIndex(
         'transactions',
         {
@@ -52,8 +35,6 @@ module.exports = {
   async down(queryInterface, Sequelize) {
     const transaction = await queryInterface.sequelize.transaction();
     try {
-      await queryInterface.removeIndex('transactions', 'transactions_blockId_idx', { transaction });
-      await queryInterface.removeIndex('transactions', 'transactions_state_idx', { transaction });
       await queryInterface.removeIndex('transactions', 'transactions_blockId_state_idx', { transaction });
 
       await transaction.commit();
