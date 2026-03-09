@@ -5,37 +5,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [5.17.7] - 2026-03-09
+### Added
+- Batch deploy workflow for sentry auto-fix pipeline (#514)
+
 ### Fixed
-- fix: address PR #518 review — confidence regex and recover-stuck label check (#520)
-- fix: harden sentry pipeline with dedup, confidence gate, stagger, and stuck PR recovery (#518)
-- fix: add additional gasPrice null safety check before Transaction.bulkCreate (#495)
-- fix: optimize Redis queries in queueMonitoring job to eliminate N+1 pattern (#512)
-- Merge master into develop to resolve CHANGELOG divergence
-- feat: batch deploy for sentry auto-fix pipeline (#514)
-- Merge develop into master for v5.17.1
-- Merge develop into master for v5.17.0
-- Merge develop into master for v5.16.17
-- Merge develop into master for v5.16.16
-- Merge develop into master for v5.16.15
-- Merge develop into master for v5.16.14
-- Merge develop into master for v5.16.13
-- Merge develop into master for v5.16.12
-- Merge develop into master for v5.16.11
-- Merge develop into master for v5.16.10
-- Merge develop into master for v5.16.9
-- Merge develop into master for v5.16.8
-- Merge develop into master for v5.16.7
-- Merge develop into master for v5.16.6
-- Merge develop into master for v5.16.5
-- Merge develop into master for v5.16.4
-- Merge develop into master for v5.16.3
-- Merge develop into master for v5.16.2
-- Merge develop into master: fix landing images
-- Merge develop into master: add landing images
-- Merge develop into master for v5.16.1
-- Merge develop into master for v5.15.2
-- fix: use CREATE INDEX CONCURRENTLY for performance indexes migration
-- Merge develop into master for v5.15.1
+- Harden sentry pipeline with dedup check, confidence gate, stagger, and stuck PR recovery (#518, #520)
+- Optimize Redis queries in queueMonitoring job to eliminate N+1 pattern (#512)
+- Add gasPrice null safety check before Transaction.bulkCreate (#495)
 
 
 ## [5.17.6] - 2026-03-09

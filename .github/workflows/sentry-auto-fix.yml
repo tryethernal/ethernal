@@ -728,7 +728,7 @@ jobs:
           echo "last_tag=$LAST_TAG" >> "$GITHUB_OUTPUT"
 
           # Get commits since last tag, filter out release machinery
-          COMMITS=$(git log --oneline "$LAST_TAG..HEAD" | grep -viE '^[a-f0-9]+ (update changelog|[0-9]+\.[0-9]+\.[0-9]+|Merge branch)' || true)
+          COMMITS=$(git log --oneline "$LAST_TAG..HEAD" | grep -viE '^[a-f0-9]+ (update changelog|[0-9]+\.[0-9]+\.[0-9]+|Merge (branch|develop|master))' || true)
           echo "Commits since $LAST_TAG:"
           echo "$COMMITS"
 
@@ -845,7 +845,7 @@ jobs:
           # Use pre-deploy tag captured by the deploy step
           LAST_TAG=${{ steps.deploy_hotfix.outputs.last_tag }}
           HOTFIX_PR=${{ steps.pr_info.outputs.pr_number }}
-          PR_NUMBERS=$(git log --oneline "$LAST_TAG..HEAD" | grep -viE '^[a-f0-9]+ (update changelog|[0-9]+\.[0-9]+\.[0-9]+|Merge branch)' | grep -oP '#\K\d+' | grep -v "^${HOTFIX_PR}$" || true)
+          PR_NUMBERS=$(git log --oneline "$LAST_TAG..HEAD" | grep -viE '^[a-f0-9]+ (update changelog|[0-9]+\.[0-9]+\.[0-9]+|Merge (branch|develop|master))' | grep -oP '#\K\d+' | grep -v "^${HOTFIX_PR}$" || true)
 
           if [ -z "$PR_NUMBERS" ]; then
             echo "No other PRs swept into this hotfix release"
