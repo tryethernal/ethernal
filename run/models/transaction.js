@@ -204,6 +204,18 @@ module.exports = (sequelize, DataTypes) => {
         if (!receipt) throw new Error('Missing parameter');
 
         return sequelize.transaction(async transaction => {
+            // Check if this transaction still exists before proceeding
+            // Prevents race condition with workspace reset operations that delete transactions
+            const transactionExists = await sequelize.models.Transaction.findByPk(this.id, {
+                attributes: ['id'],
+                lock: transaction.LOCK.UPDATE,
+                transaction
+            });
+
+            if (!transactionExists) {
+                return 'Transaction no longer exists';
+            }
+
             await this.update({ state: 'ready' }, { transaction });
 
             const [storedReceipt] = await sequelize.models.TransactionReceipt.bulkCreate(
