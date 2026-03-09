@@ -55,8 +55,25 @@ app.use((req, res, next) => {
 
 const serverAdapter = new ExpressAdapter();
 serverAdapter.setBasePath('/bull');
+
+// Only include critical queues in BullBoard to prevent N+1 query pattern
+// Previously all 60+ queues caused individual Redis hexists calls
+const criticalQueues = [
+    'blockSync',
+    'receiptSync',
+    'processBlock',
+    'processContract',
+    'processTokenTransfer',
+    'queueMonitoring',
+    'processHistoricalBlocks'
+];
+
+const bullBoardQueues = criticalQueues
+    .filter(queueName => queues[queueName])
+    .map(queueName => new BullMQAdapter(queues[queueName]));
+
 createBullBoard({
-    queues: Object.values(queues).map(queue => new BullMQAdapter(queue)),
+    queues: bullBoardQueues,
     serverAdapter: serverAdapter,
 });
 
