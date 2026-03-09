@@ -1,0 +1,168 @@
+name: Sentry Batch Deploy
+
+on:
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: read
+
+jobs:
+  batch-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+          token: ${{ secrets.GH_PAT }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Check for new commits since last tag
+        id: check_commits
+        run: |
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          if [ -z "$LAST_TAG" ]; then
+            echo "No tags found, nothing to deploy"
+            echo "has_commits=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "last_tag=$LAST_TAG" >> "$GITHUB_OUTPUT"
+
+          # Get meaningful commits (filter out release machinery)
+          COMMITS=$(git log --oneline "$LAST_TAG..HEAD" | grep -viE '^[a-f0-9]+ (update changelog|[0-9]+\.[0-9]+\.[0-9]+|Merge branch)' || true)
+
+          if [ -z "$COMMITS" ]; then
+            echo "No new meaningful commits since $LAST_TAG"
+            echo "has_commits=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "Found commits since $LAST_TAG:"
+            echo "$COMMITS"
+            echo "has_commits=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Generate changelog and bump version
+        id: deploy
+        if: steps.check_commits.outputs.has_commits == 'true'
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: |
+          git remote set-url origin "https://x-access-token:${GH_PAT}@github.com/${{ github.repository }}.git"
+
+          LAST_TAG=${{ steps.check_commits.outputs.last_tag }}
+          COMMITS=$(git log --oneline "$LAST_TAG..HEAD" | grep -viE '^[a-f0-9]+ (update changelog|[0-9]+\.[0-9]+\.[0-9]+|Merge branch)' || true)
+
+          # Generate changelog entry
+          VERSION_DATE=$(date +%Y-%m-%d)
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
+          NEW_VERSION="$MAJOR.$MINOR.$((PATCH + 1))"
+
+          CHANGELOG_ENTRY="## [$NEW_VERSION] - $VERSION_DATE
+          ### Fixed
+          $(echo "$COMMITS" | sed 's/^[a-f0-9]* /- /')"
+
+          # Insert after header (line 5)
+          head -5 CHANGELOG.md > CHANGELOG.tmp
+          echo "" >> CHANGELOG.tmp
+          echo "$CHANGELOG_ENTRY" >> CHANGELOG.tmp
+          echo "" >> CHANGELOG.tmp
+          tail -n +6 CHANGELOG.md >> CHANGELOG.tmp
+          mv CHANGELOG.tmp CHANGELOG.md
+
+          git add CHANGELOG.md
+          git commit -m "update changelog"
+
+          npm version patch --message '%s'
+
+          git push origin "v$NEW_VERSION"
+          git push origin develop
+
+          # Sync master
+          git checkout master
+          git pull origin master
+          git merge develop --no-ff -m "Merge develop into master for v$NEW_VERSION"
+          git push origin master
+          git checkout develop
+
+          echo "new_version=v$NEW_VERSION" >> "$GITHUB_OUTPUT"
+          echo "last_tag=$LAST_TAG" >> "$GITHUB_OUTPUT"
+          echo "Deployed $NEW_VERSION"
+
+      - name: Resolve Sentry issues from merged PRs
+        if: steps.check_commits.outputs.has_commits == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SENTRY_API_TOKEN: ${{ secrets.SENTRY_API_TOKEN }}
+        run: |
+          LAST_TAG=${{ steps.deploy.outputs.last_tag }}
+
+          # Extract PR numbers from squash merge commit messages (e.g. "Fix foo (#123)")
+          PR_NUMBERS=$(git log --oneline "$LAST_TAG..HEAD" | grep -oP '#\K\d+' || true)
+
+          if [ -z "$PR_NUMBERS" ]; then
+            echo "No PR references found in commits"
+            exit 0
+          fi
+
+          echo "Found PR references: $PR_NUMBERS"
+
+          for PR_NUM in $PR_NUMBERS; do
+            echo "--- Processing PR #$PR_NUM ---"
+
+            # Get linked issue from PR body ("Fixes #N")
+            ISSUE_NUMBER=$(gh pr view "$PR_NUM" --repo ${{ github.repository }} --json body -q '.body' 2>/dev/null | grep -oP 'Fixes #\K\d+' | head -1 || true)
+            if [ -z "$ISSUE_NUMBER" ]; then
+              echo "No linked issue in PR #$PR_NUM, skipping"
+              continue
+            fi
+
+            # Check if it's a sentry issue
+            IS_SENTRY=$(gh issue view "$ISSUE_NUMBER" --repo ${{ github.repository }} --json labels -q '.labels[].name' 2>/dev/null | grep -c '^sentry$' || true)
+            if [ "$IS_SENTRY" = "0" ]; then
+              echo "Issue #$ISSUE_NUMBER is not a sentry issue, skipping"
+              continue
+            fi
+
+            # Extract Sentry issue ID from GitHub issue body
+            SENTRY_ISSUE_ID=$(gh issue view "$ISSUE_NUMBER" --repo ${{ github.repository }} --json body -q '.body' | grep -oP 'sentry\.tryethernal\.com/organizations/sentry/issues/\K\d+' | head -1 || true)
+            if [ -z "$SENTRY_ISSUE_ID" ]; then
+              echo "No Sentry issue ID in issue #$ISSUE_NUMBER, skipping"
+              continue
+            fi
+
+            echo "Resolving Sentry issue $SENTRY_ISSUE_ID (from GitHub issue #$ISSUE_NUMBER, PR #$PR_NUM)"
+            curl -s -X PUT \
+              "https://sentry.tryethernal.com/api/0/issues/$SENTRY_ISSUE_ID/" \
+              -H "Authorization: Bearer $SENTRY_API_TOKEN" \
+              -H "Content-Type: application/json" \
+              -d '{"status": "resolved"}' | jq '{status, statusDetails}'
+
+            # Notify dashboard - completed
+            curl -s -X POST "${{ secrets.APP_URL }}/webhooks/github-actions" \
+              -H "Authorization: Bearer ${{ secrets.ETHERNAL_WEBHOOK_SECRET }}" \
+              -H "Content-Type: application/json" \
+              -d "{
+                \"githubIssueNumber\": ${ISSUE_NUMBER},
+                \"githubPrNumber\": ${PR_NUM},
+                \"status\": \"completed\",
+                \"currentStep\": \"Fix deployed via batch deploy (${{ steps.deploy.outputs.new_version }})\",
+                \"completedAt\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"
+              }"
+
+            echo "Resolved Sentry issue $SENTRY_ISSUE_ID and notified dashboard"
+          done

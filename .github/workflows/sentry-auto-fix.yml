@@ -606,26 +606,67 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
 
-      - name: Notify dashboard - merging
+      - name: Check hotfix label
+        id: hotfix_check
         if: steps.check_sentry.outputs.is_sentry == 'true' && steps.merge_check.outputs.ready == 'true' && steps.ci_check.outputs.passed == 'true'
+        run: |
+          ISSUE_NUMBER=$(gh pr view ${{ steps.pr_info.outputs.pr_number }} --repo ${{ github.repository }} --json body -q '.body' | grep -oP 'Fixes #\K\d+' | head -1)
+          IS_HOTFIX=0
+          if [ -n "$ISSUE_NUMBER" ]; then
+            IS_HOTFIX=$(gh issue view "$ISSUE_NUMBER" --repo ${{ github.repository }} --json labels -q '.labels[].name' | grep -c '^hotfix$' || true)
+          fi
+          echo "is_hotfix=${IS_HOTFIX}" >> "$GITHUB_OUTPUT"
+          echo "issue_number=${ISSUE_NUMBER:-0}" >> "$GITHUB_OUTPUT"
+          echo "Hotfix: ${IS_HOTFIX}, Issue: ${ISSUE_NUMBER:-none}"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # --- Non-hotfix path: notify merged status and stop ---
+
+      - name: Notify dashboard - merged (batch deploy)
+        if: >
+          steps.check_sentry.outputs.is_sentry == 'true' &&
+          steps.merge_check.outputs.ready == 'true' &&
+          steps.ci_check.outputs.passed == 'true' &&
+          steps.hotfix_check.outputs.is_hotfix == '0'
         continue-on-error: true
         run: |
-          # Extract linked issue number from PR body
-          ISSUE_NUMBER=$(gh pr view ${{ steps.pr_info.outputs.pr_number }} --repo ${{ github.repository }} --json body -q '.body' | grep -oP 'Fixes #\K\d+' | head -1)
           curl -s -X POST "${{ secrets.APP_URL }}/webhooks/github-actions" \
             -H "Authorization: Bearer ${{ secrets.ETHERNAL_WEBHOOK_SECRET }}" \
             -H "Content-Type: application/json" \
             -d "{
-              \"githubIssueNumber\": ${ISSUE_NUMBER:-0},
+              \"githubIssueNumber\": ${{ steps.hotfix_check.outputs.issue_number }},
+              \"githubPrNumber\": ${{ steps.pr_info.outputs.pr_number }},
+              \"status\": \"merged\",
+              \"currentStep\": \"PR merged, awaiting batch deploy\"
+            }"
+
+      # --- Hotfix path: deploy inline (existing logic) ---
+
+      - name: Notify dashboard - merging (hotfix)
+        if: >
+          steps.check_sentry.outputs.is_sentry == 'true' &&
+          steps.merge_check.outputs.ready == 'true' &&
+          steps.ci_check.outputs.passed == 'true' &&
+          steps.hotfix_check.outputs.is_hotfix != '0'
+        continue-on-error: true
+        run: |
+          curl -s -X POST "${{ secrets.APP_URL }}/webhooks/github-actions" \
+            -H "Authorization: Bearer ${{ secrets.ETHERNAL_WEBHOOK_SECRET }}" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"githubIssueNumber\": ${{ steps.hotfix_check.outputs.issue_number }},
               \"githubPrNumber\": ${{ steps.pr_info.outputs.pr_number }},
               \"status\": \"merging\",
-              \"currentStep\": \"PR merged, deploying\"
+              \"currentStep\": \"PR merged, deploying (hotfix)\"
             }"
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Deploy
-        if: steps.check_sentry.outputs.is_sentry == 'true' && steps.merge_check.outputs.ready == 'true' && steps.ci_check.outputs.passed == 'true'
+      - name: Deploy (hotfix)
+        if: >
+          steps.check_sentry.outputs.is_sentry == 'true' &&
+          steps.merge_check.outputs.ready == 'true' &&
+          steps.ci_check.outputs.passed == 'true' &&
+          steps.hotfix_check.outputs.is_hotfix != '0'
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
         run: |
@@ -681,33 +722,37 @@ jobs:
 
           echo "Deployed v$NEW_VERSION"
 
-      - name: Notify dashboard - deploying
-        if: steps.check_sentry.outputs.is_sentry == 'true' && steps.merge_check.outputs.ready == 'true' && steps.ci_check.outputs.passed == 'true'
+      - name: Notify dashboard - deploying (hotfix)
+        if: >
+          steps.check_sentry.outputs.is_sentry == 'true' &&
+          steps.merge_check.outputs.ready == 'true' &&
+          steps.ci_check.outputs.passed == 'true' &&
+          steps.hotfix_check.outputs.is_hotfix != '0'
         continue-on-error: true
         run: |
-          ISSUE_NUMBER=$(gh pr view ${{ steps.pr_info.outputs.pr_number }} --repo ${{ github.repository }} --json body -q '.body' | grep -oP 'Fixes #\K\d+' | head -1)
           curl -s -X POST "${{ secrets.APP_URL }}/webhooks/github-actions" \
             -H "Authorization: Bearer ${{ secrets.ETHERNAL_WEBHOOK_SECRET }}" \
             -H "Content-Type: application/json" \
             -d "{
-              \"githubIssueNumber\": ${ISSUE_NUMBER:-0},
+              \"githubIssueNumber\": ${{ steps.hotfix_check.outputs.issue_number }},
               \"githubPrNumber\": ${{ steps.pr_info.outputs.pr_number }},
               \"status\": \"deploying\",
-              \"currentStep\": \"Deploying to production\"
+              \"currentStep\": \"Deploying to production (hotfix)\"
             }"
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Resolve Sentry issue
-        if: steps.check_sentry.outputs.is_sentry == 'true' && steps.merge_check.outputs.ready == 'true' && steps.ci_check.outputs.passed == 'true'
+      - name: Resolve Sentry issue (hotfix)
+        if: >
+          steps.check_sentry.outputs.is_sentry == 'true' &&
+          steps.merge_check.outputs.ready == 'true' &&
+          steps.ci_check.outputs.passed == 'true' &&
+          steps.hotfix_check.outputs.is_hotfix != '0'
         env:
           SENTRY_API_TOKEN: ${{ secrets.SENTRY_API_TOKEN }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Get the linked GitHub issue number from the PR body ("Fixes #N")
-          ISSUE_NUMBER=$(gh pr view ${{ steps.pr_info.outputs.pr_number }} --repo ${{ github.repository }} --json body -q '.body' | grep -oP 'Fixes #\K\d+' | head -1)
-          if [ -z "$ISSUE_NUMBER" ]; then
-            echo "No linked issue found in PR body, skipping Sentry resolution"
+          ISSUE_NUMBER=${{ steps.hotfix_check.outputs.issue_number }}
+          if [ "$ISSUE_NUMBER" = "0" ] || [ -z "$ISSUE_NUMBER" ]; then
+            echo "No linked issue found, skipping Sentry resolution"
             exit 0
           fi
 
@@ -725,20 +770,21 @@ jobs:
             -H "Content-Type: application/json" \
             -d '{"status": "resolved"}' | jq '{status, statusDetails}'
 
-      - name: Notify dashboard - completed
-        if: steps.check_sentry.outputs.is_sentry == 'true' && steps.merge_check.outputs.ready == 'true' && steps.ci_check.outputs.passed == 'true'
+      - name: Notify dashboard - completed (hotfix)
+        if: >
+          steps.check_sentry.outputs.is_sentry == 'true' &&
+          steps.merge_check.outputs.ready == 'true' &&
+          steps.ci_check.outputs.passed == 'true' &&
+          steps.hotfix_check.outputs.is_hotfix != '0'
         continue-on-error: true
         run: |
-          ISSUE_NUMBER=$(gh pr view ${{ steps.pr_info.outputs.pr_number }} --repo ${{ github.repository }} --json body -q '.body' | grep -oP 'Fixes #\K\d+' | head -1)
           curl -s -X POST "${{ secrets.APP_URL }}/webhooks/github-actions" \
             -H "Authorization: Bearer ${{ secrets.ETHERNAL_WEBHOOK_SECRET }}" \
             -H "Content-Type: application/json" \
             -d "{
-              \"githubIssueNumber\": ${ISSUE_NUMBER:-0},
+              \"githubIssueNumber\": ${{ steps.hotfix_check.outputs.issue_number }},
               \"githubPrNumber\": ${{ steps.pr_info.outputs.pr_number }},
               \"status\": \"completed\",
-              \"currentStep\": \"Fix deployed and Sentry issue resolved\",
+              \"currentStep\": \"Fix deployed and Sentry issue resolved (hotfix)\",
               \"completedAt\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"
             }"
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

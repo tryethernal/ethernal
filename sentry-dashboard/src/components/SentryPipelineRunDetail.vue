@@ -122,6 +122,7 @@ const pipelineSteps = [
     { value: 'fixing', label: 'Fixing' },
     { value: 'reviewing', label: 'Reviewing' },
     { value: 'merging', label: 'Merging' },
+    { value: 'merged', label: 'Merged' },
     { value: 'deploying', label: 'Deploying' },
     { value: 'completed', label: 'Completed' }
 ];
@@ -152,8 +153,9 @@ function isStepComplete(step) {
 function statusColor(status) {
     const colors = {
         discovered: 'blue', triaging: 'orange', fixing: 'purple',
-        reviewing: 'cyan', merging: 'teal', deploying: 'lime',
-        completed: 'green', closed: 'grey', escalated: 'amber', failed: 'red'
+        reviewing: 'cyan', merging: 'teal', merged: 'indigo',
+        deploying: 'lime', completed: 'green', closed: 'grey',
+        escalated: 'amber', failed: 'red'
     };
     return colors[status] || 'grey';
 }
