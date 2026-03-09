@@ -170,6 +170,7 @@ jobs:
 
       - name: Start conversation streamer
         if: steps.existing_pr.outputs.exists != 'true'
+        continue-on-error: true
         run: |
           chmod +x .github/scripts/stream-conversation.sh
           .github/scripts/stream-conversation.sh &
@@ -541,6 +542,7 @@ jobs:
 
       - name: Start conversation streamer
         if: steps.check_sentry.outputs.is_sentry == 'true'
+        continue-on-error: true
         run: |
           chmod +x .github/scripts/stream-conversation.sh
           .github/scripts/stream-conversation.sh &
