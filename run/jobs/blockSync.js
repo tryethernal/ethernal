@@ -108,7 +108,8 @@ module.exports = async job => {
                         'l2GenesisTimestamp',
                         'optimismPortalAddress',
                         'l2OutputOracleAddress',
-                        'disputeGameFactoryAddress'
+                        'disputeGameFactoryAddress',
+                        'finalizationPeriodSeconds'
                     ]
                 }
             ]
@@ -232,7 +233,8 @@ module.exports = async job => {
                         'l2GenesisTimestamp',
                         'optimismPortalAddress',
                         'l2OutputOracleAddress',
-                        'disputeGameFactoryAddress'
+                        'disputeGameFactoryAddress',
+                        'finalizationPeriodSeconds'
                     ]
                 }
             ]
