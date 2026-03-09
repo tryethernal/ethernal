@@ -5,7 +5,7 @@
  */
 
 const express = require('express');
-const { isStripeEnabled, isDemoEnabled, isSelfHosted } = require('../lib/flags');
+const { isStripeEnabled, isDemoEnabled, isSelfHosted, isSentryPipelineEnabled } = require('../lib/flags');
 const router = express.Router();
 
 const blocks = require('./blocks');
@@ -75,6 +75,11 @@ if (isDemoEnabled()) {
 if (isStripeEnabled()) {
     const stripe = require('./stripe');
     router.use('/stripe', stripe);
+}
+
+if (isSentryPipelineEnabled()) {
+    const sentryPipeline = require('./sentryPipeline');
+    router.use('/sentryPipeline', sentryPipeline);
 }
 
 if (isSelfHosted()) {

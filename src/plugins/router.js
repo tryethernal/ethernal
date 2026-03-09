@@ -137,7 +137,7 @@ const routes = [
     { path: '/op/outputs/:outputIndex', component: OpOutputDetail, name: 'opOutputDetail', props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/op/withdrawals', component: OpWithdrawals, name: 'opWithdrawals', beforeEnter: redirectIfLoggedOut },
     { path: '/op/deposits', component: OpDeposits, name: 'opDeposits', beforeEnter: redirectIfLoggedOut },
-    { path: '/:pathMatch(.*)*', name: 'not-found', component: Overview, beforeEnter: redirectIfLoggedOut }
+{ path: '/:pathMatch(.*)*', name: 'not-found', component: Overview, beforeEnter: redirectIfLoggedOut }
 ];
 
 const router = createRouter({

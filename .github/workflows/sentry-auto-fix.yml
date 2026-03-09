@@ -89,6 +89,20 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
+      - name: Notify dashboard - triaging
+        if: always()
+        continue-on-error: true
+        run: |
+          curl -s -X POST "${{ secrets.APP_URL }}/webhooks/github-actions" \
+            -H "Authorization: Bearer ${{ secrets.ETHERNAL_WEBHOOK_SECRET }}" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"workflowRunId\": ${{ github.run_id }},
+              \"githubIssueNumber\": ${{ steps.issue_info.outputs.number }},
+              \"status\": \"triaging\",
+              \"currentStep\": \"Claude is investigating the error\"
+            }"
+
       - name: Check for regression
         id: regression
         env:
@@ -254,6 +268,80 @@ jobs:
           SENTRY_API_TOKEN: ${{ secrets.SENTRY_API_TOKEN }}
           PROD_DATABASE_URL_READONLY: ${{ secrets.PROD_DATABASE_URL_READONLY }}
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      - name: Notify dashboard - post-triage
+        if: always()
+        continue-on-error: true
+        run: |
+          # Determine status based on whether a PR branch exists
+          if git ls-remote --heads origin "fix/sentry-${{ steps.issue_info.outputs.number }}" | grep -q .; then
+            STATUS="fixing"
+            STEP="Claude created a fix branch"
+            DECISION="auto-fix"
+          else
+            # Check if issue was closed
+            ISSUE_STATE=$(gh issue view ${{ steps.issue_info.outputs.number }} --repo ${{ github.repository }} --json state -q '.state')
+            if [ "$ISSUE_STATE" = "CLOSED" ]; then
+              STATUS="closed"
+              STEP="Issue was closed by Claude"
+              DECISION="close"
+            elif gh issue view ${{ steps.issue_info.outputs.number }} --repo ${{ github.repository }} --json labels -q '.labels[].name' | grep -q "needs-human"; then
+              STATUS="escalated"
+              STEP="Escalated to human"
+              DECISION="escalate"
+            else
+              STATUS="failed"
+              STEP="Triage completed without action"
+              DECISION="unknown"
+            fi
+          fi
+
+          curl -s -X POST "${{ secrets.APP_URL }}/webhooks/github-actions" \
+            -H "Authorization: Bearer ${{ secrets.ETHERNAL_WEBHOOK_SECRET }}" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"workflowRunId\": ${{ github.run_id }},
+              \"githubIssueNumber\": ${{ steps.issue_info.outputs.number }},
+              \"status\": \"$STATUS\",
+              \"currentStep\": \"$STEP\",
+              \"triageDecision\": \"$DECISION\"
+            }"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Notify dashboard - PR created
+        if: always()
+        continue-on-error: true
+        run: |
+          PR_NUMBER=$(gh pr list --head "fix/sentry-${{ steps.issue_info.outputs.number }}" --json number -q '.[0].number' 2>/dev/null)
+          if [ -n "$PR_NUMBER" ]; then
+            curl -s -X POST "${{ secrets.APP_URL }}/webhooks/github-actions" \
+              -H "Authorization: Bearer ${{ secrets.ETHERNAL_WEBHOOK_SECRET }}" \
+              -H "Content-Type: application/json" \
+              -d "{
+                \"workflowRunId\": ${{ github.run_id }},
+                \"githubIssueNumber\": ${{ steps.issue_info.outputs.number }},
+                \"githubPrNumber\": $PR_NUMBER,
+                \"status\": \"reviewing\",
+                \"currentStep\": \"PR #$PR_NUMBER awaiting review\"
+              }"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Notify dashboard - failure
+        if: failure()
+        continue-on-error: true
+        run: |
+          curl -s -X POST "${{ secrets.APP_URL }}/webhooks/github-actions" \
+            -H "Authorization: Bearer ${{ secrets.ETHERNAL_WEBHOOK_SECRET }}" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"workflowRunId\": ${{ github.run_id }},
+              \"githubIssueNumber\": ${{ steps.issue_info.outputs.number }},
+              \"status\": \"failed\",
+              \"currentStep\": \"Workflow failed\"
+            }"
 
   process-review:
     concurrency:
@@ -457,6 +545,24 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
 
+      - name: Notify dashboard - merging
+        if: steps.check_sentry.outputs.is_sentry == 'true' && steps.merge_check.outputs.ready == 'true' && steps.ci_check.outputs.passed == 'true'
+        continue-on-error: true
+        run: |
+          # Extract linked issue number from PR body
+          ISSUE_NUMBER=$(gh pr view ${{ steps.pr_info.outputs.pr_number }} --repo ${{ github.repository }} --json body -q '.body' | grep -oP 'Fixes #\K\d+' | head -1)
+          curl -s -X POST "${{ secrets.APP_URL }}/webhooks/github-actions" \
+            -H "Authorization: Bearer ${{ secrets.ETHERNAL_WEBHOOK_SECRET }}" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"githubIssueNumber\": ${ISSUE_NUMBER:-0},
+              \"githubPrNumber\": ${{ steps.pr_info.outputs.pr_number }},
+              \"status\": \"merging\",
+              \"currentStep\": \"PR merged, deploying\"
+            }"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Deploy
         if: steps.check_sentry.outputs.is_sentry == 'true' && steps.merge_check.outputs.ready == 'true' && steps.ci_check.outputs.passed == 'true'
         env:
@@ -514,6 +620,23 @@ jobs:
 
           echo "Deployed v$NEW_VERSION"
 
+      - name: Notify dashboard - deploying
+        if: steps.check_sentry.outputs.is_sentry == 'true' && steps.merge_check.outputs.ready == 'true' && steps.ci_check.outputs.passed == 'true'
+        continue-on-error: true
+        run: |
+          ISSUE_NUMBER=$(gh pr view ${{ steps.pr_info.outputs.pr_number }} --repo ${{ github.repository }} --json body -q '.body' | grep -oP 'Fixes #\K\d+' | head -1)
+          curl -s -X POST "${{ secrets.APP_URL }}/webhooks/github-actions" \
+            -H "Authorization: Bearer ${{ secrets.ETHERNAL_WEBHOOK_SECRET }}" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"githubIssueNumber\": ${ISSUE_NUMBER:-0},
+              \"githubPrNumber\": ${{ steps.pr_info.outputs.pr_number }},
+              \"status\": \"deploying\",
+              \"currentStep\": \"Deploying to production\"
+            }"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Resolve Sentry issue
         if: steps.check_sentry.outputs.is_sentry == 'true' && steps.merge_check.outputs.ready == 'true' && steps.ci_check.outputs.passed == 'true'
         env:
@@ -540,3 +663,21 @@ jobs:
             -H "Authorization: Bearer $SENTRY_API_TOKEN" \
             -H "Content-Type: application/json" \
             -d '{"status": "resolved"}' | jq '{status, statusDetails}'
+
+      - name: Notify dashboard - completed
+        if: steps.check_sentry.outputs.is_sentry == 'true' && steps.merge_check.outputs.ready == 'true' && steps.ci_check.outputs.passed == 'true'
+        continue-on-error: true
+        run: |
+          ISSUE_NUMBER=$(gh pr view ${{ steps.pr_info.outputs.pr_number }} --repo ${{ github.repository }} --json body -q '.body' | grep -oP 'Fixes #\K\d+' | head -1)
+          curl -s -X POST "${{ secrets.APP_URL }}/webhooks/github-actions" \
+            -H "Authorization: Bearer ${{ secrets.ETHERNAL_WEBHOOK_SECRET }}" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"githubIssueNumber\": ${ISSUE_NUMBER:-0},
+              \"githubPrNumber\": ${{ steps.pr_info.outputs.pr_number }},
+              \"status\": \"completed\",
+              \"currentStep\": \"Fix deployed and Sentry issue resolved\",
+              \"completedAt\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"
+            }"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

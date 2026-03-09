@@ -80,6 +80,15 @@
         }
     }
 
+    handle_path /sentry-dashboard* {
+        basicauth {
+            {$SENTRY_DASHBOARD_USERNAME} {$SENTRY_DASHBOARD_PASSWORD_HASH}
+        }
+        root * /srv/sentry-dashboard
+        try_files {path} /index.html
+        file_server
+    }
+
     @landing host tryethernal.com www.tryethernal.com
     handle @landing {
         root * /srv/landing

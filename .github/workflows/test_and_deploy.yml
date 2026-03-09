@@ -129,7 +129,8 @@ jobs:
             --build-arg VITE_SENTRY_ORG=${{ secrets.VITE_SENTRY_ORG }} \
             --build-arg VITE_SENTRY_PROJECT=${{ secrets.VITE_SENTRY_PROJECT }} \
             --build-arg VITE_SENTRY_URL=${{ secrets.VITE_SENTRY_URL }} \
-            --build-arg VITE_SENTRY_ENABLED=${{ secrets.VITE_SENTRY_ENABLED }}
+            --build-arg VITE_SENTRY_ENABLED=${{ secrets.VITE_SENTRY_ENABLED }} \
+            --build-arg VITE_SOKETI_KEY=${{ secrets.SOKETI_DEFAULT_APP_KEY }}
 
   deploy_back_amd64:
     if: startsWith(github.ref, 'refs/tags/v')
