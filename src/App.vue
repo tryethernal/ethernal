@@ -64,7 +64,7 @@
 </template>
 
 <script setup>
-import { ref, shallowRef, computed, defineComponent, onMounted, onBeforeUnmount, onUnmounted, inject } from 'vue';
+import { ref, shallowRef, computed, watch, defineComponent, onMounted, onBeforeUnmount, onUnmounted, inject } from 'vue';
 import { useTheme } from 'vuetify';
 import WebFont from 'webfontloader';
 import detectEthereumProvider from '@metamask/detect-provider';
@@ -120,6 +120,10 @@ onMounted(() => { maintenanceTimer = setInterval(() => { now.value = Date.now();
 onUnmounted(() => { clearInterval(maintenanceTimer); });
 const showMaintenanceBanner = computed(() => now.value < MAINTENANCE_START);
 const isMaintenanceWindow = computed(() => now.value >= MAINTENANCE_START && now.value < MAINTENANCE_END);
+// Auto-reload when maintenance window ends so the app initializes properly
+watch(isMaintenanceWindow, (inMaintenance, wasMaintenance) => {
+    if (wasMaintenance && !inMaintenance) window.location.reload();
+});
 
 // Computed properties
 const isAuthPage = computed(() => window.location.pathname.indexOf('/auth') > -1);
