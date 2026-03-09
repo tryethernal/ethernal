@@ -36,7 +36,10 @@ module.exports = async job => {
         const axiosableURI = URI.startsWith('ipfs://') ? `https://ipfs.io/ipfs/${URI.slice(7, URI.length)}` : URI;
 
         try {
-            metadata = (await withTimeout(axios.get(axiosableURI))).data;
+            metadata = (await withTimeout(
+                axios.get(axiosableURI),
+                30000 // 30 second timeout for IPFS/external metadata calls
+            )).data;
         } catch(error) {
             metadata = {};
         }
