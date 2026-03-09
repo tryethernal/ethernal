@@ -3044,7 +3044,9 @@ const revertPartialBlock = async (blockId) => {
 const syncPartialBlock = async (workspaceId, block) => {
     if (!workspaceId || !block) throw new Error('Missing parameter.');
 
-    const workspace = await Workspace.findByPk(workspaceId);
+    const workspace = await Workspace.findByPk(workspaceId, {
+        include: ['orbitConfig']
+    });
 
     if (!workspace)
         throw new Error('Could not find workspace');

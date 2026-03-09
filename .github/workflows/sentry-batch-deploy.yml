@@ -48,7 +48,7 @@ jobs:
           echo "last_tag=$LAST_TAG" >> "$GITHUB_OUTPUT"
 
           # Get meaningful commits (filter out release machinery)
-          COMMITS=$(git log --oneline "$LAST_TAG..HEAD" | grep -viE '^[a-f0-9]+ (update changelog|[0-9]+\.[0-9]+\.[0-9]+|Merge branch)' || true)
+          COMMITS=$(git log --oneline "$LAST_TAG..HEAD" | grep -viE '^[a-f0-9]+ (update changelog|[0-9]+\.[0-9]+\.[0-9]+|Merge (branch|develop|master))' || true)
 
           if [ -z "$COMMITS" ]; then
             echo "No new meaningful commits since $LAST_TAG"
@@ -68,7 +68,7 @@ jobs:
           git remote set-url origin "https://x-access-token:${GH_PAT}@github.com/${{ github.repository }}.git"
 
           LAST_TAG=${{ steps.check_commits.outputs.last_tag }}
-          COMMITS=$(git log --oneline "$LAST_TAG..HEAD" | grep -viE '^[a-f0-9]+ (update changelog|[0-9]+\.[0-9]+\.[0-9]+|Merge branch)' || true)
+          COMMITS=$(git log --oneline "$LAST_TAG..HEAD" | grep -viE '^[a-f0-9]+ (update changelog|[0-9]+\.[0-9]+\.[0-9]+|Merge (branch|develop|master))' || true)
 
           # Generate changelog entry
           VERSION_DATE=$(date +%Y-%m-%d)
@@ -116,7 +116,7 @@ jobs:
           LAST_TAG=${{ steps.deploy.outputs.last_tag }}
 
           # Extract PR numbers from squash merge commit messages, filtering release machinery
-          PR_NUMBERS=$(git log --oneline "$LAST_TAG..HEAD" | grep -viE '^[a-f0-9]+ (update changelog|[0-9]+\.[0-9]+\.[0-9]+|Merge branch)' | grep -oP '#\K\d+' || true)
+          PR_NUMBERS=$(git log --oneline "$LAST_TAG..HEAD" | grep -viE '^[a-f0-9]+ (update changelog|[0-9]+\.[0-9]+\.[0-9]+|Merge (branch|develop|master))' | grep -oP '#\K\d+' || true)
 
           if [ -z "$PR_NUMBERS" ]; then
             echo "No PR references found in commits"
