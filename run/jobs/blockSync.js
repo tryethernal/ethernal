@@ -32,14 +32,8 @@ module.exports = async job => {
             return 'Missing parameter';
 
         workspace = await Workspace.findByPk(data.workspaceId, {
+            attributes: ['id', 'name', 'rpcServer', 'browserSyncEnabled', 'isCustomL1Parent', 'rpcHealthCheckEnabled'],
             include: [
-                'user',
-                'orbitConfig',
-                'orbitChildConfigs',
-                {
-                    model: OpChainConfig,
-                    as: 'opChildConfigs'
-                },
                 {
                     model: Explorer,
                     as: 'explorer',
@@ -59,6 +53,12 @@ module.exports = async job => {
                     model: IntegrityCheck,
                     as: 'integrityCheck',
                     attributes: ['id', 'isHealthy', 'isRecovering']
+                },
+                'orbitConfig',
+                'orbitChildConfigs',
+                {
+                    model: OpChainConfig,
+                    as: 'opChildConfigs'
                 }
             ]
         });
@@ -96,17 +96,16 @@ module.exports = async job => {
 
         workspace = await Workspace.findOne({
             subQuery: false,
+            attributes: ['id', 'name', 'rpcServer', 'browserSyncEnabled', 'isCustomL1Parent', 'rpcHealthCheckEnabled'],
             where: {
                 name: data.workspace,
                 '$user.firebaseUserId$': data.userId
             },
             include: [
-                'user',
-                'orbitConfig',
-                'orbitChildConfigs',
                 {
-                    model: OpChainConfig,
-                    as: 'opChildConfigs'
+                    model: require('../models').User,
+                    as: 'user',
+                    attributes: ['id', 'firebaseUserId']
                 },
                 {
                     model: Explorer,
@@ -127,6 +126,12 @@ module.exports = async job => {
                     model: IntegrityCheck,
                     as: 'integrityCheck',
                     attributes: ['id', 'isHealthy', 'isRecovering']
+                },
+                'orbitConfig',
+                'orbitChildConfigs',
+                {
+                    model: OpChainConfig,
+                    as: 'opChildConfigs'
                 }
             ]
         });
