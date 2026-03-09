@@ -79,12 +79,19 @@ function scrollToBottom() {
 
 /**
  * Append new turns to the internal turns array.
+ * Skips if turns appear to already be present (dedup against prop resets).
  * Used by parent components to push streaming updates.
  *
  * @param {Array} turns - Array of turn objects to append
  */
 function appendTurns(turns) {
     if (!turns || !turns.length) return;
+    // Dedup: if a prop reset already included these turns, skip.
+    // Compare the last existing turn's text/tool with the first incoming turn.
+    const last = internalTurns.value[internalTurns.value.length - 1];
+    const first = turns[0];
+    if (last && first && last.text === first.text && last.tool === first.tool && last.role === first.role) return;
+
     internalTurns.value = [...internalTurns.value, ...turns];
     // Keep visible window including new items
     if (totalItems.value > PAGE_SIZE && startIndex.value > 0) {
