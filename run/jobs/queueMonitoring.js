@@ -85,12 +85,19 @@ module.exports = async () => {
 
             const p95ProcessingTime = computeP95ProcessingTime(completedJobs);
 
+            // Fetch failed jobs in parallel if there are any failures
+            let failedJobs = [];
+            if (failedJobCount > 0) {
+                failedJobs = await queue.getFailed(0, 99);
+            }
+
             return {
                 queueName,
                 completedJobs,
                 waitingJobCount,
                 delayedJobCount,
                 failedJobCount,
+                failedJobs,
                 p95ProcessingTime
             };
         });
@@ -99,7 +106,7 @@ module.exports = async () => {
 
         // Process results and create incidents
         for (const stats of allQueueStats) {
-            const { queueName, completedJobs, waitingJobCount, delayedJobCount, failedJobCount, p95ProcessingTime } = stats;
+            const { queueName, completedJobs, waitingJobCount, delayedJobCount, failedJobCount, failedJobs, p95ProcessingTime } = stats;
 
             logger.info('Queue monitoring', { queueName, p95ProcessingTime, waitingJobCount, delayedJobCount, failedJobCount });
 
@@ -118,8 +125,6 @@ module.exports = async () => {
             }
 
             if (failedJobCount > 0) {
-                const queue = getQueue(queueName);
-                const failedJobs = await queue.getFailed(0, 99);
                 const recentFailures = failedJobs.filter(j => j && j.finishedOn && j.finishedOn > Date.now() - 5 * 60 * 1000);
 
                 if (recentFailures.length >= 10) {
