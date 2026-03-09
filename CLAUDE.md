@@ -661,6 +661,43 @@ When running queries against the production database:
 4. **Use `SET CONSTRAINTS ALL DEFERRED`** inside transactions when deleting across related tables
 5. **Connection timeouts** — the production DB drops connections on queries running longer than ~2-3 minutes; keep individual operations under that threshold
 
+### Large Tables — Index Safety
+
+The following tables have 10M+ rows and **must use `CREATE INDEX CONCURRENTLY`** in migrations. Never use standard `CREATE INDEX` on these — it locks the table and causes downtime.
+
+| Table | Rows | Size |
+|-------|------|------|
+| `transaction_logs` | ~257M | 203 GB |
+| `blocks` | ~173M | 329 GB |
+| `transactions` | ~139M | 141 GB |
+| `token_transfers` | ~96M | 30 GB |
+| `transaction_receipts` | ~93M | 124 GB |
+| `token_balance_changes` | ~76M | 39 GB |
+
+**Migration pattern for concurrent indexes:**
+```javascript
+module.exports = {
+    async up(queryInterface) {
+        await queryInterface.sequelize.query(
+            'CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_name ON table_name (column)'
+        );
+    },
+    async down(queryInterface) {
+        await queryInterface.sequelize.query(
+            'DROP INDEX CONCURRENTLY IF EXISTS idx_name'
+        );
+    }
+};
+// CONCURRENTLY cannot run inside a transaction
+module.exports.config = { transaction: false };
+```
+
+**Key rules:**
+- Always use `IF NOT EXISTS` / `IF EXISTS` so the migration is re-runnable
+- Always set `module.exports.config = { transaction: false }` — `CONCURRENTLY` fails inside transactions
+- Check existing indexes first: `SELECT indexname, indexdef FROM pg_indexes WHERE tablename = 'table_name'`
+- For smaller tables (< 1M rows), standard `CREATE INDEX` inside a transaction is fine
+
 ---
 
 ## Code Style
