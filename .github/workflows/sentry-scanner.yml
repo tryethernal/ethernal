@@ -3,7 +3,18 @@ name: Sentry Proactive Scanner
 on:
   schedule:
     - cron: '0 * * * *'
+    - cron: '0 */6 * * *'
   workflow_dispatch:
+    inputs:
+      scan_type:
+        description: 'Which scan to run'
+        required: false
+        default: 'both'
+        type: choice
+        options:
+          - errors
+          - performance
+          - both
 
 permissions:
   contents: read
@@ -11,7 +22,10 @@ permissions:
   id-token: write
 
 jobs:
-  scan-sentry:
+  scan-errors:
+    if: >-
+      github.event_name == 'workflow_dispatch' && (github.event.inputs.scan_type == 'errors' || github.event.inputs.scan_type == 'both')
+      || github.event_name == 'schedule'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -33,7 +47,7 @@ jobs:
           mkdir -p ~/.ssh
           ssh-keyscan -H 157.90.154.200 >> ~/.ssh/known_hosts
 
-      - name: Claude Code - Scan Sentry
+      - name: Claude Code - Scan Errors
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
@@ -144,7 +158,7 @@ jobs:
 
             At the end, print a summary:
             ```
-            === Sentry Scanner Summary ===
+            === Sentry Error Scanner Summary ===
             Scanned: X issues
             Created: Y GitHub issues
             Auto-resolved: Z Sentry issues
@@ -157,6 +171,214 @@ jobs:
             - Be conservative: only create issues for clear code bugs
             - When resolving in Sentry, always include a reason
             - Keep issue descriptions concise but include enough for the auto-fix agent
+        env:
+          SENTRY_API_TOKEN: ${{ secrets.SENTRY_API_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          APP_URL: ${{ secrets.APP_URL }}
+          ETHERNAL_WEBHOOK_SECRET: ${{ secrets.ETHERNAL_WEBHOOK_SECRET }}
+
+  scan-performance:
+    if: >-
+      github.event_name == 'workflow_dispatch' && (github.event.inputs.scan_type == 'performance' || github.event.inputs.scan_type == 'both')
+      || github.event.schedule == '0 */6 * * *'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            CLAUDE.md
+            run/
+            .github/
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Add known hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H 157.90.154.200 >> ~/.ssh/known_hosts
+
+      - name: Claude Code - Scan Performance
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          claude_args: "--model claude-sonnet-4-20250514 --max-turns 40 --allowedTools Bash,Read,Glob,Grep"
+          show_full_output: true
+          prompt: |
+            You are a performance analyst for the Ethernal project. Your job is to analyze Sentry performance data and create GitHub issues for significant bottlenecks.
+
+            Sentry base URL: https://sentry.tryethernal.com
+            Org: sentry
+            Backend project: ethernal-backend (id=2)
+            Frontend project: ethernal-frontend (id=3)
+
+            ## Step 1: Scan Sentry performance issues
+
+            Query both projects for unresolved performance issues:
+
+            ```bash
+            # Backend performance issues
+            curl -s "https://sentry.tryethernal.com/api/0/projects/sentry/ethernal-backend/issues/?query=is:unresolved+issue.category:performance&limit=100" \
+              -H "Authorization: Bearer $SENTRY_API_TOKEN" | jq '[.[] | {id, title, level, count, firstSeen, lastSeen, shortId, type: .metadata.type, project: "ethernal-backend"}]'
+
+            # Frontend performance issues
+            curl -s "https://sentry.tryethernal.com/api/0/projects/sentry/ethernal-frontend/issues/?query=is:unresolved+issue.category:performance&limit=100" \
+              -H "Authorization: Bearer $SENTRY_API_TOKEN" | jq '[.[] | {id, title, level, count, firstSeen, lastSeen, shortId, type: .metadata.type, project: "ethernal-frontend"}]'
+            ```
+
+            Performance issue types to look for:
+            - `performance_n_plus_one_db_queries` — N+1 DB queries (loop of SELECTs)
+            - `performance_consecutive_db_queries` — sequential queries that could be parallelized
+            - `performance_slow_db_query` — individual queries consistently > 500ms
+            - `performance_n_plus_one_api_calls` — repeated API calls from frontend
+            - `performance_consecutive_http` — sequential HTTP requests
+            - `performance_large_render_blocking_asset` — large CSS/JS blocking render
+            - `performance_large_http_payload` — oversized API responses
+            - `performance_endpoint_regression` — p95 regression on an endpoint
+            - `performance_function_regression` — function duration regression
+
+            ## Step 2: Query transaction performance stats
+
+            Get the slowest backend transactions (p95 > 2s):
+
+            ```bash
+            curl -s "https://sentry.tryethernal.com/api/0/organizations/sentry/events/?field=transaction&field=p95(transaction.duration)&field=p75(transaction.duration)&field=count()&field=failure_rate()&query=event.type:transaction+project:ethernal-backend&statsPeriod=6h&sort=-p95_transaction_duration&per_page=20" \
+              -H "Authorization: Bearer $SENTRY_API_TOKEN" | jq '.data'
+            ```
+
+            Get the slowest frontend transactions:
+
+            ```bash
+            curl -s "https://sentry.tryethernal.com/api/0/organizations/sentry/events/?field=transaction&field=p95(transaction.duration)&field=p75(transaction.duration)&field=count()&field=failure_rate()&query=event.type:transaction+project:ethernal-frontend&statsPeriod=6h&sort=-p95_transaction_duration&per_page=20" \
+              -H "Authorization: Bearer $SENTRY_API_TOKEN" | jq '.data'
+            ```
+
+            ## Step 3: Check for slow database spans
+
+            ```bash
+            curl -s "https://sentry.tryethernal.com/api/0/organizations/sentry/events/?field=transaction&field=avg(spans.db)&field=max(spans.db)&field=count()&query=event.type:transaction+project:ethernal-backend+spans.db:>1000&statsPeriod=6h&sort=-avg_spans_db&per_page=20" \
+              -H "Authorization: Bearer $SENTRY_API_TOKEN" | jq '.data'
+            ```
+
+            ## Step 4: Filter already-tracked issues
+
+            ```bash
+            gh issue list --label sentry --label performance --state all --limit 200 --json number,title,body
+            ```
+
+            Skip anything already tracked. Also skip issues that have been closed as "won't fix" or "not planned".
+
+            ## Step 5: Evaluate and prioritize
+
+            For each performance issue from Sentry, fetch detailed event data:
+            ```bash
+            curl -s "https://sentry.tryethernal.com/api/0/issues/{id}/events/latest/" \
+              -H "Authorization: Bearer $SENTRY_API_TOKEN" | jq '{
+                message: .message,
+                transaction: (.tags // [] | map(select(.key == "transaction")) | .[0].value // "unknown"),
+                spans: [(.entries // [] | .[] | select(.type == "spans") | .data // [] | .[] | select(.op | startswith("db")) | {op, description: .description[0:200], duration: ((.timestamp - .start_timestamp) * 1000 | floor)})[0:5]]
+              }'
+            ```
+
+            Categorize each finding:
+
+            **CREATE GITHUB ISSUE** (high impact):
+            - N+1 queries with 50+ events — these are real hotspots
+            - Slow DB queries (p95 > 2s) on frequently-hit endpoints
+            - Transaction p95 > 5s with 100+ events in 6h
+            - Endpoint regressions (significant p95 increase)
+            - Consecutive DB queries where parallelization would save > 500ms
+
+            **SKIP** (low impact or not actionable):
+            - N+1 queries with < 20 events (rare code path)
+            - Performance issues on admin/debug endpoints (e.g., /bull/*)
+            - One-off slow transactions (< 5 events)
+            - Issues where the slow span is an external API call we can't control
+            - Frontend issues on deprecated browsers
+
+            **AUTO-RESOLVE in Sentry**:
+            - Performance issues on endpoints that no longer exist
+            - Issues with 0 events in the last 24h that are stale
+
+            ## Step 6: Create GitHub issues
+
+            For actionable findings, create GitHub issues:
+            ```bash
+            gh issue create \
+              --title "Perf: [concise description]" \
+              --label "sentry" \
+              --label "performance" \
+              --label "[backend|frontend]" \
+              --body "## Performance Issue
+
+            **Project:** [ethernal-backend|ethernal-frontend]
+            **Type:** [N+1 Query | Slow DB | Slow Transaction | Regression | ...]
+            **Impact:** [events in 6h] events, p95: [Xms]
+            **Transaction:** \`[transaction name]\`
+            **Link:** https://sentry.tryethernal.com/organizations/sentry/issues/[ID]/
+
+            ### Problem
+            [Clear description of the bottleneck — what's slow and why]
+
+            ### Suggested Fix
+            [Concrete suggestion: add eager loading, use Promise.all, add index, batch queries, etc.]
+
+            ### Evidence
+            \`\`\`
+            [Key spans, query patterns, or timing data]
+            \`\`\`
+
+            ---
+            *Created by Sentry Performance Scanner*"
+            ```
+
+            ## Step 7: Notify dashboard
+
+            For each issue created, notify the dashboard webhook:
+            ```bash
+            curl -s -X POST "$APP_URL/webhooks/github-actions" \
+              -H "Authorization: Bearer $ETHERNAL_WEBHOOK_SECRET" \
+              -H "Content-Type: application/json" \
+              -d "{
+                \"githubIssueNumber\": ISSUE_NUMBER,
+                \"sentryIssueId\": \"SENTRY_ID\",
+                \"sentryProject\": \"PROJECT\",
+                \"sentryTitle\": \"TITLE\",
+                \"sentryLevel\": \"warning\",
+                \"sentryEventCount\": COUNT,
+                \"sentryLink\": \"https://sentry.tryethernal.com/organizations/sentry/issues/SENTRY_ID/\",
+                \"status\": \"discovered\",
+                \"currentStep\": \"Discovered by performance scanner\"
+              }"
+            ```
+
+            ## Step 8: Print summary
+
+            ```
+            === Sentry Performance Scanner Summary ===
+            Performance issues scanned: X
+            Slow transactions found: Y
+            GitHub issues created: Z
+            Auto-resolved: A
+            Skipped (already tracked): B
+            Skipped (low impact): C
+
+            Top 5 slowest transactions (p95):
+            1. [transaction] - [p95]ms ([count] events)
+            ...
+            ```
+
+            ## Rules
+            - NEVER create duplicate GitHub issues — always check first
+            - Include concrete fix suggestions — the auto-fix agent will use them
+            - Focus on high-impact issues: frequent transactions with poor performance
+            - For N+1 queries, always identify the model/relation involved
+            - For slow queries, suggest specific indexes or query optimizations
+            - Read the relevant source code (under run/) before suggesting fixes
         env:
           SENTRY_API_TOKEN: ${{ secrets.SENTRY_API_TOKEN }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
