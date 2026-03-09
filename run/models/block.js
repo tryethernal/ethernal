@@ -115,7 +115,8 @@ module.exports = (sequelize, DataTypes) => {
             })
         ]);
 
-        const isSyncing = syncingTransactionCount > 0 || currentTransactionCount !== this.transactionsCount;
+        const isSyncing = syncingTransactionCount > 0 ||
+            (this.transactionsCount !== null && this.transactionsCount !== undefined && currentTransactionCount !== this.transactionsCount);
 
         if (!isSyncing)
           return false;
