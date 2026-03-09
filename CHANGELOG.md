@@ -46,6 +46,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ci: run database migrations automatically before deploy
 
 
+## [5.17.0] - 2026-03-09
+### Added
+- Sentry proactive scanner and auto-fix pipeline dashboard (#502)
+
+### Fixed
+- Clean up legacy BullMQ priority keys to prevent Redis OOM (#503)
+- Improved sentry auto-fix pipeline error handling and transient error guidance
+
+
 ## [5.16.17] - 2026-03-06
 ### Fixed
 - fix: add error handling for database connection failures in processBlock job (#498)
