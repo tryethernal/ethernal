@@ -511,11 +511,13 @@ describe('blockSync', () => {
         blockSync({ opts: { priority: 1 }, data: { workspaceId: 1, blockNumber: 1, source: 'batchSync', rateLimited: true }})
             .then(res => {
                 expect(Workspace.findByPk).toHaveBeenCalledWith(1, expect.objectContaining({
+                    attributes: expect.arrayContaining(['id', 'name', 'rpcServer', 'browserSyncEnabled', 'isCustomL1Parent', 'rpcHealthCheckEnabled']),
                     include: expect.arrayContaining([
-                        'user',
                         'orbitConfig',
+                        'orbitChildConfigs',
                         expect.objectContaining({ as: 'opChildConfigs' }),
                         expect.objectContaining({ as: 'explorer' }),
+                        expect.objectContaining({ as: 'rpcHealthCheck' }),
                         expect.objectContaining({ as: 'integrityCheck' })
                     ])
                 }));
