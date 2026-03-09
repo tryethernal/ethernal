@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.2] - 2026-03-09
+### Fixed
+- fix: add null check in _sanitize function to prevent TypeError (#509)
+- fix: send Claude conversation log to sentry dashboard webhook
+- Hetzner maintenance banner and page (March 10) (#508)
+- fix: route /webhooks* to backend in Caddy and allow scanner issues in auto-fix
+- chore: change performance scan to daily at 6am UTC
+- feat: add performance scanning to Sentry scanner workflow
+- fix: add id-token permission and remove deprecated direct_prompt from sentry scanner
+- docs: update CLAUDE.md with CI migrations and Redis/BullMQ gotcha
+- ci: run database migrations automatically before deploy
+
+
 ## [5.16.17] - 2026-03-06
 ### Fixed
 - fix: add error handling for database connection failures in processBlock job (#498)
