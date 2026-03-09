@@ -56,23 +56,8 @@ module.exports = async job => {
                     model: RpcHealthCheck,
                     as: 'rpcHealthCheck',
                     attributes: ['isReachable']
-                },
-                {
-                    model: OrbitChainConfig,
-                    as: 'orbitChildConfigs'
-                },
-                {
-                    model: OrbitChainConfig,
-                    as: 'orbitConfig'
-                },
-                {
-                    model: OpChainConfig,
-                    as: 'opChildConfigs'
-                },
-                {
-                    model: OpChainConfig,
-                    as: 'opConfig'
                 }
+                // Removed orbit/OP config includes - they will be loaded lazily if needed
             ]
         },
         {
@@ -197,7 +182,35 @@ module.exports = async job => {
         if (hasCachedWorkspace) {
             processedReceipt.workspace = { id: data.workspaceId, orbitConfig: null, orbitChildConfigs: [] };
         } else {
-            processedReceipt.workspace = transaction.workspace;
+            // Lazy load orbit configs only if we have logs that might contain orbit events
+            let orbitConfig = null;
+            let orbitChildConfigs = [];
+
+            if (processedReceipt.logs && processedReceipt.logs.length > 0) {
+                // Only query orbit configs if we have logs to process
+                const workspaceWithOrbitConfigs = await Workspace.findByPk(data.workspaceId, {
+                    attributes: ['id'],
+                    include: [
+                        {
+                            model: OrbitChainConfig,
+                            as: 'orbitConfig'
+                        },
+                        {
+                            model: OrbitChainConfig,
+                            as: 'orbitChildConfigs'
+                        }
+                    ]
+                });
+                orbitConfig = workspaceWithOrbitConfigs?.orbitConfig || null;
+                orbitChildConfigs = workspaceWithOrbitConfigs?.orbitChildConfigs || [];
+            }
+
+            // Build workspace object with lazily loaded orbit configs
+            processedReceipt.workspace = {
+                ...transaction.workspace,
+                orbitConfig,
+                orbitChildConfigs
+            };
         }
 
         const savedReceipt = await transaction.safeCreateReceipt(processedReceipt);
@@ -208,8 +221,21 @@ module.exports = async job => {
         }
 
         // OP Stack event detection - check for deposits and outputs
-        // Only available when we have the full workspace with OP config includes
-        const opChildConfigs = (!hasCachedWorkspace && transaction.workspace && transaction.workspace.opChildConfigs) ? transaction.workspace.opChildConfigs : [];
+        // Load OP configs lazily only if we have receipt logs to process
+        let opChildConfigs = [];
+        if (!hasCachedWorkspace && processedReceipt.logs && processedReceipt.logs.length > 0) {
+            // Lazily load OP child configs only when we have logs to process
+            const workspaceWithOpConfigs = await Workspace.findByPk(data.workspaceId, {
+                attributes: ['id'],
+                include: [
+                    {
+                        model: OpChainConfig,
+                        as: 'opChildConfigs'
+                    }
+                ]
+            });
+            opChildConfigs = workspaceWithOpConfigs?.opChildConfigs || [];
+        }
 
         for (const opConfig of opChildConfigs) {
             if (!processedReceipt.logs || processedReceipt.logs.length === 0) continue;
