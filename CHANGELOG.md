@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.11] - 2026-03-09
+### Fixed
+- fix: eliminate N+1 Redis pattern by batching getFailed() calls in queueMonitoring (#541)
+- fix: limit completed jobs fetched in queueMonitoring to prevent N+1 queries (#538)
+- fix: increase lock duration for low priority workers to prevent batchBlockDelete stalls (#539)
+- chore: remove Hetzner maintenance banner and page (#536)
+- fix: add claude[bot] to allowed_bots for triage-and-fix (#535)
+
+
 ## [5.17.10] - 2026-03-09
 ### Fixed
 - fix: allow scanner-created issues to trigger auto-fix pipeline (#528)
