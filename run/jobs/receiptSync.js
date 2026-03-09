@@ -180,15 +180,23 @@ module.exports = async job => {
         // Note: cached path is only used for non-orbit workspaces (blockSync skips caching for orbit),
         // so safe defaults for orbit fields are sufficient
         if (hasCachedWorkspace) {
-            processedReceipt.workspace = { id: data.workspaceId, orbitConfig: null, orbitChildConfigs: [] };
+            processedReceipt.workspace = {
+                id: data.workspaceId,
+                orbitConfig: null,
+                orbitChildConfigs: [],
+                opConfig: null,
+                opChildConfigs: []
+            };
         } else {
-            // Lazy load orbit configs only if we have logs that might contain orbit events
+            // Lazy load all L2 configs only if we have logs that might contain events
             let orbitConfig = null;
             let orbitChildConfigs = [];
+            let opConfig = null;
+            let opChildConfigs = [];
 
             if (processedReceipt.logs && processedReceipt.logs.length > 0) {
-                // Only query orbit configs if we have logs to process
-                const workspaceWithOrbitConfigs = await Workspace.findByPk(data.workspaceId, {
+                // Query all L2 configs in a single call when we have logs to process
+                const workspaceWithL2Configs = await Workspace.findByPk(data.workspaceId, {
                     attributes: ['id'],
                     include: [
                         {
@@ -198,18 +206,30 @@ module.exports = async job => {
                         {
                             model: OrbitChainConfig,
                             as: 'orbitChildConfigs'
+                        },
+                        {
+                            model: OpChainConfig,
+                            as: 'opConfig'
+                        },
+                        {
+                            model: OpChainConfig,
+                            as: 'opChildConfigs'
                         }
                     ]
                 });
-                orbitConfig = workspaceWithOrbitConfigs?.orbitConfig || null;
-                orbitChildConfigs = workspaceWithOrbitConfigs?.orbitChildConfigs || [];
+                orbitConfig = workspaceWithL2Configs?.orbitConfig || null;
+                orbitChildConfigs = workspaceWithL2Configs?.orbitChildConfigs || [];
+                opConfig = workspaceWithL2Configs?.opConfig || null;
+                opChildConfigs = workspaceWithL2Configs?.opChildConfigs || [];
             }
 
-            // Build workspace object with lazily loaded orbit configs
+            // Build workspace object with lazily loaded L2 configs for safeCreateReceipt
             processedReceipt.workspace = {
                 ...transaction.workspace,
                 orbitConfig,
-                orbitChildConfigs
+                orbitChildConfigs,
+                opConfig,
+                opChildConfigs
             };
         }
 
@@ -220,22 +240,9 @@ module.exports = async job => {
             return savedReceipt;
         }
 
-        // OP Stack event detection - check for deposits and outputs
-        // Load OP configs lazily only if we have receipt logs to process
-        let opChildConfigs = [];
-        if (!hasCachedWorkspace && processedReceipt.logs && processedReceipt.logs.length > 0) {
-            // Lazily load OP child configs only when we have logs to process
-            const workspaceWithOpConfigs = await Workspace.findByPk(data.workspaceId, {
-                attributes: ['id'],
-                include: [
-                    {
-                        model: OpChainConfig,
-                        as: 'opChildConfigs'
-                    }
-                ]
-            });
-            opChildConfigs = workspaceWithOpConfigs?.opChildConfigs || [];
-        }
+        // OP Stack event detection - use the already loaded configs for queue jobs
+        // Note: opChildConfigs are already loaded above before safeCreateReceipt
+        const opChildConfigs = (!hasCachedWorkspace && processedReceipt.workspace && processedReceipt.workspace.opChildConfigs) ? processedReceipt.workspace.opChildConfigs : [];
 
         for (const opConfig of opChildConfigs) {
             if (!processedReceipt.logs || processedReceipt.logs.length === 0) continue;
