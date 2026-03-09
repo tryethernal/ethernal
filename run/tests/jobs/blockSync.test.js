@@ -513,8 +513,8 @@ describe('blockSync', () => {
                 expect(Workspace.findByPk).toHaveBeenCalledWith(1, expect.objectContaining({
                     attributes: expect.arrayContaining(['id', 'name', 'rpcServer', 'browserSyncEnabled', 'isCustomL1Parent', 'rpcHealthCheckEnabled']),
                     include: expect.arrayContaining([
-                        'orbitConfig',
-                        'orbitChildConfigs',
+                        expect.objectContaining({ as: 'orbitConfig' }),
+                        expect.objectContaining({ as: 'orbitChildConfigs' }),
                         expect.objectContaining({ as: 'opChildConfigs' }),
                         expect.objectContaining({ as: 'explorer' }),
                         expect.objectContaining({ as: 'rpcHealthCheck' }),

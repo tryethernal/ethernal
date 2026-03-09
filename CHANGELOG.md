@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.12] - 2026-03-09
+### Fixed
+- fix: optimize workspace query in blockSync to reduce excessive joins (#542)
+- fix: prevent race condition in transaction receipt creation (#548)
+- fix: add transactions.state concurrent index, document large table rules (#544)
+- fix: handle null receipts gracefully in receiptSync job (#547)
+
+
 ## [5.17.11] - 2026-03-09
 ### Fixed
 - fix: eliminate N+1 Redis pattern by batching getFailed() calls in queueMonitoring (#541)
