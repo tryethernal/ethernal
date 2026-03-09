@@ -559,7 +559,14 @@ jobs:
                # For issue-level comments:
                gh api repos/${{ github.repository }}/issues/comments/{comment_id}/reactions -f content='-1'
                ```
-            4. If it's unclear → ask for clarification in a reply (no reaction yet)
+            4. If it was a **valid issue but already fixed** by a later commit on this branch → reply noting it was valid but already addressed, and react with 👍:
+               ```bash
+               # For inline review comments:
+               gh api repos/${{ github.repository }}/pulls/comments/{comment_id}/reactions -f content='+1'
+               # For issue-level comments:
+               gh api repos/${{ github.repository }}/issues/comments/{comment_id}/reactions -f content='+1'
+               ```
+            5. If it's unclear → ask for clarification in a reply (no reaction yet)
 
             **IMPORTANT:** Do NOT react to comments before verifying them. Verify first, then react with the appropriate emoji based on your assessment.
             If the review summary is clean (no issues flagged), react with 👍 on the summary.
