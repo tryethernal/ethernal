@@ -54,11 +54,56 @@ module.exports = async job => {
                     as: 'integrityCheck',
                     attributes: ['id', 'isHealthy', 'isRecovering']
                 },
-                'orbitConfig',
-                'orbitChildConfigs',
+                {
+                    model: require('../models').OrbitChainConfig,
+                    as: 'orbitConfig',
+                    attributes: [
+                        'rollupContract',
+                        'sequencerInboxContract',
+                        'bridgeContract',
+                        'inboxContract',
+                        'outboxContract',
+                        'stakeToken',
+                        'l1GatewayRouter',
+                        'l1Erc20Gateway',
+                        'l1WethGateway',
+                        'l1CustomGateway',
+                        'l2GatewayRouter',
+                        'l2Erc20Gateway',
+                        'l2WethGateway',
+                        'l2CustomGateway'
+                    ]
+                },
+                {
+                    model: require('../models').OrbitChainConfig,
+                    as: 'orbitChildConfigs',
+                    attributes: [
+                        'rollupContract',
+                        'sequencerInboxContract',
+                        'bridgeContract',
+                        'inboxContract',
+                        'outboxContract',
+                        'stakeToken',
+                        'l1GatewayRouter',
+                        'l1Erc20Gateway',
+                        'l1WethGateway',
+                        'l1CustomGateway',
+                        'l2GatewayRouter',
+                        'l2Erc20Gateway',
+                        'l2WethGateway',
+                        'l2CustomGateway'
+                    ]
+                },
                 {
                     model: OpChainConfig,
-                    as: 'opChildConfigs'
+                    as: 'opChildConfigs',
+                    attributes: [
+                        'workspaceId',
+                        'batchInboxAddress',
+                        'beaconUrl',
+                        'l2BlockTime',
+                        'l2GenesisTimestamp'
+                    ]
                 }
             ]
         });
@@ -127,11 +172,56 @@ module.exports = async job => {
                     as: 'integrityCheck',
                     attributes: ['id', 'isHealthy', 'isRecovering']
                 },
-                'orbitConfig',
-                'orbitChildConfigs',
+                {
+                    model: require('../models').OrbitChainConfig,
+                    as: 'orbitConfig',
+                    attributes: [
+                        'rollupContract',
+                        'sequencerInboxContract',
+                        'bridgeContract',
+                        'inboxContract',
+                        'outboxContract',
+                        'stakeToken',
+                        'l1GatewayRouter',
+                        'l1Erc20Gateway',
+                        'l1WethGateway',
+                        'l1CustomGateway',
+                        'l2GatewayRouter',
+                        'l2Erc20Gateway',
+                        'l2WethGateway',
+                        'l2CustomGateway'
+                    ]
+                },
+                {
+                    model: require('../models').OrbitChainConfig,
+                    as: 'orbitChildConfigs',
+                    attributes: [
+                        'rollupContract',
+                        'sequencerInboxContract',
+                        'bridgeContract',
+                        'inboxContract',
+                        'outboxContract',
+                        'stakeToken',
+                        'l1GatewayRouter',
+                        'l1Erc20Gateway',
+                        'l1WethGateway',
+                        'l1CustomGateway',
+                        'l2GatewayRouter',
+                        'l2Erc20Gateway',
+                        'l2WethGateway',
+                        'l2CustomGateway'
+                    ]
+                },
                 {
                     model: OpChainConfig,
-                    as: 'opChildConfigs'
+                    as: 'opChildConfigs',
+                    attributes: [
+                        'workspaceId',
+                        'batchInboxAddress',
+                        'beaconUrl',
+                        'l2BlockTime',
+                        'l2GenesisTimestamp'
+                    ]
                 }
             ]
         });
