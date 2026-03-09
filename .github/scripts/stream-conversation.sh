@@ -16,8 +16,8 @@
 
 set -euo pipefail
 
-LOG_FILE="${LOG_FILE:-/home/runner/work/_temp/claude-execution-output.json}"
-OFFSET_FILE="/tmp/streamer-offset"
+export LOG_FILE="${LOG_FILE:-/home/runner/work/_temp/claude-execution-output.json}"
+export OFFSET_FILE="/tmp/streamer-offset"
 POLL_INTERVAL=5
 MAX_WAIT=300  # 5 minutes
 
@@ -40,8 +40,6 @@ echo "[streamer] Log file detected after ${elapsed}s."
 # Main streaming loop
 while true; do
   sleep "$POLL_INTERVAL"
-
-  PREV_OFFSET=$(cat "$OFFSET_FILE" 2>/dev/null || echo "0")
 
   # Extract turns and POST new ones
   python3 << 'PYEOF' || true
