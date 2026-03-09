@@ -1,3 +1,10 @@
+/**
+ * @fileoverview Low-priority worker process.
+ * Handles cleanup and maintenance jobs: batchBlockDelete, workspaceReset, monitoring.
+ * Extended lock duration (300s) for complex deletion operations like batchBlockDelete.
+ * @module workers/lowPriority
+ */
+
 require('../instrument');
 const Sentry = require('@sentry/node');
 const { Worker, MetricsTime } = require('bullmq');
@@ -21,6 +28,7 @@ priorities['low'].forEach(jobName => {
         {
             concurrency: 10,
             maxStalledCount: 5,
+            lockDuration: 300000,
             connection,
             metrics: {
                 maxDataPoints: MetricsTime.ONE_WEEK * 2,
