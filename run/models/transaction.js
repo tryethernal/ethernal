@@ -564,7 +564,7 @@ module.exports = (sequelize, DataTypes) => {
                                     const outputData = getOutputProposedData(log);
                                     const challengePeriodEnds = calculateChallengePeriodEnd(
                                         parseInt(outputData.l1Timestamp),
-                                        opChildConfig.challengePeriodSeconds || 604800
+                                        opChildConfig.finalizationPeriodSeconds || 604800
                                     );
 
                                     await sequelize.models.OpOutput.bulkCreate([{
@@ -607,7 +607,7 @@ module.exports = (sequelize, DataTypes) => {
 
                                     const challengePeriodEnds = calculateChallengePeriodEnd(
                                         Math.floor(Date.now() / 1000),
-                                        opChildConfig.challengePeriodSeconds || 604800
+                                        opChildConfig.finalizationPeriodSeconds || 604800
                                     );
 
                                     await sequelize.models.OpOutput.bulkCreate([{
