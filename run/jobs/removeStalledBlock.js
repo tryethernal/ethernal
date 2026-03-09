@@ -4,7 +4,7 @@
  * @module jobs/removeStalledBlock
  */
 
-const { Block } = require('../models');
+const { Block, Transaction } = require('../models');
 const { enqueue } = require('../lib/queue');
 
 module.exports = async (job) => {
@@ -13,14 +13,19 @@ module.exports = async (job) => {
     if (!data.blockId)
         return 'Missing parameter';
 
-    const block = await Block.findByPk(data.blockId, {
-        include: ['transactions']
-    });
+    const block = await Block.findByPk(data.blockId);
     if (!block)
         return 'Could not find block';
 
-    const hasTransactionSyncing = block.transactions.length > 0 && block.transactions.filter(t => t.isSyncing).length > 0;
-    if (hasTransactionSyncing) {
+    // Check if any transactions are syncing using efficient count query
+    const syncingTransactionCount = await Transaction.count({
+        where: {
+            blockId: data.blockId,
+            isSyncing: true
+        }
+    });
+
+    if (syncingTransactionCount > 0) {
         await block.revertIfPartial();
         return `Removed stalled block ${block.id} - Workspace ${block.workspaceId} - #${block.number}`;
     }

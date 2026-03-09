@@ -1,5 +1,5 @@
 require('../mocks/lib/queue');
-const { Block } = require('../mocks/models');
+const { Block, Transaction } = require('../mocks/models');
 
 const removeStalledBlock = require('../../jobs/removeStalledBlock');
 const { enqueue } = require('../../lib/queue');
@@ -11,9 +11,9 @@ describe('removeStalledBlock', () => {
         const revertIfPartial = jest.fn();
         jest.spyOn(Block, 'findByPk').mockResolvedValue({
             workspaceId: 1,
-           transactions: [{ isSyncing: false }],
-           revertIfPartial
+            revertIfPartial
         });
+        jest.spyOn(Transaction, 'count').mockResolvedValue(0); // No syncing transactions
 
         removeStalledBlock({ data: { blockId: 1 }})
             .then(res => {
@@ -30,9 +30,9 @@ describe('removeStalledBlock', () => {
             id: 1,
             workspaceId: 1,
             number: 1,
-            transactions: [{ isSyncing: true }],
             revertIfPartial
         });
+        jest.spyOn(Transaction, 'count').mockResolvedValue(1); // Has syncing transactions
 
         removeStalledBlock({ data: { blockId: 1 }})
             .then(res => {

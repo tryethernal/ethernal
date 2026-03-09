@@ -100,8 +100,22 @@ module.exports = (sequelize, DataTypes) => {
      * @returns {Promise<void>}
      */
     async revertIfPartial() {
-        const transactions = await this.getTransactions();
-        const isSyncing = transactions.map(t => t.isSyncing).length > 0 || transactions.length != this.transactionsCount;
+        // Use efficient count queries instead of loading all transactions
+        const [syncingTransactionCount, currentTransactionCount] = await Promise.all([
+            sequelize.models.Transaction.count({
+                where: {
+                    blockId: this.id,
+                    isSyncing: true
+                }
+            }),
+            sequelize.models.Transaction.count({
+                where: {
+                    blockId: this.id
+                }
+            })
+        ]);
+
+        const isSyncing = syncingTransactionCount > 0 || currentTransactionCount !== this.transactionsCount;
 
         if (!isSyncing)
           return;
