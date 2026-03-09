@@ -58,6 +58,7 @@ module.exports = async job => {
                     model: require('../models').OrbitChainConfig,
                     as: 'orbitConfig',
                     attributes: [
+                        'parentWorkspaceId',
                         'rollupContract',
                         'sequencerInboxContract',
                         'bridgeContract',
@@ -183,6 +184,7 @@ module.exports = async job => {
                     model: require('../models').OrbitChainConfig,
                     as: 'orbitConfig',
                     attributes: [
+                        'parentWorkspaceId',
                         'rollupContract',
                         'sequencerInboxContract',
                         'bridgeContract',
