@@ -17,6 +17,11 @@ jest.mock('bullmq', () => ({
     }))
 }));
 
+jest.mock('../../lib/redis', () => ({
+    zcard: jest.fn().mockResolvedValue(0),
+    unlink: jest.fn().mockResolvedValue(1),
+}));
+
 const queueMonitoring = require('../../jobs/queueMonitoring');
 
 beforeEach(() => {
