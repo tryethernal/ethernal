@@ -648,7 +648,7 @@ jobs:
           steps.check_sentry.outputs.is_sentry == 'true' &&
           steps.merge_check.outputs.ready == 'true' &&
           steps.ci_check.outputs.passed == 'true' &&
-          steps.hotfix_check.outputs.is_hotfix != '0'
+          steps.hotfix_check.outputs.is_hotfix == '1'
         continue-on-error: true
         run: |
           curl -s -X POST "${{ secrets.APP_URL }}/webhooks/github-actions" \
@@ -666,7 +666,7 @@ jobs:
           steps.check_sentry.outputs.is_sentry == 'true' &&
           steps.merge_check.outputs.ready == 'true' &&
           steps.ci_check.outputs.passed == 'true' &&
-          steps.hotfix_check.outputs.is_hotfix != '0'
+          steps.hotfix_check.outputs.is_hotfix == '1'
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
         run: |
@@ -727,7 +727,7 @@ jobs:
           steps.check_sentry.outputs.is_sentry == 'true' &&
           steps.merge_check.outputs.ready == 'true' &&
           steps.ci_check.outputs.passed == 'true' &&
-          steps.hotfix_check.outputs.is_hotfix != '0'
+          steps.hotfix_check.outputs.is_hotfix == '1'
         continue-on-error: true
         run: |
           curl -s -X POST "${{ secrets.APP_URL }}/webhooks/github-actions" \
@@ -745,7 +745,7 @@ jobs:
           steps.check_sentry.outputs.is_sentry == 'true' &&
           steps.merge_check.outputs.ready == 'true' &&
           steps.ci_check.outputs.passed == 'true' &&
-          steps.hotfix_check.outputs.is_hotfix != '0'
+          steps.hotfix_check.outputs.is_hotfix == '1'
         env:
           SENTRY_API_TOKEN: ${{ secrets.SENTRY_API_TOKEN }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -775,7 +775,7 @@ jobs:
           steps.check_sentry.outputs.is_sentry == 'true' &&
           steps.merge_check.outputs.ready == 'true' &&
           steps.ci_check.outputs.passed == 'true' &&
-          steps.hotfix_check.outputs.is_hotfix != '0'
+          steps.hotfix_check.outputs.is_hotfix == '1'
         continue-on-error: true
         run: |
           curl -s -X POST "${{ secrets.APP_URL }}/webhooks/github-actions" \
