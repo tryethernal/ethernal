@@ -5,7 +5,7 @@
  */
 
 const { Block, Workspace } = require('../models');
-const { sanitize } = require('../lib/utils');
+const { sanitize, withTimeout } = require('../lib/utils');
 
 module.exports = async job => {
     const data = job.data;
@@ -38,11 +38,14 @@ module.exports = async job => {
         const client = block.workspace.getViemPublicClient();
 
         try {
-            const feeHistory = await client.getFeeHistory({
-                blockCount: 1,
-                blockNumber: block.number,
-                rewardPercentiles: [20, 50, 75]
-            });
+            const feeHistory = await withTimeout(
+                client.getFeeHistory({
+                    blockCount: 1,
+                    blockNumber: block.number,
+                    rewardPercentiles: [20, 50, 75]
+                }),
+                30000 // 30 second timeout for RPC calls under heavy load
+            );
 
             blockEvent = {
                 baseFeePerGas: feeHistory.baseFeePerGas[0].toString(),
