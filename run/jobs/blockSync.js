@@ -53,12 +53,6 @@ module.exports = async job => {
                     model: IntegrityCheck,
                     as: 'integrityCheck',
                     attributes: ['id', 'isHealthy', 'isRecovering']
-                },
-                'orbitConfig',
-                'orbitChildConfigs',
-                {
-                    model: OpChainConfig,
-                    as: 'opChildConfigs'
                 }
             ]
         });
@@ -126,12 +120,6 @@ module.exports = async job => {
                     model: IntegrityCheck,
                     as: 'integrityCheck',
                     attributes: ['id', 'isHealthy', 'isRecovering']
-                },
-                'orbitConfig',
-                'orbitChildConfigs',
-                {
-                    model: OpChainConfig,
-                    as: 'opChildConfigs'
                 }
             ]
         });
@@ -211,7 +199,15 @@ module.exports = async job => {
             Object.keys(Block.rawAttributes).concat(['transactions'])
         );
 
-        const orbitChildConfigs = workspace.orbitChildConfigs || [];
+        // Load orbit configurations only when needed to avoid N+1 queries
+        let orbitChildConfigs = [];
+        if (!workspace.orbitConfig && !workspace.orbitChildConfigs) {
+            // Only reload if orbit configurations haven't been loaded yet
+            await workspace.reload({
+                include: ['orbitConfig', 'orbitChildConfigs']
+            });
+        }
+        orbitChildConfigs = workspace.orbitChildConfigs || [];
 
         if (workspace.orbitConfig || orbitChildConfigs.length > 0) {
             // Filter transactions to only include those that interact with rollupContract or sequencerInbox
@@ -272,6 +268,15 @@ module.exports = async job => {
             return "Couldn't store block";
 
         // OP Stack batch detection - enqueue as separate jobs to avoid blocking sync
+        // Load OP configurations only when needed to avoid N+1 queries
+        if (!workspace.opChildConfigs) {
+            await workspace.reload({
+                include: [{
+                    model: OpChainConfig,
+                    as: 'opChildConfigs'
+                }]
+            });
+        }
         const opChildConfigs = workspace.opChildConfigs || [];
         if (opChildConfigs.length > 0) {
             const l1Timestamp = typeof processedBlock.timestamp === 'string' && processedBlock.timestamp.startsWith('0x')

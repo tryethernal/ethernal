@@ -111,7 +111,8 @@ const workspace = {
     countAddressTokenTransfers: jest.fn(),
     countAddressTransactionTraceSteps: jest.fn(),
     getFilteredImportedAccounts: jest.fn(),
-    safeDestroyOrbitData: jest.fn()
+    safeDestroyOrbitData: jest.fn(),
+    reload: jest.fn().mockResolvedValue()
 };
 
 const Workspace = {
