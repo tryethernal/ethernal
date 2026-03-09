@@ -120,7 +120,10 @@ const fetchEtherscanData = async (address, workspace) => {
 
     const endpoint = `https://${scannerHost}?module=contract&action=getsourcecode&address=${address}&apikey=${apiKey}`;
     try {
-        const response = await withTimeout(axios.get(endpoint, { headers }));
+        const response = await withTimeout(
+            axios.get(endpoint, { headers }),
+            30000 // 30 second timeout for external API calls
+        );
         return response ? response.data : null;
     } catch (error) {
         if (error.response && error.response.status >= 400)
