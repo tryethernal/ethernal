@@ -104,7 +104,7 @@ module.exports = (sequelize, DataTypes) => {
         const syncingTransactionCount = await sequelize.models.Transaction.count({
             where: {
                 blockId: this.id,
-                isSyncing: true
+                state: 'syncing'
             }
         });
 
