@@ -13,19 +13,19 @@ module.exports = async (job) => {
     if (!data.blockId)
         return 'Missing parameter';
 
-    const block = await Block.findByPk(data.blockId, {
-        include: ['transactions']
-    });
+    const block = await Block.findByPk(data.blockId);
     if (!block)
         return 'Could not find block';
 
-    const hasTransactionSyncing = block.transactions.length > 0 && block.transactions.filter(t => t.isSyncing).length > 0;
-    if (hasTransactionSyncing) {
-        await block.revertIfPartial();
+    // Let revertIfPartial() handle all the checking logic to avoid redundant queries
+    const wasReverted = await block.revertIfPartial();
+
+    if (wasReverted) {
         return `Removed stalled block ${block.id} - Workspace ${block.workspaceId} - #${block.number}`;
     }
-    else
+    else {
         await enqueue('increaseStripeBillingQuota', `increaseStripeBillingQuota-${data.blockId}-${block.workspaceId}`, { blockId: data.blockId });
+    }
 
     return true;
 };
