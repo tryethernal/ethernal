@@ -63,7 +63,7 @@
     }
 
     @fallbackApi {
-        path /api*
+        path /api* /webhooks*
     }
     handle @fallbackApi {
         reverse_proxy ethernal.internal:8080
