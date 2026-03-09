@@ -384,6 +384,12 @@ module.exports = async job => {
                 ? parseInt(processedBlock.timestamp, 16)
                 : Number(processedBlock.timestamp);
 
+            // Create hash map of synced transactions for O(1) lookup to avoid O(n²) performance regression
+            const transactionHashMap = new Map();
+            for (const tx of syncedBlock.transactions) {
+                transactionHashMap.set(tx.hash, tx);
+            }
+
             const opBatchJobs = [];
             for (const opConfig of opChildConfigs) {
                 if (!opConfig.batchInboxAddress) continue;
@@ -393,7 +399,7 @@ module.exports = async job => {
                 );
 
                 for (const tx of batchTxs) {
-                    const l1Transaction = syncedBlock.transactions.find(t => t.hash === tx.hash);
+                    const l1Transaction = transactionHashMap.get(tx.hash);
                     opBatchJobs.push({
                         name: `processOpBatch-${opConfig.workspaceId}-${tx.hash}`,
                         data: {
