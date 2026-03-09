@@ -541,30 +541,41 @@ jobs:
             gh api repos/${{ github.repository }}/issues/${{ steps.pr_info.outputs.pr_number }}/comments
             ```
 
-            ## Step 2: React to Every Greptile Comment
+            ## Step 2: Verify and Process Review Comments
 
-            For EVERY comment from `greptile-apps[bot]`, you MUST react using the GitHub API:
-            ```bash
-            # 👍 for clean reviews or valid comments you're fixing
-            gh api repos/${{ github.repository }}/issues/comments/{comment_id}/reactions -f content='+1'
-            # For inline review comments, use the pulls comments endpoint:
-            gh api repos/${{ github.repository }}/pulls/comments/{comment_id}/reactions -f content='+1'
-            # 👎 for incorrect or irrelevant comments (same endpoints with '-1')
-            ```
-            If the review summary is clean (no issues flagged), react with 👍.
+            For each review comment from `greptile-apps[bot]` that flags an issue:
+            1. **FIRST verify** the comment is correct by reading the actual code it references. Check ALL commits on the branch, not just the diff — a later commit may have already addressed the issue.
+            2. If it's a **valid issue** → fix it, commit, push, reply explaining the fix, and react with 👍:
+               ```bash
+               # For inline review comments:
+               gh api repos/${{ github.repository }}/pulls/comments/{comment_id}/reactions -f content='+1'
+               # For issue-level comments:
+               gh api repos/${{ github.repository }}/issues/comments/{comment_id}/reactions -f content='+1'
+               ```
+            3. If it's **incorrect** → reply on the PR explaining why it's wrong, and react with 👎:
+               ```bash
+               # For inline review comments:
+               gh api repos/${{ github.repository }}/pulls/comments/{comment_id}/reactions -f content='-1'
+               # For issue-level comments:
+               gh api repos/${{ github.repository }}/issues/comments/{comment_id}/reactions -f content='-1'
+               ```
+            4. If it was a **valid issue but already fixed** by a later commit on this branch → reply noting it was valid but already addressed, and react with 👍:
+               ```bash
+               # For inline review comments:
+               gh api repos/${{ github.repository }}/pulls/comments/{comment_id}/reactions -f content='+1'
+               # For issue-level comments:
+               gh api repos/${{ github.repository }}/issues/comments/{comment_id}/reactions -f content='+1'
+               ```
+            5. If it's unclear → ask for clarification in a reply (no reaction yet)
 
-            ## Step 3: Process Review Comments
-
-            For each review comment that flags an issue:
-            - If it's a valid issue → fix it, commit, push, and react with 👍
-            - If it's incorrect → reply on the PR explaining why, and react with 👎
-            - If it's unclear → ask for clarification in a reply
+            **IMPORTANT:** Do NOT react to comments before verifying them. Verify first, then react with the appropriate emoji based on your assessment.
+            If the review summary is clean (no issues flagged), react with 👍 on the summary.
 
             Take comments seriously but verify they're correct before acting.
             NEVER remove working code to satisfy a review bot.
             NEVER modify: `run/api/stripe.js`, `run/webhooks/stripe.js`, `run/lib/stripe.js`, `run/middlewares/auth.js`, `run/lib/crypto.js`
 
-            ## Step 4: Signal Merge Readiness
+            ## Step 3: Signal Merge Readiness
 
             After processing ALL comments, determine if the PR is ready to merge:
             - **READY**: All review issues have been addressed (fixed or correctly dismissed)
@@ -728,7 +739,7 @@ jobs:
           echo "last_tag=$LAST_TAG" >> "$GITHUB_OUTPUT"
 
           # Get commits since last tag, filter out release machinery
-          COMMITS=$(git log --oneline "$LAST_TAG..HEAD" | grep -viE '^[a-f0-9]+ (update changelog|[0-9]+\.[0-9]+\.[0-9]+|Merge branch)' || true)
+          COMMITS=$(git log --oneline "$LAST_TAG..HEAD" | grep -viE '^[a-f0-9]+ (update changelog|[0-9]+\.[0-9]+\.[0-9]+|Merge (branch|develop|master))' || true)
           echo "Commits since $LAST_TAG:"
           echo "$COMMITS"
 
@@ -845,7 +856,7 @@ jobs:
           # Use pre-deploy tag captured by the deploy step
           LAST_TAG=${{ steps.deploy_hotfix.outputs.last_tag }}
           HOTFIX_PR=${{ steps.pr_info.outputs.pr_number }}
-          PR_NUMBERS=$(git log --oneline "$LAST_TAG..HEAD" | grep -viE '^[a-f0-9]+ (update changelog|[0-9]+\.[0-9]+\.[0-9]+|Merge branch)' | grep -oP '#\K\d+' | grep -v "^${HOTFIX_PR}$" || true)
+          PR_NUMBERS=$(git log --oneline "$LAST_TAG..HEAD" | grep -viE '^[a-f0-9]+ (update changelog|[0-9]+\.[0-9]+\.[0-9]+|Merge (branch|develop|master))' | grep -oP '#\K\d+' | grep -v "^${HOTFIX_PR}$" || true)
 
           if [ -z "$PR_NUMBERS" ]; then
             echo "No other PRs swept into this hotfix release"
