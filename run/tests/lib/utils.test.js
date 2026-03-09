@@ -55,7 +55,15 @@ describe('sanitize', () => {
             a: 'Not An Address',
             b: '0xad0cf4fe440ada22aacf5c2f763d9ab481174bbd'
         });
-    })
+    });
+
+    it('Should return null for null input', () => {
+        expect(sanitize(null)).toEqual(null);
+    });
+
+    it('Should return null for undefined input', () => {
+        expect(sanitize(undefined)).toEqual(null);
+    });
 });
 
 describe('stringifyBns', () => {
