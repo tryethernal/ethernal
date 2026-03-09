@@ -202,6 +202,11 @@ module.exports = async job => {
 
         const savedReceipt = await transaction.safeCreateReceipt(processedReceipt);
 
+        // Handle graceful failure when transaction was deleted during processing
+        if (savedReceipt === 'Transaction no longer exists') {
+            return savedReceipt;
+        }
+
         // OP Stack event detection - check for deposits and outputs
         // Only available when we have the full workspace with OP config includes
         const opChildConfigs = (!hasCachedWorkspace && transaction.workspace && transaction.workspace.opChildConfigs) ? transaction.workspace.opChildConfigs : [];
