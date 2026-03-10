@@ -5,8 +5,34 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --bg-base: #ffffff;
+    --bg-card: #f8fafc;
+    --bg-card-hover: #f1f5f9;
+    --bg-surface: #e2e8f0;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #94a3b8;
+    --border-subtle: rgba(15, 23, 42, 0.1);
+    --prose-body: #334155;
+    --prose-pre-bg: #1e293b;
+  }
+
+  .dark {
+    --bg-base: #0B1120;
+    --bg-card: #111827;
+    --bg-card-hover: #1a2234;
+    --bg-surface: #151d2e;
+    --text-primary: #F1F5F9;
+    --text-secondary: #94A3B8;
+    --text-muted: #64748B;
+    --border-subtle: rgba(61, 149, 206, 0.22);
+    --prose-body: #CBD5E1;
+    --prose-pre-bg: #0f172a;
+  }
+
   body {
-    @apply bg-bg-base text-text-primary font-body;
+    @apply bg-bg-base text-text-primary font-body transition-colors duration-200;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
@@ -39,7 +65,7 @@
 
 /* Prose overrides for article content */
 .prose {
-  @apply text-slate-300;
+  color: var(--prose-body);
 }
 
 .prose h2 {
@@ -60,12 +86,15 @@
 }
 
 .prose code:not(pre code) {
-  @apply bg-bg-surface text-primary-light px-1.5 py-0.5 rounded text-sm font-normal
+  @apply px-1.5 py-0.5 rounded text-sm font-normal
          before:content-[''] after:content-[''];
+  background: var(--bg-surface);
+  color: #3D95CE;
 }
 
 .prose pre {
-  @apply bg-[#0f172a] border border-border-subtle rounded-lg;
+  background: var(--prose-pre-bg) !important;
+  @apply border border-border-subtle rounded-lg;
 }
 
 .prose blockquote {
@@ -77,12 +106,12 @@
 }
 
 .prose th {
-  @apply text-left text-text-primary font-semibold bg-bg-surface px-4 py-2
-         border border-border-subtle text-sm;
+  @apply text-left text-text-primary font-semibold px-4 py-2 border border-border-subtle text-sm;
+  background: var(--bg-surface);
 }
 
 .prose td {
-  @apply px-4 py-2 border border-border-subtle/50 text-sm;
+  @apply px-4 py-2 border border-border-subtle text-sm;
 }
 
 .prose hr {

@@ -1,6 +1,6 @@
 ---
 /**
- * @fileoverview Blog homepage with category filter and card grid.
+ * @fileoverview Blog homepage with hero section, category filter, and uniform card grid.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import BlogCard from '../components/BlogCard.astro';
@@ -12,17 +12,18 @@ const sortedPosts = posts.sort((a, b) => b.data.date.valueOf() - a.data.date.val
 
 const allTags = [...new Set(sortedPosts.flatMap(p => p.data.tags))];
 const categories = ['All', ...allTags];
-
-const [featured, ...rest] = sortedPosts;
 ---
 
 <BaseLayout title="Blog">
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-12">
-    <!-- Hero -->
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 pt-14 pb-16">
+    <!-- Hero section -->
     <div class="mb-12">
-      <h1 class="font-heading text-4xl sm:text-5xl font-bold text-text-primary mb-3">Blog</h1>
+      <span class="text-sm font-medium text-primary uppercase tracking-wider">Blog</span>
+      <h1 class="font-heading text-4xl sm:text-5xl font-bold text-text-primary mt-2 mb-3">
+        Web3 Development Insights
+      </h1>
       <p class="text-lg text-text-secondary max-w-2xl">
-        Insights on EVM development, block explorers, and blockchain infrastructure.
+        Deep dives into EVM internals, smart contract patterns, and the infrastructure behind block explorers.
       </p>
     </div>
 
@@ -31,23 +32,9 @@ const [featured, ...rest] = sortedPosts;
       <CategoryFilter client:load categories={categories} />
     </div>
 
-    <!-- Post grid -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="post-grid">
-      {featured && (
-        <div data-tags={JSON.stringify(featured.data.tags)}>
-          <BlogCard
-            title={featured.data.title}
-            slug={featured.id}
-            description={featured.data.description}
-            date={featured.data.date}
-            tags={featured.data.tags}
-            image={featured.data.image}
-            readingTime={featured.data.readingTime}
-            featured={true}
-          />
-        </div>
-      )}
-      {rest.map(post => (
+    <!-- Post grid — all cards uniform -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="post-grid">
+      {sortedPosts.map((post, i) => (
         <div data-tags={JSON.stringify(post.data.tags)}>
           <BlogCard
             title={post.data.title}
@@ -57,6 +44,7 @@ const [featured, ...rest] = sortedPosts;
             tags={post.data.tags}
             image={post.data.image}
             readingTime={post.data.readingTime}
+            isFeatured={i === 0}
           />
         </div>
       ))}

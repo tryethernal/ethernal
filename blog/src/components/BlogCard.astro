@@ -9,7 +9,7 @@
  * @prop {string[]} tags - Category tags
  * @prop {string} [image] - Optional hero image
  * @prop {number} [readingTime] - Estimated reading time in minutes
- * @prop {boolean} [featured] - Whether to render as featured (large) card
+ * @prop {boolean} [isFeatured] - Whether this is the latest/featured post
  */
 
 interface Props {
@@ -20,10 +20,10 @@ interface Props {
   tags: string[];
   image?: string;
   readingTime?: number;
-  featured?: boolean;
+  isFeatured?: boolean;
 }
 
-const { title, slug, description, date, tags, image, readingTime, featured = false } = Astro.props;
+const { title, slug, description, date, tags, image, readingTime, isFeatured = false } = Astro.props;
 
 const formattedDate = date.toLocaleDateString('en-US', {
   year: 'numeric',
@@ -32,34 +32,65 @@ const formattedDate = date.toLocaleDateString('en-US', {
 });
 
 const tag = tags[0] || 'Article';
+
+// Category-based gradient for generated covers
+const gradientMap: Record<string, string> = {
+  'EVM': 'from-blue-600/80 via-indigo-700/70 to-purple-800/80',
+  'Ethereum': 'from-indigo-600/80 via-blue-700/70 to-cyan-800/80',
+  'Smart Contracts': 'from-violet-600/80 via-purple-700/70 to-fuchsia-800/80',
+  'Infrastructure': 'from-cyan-600/80 via-teal-700/70 to-emerald-800/80',
+  'L2': 'from-emerald-600/80 via-teal-700/70 to-cyan-800/80',
+  'Developer Tools': 'from-amber-600/80 via-orange-700/70 to-red-800/80',
+  'Developer Education': 'from-blue-500/80 via-violet-600/70 to-purple-700/80',
+  'Ethernal': 'from-sky-600/80 via-blue-700/70 to-indigo-800/80',
+};
+const gradient = gradientMap[tag] || 'from-blue-600/80 via-slate-700/70 to-indigo-800/80';
+
+// Decorative pattern seed from slug
+const seed = slug.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
+const patternRotate = (seed % 60) - 30;
+const patternX = seed % 40;
+const patternY = (seed * 7) % 30;
 ---
 
-<a href={`/blog/${slug}`} class="block blog-card group" class:list={[featured && 'md:col-span-3']}>
+<a href={`/blog/${slug}`} class="block blog-card group">
   {image ? (
-    <div class:list={['overflow-hidden', featured ? 'h-64' : 'h-44']}>
+    <div class="aspect-[16/9] overflow-hidden">
       <img src={image} alt={title}
            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
     </div>
   ) : (
-    <div class:list={[
-      'flex items-center justify-center bg-gradient-to-br from-primary/10 to-accent/10',
-      featured ? 'h-48' : 'h-32'
-    ]}>
-      <span class="text-4xl opacity-30">📝</span>
+    <div class={`aspect-[16/9] overflow-hidden relative bg-gradient-to-br ${gradient}`}>
+      <!-- Decorative geometric pattern -->
+      <div class="absolute inset-0 opacity-[0.15]"
+           style={`transform: rotate(${patternRotate}deg) translate(${patternX}px, ${patternY}px);`}>
+        <div class="absolute top-4 right-8 w-32 h-32 border border-white/40 rounded-full"></div>
+        <div class="absolute bottom-6 left-6 w-20 h-20 border border-white/30 rounded-lg rotate-45"></div>
+        <div class="absolute top-1/2 left-1/3 w-16 h-16 border border-white/20 rounded-full"></div>
+        <div class="absolute top-8 left-12 w-24 h-1 bg-white/20 rounded"></div>
+        <div class="absolute bottom-12 right-16 w-12 h-12 border-2 border-white/25 rounded"></div>
+      </div>
+      <!-- Title overlay on the cover -->
+      <div class="absolute inset-0 flex flex-col justify-end p-5">
+        <span class="text-[10px] uppercase tracking-widest text-white/60 font-medium mb-1.5">{tag}</span>
+        <p class="text-white font-heading font-semibold text-base sm:text-lg leading-snug line-clamp-3 drop-shadow-md">
+          {title}
+        </p>
+      </div>
     </div>
   )}
   <div class="p-5">
-    <div class="flex items-center gap-3 mb-3">
+    <div class="flex items-center gap-3 mb-2.5">
       <span class="text-xs font-medium text-primary bg-primary/10 px-2 py-0.5 rounded">{tag}</span>
+      {isFeatured && (
+        <span class="text-[10px] font-semibold uppercase tracking-wider text-amber-400 dark:text-amber-400 text-amber-600">Featured</span>
+      )}
       <span class="text-xs text-text-muted">{formattedDate}</span>
       {readingTime && <span class="text-xs text-text-muted">{readingTime} min read</span>}
     </div>
-    <h3 class:list={[
-      'font-heading font-semibold text-text-primary mb-2 line-clamp-2 group-hover:text-primary transition-colors',
-      featured ? 'text-2xl' : 'text-lg'
-    ]}>
+    <h3 class="font-heading font-semibold text-text-primary mb-2 text-lg leading-snug line-clamp-2 group-hover:text-primary transition-colors">
       {title}
     </h3>
-    <p class="text-sm text-text-secondary line-clamp-3 leading-relaxed">{description}</p>
+    <p class="text-sm text-text-secondary line-clamp-2 leading-relaxed">{description}</p>
   </div>
 </a>

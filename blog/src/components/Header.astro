@@ -1,18 +1,29 @@
 ---
 /**
- * @fileoverview Blog header/navbar component with Ethernal branding.
+ * @fileoverview Blog header/navbar component with Ethernal branding and theme toggle.
  * @component Header
  */
 ---
-<header class="sticky top-0 z-50 border-b border-border-subtle bg-bg-base/80 backdrop-blur-xl">
+<header class="sticky top-0 z-50 border-b border-border-subtle bg-bg-base/80 backdrop-blur-xl transition-colors duration-200">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
     <a href="/" class="flex items-center gap-2 text-decoration-none">
       <span class="font-heading text-xl font-semibold text-text-primary">Ethernal</span>
     </a>
-    <nav class="flex items-center gap-6">
+    <nav class="flex items-center gap-4 sm:gap-6">
       <a href="/blog" class="text-sm text-primary font-medium hover:text-primary-light transition-colors">Blog</a>
       <a href="https://doc.tryethernal.com" target="_blank" rel="noopener noreferrer"
          class="text-sm text-text-secondary hover:text-text-primary transition-colors">Docs</a>
+      <button id="theme-toggle" type="button" aria-label="Toggle theme"
+              class="p-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-card transition-colors">
+        <svg id="theme-icon-sun" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
+        <svg id="theme-icon-moon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+        </svg>
+      </button>
       <a href="https://app.tryethernal.com" target="_blank" rel="noopener noreferrer"
          class="text-sm bg-primary hover:bg-primary-light text-white px-4 py-1.5 rounded-lg font-medium transition-colors">
         Get Started
@@ -20,3 +31,23 @@
     </nav>
   </div>
 </header>
+
+<script>
+  function updateThemeIcons() {
+    const isDark = document.documentElement.classList.contains('dark');
+    const sun = document.getElementById('theme-icon-sun');
+    const moon = document.getElementById('theme-icon-moon');
+    if (sun && moon) {
+      sun.classList.toggle('hidden', !isDark);
+      moon.classList.toggle('hidden', isDark);
+    }
+  }
+
+  updateThemeIcons();
+
+  document.getElementById('theme-toggle')?.addEventListener('click', () => {
+    const isDark = document.documentElement.classList.toggle('dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    updateThemeIcons();
+  });
+</script>

@@ -44,6 +44,16 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   <title>{title} | Ethernal Blog</title>
 
   <link rel="icon" type="image/svg+xml" href="/blog/favicon.svg" />
+
+  <!-- Inline theme init to prevent FOUC -->
+  <script is:inline>
+    (function() {
+      const stored = localStorage.getItem('theme');
+      if (stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      }
+    })();
+  </script>
 </head>
 <body class="min-h-screen flex flex-col">
   <Header />
