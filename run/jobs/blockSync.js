@@ -72,7 +72,12 @@ module.exports = async job => {
                         'l2Erc20Gateway',
                         'l2WethGateway',
                         'l2CustomGateway'
-                    ]
+                    ],
+                    include: {
+                        model: require('../models').Workspace,
+                        as: 'parentWorkspace',
+                        attributes: ['id', 'rpcServer']
+                    }
                 },
                 {
                     model: require('../models').OrbitChainConfig,
@@ -191,7 +196,12 @@ module.exports = async job => {
                         'l2Erc20Gateway',
                         'l2WethGateway',
                         'l2CustomGateway'
-                    ]
+                    ],
+                    include: {
+                        model: require('../models').Workspace,
+                        as: 'parentWorkspace',
+                        attributes: ['id', 'rpcServer']
+                    }
                 },
                 {
                     model: require('../models').OrbitChainConfig,

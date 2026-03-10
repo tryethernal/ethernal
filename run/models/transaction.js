@@ -345,7 +345,11 @@ module.exports = (sequelize, DataTypes) => {
                             const withdrawalData = getWithdrawalData(log, this);
                             let tokenSymbol, tokenDecimals;
                             if (withdrawalData.l1Token) {
-                                const parentWorkspace = await receipt.workspace.orbitConfig.getParentWorkspace();
+                                // Use pre-loaded parentWorkspace to avoid N+1 query
+                                const parentWorkspace = receipt.workspace.orbitConfig.parentWorkspace;
+                                if (!parentWorkspace) {
+                                    throw new Error('Parent workspace not loaded - ensure orbitConfig includes parentWorkspace in blockSync query');
+                                }
                                 ({ tokenSymbol, tokenDecimals } = await getWithdrawalTokenInfo(withdrawalData.l1Token, parentWorkspace.rpcServer));
                             }
 
