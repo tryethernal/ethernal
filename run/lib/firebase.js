@@ -4472,7 +4472,7 @@ const storeTokenBalanceChanges = async (userId, workspace, tokenTransferId, chan
     if (!tokenTransfer)
         throw new Error(`Couldn't find token transfer`);
 
-    return changes.forEach(async change => await tokenTransfer.safeCreateBalanceChange(change));
+    return await tokenTransfer.safeCreateBalanceChanges(changes);
 };
 
 /**
