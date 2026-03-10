@@ -3523,10 +3523,11 @@ describe('storeTokenBalanceChanges', () => {
         { src: '0x789' }
     ];
 
-    it('Should call the creation method for each balance change', async () => {
+    it('Should call the bulk creation method with all balance changes', async () => {
         const tokenTransfer = (await workspace.getTokenTransfers(1))[0];
         await db.storeTokenBalanceChanges('123', 'My Workspace', '0x123', balanceChanges);
-        expect(tokenTransfer.safeCreateBalanceChange).toHaveBeenCalledTimes(2);
+        expect(tokenTransfer.safeCreateBalanceChanges).toHaveBeenCalledTimes(1);
+        expect(tokenTransfer.safeCreateBalanceChanges).toHaveBeenCalledWith(balanceChanges);
     });
 
     it('Should throw an error if the token transfer does not exist', async () => {

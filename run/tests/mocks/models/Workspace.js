@@ -63,7 +63,8 @@ const contract2 = {
 const tokenTransfer = {
     id: 1,
     diff: '123',
-    safeCreateBalanceChange: jest.fn().mockResolvedValue()
+    safeCreateBalanceChange: jest.fn().mockResolvedValue(),
+    safeCreateBalanceChanges: jest.fn().mockResolvedValue([])
 };
 
 const workspace = {
