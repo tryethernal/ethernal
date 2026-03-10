@@ -9,7 +9,7 @@ import CategoryFilter from '../components/CategoryFilter.vue';
 import { getCollection } from 'astro:content';
 
 const posts = await getCollection('blog', ({ data }) => data.status === 'published');
-const sortedPosts = posts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const sortedPosts = [...posts].sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
 const allTags = [...new Set(sortedPosts.flatMap(p => p.data.tags))];
 const categories = ['All', ...allTags];

@@ -40,7 +40,7 @@ const relatedPosts = allPosts
   .slice(0, 3);
 ---
 
-<BaseLayout title={title} description={description} image={image} plainBg>
+<BaseLayout title={title} description={description} image={image} plainBg ogType="article">
   <!-- Structured Data: BlogPosting -->
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
