@@ -112,7 +112,8 @@ module.exports = async job => {
                         'l2Erc20Gateway',
                         'l2WethGateway',
                         'l2CustomGateway'
-                    ]
+                    ],
+                    required: false
                 },
                 {
                     model: require('../models').OrbitChainConfig,
@@ -133,12 +134,14 @@ module.exports = async job => {
                         'l2Erc20Gateway',
                         'l2WethGateway',
                         'l2CustomGateway'
-                    ]
+                    ],
+                    required: false
                 },
                 {
                     model: require('../models').OpChainConfig,
                     as: 'opChildConfigs',
-                    attributes: ['workspaceId', 'batchInboxAddress', 'beaconUrl', 'l2BlockTime', 'l2GenesisTimestamp']
+                    attributes: ['workspaceId', 'batchInboxAddress', 'beaconUrl', 'l2BlockTime', 'l2GenesisTimestamp'],
+                    required: false
                 }
             ]
         });
@@ -200,7 +203,8 @@ module.exports = async job => {
                         model: require('../models').Workspace,
                         as: 'parentWorkspace',
                         attributes: ['id', 'rpcServer']
-                    }
+                    },
+                    required: false
                 },
                 {
                     model: require('../models').OrbitChainConfig,
@@ -221,7 +225,8 @@ module.exports = async job => {
                         'l2Erc20Gateway',
                         'l2WethGateway',
                         'l2CustomGateway'
-                    ]
+                    ],
+                    required: false
                 },
                 {
                     model: OpChainConfig,
@@ -232,7 +237,8 @@ module.exports = async job => {
                         'beaconUrl',
                         'l2BlockTime',
                         'l2GenesisTimestamp'
-                    ]
+                    ],
+                    required: false
                 }
             ]
         });
@@ -324,7 +330,8 @@ module.exports = async job => {
                         model: require('../models').Workspace,
                         as: 'parentWorkspace',
                         attributes: ['id', 'rpcServer']
-                    }
+                    },
+                    required: false
                 },
                 {
                     model: require('../models').OrbitChainConfig,
@@ -345,7 +352,8 @@ module.exports = async job => {
                         'l2Erc20Gateway',
                         'l2WethGateway',
                         'l2CustomGateway'
-                    ]
+                    ],
+                    required: false
                 },
                 {
                     model: OpChainConfig,
@@ -356,7 +364,8 @@ module.exports = async job => {
                         'beaconUrl',
                         'l2BlockTime',
                         'l2GenesisTimestamp'
-                    ]
+                    ],
+                    required: false
                 }
             ]
         });
