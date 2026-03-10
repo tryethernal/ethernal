@@ -1,6 +1,6 @@
 ---
 /**
- * @fileoverview Card component for blog post listings.
+ * @fileoverview Card component for blog post grid listings.
  * @component BlogCard
  * @prop {string} title - Post title
  * @prop {string} slug - URL slug
@@ -9,7 +9,6 @@
  * @prop {string[]} tags - Category tags
  * @prop {string} [image] - Optional hero image
  * @prop {number} [readingTime] - Estimated reading time in minutes
- * @prop {boolean} [isFeatured] - Whether this is the latest/featured post
  */
 
 interface Props {
@@ -20,13 +19,11 @@ interface Props {
   tags: string[];
   image?: string;
   readingTime?: number;
-  isFeatured?: boolean;
 }
 
-const { title, slug, description, date, tags, image, readingTime, isFeatured = false } = Astro.props;
+const { title, slug, description, date, tags, image, readingTime } = Astro.props;
 
 const formattedDate = date.toLocaleDateString('en-US', {
-  year: 'numeric',
   month: 'short',
   day: 'numeric',
 });
@@ -82,9 +79,6 @@ const patternY = (seed * 7) % 30;
   <div class="p-5">
     <div class="flex items-center gap-3 mb-2.5">
       <span class="text-xs font-medium text-primary bg-primary/10 px-2 py-0.5 rounded">{tag}</span>
-      {isFeatured && (
-        <span class="text-[10px] font-semibold uppercase tracking-wider text-amber-400 dark:text-amber-400 text-amber-600">Featured</span>
-      )}
       <span class="text-xs text-text-muted">{formattedDate}</span>
       {readingTime && <span class="text-xs text-text-muted">{readingTime} min read</span>}
     </div>

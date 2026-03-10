@@ -1,8 +1,9 @@
 ---
 /**
- * @fileoverview Blog homepage with hero section, category filter, and uniform card grid.
+ * @fileoverview Blog homepage with hero section, featured post, category filter, and card grid.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
+import FeaturedCard from '../components/FeaturedCard.astro';
 import BlogCard from '../components/BlogCard.astro';
 import CategoryFilter from '../components/CategoryFilter.vue';
 import { getCollection } from 'astro:content';
@@ -12,6 +13,8 @@ const sortedPosts = posts.sort((a, b) => b.data.date.valueOf() - a.data.date.val
 
 const allTags = [...new Set(sortedPosts.flatMap(p => p.data.tags))];
 const categories = ['All', ...allTags];
+
+const [featured, ...rest] = sortedPosts;
 ---
 
 <BaseLayout title="Blog">
@@ -27,14 +30,29 @@ const categories = ['All', ...allTags];
       </p>
     </div>
 
+    <!-- Featured post (horizontal card) -->
+    {featured && (
+      <div class="mb-12" id="featured-card" data-tags={JSON.stringify(featured.data.tags)}>
+        <FeaturedCard
+          title={featured.data.title}
+          slug={featured.id}
+          description={featured.data.description}
+          date={featured.data.date}
+          tags={featured.data.tags}
+          image={featured.data.image}
+          readingTime={featured.data.readingTime}
+        />
+      </div>
+    )}
+
     <!-- Category filter -->
     <div class="mb-10">
       <CategoryFilter client:load categories={categories} />
     </div>
 
-    <!-- Post grid — all cards uniform -->
+    <!-- Post grid -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="post-grid">
-      {sortedPosts.map((post, i) => (
+      {rest.map(post => (
         <div data-tags={JSON.stringify(post.data.tags)}>
           <BlogCard
             title={post.data.title}
@@ -44,7 +62,6 @@ const categories = ['All', ...allTags];
             tags={post.data.tags}
             image={post.data.image}
             readingTime={post.data.readingTime}
-            isFeatured={i === 0}
           />
         </div>
       ))}
@@ -61,12 +78,22 @@ const categories = ['All', ...allTags];
   document.addEventListener('filter-change', (e: Event) => {
     const category = (e as CustomEvent).detail;
     const grid = document.getElementById('post-grid');
+    const featured = document.getElementById('featured-card');
     const noResults = document.getElementById('no-results');
     if (!grid || !noResults) return;
 
-    const cards = grid.querySelectorAll<HTMLElement>('[data-tags]');
     let visibleCount = 0;
 
+    // Filter featured card
+    if (featured) {
+      const fTags: string[] = JSON.parse(featured.dataset.tags || '[]');
+      const fShow = category === 'All' || fTags.includes(category);
+      featured.style.display = fShow ? '' : 'none';
+      if (fShow) visibleCount++;
+    }
+
+    // Filter grid cards
+    const cards = grid.querySelectorAll<HTMLElement>('[data-tags]');
     cards.forEach(card => {
       const tags: string[] = JSON.parse(card.dataset.tags || '[]');
       const show = category === 'All' || tags.includes(category);
