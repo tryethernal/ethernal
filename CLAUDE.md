@@ -113,6 +113,7 @@ All traffic goes through Caddy on Fly.io (`ethernal-caddy` app, `fly.caddy.toml`
 - Landing served for `tryethernal.com` and `www.tryethernal.com` only; all other domains get the app frontend
 - Caddy handles on-demand TLS for explorer subdomains and custom domains
 - Self-hosted users generate their own Caddyfile via `generate-env-files.sh` (unaffected)
+- **WebSocket path — DO NOT CHANGE:** Caddy uses `handle /app*` (NOT `handle_path`) to route WebSocket traffic to Soketi while preserving the `/app` prefix. The frontend Pusher client (`src/plugins/pusher.js`) must NOT set `wsPath` — pusher-js already generates `/app/{key}` by default. Setting `wsPath: '/app'` causes a double prefix (`/app/app/{key}`) resulting in 404s. If you change one, you break the other. The correct pairing is: Caddyfile `handle /app*` + no `wsPath` in pusher config.
 - Caddy deploys via `flyctl deploy -c fly.caddy.toml` (also runs in CI as `deploy_caddy` job)
 
 ### Sentry Error & Performance Monitoring

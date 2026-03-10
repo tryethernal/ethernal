@@ -27,7 +27,6 @@ export default {
                 pusher = envStore.soketiKey ?
                     new Pusher(envStore.soketiKey, {
                         wsHost: window.location.hostname,
-                        wsPath: '/app',
                         forceTLS: window.location.protocol === 'https:',
                         enabledTransports: ['ws', 'wss'],
                         userAuthentication: {
