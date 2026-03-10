@@ -202,7 +202,8 @@ module.exports = async job => {
                     include: {
                         model: require('../models').Workspace,
                         as: 'parentWorkspace',
-                        attributes: ['id', 'rpcServer']
+                        attributes: ['id', 'rpcServer'],
+                        required: false
                     },
                     required: false
                 },
@@ -329,7 +330,8 @@ module.exports = async job => {
                     include: {
                         model: require('../models').Workspace,
                         as: 'parentWorkspace',
-                        attributes: ['id', 'rpcServer']
+                        attributes: ['id', 'rpcServer'],
+                        required: false
                     },
                     required: false
                 },
