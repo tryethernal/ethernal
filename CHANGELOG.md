@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.21] - 2026-03-10
+### Fixed
+- fix: add compound index to optimize transaction queries (#587)
+- fix: eliminate N+1 Redis pattern in queueMonitoring by conditionally fetching failed jobs (#585)
+- fix: preserve WebSocket path when routing to Soketi (#586)
+
+
 ## [5.17.20] - 2026-03-10
 ### Fixed
 - fix: eliminate N+1 Redis pattern in queueMonitoring by batching getFailed calls (#581)
