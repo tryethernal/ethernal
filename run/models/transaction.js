@@ -197,23 +197,28 @@ module.exports = (sequelize, DataTypes) => {
      * Creates a transaction receipt and processes its logs.
      * Updates transaction state to ready and triggers real-time updates.
      * @param {Object} receipt - Receipt data with logs
+     * @param {Object} options - Optional configuration
+     * @param {boolean} [options.skipExistenceCheck=false] - Skip transaction existence check for performance
      * @returns {Promise<TransactionReceipt>} The created receipt
      * @throws {Error} If receipt parameter is missing
      */
-    async safeCreateReceipt(receipt) {
+    async safeCreateReceipt(receipt, options = {}) {
         if (!receipt) throw new Error('Missing parameter');
 
         return sequelize.transaction(async transaction => {
-            // Check if this transaction still exists before proceeding
+            // Conditionally check if this transaction still exists before proceeding
             // Prevents race condition with workspace reset operations that delete transactions
-            const transactionExists = await sequelize.models.Transaction.findByPk(this.id, {
-                attributes: ['id'],
-                lock: transaction.LOCK.UPDATE,
-                transaction
-            });
+            // Skip this check for performance when called from trusted contexts like inline blockSync
+            if (!options.skipExistenceCheck) {
+                const transactionExists = await sequelize.models.Transaction.findByPk(this.id, {
+                    attributes: ['id'],
+                    lock: transaction.LOCK.UPDATE,
+                    transaction
+                });
 
-            if (!transactionExists) {
-                return 'Transaction no longer exists';
+                if (!transactionExists) {
+                    return 'Transaction no longer exists';
+                }
             }
 
             await this.update({ state: 'ready' }, { transaction });
