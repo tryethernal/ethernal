@@ -26,8 +26,8 @@ module.exports = async job => {
             {
                 model: Transaction,
                 as: 'transaction',
-                attributes: ['id', 'blockNumber', 'hash'],
-                required: true  // Use INNER JOIN for better performance - transaction should always exist
+                attributes: ['id', 'blockNumber', 'hash']
+                // Keep default LEFT OUTER JOIN to preserve error handling for missing transactions
             }
         ]
     });
