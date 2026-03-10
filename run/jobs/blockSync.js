@@ -73,6 +73,8 @@ module.exports = async job => {
             await db.updateBrowserSync(workspace.id, false);
 
         // After validation, fetch a real Sequelize instance for methods like safeCreatePartialBlock
+        // Note: This still requires a DB query per block, but provides significant benefit for early-exit validation failures
+        // and ensures we have fresh data + model methods. Full N+1 elimination would require architectural changes to avoid Sequelize dependencies.
         workspace = await Workspace.findByPk(data.workspaceId, {
             attributes: ['id', 'name', 'rpcServer', 'browserSyncEnabled', 'isCustomL1Parent', 'rpcHealthCheckEnabled', 'public', 'rateLimitInterval', 'rateLimitMaxInInterval'],
             include: [
@@ -140,10 +142,13 @@ module.exports = async job => {
                 {
                     model: require('../models').OpChainConfig,
                     as: 'opChildConfigs',
-                    attributes: ['workspaceId', 'portalContract', 'l2OutputOracleContract', 'optimismMintableErc20FactoryContract', 'l1CrossDomainMessengerContract', 'l1StandardBridgeContract', 'systemConfigContract', 'l1Erc721BridgeContract']
+                    attributes: ['workspaceId', 'batchInboxAddress', 'beaconUrl', 'l2BlockTime', 'l2GenesisTimestamp']
                 }
             ]
         });
+
+        if (!workspace)
+            return 'Invalid workspace.';
     } else if (data.workspaceId) {
         // Fast path: uses workspaceId for optimized database lookup
         if (data.blockNumber === undefined || data.blockNumber === null)
