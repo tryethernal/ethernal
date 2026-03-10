@@ -73,7 +73,7 @@
         reverse_proxy ethernal.internal:8080
     }
 
-    handle_path /app* {
+    handle /app* {
         reverse_proxy ethernal-soketi:6001 {
             header_up Upgrade "websocket"
             header_up Connection "Upgrade"
