@@ -198,7 +198,9 @@ module.exports = (sequelize, DataTypes) => {
      * Updates transaction state to ready and triggers real-time updates.
      * @param {Object} receipt - Receipt data with logs
      * @param {Object} options - Optional configuration
-     * @param {boolean} [options.skipExistenceCheck=false] - Skip transaction existence check for performance
+     * @param {boolean} [options.skipExistenceCheck=false] - Skip transaction existence check for performance.
+     *   Caller MUST guarantee the transaction row still exists at the time of the call, as no DB-level lock
+     *   is acquired to protect against concurrent workspace resets.
      * @returns {Promise<TransactionReceipt>} The created receipt
      * @throws {Error} If receipt parameter is missing
      */
