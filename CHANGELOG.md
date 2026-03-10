@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.24] - 2026-03-10
+### Fixed
+- fix: optimize blockSync database query performance (#592)
+
+
 ## [5.17.23] - 2026-03-10
 ### Fixed
 - refactor: split CLAUDE.md into slim core + on-demand reference files
