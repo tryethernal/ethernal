@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.26] - 2026-03-10
+### Fixed
+- docs: clarify PostgreSQL database requirement in prerequisites (#597)
+
+
 ## [5.17.25] - 2026-03-10
 ### Fixed
 - fix: remove non-existent workspace.settings from processBlock job (#595)

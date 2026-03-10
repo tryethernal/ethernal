@@ -29,6 +29,8 @@ Run your own Ethernal instance on your infrastructure, with full control over yo
 - [OpenSSL](https://www.openssl.org/) (for environment file generation)
 - A domain name or server IP
 
+> **Database:** Ethernal uses PostgreSQL (TimescaleDB) as its database backend. This is automatically provided through Docker containers—no manual installation required.
+
 ### 1. Clone the Repository
 
 ```bash
