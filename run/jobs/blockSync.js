@@ -68,10 +68,6 @@ module.exports = async job => {
             }
         }
 
-        // Disable browser sync to prevent concurrent syncing from both browser and server
-        if (workspace.browserSyncEnabled)
-            await db.updateBrowserSync(workspace.id, false);
-
         // After validation, fetch a real Sequelize instance for methods like safeCreatePartialBlock
         // Note: This still requires a DB query per block, but provides significant benefit for early-exit validation failures
         // and ensures we have fresh data + model methods. Full N+1 elimination would require architectural changes to avoid Sequelize dependencies.
@@ -149,6 +145,10 @@ module.exports = async job => {
 
         if (!workspace)
             return 'Invalid workspace.';
+
+        // Disable browser sync to prevent concurrent syncing from both browser and server
+        if (workspace.browserSyncEnabled)
+            await db.updateBrowserSync(workspace.id, false);
     } else if (data.workspaceId) {
         // Fast path: uses workspaceId for optimized database lookup
         if (data.blockNumber === undefined || data.blockNumber === null)
