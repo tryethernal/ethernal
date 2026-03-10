@@ -1,48 +1,64 @@
 ---
 /**
- * @fileoverview Blog header/navbar component with Ethernal branding and theme toggle.
+ * @fileoverview Blog header/navbar with Ethernal branding, theme toggle, GitHub link, and CTA.
+ * Fixed position with scroll-triggered backdrop blur.
  * @component Header
  */
 ---
-<header class="sticky top-0 z-50 border-b border-border-subtle bg-bg-base/80 backdrop-blur-xl transition-colors duration-200">
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-    <a href="/" class="flex items-center gap-2 text-decoration-none">
-      <span class="font-heading text-xl font-semibold text-text-primary">Ethernal</span>
+<header class="blog-navbar" id="blog-navbar">
+  <div class="navbar-inner">
+    <a href="/" class="navbar-logo">
+      <span class="font-heading">Ethernal</span>
     </a>
-    <nav class="flex items-center gap-4 sm:gap-6">
-      <a href="/blog" class="text-sm text-primary font-medium hover:text-primary-light transition-colors">Blog</a>
-      <a href="https://doc.tryethernal.com" target="_blank" rel="noopener noreferrer"
-         class="text-sm text-text-secondary hover:text-text-primary transition-colors">Docs</a>
-      <button id="theme-toggle" type="button" aria-label="Toggle theme"
-              class="p-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-card transition-colors">
-        <svg id="theme-icon-sun" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
+    <div class="navbar-spacer"></div>
+
+    <!-- Actions -->
+    <div class="navbar-actions">
+      <a href="https://github.com/tryethernal/ethernal" target="_blank" rel="noopener noreferrer" class="nav-link github-link" aria-label="GitHub">
+        <svg fill="currentColor" height="20" width="20" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+          <path d="M208.31,75.68A59.78,59.78,0,0,0,202.93,28,8,8,0,0,0,196,24a59.75,59.75,0,0,0-48,24H124A59.75,59.75,0,0,0,76,24a8,8,0,0,0-6.93,4,59.78,59.78,0,0,0-5.38,47.68A58.14,58.14,0,0,0,56,104v8a56.06,56.06,0,0,0,48.44,55.47A39.8,39.8,0,0,0,96,192v8H72a24,24,0,0,1-24-24A40,40,0,0,0,8,136a8,8,0,0,0,0,16,24,24,0,0,1,24,24,40,40,0,0,0,40,40H96v16a8,8,0,0,0,16,0V192a24,24,0,0,1,48,0v40a8,8,0,0,0,16,0V192a39.8,39.8,0,0,0-8.44-24.53A56.06,56.06,0,0,0,216,112v-8A58.14,58.14,0,0,0,208.31,75.68ZM200,112a40,40,0,0,1-40,40H112a40,40,0,0,1-40-40v-8a41.74,41.74,0,0,1,6.9-22.48A8,8,0,0,0,80,73.83a43.81,43.81,0,0,1,.79-33.58,43.88,43.88,0,0,1,32.32,20.06A8,8,0,0,0,119.82,64h32.35a8,8,0,0,0,6.74-3.69,43.87,43.87,0,0,1,32.32-20.06A43.81,43.81,0,0,1,192,73.83a8.09,8.09,0,0,0,1,7.65A41.72,41.72,0,0,1,200,104Z"/>
+        </svg>
+      </a>
+      <button id="theme-toggle" type="button" aria-label="Toggle theme" class="nav-link theme-toggle-btn">
+        <svg id="theme-icon-sun" style="display:none;" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
         </svg>
-        <svg id="theme-icon-moon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg id="theme-icon-moon" style="display:none;" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
         </svg>
       </button>
-      <a href="https://app.tryethernal.com" target="_blank" rel="noopener noreferrer"
-         class="text-sm bg-primary hover:bg-primary-light text-white px-4 py-1.5 rounded-lg font-medium transition-colors">
-        Get Started
-      </a>
-    </nav>
+      <a href="https://app.tryethernal.com/auth" class="navbar-cta">Get Started</a>
+    </div>
   </div>
 </header>
 
-<script>
+<!-- Spacer to offset fixed header -->
+<div style="height: 64px;"></div>
+
+<script is:inline>
+  // Scroll effect
+  function onScroll() {
+    const navbar = document.getElementById('blog-navbar');
+    if (navbar) {
+      navbar.classList.toggle('scrolled', window.scrollY > 20);
+    }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // Theme toggle
   function updateThemeIcons() {
     const isDark = document.documentElement.classList.contains('dark');
     const sun = document.getElementById('theme-icon-sun');
     const moon = document.getElementById('theme-icon-moon');
     if (sun && moon) {
-      sun.classList.toggle('hidden', !isDark);
-      moon.classList.toggle('hidden', isDark);
+      sun.style.display = isDark ? 'block' : 'none';
+      moon.style.display = isDark ? 'none' : 'block';
     }
   }
-
   updateThemeIcons();
 
   document.getElementById('theme-toggle')?.addEventListener('click', () => {
@@ -51,3 +67,114 @@
     updateThemeIcons();
   });
 </script>
+
+<style>
+  .blog-navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    transition: background 0.3s ease, border-color 0.3s ease, backdrop-filter 0.3s ease;
+    border-bottom: 1px solid transparent;
+  }
+
+  .blog-navbar.scrolled {
+    border-bottom-color: var(--border-subtle);
+  }
+
+  .blog-navbar.scrolled {
+    background: color-mix(in srgb, var(--bg-base) 92%, transparent);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  .navbar-inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 32px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .navbar-logo {
+    text-decoration: none;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #3D95CE;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    letter-spacing: -0.02em;
+  }
+
+  :global(.dark) .navbar-logo {
+    color: #F1F5F9;
+  }
+
+  .navbar-spacer {
+    flex: 1;
+  }
+
+  .nav-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 400;
+    padding: 6px 12px;
+    border-radius: 8px;
+    transition: color 0.2s ease, background 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    border: none;
+    background: none;
+  }
+
+  .nav-link:hover {
+    color: var(--text-primary);
+    background: rgba(128, 128, 128, 0.08);
+  }
+
+  .github-link {
+    padding: 6px 8px;
+  }
+
+  .theme-toggle-btn {
+    padding: 6px 8px;
+    cursor: pointer;
+  }
+
+  .navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .navbar-cta {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 20px;
+    border-radius: 100px;
+    background: linear-gradient(90deg, #3D95CE, #5DAAE0);
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: box-shadow 0.3s ease, opacity 0.2s ease;
+  }
+
+  .navbar-cta:hover {
+    box-shadow: 0 4px 16px rgba(61, 149, 206, 0.4);
+    opacity: 0.92;
+  }
+
+  @media (max-width: 768px) {
+    .navbar-inner {
+      padding: 0 16px;
+    }
+  }
+</style>

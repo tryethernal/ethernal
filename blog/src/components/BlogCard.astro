@@ -50,10 +50,11 @@ const patternX = seed % 40;
 const patternY = (seed * 7) % 30;
 ---
 
-<a href={`/blog/${slug}`} class="block blog-card group">
+<a href={`/blog/${slug}`} class="block blog-card group" style="cursor: pointer;">
   {image ? (
     <div class="aspect-[16/9] overflow-hidden">
-      <img src={image} alt={title}
+      <img src={image} alt={`Cover image for ${title}`}
+           width="800" height="450" loading="lazy"
            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
     </div>
   ) : (
@@ -81,10 +82,11 @@ const patternY = (seed * 7) % 30;
       <span class="text-xs font-medium text-primary bg-primary/10 px-2 py-0.5 rounded">{tag}</span>
       <span class="text-xs text-text-muted">{formattedDate}</span>
       {readingTime && <span class="text-xs text-text-muted">{readingTime} min read</span>}
+      <span class="text-xs text-text-muted">by Antoine</span>
     </div>
-    <h3 class="font-heading font-semibold text-text-primary mb-2 text-lg leading-snug line-clamp-2 group-hover:text-primary transition-colors">
+    <h2 class="font-heading font-semibold text-text-primary mb-2 text-lg leading-snug line-clamp-2 group-hover:text-primary transition-colors">
       {title}
-    </h3>
+    </h2>
     <p class="text-sm text-text-secondary line-clamp-2 leading-relaxed mt-auto">{description}</p>
   </div>
 </a>

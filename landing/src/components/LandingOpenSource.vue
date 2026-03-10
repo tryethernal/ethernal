@@ -3,10 +3,10 @@
         <v-container style="max-width: 1200px;">
             <v-row align="center">
                 <v-col cols="12" md="6">
-                    <h2 class="font-heading mb-4" style="font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 700; color: #F1F5F9; letter-spacing: -0.02em;">
+                    <h2 class="font-heading mb-4" :style="{ fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-0.02em' }">
                         Built in the open.<br><span class="gradient-text">MIT licensed.</span>
                     </h2>
-                    <p class="mb-8" style="color: #94A3B8; line-height: 1.7; max-width: 440px; font-size: 1.05rem;">
+                    <p class="mb-8" :style="{ color: 'var(--text-secondary)', lineHeight: 1.7, maxWidth: '440px', fontSize: '1.05rem' }">
                         Ethernal is fully open source. Fork it, extend it, self-host it.
                         No vendor lock-in, no hidden fees.
                     </p>
@@ -71,9 +71,9 @@
 <style scoped>
 .opensource-section {
     padding: 100px 0;
-    border-top: 1px solid rgba(61, 149, 206, 0.08);
-    border-bottom: 1px solid rgba(61, 149, 206, 0.08);
-    background: #0B1120;
+    border-top: 1px solid var(--drawer-divider);
+    border-bottom: 1px solid var(--drawer-divider);
+    background: var(--bg-base);
 }
 
 @media (max-width: 960px) {
@@ -83,7 +83,7 @@
 }
 
 .terminal-title {
-    color: #64748B;
+    color: var(--text-muted);
     font-size: 12px;
     font-weight: 500;
     font-family: 'JetBrains Mono', 'Fira Code', monospace;

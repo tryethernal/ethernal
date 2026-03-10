@@ -2,7 +2,7 @@
 title: "Ethernal x Alchemy"
 date: 2021-04-29
 description: "Add a webhook in your Alchemy dashboard and get a block explorer for your dapp. Automatic transaction syncing and decoded function calls."
-image: "/blog/images/ethernal-x-alchemy.png"
+image: "/blog/images/ethernal-x-alchemy.webp"
 tags:
   - Ethernal
   - Developer Tools

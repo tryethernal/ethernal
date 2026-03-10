@@ -40,7 +40,46 @@ const relatedPosts = allPosts
   .slice(0, 3);
 ---
 
-<BaseLayout title={title} description={description} image={image}>
+<BaseLayout title={title} description={description} image={image} plainBg>
+  <!-- Structured Data: BlogPosting -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": title,
+    "description": description,
+    "url": `https://tryethernal.com/blog/${post.id}`,
+    "datePublished": date.toISOString().split('T')[0],
+    "dateModified": date.toISOString().split('T')[0],
+    "image": image ? `https://tryethernal.com${image}` : undefined,
+    "author": {
+      "@type": "Person",
+      "name": "Antoine Gravieet",
+      "url": "https://tryethernal.com"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Ethernal",
+      "url": "https://tryethernal.com",
+      "logo": { "@type": "ImageObject", "url": "https://tryethernal.com/favicon.ico" }
+    },
+    "keywords": tags.join(", "),
+    "wordCount": readingTime ? readingTime * 250 : undefined,
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `https://tryethernal.com/blog/${post.id}`
+    }
+  })} />
+  <!-- Structured Data: BreadcrumbList -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tryethernal.com" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://tryethernal.com/blog" },
+      { "@type": "ListItem", "position": 3, "name": title, "item": `https://tryethernal.com/blog/${post.id}` }
+    ]
+  })} />
+
   <article class="max-w-4xl mx-auto px-4 sm:px-6">
     <!-- Back link -->
     <div class="pt-8 pb-6">
@@ -52,7 +91,7 @@ const relatedPosts = allPosts
     <!-- Hero image / generated cover -->
     {image ? (
       <div class="rounded-xl overflow-hidden mb-8 border border-border-subtle">
-        <img src={image} alt={title} class="w-full h-auto max-h-96 object-cover" />
+        <img src={image} alt={`Cover image for ${title}`} width="1200" height="514" class="w-full h-auto max-h-96 object-cover" />
       </div>
     ) : (
       <div class="rounded-xl overflow-hidden mb-8 relative aspect-[21/9] bg-gradient-to-br from-sky-600/80 via-blue-700/70 to-indigo-800/80">
@@ -77,7 +116,8 @@ const relatedPosts = allPosts
       </h1>
       <div class="flex flex-wrap items-center gap-3 text-sm text-text-muted">
         <span class="text-xs font-medium text-primary bg-primary/10 px-2.5 py-1 rounded">{tag}</span>
-        <span>{formattedDate}</span>
+        <span>by Antoine</span>
+        <span>&middot; {formattedDate}</span>
         {readingTime && <span>&middot; {readingTime} min read</span>}
       </div>
     </header>
@@ -90,7 +130,7 @@ const relatedPosts = allPosts
 
   <!-- Related posts -->
   {relatedPosts.length > 0 && (
-    <section class="max-w-6xl mx-auto px-4 sm:px-6 pb-16">
+    <section class="max-w-6xl mx-auto px-4 sm:px-6 pb-6">
       <div class="border-t border-border-subtle pt-12">
         <h2 class="font-heading text-2xl font-semibold text-text-primary mb-8">Related Articles</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -100,7 +140,8 @@ const relatedPosts = allPosts
               <a href={`/blog/${rp.id}`} class="blog-card group">
                 {rp.data.image ? (
                   <div class="aspect-[16/9] overflow-hidden">
-                    <img src={rp.data.image} alt={rp.data.title}
+                    <img src={rp.data.image} alt={`Cover image for ${rp.data.title}`}
+                         width="800" height="450" loading="lazy"
                          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   </div>
                 ) : (
@@ -130,4 +171,16 @@ const relatedPosts = allPosts
       </div>
     </section>
   )}
+
+  <!-- CTA -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6">
+    <div class="border-t border-border-subtle pt-10 pb-4 text-center">
+      <h2 class="font-heading text-2xl sm:text-3xl font-bold text-text-primary mb-3">Ready to explore your chain?</h2>
+      <p class="text-text-secondary mb-6 max-w-lg mx-auto">Connect your RPC and get a fully working block explorer in under 5 minutes. Free to start.</p>
+      <a href="https://app.tryethernal.com" class="inline-flex items-center gap-2 px-8 py-3 rounded-full text-white font-semibold text-sm tracking-wide transition-all duration-200 hover:opacity-90 hover:shadow-lg hover:shadow-primary/30" style="background: linear-gradient(90deg, #3D95CE, #5DAAE0);">
+        Get Started
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </a>
+    </div>
+  </section>
 </BaseLayout>

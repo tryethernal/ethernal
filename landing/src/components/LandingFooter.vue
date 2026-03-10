@@ -1,13 +1,13 @@
 <template>
-    <footer style="border-top: 1px solid rgba(61,149,206,0.08); background: #0B1120;">
+    <footer :style="{ borderTop: '1px solid var(--border-subtle)', background: 'var(--footer-bg)' }">
         <v-container style="max-width: 1200px;" class="py-16">
             <v-row>
                 <!-- Brand column -->
                 <v-col cols="12" md="4" lg="3">
                     <router-link to="/" class="d-inline-block text-decoration-none mb-4">
-                        <span class="font-heading" style="font-size: 1.3rem; font-weight: 600; color: #F1F5F9;">Ethernal</span>
+                        <span class="font-heading" :style="{ fontSize: '1.3rem', fontWeight: 600, color: 'var(--text-primary)' }">Ethernal</span>
                     </router-link>
-                    <p style="color: #64748B; font-size: 14px; line-height: 1.65; max-width: 260px;">
+                    <p :style="{ color: 'var(--text-muted)', fontSize: '14px', lineHeight: 1.65, maxWidth: '260px' }">
                         Open-source block explorer for any EVM chain. Built for developers, by developers.
                     </p>
                 </v-col>
@@ -64,10 +64,10 @@
             <div class="gradient-divider my-8"></div>
 
             <div class="d-flex flex-wrap align-center justify-space-between">
-                <div style="color: #475569; font-size: 13px;">
+                <div :style="{ color: 'var(--footer-copyright)', fontSize: '13px' }">
                     &copy; {{ new Date().getFullYear() }} Ethernal. All rights reserved.
                 </div>
-                <div class="d-flex align-center" style="color: #475569; font-size: 13px; gap: 4px;">
+                <div class="d-flex align-center" :style="{ color: 'var(--footer-copyright)', fontSize: '13px', gap: '4px' }">
                     Made with care in France
                     <span style="font-size: 14px;">🍷</span>
                 </div>
@@ -81,7 +81,7 @@
 
 <style scoped>
 .footer-heading {
-    color: #64748B;
+    color: var(--text-muted);
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.1em;
@@ -90,12 +90,12 @@
 }
 
 .footer-link {
-    color: #94A3B8;
+    color: var(--text-secondary);
     text-decoration: none;
     font-size: 14px;
     transition: color 0.2s;
 }
 .footer-link:hover {
-    color: #F1F5F9;
+    color: var(--text-primary);
 }
 </style>

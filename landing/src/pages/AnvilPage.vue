@@ -4,7 +4,7 @@
             <div class="page-title-bar">
                 <div class="text-overline mb-1" style="letter-spacing: 0.1em; color: #5DAAE0; font-size: 11px;">INTEGRATION</div>
                 <h1 class="font-heading text-white mb-2" style="font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -0.02em;">Anvil Block Explorer</h1>
-                <p style="color: #94A3B8; max-width: 500px; line-height: 1.6; font-size: 0.95rem;">
+                <p style="color: var(--text-secondary); max-width: 500px; line-height: 1.6; font-size: 0.95rem;">
                     A visual block explorer for Foundry's Anvil. See every transaction, trace calls, and inspect contracts from a clean web UI.
                 </p>
             </div>
@@ -12,7 +12,7 @@
             <FeatureSection inline-icon compact icon="mdi-flash" title="Connect in Seconds" description="Start Anvil, paste the RPC URL into Ethernal, and you're exploring. No plugins, no config. Ethernal polls your node and syncs blocks automatically.">
                 <template #visual>
                     <div class="browser-preview">
-                        <div class="preview-header"><div class="d-flex align-center ga-2"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="preview-url-bar"><v-icon size="12" style="color: #64748B;">mdi-lock</v-icon>terminal</div><div style="width: 42px;"></div></div>
+                        <div class="preview-header"><div class="d-flex align-center ga-2"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="preview-url-bar"><v-icon size="12" style="color: var(--text-muted);">mdi-lock</v-icon>terminal</div><div style="width: 42px;"></div></div>
                         <div class="preview-body terminal-mock">
                             <div><span class="t-prompt">$ </span><span class="t-cmd">anvil</span></div>
                             <div><span class="t-comment"># Listening on 127.0.0.1:8545</span></div>
@@ -26,11 +26,11 @@
             <FeatureSection inline-icon compact icon="mdi-file-tree" title="Full Trace Support" description="Anvil supports debug_traceTransaction natively. Ethernal shows complete call trees with gas costs, return values, and revert reasons for every transaction." :reverse="true">
                 <template #visual>
                     <div class="browser-preview">
-                        <div class="preview-header"><div class="d-flex align-center ga-2"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="preview-url-bar"><v-icon size="12" style="color: #64748B;">mdi-lock</v-icon>explorer.yourchain.com/tx/0x1b14…</div><div style="width: 42px;"></div></div>
+                        <div class="preview-header"><div class="d-flex align-center ga-2"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="preview-url-bar"><v-icon size="12" style="color: var(--text-muted);">mdi-lock</v-icon>explorer.yourchain.com/tx/0x1b14…</div><div style="width: 42px;"></div></div>
                         <div class="preview-body">
                             <div class="mock-trace">
                                 <div class="d-flex justify-space-between align-center mb-3">
-                                    <span style="color: #F1F5F9; font-weight: 600; font-size: 13px;">Call Trace</span>
+                                    <span style="color: var(--text-primary); font-weight: 600; font-size: 13px;">Call Trace</span>
                                     <span class="status-chip success">Success</span>
                                 </div>
                                 <div class="trace-node"><span class="trace-op call">CALL</span><span class="trace-addr">0x7a25…f832</span><span class="trace-method">swap(uint256,address)</span><span class="trace-gas">45,230 gas</span></div>
@@ -46,7 +46,7 @@
             <FeatureSection inline-icon compact icon="mdi-code-braces" title="Contract Interaction" description="Upload your ABI or verify your contract source, then read and write to any function directly from the explorer. Perfect for testing during development.">
                 <template #visual>
                     <div class="browser-preview">
-                        <div class="preview-header"><div class="d-flex align-center ga-2"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="preview-url-bar"><v-icon size="12" style="color: #64748B;">mdi-lock</v-icon>explorer.yourchain.com/address/0x7a25…</div><div style="width: 42px;"></div></div>
+                        <div class="preview-header"><div class="d-flex align-center ga-2"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="preview-url-bar"><v-icon size="12" style="color: var(--text-muted);">mdi-lock</v-icon>explorer.yourchain.com/address/0x7a25…</div><div style="width: 42px;"></div></div>
                         <div class="preview-body">
                             <div class="mock-interact">
                                 <div class="mock-interact-tabs"><span class="mock-tab">Read</span><span class="mock-tab active">Write</span></div>
@@ -68,7 +68,7 @@
             <FeatureSection inline-icon compact icon="mdi-sync" title="Fork Mode Compatible" description="Using anvil --fork-url? Ethernal works seamlessly with forked chains. Inspect mainnet state alongside your local transactions in one unified view." :reverse="true">
                 <template #visual>
                     <div class="browser-preview">
-                        <div class="preview-header"><div class="d-flex align-center ga-2"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="preview-url-bar"><v-icon size="12" style="color: #64748B;">mdi-lock</v-icon>terminal</div><div style="width: 42px;"></div></div>
+                        <div class="preview-header"><div class="d-flex align-center ga-2"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="preview-url-bar"><v-icon size="12" style="color: var(--text-muted);">mdi-lock</v-icon>terminal</div><div style="width: 42px;"></div></div>
                         <div class="preview-body terminal-mock">
                             <div><span class="t-prompt">$ </span><span class="t-cmd">anvil --fork-url https://eth.llamarpc.com</span></div>
                             <div><span class="t-comment"># Forking from block 19847231</span></div>
@@ -92,10 +92,10 @@ import LandingCTA from '@/components/LandingCTA.vue';
 </script>
 
 <style scoped>
-.page-title-bar { padding-bottom: 24px; margin-bottom: 8px; border-bottom: 1px solid rgba(61, 149, 206, 0.1); }
-.browser-preview { background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(61, 149, 206, 0.22); border-radius: 16px; overflow: hidden; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4); }
-.preview-header { background: #161B22; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(61, 149, 206, 0.12); }
-.preview-url-bar { display: flex; align-items: center; gap: 6px; background: rgba(11, 17, 32, 0.8); border-radius: 6px; padding: 4px 12px; color: #64748B; font-size: 11px; font-family: 'JetBrains Mono', monospace; }
+.page-title-bar { padding-bottom: 24px; margin-bottom: 8px; border-bottom: 1px solid var(--drawer-divider); }
+.browser-preview { background: var(--glass-bg); backdrop-filter: blur(16px); border: 1px solid var(--border-subtle); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-card); }
+.preview-header { background: var(--bg-surface); padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); }
+.preview-url-bar { display: flex; align-items: center; gap: 6px; background: var(--glass-bg-strong); border-radius: 6px; padding: 4px 12px; color: var(--text-muted); font-size: 11px; font-family: 'JetBrains Mono', monospace; }
 .dot { width: 10px; height: 10px; border-radius: 50%; } .dot.red { background: #ff5f56; } .dot.yellow { background: #febc2e; } .dot.green { background: #28c840; }
 .preview-body { padding: 20px; font-family: 'JetBrains Mono', 'Roboto', sans-serif; font-size: 12px; }
 .terminal-mock { font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.8; }
@@ -106,18 +106,18 @@ import LandingCTA from '@/components/LandingCTA.vue';
 .trace-op.call { background: rgba(61, 149, 206, 0.12); color: #3D95CE; border: 1px solid rgba(61, 149, 206, 0.25); }
 .trace-op.static { background: rgba(167, 139, 250, 0.12); color: #A78BFA; border: 1px solid rgba(167, 139, 250, 0.25); }
 .trace-op.log { background: rgba(45, 212, 191, 0.12); color: #2DD4BF; border: 1px solid rgba(45, 212, 191, 0.25); }
-.trace-addr { color: #5DAAE0; font-size: 11px; } .trace-method { color: #CBD5E1; font-size: 11px; } .trace-gas { color: #64748B; font-size: 10px; margin-left: auto; }
+.trace-addr { color: #5DAAE0; font-size: 11px; } .trace-method { color: #CBD5E1; font-size: 11px; } .trace-gas { color: var(--text-muted); font-size: 10px; margin-left: auto; }
 .status-chip { padding: 2px 10px; border-radius: 4px; font-size: 10px; font-weight: 600; }
 .status-chip.success { background: rgba(34, 197, 94, 0.1); color: #22C55E; border: 1px solid rgba(34, 197, 94, 0.2); }
-.mock-interact-tabs { display: flex; gap: 0; margin-bottom: 16px; border-bottom: 1px solid rgba(61, 149, 206, 0.1); }
-.mock-tab { padding: 8px 16px; color: #64748B; font-size: 12px; font-weight: 500; border-bottom: 2px solid transparent; } .mock-tab.active { color: #3D95CE; border-bottom-color: #3D95CE; }
-.mock-fn { background: rgba(11, 17, 32, 0.4); border: 1px solid rgba(61, 149, 206, 0.08); border-radius: 10px; padding: 14px; margin-bottom: 8px; }
+.mock-interact-tabs { display: flex; gap: 0; margin-bottom: 16px; border-bottom: 1px solid var(--drawer-divider); }
+.mock-tab { padding: 8px 16px; color: var(--text-muted); font-size: 12px; font-weight: 500; border-bottom: 2px solid transparent; } .mock-tab.active { color: #3D95CE; border-bottom-color: #3D95CE; }
+.mock-fn { background: var(--glass-bg); border: 1px solid var(--drawer-divider); border-radius: 10px; padding: 14px; margin-bottom: 8px; }
 .mock-fn.collapsed { padding: 10px 14px; }
 .mock-fn-header { display: flex; align-items: center; gap: 6px; }
-.mock-fn-idx { color: #64748B; font-size: 11px; font-weight: 600; } .mock-fn-name { color: #5DAAE0; font-size: 12px; font-weight: 600; } .mock-fn-sig { color: #64748B; font-size: 11px; }
+.mock-fn-idx { color: var(--text-muted); font-size: 11px; font-weight: 600; } .mock-fn-name { color: #5DAAE0; font-size: 12px; font-weight: 600; } .mock-fn-sig { color: var(--text-muted); font-size: 11px; }
 .mock-fn-fields { margin-top: 12px; display: flex; flex-direction: column; gap: 10px; }
 .mock-fn-field { display: flex; flex-direction: column; gap: 4px; }
-.mock-fn-label { color: #64748B; font-size: 10px; }
-.mock-fn-input { padding: 8px 12px; border-radius: 6px; background: rgba(11, 17, 32, 0.6); border: 1px solid rgba(61, 149, 206, 0.12); color: #CBD5E1; font-size: 11px; font-family: 'JetBrains Mono', monospace; }
+.mock-fn-label { color: var(--text-muted); font-size: 10px; }
+.mock-fn-input { padding: 8px 12px; border-radius: 6px; background: var(--glass-bg); border: 1px solid var(--border-subtle); color: #CBD5E1; font-size: 11px; font-family: 'JetBrains Mono', monospace; }
 .mock-fn-btn { margin-top: 12px; display: inline-flex; padding: 6px 20px; border-radius: 6px; background: linear-gradient(90deg, #3D95CE, #5DAAE0); color: #FFF; font-size: 11px; font-weight: 600; }
 </style>

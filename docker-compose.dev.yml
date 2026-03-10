@@ -23,6 +23,18 @@ services:
     networks:
       - ethernal-network
 
+  caddy:
+    image: caddy:2.7.6-alpine
+    ports:
+      - "8180:8180"
+    volumes:
+      - ./Caddyfile.dev:/etc/caddy/Caddyfile
+    depends_on:
+      - landing
+      - blog
+    networks:
+      - ethernal-network
+
   sentry-dashboard:
     image: node:20-alpine
     working_dir: /app
