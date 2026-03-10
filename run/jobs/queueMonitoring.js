@@ -75,21 +75,16 @@ module.exports = async () => {
         const queueStatsPromises = monitoredPerformances.map(async (queueName) => {
             const queue = getQueue(queueName);
 
-            // Fetch all queue stats in parallel for this queue
-            const [completedJobs, waitingJobCount, delayedJobCount, failedJobCount] = await Promise.all([
+            // Fetch all queue stats in parallel for this queue, including failed jobs
+            const [completedJobs, waitingJobCount, delayedJobCount, failedJobCount, failedJobs] = await Promise.all([
                 queue.getCompleted(0, 99), // Limit to 100 jobs for P95 calculation
                 queue.getWaitingCount(),
                 queue.getDelayedCount(),
-                queue.getFailedCount()
+                queue.getFailedCount(),
+                queue.getFailed(0, 99) // Always fetch failed jobs in the same batch
             ]);
 
             const p95ProcessingTime = computeP95ProcessingTime(completedJobs);
-
-            // Fetch failed jobs in parallel if there are any failures
-            let failedJobs = [];
-            if (failedJobCount > 0) {
-                failedJobs = await queue.getFailed(0, 99);
-            }
 
             return {
                 queueName,
