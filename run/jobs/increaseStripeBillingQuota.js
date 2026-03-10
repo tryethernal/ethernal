@@ -6,7 +6,7 @@
 
 const { getStripeSecretKey } = require('../lib/env');
 const stripe = require('stripe')(getStripeSecretKey());
-const { Block, Workspace, Explorer, StripeSubscription } = require('../models');
+const { Block, Workspace, Explorer, StripeSubscription, Transaction, StripePlan } = require('../models');
 
 module.exports = async job => {
     const data = job.data;
@@ -14,23 +14,29 @@ module.exports = async job => {
     if (!data.blockId)
         return 'Missing parameter';
 
+    // First: Get block with minimal data, including transactionsCount
     const block = await Block.findByPk(data.blockId, {
-        include: [
-            {
-                model: Workspace,
-                as: 'workspace',
+        attributes: ['id', 'isReady', 'transactionsCount', 'workspaceId'],
+        include: {
+            model: Workspace,
+            as: 'workspace',
+            attributes: ['id'],
+            include: {
+                model: Explorer,
+                as: 'explorer',
+                attributes: ['id'],
                 include: {
-                    model: Explorer,
-                    as: 'explorer',
+                    model: StripeSubscription,
+                    as: 'stripeSubscription',
+                    attributes: ['id', 'stripeId', 'transactionQuota'],
                     include: {
-                        model: StripeSubscription,
-                        as: 'stripeSubscription',
-                        include: 'stripePlan'
+                        model: StripePlan,
+                        as: 'stripePlan',
+                        attributes: ['capabilities']
                     }
                 }
-            },
-            'transactions'
-        ]
+            }
+        }
     });
 
     if (!block)
@@ -39,7 +45,15 @@ module.exports = async job => {
     if (!block.isReady)
         return 'Block is not ready';
 
-    if (!block.transactions.length)
+    // Get transaction count - use transactionsCount field if available, otherwise query
+    let transactionCount = block.transactionsCount;
+    if (transactionCount == null) {
+        transactionCount = await Transaction.count({
+            where: { blockId: block.id }
+        });
+    }
+
+    if (!transactionCount)
         return 'Block is empty';
 
     if (!block.workspace.explorer)
@@ -50,12 +64,12 @@ module.exports = async job => {
     if (!stripeSubscription)
         return 'No active subscription';
 
-    await stripeSubscription.increment('transactionQuota', { by: block.transactions.length });
+    await stripeSubscription.increment('transactionQuota', { by: transactionCount });
 
     if (stripeSubscription.stripePlan.capabilities.billing == 'metered') {
         const subscription = await stripe.subscriptions.retrieve(stripeSubscription.stripeId);
         await stripe.subscriptionItems.createUsageRecord(subscription.items.data[0].id, {
-            quantity: block.transactions.length
+            quantity: transactionCount
         }, { idempotencyKey: block.id });
     }
 
