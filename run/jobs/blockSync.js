@@ -71,6 +71,79 @@ module.exports = async job => {
         // Disable browser sync to prevent concurrent syncing from both browser and server
         if (workspace.browserSyncEnabled)
             await db.updateBrowserSync(workspace.id, false);
+
+        // After validation, fetch a real Sequelize instance for methods like safeCreatePartialBlock
+        workspace = await Workspace.findByPk(data.workspaceId, {
+            attributes: ['id', 'name', 'rpcServer', 'browserSyncEnabled', 'isCustomL1Parent', 'rpcHealthCheckEnabled', 'public', 'rateLimitInterval', 'rateLimitMaxInInterval'],
+            include: [
+                {
+                    model: Explorer,
+                    as: 'explorer',
+                    attributes: ['id', 'shouldSync'],
+                    include: {
+                        model: StripeSubscription,
+                        as: 'stripeSubscription',
+                        attributes: ['id']
+                    }
+                },
+                {
+                    model: RpcHealthCheck,
+                    as: 'rpcHealthCheck',
+                    attributes: ['id', 'isReachable']
+                },
+                {
+                    model: IntegrityCheck,
+                    as: 'integrityCheck',
+                    attributes: ['id', 'isHealthy', 'isRecovering']
+                },
+                {
+                    model: require('../models').OrbitChainConfig,
+                    as: 'orbitConfig',
+                    attributes: [
+                        'rollupContract',
+                        'sequencerInboxContract',
+                        'bridgeContract',
+                        'inboxContract',
+                        'outboxContract',
+                        'stakeToken',
+                        'l1GatewayRouter',
+                        'l1Erc20Gateway',
+                        'l1WethGateway',
+                        'l1CustomGateway',
+                        'l2GatewayRouter',
+                        'l2Erc20Gateway',
+                        'l2WethGateway',
+                        'l2CustomGateway'
+                    ]
+                },
+                {
+                    model: require('../models').OrbitChainConfig,
+                    as: 'orbitChildConfigs',
+                    attributes: [
+                        'workspaceId',
+                        'rollupContract',
+                        'sequencerInboxContract',
+                        'bridgeContract',
+                        'inboxContract',
+                        'outboxContract',
+                        'stakeToken',
+                        'l1GatewayRouter',
+                        'l1Erc20Gateway',
+                        'l1WethGateway',
+                        'l1CustomGateway',
+                        'l2GatewayRouter',
+                        'l2Erc20Gateway',
+                        'l2WethGateway',
+                        'l2CustomGateway'
+                    ]
+                },
+                {
+                    model: require('../models').OpChainConfig,
+                    as: 'opChildConfigs',
+                    attributes: ['workspaceId', 'portalContract', 'l2OutputOracleContract', 'optimismMintableErc20FactoryContract', 'l1CrossDomainMessengerContract', 'l1StandardBridgeContract', 'systemConfigContract', 'l1Erc721BridgeContract']
+                }
+            ]
+        });
     } else if (data.workspaceId) {
         // Fast path: uses workspaceId for optimized database lookup
         if (data.blockNumber === undefined || data.blockNumber === null)
@@ -348,83 +421,8 @@ module.exports = async job => {
             Object.keys(Block.rawAttributes).concat(['transactions'])
         );
 
-        // Lazy load L2 configs only when needed for cached workspace
+        // L2 configs are now loaded in the main query above
         let orbitChildConfigs = workspace.orbitChildConfigs || [];
-        let hasL2Config = !!(workspace.orbitConfig || orbitChildConfigs.length > 0);
-
-        if (hasCachedWorkspace && !hasL2Config) {
-            // Check if L2 configs exist before doing expensive processing
-            const l2ConfigCheck = await Workspace.findByPk(workspace.id, {
-                attributes: ['id'],
-                include: [
-                    {
-                        model: require('../models').OrbitChainConfig,
-                        as: 'orbitConfig',
-                        attributes: ['id']
-                    },
-                    {
-                        model: require('../models').OrbitChainConfig,
-                        as: 'orbitChildConfigs',
-                        attributes: ['id']
-                    }
-                ]
-            });
-
-            if (l2ConfigCheck && (l2ConfigCheck.orbitConfig || (l2ConfigCheck.orbitChildConfigs && l2ConfigCheck.orbitChildConfigs.length > 0))) {
-                // L2 configs exist, fetch them with full attributes
-                const workspaceWithL2 = await Workspace.findByPk(workspace.id, {
-                    attributes: ['id'],
-                    include: [
-                        {
-                            model: require('../models').OrbitChainConfig,
-                            as: 'orbitConfig',
-                            attributes: [
-                                'rollupContract',
-                                'sequencerInboxContract',
-                                'bridgeContract',
-                                'inboxContract',
-                                'outboxContract',
-                                'stakeToken',
-                                'l1GatewayRouter',
-                                'l1Erc20Gateway',
-                                'l1WethGateway',
-                                'l1CustomGateway',
-                                'l2GatewayRouter',
-                                'l2Erc20Gateway',
-                                'l2WethGateway',
-                                'l2CustomGateway'
-                            ]
-                        },
-                        {
-                            model: require('../models').OrbitChainConfig,
-                            as: 'orbitChildConfigs',
-                            attributes: [
-                                'workspaceId',
-                                'rollupContract',
-                                'sequencerInboxContract',
-                                'bridgeContract',
-                                'inboxContract',
-                                'outboxContract',
-                                'stakeToken',
-                                'l1GatewayRouter',
-                                'l1Erc20Gateway',
-                                'l1WethGateway',
-                                'l1CustomGateway',
-                                'l2GatewayRouter',
-                                'l2Erc20Gateway',
-                                'l2WethGateway',
-                                'l2CustomGateway'
-                            ]
-                        }
-                    ]
-                });
-
-                workspace.orbitConfig = workspaceWithL2.orbitConfig;
-                workspace.orbitChildConfigs = workspaceWithL2.orbitChildConfigs;
-                orbitChildConfigs = workspace.orbitChildConfigs || [];
-                hasL2Config = true;
-            }
-        }
 
         if (workspace.orbitConfig || orbitChildConfigs.length > 0) {
             // Filter transactions to only include those that interact with rollupContract or sequencerInbox
@@ -487,42 +485,7 @@ module.exports = async job => {
         // OP Stack batch detection - enqueue as separate jobs to avoid blocking sync
         let opChildConfigs = workspace.opChildConfigs || [];
 
-        // Lazy load OP configs for cached workspace if needed
-        if (hasCachedWorkspace && opChildConfigs.length === 0) {
-            const opConfigCheck = await Workspace.findByPk(workspace.id, {
-                attributes: ['id'],
-                include: [
-                    {
-                        model: OpChainConfig,
-                        as: 'opChildConfigs',
-                        attributes: ['id']
-                    }
-                ]
-            });
-
-            if (opConfigCheck && opConfigCheck.opChildConfigs && opConfigCheck.opChildConfigs.length > 0) {
-                // OP configs exist, fetch them with full attributes
-                const workspaceWithOp = await Workspace.findByPk(workspace.id, {
-                    attributes: ['id'],
-                    include: [
-                        {
-                            model: OpChainConfig,
-                            as: 'opChildConfigs',
-                            attributes: [
-                                'workspaceId',
-                                'batchInboxAddress',
-                                'beaconUrl',
-                                'l2BlockTime',
-                                'l2GenesisTimestamp'
-                            ]
-                        }
-                    ]
-                });
-
-                workspace.opChildConfigs = workspaceWithOp.opChildConfigs;
-                opChildConfigs = workspace.opChildConfigs || [];
-            }
-        }
+        // OP configs are now loaded in the main query above
 
         if (opChildConfigs.length > 0) {
             const l1Timestamp = typeof processedBlock.timestamp === 'string' && processedBlock.timestamp.startsWith('0x')
