@@ -13,7 +13,12 @@ if (getSentryDsn()) {
             nodeProfilingIntegration(),
             Sentry.postgresIntegration
         ],
-        tracesSampleRate: 0.1,
+        tracesSampler: ({ name, inheritOrSampleWith }) => {
+            if (name.startsWith('GET /api') || name.startsWith('POST /api') ||
+                name.startsWith('PUT /api') || name.startsWith('DELETE /api'))
+                return 1.0;
+            return inheritOrSampleWith(0.1);
+        },
         profilesSampleRate: 0.1
     });
     
