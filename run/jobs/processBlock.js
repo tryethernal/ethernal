@@ -19,7 +19,7 @@ module.exports = async job => {
         include: {
             model: Workspace,
             as: 'workspace',
-            attributes: ['id', 'public', 'rpcServer', 'settings', 'networkId', 'name'],
+            attributes: ['id', 'public', 'rpcServer', 'networkId', 'name'],
             include: {
                 model: require('../models').Explorer,
                 as: 'explorer',
