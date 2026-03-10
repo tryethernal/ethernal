@@ -13,7 +13,7 @@ jest.mock('stripe', () => {
     });
 });
 require('../mocks/lib/queue');
-const { Block } = require('../mocks/models');
+const { Block, Transaction } = require('../mocks/models');
 
 const increaseStripeBillingQuota = require('../../jobs/increaseStripeBillingQuota');
 
@@ -31,7 +31,11 @@ describe('increaseStripeBillingQuota', () => {
     });
 
     it('Should return an error if block is not ready', (done) => {
-        jest.spyOn(Block, 'findByPk').mockResolvedValueOnce({ isReady: false });
+        jest.spyOn(Block, 'findByPk').mockResolvedValueOnce({
+            isReady: false,
+            transactionsCount: 1,
+            workspace: { explorer: null }
+        });
 
         increaseStripeBillingQuota({ data: { blockId: 1 }})
             .then(res => {
@@ -41,7 +45,11 @@ describe('increaseStripeBillingQuota', () => {
     });
 
     it('Should return an error if block is empty', (done) => {
-        jest.spyOn(Block, 'findByPk').mockResolvedValueOnce({ isReady: true, transactions: [] });
+        jest.spyOn(Block, 'findByPk').mockResolvedValueOnce({
+            isReady: true,
+            transactionsCount: 0,
+            workspace: { explorer: null }
+        });
 
         increaseStripeBillingQuota({ data: { blockId: 1 }})
             .then(res => {
@@ -51,7 +59,11 @@ describe('increaseStripeBillingQuota', () => {
     });
 
     it('Should return an error if no explorer', (done) => {
-        jest.spyOn(Block, 'findByPk').mockResolvedValueOnce({ isReady: true, transactions: [{}], workspace: {} });
+        jest.spyOn(Block, 'findByPk').mockResolvedValueOnce({
+            isReady: true,
+            transactionsCount: 1,
+            workspace: { explorer: null }
+        });
 
         increaseStripeBillingQuota({ data: { blockId: 1 }})
             .then(res => {
@@ -61,7 +73,15 @@ describe('increaseStripeBillingQuota', () => {
     });
 
     it('Should return an error if no active subscription', (done) => {
-        jest.spyOn(Block, 'findByPk').mockResolvedValueOnce({ isReady: true, transactions: [{}], workspace: { explorer: {} }});
+        jest.spyOn(Block, 'findByPk').mockResolvedValueOnce({
+            isReady: true,
+            transactionsCount: 1,
+            workspace: {
+                explorer: {
+                    stripeSubscription: null
+                }
+            }
+        });
 
         increaseStripeBillingQuota({ data: { blockId: 1 }})
             .then(res => {
@@ -72,7 +92,20 @@ describe('increaseStripeBillingQuota', () => {
 
     it('Should increment and not call stripe is billing is flat', (done) => {
         const increment = jest.fn().mockResolvedValue();
-        jest.spyOn(Block, 'findByPk').mockResolvedValueOnce({ isReady: true, transactions: [{}], workspace: { explorer: { stripeSubscription: { increment, stripePlan: { capabilities: { billing: 'flat' }}}}}});
+        jest.spyOn(Block, 'findByPk').mockResolvedValueOnce({
+            isReady: true,
+            transactionsCount: 1,
+            workspace: {
+                explorer: {
+                    stripeSubscription: {
+                        increment,
+                        stripePlan: {
+                            capabilities: { billing: 'flat' }
+                        }
+                    }
+                }
+            }
+        });
 
         increaseStripeBillingQuota({ data: { blockId: 1 }})
             .then(res => {
@@ -86,12 +119,57 @@ describe('increaseStripeBillingQuota', () => {
         const increment = jest.fn().mockResolvedValue();
         mockSubscriptionRetrieve.mockResolvedValue({ items: { data: [{ id: 'id' }]}});
         mockCreateUsageRecord.mockResolvedValue();
-        jest.spyOn(Block, 'findByPk').mockResolvedValueOnce({ id: 1, isReady: true, transactions: [{}], workspace: { explorer: { stripeSubscription: { increment, stripePlan: { capabilities: { billing: 'metered' }}}}}});
+        jest.spyOn(Block, 'findByPk').mockResolvedValueOnce({
+            id: 1,
+            isReady: true,
+            transactionsCount: 1,
+            workspace: {
+                explorer: {
+                    stripeSubscription: {
+                        increment,
+                        stripeId: 'stripe_sub_123',
+                        stripePlan: {
+                            capabilities: { billing: 'metered' }
+                        }
+                    }
+                }
+            }
+        });
 
         increaseStripeBillingQuota({ data: { blockId: 1 }})
             .then(res => {
                 expect(increment).toHaveBeenCalledWith('transactionQuota', { by: 1 });
                 expect(mockCreateUsageRecord).toHaveBeenCalledWith('id', { quantity: 1 }, { idempotencyKey: 1 });
+                expect(res).toEqual(true);
+                done();
+            });
+    });
+
+    it('Should use Transaction.count when transactionsCount is not available', (done) => {
+        const increment = jest.fn().mockResolvedValue();
+        jest.spyOn(Block, 'findByPk').mockResolvedValueOnce({
+            id: 1,
+            isReady: true,
+            transactionsCount: null, // Force fallback to count
+            workspace: {
+                explorer: {
+                    stripeSubscription: {
+                        increment,
+                        stripePlan: {
+                            capabilities: { billing: 'flat' }
+                        }
+                    }
+                }
+            }
+        });
+        jest.spyOn(Transaction, 'count').mockResolvedValueOnce(2);
+
+        increaseStripeBillingQuota({ data: { blockId: 1 }})
+            .then(res => {
+                expect(Transaction.count).toHaveBeenCalledWith({
+                    where: { blockId: 1 }
+                });
+                expect(increment).toHaveBeenCalledWith('transactionQuota', { by: 2 });
                 expect(res).toEqual(true);
                 done();
             });
