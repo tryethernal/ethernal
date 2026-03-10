@@ -20,12 +20,14 @@ module.exports = async job => {
             {
                 model: Workspace,
                 as: 'workspace',
-                attributes: ['id', 'name', 'public', 'rpcServer', 'processNativeTokenTransfers']
+                attributes: ['id', 'name', 'public', 'rpcServer', 'processNativeTokenTransfers'],
+                required: true  // Use INNER JOIN for better performance - workspace should always exist
             },
             {
                 model: Transaction,
                 as: 'transaction',
-                attributes: ['id', 'blockNumber', 'hash']
+                attributes: ['id', 'blockNumber', 'hash'],
+                required: true  // Use INNER JOIN for better performance - transaction should always exist
             }
         ]
     });
