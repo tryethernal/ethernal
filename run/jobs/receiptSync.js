@@ -201,7 +201,12 @@ module.exports = async job => {
                     include: [
                         {
                             model: OrbitChainConfig,
-                            as: 'orbitConfig'
+                            as: 'orbitConfig',
+                            include: {
+                                model: require('../models').Workspace,
+                                as: 'parentWorkspace',
+                                attributes: ['id', 'rpcServer']
+                            }
                         },
                         {
                             model: OrbitChainConfig,
