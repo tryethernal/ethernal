@@ -1,0 +1,107 @@
+@import url('https://fonts.googleapis.com/css2?family=Exo:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-bg-base text-text-primary font-body;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading;
+  }
+}
+
+@layer components {
+  .blog-card {
+    @apply bg-bg-card rounded-xl overflow-hidden border border-border-subtle
+           transition-all duration-300 hover:border-primary/40 hover:bg-bg-card-hover
+           hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/5;
+  }
+
+  .category-pill {
+    @apply px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 cursor-pointer
+           border border-border-subtle;
+  }
+
+  .category-pill-active {
+    @apply bg-primary text-white border-primary;
+  }
+
+  .category-pill-inactive {
+    @apply bg-bg-card text-text-secondary hover:bg-bg-card-hover hover:text-text-primary;
+  }
+}
+
+/* Prose overrides for article content */
+.prose {
+  @apply text-slate-300;
+}
+
+.prose h2 {
+  @apply font-heading text-text-primary mt-12 mb-4 text-2xl font-semibold;
+}
+
+.prose h3 {
+  @apply font-heading text-text-primary mt-8 mb-3 text-xl font-semibold;
+}
+
+.prose a {
+  @apply text-primary hover:text-primary-light transition-colors no-underline
+         border-b border-primary/30 hover:border-primary;
+}
+
+.prose strong {
+  @apply text-text-primary;
+}
+
+.prose code:not(pre code) {
+  @apply bg-bg-surface text-primary-light px-1.5 py-0.5 rounded text-sm font-normal
+         before:content-[''] after:content-[''];
+}
+
+.prose pre {
+  @apply bg-[#0f172a] border border-border-subtle rounded-lg;
+}
+
+.prose blockquote {
+  @apply border-l-primary text-text-secondary italic;
+}
+
+.prose table {
+  @apply border-collapse w-full;
+}
+
+.prose th {
+  @apply text-left text-text-primary font-semibold bg-bg-surface px-4 py-2
+         border border-border-subtle text-sm;
+}
+
+.prose td {
+  @apply px-4 py-2 border border-border-subtle/50 text-sm;
+}
+
+.prose hr {
+  @apply border-border-subtle my-10;
+}
+
+.prose img {
+  @apply rounded-lg mx-auto;
+}
+
+.prose sup a {
+  @apply border-none text-primary;
+}
+
+/* References section styling */
+.prose ol:last-of-type {
+  @apply text-sm text-text-muted;
+}
+
+.prose ol:last-of-type a {
+  @apply text-primary/80 text-sm;
+}

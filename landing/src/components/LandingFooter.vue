@@ -49,7 +49,7 @@
                         <a href="https://github.com/tryethernal/ethernal" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub</a>
                         <a href="https://discord.gg/jYCER6Mh" target="_blank" rel="noopener noreferrer" class="footer-link">Discord</a>
                         <a href="https://doc.tryethernal.com" target="_blank" rel="noopener noreferrer" class="footer-link">Documentation</a>
-                        <a href="https://blog.tryethernal.com" target="_blank" rel="noopener noreferrer" class="footer-link">Blog</a>
+                        <a href="/blog" class="footer-link">Blog</a>
                         <router-link to="/contact-us" class="footer-link">Contact</router-link>
                     </div>
 

@@ -1,0 +1,55 @@
+---
+/**
+ * @fileoverview Base layout shell for all blog pages. Includes head, nav, and footer.
+ * @component BaseLayout
+ * @prop {string} title - Page title
+ * @prop {string} [description] - Meta description
+ * @prop {string} [image] - OG image URL
+ */
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+}
+
+const { title, description = 'Ethernal Blog — Insights on EVM development, block explorers, and blockchain infrastructure.', image } = Astro.props;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonicalURL} />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content={canonicalURL} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  {image && <meta property="og:image" content={image} />}
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  {image && <meta name="twitter:image" content={image} />}
+
+  <title>{title} | Ethernal Blog</title>
+
+  <link rel="icon" type="image/svg+xml" href="/blog/favicon.svg" />
+</head>
+<body class="min-h-screen flex flex-col">
+  <Header />
+  <main class="flex-1">
+    <slot />
+  </main>
+  <Footer />
+</body>
+</html>

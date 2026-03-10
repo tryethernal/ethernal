@@ -1,0 +1,65 @@
+---
+/**
+ * @fileoverview Card component for blog post listings.
+ * @component BlogCard
+ * @prop {string} title - Post title
+ * @prop {string} slug - URL slug
+ * @prop {string} description - Post excerpt
+ * @prop {Date} date - Publication date
+ * @prop {string[]} tags - Category tags
+ * @prop {string} [image] - Optional hero image
+ * @prop {number} [readingTime] - Estimated reading time in minutes
+ * @prop {boolean} [featured] - Whether to render as featured (large) card
+ */
+
+interface Props {
+  title: string;
+  slug: string;
+  description: string;
+  date: Date;
+  tags: string[];
+  image?: string;
+  readingTime?: number;
+  featured?: boolean;
+}
+
+const { title, slug, description, date, tags, image, readingTime, featured = false } = Astro.props;
+
+const formattedDate = date.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+});
+
+const tag = tags[0] || 'Article';
+---
+
+<a href={`/blog/${slug}`} class="block blog-card group" class:list={[featured && 'md:col-span-3']}>
+  {image ? (
+    <div class:list={['overflow-hidden', featured ? 'h-64' : 'h-44']}>
+      <img src={image} alt={title}
+           class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+    </div>
+  ) : (
+    <div class:list={[
+      'flex items-center justify-center bg-gradient-to-br from-primary/10 to-accent/10',
+      featured ? 'h-48' : 'h-32'
+    ]}>
+      <span class="text-4xl opacity-30">📝</span>
+    </div>
+  )}
+  <div class="p-5">
+    <div class="flex items-center gap-3 mb-3">
+      <span class="text-xs font-medium text-primary bg-primary/10 px-2 py-0.5 rounded">{tag}</span>
+      <span class="text-xs text-text-muted">{formattedDate}</span>
+      {readingTime && <span class="text-xs text-text-muted">{readingTime} min read</span>}
+    </div>
+    <h3 class:list={[
+      'font-heading font-semibold text-text-primary mb-2 line-clamp-2 group-hover:text-primary transition-colors',
+      featured ? 'text-2xl' : 'text-lg'
+    ]}>
+      {title}
+    </h3>
+    <p class="text-sm text-text-secondary line-clamp-3 leading-relaxed">{description}</p>
+  </div>
+</a>

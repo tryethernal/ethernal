@@ -1,0 +1,107 @@
+---
+/**
+ * @fileoverview Article page layout with hero, metadata, content, and related posts.
+ * @component PostLayout
+ * @prop {object} post - The blog post entry from the collection
+ */
+import BaseLayout from './BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+interface Props {
+  post: {
+    id: string;
+    data: {
+      title: string;
+      date: Date;
+      description: string;
+      tags: string[];
+      image?: string;
+      readingTime?: number;
+    };
+  };
+}
+
+const { post } = Astro.props;
+const { title, date, description, tags, image, readingTime } = post.data;
+
+const formattedDate = date.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+
+const tag = tags[0] || 'Article';
+
+// Get related posts (same tag, excluding current)
+const allPosts = await getCollection('blog', ({ data }) => data.status === 'published');
+const relatedPosts = allPosts
+  .filter(p => p.id !== post.id && p.data.tags.some(t => tags.includes(t)))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+---
+
+<BaseLayout title={title} description={description} image={image}>
+  <article class="max-w-4xl mx-auto px-4 sm:px-6">
+    <!-- Back link -->
+    <div class="pt-8 pb-6">
+      <a href="/blog" class="text-sm text-text-secondary hover:text-primary transition-colors">
+        &larr; Back to Blog
+      </a>
+    </div>
+
+    <!-- Hero image -->
+    {image && (
+      <div class="rounded-xl overflow-hidden mb-8 border border-border-subtle">
+        <img src={image} alt={title} class="w-full h-auto max-h-96 object-cover" />
+      </div>
+    )}
+
+    <!-- Header -->
+    <header class="mb-10">
+      <h1 class="font-heading text-3xl sm:text-4xl lg:text-[2.75rem] font-bold text-text-primary leading-tight mb-4">
+        {title}
+      </h1>
+      <div class="flex flex-wrap items-center gap-3 text-sm text-text-muted">
+        <span class="text-xs font-medium text-primary bg-primary/10 px-2.5 py-1 rounded">{tag}</span>
+        <span>{formattedDate}</span>
+        {readingTime && <span>&middot; {readingTime} min read</span>}
+      </div>
+    </header>
+
+    <!-- Article body -->
+    <div class="prose prose-lg max-w-none mb-16">
+      <slot />
+    </div>
+  </article>
+
+  <!-- Related posts -->
+  {relatedPosts.length > 0 && (
+    <section class="max-w-6xl mx-auto px-4 sm:px-6 pb-16">
+      <div class="border-t border-border-subtle pt-12">
+        <h2 class="font-heading text-2xl font-semibold text-text-primary mb-8">Related Articles</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {relatedPosts.map(rp => (
+            <a href={`/blog/${rp.id}`} class="blog-card group">
+              {rp.data.image ? (
+                <div class="h-36 overflow-hidden">
+                  <img src={rp.data.image} alt={rp.data.title}
+                       class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                </div>
+              ) : (
+                <div class="h-24 flex items-center justify-center bg-gradient-to-br from-primary/10 to-accent/10">
+                  <span class="text-3xl opacity-30">📝</span>
+                </div>
+              )}
+              <div class="p-4">
+                <span class="text-xs text-text-muted">{rp.data.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                <h3 class="font-heading text-base font-semibold text-text-primary mt-1 line-clamp-2 group-hover:text-primary transition-colors">
+                  {rp.data.title}
+                </h3>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+</BaseLayout>

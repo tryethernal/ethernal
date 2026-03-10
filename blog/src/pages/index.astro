@@ -1,0 +1,91 @@
+---
+/**
+ * @fileoverview Blog homepage with category filter and card grid.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import BlogCard from '../components/BlogCard.astro';
+import CategoryFilter from '../components/CategoryFilter.vue';
+import { getCollection } from 'astro:content';
+
+const posts = await getCollection('blog', ({ data }) => data.status === 'published');
+const sortedPosts = posts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const allTags = [...new Set(sortedPosts.flatMap(p => p.data.tags))];
+const categories = ['All', ...allTags];
+
+const [featured, ...rest] = sortedPosts;
+---
+
+<BaseLayout title="Blog">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-12">
+    <!-- Hero -->
+    <div class="mb-12">
+      <h1 class="font-heading text-4xl sm:text-5xl font-bold text-text-primary mb-3">Blog</h1>
+      <p class="text-lg text-text-secondary max-w-2xl">
+        Insights on EVM development, block explorers, and blockchain infrastructure.
+      </p>
+    </div>
+
+    <!-- Category filter -->
+    <div class="mb-10">
+      <CategoryFilter client:load categories={categories} />
+    </div>
+
+    <!-- Post grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="post-grid">
+      {featured && (
+        <div data-tags={JSON.stringify(featured.data.tags)}>
+          <BlogCard
+            title={featured.data.title}
+            slug={featured.id}
+            description={featured.data.description}
+            date={featured.data.date}
+            tags={featured.data.tags}
+            image={featured.data.image}
+            readingTime={featured.data.readingTime}
+            featured={true}
+          />
+        </div>
+      )}
+      {rest.map(post => (
+        <div data-tags={JSON.stringify(post.data.tags)}>
+          <BlogCard
+            title={post.data.title}
+            slug={post.id}
+            description={post.data.description}
+            date={post.data.date}
+            tags={post.data.tags}
+            image={post.data.image}
+            readingTime={post.data.readingTime}
+          />
+        </div>
+      ))}
+    </div>
+
+    <!-- No results message -->
+    <div id="no-results" class="hidden text-center py-16">
+      <p class="text-text-muted text-lg">No posts found for this category.</p>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  document.addEventListener('filter-change', (e: Event) => {
+    const category = (e as CustomEvent).detail;
+    const grid = document.getElementById('post-grid');
+    const noResults = document.getElementById('no-results');
+    if (!grid || !noResults) return;
+
+    const cards = grid.querySelectorAll<HTMLElement>('[data-tags]');
+    let visibleCount = 0;
+
+    cards.forEach(card => {
+      const tags: string[] = JSON.parse(card.dataset.tags || '[]');
+      const show = category === 'All' || tags.includes(category);
+      card.style.display = show ? '' : 'none';
+      if (show) visibleCount++;
+    });
+
+    noResults.classList.toggle('hidden', visibleCount > 0);
+  });
+</script>

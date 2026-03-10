@@ -1,0 +1,30 @@
+---
+/**
+ * @fileoverview Blog footer component matching the landing site design.
+ * @component Footer
+ */
+---
+<footer class="border-t border-border-subtle bg-bg-base mt-20">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-12">
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-6">
+        <a href="/" class="font-heading text-lg font-semibold text-text-primary hover:text-primary-light transition-colors">
+          Ethernal
+        </a>
+        <span class="text-text-muted text-sm">Open-source block explorer for EVM chains</span>
+      </div>
+      <div class="flex items-center gap-6 text-sm text-text-secondary">
+        <a href="https://github.com/tryethernal/ethernal" target="_blank" rel="noopener noreferrer"
+           class="hover:text-text-primary transition-colors">GitHub</a>
+        <a href="https://discord.gg/jYCER6Mh" target="_blank" rel="noopener noreferrer"
+           class="hover:text-text-primary transition-colors">Discord</a>
+        <a href="https://doc.tryethernal.com" target="_blank" rel="noopener noreferrer"
+           class="hover:text-text-primary transition-colors">Docs</a>
+      </div>
+    </div>
+    <div class="mt-8 pt-6 border-t border-border-subtle flex flex-col sm:flex-row items-center justify-between gap-2">
+      <span class="text-text-muted text-xs">&copy; {new Date().getFullYear()} Ethernal. All rights reserved.</span>
+      <span class="text-text-muted text-xs flex items-center gap-1">Made with care in France 🍷</span>
+    </div>
+  </div>
+</footer>
