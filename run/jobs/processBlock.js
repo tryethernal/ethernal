@@ -15,10 +15,17 @@ module.exports = async job => {
         return 'Missing parameter';
 
     const block = await Block.findByPk(data.blockId, {
+        attributes: ['id', 'number', 'gasUsed', 'gasLimit', 'workspaceId', 'timestamp', 'transactionsCount'],
         include: {
             model: Workspace,
             as: 'workspace',
-            include: 'explorer'
+            attributes: ['id', 'public', 'rpcServer', 'settings', 'networkId', 'name'],
+            include: {
+                model: require('../models').Explorer,
+                as: 'explorer',
+                attributes: ['id', 'shouldSync', 'gasAnalyticsEnabled'],
+                required: false
+            }
         }
     });
 
