@@ -26,7 +26,52 @@ module.exports = async job => {
 
     let workspace;
 
-    if (data.workspaceId) {
+    // Use cached workspace data if available (passed from batchBlockSync for faster processing)
+    const hasCachedWorkspace = data.cachedWorkspace && data.cachedWorkspace.rpcServer && data.workspaceId;
+
+    if (hasCachedWorkspace) {
+        // Fast path with cached data: skip database lookup for workspace validation
+        if (data.blockNumber === undefined || data.blockNumber === null)
+            return 'Missing parameter';
+
+        // Reconstruct workspace object from cached data
+        workspace = {
+            id: data.workspaceId,
+            rpcServer: data.cachedWorkspace.rpcServer,
+            browserSyncEnabled: data.cachedWorkspace.browserSyncEnabled,
+            isCustomL1Parent: data.cachedWorkspace.isCustomL1Parent,
+            rpcHealthCheckEnabled: data.cachedWorkspace.rpcHealthCheckEnabled,
+            public: data.cachedWorkspace.public,
+            rateLimitInterval: data.cachedWorkspace.rateLimitInterval,
+            rateLimitMaxInInterval: data.cachedWorkspace.rateLimitMaxInInterval,
+            explorer: data.cachedWorkspace.explorer,
+            rpcHealthCheck: data.cachedWorkspace.rpcHealthCheck
+        };
+
+        // API source requires the same validations as the slow path
+        if (data.source === 'api') {
+            // Custom L1 parents don't require explorer/subscription - they sync for their L2 children
+            const isCustomL1Parent = workspace.isCustomL1Parent === true;
+
+            if (!isCustomL1Parent) {
+                if (!workspace.explorer)
+                    return 'No active explorer for this workspace';
+
+                if (!workspace.explorer.shouldSync)
+                    return 'Sync is disabled';
+
+                if (workspace.rpcHealthCheckEnabled && workspace.rpcHealthCheck && !workspace.rpcHealthCheck.isReachable)
+                    return 'RPC is not reachable';
+
+                if (!workspace.explorer.stripeSubscription)
+                    return 'No active subscription';
+            }
+        }
+
+        // Disable browser sync to prevent concurrent syncing from both browser and server
+        if (workspace.browserSyncEnabled)
+            await db.updateBrowserSync(workspace.id, false);
+    } else if (data.workspaceId) {
         // Fast path: uses workspaceId for optimized database lookup
         if (data.blockNumber === undefined || data.blockNumber === null)
             return 'Missing parameter';
@@ -303,7 +348,83 @@ module.exports = async job => {
             Object.keys(Block.rawAttributes).concat(['transactions'])
         );
 
-        const orbitChildConfigs = workspace.orbitChildConfigs || [];
+        // Lazy load L2 configs only when needed for cached workspace
+        let orbitChildConfigs = workspace.orbitChildConfigs || [];
+        let hasL2Config = !!(workspace.orbitConfig || orbitChildConfigs.length > 0);
+
+        if (hasCachedWorkspace && !hasL2Config) {
+            // Check if L2 configs exist before doing expensive processing
+            const l2ConfigCheck = await Workspace.findByPk(workspace.id, {
+                attributes: ['id'],
+                include: [
+                    {
+                        model: require('../models').OrbitChainConfig,
+                        as: 'orbitConfig',
+                        attributes: ['id']
+                    },
+                    {
+                        model: require('../models').OrbitChainConfig,
+                        as: 'orbitChildConfigs',
+                        attributes: ['id']
+                    }
+                ]
+            });
+
+            if (l2ConfigCheck && (l2ConfigCheck.orbitConfig || (l2ConfigCheck.orbitChildConfigs && l2ConfigCheck.orbitChildConfigs.length > 0))) {
+                // L2 configs exist, fetch them with full attributes
+                const workspaceWithL2 = await Workspace.findByPk(workspace.id, {
+                    attributes: ['id'],
+                    include: [
+                        {
+                            model: require('../models').OrbitChainConfig,
+                            as: 'orbitConfig',
+                            attributes: [
+                                'rollupContract',
+                                'sequencerInboxContract',
+                                'bridgeContract',
+                                'inboxContract',
+                                'outboxContract',
+                                'stakeToken',
+                                'l1GatewayRouter',
+                                'l1Erc20Gateway',
+                                'l1WethGateway',
+                                'l1CustomGateway',
+                                'l2GatewayRouter',
+                                'l2Erc20Gateway',
+                                'l2WethGateway',
+                                'l2CustomGateway'
+                            ]
+                        },
+                        {
+                            model: require('../models').OrbitChainConfig,
+                            as: 'orbitChildConfigs',
+                            attributes: [
+                                'workspaceId',
+                                'rollupContract',
+                                'sequencerInboxContract',
+                                'bridgeContract',
+                                'inboxContract',
+                                'outboxContract',
+                                'stakeToken',
+                                'l1GatewayRouter',
+                                'l1Erc20Gateway',
+                                'l1WethGateway',
+                                'l1CustomGateway',
+                                'l2GatewayRouter',
+                                'l2Erc20Gateway',
+                                'l2WethGateway',
+                                'l2CustomGateway'
+                            ]
+                        }
+                    ]
+                });
+
+                workspace.orbitConfig = workspaceWithL2.orbitConfig;
+                workspace.orbitChildConfigs = workspaceWithL2.orbitChildConfigs;
+                orbitChildConfigs = workspace.orbitChildConfigs || [];
+                hasL2Config = true;
+            }
+        }
 
         if (workspace.orbitConfig || orbitChildConfigs.length > 0) {
             // Filter transactions to only include those that interact with rollupContract or sequencerInbox
@@ -364,7 +485,45 @@ module.exports = async job => {
             return "Couldn't store block";
 
         // OP Stack batch detection - enqueue as separate jobs to avoid blocking sync
-        const opChildConfigs = workspace.opChildConfigs || [];
+        let opChildConfigs = workspace.opChildConfigs || [];
+
+        // Lazy load OP configs for cached workspace if needed
+        if (hasCachedWorkspace && opChildConfigs.length === 0) {
+            const opConfigCheck = await Workspace.findByPk(workspace.id, {
+                attributes: ['id'],
+                include: [
+                    {
+                        model: OpChainConfig,
+                        as: 'opChildConfigs',
+                        attributes: ['id']
+                    }
+                ]
+            });
+
+            if (opConfigCheck && opConfigCheck.opChildConfigs && opConfigCheck.opChildConfigs.length > 0) {
+                // OP configs exist, fetch them with full attributes
+                const workspaceWithOp = await Workspace.findByPk(workspace.id, {
+                    attributes: ['id'],
+                    include: [
+                        {
+                            model: OpChainConfig,
+                            as: 'opChildConfigs',
+                            attributes: [
+                                'workspaceId',
+                                'batchInboxAddress',
+                                'beaconUrl',
+                                'l2BlockTime',
+                                'l2GenesisTimestamp'
+                            ]
+                        }
+                    ]
+                });
+
+                workspace.opChildConfigs = workspaceWithOp.opChildConfigs;
+                opChildConfigs = workspace.opChildConfigs || [];
+            }
+        }
+
         if (opChildConfigs.length > 0) {
             const l1Timestamp = typeof processedBlock.timestamp === 'string' && processedBlock.timestamp.startsWith('0x')
                 ? parseInt(processedBlock.timestamp, 16)
