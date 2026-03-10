@@ -76,7 +76,7 @@ const patternY = (seed * 7) % 30;
       </div>
     </div>
   )}
-  <div class="p-5">
+  <div class="p-5 h-[168px] flex flex-col">
     <div class="flex items-center gap-3 mb-2.5">
       <span class="text-xs font-medium text-primary bg-primary/10 px-2 py-0.5 rounded">{tag}</span>
       <span class="text-xs text-text-muted">{formattedDate}</span>
@@ -85,6 +85,6 @@ const patternY = (seed * 7) % 30;
     <h3 class="font-heading font-semibold text-text-primary mb-2 text-lg leading-snug line-clamp-2 group-hover:text-primary transition-colors">
       {title}
     </h3>
-    <p class="text-sm text-text-secondary line-clamp-2 leading-relaxed">{description}</p>
+    <p class="text-sm text-text-secondary line-clamp-2 leading-relaxed mt-auto">{description}</p>
   </div>
 </a>
