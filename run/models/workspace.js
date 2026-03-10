@@ -2992,9 +2992,7 @@ module.exports = (sequelize, DataTypes) => {
                     }
                 }
 
-                // Convert transactions to plain objects to prevent N+1 queries when accessing associations
-                const transactionsPlain = storedTransactions.map(tx => tx.get({ plain: true }));
-                return { ...createdBlock, transactions: transactionsPlain };
+                return { ...createdBlock, transactions: storedTransactions };
             } catch(error) {
                 const blockAlreadyExists = error.errors && error.errors.find(e => e.validatorKey === 'not_unique');
                 if (blockAlreadyExists)
