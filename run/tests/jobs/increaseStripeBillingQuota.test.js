@@ -50,10 +50,12 @@ describe('increaseStripeBillingQuota', () => {
             transactionsCount: 0,
             workspace: { explorer: null }
         });
+        const transactionCountSpy = jest.spyOn(Transaction, 'count');
 
         increaseStripeBillingQuota({ data: { blockId: 1 }})
             .then(res => {
                 expect(res).toEqual('Block is empty');
+                expect(transactionCountSpy).not.toHaveBeenCalled(); // Should not call Transaction.count when transactionsCount is 0
                 done();
             });
     });

@@ -6,7 +6,7 @@
 
 const { getStripeSecretKey } = require('../lib/env');
 const stripe = require('stripe')(getStripeSecretKey());
-const { Block, Workspace, Explorer, StripeSubscription, Transaction } = require('../models');
+const { Block, Workspace, Explorer, StripeSubscription, Transaction, StripePlan } = require('../models');
 
 module.exports = async job => {
     const data = job.data;
@@ -30,7 +30,7 @@ module.exports = async job => {
                     as: 'stripeSubscription',
                     attributes: ['id', 'stripeId', 'transactionQuota'],
                     include: {
-                        model: require('../models').StripePlan,
+                        model: StripePlan,
                         as: 'stripePlan',
                         attributes: ['capabilities']
                     }
@@ -47,13 +47,13 @@ module.exports = async job => {
 
     // Get transaction count - use transactionsCount field if available, otherwise query
     let transactionCount = block.transactionsCount;
-    if (!transactionCount) {
+    if (transactionCount == null) {
         transactionCount = await Transaction.count({
             where: { blockId: block.id }
         });
     }
 
-    if (!transactionCount || transactionCount === 0)
+    if (!transactionCount)
         return 'Block is empty';
 
     if (!block.workspace.explorer)
