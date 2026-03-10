@@ -2,6 +2,7 @@
 title: "What Is a Layer 2, and Why Does Your Rollup Need a Block Explorer?"
 date: 2026-03-10
 description: "L2 rollups need block explorers from day one. Here's why debugging, user trust, token tracking, contract verification, and chain monitoring all depend on it."
+image: "/blog/images/what-is-l2-why-rollup-needs-block-explorer.png"
 tags:
   - Infrastructure
   - L2

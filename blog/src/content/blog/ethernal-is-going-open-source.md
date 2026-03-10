@@ -2,6 +2,7 @@
 title: "Ethernal Is Going Open Source!"
 date: 2021-10-18
 description: "Ethernal's code is now publicly available on GitHub. The hosted version now has free and paid tiers."
+image: "/blog/images/ethernal-is-going-open-source.png"
 tags:
   - Ethernal
 status: published
