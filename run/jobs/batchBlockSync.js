@@ -83,6 +83,28 @@ module.exports = async job => {
 
         const existingSet = new Set(existingBlocks.map(b => Number(b.number)));
 
+        // Cache workspace data to avoid N+1 queries in blockSync jobs
+        const cachedWorkspace = {
+            rpcServer: workspace.rpcServer,
+            browserSyncEnabled: workspace.browserSyncEnabled,
+            isCustomL1Parent: workspace.isCustomL1Parent,
+            rpcHealthCheckEnabled: workspace.rpcHealthCheckEnabled,
+            public: workspace.public,
+            rateLimitInterval: workspace.rateLimitInterval,
+            rateLimitMaxInInterval: workspace.rateLimitMaxInInterval,
+            explorer: workspace.explorer ? {
+                id: workspace.explorer.id,
+                shouldSync: workspace.explorer.shouldSync,
+                stripeSubscription: workspace.explorer.stripeSubscription ? {
+                    id: workspace.explorer.stripeSubscription.id
+                } : null
+            } : null,
+            rpcHealthCheck: workspace.rpcHealthCheck ? {
+                id: workspace.rpcHealthCheck.id,
+                isReachable: workspace.rpcHealthCheck.isReachable
+            } : null
+        };
+
         const jobs = [];
         for (let i = from; i <= end; i++) {
             if (existingSet.has(i)) continue;
@@ -94,7 +116,8 @@ module.exports = async job => {
                     workspaceId,
                     blockNumber: i,
                     source: data.source || 'batchSync',
-                    rateLimited: true
+                    rateLimited: true,
+                    cachedWorkspace
                 }
             });
         }
