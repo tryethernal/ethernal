@@ -1,0 +1,31 @@
+name: Blog Trend Scan
+
+on:
+  schedule:
+    # Every Monday at 6am UTC
+    - cron: '0 6 * * 1'
+  workflow_dispatch: # Manual trigger
+
+permissions:
+  issues: write
+  repository-projects: write
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        working-directory: blog/pipeline
+        run: npm ci
+
+      - name: Run trend scan
+        working-directory: blog/pipeline
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node index.js

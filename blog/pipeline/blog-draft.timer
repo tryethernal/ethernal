@@ -1,0 +1,10 @@
+[Unit]
+Description=Run blog draft pipeline every 2 days
+
+[Timer]
+OnCalendar=*-*-1/2 08:00:00 UTC
+Persistent=true
+RandomizedDelaySec=600
+
+[Install]
+WantedBy=timers.target

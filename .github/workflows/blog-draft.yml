@@ -1,0 +1,81 @@
+name: Blog Draft (Every 2 Days)
+
+on:
+  schedule:
+    # Every 2 days at 8am UTC (odd days: 1st, 3rd, 5th...)
+    - cron: '0 8 1-31/2 * *'
+  workflow_dispatch: # Manual trigger
+
+permissions:
+  issues: write
+  repository-projects: write
+  contents: write
+  pull-requests: write
+
+jobs:
+  pick-and-draft:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install pipeline dependencies
+        working-directory: blog/pipeline
+        run: npm ci
+
+      - name: Pick next topic
+        id: pick
+        working-directory: blog/pipeline
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          OUTPUT=$(node index.js --pick 2>&1)
+          echo "$OUTPUT"
+          PICKED=$(echo "$OUTPUT" | grep '::picked::' | sed 's/::picked:://')
+          if [ -z "$PICKED" ]; then
+            echo "No topic picked — all clusters have active work"
+            echo "skip=true" >> $GITHUB_OUTPUT
+          else
+            # Save picked JSON to file (too large for env var due to issue body)
+            echo "$PICKED" > /tmp/picked-topic.json
+            TOPIC=$(echo "$PICKED" | jq -r '.cluster')
+            CONTENT_TYPE=$(echo "$PICKED" | jq -r '.contentType')
+            CARD_BODY=$(echo "$PICKED" | jq -r '.body // ""')
+            echo "skip=false" >> $GITHUB_OUTPUT
+            echo "topic=$TOPIC" >> $GITHUB_OUTPUT
+            echo "content_type=$CONTENT_TYPE" >> $GITHUB_OUTPUT
+            # Write card body to file for multi-line content
+            echo "$CARD_BODY" > /tmp/card-body.md
+          fi
+
+      - name: Research and draft
+        if: steps.pick.outputs.skip != 'true'
+        uses: anthropics/claude-code-action@v1
+        with:
+          prompt: |
+            You are writing a blog article for the Ethernal blog (On-Chain Engineering).
+
+            A trending topic has been detected by our pipeline:
+
+            **Topic:** ${{ steps.pick.outputs.topic }}
+            **Content Type:** ${{ steps.pick.outputs.content_type }}
+
+            **Trend Card Content (sources to research):**
+            $(cat /tmp/card-body.md)
+
+            Steps:
+            1. Run /blog:research for this topic. Focus on the specific EIPs, ERCs, papers, and forum posts listed in the trend card above — those are your primary sources.
+            2. Run /blog:draft to write the article. Use the Content Type to determine the format:
+               - "ERC Tutorial": Code-heavy, include working Solidity, deploy instructions, practical examples
+               - "EIP Explainer": What it changes, why it matters, code impact with before/after examples
+               - "Research Deep Dive": Break down the paper/proposal, extract practical insights, include code snippets
+               - "Upgrade Guide": Step-by-step migration guide with code changes needed
+               - "Trend Survey": Survey multiple related proposals, compare approaches, include interface examples
+               Cite the sources from the trend card as references in the article.
+            3. Create a PR with the new article targeting the `develop` branch.
+            4. After the PR is created, output the PR URL.
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          allowed_tools: "Read,Write,Edit,Bash,WebSearch,WebFetch,Glob,Grep,Skill"
