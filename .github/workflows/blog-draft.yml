@@ -48,7 +48,8 @@ jobs:
             echo "topic=$TOPIC" >> $GITHUB_OUTPUT
             echo "content_type=$CONTENT_TYPE" >> $GITHUB_OUTPUT
             echo "card_id=$CARD_ID" >> $GITHUB_OUTPUT
-            echo "$CARD_BODY" > /tmp/card-body.md
+            # Write card body to workspace file so Claude can read it
+            echo "$CARD_BODY" > "$GITHUB_WORKSPACE/blog/pipeline/.card-body.md"
           fi
 
       - name: Research and draft
@@ -63,11 +64,10 @@ jobs:
             **Topic:** ${{ steps.pick.outputs.topic }}
             **Content Type:** ${{ steps.pick.outputs.content_type }}
 
-            **Trend Card Content (sources to research):**
-            $(cat /tmp/card-body.md)
+            Read the file `blog/pipeline/.card-body.md` for the full trend card content with sources to research.
 
             Steps:
-            1. Run /blog:research for this topic. Focus on the specific EIPs, ERCs, papers, and forum posts listed in the trend card above — those are your primary sources.
+            1. Run /blog:research for this topic. Focus on the specific EIPs, ERCs, papers, and forum posts listed in the trend card — those are your primary sources.
             2. Run /blog:draft to write the article. Use the Content Type to determine the format:
                - "ERC Tutorial": Code-heavy, include working Solidity, deploy instructions, practical examples
                - "EIP Explainer": What it changes, why it matters, code impact with before/after examples
@@ -89,14 +89,12 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          CARD_ID="${{ steps.pick.outputs.card_id }}"
-
           # Find the article that was just committed
           ARTICLE_PATH=$(git log -1 --name-only --pretty=format: | grep 'blog/src/content/blog/' | head -1)
 
           if [ -n "$ARTICLE_PATH" ]; then
             echo "Article: $ARTICLE_PATH"
-            CARD_ID="$CARD_ID" ARTICLE_PATH="$ARTICLE_PATH" node --input-type=module -e "
+            CARD_ID="${{ steps.pick.outputs.card_id }}" ARTICLE_PATH="$ARTICLE_PATH" node --input-type=module -e "
               import { updateCardStatus, setArticlePath } from './project.js';
               updateCardStatus(process.env.CARD_ID, 'drafting');
               setArticlePath(process.env.CARD_ID, process.env.ARTICLE_PATH);
