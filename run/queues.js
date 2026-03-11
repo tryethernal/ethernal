@@ -7,6 +7,7 @@ priorities['high'].forEach(jobName => {
     queues[jobName] = new Queue(jobName, {
         defaultJobOptions: {
             attempts: 50,
+            stackTraceLimit: 3,
             removeOnComplete: {
                 count: 100,
                 age: 4 * 60
@@ -31,6 +32,7 @@ priorities['medium'].forEach(jobName => {
     queues[jobName] = new Queue(jobName, {
         defaultJobOptions: {
             attempts: 40,
+            stackTraceLimit: 3,
             removeOnComplete: 20,
             removeOnFail: 20,
             timeout: 30000,
@@ -47,6 +49,7 @@ priorities['low'].forEach(jobName => {
     queues[jobName] = new Queue(jobName, {
         defaultJobOptions: {
             attempts: 10,
+            stackTraceLimit: 3,
             removeOnComplete: 10,
             removeOnFail: 10,
             timeout: 30000,
@@ -62,6 +65,7 @@ priorities['low'].forEach(jobName => {
 queues['processHistoricalBlocks'] = new Queue('processHistoricalBlocks', {
     defaultJobOptions: {
         attempts: 5,
+        stackTraceLimit: 3,
         removeOnComplete: {
             count: 100,
             age: 4 * 60
