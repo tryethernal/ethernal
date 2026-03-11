@@ -21,13 +21,15 @@ const NOISE_PATTERNS = [
 ];
 
 /**
- * Fetch new EIPs from GitHub.
- * @returns {Promise<Array<{title: string, url: string, source: string, date: string, abstract: string}>>}
+ * Fetch new proposals from a GitHub repo (EIPs or ERCs).
+ * @param {string} repo - GitHub repo path (e.g. 'ethereum/EIPs')
+ * @param {string} source - Source tag ('eip' or 'erc')
+ * @returns {Array<{title: string, url: string, source: string, date: string, abstract: string}>}
  */
-export async function collectEIPs() {
+function collectProposals(repo, source) {
   const since = cutoffDate.toISOString();
   const result = execSync(
-    `gh api "repos/ethereum/EIPs/pulls?state=all&sort=created&direction=desc&per_page=50" --jq '.[] | select(.created_at >= "${since}") | {title: .title, url: .html_url, date: .created_at, body: (.body // "" | .[0:500])}'`,
+    `gh api "repos/${repo}/pulls?state=all&sort=created&direction=desc&per_page=50" --jq '.[] | select(.created_at >= "${since}") | {title: .title, url: .html_url, date: .created_at, body: (.body // "" | .[0:500])}'`,
     { encoding: 'utf-8', timeout: 30000 }
   );
 
@@ -37,52 +39,20 @@ export async function collectEIPs() {
     .filter(Boolean)
     .map(line => {
       const item = JSON.parse(line);
-      return {
-        title: item.title,
-        url: item.url,
-        source: 'eip',
-        date: item.date,
-        abstract: item.body,
-      };
+      return { title: item.title, url: item.url, source, date: item.date, abstract: item.body };
     })
     .filter(item => {
       const t = item.title.toLowerCase();
-      if (!t.includes('add eip') && !t.includes('eip-')) return false;
+      if (!t.includes(`add ${source}`) && !t.includes(`${source}-`)) return false;
       return !NOISE_PATTERNS.some(p => p.test(item.title));
     });
 }
 
-/**
- * Fetch new ERCs from GitHub.
- * @returns {Promise<Array<{title: string, url: string, source: string, date: string, abstract: string}>>}
- */
-export async function collectERCs() {
-  const since = cutoffDate.toISOString();
-  const result = execSync(
-    `gh api "repos/ethereum/ERCs/pulls?state=all&sort=created&direction=desc&per_page=50" --jq '.[] | select(.created_at >= "${since}") | {title: .title, url: .html_url, date: .created_at, body: (.body // "" | .[0:500])}'`,
-    { encoding: 'utf-8', timeout: 30000 }
-  );
+/** @returns {Promise<Array>} */
+export async function collectEIPs() { return collectProposals('ethereum/EIPs', 'eip'); }
 
-  return result
-    .trim()
-    .split('\n')
-    .filter(Boolean)
-    .map(line => {
-      const item = JSON.parse(line);
-      return {
-        title: item.title,
-        url: item.url,
-        source: 'erc',
-        date: item.date,
-        abstract: item.body,
-      };
-    })
-    .filter(item => {
-      const t = item.title.toLowerCase();
-      if (!t.includes('add erc') && !t.includes('erc-')) return false;
-      return !NOISE_PATTERNS.some(p => p.test(item.title));
-    });
-}
+/** @returns {Promise<Array>} */
+export async function collectERCs() { return collectProposals('ethereum/ERCs', 'erc'); }
 
 /**
  * Fetch recent posts from ethresear.ch RSS.
