@@ -15,6 +15,7 @@
 | Database schema | `.claude/references/SCHEMA.md` | |
 | Sentry pipeline | `run/api/sentryPipeline.js`, `run/webhooks/githubActions.js` | [SENTRY.md](.claude/references/SENTRY.md) |
 | Landing/marketing | `landing/` | [LANDING.md](.claude/references/LANDING.md) |
+| Blog pipeline | `blog/pipeline/`, `.github/workflows/blog-*.yml` | |
 | Docker commands | | [COMMANDS.md](.claude/references/COMMANDS.md) |
 | Env vars/flags | `run/lib/flags.js` | [ENV.md](.claude/references/ENV.md) |
 
