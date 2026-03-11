@@ -2,7 +2,7 @@
 title: "What Is a Layer 2, and Why Does Your Rollup Need a Block Explorer?"
 date: 2026-03-10
 description: "L2 rollups process thousands of transactions off-chain, but without a block explorer, debugging failures, tracking bridges, and verifying contracts all become guesswork. Here's what you need and why."
-image: "/blog/images/what-is-l2-why-rollup-needs-block-explorer.webp"
+image: "/blog/images/what-is-l2-why-rollup-needs-block-explorer.png"
 tags:
   - Infrastructure
   - L2
