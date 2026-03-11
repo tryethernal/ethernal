@@ -35,13 +35,57 @@ const computeP95ProcessingTime = (jobs) => {
     return times[index];
 };
 
-module.exports = async () => {
-    if (!maxTimeWithoutEnqueuedJob() || !queueMonitoringMaxProcessingTime() || !queueMonitoringHighProcessingTimeThreshold() || !queueMonitoringHighWaitingJobCountThreshold() || !queueMonitoringMaxWaitingJobCount()) {
-        logger.info('Queue monitoring is not enabled');
-        return;
-    }
+/**
+ * Cleans up legacy BullMQ v4 'priority' sorted sets that leak memory.
+ * BullMQ v5 uses 'prioritized' instead, but orphaned entries accumulate
+ * in the old 'priority' key and can consume gigabytes of Redis memory.
+ * This cleanup must run independently of monitoring configuration.
+ */
+const cleanupLegacyRedisKeys = async () => {
+    const allQueues = [...priorities['high'], ...priorities['medium'], ...priorities['low'], 'processHistoricalBlocks'];
+    if (allQueues.length === 0) return;
 
+    const pipeline = redis.pipeline();
+
+    // Build pipeline with all zcard commands
+    allQueues.forEach(queueName => {
+        const key = `bull:${queueName}:priority`;
+        pipeline.zcard(key);
+    });
+
+    const zcardResults = await pipeline.exec();
+
+    // Build second pipeline for unlinking keys with entries
+    const unlinkPipeline = redis.pipeline();
+    const keysToUnlink = [];
+
+    zcardResults.forEach((result, index) => {
+        if (!result[0]) { // No error
+            const count = result[1];
+            const queueName = allQueues[index];
+            const key = `bull:${queueName}:priority`;
+
+            if (count > 0) {
+                unlinkPipeline.unlink(key);
+                keysToUnlink.push({ queueName, entriesRemoved: count });
+            }
+        }
+    });
+
+    if (keysToUnlink.length > 0) {
+        await unlinkPipeline.exec();
+        keysToUnlink.forEach(({ queueName, entriesRemoved }) => {
+            logger.info('Cleaned legacy priority key', { queueName, entriesRemoved });
+        });
+    }
+};
+
+module.exports = async () => {
     let incidentCreated = false;
+
+    // Always run Redis cleanup first, regardless of monitoring configuration.
+    // This prevents Redis OOM from legacy BullMQ v4 priority keys.
+    await cleanupLegacyRedisKeys();
 
     // Cache queue instances to avoid repeated instantiation
     const queueCache = new Map();
@@ -137,46 +181,6 @@ module.exports = async () => {
         }
     }
 
-    // Clean up legacy BullMQ v4 'priority' sorted sets that leak memory.
-    // BullMQ v5 uses 'prioritized' instead, but orphaned entries accumulate
-    // in the old 'priority' key and can consume gigabytes of Redis memory.
-    // Use Redis pipeline to batch all cleanup operations.
-    const allQueues = [...priorities['high'], ...priorities['medium'], ...priorities['low'], 'processHistoricalBlocks'];
-    if (allQueues.length > 0) {
-        const pipeline = redis.pipeline();
-
-        // Build pipeline with all zcard commands
-        allQueues.forEach(queueName => {
-            const key = `bull:${queueName}:priority`;
-            pipeline.zcard(key);
-        });
-
-        const zcardResults = await pipeline.exec();
-
-        // Build second pipeline for unlinking keys with entries
-        const unlinkPipeline = redis.pipeline();
-        const keysToUnlink = [];
-
-        zcardResults.forEach((result, index) => {
-            if (!result[0]) { // No error
-                const count = result[1];
-                const queueName = allQueues[index];
-                const key = `bull:${queueName}:priority`;
-
-                if (count > 0) {
-                    unlinkPipeline.unlink(key);
-                    keysToUnlink.push({ queueName, entriesRemoved: count });
-                }
-            }
-        });
-
-        if (keysToUnlink.length > 0) {
-            await unlinkPipeline.exec();
-            keysToUnlink.forEach(({ queueName, entriesRemoved }) => {
-                logger.info('Cleaned legacy priority key', { queueName, entriesRemoved });
-            });
-        }
-    }
 
     return incidentCreated;
 };
