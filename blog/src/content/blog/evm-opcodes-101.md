@@ -1,7 +1,7 @@
 ---
 title: "EVM Opcodes 101: What Happens When You Send a Transaction"
 description: "EVM opcodes are the low-level instructions behind every Ethereum transaction. Learn how the stack, memory, and storage work, where gas costs come from, and how to debug failed transactions."
-image: "/blog/images/evm-opcodes-101.webp"
+image: "/blog/images/evm-opcodes-101.png"
 tags:
   - EVM
   - Ethereum
@@ -12,9 +12,9 @@ status: published
 readingTime: 8
 ---
 
-EVM opcodes are the low-level, single-byte instructions that the Ethereum Virtual Machine executes. Every Solidity function compiles down to a sequence of these roughly 140 opcodes, covering arithmetic, memory access, persistent storage, and control flow. They're the layer where gas costs are actually determined and where failed transactions can be debugged.
-
 A developer ships a token swap function. Works perfectly in testing. On mainnet, it burns $47 in gas for what should be a $3 operation. The culprit? An `SSTORE` inside a loop, writing to cold storage on every iteration instead of caching in memory first. Fifteen lines of Solidity, and the most expensive one is invisible unless you know where to look. Understanding opcodes turns that mystery into arithmetic.
+
+EVM opcodes are the low-level, single-byte instructions that the Ethereum Virtual Machine executes. Every Solidity function compiles down to a sequence of these roughly 140 opcodes, covering arithmetic, memory access, persistent storage, and control flow. They're the layer where gas costs are actually determined and where failed transactions can be debugged.
 
 ## Your transaction's journey before a single opcode fires
 
