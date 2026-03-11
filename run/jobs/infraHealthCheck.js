@@ -19,6 +19,9 @@ const REMEDIATION_COOLDOWN_SECONDS = 300;
 const REMEDIATION_HOURLY_LIMIT = 10;
 const REMEDIATION_REPEAT_WINDOW_SECONDS = 1800;
 
+/** In-memory fallback cooldown per alert type when Redis is unavailable */
+const inMemoryLastDispatch = {};
+
 /**
  * Checks Redis connectivity and memory usage.
  * @returns {Promise<Object>} Redis health status
@@ -173,8 +176,15 @@ const triggerRemediation = async (alertType, details) => {
     try {
         rateLimit = await checkRemediationRateLimit(alertType);
     } catch (error) {
-        // Rate limit check uses Redis — if Redis is down (which may be the alert itself), skip rate limiting and proceed
-        logger.warn('Rate limit check failed, proceeding with remediation', { alertType, error: error.message });
+        // Rate limit check uses Redis — if Redis is down, use in-memory cooldown to prevent dispatch flooding
+        const now = Date.now();
+        const lastDispatch = inMemoryLastDispatch[alertType] || 0;
+        if (now - lastDispatch < REMEDIATION_COOLDOWN_SECONDS * 1000) {
+            logger.warn('Rate limit check failed, in-memory cooldown active', { alertType });
+            return;
+        }
+        inMemoryLastDispatch[alertType] = now;
+        logger.warn('Rate limit check failed, proceeding with remediation (in-memory dedup)', { alertType, error: error.message });
         rateLimit = { allowed: true, reason: null, escalate: false };
     }
 
@@ -247,17 +257,19 @@ module.exports = async () => {
 
     // Redis connectivity failure
     if (redisResult.status === 'unhealthy' && redisResult.error) {
-        const details = `Redis connectivity failed: ${redisResult.error}`;
-        await createIncident('Redis connectivity failure', details, 'P1', { alias: 'infra-redis-connectivity' });
-        await triggerRemediation('redis-connectivity', details);
+        // OpsGenie is private — safe to include raw error for diagnosis
+        const privateDetails = `Redis connectivity failed: ${redisResult.error}`;
+        await createIncident('Redis connectivity failure', privateDetails, 'P1', { alias: 'infra-redis-connectivity' });
+        // Remediation triggers public GitHub issues — use generic message to avoid credential leaks
+        await triggerRemediation('redis-connectivity', 'Redis connectivity check failed');
         incidentCreated = true;
     }
 
     // PostgreSQL connectivity failure
     if (postgresResult.status === 'unhealthy') {
-        const details = `PostgreSQL connectivity failed: ${postgresResult.error}`;
-        await createIncident('PostgreSQL connectivity failure', details, 'P1', { alias: 'infra-postgres-connectivity' });
-        await triggerRemediation('postgres-connectivity', details);
+        const privateDetails = `PostgreSQL connectivity failed: ${postgresResult.error}`;
+        await createIncident('PostgreSQL connectivity failure', privateDetails, 'P1', { alias: 'infra-postgres-connectivity' });
+        await triggerRemediation('postgres-connectivity', 'PostgreSQL connectivity check failed');
         incidentCreated = true;
     }
 

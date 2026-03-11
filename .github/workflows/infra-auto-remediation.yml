@@ -41,7 +41,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y redis-tools
 
       - name: Investigate and Remediate
-        uses: anthropics/claude-code-action@v1
+        uses: anthropics/claude-code-action@9469d113c6afd29550c402740f22d1a97dd1209b # v1
         with:
           max_turns: 30
           allowed_tools: "Bash,Read,Glob,Grep"
