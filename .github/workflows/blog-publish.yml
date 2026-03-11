@@ -58,15 +58,14 @@ jobs:
             fi
 
             # Get the article path from the project item
-            ITEM_ID="${{ github.event.projects_v2_item.node_id }}"
-            ARTICLE_PATH=$(node --input-type=module -e "
+            ARTICLE_PATH=$(ITEM_ID="${{ github.event.projects_v2_item.node_id }}" node --input-type=module -e "
               import { getProjectItems } from './project.js';
               const items = getProjectItems();
-              const item = items.find(i => i.id === '$ITEM_ID');
+              const item = items.find(i => i.id === process.env.ITEM_ID);
               if (item && item.articlePath) {
                 console.log(item.articlePath);
               } else {
-                console.error('No article path found for item $ITEM_ID');
+                console.error('No article path found for item ' + process.env.ITEM_ID);
                 process.exit(1);
               }
             ")

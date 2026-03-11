@@ -96,10 +96,10 @@ jobs:
 
           if [ -n "$ARTICLE_PATH" ]; then
             echo "Article: $ARTICLE_PATH"
-            node --input-type=module -e "
+            CARD_ID="$CARD_ID" ARTICLE_PATH="$ARTICLE_PATH" node --input-type=module -e "
               import { updateCardStatus, setArticlePath } from './project.js';
-              updateCardStatus('$CARD_ID', 'drafting');
-              setArticlePath('$CARD_ID', '$ARTICLE_PATH');
+              updateCardStatus(process.env.CARD_ID, 'drafting');
+              setArticlePath(process.env.CARD_ID, process.env.ARTICLE_PATH);
               console.log('Card updated');
             "
           else

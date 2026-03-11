@@ -29,18 +29,12 @@ const NOISE_PATTERNS = [
 function collectProposals(repo, source) {
   const since = cutoffDate.toISOString();
   const result = execSync(
-    `gh api "repos/${repo}/pulls?state=all&sort=created&direction=desc&per_page=50" --jq '.[] | select(.created_at >= "${since}") | {title: .title, url: .html_url, date: .created_at, body: (.body // "" | .[0:500])}'`,
+    `gh api "repos/${repo}/pulls?state=all&sort=created&direction=desc&per_page=50" --jq '[.[] | select(.created_at >= "${since}") | {title: .title, url: .html_url, date: .created_at, body: (.body // "" | .[0:500])}]'`,
     { encoding: 'utf-8', timeout: 30000 }
   );
 
-  return result
-    .trim()
-    .split('\n')
-    .filter(Boolean)
-    .map(line => {
-      const item = JSON.parse(line);
-      return { title: item.title, url: item.url, source, date: item.date, abstract: item.body };
-    })
+  return JSON.parse(result)
+    .map(item => ({ title: item.title, url: item.url, source, date: item.date, abstract: item.body }))
     .filter(item => {
       const t = item.title.toLowerCase();
       if (!t.includes(`add ${source}`) && !t.includes(`${source}-`)) return false;

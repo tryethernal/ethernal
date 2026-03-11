@@ -111,12 +111,12 @@ if [ -n "$ARTICLE_PATH" ]; then
   # Update the project card: set article path, move to Drafting
   log "Updating project card..."
   cd blog/pipeline
-  node -e "
+  CARD_ID="$CARD_ID" ARTICLE_PATH="$ARTICLE_PATH" node --input-type=module -e "
     import { updateCardStatus, setArticlePath } from './project.js';
-    updateCardStatus('$CARD_ID', 'drafting');
-    setArticlePath('$CARD_ID', '$ARTICLE_PATH');
+    updateCardStatus(process.env.CARD_ID, 'drafting');
+    setArticlePath(process.env.CARD_ID, process.env.ARTICLE_PATH);
     console.log('Card updated: Drafting + article path set');
-  " --input-type=module 2>&1 | tee -a "$LOG_FILE"
+  " 2>&1 | tee -a "$LOG_FILE"
 
   log "Done. Article deployed as draft: $ARTICLE_URL"
 else
