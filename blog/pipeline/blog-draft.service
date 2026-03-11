@@ -1,0 +1,13 @@
+[Unit]
+Description=Blog draft pipeline — pick trending topic, research, and draft
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/opt/ethernal-blog-stack/blog/pipeline/draft.sh
+WorkingDirectory=/opt/ethernal-blog-stack
+EnvironmentFile=/opt/blog-pipeline.env
+TimeoutStartSec=1800
+StandardOutput=journal
+StandardError=journal
