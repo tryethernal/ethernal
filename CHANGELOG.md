@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.33] - 2026-03-11
+### Fixed
+- fix(blog): switch OG images to PNG for Twitter card support, add blog.tryethernal.com redirect (#608)
+
+
 ## [5.17.32] - 2026-03-11
 ### Fixed
 - fix(blog): wrap landing handler to fix blog routing priority
