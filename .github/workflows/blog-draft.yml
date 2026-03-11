@@ -80,7 +80,7 @@ jobs:
             5. Push to origin develop.
             6. After pushing, output the article file path relative to the repo root on a line starting with "::article-path::"
                Example: ::article-path::blog/src/content/blog/my-article.md
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           allowed_tools: "Read,Write,Edit,Bash,WebSearch,WebFetch,Glob,Grep,Skill"
 
       - name: Update project card
