@@ -2,7 +2,7 @@
 title: "Ethernal x Tenderly"
 date: 2022-02-11
 description: "Set up a block explorer for your Tenderly forks. Debug transactions sent through Ethernal's UI directly in Tenderly."
-image: "/blog/images/ethernal-x-tenderly.webp"
+image: "/blog/images/ethernal-x-tenderly.png"
 tags:
   - Ethernal
   - Developer Tools

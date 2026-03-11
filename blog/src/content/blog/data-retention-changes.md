@@ -2,7 +2,7 @@
 title: "Data Retention Changes"
 date: 2022-10-03
 description: "Data will now be cleared after 7 days for free plan users."
-image: "/blog/images/data-retention-changes.webp"
+image: "/blog/images/data-retention-changes.png"
 tags:
   - Ethernal
 status: published
