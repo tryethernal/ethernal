@@ -1,0 +1,93 @@
+---
+/**
+ * @fileoverview Full-width featured post card with horizontal layout (image left, content right).
+ * @component FeaturedCard
+ * @prop {string} title - Post title
+ * @prop {string} slug - URL slug
+ * @prop {string} description - Post excerpt
+ * @prop {Date} date - Publication date
+ * @prop {string[]} tags - Category tags
+ * @prop {string} [image] - Optional hero image
+ * @prop {number} [readingTime] - Estimated reading time in minutes
+ */
+
+interface Props {
+  title: string;
+  slug: string;
+  description: string;
+  date: Date;
+  tags: string[];
+  image?: string;
+  readingTime?: number;
+}
+
+const { title, slug, description, date, tags, image, readingTime } = Astro.props;
+
+const formattedDate = date.toLocaleDateString('en-US', {
+  month: 'short',
+  day: 'numeric',
+});
+
+const tag = tags[0] || 'Article';
+
+// Category-based gradient for generated covers
+const gradientMap: Record<string, string> = {
+  'EVM': 'from-blue-600/80 via-indigo-700/70 to-purple-800/80',
+  'Ethereum': 'from-indigo-600/80 via-blue-700/70 to-cyan-800/80',
+  'Smart Contracts': 'from-violet-600/80 via-purple-700/70 to-fuchsia-800/80',
+  'Infrastructure': 'from-cyan-600/80 via-teal-700/70 to-emerald-800/80',
+  'L2': 'from-emerald-600/80 via-teal-700/70 to-cyan-800/80',
+  'Developer Tools': 'from-amber-600/80 via-orange-700/70 to-red-800/80',
+  'Developer Education': 'from-blue-500/80 via-violet-600/70 to-purple-700/80',
+  'Ethernal': 'from-sky-600/80 via-blue-700/70 to-indigo-800/80',
+};
+const gradient = gradientMap[tag] || 'from-blue-600/80 via-slate-700/70 to-indigo-800/80';
+
+const seed = slug.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
+const patternRotate = (seed % 60) - 30;
+const patternX = seed % 40;
+const patternY = (seed * 7) % 30;
+---
+
+<a href={`/blog/${slug}`} class="block blog-card group" style="cursor: pointer;">
+  <div class="flex flex-col md:flex-row">
+    <!-- Image (left on desktop, top on mobile) -->
+    {image ? (
+      <div class="md:w-1/2 aspect-[16/9] md:aspect-auto overflow-hidden">
+        <img src={image} alt={`Cover image for ${title}`}
+             width="800" height="450"
+             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+      </div>
+    ) : (
+      <div class={`md:w-1/2 aspect-[16/9] md:aspect-auto md:min-h-[280px] overflow-hidden relative bg-gradient-to-br ${gradient}`}>
+        <div class="absolute inset-0 opacity-[0.15]"
+             style={`transform: rotate(${patternRotate}deg) translate(${patternX}px, ${patternY}px);`}>
+          <div class="absolute top-6 right-12 w-40 h-40 border border-white/40 rounded-full"></div>
+          <div class="absolute bottom-8 left-8 w-24 h-24 border border-white/30 rounded-lg rotate-45"></div>
+          <div class="absolute top-1/2 left-1/3 w-20 h-20 border border-white/20 rounded-full"></div>
+          <div class="absolute top-10 left-16 w-32 h-1 bg-white/20 rounded"></div>
+          <div class="absolute bottom-16 right-20 w-14 h-14 border-2 border-white/25 rounded"></div>
+        </div>
+      </div>
+    )}
+
+    <!-- Content (right on desktop, bottom on mobile) -->
+    <div class="md:w-1/2 p-6 sm:p-8 flex flex-col justify-center">
+      <div class="flex items-center gap-3 mb-3">
+        <span class="text-xs font-medium text-primary bg-primary/10 px-2.5 py-1 rounded">{tag}</span>
+        <span class="text-xs text-text-muted">{formattedDate}</span>
+      </div>
+      <h2 class="font-heading font-bold text-text-primary text-xl sm:text-2xl leading-snug mb-3 group-hover:text-primary transition-colors">
+        {title}
+      </h2>
+      <p class="text-sm sm:text-base text-text-secondary leading-relaxed line-clamp-3 mb-4">{description}</p>
+      <div class="flex items-center gap-3 mt-auto">
+        <img src="/blog/images/antoine.jpg" alt="Antoine, author" width="28" height="28" class="w-7 h-7 rounded-full object-cover" />
+        <span class="text-xs text-text-muted">Antoine</span>
+        {readingTime && (
+          <span class="text-xs text-text-muted">&middot; {readingTime} min read</span>
+        )}
+      </div>
+    </div>
+  </div>
+</a>

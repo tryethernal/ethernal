@@ -1,0 +1,82 @@
+---
+/**
+ * @fileoverview Base layout shell for all blog pages. Includes head, nav, and footer.
+ * @component BaseLayout
+ * @prop {string} title - Page title
+ * @prop {string} [description] - Meta description
+ * @prop {string} [image] - OG image URL
+ */
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  plainBg?: boolean;
+  ogType?: 'website' | 'article';
+}
+
+const { title, description = 'Ethernal Blog — Insights on EVM development, block explorers, and blockchain infrastructure.', image, plainBg = false, ogType = 'website' } = Astro.props;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const ogImage = image?.startsWith('http') ? image : image ? `https://tryethernal.com${image}` : undefined;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonicalURL} />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content={ogType} />
+  <meta property="og:url" content={canonicalURL} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  {ogImage && <meta property="og:image" content={ogImage} />}
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  {ogImage && <meta name="twitter:image" content={ogImage} />}
+
+  <title>{title} | On-Chain Engineering</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="icon" type="image/png" href="/blog/favicon.png" />
+
+  <!-- Force pointer on clickable cards -->
+  <style is:inline>
+    .blog-card, .blog-card * { cursor: pointer !important; }
+  </style>
+
+  <!-- Inline theme init to prevent FOUC -->
+  <script is:inline>
+    (function() {
+      const stored = localStorage.getItem('theme');
+      if (stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      }
+    })();
+  </script>
+</head>
+<body class={`min-h-screen flex flex-col relative overflow-x-hidden ${plainBg ? '' : 'blog-bg'}`} style={plainBg ? `background-color: var(--bg-card);` : ''}>
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-primary focus:text-white focus:rounded-lg">Skip to main content</a>
+  {!plainBg && (
+    <>
+      <div class="absolute top-20 left-10 w-[250px] h-[250px] rounded-full opacity-60 blur-[60px] pointer-events-none" style="background: var(--glow-color);"></div>
+      <div class="absolute top-[500px] right-10 w-[200px] h-[200px] rounded-full opacity-50 blur-[60px] pointer-events-none" style="background: var(--glow-color-alt);"></div>
+    </>
+  )}
+  <Header />
+  <main id="main-content" class="flex-1">
+    <slot />
+  </main>
+  <Footer />
+</body>
+</html>

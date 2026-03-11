@@ -1,0 +1,207 @@
+---
+/**
+ * @fileoverview Blog footer matching the landing page multi-column layout.
+ * @component Footer
+ */
+const year = new Date().getFullYear();
+---
+<footer class="blog-footer">
+  <div class="footer-container">
+    <div class="footer-grid">
+      <!-- Brand column -->
+      <div class="footer-brand">
+        <a href="/" class="footer-logo">
+          <span class="font-heading">Ethernal</span>
+        </a>
+        <p class="footer-tagline">
+          Open-source block explorer for any EVM chain. Built for developers, by developers.
+        </p>
+      </div>
+
+      <!-- Product -->
+      <div class="footer-col">
+        <div class="footer-heading">Product</div>
+        <div class="footer-link-list">
+          <a href="/transaction-tracing" class="footer-link">Transaction Tracing</a>
+          <a href="/pricing" class="footer-link">Pricing</a>
+          <a href="https://doc.tryethernal.com" target="_blank" rel="noopener noreferrer" class="footer-link">Docs</a>
+        </div>
+      </div>
+
+      <!-- Use Cases -->
+      <div class="footer-col">
+        <div class="footer-heading">Use Cases</div>
+        <div class="footer-link-list">
+          <a href="/developers" class="footer-link">Developers</a>
+          <a href="/teams" class="footer-link">Teams</a>
+          <a href="/app-chains" class="footer-link">App Chains</a>
+        </div>
+      </div>
+
+      <!-- Integrations -->
+      <div class="footer-col">
+        <div class="footer-heading">Integrations</div>
+        <div class="footer-link-list">
+          <a href="/hardhat-block-explorer" class="footer-link">Hardhat</a>
+          <a href="/anvil-block-explorer" class="footer-link">Anvil</a>
+          <a href="/ganache-block-explorer" class="footer-link">Ganache</a>
+          <a href="/kaleido" class="footer-link">Kaleido</a>
+          <a href="/chainstack" class="footer-link">Chainstack</a>
+          <a href="/arbitrum-orbit" class="footer-link">Arbitrum Orbit</a>
+          <a href="/op-stack" class="footer-link">OP Stack</a>
+        </div>
+      </div>
+
+      <!-- Resources + Legal -->
+      <div class="footer-col">
+        <div class="footer-heading">Resources</div>
+        <div class="footer-link-list">
+          <a href="https://github.com/tryethernal/ethernal" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub</a>
+          <a href="https://discord.gg/jYCER6Mh" target="_blank" rel="noopener noreferrer" class="footer-link">Discord</a>
+          <a href="https://doc.tryethernal.com" target="_blank" rel="noopener noreferrer" class="footer-link">Documentation</a>
+          <a href="/blog" class="footer-link">Blog</a>
+          <a href="/contact-us" class="footer-link">Contact</a>
+        </div>
+
+        <div class="footer-heading footer-heading-legal">Legal</div>
+        <div class="footer-link-list">
+          <a href="/terms" class="footer-link">Terms of Service</a>
+          <a href="/privacy" class="footer-link">Privacy Policy</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="footer-divider"></div>
+    <div class="footer-bottom">
+      <span class="footer-copyright">&copy; {year} Ethernal. All rights reserved.</span>
+      <span class="footer-made">Made with care in France <span style="font-size: 14px;">🍷</span></span>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .blog-footer {
+    border-top: 1px solid var(--border-subtle);
+    background: var(--bg-base);
+    margin-top: 0;
+  }
+
+  .footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 64px 32px 32px;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr 1.2fr;
+    gap: 32px;
+  }
+
+  .footer-brand {
+    padding-right: 16px;
+  }
+
+  .footer-logo {
+    text-decoration: none;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    display: inline-block;
+    margin-bottom: 16px;
+  }
+
+  .footer-tagline {
+    color: var(--text-muted);
+    font-size: 14px;
+    line-height: 1.65;
+    max-width: 260px;
+    margin: 0;
+  }
+
+  .footer-heading {
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  .footer-heading-legal {
+    margin-top: 24px;
+  }
+
+  .footer-link-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .footer-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.2s;
+  }
+
+  .footer-link:hover {
+    color: var(--text-primary);
+  }
+
+  .footer-divider {
+    height: 1px;
+    margin: 32px 0;
+    background: linear-gradient(90deg, transparent, var(--border-subtle), transparent);
+  }
+
+  .footer-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .footer-copyright,
+  .footer-made {
+    color: var(--text-muted);
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .footer-grid {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    .footer-brand {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .footer-container {
+      padding: 40px 20px 24px;
+    }
+
+    .footer-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .footer-brand {
+      grid-column: 1 / -1;
+    }
+
+    .footer-bottom {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+  }
+</style>

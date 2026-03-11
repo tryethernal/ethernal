@@ -4,7 +4,7 @@
             <div class="page-title-bar">
                 <div class="text-overline mb-1" style="letter-spacing: 0.1em; color: #5DAAE0; font-size: 11px;">CONTACT</div>
                 <h1 class="font-heading text-white mb-2" style="font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -0.02em;">Contact Us</h1>
-                <p style="color: #94A3B8; max-width: 500px; line-height: 1.6; font-size: 0.95rem;">
+                <p style="color: var(--text-secondary); max-width: 500px; line-height: 1.6; font-size: 0.95rem;">
                     Have a question or need a custom solution? We'd love to hear from you.
                 </p>
             </div>
@@ -139,12 +139,12 @@ async function onSubmit() {
 </script>
 
 <style scoped>
-.page-title-bar { padding-bottom: 24px; margin-bottom: 8px; border-bottom: 1px solid rgba(61, 149, 206, 0.1); }
+.page-title-bar { padding-bottom: 24px; margin-bottom: 8px; border-bottom: 1px solid var(--drawer-divider); }
 
 .contact-card {
-    background: rgba(17, 24, 39, 0.7);
+    background: var(--glass-bg);
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(61, 149, 206, 0.22);
+    border: 1px solid var(--border-subtle);
     border-radius: 16px;
     padding: 32px;
 }
@@ -168,7 +168,7 @@ async function onSubmit() {
 }
 
 .contact-info-label {
-    color: #64748B;
+    color: var(--text-muted);
     font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 0.06em;
@@ -176,7 +176,7 @@ async function onSubmit() {
 }
 
 .contact-info-value {
-    color: #F1F5F9;
+    color: var(--text-primary);
     font-size: 14px;
     text-decoration: none;
     transition: color 0.2s;
