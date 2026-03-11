@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Blog draft automation — runs on Hetzner via systemd timer
-# Picks the top trending topic and runs research + draft via Claude CLI
+# Picks the top trending topic, researches, drafts, and commits directly to develop
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -29,6 +29,7 @@ cd "$REPO_DIR"
 
 # Pull latest
 log "Pulling latest changes..."
+git checkout develop 2>&1 | tee -a "$LOG_FILE"
 git pull --ff-only origin develop 2>&1 | tee -a "$LOG_FILE"
 
 # Install pipeline deps if needed
@@ -56,9 +57,11 @@ log "Topic: $TOPIC (card: $CARD_ID, type: $CONTENT_TYPE)"
 
 cd "$REPO_DIR"
 
-# Research phase — pass the full card body as context
-log "Starting research..."
-claude -p "$(cat <<PROMPT
+# Research + Draft phase
+# Claude writes the article with status: draft in frontmatter,
+# commits directly to develop, and outputs the article path
+log "Starting research and draft..."
+CLAUDE_OUTPUT=$(claude -p "$(cat <<PROMPT
 You are writing a blog article for the Ethernal blog (On-Chain Engineering).
 
 A trending topic has been detected by our pipeline. Here is the full trend card:
@@ -69,41 +72,53 @@ A trending topic has been detected by our pipeline. Here is the full trend card:
 **Trend Card Content:**
 $CARD_BODY
 
-Based on the sources listed above, run /blog:research to deeply research this topic.
-Focus on the specific EIPs, ERCs, papers, and forum posts listed — those are the primary sources.
+Steps:
+1. Run /blog:research for this topic. Focus on the specific EIPs, ERCs, papers, and forum posts listed — those are the primary sources.
+2. Run /blog:draft to write the article. Use the Content Type to determine the format:
+   - "ERC Tutorial": Code-heavy, include working Solidity, deploy instructions, practical examples
+   - "EIP Explainer": What it changes, why it matters, code impact with before/after examples
+   - "Research Deep Dive": Break down the paper/proposal, extract practical insights, include code snippets
+   - "Upgrade Guide": Step-by-step migration guide with code changes needed
+   - "Trend Survey": Survey multiple related proposals, compare approaches, include interface examples
+   Cite the sources from the trend card as references in the article.
+3. IMPORTANT: Set the article frontmatter status to "draft" (not "published").
+4. Commit the article directly to the current branch (develop) with message "blog: add draft — <article title>".
+5. Push to origin develop.
+6. After pushing, output the article file path relative to the repo root on a line starting with "::article-path::"
+   Example: ::article-path::blog/src/content/blog/my-article.md
 PROMPT
 )" \
   --dangerously-skip-permissions \
   --mcp-config "$MCP_CONFIG" \
   --max-turns 50 \
   --max-budget-usd "$MAX_BUDGET" \
-  2>&1 | tee -a "$LOG_FILE"
+  2>&1)
 
-# Draft phase — uses research context from --resume, plus explicit instructions
-log "Starting draft..."
-claude -p "$(cat <<PROMPT
-Continue with the research you just completed on "$TOPIC".
+echo "$CLAUDE_OUTPUT" | tee -a "$LOG_FILE"
 
-Run /blog:draft to write the full article with these parameters:
-- **Content Type:** $CONTENT_TYPE
-  - "ERC Tutorial": Code-heavy, include working Solidity, deploy instructions, practical examples
-  - "EIP Explainer": What it changes, why it matters, code impact with before/after examples
-  - "Research Deep Dive": Break down the paper/proposal, extract practical insights, include code snippets
-  - "Upgrade Guide": Step-by-step migration guide with code changes needed
-  - "Trend Survey": Survey multiple related proposals, compare approaches, include interface examples
-- **Sources to cite:** Use the EIPs, ERCs, papers, and forum posts from the research phase as references
+# Extract article path from Claude output
+ARTICLE_PATH=$(echo "$CLAUDE_OUTPUT" | grep '::article-path::' | sed 's/::article-path:://' | head -1)
 
-After writing:
-1. Create a git branch named blog/$TOPIC (slugified)
-2. Create a PR targeting develop
-3. After the PR is created, output the PR URL so it can be tracked
-PROMPT
-)" \
-  --dangerously-skip-permissions \
-  --mcp-config "$MCP_CONFIG" \
-  --max-turns 50 \
-  --max-budget-usd "$MAX_BUDGET" \
-  --resume \
-  2>&1 | tee -a "$LOG_FILE"
+if [ -n "$ARTICLE_PATH" ]; then
+  log "Article path: $ARTICLE_PATH"
 
-log "Done. Check for new PR."
+  # Derive the blog URL slug from the file path
+  # e.g. blog/src/content/blog/my-article.md → my-article
+  SLUG=$(basename "$ARTICLE_PATH" .md)
+  SLUG=$(basename "$SLUG" .mdx)
+  ARTICLE_URL="https://tryethernal.com/blog/$SLUG"
+
+  # Update the project card: set article path, move to Drafting
+  log "Updating project card..."
+  cd blog/pipeline
+  node -e "
+    import { updateCardStatus, setArticlePath } from './project.js';
+    updateCardStatus('$CARD_ID', 'drafting');
+    setArticlePath('$CARD_ID', '$ARTICLE_PATH');
+    console.log('Card updated: Drafting + article path set');
+  " --input-type=module 2>&1 | tee -a "$LOG_FILE"
+
+  log "Done. Article deployed as draft: $ARTICLE_URL"
+else
+  log "WARNING: Could not extract article path from Claude output"
+fi

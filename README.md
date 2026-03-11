@@ -240,14 +240,20 @@ Classify into 12 topic clusters
   ↓
 Score by weighted signals (ERC count, research posts, arxiv papers, Google Trends)
   ↓
-Create draft cards on GitHub Project board (Detected → Researched → Drafting → Published)
+Create draft cards on GitHub Project board
   ↓  every 2 days
 Round-robin picker selects highest-scoring topic (skips clusters with active work)
   ↓
 Claude CLI researches sources and drafts the article
   ↓
-PR created targeting develop
+Article committed to develop with status: draft (invisible on site, deployed for preview)
+  ↓  card link added to project board
+Move card to "Published" in GitHub Project
+  ↓  triggers workflow
+Frontmatter updated to status: published → article goes live on next deploy
 ```
+
+**Board columns:** Detected → Researched → Drafting → Published
 
 ### Running the pipeline
 
@@ -270,8 +276,9 @@ node index.js --pick --dry-run
 | Trigger | What | Where |
 |---------|------|-------|
 | Weekly (Mon 6am UTC) | Scan sources, update scores | `.github/workflows/blog-trend-scan.yml` |
-| Every 2 days (8am UTC) | Pick topic, research, draft, PR | `.github/workflows/blog-draft.yml` |
-| Systemd timer (Hetzner) | Same as above via Claude CLI | `blog/pipeline/draft.sh` |
+| Every 2 days (8am UTC) | Pick topic, research, draft to develop | `.github/workflows/blog-draft.yml` |
+| Card → Published | Update frontmatter `status: published` | `.github/workflows/blog-publish.yml` |
+| Systemd timer (Hetzner) | Same as draft workflow via Claude CLI | `blog/pipeline/draft.sh` |
 
 ---
 

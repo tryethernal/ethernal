@@ -92,6 +92,7 @@ export function getProjectItems() {
       score: item['trend Score'] || item['Trend Score'] || 0,
       contentType: item['content Type'] || item['Content Type'] || '',
       sourceLinks: item['source Links'] || item['Source Links'] || '',
+      articlePath: item['article Path'] || item['Article Path'] || '',
       body: item.content?.body || '',
     }));
   } catch (err) {
@@ -168,6 +169,39 @@ export function pickNextTopic(dryRun = false) {
   }
 
   return picked;
+}
+
+/**
+ * Update a project item's status.
+ * @param {string} itemId - Project item ID
+ * @param {string} statusKey - Key from PROJECT.statusOptions (e.g. 'drafting', 'published')
+ */
+export function updateCardStatus(itemId, statusKey) {
+  const optionId = PROJECT.statusOptions[statusKey];
+  if (!optionId) throw new Error(`Unknown status: ${statusKey}`);
+  execSync(
+    `gh api graphql -f query='mutation { updateProjectV2ItemFieldValue(input: { projectId: "${PROJECT.id}", itemId: "${itemId}", fieldId: "${PROJECT.fields.status}", value: { singleSelectOptionId: "${optionId}" } }) { projectV2Item { id } } }'`,
+    { encoding: 'utf-8', timeout: 15000 }
+  );
+}
+
+/**
+ * Set the Article Path field on a project item.
+ * @param {string} itemId - Project item ID
+ * @param {string} articlePath - Relative path to the article file (e.g. blog/src/content/blog/my-article.md)
+ */
+export function setArticlePath(itemId, articlePath) {
+  execSync(
+    'gh api graphql --input -',
+    {
+      encoding: 'utf-8',
+      timeout: 15000,
+      input: JSON.stringify({
+        query: `mutation($text: String!) { updateProjectV2ItemFieldValue(input: { projectId: "${PROJECT.id}", itemId: "${itemId}", fieldId: "${PROJECT.fields.articlePath}", value: { text: $text } }) { projectV2Item { id } } }`,
+        variables: { text: articlePath },
+      }),
+    }
+  );
 }
 
 /**

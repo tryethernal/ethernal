@@ -1,0 +1,110 @@
+name: Blog Publish
+
+on:
+  # Fires when a project item field changes (e.g. status moved to Published)
+  projects_v2_item:
+    types: [edited]
+
+  # Manual trigger as fallback
+  workflow_dispatch:
+    inputs:
+      article_path:
+        description: 'Path to the article file (e.g. blog/src/content/blog/my-article.md)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  repository-projects: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    # Only run for project item status changes, or manual dispatch
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.projects_v2_item.content_type == 'DraftIssue' &&
+       github.event.changes.field_value.field_name == 'Status')
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: develop
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install pipeline dependencies
+        working-directory: blog/pipeline
+        run: npm ci
+
+      - name: Resolve article path
+        id: resolve
+        working-directory: blog/pipeline
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "article_path=${{ inputs.article_path }}" >> $GITHUB_OUTPUT
+            echo "should_publish=true" >> $GITHUB_OUTPUT
+          else
+            # Check if the new status is "Published" (option ID: 98236657)
+            NEW_STATUS="${{ github.event.changes.field_value.to.singleSelectOptionId }}"
+            if [ "$NEW_STATUS" != "98236657" ]; then
+              echo "Status changed but not to Published (got: $NEW_STATUS). Skipping."
+              echo "should_publish=false" >> $GITHUB_OUTPUT
+              exit 0
+            fi
+
+            # Get the article path from the project item
+            ITEM_ID="${{ github.event.projects_v2_item.node_id }}"
+            ARTICLE_PATH=$(node --input-type=module -e "
+              import { getProjectItems } from './project.js';
+              const items = getProjectItems();
+              const item = items.find(i => i.id === '$ITEM_ID');
+              if (item && item.articlePath) {
+                console.log(item.articlePath);
+              } else {
+                console.error('No article path found for item $ITEM_ID');
+                process.exit(1);
+              }
+            ")
+            echo "article_path=$ARTICLE_PATH" >> $GITHUB_OUTPUT
+            echo "should_publish=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Publish article
+        if: steps.resolve.outputs.should_publish == 'true'
+        run: |
+          ARTICLE="${{ steps.resolve.outputs.article_path }}"
+
+          if [ ! -f "$ARTICLE" ]; then
+            echo "ERROR: Article not found: $ARTICLE"
+            exit 1
+          fi
+
+          # Update status: draft → published in frontmatter
+          if grep -q 'status: draft' "$ARTICLE"; then
+            sed -i 's/status: draft/status: published/' "$ARTICLE"
+            echo "Updated status to published in $ARTICLE"
+          elif grep -q 'status: published' "$ARTICLE"; then
+            echo "Article is already published"
+            exit 0
+          else
+            echo "WARNING: No status field found in frontmatter"
+            exit 1
+          fi
+
+          # Commit and push
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$ARTICLE"
+
+          TITLE=$(grep '^title:' "$ARTICLE" | head -1 | sed 's/title: *//; s/^"//; s/"$//')
+          git commit -m "blog: publish — $TITLE"
+          git push origin develop
+
+          SLUG=$(basename "$ARTICLE" .md)
+          SLUG=$(basename "$SLUG" .mdx)
+          echo "Published: https://tryethernal.com/blog/$SLUG"
