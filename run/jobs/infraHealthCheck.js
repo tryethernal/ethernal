@@ -40,7 +40,10 @@ const checkRedis = async () => {
     }
 
     try {
-        const info = await redis.info('memory');
+        const info = await Promise.race([
+            redis.info('memory'),
+            new Promise((_, reject) => setTimeout(() => reject(new Error('Redis info timeout')), CHECK_TIMEOUT_MS))
+        ]);
         const usedMatch = info.match(/used_memory:(\d+)/);
         const maxMatch = info.match(/maxmemory:(\d+)/);
 

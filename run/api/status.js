@@ -36,7 +36,10 @@ router.get('/health', async (req, res) => {
 
                 let memoryPercent = null;
                 try {
-                    const info = await redis.info('memory');
+                    const info = await Promise.race([
+                        redis.info('memory'),
+                        new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), CHECK_TIMEOUT))
+                    ]);
                     const usedMatch = info.match(/used_memory:(\d+)/);
                     const maxMatch = info.match(/maxmemory:(\d+)/);
                     if (usedMatch && maxMatch && parseInt(maxMatch[1]) > 0) {
