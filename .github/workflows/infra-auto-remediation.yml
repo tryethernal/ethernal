@@ -35,7 +35,7 @@ jobs:
         with:
           max_turns: 30
           allowed_tools: "Bash,Read,Glob,Grep"
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           direct_prompt: |
             You are an infrastructure auto-remediation agent for Ethernal, an EVM block explorer.
             Redis is accessed via `redis-cli -u "$REDIS_URL"`. BullMQ queues use the `bull:` key prefix.
