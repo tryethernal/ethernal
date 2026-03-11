@@ -92,30 +92,29 @@ const checkPostgres = async () => {
  * @returns {Promise<{allowed: boolean, reason: string|null, escalate: boolean}>}
  */
 const checkRemediationRateLimit = async (alertType) => {
-    // Layer 1: Global cooldown (5 min between any triggers)
-    const cooldownKey = 'infra:remediation:cooldown';
-    const cooldownSet = await redis.set(cooldownKey, '1', 'EX', REMEDIATION_COOLDOWN_SECONDS, 'NX');
-    if (!cooldownSet) {
-        return { allowed: false, reason: 'cooldown active', escalate: false };
-    }
-
-    // Layer 2: Hourly cap
+    // Layer 1: Hourly cap (atomic INCR+EXPIRE via Lua to avoid race condition)
     const hourlyKey = 'infra:remediation:hourly';
-    const hourlyCount = await redis.incr(hourlyKey);
-    if (hourlyCount === 1) {
-        await redis.expire(hourlyKey, 3600);
-    }
+    const hourlyCount = await redis.eval(
+        "local count = redis.call('INCR', KEYS[1]) if count == 1 then redis.call('EXPIRE', KEYS[1], 3600) end return count",
+        1, hourlyKey
+    );
     if (hourlyCount > REMEDIATION_HOURLY_LIMIT) {
         return { allowed: false, reason: `hourly limit reached (${hourlyCount}/${REMEDIATION_HOURLY_LIMIT})`, escalate: false };
     }
 
-    // Layer 3: Fail-fast escalation — same alert type within 30 min
+    // Layer 2: Per-alert dedup — same alert type within 30 min (fail-fast escalation)
     const lastKey = `infra:remediation:last:${alertType}`;
     const lastTrigger = await redis.get(lastKey);
     if (lastTrigger) {
         return { allowed: false, reason: `same alert type triggered recently`, escalate: true };
     }
-    await redis.set(lastKey, Date.now().toString(), 'EX', REMEDIATION_REPEAT_WINDOW_SECONDS);
+
+    // Layer 3: Global cooldown (5 min between any triggers) — set only after all checks pass
+    const cooldownKey = 'infra:remediation:cooldown';
+    const cooldownSet = await redis.set(cooldownKey, '1', 'EX', REMEDIATION_COOLDOWN_SECONDS, 'NX');
+    if (!cooldownSet) {
+        return { allowed: false, reason: 'cooldown active', escalate: false };
+    }
 
     return { allowed: true, reason: null, escalate: false };
 };
@@ -167,7 +166,14 @@ const triggerRemediation = async (alertType, details) => {
         return;
     }
 
-    const rateLimit = await checkRemediationRateLimit(alertType);
+    let rateLimit;
+    try {
+        rateLimit = await checkRemediationRateLimit(alertType);
+    } catch (error) {
+        // Rate limit check uses Redis — if Redis is down (which may be the alert itself), skip rate limiting and proceed
+        logger.warn('Rate limit check failed, proceeding with remediation', { alertType, error: error.message });
+        rateLimit = { allowed: true, reason: null, escalate: false };
+    }
 
     if (!rateLimit.allowed) {
         logger.info('Remediation rate-limited', { alertType, reason: rateLimit.reason, escalate: rateLimit.escalate });
@@ -195,6 +201,11 @@ const triggerRemediation = async (alertType, details) => {
                 }
             }
         );
+
+        // Set dedup key only after successful dispatch to avoid false escalations on transient failures
+        const lastKey = `infra:remediation:last:${alertType}`;
+        await redis.set(lastKey, Date.now().toString(), 'EX', REMEDIATION_REPEAT_WINDOW_SECONDS);
+
         logger.info('Triggered auto-remediation workflow', { alertType });
     } catch (error) {
         logger.error('Failed to trigger remediation workflow', { error: error.message, alertType });

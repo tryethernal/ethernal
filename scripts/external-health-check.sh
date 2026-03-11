@@ -18,6 +18,11 @@ OPSGENIE_API_KEY="${OPSGENIE_API_KEY:?Set OPSGENIE_API_KEY env var}"
 STATE_FILE="/tmp/ethernal-health-state"
 TIMEOUT=10
 
+# Escape special JSON characters in a string
+json_escape() {
+    printf '%s' "$1" | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read()), end="")'
+}
+
 # Curl the health endpoint
 HTTP_CODE=$(curl -s -o /tmp/ethernal-health-response.json -w "%{http_code}" --max-time $TIMEOUT "$HEALTH_URL" 2>/dev/null)
 CURL_EXIT=$?
@@ -66,10 +71,12 @@ fi
 if [ "$PREV_STATE" = "healthy" ]; then
     echo "[$TIMESTAMP] ALERT: $STATUS — $DETAILS"
 
+    SAFE_DETAILS=$(json_escape "$DETAILS")
+
     # Discord critical webhook
     curl -s -X POST "$DISCORD_WEBHOOK" \
         -H "Content-Type: application/json" \
-        -d "{\"content\":\"**[CRITICAL]** Ethernal API health check failed!\\nStatus: \`$STATUS\`\\nDetails: \`$DETAILS\`\\nEndpoint: $HEALTH_URL\\nTimestamp: $TIMESTAMP\\nSource: external check (Sentry server)\"}" \
+        -d "{\"content\":\"**[CRITICAL]** Ethernal API health check failed!\\nStatus: \`$STATUS\`\\nDetails: $SAFE_DETAILS\\nEndpoint: $HEALTH_URL\\nTimestamp: $TIMESTAMP\\nSource: external check (Sentry server)\"}" \
         > /dev/null 2>&1
 
     # OpsGenie alert
@@ -79,7 +86,7 @@ if [ "$PREV_STATE" = "healthy" ]; then
         -d "{
             \"message\": \"Ethernal API unreachable (external health check)\",
             \"alias\": \"ethernal-api-external-health\",
-            \"description\": \"External health check from Sentry server failed.\\nStatus: $STATUS\\nDetails: $DETAILS\\nTimestamp: $TIMESTAMP\",
+            \"description\": \"External health check from Sentry server failed.\\nStatus: $STATUS\\nDetails: $SAFE_DETAILS\\nTimestamp: $TIMESTAMP\",
             \"priority\": \"P1\",
             \"tags\": [\"infra\", \"external-health\"]
         }" \

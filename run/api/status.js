@@ -23,49 +23,58 @@ router.get('/health', async (req, res) => {
     let overallStatus = 'healthy';
     const CHECK_TIMEOUT = 5000;
 
-    // Redis check
-    try {
-        const start = Date.now();
-        await Promise.race([
-            redis.ping(),
-            new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), CHECK_TIMEOUT))
-        ]);
-        const latencyMs = Date.now() - start;
+    // Run checks in parallel to stay within external monitor timeouts
+    const [redisResult, postgresResult] = await Promise.all([
+        (async () => {
+            try {
+                const start = Date.now();
+                await Promise.race([
+                    redis.ping(),
+                    new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), CHECK_TIMEOUT))
+                ]);
+                const latencyMs = Date.now() - start;
 
-        let memoryPercent = null;
-        try {
-            const info = await redis.info('memory');
-            const usedMatch = info.match(/used_memory:(\d+)/);
-            const maxMatch = info.match(/maxmemory:(\d+)/);
-            if (usedMatch && maxMatch && parseInt(maxMatch[1]) > 0) {
-                memoryPercent = parseFloat(((parseInt(usedMatch[1]) / parseInt(maxMatch[1])) * 100).toFixed(1));
+                let memoryPercent = null;
+                try {
+                    const info = await redis.info('memory');
+                    const usedMatch = info.match(/used_memory:(\d+)/);
+                    const maxMatch = info.match(/maxmemory:(\d+)/);
+                    if (usedMatch && maxMatch && parseInt(maxMatch[1]) > 0) {
+                        memoryPercent = parseFloat(((parseInt(usedMatch[1]) / parseInt(maxMatch[1])) * 100).toFixed(1));
+                    }
+                } catch (_) { /* memory info is best-effort */ }
+
+                return { status: 'ok', memoryPercent, latencyMs };
+            } catch (_) {
+                return { status: 'unhealthy', error: 'connectivity check failed' };
             }
-        } catch (_) { /* memory info is best-effort */ }
+        })(),
+        (async () => {
+            try {
+                const start = Date.now();
+                const { sequelize } = require('../models');
+                await Promise.race([
+                    sequelize.query('SELECT 1'),
+                    new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), CHECK_TIMEOUT))
+                ]);
+                return { status: 'ok', latencyMs: Date.now() - start };
+            } catch (_) {
+                return { status: 'unhealthy', error: 'connectivity check failed' };
+            }
+        })()
+    ]);
 
-        services.redis = { status: 'ok', memoryPercent, latencyMs };
-    } catch (error) {
-        services.redis = { status: 'unhealthy', error: error.message };
-        overallStatus = 'unhealthy';
-    }
+    services.redis = redisResult;
+    services.postgres = postgresResult;
 
-    // PostgreSQL check
-    try {
-        const start = Date.now();
-        const { sequelize } = require('../models');
-        await Promise.race([
-            sequelize.query('SELECT 1'),
-            new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), CHECK_TIMEOUT))
-        ]);
-        services.postgres = { status: 'ok', latencyMs: Date.now() - start };
-    } catch (error) {
-        services.postgres = { status: 'unhealthy', error: error.message };
+    if (redisResult.status === 'unhealthy' || postgresResult.status === 'unhealthy') {
         overallStatus = 'unhealthy';
     }
 
     // API self-check (if we got here, the API is running)
     services.api = { status: 'ok' };
 
-    if (overallStatus === 'healthy' && services.redis.memoryPercent > 80) {
+    if (overallStatus === 'healthy' && services.redis.memoryPercent !== null && services.redis.memoryPercent > 80) {
         overallStatus = 'degraded';
     }
 
