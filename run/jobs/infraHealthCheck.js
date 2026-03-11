@@ -9,7 +9,7 @@
 const redis = require('../lib/redis');
 const logger = require('../lib/logger');
 const { createIncident } = require('../lib/opsgenie');
-const { getNodeEnv, getGithubToken, getDiscordCriticalWebhook } = require('../lib/env');
+const { getNodeEnv, getGithubToken } = require('../lib/env');
 const axios = require('axios');
 
 const REDIS_MEMORY_WARNING_THRESHOLD = 0.80;
@@ -77,31 +77,6 @@ const checkPostgres = async () => {
             new Promise((_, reject) => setTimeout(() => reject(new Error('PostgreSQL query timeout')), CHECK_TIMEOUT_MS))
         ]);
         result.latencyMs = Date.now() - start;
-    } catch (error) {
-        result.status = 'unhealthy';
-        result.error = error.message;
-    }
-
-    return result;
-};
-
-/**
- * Checks Fly API health via the status endpoint.
- * @returns {Promise<Object>} API health status
- */
-const checkFlyApi = async () => {
-    const result = { service: 'api', status: 'ok', latencyMs: 0 };
-    const start = Date.now();
-
-    try {
-        const response = await axios.get('https://api.tryethernal.com/api/status', {
-            timeout: CHECK_TIMEOUT_MS,
-            validateStatus: () => true
-        });
-        result.latencyMs = Date.now() - start;
-
-        // Any response (even 400) means the API is reachable
-        // Only network errors or timeouts indicate unhealthy
     } catch (error) {
         result.status = 'unhealthy';
         result.error = error.message;
@@ -226,41 +201,16 @@ const triggerRemediation = async (alertType, details) => {
     }
 };
 
-/**
- * Posts a critical alert to the Discord critical channel.
- * @param {string} title - Alert title
- * @param {string} description - Alert description
- * @param {string} priority - P1 or P2
- */
-const postDiscordAlert = async (title, description, priority) => {
-    const webhook = getDiscordCriticalWebhook();
-    if (!webhook) return;
-
-    try {
-        await axios.post(webhook, {
-            embeds: [{
-                title: `${priority === 'P1' ? '🔴' : '🟡'} ${title}`,
-                description,
-                color: priority === 'P1' ? 0xff0000 : 0xffaa00,
-                timestamp: new Date().toISOString()
-            }]
-        });
-    } catch (error) {
-        logger.error('Failed to post Discord alert', { error: error.message });
-    }
-};
-
 module.exports = async () => {
     let incidentCreated = false;
 
     // Run all checks in parallel — each is independent
-    const [redisResult, postgresResult, apiResult] = await Promise.all([
+    const [redisResult, postgresResult] = await Promise.all([
         checkRedis().catch(error => ({ service: 'redis', status: 'unhealthy', error: error.message })),
-        checkPostgres().catch(error => ({ service: 'postgres', status: 'unhealthy', error: error.message })),
-        checkFlyApi().catch(error => ({ service: 'api', status: 'unhealthy', error: error.message }))
+        checkPostgres().catch(error => ({ service: 'postgres', status: 'unhealthy', error: error.message }))
     ]);
 
-    logger.info('Infrastructure health check', { redis: redisResult, postgres: postgresResult, api: apiResult });
+    logger.info('Infrastructure health check', { redis: redisResult, postgres: postgresResult });
 
     // Redis memory warnings
     if (redisResult.status === 'warning') {
@@ -277,7 +227,6 @@ module.exports = async () => {
     if (redisResult.status === 'critical') {
         const details = `Redis memory at ${redisResult.memoryPercent}% (critical threshold: ${REDIS_MEMORY_CRITICAL_THRESHOLD * 100}%)`;
         await createIncident('Redis memory critical', details, 'P1', { alias: 'infra-redis-memory-critical' });
-        await postDiscordAlert('Redis Memory Critical', details, 'P1');
         await triggerRemediation('redis-memory-critical', details);
         incidentCreated = true;
     }
@@ -286,7 +235,6 @@ module.exports = async () => {
     if (redisResult.status === 'unhealthy' && redisResult.error) {
         const details = `Redis connectivity failed: ${redisResult.error}`;
         await createIncident('Redis connectivity failure', details, 'P1', { alias: 'infra-redis-connectivity' });
-        await postDiscordAlert('Redis Connectivity Failure', details, 'P1');
         await triggerRemediation('redis-connectivity', details);
         incidentCreated = true;
     }
@@ -295,19 +243,9 @@ module.exports = async () => {
     if (postgresResult.status === 'unhealthy') {
         const details = `PostgreSQL connectivity failed: ${postgresResult.error}`;
         await createIncident('PostgreSQL connectivity failure', details, 'P1', { alias: 'infra-postgres-connectivity' });
-        await postDiscordAlert('PostgreSQL Connectivity Failure', details, 'P1');
         await triggerRemediation('postgres-connectivity', details);
         incidentCreated = true;
     }
 
-    // Fly API health failure
-    if (apiResult.status === 'unhealthy') {
-        const details = `Fly API health check failed: ${apiResult.error}`;
-        await createIncident('Fly API health check failure', details, 'P1', { alias: 'infra-fly-api-health' });
-        await postDiscordAlert('Fly API Health Failure', details, 'P1');
-        await triggerRemediation('fly-api-health', details);
-        incidentCreated = true;
-    }
-
-    return { incidentCreated, redis: redisResult, postgres: postgresResult, api: apiResult };
+    return { incidentCreated, redis: redisResult, postgres: postgresResult };
 };

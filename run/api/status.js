@@ -12,7 +12,6 @@ const { sanitize } = require('../lib/utils');
 const router = express.Router();
 const { managedError, unmanagedError } = require('../lib/errors');
 const redis = require('../lib/redis');
-const logger = require('../lib/logger');
 
 /**
  * @route GET /health - Public infrastructure health endpoint
@@ -66,7 +65,7 @@ router.get('/health', async (req, res) => {
     // API self-check (if we got here, the API is running)
     services.api = { status: 'ok' };
 
-    if (overallStatus === 'healthy' && (services.redis.memoryPercent > 80 || services.postgres.status !== 'ok')) {
+    if (overallStatus === 'healthy' && services.redis.memoryPercent > 80) {
         overallStatus = 'degraded';
     }
 
