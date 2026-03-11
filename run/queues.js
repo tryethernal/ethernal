@@ -11,6 +11,10 @@ priorities['high'].forEach(jobName => {
                 count: 100,
                 age: 4 * 60
             },
+            removeOnFail: {
+                count: 50,
+                age: 4 * 60
+            },
             timeout: 30000,
             backoff: {
                 type: 'fixed',
@@ -28,6 +32,7 @@ priorities['medium'].forEach(jobName => {
         defaultJobOptions: {
             attempts: 40,
             removeOnComplete: 20,
+            removeOnFail: 20,
             timeout: 30000,
             backoff: {
                 type: 'exponential',
@@ -43,6 +48,7 @@ priorities['low'].forEach(jobName => {
         defaultJobOptions: {
             attempts: 10,
             removeOnComplete: 10,
+            removeOnFail: 10,
             timeout: 30000,
             backoff: {
                 type: 'exponential',
@@ -58,6 +64,10 @@ queues['processHistoricalBlocks'] = new Queue('processHistoricalBlocks', {
         attempts: 5,
         removeOnComplete: {
             count: 100,
+            age: 4 * 60
+        },
+        removeOnFail: {
+            count: 10,
             age: 4 * 60
         },
         timeout: 30000,
