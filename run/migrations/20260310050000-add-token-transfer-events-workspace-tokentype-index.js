@@ -8,14 +8,14 @@
 module.exports = {
     async up(queryInterface) {
         await queryInterface.sequelize.query(
-            'CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_token_transfer_events_workspace_tokentype ON token_transfer_events ("workspaceId", "tokenType")'
+            'CREATE INDEX IF NOT EXISTS idx_token_transfer_events_workspace_tokentype ON token_transfer_events ("workspaceId", "tokenType")'
         );
     },
     async down(queryInterface) {
         await queryInterface.sequelize.query(
-            'DROP INDEX CONCURRENTLY IF EXISTS idx_token_transfer_events_workspace_tokentype'
+            'DROP INDEX IF EXISTS idx_token_transfer_events_workspace_tokentype'
         );
     }
 };
 
-module.exports.config = { transaction: false };
+// Note: Using standard CREATE INDEX (not CONCURRENTLY) because TimescaleDB hypertables don't support concurrent index creation
