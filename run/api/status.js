@@ -11,6 +11,72 @@ const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const { sanitize } = require('../lib/utils');
 const router = express.Router();
 const { managedError, unmanagedError } = require('../lib/errors');
+const redis = require('../lib/redis');
+const logger = require('../lib/logger');
+
+/**
+ * @route GET /health - Public infrastructure health endpoint
+ * Returns service statuses for external monitoring (UptimeRobot, OpsGenie heartbeat).
+ * No auth required. Returns 200 if all ok, 503 if any service is unhealthy.
+ */
+router.get('/health', async (req, res) => {
+    const services = {};
+    let overallStatus = 'healthy';
+    const CHECK_TIMEOUT = 5000;
+
+    // Redis check
+    try {
+        const start = Date.now();
+        await Promise.race([
+            redis.ping(),
+            new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), CHECK_TIMEOUT))
+        ]);
+        const latencyMs = Date.now() - start;
+
+        let memoryPercent = null;
+        try {
+            const info = await redis.info('memory');
+            const usedMatch = info.match(/used_memory:(\d+)/);
+            const maxMatch = info.match(/maxmemory:(\d+)/);
+            if (usedMatch && maxMatch && parseInt(maxMatch[1]) > 0) {
+                memoryPercent = parseFloat(((parseInt(usedMatch[1]) / parseInt(maxMatch[1])) * 100).toFixed(1));
+            }
+        } catch (_) { /* memory info is best-effort */ }
+
+        services.redis = { status: 'ok', memoryPercent, latencyMs };
+    } catch (error) {
+        services.redis = { status: 'unhealthy', error: error.message };
+        overallStatus = 'unhealthy';
+    }
+
+    // PostgreSQL check
+    try {
+        const start = Date.now();
+        const { sequelize } = require('../models');
+        await Promise.race([
+            sequelize.query('SELECT 1'),
+            new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), CHECK_TIMEOUT))
+        ]);
+        services.postgres = { status: 'ok', latencyMs: Date.now() - start };
+    } catch (error) {
+        services.postgres = { status: 'unhealthy', error: error.message };
+        overallStatus = 'unhealthy';
+    }
+
+    // API self-check (if we got here, the API is running)
+    services.api = { status: 'ok' };
+
+    if (overallStatus === 'healthy' && (services.redis.memoryPercent > 80 || services.postgres.status !== 'ok')) {
+        overallStatus = 'degraded';
+    }
+
+    const statusCode = overallStatus === 'unhealthy' ? 503 : 200;
+    res.status(statusCode).json({
+        status: overallStatus,
+        services,
+        timestamp: new Date().toISOString()
+    });
+});
 
 router.get('/', workspaceAuthMiddleware, async (req, res, next) => {
     const data = req.query;

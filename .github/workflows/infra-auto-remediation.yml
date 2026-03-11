@@ -1,0 +1,138 @@
+name: Infra Auto-Remediation
+
+on:
+  workflow_dispatch:
+    inputs:
+      alert_type:
+        description: 'Type of infrastructure alert (e.g., redis-memory-critical, postgres-connectivity)'
+        required: true
+      alert_details:
+        description: 'Alert details and context for investigation'
+        required: true
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  investigate:
+    concurrency:
+      group: infra-remediation
+      cancel-in-progress: false
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+
+      - name: Install Redis CLI
+        run: sudo apt-get update && sudo apt-get install -y redis-tools
+
+      - name: Investigate and Remediate
+        uses: anthropics/claude-code-action@v1
+        with:
+          max_turns: 30
+          allowed_tools: "Bash,Read,Glob,Grep"
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          direct_prompt: |
+            You are an infrastructure auto-remediation agent for Ethernal (EVM block explorer).
+            An infrastructure alert has been triggered and you need to investigate and report findings.
+
+            **Alert Type:** ${{ github.event.inputs.alert_type }}
+            **Alert Details:** ${{ github.event.inputs.alert_details }}
+            **Timestamp:** $(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+            ## Investigation Steps
+
+            ### 1. Redis Investigation
+            Run these commands using the REDIS_URL environment variable:
+            ```
+            redis-cli -u "$REDIS_URL" INFO memory
+            redis-cli -u "$REDIS_URL" INFO clients
+            redis-cli -u "$REDIS_URL" INFO stats | grep -E "expired_keys|evicted_keys|keyspace_"
+            ```
+
+            Check key distribution:
+            ```
+            redis-cli -u "$REDIS_URL" --scan --pattern 'bull:*' | sed 's/:[^:]*$//' | sort | uniq -c | sort -rn | head -20
+            ```
+
+            Check BullMQ queue sizes (waiting, failed, stalled):
+            ```
+            for queue in blockSync processBlock receiptSync processContract processTokenTransfer processTransactionTrace batchBlockSync; do
+              WAITING=$(redis-cli -u "$REDIS_URL" LLEN "bull:${queue}:wait" 2>/dev/null || echo "0")
+              FAILED=$(redis-cli -u "$REDIS_URL" ZCARD "bull:${queue}:failed" 2>/dev/null || echo "0")
+              STALLED=$(redis-cli -u "$REDIS_URL" ZCARD "bull:${queue}:stalled" 2>/dev/null || echo "0")
+              echo "${queue}: waiting=${WAITING} failed=${FAILED} stalled=${STALLED}"
+            done
+            ```
+
+            ### 2. Safe Cleanup Actions (v1 scope)
+            These are the ONLY mutations you may perform:
+            - **Flush completed jobs older than 24h**: For each queue, remove completed job entries older than 24 hours
+            - **Clean failed jobs older than 7 days**: Remove failed job entries that are older than 7 days
+            - **Remove orphaned BullMQ keys**: Clean up `bull:*:priority` legacy keys (use UNLINK, not DEL)
+
+            Commands for cleanup:
+            ```
+            # Remove completed jobs older than 24h (timestamp in ms)
+            CUTOFF=$(( $(date +%s) * 1000 - 86400000 ))
+            for queue in blockSync processBlock receiptSync processContract processTokenTransfer; do
+              redis-cli -u "$REDIS_URL" ZREMRANGEBYSCORE "bull:${queue}:completed" 0 $CUTOFF
+            done
+
+            # Remove failed jobs older than 7 days
+            CUTOFF_7D=$(( $(date +%s) * 1000 - 604800000 ))
+            for queue in blockSync processBlock receiptSync processContract processTokenTransfer; do
+              redis-cli -u "$REDIS_URL" ZREMRANGEBYSCORE "bull:${queue}:failed" 0 $CUTOFF_7D
+            done
+            ```
+
+            ### 3. NEVER auto-execute these actions:
+            - Config changes (maxmemory, eviction policy)
+            - Service restarts (Redis, PostgreSQL, Fly apps)
+            - Scaling operations
+            - Deleting active/waiting jobs
+            - Any destructive operation not listed in "Safe Cleanup Actions"
+
+            ### 4. Post-Action Verification
+            After any cleanup, re-check Redis memory:
+            ```
+            redis-cli -u "$REDIS_URL" INFO memory | grep -E "used_memory_human|maxmemory_human"
+            ```
+            Report the memory delta.
+
+            ### 5. Report Findings
+            Post a summary to Discord using the critical webhook:
+            ```
+            curl -X POST "$DISCORD_CRITICAL_WEBHOOK" \
+              -H "Content-Type: application/json" \
+              -d '{
+                "embeds": [{
+                  "title": "🔧 Auto-Remediation Report: ${{ github.event.inputs.alert_type }}",
+                  "description": "YOUR_FINDINGS_HERE",
+                  "color": 3447003,
+                  "fields": [
+                    {"name": "Alert", "value": "${{ github.event.inputs.alert_details }}", "inline": false},
+                    {"name": "Actions Taken", "value": "ACTIONS_HERE", "inline": false},
+                    {"name": "Current Status", "value": "STATUS_HERE", "inline": false}
+                  ],
+                  "timestamp": "'$(date -u +"%Y-%m-%dT%H:%M:%SZ")'"
+                }]
+              }'
+            ```
+
+            ### 6. Create GitHub Issue
+            After investigation, create a GitHub issue with label `infra-alert` containing the full investigation report.
+            Use `gh issue create` with:
+            - Title: `[Infra] ${{ github.event.inputs.alert_type }} - $(date -u +"%Y-%m-%d")`
+            - Labels: `infra-alert`
+            - Body: Full investigation log with findings, actions taken, and current status
+
+            If the issue is unresolvable by safe cleanup, also add the `needs-human` label and mention `@antoinedc` in the body.
+        env:
+          REDIS_URL: ${{ secrets.REDIS_URL }}
+          DISCORD_CRITICAL_WEBHOOK: ${{ secrets.DISCORD_CRITICAL_WEBHOOK }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
