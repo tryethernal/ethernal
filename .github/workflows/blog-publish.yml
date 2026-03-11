@@ -20,10 +20,11 @@ permissions:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    # Only run for project item status changes, or manual dispatch
+    # Only run for Blog project (#1 = PVT_kwDOBLpTN84BRc80) status changes, or manual dispatch
     if: >-
       github.event_name == 'workflow_dispatch' ||
-      (github.event.projects_v2_item.content_type == 'DraftIssue' &&
+      (github.event.projects_v2_item.project_node_id == 'PVT_kwDOBLpTN84BRc80' &&
+       github.event.projects_v2_item.content_type == 'DraftIssue' &&
        github.event.changes.field_value.field_name == 'Status')
     steps:
       - uses: actions/checkout@v4
@@ -44,6 +45,7 @@ jobs:
         working-directory: blog/pipeline
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ITEM_ID: ${{ github.event.projects_v2_item.node_id }}
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             echo "article_path=${{ inputs.article_path }}" >> $GITHUB_OUTPUT
@@ -58,7 +60,7 @@ jobs:
             fi
 
             # Get the article path from the project item
-            ARTICLE_PATH=$(ITEM_ID="${{ github.event.projects_v2_item.node_id }}" node --input-type=module -e "
+            ARTICLE_PATH=$(node --input-type=module -e "
               import { getProjectItems } from './project.js';
               const items = getProjectItems();
               const item = items.find(i => i.id === process.env.ITEM_ID);
@@ -75,9 +77,9 @@ jobs:
 
       - name: Publish article
         if: steps.resolve.outputs.should_publish == 'true'
+        env:
+          ARTICLE: ${{ steps.resolve.outputs.article_path }}
         run: |
-          ARTICLE="${{ steps.resolve.outputs.article_path }}"
-
           if [ ! -f "$ARTICLE" ]; then
             echo "ERROR: Article not found: $ARTICLE"
             exit 1

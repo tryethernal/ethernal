@@ -99,6 +99,17 @@ echo "$CLAUDE_OUTPUT" | tee -a "$LOG_FILE"
 # Extract article path from Claude output
 ARTICLE_PATH=$(echo "$CLAUDE_OUTPUT" | grep '::article-path::' | sed 's/::article-path:://' | head -1)
 
+if [ -z "$ARTICLE_PATH" ]; then
+  log "WARNING: Could not extract article path — resetting card to Detected"
+  cd blog/pipeline
+  CARD_ID="$CARD_ID" node --input-type=module -e "
+    import { updateCardStatus } from './project.js';
+    updateCardStatus(process.env.CARD_ID, 'detected');
+    console.log('Card reset to Detected');
+  " 2>&1 | tee -a "$LOG_FILE"
+  exit 1
+fi
+
 if [ -n "$ARTICLE_PATH" ]; then
   log "Article path: $ARTICLE_PATH"
 
@@ -119,6 +130,4 @@ if [ -n "$ARTICLE_PATH" ]; then
   " 2>&1 | tee -a "$LOG_FILE"
 
   log "Done. Article deployed as draft: $ARTICLE_URL"
-else
-  log "WARNING: Could not extract article path from Claude output"
 fi
