@@ -87,12 +87,6 @@ module.exports = async () => {
     // This prevents Redis OOM from legacy BullMQ v4 priority keys.
     await cleanupLegacyRedisKeys();
 
-    // Skip monitoring if environment variables are not configured
-    if (!maxTimeWithoutEnqueuedJob() || !queueMonitoringMaxProcessingTime() || !queueMonitoringHighProcessingTimeThreshold() || !queueMonitoringHighWaitingJobCountThreshold() || !queueMonitoringMaxWaitingJobCount()) {
-        logger.info('Queue monitoring alerts are not enabled (Redis cleanup still performed)');
-        return false;
-    }
-
     // Cache queue instances to avoid repeated instantiation
     const queueCache = new Map();
     const getQueue = (queueName) => {
