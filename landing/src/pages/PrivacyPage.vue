@@ -3,7 +3,7 @@
         <div class="page-hero" style="padding-bottom: 40px;">
             <v-container style="max-width: 1200px;">
                 <h1 class="font-heading text-white mb-3" style="font-weight: 700; font-size: clamp(1.8rem, 4vw, 2.8rem); letter-spacing: -0.02em;">Privacy Policy</h1>
-                <p class="text-body-1" style="color: #94A3B8;">Last updated: March 2026</p>
+                <p class="text-body-1" style="color: var(--text-secondary);">Last updated: March 2026</p>
             </v-container>
         </div>
 
@@ -103,7 +103,7 @@ import LandingLayout from '@/components/LandingLayout.vue';
     font-size: 1.3rem;
     margin-top: 2rem;
     margin-bottom: 0.75rem;
-    color: #F1F5F9;
+    color: var(--text-primary);
 }
 .legal-content h3 {
     font-family: 'Exo', sans-serif;
@@ -111,15 +111,15 @@ import LandingLayout from '@/components/LandingLayout.vue';
     font-size: 1.1rem;
     margin-top: 1.2rem;
     margin-bottom: 0.5rem;
-    color: #94A3B8;
+    color: var(--text-secondary);
 }
 .legal-content p {
-    color: #94A3B8;
+    color: var(--text-secondary);
     line-height: 1.7;
     margin-bottom: 1rem;
 }
 .legal-content ul {
-    color: #94A3B8;
+    color: var(--text-secondary);
     margin-bottom: 1rem;
     padding-left: 1.5rem;
 }

@@ -4,7 +4,7 @@
             <div class="page-title-bar">
                 <div class="text-overline mb-1" style="letter-spacing: 0.1em; color: #5DAAE0; font-size: 11px;">USE CASE</div>
                 <h1 class="font-heading text-white mb-2" style="font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -0.02em;">Built for App Chains</h1>
-                <p style="color: #94A3B8; max-width: 500px; line-height: 1.6; font-size: 0.95rem;">
+                <p style="color: var(--text-secondary); max-width: 500px; line-height: 1.6; font-size: 0.95rem;">
                     White-label explorer for Orbit, OP Stack, or custom EVM chains. Full branding, bridge support, and status monitoring.
                 </p>
             </div>
@@ -25,7 +25,7 @@
                                 <span class="dot green"></span>
                             </div>
                             <div class="preview-url-bar">
-                                <v-icon size="12" style="color: #64748B;">mdi-lock</v-icon>
+                                <v-icon size="12" style="color: var(--text-muted);">mdi-lock</v-icon>
                                 explorer.yourchain.com/settings
                             </div>
                             <div style="width: 42px;"></div>
@@ -73,7 +73,7 @@
                                 <span class="dot green"></span>
                             </div>
                             <div class="preview-url-bar">
-                                <v-icon size="12" style="color: #64748B;">mdi-lock</v-icon>
+                                <v-icon size="12" style="color: var(--text-muted);">mdi-lock</v-icon>
                                 explorer.yourchain.com/deposits
                             </div>
                             <div style="width: 42px;"></div>
@@ -126,7 +126,7 @@
                                 <span class="dot green"></span>
                             </div>
                             <div class="preview-url-bar">
-                                <v-icon size="12" style="color: #64748B;">mdi-lock</v-icon>
+                                <v-icon size="12" style="color: var(--text-muted);">mdi-lock</v-icon>
                                 explorer.yourchain.com/status
                             </div>
                             <div style="width: 42px;"></div>
@@ -180,7 +180,7 @@
                                 <span class="dot green"></span>
                             </div>
                             <div class="preview-url-bar">
-                                <v-icon size="12" style="color: #64748B;">mdi-lock</v-icon>
+                                <v-icon size="12" style="color: var(--text-muted);">mdi-lock</v-icon>
                                 explorer.yourchain.com/token/0x3b7c...
                             </div>
                             <div style="width: 42px;"></div>
@@ -213,7 +213,7 @@
                                 <span class="dot green"></span>
                             </div>
                             <div class="preview-url-bar">
-                                <v-icon size="12" style="color: #64748B;">mdi-lock</v-icon>
+                                <v-icon size="12" style="color: var(--text-muted);">mdi-lock</v-icon>
                                 app.tryethernal.com/explorer/new
                             </div>
                             <div style="width: 42px;"></div>
@@ -254,11 +254,11 @@ import LandingCTA from '@/components/LandingCTA.vue';
 .page-title-bar {
     padding-bottom: 24px;
     margin-bottom: 8px;
-    border-bottom: 1px solid rgba(61, 149, 206, 0.1);
+    border-bottom: 1px solid var(--drawer-divider);
 }
-.browser-preview { background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(61, 149, 206, 0.22); border-radius: 16px; overflow: hidden; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4); }
-.preview-header { background: #161B22; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(61, 149, 206, 0.12); }
-.preview-url-bar { display: flex; align-items: center; gap: 6px; background: rgba(11, 17, 32, 0.8); border-radius: 6px; padding: 4px 12px; color: #64748B; font-size: 11px; font-family: 'JetBrains Mono', monospace; }
+.browser-preview { background: var(--glass-bg); backdrop-filter: blur(16px); border: 1px solid var(--border-subtle); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-card); }
+.preview-header { background: var(--bg-surface); padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); }
+.preview-url-bar { display: flex; align-items: center; gap: 6px; background: var(--glass-bg-strong); border-radius: 6px; padding: 4px 12px; color: var(--text-muted); font-size: 11px; font-family: 'JetBrains Mono', monospace; }
 .dot { width: 10px; height: 10px; border-radius: 50%; }
 .dot.red { background: #ff5f56; }
 .dot.yellow { background: #febc2e; }
@@ -268,22 +268,22 @@ import LandingCTA from '@/components/LandingCTA.vue';
 /* Settings */
 .mock-settings { display: flex; flex-direction: column; gap: 12px; }
 .mock-field { display: flex; flex-direction: column; gap: 4px; }
-.mock-field-label { color: #64748B; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; }
-.mock-field-input { padding: 8px 12px; border-radius: 6px; background: rgba(11, 17, 32, 0.6); border: 1px solid rgba(61, 149, 206, 0.12); color: #CBD5E1; font-size: 11px; font-family: 'JetBrains Mono', monospace; }
+.mock-field-label { color: var(--text-muted); font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; }
+.mock-field-input { padding: 8px 12px; border-radius: 6px; background: var(--glass-bg); border: 1px solid var(--border-subtle); color: #CBD5E1; font-size: 11px; font-family: 'JetBrains Mono', monospace; }
 
 /* Branding */
 .mock-branding { display: flex; flex-direction: column; gap: 12px; }
-.mock-logo-upload { padding: 8px 12px; border-radius: 6px; background: rgba(11, 17, 32, 0.6); border: 1px solid rgba(34, 197, 94, 0.15); }
+.mock-logo-upload { padding: 8px 12px; border-radius: 6px; background: var(--glass-bg); border: 1px solid rgba(34, 197, 94, 0.15); }
 .mock-color-row { display: flex; gap: 10px; }
-.mock-color-swatch { padding: 8px 12px; border-radius: 6px; background: rgba(11, 17, 32, 0.6); border: 1px solid rgba(61, 149, 206, 0.12); color: #CBD5E1; font-size: 11px; font-family: 'JetBrains Mono', monospace; display: flex; align-items: center; gap: 8px; }
+.mock-color-swatch { padding: 8px 12px; border-radius: 6px; background: var(--glass-bg); border: 1px solid var(--border-subtle); color: #CBD5E1; font-size: 11px; font-family: 'JetBrains Mono', monospace; display: flex; align-items: center; gap: 8px; }
 .swatch { width: 16px; height: 16px; border-radius: 4px; flex-shrink: 0; }
 
 /* Table */
 .mock-table { width: 100%; }
 .mock-tbl-header, .mock-tbl-row { display: grid; grid-template-columns: 1fr 1fr 0.8fr 0.8fr; gap: 4px; font-size: 11px; align-items: center; }
-.mock-tbl-header { color: #64748B; text-transform: uppercase; letter-spacing: 0.06em; font-size: 10px; padding-bottom: 10px; border-bottom: 1px solid rgba(61, 149, 206, 0.1); margin-bottom: 4px; }
-.mock-tbl-row { padding: 8px 0; border-bottom: 1px solid rgba(61, 149, 206, 0.05); }
-.tbl-hash { color: #5DAAE0; } .tbl-addr { color: #94A3B8; font-size: 11px; } .tbl-num { color: #F1F5F9; }
+.mock-tbl-header { color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; font-size: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--drawer-divider); margin-bottom: 4px; }
+.mock-tbl-row { padding: 8px 0; border-bottom: 1px solid var(--drawer-divider); }
+.tbl-hash { color: #5DAAE0; } .tbl-addr { color: var(--text-secondary); font-size: 11px; } .tbl-num { color: var(--text-primary); }
 
 /* Status chips */
 .status-chip { padding: 2px 10px; border-radius: 4px; font-size: 10px; font-weight: 600; }
@@ -292,21 +292,21 @@ import LandingCTA from '@/components/LandingCTA.vue';
 
 /* Analytics */
 .mock-analytics-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 14px; }
-.mock-analytics-card { display: flex; flex-direction: column; gap: 4px; padding: 12px; border-radius: 8px; background: rgba(11, 17, 32, 0.5); border: 1px solid rgba(61, 149, 206, 0.08); }
-.mock-analytics-label { color: #64748B; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; }
-.mock-analytics-value { color: #F1F5F9; font-size: 16px; font-weight: 600; }
-.mock-chart { padding: 12px; border-radius: 8px; background: rgba(11, 17, 32, 0.5); border: 1px solid rgba(61, 149, 206, 0.08); }
-.mock-chart-label { color: #64748B; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
+.mock-analytics-card { display: flex; flex-direction: column; gap: 4px; padding: 12px; border-radius: 8px; background: var(--glass-bg); border: 1px solid var(--drawer-divider); }
+.mock-analytics-label { color: var(--text-muted); font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; }
+.mock-analytics-value { color: var(--text-primary); font-size: 16px; font-weight: 600; }
+.mock-chart { padding: 12px; border-radius: 8px; background: var(--glass-bg); border: 1px solid var(--drawer-divider); }
+.mock-chart-label { color: var(--text-muted); font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
 .mock-chart-bars { display: flex; align-items: flex-end; gap: 4px; height: 60px; }
 .mock-bar { flex: 1; background: linear-gradient(180deg, #3D95CE, rgba(61, 149, 206, 0.3)); border-radius: 3px 3px 0 0; }
 
 /* NFT gallery */
 .mock-nft-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; }
-.mock-nft { border-radius: 10px; overflow: hidden; background: rgba(11, 17, 32, 0.5); border: 1px solid rgba(61, 149, 206, 0.08); }
+.mock-nft { border-radius: 10px; overflow: hidden; background: var(--glass-bg); border: 1px solid var(--drawer-divider); }
 .mock-nft-img { height: 80px; }
 .mock-nft-info { padding: 8px 10px; display: flex; flex-direction: column; gap: 2px; }
-.mock-nft-name { color: #F1F5F9; font-size: 11px; font-weight: 600; }
-.mock-nft-owner { color: #64748B; font-size: 10px; }
+.mock-nft-name { color: var(--text-primary); font-size: 11px; font-weight: 600; }
+.mock-nft-owner { color: var(--text-muted); font-size: 10px; }
 
 /* Create button */
 .mock-create-btn { padding: 10px 16px; border-radius: 8px; background: linear-gradient(90deg, #3D95CE, #5DAAE0); color: white; font-size: 12px; font-weight: 600; text-align: center; margin-top: 4px; }

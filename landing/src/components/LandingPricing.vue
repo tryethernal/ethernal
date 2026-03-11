@@ -2,16 +2,16 @@
     <section class="landing-section">
         <v-container style="max-width: 1200px;">
             <div class="text-center mb-14">
-                <h2 class="font-heading mb-4" style="font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 700; color: #F1F5F9; letter-spacing: -0.02em;">
+                <h2 class="font-heading mb-4" :style="{ fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-0.02em' }">
                     Simple, <span class="gradient-text">transparent pricing</span>
                 </h2>
-                <p style="color: #94A3B8; max-width: 500px; margin: 0 auto; line-height: 1.7;">
+                <p :style="{ color: 'var(--text-secondary)', maxWidth: '500px', margin: '0 auto', lineHeight: 1.7 }">
                     Start free, upgrade when you need more. No hidden fees, no surprises.
                 </p>
             </div>
 
             <!-- Public Explorers -->
-            <div v-if="full" class="font-heading text-h6 mb-6" style="font-weight: 600; color: #94A3B8; letter-spacing: 1px; text-transform: uppercase; font-size: 13px !important;">
+            <div v-if="full" class="font-heading text-h6 mb-6" :style="{ fontWeight: 600, color: 'var(--text-secondary)', letterSpacing: '1px', textTransform: 'uppercase', fontSize: '13px !important' }">
                 Public Explorers
             </div>
 
@@ -29,7 +29,7 @@
 
             <!-- Private Explorers (full page only) -->
             <template v-if="full">
-                <div class="font-heading text-h6 mt-16 mb-6" style="font-weight: 600; color: #94A3B8; letter-spacing: 1px; text-transform: uppercase; font-size: 13px !important;">
+                <div class="font-heading text-h6 mt-16 mb-6" :style="{ fontWeight: 600, color: 'var(--text-secondary)', letterSpacing: '1px', textTransform: 'uppercase', fontSize: '13px !important' }">
                     Private Explorers
                 </div>
                 <v-row class="pricing-row">

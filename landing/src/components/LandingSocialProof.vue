@@ -2,10 +2,10 @@
     <section class="landing-section">
         <v-container style="max-width: 1200px;">
             <div class="text-center mb-14" style="max-width: 700px; margin: 0 auto;">
-                <h2 class="font-heading mb-4" style="font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 700; color: #F1F5F9; letter-spacing: -0.02em;">
+                <h2 class="font-heading mb-4" :style="{ fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-0.02em' }">
                     Trusted by <span class="gradient-text">teams building on EVM</span>
                 </h2>
-                <p style="color: #94A3B8; max-width: 560px; margin: 0 auto; line-height: 1.7; font-size: 1.05rem;">
+                <p :style="{ color: 'var(--text-secondary)', maxWidth: '560px', margin: '0 auto', lineHeight: 1.7, fontSize: '1.05rem' }">
                     See how organizations are using Ethernal to power their blockchain infrastructure.
                 </p>
             </div>
@@ -28,8 +28,8 @@
                                 class="testimonial-avatar"
                             />
                             <div>
-                                <div style="color: #F1F5F9; font-size: 15px; font-weight: 600;">{{ testimonial.name }}</div>
-                                <div style="color: #64748B; font-size: 13px;">{{ testimonial.role }}</div>
+                                <div :style="{ color: 'var(--text-primary)', fontSize: '15px', fontWeight: 600 }">{{ testimonial.name }}</div>
+                                <div :style="{ color: 'var(--text-muted)', fontSize: '13px' }">{{ testimonial.role }}</div>
                             </div>
                         </div>
                     </div>
@@ -64,9 +64,9 @@ const testimonials = [
 
 <style scoped>
 .testimonial-card {
-    background: rgba(17, 24, 39, 0.7);
+    background: var(--glass-bg);
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(61, 149, 206, 0.22);
+    border: 1px solid var(--border-subtle);
     border-radius: 16px;
     padding: 32px;
     height: 100%;
@@ -81,7 +81,7 @@ const testimonials = [
 }
 
 .testimonial-quote {
-    color: #CBD5E1;
+    color: var(--text-secondary);
     font-size: 15px;
     line-height: 1.75;
     font-style: italic;
@@ -95,6 +95,6 @@ const testimonials = [
     border-radius: 50%;
     flex-shrink: 0;
     object-fit: cover;
-    border: 2px solid rgba(61, 149, 206, 0.22);
+    border: 2px solid var(--border-subtle);
 }
 </style>

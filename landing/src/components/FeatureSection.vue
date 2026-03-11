@@ -10,14 +10,14 @@
                         <template v-if="inlineIcon && icon">
                             <div class="d-flex align-center ga-3 mb-3">
                                 <v-icon color="#5DAAE0" size="24">{{ icon }}</v-icon>
-                                <h3 class="font-heading" style="font-weight: 600; color: #F1F5F9; font-size: 1.15rem;">{{ title }}</h3>
+                                <h3 class="font-heading" :style="{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '1.15rem' }">{{ title }}</h3>
                             </div>
                         </template>
                         <template v-else>
                             <v-icon v-if="icon" color="#5DAAE0" size="32" class="mb-4">{{ icon }}</v-icon>
-                            <h3 class="font-heading mb-3" style="font-weight: 600; color: #F1F5F9; font-size: 1.15rem;">{{ title }}</h3>
+                            <h3 class="font-heading mb-3" :style="{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '1.15rem' }">{{ title }}</h3>
                         </template>
-                        <p style="color: #94A3B8; line-height: 1.7; font-size: 1.05rem;">{{ description }}</p>
+                        <p :style="{ color: 'var(--text-secondary)', lineHeight: 1.7, fontSize: '1.05rem' }">{{ description }}</p>
                         <slot name="extra" />
                     </template>
                     <template v-else-if="hasVisual">
@@ -36,14 +36,14 @@
                         <template v-if="inlineIcon && icon">
                             <div class="d-flex align-center ga-3 mb-3">
                                 <v-icon color="#5DAAE0" size="24">{{ icon }}</v-icon>
-                                <h3 class="font-heading" style="font-weight: 600; color: #F1F5F9; font-size: 1.15rem;">{{ title }}</h3>
+                                <h3 class="font-heading" :style="{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '1.15rem' }">{{ title }}</h3>
                             </div>
                         </template>
                         <template v-else>
                             <v-icon v-if="icon" color="#5DAAE0" size="32" class="mb-4">{{ icon }}</v-icon>
-                            <h3 class="font-heading mb-3" style="font-weight: 600; color: #F1F5F9; font-size: 1.15rem;">{{ title }}</h3>
+                            <h3 class="font-heading mb-3" :style="{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '1.15rem' }">{{ title }}</h3>
                         </template>
-                        <p style="color: #94A3B8; line-height: 1.7; font-size: 1.05rem;">{{ description }}</p>
+                        <p :style="{ color: 'var(--text-secondary)', lineHeight: 1.7, fontSize: '1.05rem' }">{{ description }}</p>
                         <slot name="extra" />
                     </template>
                     <template v-else-if="hasVisual">

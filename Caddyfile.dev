@@ -1,0 +1,18 @@
+:8180 {
+    header {
+        X-Frame-Options "SAMEORIGIN"
+        X-Content-Type-Options "nosniff"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        Permissions-Policy "camera=(), microphone=(), geolocation=()"
+    }
+
+    # Blog: proxy /blog requests to blog dev server (keep /blog prefix — Astro base: '/blog')
+    handle /blog* {
+        reverse_proxy blog:8176
+    }
+
+    # Landing: proxy everything else to landing dev server
+    handle {
+        reverse_proxy landing:8174
+    }
+}
