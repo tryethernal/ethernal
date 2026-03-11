@@ -2,7 +2,7 @@
 title: "Interact with Mainnet Contracts on Your Local Fork"
 date: 2021-05-03
 description: "Import contracts from Etherscan into your Ethernal dashboard to interact with them on your local mainnet fork."
-image: "/blog/images/interact-with-deployed-contracts-etherscan-integration.webp"
+image: "/blog/images/interact-with-deployed-contracts-etherscan-integration.png"
 tags:
   - Ethernal
   - Developer Tools

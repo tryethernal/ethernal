@@ -8,6 +8,10 @@
     }
 }
 
+blog.tryethernal.com {
+    redir * https://tryethernal.com/blog{uri} permanent
+}
+
 :443 {
     tls {
         on_demand
