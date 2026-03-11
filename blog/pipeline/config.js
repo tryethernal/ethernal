@@ -82,6 +82,7 @@ export const PROJECT = {
     topicCluster: 'PVTSSF_lADOBLpTN84BRc80zg_RtzU',
     sourceLinks: 'PVTF_lADOBLpTN84BRc80zg_Rt28',
     contentType: 'PVTSSF_lADOBLpTN84BRc80zg_Rt3A',
+    articlePath: 'PVTF_lADOBLpTN84BRc80zg_SJMU',
   },
   statusOptions: {
     detected: 'f75ad846',

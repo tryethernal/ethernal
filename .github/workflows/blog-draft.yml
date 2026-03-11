@@ -7,16 +7,16 @@ on:
   workflow_dispatch: # Manual trigger
 
 permissions:
-  issues: write
   repository-projects: write
   contents: write
-  pull-requests: write
 
 jobs:
   pick-and-draft:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: develop
 
       - uses: actions/setup-node@v4
         with:
@@ -39,15 +39,15 @@ jobs:
             echo "No topic picked — all clusters have active work"
             echo "skip=true" >> $GITHUB_OUTPUT
           else
-            # Save picked JSON to file (too large for env var due to issue body)
             echo "$PICKED" > /tmp/picked-topic.json
             TOPIC=$(echo "$PICKED" | jq -r '.cluster')
             CONTENT_TYPE=$(echo "$PICKED" | jq -r '.contentType')
+            CARD_ID=$(echo "$PICKED" | jq -r '.id')
             CARD_BODY=$(echo "$PICKED" | jq -r '.body // ""')
             echo "skip=false" >> $GITHUB_OUTPUT
             echo "topic=$TOPIC" >> $GITHUB_OUTPUT
             echo "content_type=$CONTENT_TYPE" >> $GITHUB_OUTPUT
-            # Write card body to file for multi-line content
+            echo "card_id=$CARD_ID" >> $GITHUB_OUTPUT
             echo "$CARD_BODY" > /tmp/card-body.md
           fi
 
@@ -75,7 +75,33 @@ jobs:
                - "Upgrade Guide": Step-by-step migration guide with code changes needed
                - "Trend Survey": Survey multiple related proposals, compare approaches, include interface examples
                Cite the sources from the trend card as references in the article.
-            3. Create a PR with the new article targeting the `develop` branch.
-            4. After the PR is created, output the PR URL.
+            3. IMPORTANT: Set the article frontmatter status to "draft" (not "published").
+            4. Commit the article directly to the develop branch with message "blog: add draft — <article title>".
+            5. Push to origin develop.
+            6. After pushing, output the article file path relative to the repo root on a line starting with "::article-path::"
+               Example: ::article-path::blog/src/content/blog/my-article.md
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           allowed_tools: "Read,Write,Edit,Bash,WebSearch,WebFetch,Glob,Grep,Skill"
+
+      - name: Update project card
+        if: steps.pick.outputs.skip != 'true'
+        working-directory: blog/pipeline
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          CARD_ID="${{ steps.pick.outputs.card_id }}"
+
+          # Find the article that was just committed
+          ARTICLE_PATH=$(git log -1 --name-only --pretty=format: | grep 'blog/src/content/blog/' | head -1)
+
+          if [ -n "$ARTICLE_PATH" ]; then
+            echo "Article: $ARTICLE_PATH"
+            node --input-type=module -e "
+              import { updateCardStatus, setArticlePath } from './project.js';
+              updateCardStatus('$CARD_ID', 'drafting');
+              setArticlePath('$CARD_ID', '$ARTICLE_PATH');
+              console.log('Card updated');
+            "
+          else
+            echo "WARNING: Could not find article path in last commit"
+          fi
