@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.29] - 2026-03-11
+### Fixed
+- fix: remove CONCURRENTLY from hypertable index migration (#603)
+- fix: limit BullMQ stacktrace storage to prevent Redis OOM (#604)
+
+
 ## [5.17.28] - 2026-03-11
 ### Fixed
 - fix: resolve Redis OOM causing Sentry infrastructure outage (#601)
