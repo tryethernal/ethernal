@@ -42,7 +42,7 @@
                                     </div>
                                 </router-link>
                                 <router-link to="/github-actions" class="mega-item">
-                                    <v-icon size="20" class="mega-item-icon" style="color: #F1F5F9;">mdi-github</v-icon>
+                                    <v-icon size="20" class="mega-item-icon" :style="{ color: 'var(--text-primary)' }">mdi-github</v-icon>
                                     <div>
                                         <div class="mega-item-name">GitHub Actions</div>
                                         <div class="mega-item-desc">CI/CD pipeline integration</div>
@@ -124,6 +124,7 @@
                 </v-menu>
 
                 <router-link to="/pricing" class="nav-link">Pricing</router-link>
+                <a href="/blog" class="nav-link">Blog</a>
                 <router-link to="/contact-us" class="nav-link">Contact</router-link>
             </nav>
 
@@ -134,25 +135,24 @@
                         <path d="M208.31,75.68A59.78,59.78,0,0,0,202.93,28,8,8,0,0,0,196,24a59.75,59.75,0,0,0-48,24H124A59.75,59.75,0,0,0,76,24a8,8,0,0,0-6.93,4,59.78,59.78,0,0,0-5.38,47.68A58.14,58.14,0,0,0,56,104v8a56.06,56.06,0,0,0,48.44,55.47A39.8,39.8,0,0,0,96,192v8H72a24,24,0,0,1-24-24A40,40,0,0,0,8,136a8,8,0,0,0,0,16,24,24,0,0,1,24,24,40,40,0,0,0,40,40H96v16a8,8,0,0,0,16,0V192a24,24,0,0,1,48,0v40a8,8,0,0,0,16,0V192a39.8,39.8,0,0,0-8.44-24.53A56.06,56.06,0,0,0,216,112v-8A58.14,58.14,0,0,0,208.31,75.68ZM200,112a40,40,0,0,1-40,40H112a40,40,0,0,1-40-40v-8a41.74,41.74,0,0,1,6.9-22.48A8,8,0,0,0,80,73.83a43.81,43.81,0,0,1,.79-33.58,43.88,43.88,0,0,1,32.32,20.06A8,8,0,0,0,119.82,64h32.35a8,8,0,0,0,6.74-3.69,43.87,43.87,0,0,1,32.32-20.06A43.81,43.81,0,0,1,192,73.83a8.09,8.09,0,0,0,1,7.65A41.72,41.72,0,0,1,200,104Z"/>
                     </svg>
                 </a>
-                <a href="https://app.tryethernal.com/auth" class="nav-link" style="font-weight: 500;">Log in</a>
                 <a href="https://app.tryethernal.com/auth" class="navbar-cta">Get Started</a>
             </div>
 
             <!-- Mobile hamburger -->
             <button class="navbar-hamburger d-md-none" @click="drawer = !drawer">
-                <v-icon color="white" size="24">mdi-menu</v-icon>
+                <v-icon :color="hamburgerColor" size="24">mdi-menu</v-icon>
             </button>
         </div>
     </header>
 
     <!-- Mobile drawer -->
-    <v-navigation-drawer v-model="drawer" temporary location="right" color="#111827" width="280">
+    <v-navigation-drawer v-model="drawer" temporary location="right" :color="drawerBg" width="280">
         <v-list nav class="pa-4">
             <v-list-item to="/features" title="Features" @click="drawer = false" />
 
-            <v-divider class="my-3" style="border-color: rgba(61,149,206,0.08);" />
+            <v-divider class="my-3" :style="{ borderColor: 'var(--drawer-divider)' }" />
 
-            <v-list-subheader style="color: #64748B;">Integrations</v-list-subheader>
+            <v-list-subheader :style="{ color: 'var(--drawer-subheader)' }">Integrations</v-list-subheader>
             <v-list-item to="/hardhat-block-explorer" title="Hardhat" @click="drawer = false" prepend-icon="mdi-hammer-wrench" />
             <v-list-item to="/anvil-block-explorer" title="Anvil" @click="drawer = false" prepend-icon="mdi-anvil" />
             <v-list-item to="/ganache-block-explorer" title="Ganache" @click="drawer = false" prepend-icon="mdi-cube-outline" />
@@ -162,22 +162,22 @@
             <v-list-item to="/arbitrum-orbit" title="Arbitrum Orbit" @click="drawer = false" prepend-icon="mdi-transit-connection-variant" />
             <v-list-item to="/op-stack" title="OP Stack" @click="drawer = false" prepend-icon="mdi-layers-triple" />
 
-            <v-divider class="my-3" style="border-color: rgba(61,149,206,0.08);" />
+            <v-divider class="my-3" :style="{ borderColor: 'var(--drawer-divider)' }" />
 
-            <v-list-subheader style="color: #64748B;">Use Cases</v-list-subheader>
+            <v-list-subheader :style="{ color: 'var(--drawer-subheader)' }">Use Cases</v-list-subheader>
             <v-list-item to="/developers" title="Developers" @click="drawer = false" prepend-icon="mdi-code-braces" />
             <v-list-item to="/teams" title="Teams" @click="drawer = false" prepend-icon="mdi-account-group" />
             <v-list-item to="/app-chains" title="App Chains" @click="drawer = false" prepend-icon="mdi-link-variant" />
 
-            <v-divider class="my-3" style="border-color: rgba(61,149,206,0.08);" />
+            <v-divider class="my-3" :style="{ borderColor: 'var(--drawer-divider)' }" />
 
             <v-list-item to="/pricing" title="Pricing" @click="drawer = false" />
+            <v-list-item href="/blog" title="Blog" @click="drawer = false" />
             <v-list-item to="/contact-us" title="Contact" @click="drawer = false" />
 
-            <v-divider class="my-3" style="border-color: rgba(61,149,206,0.08);" />
+            <v-divider class="my-3" :style="{ borderColor: 'var(--drawer-divider)' }" />
 
             <div class="pa-2 d-flex flex-column ga-2">
-                <v-btn block class="btn-outline" href="https://app.tryethernal.com/auth" rounded="lg">Log In</v-btn>
                 <v-btn block class="btn-primary" href="https://app.tryethernal.com/auth" rounded="lg">Get Started</v-btn>
             </div>
         </v-list>
@@ -189,6 +189,8 @@ import { ref, onMounted, onUnmounted } from 'vue';
 
 const scrolled = ref(false);
 const drawer = ref(false);
+const hamburgerColor = 'white';
+const drawerBg = '#111827';
 
 function onScroll() {
     scrolled.value = window.scrollY > 20;
@@ -210,10 +212,10 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll));
 }
 
 .landing-navbar.scrolled {
-    background: rgba(11, 17, 32, 0.8);
+    background: var(--bg-navbar);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border-bottom-color: rgba(61, 149, 206, 0.08);
+    border-bottom-color: var(--border-subtle);
 }
 
 .navbar-inner {
@@ -230,7 +232,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll));
     text-decoration: none;
     font-size: 1.3rem;
     font-weight: 600;
-    color: #F1F5F9;
+    color: var(--text-primary);
     margin-right: 32px;
     flex-shrink: 0;
     display: flex;
@@ -246,7 +248,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll));
 }
 
 .nav-link {
-    color: #94A3B8;
+    color: var(--text-secondary);
     text-decoration: none;
     font-size: 14px;
     font-weight: 400;
@@ -259,12 +261,19 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll));
 }
 
 .nav-link:hover {
-    color: #F1F5F9;
-    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-primary);
+    background: var(--nav-hover-bg);
 }
 
 .github-link {
     padding: 6px 8px;
+}
+
+.theme-toggle {
+    background: none;
+    border: none;
+    padding: 6px 8px;
+    cursor: pointer;
 }
 
 .navbar-actions {
@@ -302,12 +311,12 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll));
 
 /* Mega menu */
 .mega-menu {
-    background: rgba(17, 24, 39, 0.95);
+    background: var(--mega-bg);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(61, 149, 206, 0.18);
+    border: 1px solid var(--mega-border);
     border-radius: 16px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(61, 149, 206, 0.06);
+    box-shadow: var(--mega-shadow);
     padding: 8px;
     margin-top: 4px;
 }
@@ -323,7 +332,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll));
 }
 
 .mega-col + .mega-col {
-    border-left: 1px solid rgba(61, 149, 206, 0.08);
+    border-left: 1px solid var(--mega-col-border);
 }
 
 .mega-col-title {
@@ -331,7 +340,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll));
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    color: #64748B;
+    color: var(--mega-col-title);
     padding: 0 10px;
     margin-bottom: 8px;
 }
@@ -347,7 +356,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll));
 }
 
 .mega-item:hover {
-    background: rgba(61, 149, 206, 0.08);
+    background: var(--mega-item-hover);
 }
 
 .mega-item-icon {
@@ -356,14 +365,14 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll));
 }
 
 .mega-item-name {
-    color: #F1F5F9;
+    color: var(--mega-item-name);
     font-size: 13px;
     font-weight: 500;
     line-height: 1.3;
 }
 
 .mega-item-desc {
-    color: #64748B;
+    color: var(--mega-item-desc);
     font-size: 11px;
     line-height: 1.4;
     margin-top: 2px;

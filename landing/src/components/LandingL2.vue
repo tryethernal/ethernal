@@ -2,10 +2,10 @@
     <section class="landing-section">
         <v-container style="max-width: 1200px;">
             <div class="text-center mb-12">
-                <h2 class="font-heading mb-4" style="font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 700; color: #F1F5F9; letter-spacing: -0.02em;">
+                <h2 class="font-heading mb-4" :style="{ fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-0.02em' }">
                     Full <span class="gradient-text">L2 bridge</span> visibility
                 </h2>
-                <p style="color: #94A3B8; max-width: 520px; margin: 0 auto; line-height: 1.7; font-size: 1.05rem;">
+                <p :style="{ color: 'var(--text-secondary)', maxWidth: '520px', margin: '0 auto', lineHeight: 1.7, fontSize: '1.05rem' }">
                     Track deposits, withdrawals, and batches across your rollup. Set up in under 2 minutes.
                 </p>
             </div>
@@ -58,9 +58,9 @@
 }
 
 .l2-card {
-    background: rgba(17, 24, 39, 0.7);
+    background: var(--glass-bg);
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(61, 149, 206, 0.22);
+    border: 1px solid var(--border-subtle);
     border-radius: 16px;
     padding: 32px 28px;
     height: 100%;
@@ -72,7 +72,7 @@
 .l2-card:hover {
     border-color: rgba(61, 149, 206, 0.4);
     transform: translateY(-4px);
-    box-shadow: 0 8px 32px rgba(61, 149, 206, 0.15), 0 4px 24px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--shadow-card-hover);
 }
 
 .l2-card-coming {
@@ -104,12 +104,12 @@
     font-family: 'Exo', sans-serif;
     font-weight: 600;
     font-size: 1.15rem;
-    color: #F1F5F9;
+    color: var(--text-primary);
     margin-bottom: 10px;
 }
 
 .l2-card-desc {
-    color: #94A3B8;
+    color: var(--text-secondary);
     font-size: 14px;
     line-height: 1.6;
     flex-grow: 1;

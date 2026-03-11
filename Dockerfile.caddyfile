@@ -16,6 +16,14 @@ ARG VITE_SOKETI_KEY
 ENV VITE_SOKETI_KEY=$VITE_SOKETI_KEY
 RUN npm run build
 
+# Build blog
+FROM node:20-alpine AS blog-build
+WORKDIR /app
+COPY blog/package.json blog/package-lock.json ./
+RUN npm ci
+COPY blog/ ./
+RUN npm run build
+
 # Build app frontend
 FROM node:18-alpine AS app-build
 RUN apk add --no-cache python3 make g++ gcc
@@ -55,6 +63,7 @@ RUN yarn build
 FROM caddy:2.7.6-alpine
 COPY Caddyfile /etc/caddy/Caddyfile
 COPY --from=landing-build /app/dist /srv/landing
+COPY --from=blog-build /app/dist /srv/blog
 COPY --from=sentry-dashboard-build /app/dist /srv/sentry-dashboard
 COPY --from=app-build /app/dist /srv/app
 COPY --from=app-build /app/ads.txt /srv/app/ads.txt

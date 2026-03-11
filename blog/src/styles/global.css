@@ -1,0 +1,190 @@
+@import url('https://fonts.googleapis.com/css2?family=Exo:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-base: #ffffff;
+    --bg-card: #f8fafc;
+    --bg-card-hover: #f1f5f9;
+    --bg-surface: #e2e8f0;
+    --text-primary: #0f172a;
+    --text-secondary: #374151;
+    --text-muted: #4b5563;
+    --border-subtle: rgba(15, 23, 42, 0.12);
+    --prose-body: #1e293b;
+    --prose-pre-bg: #f6f8fa;
+    --grid-color: rgba(15, 23, 42, 0.05);
+    --glow-color: rgba(61, 149, 206, 0.25);
+    --glow-color-alt: rgba(41, 100, 142, 0.18);
+  }
+
+  .dark {
+    --bg-base: #0B1120;
+    --bg-card: #111827;
+    --bg-card-hover: #1a2234;
+    --bg-surface: #151d2e;
+    --text-primary: #F1F5F9;
+    --text-secondary: #A8B8CC;
+    --text-muted: #7A8BA0;
+    --border-subtle: rgba(61, 149, 206, 0.22);
+    --prose-body: #CBD5E1;
+    --prose-pre-bg: #0f172a;
+    --grid-color: rgba(61, 149, 206, 0.07);
+    --glow-color: rgba(61, 149, 206, 0.15);
+    --glow-color-alt: rgba(41, 100, 142, 0.10);
+  }
+
+  body {
+    @apply bg-bg-base text-text-primary font-body transition-colors duration-200;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .blog-bg {
+    background-image:
+      radial-gradient(ellipse at 10% 10%, var(--glow-color) 0%, transparent 50%),
+      radial-gradient(ellipse at 90% 80%, var(--glow-color-alt) 0%, transparent 50%);
+    background-size: 100% 100%, 100% 100%;
+    background-attachment: fixed;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading;
+  }
+}
+
+@layer components {
+  .blog-card {
+    @apply bg-bg-card rounded-xl overflow-hidden border border-border-subtle cursor-pointer
+           transition-all duration-300 hover:border-primary/40 hover:bg-bg-card-hover
+           hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/5;
+  }
+
+
+  .category-pill {
+    @apply px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 cursor-pointer
+           border border-border-subtle;
+  }
+
+  .category-pill-active {
+    @apply bg-primary text-white border-primary;
+  }
+
+  .category-pill-inactive {
+    @apply bg-bg-card text-text-secondary hover:bg-bg-card-hover hover:text-text-primary;
+  }
+}
+
+/* Force pointer cursor on all links and their children (outside @layer to beat Preflight) */
+a, a * {
+  cursor: pointer;
+}
+
+/* Prose overrides for article content */
+.prose {
+  color: var(--prose-body);
+}
+
+.prose h2 {
+  @apply font-heading text-text-primary mt-12 mb-4 text-2xl font-semibold;
+}
+
+.prose h3 {
+  @apply font-heading text-text-primary mt-8 mb-3 text-xl font-semibold;
+}
+
+.prose a {
+  @apply text-primary hover:text-primary-light transition-colors no-underline
+         border-b border-primary/30 hover:border-primary;
+}
+
+.prose strong {
+  @apply text-text-primary;
+}
+
+.prose code:not(pre code) {
+  @apply px-1.5 py-0.5 rounded text-sm font-normal
+         before:content-[''] after:content-[''];
+  background: var(--bg-surface);
+  color: #3D95CE;
+}
+
+.prose pre {
+  background: var(--prose-pre-bg) !important;
+  @apply border border-border-subtle rounded-lg overflow-x-auto;
+}
+
+/* Shiki dual-theme support: dark mode uses --shiki-dark CSS variables */
+.dark .astro-code,
+.dark .astro-code span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
+}
+
+.dark .astro-code span {
+  background-color: transparent !important;
+}
+
+.prose blockquote {
+  @apply border-l-primary text-text-secondary italic;
+}
+
+.prose table {
+  @apply border-collapse w-full;
+}
+
+.prose th {
+  @apply text-left text-text-primary font-semibold px-4 py-2 border border-border-subtle text-sm;
+  background: var(--bg-surface);
+}
+
+.prose td {
+  @apply px-4 py-2 border border-border-subtle text-sm;
+}
+
+.prose hr {
+  @apply border-border-subtle my-10;
+}
+
+.prose img {
+  @apply rounded-lg mx-auto;
+}
+
+.prose sup a {
+  @apply border-none text-primary;
+}
+
+/* References section: subtle arrow links, smaller text */
+.prose span[id^="fn-"] {
+  @apply font-semibold text-text-muted;
+}
+
+.prose p:has(span[id^="fn-"]) {
+  @apply text-sm text-text-secondary leading-relaxed;
+}
+
+.prose p:has(span[id^="fn-"]) a {
+  @apply text-text-muted text-xs border-none opacity-50 hover:opacity-100 hover:text-primary transition-opacity;
+}
+
+/* Background glow orb animations */
+@keyframes float-slow {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(30px, 20px); }
+}
+
+@keyframes float-slow-reverse {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-25px, -15px); }
+}
+
+.animate-float-slow {
+  animation: float-slow 20s ease-in-out infinite;
+}
+
+.animate-float-slow-reverse {
+  animation: float-slow-reverse 25s ease-in-out infinite;
+}

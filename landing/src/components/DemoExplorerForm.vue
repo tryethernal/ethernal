@@ -1,5 +1,5 @@
 <template>
-    <div class="demo-form" style="max-width: 480px;">
+    <div class="demo-form" style="max-width: 560px;">
         <v-slide-x-transition mode="out-in">
             <div :key="step">
                 <!-- Step 1: RPC URL -->
@@ -150,11 +150,11 @@ async function submit() {
 .pill-input-wrap {
     display: flex;
     align-items: center;
-    background: #111827;
-    border: 1px solid rgba(51, 65, 85, 0.8);
+    background: var(--bg-card);
+    border: 1px solid var(--btn-outline-border);
     border-radius: 100px;
     padding: 6px;
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--shadow-card);
     transition: border-color 0.2s;
 }
 
@@ -163,7 +163,7 @@ async function submit() {
 }
 
 .pill-input-icon {
-    color: #64748B;
+    color: var(--text-muted);
     padding-left: 12px;
     flex-shrink: 0;
 }
@@ -173,7 +173,7 @@ async function submit() {
     background: transparent;
     border: none;
     outline: none;
-    color: #F1F5F9;
+    color: var(--text-primary);
     font-size: 15px;
     padding: 0 12px;
     height: 48px;
@@ -216,7 +216,7 @@ async function submit() {
 .back-link {
     background: none;
     border: none;
-    color: #64748B;
+    color: var(--text-muted);
     font-size: 13px;
     cursor: pointer;
     display: inline-flex;
@@ -226,7 +226,7 @@ async function submit() {
 }
 
 .back-link:hover {
-    color: #94A3B8;
+    color: var(--text-secondary);
 }
 
 .success-banner {

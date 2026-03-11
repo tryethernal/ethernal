@@ -2,10 +2,10 @@
     <section class="cta-section">
         <div class="cta-glow"></div>
         <v-container style="max-width: 800px; position: relative; z-index: 1;" class="text-center">
-            <h2 class="font-heading mb-5" style="font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; color: #F1F5F9; letter-spacing: -0.02em;">
+            <h2 class="font-heading mb-5" :style="{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-0.02em' }">
                 Ready to launch your explorer?
             </h2>
-            <p class="mb-10" style="color: #94A3B8; max-width: 520px; margin: 0 auto; line-height: 1.7; font-size: 1.1rem;">
+            <p class="mb-10" :style="{ color: 'var(--text-secondary)', maxWidth: '520px', margin: '0 auto', lineHeight: 1.7, fontSize: '1.1rem' }">
                 Deploy a fully-featured block explorer for your EVM chain in under 5 minutes. No credit card required.
             </p>
             <div class="d-flex justify-center ga-4 flex-wrap">
@@ -41,7 +41,7 @@
     padding: 120px 0;
     position: relative;
     overflow: hidden;
-    border-top: 1px solid rgba(61, 149, 206, 0.08);
+    border-top: 1px solid var(--drawer-divider);
 }
 
 .cta-glow {

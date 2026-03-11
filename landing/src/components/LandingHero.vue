@@ -41,7 +41,7 @@
                                     <span class="dot green"></span>
                                 </div>
                                 <div class="preview-url-bar">
-                                    <v-icon size="12" style="color: #64748B;">mdi-lock</v-icon>
+                                    <v-icon size="12" :style="{ color: 'var(--text-muted)' }">mdi-lock</v-icon>
                                     explorer.yourchain.com
                                 </div>
                                 <div style="width: 42px;"></div>
@@ -108,19 +108,19 @@ const txns = [
     font-size: clamp(2.2rem, 5vw, 3.5rem);
     font-weight: 700;
     line-height: 1.08;
-    color: #F1F5F9;
+    color: var(--text-primary);
     letter-spacing: -0.02em;
 }
 
 .hero-subtitle {
     font-size: 1.2rem;
-    color: #94A3B8;
+    color: var(--text-secondary);
     max-width: 520px;
     line-height: 1.7;
 }
 
 .trust-text {
-    color: #94A3B8;
+    color: var(--text-secondary);
     font-size: 13px;
 }
 
@@ -137,32 +137,32 @@ const txns = [
 }
 
 .hero-preview {
-    background: rgba(17, 24, 39, 0.7);
+    background: var(--glass-bg);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(61, 149, 206, 0.22);
+    border: 1px solid var(--border-subtle);
     border-radius: 16px;
     overflow: hidden;
     box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
 }
 
 .preview-header {
-    background: #161B22;
+    background: var(--terminal-header);
     padding: 12px 16px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 1px solid rgba(61, 149, 206, 0.12);
+    border-bottom: 1px solid var(--drawer-divider);
 }
 
 .preview-url-bar {
     display: flex;
     align-items: center;
     gap: 6px;
-    background: rgba(11, 17, 32, 0.8);
+    background: var(--glass-bg-strong);
     border-radius: 6px;
     padding: 4px 12px;
-    color: #64748B;
+    color: var(--text-muted);
     font-size: 12px;
     font-family: 'JetBrains Mono', monospace;
 }
@@ -189,9 +189,9 @@ const txns = [
 .txn-header {
     display: grid;
     grid-template-columns: 2fr 1fr 1fr;
-    color: #64748B;
+    color: var(--text-muted);
     padding-bottom: 12px;
-    border-bottom: 1px solid rgba(61, 149, 206, 0.12);
+    border-bottom: 1px solid var(--drawer-divider);
     margin-bottom: 12px;
     font-size: 11px;
     text-transform: uppercase;
@@ -236,7 +236,7 @@ const txns = [
 }
 
 .txn-block {
-    color: #CBD5E1;
+    color: var(--text-secondary);
 }
 
 .text-right {

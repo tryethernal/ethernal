@@ -4,7 +4,7 @@
             <div class="page-title-bar">
                 <div class="text-overline mb-1" style="letter-spacing: 0.1em; color: #5DAAE0; font-size: 11px;">FEATURES</div>
                 <h1 class="font-heading text-white mb-2" style="font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -0.02em;">Everything you need to explore your chain</h1>
-                <p style="color: #94A3B8; max-width: 500px; line-height: 1.6; font-size: 0.95rem;">
+                <p style="color: var(--text-secondary); max-width: 500px; line-height: 1.6; font-size: 0.95rem;">
                     From transaction decoding to contract verification, Ethernal provides a complete toolkit for understanding your blockchain.
                 </p>
             </div>
@@ -13,10 +13,10 @@
             <FeatureSection inline-icon compact icon="mdi-lightning-bolt" title="Real-time Updates" description="New blocks and transactions appear instantly via WebSocket. No manual refresh needed. Your explorer data is always current, whether you're monitoring a local dev chain or a live production network.">
                 <template #visual>
                     <div class="browser-preview">
-                        <div class="preview-header"><div class="d-flex align-center ga-2"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="preview-url-bar"><v-icon size="12" style="color: #64748B;">mdi-lock</v-icon>explorer.yourchain.com</div><div style="width: 42px;"></div></div>
+                        <div class="preview-header"><div class="d-flex align-center ga-2"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="preview-url-bar"><v-icon size="12" style="color: var(--text-muted);">mdi-lock</v-icon>explorer.yourchain.com</div><div style="width: 42px;"></div></div>
                         <div class="preview-body">
                             <div class="d-flex justify-space-between align-center mb-3">
-                                <span style="color: #F1F5F9; font-weight: 600; font-size: 13px;">Latest Blocks</span>
+                                <span style="color: var(--text-primary); font-weight: 600; font-size: 13px;">Latest Blocks</span>
                                 <span class="live-badge"><span class="live-dot-anim"></span>Live</span>
                             </div>
                             <div class="mock-block-list">
@@ -34,10 +34,10 @@
             <FeatureSection inline-icon compact icon="mdi-file-tree" title="Transaction Tracing" description="Debug transactions with full call traces, state diffs, and event logs. See exactly which function reverted, what parameters were passed, and where things went wrong. Supports debug_traceTransaction for compatible nodes." :reverse="true">
                 <template #visual>
                     <div class="browser-preview">
-                        <div class="preview-header"><div class="d-flex align-center ga-2"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="preview-url-bar"><v-icon size="12" style="color: #64748B;">mdi-lock</v-icon>explorer.yourchain.com/tx/0x1b14…</div><div style="width: 42px;"></div></div>
+                        <div class="preview-header"><div class="d-flex align-center ga-2"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="preview-url-bar"><v-icon size="12" style="color: var(--text-muted);">mdi-lock</v-icon>explorer.yourchain.com/tx/0x1b14…</div><div style="width: 42px;"></div></div>
                         <div class="preview-body">
                             <div class="d-flex justify-space-between align-center mb-3">
-                                <span style="color: #F1F5F9; font-weight: 600; font-size: 13px;">Call Trace</span>
+                                <span style="color: var(--text-primary); font-weight: 600; font-size: 13px;">Call Trace</span>
                                 <span class="status-chip success">Success</span>
                             </div>
                             <div class="trace-node"><span class="trace-op call">CALL</span><span class="trace-addr">0x7a25…f832</span><span class="trace-method">swap(uint256,address)</span><span class="trace-gas">45,230 gas</span></div>
@@ -53,7 +53,7 @@
             <FeatureSection inline-icon compact icon="mdi-check-decagram" title="Contract Verification" description="Verify and interact with smart contracts directly. Upload Solidity or Vyper source code and Ethernal matches it against deployed bytecode. Once verified, all transactions are decoded automatically.">
                 <template #visual>
                     <div class="browser-preview">
-                        <div class="preview-header"><div class="d-flex align-center ga-2"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="preview-url-bar"><v-icon size="12" style="color: #64748B;">mdi-lock</v-icon>explorer.yourchain.com/address/0x5eF0…</div><div style="width: 42px;"></div></div>
+                        <div class="preview-header"><div class="d-flex align-center ga-2"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="preview-url-bar"><v-icon size="12" style="color: var(--text-muted);">mdi-lock</v-icon>explorer.yourchain.com/address/0x5eF0…</div><div style="width: 42px;"></div></div>
                         <div class="preview-body">
                             <div class="mock-verified-banner"><span class="mock-check">&#10003;</span>Contract Source Code Verified</div>
                             <div class="mock-meta-grid">
@@ -71,7 +71,7 @@
             <FeatureSection inline-icon compact icon="mdi-code-braces" title="Contract Interaction" description="Read and write to verified contracts directly from the explorer. Connect your wallet and call any function with a simple form UI. No need to write scripts or use the CLI." :reverse="true">
                 <template #visual>
                     <div class="browser-preview">
-                        <div class="preview-header"><div class="d-flex align-center ga-2"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="preview-url-bar"><v-icon size="12" style="color: #64748B;">mdi-lock</v-icon>explorer.yourchain.com/address/0x7a25…</div><div style="width: 42px;"></div></div>
+                        <div class="preview-header"><div class="d-flex align-center ga-2"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="preview-url-bar"><v-icon size="12" style="color: var(--text-muted);">mdi-lock</v-icon>explorer.yourchain.com/address/0x7a25…</div><div style="width: 42px;"></div></div>
                         <div class="preview-body">
                             <div class="mock-interact-tabs"><span class="mock-tab">Read</span><span class="mock-tab active">Write</span></div>
                             <div class="mock-fn">
@@ -92,7 +92,7 @@
             <FeatureSection inline-icon compact icon="mdi-chart-line" title="Analytics Dashboard" description="Track gas usage trends, transaction volume, active addresses, and more. Built-in charts give you real-time visibility into your chain's health and activity patterns.">
                 <template #visual>
                     <div class="browser-preview">
-                        <div class="preview-header"><div class="d-flex align-center ga-2"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="preview-url-bar"><v-icon size="12" style="color: #64748B;">mdi-lock</v-icon>explorer.yourchain.com/analytics</div><div style="width: 42px;"></div></div>
+                        <div class="preview-header"><div class="d-flex align-center ga-2"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="preview-url-bar"><v-icon size="12" style="color: var(--text-muted);">mdi-lock</v-icon>explorer.yourchain.com/analytics</div><div style="width: 42px;"></div></div>
                         <div class="preview-body">
                             <div class="mock-analytics-row">
                                 <div class="mock-analytics-card"><span class="mock-analytics-label">Avg Block Time</span><span class="mock-analytics-value">2.1s</span></div>
@@ -127,7 +127,7 @@
             <FeatureSection inline-icon compact icon="mdi-palette" title="Custom Branding" description="Your logo, colors, domain, and theme. Make the explorer indistinguishable from a first-party product. Supports custom CSS for full control." :reverse="true">
                 <template #visual>
                     <div class="browser-preview">
-                        <div class="preview-header"><div class="d-flex align-center ga-2"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="preview-url-bar"><v-icon size="12" style="color: #64748B;">mdi-lock</v-icon>app.tryethernal.com/explorer/branding</div><div style="width: 42px;"></div></div>
+                        <div class="preview-header"><div class="d-flex align-center ga-2"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="preview-url-bar"><v-icon size="12" style="color: var(--text-muted);">mdi-lock</v-icon>app.tryethernal.com/explorer/branding</div><div style="width: 42px;"></div></div>
                         <div class="preview-body">
                             <div class="mock-branding-setup">
                                 <div class="mock-field"><div class="mock-field-label">Explorer Name</div><div class="mock-field-input">MyChain Explorer</div></div>
@@ -146,9 +146,9 @@
             <FeatureSection inline-icon compact icon="mdi-bridge" title="L2 Bridge Support" description="Full bridge visibility for Arbitrum Orbit and OP Stack chains. Track deposits, withdrawals, and batches with real-time status updates. Set up with just a few contract addresses.">
                 <template #visual>
                     <div class="browser-preview">
-                        <div class="preview-header"><div class="d-flex align-center ga-2"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="preview-url-bar"><v-icon size="12" style="color: #64748B;">mdi-lock</v-icon>explorer.yourchain.com/deposits</div><div style="width: 42px;"></div></div>
+                        <div class="preview-header"><div class="d-flex align-center ga-2"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="preview-url-bar"><v-icon size="12" style="color: var(--text-muted);">mdi-lock</v-icon>explorer.yourchain.com/deposits</div><div style="width: 42px;"></div></div>
                         <div class="preview-body">
-                            <div style="color: #F1F5F9; font-weight: 600; font-size: 13px; margin-bottom: 12px;">Recent Deposits</div>
+                            <div style="color: var(--text-primary); font-weight: 600; font-size: 13px; margin-bottom: 12px;">Recent Deposits</div>
                             <div class="mock-table">
                                 <div class="mock-tbl-header"><span>L1 Block</span><span>L2 Tx</span><span>Value</span><span>Status</span></div>
                                 <div class="mock-tbl-row"><span class="tbl-hash">#19,847,231</span><span class="tbl-addr">0x1b14…25d5</span><span class="tbl-num">0.5 ETH</span><span><span class="status-chip success">Relayed</span></span></div>
@@ -164,7 +164,7 @@
             <FeatureSection inline-icon compact icon="mdi-image-multiple" title="NFT Gallery" description="Browse ERC-721 and ERC-1155 collections with visual galleries, metadata display, and ownership history. See token images, attributes, and transfer history at a glance." :reverse="true">
                 <template #visual>
                     <div class="browser-preview">
-                        <div class="preview-header"><div class="d-flex align-center ga-2"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="preview-url-bar"><v-icon size="12" style="color: #64748B;">mdi-lock</v-icon>explorer.yourchain.com/nft/collection</div><div style="width: 42px;"></div></div>
+                        <div class="preview-header"><div class="d-flex align-center ga-2"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="preview-url-bar"><v-icon size="12" style="color: var(--text-muted);">mdi-lock</v-icon>explorer.yourchain.com/nft/collection</div><div style="width: 42px;"></div></div>
                         <div class="preview-body">
                             <div class="mock-nft-grid">
                                 <div class="mock-nft"><div class="mock-nft-img" style="background: linear-gradient(135deg, #6366F1, #A855F7);"></div><div class="mock-nft-info"><span class="mock-nft-name">#7804</span><span class="mock-nft-owner">0x7a25…f832</span></div></div>
@@ -181,7 +181,7 @@
             <FeatureSection inline-icon compact icon="mdi-swap-horizontal" title="Token Transfers" description="Track ERC-20, ERC-721, and ERC-1155 transfers with full token metadata. Display sender, recipient, amount, and token details for every transfer on your chain.">
                 <template #visual>
                     <div class="browser-preview">
-                        <div class="preview-header"><div class="d-flex align-center ga-2"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="preview-url-bar"><v-icon size="12" style="color: #64748B;">mdi-lock</v-icon>explorer.yourchain.com/token-transfers</div><div style="width: 42px;"></div></div>
+                        <div class="preview-header"><div class="d-flex align-center ga-2"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="preview-url-bar"><v-icon size="12" style="color: var(--text-muted);">mdi-lock</v-icon>explorer.yourchain.com/token-transfers</div><div style="width: 42px;"></div></div>
                         <div class="preview-body">
                             <div class="mock-table">
                                 <div class="mock-tbl-header"><span>Txn Hash</span><span>Type</span><span>From</span><span>To</span><span>Amount</span></div>
@@ -198,7 +198,7 @@
             <FeatureSection inline-icon compact icon="mdi-api" title="API Support" description="Create and manage explorers programmatically. Spin up a fully configured explorer with a single API call. Ideal for automated deployments and CI/CD pipelines." :reverse="true">
                 <template #visual>
                     <div class="browser-preview">
-                        <div class="preview-header"><div class="d-flex align-center ga-2"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="preview-url-bar"><v-icon size="12" style="color: #64748B;">mdi-lock</v-icon>app.tryethernal.com/api/explorers</div><div style="width: 42px;"></div></div>
+                        <div class="preview-header"><div class="d-flex align-center ga-2"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="preview-url-bar"><v-icon size="12" style="color: var(--text-muted);">mdi-lock</v-icon>app.tryethernal.com/api/explorers</div><div style="width: 42px;"></div></div>
                         <div class="preview-body terminal-mock">
                             <div class="code-line"><span class="t-comment">// Create an explorer via API</span></div>
                             <div class="code-line"><span class="t-cmd">POST</span> <span class="t-str">/api/explorers</span></div>
@@ -225,10 +225,10 @@ import LandingCTA from '@/components/LandingCTA.vue';
 </script>
 
 <style scoped>
-.page-title-bar { padding-bottom: 24px; margin-bottom: 8px; border-bottom: 1px solid rgba(61, 149, 206, 0.1); }
-.browser-preview { background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(61, 149, 206, 0.22); border-radius: 16px; overflow: hidden; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4); }
-.preview-header { background: #161B22; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(61, 149, 206, 0.12); }
-.preview-url-bar { display: flex; align-items: center; gap: 6px; background: rgba(11, 17, 32, 0.8); border-radius: 6px; padding: 4px 12px; color: #64748B; font-size: 11px; font-family: 'JetBrains Mono', monospace; }
+.page-title-bar { padding-bottom: 24px; margin-bottom: 8px; border-bottom: 1px solid var(--drawer-divider); }
+.browser-preview { background: var(--glass-bg); backdrop-filter: blur(16px); border: 1px solid var(--border-subtle); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-card); }
+.preview-header { background: var(--bg-surface); padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); }
+.preview-url-bar { display: flex; align-items: center; gap: 6px; background: var(--glass-bg-strong); border-radius: 6px; padding: 4px 12px; color: var(--text-muted); font-size: 11px; font-family: 'JetBrains Mono', monospace; }
 .dot { width: 10px; height: 10px; border-radius: 50%; } .dot.red { background: #ff5f56; } .dot.yellow { background: #febc2e; } .dot.green { background: #28c840; }
 .preview-body { padding: 20px; font-family: 'JetBrains Mono', 'Roboto', sans-serif; font-size: 12px; }
 
@@ -239,11 +239,11 @@ import LandingCTA from '@/components/LandingCTA.vue';
 
 /* Block list */
 .mock-block-list { display: flex; flex-direction: column; gap: 2px; }
-.mock-block { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; border-radius: 8px; border-bottom: 1px solid rgba(61, 149, 206, 0.05); }
+.mock-block { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; border-radius: 8px; border-bottom: 1px solid var(--drawer-divider); }
 .mock-block.new-block { background: rgba(34, 197, 94, 0.06); border: 1px solid rgba(34, 197, 94, 0.12); }
 .block-num { color: #5DAAE0; font-size: 12px; font-weight: 500; }
-.block-txns { color: #94A3B8; font-size: 11px; }
-.block-time { color: #64748B; font-size: 10px; }
+.block-txns { color: var(--text-secondary); font-size: 11px; }
+.block-time { color: var(--text-muted); font-size: 10px; }
 
 /* Trace */
 .trace-node { display: flex; align-items: center; gap: 8px; padding: 5px 0; flex-wrap: wrap; } .trace-node.indent { padding-left: 20px; } .trace-node.indent-2 { padding-left: 40px; }
@@ -251,7 +251,7 @@ import LandingCTA from '@/components/LandingCTA.vue';
 .trace-op.call { background: rgba(61, 149, 206, 0.12); color: #3D95CE; border: 1px solid rgba(61, 149, 206, 0.25); }
 .trace-op.static { background: rgba(167, 139, 250, 0.12); color: #A78BFA; border: 1px solid rgba(167, 139, 250, 0.25); }
 .trace-op.log { background: rgba(45, 212, 191, 0.12); color: #2DD4BF; border: 1px solid rgba(45, 212, 191, 0.25); }
-.trace-addr { color: #5DAAE0; font-size: 11px; } .trace-method { color: #CBD5E1; font-size: 11px; } .trace-gas { color: #64748B; font-size: 10px; margin-left: auto; }
+.trace-addr { color: #5DAAE0; font-size: 11px; } .trace-method { color: #CBD5E1; font-size: 11px; } .trace-gas { color: var(--text-muted); font-size: 10px; margin-left: auto; }
 .status-chip { padding: 2px 10px; border-radius: 4px; font-size: 10px; font-weight: 600; }
 .status-chip.success { background: rgba(34, 197, 94, 0.1); color: #22C55E; border: 1px solid rgba(34, 197, 94, 0.2); }
 .status-chip.pending { background: rgba(251, 191, 36, 0.1); color: #FBBF24; border: 1px solid rgba(251, 191, 36, 0.2); }
@@ -260,48 +260,48 @@ import LandingCTA from '@/components/LandingCTA.vue';
 .mock-verified-banner { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 8px; background: rgba(34, 197, 94, 0.08); border: 1px solid rgba(34, 197, 94, 0.2); color: #22C55E; font-size: 12px; font-weight: 600; margin-bottom: 12px; }
 .mock-check { font-size: 14px; }
 .mock-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.mock-meta-item { display: flex; flex-direction: column; gap: 3px; padding: 10px 12px; border-radius: 8px; background: rgba(11, 17, 32, 0.5); border: 1px solid rgba(61, 149, 206, 0.08); }
-.mock-meta-label { color: #64748B; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; }
+.mock-meta-item { display: flex; flex-direction: column; gap: 3px; padding: 10px 12px; border-radius: 8px; background: var(--glass-bg); border: 1px solid var(--drawer-divider); }
+.mock-meta-label { color: var(--text-muted); font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; }
 .mock-meta-val { color: #CBD5E1; font-size: 12px; }
 
 /* Contract interaction */
-.mock-interact-tabs { display: flex; gap: 0; margin-bottom: 16px; border-bottom: 1px solid rgba(61, 149, 206, 0.1); }
-.mock-tab { padding: 8px 16px; color: #64748B; font-size: 12px; font-weight: 500; border-bottom: 2px solid transparent; } .mock-tab.active { color: #3D95CE; border-bottom-color: #3D95CE; }
-.mock-fn { background: rgba(11, 17, 32, 0.4); border: 1px solid rgba(61, 149, 206, 0.08); border-radius: 10px; padding: 14px; margin-bottom: 8px; }
+.mock-interact-tabs { display: flex; gap: 0; margin-bottom: 16px; border-bottom: 1px solid var(--drawer-divider); }
+.mock-tab { padding: 8px 16px; color: var(--text-muted); font-size: 12px; font-weight: 500; border-bottom: 2px solid transparent; } .mock-tab.active { color: #3D95CE; border-bottom-color: #3D95CE; }
+.mock-fn { background: var(--glass-bg); border: 1px solid var(--drawer-divider); border-radius: 10px; padding: 14px; margin-bottom: 8px; }
 .mock-fn.collapsed { padding: 10px 14px; }
 .mock-fn-header { display: flex; align-items: center; gap: 6px; }
-.mock-fn-idx { color: #64748B; font-size: 11px; font-weight: 600; } .mock-fn-name { color: #5DAAE0; font-size: 12px; font-weight: 600; } .mock-fn-sig { color: #64748B; font-size: 11px; }
+.mock-fn-idx { color: var(--text-muted); font-size: 11px; font-weight: 600; } .mock-fn-name { color: #5DAAE0; font-size: 12px; font-weight: 600; } .mock-fn-sig { color: var(--text-muted); font-size: 11px; }
 .mock-fn-fields { margin-top: 12px; display: flex; flex-direction: column; gap: 10px; }
 .mock-fn-field { display: flex; flex-direction: column; gap: 4px; }
-.mock-fn-label { color: #64748B; font-size: 10px; }
-.mock-fn-input { padding: 8px 12px; border-radius: 6px; background: rgba(11, 17, 32, 0.6); border: 1px solid rgba(61, 149, 206, 0.12); color: #CBD5E1; font-size: 11px; font-family: 'JetBrains Mono', monospace; }
+.mock-fn-label { color: var(--text-muted); font-size: 10px; }
+.mock-fn-input { padding: 8px 12px; border-radius: 6px; background: var(--glass-bg); border: 1px solid var(--border-subtle); color: #CBD5E1; font-size: 11px; font-family: 'JetBrains Mono', monospace; }
 .mock-fn-btn { margin-top: 12px; display: inline-flex; padding: 6px 20px; border-radius: 6px; background: linear-gradient(90deg, #3D95CE, #5DAAE0); color: #FFF; font-size: 11px; font-weight: 600; }
 
 /* Analytics */
 .mock-analytics-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 14px; }
-.mock-analytics-card { display: flex; flex-direction: column; gap: 4px; padding: 12px; border-radius: 8px; background: rgba(11, 17, 32, 0.5); border: 1px solid rgba(61, 149, 206, 0.08); }
-.mock-analytics-label { color: #64748B; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; }
-.mock-analytics-value { color: #F1F5F9; font-size: 16px; font-weight: 600; }
-.mock-chart { padding: 12px; border-radius: 8px; background: rgba(11, 17, 32, 0.5); border: 1px solid rgba(61, 149, 206, 0.08); }
-.mock-chart-label { color: #64748B; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
+.mock-analytics-card { display: flex; flex-direction: column; gap: 4px; padding: 12px; border-radius: 8px; background: var(--glass-bg); border: 1px solid var(--drawer-divider); }
+.mock-analytics-label { color: var(--text-muted); font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; }
+.mock-analytics-value { color: var(--text-primary); font-size: 16px; font-weight: 600; }
+.mock-chart { padding: 12px; border-radius: 8px; background: var(--glass-bg); border: 1px solid var(--drawer-divider); }
+.mock-chart-label { color: var(--text-muted); font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
 .mock-chart-bars { display: flex; align-items: flex-end; gap: 4px; height: 60px; }
 .mock-bar { flex: 1; background: linear-gradient(180deg, #3D95CE, rgba(61, 149, 206, 0.3)); border-radius: 3px 3px 0 0; }
 
 /* Branding */
 .mock-branding-setup { display: flex; flex-direction: column; gap: 12px; }
 .mock-field { display: flex; flex-direction: column; gap: 4px; }
-.mock-field-label { color: #64748B; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; }
-.mock-field-input { padding: 8px 12px; border-radius: 6px; background: rgba(11, 17, 32, 0.6); border: 1px solid rgba(61, 149, 206, 0.12); color: #CBD5E1; font-size: 11px; font-family: 'JetBrains Mono', monospace; }
+.mock-field-label { color: var(--text-muted); font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; }
+.mock-field-input { padding: 8px 12px; border-radius: 6px; background: var(--glass-bg); border: 1px solid var(--border-subtle); color: #CBD5E1; font-size: 11px; font-family: 'JetBrains Mono', monospace; }
 .mock-color-row { display: flex; gap: 10px; }
-.mock-color-swatch { padding: 8px 12px; border-radius: 6px; background: rgba(11, 17, 32, 0.6); border: 1px solid rgba(61, 149, 206, 0.12); color: #CBD5E1; font-size: 11px; font-family: 'JetBrains Mono', monospace; display: flex; align-items: center; gap: 8px; }
+.mock-color-swatch { padding: 8px 12px; border-radius: 6px; background: var(--glass-bg); border: 1px solid var(--border-subtle); color: #CBD5E1; font-size: 11px; font-family: 'JetBrains Mono', monospace; display: flex; align-items: center; gap: 8px; }
 .swatch { width: 16px; height: 16px; border-radius: 4px; flex-shrink: 0; }
 
 /* Deposits table */
 .mock-table { width: 100%; }
 .mock-tbl-header, .mock-tbl-row { display: grid; grid-template-columns: 1fr 1fr 1fr 0.8fr; gap: 4px; font-size: 11px; align-items: center; }
-.mock-tbl-header { color: #64748B; text-transform: uppercase; letter-spacing: 0.06em; font-size: 10px; padding-bottom: 10px; border-bottom: 1px solid rgba(61, 149, 206, 0.1); margin-bottom: 4px; }
-.mock-tbl-row { padding: 8px 0; border-bottom: 1px solid rgba(61, 149, 206, 0.05); }
-.tbl-hash { color: #5DAAE0; } .tbl-addr { color: #94A3B8; font-size: 11px; } .tbl-num { color: #F1F5F9; }
+.mock-tbl-header { color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; font-size: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--drawer-divider); margin-bottom: 4px; }
+.mock-tbl-row { padding: 8px 0; border-bottom: 1px solid var(--drawer-divider); }
+.tbl-hash { color: #5DAAE0; } .tbl-addr { color: var(--text-secondary); font-size: 11px; } .tbl-num { color: var(--text-primary); }
 
 /* Token table (5 cols) */
 .mock-tbl-header:has(span:nth-child(5)), .mock-tbl-row:has(span:nth-child(5)) { grid-template-columns: 1.2fr 0.7fr 1fr 1fr 1fr; }
@@ -313,11 +313,11 @@ import LandingCTA from '@/components/LandingCTA.vue';
 
 /* NFT gallery */
 .mock-nft-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; }
-.mock-nft { border-radius: 10px; overflow: hidden; background: rgba(11, 17, 32, 0.5); border: 1px solid rgba(61, 149, 206, 0.08); }
+.mock-nft { border-radius: 10px; overflow: hidden; background: var(--glass-bg); border: 1px solid var(--drawer-divider); }
 .mock-nft-img { height: 80px; }
 .mock-nft-info { padding: 8px 10px; display: flex; flex-direction: column; gap: 2px; }
-.mock-nft-name { color: #F1F5F9; font-size: 11px; font-weight: 600; }
-.mock-nft-owner { color: #64748B; font-size: 10px; }
+.mock-nft-name { color: var(--text-primary); font-size: 11px; font-weight: 600; }
+.mock-nft-owner { color: var(--text-muted); font-size: 10px; }
 
 /* API terminal */
 .terminal-mock { font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.6; }

@@ -17,15 +17,15 @@
                 </template>
                 <template v-else-if="price === 0">
                     <span class="plan-price">$0</span>
-                    <span class="ml-1" style="color: #64748B; font-size: 15px; font-weight: 500;">/month</span>
+                    <span class="ml-1" :style="{ color: 'var(--text-muted)', fontSize: '15px', fontWeight: 500 }">/month</span>
                 </template>
                 <template v-else>
                     <span class="plan-price">${{ price }}</span>
-                    <span class="ml-1" style="color: #64748B; font-size: 15px; font-weight: 500;">/month</span>
+                    <span class="ml-1" :style="{ color: 'var(--text-muted)', fontSize: '15px', fontWeight: 500 }">/month</span>
                 </template>
             </div>
 
-            <p style="color: #64748B; font-size: 14px; min-height: 40px;" class="mb-6 mt-2">{{ subtitle }}</p>
+            <p :style="{ color: 'var(--text-muted)', fontSize: '14px', minHeight: '40px' }" class="mb-6 mt-2">{{ subtitle }}</p>
 
             <div v-if="quota" class="quota-pill mb-5">
                 <v-icon size="14" class="mr-1" style="color: #5DAAE0;">mdi-database-outline</v-icon>
@@ -39,7 +39,7 @@
                     class="d-flex align-start mb-3"
                 >
                     <v-icon size="18" class="mr-3 mt-0 flex-shrink-0" style="color: #22C55E;">mdi-check-circle</v-icon>
-                    <span style="color: #CBD5E1; font-size: 14px;">{{ feature }}</span>
+                    <span :style="{ color: 'var(--text-secondary)', fontSize: '14px' }">{{ feature }}</span>
                 </div>
             </div>
 
@@ -79,9 +79,9 @@ defineProps({
 }
 
 .pricing-default {
-    background: rgba(17, 24, 39, 0.7);
+    background: var(--glass-bg);
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(61, 149, 206, 0.22);
+    border: 1px solid var(--border-subtle);
 }
 
 .pricing-default:hover {
@@ -89,10 +89,10 @@ defineProps({
 }
 
 .pricing-highlighted {
-    background: rgba(17, 24, 39, 0.8);
+    background: var(--glass-bg-strong);
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(61, 149, 206, 0.4);
-    box-shadow: 0 0 40px rgba(61, 149, 206, 0.12), 0 4px 24px rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-glow);
+    box-shadow: var(--glow-shadow);
 }
 
 .pricing-badge {
@@ -117,7 +117,7 @@ defineProps({
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: #64748B;
+    color: var(--text-muted);
 }
 
 .text-primary-plan {
@@ -127,7 +127,7 @@ defineProps({
 .plan-price {
     font-size: 2.4rem;
     font-weight: 900;
-    color: #F1F5F9;
+    color: var(--text-primary);
     letter-spacing: -0.02em;
     line-height: 1;
 }
@@ -138,9 +138,9 @@ defineProps({
     justify-content: center;
     padding: 8px 14px;
     border-radius: 8px;
-    background: rgba(61, 149, 206, 0.08);
-    border: 1px solid rgba(61, 149, 206, 0.18);
-    color: #CBD5E1;
+    background: var(--mega-col-border);
+    border: 1px solid var(--pill-border);
+    color: var(--text-secondary);
     font-size: 13px;
     font-weight: 600;
 }
