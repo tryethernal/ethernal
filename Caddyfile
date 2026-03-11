@@ -101,9 +101,11 @@
             try_files /index.html
             file_server
         }
-        root * /srv/landing
-        try_files {path} /index.html
-        file_server
+        handle {
+            root * /srv/landing
+            try_files {path} /index.html
+            file_server
+        }
     }
 
     handle {
