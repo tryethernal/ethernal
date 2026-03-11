@@ -4,7 +4,7 @@
             <v-container style="max-width: 1200px;">
                 <div class="text-overline mb-2" style="letter-spacing: 0.1em; color: #5DAAE0;">FEATURE</div>
                 <h1 class="font-heading text-white mb-3" style="font-weight: 700; font-size: clamp(1.8rem, 4vw, 2.8rem); letter-spacing: -0.02em;">Transaction Tracing</h1>
-                <p class="text-body-1" style="color: #94A3B8; max-width: 550px; margin: 0 auto;">
+                <p class="text-body-1" style="color: var(--text-secondary); max-width: 550px; margin: 0 auto;">
                     Debug any transaction with full call traces, state diffs, and decoded parameters. Understand exactly what happened on-chain.
                 </p>
             </v-container>

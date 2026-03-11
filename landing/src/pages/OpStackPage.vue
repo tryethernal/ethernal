@@ -4,7 +4,7 @@
             <div class="page-title-bar">
                 <div class="text-overline mb-1" style="letter-spacing: 0.1em; color: #5DAAE0; font-size: 11px;">INTEGRATION</div>
                 <h1 class="font-heading text-white mb-2" style="font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -0.02em;">OP Stack Explorer</h1>
-                <p style="color: #94A3B8; max-width: 500px; line-height: 1.6; font-size: 0.95rem;">
+                <p style="color: var(--text-secondary); max-width: 500px; line-height: 1.6; font-size: 0.95rem;">
                     Complete bridge monitoring for your OP Stack chain. Deposits, withdrawals, batches, and fault proofs, all in one place.
                 </p>
             </div>
@@ -24,7 +24,7 @@
                                     <span class="dot green"></span>
                                 </div>
                                 <div class="preview-url-bar">
-                                    <v-icon size="12" style="color: #64748B;">mdi-lock</v-icon>
+                                    <v-icon size="12" style="color: var(--text-muted);">mdi-lock</v-icon>
                                     explorer.yourchain.com/settings
                                 </div>
                                 <div style="width: 42px;"></div>
@@ -36,7 +36,7 @@
                                         <div class="mock-field-label">L1 Parent Chain</div>
                                         <div class="mock-field-select">
                                             <span>Ethereum Mainnet</span>
-                                            <v-icon size="14" style="color: #64748B;">mdi-chevron-down</v-icon>
+                                            <v-icon size="14" style="color: var(--text-muted);">mdi-chevron-down</v-icon>
                                         </div>
                                     </div>
                                     <div class="mock-field">
@@ -71,7 +71,7 @@
                                     <span class="dot green"></span>
                                 </div>
                                 <div class="preview-url-bar">
-                                    <v-icon size="12" style="color: #64748B;">mdi-lock</v-icon>
+                                    <v-icon size="12" style="color: var(--text-muted);">mdi-lock</v-icon>
                                     explorer.yourchain.com/deposits
                                 </div>
                                 <div style="width: 42px;"></div>
@@ -132,7 +132,7 @@
                                     <span class="dot green"></span>
                                 </div>
                                 <div class="preview-url-bar">
-                                    <v-icon size="12" style="color: #64748B;">mdi-lock</v-icon>
+                                    <v-icon size="12" style="color: var(--text-muted);">mdi-lock</v-icon>
                                     explorer.yourchain.com/withdrawal/8201
                                 </div>
                                 <div style="width: 42px;"></div>
@@ -189,7 +189,7 @@
                                     <span class="dot green"></span>
                                 </div>
                                 <div class="preview-url-bar">
-                                    <v-icon size="12" style="color: #64748B;">mdi-lock</v-icon>
+                                    <v-icon size="12" style="color: var(--text-muted);">mdi-lock</v-icon>
                                     explorer.yourchain.com/batches
                                 </div>
                                 <div style="width: 42px;"></div>
@@ -246,7 +246,7 @@
                                     <span class="dot green"></span>
                                 </div>
                                 <div class="preview-url-bar">
-                                    <v-icon size="12" style="color: #64748B;">mdi-lock</v-icon>
+                                    <v-icon size="12" style="color: var(--text-muted);">mdi-lock</v-icon>
                                     explorer.yourchain.com/state-outputs
                                 </div>
                                 <div style="width: 42px;"></div>
@@ -306,36 +306,36 @@ import LandingCTA from '@/components/LandingCTA.vue';
 .page-title-bar {
     padding-bottom: 24px;
     margin-bottom: 8px;
-    border-bottom: 1px solid rgba(61, 149, 206, 0.1);
+    border-bottom: 1px solid var(--drawer-divider);
 }
 
 /* Browser preview frame */
 .browser-preview {
-    background: rgba(17, 24, 39, 0.7);
+    background: var(--glass-bg);
     backdrop-filter: blur(16px);
-    border: 1px solid rgba(61, 149, 206, 0.22);
+    border: 1px solid var(--border-subtle);
     border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+    box-shadow: var(--shadow-card);
 }
 
 .preview-header {
-    background: #161B22;
+    background: var(--bg-surface);
     padding: 12px 16px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 1px solid rgba(61, 149, 206, 0.12);
+    border-bottom: 1px solid var(--border-subtle);
 }
 
 .preview-url-bar {
     display: flex;
     align-items: center;
     gap: 6px;
-    background: rgba(11, 17, 32, 0.8);
+    background: var(--glass-bg-strong);
     border-radius: 6px;
     padding: 4px 12px;
-    color: #64748B;
+    color: var(--text-muted);
     font-size: 11px;
     font-family: 'JetBrains Mono', monospace;
 }
@@ -353,7 +353,7 @@ import LandingCTA from '@/components/LandingCTA.vue';
 
 /* Settings mockup */
 .mock-settings-title {
-    color: #F1F5F9;
+    color: var(--text-primary);
     font-weight: 600;
     font-size: 14px;
     margin-bottom: 16px;
@@ -364,7 +364,7 @@ import LandingCTA from '@/components/LandingCTA.vue';
 }
 
 .mock-field-label {
-    color: #94A3B8;
+    color: var(--text-secondary);
     font-size: 11px;
     margin-bottom: 6px;
 }
@@ -373,8 +373,8 @@ import LandingCTA from '@/components/LandingCTA.vue';
 .mock-field-select {
     padding: 10px 14px;
     border-radius: 8px;
-    background: rgba(11, 17, 32, 0.6);
-    border: 1px solid rgba(61, 149, 206, 0.12);
+    background: var(--glass-bg);
+    border: 1px solid var(--border-subtle);
     color: #CBD5E1;
     font-size: 12px;
     font-family: 'JetBrains Mono', monospace;
@@ -384,7 +384,7 @@ import LandingCTA from '@/components/LandingCTA.vue';
     display: flex;
     justify-content: space-between;
     align-items: center;
-    color: #F1F5F9;
+    color: var(--text-primary);
     font-family: 'Roboto', sans-serif;
 }
 
@@ -413,18 +413,18 @@ import LandingCTA from '@/components/LandingCTA.vue';
 }
 
 .mock-tbl-header {
-    color: #64748B;
+    color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.06em;
     font-size: 10px;
     padding-bottom: 10px;
-    border-bottom: 1px solid rgba(61, 149, 206, 0.1);
+    border-bottom: 1px solid var(--drawer-divider);
     margin-bottom: 4px;
 }
 
 .mock-tbl-row {
     padding: 10px 0;
-    border-bottom: 1px solid rgba(61, 149, 206, 0.05);
+    border-bottom: 1px solid var(--drawer-divider);
 }
 
 .mock-tbl-header.five-col,
@@ -437,9 +437,9 @@ import LandingCTA from '@/components/LandingCTA.vue';
     grid-template-columns: 0.7fr 1fr 0.8fr 0.8fr 0.8fr 0.9fr;
 }
 
-.tbl-num { color: #F1F5F9; }
+.tbl-num { color: var(--text-primary); }
 .tbl-hash { color: #5DAAE0; }
-.tbl-addr { color: #94A3B8; }
+.tbl-addr { color: var(--text-secondary); }
 
 .status-chip {
     padding: 2px 10px;
@@ -517,7 +517,7 @@ import LandingCTA from '@/components/LandingCTA.vue';
     align-items: center;
     justify-content: center;
     font-size: 12px;
-    color: #64748B;
+    color: var(--text-muted);
 }
 
 .step-dot.done {
@@ -533,7 +533,7 @@ import LandingCTA from '@/components/LandingCTA.vue';
 }
 
 .step-label {
-    color: #94A3B8;
+    color: var(--text-secondary);
     font-size: 10px;
     white-space: nowrap;
 }

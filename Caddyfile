@@ -91,6 +91,16 @@
 
     @landing host tryethernal.com www.tryethernal.com
     handle @landing {
+        handle_path /blog/* {
+            root * /srv/blog
+            try_files {path} {path}.html {path}/index.html /index.html
+            file_server
+        }
+        handle /blog {
+            root * /srv/blog
+            try_files /index.html
+            file_server
+        }
         root * /srv/landing
         try_files {path} /index.html
         file_server

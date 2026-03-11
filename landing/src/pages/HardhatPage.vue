@@ -4,7 +4,7 @@
             <div class="page-title-bar">
                 <div class="text-overline mb-1" style="letter-spacing: 0.1em; color: #5DAAE0; font-size: 11px;">INTEGRATION</div>
                 <h1 class="font-heading text-white mb-2" style="font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -0.02em;">Hardhat Block Explorer</h1>
-                <p style="color: #94A3B8; max-width: 500px; line-height: 1.6; font-size: 0.95rem;">
+                <p style="color: var(--text-secondary); max-width: 500px; line-height: 1.6; font-size: 0.95rem;">
                     The missing block explorer for Hardhat. Install the plugin and see every transaction, contract deployment, and event in a visual UI.
                 </p>
             </div>
@@ -25,7 +25,7 @@
                                 <span class="dot green"></span>
                             </div>
                             <div class="preview-url-bar">
-                                <v-icon size="12" style="color: #64748B;">mdi-lock</v-icon>
+                                <v-icon size="12" style="color: var(--text-muted);">mdi-lock</v-icon>
                                 terminal
                             </div>
                             <div style="width: 42px;"></div>
@@ -58,7 +58,7 @@
                                 <span class="dot green"></span>
                             </div>
                             <div class="preview-url-bar">
-                                <v-icon size="12" style="color: #64748B;">mdi-lock</v-icon>
+                                <v-icon size="12" style="color: var(--text-muted);">mdi-lock</v-icon>
                                 explorer.yourchain.com/address/0x5eF0…
                             </div>
                             <div style="width: 42px;"></div>
@@ -97,7 +97,7 @@
                                 <span class="dot green"></span>
                             </div>
                             <div class="preview-url-bar">
-                                <v-icon size="12" style="color: #64748B;">mdi-lock</v-icon>
+                                <v-icon size="12" style="color: var(--text-muted);">mdi-lock</v-icon>
                                 explorer.yourchain.com/tx/0x1b14…
                             </div>
                             <div style="width: 42px;"></div>
@@ -105,7 +105,7 @@
                         <div class="preview-body">
                             <div class="mock-trace">
                                 <div class="d-flex justify-space-between align-center mb-3">
-                                    <span style="color: #F1F5F9; font-weight: 600; font-size: 13px;">Call Trace</span>
+                                    <span style="color: var(--text-primary); font-weight: 600; font-size: 13px;">Call Trace</span>
                                     <span class="status-chip error">Reverted</span>
                                 </div>
                                 <div class="trace-node"><span class="trace-op call">CALL</span><span class="trace-addr">0x7a25…f832</span><span class="trace-method">swap(uint256)</span></div>
@@ -135,7 +135,7 @@
                                 <span class="dot green"></span>
                             </div>
                             <div class="preview-url-bar">
-                                <v-icon size="12" style="color: #64748B;">mdi-lock</v-icon>
+                                <v-icon size="12" style="color: var(--text-muted);">mdi-lock</v-icon>
                                 terminal
                             </div>
                             <div style="width: 42px;"></div>
@@ -166,11 +166,11 @@ import LandingCTA from '@/components/LandingCTA.vue';
 .page-title-bar {
     padding-bottom: 24px;
     margin-bottom: 8px;
-    border-bottom: 1px solid rgba(61, 149, 206, 0.1);
+    border-bottom: 1px solid var(--drawer-divider);
 }
-.browser-preview { background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(61, 149, 206, 0.22); border-radius: 16px; overflow: hidden; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4); }
-.preview-header { background: #161B22; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(61, 149, 206, 0.12); }
-.preview-url-bar { display: flex; align-items: center; gap: 6px; background: rgba(11, 17, 32, 0.8); border-radius: 6px; padding: 4px 12px; color: #64748B; font-size: 11px; font-family: 'JetBrains Mono', monospace; }
+.browser-preview { background: var(--glass-bg); backdrop-filter: blur(16px); border: 1px solid var(--border-subtle); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-card); }
+.preview-header { background: var(--bg-surface); padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); }
+.preview-url-bar { display: flex; align-items: center; gap: 6px; background: var(--glass-bg-strong); border-radius: 6px; padding: 4px 12px; color: var(--text-muted); font-size: 11px; font-family: 'JetBrains Mono', monospace; }
 .dot { width: 10px; height: 10px; border-radius: 50%; }
 .dot.red { background: #ff5f56; }
 .dot.yellow { background: #febc2e; }
@@ -190,8 +190,8 @@ import LandingCTA from '@/components/LandingCTA.vue';
 .mock-verified-banner { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 8px; background: rgba(34, 197, 94, 0.08); border: 1px solid rgba(34, 197, 94, 0.2); color: #22C55E; font-size: 12px; font-weight: 600; margin-bottom: 16px; }
 .mock-check { font-size: 14px; }
 .mock-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.mock-meta-item { display: flex; flex-direction: column; gap: 3px; padding: 10px 12px; border-radius: 8px; background: rgba(11, 17, 32, 0.5); border: 1px solid rgba(61, 149, 206, 0.08); }
-.mock-meta-label { color: #64748B; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; }
+.mock-meta-item { display: flex; flex-direction: column; gap: 3px; padding: 10px 12px; border-radius: 8px; background: var(--glass-bg); border: 1px solid var(--drawer-divider); }
+.mock-meta-label { color: var(--text-muted); font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; }
 .mock-meta-val { color: #CBD5E1; font-size: 12px; }
 .mock-meta-val.badge { color: #5DAAE0; }
 

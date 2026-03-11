@@ -11,6 +11,30 @@ services:
     networks:
       - ethernal-network
 
+  blog:
+    image: node:20-alpine
+    working_dir: /app
+    ports:
+      - "8176:8176"
+    volumes:
+      - ./blog:/app
+      - blog_node_modules:/app/node_modules
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0 --port 8176"
+    networks:
+      - ethernal-network
+
+  caddy:
+    image: caddy:2.7.6-alpine
+    ports:
+      - "8180:8180"
+    volumes:
+      - ./Caddyfile.dev:/etc/caddy/Caddyfile
+    depends_on:
+      - landing
+      - blog
+    networks:
+      - ethernal-network
+
   sentry-dashboard:
     image: node:20-alpine
     working_dir: /app
@@ -179,4 +203,5 @@ volumes:
   postgres_data:
   redis_data:
   landing_node_modules:
+  blog_node_modules:
   sentry_dashboard_node_modules:
