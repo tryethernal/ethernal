@@ -10,6 +10,7 @@ const redis = require('../lib/redis');
 const logger = require('../lib/logger');
 const { createIncident } = require('../lib/opsgenie');
 const { getNodeEnv, getGithubToken } = require('../lib/env');
+const { withTimeout } = require('../lib/utils');
 const axios = require('axios');
 
 const REDIS_MEMORY_WARNING_THRESHOLD = 0.80;
@@ -26,15 +27,12 @@ const inMemoryLastDispatch = {};
  * Checks Redis connectivity and memory usage.
  * @returns {Promise<Object>} Redis health status
  */
-const checkRedis = async () => {
+async function checkRedis() {
     const result = { service: 'redis', status: 'ok', latencyMs: 0, memoryPercent: null };
     const start = Date.now();
 
     try {
-        await Promise.race([
-            redis.ping(),
-            new Promise((_, reject) => setTimeout(() => reject(new Error('Redis ping timeout')), CHECK_TIMEOUT_MS))
-        ]);
+        await withTimeout(redis.ping(), CHECK_TIMEOUT_MS);
         result.latencyMs = Date.now() - start;
     } catch (error) {
         result.status = 'unhealthy';
@@ -43,10 +41,7 @@ const checkRedis = async () => {
     }
 
     try {
-        const info = await Promise.race([
-            redis.info('memory'),
-            new Promise((_, reject) => setTimeout(() => reject(new Error('Redis info timeout')), CHECK_TIMEOUT_MS))
-        ]);
+        const info = await withTimeout(redis.info('memory'), CHECK_TIMEOUT_MS);
         const usedMatch = info.match(/used_memory:(\d+)/);
         const maxMatch = info.match(/maxmemory:(\d+)/);
 
@@ -66,22 +61,19 @@ const checkRedis = async () => {
     }
 
     return result;
-};
+}
 
 /**
  * Checks PostgreSQL connectivity via Sequelize.
  * @returns {Promise<Object>} PostgreSQL health status
  */
-const checkPostgres = async () => {
+async function checkPostgres() {
     const result = { service: 'postgres', status: 'ok', latencyMs: 0 };
     const start = Date.now();
 
     try {
         const { sequelize } = require('../models');
-        await Promise.race([
-            sequelize.query('SELECT 1'),
-            new Promise((_, reject) => setTimeout(() => reject(new Error('PostgreSQL query timeout')), CHECK_TIMEOUT_MS))
-        ]);
+        await withTimeout(sequelize.query('SELECT 1'), CHECK_TIMEOUT_MS);
         result.latencyMs = Date.now() - start;
     } catch (error) {
         result.status = 'unhealthy';
@@ -89,7 +81,7 @@ const checkPostgres = async () => {
     }
 
     return result;
-};
+}
 
 /**
  * Checks rate limits before triggering remediation.
@@ -97,7 +89,7 @@ const checkPostgres = async () => {
  * @param {string} alertType - The type of alert for dedup tracking
  * @returns {Promise<{allowed: boolean, reason: string|null, escalate: boolean}>}
  */
-const checkRemediationRateLimit = async (alertType) => {
+async function checkRemediationRateLimit(alertType) {
     // Layer 1: Hourly cap (atomic INCR+EXPIRE via Lua to avoid race condition)
     const hourlyKey = 'infra:remediation:hourly';
     const hourlyCount = await redis.eval(
@@ -123,14 +115,14 @@ const checkRemediationRateLimit = async (alertType) => {
     }
 
     return { allowed: true, reason: null, escalate: false };
-};
+}
 
 /**
  * Creates a GitHub issue for fail-fast escalation when auto-remediation is skipped.
  * @param {string} alertType - The alert type
  * @param {string} details - Alert details
  */
-const createEscalationIssue = async (alertType, details) => {
+async function createEscalationIssue(alertType, details) {
     const token = getGithubToken();
     if (!token) return;
 
@@ -153,14 +145,14 @@ const createEscalationIssue = async (alertType, details) => {
     } catch (error) {
         logger.error('Failed to create escalation issue', { error: error.message });
     }
-};
+}
 
 /**
  * Triggers the infra-auto-remediation GitHub Actions workflow.
  * @param {string} alertType - Type of infrastructure alert
  * @param {string} details - Alert details for the investigation
  */
-const triggerRemediation = async (alertType, details) => {
+async function triggerRemediation(alertType, details) {
     const token = getGithubToken();
     if (!token) {
         logger.warn('GITHUB_TOKEN not set, skipping auto-remediation trigger');
@@ -223,7 +215,7 @@ const triggerRemediation = async (alertType, details) => {
     } catch (error) {
         logger.error('Failed to trigger remediation workflow', { error: error.message, alertType });
     }
-};
+}
 
 module.exports = async () => {
     let incidentCreated = false;
