@@ -102,7 +102,12 @@ module.exports = async job => {
                 limit: 1
             }),
             OpChainConfig.findOne({
-                where: { workspaceId },
+                where: {
+                    [Op.or]: [
+                        { workspaceId },
+                        { parentWorkspaceId: workspaceId }
+                    ]
+                },
                 attributes: ['id'],
                 limit: 1
             })
