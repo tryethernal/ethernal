@@ -1,8 +1,9 @@
 ---
 title: "Public EVM Block Explorers"
 date: 2023-12-19
-description: "You can now spin up public explorers for your public chains. Host them on your own domains with contract verification, token transfers, Metamask integration, and more."
+description: "Spin up public block explorers for your EVM chains. Custom domains, contract verification, token transfers, and Metamask integration."
 image: "/blog/images/public-explorers.png"
+ogImage: "/blog/images/public-explorers-og.png"
 tags:
   - Ethernal
   - Infrastructure

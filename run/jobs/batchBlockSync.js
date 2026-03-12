@@ -114,6 +114,77 @@ module.exports = async job => {
         ]);
         const hasL2Configs = !!(hasOrbitConfigs || hasOpConfigs);
 
+        // Load L2 configurations if needed to avoid N+1 queries in blockSync jobs
+        let l2Configs = null;
+        if (hasL2Configs) {
+            l2Configs = await Workspace.findByPk(workspaceId, {
+                attributes: ['id'],
+                include: [
+                    {
+                        model: OrbitChainConfig,
+                        as: 'orbitConfig',
+                        attributes: [
+                            'rollupContract',
+                            'sequencerInboxContract',
+                            'bridgeContract',
+                            'inboxContract',
+                            'outboxContract',
+                            'stakeToken',
+                            'l1GatewayRouter',
+                            'l1Erc20Gateway',
+                            'l1WethGateway',
+                            'l1CustomGateway',
+                            'l2GatewayRouter',
+                            'l2Erc20Gateway',
+                            'l2WethGateway',
+                            'l2CustomGateway'
+                        ],
+                        required: false,
+                        include: {
+                            model: Workspace,
+                            as: 'parentWorkspace',
+                            attributes: ['id', 'rpcServer'],
+                            required: false
+                        }
+                    },
+                    {
+                        model: OrbitChainConfig,
+                        as: 'orbitChildConfigs',
+                        attributes: [
+                            'workspaceId',
+                            'rollupContract',
+                            'sequencerInboxContract',
+                            'bridgeContract',
+                            'inboxContract',
+                            'outboxContract',
+                            'stakeToken',
+                            'l1GatewayRouter',
+                            'l1Erc20Gateway',
+                            'l1WethGateway',
+                            'l1CustomGateway',
+                            'l2GatewayRouter',
+                            'l2Erc20Gateway',
+                            'l2WethGateway',
+                            'l2CustomGateway'
+                        ],
+                        required: false
+                    },
+                    {
+                        model: OpChainConfig,
+                        as: 'opChildConfigs',
+                        attributes: [
+                            'workspaceId',
+                            'batchInboxAddress',
+                            'beaconUrl',
+                            'l2BlockTime',
+                            'l2GenesisTimestamp'
+                        ],
+                        required: false
+                    }
+                ]
+            });
+        }
+
         // Cache workspace data to avoid N+1 queries in blockSync jobs
         const cachedWorkspace = {
             rpcServer: workspace.rpcServer,
@@ -139,7 +210,11 @@ module.exports = async job => {
                 id: workspace.integrityCheck.id,
                 isHealthy: workspace.integrityCheck.isHealthy,
                 isRecovering: workspace.integrityCheck.isRecovering
-            } : null
+            } : null,
+            // Cache L2 configs to avoid N+1 queries in blockSync jobs
+            orbitConfig: l2Configs?.orbitConfig || null,
+            orbitChildConfigs: l2Configs?.orbitChildConfigs || null,
+            opChildConfigs: l2Configs?.opChildConfigs || null
         };
 
         const jobs = [];
