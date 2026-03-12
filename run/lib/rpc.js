@@ -452,13 +452,13 @@ class Tracer {
     #handleError(error) {
         // Handle HTTP 429 (Too Many Requests) as a retryable rate limiting error
         if (error.status === 429 ||
-            (error.message && error.message.includes('failed response')) &&
-            error.url && error.url.includes('hyperliquid-testnet')) {
-            return this.error = {
+            (error.message && error.message.includes('failed response') &&
+            error.url && error.url.includes('hyperliquid-testnet'))) {
+            // Throw for BullMQ to detect and retry the job
+            throw Object.assign(error, {
                 message: 'Rate limited by RPC provider',
-                code: 'RATE_LIMITED',
-                error: error
-            };
+                code: 'RATE_LIMITED'
+            });
         }
 
         if (error.status >= 400)
