@@ -41,7 +41,8 @@ function collectProposals(repo, source) {
     .map(item => ({ title: item.title, url: item.url, source, date: item.date, abstract: item.body }))
     .filter(item => {
       const t = item.title.toLowerCase();
-      if (!t.includes(`add ${source}`) && !t.includes(`${source}-`)) return false;
+      // Keep PRs that reference EIP/ERC numbers or add new proposals; drop noise
+      if (!t.includes(source) && !t.includes(`${source}-`)) return false;
       return !NOISE_PATTERNS.some(p => p.test(item.title));
     });
 }

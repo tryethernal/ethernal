@@ -8,6 +8,10 @@ on:
     - cron: '0 8 1-31/2 * *'
   workflow_dispatch: # Manual trigger
 
+concurrency:
+  group: blog-draft
+  cancel-in-progress: false
+
 permissions:
   repository-projects: write
   contents: write
