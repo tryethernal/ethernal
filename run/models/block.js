@@ -150,7 +150,7 @@ module.exports = (sequelize, DataTypes) => {
 
             const workspace = await this.getWorkspace();
             if (workspace.public) {
-                await enqueue('removeStalledBlock', `removeStalledBlock-${this.id}`, { blockId: this.id }, null, null, STALLED_BLOCK_REMOVAL_DELAY);
+                await enqueue('removeStalledBlock', `removeStalledBlock-${this.id}`, { blockId: this.id, workspaceId: this.workspaceId }, null, null, STALLED_BLOCK_REMOVAL_DELAY);
 
                 if (workspace.tracing && workspace.tracing != 'hardhat') {
                     const jobs = [];
