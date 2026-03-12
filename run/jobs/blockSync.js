@@ -68,83 +68,84 @@ module.exports = async job => {
             }
         }
 
-        // After validation, fetch a real Sequelize instance for methods like safeCreatePartialBlock
-        // Note: This still requires a DB query per block, but provides significant benefit for early-exit validation failures
-        // and ensures we have fresh data + model methods. Full N+1 elimination would require architectural changes to avoid Sequelize dependencies.
+        // Fetch minimal workspace instance for Sequelize model methods, without expensive JOINs
+        // Associations are already validated via cached data, eliminating N+1 query pattern
         workspace = await Workspace.findByPk(data.workspaceId, {
-            attributes: ['id', 'name', 'rpcServer', 'browserSyncEnabled', 'isCustomL1Parent', 'rpcHealthCheckEnabled', 'public', 'rateLimitInterval', 'rateLimitMaxInInterval'],
-            include: [
-                {
-                    model: Explorer,
-                    as: 'explorer',
-                    attributes: ['id', 'shouldSync'],
-                    include: {
-                        model: StripeSubscription,
-                        as: 'stripeSubscription',
-                        attributes: ['id']
-                    }
-                },
-                {
-                    model: RpcHealthCheck,
-                    as: 'rpcHealthCheck',
-                    attributes: ['id', 'isReachable']
-                },
-                {
-                    model: IntegrityCheck,
-                    as: 'integrityCheck',
-                    attributes: ['id', 'isHealthy', 'isRecovering']
-                },
-                {
-                    model: require('../models').OrbitChainConfig,
-                    as: 'orbitConfig',
-                    attributes: [
-                        'rollupContract',
-                        'sequencerInboxContract',
-                        'bridgeContract',
-                        'inboxContract',
-                        'outboxContract',
-                        'stakeToken',
-                        'l1GatewayRouter',
-                        'l1Erc20Gateway',
-                        'l1WethGateway',
-                        'l1CustomGateway',
-                        'l2GatewayRouter',
-                        'l2Erc20Gateway',
-                        'l2WethGateway',
-                        'l2CustomGateway'
-                    ],
-                    required: false
-                },
-                {
-                    model: require('../models').OrbitChainConfig,
-                    as: 'orbitChildConfigs',
-                    attributes: [
-                        'workspaceId',
-                        'rollupContract',
-                        'sequencerInboxContract',
-                        'bridgeContract',
-                        'inboxContract',
-                        'outboxContract',
-                        'stakeToken',
-                        'l1GatewayRouter',
-                        'l1Erc20Gateway',
-                        'l1WethGateway',
-                        'l1CustomGateway',
-                        'l2GatewayRouter',
-                        'l2Erc20Gateway',
-                        'l2WethGateway',
-                        'l2CustomGateway'
-                    ],
-                    required: false
-                },
-                {
-                    model: require('../models').OpChainConfig,
-                    as: 'opChildConfigs',
-                    attributes: ['workspaceId', 'batchInboxAddress', 'beaconUrl', 'l2BlockTime', 'l2GenesisTimestamp'],
-                    required: false
-                }
-            ]
+            attributes: ['id', 'name', 'rpcServer', 'browserSyncEnabled', 'isCustomL1Parent', 'rpcHealthCheckEnabled', 'public', 'rateLimitInterval', 'rateLimitMaxInInterval']
         });
+
+        if (!workspace) {
+            return 'Invalid workspace.';
+        }
+
+        // Manually attach cached association data to maintain compatibility with existing code
+        workspace.explorer = data.cachedWorkspace.explorer;
+        workspace.rpcHealthCheck = data.cachedWorkspace.rpcHealthCheck;
+
+        // Load L2 configs (orbit/OP) only if needed, since they're not included in cached data
+        const needsL2Configs = data.cachedWorkspace.hasL2Configs || false;
+        if (needsL2Configs) {
+            const l2ConfigWorkspace = await Workspace.findByPk(data.workspaceId, {
+                attributes: ['id'],
+                include: [
+                    {
+                        model: require('../models').OrbitChainConfig,
+                        as: 'orbitConfig',
+                        attributes: [
+                            'rollupContract',
+                            'sequencerInboxContract',
+                            'bridgeContract',
+                            'inboxContract',
+                            'outboxContract',
+                            'stakeToken',
+                            'l1GatewayRouter',
+                            'l1Erc20Gateway',
+                            'l1WethGateway',
+                            'l1CustomGateway',
+                            'l2GatewayRouter',
+                            'l2Erc20Gateway',
+                            'l2WethGateway',
+                            'l2CustomGateway'
+                        ],
+                        required: false
+                    },
+                    {
+                        model: require('../models').OrbitChainConfig,
+                        as: 'orbitChildConfigs',
+                        attributes: [
+                            'workspaceId',
+                            'rollupContract',
+                            'sequencerInboxContract',
+                            'bridgeContract',
+                            'inboxContract',
+                            'outboxContract',
+                            'stakeToken',
+                            'l1GatewayRouter',
+                            'l1Erc20Gateway',
+                            'l1WethGateway',
+                            'l1CustomGateway',
+                            'l2GatewayRouter',
+                            'l2Erc20Gateway',
+                            'l2WethGateway',
+                            'l2CustomGateway'
+                        ],
+                        required: false
+                    },
+                    {
+                        model: require('../models').OpChainConfig,
+                        as: 'opChildConfigs',
+                        attributes: ['workspaceId', 'batchInboxAddress', 'beaconUrl', 'l2BlockTime', 'l2GenesisTimestamp'],
+                        required: false
+                    }
+                ]
+            });
+
+            if (l2ConfigWorkspace) {
+                workspace.orbitConfig = l2ConfigWorkspace.orbitConfig;
+                workspace.orbitChildConfigs = l2ConfigWorkspace.orbitChildConfigs;
+                workspace.opChildConfigs = l2ConfigWorkspace.opChildConfigs;
+            }
+        }
 
         if (!workspace)
             return 'Invalid workspace.';

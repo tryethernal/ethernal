@@ -83,6 +83,28 @@ module.exports = async job => {
 
         const existingSet = new Set(existingBlocks.map(b => Number(b.number)));
 
+        // Check if workspace needs L2 configurations loaded
+        // Use model-based approach for compatibility with test mocks
+        const { OrbitChainConfig, OpChainConfig } = require('../models');
+        const [hasOrbitConfigs, hasOpConfigs] = await Promise.all([
+            OrbitChainConfig.findOne({
+                where: {
+                    [require('sequelize').Op.or]: [
+                        { workspaceId },
+                        { parentWorkspaceId: workspaceId }
+                    ]
+                },
+                attributes: ['id'],
+                limit: 1
+            }),
+            OpChainConfig.findOne({
+                where: { workspaceId },
+                attributes: ['id'],
+                limit: 1
+            })
+        ]);
+        const hasL2Configs = !!(hasOrbitConfigs || hasOpConfigs);
+
         // Cache workspace data to avoid N+1 queries in blockSync jobs
         const cachedWorkspace = {
             rpcServer: workspace.rpcServer,
@@ -92,6 +114,7 @@ module.exports = async job => {
             public: workspace.public,
             rateLimitInterval: workspace.rateLimitInterval,
             rateLimitMaxInInterval: workspace.rateLimitMaxInInterval,
+            hasL2Configs,
             explorer: workspace.explorer ? {
                 id: workspace.explorer.id,
                 shouldSync: workspace.explorer.shouldSync,
