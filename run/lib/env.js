@@ -72,5 +72,7 @@ module.exports = {
     getMailjetPublicKey: () => process.env.MAILJET_PUBLIC_KEY,
     getMailjetPrivateKey: () => process.env.MAILJET_PRIVATE_KEY,
     getMailjetSender: () => process.env.MAILJET_SENDER,
+    getGithubToken: () => process.env.GITHUB_TOKEN,
+    getDiscordCriticalWebhook: () => process.env.DISCORD_CRITICAL_WEBHOOK,
     getEnv: (env) => process.env[env]
 };

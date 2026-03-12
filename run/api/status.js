@@ -8,9 +8,85 @@
 
 const express = require('express');
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
-const { sanitize } = require('../lib/utils');
+const { sanitize, withTimeout } = require('../lib/utils');
 const router = express.Router();
 const { managedError, unmanagedError } = require('../lib/errors');
+const redis = require('../lib/redis');
+
+/**
+ * @route GET /health - Public infrastructure health endpoint
+ * Returns service statuses for external monitoring (UptimeRobot, OpsGenie heartbeat).
+ * No auth required. Returns 200 if all ok, 503 if any service is unhealthy.
+ */
+const HEALTH_CHECK_TIMEOUT = 5000;
+
+async function checkRedisHealth() {
+    try {
+        const start = Date.now();
+        await withTimeout(redis.ping(), HEALTH_CHECK_TIMEOUT);
+        const latencyMs = Date.now() - start;
+
+        let memoryPercent = null;
+        try {
+            const info = await withTimeout(redis.info('memory'), HEALTH_CHECK_TIMEOUT);
+            const usedMatch = info.match(/used_memory:(\d+)/);
+            const maxMatch = info.match(/maxmemory:(\d+)/);
+            if (usedMatch && maxMatch && parseInt(maxMatch[1]) > 0) {
+                memoryPercent = parseFloat(((parseInt(usedMatch[1]) / parseInt(maxMatch[1])) * 100).toFixed(1));
+            }
+        } catch (_) { /* memory info is best-effort */ }
+
+        return { status: 'ok', memoryPercent, latencyMs };
+    } catch (_) {
+        return { status: 'unhealthy', error: 'connectivity check failed' };
+    }
+}
+
+async function checkPostgresHealth() {
+    try {
+        const start = Date.now();
+        const { sequelize } = require('../models');
+        await withTimeout(sequelize.query('SELECT 1'), HEALTH_CHECK_TIMEOUT);
+        return { status: 'ok', latencyMs: Date.now() - start };
+    } catch (_) {
+        return { status: 'unhealthy', error: 'connectivity check failed' };
+    }
+}
+
+let cachedHealthResponse = null;
+let cachedHealthAt = 0;
+const HEALTH_CACHE_TTL_MS = 10000;
+
+router.get('/health', async (req, res) => {
+    const now = Date.now();
+    if (cachedHealthResponse && (now - cachedHealthAt) < HEALTH_CACHE_TTL_MS) {
+        return res.status(cachedHealthResponse.statusCode).json(cachedHealthResponse.body);
+    }
+
+    const [redisResult, postgresResult] = await Promise.all([
+        checkRedisHealth(),
+        checkPostgresHealth()
+    ]);
+
+    const services = {
+        redis: redisResult,
+        postgres: postgresResult,
+        api: { status: 'ok' }
+    };
+
+    let overallStatus = 'healthy';
+    if (redisResult.status === 'unhealthy' || postgresResult.status === 'unhealthy') {
+        overallStatus = 'unhealthy';
+    } else if (services.redis.memoryPercent !== null && services.redis.memoryPercent >= 80) {
+        overallStatus = 'degraded';
+    }
+
+    const statusCode = overallStatus === 'unhealthy' ? 503 : 200;
+    const body = { status: overallStatus, services, timestamp: new Date().toISOString() };
+    cachedHealthResponse = { statusCode, body };
+    cachedHealthAt = now;
+    res.status(statusCode).json(body);
+});
 
 router.get('/', workspaceAuthMiddleware, async (req, res, next) => {
     const data = req.query;

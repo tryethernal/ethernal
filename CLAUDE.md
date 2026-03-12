@@ -17,6 +17,7 @@
 | Landing/marketing | `landing/` | [LANDING.md](.claude/references/LANDING.md) |
 | Blog pipeline | `blog/pipeline/`, `.github/workflows/blog-*.yml` | |
 | Docker commands | | [COMMANDS.md](.claude/references/COMMANDS.md) |
+| Infra monitoring | `run/jobs/infraHealthCheck.js`, `run/api/status.js`, `.github/workflows/infra-auto-remediation.yml` | |
 | Env vars/flags | `run/lib/flags.js` | [ENV.md](.claude/references/ENV.md) |
 
 **Critical architectural rules:**
@@ -121,6 +122,8 @@ Always use `IF NOT EXISTS`/`IF EXISTS` for re-runnability. For tables < 1M rows,
 - Preserve existing code comments unless completely irrelevant after changes
 - Delete one-off scripts after use
 - Always use sequelize migrations, never raw SQL for schema changes
+- Use `withTimeout(promise, ms)` from `run/lib/utils` instead of inline `Promise.race` timeout patterns
+- Pin GitHub Actions to commit SHAs (not mutable tags) when secrets are in scope
 
 ## Documentation Requirements
 
