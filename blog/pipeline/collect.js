@@ -33,7 +33,11 @@ function collectProposals(repo, source) {
     { encoding: 'utf-8', timeout: 30000 }
   );
 
-  return JSON.parse(result)
+  const items = JSON.parse(result);
+  if (items.length === 50) {
+    console.warn(`  Warning: hit per_page=50 cap for ${repo} — results may be truncated`);
+  }
+  return items
     .map(item => ({ title: item.title, url: item.url, source, date: item.date, abstract: item.body }))
     .filter(item => {
       const t = item.title.toLowerCase();
