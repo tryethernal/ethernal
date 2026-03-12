@@ -144,10 +144,8 @@ const getProvider = function(url) {
 
     // WebSocketProvider expects a URL string, JsonRpcProvider expects ConnectionInfo
     if (provider === ethers.providers.WebSocketProvider) {
-        const wsUrl = rpcServer.username.length || rpcServer.password.length
-            ? rpcServer.origin
-            : url;
-        providers[url] = new provider(wsUrl);
+        // For WebSocket, always use the original URL as it can contain embedded credentials
+        providers[url] = new provider(url);
     } else {
         let connectionInfo = {
             url: rpcServer.username.length || rpcServer.password.length ?
