@@ -144,6 +144,8 @@ module.exports = async job => {
                         attributes: ['workspaceId', 'batchInboxAddress', 'beaconUrl', 'l2BlockTime', 'l2GenesisTimestamp'],
                         required: false
                     }
+                    // Note: opConfig (workspace's own OP L2 config) is intentionally not loaded here.
+                    // Only opChildConfigs is used in sync logic for OP batch transaction detection.
                 ]
             });
 
