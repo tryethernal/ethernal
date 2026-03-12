@@ -4,6 +4,48 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.41] - 2026-03-12
+### Fixed
+- Merge feature/blog-stack: 3-phase blog pipeline
+- blog: add cover images for the-shape-shifting-agent-erc-8172
+- feat(blog): 3-phase pipeline with research, draft, and humanize prompts
+- blog: remove V1 and V2 test articles, keep V3
+- fix: handle HTTP 429 rate limiting in debug_traceTransaction calls (#656)
+- blog: fix references in v3 draft (strip inline SVG)
+- blog: add draft articles from pipeline v2 and v3 tests
+- fix: resolve N+1 query regression in processBlock job (#658)
+- fix(blog): add failure() to reset step condition
+- fix(blog): pin claude-code-action to commit SHA
+- fix(blog): use git commit -F for safe title handling in publish workflow
+- fix(blog): address Greptile review round 10
+- fix(blog): address Greptile review round 9
+- docs: use check-runs API for Greptile review monitoring
+- fix(blog): check GraphQL errors in setProjectFields
+- fix(blog): address Greptile review round 7
+- fix(blog): remove Ghost/Inkwell references from remaining blog skills
+- fix(blog): remove Ghost references from blog:draft skill
+- fix(blog): check GraphQL errors in setArticlePath
+- fix(blog): address Greptile review round 6
+- fix(blog): check GraphQL errors in updateCardStatus + fix null body handling
+- feat(blog): add OG images (1200x630) and enforce description length
+- fix(blog): warn when GitHub API per_page=50 cap is hit
+- docs: comprehensive code review instructions in CLAUDE.md
+- fix(blog): address Greptile review round 4
+- docs: add reaction rule to code review instructions
+- fix(blog): pass event payload fields via env to prevent expression injection
+- fix(blog): move card to Researched before Claude run in draft.sh
+- fix(blog): address Greptile review round 3
+- fix(blog): address Greptile review round 2
+- fix(blog): address Greptile review findings
+- docs: add blog pipeline to CLAUDE.md quick reference
+- fix(blog): use OAuth token instead of API key for claude-code-action
+- refactor(blog): extract shared collectProposals helper for EIP/ERC collectors
+- feat(blog): draft directly to develop, publish via project board
+- docs: add blog pipeline section to README
+- feat(blog): add trend scanning pipeline with GitHub Projects integration
+- fix(blog): switch OG images to PNG for Twitter card support, add blog.tryethernal.com redirect
+
+
 ## [5.17.40] - 2026-03-12
 ### Fixed
 - fix: configure RPC provider timeout to prevent hanging calls (#652)
