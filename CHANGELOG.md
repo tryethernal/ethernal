@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.37] - 2026-03-12
+### Fixed
+- fix: eliminate N+1 query in blockSync L2 config loading (#638)
+- fix: eliminate N+1 database query regression in blockSync cached path (#637)
+- Blog trend scanning pipeline (#622)
+- fix: increase postgres health check timeout from 5s to 10s
+
+
 ## [5.17.36] - 2026-03-12
 ### Fixed
 - fix: add id-token:write permission to infra-auto-remediation workflow
