@@ -144,6 +144,7 @@ PRs trigger CodeAnt AI review. When checking comments:
 3. Always verify the issue exists in code before acting
 4. Challenge incorrect comments explicitly
 5. Never remove working code to satisfy a review bot
+6. **Always react to every comment** with 👍 (`+1`) if valid/fixed, or 👎 (`-1`) if incorrect — do this immediately after reading comments, and retroactively for older unreacted comments
 
 ### End-of-Session Flow
 
