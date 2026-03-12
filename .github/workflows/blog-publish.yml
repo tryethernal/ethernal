@@ -1,61 +1,92 @@
 name: Blog Publish
 
 on:
-  # Manual trigger only — projects_v2_item requires an org-level repo and was
-  # causing spurious "failed" runs on every push in this user-owned repo.
-  # To publish: trigger manually or call via workflow_dispatch from blog-draft.
+  # Fires when a project item field changes (e.g. status moved to Published)
+  projects_v2_item:
+    types: [edited]
+
+  # Manual trigger as fallback
   workflow_dispatch:
     inputs:
-      slug:
-        description: 'Article slug (e.g. evm-opcodes-101). Leave empty to publish the oldest draft.'
-        required: false
+      article_path:
+        description: 'Path to the article file (e.g. blog/src/content/blog/my-article.md)'
+        required: true
         type: string
 
 permissions:
   contents: write
+  repository-projects: read
 
 jobs:
   publish:
     runs-on: ubuntu-latest
+    # Only run for Blog project (#1 = PVT_kwDOBLpTN84BRc80) status changes, or manual dispatch
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.projects_v2_item.project_node_id == 'PVT_kwDOBLpTN84BRc80' &&
+       github.event.projects_v2_item.content_type == 'DraftIssue' &&
+       github.event.changes.field_value.field_name == 'Status')
     steps:
       - uses: actions/checkout@v4
         with:
           ref: develop
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Resolve article
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install pipeline dependencies
+        working-directory: blog/pipeline
+        run: npm ci
+
+      - name: Resolve article path
         id: resolve
+        working-directory: blog/pipeline
         env:
-          SLUG: ${{ inputs.slug }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ITEM_ID: ${{ github.event.projects_v2_item.node_id }}
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_ARTICLE_PATH: ${{ inputs.article_path }}
+          NEW_STATUS_ID: ${{ github.event.changes.field_value.to.singleSelectOptionId }}
         run: |
-          if [ -n "$SLUG" ]; then
-            # Find by slug
-            ARTICLE="blog/src/content/blog/${SLUG}.md"
-            if [ ! -f "$ARTICLE" ]; then
-              ARTICLE="blog/src/content/blog/${SLUG}.mdx"
-            fi
-            if [ ! -f "$ARTICLE" ]; then
-              echo "ERROR: No article found for slug: $SLUG"
-              echo "Available articles:"
-              ls blog/src/content/blog/
-              exit 1
-            fi
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            echo "article_path=$INPUT_ARTICLE_PATH" >> $GITHUB_OUTPUT
+            echo "should_publish=true" >> $GITHUB_OUTPUT
           else
-            # Find oldest draft article (by git commit date)
-            ARTICLE=$(grep -rl 'status: draft' blog/src/content/blog/ | head -1)
-            if [ -z "$ARTICLE" ]; then
-              echo "No draft articles found. Nothing to publish."
+            # Check if the new status is "Published" (option ID: 98236657)
+            if [ "$NEW_STATUS_ID" != "98236657" ]; then
+              echo "Status changed but not to Published (got: $NEW_STATUS_ID). Skipping."
+              echo "should_publish=false" >> $GITHUB_OUTPUT
               exit 0
             fi
+
+            # Get the article path from the project item
+            ARTICLE_PATH=$(node --input-type=module -e "
+              import { getProjectItems } from './project.js';
+              const items = getProjectItems();
+              const item = items.find(i => i.id === process.env.ITEM_ID);
+              if (item && item.articlePath) {
+                console.log(item.articlePath);
+              } else {
+                console.error('No article path found for item ' + process.env.ITEM_ID);
+                process.exit(1);
+              }
+            ")
+            echo "article_path=$ARTICLE_PATH" >> $GITHUB_OUTPUT
+            echo "should_publish=true" >> $GITHUB_OUTPUT
           fi
-          echo "article=$ARTICLE" >> $GITHUB_OUTPUT
-          echo "Publishing: $ARTICLE"
 
       - name: Publish article
-        if: steps.resolve.outputs.article != ''
+        if: steps.resolve.outputs.should_publish == 'true'
         env:
-          ARTICLE: ${{ steps.resolve.outputs.article }}
+          ARTICLE: ${{ steps.resolve.outputs.article_path }}
         run: |
+          if [ ! -f "$ARTICLE" ]; then
+            echo "ERROR: Article not found: $ARTICLE"
+            exit 1
+          fi
+
           # Update status: draft → published in frontmatter only (between --- delimiters)
           # Use awk to check frontmatter only (not article body which may contain 'status: draft' in code examples)
           if awk 'BEGIN{c=0} /^---$/{c++} c==1 && /status: draft/{found=1} END{exit !found}' "$ARTICLE"; then
