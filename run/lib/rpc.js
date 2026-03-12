@@ -142,15 +142,26 @@ const getProvider = function(url) {
         provider = ethers.providers.WebSocketProvider;
     }
 
-    let authenticatedUrl = url;
-    if (rpcServer.username.length || rpcServer.password.length)
-        authenticatedUrl = {
-            url: rpcServer.origin,
-            user: rpcServer.username,
-            password: rpcServer.password
+    // WebSocketProvider expects a URL string, JsonRpcProvider expects ConnectionInfo
+    if (provider === ethers.providers.WebSocketProvider) {
+        // For WebSocket, always use the original URL as it can contain embedded credentials
+        providers[url] = new provider(url);
+    } else {
+        let connectionInfo = {
+            url: rpcServer.username.length || rpcServer.password.length ?
+                rpcServer.origin : url,
+            timeout: 8000, // Set RPC timeout to 8 seconds (less than withTimeout default)
+            throttleLimit: 1 // Fail fast on rate limiting instead of retrying silently
         };
 
-    providers[url] = new provider(authenticatedUrl);
+        // Add authentication if present
+        if (rpcServer.username.length || rpcServer.password.length) {
+            connectionInfo.user = rpcServer.username;
+            connectionInfo.password = rpcServer.password;
+        }
+
+        providers[url] = new provider(connectionInfo);
+    }
     return providers[url];
 };
 
