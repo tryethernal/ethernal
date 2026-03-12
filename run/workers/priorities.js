@@ -57,7 +57,8 @@ const priorities = {
         'backfillOpBatchBlockRanges',
         'backfillOpDeposits',
         'backfillOpOutputs',
-        'syncRecoveryCheck'
+        'syncRecoveryCheck',
+        'infraHealthCheck'
     ]
 }
 

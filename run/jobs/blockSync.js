@@ -68,93 +68,45 @@ module.exports = async job => {
             }
         }
 
-        // Fetch minimal workspace instance for Sequelize model methods, without expensive JOINs
-        // Associations are already validated via cached data, eliminating N+1 query pattern
-        workspace = await Workspace.findByPk(data.workspaceId, {
-            attributes: ['id', 'name', 'rpcServer', 'browserSyncEnabled', 'isCustomL1Parent', 'rpcHealthCheckEnabled', 'public', 'rateLimitInterval', 'rateLimitMaxInInterval']
-        });
+        // Create Sequelize instance from cached data to avoid N+1 query
+        workspace = Workspace.build({
+            id: data.workspaceId,
+            rpcServer: data.cachedWorkspace.rpcServer,
+            browserSyncEnabled: data.cachedWorkspace.browserSyncEnabled,
+            isCustomL1Parent: data.cachedWorkspace.isCustomL1Parent,
+            rpcHealthCheckEnabled: data.cachedWorkspace.rpcHealthCheckEnabled,
+            public: data.cachedWorkspace.public,
+            rateLimitInterval: data.cachedWorkspace.rateLimitInterval,
+            rateLimitMaxInInterval: data.cachedWorkspace.rateLimitMaxInInterval
+        }, { isNewRecord: false });
 
-        if (!workspace) {
-            return 'Invalid workspace.';
-        }
-
-        // Manually attach cached association data to maintain compatibility with existing code
-        workspace.explorer = data.cachedWorkspace.explorer;
-        workspace.rpcHealthCheck = data.cachedWorkspace.rpcHealthCheck;
-        workspace.integrityCheck = data.cachedWorkspace.integrityCheck;
-
-        // Load L2 configs (orbit/OP) only if needed, since they're not included in cached data
-        const needsL2Configs = data.cachedWorkspace.hasL2Configs || false;
-        if (needsL2Configs) {
-            const l2ConfigWorkspace = await Workspace.findByPk(data.workspaceId, {
-                attributes: ['id'],
-                include: [
-                    {
-                        model: require('../models').OrbitChainConfig,
-                        as: 'orbitConfig',
-                        attributes: [
-                            'rollupContract',
-                            'sequencerInboxContract',
-                            'bridgeContract',
-                            'inboxContract',
-                            'outboxContract',
-                            'stakeToken',
-                            'l1GatewayRouter',
-                            'l1Erc20Gateway',
-                            'l1WethGateway',
-                            'l1CustomGateway',
-                            'l2GatewayRouter',
-                            'l2Erc20Gateway',
-                            'l2WethGateway',
-                            'l2CustomGateway'
-                        ],
-                        include: {
-                            model: require('../models').Workspace,
-                            as: 'parentWorkspace',
-                            attributes: ['id', 'rpcServer'],
-                            required: false
-                        },
-                        required: false
-                    },
-                    {
-                        model: require('../models').OrbitChainConfig,
-                        as: 'orbitChildConfigs',
-                        attributes: [
-                            'workspaceId',
-                            'rollupContract',
-                            'sequencerInboxContract',
-                            'bridgeContract',
-                            'inboxContract',
-                            'outboxContract',
-                            'stakeToken',
-                            'l1GatewayRouter',
-                            'l1Erc20Gateway',
-                            'l1WethGateway',
-                            'l1CustomGateway',
-                            'l2GatewayRouter',
-                            'l2Erc20Gateway',
-                            'l2WethGateway',
-                            'l2CustomGateway'
-                        ],
-                        required: false
-                    },
-                    {
-                        model: require('../models').OpChainConfig,
-                        as: 'opChildConfigs',
-                        attributes: ['workspaceId', 'batchInboxAddress', 'beaconUrl', 'l2BlockTime', 'l2GenesisTimestamp'],
-                        required: false
-                    }
-                    // Note: opConfig (workspace's own OP L2 config) is intentionally not loaded here.
-                    // Only opChildConfigs is used in sync logic for OP batch transaction detection.
-                ]
-            });
-
-            if (l2ConfigWorkspace) {
-                workspace.orbitConfig = l2ConfigWorkspace.orbitConfig;
-                workspace.orbitChildConfigs = l2ConfigWorkspace.orbitChildConfigs;
-                workspace.opChildConfigs = l2ConfigWorkspace.opChildConfigs;
+        // Set up associations from cached data
+        if (data.cachedWorkspace.explorer) {
+            workspace.explorer = Explorer.build(data.cachedWorkspace.explorer, { isNewRecord: false });
+            if (data.cachedWorkspace.explorer.stripeSubscription) {
+                workspace.explorer.stripeSubscription = StripeSubscription.build(
+                    data.cachedWorkspace.explorer.stripeSubscription,
+                    { isNewRecord: false }
+                );
             }
         }
+
+        if (data.cachedWorkspace.rpcHealthCheck) {
+            workspace.rpcHealthCheck = RpcHealthCheck.build(
+                data.cachedWorkspace.rpcHealthCheck,
+                { isNewRecord: false }
+            );
+        }
+
+        if (data.cachedWorkspace.integrityCheck) {
+            workspace.integrityCheck = IntegrityCheck.build(
+                data.cachedWorkspace.integrityCheck,
+                { isNewRecord: false }
+            );
+        }
+
+        // L2 configs are not cached in batchBlockSync since they're rarely used
+        // They will be loaded on-demand if needed for orbit/OP processing
 
         // Disable browser sync to prevent concurrent syncing from both browser and server
         if (workspace.browserSyncEnabled)
@@ -454,7 +406,77 @@ module.exports = async job => {
             Object.keys(Block.rawAttributes).concat(['transactions'])
         );
 
-        // L2 configs are now loaded in the main query above
+        // Load L2 configs on-demand if using cached workspace and workspace has L2 configs
+        // Defensive guard: treat undefined hasL2Configs as true for old in-flight jobs
+        if (hasCachedWorkspace && (data.cachedWorkspace.hasL2Configs === undefined || data.cachedWorkspace.hasL2Configs)) {
+            const l2Configs = await Workspace.findByPk(data.workspaceId, {
+                attributes: ['id'],
+                include: [
+                    {
+                        model: require('../models').OrbitChainConfig,
+                        as: 'orbitConfig',
+                        attributes: [
+                            'rollupContract',
+                            'sequencerInboxContract',
+                            'bridgeContract',
+                            'inboxContract',
+                            'outboxContract',
+                            'stakeToken',
+                            'l1GatewayRouter',
+                            'l1Erc20Gateway',
+                            'l1WethGateway',
+                            'l1CustomGateway',
+                            'l2GatewayRouter',
+                            'l2Erc20Gateway',
+                            'l2WethGateway',
+                            'l2CustomGateway'
+                        ],
+                        required: false,
+                        include: {
+                            model: require('../models').Workspace,
+                            as: 'parentWorkspace',
+                            attributes: ['id', 'rpcServer'],
+                            required: false
+                        }
+                    },
+                    {
+                        model: require('../models').OrbitChainConfig,
+                        as: 'orbitChildConfigs',
+                        attributes: [
+                            'workspaceId',
+                            'rollupContract',
+                            'sequencerInboxContract',
+                            'bridgeContract',
+                            'inboxContract',
+                            'outboxContract',
+                            'stakeToken',
+                            'l1GatewayRouter',
+                            'l1Erc20Gateway',
+                            'l1WethGateway',
+                            'l1CustomGateway',
+                            'l2GatewayRouter',
+                            'l2Erc20Gateway',
+                            'l2WethGateway',
+                            'l2CustomGateway'
+                        ],
+                        required: false
+                    },
+                    {
+                        model: require('../models').OpChainConfig,
+                        as: 'opChildConfigs',
+                        attributes: ['workspaceId', 'batchInboxAddress', 'beaconUrl', 'l2BlockTime', 'l2GenesisTimestamp'],
+                        required: false
+                    }
+                ]
+            });
+
+            if (l2Configs) {
+                workspace.orbitConfig = l2Configs.orbitConfig;
+                workspace.orbitChildConfigs = l2Configs.orbitChildConfigs;
+                workspace.opChildConfigs = l2Configs.opChildConfigs;
+            }
+        }
+
         let orbitChildConfigs = workspace.orbitChildConfigs || [];
 
         if (workspace.orbitConfig || orbitChildConfigs.length > 0) {
@@ -518,7 +540,7 @@ module.exports = async job => {
         // OP Stack batch detection - enqueue as separate jobs to avoid blocking sync
         let opChildConfigs = workspace.opChildConfigs || [];
 
-        // OP configs are now loaded in the main query above
+        // L2 configs are loaded on-demand above when using cached workspace
 
         if (opChildConfigs.length > 0) {
             const l1Timestamp = typeof processedBlock.timestamp === 'string' && processedBlock.timestamp.startsWith('0x')
