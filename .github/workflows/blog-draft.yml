@@ -74,7 +74,7 @@ jobs:
       - name: Research and draft
         id: draft
         if: steps.pick.outputs.skip != 'true'
-        uses: anthropics/claude-code-action@v1
+        uses: anthropics/claude-code-action@9469d113c6afd29550c402740f22d1a97dd1209b # v1
         with:
           prompt: |
             You are writing a blog article for the Ethernal blog (On-Chain Engineering).
