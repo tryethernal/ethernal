@@ -3,6 +3,8 @@ name: Blog Draft (Every 2 Days)
 on:
   schedule:
     # Every 2 days at 8am UTC (odd days: 1st, 3rd, 5th...)
+    # NOTE: 1-31/2 fires on consecutive days at month boundaries (31st then 1st).
+    # The pipeline is idempotent (skips if no Detected cards), so extra runs are harmless.
     - cron: '0 8 1-31/2 * *'
   workflow_dispatch: # Manual trigger
 

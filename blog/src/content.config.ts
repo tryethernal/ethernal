@@ -12,7 +12,7 @@ const blog = defineCollection({
     image: z.string().optional(),
     ogImage: z.string().optional(),
     readingTime: z.number().optional(),
-    status: z.enum(['draft', 'published']).default('published'),
+    status: z.enum(['draft', 'published']).default('draft'),
   }),
 });
 

@@ -99,7 +99,7 @@ export function getProjectItems() {
     }));
   } catch (err) {
     console.error('Failed to fetch project items:', err.message);
-    return [];
+    throw new Error(`getProjectItems failed: ${err.message}`);
   }
 }
 
