@@ -55,6 +55,13 @@ CARD_BODY=$(echo "$PICKED" | jq -r '.body // ""')
 
 log "Topic: $TOPIC (card: $CARD_ID, type: $CONTENT_TYPE)"
 
+# Move card to Researched before Claude run to block duplicate picks
+CARD_ID="$CARD_ID" node --input-type=module -e "
+  import { updateCardStatus } from './project.js';
+  updateCardStatus(process.env.CARD_ID, 'researched');
+  console.log('Card moved to Researched');
+" 2>&1 | tee -a "$LOG_FILE"
+
 cd "$REPO_DIR"
 
 # Research + Draft phase
