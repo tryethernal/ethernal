@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
 # Blog draft automation — runs on Hetzner via systemd timer
-# Picks the top trending topic, researches, drafts, and commits directly to develop
+# Three-phase pipeline: research → draft → humanize
+# Each phase is a separate Claude call with focused instructions
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
-ENV_FILE="${BLOG_PIPELINE_ENV:-/opt/blog-pipeline.env}"
+ENV_FILE="/opt/blog-pipeline.env"
 MCP_CONFIG="$SCRIPT_DIR/mcp.json"
+PROMPTS_DIR="$SCRIPT_DIR/prompts"
 LOG_DIR="/var/log/blog-pipeline"
-MAX_BUDGET=10
 
 mkdir -p "$LOG_DIR"
 LOG_FILE="$LOG_DIR/draft-$(date +%Y%m%d-%H%M%S).log"
@@ -64,85 +65,27 @@ CARD_ID="$CARD_ID" node --input-type=module -e "
 
 cd "$REPO_DIR"
 
-# Research + Draft phase
-# Claude writes the article with status: draft in frontmatter,
-# commits directly to develop, and outputs the article path
-log "Starting research and draft..."
-
-# Write prompt to temp file to avoid heredoc delimiter injection via $CARD_BODY
-PROMPT_FILE=$(mktemp)
-cat > "$PROMPT_FILE" <<'CLAUDE_PROMPT_EOF'
-You are an autonomous blog writer for the Ethernal blog (On-Chain Engineering).
-You MUST complete all steps without asking for confirmation. Do NOT stop to ask questions or present outlines for approval. Execute everything end-to-end.
-
-Read `blog/pipeline/.card-body.md` for the topic and sources to research.
-
-## Phase 1: Research
-
-1. Read `.agents/product-marketing-context.md` for product messaging context.
-2. Read 2-3 existing articles in `blog/src/content/blog/` to match tone (practical, tutorial-like, direct, slightly informal).
-3. Use WebSearch and WebFetch to research the specific EIPs, ERCs, papers, and forum posts listed in the card body. For each source, extract core concepts, code examples, and key facts.
-
-## Phase 2: Write
-
-4. Write the article (1200-1800 words). Use the Content Type from the card to determine format:
-   - "ERC Tutorial": Code-heavy, working Solidity, deploy instructions, practical examples
-   - "EIP Explainer": What it changes, why it matters, before/after code examples
-   - "Research Deep Dive": Break down proposals, extract practical insights, code snippets
-   - "Upgrade Guide": Step-by-step migration with code changes
-   - "Trend Survey": Survey related proposals, compare approaches, interface examples
-5. Structure: hook, context, problem, solution, Ethernal angle (natural, not forced), CTA.
-6. Include code snippets with language-tagged blocks where relevant.
-7. Add a References footer section with numbered links to all cited sources (EIPs, docs, papers).
-8. Zero em dashes. Use commas, periods, colons, or parentheses instead.
-9. Quote recognized Ethereum figures where relevant (Vitalik, core devs, auditors, protocol authors).
-
-## Phase 3: Save and Publish
-
-10. Save to `blog/src/content/blog/<slug>.md` with this frontmatter:
-    ```yaml
-    ---
-    title: "Article Title"
-    description: "110-160 chars. Concise summary for SEO."
-    date: YYYY-MM-DD
-    tags:
-      - Tag1
-      - Tag2
-    image: "/blog/images/<slug>.png"
-    ogImage: "/blog/images/<slug>-og.png"
-    status: draft
-    readingTime: N
-    ---
-    ```
-    description MUST be 110-160 characters (Zod enforced max 160).
-
-11. Skip image generation (will be done separately).
-
-12. Commit: `git add blog/src/content/blog/<slug>.md && git commit -m "blog: add draft — <title>"`
-13. Push: `git push origin develop`
-14. Output the file path on a line: `::article-path::blog/src/content/blog/<slug>.md`
-
-IMPORTANT: Do NOT ask for confirmation at any step. Complete everything autonomously.
-CLAUDE_PROMPT_EOF
-
 # Write card body to file for Claude to read (avoids shell interpolation)
 printf '**Topic:** %s\n**Content Type:** %s\n\n%s' "$TOPIC" "$CONTENT_TYPE" "$CARD_BODY" > blog/pipeline/.card-body.md
 
-CLAUDE_OUTPUT=$(claude -p "$(cat "$PROMPT_FILE")" \
+# Clean up any previous research notes
+rm -f blog/pipeline/.research-notes.md
+
+# ============================================================
+# PHASE 1: Research
+# ============================================================
+log "Phase 1: Research..."
+
+PHASE1_OUTPUT=$(claude -p "$(cat "$PROMPTS_DIR/1-research.md")" \
   --dangerously-skip-permissions \
   --mcp-config "$MCP_CONFIG" \
-  --max-turns 50 \
-  --max-budget-usd "$MAX_BUDGET" \
+  --max-turns 30 \
   2>&1)
-rm -f "$PROMPT_FILE"
 
-echo "$CLAUDE_OUTPUT" | tee -a "$LOG_FILE"
+echo "$PHASE1_OUTPUT" | tee -a "$LOG_FILE"
 
-# Extract article path from Claude output
-ARTICLE_PATH=$(echo "$CLAUDE_OUTPUT" | grep '::article-path::' | sed 's/::article-path:://' | head -1)
-
-if [ -z "$ARTICLE_PATH" ]; then
-  log "WARNING: Could not extract article path — resetting card to Detected"
+if [ ! -f blog/pipeline/.research-notes.md ]; then
+  log "ERROR: Phase 1 failed — no research notes produced"
   cd blog/pipeline
   CARD_ID="$CARD_ID" node --input-type=module -e "
     import { updateCardStatus } from './project.js';
@@ -152,24 +95,88 @@ if [ -z "$ARTICLE_PATH" ]; then
   exit 1
 fi
 
-if [ -n "$ARTICLE_PATH" ]; then
-  log "Article path: $ARTICLE_PATH"
+log "Phase 1 complete. Research notes saved."
 
-  # Derive the blog URL slug from the file path
-  # e.g. blog/src/content/blog/my-article.md → my-article
-  SLUG=$(basename "$ARTICLE_PATH" .md)
-  SLUG=$(basename "$SLUG" .mdx)
-  ARTICLE_URL="https://tryethernal.com/blog/$SLUG"
+# ============================================================
+# PHASE 2: Draft
+# ============================================================
+log "Phase 2: Draft..."
 
-  # Update the project card: set article path, move to Drafting
-  log "Updating project card..."
+PHASE2_OUTPUT=$(claude -p "$(cat "$PROMPTS_DIR/2-draft.md")" \
+  --dangerously-skip-permissions \
+  --max-turns 20 \
+  2>&1)
+
+echo "$PHASE2_OUTPUT" | tee -a "$LOG_FILE"
+
+# Extract article path
+ARTICLE_PATH=$(echo "$PHASE2_OUTPUT" | grep '::article-path::' | sed 's/::article-path:://' | head -1)
+
+if [ -z "$ARTICLE_PATH" ] || [ ! -f "$ARTICLE_PATH" ]; then
+  log "ERROR: Phase 2 failed — no article produced"
   cd blog/pipeline
-  CARD_ID="$CARD_ID" ARTICLE_PATH="$ARTICLE_PATH" node --input-type=module -e "
-    import { updateCardStatus, setArticlePath } from './project.js';
-    updateCardStatus(process.env.CARD_ID, 'drafting');
-    setArticlePath(process.env.CARD_ID, process.env.ARTICLE_PATH);
-    console.log('Card updated: Drafting + article path set');
+  CARD_ID="$CARD_ID" node --input-type=module -e "
+    import { updateCardStatus } from './project.js';
+    updateCardStatus(process.env.CARD_ID, 'detected');
+    console.log('Card reset to Detected');
   " 2>&1 | tee -a "$LOG_FILE"
-
-  log "Done. Article deployed as draft: $ARTICLE_URL"
+  exit 1
 fi
+
+log "Phase 2 complete. Article: $ARTICLE_PATH"
+
+# ============================================================
+# PHASE 3: Humanize + Polish
+# ============================================================
+log "Phase 3: Humanize..."
+
+PHASE3_OUTPUT=$(claude -p "Polish the article at $ARTICLE_PATH. $(cat "$PROMPTS_DIR/3-humanize.md")" \
+  --dangerously-skip-permissions \
+  --max-turns 10 \
+  2>&1)
+
+echo "$PHASE3_OUTPUT" | tee -a "$LOG_FILE"
+
+# Hard safety net: sed out any remaining em dashes
+if grep -q '—' "$ARTICLE_PATH"; then
+  log "WARNING: Em dashes survived humanizer — stripping with sed"
+  sed -i 's/—/,/g' "$ARTICLE_PATH"
+fi
+
+log "Phase 3 complete."
+
+# ============================================================
+# Commit, push, and update card
+# ============================================================
+SLUG=$(basename "$ARTICLE_PATH" .md)
+SLUG=$(basename "$SLUG" .mdx)
+ARTICLE_URL="https://tryethernal.com/blog/$SLUG"
+
+# Generate cover image
+log "Generating cover image..."
+IMG_PROMPT="Clean flat diagram on dark navy background (#0f172a). Topic: ${TOPIC}. Developer aesthetic, diagrammatic with text labels, 2-4 elements max, centered, lots of whitespace. NOT futuristic or glowy. Minimal, professional."
+"$SCRIPT_DIR/generate-cover.sh" "$SLUG" "$IMG_PROMPT" 2>&1 | tee -a "$LOG_FILE" || log "WARNING: Cover image generation failed"
+
+# Commit everything
+git add "$ARTICLE_PATH"
+[ -f "blog/public/images/${SLUG}.png" ] && git add "blog/public/images/${SLUG}.png" "blog/public/images/${SLUG}-og.png"
+TITLE=$(head -5 "$ARTICLE_PATH" | grep '^title:' | sed 's/^title: *"//;s/"$//')
+git commit -m "blog: add draft - ${TITLE}" 2>&1 | tee -a "$LOG_FILE"
+git push origin develop 2>&1 | tee -a "$LOG_FILE"
+
+log "Pushed to develop."
+
+# Update the project card
+log "Updating project card..."
+cd blog/pipeline
+CARD_ID="$CARD_ID" ARTICLE_PATH="$ARTICLE_PATH" node --input-type=module -e "
+  import { updateCardStatus, setArticlePath } from './project.js';
+  updateCardStatus(process.env.CARD_ID, 'drafting');
+  setArticlePath(process.env.CARD_ID, process.env.ARTICLE_PATH);
+  console.log('Card updated: Drafting + article path set');
+" 2>&1 | tee -a "$LOG_FILE"
+
+# Clean up temp files
+rm -f blog/pipeline/.research-notes.md blog/pipeline/.card-body.md
+
+log "Done. Article deployed as draft: $ARTICLE_URL"
