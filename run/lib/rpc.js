@@ -450,6 +450,17 @@ class Tracer {
     }
 
     #handleError(error) {
+        // Handle HTTP 429 (Too Many Requests) as a retryable rate limiting error
+        if (error.status === 429 ||
+            (error.message && error.message.includes('failed response')) &&
+            error.url && error.url.includes('hyperliquid-testnet')) {
+            return this.error = {
+                message: 'Rate limited by RPC provider',
+                code: 'RATE_LIMITED',
+                error: error
+            };
+        }
+
         if (error.status >= 400)
             return this.error = {
                 message: `Http status code ${error.status}`,
