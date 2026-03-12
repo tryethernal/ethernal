@@ -52,6 +52,19 @@ jobs:
             echo "$CARD_BODY" > "$GITHUB_WORKSPACE/blog/pipeline/.card-body.md"
           fi
 
+      - name: Move card to Researched
+        if: steps.pick.outputs.skip != 'true'
+        working-directory: blog/pipeline
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CARD_ID: ${{ steps.pick.outputs.card_id }}
+        run: |
+          node --input-type=module -e "
+            import { updateCardStatus } from './project.js';
+            updateCardStatus(process.env.CARD_ID, 'researched');
+            console.log('Card moved to Researched');
+          "
+
       - name: Research and draft
         if: steps.pick.outputs.skip != 'true'
         uses: anthropics/claude-code-action@v1
@@ -103,3 +116,16 @@ jobs:
           else
             echo "WARNING: Could not find article path in last commit"
           fi
+
+      - name: Reset card on failure
+        if: failure() && steps.pick.outputs.skip != 'true'
+        working-directory: blog/pipeline
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CARD_ID: ${{ steps.pick.outputs.card_id }}
+        run: |
+          node --input-type=module -e "
+            import { updateCardStatus } from './project.js';
+            updateCardStatus(process.env.CARD_ID, 'detected');
+            console.log('Card reset to Detected after failure');
+          "
