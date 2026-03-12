@@ -400,7 +400,8 @@ module.exports = async job => {
         );
 
         // Load L2 configs on-demand if using cached workspace and workspace has L2 configs
-        if (hasCachedWorkspace && data.cachedWorkspace.hasL2Config) {
+        // Defensive guard: treat undefined hasL2Config as true for old in-flight jobs
+        if (hasCachedWorkspace && (data.cachedWorkspace.hasL2Config === undefined || data.cachedWorkspace.hasL2Config)) {
             const l2Configs = await Workspace.findByPk(data.workspaceId, {
                 attributes: ['id'],
                 include: [
