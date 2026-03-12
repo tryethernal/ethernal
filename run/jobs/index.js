@@ -62,5 +62,6 @@ module.exports = {
     backfillNativeTokenTransfers: require('./backfillNativeTokenTransfers'),
     backfillOpBatchBlockRanges: require('./backfillOpBatchBlockRanges'),
     backfillOpDeposits: require('./backfillOpDeposits'),
-    backfillOpOutputs: require('./backfillOpOutputs')
+    backfillOpOutputs: require('./backfillOpOutputs'),
+    infraHealthCheck: require('./infraHealthCheck')
 };

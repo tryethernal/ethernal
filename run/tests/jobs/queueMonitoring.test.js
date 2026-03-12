@@ -14,19 +14,23 @@ jest.mock('bullmq', () => ({
         getDelayedCount: (...args) => mockGetDelayedCount(...args),
         getFailedCount: (...args) => mockGetFailedCount(...args),
         getFailed: (...args) => mockGetFailed(...args),
+        getJob: jest.fn().mockResolvedValue(null),
     }))
 }));
 
 jest.mock('../../lib/redis', () => ({
     zcard: jest.fn().mockResolvedValue(0),
     unlink: jest.fn().mockResolvedValue(1),
+    zrevrange: jest.fn().mockResolvedValue([]),
     pipeline: jest.fn().mockReturnValue({
         zcard: jest.fn().mockReturnThis(),
         unlink: jest.fn().mockReturnThis(),
+        zrevrange: jest.fn().mockReturnThis(),
+        llen: jest.fn().mockReturnThis(),
         exec: jest.fn().mockResolvedValue([
-            [null, 0], // Mock result for zcard operations - [error, result] format
-            [null, 0],
-            [null, 0]
+            [null, 0],  // Mock result for zcard (legacy key count)
+            [null, 0],  // Mock result for zcard (legacy key count)
+            [null, 0]   // Mock result for zcard (legacy key count)
         ])
     })
 }));

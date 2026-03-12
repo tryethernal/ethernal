@@ -7,7 +7,7 @@
  */
 
 const { enqueue, bulkEnqueue } = require('../lib/queue');
-const { Workspace, Explorer, StripeSubscription, RpcHealthCheck, Block } = require('../models');
+const { Workspace, Explorer, StripeSubscription, RpcHealthCheck, Block, OrbitChainConfig, OpChainConfig } = require('../models');
 const { Op } = require('sequelize');
 const logger = require('../lib/logger');
 
@@ -48,6 +48,11 @@ module.exports = async job => {
                     model: RpcHealthCheck,
                     as: 'rpcHealthCheck',
                     attributes: ['id', 'isReachable']
+                },
+                {
+                    model: require('../models').IntegrityCheck,
+                    as: 'integrityCheck',
+                    attributes: ['id', 'isHealthy', 'isRecovering']
                 }
             ]
         });
@@ -83,6 +88,32 @@ module.exports = async job => {
 
         const existingSet = new Set(existingBlocks.map(b => Number(b.number)));
 
+        // Check if workspace needs L2 configurations loaded
+        // Use model-based approach for compatibility with test mocks
+        const [hasOrbitConfigs, hasOpConfigs] = await Promise.all([
+            OrbitChainConfig.findOne({
+                where: {
+                    [Op.or]: [
+                        { workspaceId },
+                        { parentWorkspaceId: workspaceId }
+                    ]
+                },
+                attributes: ['id'],
+                limit: 1
+            }),
+            OpChainConfig.findOne({
+                where: {
+                    [Op.or]: [
+                        { workspaceId },
+                        { parentWorkspaceId: workspaceId }
+                    ]
+                },
+                attributes: ['id'],
+                limit: 1
+            })
+        ]);
+        const hasL2Configs = !!(hasOrbitConfigs || hasOpConfigs);
+
         // Cache workspace data to avoid N+1 queries in blockSync jobs
         const cachedWorkspace = {
             rpcServer: workspace.rpcServer,
@@ -92,6 +123,7 @@ module.exports = async job => {
             public: workspace.public,
             rateLimitInterval: workspace.rateLimitInterval,
             rateLimitMaxInInterval: workspace.rateLimitMaxInInterval,
+            hasL2Configs,
             explorer: workspace.explorer ? {
                 id: workspace.explorer.id,
                 shouldSync: workspace.explorer.shouldSync,
@@ -102,6 +134,11 @@ module.exports = async job => {
             rpcHealthCheck: workspace.rpcHealthCheck ? {
                 id: workspace.rpcHealthCheck.id,
                 isReachable: workspace.rpcHealthCheck.isReachable
+            } : null,
+            integrityCheck: workspace.integrityCheck ? {
+                id: workspace.integrityCheck.id,
+                isHealthy: workspace.integrityCheck.isHealthy,
+                isRecovering: workspace.integrityCheck.isRecovering
             } : null
         };
 
