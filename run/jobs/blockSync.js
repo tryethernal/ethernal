@@ -409,32 +409,110 @@ module.exports = async job => {
         // Use cached L2 configs to avoid N+1 queries
         // Defensive guard: treat undefined hasL2Configs as true for old in-flight jobs
         if (hasCachedWorkspace && (data.cachedWorkspace.hasL2Configs === undefined || data.cachedWorkspace.hasL2Configs)) {
-            // Use cached L2 configs from batchBlockSync instead of querying database
-            if (data.cachedWorkspace.orbitConfig) {
-                workspace.orbitConfig = require('../models').OrbitChainConfig.build(
-                    data.cachedWorkspace.orbitConfig,
-                    { isNewRecord: false }
-                );
+            // Detect jobs from the intermediate batchBlockSync version that set
+            // hasL2Configs but didn't include the actual config objects yet
+            const hasCachedL2Data = !!(
+                data.cachedWorkspace.orbitConfig !== undefined ||
+                data.cachedWorkspace.orbitChildConfigs !== undefined ||
+                data.cachedWorkspace.opChildConfigs !== undefined
+            );
 
-                // Set up parentWorkspace if available in cached data
-                if (data.cachedWorkspace.orbitConfig.parentWorkspace) {
-                    workspace.orbitConfig.parentWorkspace = Workspace.build(
-                        data.cachedWorkspace.orbitConfig.parentWorkspace,
+            if (hasCachedL2Data) {
+                // Use cached L2 configs from batchBlockSync instead of querying database
+                if (data.cachedWorkspace.orbitConfig) {
+                    workspace.orbitConfig = require('../models').OrbitChainConfig.build(
+                        data.cachedWorkspace.orbitConfig,
                         { isNewRecord: false }
                     );
+
+                    // Set up parentWorkspace if available in cached data
+                    if (data.cachedWorkspace.orbitConfig.parentWorkspace) {
+                        workspace.orbitConfig.parentWorkspace = Workspace.build(
+                            data.cachedWorkspace.orbitConfig.parentWorkspace,
+                            { isNewRecord: false }
+                        );
+                    }
                 }
-            }
 
-            if (data.cachedWorkspace.orbitChildConfigs) {
-                workspace.orbitChildConfigs = data.cachedWorkspace.orbitChildConfigs.map(config =>
-                    require('../models').OrbitChainConfig.build(config, { isNewRecord: false })
-                );
-            }
+                if (data.cachedWorkspace.orbitChildConfigs) {
+                    workspace.orbitChildConfigs = data.cachedWorkspace.orbitChildConfigs.map(config =>
+                        require('../models').OrbitChainConfig.build(config, { isNewRecord: false })
+                    );
+                }
 
-            if (data.cachedWorkspace.opChildConfigs) {
-                workspace.opChildConfigs = data.cachedWorkspace.opChildConfigs.map(config =>
-                    OpChainConfig.build(config, { isNewRecord: false })
-                );
+                if (data.cachedWorkspace.opChildConfigs) {
+                    workspace.opChildConfigs = data.cachedWorkspace.opChildConfigs.map(config =>
+                        OpChainConfig.build(config, { isNewRecord: false })
+                    );
+                }
+            } else {
+                // Old in-flight job without cached L2 data — fall back to DB
+                const l2Configs = await Workspace.findByPk(data.workspaceId, {
+                    attributes: ['id'],
+                    include: [
+                        {
+                            model: require('../models').OrbitChainConfig,
+                            as: 'orbitConfig',
+                            attributes: [
+                                'rollupContract',
+                                'sequencerInboxContract',
+                                'bridgeContract',
+                                'inboxContract',
+                                'outboxContract',
+                                'stakeToken',
+                                'l1GatewayRouter',
+                                'l1Erc20Gateway',
+                                'l1WethGateway',
+                                'l1CustomGateway',
+                                'l2GatewayRouter',
+                                'l2Erc20Gateway',
+                                'l2WethGateway',
+                                'l2CustomGateway'
+                            ],
+                            required: false,
+                            include: {
+                                model: require('../models').Workspace,
+                                as: 'parentWorkspace',
+                                attributes: ['id', 'rpcServer'],
+                                required: false
+                            }
+                        },
+                        {
+                            model: require('../models').OrbitChainConfig,
+                            as: 'orbitChildConfigs',
+                            attributes: [
+                                'workspaceId',
+                                'rollupContract',
+                                'sequencerInboxContract',
+                                'bridgeContract',
+                                'inboxContract',
+                                'outboxContract',
+                                'stakeToken',
+                                'l1GatewayRouter',
+                                'l1Erc20Gateway',
+                                'l1WethGateway',
+                                'l1CustomGateway',
+                                'l2GatewayRouter',
+                                'l2Erc20Gateway',
+                                'l2WethGateway',
+                                'l2CustomGateway'
+                            ],
+                            required: false
+                        },
+                        {
+                            model: require('../models').OpChainConfig,
+                            as: 'opChildConfigs',
+                            attributes: ['workspaceId', 'batchInboxAddress', 'beaconUrl', 'l2BlockTime', 'l2GenesisTimestamp'],
+                            required: false
+                        }
+                    ]
+                });
+
+                if (l2Configs) {
+                    workspace.orbitConfig = l2Configs.orbitConfig;
+                    workspace.orbitChildConfigs = l2Configs.orbitChildConfigs;
+                    workspace.opChildConfigs = l2Configs.opChildConfigs;
+                }
             }
         }
 
@@ -501,7 +579,7 @@ module.exports = async job => {
         // OP Stack batch detection - enqueue as separate jobs to avoid blocking sync
         let opChildConfigs = workspace.opChildConfigs || [];
 
-        // L2 configs are loaded on-demand above when using cached workspace
+        // L2 configs are pre-loaded from batchBlockSync cache above when using cached workspace
 
         if (opChildConfigs.length > 0) {
             const l1Timestamp = typeof processedBlock.timestamp === 'string' && processedBlock.timestamp.startsWith('0x')
