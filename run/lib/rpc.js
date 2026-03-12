@@ -150,7 +150,8 @@ const getProvider = function(url) {
         let connectionInfo = {
             url: rpcServer.username.length || rpcServer.password.length ?
                 rpcServer.origin : url,
-            timeout: 8000 // Set RPC timeout to 8 seconds (less than withTimeout default)
+            timeout: 8000, // Set RPC timeout to 8 seconds (less than withTimeout default)
+            throttleLimit: 1 // Fail fast on rate limiting instead of retrying silently
         };
 
         // Add authentication if present
