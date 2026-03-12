@@ -462,10 +462,11 @@ class Tracer {
             const isRateLimit = error.status === 429 ||
                 (error.message && (error.message.includes('429') || error.message.toLowerCase().includes('rate limit')));
 
-            // Throw for BullMQ to detect and retry the job
+            // Throw for BullMQ to detect and retry the job, but mark to ignore in Sentry
             const retryError = new Error(isRateLimit ? 'Rate limited by RPC provider' : 'Transient RPC error (failed response)');
             retryError.code = isRateLimit ? 'RATE_LIMITED' : 'TRANSIENT_RPC_ERROR';
             retryError.originalError = error;
+            retryError.sentryIgnore = true; // Filtered out in Sentry beforeSend
             throw retryError;
         }
 
