@@ -48,6 +48,24 @@ module.exports = async job => {
                     model: RpcHealthCheck,
                     as: 'rpcHealthCheck',
                     attributes: ['id', 'isReachable']
+                },
+                {
+                    model: require('../models').OrbitChainConfig,
+                    as: 'orbitConfig',
+                    attributes: ['id'],
+                    required: false
+                },
+                {
+                    model: require('../models').OrbitChainConfig,
+                    as: 'orbitChildConfigs',
+                    attributes: ['workspaceId'],
+                    required: false
+                },
+                {
+                    model: require('../models').OpChainConfig,
+                    as: 'opChildConfigs',
+                    attributes: ['workspaceId'],
+                    required: false
                 }
             ]
         });
@@ -92,6 +110,7 @@ module.exports = async job => {
             public: workspace.public,
             rateLimitInterval: workspace.rateLimitInterval,
             rateLimitMaxInInterval: workspace.rateLimitMaxInInterval,
+            hasL2Config: !!(workspace.orbitConfig || workspace.orbitChildConfigs?.length || workspace.opChildConfigs?.length),
             explorer: workspace.explorer ? {
                 id: workspace.explorer.id,
                 shouldSync: workspace.explorer.shouldSync,
