@@ -102,8 +102,8 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Find the article that was just committed
-          ARTICLE_PATH=$(git log -1 --name-only --pretty=format: | grep 'blog/src/content/blog/' | head -1)
+          # Search last 5 commits in case Claude pushed multiple
+          ARTICLE_PATH=$(git log -5 --name-only --pretty=format: | grep 'blog/src/content/blog/' | head -1)
 
           if [ -n "$ARTICLE_PATH" ]; then
             echo "Article: $ARTICLE_PATH"
