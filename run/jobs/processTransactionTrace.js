@@ -85,8 +85,9 @@ module.exports = async job => {
             await transaction.workspace.update({ tracing: null });
         return trace;
     } catch(error) {
-        if (error.error.message.includes('not enabled') ||
-            error.error.message.includes('RPC endpoint does not support debug_traceTransaction'))
+        if (error.error && error.error.message &&
+            (error.error.message.includes('not enabled') ||
+            error.error.message.includes('RPC endpoint does not support debug_traceTransaction')))
             await transaction.workspace.update({ tracing: null });
         return error;
     }

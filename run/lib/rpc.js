@@ -477,10 +477,9 @@ class Tracer {
             }
         }
 
-        // Handle RPC connection failures and debug_traceTransaction unavailability
+        // Handle debug_traceTransaction unavailability
         const errorMessage = error.message || '';
-        if (errorMessage.includes('failed response') ||
-            errorMessage.includes('debug_traceTransaction does not exist') ||
+        if (errorMessage.includes('debug_traceTransaction does not exist') ||
             errorMessage.includes('debug_traceTransaction is not enabled') ||
             errorMessage.includes('debug_traceTransaction not supported')) {
             return this.error = {
