@@ -489,7 +489,7 @@ module.exports = async job => {
         // Load orbitConfig on-demand if not already loaded and this might be an L2 workspace
         // Skip if we already know from cached data that there are no L2 configs
         const l2ConfigsKnownAbsent = hasCachedWorkspace && data.cachedWorkspace.hasL2Configs === false;
-        if (!l2ConfigsKnownAbsent && !workspace.orbitConfig && !workspace.isCustomL1Parent && orbitChildConfigs.length === 0) {
+        if (!l2ConfigsKnownAbsent && workspace.orbitConfig === undefined && !workspace.isCustomL1Parent && orbitChildConfigs.length === 0) {
             const orbitConfigResult = await Workspace.findByPk(workspace.id, {
                 attributes: ['id'],
                 include: {
@@ -523,6 +523,8 @@ module.exports = async job => {
 
             if (orbitConfigResult && orbitConfigResult.orbitConfig) {
                 workspace.orbitConfig = orbitConfigResult.orbitConfig;
+            } else {
+                workspace.orbitConfig = null; // mark as queried-and-absent
             }
         }
 
