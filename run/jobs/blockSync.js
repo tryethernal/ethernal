@@ -101,9 +101,6 @@ module.exports = async job => {
         // L2 configs are not cached in batchBlockSync since they're rarely used
         // They will be loaded on-demand if needed for orbit/OP processing
 
-        if (!workspace)
-            return 'Invalid workspace.';
-
         // Disable browser sync to prevent concurrent syncing from both browser and server
         if (workspace.browserSyncEnabled)
             await db.updateBrowserSync(workspace.id, false);
@@ -402,8 +399,8 @@ module.exports = async job => {
             Object.keys(Block.rawAttributes).concat(['transactions'])
         );
 
-        // Load L2 configs on-demand if using cached workspace (to avoid N+1 queries for majority of workspaces that don't need them)
-        if (hasCachedWorkspace && (!workspace.orbitConfig && !workspace.orbitChildConfigs && !workspace.opChildConfigs)) {
+        // Load L2 configs on-demand if using cached workspace and workspace has L2 configs
+        if (hasCachedWorkspace && data.cachedWorkspace.hasL2Config) {
             const l2Configs = await Workspace.findByPk(data.workspaceId, {
                 attributes: ['id'],
                 include: [
@@ -426,7 +423,13 @@ module.exports = async job => {
                             'l2WethGateway',
                             'l2CustomGateway'
                         ],
-                        required: false
+                        required: false,
+                        include: {
+                            model: require('../models').Workspace,
+                            as: 'parentWorkspace',
+                            attributes: ['id', 'rpcServer'],
+                            required: false
+                        }
                     },
                     {
                         model: require('../models').OrbitChainConfig,
