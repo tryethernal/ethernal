@@ -16,6 +16,7 @@
 | Sentry pipeline | `run/api/sentryPipeline.js`, `run/webhooks/githubActions.js` | [SENTRY.md](.claude/references/SENTRY.md) |
 | Landing/marketing | `landing/` | [LANDING.md](.claude/references/LANDING.md) |
 | Docker commands | | [COMMANDS.md](.claude/references/COMMANDS.md) |
+| Infra monitoring | `run/jobs/infraHealthCheck.js`, `run/api/status.js`, `.github/workflows/infra-auto-remediation.yml` | |
 | Env vars/flags | `run/lib/flags.js` | [ENV.md](.claude/references/ENV.md) |
 
 **Critical architectural rules:**
@@ -120,6 +121,8 @@ Always use `IF NOT EXISTS`/`IF EXISTS` for re-runnability. For tables < 1M rows,
 - Preserve existing code comments unless completely irrelevant after changes
 - Delete one-off scripts after use
 - Always use sequelize migrations, never raw SQL for schema changes
+- Use `withTimeout(promise, ms)` from `run/lib/utils` instead of inline `Promise.race` timeout patterns
+- Pin GitHub Actions to commit SHAs (not mutable tags) when secrets are in scope
 
 ## Documentation Requirements
 
@@ -135,14 +138,15 @@ Browse quality design components at: https://21st.dev/community/components
 
 - **Always create a PR after completing work** targeting `develop`.
 
-### Code Review (CodeAnt AI)
+### Code Review (Greptile)
 
-PRs trigger CodeAnt AI review. When checking comments:
-1. Fetch both top-level and inline comments via `gh api repos/tryethernal/ethernal/pulls/{number}/reviews` and `.../comments`
-2. Take comments seriously — most are legitimate
-3. Always verify the issue exists in code before acting
-4. Challenge incorrect comments explicitly
-5. Never remove working code to satisfy a review bot
+PRs trigger Greptile bot review. When checking comments:
+1. Inline comments: `gh api repos/tryethernal/ethernal/pulls/{number}/comments`
+2. Summary comment (with confidence score): `gh api repos/tryethernal/ethernal/issues/{number}/comments` — look for `greptile-apps[bot]`
+3. Reply to inline comments: `gh api repos/tryethernal/ethernal/pulls/{number}/comments -f body="..." -F in_reply_to={comment_id}`
+4. Take comments seriously — most are legitimate
+5. Always verify the issue exists in code before acting
+6. Challenge incorrect comments explicitly
 
 ### End-of-Session Flow
 
