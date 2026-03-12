@@ -14,13 +14,15 @@ interface Props {
   title: string;
   description?: string;
   image?: string;
+  ogImage?: string;
   plainBg?: boolean;
   ogType?: 'website' | 'article';
 }
 
-const { title, description = 'Ethernal Blog — Insights on EVM development, block explorers, and blockchain infrastructure.', image, plainBg = false, ogType = 'website' } = Astro.props;
+const { title, description = 'Ethernal Blog — Insights on EVM development, block explorers, and blockchain infrastructure.', image, ogImage: ogImageProp, plainBg = false, ogType = 'website' } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
-const ogImage = image?.startsWith('http') ? image : image ? `https://tryethernal.com${image}` : undefined;
+const socialImage = ogImageProp || image;
+const ogImageUrl = socialImage?.startsWith('http') ? socialImage : socialImage ? `https://tryethernal.com${socialImage}` : undefined;
 ---
 
 <!DOCTYPE html>
@@ -36,13 +38,13 @@ const ogImage = image?.startsWith('http') ? image : image ? `https://tryethernal
   <meta property="og:url" content={canonicalURL} />
   <meta property="og:title" content={title} />
   <meta property="og:description" content={description} />
-  {ogImage && <meta property="og:image" content={ogImage} />}
+  {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content={title} />
   <meta name="twitter:description" content={description} />
-  {ogImage && <meta name="twitter:image" content={ogImage} />}
+  {ogImageUrl && <meta name="twitter:image" content={ogImageUrl} />}
 
   <title>{title} | On-Chain Engineering</title>
 

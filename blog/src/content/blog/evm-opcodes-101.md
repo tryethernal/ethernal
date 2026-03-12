@@ -1,7 +1,8 @@
 ---
 title: "EVM Opcodes 101: What Happens When You Send a Transaction"
-description: "EVM opcodes are the low-level instructions behind every Ethereum transaction. Learn how the stack, memory, and storage work, where gas costs come from, and how to debug failed transactions."
+description: "EVM opcodes are the low-level instructions behind every Ethereum transaction. Learn how stack, memory, storage, and gas costs work."
 image: "/blog/images/evm-opcodes-101.png"
+ogImage: "/blog/images/evm-opcodes-101-og.png"
 tags:
   - EVM
   - Ethereum

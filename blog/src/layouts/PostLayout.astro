@@ -16,13 +16,14 @@ interface Props {
       description: string;
       tags: string[];
       image?: string;
+      ogImage?: string;
       readingTime?: number;
     };
   };
 }
 
 const { post } = Astro.props;
-const { title, date, description, tags, image, readingTime } = post.data;
+const { title, date, description, tags, image, ogImage, readingTime } = post.data;
 
 const formattedDate = date.toLocaleDateString('en-US', {
   year: 'numeric',
@@ -40,7 +41,7 @@ const relatedPosts = allPosts
   .slice(0, 3);
 ---
 
-<BaseLayout title={title} description={description} image={image} plainBg ogType="article">
+<BaseLayout title={title} description={description} image={image} ogImage={ogImage} plainBg ogType="article">
   <!-- Structured Data: BlogPosting -->
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
@@ -50,7 +51,7 @@ const relatedPosts = allPosts
     "url": `https://tryethernal.com/blog/${post.id}`,
     "datePublished": date.toISOString().split('T')[0],
     "dateModified": date.toISOString().split('T')[0],
-    "image": image ? `https://tryethernal.com${image}` : undefined,
+    "image": (ogImage || image) ? ((ogImage || image).startsWith('http') ? (ogImage || image) : `https://tryethernal.com${ogImage || image}`) : undefined,
     "author": {
       "@type": "Person",
       "name": "Antoine Gravieet",

@@ -15,6 +15,7 @@
 | Database schema | `.claude/references/SCHEMA.md` | |
 | Sentry pipeline | `run/api/sentryPipeline.js`, `run/webhooks/githubActions.js` | [SENTRY.md](.claude/references/SENTRY.md) |
 | Landing/marketing | `landing/` | [LANDING.md](.claude/references/LANDING.md) |
+| Blog pipeline | `blog/pipeline/`, `.github/workflows/blog-*.yml` | |
 | Docker commands | | [COMMANDS.md](.claude/references/COMMANDS.md) |
 | Infra monitoring | `run/jobs/infraHealthCheck.js`, `run/api/status.js`, `.github/workflows/infra-auto-remediation.yml` | |
 | Env vars/flags | `run/lib/flags.js` | [ENV.md](.claude/references/ENV.md) |
@@ -138,15 +139,36 @@ Browse quality design components at: https://21st.dev/community/components
 
 - **Always create a PR after completing work** targeting `develop`.
 
-### Code Review (Greptile)
+### Code Review (Greptile / CodeAnt AI)
 
-PRs trigger Greptile bot review. When checking comments:
-1. Inline comments: `gh api repos/tryethernal/ethernal/pulls/{number}/comments`
-2. Summary comment (with confidence score): `gh api repos/tryethernal/ethernal/issues/{number}/comments` — look for `greptile-apps[bot]`
-3. Reply to inline comments: `gh api repos/tryethernal/ethernal/pulls/{number}/comments -f body="..." -F in_reply_to={comment_id}`
-4. Take comments seriously — most are legitimate
-5. Always verify the issue exists in code before acting
-6. Challenge incorrect comments explicitly
+PRs trigger automated review (Greptile bot: `greptile-apps[bot]`). When processing reviews:
+
+**Wait for review to complete before processing:**
+- **Use the check-runs API** to know when Greptile is done: `gh api repos/tryethernal/ethernal/commits/{sha}/check-runs --jq '.check_runs[] | select(.app.slug == "greptile-apps") | {status, conclusion}'`
+- Poll every 60s until status is `completed`. Only then fetch and process comments.
+- After pushing fixes, the check resets to `in_progress` — poll again for the new commit SHA.
+
+**Fetch ALL comment types** (there are 3 separate locations):
+1. **Per-review comments** (MOST RELIABLE): For each review, fetch `gh api repos/tryethernal/ethernal/pulls/{number}/reviews/{review_id}/comments`. The top-level `pulls/{number}/comments` endpoint can miss comments from later review batches.
+2. **Review-level comments**: `gh api repos/tryethernal/ethernal/pulls/{number}/reviews --jq '.[] | select(.body != "")'` — top-level review summaries
+3. **PR conversation comments**: `gh api repos/tryethernal/ethernal/issues/{number}/comments` — general discussion thread (bot summaries, etc.)
+
+**Process each comment:**
+1. Take comments seriously — most are legitimate
+2. Verify the issue exists in code before acting
+3. Challenge incorrect comments explicitly
+4. Never remove working code to satisfy a review bot
+
+**React to EVERY comment** with 👍 (`+1`) if valid/fixed, or 👎 (`-1`) if incorrect:
+- Inline comments: `gh api repos/tryethernal/ethernal/pulls/comments/{id}/reactions -f content='+1'`
+- PR conversation comments: `gh api repos/tryethernal/ethernal/issues/comments/{id}/reactions -f content='+1'`
+- Do this immediately after reading, and retroactively for older unreacted comments
+
+**Review loop — keep iterating until the check-runs API shows `completed`:**
+- After each push, poll the check-runs API every 60s until the Greptile check is `completed`
+- Only then fetch and process new comments
+- After fixing comments and pushing, the check resets — poll again for the new commit
+- Never declare "Greptile done" based on absence of new reviews — always use the check-runs status
 
 ### End-of-Session Flow
 
