@@ -28,14 +28,9 @@ jest.mock('../../lib/redis', () => ({
         zrevrange: jest.fn().mockReturnThis(),
         llen: jest.fn().mockReturnThis(),
         exec: jest.fn().mockResolvedValue([
-            [null, []], // Mock result for zrevrange (completed jobs)
-            [null, 0],  // Mock result for llen (waiting count)
-            [null, 0],  // Mock result for zcard (delayed count)
-            [null, 0],  // Mock result for zcard (failed count)
-            [null, []], // Mock result for zrevrange (completed jobs)
-            [null, 0],  // Mock result for llen (waiting count)
-            [null, 0],  // Mock result for zcard (delayed count)
-            [null, 0]   // Mock result for zcard (failed count)
+            [null, 0],  // Mock result for zcard (legacy key count)
+            [null, 0],  // Mock result for zcard (legacy key count)
+            [null, 0]   // Mock result for zcard (legacy key count)
         ])
     })
 }));
