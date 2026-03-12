@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.42] - 2026-03-12
+### Fixed
+- fix: handle ethers.js "failed response" errors for Hyperliquid rate limiting (#662)
+- blog: add draft - The Commerce Layer: How ERC-8183 Makes AI Agent Payments Verifiable
+- fix(blog): trim whitespace from article-path extraction in pipeline
+- fix(blog): trim whitespace from article-path extraction in pipeline
+
+
 ## [5.17.41] - 2026-03-12
 ### Fixed
 - Merge feature/blog-stack: 3-phase blog pipeline
