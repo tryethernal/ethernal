@@ -8,11 +8,11 @@ Generate a 2-week content calendar targeting 1 post every 2 days. Maintain a hea
 
 ## Workflow
 
-1. **Check existing pipeline** — Use Inkwell `list_articles` to see what's been published. Use `list_notes` (tag: calendar) to see scheduled posts. Use `list_notes` (type: idea) to check backlog size.
+1. **Check existing pipeline** — List published and draft articles in `blog/src/content/blog/`. Note publish dates from frontmatter to understand current pace.
 
 2. **Invoke the content-strategy skill** to guide topic selection, content mix, and audience targeting.
 
-3. **Replenish backlog** — If fewer than 15 ideas exist, use WebSearch to research trending blockchain dev topics. Add each via Inkwell `add_note` (type: idea) with a category tag. Target categories:
+3. **Replenish backlog** — If fewer than 15 ideas exist in the calendar, use WebSearch to research trending blockchain dev topics. Target categories:
    - Solidity Patterns
    - EVM Internals
    - L2 Architecture
@@ -22,11 +22,16 @@ Generate a 2-week content calendar targeting 1 post every 2 days. Maintain a hea
    - Infrastructure/DevOps
    - Block Explorer Concepts
 
-4. **Build calendar** — Pick topics for the next 14 days (7 posts at 1 per 2 days). Balance across categories. Create entries via `add_note` (type: todo, tag: calendar) with target dates.
+4. **Build calendar** — Pick topics for the next 14 days (7 posts at 1 per 2 days). Balance across categories. Save the calendar to `blog/CONTENT-CALENDAR.md`:
+   ```markdown
+   # Content Calendar
 
-5. **Display the calendar** in a clear table:
    | Date | Topic | Category | Status |
    |------|-------|----------|--------|
+   | YYYY-MM-DD | Topic title | Category | planned/researched/drafted/published |
+   ```
+
+5. **Display the calendar** in a clear table.
 
 6. Show backlog stats: total ideas, breakdown by category.
 

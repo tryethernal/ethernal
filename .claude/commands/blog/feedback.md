@@ -13,28 +13,28 @@ Process feedback on the current draft, update the learning system, and revise.
 
    If no explicit feedback text, look at the most recent user messages in the conversation for feedback on the current draft.
 
-2. **Log the feedback** — Use Inkwell `list_notes` (tag: feedback) to find the "Editorial Feedback Log" note. Use `update_note` to append:
-   ```
+2. **Log the feedback** — Append to the memory file at `~/.claude/projects/-Users-antoine-ethernal-ethernal/memory/blog-feedback-log.md`. Create it if it doesn't exist, using this format:
+   ```markdown
    ---
-   Date: [today]
-   Article: [current article title]
-   Feedback: [user's feedback]
-   Theme: [categorize: tone, structure, length, technical depth, Ethernal mentions, style, other]
+   name: blog-feedback-log
+   description: Cumulative editorial feedback log for blog articles
+   type: feedback
+   ---
+
+   ## Feedback Log
+
+   ### YYYY-MM-DD — Article Title
+   - **Feedback:** user's feedback
+   - **Theme:** tone | structure | length | technical depth | Ethernal mentions | style | accuracy
    ```
 
-3. **Check for patterns** — Review the full feedback log. If any theme appears 3+ times, it's a pattern. Update the refined voice template at `~/ethernal-blog/templates/voice/ethernal-refined.md` by adding a rule to the "Learned Preferences" section between the FEEDBACK_RULES markers.
+3. **Check for patterns** — Review the full feedback log. If any theme appears 3+ times, it's a pattern. Save a new memory file documenting the pattern as a writing rule, and update MEMORY.md.
 
-4. **Revise the draft** — Apply the feedback to the current draft. Read the draft from `~/ethernal-blog/drafts/<slug>.md`, make changes, and save.
+4. **Revise the draft** — Apply the feedback to the current draft. Read the article from `blog/src/content/blog/<slug>.md`, make changes, and save.
 
-5. **Update Ghost draft** — If a Ghost post ID was returned during creation, update it:
-   ```bash
-   node ~/ethernal-blog/ghost-publish.mjs update <ghost-post-id> ~/ethernal-blog/drafts/<slug>.md
-   ```
-   If no ID is available, check conversation history for the Ghost ID from the `/blog:draft` step.
+5. **Show diff summary** — Briefly describe what changed and why.
 
-6. **Show diff summary** — Briefly describe what changed and why.
-
-7. **Track metrics** — Note the revision count for this article.
+6. **Track metrics** — Note the revision count for this article.
 
 ## Feedback Categories
 
