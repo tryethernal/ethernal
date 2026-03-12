@@ -137,10 +137,10 @@ export function pickNextTopic(dryRun = false) {
   if (!picked.body) {
     try {
       const result = execSync(
-        `gh api graphql -f query='{ node(id: "${picked.id}") { ... on ProjectV2Item { content { ... on DraftIssue { body } ... on Issue { body } } } } }' --jq '.data.node.content.body'`,
+        `gh api graphql -f query='{ node(id: "${picked.id}") { ... on ProjectV2Item { content { ... on DraftIssue { body } ... on Issue { body } } } } }' --jq '.data.node.content.body // ""'`,
         { encoding: 'utf-8', timeout: 15000 }
       ).trim();
-      picked.body = result;
+      picked.body = result === 'null' ? '' : result;
     } catch {
       picked.body = '';
     }
@@ -170,10 +170,14 @@ export function pickNextTopic(dryRun = false) {
 export function updateCardStatus(itemId, statusKey) {
   const optionId = PROJECT.statusOptions[statusKey];
   if (!optionId) throw new Error(`Unknown status: ${statusKey}`);
-  execSync(
+  const raw = execSync(
     `gh api graphql -f query='mutation { updateProjectV2ItemFieldValue(input: { projectId: "${PROJECT.id}", itemId: "${itemId}", fieldId: "${PROJECT.fields.status}", value: { singleSelectOptionId: "${optionId}" } }) { projectV2Item { id } } }'`,
     { encoding: 'utf-8', timeout: 15000 }
   );
+  const parsed = JSON.parse(raw);
+  if (parsed.errors?.length) {
+    throw new Error(`GraphQL error updating status: ${parsed.errors.map(e => e.message).join('; ')}`);
+  }
 }
 
 /**
