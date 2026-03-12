@@ -110,7 +110,7 @@ PHASE2_OUTPUT=$(claude -p "$(cat "$PROMPTS_DIR/2-draft.md")" \
 echo "$PHASE2_OUTPUT" | tee -a "$LOG_FILE"
 
 # Extract article path
-ARTICLE_PATH=$(echo "$PHASE2_OUTPUT" | grep '::article-path::' | sed 's/::article-path:://' | head -1)
+ARTICLE_PATH=$(echo "$PHASE2_OUTPUT" | grep '::article-path::' | sed 's/::article-path:://' | tr -d ' ' | head -1)
 
 if [ -z "$ARTICLE_PATH" ] || [ ! -f "$ARTICLE_PATH" ]; then
   log "ERROR: Phase 2 failed — no article produced"
