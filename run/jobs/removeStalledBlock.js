@@ -13,7 +13,11 @@ module.exports = async (job) => {
     if (!data.blockId)
         return 'Missing parameter';
 
-    const block = await Block.findByPk(data.blockId);
+    // Use workspaceId in query for better performance on hypertables
+    // Fallback to findByPk for backward compatibility with existing job data
+    const block = data.workspaceId
+        ? await Block.findOne({ where: { id: data.blockId, workspaceId: data.workspaceId } })
+        : await Block.findByPk(data.blockId);
     if (!block)
         return 'Could not find block';
 
