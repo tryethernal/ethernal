@@ -311,6 +311,15 @@ class ProviderConnector {
                 }
             }
 
+            // Handle ethers.js response processing errors for large blocks
+            if (error.message && error.message.includes('processing response error')) {
+                logger.warn('Ethers.js failed to process large block response', {
+                    blockNumber,
+                    error: error.message
+                });
+                return null; // Return null so blockSync can handle gracefully
+            }
+
             // Re-throw other errors
             throw error;
         }
