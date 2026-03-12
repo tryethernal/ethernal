@@ -46,15 +46,17 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ITEM_ID: ${{ github.event.projects_v2_item.node_id }}
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_ARTICLE_PATH: ${{ inputs.article_path }}
+          NEW_STATUS_ID: ${{ github.event.changes.field_value.to.singleSelectOptionId }}
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "article_path=${{ inputs.article_path }}" >> $GITHUB_OUTPUT
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            echo "article_path=$INPUT_ARTICLE_PATH" >> $GITHUB_OUTPUT
             echo "should_publish=true" >> $GITHUB_OUTPUT
           else
             # Check if the new status is "Published" (option ID: 98236657)
-            NEW_STATUS="${{ github.event.changes.field_value.to.singleSelectOptionId }}"
-            if [ "$NEW_STATUS" != "98236657" ]; then
-              echo "Status changed but not to Published (got: $NEW_STATUS). Skipping."
+            if [ "$NEW_STATUS_ID" != "98236657" ]; then
+              echo "Status changed but not to Published (got: $NEW_STATUS_ID). Skipping."
               echo "should_publish=false" >> $GITHUB_OUTPUT
               exit 0
             fi
