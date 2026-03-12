@@ -33,10 +33,14 @@ function setProjectFields(itemId, topic, { includeStatus = true } = {}) {
 
   for (const { fieldId, value } of fields) {
     try {
-      execSync(
+      const raw = execSync(
         `gh api graphql -f query='mutation { updateProjectV2ItemFieldValue(input: { ${baseInput}, fieldId: "${fieldId}", value: { ${value} } }) { projectV2Item { id } } }'`,
         { encoding: 'utf-8', timeout: 15000 }
       );
+      const parsed = JSON.parse(raw);
+      if (parsed.errors?.length) {
+        throw new Error(parsed.errors.map(e => e.message).join('; '));
+      }
     } catch (err) {
       console.warn(`  Warning: Failed to set field: ${err.message.slice(0, 100)}`);
     }
@@ -45,7 +49,7 @@ function setProjectFields(itemId, topic, { includeStatus = true } = {}) {
   // Source links — use --input to avoid shell escaping issues with URLs
   const sourceLinks = topic.items.slice(0, 5).map(i => i.url).join(' | ');
   try {
-    execSync(
+    const raw = execSync(
       'gh api graphql --input -',
       {
         encoding: 'utf-8',
@@ -56,6 +60,10 @@ function setProjectFields(itemId, topic, { includeStatus = true } = {}) {
         }),
       }
     );
+    const parsed = JSON.parse(raw);
+    if (parsed.errors?.length) {
+      throw new Error(parsed.errors.map(e => e.message).join('; '));
+    }
   } catch (err) {
     console.warn(`  Warning: Failed to set source links: ${err.message.slice(0, 100)}`);
   }
