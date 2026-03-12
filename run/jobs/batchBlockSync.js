@@ -7,7 +7,7 @@
  */
 
 const { enqueue, bulkEnqueue } = require('../lib/queue');
-const { Workspace, Explorer, StripeSubscription, RpcHealthCheck, Block } = require('../models');
+const { Workspace, Explorer, StripeSubscription, RpcHealthCheck, Block, OrbitChainConfig, OpChainConfig } = require('../models');
 const { Op } = require('sequelize');
 const logger = require('../lib/logger');
 
@@ -48,6 +48,11 @@ module.exports = async job => {
                     model: RpcHealthCheck,
                     as: 'rpcHealthCheck',
                     attributes: ['id', 'isReachable']
+                },
+                {
+                    model: require('../models').IntegrityCheck,
+                    as: 'integrityCheck',
+                    attributes: ['id', 'isHealthy', 'isRecovering']
                 }
             ]
         });
@@ -85,11 +90,10 @@ module.exports = async job => {
 
         // Check if workspace needs L2 configurations loaded
         // Use model-based approach for compatibility with test mocks
-        const { OrbitChainConfig, OpChainConfig } = require('../models');
         const [hasOrbitConfigs, hasOpConfigs] = await Promise.all([
             OrbitChainConfig.findOne({
                 where: {
-                    [require('sequelize').Op.or]: [
+                    [Op.or]: [
                         { workspaceId },
                         { parentWorkspaceId: workspaceId }
                     ]
@@ -125,6 +129,11 @@ module.exports = async job => {
             rpcHealthCheck: workspace.rpcHealthCheck ? {
                 id: workspace.rpcHealthCheck.id,
                 isReachable: workspace.rpcHealthCheck.isReachable
+            } : null,
+            integrityCheck: workspace.integrityCheck ? {
+                id: workspace.integrityCheck.id,
+                isHealthy: workspace.integrityCheck.isHealthy,
+                isRecovering: workspace.integrityCheck.isRecovering
             } : null
         };
 

@@ -81,6 +81,7 @@ module.exports = async job => {
         // Manually attach cached association data to maintain compatibility with existing code
         workspace.explorer = data.cachedWorkspace.explorer;
         workspace.rpcHealthCheck = data.cachedWorkspace.rpcHealthCheck;
+        workspace.integrityCheck = data.cachedWorkspace.integrityCheck;
 
         // Load L2 configs (orbit/OP) only if needed, since they're not included in cached data
         const needsL2Configs = data.cachedWorkspace.hasL2Configs || false;
@@ -107,6 +108,12 @@ module.exports = async job => {
                             'l2WethGateway',
                             'l2CustomGateway'
                         ],
+                        include: {
+                            model: require('../models').Workspace,
+                            as: 'parentWorkspace',
+                            attributes: ['id', 'rpcServer'],
+                            required: false
+                        },
                         required: false
                     },
                     {
@@ -146,9 +153,6 @@ module.exports = async job => {
                 workspace.opChildConfigs = l2ConfigWorkspace.opChildConfigs;
             }
         }
-
-        if (!workspace)
-            return 'Invalid workspace.';
 
         // Disable browser sync to prevent concurrent syncing from both browser and server
         if (workspace.browserSyncEnabled)
