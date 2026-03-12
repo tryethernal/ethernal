@@ -106,7 +106,8 @@ jobs:
           git add "$ARTICLE"
 
           TITLE=$(grep '^title:' "$ARTICLE" | head -1 | sed 's/title: *//; s/^"//; s/"$//')
-          git commit -m "blog: publish — $TITLE"
+          printf 'blog: publish — %s\n' "$TITLE" > /tmp/commit-msg.txt
+          git commit -F /tmp/commit-msg.txt
           git push origin develop
 
           SLUG=$(basename "$ARTICLE" .md)
