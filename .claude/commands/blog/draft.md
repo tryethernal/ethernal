@@ -4,7 +4,7 @@ description: Write a complete blog article from the research brief and push to G
 
 # Blog Draft
 
-Write a complete, publication-ready article and push it to Ghost as a draft.
+Write a complete, publication-ready article for the Ethernal Astro blog.
 
 ## Pre-Writing
 
@@ -54,21 +54,27 @@ Write a complete, publication-ready article and push it to Ghost as a draft.
 
 ## Publishing
 
-10. **Save locally** to `~/ethernal-blog/drafts/<slug>.md` with frontmatter:
+11. **Save the article** to `blog/src/content/blog/<slug>.md` with frontmatter:
     ```yaml
     ---
     title: "Article Title"
-    tags: category1, category2
+    description: "110-160 chars max. Concise summary for OG/SEO display."
     date: YYYY-MM-DD
+    tags:
+      - Tag1
+      - Tag2
+    image: "/blog/images/<slug>.png"
+    ogImage: "/blog/images/<slug>-og.png"
     status: draft
+    readingTime: N
     ---
     ```
 
-11. **Push to Ghost** — Run:
-    ```bash
-    node ~/ethernal-blog/ghost-publish.mjs create ~/ethernal-blog/drafts/<slug>.md
-    ```
-    Save the returned Ghost post ID for the next steps.
+    **Frontmatter rules:**
+    - `description`: **Must be 110-160 characters.** Zod schema enforces max 160. This is used for meta description, og:description, and twitter:description.
+    - `image`: Cover image displayed in the article (1424x752px recommended)
+    - `ogImage`: Social sharing image (must be exactly **1200x630px**). Generated separately from cover.
+    - `status`: Always `draft` initially. Changed to `published` by the publish workflow.
 
 ## Cover Image & Social Cards
 
@@ -76,48 +82,16 @@ Write a complete, publication-ready article and push it to Ghost as a draft.
     - Use `gemini-3-pro-image-preview` model (best text rendering) or `imagen-4.0-generate-001` (batch variations)
     - If `gemini-2.5-flash-image` is available and not rate-limited, it also works
     - Generate 4 variations and pick the best one
-    - Request `aspectRatio: "16:9"` for landscape social cards
-    - Resize final image to exactly **1200x630** with ImageMagick: `magick input.png -resize 1200x630! output.png`
     - Prompt structure: describe layout (left/right split), specific text to render, "dark navy background", "flat minimal design, developer aesthetic"
 
-13. **Upload image to Ghost** via the Admin API image upload endpoint:
-    ```
-    POST /ghost/api/admin/images/upload/
-    ```
-
-14. **Set all post metadata** via Ghost Admin API PUT on the post:
-    - `feature_image` — the uploaded image URL
-    - `feature_image_alt` — descriptive alt text
-    - `feature_image_caption` — short contextual caption
-    - `custom_excerpt` — 1-2 sentence summary for post cards (different from meta_description)
-    - `meta_title` — SEO title (can match post title)
-    - `meta_description` — Google snippet, ~155 chars, practical description
-    - `og_title`, `og_description`, `og_image` — Facebook/Open Graph card
-    - `twitter_title`, `twitter_description`, `twitter_image` — Twitter/X card
-    - Vary the descriptions slightly across SEO/OG/Twitter for natural diversity
-
-15. **Constrain cover image size** — Ghost's Casper theme renders feature images full-width by default. Add CSS via `codeinjection_head` to make it smaller and centered:
-    ```html
-    <style>.article-image { max-width: 640px; justify-self: center; } .article-image img { border-radius: 8px; }</style>
-    ```
-    Note: the parent is a CSS grid, so use `justify-self: center` (not `margin: auto`). The class is `.article-image` (not `.post-full-image`).
-
-16. **Verify with Playwright** — Navigate to the Ghost preview URL and take a screenshot to confirm the image renders at the right size and is centered.
-
-17. **Present the draft** with the Ghost editor URL for review.
-
-## Ghost API Reference
-
-- **Auth**: JWT signed with HS256 using the admin API key (`{id}:{secret}` from `~/ethernal-blog/.env`)
-- **Helper script**: `node ~/ethernal-blog/ghost-publish.mjs create|update|delete`
-- **Image upload**: `POST /ghost/api/admin/images/upload/` with FormData (file + purpose)
-- **Post update**: `PUT /ghost/api/admin/posts/{id}/` — must include `updated_at` from a fresh GET
-- **Preview URL format**: `https://blog.tryethernal.com/p/{uuid}/`
-- **Editor URL format**: `https://blog.tryethernal.com/ghost/#/editor/post/{id}`
+13. **Generate two image sizes:**
+    - **Cover image** (1424x752): `magick input.png -resize 1424x752! blog/public/images/<slug>.png`
+    - **OG image** (1200x630): `magick input.png -resize 1200x630! blog/public/images/<slug>-og.png`
+    - The cover is shown in-article; the OG image is used for social previews (Twitter, Slack, Discord, etc.)
 
 ## Quality Checklist
 
-Before pushing, verify:
+Before committing, verify:
 - [ ] Hook is specific and relatable (not generic)
 - [ ] No AI-isms ("delve", "landscape", "in conclusion", "it's worth noting")
 - [ ] Zero em dashes (use commas, periods, colons, or parentheses instead)
@@ -126,6 +100,7 @@ Before pushing, verify:
 - [ ] 1200-1800 word range
 - [ ] Subheadings are scannable
 - [ ] CTA is clear
-- [ ] Cover image generated, uploaded, and sized correctly (640px, centered)
-- [ ] All metadata fields populated (SEO, OG, Twitter, excerpt, alt text, caption)
-- [ ] Verified rendering via Playwright screenshot
+- [ ] Cover image generated at 1424x752 (`image` field)
+- [ ] OG image generated at 1200x630 (`ogImage` field)
+- [ ] Description is 110-160 characters
+- [ ] All frontmatter fields populated
