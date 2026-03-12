@@ -53,7 +53,16 @@ async function checkPostgresHealth() {
     }
 }
 
+let cachedHealthResponse = null;
+let cachedHealthAt = 0;
+const HEALTH_CACHE_TTL_MS = 10000;
+
 router.get('/health', async (req, res) => {
+    const now = Date.now();
+    if (cachedHealthResponse && (now - cachedHealthAt) < HEALTH_CACHE_TTL_MS) {
+        return res.status(cachedHealthResponse.statusCode).json(cachedHealthResponse.body);
+    }
+
     const [redisResult, postgresResult] = await Promise.all([
         checkRedisHealth(),
         checkPostgresHealth()
@@ -68,16 +77,15 @@ router.get('/health', async (req, res) => {
     let overallStatus = 'healthy';
     if (redisResult.status === 'unhealthy' || postgresResult.status === 'unhealthy') {
         overallStatus = 'unhealthy';
-    } else if (services.redis.memoryPercent !== null && services.redis.memoryPercent > 80) {
+    } else if (services.redis.memoryPercent !== null && services.redis.memoryPercent >= 80) {
         overallStatus = 'degraded';
     }
 
     const statusCode = overallStatus === 'unhealthy' ? 503 : 200;
-    res.status(statusCode).json({
-        status: overallStatus,
-        services,
-        timestamp: new Date().toISOString()
-    });
+    const body = { status: overallStatus, services, timestamp: new Date().toISOString() };
+    cachedHealthResponse = { statusCode, body };
+    cachedHealthAt = now;
+    res.status(statusCode).json(body);
 });
 
 router.get('/', workspaceAuthMiddleware, async (req, res, next) => {

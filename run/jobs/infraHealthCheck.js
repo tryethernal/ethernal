@@ -207,11 +207,15 @@ async function triggerRemediation(alertType, details) {
             }
         );
 
-        // Set dedup key only after successful dispatch to avoid false escalations on transient failures
-        const lastKey = `infra:remediation:last:${alertType}`;
-        await redis.set(lastKey, Date.now().toString(), 'EX', REMEDIATION_REPEAT_WINDOW_SECONDS);
-
         logger.info('Triggered auto-remediation workflow', { alertType });
+
+        // Set dedup key separately — a Redis failure here shouldn't mask the successful dispatch
+        try {
+            const lastKey = `infra:remediation:last:${alertType}`;
+            await redis.set(lastKey, Date.now().toString(), 'EX', REMEDIATION_REPEAT_WINDOW_SECONDS);
+        } catch (dedupError) {
+            logger.warn('Failed to set dedup key after successful dispatch', { alertType, error: dedupError.message });
+        }
     } catch (error) {
         logger.error('Failed to trigger remediation workflow', { error: error.message, alertType });
     }
