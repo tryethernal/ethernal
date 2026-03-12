@@ -105,6 +105,9 @@ export async function collectArxiv() {
     const query = encodeURIComponent(ARXIV_QUERY);
     const url = `https://export.arxiv.org/api/query?search_query=${query}&sortBy=submittedDate&sortOrder=descending&max_results=50`;
     const res = await fetch(url);
+    if (!res.ok) {
+      throw new Error(`arxiv API returned ${res.status} ${res.statusText}`);
+    }
     const xml = await res.text();
 
     const entries = [];

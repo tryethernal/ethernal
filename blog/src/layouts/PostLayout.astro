@@ -51,7 +51,7 @@ const relatedPosts = allPosts
     "url": `https://tryethernal.com/blog/${post.id}`,
     "datePublished": date.toISOString().split('T')[0],
     "dateModified": date.toISOString().split('T')[0],
-    "image": (ogImage || image) ? `https://tryethernal.com${ogImage || image}` : undefined,
+    "image": (ogImage || image) ? ((ogImage || image).startsWith('http') ? (ogImage || image) : `https://tryethernal.com${ogImage || image}`) : undefined,
     "author": {
       "@type": "Person",
       "name": "Antoine Gravieet",
