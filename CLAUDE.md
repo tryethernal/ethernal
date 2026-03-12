@@ -136,15 +136,33 @@ Browse quality design components at: https://21st.dev/community/components
 
 - **Always create a PR after completing work** targeting `develop`.
 
-### Code Review (CodeAnt AI)
+### Code Review (Greptile / CodeAnt AI)
 
-PRs trigger CodeAnt AI review. When checking comments:
-1. Fetch both top-level and inline comments via `gh api repos/tryethernal/ethernal/pulls/{number}/reviews` and `.../comments`
-2. Take comments seriously — most are legitimate
-3. Always verify the issue exists in code before acting
-4. Challenge incorrect comments explicitly
-5. Never remove working code to satisfy a review bot
-6. **Always react to every comment** with 👍 (`+1`) if valid/fixed, or 👎 (`-1`) if incorrect — do this immediately after reading comments, and retroactively for older unreacted comments
+PRs trigger automated review (Greptile bot: `greptile-apps[bot]`). When processing reviews:
+
+**Wait for review to complete before processing:**
+- Check `gh api repos/tryethernal/ethernal/pulls/{number}/reviews --jq '.[] | select(.user.login == "greptile-apps[bot]")'`
+- Greptile submits multiple reviews per push (one per batch of comments). Wait until no new reviews appear.
+
+**Fetch ALL comment types** (there are 3 separate locations):
+1. **Inline code comments**: `gh api repos/tryethernal/ethernal/pulls/{number}/comments` — line-level comments on code diffs
+2. **Review-level comments**: `gh api repos/tryethernal/ethernal/pulls/{number}/reviews --jq '.[] | select(.body != "")'` — top-level review summaries
+3. **PR conversation comments**: `gh api repos/tryethernal/ethernal/issues/{number}/comments` — general discussion thread (bot summaries, etc.)
+
+**Process each comment:**
+1. Take comments seriously — most are legitimate
+2. Verify the issue exists in code before acting
+3. Challenge incorrect comments explicitly
+4. Never remove working code to satisfy a review bot
+
+**React to EVERY comment** with 👍 (`+1`) if valid/fixed, or 👎 (`-1`) if incorrect:
+- Inline comments: `gh api repos/tryethernal/ethernal/pulls/comments/{id}/reactions -f content='+1'`
+- PR conversation comments: `gh api repos/tryethernal/ethernal/issues/comments/{id}/reactions -f content='+1'`
+- Do this immediately after reading, and retroactively for older unreacted comments
+
+**Review loop — keep iterating until:**
+- All comments have been processed (acted on or thumbed down)
+- Greptile review has passed (no new reviews after latest push)
 
 ### End-of-Session Flow
 
