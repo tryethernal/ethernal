@@ -141,8 +141,9 @@ Browse quality design components at: https://21st.dev/community/components
 PRs trigger automated review (Greptile bot: `greptile-apps[bot]`). When processing reviews:
 
 **Wait for review to complete before processing:**
-- Check `gh api repos/tryethernal/ethernal/pulls/{number}/reviews --jq '.[] | select(.user.login == "greptile-apps[bot]")'`
-- Greptile submits multiple reviews per push (one per batch of comments). Wait until no new reviews appear.
+- **Use the check-runs API** to know when Greptile is done: `gh api repos/tryethernal/ethernal/commits/{sha}/check-runs --jq '.check_runs[] | select(.app.slug == "greptile-apps") | {status, conclusion}'`
+- Poll every 60s until status is `completed`. Only then fetch and process comments.
+- After pushing fixes, the check resets to `in_progress` — poll again for the new commit SHA.
 
 **Fetch ALL comment types** (there are 3 separate locations):
 1. **Inline code comments**: `gh api repos/tryethernal/ethernal/pulls/{number}/comments` — line-level comments on code diffs
@@ -160,9 +161,11 @@ PRs trigger automated review (Greptile bot: `greptile-apps[bot]`). When processi
 - PR conversation comments: `gh api repos/tryethernal/ethernal/issues/comments/{id}/reactions -f content='+1'`
 - Do this immediately after reading, and retroactively for older unreacted comments
 
-**Review loop — keep iterating until:**
-- All comments have been processed (acted on or thumbed down)
-- Greptile review has passed (no new reviews after latest push)
+**Review loop — keep iterating until the check-runs API shows `completed`:**
+- After each push, poll the check-runs API every 60s until the Greptile check is `completed`
+- Only then fetch and process new comments
+- After fixing comments and pushing, the check resets — poll again for the new commit
+- Never declare "Greptile done" based on absence of new reviews — always use the check-runs status
 
 ### End-of-Session Flow
 
