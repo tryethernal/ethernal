@@ -6,9 +6,9 @@ on:
   # To publish: trigger manually or call via workflow_dispatch from blog-draft.
   workflow_dispatch:
     inputs:
-      article_path:
-        description: 'Path to the article file (e.g. blog/src/content/blog/my-article.md)'
-        required: true
+      slug:
+        description: 'Article slug (e.g. evm-opcodes-101). Leave empty to publish the oldest draft.'
+        required: false
         type: string
 
 permissions:
@@ -23,15 +23,39 @@ jobs:
           ref: develop
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Publish article
+      - name: Resolve article
+        id: resolve
         env:
-          ARTICLE: ${{ inputs.article_path }}
+          SLUG: ${{ inputs.slug }}
         run: |
-          if [ ! -f "$ARTICLE" ]; then
-            echo "ERROR: Article not found: $ARTICLE"
-            exit 1
+          if [ -n "$SLUG" ]; then
+            # Find by slug
+            ARTICLE="blog/src/content/blog/${SLUG}.md"
+            if [ ! -f "$ARTICLE" ]; then
+              ARTICLE="blog/src/content/blog/${SLUG}.mdx"
+            fi
+            if [ ! -f "$ARTICLE" ]; then
+              echo "ERROR: No article found for slug: $SLUG"
+              echo "Available articles:"
+              ls blog/src/content/blog/
+              exit 1
+            fi
+          else
+            # Find oldest draft article (by git commit date)
+            ARTICLE=$(grep -rl 'status: draft' blog/src/content/blog/ | head -1)
+            if [ -z "$ARTICLE" ]; then
+              echo "No draft articles found. Nothing to publish."
+              exit 0
+            fi
           fi
+          echo "article=$ARTICLE" >> $GITHUB_OUTPUT
+          echo "Publishing: $ARTICLE"
 
+      - name: Publish article
+        if: steps.resolve.outputs.article != ''
+        env:
+          ARTICLE: ${{ steps.resolve.outputs.article }}
+        run: |
           # Update status: draft → published in frontmatter only (between --- delimiters)
           # Use awk to check frontmatter only (not article body which may contain 'status: draft' in code examples)
           if awk 'BEGIN{c=0} /^---$/{c++} c==1 && /status: draft/{found=1} END{exit !found}' "$ARTICLE"; then
