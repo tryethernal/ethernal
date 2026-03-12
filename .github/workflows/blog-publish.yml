@@ -88,7 +88,8 @@ jobs:
           fi
 
           # Update status: draft → published in frontmatter only (between --- delimiters)
-          if grep -q 'status: draft' "$ARTICLE"; then
+          # Use awk to check frontmatter only (not article body which may contain 'status: draft' in code examples)
+          if awk 'BEGIN{c=0} /^---$/{c++} c==1 && /status: draft/{found=1} END{exit !found}' "$ARTICLE"; then
             awk '/^---$/{c++} c==1{gsub(/status: draft/,"status: published")} 1' "$ARTICLE" > "${ARTICLE}.tmp" && mv "${ARTICLE}.tmp" "$ARTICLE"
             echo "Updated status to published in $ARTICLE"
           elif grep -q 'status: published' "$ARTICLE"; then
