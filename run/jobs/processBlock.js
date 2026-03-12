@@ -14,41 +14,38 @@ module.exports = async job => {
     if (!data.blockId)
         return 'Missing parameter';
 
-    // Fetch block data first (fast primary key lookup)
+    // Single optimized query with explicit subQuery: false to avoid slow nested SELECT
     const block = await Block.findByPk(data.blockId, {
-        attributes: ['id', 'number', 'gasUsed', 'gasLimit', 'workspaceId', 'timestamp', 'transactionsCount']
+        attributes: ['id', 'number', 'gasUsed', 'gasLimit', 'workspaceId', 'timestamp', 'transactionsCount'],
+        include: {
+            model: Workspace,
+            as: 'workspace',
+            attributes: ['id', 'public', 'rpcServer', 'networkId', 'name'],
+            include: {
+                model: require('../models').Explorer,
+                as: 'explorer',
+                attributes: ['id', 'shouldSync', 'gasAnalyticsEnabled'],
+                required: false
+            }
+        },
+        subQuery: false // Use JOIN instead of subquery for better performance
     });
 
     if (!block)
         return 'Cannot find block';
 
-    // Fetch workspace and explorer data with targeted query to avoid slow JOINs
-    const workspace = await Workspace.findByPk(block.workspaceId, {
-        attributes: ['id', 'public', 'rpcServer', 'networkId', 'name'],
-        include: {
-            model: require('../models').Explorer,
-            as: 'explorer',
-            attributes: ['id', 'shouldSync', 'gasAnalyticsEnabled'],
-            required: false
-        }
-    });
-
-    if (!workspace)
-        return 'Cannot find workspace';
-
-    // Use workspace directly instead of attaching it to the block instance
-    if (!workspace.public)
+    if (!block.workspace.public)
         return 'Not allowed on private workspaces';
 
-    if (!workspace.explorer)
+    if (!block.workspace.explorer)
         return 'Inactive explorer';
 
-    if (!workspace.explorer.shouldSync)
+    if (!block.workspace.explorer.shouldSync)
         return 'Sync is disabled';
 
     let blockEvent = {};
-    if (workspace.explorer.gasAnalyticsEnabled) {
-        const client = workspace.getViemPublicClient();
+    if (block.workspace.explorer.gasAnalyticsEnabled) {
+        const client = block.workspace.getViemPublicClient();
 
         try {
             const feeHistory = await withTimeout(
@@ -67,7 +64,7 @@ module.exports = async job => {
             };
         } catch (error) {
             if (error.code == -32601)
-                await workspace.explorer.update({ gasAnalyticsEnabled: false });
+                await block.workspace.explorer.update({ gasAnalyticsEnabled: false });
             else
                 logger.warn(`getFeeHistory failed for block ${block.number}: ${error.message}`);
         }
