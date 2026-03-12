@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.38] - 2026-03-12
+### Fixed
+- blog: add draft — Who Evaluates the Agent? The Hardest Problem in Onchain AI Commerce
+- fix: make blog draft prompt fully autonomous
+- fix: make blog pipeline env file path configurable
+- fix: handle ethers.js response processing errors for large blocks (#646)
+- fix: remove blog-draft GitHub Actions workflow
+- fix: optimize removeStalledBlock performance with workspaceId query optimization (#645)
+- fix: optimize processBlock query performance (#642)
+- fix: eliminate complex JOIN query in increaseStripeBillingQuota job (#644)
+- fix: accept slug or auto-pick oldest draft in blog-publish workflow
+
+
 ## [5.17.37] - 2026-03-12
 ### Fixed
 - fix: eliminate N+1 query in blockSync L2 config loading (#638)
