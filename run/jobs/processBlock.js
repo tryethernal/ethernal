@@ -36,21 +36,19 @@ module.exports = async job => {
     if (!workspace)
         return 'Cannot find workspace';
 
-    // Attach workspace to block for compatibility with existing code
-    block.workspace = workspace;
-
-    if (!block.workspace.public)
+    // Use workspace directly instead of attaching it to the block instance
+    if (!workspace.public)
         return 'Not allowed on private workspaces';
 
-    if (!block.workspace.explorer)
+    if (!workspace.explorer)
         return 'Inactive explorer';
 
-    if (!block.workspace.explorer.shouldSync)
+    if (!workspace.explorer.shouldSync)
         return 'Sync is disabled';
 
     let blockEvent = {};
-    if (block.workspace.explorer.gasAnalyticsEnabled) {
-        const client = block.workspace.getViemPublicClient();
+    if (workspace.explorer.gasAnalyticsEnabled) {
+        const client = workspace.getViemPublicClient();
 
         try {
             const feeHistory = await withTimeout(
@@ -69,7 +67,7 @@ module.exports = async job => {
             };
         } catch (error) {
             if (error.code == -32601)
-                await block.workspace.explorer.update({ gasAnalyticsEnabled: false });
+                await workspace.explorer.update({ gasAnalyticsEnabled: false });
             else
                 logger.warn(`getFeeHistory failed for block ${block.number}: ${error.message}`);
         }

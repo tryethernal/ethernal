@@ -55,7 +55,7 @@ describe('processBlock', () => {
             });
     });
 
-    it('Should return the created block event', (done) => {
+    it('Should return the created block event with gas analytics', (done) => {
         const mockBlock = {
             workspaceId: 1,
             safeCreateEvent: jest.fn().mockResolvedValueOnce({ id: 1 })
@@ -81,6 +81,31 @@ describe('processBlock', () => {
         processBlock({ data: { blockId: 1 }})
             .then(res => {
                 expect(res).toEqual({ id: 1 });
+                done();
+            });
+    });
+
+    it('Should return the created block event without gas analytics when disabled', (done) => {
+        const mockBlock = {
+            workspaceId: 1,
+            safeCreateEvent: jest.fn().mockResolvedValueOnce({ id: 1 })
+        };
+        const mockWorkspace = {
+            public: true,
+            explorer: {
+                shouldSync: true,
+                gasAnalyticsEnabled: false
+            },
+            getViemPublicClient: jest.fn()
+        };
+
+        jest.spyOn(Block, 'findByPk').mockResolvedValueOnce(mockBlock);
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce(mockWorkspace);
+
+        processBlock({ data: { blockId: 1 }})
+            .then(res => {
+                expect(res).toEqual({ id: 1 });
+                expect(mockWorkspace.getViemPublicClient).not.toHaveBeenCalled();
                 done();
             });
     });
