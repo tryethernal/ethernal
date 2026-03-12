@@ -186,7 +186,7 @@ export function updateCardStatus(itemId, statusKey) {
  * @param {string} articlePath - Relative path to the article file (e.g. blog/src/content/blog/my-article.md)
  */
 export function setArticlePath(itemId, articlePath) {
-  execSync(
+  const raw = execSync(
     'gh api graphql --input -',
     {
       encoding: 'utf-8',
@@ -197,6 +197,10 @@ export function setArticlePath(itemId, articlePath) {
       }),
     }
   );
+  const parsed = JSON.parse(raw);
+  if (parsed.errors?.length) {
+    throw new Error(`GraphQL error setting article path: ${parsed.errors.map(e => e.message).join('; ')}`);
+  }
 }
 
 /**
