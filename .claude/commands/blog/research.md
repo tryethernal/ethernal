@@ -15,20 +15,18 @@ Research the topic "$ARGUMENTS" thoroughly to prepare a writing brief.
    - Recent conference talks or research papers
    - Quality tutorials or deep dives
 
-2. **Save sources** via Inkwell `add_source` for each. Include URL and a brief description of what it covers.
+2. **Save sources** — For each source, note the URL and a brief description of what it covers.
 
 3. **Extract key facts** — For each source, pull out:
    - Core technical concepts and definitions
    - Code examples worth referencing
    - Data points, benchmarks, or comparisons
    - Common misconceptions to address
-   Save each as `add_note` (type: fact, tag matching the article slug).
 
 4. **Propose angles** — Suggest 2-3 possible angles for the article. Consider:
    - What's the reader's starting point? (beginner, intermediate, advanced)
    - What's the unique insight we can offer?
    - How does this connect to Ethernal's domain?
-   Save as `add_note` (type: angle).
 
 5. **Create an outline** — Pick the strongest angle and create a detailed outline:
    - Hook idea
@@ -36,9 +34,8 @@ Research the topic "$ARGUMENTS" thoroughly to prepare a writing brief.
    - Where code examples fit
    - Where Ethernal can be mentioned naturally (if at all — don't force it)
    - Estimated word count per section
-   Save as `add_note` (type: outline).
 
-6. **Run `prepare_brief`** and display the complete brief for review.
+6. **Check existing articles** — Read 2-3 articles in `blog/src/content/blog/` to ensure the angle is fresh and doesn't overlap with published content.
 
 ## Output
 

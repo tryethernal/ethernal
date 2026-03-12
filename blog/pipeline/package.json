@@ -1,0 +1,13 @@
+{
+  "name": "ethernal-blog-pipeline",
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "scan": "node index.js",
+    "scan:dry": "node index.js --dry-run"
+  },
+  "dependencies": {
+    "google-trends-api": "^4.9.2",
+    "rss-parser": "^3.13.0"
+  }
+}

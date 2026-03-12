@@ -227,6 +227,61 @@ Below are the main configuration files and the variables they contain:
 
 ---
 
+## 📝 Blog Pipeline
+
+Ethernal's blog ([tryethernal.com/blog](https://tryethernal.com/blog)) is powered by an automated trend-scanning pipeline that discovers what's happening in the Ethereum ecosystem and produces draft articles.
+
+### How it works
+
+```
+Sources (EIPs, ERCs, ethresear.ch, Magicians, arxiv)
+  ↓  weekly scan
+Classify into 12 topic clusters
+  ↓
+Score by weighted signals (ERC count, research posts, arxiv papers, Google Trends)
+  ↓
+Create draft cards on GitHub Project board
+  ↓  every 2 days
+Round-robin picker selects highest-scoring topic (skips clusters with active work)
+  ↓
+Claude CLI researches sources and drafts the article
+  ↓
+Article committed to develop with status: draft (invisible on site, deployed for preview)
+  ↓  card link added to project board
+Move card to "Published" in GitHub Project
+  ↓  triggers workflow
+Frontmatter updated to status: published → article goes live on next deploy
+```
+
+**Board columns:** Detected → Researched → Drafting → Published
+
+### Running the pipeline
+
+```bash
+cd blog/pipeline
+npm ci
+
+# Scan sources and create/update project cards
+node index.js
+
+# Preview without creating cards
+node index.js --dry-run
+
+# Pick next topic for drafting
+node index.js --pick --dry-run
+```
+
+### Automation
+
+| Trigger | What | Where |
+|---------|------|-------|
+| Weekly (Mon 6am UTC) | Scan sources, update scores | `.github/workflows/blog-trend-scan.yml` |
+| Every 2 days (8am UTC) | Pick topic, research, draft to develop | `.github/workflows/blog-draft.yml` |
+| Card → Published | Update frontmatter `status: published` | `.github/workflows/blog-publish.yml` |
+| Systemd timer (Hetzner) | Same as draft workflow via Claude CLI | `blog/pipeline/draft.sh` |
+
+---
+
 ## 🐞 Bug Reports
 
 Found a bug? Please [open an issue](https://github.com/tryethernal/ethernal/issues) in this repo.

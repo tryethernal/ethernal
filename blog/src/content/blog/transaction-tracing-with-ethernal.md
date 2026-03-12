@@ -3,6 +3,7 @@ title: "Transaction Tracing with Ethernal"
 date: 2021-05-26
 description: "Easily see which contracts were called or created during the execution of a function. A deep dive into Ethernal's transaction tracing feature."
 image: "/blog/images/transaction-tracing-with-ethernal.png"
+ogImage: "/blog/images/transaction-tracing-with-ethernal-og.png"
 tags:
   - Ethernal
   - EVM
