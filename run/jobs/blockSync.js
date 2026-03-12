@@ -165,38 +165,12 @@ module.exports = async job => {
             }
         }
 
-        // Load L2 configs on-demand for workspaceId path
+        // Load L2 child configs on-demand for workspaceId path
+        // L1 parent workspaces never have their own orbitConfig - only child configs
         if (workspace.isCustomL1Parent) {
             const l2Configs = await Workspace.findByPk(data.workspaceId, {
                 attributes: ['id'],
                 include: [
-                    {
-                        model: require('../models').OrbitChainConfig,
-                        as: 'orbitConfig',
-                        attributes: [
-                            'rollupContract',
-                            'sequencerInboxContract',
-                            'bridgeContract',
-                            'inboxContract',
-                            'outboxContract',
-                            'stakeToken',
-                            'l1GatewayRouter',
-                            'l1Erc20Gateway',
-                            'l1WethGateway',
-                            'l1CustomGateway',
-                            'l2GatewayRouter',
-                            'l2Erc20Gateway',
-                            'l2WethGateway',
-                            'l2CustomGateway'
-                        ],
-                        required: false,
-                        include: {
-                            model: require('../models').Workspace,
-                            as: 'parentWorkspace',
-                            attributes: ['id', 'rpcServer'],
-                            required: false
-                        }
-                    },
                     {
                         model: require('../models').OrbitChainConfig,
                         as: 'orbitChildConfigs',
@@ -235,7 +209,6 @@ module.exports = async job => {
             });
 
             if (l2Configs) {
-                workspace.orbitConfig = l2Configs.orbitConfig;
                 workspace.orbitChildConfigs = l2Configs.orbitChildConfigs;
                 workspace.opChildConfigs = l2Configs.opChildConfigs;
             }
@@ -467,9 +440,9 @@ module.exports = async job => {
                     workspace.opChildConfigs = l2Configs.opChildConfigs;
                 }
             }
-        } else if (workspace.isCustomL1Parent) {
+        } else if (workspace.isCustomL1Parent && !workspace.orbitChildConfigs) {
             // Only load L2 configs for L1 parent workspaces that can have child configs
-            // Regular L2 workspaces will load their orbitConfig when actually needed below
+            // Skip if configs were already loaded in the workspaceId path above
             const l2Configs = await Workspace.findByPk(workspace.id, {
                 attributes: ['id'],
                 include: [
