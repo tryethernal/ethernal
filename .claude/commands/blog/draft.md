@@ -1,5 +1,5 @@
 ---
-description: Write a complete blog article from the research brief and push to Ghost as draft
+description: Write a complete blog article for the Astro blog
 ---
 
 # Blog Draft
@@ -8,37 +8,26 @@ Write a complete, publication-ready article for the Ethernal Astro blog.
 
 ## Pre-Writing
 
-1. **Read feedback log** — Use Inkwell `list_notes` (tag: feedback) to internalize all past editorial preferences. These are NON-NEGOTIABLE rules.
+1. **Read product context** — Read `.agents/product-marketing-context.md` for accurate product messaging.
 
-2. **Read voice template** — Read `~/ethernal-blog/templates/voice/ethernal-refined.md` for tone, structure, and learned preferences.
+2. **Read existing articles** — Skim 2-3 existing articles in `blog/src/content/blog/` to match tone and structure. Antoine's style is practical, tutorial-like, direct, slightly informal, uses "we" for Ethernal and occasional "I".
 
-3. **Read product context** — Read `.agents/product-marketing-context.md` for accurate product messaging.
-
-4. **Read codebase context** — Read files in `~/ethernal-blog/context/` for:
-   - `landing-copy.md` — marketing alignment
-   - `feature-map.md` — technical accuracy
-   - `code-snippets.md` — reusable examples
-
-5. **Get research brief** — Run Inkwell `prepare_brief` for the article.
+3. **Gather sources** — Research the topic using WebSearch/WebFetch. Collect EIPs, official docs, papers, protocol specs, and expert quotes.
 
 ## Writing
 
-6. **Invoke the `copywriting` skill** for structure, hooks, and persuasion guidance.
+4. **Invoke the `copywriting` skill** for structure, hooks, and persuasion guidance.
 
-7. **Write the article** following:
-   - Voice template structure (hook → context → problem → solution → Ethernal angle → CTA)
-   - Match the tone of the 7 existing human-written Ghost posts
-   - All accumulated feedback preferences (from step 1)
+5. **Write the article** following:
+   - Structure: hook → context → problem → solution → Ethernal angle → CTA
    - Target: 1200-1800 words
    - Include code snippets where relevant (use language-tagged code blocks)
    - Ethernal mentions should feel natural (or absent if forced)
 
-8. **Add citations and references** — Every article should cite real sources:
+6. **Add citations and references** — Every article should cite real sources:
    - Link to EIPs, official docs, research papers, or protocol specs inline
    - Quote or reference recognized figures of authority in the space (e.g. Vitalik, protocol authors, core devs, auditors)
-   - Reference subject matter experts when discussing specific topics
    - Add a **References** footer section at the bottom (before CTA), listing all sources with links
-   - Style reference: https://www.sensai.fit/blog (see how they structure citations and reference footers, e.g. https://www.sensai.fit/blog/low-hrv-normal-rhr-train-or-recover-framework)
    - Format:
      ```markdown
      ## References
@@ -48,13 +37,13 @@ Write a complete, publication-ready article for the Ethernal Astro blog.
      3. ...
      ```
 
-9. **Invoke the `humanizer` skill** to remove AI writing artifacts.
+7. **Invoke the `humanizer` skill** to remove AI writing artifacts.
 
-10. **Invoke the `ai-seo` skill** to optimize for AI search discoverability.
+8. **Invoke the `ai-seo` skill** to optimize for AI search discoverability.
 
 ## Publishing
 
-11. **Save the article** to `blog/src/content/blog/<slug>.md` with frontmatter:
+9. **Save the article** to `blog/src/content/blog/<slug>.md` with frontmatter:
     ```yaml
     ---
     title: "Article Title"
@@ -78,13 +67,12 @@ Write a complete, publication-ready article for the Ethernal Astro blog.
 
 ## Cover Image & Social Cards
 
-12. **Generate a cover image** using the Gemini API (see `~/ethernal-blog/gen-image.mjs` helper or call directly):
+10. **Generate a cover image** using the nano-banana MCP tool or Gemini API:
     - Use `gemini-3-pro-image-preview` model (best text rendering) or `imagen-4.0-generate-001` (batch variations)
-    - If `gemini-2.5-flash-image` is available and not rate-limited, it also works
     - Generate 4 variations and pick the best one
     - Prompt structure: describe layout (left/right split), specific text to render, "dark navy background", "flat minimal design, developer aesthetic"
 
-13. **Generate two image sizes:**
+11. **Generate two image sizes:**
     - **Cover image** (1424x752): `magick input.png -resize 1424x752! blog/public/images/<slug>.png`
     - **OG image** (1200x630): `magick input.png -resize 1200x630! blog/public/images/<slug>-og.png`
     - The cover is shown in-article; the OG image is used for social previews (Twitter, Slack, Discord, etc.)
