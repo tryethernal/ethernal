@@ -113,13 +113,16 @@ module.exports = async () => {
         }
     }
 
-    // Monitor performance - batch queue stats collection for all monitored queues
+    // Monitor performance - batch queue stats collection with reduced call frequency
     if (monitoredPerformances.length > 0) {
-        // Collect queue stats in parallel to reduce sequential Redis calls
-        const queueStatsPromises = monitoredPerformances.map(async (queueName) => {
+        // Collect queue stats sequentially to reduce parallel Redis load
+        // This reduces peak concurrent Redis operations from 8+ to 4 per queue
+        const allQueueStats = [];
+
+        for (const queueName of monitoredPerformances) {
             const queue = getQueue(queueName);
 
-            // Fetch basic queue stats first
+            // Batch the 4 basic stats calls together, but process queues sequentially
             const [completedJobs, waitingJobCount, delayedJobCount, failedJobCount] = await Promise.all([
                 queue.getCompleted(0, 99), // Limit to 100 jobs for P95 calculation
                 queue.getWaitingCount(),
@@ -132,7 +135,7 @@ module.exports = async () => {
 
             const p95ProcessingTime = computeP95ProcessingTime(completedJobs);
 
-            return {
+            allQueueStats.push({
                 queueName,
                 completedJobs,
                 waitingJobCount,
@@ -140,10 +143,8 @@ module.exports = async () => {
                 failedJobCount,
                 failedJobs,
                 p95ProcessingTime
-            };
-        });
-
-        const allQueueStats = await Promise.all(queueStatsPromises);
+            });
+        }
 
         // Process results and create incidents
         for (const stats of allQueueStats) {
