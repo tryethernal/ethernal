@@ -14,29 +14,9 @@ module.exports = async job => {
     if (!data.blockId)
         return 'Missing parameter';
 
-    // First: Get block with minimal data, including transactionsCount
+    // Step 1: Get block with minimal data
     const block = await Block.findByPk(data.blockId, {
-        attributes: ['id', 'isReady', 'transactionsCount', 'workspaceId'],
-        include: {
-            model: Workspace,
-            as: 'workspace',
-            attributes: ['id'],
-            include: {
-                model: Explorer,
-                as: 'explorer',
-                attributes: ['id'],
-                include: {
-                    model: StripeSubscription,
-                    as: 'stripeSubscription',
-                    attributes: ['id', 'stripeId', 'transactionQuota'],
-                    include: {
-                        model: StripePlan,
-                        as: 'stripePlan',
-                        attributes: ['capabilities']
-                    }
-                }
-            }
-        }
+        attributes: ['id', 'isReady', 'transactionsCount', 'workspaceId']
     });
 
     if (!block)
@@ -56,17 +36,35 @@ module.exports = async job => {
     if (!transactionCount)
         return 'Block is empty';
 
-    if (!block.workspace.explorer)
+    // Step 2: Get explorer for this workspace
+    const explorer = await Explorer.findOne({
+        where: { workspaceId: block.workspaceId },
+        attributes: ['id']
+    });
+
+    if (!explorer)
         return 'No explorer';
 
-    const stripeSubscription = block.workspace.explorer.stripeSubscription;
+    // Step 3: Get stripe subscription for this explorer
+    const stripeSubscription = await StripeSubscription.findOne({
+        where: { explorerId: explorer.id },
+        attributes: ['id', 'stripeId', 'transactionQuota', 'stripePlanId']
+    });
 
     if (!stripeSubscription)
         return 'No active subscription';
 
+    // Step 4: Get stripe plan capabilities
+    const stripePlan = await StripePlan.findByPk(stripeSubscription.stripePlanId, {
+        attributes: ['capabilities']
+    });
+
+    if (!stripePlan)
+        return 'No stripe plan found';
+
     await stripeSubscription.increment('transactionQuota', { by: transactionCount });
 
-    if (stripeSubscription.stripePlan.capabilities.billing == 'metered') {
+    if (stripePlan.capabilities.billing == 'metered') {
         const subscription = await stripe.subscriptions.retrieve(stripeSubscription.stripeId);
         await stripe.subscriptionItems.createUsageRecord(subscription.items.data[0].id, {
             quantity: transactionCount
