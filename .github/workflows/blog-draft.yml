@@ -125,7 +125,7 @@ jobs:
           fi
 
       - name: Reset card on failure
-        if: steps.draft.outcome == 'failure' && steps.pick.outputs.skip != 'true'
+        if: failure() && steps.draft.outcome == 'failure' && steps.pick.outputs.skip != 'true'
         working-directory: blog/pipeline
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
