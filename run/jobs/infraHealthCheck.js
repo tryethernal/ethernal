@@ -92,24 +92,24 @@ async function checkPostgres() {
 async function checkRemediationRateLimit(alertType) {
     // Layer 1: Hourly cap (atomic INCR+EXPIRE via Lua to avoid race condition)
     const hourlyKey = 'infra:remediation:hourly';
-    const hourlyCount = await redis.eval(
+    const hourlyCount = await withTimeout(redis.eval(
         "local count = redis.call('INCR', KEYS[1]) if count == 1 then redis.call('EXPIRE', KEYS[1], 3600) end return count",
         1, hourlyKey
-    );
+    ), CHECK_TIMEOUT_MS);
     if (hourlyCount > REMEDIATION_HOURLY_LIMIT) {
         return { allowed: false, reason: `hourly limit reached (${hourlyCount}/${REMEDIATION_HOURLY_LIMIT})`, escalate: false };
     }
 
     // Layer 2: Per-alert dedup — same alert type within 30 min (fail-fast escalation)
     const lastKey = `infra:remediation:last:${alertType}`;
-    const lastTrigger = await redis.get(lastKey);
+    const lastTrigger = await withTimeout(redis.get(lastKey), CHECK_TIMEOUT_MS);
     if (lastTrigger) {
         return { allowed: false, reason: `same alert type triggered recently`, escalate: true };
     }
 
     // Layer 3: Global cooldown (5 min between any triggers) — set only after all checks pass
     const cooldownKey = 'infra:remediation:cooldown';
-    const cooldownSet = await redis.set(cooldownKey, '1', 'EX', REMEDIATION_COOLDOWN_SECONDS, 'NX');
+    const cooldownSet = await withTimeout(redis.set(cooldownKey, '1', 'EX', REMEDIATION_COOLDOWN_SECONDS, 'NX'), CHECK_TIMEOUT_MS);
     if (!cooldownSet) {
         return { allowed: false, reason: 'cooldown active', escalate: false };
     }
