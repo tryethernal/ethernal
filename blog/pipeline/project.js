@@ -157,17 +157,6 @@ export function pickNextTopic(dryRun = false) {
     console.log(`  Skipped clusters (active): ${[...activeClusters].join(', ')}`);
   }
 
-  // Move to Researched status
-  try {
-    execSync(
-      `gh api graphql -f query='mutation { updateProjectV2ItemFieldValue(input: { projectId: "${PROJECT.id}", itemId: "${picked.id}", fieldId: "${PROJECT.fields.status}", value: { singleSelectOptionId: "${PROJECT.statusOptions.researched}" } }) { projectV2Item { id } } }'`,
-      { encoding: 'utf-8', timeout: 15000 }
-    );
-    console.log(`  Moved to "Researched"`);
-  } catch (err) {
-    console.error(`  Failed to move card: ${err.message}`);
-  }
-
   return picked;
 }
 
@@ -283,7 +272,11 @@ export async function createProjectCard(topic, dryRun = false, existingItems = n
         }),
       }
     );
-    const itemId = JSON.parse(result).data.addProjectV2DraftIssue.projectItem.id;
+    const parsed = JSON.parse(result);
+    if (parsed.errors?.length) {
+      throw new Error(`GraphQL error: ${parsed.errors.map(e => e.message).join('; ')}`);
+    }
+    const itemId = parsed.data.addProjectV2DraftIssue.projectItem.id;
 
     setProjectFields(itemId, topic);
     console.log(`  Created: "${title}" (score: ${topic.score})`);

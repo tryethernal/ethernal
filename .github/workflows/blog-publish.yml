@@ -85,9 +85,9 @@ jobs:
             exit 1
           fi
 
-          # Update status: draft → published in frontmatter
+          # Update status: draft → published in frontmatter only (between --- delimiters)
           if grep -q 'status: draft' "$ARTICLE"; then
-            sed -i 's/status: draft/status: published/' "$ARTICLE"
+            awk '/^---$/{c++} c==1{gsub(/status: draft/,"status: published")} 1' "$ARTICLE" > "${ARTICLE}.tmp" && mv "${ARTICLE}.tmp" "$ARTICLE"
             echo "Updated status to published in $ARTICLE"
           elif grep -q 'status: published' "$ARTICLE"; then
             echo "Article is already published"
