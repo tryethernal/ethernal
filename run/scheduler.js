@@ -7,6 +7,7 @@ const SYNC_RECOVERY_CHECK_INTERVAL = 5 * 60 * 1000;
 const QUEUE_MONITORING_INTERVAL = 120 * 1000; // Reduced from 60s to 120s to reduce Redis N+1 call frequency
 const CANCEL_DEMO_INTERVAL = 60 * 60 * 1000;
 const BLOCK_SYNC_MONITORING_INTERVAL = 60 * 1000;
+const INFRA_HEALTH_CHECK_INTERVAL = 60 * 1000;
 
 (async () => {
     await enqueue(
@@ -128,5 +129,13 @@ const BLOCK_SYNC_MONITORING_INTERVAL = 60 * 1000;
         {},
         10,
         { every: 30 * 1000 } // Check every 30 seconds
+    );
+
+    await enqueue(
+        'infraHealthCheck',
+        'infraHealthCheck',
+        {},
+        10,
+        { every: INFRA_HEALTH_CHECK_INTERVAL }
     );
 })();
