@@ -477,6 +477,18 @@ class Tracer {
             }
         }
 
+        // Handle RPC connection failures and debug_traceTransaction unavailability
+        const errorMessage = error.message || '';
+        if (errorMessage.includes('failed response') ||
+            errorMessage.includes('debug_traceTransaction does not exist') ||
+            errorMessage.includes('debug_traceTransaction is not enabled') ||
+            errorMessage.includes('debug_traceTransaction not supported')) {
+            return this.error = {
+                message: 'RPC endpoint does not support debug_traceTransaction or is unreachable',
+                error: error
+            };
+        }
+
         throw error;
     }
 

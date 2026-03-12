@@ -66,8 +66,15 @@ module.exports = async job => {
     const tracer = new Tracer(transaction.workspace.rpcServer, db, transaction.workspace.tracing);
     await tracer.process(transaction);
 
-    if (tracer.error)
+    if (tracer.error) {
+        // Disable tracing if RPC doesn't support debug_traceTransaction
+        if (tracer.error.message &&
+            (tracer.error.message.includes('RPC endpoint does not support debug_traceTransaction') ||
+             tracer.error.message.includes('debug_traceTransaction does not exist'))) {
+            await transaction.workspace.update({ tracing: null });
+        }
         return tracer.error;
+    }
 
     if (!tracer.parsedTrace)
         return 'No trace';
@@ -78,7 +85,8 @@ module.exports = async job => {
             await transaction.workspace.update({ tracing: null });
         return trace;
     } catch(error) {
-        if (error.error.message.includes('not enabled'))
+        if (error.error.message.includes('not enabled') ||
+            error.error.message.includes('RPC endpoint does not support debug_traceTransaction'))
             await transaction.workspace.update({ tracing: null });
         return error;
     }
