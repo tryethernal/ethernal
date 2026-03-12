@@ -11,12 +11,14 @@ import { PROJECT } from './config.js';
  * @param {string} itemId - Project item ID
  * @param {{cluster: string, score: number, items: Array, contentType: string}} topic
  */
-function setProjectFields(itemId, topic) {
+function setProjectFields(itemId, topic, { includeStatus = true } = {}) {
   const baseInput = `projectId: "${PROJECT.id}", itemId: "${itemId}"`;
 
   const fields = [
     { fieldId: PROJECT.fields.trendScore, value: `number: ${topic.score}` },
-    { fieldId: PROJECT.fields.status, value: `singleSelectOptionId: "${PROJECT.statusOptions.detected}"` },
+    ...(includeStatus
+      ? [{ fieldId: PROJECT.fields.status, value: `singleSelectOptionId: "${PROJECT.statusOptions.detected}"` }]
+      : []),
   ];
 
   const clusterOptionId = PROJECT.clusterOptions[topic.cluster];
@@ -238,13 +240,13 @@ export async function createProjectCard(topic, dryRun = false, existingItems = n
           }),
         }
       );
-      setProjectFields(existing.id, topic);
+      setProjectFields(existing.id, topic, { includeStatus: false });
       console.log(`  Updated: "${title}" — score → ${topic.score}`);
     } catch (err) {
       // updateProjectV2DraftIssue needs the draftIssue ID, not the item ID
       // If update fails, just update the fields
       try {
-        setProjectFields(existing.id, topic);
+        setProjectFields(existing.id, topic, { includeStatus: false });
         console.log(`  Updated fields: "${title}" — score → ${topic.score}`);
       } catch (err2) {
         console.error(`  Error updating "${topic.label}": ${err2.message}`);
