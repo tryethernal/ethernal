@@ -34,6 +34,9 @@ module.exports = async job => {
     if (!block)
         return 'Cannot find block';
 
+    if (!block.workspace)
+        return 'Cannot find workspace';
+
     if (!block.workspace.public)
         return 'Not allowed on private workspaces';
 

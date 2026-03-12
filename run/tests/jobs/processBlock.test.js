@@ -16,11 +16,13 @@ describe('processBlock', () => {
     });
 
     it('Should return an error if workspace is not found', (done) => {
-        // With the single query approach, missing workspace means block is null
-        jest.spyOn(Block, 'findByPk').mockResolvedValueOnce(null);
+        jest.spyOn(Block, 'findByPk').mockResolvedValueOnce({
+            workspaceId: 1,
+            workspace: null
+        });
         processBlock({ data: { blockId: 1 }})
             .then(res => {
-                expect(res).toEqual('Cannot find block');
+                expect(res).toEqual('Cannot find workspace');
                 done();
             });
     });
