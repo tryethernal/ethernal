@@ -68,16 +68,13 @@ cd "$REPO_DIR"
 # Claude writes the article with status: draft in frontmatter,
 # commits directly to develop, and outputs the article path
 log "Starting research and draft..."
-CLAUDE_OUTPUT=$(claude -p "$(cat <<PROMPT
+
+# Write prompt to temp file to avoid heredoc delimiter injection via $CARD_BODY
+PROMPT_FILE=$(mktemp)
+cat > "$PROMPT_FILE" <<'CLAUDE_PROMPT_EOF'
 You are writing a blog article for the Ethernal blog (On-Chain Engineering).
 
-A trending topic has been detected by our pipeline. Here is the full trend card:
-
-**Topic:** $TOPIC
-**Content Type:** $CONTENT_TYPE
-
-**Trend Card Content:**
-$CARD_BODY
+A trending topic has been detected by our pipeline. Read the file `blog/pipeline/.card-body.md` for the full trend card content with sources to research.
 
 Steps:
 1. Run /blog:research for this topic. Focus on the specific EIPs, ERCs, papers, and forum posts listed — those are the primary sources.
@@ -93,13 +90,18 @@ Steps:
 5. Push to origin develop.
 6. After pushing, output the article file path relative to the repo root on a line starting with "::article-path::"
    Example: ::article-path::blog/src/content/blog/my-article.md
-PROMPT
-)" \
+CLAUDE_PROMPT_EOF
+
+# Write card body to file for Claude to read (avoids shell interpolation)
+printf '**Topic:** %s\n**Content Type:** %s\n\n%s' "$TOPIC" "$CONTENT_TYPE" "$CARD_BODY" > blog/pipeline/.card-body.md
+
+CLAUDE_OUTPUT=$(claude -p "$(cat "$PROMPT_FILE")" \
   --dangerously-skip-permissions \
   --mcp-config "$MCP_CONFIG" \
   --max-turns 50 \
   --max-budget-usd "$MAX_BUDGET" \
   2>&1)
+rm -f "$PROMPT_FILE"
 
 echo "$CLAUDE_OUTPUT" | tee -a "$LOG_FILE"
 

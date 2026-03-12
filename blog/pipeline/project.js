@@ -82,7 +82,7 @@ function buildCardBody(topic) {
 export function getProjectItems() {
   try {
     const result = execSync(
-      `gh project item-list ${PROJECT.number} --owner ${PROJECT.owner} --format json`,
+      `gh project item-list ${PROJECT.number} --owner ${PROJECT.owner} --format json --limit 200`,
       { encoding: 'utf-8', timeout: 30000 }
     );
     const data = JSON.parse(result);
