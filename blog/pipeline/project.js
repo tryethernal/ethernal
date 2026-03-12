@@ -145,7 +145,7 @@ export function pickNextTopic(dryRun = false) {
   if (!picked.body) {
     try {
       const result = execSync(
-        `gh api graphql -f query='{ node(id: "${picked.id}") { ... on ProjectV2Item { content { ... on DraftIssue { body } ... on Issue { body } } } } }' --jq '.data.node.content.body // ""'`,
+        `gh api graphql -f query='{ node(id: "${picked.id}") { ... on ProjectV2Item { content { ... on DraftIssue { body } ... on Issue { body } } } } }' --jq -r '.data.node.content.body // ""'`,
         { encoding: 'utf-8', timeout: 15000 }
       ).trim();
       picked.body = result === 'null' ? '' : result;

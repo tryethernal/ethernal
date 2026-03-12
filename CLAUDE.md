@@ -149,7 +149,7 @@ PRs trigger automated review (Greptile bot: `greptile-apps[bot]`). When processi
 - After pushing fixes, the check resets to `in_progress` — poll again for the new commit SHA.
 
 **Fetch ALL comment types** (there are 3 separate locations):
-1. **Inline code comments**: `gh api repos/tryethernal/ethernal/pulls/{number}/comments` — line-level comments on code diffs
+1. **Per-review comments** (MOST RELIABLE): For each review, fetch `gh api repos/tryethernal/ethernal/pulls/{number}/reviews/{review_id}/comments`. The top-level `pulls/{number}/comments` endpoint can miss comments from later review batches.
 2. **Review-level comments**: `gh api repos/tryethernal/ethernal/pulls/{number}/reviews --jq '.[] | select(.body != "")'` — top-level review summaries
 3. **PR conversation comments**: `gh api repos/tryethernal/ethernal/issues/{number}/comments` — general discussion thread (bot summaries, etc.)
 
