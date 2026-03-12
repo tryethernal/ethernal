@@ -14,23 +14,30 @@ module.exports = async job => {
     if (!data.blockId)
         return 'Missing parameter';
 
+    // Fetch block data first (fast primary key lookup)
     const block = await Block.findByPk(data.blockId, {
-        attributes: ['id', 'number', 'gasUsed', 'gasLimit', 'workspaceId', 'timestamp', 'transactionsCount'],
-        include: {
-            model: Workspace,
-            as: 'workspace',
-            attributes: ['id', 'public', 'rpcServer', 'networkId', 'name'],
-            include: {
-                model: require('../models').Explorer,
-                as: 'explorer',
-                attributes: ['id', 'shouldSync', 'gasAnalyticsEnabled'],
-                required: false
-            }
-        }
+        attributes: ['id', 'number', 'gasUsed', 'gasLimit', 'workspaceId', 'timestamp', 'transactionsCount']
     });
 
     if (!block)
         return 'Cannot find block';
+
+    // Fetch workspace and explorer data with targeted query to avoid slow JOINs
+    const workspace = await Workspace.findByPk(block.workspaceId, {
+        attributes: ['id', 'public', 'rpcServer', 'networkId', 'name'],
+        include: {
+            model: require('../models').Explorer,
+            as: 'explorer',
+            attributes: ['id', 'shouldSync', 'gasAnalyticsEnabled'],
+            required: false
+        }
+    });
+
+    if (!workspace)
+        return 'Cannot find workspace';
+
+    // Attach workspace to block for compatibility with existing code
+    block.workspace = workspace;
 
     if (!block.workspace.public)
         return 'Not allowed on private workspaces';
