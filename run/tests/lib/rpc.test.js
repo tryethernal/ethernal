@@ -106,10 +106,45 @@ describe('Tracer', () => {
     it('Should not persist the trace in the db if it is invalid', async () => {
         const tracer = new Tracer('http://localhost:8545', {});
         parseTrace.mockResolvedValueOnce({ invalid: 'trace' });
-        
+
         await tracer.process({ hash: '0x123' });
         await tracer.saveTrace('123', 'hardhat');
 
         expect(processTrace).not.toHaveBeenCalled();
+    });
+
+    it('Should throw RATE_LIMITED for HTTP 429 errors', async () => {
+        const tracer = new Tracer('http://localhost:8545', {});
+        const error = new Error('Too Many Requests');
+        error.status = 429;
+        jest.spyOn(tracer.provider, 'send').mockRejectedValueOnce(error);
+
+        await expect(tracer.process({ hash: '0x123' })).rejects.toMatchObject({
+            code: 'RATE_LIMITED',
+            message: 'Rate limited by RPC provider'
+        });
+    });
+
+    it('Should throw RATE_LIMITED for Hyperliquid rate limit errors', async () => {
+        const tracer = new Tracer('http://localhost:8545', {});
+        const error = new Error('rate limit exceeded');
+        error.url = 'https://rpc.hyperliquid-testnet.xyz/evm';
+        jest.spyOn(tracer.provider, 'send').mockRejectedValueOnce(error);
+
+        await expect(tracer.process({ hash: '0x123' })).rejects.toMatchObject({
+            code: 'RATE_LIMITED',
+            message: 'Rate limited by RPC provider'
+        });
+    });
+
+    it('Should throw TRANSIENT_RPC_ERROR for generic Hyperliquid failed response errors', async () => {
+        const tracer = new Tracer('http://localhost:8545', {});
+        const error = new Error('failed response (url="https://rpc.hyperliquid-testnet.xyz/evm", requestBody="{...}")');
+        jest.spyOn(tracer.provider, 'send').mockRejectedValueOnce(error);
+
+        await expect(tracer.process({ hash: '0x123' })).rejects.toMatchObject({
+            code: 'TRANSIENT_RPC_ERROR',
+            message: 'Transient RPC error (failed response)'
+        });
     });
 });
