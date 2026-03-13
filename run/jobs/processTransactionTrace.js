@@ -5,7 +5,7 @@
  */
 
 const db = require('../lib/firebase');
-const { Transaction, Workspace, User, Explorer, RpcHealthCheck } = require('../models');
+const { Transaction, Workspace, Explorer, RpcHealthCheck, StripeSubscription } = require('../models');
 const { Tracer } = require('../lib/rpc');
 
 module.exports = async job => {
@@ -22,15 +22,15 @@ module.exports = async job => {
                 attributes: ['public', 'rpcHealthCheckEnabled', 'rpcServer', 'tracing', 'name'],
                 include: [
                     {
-                        model: User,
-                        as: 'user',
-                        attributes: ['firebaseUserId'],
-                    },
-                    {
                         model: Explorer,
                         as: 'explorer',
                         attributes: ['shouldSync'],
-                        include: 'stripeSubscription'
+                        include: {
+                            model: StripeSubscription,
+                            as: 'stripeSubscription',
+                            attributes: ['id'],
+                            required: false
+                        }
                     },
                     {
                         model: RpcHealthCheck,
