@@ -147,8 +147,12 @@ const getProvider = function(url, timeout) {
 
     // WebSocketProvider expects a URL string, JsonRpcProvider expects ConnectionInfo
     if (provider === ethers.providers.WebSocketProvider) {
-        // For WebSocket, always use the original URL as it can contain embedded credentials
-        providers[cacheKey] = new provider(url);
+        // For WebSocket, timeout has no effect on WebSocket connections; cache under the base URL to avoid duplicate connections
+        const wsKey = url;
+        if (!providers[wsKey]) {
+            providers[wsKey] = new provider(url);
+        }
+        providers[cacheKey] = providers[wsKey]; // alias so future lookups also hit the cache
     } else {
         let connectionInfo = {
             url: rpcServer.username.length || rpcServer.password.length ?
