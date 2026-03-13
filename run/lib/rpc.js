@@ -260,6 +260,7 @@ class ProviderConnector {
         if (!server) throw '[ProviderConnector] Missing server parameter';
         this.server = server; // Store original URL for batch requests
         this.provider = getProvider(server);
+        this.blockProvider = getProvider(server, 30000); // Separate provider with 30s timeout for block operations
         this.limiter = limiter;
     }
 
@@ -301,7 +302,7 @@ class ProviderConnector {
         await this.checkRateLimit();
 
         try {
-            const res = await withTimeout(this.provider.send('eth_getBlockByNumber', [`0x${blockNumber.toString(16)}`, true]));
+            const res = await withTimeout(this.blockProvider.send('eth_getBlockByNumber', [`0x${blockNumber.toString(16)}`, true]), 30000);
             return res ? sanitize(res) : null;
         } catch (error) {
             // Handle RPC provider limitations gracefully
