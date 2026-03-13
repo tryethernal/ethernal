@@ -146,6 +146,24 @@ fi
 log "Phase 3 complete."
 
 # ============================================================
+# Validate: Astro build must pass before committing
+# ============================================================
+log "Validating blog build..."
+cd "$REPO_DIR/blog"
+if ! npx astro build 2>&1 | tee -a "$LOG_FILE"; then
+  log "ERROR: Astro build failed — article has schema or syntax errors"
+  cd "$REPO_DIR/blog/pipeline"
+  CARD_ID="$CARD_ID" node --input-type=module -e "
+    import { updateCardStatus } from './project.js';
+    updateCardStatus(process.env.CARD_ID, 'detected');
+    console.log('Card reset to Detected');
+  " 2>&1 | tee -a "$LOG_FILE"
+  exit 1
+fi
+cd "$REPO_DIR"
+log "Build validation passed."
+
+# ============================================================
 # Commit, push, and update card
 # ============================================================
 SLUG=$(basename "$ARTICLE_PATH" .md)
