@@ -531,7 +531,7 @@ class Tracer {
     async processGeth(transaction) {
         try {
             this.transaction = transaction;
-            const rawTrace = await withTimeout(this.provider.send('debug_traceTransaction', [transaction.hash, { "tracer": "callTracer", "tracerConfig": { "withLog": true }}]));
+            const rawTrace = await withTimeout(this.provider.send('debug_traceTransaction', [transaction.hash, { "tracer": "callTracer", "tracerConfig": { "withLog": true }}]), 30000);
             if (!rawTrace.calls)
                 return;
             for (let call of rawTrace.calls)
@@ -544,7 +544,7 @@ class Tracer {
     async processOther(transaction) {
         try {
             this.transaction = transaction;
-            const rawTrace = await withTimeout(this.provider.send('debug_traceTransaction', [transaction.hash]));
+            const rawTrace = await withTimeout(this.provider.send('debug_traceTransaction', [transaction.hash]), 30000);
             if (!rawTrace)
                 return null;
             this.parsedTrace = await parseTrace(transaction.from, rawTrace, this.provider);
