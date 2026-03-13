@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.46] - 2026-03-13
+### Fixed
+- fix: remove projects_v2_item trigger from blog-publish workflow
+- fix: optimize blockSync workspace query by deferring L2 config loading (#650)
+- fix: prevent Sentry noise from expected RPC rate limiting (#660)
+- fix: handle debug_traceTransaction RPC failures gracefully (#657)
+- fix: increase timeout for debug_traceTransaction calls to prevent regression (#669)
+- fix: add missing blockId indexes to transactions table (#649)
+
+
 ## [5.17.45] - 2026-03-13
 ### Fixed
 - blog: regenerate covers with explicit flow labels
