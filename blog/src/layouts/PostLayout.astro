@@ -189,15 +189,6 @@ const relatedPosts = allPosts
       var articlePath = window.location.pathname;
       var articleTitle = document.querySelector('h1')?.textContent || '';
 
-      // CTA clicks (header + bottom)
-      document.querySelectorAll('a.navbar-cta').forEach(function(el) {
-        el.addEventListener('click', function() {
-          if (window.posthog) window.posthog.capture('blog:cta_click', {
-            cta_type: 'get_started', cta_position: 'header', article_path: articlePath, article_title: articleTitle
-          });
-        });
-      });
-
       // Bottom CTA
       var bottomCta = document.querySelector('.cta-section a[href*="app.tryethernal.com"], section a[href*="app.tryethernal.com"]');
       if (bottomCta && !bottomCta.classList.contains('navbar-cta')) {

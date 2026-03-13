@@ -102,7 +102,11 @@ function onRpcSubmit() {
         rpcError.value = 'Must be a valid URL';
         return;
     }
-    if (window.posthog) window.posthog.capture('landing:demo_form_start', { rpc_url: rpcServer.value });
+    if (window.posthog) {
+        let rpcHost = '';
+        try { rpcHost = new URL(rpcServer.value).hostname; } catch {}
+        window.posthog.capture('landing:demo_form_start', { rpc_host: rpcHost });
+    }
     step.value = 2;
     email.value = '';
     errorMsg.value = '';

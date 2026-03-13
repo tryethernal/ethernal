@@ -67,10 +67,12 @@
     updateThemeIcons();
   });
 
-  // Track header CTA click
+  // Track header CTA click (includes article context when on a post page)
   document.querySelector('.navbar-cta')?.addEventListener('click', function() {
     if (window.posthog) window.posthog.capture('blog:cta_click', {
-      cta_type: 'get_started', cta_position: 'header'
+      cta_type: 'get_started', cta_position: 'header',
+      article_path: window.location.pathname,
+      article_title: document.querySelector('h1')?.textContent || ''
     });
   });
 </script>
