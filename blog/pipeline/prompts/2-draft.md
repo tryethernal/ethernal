@@ -60,7 +60,7 @@ Save the article to `blog/src/content/blog/<slug>.md` with this frontmatter:
 ```yaml
 ---
 title: "Article Title"
-description: "110-160 chars max."
+description: "110-160 chars max. MUST be ≤160 characters (Zod schema in src/content.config.ts enforces this; build will fail if exceeded)."
 date: YYYY-MM-DD
 tags:
   - Tag1
