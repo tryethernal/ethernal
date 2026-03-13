@@ -81,11 +81,14 @@ describe('Tracer', () => {
     });
 
     it('Should throw an error if debug_traceTransaction is not available', () => {
-        jest.spyOn(ethers.providers, 'JsonRpcProvider').mockReturnValueOnce({
+        const rejectingProvider = {
             send: () => {
                 return new Promise((_, rejects) => rejects('debug_traceTransaction is not available'));
             }
-        });
+        };
+        jest.spyOn(ethers.providers, 'JsonRpcProvider')
+            .mockReturnValueOnce(rejectingProvider)
+            .mockReturnValueOnce(rejectingProvider);
 
         const tracer = new Tracer('http://localhost:8543');
 
