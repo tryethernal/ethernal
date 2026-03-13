@@ -184,4 +184,40 @@ const relatedPosts = allPosts
       </a>
     </div>
   </section>
+  <script is:inline>
+    document.addEventListener('DOMContentLoaded', function() {
+      var articlePath = window.location.pathname;
+      var articleTitle = document.querySelector('h1')?.textContent || '';
+
+      // Bottom CTA
+      var bottomCta = document.querySelector('.cta-section a[href*="app.tryethernal.com"], section a[href*="app.tryethernal.com"]');
+      if (bottomCta && !bottomCta.classList.contains('navbar-cta')) {
+        bottomCta.addEventListener('click', function() {
+          if (window.posthog) window.posthog.capture('blog:cta_click', {
+            cta_type: 'get_started', cta_position: 'bottom', article_path: articlePath, article_title: articleTitle
+          });
+        });
+      }
+
+      // Related article clicks
+      document.querySelectorAll('.blog-card[href^="/blog/"]').forEach(function(el) {
+        el.addEventListener('click', function() {
+          if (window.posthog) window.posthog.capture('blog:related_article_click', {
+            source_article: articlePath, target_article: el.getAttribute('href')
+          });
+        });
+      });
+
+      // External link clicks in article body
+      document.querySelectorAll('.prose a[href^="http"]').forEach(function(el) {
+        if (el.href && !el.href.includes('tryethernal.com')) {
+          el.addEventListener('click', function() {
+            if (window.posthog) window.posthog.capture('blog:external_link_click', {
+              article_path: articlePath, link_url: el.href
+            });
+          });
+        }
+      });
+    });
+  </script>
 </BaseLayout>

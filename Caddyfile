@@ -54,9 +54,9 @@ blog.tryethernal.com {
         reverse_proxy ethernal.internal:8080
     }
 
-    handle /ingest/* {
-        reverse_proxy https://app.posthog.com {
-            header_up Host app.posthog.com
+    handle_path /ingest/* {
+        reverse_proxy https://us.i.posthog.com {
+            header_up Host us.i.posthog.com
         }
     }
 
