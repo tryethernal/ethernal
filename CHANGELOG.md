@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.47] - 2026-03-13
+### Fixed
+- feat: PostHog analytics for blog and landing page (#670)
+
+
 ## [5.17.46] - 2026-03-13
 ### Fixed
 - fix: remove projects_v2_item trigger from blog-publish workflow

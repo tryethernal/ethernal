@@ -16,6 +16,7 @@
 | Sentry pipeline | `run/api/sentryPipeline.js`, `run/webhooks/githubActions.js` | [SENTRY.md](.claude/references/SENTRY.md) |
 | Landing/marketing | `landing/` | [LANDING.md](.claude/references/LANDING.md) |
 | Blog pipeline | `blog/pipeline/`, `.github/workflows/blog-*.yml` | |
+| Analytics (PostHog) | `blog/src/layouts/BaseLayout.astro` (snippet), `landing/src/main.js` (init) | |
 | Docker commands | | [COMMANDS.md](.claude/references/COMMANDS.md) |
 | Infra monitoring | `run/jobs/infraHealthCheck.js`, `run/api/status.js`, `.github/workflows/infra-auto-remediation.yml` | |
 | Env vars/flags | `run/lib/flags.js` | [ENV.md](.claude/references/ENV.md) |
@@ -43,6 +44,7 @@ All traffic goes through Caddy (`ethernal-caddy` app, `fly.caddy.toml`):
 
 | Path | Target |
 |------|--------|
+| `/ingest/*` | `us.i.posthog.com` (PostHog analytics proxy) |
 | `/api/2/*`, `/api/3/*` | `sentry.tryethernal.com` (Sentry) |
 | `/api*` | `ethernal.internal:8080` (backend) |
 | `/app*` | `ethernal-soketi.internal:6001` (websocket via 6PN) |
@@ -137,6 +139,7 @@ Browse quality design components at: https://21st.dev/community/components
 
 ## Workflow
 
+- **Always branch from `develop`**, never from `master`. `develop` is the default branch.
 - **Always create a PR after completing work** targeting `develop`.
 
 ### Code Review (Greptile / CodeAnt AI)
