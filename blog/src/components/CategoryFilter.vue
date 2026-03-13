@@ -32,5 +32,6 @@ function setCategory(cat: string) {
   activeCategory.value = cat;
   const event = new CustomEvent('filter-change', { detail: cat });
   document.dispatchEvent(event);
+  if (window.posthog) (window.posthog as any).capture('blog:category_filter', { category: cat });
 }
 </script>

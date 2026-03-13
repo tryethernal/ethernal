@@ -51,6 +51,7 @@
                 class="mt-6 pricing-cta"
                 :href="ctaUrl"
                 rounded="xl"
+                @click="trackPricing"
             >
                 {{ ctaText }}
             </v-btn>
@@ -59,7 +60,7 @@
 </template>
 
 <script setup>
-defineProps({
+const props = defineProps({
     name: { type: String, required: true },
     price: { type: [Number, String], required: true },
     subtitle: { type: String, default: '' },
@@ -69,6 +70,10 @@ defineProps({
     ctaText: { type: String, default: 'Get Started' },
     ctaUrl: { type: String, default: 'https://app.tryethernal.com/auth' }
 });
+
+function trackPricing() {
+    if (window.posthog) window.posthog.capture('landing:pricing_click', { plan_name: props.name, plan_price: String(props.price) });
+}
 </script>
 
 <style scoped>
