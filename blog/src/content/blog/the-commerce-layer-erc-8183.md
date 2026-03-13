@@ -1,6 +1,6 @@
 ---
 title: "The Commerce Layer: How ERC-8183 Makes AI Agent Payments Verifiable"
-description: "ERC-8183 adds the missing verb to agent commerce: not 'I sent you value' but 'I will pay you when you deliver.' Here's how the job lifecycle and evaluator model work."
+description: "ERC-8183 adds the missing verb to agent commerce: not 'I sent value' but 'I will pay when you deliver.' How the job lifecycle and evaluator work."
 date: 2026-03-12
 tags:
   - AI Agents
