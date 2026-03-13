@@ -131,7 +131,7 @@ let providers = {};
  */
 const getProvider = function(url, timeout) {
     // Use different cache keys for different timeouts to avoid mixing providers
-    const cacheKey = timeout ? `${url}:${timeout}` : url;
+    const cacheKey = timeout ? `${url}#timeout=${timeout}` : url;
     if (providers[cacheKey])
         return providers[cacheKey];
 
