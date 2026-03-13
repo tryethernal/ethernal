@@ -66,6 +66,13 @@
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
     updateThemeIcons();
   });
+
+  // Track header CTA click
+  document.querySelector('.navbar-cta')?.addEventListener('click', function() {
+    if (window.posthog) window.posthog.capture('blog:cta_click', {
+      cta_type: 'get_started', cta_position: 'header'
+    });
+  });
 </script>
 
 <style>

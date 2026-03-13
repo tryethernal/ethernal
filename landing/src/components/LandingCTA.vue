@@ -14,6 +14,7 @@
                     class="btn-primary cta-btn"
                     href="https://app.tryethernal.com/auth"
                     rounded="xl"
+                    @click="trackCta('get_started')"
                 >
                     Get Started Free
                     <v-icon end size="18">mdi-arrow-right</v-icon>
@@ -25,6 +26,7 @@
                     target="_blank"
                     rel="noopener noreferrer"
                     rounded="xl"
+                    @click="trackCta('read_docs')"
                 >
                     Read the Docs
                 </v-btn>
@@ -34,6 +36,9 @@
 </template>
 
 <script setup>
+function trackCta(ctaType) {
+    if (window.posthog) window.posthog.capture('landing:cta_click', { cta_type: ctaType, cta_position: 'footer_cta' });
+}
 </script>
 
 <style scoped>
