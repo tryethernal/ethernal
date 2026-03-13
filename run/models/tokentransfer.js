@@ -219,7 +219,11 @@ module.exports = (sequelize, DataTypes) => {
 
         if (transaction.workspace.public) {
             options.transaction.afterCommit(() => {
-                if (transaction.workspace.processNativeTokenTransfers) {
+                // Process ERC-20/721/1155 tokens always, native tokens only if flag is enabled
+                const isNativeToken = this.token === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
+                const shouldProcess = !isNativeToken || transaction.workspace.processNativeTokenTransfers;
+
+                if (shouldProcess) {
                     return enqueue('processTokenTransfer',
                         `processTokenTransfer-${this.workspaceId}-${this.token}-${this.id}`, {
                             tokenTransferId: this.id
