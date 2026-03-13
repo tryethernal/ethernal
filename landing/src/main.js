@@ -5,6 +5,7 @@ import * as directives from 'vuetify/directives';
 import 'vuetify/styles';
 import '@mdi/font/css/materialdesignicons.css';
 import './styles/landing.scss';
+import posthog from 'posthog-js';
 
 import App from './App.vue';
 import router from './router.js';
@@ -41,7 +42,20 @@ const vuetify = createVuetify({
     }
 });
 
+posthog.init('phc_W1H8OCkSPHM7iP8fxwINcnV5CkVpLj6i6yzwQfsCAtC', {
+    api_host: '/ingest',
+    ui_host: 'https://us.posthog.com',
+    person_profiles: 'identified_only',
+    capture_pageview: false,
+    capture_pageleave: true
+});
+
 const app = createApp(App);
+app.config.globalProperties.$posthog = posthog;
 app.use(vuetify);
 app.use(router);
 app.mount('#app');
+
+router.afterEach((to) => {
+    posthog.capture('$pageview', { $current_url: window.location.origin + to.fullPath });
+});

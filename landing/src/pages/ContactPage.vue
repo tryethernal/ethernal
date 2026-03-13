@@ -130,6 +130,7 @@ async function onSubmit() {
         });
         if (!res.ok) throw new Error('Server error');
         success.value = true;
+        if (window.posthog) window.posthog.capture('landing:contact_submit', { subject: form.subject });
     } catch {
         alert('Error sending message. Please email us directly at contact@tryethernal.com');
     } finally {
