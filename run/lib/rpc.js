@@ -126,11 +126,14 @@ let providers = {};
  * Supports HTTP, HTTPS, WS, and WSS protocols with optional basic auth.
  *
  * @param {string} url - RPC endpoint URL
+ * @param {number} [timeout] - Optional timeout override in milliseconds
  * @returns {ethers.providers.JsonRpcProvider|ethers.providers.WebSocketProvider} Provider instance
  */
-const getProvider = function(url) {
-    if (providers[url])
-        return providers[url];
+const getProvider = function(url, timeout) {
+    // Use different cache keys for different timeouts to avoid mixing providers
+    const cacheKey = timeout ? `${url}:${timeout}` : url;
+    if (providers[cacheKey])
+        return providers[cacheKey];
 
     const rpcServer = new URL(url);
 
@@ -145,12 +148,12 @@ const getProvider = function(url) {
     // WebSocketProvider expects a URL string, JsonRpcProvider expects ConnectionInfo
     if (provider === ethers.providers.WebSocketProvider) {
         // For WebSocket, always use the original URL as it can contain embedded credentials
-        providers[url] = new provider(url);
+        providers[cacheKey] = new provider(url);
     } else {
         let connectionInfo = {
             url: rpcServer.username.length || rpcServer.password.length ?
                 rpcServer.origin : url,
-            timeout: 8000, // Set RPC timeout to 8 seconds (less than withTimeout default)
+            timeout: timeout || 8000, // Use provided timeout or default to 8 seconds
             throttleLimit: 1 // Fail fast on rate limiting instead of retrying silently
         };
 
@@ -160,9 +163,9 @@ const getProvider = function(url) {
             connectionInfo.password = rpcServer.password;
         }
 
-        providers[url] = new provider(connectionInfo);
+        providers[cacheKey] = new provider(connectionInfo);
     }
-    return providers[url];
+    return providers[cacheKey];
 };
 
 /**
@@ -443,6 +446,7 @@ class Tracer {
     constructor(server, db, type = 'other') {
         if (!server) throw '[Tracer] Missing parameter';
         this.provider = getProvider(server);
+        this.traceProvider = getProvider(server, 30000); // Separate provider with 30s timeout for trace operations
         this.db = db;
         this.type = type;
         this.parsedTrace = [];
@@ -531,7 +535,7 @@ class Tracer {
     async processGeth(transaction) {
         try {
             this.transaction = transaction;
-            const rawTrace = await withTimeout(this.provider.send('debug_traceTransaction', [transaction.hash, { "tracer": "callTracer", "tracerConfig": { "withLog": true }}]), 30000);
+            const rawTrace = await withTimeout(this.traceProvider.send('debug_traceTransaction', [transaction.hash, { "tracer": "callTracer", "tracerConfig": { "withLog": true }}]), 30000);
             if (!rawTrace.calls)
                 return;
             for (let call of rawTrace.calls)
@@ -544,7 +548,7 @@ class Tracer {
     async processOther(transaction) {
         try {
             this.transaction = transaction;
-            const rawTrace = await withTimeout(this.provider.send('debug_traceTransaction', [transaction.hash]), 30000);
+            const rawTrace = await withTimeout(this.traceProvider.send('debug_traceTransaction', [transaction.hash]), 30000);
             if (!rawTrace)
                 return null;
             this.parsedTrace = await parseTrace(transaction.from, rawTrace, this.provider);
