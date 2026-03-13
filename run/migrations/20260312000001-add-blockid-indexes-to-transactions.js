@@ -7,10 +7,6 @@
  * The compound index covers both query patterns:
  * - WHERE blockId = X AND state = 'syncing' (revertIfPartial)
  * - WHERE blockId = X (increaseStripeBillingQuota) via leftmost prefix
- *
- * Uses CREATE INDEX CONCURRENTLY to avoid blocking writes during index creation.
- * The transactions table (139M+ rows) is NOT a TimescaleDB hypertable, so CONCURRENTLY is safe.
- * On CCX53 (32 cores, 128GB, NVMe) this should take 2-5 minutes without blocking writes.
  */
 
 /** @type {import('sequelize-cli').Migration} */
@@ -28,5 +24,4 @@ module.exports = {
   }
 };
 
-// CONCURRENTLY operations cannot run inside a database transaction
 module.exports.config = { transaction: false };
