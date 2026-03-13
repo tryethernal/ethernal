@@ -139,6 +139,7 @@ Browse quality design components at: https://21st.dev/community/components
 
 ## Workflow
 
+- **Always branch from `develop`**, never from `master`. `develop` is the default branch.
 - **Always create a PR after completing work** targeting `develop`.
 
 ### Code Review (Greptile / CodeAnt AI)
