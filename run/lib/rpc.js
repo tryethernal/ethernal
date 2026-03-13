@@ -457,11 +457,16 @@ class Tracer {
             error.url && error.url.includes('hyperliquid-testnet')) ||
             (error.message && error.message.includes('failed response') &&
             error.message.includes('hyperliquid-testnet.xyz'))) {
+
+            // Distinguish between actual rate limiting and other transient errors
+            const isRateLimit = error.status === 429 ||
+                (error.message && (error.message.includes('429') || error.message.toLowerCase().includes('rate limit')));
+
             // Throw for BullMQ to detect and retry the job
-            const rateError = new Error('Rate limited by RPC provider');
-            rateError.code = 'RATE_LIMITED';
-            rateError.originalError = error;
-            throw rateError;
+            const retryError = new Error(isRateLimit ? 'Rate limited by RPC provider' : 'Transient RPC error (failed response)');
+            retryError.code = isRateLimit ? 'RATE_LIMITED' : 'TRANSIENT_RPC_ERROR';
+            retryError.originalError = error;
+            throw retryError;
         }
 
         if (error.status >= 400)
