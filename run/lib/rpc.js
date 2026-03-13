@@ -504,6 +504,22 @@ class Tracer {
             }
         }
 
+        // Handle debug_traceTransaction unavailability
+        const errorMessage = error.message || '';
+        const innerMessage = (error.error && error.error.message) || '';
+        if (errorMessage.includes('debug_traceTransaction does not exist') ||
+            errorMessage.includes('debug_traceTransaction is not enabled') ||
+            errorMessage.includes('debug_traceTransaction not supported') ||
+            innerMessage.includes('debug_traceTransaction does not exist') ||
+            innerMessage.includes('debug_traceTransaction is not enabled') ||
+            innerMessage.includes('debug_traceTransaction not supported') ||
+            (errorMessage.includes('failed response') && errorMessage.includes('debug_traceTransaction'))) {
+            return this.error = {
+                message: 'RPC endpoint does not support debug_traceTransaction or is unreachable',
+                error: error
+            };
+        }
+
         throw error;
     }
 
