@@ -15,9 +15,15 @@ module.exports = async (job) => {
 
     // Use workspaceId in query for better performance on hypertables
     // Fallback to findByPk for backward compatibility with existing job data
+    // Only select fields needed by revertIfPartial() method for performance
     const block = data.workspaceId
-        ? await Block.findOne({ where: { id: data.blockId, workspaceId: data.workspaceId } })
-        : await Block.findByPk(data.blockId);
+        ? await Block.findOne({
+            where: { id: data.blockId, workspaceId: data.workspaceId },
+            attributes: ['id', 'workspaceId', 'number', 'transactionsCount']
+        })
+        : await Block.findByPk(data.blockId, {
+            attributes: ['id', 'workspaceId', 'number', 'transactionsCount']
+        });
     if (!block)
         return 'Could not find block';
 
