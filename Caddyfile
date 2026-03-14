@@ -12,11 +12,7 @@ blog.tryethernal.com {
     redir * https://tryethernal.com/blog{uri} permanent
 }
 
-:443 {
-    tls {
-        on_demand
-    }
-
+(common) {
     header {
         Apx-Incoming-Host "{host}"
     }
@@ -119,4 +115,24 @@ blog.tryethernal.com {
     }
 
     encode gzip
+}
+
+# Wildcard cert for *.tryethernal.com subdomains (DNS challenge via Google Trust Services)
+*.tryethernal.com {
+    tls contact@tryethernal.com {
+        ca https://dv.acme-v02.api.pki.goog/directory
+        eab adaf0f2ddae7ae0f7466c40329d48f11 BhCCPZ7_J4pRIyf8JBxVkxeY2_Y3P8oJ5J6OS6vYs_ubGsbru7wc5OaGAFdAxMlTyCx_cXUk4nLuQpGh0VJN0lQ
+        dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+    }
+
+    import common
+}
+
+# Custom domains use on-demand TLS (HTTP challenge)
+:443 {
+    tls {
+        on_demand
+    }
+
+    import common
 }

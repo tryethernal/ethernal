@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.53] - 2026-03-14
+### Fixed
+- fix: add wildcard TLS cert for *.tryethernal.com subdomains
+- feat(blog): auto-update project board on publish (#693)
+- fix(blog): guard PR step on publish outputs (#692)
+- fix(blog): use GH_PAT for publish workflow to bypass branch protection (#691)
+- blog: publish — The Shape-Shifting Agent: Mutable Configuration Is Ethereum's Next AI Security Problem (#690)
+- fix(blog): publish via PR instead of direct push (#689)
+
+
 ## [5.17.52] - 2026-03-14
 ### Fixed
 - fix: improve processBlock performance by eliminating expensive JOINs (#688)
