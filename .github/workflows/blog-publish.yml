@@ -13,6 +13,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   publish:
@@ -52,6 +53,7 @@ jobs:
           echo "Publishing: $ARTICLE"
 
       - name: Publish article
+        id: publish
         if: steps.resolve.outputs.article != ''
         env:
           ARTICLE: ${{ steps.resolve.outputs.article }}
@@ -69,16 +71,38 @@ jobs:
             exit 1
           fi
 
-          # Commit and push
+          # Commit to a publish branch
+          SLUG=$(basename "$ARTICLE" .md)
+          SLUG=$(basename "$SLUG" .mdx)
+          BRANCH="blog/publish-${SLUG}"
+
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
           git add "$ARTICLE"
 
           TITLE=$(grep '^title:' "$ARTICLE" | head -1 | sed 's/title: *//; s/^"//; s/"$//')
           printf 'blog: publish — %s\n' "$TITLE" > /tmp/commit-msg.txt
           git commit -F /tmp/commit-msg.txt
-          git push origin develop
+          git push origin "$BRANCH"
 
-          SLUG=$(basename "$ARTICLE" .md)
-          SLUG=$(basename "$SLUG" .mdx)
+          echo "slug=$SLUG" >> $GITHUB_OUTPUT
+          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+          echo "title=$TITLE" >> $GITHUB_OUTPUT
+
+      - name: Create and merge PR
+        if: steps.resolve.outputs.article != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLUG: ${{ steps.publish.outputs.slug }}
+          BRANCH: ${{ steps.publish.outputs.branch }}
+          TITLE: ${{ steps.publish.outputs.title }}
+        run: |
+          PR_URL=$(gh pr create \
+            --base develop \
+            --head "$BRANCH" \
+            --title "blog: publish — $TITLE" \
+            --body "Auto-publish article: \`$SLUG\`")
+          echo "Created PR: $PR_URL"
+          gh pr merge "$PR_URL" --squash --admin --delete-branch
           echo "Published: https://tryethernal.com/blog/$SLUG"
