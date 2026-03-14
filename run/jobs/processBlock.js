@@ -4,7 +4,7 @@
  * @module jobs/processBlock
  */
 
-const { Block, Workspace } = require('../models');
+const { Block, Workspace, Explorer } = require('../models');
 const { sanitize, withTimeout } = require('../lib/utils');
 const logger = require('../lib/logger');
 
@@ -33,7 +33,6 @@ module.exports = async job => {
     if (!workspace.public)
         return 'Not allowed on private workspaces';
 
-    const { Explorer } = require('../models');
     const explorer = await Explorer.findOne({
         where: { workspaceId: workspace.id },
         attributes: ['id', 'shouldSync', 'gasAnalyticsEnabled']
