@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.57] - 2026-03-14
+### Fixed
+- fix: optimize RPC balance queries to prevent consecutive HTTP calls (#705)
+
+
 ## [5.17.56] - 2026-03-14
 ### Fixed
 - fix: optimize updateExplorerSyncingProcess database query performance (#703)
