@@ -19,20 +19,11 @@ module.exports = {
         await queryInterface.sequelize.query(
             'CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_token_transfers_transaction_id ON token_transfers ("transactionId")'
         );
-
-        // Add standalone workspaceId index for efficient workspace filtering
-        // (complements existing composite index on workspaceId, token)
-        await queryInterface.sequelize.query(
-            'CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_token_transfers_workspace_id ON token_transfers ("workspaceId")'
-        );
     },
 
     async down(queryInterface) {
         await queryInterface.sequelize.query(
             'DROP INDEX CONCURRENTLY IF EXISTS idx_token_transfers_transaction_id'
-        );
-        await queryInterface.sequelize.query(
-            'DROP INDEX CONCURRENTLY IF EXISTS idx_token_transfers_workspace_id'
         );
     }
 };
