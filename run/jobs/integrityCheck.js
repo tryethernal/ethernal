@@ -98,17 +98,21 @@ module.exports = async job => {
         }, 1);
     }
 
-    const latestReadyBlock = await workspace.getLatestReadyBlock();
-    if (!latestReadyBlock || !latestReadyBlock.timestamp || !latestReadyBlock.number)
-        return 'Invalid latest ready block';
-
     const provider = workspace.getProvider();
-    let latestBlock;
+
+    // Parallelize independent operations
+    let latestReadyBlock, latestBlock;
     try {
-        latestBlock = await withTimeout(provider.fetchLatestBlock());
+        [latestReadyBlock, latestBlock] = await Promise.all([
+            workspace.getLatestReadyBlock(),
+            withTimeout(provider.fetchLatestBlock())
+        ]);
     } catch (_error) {
         return "Couldn't reach network";
     }
+
+    if (!latestReadyBlock || !latestReadyBlock.timestamp || !latestReadyBlock.number)
+        return 'Invalid latest ready block';
     /*
         If the latest block stored is more than 2 minutes away from the latest block on chain,
         we recover the range of missing blocks
