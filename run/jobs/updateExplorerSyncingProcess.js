@@ -18,33 +18,40 @@ module.exports = async job => {
     if (!data.explorerSlug)
         return 'Missing parameter.';
 
+    // Load explorer with optimized query - only essential attributes to reduce query time
     const explorer = await Explorer.findOne({
+        attributes: ['id', 'slug', 'workspaceId', 'shouldSync', 'syncFailedAttempts', 'shouldEnforceQuota'],
         where: { slug: data.explorerSlug },
         include: [
             {
                 model: Workspace,
                 as: 'workspace',
                 required: false,
+                attributes: ['id', 'name'], // Only essential workspace attributes
                 include: {
                     model: RpcHealthCheck,
                     as: 'rpcHealthCheck',
-                    required: false
+                    required: false,
+                    attributes: ['isReachable'] // Only the attribute we actually use
                 }
             },
             {
                 model: StripeSubscription,
                 as: 'stripeSubscription',
                 required: false,
+                attributes: ['id', 'status', 'transactionQuota'], // Essential subscription attributes
                 include: [
                     {
                         model: StripePlan,
                         as: 'stripePlan',
-                        required: false
+                        required: false,
+                        attributes: ['capabilities'] // Only capabilities needed
                     },
                     {
                         model: StripeQuotaExtension,
                         as: 'stripeQuotaExtension',
-                        required: false
+                        required: false,
+                        attributes: ['quota'] // Only quota attribute needed
                     }
                 ]
             }
