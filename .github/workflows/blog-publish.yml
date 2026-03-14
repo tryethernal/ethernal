@@ -106,3 +106,27 @@ jobs:
           echo "Created PR: $PR_URL"
           gh pr merge "$PR_URL" --squash --admin --delete-branch
           echo "Published: https://tryethernal.com/blog/$SLUG"
+
+      - uses: actions/setup-node@v4
+        if: steps.publish.outputs.slug != ''
+        with:
+          node-version: 20
+
+      - name: Update project card to Published
+        if: steps.publish.outputs.slug != ''
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+          ARTICLE: ${{ steps.resolve.outputs.article }}
+        run: |
+          cd blog/pipeline
+          node -e "
+            import { getProjectItems, updateCardStatus } from './project.js';
+            const items = getProjectItems();
+            const card = items.find(i => i.articlePath === process.env.ARTICLE);
+            if (card) {
+              updateCardStatus(card.id, 'published');
+              console.log('Updated card to Published:', card.title);
+            } else {
+              console.log('No project card found for article:', process.env.ARTICLE);
+            }
+          "
