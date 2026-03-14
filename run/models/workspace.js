@@ -2787,7 +2787,8 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     getFilteredBlocks(page = 1, itemsPerPage = 10, order = 'DESC', orderBy = 'number') {
-        return this.getBlocks({
+        return this.sequelize.models.Block.findAndCountAll({
+            where: { workspaceId: this.id },
             offset: (page - 1) * itemsPerPage,
             limit: itemsPerPage,
             order: [[orderBy, order]]
