@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.52] - 2026-03-14
+### Fixed
+- fix: improve processBlock performance by eliminating expensive JOINs (#688)
+- fix: optimize removeStalledBlock query performance (#687)
+- fix: drop invalid transactions index causing 20+ second UPDATE queries (#686)
+
+
 ## [5.17.51] - 2026-03-14
 ### Fixed
 - fix: add missing foreign key indexes to token_transfers table (#681)
