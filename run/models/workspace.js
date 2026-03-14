@@ -3652,7 +3652,7 @@ module.exports = (sequelize, DataTypes) => {
                 entities.transaction_receipts = receipts;
                 entities.transaction_logs = logs;
                 // Get ALL token_transfers that reference the transactions we're deleting
-                const transactionIds = entities.transactions.map(t => t.id);
+                // Note: transactionIds already declared at line 3608
                 if (transactionIds.length > 0) {
                     const allTokenTransfers = await sequelize.query(
                         `SELECT id FROM token_transfers WHERE "transactionId" IN (:transactionIds) AND "workspaceId" = :workspaceId`,
@@ -3697,8 +3697,16 @@ module.exports = (sequelize, DataTypes) => {
                     entities.v2_dex_pool_reserves = [];
                 }
 
-                for (const contract of entities.contracts)
-                    await contract.update({ transactionId: null }, { transaction });
+                // Update contracts to unlink from deleted transactions (using raw SQL since entities.contracts contains plain objects)
+                if (entities.contracts.length > 0) {
+                    await sequelize.query(
+                        `UPDATE contracts SET "transactionId" = NULL WHERE "id" IN (:ids) AND "workspaceId" = :workspaceId`,
+                        {
+                            replacements: { ids: entities.contracts.map(c => c.id), workspaceId: this.id },
+                            transaction
+                        }
+                    );
+                }
 
                 if (entities.blocks.length) {
                     await sequelize.query(`DELETE FROM block_events WHERE "blockId" IN (:ids) AND "workspaceId" = :workspaceId`, {
