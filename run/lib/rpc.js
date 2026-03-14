@@ -282,7 +282,9 @@ class ProviderConnector {
     }
 
     getBalance(address, block = 'latest') {
-        return withTimeout(this.provider.getBalance(address, block));
+        // Use blockProvider for better timeout handling on slow RPC endpoints
+        // This prevents timeout-induced retries that cause consecutive HTTP calls
+        return withTimeout(this.blockProvider.getBalance(address, block), 30000);
     }
 
     async checkRateLimit() {
