@@ -22,7 +22,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: develop
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GH_PAT }}
 
       - name: Resolve article
         id: resolve
@@ -93,7 +93,7 @@ jobs:
       - name: Create and merge PR
         if: steps.resolve.outputs.article != ''
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_PAT }}
           SLUG: ${{ steps.publish.outputs.slug }}
           BRANCH: ${{ steps.publish.outputs.branch }}
           TITLE: ${{ steps.publish.outputs.title }}
