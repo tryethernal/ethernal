@@ -226,7 +226,7 @@ router.post('/', async (req, res, next) => {
     const data = req.body.data;
 
     try {
-        if (!data.firebaseUserId)
+        if (!data || !data.firebaseUserId)
             return managedError(new Error('Missing parameter.'), req, res);
 
         const apiKey = uuidAPIKey.create().apiKey;
