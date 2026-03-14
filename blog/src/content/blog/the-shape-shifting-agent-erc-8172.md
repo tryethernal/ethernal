@@ -11,7 +11,7 @@ tags:
   - Security
 image: "/blog/images/the-shape-shifting-agent-erc-8172.png"
 ogImage: "/blog/images/the-shape-shifting-agent-erc-8172-og.png"
-status: draft
+status: published
 readingTime: 8
 ---
 

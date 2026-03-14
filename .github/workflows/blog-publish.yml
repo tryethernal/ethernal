@@ -13,6 +13,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   publish:
@@ -21,7 +22,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: develop
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GH_PAT }}
 
       - name: Resolve article
         id: resolve
@@ -52,6 +53,7 @@ jobs:
           echo "Publishing: $ARTICLE"
 
       - name: Publish article
+        id: publish
         if: steps.resolve.outputs.article != ''
         env:
           ARTICLE: ${{ steps.resolve.outputs.article }}
@@ -69,16 +71,62 @@ jobs:
             exit 1
           fi
 
-          # Commit and push
+          # Commit to a publish branch
+          SLUG=$(basename "$ARTICLE" .md)
+          SLUG=$(basename "$SLUG" .mdx)
+          BRANCH="blog/publish-${SLUG}"
+
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
           git add "$ARTICLE"
 
           TITLE=$(grep '^title:' "$ARTICLE" | head -1 | sed 's/title: *//; s/^"//; s/"$//')
           printf 'blog: publish — %s\n' "$TITLE" > /tmp/commit-msg.txt
           git commit -F /tmp/commit-msg.txt
-          git push origin develop
+          git push origin "$BRANCH"
 
-          SLUG=$(basename "$ARTICLE" .md)
-          SLUG=$(basename "$SLUG" .mdx)
+          echo "slug=$SLUG" >> $GITHUB_OUTPUT
+          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+          echo "title=$TITLE" >> $GITHUB_OUTPUT
+
+      - name: Create and merge PR
+        if: steps.publish.outputs.slug != ''
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+          SLUG: ${{ steps.publish.outputs.slug }}
+          BRANCH: ${{ steps.publish.outputs.branch }}
+          TITLE: ${{ steps.publish.outputs.title }}
+        run: |
+          PR_URL=$(gh pr create \
+            --base develop \
+            --head "$BRANCH" \
+            --title "blog: publish — $TITLE" \
+            --body "Auto-publish article: \`$SLUG\`")
+          echo "Created PR: $PR_URL"
+          gh pr merge "$PR_URL" --squash --admin --delete-branch
           echo "Published: https://tryethernal.com/blog/$SLUG"
+
+      - uses: actions/setup-node@v4
+        if: steps.publish.outputs.slug != ''
+        with:
+          node-version: 20
+
+      - name: Update project card to Published
+        if: steps.publish.outputs.slug != ''
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+          ARTICLE: ${{ steps.resolve.outputs.article }}
+        run: |
+          cd blog/pipeline
+          node -e "
+            import { getProjectItems, updateCardStatus } from './project.js';
+            const items = getProjectItems();
+            const card = items.find(i => i.articlePath === process.env.ARTICLE);
+            if (card) {
+              updateCardStatus(card.id, 'published');
+              console.log('Updated card to Published:', card.title);
+            } else {
+              console.log('No project card found for article:', process.env.ARTICLE);
+            }
+          "
