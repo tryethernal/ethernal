@@ -91,7 +91,7 @@ jobs:
           echo "title=$TITLE" >> $GITHUB_OUTPUT
 
       - name: Create and merge PR
-        if: steps.resolve.outputs.article != ''
+        if: steps.publish.outputs.slug != ''
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
           SLUG: ${{ steps.publish.outputs.slug }}
