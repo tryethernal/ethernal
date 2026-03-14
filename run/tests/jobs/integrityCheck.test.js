@@ -105,6 +105,7 @@ describe('integrityCheck', () => {
             public: true,
             name: 'hardhat',
             user: { firebaseUserId: '123', name: 'hardhat' },
+            getProvider: () => ({ fetchLatestBlock: jest.fn().mockResolvedValueOnce({ timestamp: 123, number: 4 }) }),
             getLatestReadyBlock: jest.fn().mockResolvedValueOnce(null)
         });
 
