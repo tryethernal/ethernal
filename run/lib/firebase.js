@@ -2373,16 +2373,36 @@ const incrementFailedAttempts = async (workspaceId) => {
 };
 
 /**
- * Checks if a user can sync blocks (based on plan and workspace count).
+ * Fetches a user by ID with all workspaces included.
  * @param {number} userId - The user ID
- * @returns {Promise<boolean>} True if user can sync
+ * @returns {Promise<Object>} User with workspaces
  */
-const canUserSyncBlock = async (userId) => {
+const getUserWithWorkspaces = async (userId) => {
     if (!userId) throw new Error('Missing parameter');
 
-    const user = await User.findByPk(userId, {
+    return User.findByPk(userId, {
         include: 'workspaces'
     });
+};
+
+/**
+ * Checks if a user can sync blocks (based on plan and workspace count).
+ * @param {number|Object} userOrUserId - The user ID or user object with workspaces
+ * @returns {Promise<boolean>} True if user can sync
+ */
+const canUserSyncBlock = async (userOrUserId) => {
+    if (!userOrUserId) throw new Error('Missing parameter');
+
+    let user;
+    if (typeof userOrUserId === 'object') {
+        // User object passed, use directly
+        user = userOrUserId;
+    } else {
+        // User ID passed, fetch user data
+        user = await User.findByPk(userOrUserId, {
+            include: 'workspaces'
+        });
+    }
 
     if (!user.isPremium && user.workspaces.length > 1)
         return false;
@@ -5096,6 +5116,7 @@ module.exports = {
     storeTransactionReceipt: storeTransactionReceipt,
     getBlockTransactions: getBlockTransactions,
     deleteWorkspace: deleteWorkspace,
+    getUserWithWorkspaces: getUserWithWorkspaces,
     canUserSyncBlock: canUserSyncBlock,
     resetFailedAttempts: resetFailedAttempts,
     incrementFailedAttempts: incrementFailedAttempts,
