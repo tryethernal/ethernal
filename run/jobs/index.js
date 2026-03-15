@@ -59,6 +59,8 @@ module.exports = {
     blockSyncMonitoring: require('./blockSyncMonitoring'),
     sendDiscordMessage: require('./sendDiscordMessage'),
     sendDemoExplorerLink: require('./sendDemoExplorerLink'),
+    processDripEmails: require('./processDripEmails'),
+    sendDripEmail: require('./sendDripEmail'),
     backfillNativeTokenTransfers: require('./backfillNativeTokenTransfers'),
     backfillOpBatchBlockRanges: require('./backfillOpBatchBlockRanges'),
     backfillOpDeposits: require('./backfillOpDeposits'),

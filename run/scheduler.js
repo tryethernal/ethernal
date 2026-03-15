@@ -1,5 +1,6 @@
 const { enqueue } = require('./lib/queue');
 
+const DRIP_EMAIL_CHECK_INTERVAL = 15 * 60 * 1000;
 const INTEGRITY_CHECK_INTERVAL = 5 * 60 * 1000;
 const RPC_HEALTH_CHECK_INTERVAL = 5 * 60 * 1000;
 const SUBSCRIPTION_CHECK_INTERVAL = 5 * 60 * 1000;
@@ -137,5 +138,13 @@ const INFRA_HEALTH_CHECK_INTERVAL = 60 * 1000;
         {},
         10,
         { every: INFRA_HEALTH_CHECK_INTERVAL }
+    );
+
+    await enqueue(
+        'processDripEmails',
+        'processDripEmails',
+        {},
+        10,
+        { every: DRIP_EMAIL_CHECK_INTERVAL }
     );
 })();
