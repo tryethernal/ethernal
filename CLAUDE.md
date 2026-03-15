@@ -128,6 +128,7 @@ Always use `IF NOT EXISTS`/`IF EXISTS` for re-runnability. For tables < 1M rows,
 - Always use sequelize migrations, never raw SQL for schema changes
 - Use `withTimeout(promise, ms)` from `run/lib/utils` instead of inline `Promise.race` timeout patterns
 - Pin GitHub Actions to commit SHAs (not mutable tags) when secrets are in scope
+- **Never hardcode API keys, tokens, or credentials in committed files** (including CLAUDE.md, scripts, YAML). Store in `.credentials.local` (gitignored) and reference by variable name. This repo is public.
 
 ## Documentation Requirements
 
@@ -143,7 +144,7 @@ Use RenderKit to render specs, reports, or any structured content as hosted HTML
 
 - **API:** `https://renderkit.live/v1`
 - **Docs:** `https://renderkit.live/docs.md`
-- **API key:** `rk_live_fsnv9URGf2z9mGOg4DVrzyP-Jg8XF8zw`
+- **API key:** See `RENDERKIT_API_KEY` in `.credentials.local`
 - **Templates:** `freeform` (flexible, works with markdown or structured blocks), `travel_itinerary`
 - **Usage:** `POST /v1/render` with `{template, context, data, theme}`. Returns hosted URL.
 - **Update:** `PATCH /v1/render/{id}` to refine without changing URL.

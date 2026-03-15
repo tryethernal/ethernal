@@ -222,7 +222,8 @@ router.post('/explorers', async (req, res, next) => {
         if (!explorer)
             return managedError(new Error('Could not create explorer. Please retry.'), req, res);
 
-        // Create drip email schedule (steps 1-6) and send step 1 immediately
+        // Create drip email schedule (steps 1-6) and send step 1 immediately,
+        // or fall back to the legacy welcome email when drip is not configured
         if (isDripEmailEnabled()) {
             try {
                 const schedules = await db.createDripSchedule(explorer.id, data.email);
@@ -237,6 +238,8 @@ router.post('/explorers', async (req, res, next) => {
                 // Non-blocking: drip schedule failure should not break demo creation
                 logger.error(error.message, { location: 'api.demo.createDripSchedule', explorerId: explorer.id, error });
             }
+        } else {
+            await enqueue('sendDemoExplorerLink', `sendDemoExplorerLink-${explorer.id}`, { email: data.email, explorerSlug: explorer.slug });
         }
 
         const discordNotification = '\n**New Demo Explorer**\n\n**User Email:** ' + data.email + '\n**Explorer Name:** ' + (explorer.name || 'N/A') + '\n**Explorer Link:** https://' + explorer.slug + '.' + getAppDomain() + '\n**Explorer RPC:** ' + (data.rpcServer || 'N/A') + '\n';
