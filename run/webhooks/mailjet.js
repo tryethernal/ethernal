@@ -4,6 +4,7 @@
  * @module webhooks/mailjet
  */
 
+const crypto = require('crypto');
 const express = require('express');
 const router = express.Router();
 const { getMailjetWebhookSecret } = require('../lib/env');
@@ -13,7 +14,9 @@ const logger = require('../lib/logger');
 router.post('/', async (req, res) => {
     try {
         const { token } = req.query;
-        if (!token || token !== getMailjetWebhookSecret())
+        const secret = getMailjetWebhookSecret();
+        if (!token || !secret || token.length !== secret.length ||
+            !crypto.timingSafeEqual(Buffer.from(token), Buffer.from(secret)))
             return res.status(401).json({ message: 'Unauthorized' });
 
         const events = Array.isArray(req.body) ? req.body : [req.body];
