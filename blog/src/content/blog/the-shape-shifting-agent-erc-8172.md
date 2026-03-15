@@ -1,7 +1,7 @@
 ---
 title: "The Shape-Shifting Agent: Mutable Configuration Is Ethereum's Next AI Security Problem"
 description: "ERC-8172 proposes block-delayed metadata updates for AI agents. Here's why the problem is harder than it looks, and what the full defense stack looks like."
-date: 2026-03-12
+date: 2026-03-14
 tags:
   - AI Agents
   - ERC-8172
