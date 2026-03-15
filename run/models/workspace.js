@@ -4033,7 +4033,8 @@ module.exports = (sequelize, DataTypes) => {
     rateLimitMaxInInterval: DataTypes.INTEGER,
     processNativeTokenTransfers: DataTypes.BOOLEAN,
     isTopL1Parent: DataTypes.BOOLEAN,
-    isCustomL1Parent: DataTypes.BOOLEAN
+    isCustomL1Parent: DataTypes.BOOLEAN,
+    deleteAfter: DataTypes.DATE
   }, {
     hooks: {
         afterCreate(workspace, options) {
