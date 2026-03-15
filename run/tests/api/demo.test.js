@@ -394,6 +394,10 @@ describe(`POST ${BASE_URL}/explorers`, () => {
         jest.spyOn(db, 'getUserById').mockResolvedValueOnce({ id: 123 });
         jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ id: 1 });
         jest.spyOn(db, 'createExplorerFromOptions').mockResolvedValueOnce({ id: 1, slug: 'slug' });
+        jest.spyOn(db, 'createDripSchedule').mockResolvedValueOnce([
+            { id: 10, step: 1 }, { id: 11, step: 2 }, { id: 12, step: 3 },
+            { id: 13, step: 4 }, { id: 14, step: 5 }, { id: 15, step: 6 }
+        ]);
         ProviderConnector.mockImplementationOnce(() => ({
             fetchNetworkId: jest.fn().mockResolvedValueOnce(1)
         }));
@@ -404,7 +408,12 @@ describe(`POST ${BASE_URL}/explorers`, () => {
             .expect(200)
             .then(() => {
                 expect(enqueue).toHaveBeenCalledWith('sendDiscordMessage', 'sendDiscordMessage-1', { content: expect.any(String), channel: expect.any(String) });
-                expect(enqueue).toHaveBeenCalledWith('sendDemoExplorerLink', 'sendDemoExplorerLink-1', { email: 'email@email.com', explorerSlug: 'slug' });
+                expect(enqueue).toHaveBeenCalledWith('sendDripEmail', 'sendDripEmail-step1-1', {
+                    scheduleId: 10,
+                    email: 'email@email.com',
+                    explorerSlug: 'slug',
+                    step: 1
+                }, 1);
                 done();
             });
     });
