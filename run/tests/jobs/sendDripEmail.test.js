@@ -3,7 +3,8 @@ require('../mocks/lib/flags');
 require('../mocks/lib/mailjet');
 
 jest.mock('../../lib/firebase', () => ({
-    markDripEmailSent: jest.fn()
+    markDripEmailSent: jest.fn(),
+    getDripScheduleById: jest.fn()
 }));
 
 jest.mock('../../lib/analytics', () => {
@@ -24,6 +25,7 @@ beforeEach(() => jest.clearAllMocks());
 
 describe('sendDripEmail', () => {
     it('Should send a drip email for step 2', async () => {
+        db.getDripScheduleById.mockResolvedValue({ id: 1, skipped: false });
         db.markDripEmailSent.mockResolvedValue();
 
         await sendDripEmail({ data: {
@@ -46,6 +48,21 @@ describe('sendDripEmail', () => {
             { step: 2, explorerSlug: 'my-chain' }
         );
         expect(analyticsInstance.shutdown).toHaveBeenCalled();
+    });
+
+    it('Should skip sending if schedule was marked as skipped (late unsubscribe)', async () => {
+        db.getDripScheduleById.mockResolvedValue({ id: 1, skipped: true });
+
+        await sendDripEmail({ data: {
+            email: 'dev@example.com',
+            explorerSlug: 'my-chain',
+            step: 3,
+            scheduleId: 1
+        }});
+
+        const mailjetInstance = Mailjet.apiConnect();
+        expect(mailjetInstance.post).not.toHaveBeenCalled();
+        expect(db.markDripEmailSent).not.toHaveBeenCalled();
     });
 
     it('Should throw if drip emails are not enabled', async () => {

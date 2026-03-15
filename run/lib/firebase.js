@@ -5045,6 +5045,15 @@ const markDripEmailSent = async (id) => {
 };
 
 /**
+ * Fetches a drip schedule row by ID.
+ * @param {number} id - DemoDripSchedule ID
+ * @returns {Promise<Object|null>} Schedule row or null
+ */
+const getDripScheduleById = async (id) => {
+    return await DemoDripSchedule.findByPk(id);
+};
+
+/**
  * Skips all pending drip emails for a given email address.
  * Used for unsubscribe and when user migrates to paid.
  * @param {string} email - Email address to skip
@@ -5304,6 +5313,7 @@ module.exports = {
     createDripSchedule,
     getPendingDripEmails,
     markDripEmailSent,
+    getDripScheduleById,
     skipDripEmailsForEmail,
     skipDripEmailsForExplorer
 };

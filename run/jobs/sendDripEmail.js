@@ -75,6 +75,15 @@ module.exports = async (job) => {
     if (content.htmlPart)
         message.HTMLPart = content.htmlPart;
 
+    // Re-check schedule state before sending — user may have unsubscribed since enqueue
+    if (scheduleId) {
+        const schedule = await db.getDripScheduleById(scheduleId);
+        if (!schedule || schedule.skipped) {
+            logger.info('Drip email skipped (unsubscribed or cancelled)', { scheduleId, step });
+            return;
+        }
+    }
+
     await mailjet.post('send', { version: 'v3.1' })
         .request({ Messages: [message] })
         .catch(error => {

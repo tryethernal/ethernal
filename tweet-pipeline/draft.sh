@@ -55,6 +55,14 @@ git pull --ff-only origin develop 2>&1 | tee -a "$LOG_FILE"
 cd tweet-pipeline
 npm ci --silent 2>&1 | tee -a "$LOG_FILE"
 
+# Prevent overlapping runs via lockfile
+LOCKFILE="/tmp/tweet-draft.lock"
+exec 200>"$LOCKFILE"
+if ! flock -n 200; then
+  log "Another draft run is in progress — exiting"
+  exit 0
+fi
+
 # ============================================================
 # Source selection
 # ============================================================

@@ -144,6 +144,9 @@ router.post('/migrateExplorer', authMiddleware, async (req, res, next) => {
         if (workspace && (workspace.pendingDeletion || workspace.deleteAfter))
             await workspace.update({ pendingDeletion: false, public: true, deleteAfter: null });
 
+        // Cancel any pending drip emails now that the user has upgraded
+        await db.skipDripEmailsForExplorer(explorer.id);
+
         res.status(200).send({ explorerId: explorer.id });
     } catch(error) {
         unmanagedError(error, req, next);
