@@ -1,19 +1,12 @@
 #!/usr/bin/env bash
-# Twitter engagement metrics bridge — polls tweet metrics and sends to PostHog
-# Runs daily via systemd timer
+# One-time backfill: fetch engagement metrics for ALL posted tweets and send to PostHog.
+# Run manually once, then delete. Daily engagement-bridge.sh handles ongoing tracking.
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ENV_FILE="/opt/blog-pipeline.env"
 QUEUE_DIR="${TWEET_QUEUE_DIR:-/home/blog/tweet-queue}"
-LOG_DIR="/var/log/tweet-pipeline"
 
-mkdir -p "$LOG_DIR"
-LOG_FILE="$LOG_DIR/engagement-$(date +%Y%m%d).log"
-
-log() { echo "[$(date -Iseconds)] $*" | tee -a "$LOG_FILE"; }
-
-# Load environment
 if [ -f "$ENV_FILE" ]; then
   set -a; source "$ENV_FILE"; set +a
   QUEUE_DIR="${TWEET_QUEUE_DIR:-/home/blog/tweet-queue}"
@@ -21,32 +14,26 @@ fi
 
 cd "$SCRIPT_DIR"
 
-# Collect tweet IDs from last 7 days (engagement settles after ~7 days)
-CUTOFF=$(date -u -d "7 days ago" +%Y-%m-%dT%H:%M:%S 2>/dev/null || date -u -v-7d +%Y-%m-%dT%H:%M:%S)
-
+# Collect ALL posted tweet IDs (no date filter)
 TWEET_IDS=""
 for f in "$QUEUE_DIR"/tweet-*.json; do
   [ -f "$f" ] || continue
   POSTED=$(jq -r '.posted' "$f")
   [ "$POSTED" = "true" ] || continue
-  POSTED_AT=$(jq -r '.postedAt // ""' "$f")
-  [ -n "$POSTED_AT" ] || continue
-  if [[ "$POSTED_AT" > "$CUTOFF" ]]; then
-    IDS=$(jq -r '.tweetIds[]' "$f" 2>/dev/null)
-    for id in $IDS; do
-      TWEET_IDS="${TWEET_IDS:+$TWEET_IDS,}$id"
-    done
-  fi
+  IDS=$(jq -r '.tweetIds[]' "$f" 2>/dev/null)
+  for id in $IDS; do
+    TWEET_IDS="${TWEET_IDS:+$TWEET_IDS,}$id"
+  done
 done
 
 if [ -z "$TWEET_IDS" ]; then
-  log "No tweets to check engagement for."
+  echo "No posted tweets found."
   exit 0
 fi
 
-log "Checking engagement for tweet IDs: $TWEET_IDS"
+COUNT=$(echo "$TWEET_IDS" | tr ',' '\n' | wc -l | tr -d ' ')
+echo "Backfilling engagement for $COUNT tweet IDs..."
 
-# Get metrics and send to PostHog via Node.js
 TWEET_IDS_CSV="$TWEET_IDS" POSTHOG_KEY="${POSTHOG_API_KEY:-}" node --input-type=module -e "
 import { createTwitterClientFromEnv } from './lib/twitter.js';
 
@@ -54,7 +41,6 @@ const client = createTwitterClientFromEnv();
 const allIds = process.env.TWEET_IDS_CSV.split(',').filter(Boolean);
 const posthogKey = process.env.POSTHOG_KEY;
 
-// Batch in chunks of 100
 for (let i = 0; i < allIds.length; i += 100) {
   const batch = allIds.slice(i, i + 100);
   try {
@@ -68,7 +54,6 @@ for (let i = 0; i < allIds.length; i += 100) {
         impressions: m.metrics.impressions
       }));
 
-      // Send to PostHog
       if (posthogKey) {
         await fetch('https://us.i.posthog.com/capture/', {
           method: 'POST',
@@ -82,16 +67,19 @@ for (let i = 0; i < allIds.length; i += 100) {
               likes: m.metrics.likes,
               retweets: m.metrics.retweets,
               replies: m.metrics.replies,
-              impressions: m.metrics.impressions
+              impressions: m.metrics.impressions,
+              backfill: true
             }
           })
         });
       }
     }
   } catch (err) {
-    console.error('Error fetching metrics for batch:', err.message);
+    console.error('Error fetching batch starting at index ' + i + ':', err.message);
   }
+  // Rate limit: pause 2s between batches
+  if (i + 100 < allIds.length) await new Promise(r => setTimeout(r, 2000));
 }
-" 2>&1 | tee -a "$LOG_FILE"
+"
 
-log "Engagement bridge complete."
+echo "Backfill complete."
