@@ -5,7 +5,7 @@
  */
 
 const express = require('express');
-const { isStripeEnabled, isDemoEnabled, isSelfHosted, isSentryPipelineEnabled } = require('../lib/flags');
+const { isStripeEnabled, isDemoEnabled, isDripEmailEnabled, isSelfHosted, isSentryPipelineEnabled } = require('../lib/flags');
 const router = express.Router();
 
 const blocks = require('./blocks');
@@ -70,6 +70,11 @@ router.use('/opWithdrawals', opWithdrawals);
 if (isDemoEnabled()) {
     const demo = require('./demo');
     router.use('/demo', demo);
+
+    if (isDripEmailEnabled()) {
+        const demoUnsubscribe = require('./demoUnsubscribe');
+        router.use('/demo', demoUnsubscribe);
+    }
 }
 
 if (isStripeEnabled()) {

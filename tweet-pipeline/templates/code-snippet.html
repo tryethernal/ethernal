@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1200, height=675">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    width: 1200px;
+    height: 675px;
+    background: #0f172a;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+}
+.editor {
+    width: 1080px;
+    max-height: 595px;
+    background: #1e293b;
+    border-radius: 12px;
+    overflow: hidden;
+}
+.titlebar {
+    display: flex;
+    align-items: center;
+    padding: 14px 20px;
+    background: #162033;
+    gap: 8px;
+}
+.dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+}
+.dot-red { background: #ef4444; }
+.dot-yellow { background: #eab308; }
+.dot-green { background: #22c55e; }
+.lang-label {
+    margin-left: auto;
+    font-size: 14px;
+    color: #475569;
+    text-transform: uppercase;
+}
+.code-area {
+    padding: 24px 28px;
+    font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+    font-size: 20px;
+    color: #e2e8f0;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow: hidden;
+}
+.watermark {
+    position: absolute;
+    bottom: 24px;
+    right: 32px;
+    font-size: 18px;
+    color: #475569;
+}
+</style>
+</head>
+<body>
+<div class="editor">
+    <div class="titlebar">
+        <div class="dot dot-red"></div>
+        <div class="dot dot-yellow"></div>
+        <div class="dot dot-green"></div>
+        <span class="lang-label" id="lang"></span>
+    </div>
+    <pre class="code-area" id="code"></pre>
+</div>
+<div class="watermark">tryethernal.com</div>
+<script>
+const params = new URLSearchParams(window.location.search);
+document.getElementById('code').textContent = params.get('code') || '';
+document.getElementById('lang').textContent = params.get('lang') || '';
+</script>
+</body>
+</html>
