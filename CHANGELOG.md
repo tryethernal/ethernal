@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.58] - 2026-03-15
+### Fixed
+- perf: optimize batchBlockDelete by replacing complex nested joins with focused queries (#699)
+- fix: eliminate N+1 query in POST /api/transactions endpoint (#675)
+
+
 ## [5.17.57] - 2026-03-14
 ### Fixed
 - fix: optimize RPC balance queries to prevent consecutive HTTP calls (#705)
