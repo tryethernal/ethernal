@@ -88,6 +88,23 @@ for TWEET_FILE in "$QUEUE_DIR"/tweet-*.json; do
        '.posted = true | .tweetIds = $tweetIds.tweetIds | .postedAt = $postedAt' \
        "$TWEET_FILE" > "$TMPFILE" && mv "$TMPFILE" "$TWEET_FILE"
 
+    # Send PostHog event for tracking
+    if [ -n "${POSTHOG_API_KEY:-}" ]; then
+      curl -s -X POST https://us.i.posthog.com/capture/ \
+        -H "Content-Type: application/json" \
+        -d "{
+          \"api_key\": \"${POSTHOG_API_KEY}\",
+          \"event\": \"twitter:tweet_posted\",
+          \"distinct_id\": \"tweet-pipeline\",
+          \"properties\": {
+            \"tweetId\": $(echo "$TWEET_IDS" | jq '.[0]'),
+            \"bucket\": $(jq -r '.bucket' "$TWEET_FILE" | jq -R .),
+            \"sourceId\": $(jq -r '.sourceId' "$TWEET_FILE" | jq -R .),
+            \"hasThread\": $(jq 'if (.thread | length) > 0 then true else false end' "$TWEET_FILE")
+          }
+        }" > /dev/null 2>&1 || true
+    fi
+
     POSTED_COUNT=$((POSTED_COUNT + 1))
   else
     log "ERROR: Failed to post $(basename "$TWEET_FILE"): $RESULT"
