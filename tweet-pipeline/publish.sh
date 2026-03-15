@@ -77,8 +77,8 @@ for TWEET_FILE in "$QUEUE_DIR"/tweet-*.json; do
     const tweetIds = await client.postThread(thread, mediaId);
     console.log(JSON.stringify({ tweetIds }));
   " 2>&1); then
-    # Extract tweetIds from output (last line of stdout is the JSON)
-    TWEET_IDS=$(echo "$RESULT" | tail -1)
+    # Extract the JSON line containing tweetIds (grep avoids picking up stray stderr)
+    TWEET_IDS=$(echo "$RESULT" | grep -o '{"tweetIds":\[.*\]}')
     log "Posted successfully: $TWEET_IDS"
 
     # Update queue file: mark as posted

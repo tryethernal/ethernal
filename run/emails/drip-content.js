@@ -69,7 +69,7 @@ const steps = {
             <p>Your demo explorer gives you a taste. Here is what a paid plan adds:</p>
             <table class="feature-table">
                 <tr><th>Feature</th><th>Demo</th><th>Paid</th></tr>
-                <tr><td>Data retention</td><td>1 day</td><td>Unlimited</td></tr>
+                <tr><td>Data retention</td><td>7 days</td><td>Unlimited</td></tr>
                 <tr><td>Custom branding</td><td>No</td><td>Yes</td></tr>
                 <tr><td>Custom domain</td><td>No</td><td>Yes</td></tr>
                 <tr><td>Historical sync</td><td>No</td><td>Yes</td></tr>
