@@ -7,6 +7,7 @@
 const Mailjet = require('node-mailjet');
 const logger = require('../lib/logger');
 const db = require('../lib/firebase');
+const Analytics = require('../lib/analytics');
 const { getAppDomain, getMailjetPublicKey, getMailjetPrivateKey, getDemoExplorerSender, getDripUnsubscribeSecret } = require('../lib/env');
 const { isMailjetEnabled } = require('../lib/flags');
 const { getEmailContent } = require('../emails/drip-content');
@@ -84,4 +85,12 @@ module.exports = async (job) => {
     // Mark as sent AFTER successful Mailjet send (not before)
     if (scheduleId)
         await db.markDripEmailSent(scheduleId);
+
+    const analytics = new Analytics();
+    analytics.track(
+        `explorer:${explorerSlug}`,
+        'email:drip_sent',
+        { step, explorerSlug }
+    );
+    analytics.shutdown();
 };

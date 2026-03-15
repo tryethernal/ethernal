@@ -6,7 +6,6 @@
 
 const db = require('../lib/firebase');
 const { enqueue } = require('../lib/queue');
-const Analytics = require('../lib/analytics');
 const logger = require('../lib/logger');
 
 /**
@@ -19,8 +18,6 @@ module.exports = async () => {
 
     if (!pendingEmails.length)
         return;
-
-    const analytics = new Analytics();
 
     for (const schedule of pendingEmails) {
         try {
@@ -40,12 +37,6 @@ module.exports = async () => {
                 },
                 1
             );
-
-            analytics.track(
-                `explorer:${schedule.explorer.slug}`,
-                'email:drip_sent',
-                { step: schedule.step, explorerSlug: schedule.explorer.slug }
-            );
         } catch (error) {
             logger.error(error.message, {
                 location: 'jobs.processDripEmails',
@@ -55,6 +46,4 @@ module.exports = async () => {
             });
         }
     }
-
-    analytics.shutdown();
 };

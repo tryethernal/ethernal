@@ -9,14 +9,6 @@ jest.mock('../../lib/firebase', () => ({
 
 const db = require('../../lib/firebase');
 const { enqueue } = require('../../lib/queue');
-const Analytics = require('../../lib/analytics');
-
-jest.mock('../../lib/analytics', () => {
-    return jest.fn().mockImplementation(() => ({
-        track: jest.fn(),
-        shutdown: jest.fn()
-    }));
-});
 
 const processDripEmails = require('../../jobs/processDripEmails');
 
@@ -44,7 +36,7 @@ describe('processDripEmails', () => {
         expect(enqueue).not.toHaveBeenCalled();
     });
 
-    it('Should enqueue sendDripEmail for pending emails and track in PostHog', async () => {
+    it('Should enqueue sendDripEmail for pending emails', async () => {
         db.getPendingDripEmails.mockResolvedValue([{
             id: 1,
             explorerId: 10,
@@ -65,13 +57,6 @@ describe('processDripEmails', () => {
             'sendDripEmail-1',
             expect.objectContaining({ scheduleId: 1, email: 'dev@example.com', step: 2, explorerSlug: 'my-chain' }),
             1
-        );
-
-        const analyticsInstance = Analytics.mock.results[0].value;
-        expect(analyticsInstance.track).toHaveBeenCalledWith(
-            'explorer:my-chain',
-            'email:drip_sent',
-            { step: 2, explorerSlug: 'my-chain' }
         );
     });
 
