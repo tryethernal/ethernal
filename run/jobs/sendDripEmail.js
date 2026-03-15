@@ -62,10 +62,15 @@ module.exports = async (job) => {
         teamContext
     });
 
+    const senderRaw = getDemoExplorerSender();
+    const senderMatch = senderRaw.match(/^(.+?)\s*<(.+)>$/);
+    const senderName = senderMatch ? senderMatch[1].trim() : 'Ethernal';
+    const senderEmail = senderMatch ? senderMatch[2] : senderRaw;
+
     const message = {
         From: {
-            Email: getDemoExplorerSender(),
-            Name: 'Antoine'
+            Email: senderEmail,
+            Name: senderName
         },
         To: [{ Email: email }],
         Subject: content.subject,

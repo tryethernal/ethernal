@@ -38,7 +38,7 @@ function wrapInTemplate(content, subject, unsubscribeUrl, appDomain) {
 const steps = {
     1: (data) => ({
         subject: 'Your Ethernal demo explorer is ready',
-        textPart: `Hello,\n\nYour Ethernal demo explorer is ready. You can access it at ${data.explorerLink}.\n\nYour explorer will sync blocks, transactions, and contract interactions in real-time. Try deploying a contract or sending a transaction to see it appear.\n\nFeel free to reply to this email if you have any questions!\n\nRegards,\n\nAntoine`,
+        textPart: `Hello,\n\nYour Ethernal demo explorer is ready. You can access it at ${data.explorerLink}.\n\nYour explorer will sync blocks, transactions, and contract interactions in real-time. Try deploying a contract or sending a transaction to see it appear.\n\nFeel free to reply to this email if you have any questions!\n\nRegards,\n\nAntoine\n\n---\nUnsubscribe: ${data.unsubscribeUrl}`,
         htmlPart: null
     }),
 
@@ -58,7 +58,7 @@ const steps = {
         `;
         return {
             subject,
-            textPart: `Your demo explorer ${data.explorerSlug} has synced ${summary}. Open it at ${data.explorerLink}`,
+            textPart: `Your demo explorer ${data.explorerSlug} has synced ${summary}. Open it at ${data.explorerLink}\n\nUnsubscribe: ${data.unsubscribeUrl}`,
             htmlPart: wrapInTemplate(content, subject, data.unsubscribeUrl, data.appDomain)
         };
     },
@@ -82,7 +82,7 @@ const steps = {
         `;
         return {
             subject,
-            textPart: `Your demo explorer has limited features. See what a paid plan unlocks: data retention, custom domain, historical sync, DEX analytics, and more. Plans at https://${data.appDomain}/#pricing`,
+            textPart: `Your demo explorer has limited features. See what a paid plan unlocks: data retention, custom domain, historical sync, DEX analytics, and more. Plans at https://${data.appDomain}/#pricing\n\nUnsubscribe: ${data.unsubscribeUrl}`,
             htmlPart: wrapInTemplate(content, subject, data.unsubscribeUrl, data.appDomain)
         };
     },
@@ -98,7 +98,7 @@ const steps = {
         `;
         return {
             subject,
-            textPart: `${teamContext}\n\nLearn more at https://${data.appDomain}`,
+            textPart: `${teamContext}\n\nLearn more at https://${data.appDomain}\n\nUnsubscribe: ${data.unsubscribeUrl}`,
             htmlPart: wrapInTemplate(content, subject, data.unsubscribeUrl, data.appDomain)
         };
     },
@@ -114,7 +114,7 @@ const steps = {
         `;
         return {
             subject,
-            textPart: `Your demo explorer ${data.explorerSlug} expires in 2 days. Migrate to a paid plan to keep it running: https://app.${data.appDomain}/explorers`,
+            textPart: `Your demo explorer ${data.explorerSlug} expires in 2 days. Migrate to a paid plan to keep it running: https://app.${data.appDomain}/explorers\n\nUnsubscribe: ${data.unsubscribeUrl}`,
             htmlPart: wrapInTemplate(content, subject, data.unsubscribeUrl, data.appDomain)
         };
     },
@@ -130,7 +130,7 @@ const steps = {
         `;
         return {
             subject,
-            textPart: `Your demo explorer ${data.explorerSlug} has expired. We're keeping your configuration for 48 hours. Sign up now to restore it: https://app.${data.appDomain}/explorers`,
+            textPart: `Your demo explorer ${data.explorerSlug} has expired. We're keeping your configuration for 48 hours. Sign up now to restore it: https://app.${data.appDomain}/explorers\n\nUnsubscribe: ${data.unsubscribeUrl}`,
             htmlPart: wrapInTemplate(content, subject, data.unsubscribeUrl, data.appDomain)
         };
     }
