@@ -3966,7 +3966,7 @@ const getWorkspaceBlock = async (workspaceId, number) => {
  */
 const getWorkspaceBlocks = async (workspaceId, page = 1, itemsPerPage = 10, order = 'DESC') => {
     const workspace = await Workspace.findByPk(workspaceId);
-    const { rows: blocks } = await workspace.getFilteredBlocks(page, itemsPerPage, order);
+    const blocks = await workspace.getFilteredBlocks(page, itemsPerPage, order);
 
     return {
         items: blocks.map(b => b.toJSON())

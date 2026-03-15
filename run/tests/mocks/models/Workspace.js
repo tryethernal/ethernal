@@ -74,7 +74,7 @@ const workspace = {
     findContractById: jest.fn().mockResolvedValue(contract1),
     findContractByAddress: jest.fn().mockResolvedValue(contract1),
     getBlocks: jest.fn().mockResolvedValue([block1, block2]),
-    getFilteredBlocks: jest.fn().mockResolvedValue({ count: 2, rows: [block1, block2] }),
+    getFilteredBlocks: jest.fn().mockResolvedValue([block1, block2]),
     countBlocks: jest.fn().mockResolvedValue(2),
     findTransaction: jest.fn().mockResolvedValue(transaction1),
     getFilteredTransactions: jest.fn().mockResolvedValue([transaction1, transaction2]),
