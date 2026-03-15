@@ -1,0 +1,97 @@
+#!/usr/bin/env bash
+# Twitter engagement metrics bridge — polls tweet metrics and sends to PostHog
+# Runs daily via systemd timer
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+ENV_FILE="/opt/blog-pipeline.env"
+QUEUE_DIR="${TWEET_QUEUE_DIR:-/home/blog/tweet-queue}"
+LOG_DIR="/var/log/tweet-pipeline"
+
+mkdir -p "$LOG_DIR"
+LOG_FILE="$LOG_DIR/engagement-$(date +%Y%m%d).log"
+
+log() { echo "[$(date -Iseconds)] $*" | tee -a "$LOG_FILE"; }
+
+# Load environment
+if [ -f "$ENV_FILE" ]; then
+  set -a; source "$ENV_FILE"; set +a
+  QUEUE_DIR="${TWEET_QUEUE_DIR:-/home/blog/tweet-queue}"
+fi
+
+cd "$SCRIPT_DIR"
+
+# Collect tweet IDs from last 30 days
+THIRTY_DAYS_AGO=$(date -u -d "30 days ago" +%Y-%m-%dT%H:%M:%S 2>/dev/null || date -u -v-30d +%Y-%m-%dT%H:%M:%S)
+
+TWEET_IDS=""
+for f in "$QUEUE_DIR"/tweet-*.json; do
+  [ -f "$f" ] || continue
+  POSTED=$(jq -r '.posted' "$f")
+  [ "$POSTED" = "true" ] || continue
+  POSTED_AT=$(jq -r '.postedAt // ""' "$f")
+  [ -n "$POSTED_AT" ] || continue
+  if [[ "$POSTED_AT" > "$THIRTY_DAYS_AGO" ]]; then
+    IDS=$(jq -r '.tweetIds[]' "$f" 2>/dev/null)
+    for id in $IDS; do
+      TWEET_IDS="${TWEET_IDS:+$TWEET_IDS,}$id"
+    done
+  fi
+done
+
+if [ -z "$TWEET_IDS" ]; then
+  log "No tweets to check engagement for."
+  exit 0
+fi
+
+log "Checking engagement for tweet IDs: $TWEET_IDS"
+
+# Get metrics and send to PostHog via Node.js
+TWEET_IDS_CSV="$TWEET_IDS" POSTHOG_KEY="${POSTHOG_API_KEY:-}" node --input-type=module -e "
+import { createTwitterClientFromEnv } from './lib/twitter.js';
+
+const client = createTwitterClientFromEnv();
+const allIds = process.env.TWEET_IDS_CSV.split(',').filter(Boolean);
+const posthogKey = process.env.POSTHOG_KEY;
+
+// Batch in chunks of 100
+for (let i = 0; i < allIds.length; i += 100) {
+  const batch = allIds.slice(i, i + 100);
+  try {
+    const metrics = await client.getMetrics(batch);
+    for (const m of metrics) {
+      console.log(JSON.stringify({
+        tweetId: m.id,
+        likes: m.metrics.likes,
+        retweets: m.metrics.retweets,
+        replies: m.metrics.replies,
+        impressions: m.metrics.impressions
+      }));
+
+      // Send to PostHog
+      if (posthogKey) {
+        await fetch('https://us.i.posthog.com/capture/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            api_key: posthogKey,
+            event: 'twitter:tweet_engagement',
+            distinct_id: 'tweet-pipeline',
+            properties: {
+              tweetId: m.id,
+              likes: m.metrics.likes,
+              retweets: m.metrics.retweets,
+              replies: m.metrics.replies,
+              impressions: m.metrics.impressions
+            }
+          })
+        });
+      }
+    }
+  } catch (err) {
+    console.error('Error fetching metrics for batch:', err.message);
+  }
+}
+" 2>&1 | tee -a "$LOG_FILE"
+
+log "Engagement bridge complete."
