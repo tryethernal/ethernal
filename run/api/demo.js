@@ -139,6 +139,11 @@ router.post('/migrateExplorer', authMiddleware, async (req, res, next) => {
         if (!subscription)
             return managedError(new Error('Error while starting trial. Please try again.'), req, res);
 
+        // Clear grace-period flags set by removeExpiredExplorers
+        const workspace = await db.getWorkspaceById(explorer.workspaceId);
+        if (workspace && (workspace.pendingDeletion || workspace.deleteAfter))
+            await workspace.update({ pendingDeletion: false, public: true, deleteAfter: null });
+
         res.status(200).send({ explorerId: explorer.id });
     } catch(error) {
         unmanagedError(error, req, next);

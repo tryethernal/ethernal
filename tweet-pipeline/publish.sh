@@ -78,7 +78,12 @@ for TWEET_FILE in "$QUEUE_DIR"/tweet-*.json; do
     console.log(JSON.stringify({ tweetIds }));
   " 2>&1); then
     # Extract the JSON line containing tweetIds (grep avoids picking up stray stderr)
-    TWEET_IDS=$(echo "$RESULT" | grep -o '{"tweetIds":\[.*\]}')
+    TWEET_IDS=$(echo "$RESULT" | grep -o '{"tweetIds":\[.*\]}' || true)
+    if [ -z "$TWEET_IDS" ]; then
+      log "ERROR: Could not extract tweetIds from output. Marking as failed to prevent duplicate post."
+      jq '.postError = "no tweetIds in output"' "$TWEET_FILE" > "${TWEET_FILE}.tmp" && mv "${TWEET_FILE}.tmp" "$TWEET_FILE"
+      continue
+    fi
     log "Posted successfully: $TWEET_IDS"
 
     # Update queue file: mark as posted
