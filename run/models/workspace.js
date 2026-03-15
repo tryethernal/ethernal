@@ -3588,63 +3588,71 @@ module.exports = (sequelize, DataTypes) => {
         return sequelize.transaction(
             { deferrable: Sequelize.Deferrable.SET_DEFERRED },
             async transaction => {
+                // Step 1: Get blocks (simple query, no joins)
                 const blocks = await this.getBlocks({
                     where: { id: ids },
-                    attributes: ['id'],
-                    include: [
-                        {
-                            model: sequelize.models.Transaction,
-                            attributes: ['id'],
-                            as: 'transactions',
-                            include: [
-                                {
-                                    model: sequelize.models.TransactionEvent,
-                                    as: 'event'
-                                },
-                                {
-                                    model: sequelize.models.TransactionTraceStep,
-                                    attributes: ['id'],
-                                    as: 'traceSteps',
-                                },
-                                {
-                                    model: sequelize.models.Contract,
-                                    as: 'createdContract',
-                                },
-                                {
-                                    model: sequelize.models.TransactionReceipt,
-                                    attributes: ['id'],
-                                    as: 'receipt',
-                                    include: {
-                                        model: sequelize.models.TransactionLog,
-                                        attributes: ['id'],
-                                        as: 'logs',
-                                        include: {
-                                            model: sequelize.models.TokenTransfer,
-                                            attributes: ['id'],
-                                            as: 'tokenTransfer',
-                                            include: {
-                                                model: sequelize.models.TokenBalanceChange,
-                                                attributes: ['id'],
-                                                as: 'tokenBalanceChanges'
-                                            }
-                                        }
-                                    }
-                                },
-                            ]
-                        }
-                    ]
+                    attributes: ['id']
                 });
+
+                // Step 2: Get transactions for these blocks (focused query with workspaceId filter)
+                const blockIds = blocks.map(block => block.id);
+                const transactions = blockIds.length > 0 ? await sequelize.query(
+                    `SELECT id FROM transactions WHERE "blockId" IN (:blockIds) AND "workspaceId" = :workspaceId`,
+                    {
+                        replacements: { blockIds, workspaceId: this.id },
+                        type: QueryTypes.SELECT
+                    }
+                ) : [];
+
+                // Step 3: Get transaction trace steps
+                const transactionIds = transactions.map(t => t.id);
+                const traceSteps = transactionIds.length > 0 ? await sequelize.query(
+                    `SELECT id FROM transaction_trace_steps WHERE "transactionId" IN (:transactionIds) AND "workspaceId" = :workspaceId`,
+                    {
+                        replacements: { transactionIds, workspaceId: this.id },
+                        type: QueryTypes.SELECT
+                    }
+                ) : [];
+
+                // Step 4: Get contracts created by these transactions
+                const contracts = transactionIds.length > 0 ? await sequelize.query(
+                    `SELECT id FROM contracts WHERE "transactionId" IN (:transactionIds) AND "workspaceId" = :workspaceId`,
+                    {
+                        replacements: { transactionIds, workspaceId: this.id },
+                        type: QueryTypes.SELECT
+                    }
+                ) : [];
+
+                // Step 5: Get transaction receipts
+                const receipts = transactionIds.length > 0 ? await sequelize.query(
+                    `SELECT id FROM transaction_receipts WHERE "transactionId" IN (:transactionIds) AND "workspaceId" = :workspaceId`,
+                    {
+                        replacements: { transactionIds, workspaceId: this.id },
+                        type: QueryTypes.SELECT
+                    }
+                ) : [];
+
+                // Step 6: Get transaction logs
+                const receiptIds = receipts.map(r => r.id);
+                const logs = receiptIds.length > 0 ? await sequelize.query(
+                    `SELECT id FROM transaction_logs WHERE "transactionReceiptId" IN (:receiptIds) AND "workspaceId" = :workspaceId`,
+                    {
+                        replacements: { receiptIds, workspaceId: this.id },
+                        type: QueryTypes.SELECT
+                    }
+                ) : [];
 
                 const entities = {};
 
+                // Store all entities from our focused queries
                 entities.blocks = blocks;
-                entities.transactions = blocks.flatMap(block => block.transactions);
-                entities.transaction_trace_steps = entities.transactions.flatMap(transaction => transaction.traceSteps).filter(traceStep => !!traceStep);
-                entities.contracts = entities.transactions.flatMap(transaction => transaction.createdContract).filter(contract => !!contract);
-                entities.transaction_receipts = entities.transactions.flatMap(transaction => transaction.receipt).filter(receipt => !!receipt && !!receipt.logs);
-                entities.transaction_logs = entities.transaction_receipts.flatMap(receipt => receipt.logs).filter(log => !!log);
+                entities.transactions = transactions;
+                entities.transaction_trace_steps = traceSteps;
+                entities.contracts = contracts;
+                entities.transaction_receipts = receipts;
+                entities.transaction_logs = logs;
                 // Get ALL token_transfers that reference the transactions we're deleting
-                const transactionIds = entities.transactions.map(t => t.id);
+                // Note: transactionIds already declared at line 3608
                 if (transactionIds.length > 0) {
                     const allTokenTransfers = await sequelize.query(
                         `SELECT id FROM token_transfers WHERE "transactionId" IN (:transactionIds) AND "workspaceId" = :workspaceId`,
@@ -3689,8 +3697,16 @@ module.exports = (sequelize, DataTypes) => {
                     entities.v2_dex_pool_reserves = [];
                 }
 
-                for (const contract of entities.contracts)
-                    await contract.update({ transactionId: null }, { transaction });
+                // Update contracts to unlink from deleted transactions (using raw SQL since entities.contracts contains plain objects)
+                if (entities.contracts.length > 0) {
+                    await sequelize.query(
+                        `UPDATE contracts SET "transactionId" = NULL WHERE "id" IN (:ids) AND "workspaceId" = :workspaceId`,
+                        {
+                            replacements: { ids: entities.contracts.map(c => c.id), workspaceId: this.id },
+                            transaction
+                        }
+                    );
+                }
 
                 if (entities.blocks.length) {
                     await sequelize.query(`DELETE FROM block_events WHERE "blockId" IN (:ids) AND "workspaceId" = :workspaceId`, {
