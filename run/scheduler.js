@@ -1,4 +1,5 @@
 const { enqueue } = require('./lib/queue');
+const { isDripEmailEnabled } = require('./lib/flags');
 
 const DRIP_EMAIL_CHECK_INTERVAL = 15 * 60 * 1000;
 const INTEGRITY_CHECK_INTERVAL = 5 * 60 * 1000;
@@ -140,11 +141,13 @@ const INFRA_HEALTH_CHECK_INTERVAL = 60 * 1000;
         { every: INFRA_HEALTH_CHECK_INTERVAL }
     );
 
-    await enqueue(
-        'processDripEmails',
-        'processDripEmails',
-        {},
-        10,
-        { every: DRIP_EMAIL_CHECK_INTERVAL }
-    );
+    if (isDripEmailEnabled()) {
+        await enqueue(
+            'processDripEmails',
+            'processDripEmails',
+            {},
+            10,
+            { every: DRIP_EMAIL_CHECK_INTERVAL }
+        );
+    }
 })();
