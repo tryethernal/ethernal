@@ -120,10 +120,10 @@ export function createTwitterClient(creds) {
         return (result.data || []).map(tweet => ({
             id: tweet.id,
             metrics: {
-                likes: tweet.public_metrics.like_count,
-                retweets: tweet.public_metrics.retweet_count,
-                replies: tweet.public_metrics.reply_count,
-                impressions: tweet.public_metrics.impression_count,
+                likes: tweet.public_metrics?.like_count ?? 0,
+                retweets: tweet.public_metrics?.retweet_count ?? 0,
+                replies: tweet.public_metrics?.reply_count ?? 0,
+                impressions: tweet.public_metrics?.impression_count ?? 0,
             },
         }));
     }

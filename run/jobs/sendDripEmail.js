@@ -78,8 +78,8 @@ module.exports = async (job) => {
     // Re-check schedule state before sending — user may have unsubscribed since enqueue
     if (scheduleId) {
         const schedule = await db.getDripScheduleById(scheduleId);
-        if (!schedule || schedule.skipped) {
-            logger.info('Drip email skipped (unsubscribed or cancelled)', { scheduleId, step });
+        if (!schedule || schedule.skipped || schedule.sentAt) {
+            logger.info('Drip email skipped (unsubscribed, cancelled, or already sent)', { scheduleId, step });
             return;
         }
     }

@@ -50,8 +50,23 @@ describe('sendDripEmail', () => {
         expect(analyticsInstance.shutdown).toHaveBeenCalled();
     });
 
+    it('Should skip sending if schedule was already sent (retry idempotency)', async () => {
+        db.getDripScheduleById.mockResolvedValue({ id: 1, skipped: false, sentAt: new Date() });
+
+        await sendDripEmail({ data: {
+            email: 'dev@example.com',
+            explorerSlug: 'my-chain',
+            step: 3,
+            scheduleId: 1
+        }});
+
+        const mailjetInstance = Mailjet.apiConnect();
+        expect(mailjetInstance.post).not.toHaveBeenCalled();
+        expect(db.markDripEmailSent).not.toHaveBeenCalled();
+    });
+
     it('Should skip sending if schedule was marked as skipped (late unsubscribe)', async () => {
-        db.getDripScheduleById.mockResolvedValue({ id: 1, skipped: true });
+        db.getDripScheduleById.mockResolvedValue({ id: 1, skipped: true, sentAt: null });
 
         await sendDripEmail({ data: {
             email: 'dev@example.com',
