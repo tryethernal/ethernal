@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{subject}}</title>
+<style>
+  body { margin: 0; padding: 0; background-color: #0f0f1a; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+  .container { max-width: 600px; margin: 0 auto; background-color: #1a1a2e; }
+  .header { padding: 24px 32px; border-bottom: 1px solid #2a2a3e; }
+  .header img { height: 28px; }
+  .body { padding: 32px; color: #e0e0e0; font-size: 15px; line-height: 1.6; }
+  .body h2 { color: #ffffff; font-size: 20px; margin: 0 0 16px 0; }
+  .body p { margin: 0 0 16px 0; }
+  .body a { color: #3D95CE; text-decoration: none; }
+  .cta { display: inline-block; background-color: #3D95CE; color: #ffffff !important; padding: 12px 28px; border-radius: 6px; font-weight: 600; text-decoration: none !important; margin: 8px 0 16px 0; }
+  .feature-table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+  .feature-table th { text-align: left; padding: 8px 12px; background-color: #2a2a3e; color: #ffffff; font-size: 13px; }
+  .feature-table td { padding: 8px 12px; border-bottom: 1px solid #2a2a3e; color: #c0c0c0; font-size: 13px; }
+  .footer { padding: 24px 32px; border-top: 1px solid #2a2a3e; color: #666; font-size: 12px; text-align: center; }
+  .footer a { color: #888; text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <img src="https://app.tryethernal.com/logo.png" alt="Ethernal" />
+  </div>
+  <div class="body">
+    {{content}}
+  </div>
+  <div class="footer">
+    <p><a href="{{unsubscribeUrl}}">Unsubscribe</a> from demo emails</p>
+    <p>&copy; Ethernal &middot; <a href="https://tryethernal.com">tryethernal.com</a></p>
+  </div>
+</div>
+</body>
+</html>
