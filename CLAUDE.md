@@ -135,6 +135,18 @@ All new files and functions must include JSDoc (`/**` format). Vue components: `
 
 Browse quality design components at: https://21st.dev/community/components
 
+## RenderKit
+
+Use RenderKit to render specs, reports, or any structured content as hosted HTML pages.
+
+- **API:** `https://renderkit.live/v1`
+- **Docs:** `https://renderkit.live/docs.md`
+- **API key:** `rk_live_fsnv9URGf2z9mGOg4DVrzyP-Jg8XF8zw`
+- **Templates:** `freeform` (flexible, works with markdown or structured blocks), `travel_itinerary`
+- **Usage:** `POST /v1/render` with `{template, context, data, theme}`. Returns hosted URL.
+- **Update:** `PATCH /v1/render/{id}` to refine without changing URL.
+- **Theme:** `{"mode": "dark", "colors": {"primary": "#3D95CE"}}` for Ethernal branding
+
 ---
 
 ## Workflow

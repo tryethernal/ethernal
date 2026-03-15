@@ -36,11 +36,11 @@ Extend demo explorer lifetime from 1 day to 7 days.
 | # | Timing | Subject Style | Content |
 |---|--------|--------------|---------|
 | 1 | Instant (existing) | "Your Ethernal demo explorer is ready" | Explorer link + what they can do right now |
-| 2 | +6 hours | "Your explorer synced X blocks" | Activity stats, show value they're getting for free |
+| 2 | +6 hours | "Your explorer synced X blocks" | Prioritize by activity value: (1) token transfers if present, (2) transactions with special activity (fn calls, ETH transfers), (3) blocks with link to a relevant transaction. Highlight the most interesting on-chain activity. |
 | 3 | +24 hours | "Here's what you're missing on [chain]" | Feature comparison: demo vs. paid (branding, custom domain, historical sync, DEX) |
-| 4 | +72 hours (day 3) | "Teams using Ethernal on [similar chain]" | Social proof, use cases, link to case studies/blog |
+| 4 | +72 hours (day 3) | "Teams using Ethernal on [similar chain]" | Research the team/company via linkup.so API (enrich from email domain): what they build, what chain ecosystem they're in, what similar customers look like. Personalize with relevant use cases and social proof matching their profile. |
 | 5 | +120 hours (day 5) | "Your explorer expires in 2 days" | Urgency + one-click migration CTA + what happens when it expires |
-| 6 | +168 hours (day 7) | "Your demo expired -- but your data doesn't have to" | Post-expiration win-back, offer to restore if they sign up within 48h |
+| 6 | +168 hours (day 7) | "Your demo expired -- but your data doesn't have to" | Post-expiration win-back, offer to restore if they sign up within 48h. **Backend work required:** Currently `removeExpiredExplorers` job queues workspace for deletion immediately on expiry. Need a grace period: on expiry, set explorer to inactive/hidden (not public, syncing paused) but defer actual deletion by 48h. New flag `pendingGracePeriod` or extend `pendingDeletion` with a `deleteAfter` timestamp. |
 
 #### Implementation
 
@@ -52,7 +52,7 @@ Extend demo explorer lifetime from 1 day to 7 days.
 - **Benefits:** Survives Redis flushes/restarts. Schedule changes apply to all in-flight demos. Easy to query/debug. No phantom jobs.
 - **Migration:** New Sequelize migration for `demo_drip_schedules` table.
 - **Mailjet webhooks:** New endpoint `POST /api/webhooks/mailjet?token=<secret>` to track opens/clicks. Secret token configured in Mailjet webhook URL and validated on receipt.
-- **Email templates:** `run/emails/` directory (HTML + text versions). Each template must include an unsubscribe link (Mailjet `{{var:unsubscribe_url}}` or custom endpoint).
+- **Email templates:** `run/emails/` directory. Email #1 stays plain text (personal feel for welcome). Emails #2-6 use a branded HTML template with: Ethernal logo header, dark theme (#1a1a2e background, #3D95CE accent), CTA buttons, feature screenshots/comparisons where relevant, and footer with unsubscribe link + social links. Each HTML email includes a plain text fallback (Mailjet generates automatically). One shared base template (`run/emails/base.html`) with per-email content blocks injected via Mailjet template variables.
 - **Unsubscribe:** New endpoint `GET /api/demo/unsubscribe?token=<encrypted>` -- marks all pending drip rows as `skipped = true` for that email.
 - **Tracking:** PostHog events `email:drip_sent`, `email:drip_opened`, `email:drip_clicked` with `{step, explorerSlug}` (no raw email addresses sent to PostHog, use explorerSlug as identifier)
 
