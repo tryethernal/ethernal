@@ -9,7 +9,7 @@ const logger = require('../lib/logger');
 const db = require('../lib/firebase');
 const Analytics = require('../lib/analytics');
 const { getAppDomain, getMailjetPublicKey, getMailjetPrivateKey, getDemoExplorerSender, getDripUnsubscribeSecret } = require('../lib/env');
-const { isMailjetEnabled } = require('../lib/flags');
+const { isDripEmailEnabled } = require('../lib/flags');
 const { getEmailContent } = require('../emails/drip-content');
 const crypto = require('crypto');
 
@@ -44,8 +44,8 @@ function generateUnsubscribeToken(email) {
 module.exports = async (job) => {
     const { email, explorerSlug, step, activitySummary, teamContext, scheduleId } = job.data;
 
-    if (!isMailjetEnabled())
-        throw new Error('Mailjet has not been enabled.');
+    if (!isDripEmailEnabled())
+        throw new Error('Drip emails have not been enabled.');
 
     const mailjet = Mailjet.apiConnect(getMailjetPublicKey(), getMailjetPrivateKey());
     const explorerLink = `https://${explorerSlug}.${getAppDomain()}`;

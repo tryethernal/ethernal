@@ -48,12 +48,12 @@ describe('sendDripEmail', () => {
         expect(analyticsInstance.shutdown).toHaveBeenCalled();
     });
 
-    it('Should throw if Mailjet is not enabled', async () => {
-        jest.spyOn(flags, 'isMailjetEnabled').mockReturnValueOnce(false);
+    it('Should throw if drip emails are not enabled', async () => {
+        jest.spyOn(flags, 'isDripEmailEnabled').mockReturnValueOnce(false);
         await expect(sendDripEmail({ data: {
             email: 'dev@example.com',
             explorerSlug: 'my-chain',
             step: 1
-        }})).rejects.toThrow('Mailjet has not been enabled');
+        }})).rejects.toThrow('Drip emails have not been enabled');
     });
 });
