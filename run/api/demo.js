@@ -24,6 +24,7 @@ const authMiddleware = require('../middlewares/auth');
 const db = require('../lib/firebase');
 const { managedError, unmanagedError } = require('../lib/errors');
 const { isChainAllowed } = require('../lib/chains');
+const logger = require('../lib/logger');
 
 /*
     Creates a uniswap v2 dex for a demo explorer
@@ -220,7 +221,19 @@ router.post('/explorers', async (req, res, next) => {
         if (!explorer)
             return managedError(new Error('Could not create explorer. Please retry.'), req, res);
 
-        await enqueue('sendDemoExplorerLink', `sendDemoExplorerLink-${explorer.id}`, { email: data.email, explorerSlug: explorer.slug });
+        // Create drip email schedule (steps 1-6) and send step 1 immediately
+        try {
+            await db.createDripSchedule(explorer.id, data.email);
+            await enqueue('sendDripEmail', `sendDripEmail-step1-${explorer.id}`, {
+                scheduleId: null,
+                email: data.email,
+                explorerSlug: explorer.slug,
+                step: 1
+            }, 1);
+        } catch (error) {
+            // Non-blocking: drip schedule failure should not break demo creation
+            logger.error(error.message, { location: 'api.demo.createDripSchedule', explorerId: explorer.id, error });
+        }
 
         const discordNotification = '\n**New Demo Explorer**\n\n**User Email:** ' + data.email + '\n**Explorer Name:** ' + (explorer.name || 'N/A') + '\n**Explorer Link:** https://' + explorer.slug + '.' + getAppDomain() + '\n**Explorer RPC:** ' + (data.rpcServer || 'N/A') + '\n';
         await enqueue('sendDiscordMessage', 'sendDiscordMessage-' + explorer.id, { content: discordNotification, channel: getDiscordDemoExplorerChannelWebhook() });
