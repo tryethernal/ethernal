@@ -19,7 +19,7 @@ module.exports = async job => {
             {
                 model: Workspace,
                 as: 'workspace',
-                attributes: ['public', 'rpcHealthCheckEnabled', 'rpcServer', 'tracing', 'name'],
+                attributes: ['id', 'public', 'rpcHealthCheckEnabled', 'rpcServer', 'tracing', 'name'],
                 include: [
                     {
                         model: Explorer,
