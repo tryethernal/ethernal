@@ -16,6 +16,8 @@
 | Sentry pipeline | `run/api/sentryPipeline.js`, `run/webhooks/githubActions.js` | [SENTRY.md](.claude/references/SENTRY.md) |
 | Landing/marketing | `landing/` | [LANDING.md](.claude/references/LANDING.md) |
 | Blog pipeline | `blog/pipeline/`, `.github/workflows/blog-*.yml` | |
+| Drip emails | `run/jobs/sendDripEmail.js`, `run/jobs/processDripEmails.js`, `run/models/demodripschedule.js`, `run/webhooks/mailjet.js` | |
+| Twitter pipeline | `tweet-pipeline/` (standalone package, runs on Hetzner server) | |
 | Analytics (PostHog) | `blog/src/layouts/BaseLayout.astro` (snippet), `landing/src/main.js` (init) | |
 | Docker commands | | [COMMANDS.md](.claude/references/COMMANDS.md) |
 | Infra monitoring | `run/jobs/infraHealthCheck.js`, `run/api/status.js`, `.github/workflows/infra-auto-remediation.yml` | |
@@ -146,6 +148,31 @@ Use RenderKit to render specs, reports, or any structured content as hosted HTML
 - **Usage:** `POST /v1/render` with `{template, context, data, theme}`. Returns hosted URL.
 - **Update:** `PATCH /v1/render/{id}` to refine without changing URL.
 - **Theme:** `{"mode": "dark", "colors": {"primary": "#3D95CE"}}` for Ethernal branding
+
+---
+
+## Marketing Pipeline
+
+### Demo Explorer Lifecycle
+
+Creation → 7-day active period → 48h grace period (`deleteAfter` column on workspace) → deletion by `removeExpiredExplorers` job.
+
+### Drip Email System
+
+6-step email sequence sent to demo explorer creators via Mailjet. `processDripEmails` runs every 15 min, finds pending emails, enqueues `sendDripEmail` for each. Unsubscribe uses AES-256-CBC tokens (format: `IV.ciphertext`, URL-safe base64).
+
+Key env vars: `MAILJET_PUBLIC_KEY`, `MAILJET_PRIVATE_KEY`, `MAILJET_WEBHOOK_SECRET`, `DRIP_UNSUBSCRIBE_SECRET`, `DEMO_EXPLORER_SENDER`. Feature flag: `isDripEmailEnabled()` in `run/lib/flags.js`.
+
+PostHog events: `email:drip_sent`, `email:drip_opened`, `email:drip_clicked`, `explorer:demo_expired`.
+
+### Twitter Pipeline (`tweet-pipeline/`)
+
+Standalone Node.js package on Hetzner server (`157.90.154.200`, user `blog`). Orchestrated by systemd timers:
+- **Draft** (daily 00:00 UTC): 3-phase Claude pipeline (research → draft → humanize) generates 5 tweets
+- **Publish** (every 10 min): Posts queued tweets with media cards
+- **Engagement** (daily 22:00 UTC): Fetches metrics → PostHog
+
+Config: `/opt/blog-pipeline.env`. Queue dir: `/home/blog/tweet-queue/`.
 
 ---
 
