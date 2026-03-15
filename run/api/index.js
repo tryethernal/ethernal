@@ -69,7 +69,9 @@ router.use('/opWithdrawals', opWithdrawals);
 
 if (isDemoEnabled()) {
     const demo = require('./demo');
+    const demoUnsubscribe = require('./demoUnsubscribe');
     router.use('/demo', demo);
+    router.use('/demo', demoUnsubscribe);
 }
 
 if (isStripeEnabled()) {
