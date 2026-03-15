@@ -97,7 +97,7 @@ for TWEET_FILE in "$QUEUE_DIR"/tweet-*.json; do
           \"event\": \"twitter:tweet_posted\",
           \"distinct_id\": \"tweet-pipeline\",
           \"properties\": {
-            \"tweetId\": $(echo "$TWEET_IDS" | jq '.[0]'),
+            \"tweetId\": $(echo "$TWEET_IDS" | jq '.tweetIds[0]'),
             \"bucket\": $(jq -r '.bucket' "$TWEET_FILE" | jq -R .),
             \"sourceId\": $(jq -r '.sourceId' "$TWEET_FILE" | jq -R .),
             \"hasThread\": $(jq 'if (.thread | length) > 0 then true else false end' "$TWEET_FILE")
