@@ -57,6 +57,7 @@ module.exports = async (job) => {
         explorerLink,
         email,
         unsubscribeUrl,
+        appDomain: getAppDomain(),
         activitySummary,
         teamContext
     });

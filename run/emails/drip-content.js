@@ -27,11 +27,12 @@ function getBaseTemplate() {
  * @param {string} unsubscribeUrl - Unsubscribe link
  * @returns {string} Complete HTML email
  */
-function wrapInTemplate(content, subject, unsubscribeUrl) {
+function wrapInTemplate(content, subject, unsubscribeUrl, appDomain) {
     return getBaseTemplate()
         .replace('{{content}}', content)
         .replace('{{subject}}', subject)
-        .replace('{{unsubscribeUrl}}', unsubscribeUrl);
+        .replace('{{unsubscribeUrl}}', unsubscribeUrl)
+        .replace(/\{\{appDomain\}\}/g, appDomain);
 }
 
 const steps = {
@@ -58,7 +59,7 @@ const steps = {
         return {
             subject,
             textPart: `Your demo explorer ${data.explorerSlug} has synced ${summary}. Open it at ${data.explorerLink}`,
-            htmlPart: wrapInTemplate(content, subject, data.unsubscribeUrl)
+            htmlPart: wrapInTemplate(content, subject, data.unsubscribeUrl, data.appDomain)
         };
     },
 
@@ -77,12 +78,12 @@ const steps = {
                 <tr><td>API access</td><td>Limited</td><td>Full</td></tr>
                 <tr><td>Explorer lifetime</td><td>7 days</td><td>Permanent</td></tr>
             </table>
-            <a href="https://tryethernal.com/#pricing" class="cta">See Plans</a>
+            <a href="https://${data.appDomain}/#pricing" class="cta">See Plans</a>
         `;
         return {
             subject,
-            textPart: `Your demo explorer has limited features. See what a paid plan unlocks: data retention, custom domain, historical sync, DEX analytics, and more. Plans at https://tryethernal.com/#pricing`,
-            htmlPart: wrapInTemplate(content, subject, data.unsubscribeUrl)
+            textPart: `Your demo explorer has limited features. See what a paid plan unlocks: data retention, custom domain, historical sync, DEX analytics, and more. Plans at https://${data.appDomain}/#pricing`,
+            htmlPart: wrapInTemplate(content, subject, data.unsubscribeUrl, data.appDomain)
         };
     },
 
@@ -93,12 +94,12 @@ const steps = {
             <h2>You are not alone</h2>
             <p>${teamContext}</p>
             <p>Ethernal works out of the box with any EVM chain: L2s, L3s, appchains, testnets, and private networks.</p>
-            <a href="https://tryethernal.com" class="cta">Learn More</a>
+            <a href="https://${data.appDomain}" class="cta">Learn More</a>
         `;
         return {
             subject,
-            textPart: `${teamContext}\n\nLearn more at https://tryethernal.com`,
-            htmlPart: wrapInTemplate(content, subject, data.unsubscribeUrl)
+            textPart: `${teamContext}\n\nLearn more at https://${data.appDomain}`,
+            htmlPart: wrapInTemplate(content, subject, data.unsubscribeUrl, data.appDomain)
         };
     },
 
@@ -108,13 +109,13 @@ const steps = {
             <h2>Your demo is ending soon</h2>
             <p>Your explorer <strong>${data.explorerSlug}</strong> expires in 2 days.</p>
             <p>Migrate now to keep your explorer running permanently. Your existing configuration transfers automatically.</p>
-            <a href="https://app.tryethernal.com/explorers" class="cta">Migrate to Paid</a>
+            <a href="https://app.${data.appDomain}/explorers" class="cta">Migrate to Paid</a>
             <p style="color: #888; font-size: 13px; margin-top: 16px;">After expiration, your explorer and its data will be removed.</p>
         `;
         return {
             subject,
-            textPart: `Your demo explorer ${data.explorerSlug} expires in 2 days. Migrate to a paid plan to keep it running: https://app.tryethernal.com/explorers`,
-            htmlPart: wrapInTemplate(content, subject, data.unsubscribeUrl)
+            textPart: `Your demo explorer ${data.explorerSlug} expires in 2 days. Migrate to a paid plan to keep it running: https://app.${data.appDomain}/explorers`,
+            htmlPart: wrapInTemplate(content, subject, data.unsubscribeUrl, data.appDomain)
         };
     },
 
@@ -124,13 +125,13 @@ const steps = {
             <h2>Your demo has ended</h2>
             <p>Your explorer <strong>${data.explorerSlug}</strong> has expired.</p>
             <p>We are keeping your configuration for 48 hours. Sign up for a paid plan now and we will restore your explorer instantly.</p>
-            <a href="https://app.tryethernal.com/explorers" class="cta">Restore Explorer</a>
+            <a href="https://app.${data.appDomain}/explorers" class="cta">Restore Explorer</a>
             <p style="color: #888; font-size: 13px; margin-top: 16px;">After 48 hours, your explorer and its data will be permanently deleted.</p>
         `;
         return {
             subject,
-            textPart: `Your demo explorer ${data.explorerSlug} has expired. We're keeping your configuration for 48 hours. Sign up now to restore it: https://app.tryethernal.com/explorers`,
-            htmlPart: wrapInTemplate(content, subject, data.unsubscribeUrl)
+            textPart: `Your demo explorer ${data.explorerSlug} has expired. We're keeping your configuration for 48 hours. Sign up now to restore it: https://app.${data.appDomain}/explorers`,
+            htmlPart: wrapInTemplate(content, subject, data.unsubscribeUrl, data.appDomain)
         };
     }
 };
