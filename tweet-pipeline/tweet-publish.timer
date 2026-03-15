@@ -1,0 +1,9 @@
+[Unit]
+Description=Run tweet publisher every 10 minutes
+
+[Timer]
+OnCalendar=*-*-* *:00/10:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target
