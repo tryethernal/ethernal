@@ -6,6 +6,7 @@
 
 const db = require('../lib/firebase');
 const { enqueue } = require('../lib/queue');
+const { isDripEmailEnabled } = require('../lib/flags');
 const logger = require('../lib/logger');
 
 /**
@@ -14,6 +15,9 @@ const logger = require('../lib/logger');
  * @returns {Promise<void>}
  */
 module.exports = async () => {
+    if (!isDripEmailEnabled())
+        return;
+
     const pendingEmails = await db.getPendingDripEmails();
 
     if (!pendingEmails.length)
