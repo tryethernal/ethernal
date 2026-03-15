@@ -20,6 +20,11 @@ const BASE_URL = '/api/transactions';
 beforeEach(() => {
     jest.clearAllMocks();
     jest.spyOn(db, 'canUserSyncBlock').mockResolvedValue(true);
+    jest.spyOn(db, 'getUserWithWorkspaces').mockResolvedValue({
+        id: 123,
+        isPremium: false,
+        workspaces: []
+    });
 });
 
 describe(`GET ${BASE_URL}/:hash/traceSteps`, () => {
@@ -242,6 +247,11 @@ describe(`POST ${BASE_URL}`, () => {
 
     it('Should return an error if user is not allowed to sync', (done) => {
         jest.spyOn(db, 'canUserSyncContract').mockResolvedValue(true);
+        jest.spyOn(db, 'getUserWithWorkspaces').mockResolvedValue({
+            id: 123,
+            isPremium: false,
+            workspaces: [{}, {}] // Multiple workspaces for non-premium user
+        });
         jest.spyOn(db, 'canUserSyncBlock').mockResolvedValue(false);
         request.post(BASE_URL)
             .send({

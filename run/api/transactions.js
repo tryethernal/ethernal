@@ -101,7 +101,9 @@ router.post('/', [authMiddleware, browserSyncMiddleware], async (req, res, next)
         const transaction = data.transaction;
         const receipt = data.transactionReceipt;
 
-        const canUserSyncBlock = await db.canUserSyncBlock(data.user.id);
+        // Fetch user with all workspaces for permission check
+        const userWithWorkspaces = await db.getUserWithWorkspaces(data.user.id);
+        const canUserSyncBlock = await db.canUserSyncBlock(userWithWorkspaces);
         if (!canUserSyncBlock)
             return managedError(new Error(`You are on a free plan with more than one workspace. Please upgrade your plan, or delete your extra workspaces here: https://app.${getAppDomain()}/settings.`), req, res);
 
