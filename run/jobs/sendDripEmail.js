@@ -8,9 +8,10 @@ const Mailjet = require('node-mailjet');
 const logger = require('../lib/logger');
 const db = require('../lib/firebase');
 const Analytics = require('../lib/analytics');
-const { getAppDomain, getMailjetPublicKey, getMailjetPrivateKey, getDemoExplorerSender, getDripUnsubscribeSecret } = require('../lib/env');
+const { getAppDomain, getMailjetPublicKey, getMailjetPrivateKey, getDemoExplorerSender, getDripUnsubscribeSecret, getNodeEnv } = require('../lib/env');
 const { isDripEmailEnabled } = require('../lib/flags');
 const { getEmailContent } = require('../emails/drip-content');
+const { encode } = require('../lib/crypto');
 const crypto = require('crypto');
 
 /**
@@ -47,17 +48,39 @@ module.exports = async (job) => {
     if (!isDripEmailEnabled())
         throw new Error('Drip emails have not been enabled.');
 
+    // Fetch schedule once — used for skip check and migration URL
+    let schedule;
+    if (scheduleId)
+        schedule = await db.getDripScheduleById(scheduleId);
+
+    // Re-check schedule state before sending — user may have unsubscribed since enqueue
+    if (scheduleId) {
+        if (!schedule || schedule.skipped || schedule.sentAt) {
+            logger.info('Drip email skipped (unsubscribed, cancelled, or already sent)', { scheduleId, step });
+            return;
+        }
+    }
+
     const mailjet = Mailjet.apiConnect(getMailjetPublicKey(), getMailjetPrivateKey());
-    const explorerLink = `https://${explorerSlug}.${getAppDomain()}`;
+    const appDomain = getAppDomain();
+    const explorerLink = `https://${explorerSlug}.${appDomain}`;
     const unsubscribeToken = generateUnsubscribeToken(email);
-    const unsubscribeUrl = `https://${getAppDomain()}/api/demo/unsubscribe?token=${unsubscribeToken}`;
+    const unsubscribeUrl = `https://${appDomain}/api/demo/unsubscribe?token=${unsubscribeToken}`;
+
+    // Steps 3-6 link to migration flow; steps 1-2 link to the explorer
+    let migrateUrl = `https://app.${appDomain}`;
+    if (step >= 3 && schedule && schedule.explorerId) {
+        const explorerToken = encode({ explorerId: schedule.explorerId });
+        migrateUrl = `https://app.${appDomain}/?explorerToken=${explorerToken}`;
+    }
 
     const content = getEmailContent(step, {
         explorerSlug,
         explorerLink,
+        migrateUrl,
         email,
         unsubscribeUrl,
-        appDomain: getAppDomain(),
+        appDomain,
         activitySummary,
         teamContext
     });
@@ -67,6 +90,7 @@ module.exports = async (job) => {
     const senderName = senderMatch ? senderMatch[1].trim() : 'Ethernal';
     const senderEmail = senderMatch ? senderMatch[2] : senderRaw;
 
+    const isProd = getNodeEnv() === 'production';
     const message = {
         From: {
             Email: senderEmail,
@@ -75,20 +99,13 @@ module.exports = async (job) => {
         To: [{ Email: email }],
         Subject: content.subject,
         TextPart: content.textPart,
-        CustomID: `drip-step-${step}-explorer-${explorerSlug}`
+        CustomID: `drip-step-${step}-explorer-${explorerSlug}`,
+        TrackOpens: isProd ? 'enabled' : 'disabled',
+        TrackClicks: isProd ? 'enabled' : 'disabled'
     };
 
     if (content.htmlPart)
         message.HTMLPart = content.htmlPart;
-
-    // Re-check schedule state before sending — user may have unsubscribed since enqueue
-    if (scheduleId) {
-        const schedule = await db.getDripScheduleById(scheduleId);
-        if (!schedule || schedule.skipped || schedule.sentAt) {
-            logger.info('Drip email skipped (unsubscribed, cancelled, or already sent)', { scheduleId, step });
-            return;
-        }
-    }
 
     await mailjet.post('send', { version: 'v3.1' })
         .request({ Messages: [message] })

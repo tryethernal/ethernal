@@ -82,6 +82,20 @@ describe('GET /feature/:id', () => {
 });
 ```
 
+## Environment Variables
+
+**Never use `process.env` directly in backend code.** Use the getter functions in `run/lib/env.js`:
+```javascript
+// Bad
+const isProd = process.env.NODE_ENV === 'production';
+
+// Good
+const { getNodeEnv } = require('../lib/env');
+const isProd = getNodeEnv() === 'production';
+```
+
+If a new env var is needed, add a getter to `run/lib/env.js` first, then use it everywhere. This keeps env access centralized and testable (mocked in `run/tests/mocks/lib/env.js`).
+
 ## Error Handling
 
 ```javascript

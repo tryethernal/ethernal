@@ -1,6 +1,7 @@
 /**
  * @fileoverview Per-step content generators for the demo drip email sequence.
  * Step 1 is plain text (personal feel). Steps 2-6 use branded HTML template.
+ * Steps 1-2 link to the explorer. Steps 3-6 link to the migration flow.
  * @module emails/drip-content
  */
 
@@ -38,7 +39,7 @@ function wrapInTemplate(content, subject, unsubscribeUrl, appDomain) {
 const steps = {
     1: (data) => ({
         subject: 'Your Ethernal demo explorer is ready',
-        textPart: `Hello,\n\nYour Ethernal demo explorer is ready. You can access it at ${data.explorerLink}.\n\nYour explorer will sync blocks, transactions, and contract interactions in real-time. Try deploying a contract or sending a transaction to see it appear.\n\nFeel free to reply to this email if you have any questions!\n\nRegards,\n\nAntoine\n\n---\nUnsubscribe: ${data.unsubscribeUrl}`,
+        textPart: `Hello,\n\nYour Ethernal demo explorer is ready: ${data.explorerLink}\n\nYour explorer will sync blocks, transactions, and contract interactions in real-time. Try deploying a contract or sending a transaction to see it appear.\n\nFeel free to reply to this email if you have any questions!\n\nRegards,\n\nAntoine`,
         htmlPart: null
     }),
 
@@ -54,7 +55,7 @@ const steps = {
                 <li>Inspect contract source code and ABI</li>
                 <li>Track token transfers and balances</li>
             </ul>
-            <a href="${data.explorerLink}" class="cta">Open Explorer</a>
+            <div class="cta-wrap"><a href="${data.explorerLink}" class="cta">Open Explorer</a></div>
         `;
         return {
             subject,
@@ -70,19 +71,18 @@ const steps = {
             <p>Your demo explorer gives you a taste. Here is what a paid plan adds:</p>
             <table class="feature-table">
                 <tr><th>Feature</th><th>Demo</th><th>Paid</th></tr>
-                <tr><td>Data retention</td><td>7 days</td><td>Unlimited</td></tr>
-                <tr><td>Custom branding</td><td>No</td><td>Yes</td></tr>
-                <tr><td>Custom domain</td><td>No</td><td>Yes</td></tr>
-                <tr><td>Historical sync</td><td>No</td><td>Yes</td></tr>
-                <tr><td>DEX analytics</td><td>No</td><td>Yes</td></tr>
-                <tr><td>API access</td><td>Limited</td><td>Full</td></tr>
-                <tr><td>Explorer lifetime</td><td>7 days</td><td>Permanent</td></tr>
+                <tr><td>Data retention</td><td style="color: #e57373;">7 days</td><td style="color: #81c784;">Unlimited</td></tr>
+                <tr><td>Custom branding</td><td style="color: #e57373;">&#10007;</td><td style="color: #81c784;">&#10003;</td></tr>
+                <tr><td>Custom domain</td><td style="color: #e57373;">&#10007;</td><td style="color: #81c784;">&#10003;</td></tr>
+                <tr><td>Historical sync</td><td style="color: #e57373;">&#10007;</td><td style="color: #81c784;">&#10003;</td></tr>
+                <tr><td>API access</td><td style="color: #e57373;">Limited</td><td style="color: #81c784;">Full</td></tr>
+                <tr><td>Explorer lifetime</td><td style="color: #e57373;">7 days</td><td style="color: #81c784;">Permanent</td></tr>
             </table>
-            <a href="https://${data.appDomain}/#pricing" class="cta">See Plans</a>
+            <div class="cta-wrap"><a href="${data.migrateUrl}" class="cta">Start Free Trial</a></div>
         `;
         return {
             subject,
-            textPart: `Your demo explorer has limited features. See what a paid plan unlocks: data retention, custom domain, historical sync, DEX analytics, and more. Plans at https://${data.appDomain}/#pricing\n\nUnsubscribe: ${data.unsubscribeUrl}`,
+            textPart: `Your demo explorer has limited features. See what a paid plan unlocks: data retention, custom domain, historical sync, and more. Start your free trial: ${data.migrateUrl}\n\nUnsubscribe: ${data.unsubscribeUrl}`,
             htmlPart: wrapInTemplate(content, subject, data.unsubscribeUrl, data.appDomain)
         };
     },
@@ -94,11 +94,11 @@ const steps = {
             <h2>You are not alone</h2>
             <p>${teamContext}</p>
             <p>Ethernal works out of the box with any EVM chain: L2s, L3s, appchains, testnets, and private networks.</p>
-            <a href="https://${data.appDomain}" class="cta">Learn More</a>
+            <div class="cta-wrap"><a href="${data.migrateUrl}" class="cta">Start Free Trial</a></div>
         `;
         return {
             subject,
-            textPart: `${teamContext}\n\nLearn more at https://${data.appDomain}\n\nUnsubscribe: ${data.unsubscribeUrl}`,
+            textPart: `${teamContext}\n\nStart your free trial: ${data.migrateUrl}\n\nUnsubscribe: ${data.unsubscribeUrl}`,
             htmlPart: wrapInTemplate(content, subject, data.unsubscribeUrl, data.appDomain)
         };
     },
@@ -108,13 +108,13 @@ const steps = {
         const content = `
             <h2>Your demo is ending soon</h2>
             <p>Your explorer <strong>${data.explorerSlug}</strong> expires in 2 days.</p>
-            <p>Migrate now to keep your explorer running permanently. Your existing configuration transfers automatically.</p>
-            <a href="https://app.${data.appDomain}/explorers" class="cta">Migrate to Paid</a>
+            <p>Start your 7-day free trial now to keep your explorer running. Your existing configuration transfers automatically.</p>
+            <div class="cta-wrap"><a href="${data.migrateUrl}" class="cta">Start Free Trial</a></div>
             <p style="color: #888; font-size: 13px; margin-top: 16px;">After expiration, your explorer and its data will be removed.</p>
         `;
         return {
             subject,
-            textPart: `Your demo explorer ${data.explorerSlug} expires in 2 days. Migrate to a paid plan to keep it running: https://app.${data.appDomain}/explorers\n\nUnsubscribe: ${data.unsubscribeUrl}`,
+            textPart: `Your demo explorer ${data.explorerSlug} expires in 2 days. Start your 7-day free trial to keep it running: ${data.migrateUrl}\n\nUnsubscribe: ${data.unsubscribeUrl}`,
             htmlPart: wrapInTemplate(content, subject, data.unsubscribeUrl, data.appDomain)
         };
     },
@@ -124,13 +124,13 @@ const steps = {
         const content = `
             <h2>Your demo has ended</h2>
             <p>Your explorer <strong>${data.explorerSlug}</strong> has expired.</p>
-            <p>We are keeping your configuration for 48 hours. Sign up for a paid plan now and we will restore your explorer instantly.</p>
-            <a href="https://app.${data.appDomain}/explorers" class="cta">Restore Explorer</a>
+            <p>We are keeping your configuration for 48 hours. Start a free trial now and we will restore your explorer instantly.</p>
+            <div class="cta-wrap"><a href="${data.migrateUrl}" class="cta">Restore Explorer</a></div>
             <p style="color: #888; font-size: 13px; margin-top: 16px;">After 48 hours, your explorer and its data will be permanently deleted.</p>
         `;
         return {
             subject,
-            textPart: `Your demo explorer ${data.explorerSlug} has expired. We're keeping your configuration for 48 hours. Sign up now to restore it: https://app.${data.appDomain}/explorers\n\nUnsubscribe: ${data.unsubscribeUrl}`,
+            textPart: `Your demo explorer ${data.explorerSlug} has expired. We're keeping your configuration for 48 hours. Start a free trial to restore it: ${data.migrateUrl}\n\nUnsubscribe: ${data.unsubscribeUrl}`,
             htmlPart: wrapInTemplate(content, subject, data.unsubscribeUrl, data.appDomain)
         };
     }
@@ -142,6 +142,7 @@ const steps = {
  * @param {Object} data - Template data
  * @param {string} data.explorerSlug - Explorer slug
  * @param {string} data.explorerLink - Full explorer URL
+ * @param {string} data.migrateUrl - Migration URL with JWT token (steps 3-6)
  * @param {string} data.email - Recipient email
  * @param {string} data.unsubscribeUrl - Unsubscribe URL
  * @param {string} [data.activitySummary] - Activity summary for step 2
