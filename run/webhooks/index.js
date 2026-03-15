@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { isStripeEnabled, isQuicknodeEnabled, isSentryPipelineEnabled } = require('../lib/flags');
+const { isStripeEnabled, isQuicknodeEnabled, isSentryPipelineEnabled, isMailjetEnabled } = require('../lib/flags');
 
 if (isStripeEnabled()) {
     const stripe = require('./stripe');
@@ -15,6 +15,11 @@ if (isQuicknodeEnabled()) {
 if (isSentryPipelineEnabled()) {
     const githubActions = require('./githubActions');
     router.use('/github-actions', githubActions);
+}
+
+if (isMailjetEnabled()) {
+    const mailjet = require('./mailjet');
+    router.use('/mailjet', mailjet);
 }
 
 module.exports = router;
