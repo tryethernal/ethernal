@@ -8,6 +8,7 @@
 const { Op } = require('sequelize');
 const { Explorer, StripeSubscription, StripePlan, Workspace } = require('../models');
 const { enqueue } = require('../lib/queue');
+const Analytics = require('../lib/analytics');
 
 const GRACE_PERIOD_HOURS = 48;
 
@@ -36,6 +37,7 @@ module.exports = async () => {
         ]
     })).filter(e => !!e.stripeSubscription);
 
+    const analytics = new Analytics();
     const deleted = [];
     for (let i = 0; i < explorers.length; i++) {
         const explorer = explorers[i];
@@ -57,6 +59,16 @@ module.exports = async () => {
                         to: new Date()
                     });
                     await enqueue('deleteWorkspace', `deleteWorkspace-${explorer.workspaceId}`, { workspaceId: explorer.workspaceId });
+                    analytics.track(
+                        explorer.workspace.userId ? String(explorer.workspace.userId) : 'system',
+                        'explorer:demo_expired',
+                        {
+                            slug: explorer.slug,
+                            workspaceId: explorer.workspaceId,
+                            expiresAfterDays,
+                            lifetimeDays: Math.round((new Date() - new Date(explorer.createdAt)) / (1000 * 60 * 60 * 24))
+                        }
+                    );
                     deleted.push(explorer.slug);
                 }
                 // else: still in grace period, skip
@@ -71,5 +83,6 @@ module.exports = async () => {
             }
         }
     }
+    analytics.shutdown();
     return deleted;
 };
