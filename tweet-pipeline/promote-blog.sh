@@ -80,8 +80,9 @@ for ARTICLE in "$BLOG_DIR"/*.md; do
     continue
   fi
 
-  # Skip if article is not live yet (avoids promoting before deploy)
-  if ! curl -sf --head "https://tryethernal.com/blog/${SLUG}" > /dev/null 2>&1; then
+  # Skip if article is not live yet (SPA returns 200 for all paths, so check page title)
+  PAGE_TITLE=$(curl -sf "https://tryethernal.com/blog/${SLUG}" 2>/dev/null | grep -o '<title>[^<]*</title>' || true)
+  if [ -z "$PAGE_TITLE" ] || echo "$PAGE_TITLE" | grep -q '^<title>On-Chain Engineering | On-Chain Engineering</title>$'; then
     log "Skipping $SLUG — not live at tryethernal.com yet"
     continue
   fi

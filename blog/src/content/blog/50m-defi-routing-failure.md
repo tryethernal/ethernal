@@ -10,8 +10,7 @@ tags:
   - Aave
 image: "/blog/images/50m-defi-routing-failure.png"
 ogImage: "/blog/images/50m-defi-routing-failure-og.png"
-status: published
-ogImage: /images/50m-defi-routing-failure-og.png
+status: draft
 readingTime: 9
 ---
 

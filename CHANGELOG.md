@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.68] - 2026-03-16
+### Fixed
+- fix(blog): remove duplicate ogImage key and set status to draft
+- fix: replace N+1 INSERT queries in transaction logs with bulk insert (#725)
+
+
 ## [5.17.67] - 2026-03-16
 ### Fixed
 - fix(blog): standardize reference format in draft prompt

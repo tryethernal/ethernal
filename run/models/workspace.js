@@ -3196,27 +3196,39 @@ module.exports = (sequelize, DataTypes) => {
                     raw: receipt
                 }), { transaction: sequelizeTransaction });
 
-                for (let i = 0; i < receipt.logs.length; i++) {
-                    const log = receipt.logs[i];
+                // Bulk create transaction logs to avoid N+1 queries
+                if (receipt.logs.length > 0) {
+                    const logsData = receipt.logs.map(log => sanitize({
+                        workspaceId: storedTx.workspaceId,
+                        transactionReceiptId: storedReceipt.id,
+                        address: log.address,
+                        blockHash: log.blockHash,
+                        blockNumber: log.blockNumber,
+                        data: log.data,
+                        logIndex: log.logIndex,
+                        topics: log.topics,
+                        transactionHash: log.transactionHash,
+                        transactionIndex: log.transactionIndex,
+                        raw: log
+                    }));
+
                     try {
-                        await storedReceipt.createLog(sanitize({
-                            workspaceId: storedTx.workspaceId,
-                            address: log.address,
-                            blockHash: log.blockHash,
-                            blockNumber: log.blockNumber,
-                            data: log.data,
-                            logIndex: log.logIndex,
-                            topics: log.topics,
-                            transactionHash: log.transactionHash,
-                            transactionIndex: log.transactionIndex,
-                            raw: log
-                        }), { transaction: sequelizeTransaction });
+                        await sequelize.query('SAVEPOINT bulk_logs_insert', { transaction: sequelizeTransaction });
+                        await sequelize.models.TransactionLog.bulkCreate(logsData, { transaction: sequelizeTransaction });
                     } catch(error) {
                         logger.error(error.message, { location: 'models.workspaces.safeCreateTransaction', error: error, transaction: transaction });
-                        await storedReceipt.createLog(sanitize({
-                            workspaceId: storedTx.workspaceId,
-                            raw: log
-                        }), { transaction: sequelizeTransaction });
+                        await sequelize.query('ROLLBACK TO SAVEPOINT bulk_logs_insert', { transaction: sequelizeTransaction });
+                        // Fall back to individual creates with minimal data
+                        for (const logData of logsData) {
+                            try {
+                                await sequelize.models.TransactionLog.create(
+                                    sanitize({ workspaceId: logData.workspaceId, transactionReceiptId: logData.transactionReceiptId, raw: logData.raw }),
+                                    { transaction: sequelizeTransaction }
+                                );
+                            } catch(innerError) {
+                                logger.error(innerError.message, { location: 'models.workspaces.safeCreateTransaction.fallback', error: innerError, transaction: transaction });
+                            }
+                        }
                     }
                 }
             }
