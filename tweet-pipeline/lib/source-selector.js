@@ -152,11 +152,15 @@ function fetchBlogArticles() {
     try {
         const files = readdirSync(BLOG_DIR).filter(f => f.endsWith('.md'));
         const articles = [];
+        const cutoff = new Date(Date.now() - 48 * 60 * 60 * 1000);
 
         for (const file of files) {
             const content = readFileSync(join(BLOG_DIR, file), 'utf-8');
             const parsed = parseArticleFrontmatter(content, file);
-            if (parsed) articles.push(parsed);
+            if (!parsed) continue;
+            // Skip articles published in last 48h (promo tweet covers them)
+            if (parsed.date > cutoff) continue;
+            articles.push(parsed);
         }
 
         return articles;
