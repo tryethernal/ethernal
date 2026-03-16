@@ -184,7 +184,7 @@ Two independent teams submitted the same state machine. One of them listed an AI
 
 ## References
 
-<span id="fn-1">1.</span> [Add ERC: Agentic Commerce, Ethereum Magicians Discussion](https://ethereum-magicians.org/t/erc-8183-agentic-commerce/27902), Crapis et al., 2026
+<span id="fn-1">1.</span> Crapis, D. et al. "Add ERC: Agentic Commerce." _Ethereum Magicians_, 2026. [https://ethereum-magicians.org/t/erc-8183-agentic-commerce/27902](https://ethereum-magicians.org/t/erc-8183-agentic-commerce/27902)
 
 <span id="fn-2">2.</span> Crapis, D., Lim, B., Weixiong, T., Zuhwa, C. "ERC-8183: Agentic Commerce." _GitHub ERCs_, February 25, 2026. [https://github.com/ethereum/ERCs/pull/1581](https://github.com/ethereum/ERCs/pull/1581)
 
