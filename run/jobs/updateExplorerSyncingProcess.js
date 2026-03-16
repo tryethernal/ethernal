@@ -137,6 +137,22 @@ module.exports = async job => {
             }
             return 'Timed out';
         }
+        else if (error.message.includes('socket disconnected before secure TLS connection was established') ||
+                 error.message.includes('ECONNRESET') ||
+                 error.message.includes('ENOTFOUND') ||
+                 error.message.includes('ETIMEDOUT')) {
+            // PM2 connection failures are transient infrastructure issues, not explorer-level problems.
+            // Only log them — don't count towards auto-disable (only rpc_unreachable should).
+            if (explorer) {
+                logger.warn({
+                    message: 'PM2 connection failed for explorer sync process',
+                    explorerId: explorer.id,
+                    explorerSlug: explorer.slug,
+                    error: error.message
+                });
+            }
+            return 'Connection failed';
+        }
         else
             throw error;
     }

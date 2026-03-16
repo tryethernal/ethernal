@@ -44,16 +44,14 @@ Save to `tweet-pipeline/.draft.json`:
   ],
   "imageSpec": {
     "type": "stat_card | eip_card | code_snippet | quote_card | blog_cover",
-    "title": "main text for the image",
-    "subtitle": "secondary text",
-    "metric": "the big number (for stat_card)",
-    "code": "code block content (for code_snippet)",
-    "quote": "quote text (for quote_card)",
-    "author": "attribution (for quote_card)"
+    "title": "main text for the image (appears as large title)",
+    "subtitle": "secondary text (smaller, below title)",
+    "metric": "the big number to display prominently",
+    "diagram": "describe a simple flat diagram to illustrate the concept (e.g. 'two panels: left=raw hex, right=decoded functions, ABI arrow between them' or 'timeline with 4 labeled nodes' or '3 connected boxes labeled X, Y, Z')"
   }
 }
 ```
 
-Only include the imageSpec fields relevant to the chosen type.
+Only include the imageSpec fields relevant to the chosen type. The `diagram` field is important — it tells the image generator what to draw. Be specific: describe panels, boxes, arrows, labels. Think whiteboard sketch, not abstract art.
 
 Print `::draft-ready::` when done.
