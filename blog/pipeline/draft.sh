@@ -73,6 +73,32 @@ git pull --ff-only origin develop 2>&1 | tee -a "$LOG_FILE"
 cd blog/pipeline
 npm ci --silent 2>&1 | tee -a "$LOG_FILE"
 
+# Check for newsletter blog candidate (priority override)
+BLOG_CANDIDATE="/opt/ethernal-blog-stack/tweet-pipeline/.blog-candidate.json"
+SKIP_CARD_PICK=false
+if [ -f "$BLOG_CANDIDATE" ]; then
+  log "Found blog candidate from newsletter scanner"
+  TOPIC=$(jq -r '.title' "$BLOG_CANDIDATE")
+  CONTENT_TYPE="Research Deep Dive"
+  CARD_ID=""
+  CARD_BODY=$(jq -r '.content' "$BLOG_CANDIDATE")
+  NL_ANGLE=$(jq -r '.angle // ""' "$BLOG_CANDIDATE")
+  NL_FACTS=$(jq -r '.key_facts | join("; ")' "$BLOG_CANDIDATE")
+  CARD_BODY="$CARD_BODY
+
+Suggested angle: $NL_ANGLE
+Key facts: $NL_FACTS"
+
+  rm -f "$BLOG_CANDIDATE"
+  log "Topic from newsletter: $TOPIC (type: $CONTENT_TYPE)"
+
+  cd "$REPO_DIR"
+  printf '**Topic:** %s\n**Content Type:** %s\n\n%s' "$TOPIC" "$CONTENT_TYPE" "$CARD_BODY" > blog/pipeline/.card-body.md
+  rm -f blog/pipeline/.research-notes.md
+  SKIP_CARD_PICK=true
+fi
+
+if [ "$SKIP_CARD_PICK" != "true" ]; then
 # Pick the next topic
 log "Picking next topic..."
 PICK_OUTPUT=$(node index.js --pick 2>&1)
@@ -93,19 +119,22 @@ CARD_BODY=$(echo "$PICKED" | jq -r '.body // ""')
 log "Topic: $TOPIC (card: $CARD_ID, type: $CONTENT_TYPE)"
 
 # Move card to Researched before Claude run to block duplicate picks
+if [ -n "${CARD_ID:-}" ]; then
 CARD_ID="$CARD_ID" node --input-type=module -e "
   import { updateCardStatus } from './project.js';
   updateCardStatus(process.env.CARD_ID, 'researched');
   console.log('Card moved to Researched');
 " 2>&1 | tee -a "$LOG_FILE"
+fi
 
 cd "$REPO_DIR"
+fi
 
-# Write card body to file for Claude to read (avoids shell interpolation)
-printf '**Topic:** %s\n**Content Type:** %s\n\n%s' "$TOPIC" "$CONTENT_TYPE" "$CARD_BODY" > blog/pipeline/.card-body.md
-
-# Clean up any previous research notes
-rm -f blog/pipeline/.research-notes.md
+# Write card body to file for Claude to read (newsletter path already wrote it)
+if [ "$SKIP_CARD_PICK" != "true" ]; then
+  printf '**Topic:** %s\n**Content Type:** %s\n\n%s' "$TOPIC" "$CONTENT_TYPE" "$CARD_BODY" > blog/pipeline/.card-body.md
+  rm -f blog/pipeline/.research-notes.md
+fi
 
 # ============================================================
 # PHASE 1: Research
@@ -122,12 +151,14 @@ echo "$PHASE1_OUTPUT" | tee -a "$LOG_FILE"
 
 if [ ! -f blog/pipeline/.research-notes.md ]; then
   log "ERROR: Phase 1 failed — no research notes produced"
-  cd blog/pipeline
-  CARD_ID="$CARD_ID" node --input-type=module -e "
-    import { updateCardStatus } from './project.js';
-    updateCardStatus(process.env.CARD_ID, 'detected');
-    console.log('Card reset to Detected');
-  " 2>&1 | tee -a "$LOG_FILE"
+  if [ -n "${CARD_ID:-}" ]; then
+    cd blog/pipeline
+    CARD_ID="$CARD_ID" node --input-type=module -e "
+      import { updateCardStatus } from './project.js';
+      updateCardStatus(process.env.CARD_ID, 'detected');
+      console.log('Card reset to Detected');
+    " 2>&1 | tee -a "$LOG_FILE"
+  fi
   report_failure "Research (Phase 1)"
   exit 1
 fi
@@ -151,12 +182,14 @@ ARTICLE_PATH=$(echo "$PHASE2_OUTPUT" | grep '::article-path::' | sed 's/::articl
 
 if [ -z "$ARTICLE_PATH" ] || [ ! -f "$ARTICLE_PATH" ]; then
   log "ERROR: Phase 2 failed — no article produced"
-  cd blog/pipeline
-  CARD_ID="$CARD_ID" node --input-type=module -e "
-    import { updateCardStatus } from './project.js';
-    updateCardStatus(process.env.CARD_ID, 'detected');
-    console.log('Card reset to Detected');
-  " 2>&1 | tee -a "$LOG_FILE"
+  if [ -n "${CARD_ID:-}" ]; then
+    cd blog/pipeline
+    CARD_ID="$CARD_ID" node --input-type=module -e "
+      import { updateCardStatus } from './project.js';
+      updateCardStatus(process.env.CARD_ID, 'detected');
+      console.log('Card reset to Detected');
+    " 2>&1 | tee -a "$LOG_FILE"
+  fi
   report_failure "Draft (Phase 2)"
   exit 1
 fi
@@ -190,12 +223,14 @@ log "Validating blog build..."
 cd "$REPO_DIR/blog"
 if ! npx astro build 2>&1 | tee -a "$LOG_FILE"; then
   log "ERROR: Astro build failed — article has schema or syntax errors"
-  cd "$REPO_DIR/blog/pipeline"
-  CARD_ID="$CARD_ID" node --input-type=module -e "
-    import { updateCardStatus } from './project.js';
-    updateCardStatus(process.env.CARD_ID, 'detected');
-    console.log('Card reset to Detected');
-  " 2>&1 | tee -a "$LOG_FILE"
+  if [ -n "${CARD_ID:-}" ]; then
+    cd "$REPO_DIR/blog/pipeline"
+    CARD_ID="$CARD_ID" node --input-type=module -e "
+      import { updateCardStatus } from './project.js';
+      updateCardStatus(process.env.CARD_ID, 'detected');
+      console.log('Card reset to Detected');
+    " 2>&1 | tee -a "$LOG_FILE"
+  fi
   report_failure "Build Validation"
   exit 1
 fi
@@ -223,7 +258,8 @@ git push origin develop 2>&1 | tee -a "$LOG_FILE"
 
 log "Pushed to develop."
 
-# Update the project card
+# Update the project card (skip for newsletter-sourced articles)
+if [ -n "${CARD_ID:-}" ]; then
 log "Updating project card..."
 cd blog/pipeline
 CARD_ID="$CARD_ID" ARTICLE_PATH="$ARTICLE_PATH" node --input-type=module -e "
@@ -232,6 +268,7 @@ CARD_ID="$CARD_ID" ARTICLE_PATH="$ARTICLE_PATH" node --input-type=module -e "
   setArticlePath(process.env.CARD_ID, process.env.ARTICLE_PATH);
   console.log('Card updated: Drafting + article path set');
 " 2>&1 | tee -a "$LOG_FILE"
+fi
 
 # Clean up temp files
 rm -f blog/pipeline/.research-notes.md blog/pipeline/.card-body.md
