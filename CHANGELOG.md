@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.65] - 2026-03-16
+### Fixed
+- fix: handle TLS connection errors in updateExplorerSyncingProcess job (#720)
+- fix: add emails directory to Docker build
+- feat: replace Playwright image generator with Gemini API (#718)
+
+
 ## [5.17.64] - 2026-03-16
 ### Fixed
 - fix: clear redis mocks in queueMonitoring test beforeEach (#717)
