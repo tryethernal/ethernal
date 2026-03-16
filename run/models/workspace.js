@@ -3213,9 +3213,11 @@ module.exports = (sequelize, DataTypes) => {
                     }));
 
                     try {
+                        await sequelize.query('SAVEPOINT bulk_logs_insert', { transaction: sequelizeTransaction });
                         await sequelize.models.TransactionLog.bulkCreate(logsData, { transaction: sequelizeTransaction });
                     } catch(error) {
                         logger.error(error.message, { location: 'models.workspaces.safeCreateTransaction', error: error, transaction: transaction });
+                        await sequelize.query('ROLLBACK TO SAVEPOINT bulk_logs_insert', { transaction: sequelizeTransaction });
                         // Fall back to individual creates with minimal data
                         for (const logData of logsData) {
                             try {
