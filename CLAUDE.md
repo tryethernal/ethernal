@@ -17,6 +17,7 @@
 | Landing/marketing | `landing/` | [LANDING.md](.claude/references/LANDING.md) |
 | Blog pipeline | `blog/pipeline/`, `.github/workflows/blog-*.yml` | |
 | Drip emails | `run/jobs/sendDripEmail.js`, `run/jobs/processDripEmails.js`, `run/models/demodripschedule.js`, `run/webhooks/mailjet.js` | |
+| Demo enrichment | `run/jobs/enrichDemoProfile.js`, `run/lib/enrichment.js`, `run/emails/drip-content.js` | |
 | Twitter pipeline | `tweet-pipeline/` (standalone package, runs on Hetzner server) | |
 | Analytics (PostHog) | `blog/src/layouts/BaseLayout.astro` (snippet), `landing/src/main.js` (init) | |
 | Docker commands | | [COMMANDS.md](.claude/references/COMMANDS.md) |
@@ -162,9 +163,21 @@ Creation → 7-day active period → 48h grace period (`deleteAfter` column on w
 
 6-step email sequence sent to demo explorer creators via Mailjet. `processDripEmails` runs every 15 min, finds pending emails, enqueues `sendDripEmail` for each. Unsubscribe uses AES-256-CBC tokens (format: `IV.ciphertext`, URL-safe base64).
 
+Steps 1-2 link to the explorer. Steps 3-6 link to the migration flow (`?explorerToken=<jwt>`). Step 1 is plain text (transactional, no unsubscribe). Steps 2-6 use the branded HTML template (`drip-base.html`).
+
 Key env vars: `MAILJET_PUBLIC_KEY`, `MAILJET_PRIVATE_KEY`, `MAILJET_WEBHOOK_SECRET`, `DRIP_UNSUBSCRIBE_SECRET`, `DEMO_EXPLORER_SENDER`. Feature flag: `isDripEmailEnabled()` in `run/lib/flags.js`.
 
 PostHog events: `email:drip_sent`, `email:drip_opened`, `email:drip_clicked`, `explorer:demo_expired`.
+
+### Demo Profile Enrichment
+
+At demo creation, `enrichDemoProfile` job researches the company (via linkup.so) and generates personalized email copy (via `claude -p` CLI). Results stored in `explorer.enrichment` JSON column. Steps 3-6 use enrichment fields with generic fallbacks.
+
+Domain resolution: email domain first, RPC URL domain as fallback. Skips free email providers and public RPC providers. Caches results per domain for 7 days.
+
+Enrichment fields: `companyContext` (step 4), `tailoredBenefits` (step 3), `expirationWarning` (step 5), `recoveryHook` (step 6).
+
+Key env vars: `LINKUP_API_KEY`. Requires `claude` CLI installed on the worker server.
 
 ### Twitter Pipeline (`tweet-pipeline/`)
 
