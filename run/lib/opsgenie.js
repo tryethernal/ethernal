@@ -19,7 +19,7 @@ const axios = require('axios');
  *   with the same alias as the same incident instead of creating new ones.
  * @returns {Promise<Object>|undefined} Axios response or undefined in dev mode
  */
-const createIncident = (message, description, priority = 'P1', options = {}) => {
+const createIncident = async (message, description, priority = 'P1', options = {}) => {
     if (getNodeEnv() === 'development' || !getOpsgenieApiKey()) {
         logger.info('Development environment (no OpsGenie API key) - skipping OpsGenie incident creation');
         return logger.info({ message, description, priority });
@@ -35,14 +35,28 @@ const createIncident = (message, description, priority = 'P1', options = {}) => 
     if (options.alias)
         data.alias = options.alias;
 
-    return axios({
-        method: 'POST',
-        url: 'https://api.opsgenie.com/v2/alerts',
-        headers: {
-            'Authorization': `GenieKey ${getOpsgenieApiKey()}`,
-        },
-        data
-    });
+    try {
+        return await axios({
+            method: 'POST',
+            url: 'https://api.opsgenie.com/v2/alerts',
+            headers: {
+                'Authorization': `GenieKey ${getOpsgenieApiKey()}`,
+            },
+            data
+        });
+    } catch (error) {
+        logger.error('Failed to create OpsGenie incident', {
+            error: error.message,
+            status: error.response?.status,
+            statusText: error.response?.statusText,
+            message,
+            description,
+            priority,
+            alias: options.alias
+        });
+        // Return undefined to indicate failure, but don't throw to prevent job failure
+        return undefined;
+    }
 };
 
 module.exports = {
