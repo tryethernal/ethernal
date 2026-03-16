@@ -246,7 +246,7 @@ ARTICLE_URL="https://tryethernal.com/blog/$SLUG"
 
 # Generate cover image
 log "Generating cover image..."
-IMG_PROMPT="Flat vector flow diagram on dark navy background (#0f172a) with subtle dot grid pattern overlay. Topic: ${TOPIC}. Use rounded pill-shaped boxes in steel blue (#4a8ecb) with soft shadows, connected by thin arrows. 2-4 labeled elements showing a simple relationship or flow. Large readable white text labels. Centered composition with lots of whitespace. Style: polished Figma mockup, NOT realistic 3D icons, NOT wireframes, NOT text-heavy. No gradients, no glow effects."
+IMG_PROMPT="Flat vector flow diagram on dark navy background (#0f172a) with subtle dot grid pattern overlay. The diagram should visually represent the concept of: ${TOPIC}. Use rounded pill-shaped boxes in steel blue (#4a8ecb) with soft shadows, connected by thin arrows. 2-4 labeled elements showing a simple relationship or flow. Short generic labels only (2-3 words max per label, like 'Router', 'Pool', 'User'). Centered composition with lots of whitespace. Style: polished Figma mockup, NOT realistic 3D icons, NOT wireframes. CRITICAL: Do NOT render any numbers, dollar amounts, percentages, dates, or long text. Only short generic labels on diagram elements. No title text, no subtitle, no statistics, no dates."
 "$SCRIPT_DIR/generate-cover.sh" "$SLUG" "$IMG_PROMPT" 2>&1 | tee -a "$LOG_FILE" || log "WARNING: Cover image generation failed"
 
 # Commit everything
