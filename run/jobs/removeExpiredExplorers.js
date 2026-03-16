@@ -9,6 +9,7 @@ const { Op } = require('sequelize');
 const { Explorer, StripeSubscription, StripePlan, Workspace } = require('../models');
 const { enqueue } = require('../lib/queue');
 const Analytics = require('../lib/analytics');
+const db = require('../lib/firebase');
 
 const GRACE_PERIOD_HOURS = 48;
 
@@ -53,6 +54,7 @@ module.exports = async () => {
                 if (explorer.workspace.deleteAfter) {
                     // Grace period set — check if it has elapsed
                     if (new Date() >= explorer.workspace.deleteAfter) {
+                        await db.skipDripEmailsForExplorer(explorer.id);
                         await explorer.safeDelete({ deleteSubscription: true });
                         await enqueue('workspaceReset', `workspaceReset-${explorer.workspaceId}`, {
                             workspaceId: explorer.workspaceId,

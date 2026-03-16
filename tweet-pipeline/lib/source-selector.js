@@ -138,8 +138,8 @@ function fetchTrendItems() {
                 id: item.id,
                 status: item.fieldValueByName?.name?.toLowerCase(),
             }));
-    } catch {
-        // gh CLI not available or project not found, return empty
+    } catch (err) {
+        console.error('fetchTrendItems failed:', err.message || err);
         return [];
     }
 }

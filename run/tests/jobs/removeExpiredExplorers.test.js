@@ -1,6 +1,8 @@
 require('../mocks/lib/queue');
+require('../mocks/lib/firebase');
 const { Explorer } = require('../mocks/models');
 const { enqueue } = require('../../lib/queue');
+const db = require('../../lib/firebase');
 
 jest.mock('../../lib/analytics', () => {
     return jest.fn().mockImplementation(() => ({

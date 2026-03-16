@@ -95,19 +95,26 @@ for TWEET_FILE in "$QUEUE_DIR"/tweet-*.json; do
 
     # Send PostHog event for tracking
     if [ -n "${POSTHOG_API_KEY:-}" ]; then
+      POSTHOG_PAYLOAD=$(jq -n \
+        --arg api_key "$POSTHOG_API_KEY" \
+        --arg tweetId "$(echo "$TWEET_IDS" | jq -r '.tweetIds[0]')" \
+        --arg bucket "$(jq -r '.bucket' "$TWEET_FILE")" \
+        --arg sourceId "$(jq -r '.sourceId' "$TWEET_FILE")" \
+        --argjson hasThread "$(jq 'if (.thread | length) > 0 then true else false end' "$TWEET_FILE")" \
+        '{
+          api_key: $api_key,
+          event: "twitter:tweet_posted",
+          distinct_id: "tweet-pipeline",
+          properties: {
+            tweetId: $tweetId,
+            bucket: $bucket,
+            sourceId: $sourceId,
+            hasThread: $hasThread
+          }
+        }')
       curl -s -X POST https://us.i.posthog.com/capture/ \
         -H "Content-Type: application/json" \
-        -d "{
-          \"api_key\": \"${POSTHOG_API_KEY}\",
-          \"event\": \"twitter:tweet_posted\",
-          \"distinct_id\": \"tweet-pipeline\",
-          \"properties\": {
-            \"tweetId\": $(echo "$TWEET_IDS" | jq '.tweetIds[0]'),
-            \"bucket\": $(jq -r '.bucket' "$TWEET_FILE" | jq -R .),
-            \"sourceId\": $(jq -r '.sourceId' "$TWEET_FILE" | jq -R .),
-            \"hasThread\": $(jq 'if (.thread | length) > 0 then true else false end' "$TWEET_FILE")
-          }
-        }" > /dev/null 2>&1 || true
+        -d "$POSTHOG_PAYLOAD" > /dev/null 2>&1 || true
     fi
 
     POSTED_COUNT=$((POSTED_COUNT + 1))

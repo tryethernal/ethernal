@@ -42,6 +42,7 @@ module.exports = async (job) => {
             id: { [Op.ne]: explorerId },
             [Op.and]: [
                 sequelize.literal(`enrichment->>'companyDomain' = ${sequelize.escape(domain)}`),
+                ...(networkId ? [sequelize.literal(`enrichment->>'networkId' = ${sequelize.escape(networkId)}`)] : []),
                 sequelize.literal(`enrichment->>'error' IS NULL`),
                 sequelize.literal(`(enrichment->>'enrichedAt')::timestamptz > NOW() - INTERVAL '${CACHE_DAYS} days'`)
             ]
@@ -77,6 +78,7 @@ module.exports = async (job) => {
             ...snippets,
             companyDomain: domain,
             source,
+            networkId: networkId || null,
             enrichedAt: new Date().toISOString()
         }
     });

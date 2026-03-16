@@ -131,14 +131,16 @@ module.exports = async (job) => {
         });
 
     // Mark as sent AFTER successful Mailjet send (not before)
-    if (scheduleId)
-        await db.markDripEmailSent(scheduleId);
-
-    const analytics = new Analytics();
-    analytics.track(
-        `explorer:${explorerSlug}`,
-        'email:drip_sent',
-        { step, explorerSlug }
-    );
-    analytics.shutdown();
+    try {
+        if (scheduleId)
+            await db.markDripEmailSent(scheduleId);
+    } finally {
+        const analytics = new Analytics();
+        analytics.track(
+            `explorer:${explorerSlug}`,
+            'email:drip_sent',
+            { step, explorerSlug }
+        );
+        analytics.shutdown();
+    }
 };
