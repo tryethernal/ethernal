@@ -7,7 +7,7 @@
 # Required env vars (from /home/blog/.watchdog.env):
 #   REDIS_URL, OPSGENIE_API_KEY, FLY_API_TOKEN, GH_TOKEN
 
-set -euo pipefail
+set -uo pipefail
 
 STATE_FILE="/tmp/ethernal-watchdog-state.json"
 LOG_FILE="/var/log/ethernal-watchdog/watchdog.log"
