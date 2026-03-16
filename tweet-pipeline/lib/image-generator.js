@@ -22,7 +22,7 @@ const STYLE_PREFIX = `Clean flat illustration on a dark navy (#0F1729) backgroun
  * - Limit text: "Nothing else written below the diagram"
  * - Use the metric as the hero element when it's a number
  */
-const PROMPT_RULES = `Do NOT repeat any text. Each piece of text appears exactly once. Keep the layout extremely clean and minimal. Maximum 3-4 visual elements.`;
+const PROMPT_RULES = `Do NOT repeat any text. Each piece of text appears exactly once. Keep the layout extremely clean and minimal. Maximum 3-4 visual elements. CRITICAL LAYOUT RULES: The title MUST fit entirely on one line. The subtitle MUST be on a separate line below. The metric MUST NOT overflow into the title or subtitle area. If text is too long to fit, truncate it rather than letting it wrap into adjacent zones. Each text element occupies its own distinct horizontal band.`;
 
 /**
  * Builds a Gemini prompt from an imageSpec.
@@ -42,7 +42,7 @@ function buildPrompt(spec) {
     let content = `Title at top in large white text: "${title}"`;
 
     if (metric) {
-        content += `\nDisplay the metric "${metric}" prominently — large font, centered or near the title.`;
+        content += `\nDisplay the metric "${metric}" as a large hero number on its own line, BELOW the title and ABOVE any diagram. It must NOT appear on the same line as the title.`;
     }
 
     if (subtitle) {

@@ -49,6 +49,10 @@ Read `blog/pipeline/.research-notes.md` for the research brief (sources, outline
   ```
   Use `<sup>[N](#fn-N)</sup>` for inline citations in the article body.
 
+**Markdown formatting (CRITICAL):**
+- Never use `~` for "approximately". Markdown interprets pairs of `~` as strikethrough (`~text~` renders as ~~text~~). Write "approximately", "roughly", or "around" instead. Example: write "approximately 17,957 WETH (roughly $37M)" not "~17,957 WETH (~$37M)".
+- Never wrap blockquote text in quotation marks. The `>` blockquote syntax already indicates a quote. Writing `> "quote text"` renders with visible double-quote characters. Write `> Quote text` instead.
+
 **AI SEO structure:**
 - Lead every section with a direct answer
 - H2/H3 headings that match how people phrase queries
