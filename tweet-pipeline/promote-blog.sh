@@ -55,6 +55,10 @@ if [ -f "$ENV_FILE" ]; then
   set +a
 fi
 
+# Pull latest to get updated articles and images
+cd "$REPO_DIR"
+git pull origin develop --ff-only 2>&1 | tee -a "$LOG_FILE" || log "WARNING: git pull failed — using existing checkout"
+
 # Ensure we're in the right directory for Node.js imports
 cd "$SCRIPT_DIR"
 
@@ -103,6 +107,13 @@ Description: ${DESCRIPTION}" \
     --dangerously-skip-permissions \
     --max-turns 3 \
     2>&1) || true
+
+  # Detect Claude auth/API errors (would otherwise be posted as tweet text)
+  if echo "$HOOK" | grep -qiE "authentication_error|Invalid authentication|Invalid.*token|Invalid API key|401.*error|403.*error|Not logged in|Please run /login"; then
+    log "ERROR: Claude returned an auth/API error instead of a hook: $HOOK"
+    report_failure "Claude auth error for $SLUG"
+    continue
+  fi
 
   # Fallback if Claude fails or returns empty
   if [ -z "$HOOK" ] || [ ${#HOOK} -gt 500 ]; then

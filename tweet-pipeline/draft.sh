@@ -50,6 +50,17 @@ EOF
 
 trap 'report_failure "Unexpected error (line $LINENO)"' ERR
 
+# Detect Claude auth/API errors in output — abort early instead of posting error text
+check_claude_output() {
+  local output="$1"
+  local phase="$2"
+  if echo "$output" | grep -qiE "authentication_error|Invalid authentication|Invalid.*token|Invalid API key|401.*error|403.*error|Not logged in|Please run /login"; then
+    log "ERROR: Claude returned an auth/API error in $phase: $(echo "$output" | head -5)"
+    report_failure "Claude auth error in $phase"
+    exit 1
+  fi
+}
+
 # Load environment
 if [ -f "$ENV_FILE" ]; then
   set -a
@@ -206,6 +217,7 @@ PHASE1_OUTPUT=$(claude -p "$(cat "$PROMPTS_DIR/tweet-1-research.md")" \
   2>&1)
 
 echo "$PHASE1_OUTPUT" | tee -a "$LOG_FILE"
+check_claude_output "$PHASE1_OUTPUT" "Research (Phase 1)"
 
 if [ ! -f .research.md ]; then
   log "ERROR: Phase 1 failed — no .research.md produced"
@@ -227,6 +239,7 @@ PHASE2_OUTPUT=$(claude -p "$(cat "$PROMPTS_DIR/tweet-2-draft.md")" \
   2>&1)
 
 echo "$PHASE2_OUTPUT" | tee -a "$LOG_FILE"
+check_claude_output "$PHASE2_OUTPUT" "Draft (Phase 2)"
 
 if [ ! -f .draft.json ]; then
   log "ERROR: Phase 2 failed — no .draft.json produced"
@@ -256,6 +269,7 @@ PHASE3_OUTPUT=$(claude -p "$(cat "$PROMPTS_DIR/tweet-3-humanize.md")" \
   2>&1)
 
 echo "$PHASE3_OUTPUT" | tee -a "$LOG_FILE"
+check_claude_output "$PHASE3_OUTPUT" "Humanize (Phase 3)"
 
 log "Phase 3 complete."
 
