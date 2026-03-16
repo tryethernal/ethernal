@@ -130,7 +130,7 @@ Always use `IF NOT EXISTS`/`IF EXISTS` for re-runnability. For tables < 1M rows,
 - Always use sequelize migrations, never raw SQL for schema changes
 - Use `withTimeout(promise, ms)` from `run/lib/utils` instead of inline `Promise.race` timeout patterns
 - Pin GitHub Actions to commit SHAs (not mutable tags) when secrets are in scope
-- **Never hardcode API keys, tokens, or credentials in committed files** (including CLAUDE.md, scripts, YAML). Store in `.credentials.local` (gitignored) and reference by variable name. This repo is public.
+- **CRITICAL: Never hardcode API keys, tokens, passwords, or credentials in ANY file that could be committed** — this includes plan files (`docs/`), scripts, YAML, CLAUDE.md, shell commands, and code. Even files in `.gitignore` can be force-added accidentally. Always reference credentials by variable name only (e.g. "see `.credentials.local`" or "see memory file `infra-monitoring.md`"). Store actual values ONLY in `.credentials.local` (gitignored) or memory files (outside the repo). **This repo is PUBLIC — any committed credential requires immediate rotation.**
 
 ## Documentation Requirements
 
