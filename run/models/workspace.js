@@ -3196,27 +3196,46 @@ module.exports = (sequelize, DataTypes) => {
                     raw: receipt
                 }), { transaction: sequelizeTransaction });
 
-                for (let i = 0; i < receipt.logs.length; i++) {
-                    const log = receipt.logs[i];
-                    try {
-                        await storedReceipt.createLog(sanitize({
-                            workspaceId: storedTx.workspaceId,
-                            address: log.address,
-                            blockHash: log.blockHash,
-                            blockNumber: log.blockNumber,
-                            data: log.data,
-                            logIndex: log.logIndex,
-                            topics: log.topics,
-                            transactionHash: log.transactionHash,
-                            transactionIndex: log.transactionIndex,
-                            raw: log
-                        }), { transaction: sequelizeTransaction });
-                    } catch(error) {
-                        logger.error(error.message, { location: 'models.workspaces.safeCreateTransaction', error: error, transaction: transaction });
-                        await storedReceipt.createLog(sanitize({
-                            workspaceId: storedTx.workspaceId,
-                            raw: log
-                        }), { transaction: sequelizeTransaction });
+                // Bulk create transaction logs to avoid N+1 queries
+                if (receipt.logs.length > 0) {
+                    const logsData = [];
+                    const fallbackLogs = [];
+
+                    // Process each log, collecting successfully sanitized ones for bulk insert
+                    for (const log of receipt.logs) {
+                        try {
+                            logsData.push(sanitize({
+                                workspaceId: storedTx.workspaceId,
+                                transactionReceiptId: storedReceipt.id,
+                                address: log.address,
+                                blockHash: log.blockHash,
+                                blockNumber: log.blockNumber,
+                                data: log.data,
+                                logIndex: log.logIndex,
+                                topics: log.topics,
+                                transactionHash: log.transactionHash,
+                                transactionIndex: log.transactionIndex,
+                                raw: log
+                            }));
+                        } catch(error) {
+                            logger.error(error.message, { location: 'models.workspaces.safeCreateTransaction', error: error, transaction: transaction });
+                            // Collect failed logs for individual fallback creation
+                            fallbackLogs.push(sanitize({
+                                workspaceId: storedTx.workspaceId,
+                                transactionReceiptId: storedReceipt.id,
+                                raw: log
+                            }));
+                        }
+                    }
+
+                    // Bulk create successfully processed logs
+                    if (logsData.length > 0) {
+                        await sequelize.models.TransactionLog.bulkCreate(logsData, { transaction: sequelizeTransaction });
+                    }
+
+                    // Create fallback logs individually if any failed sanitization
+                    for (const fallbackLog of fallbackLogs) {
+                        await sequelize.models.TransactionLog.create(fallbackLog, { transaction: sequelizeTransaction });
                     }
                 }
             }
