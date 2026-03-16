@@ -1,0 +1,13 @@
+[Unit]
+Description=Tweet publisher — post queued tweets past their scheduled time
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/opt/ethernal-blog-stack/tweet-pipeline/publish.sh
+WorkingDirectory=/opt/ethernal-blog-stack
+EnvironmentFile=/opt/blog-pipeline.env
+TimeoutStartSec=120
+StandardOutput=journal
+StandardError=journal

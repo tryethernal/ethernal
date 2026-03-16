@@ -1,0 +1,12 @@
+{
+  "name": "ethernal-tweet-pipeline",
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "node --test lib/*.test.js"
+  },
+  "dependencies": {
+    "twitter-api-v2": "^1.29.0",
+    "playwright": "^1.49.0"
+  }
+}

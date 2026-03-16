@@ -810,7 +810,8 @@ module.exports = (sequelize, DataTypes) => {
     syncDisabledAt: DataTypes.DATE,
     syncDisabledReason: DataTypes.STRING,
     recoveryAttempts: DataTypes.INTEGER,
-    nextRecoveryCheckAt: DataTypes.DATE
+    nextRecoveryCheckAt: DataTypes.DATE,
+    enrichment: DataTypes.JSON
   }, {
     hooks: {
         afterCreate(explorer, options) {

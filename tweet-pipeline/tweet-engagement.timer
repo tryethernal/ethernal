@@ -1,0 +1,9 @@
+[Unit]
+Description=Poll Twitter engagement metrics daily
+
+[Timer]
+OnCalendar=*-*-* 22:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

@@ -11,7 +11,7 @@
 
 const express = require('express');
 const axios = require('axios');
-const { getDemoUserId, getDefaultPlanSlug, getAppDomain, getDemoTrialSlug, getStripeSecretKey, getDefaultExplorerTrialDays, whitelistedNetworkIdsForDemo, maxDemoExplorersForNetwork, getDiscordDemoExplorerChannelWebhook } = require('../lib/env');
+const { getDemoUserId, getDefaultPlanSlug, getAppDomain, getDemoTrialSlug, getStripeSecretKey, getDefaultExplorerTrialDays, whitelistedNetworkIdsForDemo, maxDemoExplorersForNetwork, getDiscordDemoExplorerChannelWebhook, getLinkupApiKey, getAnthropicApiKey } = require('../lib/env');
 const stripe = require('stripe')(getStripeSecretKey());
 const { generateSlug } = require('random-word-slugs');
 const router = express.Router();
@@ -24,6 +24,8 @@ const authMiddleware = require('../middlewares/auth');
 const db = require('../lib/firebase');
 const { managedError, unmanagedError } = require('../lib/errors');
 const { isChainAllowed } = require('../lib/chains');
+const logger = require('../lib/logger');
+const { isDripEmailEnabled } = require('../lib/flags');
 
 /*
     Creates a uniswap v2 dex for a demo explorer
@@ -137,6 +139,14 @@ router.post('/migrateExplorer', authMiddleware, async (req, res, next) => {
         if (!subscription)
             return managedError(new Error('Error while starting trial. Please try again.'), req, res);
 
+        // Clear grace-period flags set by removeExpiredExplorers
+        const workspace = await db.getWorkspaceById(explorer.workspaceId);
+        if (workspace && (workspace.pendingDeletion || workspace.deleteAfter))
+            await workspace.update({ pendingDeletion: false, public: true, deleteAfter: null });
+
+        // Cancel any pending drip emails now that the user has upgraded
+        await db.skipDripEmailsForExplorer(explorer.id);
+
         res.status(200).send({ explorerId: explorer.id });
     } catch(error) {
         unmanagedError(error, req, next);
@@ -220,7 +230,39 @@ router.post('/explorers', async (req, res, next) => {
         if (!explorer)
             return managedError(new Error('Could not create explorer. Please retry.'), req, res);
 
-        await enqueue('sendDemoExplorerLink', `sendDemoExplorerLink-${explorer.id}`, { email: data.email, explorerSlug: explorer.slug });
+        // Create drip email schedule (steps 1-6) and send step 1 immediately,
+        // or fall back to the legacy welcome email when drip is not configured
+        if (isDripEmailEnabled()) {
+            try {
+                const schedules = await db.createDripSchedule(explorer.id, data.email);
+                const step1 = schedules.find(s => s.step === 1);
+                await enqueue('sendDripEmail', `sendDripEmail-step1-${explorer.id}`, {
+                    scheduleId: step1 ? step1.id : null,
+                    email: data.email,
+                    explorerSlug: explorer.slug,
+                    step: 1
+                }, 1);
+            } catch (error) {
+                // Non-blocking: drip schedule failure should not break demo creation
+                logger.error(error.message, { location: 'api.demo.createDripSchedule', explorerId: explorer.id, error });
+            }
+
+            // Enqueue profile enrichment (async, independent of drip emails)
+            if (getLinkupApiKey() && getAnthropicApiKey()) {
+                try {
+                    await enqueue('enrichDemoProfile', `enrichDemoProfile-${explorer.id}`, {
+                        explorerId: explorer.id,
+                        email: data.email,
+                        rpcServer: data.rpcServer,
+                        networkId: networkId ? String(networkId) : null
+                    });
+                } catch (error) {
+                    logger.error(error.message, { location: 'api.demo.enrichDemoProfile', explorerId: explorer.id, error });
+                }
+            }
+        } else {
+            await enqueue('sendDemoExplorerLink', `sendDemoExplorerLink-${explorer.id}`, { email: data.email, explorerSlug: explorer.slug });
+        }
 
         const discordNotification = '\n**New Demo Explorer**\n\n**User Email:** ' + data.email + '\n**Explorer Name:** ' + (explorer.name || 'N/A') + '\n**Explorer Link:** https://' + explorer.slug + '.' + getAppDomain() + '\n**Explorer RPC:** ' + (data.rpcServer || 'N/A') + '\n';
         await enqueue('sendDiscordMessage', 'sendDiscordMessage-' + explorer.id, { content: discordNotification, channel: getDiscordDemoExplorerChannelWebhook() });
