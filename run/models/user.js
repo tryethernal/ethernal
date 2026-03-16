@@ -159,7 +159,7 @@ module.exports = (sequelize, DataTypes) => {
                 {
                     model: Workspace,
                     as: 'workspaces',
-                    attributes: ['id', 'name', 'public', 'userId', 'networkId'],
+                    attributes: ['id', 'name', 'public', 'userId', 'networkId', 'rpcServer', 'statusPageEnabled', 'rpcHealthCheckEnabled', 'integrityCheckStartBlockNumber'],
                     where: {
                         name: workspaceName,
                         pendingDeletion: false
