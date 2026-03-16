@@ -44,14 +44,20 @@ Save to `tweet-pipeline/.draft.json`:
   ],
   "imageSpec": {
     "type": "stat_card | eip_card | code_snippet | quote_card | blog_cover",
-    "title": "main text for the image (appears as large title)",
-    "subtitle": "secondary text (smaller, below title)",
-    "metric": "the big number to display prominently",
-    "diagram": "describe a simple flat diagram to illustrate the concept (e.g. 'two panels: left=raw hex, right=decoded functions, ABI arrow between them' or 'timeline with 4 labeled nodes' or '3 connected boxes labeled X, Y, Z')"
+    "title": "SHORT title, max 30 chars. Must fit on ONE line at large font size.",
+    "subtitle": "secondary text, max 60 chars. Appears smaller below title.",
+    "metric": "the big number (e.g. '123,000' or '$50M'). Keep under 10 chars.",
+    "diagram": "describe a simple flat diagram (e.g. 'two panels: left=raw hex, right=decoded functions')"
   }
 }
 ```
 
 Only include the imageSpec fields relevant to the chosen type. The `diagram` field is important — it tells the image generator what to draw. Be specific: describe panels, boxes, arrows, labels. Think whiteboard sketch, not abstract art.
+
+**imageSpec text limits (CRITICAL):** The image is 1200x675px and text is rendered by an AI model that cannot reflow text precisely. If text is too long, it overflows into adjacent areas (title wraps into subtitle, metric spills outside its box). Keep text SHORT:
+- `title`: Max 30 characters. One short phrase. NOT a full sentence.
+- `subtitle`: Max 60 characters.
+- `metric`: Max 10 characters. Just the number (e.g. "123,000" not "123,000 agents").
+- Never put the metric value inside the title. The metric renders separately in large font.
 
 Print `::draft-ready::` when done.

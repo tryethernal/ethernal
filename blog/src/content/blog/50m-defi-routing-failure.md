@@ -46,14 +46,14 @@ CoW Protocol's solver auction found a three-hop route for this order.
 50,432,688 aEthUSDT → 50,432,688 USDT (1:1, zero price impact)
 
 **Hop 2 , Uniswap V3 USDT/WETH:**
-50,432,688 USDT → ~17,957 WETH (~$37M)
+50,432,688 USDT → approximately 17,957 WETH (roughly $37M)
 
 A large order on a relatively deep pool. Significant slippage, but the trade survived it. Uniswap V3's concentrated liquidity absorbed the pressure.
 
 **Hop 3 , SushiSwap AAVE/WETH:**
-17,957 WETH → 327 AAVE (~$36,000)
+17,957 WETH → 327 AAVE (roughly $36,000)
 
-This is where the incident lives. The SushiSwap AAVE/WETH pool had approximately $73,000 in total liquidity at execution. A $37M WETH order entered it. The constant product formula does the rest: you buy the entire pool at progressively inflating prices until the pool is empty. The effective price paid: ~$154,000 per AAVE, against a market rate of ~$111. Price impact: 99.9%+.
+This is where the incident lives. The SushiSwap AAVE/WETH pool had approximately $73,000 in total liquidity at execution. A $37M WETH order entered it. The constant product formula does the rest: you buy the entire pool at progressively inflating prices until the pool is empty. The effective price paid: approximately $154,000 per AAVE, against a market rate of roughly $111. Price impact: 99.9%+.
 
 ### Slippage tolerance is not the same thing as price impact
 
@@ -65,10 +65,10 @@ This distinction trips up engineers who haven't thought carefully about it.
 
 The user's slippage tolerance was 1.21%. That setting was functioning correctly.
 
-> "In this case, the user sent a market order with the suggested 1.21% slippage. But the core issue wasn't slippage, it was just the accepted quote with 99% price impact."
+> In this case, the user sent a market order with the suggested 1.21% slippage. But the core issue wasn't slippage, it was just the accepted quote with 99% price impact.
 > , Martin Grabina, Aave engineer<sup>[2](#fn-2)</sup>
 
-> "To be more precise, the issue wasn't slippage, it was user accepting a quote with high price impact."
+> To be more precise, the issue wasn't slippage, it was user accepting a quote with high price impact.
 > , Stani Kulechov, Aave founder<sup>[2](#fn-2)</sup>
 
 The CoW Protocol order quote showed fewer than 140 AAVE in exchange for 50 million USDT , before fees and slippage , and was visible on the CoW Explorer before a single unit of gas was spent. The 99%+ price impact was displayed. The user confirmed it.
@@ -105,31 +105,31 @@ Etherscan shows a "confirmed within 30 seconds" tag on transactions that appear 
 
 The transaction leaked into the public mempool. An MEV bot saw it. The extraction follows directly.
 
-> "technically correct is not the ceiling we should be building toward"
+> Technically correct is not the ceiling we should be building toward.
 > , CoW Protocol post-mortem<sup>[4](#fn-4)</sup>
 
 ## The same-block MEV extraction
 
 With the pending swap visible in the public mempool, an MEV bot constructed a backrun and executed it in block 24,643,151:
 
-1. Flash-borrow ~14,175 WETH (~$29M) from Morpho. Zero collateral required; full repayment in the same block.
-2. Buy AAVE on Bancor at ~$111/token , establishing a position before the user's WETH lands.
-3. The user's 17,957 WETH hits the SushiSwap AAVE/WETH pool (~$73K total liquidity). The pool drains. Effective price: ~$154,000 per AAVE.
+1. Flash-borrow approximately 14,175 WETH (roughly $29M) from Morpho. Zero collateral required; full repayment in the same block.
+2. Buy AAVE on Bancor at roughly $111/token, establishing a position before the user's WETH lands.
+3. The user's 17,957 WETH hits the SushiSwap AAVE/WETH pool (roughly $73K total liquidity). The pool drains. Effective price: approximately $154,000 per AAVE.
 4. Sell AAVE into the now-distorted pool at inflated prices.
 5. Execute 18 additional arbitrage trades across Uniswap, SushiSwap, Bancor, DODO, and Fluid to normalize prices and close out the position.
 6. Repay the Morpho flash loan.
-7. Net: ~4,824 ETH (~$9.9M) for the MEV operator.
+7. Net: approximately 4,824 ETH (roughly $9.9M) for the MEV operator.
 
 The extracted value flowed outward from there:
 
 | Recipient | ETH | USD |
 |-----------|-----|-----|
-| Titan Builder (total received) | ~16,927 ETH | ~$34.8M |
-| Lido validator (paid by Titan) | 568 ETH | ~$1.2M |
-| Titan Builder (net) | ~16,359 ETH | ~$33.6M |
-| MEV bot operator | ~4,824 ETH | ~$9.9M |
-| User received | - | ~$36,000 |
-| Aave frontend fees (planned refund) | , | ~$600K |
+| Titan Builder (total received) | 16,927 ETH | $34.8M |
+| Lido validator (paid by Titan) | 568 ETH | $1.2M |
+| Titan Builder (net) | 16,359 ETH | $33.6M |
+| MEV bot operator | 4,824 ETH | $9.9M |
+| User received | - | $36,000 |
+| Aave frontend fees (planned refund) | - | $600K |
 
 This single transaction made Titan Builder the top on-chain revenue earner for that 24-hour period, ahead of Tether ($16.43M) and Circle ($6.85M).<sup>[5](#fn-5)</sup>
 
@@ -148,7 +148,7 @@ The user confirmed all four on a mobile device. Both Aave and CoW Protocol ackno
 
 The community response was narrower than "user error" or "protocol failure." It was a design question.
 
-> "You need a more aggressive friction pattern than just a checkbox if they are about to lose over $100,000 in slippage."
+> You need a more aggressive friction pattern than just a checkbox if they are about to lose over $100,000 in slippage.
 > , James Dawson, design engineer<sup>[7](#fn-7)</sup>
 
 A checkbox asks for confirmation. It does not slow down the decision, require deliberate re-entry, or apply asymmetric friction based on the magnitude of loss. At a $50M scale, "technically the warning was shown" and "the warning was sufficient" are different claims.
@@ -157,7 +157,7 @@ Aave's response: **Aave Shield**, deployed as a new default that blocks swaps ex
 
 ## The on-chain trail
 
-Lookonchain traced the originating wallet through 13 addresses that withdrew USDC and USDT from Binance on February 16th and February 20th , all becoming active simultaneously on March 12th, and sharing Binance deposit addresses with wallets publicly linked to Garrett Jin.<sup>[9](#fn-9)</sup> Jin's connected wallets sold approximately 261,024 ETH (~$543M) and 11,318 BTC (~$761M) in the same period.
+Lookonchain traced the originating wallet through 13 addresses that withdrew USDC and USDT from Binance on February 16th and February 20th , all becoming active simultaneously on March 12th, and sharing Binance deposit addresses with wallets publicly linked to Garrett Jin.<sup>[9](#fn-9)</sup> Jin's connected wallets sold approximately 261,024 ETH ($543M) and 11,318 BTC ($761M) in the same period.
 
 One theory circulated: an intentional value transfer, moving funds of unclear provenance through an apparent trading error into "clean" MEV extraction proceeds. The circumstantial case: a newly created wallet, retail-scale interface used for institutional-scale capital, mobile confirmation of explicit warnings, a single order that would have consumed roughly 3% of total AAVE supply.
 

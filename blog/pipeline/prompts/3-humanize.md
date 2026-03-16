@@ -46,6 +46,8 @@ Additionally, align with, crucial, delve, emphasizing, enduring, enhance, foster
 - No inline-header vertical lists (bolded term + colon on every bullet)
 - Sentence case for headings (not Title Case)
 - **Plain markdown links only.** References must use standard markdown `[text](url)` syntax. No inline HTML, no SVG icons, no `<a>` tags with embedded markup. If the draft phase produced HTML links with SVG icons or class attributes, convert them to plain `[text](url)` markdown.
+- **No tilde for "approximately".** `~` pairs render as strikethrough in markdown. Replace every `~` used for approximation with "approximately", "roughly", or "around". Search the entire file.
+- **No quotation marks inside blockquotes.** `> "text"` renders with visible double-quotes. Remove the `"` wrapping from any `>` blockquote line.
 
 ## Add Soul
 
