@@ -3198,44 +3198,35 @@ module.exports = (sequelize, DataTypes) => {
 
                 // Bulk create transaction logs to avoid N+1 queries
                 if (receipt.logs.length > 0) {
-                    const logsData = [];
-                    const fallbackLogs = [];
+                    const logsData = receipt.logs.map(log => sanitize({
+                        workspaceId: storedTx.workspaceId,
+                        transactionReceiptId: storedReceipt.id,
+                        address: log.address,
+                        blockHash: log.blockHash,
+                        blockNumber: log.blockNumber,
+                        data: log.data,
+                        logIndex: log.logIndex,
+                        topics: log.topics,
+                        transactionHash: log.transactionHash,
+                        transactionIndex: log.transactionIndex,
+                        raw: log
+                    }));
 
-                    // Process each log, collecting successfully sanitized ones for bulk insert
-                    for (const log of receipt.logs) {
-                        try {
-                            logsData.push(sanitize({
-                                workspaceId: storedTx.workspaceId,
-                                transactionReceiptId: storedReceipt.id,
-                                address: log.address,
-                                blockHash: log.blockHash,
-                                blockNumber: log.blockNumber,
-                                data: log.data,
-                                logIndex: log.logIndex,
-                                topics: log.topics,
-                                transactionHash: log.transactionHash,
-                                transactionIndex: log.transactionIndex,
-                                raw: log
-                            }));
-                        } catch(error) {
-                            logger.error(error.message, { location: 'models.workspaces.safeCreateTransaction', error: error, transaction: transaction });
-                            // Collect failed logs for individual fallback creation
-                            fallbackLogs.push(sanitize({
-                                workspaceId: storedTx.workspaceId,
-                                transactionReceiptId: storedReceipt.id,
-                                raw: log
-                            }));
-                        }
-                    }
-
-                    // Bulk create successfully processed logs
-                    if (logsData.length > 0) {
+                    try {
                         await sequelize.models.TransactionLog.bulkCreate(logsData, { transaction: sequelizeTransaction });
-                    }
-
-                    // Create fallback logs individually if any failed sanitization
-                    for (const fallbackLog of fallbackLogs) {
-                        await sequelize.models.TransactionLog.create(fallbackLog, { transaction: sequelizeTransaction });
+                    } catch(error) {
+                        logger.error(error.message, { location: 'models.workspaces.safeCreateTransaction', error: error, transaction: transaction });
+                        // Fall back to individual creates with minimal data
+                        for (const logData of logsData) {
+                            try {
+                                await sequelize.models.TransactionLog.create(
+                                    sanitize({ workspaceId: logData.workspaceId, transactionReceiptId: logData.transactionReceiptId, raw: logData.raw }),
+                                    { transaction: sequelizeTransaction }
+                                );
+                            } catch(innerError) {
+                                logger.error(innerError.message, { location: 'models.workspaces.safeCreateTransaction.fallback', error: innerError, transaction: transaction });
+                            }
+                        }
                     }
                 }
             }
