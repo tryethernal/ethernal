@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.63] - 2026-03-16
+### Fixed
+- fix: throttle legacy Redis key cleanup to reduce N+1 queries (#715)
+- fix: optimize activeWalletCount API by reducing unnecessary JOINs in workspace auth (#713)
+
+
 ## [5.17.62] - 2026-03-16
 ### Fixed
 - Change publication date and status for blog post
