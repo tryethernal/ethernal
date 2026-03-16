@@ -13,6 +13,7 @@ RUN npm ci --only=production
 COPY run/api ./api
 COPY run/config ./config
 COPY run/constants ./constants
+COPY run/emails ./emails
 COPY run/jobs ./jobs
 COPY run/lib ./lib
 COPY run/middlewares ./middlewares
