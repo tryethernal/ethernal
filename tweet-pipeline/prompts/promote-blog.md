@@ -14,7 +14,7 @@ Description: {description}
   - Question that the article answers (best for technical explainers)
   - Lead with the most surprising number or fact (best for incident analyses)
   - Tease the payoff without giving it away (best for deep dives)
-- Lowercase casual. No sentence case except proper nouns.
+- Casual tone. First letter MUST be uppercase (like a regular sentence). First-person "I" always uppercase. Rest is lowercase except proper nouns.
 - No hashtags, no emoji, no "we're excited", no "check out our latest"
 - Do NOT include the link — it will be appended separately
 - Output ONLY the hook text, nothing else. No quotes, no labels, no markdown.
