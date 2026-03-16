@@ -22,13 +22,13 @@ What happened between those two facts (the user clicking confirm and the extract
 
 ## What the user was actually trying to do
 
-When you deposit USDT into Aave V3, you receive **aEthUSDT**: an interest-bearing position that appreciates automatically as borrowing fees accrue. It is not USDT. It cannot be directly swapped on a DEX. Moving between aToken positions , aEthUSDT to aEthAAVE, for example , requires a protocol-level primitive called a collateral swap.
+When you deposit USDT into Aave V3, you receive **aEthUSDT**: an interest-bearing position that appreciates automatically as borrowing fees accrue. It is not USDT. It cannot be directly swapped on a DEX. Moving between aToken positions (aEthUSDT to aEthAAVE, for example) requires a protocol-level primitive called a collateral swap.
 
 The Swap Collateral Adapter V3 (`0xadc0a53095a0af87f3aa29fe0715b5c28016364e`) executes this atomically in a single transaction:<sup>[1](#fn-1)</sup>
 
 1. Flash loan borrows the collateral asset
 2. User's aEthUSDT is pulled (requires prior approval)
-3. Underlying USDT redeemed from Aave V3 , 1:1, no price impact
+3. Underlying USDT redeemed from Aave V3 (1:1, no price impact)
 4. USDT routed through CoW Protocol solvers to acquire AAVE
 5. AAVE re-supplied into Aave V3 on the user's behalf
 6. User receives aEthAAVE
@@ -42,15 +42,15 @@ The problem was step 4.
 
 CoW Protocol's solver auction found a three-hop route for this order.
 
-**Hop 1 , Aave V3 redemption:**
+**Hop 1, Aave V3 redemption:**
 50,432,688 aEthUSDT → 50,432,688 USDT (1:1, zero price impact)
 
-**Hop 2 , Uniswap V3 USDT/WETH:**
+**Hop 2, Uniswap V3 USDT/WETH:**
 50,432,688 USDT → approximately 17,957 WETH (roughly $37M)
 
 A large order on a relatively deep pool. Significant slippage, but the trade survived it. Uniswap V3's concentrated liquidity absorbed the pressure.
 
-**Hop 3 , SushiSwap AAVE/WETH:**
+**Hop 3, SushiSwap AAVE/WETH:**
 17,957 WETH → 327 AAVE (roughly $36,000)
 
 This is where the incident lives. The SushiSwap AAVE/WETH pool had approximately $73,000 in total liquidity at execution. A $37M WETH order entered it. The constant product formula does the rest: you buy the entire pool at progressively inflating prices until the pool is empty. The effective price paid: approximately $154,000 per AAVE, against a market rate of roughly $111. Price impact: 99.9%+.
@@ -59,19 +59,21 @@ This is where the incident lives. The SushiSwap AAVE/WETH pool had approximately
 
 This distinction trips up engineers who haven't thought carefully about it.
 
-**Price impact** is the change in market price caused by the trade itself. It is baked into the quote shown to you before execution. When a $37M order hits a $73K pool, the impact is calculable from the pool's reserves , it is not a surprise that emerges during execution. It is a property of the trade size relative to available liquidity.
+**Price impact** is the change in market price caused by the trade itself. It is baked into the quote shown to you before execution. When a $37M order hits a $73K pool, the impact is calculable from the pool's reserves. It is not a surprise that emerges during execution. It is a property of the trade size relative to available liquidity.
 
 **Slippage tolerance** is the maximum acceptable deviation from the *quoted* execution price. It protects against market movement between quote time and on-chain execution: another large trade landing first, a price oracle update, mempool delay. It does nothing when the base quote is already catastrophically bad.
 
 The user's slippage tolerance was 1.21%. That setting was functioning correctly.
 
 > In this case, the user sent a market order with the suggested 1.21% slippage. But the core issue wasn't slippage, it was just the accepted quote with 99% price impact.
-> , Martin Grabina, Aave engineer<sup>[2](#fn-2)</sup>
+
+*Martin Grabina, Aave engineer<sup>[2](#fn-2)</sup>*
 
 > To be more precise, the issue wasn't slippage, it was user accepting a quote with high price impact.
-> , Stani Kulechov, Aave founder<sup>[2](#fn-2)</sup>
 
-The CoW Protocol order quote showed fewer than 140 AAVE in exchange for 50 million USDT , before fees and slippage , and was visible on the CoW Explorer before a single unit of gas was spent. The 99%+ price impact was displayed. The user confirmed it.
+*Stani Kulechov, Aave founder<sup>[2](#fn-2)</sup>*
+
+The CoW Protocol order quote showed fewer than 140 AAVE in exchange for 50 million USDT (before fees and slippage) and was visible on the CoW Explorer before a single unit of gas was spent. The 99%+ price impact was displayed. The user confirmed it.
 
 But why was this the only quote available?
 
@@ -83,7 +85,7 @@ CoW Protocol runs a competitive solver auction: multiple algorithms bid to find 
 
 CoW Protocol's quote verification step rejected any route that exceeded 12 million gas units in simulation. Per CoW's own post-mortem, this was "legacy code predating current gas consumption patterns."<sup>[4](#fn-4)</sup>
 
-Competing solvers had found better routes. Routes that would have returned approximately $5–6 million in AAVE , still a dramatic loss from $50M, but orders of magnitude better than $36K. Those routes were rejected. Not because they were technically incorrect, but because they exceeded a hardcoded limit that nobody had updated.
+Competing solvers had found better routes. Routes that would have returned approximately $5–6 million in AAVE (still a dramatic loss from $50M, but orders of magnitude better than $36K). Those routes were rejected. Not because they were technically incorrect, but because they exceeded a hardcoded limit that nobody had updated.
 
 The better routes never reached the user. The ceiling was fixed after the incident.
 
@@ -91,11 +93,11 @@ The better routes never reached the user. The ceiling was fixed after the incide
 
 A solver named "Solver E" won auction 12479347 with a superior route. It committed to the auction. It never submitted an on-chain transaction. No revert. No error message. Silence.
 
-Solver E won the next auction , 12479350 , again with better execution. Again, no on-chain submission. Zero reverts observed.
+Solver E won the next auction (12479350) again with better execution. Again, no on-chain submission. Zero reverts observed.
 
 After two silent wins and two silent non-executions, Solver E stopped bidding entirely. The auction system had no mechanism to detect this pattern: no alerting on won-but-not-executed auctions, no escalation path, no automatic fallback. Solver E disappeared, and the system continued routing to progressively worse bids from remaining solvers.
 
-Solver B's degraded route , the $36K option , became the winner in the absence of any competition that could actually execute.
+Solver B's degraded route (the $36K option) became the winner in the absence of any competition that could actually execute.
 
 ### Failure 3: The mempool leak
 
@@ -106,7 +108,8 @@ Etherscan shows a "confirmed within 30 seconds" tag on transactions that appear 
 The transaction leaked into the public mempool. An MEV bot saw it. The extraction follows directly.
 
 > Technically correct is not the ceiling we should be building toward.
-> , CoW Protocol post-mortem<sup>[4](#fn-4)</sup>
+
+*CoW Protocol post-mortem<sup>[4](#fn-4)</sup>*
 
 ## The same-block MEV extraction
 
@@ -149,7 +152,8 @@ The user confirmed all four on a mobile device. Both Aave and CoW Protocol ackno
 The community response was narrower than "user error" or "protocol failure." It was a design question.
 
 > You need a more aggressive friction pattern than just a checkbox if they are about to lose over $100,000 in slippage.
-> , James Dawson, design engineer<sup>[7](#fn-7)</sup>
+
+*James Dawson, design engineer<sup>[7](#fn-7)</sup>*
 
 A checkbox asks for confirmation. It does not slow down the decision, require deliberate re-entry, or apply asymmetric friction based on the magnitude of loss. At a $50M scale, "technically the warning was shown" and "the warning was sufficient" are different claims.
 
@@ -157,7 +161,7 @@ Aave's response: **Aave Shield**, deployed as a new default that blocks swaps ex
 
 ## The on-chain trail
 
-Lookonchain traced the originating wallet through 13 addresses that withdrew USDC and USDT from Binance on February 16th and February 20th , all becoming active simultaneously on March 12th, and sharing Binance deposit addresses with wallets publicly linked to Garrett Jin.<sup>[9](#fn-9)</sup> Jin's connected wallets sold approximately 261,024 ETH ($543M) and 11,318 BTC ($761M) in the same period.
+Lookonchain traced the originating wallet through 13 addresses that withdrew USDC and USDT from Binance on February 16th and February 20th, all becoming active simultaneously on March 12th, and sharing Binance deposit addresses with wallets publicly linked to Garrett Jin.<sup>[9](#fn-9)</sup> Jin's connected wallets sold approximately 261,024 ETH ($543M) and 11,318 BTC ($761M) in the same period.
 
 One theory circulated: an intentional value transfer, moving funds of unclear provenance through an apparent trading error into "clean" MEV extraction proceeds. The circumstantial case: a newly created wallet, retail-scale interface used for institutional-scale capital, mobile confirmation of explicit warnings, a single order that would have consumed roughly 3% of total AAVE supply.
 
@@ -165,7 +169,7 @@ The evidence is circumstantial. No formal accusation exists. As of the post-mort
 
 ## The full picture is on-chain
 
-The entire sequence is preserved at transaction `0x9fa9feab3c1989a33424728c23e6de07a40a26a98ff7ff5139f3492ce430801f`, block 24,643,151 on Ethereum mainnet. The Swap Collateral Adapter's internal call tree , Aave redemption, Uniswap V3 routing, SushiSwap execution , is embedded in the transaction trace. The MEV bot's 18 arbitrage hops follow in the same block in sequence. Every flash loan, every token transfer, every pool interaction: on-chain and readable.
+The entire sequence is preserved at transaction `0x9fa9feab3c1989a33424728c23e6de07a40a26a98ff7ff5139f3492ce430801f`, block 24,643,151 on Ethereum mainnet. The Swap Collateral Adapter's internal call tree (Aave redemption, Uniswap V3 routing, SushiSwap execution) is embedded in the transaction trace. The MEV bot's 18 arbitrage hops follow in the same block in sequence. Every flash loan, every token transfer, every pool interaction: on-chain and readable.
 
 This is what block explorers do beyond showing transaction hashes. They render execution: decoded call trees, event logs, internal traces, value flows at each hop. For engineering teams running post-mortems on their own protocols (or building DeFi infrastructure that routes large orders), the ability to inspect a complex multi-hop transaction at full resolution is what makes "what actually happened" a question with a definitive answer. [Ethernal](https://tryethernal.com) connects to any EVM-compatible node, including Ethereum mainnet, and decodes exactly this.
 

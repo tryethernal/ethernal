@@ -132,6 +132,11 @@ a, a * {
   @apply border-l-primary text-text-secondary italic;
 }
 
+.prose blockquote + p > em:only-child {
+  @apply text-sm not-italic block -mt-4;
+  opacity: 0.6;
+}
+
 .prose table {
   @apply border-collapse w-full;
 }
