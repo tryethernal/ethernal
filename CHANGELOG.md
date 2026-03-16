@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.64] - 2026-03-16
+### Fixed
+- fix: clear redis mocks in queueMonitoring test beforeEach (#717)
+- feat: marketing pipeline (drip emails, twitter, PostHog tracking) (#707)
+- ui: widen RPC URL input field on landing homepage (#716)
+
+
 ## [5.17.63] - 2026-03-16
 ### Fixed
 - fix: throttle legacy Redis key cleanup to reduce N+1 queries (#715)
