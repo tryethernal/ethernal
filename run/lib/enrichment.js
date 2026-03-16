@@ -7,7 +7,7 @@
 
 const freeEmailDomains = require('free-email-domains');
 const { URL } = require('url');
-const { getLinkupApiKey, getClaudeApiKey } = require('./env');
+const { getLinkupApiKey } = require('./env');
 const logger = require('./logger');
 
 const FREE_EMAIL_SET = new Set(freeEmailDomains);
@@ -19,7 +19,6 @@ const PUBLIC_RPC_DOMAINS = new Set([
 ]);
 
 const LINKUP_TIMEOUT_MS = 30000;
-const CLAUDE_TIMEOUT_MS = 30000;
 
 /**
  * Extracts the registrable domain from a hostname (strips subdomains).
@@ -98,32 +97,21 @@ async function searchCompany(domain) {
         if (!res.ok) return null;
 
         const data = await res.json();
-        return data.output || null;
+        return data.answer || data.output || null;
     } catch (error) {
         logger.error(error.message, { location: 'enrichment.searchCompany', domain, error });
         return null;
     }
 }
 
-const ENRICHMENT_TOOL = {
-    name: 'save_enrichment',
-    description: 'Save personalized email copy snippets',
-    input_schema: {
-        type: 'object',
-        required: ['companyName', 'companyDescription', 'companyContext', 'tailoredBenefits', 'urgencyHook'],
-        properties: {
-            companyName: { type: 'string', description: 'Company name derived from research' },
-            companyDescription: { type: 'string', description: 'One-line description of what the company does' },
-            companyContext: { type: 'string', description: "Social proof paragraph. Start with 'As a team building X...'. Explain why they need a block explorer." },
-            tailoredBenefits: { type: 'string', description: 'Which Ethernal features matter most for their use case and why.' },
-            urgencyHook: { type: 'string', description: 'Make the cost of losing their explorer data concrete and specific to their use case.' }
-        }
-    }
-};
+const { execSync } = require('child_process');
+
+const CLAUDE_TIMEOUT_MS = 60000;
 
 /**
- * Calls Claude API to generate personalized email snippets.
- * Uses tool_use mode for structured JSON output.
+ * Calls Claude via the CLI to generate personalized email snippets.
+ * Uses `claude -p` with --output-format json for structured output.
+ * Auth is handled by Claude Code's OAuth credentials (apiKeyHelper).
  * @param {string} research - Linkup.so research text
  * @param {string} domain - Company domain
  * @param {string} networkId - Chain network ID
@@ -131,41 +119,42 @@ const ENRICHMENT_TOOL = {
  */
 async function generateSnippets(research, domain, networkId) {
     try {
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), CLAUDE_TIMEOUT_MS);
-
-        const res = await fetch('https://api.anthropic.com/v1/messages', {
-            method: 'POST',
-            headers: {
-                'x-api-key': getClaudeApiKey(),
-                'content-type': 'application/json',
-                'anthropic-version': '2023-06-01'
-            },
-            body: JSON.stringify({
-                model: 'claude-haiku-4-5-20251001',
-                max_tokens: 1024,
-                tools: [ENRICHMENT_TOOL],
-                tool_choice: { type: 'tool', name: 'save_enrichment' },
-                messages: [{
-                    role: 'user',
-                    content: `You are writing personalized email copy for Ethernal, a block explorer for EVM chains.
+        const prompt = `You are writing personalized email copy for Ethernal, a block explorer for EVM chains.
 
 Company domain: ${domain}
 Chain network ID: ${networkId}
 Research: ${research}
 
-Generate three short snippets (2-3 sentences each). Be factual, do not invent details not supported by the research. If the research is thin, keep the copy general but still reference their domain.`
-                }]
-            }),
-            signal: controller.signal
-        });
+Generate a JSON object with exactly these 5 fields (2-3 sentences each). Be factual, do not invent details not supported by the research. If the research is thin, keep the copy general but still reference their domain.
 
-        clearTimeout(timeout);
-        if (!res.ok) return null;
+{
+  "companyName": "Company name derived from research",
+  "companyDescription": "One-line description of what the company does",
+  "companyContext": "Social proof paragraph. Start with 'As a team building X...'. Explain why they need a block explorer.",
+  "tailoredBenefits": "Which Ethernal features matter most for their use case and why.",
+  "urgencyHook": "Make the cost of losing their explorer data concrete and specific to their use case."
+}
 
-        const data = await res.json();
-        const toolUse = data.content?.find(c => c.type === 'tool_use' && c.name === 'save_enrichment');
-        return toolUse?.input || null;
+Return ONLY the JSON object, no other text.`;
+
+        const result = execSync(
+            `claude -p --output-format json --model claude-haiku-4-5`,
+            { input: prompt, encoding: 'utf8', timeout: CLAUDE_TIMEOUT_MS, stdio: ['pipe', 'pipe', 'pipe'] }
+        );
+
+        const parsed = JSON.parse(result);
+        // claude --output-format json wraps the response; extract the text result
+        const text = parsed.result || parsed.content?.[0]?.text || (typeof parsed === 'string' ? parsed : null);
+        if (!text) return null;
+
+        // Parse the JSON from Claude's text response
+        const jsonMatch = (typeof text === 'string' ? text : JSON.stringify(text)).match(/\{[\s\S]*\}/);
+        if (!jsonMatch) return null;
+
+        const snippets = JSON.parse(jsonMatch[0]);
+        if (!snippets.companyName || !snippets.companyContext) return null;
+
+        return snippets;
     } catch (error) {
         logger.error(error.message, { location: 'enrichment.generateSnippets', domain, error });
         return null;

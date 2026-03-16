@@ -2,8 +2,14 @@ require('../mocks/lib/env');
 
 const { searchCompany, generateSnippets } = require('../../lib/enrichment');
 
-// Mock global fetch (Node 18+ has it built-in)
+// Mock global fetch for linkup tests
 const originalFetch = global.fetch;
+
+// Mock child_process for claude CLI tests
+jest.mock('child_process', () => ({
+    execSync: jest.fn()
+}));
+const { execSync } = require('child_process');
 
 describe('searchCompany', () => {
     afterEach(() => { global.fetch = originalFetch; });
@@ -11,7 +17,7 @@ describe('searchCompany', () => {
     it('returns search results from linkup', async () => {
         global.fetch = jest.fn().mockResolvedValueOnce({
             ok: true,
-            json: () => Promise.resolve({ output: 'Acme Labs builds DeFi on Arbitrum' })
+            json: () => Promise.resolve({ answer: 'Acme Labs builds DeFi on Arbitrum' })
         });
         const result = await searchCompany('acmelabs.xyz');
         expect(result).toBe('Acme Labs builds DeFi on Arbitrum');
@@ -35,37 +41,30 @@ describe('searchCompany', () => {
 });
 
 describe('generateSnippets', () => {
-    afterEach(() => { global.fetch = originalFetch; });
+    afterEach(() => jest.restoreAllMocks());
 
-    it('returns parsed snippets from Claude tool_use response', async () => {
-        const toolInput = {
+    it('returns parsed snippets from Claude CLI response', async () => {
+        const snippets = {
             companyName: 'Acme Labs',
             companyDescription: 'DeFi lending on Arbitrum',
             companyContext: 'As a DeFi team...',
             tailoredBenefits: 'For lending protocols...',
             urgencyHook: 'Your lending explorer...'
         };
-        global.fetch = jest.fn().mockResolvedValueOnce({
-            ok: true,
-            json: () => Promise.resolve({
-                content: [{ type: 'tool_use', name: 'save_enrichment', input: toolInput }]
-            })
-        });
+        execSync.mockReturnValueOnce(JSON.stringify({ result: JSON.stringify(snippets) }));
+
         const result = await generateSnippets('Acme builds DeFi', 'acmelabs.xyz', '42161');
-        expect(result).toEqual(toolInput);
+        expect(result).toEqual(snippets);
     });
 
-    it('returns null when Claude returns no tool_use', async () => {
-        global.fetch = jest.fn().mockResolvedValueOnce({
-            ok: true,
-            json: () => Promise.resolve({ content: [{ type: 'text', text: 'hello' }] })
-        });
+    it('returns null when Claude returns invalid JSON', async () => {
+        execSync.mockReturnValueOnce(JSON.stringify({ result: 'not json at all' }));
         const result = await generateSnippets('research', 'acmelabs.xyz', '1');
         expect(result).toBeNull();
     });
 
-    it('returns null on API failure', async () => {
-        global.fetch = jest.fn().mockRejectedValueOnce(new Error('network error'));
+    it('returns null on CLI failure', async () => {
+        execSync.mockImplementationOnce(() => { throw new Error('command failed'); });
         const result = await generateSnippets('research', 'acmelabs.xyz', '1');
         expect(result).toBeNull();
     });

@@ -102,7 +102,7 @@ describe('enrichDemoProfile', () => {
         ).resolves.not.toThrow();
     });
 
-    it('skips when API keys not configured', async () => {
+    it('skips when LINKUP_API_KEY not configured', async () => {
         const { getLinkupApiKey } = require('../../lib/env');
         getLinkupApiKey.mockReturnValueOnce(null);
         const spy = jest.spyOn(Explorer, 'findByPk');

@@ -7,7 +7,7 @@
 const { Explorer } = require('../models');
 const { Op } = require('sequelize');
 const { resolveDomain, searchCompany, generateSnippets } = require('../lib/enrichment');
-const { getLinkupApiKey, getClaudeApiKey } = require('../lib/env');
+const { getLinkupApiKey } = require('../lib/env');
 const logger = require('../lib/logger');
 
 const CACHE_DAYS = 7;
@@ -22,8 +22,8 @@ const CACHE_DAYS = 7;
 module.exports = async (job) => {
     const { explorerId, email, rpcServer, networkId } = job.data;
 
-    if (!getLinkupApiKey() || !getClaudeApiKey()) {
-        logger.info('Enrichment skipped: missing LINKUP_API_KEY or CLAUDE_API_KEY');
+    if (!getLinkupApiKey()) {
+        logger.info('Enrichment skipped: missing LINKUP_API_KEY');
         return;
     }
 
