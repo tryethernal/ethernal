@@ -17,6 +17,39 @@ LOG_FILE="$LOG_DIR/draft-$(date +%Y%m%d-%H%M%S).log"
 
 log() { echo "[$(date -Iseconds)] $*" | tee -a "$LOG_FILE"; }
 
+# Report failure to GitHub Issues with last 50 lines of log
+FAILURE_REPORTED=false
+report_failure() {
+  [ "$FAILURE_REPORTED" = true ] && return
+  FAILURE_REPORTED=true
+  local phase="$1"
+  local log_tail
+  log_tail=$(tail -50 "$LOG_FILE" 2>/dev/null || echo "No log available")
+  local title="Tweet pipeline failed: $phase"
+
+  gh issue create \
+    --repo tryethernal/ethernal \
+    --title "$title" \
+    --label "tweet-pipeline" \
+    --body "$(cat <<EOF
+## Tweet Pipeline Failure
+
+**Phase:** $phase
+**Slot:** ${SLOT:-N/A}
+**Date:** $(date -Iseconds)
+**Log file:** \`$LOG_FILE\`
+
+### Last 50 lines of log
+
+\`\`\`
+$log_tail
+\`\`\`
+EOF
+)" 2>&1 | tee -a "$LOG_FILE" || log "WARNING: Failed to create GitHub issue"
+}
+
+trap 'report_failure "Unexpected error (line $LINENO)"' ERR
+
 # Load environment
 if [ -f "$ENV_FILE" ]; then
   set -a
@@ -26,6 +59,7 @@ if [ -f "$ENV_FILE" ]; then
   QUEUE_DIR="${TWEET_QUEUE_DIR:-/home/blog/tweet-queue}"
 else
   log "ERROR: $ENV_FILE not found"
+  report_failure "Environment"
   exit 1
 fi
 
@@ -48,8 +82,8 @@ cd "$REPO_DIR"
 
 # Pull latest
 log "Pulling latest changes..."
-git checkout develop 2>&1 | tee -a "$LOG_FILE"
-git pull --ff-only origin develop 2>&1 | tee -a "$LOG_FILE"
+git fetch origin develop 2>&1 | tee -a "$LOG_FILE"
+git reset --hard origin/develop 2>&1 | tee -a "$LOG_FILE"
 
 # Install pipeline deps
 cd tweet-pipeline
@@ -101,6 +135,7 @@ SLOT="$SLOT" RECENT_IDS="$RECENT_IDS" node --input-type=module -e "
 
 if [ ! -f .source.json ]; then
   log "ERROR: Source selection failed — no .source.json produced"
+  report_failure "Source selection"
   exit 1
 fi
 
@@ -122,6 +157,7 @@ echo "$PHASE1_OUTPUT" | tee -a "$LOG_FILE"
 if [ ! -f .research.md ]; then
   log "ERROR: Phase 1 failed — no .research.md produced"
   rm -f .source.json
+  report_failure "Research (Phase 1)"
   exit 1
 fi
 
@@ -142,6 +178,7 @@ echo "$PHASE2_OUTPUT" | tee -a "$LOG_FILE"
 if [ ! -f .draft.json ]; then
   log "ERROR: Phase 2 failed — no .draft.json produced"
   rm -f .source.json .research.md
+  report_failure "Draft (Phase 2)"
   exit 1
 fi
 
@@ -149,6 +186,7 @@ fi
 if ! jq -e '.hook' .draft.json > /dev/null 2>&1; then
   log "ERROR: Phase 2 failed — .draft.json missing .hook field"
   rm -f .source.json .research.md .draft.json
+  report_failure "Draft validation (Phase 2)"
   exit 1
 fi
 

@@ -16,6 +16,41 @@ LOG_FILE="$LOG_DIR/draft-$(date +%Y%m%d-%H%M%S).log"
 
 log() { echo "[$(date -Iseconds)] $*" | tee -a "$LOG_FILE"; }
 
+# Report failure to GitHub Issues with last 50 lines of log
+FAILURE_REPORTED=false
+report_failure() {
+  [ "$FAILURE_REPORTED" = true ] && return
+  FAILURE_REPORTED=true
+  local phase="$1"
+  local log_tail
+  log_tail=$(tail -50 "$LOG_FILE" 2>/dev/null || echo "No log available")
+  local title="Blog pipeline failed: $phase"
+  [ -n "${TOPIC:-}" ] && title="Blog pipeline failed: $phase — $TOPIC"
+
+  gh issue create \
+    --repo tryethernal/ethernal \
+    --title "$title" \
+    --label "blog-pipeline" \
+    --body "$(cat <<EOF
+## Blog Pipeline Failure
+
+**Phase:** $phase
+**Topic:** ${TOPIC:-N/A}
+**Card ID:** ${CARD_ID:-N/A}
+**Date:** $(date -Iseconds)
+**Log file:** \`$LOG_FILE\`
+
+### Last 50 lines of log
+
+\`\`\`
+$log_tail
+\`\`\`
+EOF
+)" 2>&1 | tee -a "$LOG_FILE" || log "WARNING: Failed to create GitHub issue"
+}
+
+trap 'report_failure "Unexpected error (line $LINENO)"' ERR
+
 # Load environment
 if [ -f "$ENV_FILE" ]; then
   set -a
@@ -23,6 +58,7 @@ if [ -f "$ENV_FILE" ]; then
   set +a
 else
   log "ERROR: $ENV_FILE not found"
+  report_failure "Environment"
   exit 1
 fi
 
@@ -92,6 +128,7 @@ if [ ! -f blog/pipeline/.research-notes.md ]; then
     updateCardStatus(process.env.CARD_ID, 'detected');
     console.log('Card reset to Detected');
   " 2>&1 | tee -a "$LOG_FILE"
+  report_failure "Research (Phase 1)"
   exit 1
 fi
 
@@ -120,6 +157,7 @@ if [ -z "$ARTICLE_PATH" ] || [ ! -f "$ARTICLE_PATH" ]; then
     updateCardStatus(process.env.CARD_ID, 'detected');
     console.log('Card reset to Detected');
   " 2>&1 | tee -a "$LOG_FILE"
+  report_failure "Draft (Phase 2)"
   exit 1
 fi
 
@@ -158,6 +196,7 @@ if ! npx astro build 2>&1 | tee -a "$LOG_FILE"; then
     updateCardStatus(process.env.CARD_ID, 'detected');
     console.log('Card reset to Detected');
   " 2>&1 | tee -a "$LOG_FILE"
+  report_failure "Build Validation"
   exit 1
 fi
 cd "$REPO_DIR"
