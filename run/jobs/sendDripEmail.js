@@ -83,7 +83,8 @@ module.exports = async (job) => {
             enrichmentData = {
                 teamContext: explorer.enrichment.companyContext,
                 tailoredBenefits: explorer.enrichment.tailoredBenefits,
-                urgencyHook: explorer.enrichment.urgencyHook
+                expirationWarning: explorer.enrichment.expirationWarning,
+                recoveryHook: explorer.enrichment.recoveryHook
             };
         }
     }

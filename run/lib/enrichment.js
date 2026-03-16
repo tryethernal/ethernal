@@ -132,7 +132,8 @@ Generate a JSON object with exactly these 5 fields (2-3 sentences each). Be fact
   "companyDescription": "One-line description of what the company does",
   "companyContext": "Social proof paragraph. Start with 'As a team building X...'. Explain why they need a block explorer.",
   "tailoredBenefits": "Which Ethernal features matter most for their use case and why.",
-  "urgencyHook": "Make the cost of losing their explorer data concrete and specific to their use case."
+  "expirationWarning": "For the 'expires in 2 days' email. Make the cost of losing their explorer data concrete and specific to their use case. Focus on what they'll lose.",
+  "recoveryHook": "For the 'demo expired' email. Emphasize the urgency of the 48-hour recovery window and what they can still save. Different angle from expirationWarning."
 }
 
 Return ONLY the JSON object, no other text.`;
@@ -152,7 +153,7 @@ Return ONLY the JSON object, no other text.`;
         if (!jsonMatch) return null;
 
         const snippets = JSON.parse(jsonMatch[0]);
-        if (!snippets.companyName || !snippets.companyContext) return null;
+        if (!snippets.companyName || !snippets.companyContext || !snippets.expirationWarning) return null;
 
         return snippets;
     } catch (error) {

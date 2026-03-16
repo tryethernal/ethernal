@@ -109,11 +109,11 @@ const steps = {
 
     5: (data) => {
         const subject = 'Your explorer expires in 2 days';
-        const urgencyHtml = data.urgencyHook
-            ? `<p>${data.urgencyHook}</p><p>Start your 7-day free trial now to keep your explorer running. Your existing configuration transfers automatically.</p>`
+        const urgencyHtml = data.expirationWarning
+            ? `<p>${data.expirationWarning}</p><p>Start your 7-day free trial now to keep your explorer running. Your existing configuration transfers automatically.</p>`
             : `<p>Start your 7-day free trial now to keep your explorer running. Your existing configuration transfers automatically.</p>`;
-        const urgencyText = data.urgencyHook
-            ? `${data.urgencyHook}\n\nStart your 7-day free trial to keep it running: ${data.migrateUrl}`
+        const urgencyText = data.expirationWarning
+            ? `${data.expirationWarning}\n\nStart your 7-day free trial to keep it running: ${data.migrateUrl}`
             : `Your demo explorer ${data.explorerSlug} expires in 2 days. Start your 7-day free trial to keep it running: ${data.migrateUrl}`;
         const content = `
             <h2>Your demo is ending soon</h2>
@@ -131,11 +131,11 @@ const steps = {
 
     6: (data) => {
         const subject = "Your demo expired, but your data doesn't have to";
-        const restoreHtml = data.urgencyHook
-            ? `<p>${data.urgencyHook}</p><p>Start a free trial now and we will restore your explorer instantly.</p>`
+        const restoreHtml = data.recoveryHook
+            ? `<p>${data.recoveryHook}</p><p>Start a free trial now and we will restore your explorer instantly.</p>`
             : `<p>We are keeping your configuration for 48 hours. Start a free trial now and we will restore your explorer instantly.</p>`;
-        const restoreText = data.urgencyHook
-            ? `${data.urgencyHook}\n\nStart a free trial to restore it: ${data.migrateUrl}`
+        const restoreText = data.recoveryHook
+            ? `${data.recoveryHook}\n\nStart a free trial to restore it: ${data.migrateUrl}`
             : `Your demo explorer ${data.explorerSlug} has expired. We're keeping your configuration for 48 hours. Start a free trial to restore it: ${data.migrateUrl}`;
         const content = `
             <h2>Your demo has ended</h2>
@@ -164,7 +164,8 @@ const steps = {
  * @param {string} [data.activitySummary] - Activity summary for step 2
  * @param {string} [data.teamContext] - Team/company context for step 4 (enrichment: companyContext)
  * @param {string} [data.tailoredBenefits] - Personalized benefits for step 3
- * @param {string} [data.urgencyHook] - Personalized urgency message for steps 5-6
+ * @param {string} [data.expirationWarning] - Personalized "about to lose" message for step 5
+ * @param {string} [data.recoveryHook] - Personalized "still recoverable" message for step 6
  * @returns {{ subject: string, textPart: string, htmlPart: string|null }}
  * @throws {Error} If step is not 1-6
  */
