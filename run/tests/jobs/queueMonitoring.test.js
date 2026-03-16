@@ -4,6 +4,7 @@ require('../mocks/lib/opsgenie');
 
 const { createIncident } = require('../../lib/opsgenie');
 const logger = require('../../lib/logger');
+const redis = require('../../lib/redis');
 
 let mockGetCompleted, mockGetWaitingCount, mockGetDelayedCount, mockGetFailedCount, mockGetFailed;
 
@@ -22,6 +23,8 @@ jest.mock('../../lib/redis', () => ({
     zcard: jest.fn().mockResolvedValue(0),
     unlink: jest.fn().mockResolvedValue(1),
     zrevrange: jest.fn().mockResolvedValue([]),
+    get: jest.fn().mockResolvedValue(null), // Mock for legacy cleanup cache
+    set: jest.fn().mockResolvedValue('OK'), // Mock for legacy cleanup cache
     pipeline: jest.fn().mockReturnValue({
         zcard: jest.fn().mockReturnThis(),
         unlink: jest.fn().mockReturnThis(),
@@ -229,5 +232,37 @@ describe('queueMonitoring', () => {
         // p95 of 1..20s = 20s, which is below the 60s max threshold
         // but at exactly the 20s high threshold with 0 waiting - no alert expected
         expect(createIncident).not.toHaveBeenCalled();
+    });
+
+    it('Should throttle legacy Redis cleanup when recently run', async () => {
+        const now = Date.now();
+        // Mock that cleanup ran recently (5 minutes ago, which is less than 15 minute interval)
+        const recentTimestamp = (now - 5 * 60 * 1000).toString();
+        redis.get.mockResolvedValueOnce(recentTimestamp);
+
+        await queueMonitoring();
+
+        // Should check cache timestamp but not run zcard pipeline operations
+        expect(redis.get).toHaveBeenCalledWith('queue:legacy_cleanup_last_run');
+        expect(redis.pipeline).not.toHaveBeenCalled(); // Cleanup should be skipped
+    });
+
+    it('Should run legacy Redis cleanup when enough time has passed', async () => {
+        const now = Date.now();
+        // Mock that cleanup ran long ago (20 minutes ago, which is more than 15 minute interval)
+        const oldTimestamp = (now - 20 * 60 * 1000).toString();
+        redis.get.mockResolvedValueOnce(oldTimestamp);
+
+        await queueMonitoring();
+
+        // Should check cache timestamp and run cleanup
+        expect(redis.get).toHaveBeenCalledWith('queue:legacy_cleanup_last_run');
+        expect(redis.pipeline).toHaveBeenCalled(); // Cleanup should run
+        expect(redis.set).toHaveBeenCalledWith(
+            'queue:legacy_cleanup_last_run',
+            expect.any(String),
+            'EX',
+            expect.any(Number)
+        );
     });
 });
