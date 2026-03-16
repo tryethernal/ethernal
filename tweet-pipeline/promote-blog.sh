@@ -80,12 +80,9 @@ for ARTICLE in "$BLOG_DIR"/*.md; do
     continue
   fi
 
-  # Skip if file modified less than 10 minutes ago (deploy race guard)
-  FILE_MTIME=$(stat -c %Y "$ARTICLE" 2>/dev/null || stat -f %m "$ARTICLE" 2>/dev/null || echo "0")
-  NOW=$(date +%s)
-  AGE=$(( NOW - FILE_MTIME ))
-  if [ "$AGE" -lt 600 ]; then
-    log "Skipping $SLUG — published less than 10 min ago (age: ${AGE}s)"
+  # Skip if article is not live yet (avoids promoting before deploy)
+  if ! curl -sf --head "https://tryethernal.com/blog/${SLUG}" > /dev/null 2>&1; then
+    log "Skipping $SLUG — not live at tryethernal.com yet"
     continue
   fi
 
