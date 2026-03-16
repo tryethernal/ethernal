@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.66] - 2026-03-16
+### Added
+- External watchdog for worker crash detection with AI-powered diagnosis
+- Worker heartbeat writes to Redis for external monitoring
+- Auto-fix workflow support for worker-crash label
+
+### Fixed
+- Include emails directory in backend Docker image
+
 ## [5.17.65] - 2026-03-16
 ### Fixed
 - fix: handle TLS connection errors in updateExplorerSyncingProcess job (#720)
