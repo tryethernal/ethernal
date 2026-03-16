@@ -204,10 +204,31 @@ PRs trigger automated review (Greptile bot: `greptile-apps[bot]`). When processi
 - Poll every 60s until status is `completed`. Only then fetch and process comments.
 - After pushing fixes, the check resets to `in_progress` — poll again for the new commit SHA.
 
-**Fetch ALL comment types** (there are 3 separate locations):
-1. **Per-review comments** (MOST RELIABLE): For each review, fetch `gh api repos/tryethernal/ethernal/pulls/{number}/reviews/{review_id}/comments`. The top-level `pulls/{number}/comments` endpoint can miss comments from later review batches.
-2. **Review-level comments**: `gh api repos/tryethernal/ethernal/pulls/{number}/reviews --jq '.[] | select(.body != "")'` — top-level review summaries
-3. **PR conversation comments**: `gh api repos/tryethernal/ethernal/issues/{number}/comments` — general discussion thread (bot summaries, etc.)
+**Fetch ALL comment types — MUST follow this exact procedure:**
+
+**DO NOT use `pulls/{number}/comments` alone** — it misses comments from later review batches. This has caused missed review comments in production.
+
+Step 1: Get all review IDs:
+```bash
+gh api repos/tryethernal/ethernal/pulls/{number}/reviews --jq '.[].id'
+```
+
+Step 2: For EACH review ID, fetch its comments:
+```bash
+gh api repos/tryethernal/ethernal/pulls/{number}/reviews/{review_id}/comments --jq '.[] | {id, body: .body[:100], reactions: .reactions}'
+```
+
+Step 3: Also check review-level bodies (top-level summaries):
+```bash
+gh api repos/tryethernal/ethernal/pulls/{number}/reviews --jq '.[] | select(.body != "") | {id, body: .body[:100]}'
+```
+
+Step 4: Check PR conversation comments:
+```bash
+gh api repos/tryethernal/ethernal/issues/{number}/comments --jq '.[] | {id, body: .body[:100]}'
+```
+
+**Filter for unreacted comments** — only process comments where `reactions["+1"] == 0 AND reactions["-1"] == 0`.
 
 **Process each comment:**
 1. Take comments seriously — most are legitimate
