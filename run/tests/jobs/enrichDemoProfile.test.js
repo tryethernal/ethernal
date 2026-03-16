@@ -1,5 +1,6 @@
 require('../mocks/lib/env');
 require('../mocks/lib/queue');
+require('../mocks/models');
 
 const { Explorer } = require('../../models');
 const enrichment = require('../../lib/enrichment');
@@ -12,8 +13,9 @@ describe('enrichDemoProfile', () => {
         enrichment.resolveDomain.mockReset();
         enrichment.searchCompany.mockReset();
         enrichment.generateSnippets.mockReset();
+        Explorer.findByPk.mockReset();
+        Explorer.findOne.mockReset();
     });
-    afterEach(() => jest.restoreAllMocks());
 
     it('enriches explorer with corporate email', async () => {
         const mockExplorer = { id: 1, update: jest.fn() };

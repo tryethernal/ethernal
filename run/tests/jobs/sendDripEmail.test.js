@@ -1,6 +1,7 @@
 require('../mocks/lib/env');
 require('../mocks/lib/flags');
 require('../mocks/lib/mailjet');
+require('../mocks/models');
 
 jest.mock('../../lib/firebase', () => ({
     markDripEmailSent: jest.fn(),
