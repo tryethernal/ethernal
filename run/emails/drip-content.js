@@ -66,8 +66,12 @@ const steps = {
 
     3: (data) => {
         const subject = "Here's what you're missing on your chain";
+        const benefitsIntro = data.tailoredBenefits
+            ? `<p>${data.tailoredBenefits}</p>`
+            : '';
         const content = `
             <h2>Demo vs. Paid: what you unlock</h2>
+            ${benefitsIntro}
             <p>Your demo explorer gives you a taste. Here is what a paid plan adds:</p>
             <table class="feature-table">
                 <tr><th>Feature</th><th>Demo</th><th>Paid</th></tr>
@@ -105,32 +109,44 @@ const steps = {
 
     5: (data) => {
         const subject = 'Your explorer expires in 2 days';
+        const urgencyHtml = data.urgencyHook
+            ? `<p>${data.urgencyHook}</p><p>Start your 7-day free trial now to keep your explorer running. Your existing configuration transfers automatically.</p>`
+            : `<p>Start your 7-day free trial now to keep your explorer running. Your existing configuration transfers automatically.</p>`;
+        const urgencyText = data.urgencyHook
+            ? `${data.urgencyHook}\n\nStart your 7-day free trial to keep it running: ${data.migrateUrl}`
+            : `Your demo explorer ${data.explorerSlug} expires in 2 days. Start your 7-day free trial to keep it running: ${data.migrateUrl}`;
         const content = `
             <h2>Your demo is ending soon</h2>
             <p>Your explorer <strong>${data.explorerSlug}</strong> expires in 2 days.</p>
-            <p>Start your 7-day free trial now to keep your explorer running. Your existing configuration transfers automatically.</p>
+            ${urgencyHtml}
             <div class="cta-wrap"><a href="${data.migrateUrl}" class="cta">Start Free Trial</a></div>
             <p style="color: #888; font-size: 13px; margin-top: 16px;">After expiration, your explorer and its data will be removed.</p>
         `;
         return {
             subject,
-            textPart: `Your demo explorer ${data.explorerSlug} expires in 2 days. Start your 7-day free trial to keep it running: ${data.migrateUrl}\n\nUnsubscribe: ${data.unsubscribeUrl}`,
+            textPart: `${urgencyText}\n\nUnsubscribe: ${data.unsubscribeUrl}`,
             htmlPart: wrapInTemplate(content, subject, data.unsubscribeUrl, data.appDomain)
         };
     },
 
     6: (data) => {
         const subject = "Your demo expired, but your data doesn't have to";
+        const restoreHtml = data.urgencyHook
+            ? `<p>${data.urgencyHook}</p><p>Start a free trial now and we will restore your explorer instantly.</p>`
+            : `<p>We are keeping your configuration for 48 hours. Start a free trial now and we will restore your explorer instantly.</p>`;
+        const restoreText = data.urgencyHook
+            ? `${data.urgencyHook}\n\nStart a free trial to restore it: ${data.migrateUrl}`
+            : `Your demo explorer ${data.explorerSlug} has expired. We're keeping your configuration for 48 hours. Start a free trial to restore it: ${data.migrateUrl}`;
         const content = `
             <h2>Your demo has ended</h2>
             <p>Your explorer <strong>${data.explorerSlug}</strong> has expired.</p>
-            <p>We are keeping your configuration for 48 hours. Start a free trial now and we will restore your explorer instantly.</p>
+            ${restoreHtml}
             <div class="cta-wrap"><a href="${data.migrateUrl}" class="cta">Restore Explorer</a></div>
             <p style="color: #888; font-size: 13px; margin-top: 16px;">After 48 hours, your explorer and its data will be permanently deleted.</p>
         `;
         return {
             subject,
-            textPart: `Your demo explorer ${data.explorerSlug} has expired. We're keeping your configuration for 48 hours. Start a free trial to restore it: ${data.migrateUrl}\n\nUnsubscribe: ${data.unsubscribeUrl}`,
+            textPart: `${restoreText}\n\nUnsubscribe: ${data.unsubscribeUrl}`,
             htmlPart: wrapInTemplate(content, subject, data.unsubscribeUrl, data.appDomain)
         };
     }
@@ -146,7 +162,9 @@ const steps = {
  * @param {string} data.email - Recipient email
  * @param {string} data.unsubscribeUrl - Unsubscribe URL
  * @param {string} [data.activitySummary] - Activity summary for step 2
- * @param {string} [data.teamContext] - Team/company context for step 4
+ * @param {string} [data.teamContext] - Team/company context for step 4 (enrichment: companyContext)
+ * @param {string} [data.tailoredBenefits] - Personalized benefits for step 3
+ * @param {string} [data.urgencyHook] - Personalized urgency message for steps 5-6
  * @returns {{ subject: string, textPart: string, htmlPart: string|null }}
  * @throws {Error} If step is not 1-6
  */
