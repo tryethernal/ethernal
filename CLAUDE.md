@@ -16,6 +16,9 @@
 | Sentry pipeline | `run/api/sentryPipeline.js`, `run/webhooks/githubActions.js` | [SENTRY.md](.claude/references/SENTRY.md) |
 | Landing/marketing | `landing/` | [LANDING.md](.claude/references/LANDING.md) |
 | Blog pipeline | `blog/pipeline/`, `.github/workflows/blog-*.yml` | |
+| Drip emails | `run/jobs/sendDripEmail.js`, `run/jobs/processDripEmails.js`, `run/models/demodripschedule.js`, `run/webhooks/mailjet.js` | |
+| Demo enrichment | `run/jobs/enrichDemoProfile.js`, `run/lib/enrichment.js`, `run/emails/drip-content.js` | |
+| Twitter pipeline | `tweet-pipeline/` (standalone package, runs on Hetzner server) | |
 | Analytics (PostHog) | `blog/src/layouts/BaseLayout.astro` (snippet), `landing/src/main.js` (init) | |
 | Docker commands | | [COMMANDS.md](.claude/references/COMMANDS.md) |
 | Infra monitoring | `run/jobs/infraHealthCheck.js`, `run/api/status.js`, `.github/workflows/infra-auto-remediation.yml` | |
@@ -126,6 +129,7 @@ Always use `IF NOT EXISTS`/`IF EXISTS` for re-runnability. For tables < 1M rows,
 - Always use sequelize migrations, never raw SQL for schema changes
 - Use `withTimeout(promise, ms)` from `run/lib/utils` instead of inline `Promise.race` timeout patterns
 - Pin GitHub Actions to commit SHAs (not mutable tags) when secrets are in scope
+- **Never hardcode API keys, tokens, or credentials in committed files** (including CLAUDE.md, scripts, YAML). Store in `.credentials.local` (gitignored) and reference by variable name. This repo is public.
 
 ## Documentation Requirements
 
@@ -134,6 +138,55 @@ All new files and functions must include JSDoc (`/**` format). Vue components: `
 ## Design Resources
 
 Browse quality design components at: https://21st.dev/community/components
+
+## RenderKit
+
+Use RenderKit to render specs, reports, or any structured content as hosted HTML pages.
+
+- **API:** `https://renderkit.live/v1`
+- **Docs:** `https://renderkit.live/docs.md`
+- **API key:** See `RENDERKIT_API_KEY` in `.credentials.local`
+- **Templates:** `freeform` (flexible, works with markdown or structured blocks), `travel_itinerary`
+- **Usage:** `POST /v1/render` with `{template, context, data, theme}`. Returns hosted URL.
+- **Update:** `PATCH /v1/render/{id}` to refine without changing URL.
+- **Theme:** `{"mode": "dark", "colors": {"primary": "#3D95CE"}}` for Ethernal branding
+
+---
+
+## Marketing Pipeline
+
+### Demo Explorer Lifecycle
+
+Creation → 7-day active period → 48h grace period (`deleteAfter` column on workspace) → deletion by `removeExpiredExplorers` job.
+
+### Drip Email System
+
+6-step email sequence sent to demo explorer creators via Mailjet. `processDripEmails` runs every 15 min, finds pending emails, enqueues `sendDripEmail` for each. Unsubscribe uses AES-256-CBC tokens (format: `IV.ciphertext`, URL-safe base64).
+
+Steps 1-2 link to the explorer. Steps 3-6 link to the migration flow (`?explorerToken=<jwt>`). Step 1 is plain text (transactional, no unsubscribe). Steps 2-6 use the branded HTML template (`drip-base.html`).
+
+Key env vars: `MAILJET_PUBLIC_KEY`, `MAILJET_PRIVATE_KEY`, `MAILJET_WEBHOOK_SECRET`, `DRIP_UNSUBSCRIBE_SECRET`, `DEMO_EXPLORER_SENDER`. Feature flag: `isDripEmailEnabled()` in `run/lib/flags.js`.
+
+PostHog events: `email:drip_sent`, `email:drip_opened`, `email:drip_clicked`, `explorer:demo_expired`.
+
+### Demo Profile Enrichment
+
+At demo creation, `enrichDemoProfile` job researches the company (via linkup.so) and generates personalized email copy (via `claude -p` CLI). Results stored in `explorer.enrichment` JSON column. Steps 3-6 use enrichment fields with generic fallbacks.
+
+Domain resolution: email domain first, RPC URL domain as fallback. Skips free email providers and public RPC providers. Caches results per domain for 7 days.
+
+Enrichment fields: `companyContext` (step 4), `tailoredBenefits` (step 3), `expirationWarning` (step 5), `recoveryHook` (step 6).
+
+Key env vars: `LINKUP_API_KEY`. Requires `claude` CLI installed on the worker server.
+
+### Twitter Pipeline (`tweet-pipeline/`)
+
+Standalone Node.js package on Hetzner server (`157.90.154.200`, user `blog`). Orchestrated by systemd timers:
+- **Draft** (daily 00:00 UTC): 3-phase Claude pipeline (research → draft → humanize) generates 5 tweets
+- **Publish** (every 10 min): Posts queued tweets with media cards
+- **Engagement** (daily 22:00 UTC): Fetches metrics → PostHog
+
+Config: `/opt/blog-pipeline.env`. Queue dir: `/home/blog/tweet-queue/`.
 
 ---
 
@@ -151,10 +204,31 @@ PRs trigger automated review (Greptile bot: `greptile-apps[bot]`). When processi
 - Poll every 60s until status is `completed`. Only then fetch and process comments.
 - After pushing fixes, the check resets to `in_progress` — poll again for the new commit SHA.
 
-**Fetch ALL comment types** (there are 3 separate locations):
-1. **Per-review comments** (MOST RELIABLE): For each review, fetch `gh api repos/tryethernal/ethernal/pulls/{number}/reviews/{review_id}/comments`. The top-level `pulls/{number}/comments` endpoint can miss comments from later review batches.
-2. **Review-level comments**: `gh api repos/tryethernal/ethernal/pulls/{number}/reviews --jq '.[] | select(.body != "")'` — top-level review summaries
-3. **PR conversation comments**: `gh api repos/tryethernal/ethernal/issues/{number}/comments` — general discussion thread (bot summaries, etc.)
+**Fetch ALL comment types — MUST follow this exact procedure:**
+
+**DO NOT use `pulls/{number}/comments` alone** — it misses comments from later review batches. This has caused missed review comments in production.
+
+Step 1: Get all review IDs:
+```bash
+gh api repos/tryethernal/ethernal/pulls/{number}/reviews --jq '.[].id'
+```
+
+Step 2: For EACH review ID, fetch its comments:
+```bash
+gh api repos/tryethernal/ethernal/pulls/{number}/reviews/{review_id}/comments --jq '.[] | {id, body: .body[:100], reactions: .reactions}'
+```
+
+Step 3: Also check review-level bodies (top-level summaries):
+```bash
+gh api repos/tryethernal/ethernal/pulls/{number}/reviews --jq '.[] | select(.body != "") | {id, body: .body[:100]}'
+```
+
+Step 4: Check PR conversation comments:
+```bash
+gh api repos/tryethernal/ethernal/issues/{number}/comments --jq '.[] | {id, body: .body[:100]}'
+```
+
+**Filter for unreacted comments** — only process comments where `reactions["+1"] == 0 AND reactions["-1"] == 0`.
 
 **Process each comment:**
 1. Take comments seriously — most are legitimate

@@ -1,5 +1,5 @@
 <template>
-    <div class="demo-form" style="max-width: 560px;">
+    <div class="demo-form" style="max-width: 640px;">
         <v-slide-x-transition mode="out-in">
             <div :key="step">
                 <!-- Step 1: RPC URL -->

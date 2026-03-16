@@ -41,7 +41,22 @@ jest.mock('../../lib/redis', () => ({
 const queueMonitoring = require('../../jobs/queueMonitoring');
 
 beforeEach(() => {
-    jest.clearAllMocks();
+    createIncident.mockClear();
+    logger.info.mockClear();
+    logger.error.mockClear();
+    redis.get.mockClear().mockResolvedValue(null);
+    redis.set.mockClear().mockResolvedValue('OK');
+    redis.pipeline.mockClear().mockReturnValue({
+        zcard: jest.fn().mockReturnThis(),
+        unlink: jest.fn().mockReturnThis(),
+        zrevrange: jest.fn().mockReturnThis(),
+        llen: jest.fn().mockReturnThis(),
+        exec: jest.fn().mockResolvedValue([
+            [null, 0],
+            [null, 0],
+            [null, 0]
+        ])
+    });
     mockGetCompleted = jest.fn().mockResolvedValue([]);
     mockGetWaitingCount = jest.fn().mockResolvedValue(0);
     mockGetDelayedCount = jest.fn().mockResolvedValue(0);
@@ -117,11 +132,11 @@ describe('queueMonitoring', () => {
 
     it('Should create a performance incident when combined thresholds are exceeded', async () => {
         const now = Date.now();
-        // p95 = 25s (above 20s threshold), waiting = 60 (above 50 threshold)
+        // p95 = 65s (above 60s max), waiting = 150 (above 100 max)
         mockGetCompleted.mockResolvedValue([
-            { processedOn: now - 25000, finishedOn: now },
+            { processedOn: now - 65000, finishedOn: now },
         ]);
-        mockGetWaitingCount.mockResolvedValue(60);
+        mockGetWaitingCount.mockResolvedValue(150);
         mockGetDelayedCount.mockResolvedValue(0);
         mockGetFailedCount.mockResolvedValue(0);
 

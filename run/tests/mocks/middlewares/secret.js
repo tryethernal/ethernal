@@ -1,5 +1,3 @@
-jest.mock('../../../middlewares/auth', () => {
-    return (req, res, next) => {
-        next();
-    }
+jest.mock('../../../middlewares/secret', () => {
+    return jest.fn((req, res, next) => next());
 });

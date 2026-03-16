@@ -42,6 +42,7 @@ const OpOutput = models.OpOutput;
 const OpDeposit = models.OpDeposit;
 const OpWithdrawal = models.OpWithdrawal;
 const SentryPipelineRun = models.SentryPipelineRun;
+const DemoDripSchedule = models.DemoDripSchedule;
 
 /**
  * Creates an orbit config for an explorer
@@ -5021,6 +5022,99 @@ const upsertSentryPipelineRun = async (data) => {
     return run.toJSON();
 };
 
+/**
+ * Creates drip schedule rows for a demo explorer.
+ * Inserts 6 rows with pre-calculated sendAt timestamps.
+ * @param {number} explorerId - Explorer ID
+ * @param {string} email - Recipient email
+ * @returns {Promise<DemoDripSchedule[]>} Created schedule rows
+ */
+const createDripSchedule = async (explorerId, email) => {
+    const now = new Date();
+    // Step offsets in hours: instant, +6h, +24h, +72h, +120h, +168h
+    const offsets = [0, 6, 24, 72, 120, 168];
+
+    const rows = offsets.map((offsetHours, index) => ({
+        explorerId,
+        email,
+        step: index + 1,
+        sendAt: new Date(now.getTime() + offsetHours * 60 * 60 * 1000),
+        skipped: false
+    }));
+
+    return DemoDripSchedule.bulkCreate(rows);
+};
+
+/**
+ * Gets all pending drip emails that are due to be sent.
+ * @returns {Promise<DemoDripSchedule[]>} Due schedule rows with explorer included
+ */
+const getPendingDripEmails = async () => {
+    return DemoDripSchedule.findAll({
+        where: {
+            sendAt: { [Op.lte]: new Date() },
+            sentAt: null,
+            skipped: false
+        },
+        include: [{
+            model: Explorer,
+            as: 'explorer',
+            include: [{
+                model: Workspace,
+                as: 'workspace'
+            }]
+        }],
+        order: [['sendAt', 'ASC']],
+        limit: 100
+    });
+};
+
+/**
+ * Marks a drip schedule row as sent.
+ * @param {number} id - DemoDripSchedule ID
+ * @returns {Promise<void>}
+ */
+const markDripEmailSent = async (id) => {
+    await DemoDripSchedule.update({ sentAt: new Date() }, { where: { id } });
+};
+
+/**
+ * Fetches a drip schedule row by ID.
+ * @param {number} id - DemoDripSchedule ID
+ * @returns {Promise<Object|null>} Schedule row or null
+ */
+const getDripScheduleById = async (id) => {
+    return await DemoDripSchedule.findByPk(id);
+};
+
+/**
+ * Skips all pending drip emails for a given email address.
+ * Used for unsubscribe and when user migrates to paid.
+ * @param {string} email - Email address to skip
+ * @returns {Promise<number>} Number of rows updated
+ */
+const skipDripEmailsForEmail = async (email) => {
+    const [count] = await DemoDripSchedule.update(
+        { skipped: true },
+        { where: { email, sentAt: null, skipped: false } }
+    );
+    return count;
+};
+
+/**
+ * Skips all pending drip emails for a given explorer.
+ * Used when demo explorer is deleted or migrated.
+ * @param {number} explorerId - Explorer ID
+ * @returns {Promise<number>} Number of rows updated
+ */
+const skipDripEmailsForExplorer = async (explorerId) => {
+    const [count] = await DemoDripSchedule.update(
+        { skipped: true },
+        { where: { explorerId, sentAt: null, skipped: false } }
+    );
+    return count;
+};
+
 module.exports = {
     storeBlock: storeBlock,
     storeTransaction: storeTransaction,
@@ -5251,5 +5345,11 @@ module.exports = {
     getOpDepositByL1Hash: getOpDepositByL1Hash,
     getWorkspaceOpWithdrawals: getWorkspaceOpWithdrawals,
     getOpWithdrawalByL2Hash: getOpWithdrawalByL2Hash,
-    getOpWithdrawalProof: getOpWithdrawalProof
+    getOpWithdrawalProof: getOpWithdrawalProof,
+    createDripSchedule,
+    getPendingDripEmails,
+    markDripEmailSent,
+    getDripScheduleById,
+    skipDripEmailsForEmail,
+    skipDripEmailsForExplorer
 };

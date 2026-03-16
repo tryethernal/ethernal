@@ -12,6 +12,7 @@ const Explorer = {
     findBySlug: jest.fn().mockResolvedValue(explorer),
     findByDomain: jest.fn().mockResolvedValue(explorer),
     safeCreateExplorer: jest.fn().mockResolvedValue(explorer),
+    sequelize: { literal: jest.fn((sql) => sql), escape: jest.fn((v) => `'${v}'`) },
 };
 
 module.exports = {

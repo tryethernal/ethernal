@@ -3,7 +3,7 @@
         <div class="hero-glow"></div>
         <v-container style="max-width: 1280px; position: relative; z-index: 1;">
             <v-row align="center" justify="center" class="py-8 py-lg-0">
-                <v-col cols="12" lg="6" class="py-12">
+                <v-col cols="12" lg="7" class="py-12">
                     <h1 class="hero-headline font-heading mb-5">
                         <span class="gradient-text">Etherscan</span> for your blockchain
                     </h1>
@@ -31,7 +31,7 @@
                     </div>
                 </v-col>
 
-                <v-col cols="12" lg="6" class="d-none d-lg-flex justify-center">
+                <v-col cols="12" lg="5" class="d-none d-lg-flex justify-center" style="margin-top: -40px;">
                     <div class="hero-preview-wrap">
                         <div class="hero-preview">
                             <div class="preview-header">
@@ -115,7 +115,7 @@ const txns = [
 .hero-subtitle {
     font-size: 1.2rem;
     color: var(--text-secondary);
-    max-width: 520px;
+    max-width: 580px;
     line-height: 1.7;
 }
 
