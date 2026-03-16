@@ -4,6 +4,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.67] - 2026-03-16
+### Fixed
+- fix(blog): standardize reference format in draft prompt
+- fix(blog): standardize first reference in the-commerce-layer-erc-8183
+- fix(blog): standardize reference format to plain markdown links
+- fix(twitter): promo tweets include transition phrase before link
+- blog: publish — How Three Infrastructure Failures Turned a $50M Collateral Swap into $36K (#727)
+- fix(twitter): check article is live before posting promo tweet
+- fix(twitter): enforce uppercase I and sentence-start capitalization in tweets
+- fix(twitter): promote-blog.sh uses proper log file instead of /dev/stderr
+- feat(twitter): slot 4 skips articles published within 48h
+- chore: add .promoted-articles to gitignore
+- feat(twitter): call promote-blog.sh from publish timer
+- feat(twitter): add blog promo tweet script
+- feat(twitter): add blog promo tweet hook generation prompt
+- fix(twitter): blog-worthy newsletter stories skip tweet thread
+- blog: add cover and OG images for 50m-defi-routing-failure
+- blog: add draft - How Three Infrastructure Failures Turned a $50M Collateral Swap into $36K
+- fix(twitter): scanner matches forwarded newsletters, tracks processed threads locally
+- feat(blog): check for newsletter blog candidates before card picking
+- feat(twitter): slot 3 checks newsletter source before product tips
+- feat(twitter): add systemd units for newsletter scanner
+- feat(twitter): add newsletter scanner script
+- feat(twitter): add newsletter scoring prompt for scan pipeline
+- feat: add GH issue error reporting to tweet and blog pipelines
+- docs: strengthen credential security warning in CLAUDE.md
+- fix: remove docs/ from git tracking
+- fix: remove set -e from watchdog to prevent premature exit on empty redis results
+
+
 ## [5.17.66] - 2026-03-16
 ### Added
 - External watchdog for worker crash detection with AI-powered diagnosis
