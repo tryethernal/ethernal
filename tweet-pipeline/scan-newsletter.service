@@ -1,0 +1,13 @@
+[Unit]
+Description=Newsletter scanner — score stories for tweet/blog pipeline
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/opt/ethernal-blog-stack/tweet-pipeline/scan-newsletter.sh
+WorkingDirectory=/opt/ethernal-blog-stack
+EnvironmentFile=/opt/blog-pipeline.env
+TimeoutStartSec=300
+StandardOutput=journal
+StandardError=journal
