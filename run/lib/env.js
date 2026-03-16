@@ -78,5 +78,5 @@ module.exports = {
     getDiscordCriticalWebhook: () => process.env.DISCORD_CRITICAL_WEBHOOK,
     getEnv: (env) => process.env[env],
     getLinkupApiKey: () => process.env.LINKUP_API_KEY,
-    getClaudeApiKey: () => process.env.CLAUDE_API_KEY
+    getAnthropicApiKey: () => process.env.ANTHROPIC_API_KEY
 };

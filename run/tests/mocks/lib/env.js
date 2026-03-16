@@ -61,5 +61,5 @@ jest.mock('../../../lib/env', () => ({
     getPm2Host: jest.fn(() => 'http://localhost:3000'),
     getPm2Secret: jest.fn(() => 'secret123'),
     getLinkupApiKey: jest.fn(() => 'test-linkup-key'),
-    getClaudeApiKey: jest.fn(() => 'test-claude-key')
+    getAnthropicApiKey: jest.fn(() => 'test-anthropic-key')
 }));

@@ -2,14 +2,15 @@ require('../mocks/lib/env');
 
 const { searchCompany, generateSnippets } = require('../../lib/enrichment');
 
-// Mock global fetch for linkup tests
 const originalFetch = global.fetch;
 
-// Mock child_process for claude CLI tests
-jest.mock('child_process', () => ({
-    execSync: jest.fn()
-}));
-const { execSync } = require('child_process');
+jest.mock('@anthropic-ai/sdk', () => {
+    const mockCreate = jest.fn();
+    return jest.fn().mockImplementation(() => ({
+        messages: { create: mockCreate }
+    }));
+});
+const Anthropic = require('@anthropic-ai/sdk');
 
 describe('searchCompany', () => {
     afterEach(() => { global.fetch = originalFetch; });
@@ -41,30 +42,45 @@ describe('searchCompany', () => {
 });
 
 describe('generateSnippets', () => {
-    afterEach(() => jest.restoreAllMocks());
+    let mockCreate;
 
-    it('returns parsed snippets from Claude CLI response', async () => {
-        const snippets = {
+    beforeEach(() => {
+        mockCreate = new Anthropic().messages.create;
+        mockCreate.mockReset();
+    });
+
+    it('returns parsed snippets from Anthropic tool_use response', async () => {
+        const toolInput = {
             companyName: 'Acme Labs',
             companyDescription: 'DeFi lending on Arbitrum',
             companyContext: 'As a DeFi team...',
             tailoredBenefits: 'For lending protocols...',
-            urgencyHook: 'Your lending explorer...'
+            expirationWarning: 'You will lose...',
+            recoveryHook: 'Your data is still recoverable...'
         };
-        execSync.mockReturnValueOnce(JSON.stringify({ result: JSON.stringify(snippets) }));
+        mockCreate.mockResolvedValueOnce({
+            content: [{ type: 'tool_use', name: 'save_enrichment', input: toolInput }]
+        });
 
         const result = await generateSnippets('Acme builds DeFi', 'acmelabs.xyz', '42161');
-        expect(result).toEqual(snippets);
+        expect(result).toEqual(toolInput);
+        expect(mockCreate).toHaveBeenCalledWith(expect.objectContaining({
+            model: 'claude-haiku-4-5',
+            tools: expect.any(Array),
+            tool_choice: { type: 'tool', name: 'save_enrichment' }
+        }));
     });
 
-    it('returns null when Claude returns invalid JSON', async () => {
-        execSync.mockReturnValueOnce(JSON.stringify({ result: 'not json at all' }));
+    it('returns null when no tool_use in response', async () => {
+        mockCreate.mockResolvedValueOnce({
+            content: [{ type: 'text', text: 'hello' }]
+        });
         const result = await generateSnippets('research', 'acmelabs.xyz', '1');
         expect(result).toBeNull();
     });
 
-    it('returns null on CLI failure', async () => {
-        execSync.mockImplementationOnce(() => { throw new Error('command failed'); });
+    it('returns null on API failure', async () => {
+        mockCreate.mockRejectedValueOnce(new Error('api error'));
         const result = await generateSnippets('research', 'acmelabs.xyz', '1');
         expect(result).toBeNull();
     });
