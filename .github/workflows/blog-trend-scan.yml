@@ -27,5 +27,5 @@ jobs:
       - name: Run trend scan
         working-directory: blog/pipeline
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_PAT }}
         run: node index.js
