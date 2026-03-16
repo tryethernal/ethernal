@@ -65,5 +65,6 @@ module.exports = {
     backfillOpBatchBlockRanges: require('./backfillOpBatchBlockRanges'),
     backfillOpDeposits: require('./backfillOpDeposits'),
     backfillOpOutputs: require('./backfillOpOutputs'),
-    infraHealthCheck: require('./infraHealthCheck')
+    infraHealthCheck: require('./infraHealthCheck'),
+    enrichDemoProfile: require('./enrichDemoProfile')
 };
