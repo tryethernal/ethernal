@@ -12,6 +12,7 @@ const { getAppDomain, getMailjetPublicKey, getMailjetPrivateKey, getDemoExplorer
 const { isDripEmailEnabled } = require('../lib/flags');
 const { getEmailContent } = require('../emails/drip-content');
 const { encode } = require('../lib/crypto');
+const { Explorer } = require('../models');
 const crypto = require('crypto');
 
 /**
@@ -74,6 +75,19 @@ module.exports = async (job) => {
         migrateUrl = `https://app.${appDomain}/?explorerToken=${explorerToken}`;
     }
 
+    // Load enrichment for steps 3+ (personalized copy)
+    let enrichmentData = {};
+    if (step >= 3 && schedule && schedule.explorerId) {
+        const explorer = await Explorer.findByPk(schedule.explorerId, { attributes: ['enrichment'] });
+        if (explorer?.enrichment && !explorer.enrichment.error) {
+            enrichmentData = {
+                teamContext: explorer.enrichment.companyContext,
+                tailoredBenefits: explorer.enrichment.tailoredBenefits,
+                urgencyHook: explorer.enrichment.urgencyHook
+            };
+        }
+    }
+
     const content = getEmailContent(step, {
         explorerSlug,
         explorerLink,
@@ -82,7 +96,8 @@ module.exports = async (job) => {
         unsubscribeUrl,
         appDomain,
         activitySummary,
-        teamContext
+        teamContext,
+        ...enrichmentData
     });
 
     const senderRaw = getDemoExplorerSender();
