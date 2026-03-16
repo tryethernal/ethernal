@@ -411,10 +411,10 @@ module.exports = async job => {
         if (hasCachedWorkspace && (data.cachedWorkspace.hasL2Configs === undefined || data.cachedWorkspace.hasL2Configs)) {
             // Detect jobs from the intermediate batchBlockSync version that set
             // hasL2Configs but didn't include the actual config objects yet
-            const hasCachedL2Data = !!(
-                data.cachedWorkspace.orbitConfig !== undefined ||
-                data.cachedWorkspace.orbitChildConfigs !== undefined ||
-                data.cachedWorkspace.opChildConfigs !== undefined
+            const hasCachedL2Data = (
+                'orbitConfig' in data.cachedWorkspace ||
+                'orbitChildConfigs' in data.cachedWorkspace ||
+                'opChildConfigs' in data.cachedWorkspace
             );
 
             if (hasCachedL2Data) {
