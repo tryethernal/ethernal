@@ -246,7 +246,13 @@ ARTICLE_URL="https://tryethernal.com/blog/$SLUG"
 
 # Generate cover image
 log "Generating cover image..."
-IMG_PROMPT="Flat vector flow diagram on dark navy background (#0f172a) with subtle dot grid pattern overlay. Topic: ${TOPIC}. Use rounded pill-shaped boxes in steel blue (#4a8ecb) with soft shadows, connected by thin arrows. 2-4 labeled elements showing a simple relationship or flow. Large readable white text labels. Centered composition with lots of whitespace. Style: polished Figma mockup, NOT realistic 3D icons, NOT wireframes, NOT text-heavy. No gradients, no glow effects."
+IMG_PROMPT="Flat infographic on dark navy background (#0f172a) with subtle dot grid pattern overlay. Landscape format 1424x752. Topic: ${TOPIC}.
+
+Show a title at the very top in large bold white text on ONE single line (max 25 characters). Below it, a subtitle in smaller gray text (max 50 characters). Then a simple flat diagram or chart that visually represents the topic: use horizontal bars, labeled boxes, arrows, or timelines with steel blue (#4a8ecb) rounded rectangles and white text labels. 2-4 visual elements max. Short labels only (2-4 words each).
+
+Style: polished Figma mockup, clean flat design. NOT 3D, NOT glowy, NOT wireframes. Centered composition with whitespace on all sides.
+
+CRITICAL LAYOUT RULES: The title MUST fit entirely on ONE line, never wrap. Each text element (title, subtitle, labels) occupies its own distinct area. Do NOT render dates. Keep all text short and readable. If a label is too long, shorten it."
 "$SCRIPT_DIR/generate-cover.sh" "$SLUG" "$IMG_PROMPT" 2>&1 | tee -a "$LOG_FILE" || log "WARNING: Cover image generation failed"
 
 # Commit everything
