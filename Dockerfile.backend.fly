@@ -12,6 +12,7 @@ RUN npm ci --only=production
 # Copy application files
 COPY run/api ./api
 COPY run/config ./config
+COPY run/emails ./emails
 COPY run/jobs ./jobs
 COPY run/lib ./lib
 COPY run/constants ./constants
