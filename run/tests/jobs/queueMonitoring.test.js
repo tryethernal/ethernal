@@ -44,6 +44,19 @@ beforeEach(() => {
     createIncident.mockClear();
     logger.info.mockClear();
     logger.error.mockClear();
+    redis.get.mockClear().mockResolvedValue(null);
+    redis.set.mockClear().mockResolvedValue('OK');
+    redis.pipeline.mockClear().mockReturnValue({
+        zcard: jest.fn().mockReturnThis(),
+        unlink: jest.fn().mockReturnThis(),
+        zrevrange: jest.fn().mockReturnThis(),
+        llen: jest.fn().mockReturnThis(),
+        exec: jest.fn().mockResolvedValue([
+            [null, 0],
+            [null, 0],
+            [null, 0]
+        ])
+    });
     mockGetCompleted = jest.fn().mockResolvedValue([]);
     mockGetWaitingCount = jest.fn().mockResolvedValue(0);
     mockGetDelayedCount = jest.fn().mockResolvedValue(0);
