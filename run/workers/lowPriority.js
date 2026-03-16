@@ -13,6 +13,8 @@ const jobs = require('../jobs');
 const logger = require('../lib/logger');
 const priorities = require('./priorities.js');
 const { managedWorkerError } = require('../lib/errors');
+const { startHeartbeat } = require('../lib/heartbeat');
+startHeartbeat('lowPriority');
 
 priorities['low'].forEach(jobName => {
     const worker = new Worker(
