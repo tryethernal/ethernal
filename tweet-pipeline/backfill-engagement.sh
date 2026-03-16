@@ -55,23 +55,27 @@ for (let i = 0; i < allIds.length; i += 100) {
       }));
 
       if (posthogKey) {
-        await fetch('https://us.i.posthog.com/capture/', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            api_key: posthogKey,
-            event: 'twitter:tweet_engagement',
-            distinct_id: 'tweet-pipeline',
-            properties: {
-              tweetId: m.id,
-              likes: m.metrics.likes,
-              retweets: m.metrics.retweets,
-              replies: m.metrics.replies,
-              impressions: m.metrics.impressions,
-              backfill: true
-            }
-          })
-        });
+        try {
+          await fetch('https://us.i.posthog.com/capture/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              api_key: posthogKey,
+              event: 'twitter:tweet_engagement',
+              distinct_id: 'tweet-pipeline',
+              properties: {
+                tweetId: m.id,
+                likes: m.metrics.likes,
+                retweets: m.metrics.retweets,
+                replies: m.metrics.replies,
+                impressions: m.metrics.impressions,
+                backfill: true
+              }
+            })
+          });
+        } catch (phErr) {
+          console.error('PostHog delivery failed for', m.id, phErr.message);
+        }
       }
     }
   } catch (err) {

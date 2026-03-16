@@ -8,6 +8,16 @@
 const fs = require('fs');
 const path = require('path');
 
+/**
+ * Escapes HTML special characters in AI-generated content.
+ * @param {string} str - Raw text to escape
+ * @returns {string} HTML-safe string
+ */
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
 let baseTemplate;
 
 /**
@@ -67,7 +77,7 @@ const steps = {
     3: (data) => {
         const subject = "Here's what you're missing on your chain";
         const benefitsIntro = data.tailoredBenefits
-            ? `<p>${data.tailoredBenefits}</p>`
+            ? `<p>${escapeHtml(data.tailoredBenefits)}</p>`
             : '';
         const content = `
             <h2>Demo vs. Paid: what you unlock</h2>
@@ -96,7 +106,7 @@ const steps = {
         const teamContext = data.teamContext || 'Teams building EVM-based chains use Ethernal as their primary block explorer for debugging, monitoring, and sharing chain data with their community.';
         const content = `
             <h2>You are not alone</h2>
-            <p>${teamContext}</p>
+            <p>${escapeHtml(teamContext)}</p>
             <p>Ethernal works out of the box with any EVM chain: L2s, L3s, appchains, testnets, and private networks.</p>
             <div class="cta-wrap"><a href="${data.migrateUrl}" class="cta">Start Free Trial</a></div>
         `;
@@ -110,7 +120,7 @@ const steps = {
     5: (data) => {
         const subject = 'Your explorer expires in 2 days';
         const urgencyHtml = data.expirationWarning
-            ? `<p>${data.expirationWarning}</p><p>Start your 7-day free trial now to keep your explorer running. Your existing configuration transfers automatically.</p>`
+            ? `<p>${escapeHtml(data.expirationWarning)}</p><p>Start your 7-day free trial now to keep your explorer running. Your existing configuration transfers automatically.</p>`
             : `<p>Start your 7-day free trial now to keep your explorer running. Your existing configuration transfers automatically.</p>`;
         const urgencyText = data.expirationWarning
             ? `${data.expirationWarning}\n\nStart your 7-day free trial to keep it running: ${data.migrateUrl}`
@@ -132,7 +142,7 @@ const steps = {
     6: (data) => {
         const subject = "Your demo expired, but your data doesn't have to";
         const restoreHtml = data.recoveryHook
-            ? `<p>${data.recoveryHook}</p><p>Start a free trial now and we will restore your explorer instantly.</p>`
+            ? `<p>${escapeHtml(data.recoveryHook)}</p><p>Start a free trial now and we will restore your explorer instantly.</p>`
             : `<p>We are keeping your configuration for 48 hours. Start a free trial now and we will restore your explorer instantly.</p>`;
         const restoreText = data.recoveryHook
             ? `${data.recoveryHook}\n\nStart a free trial to restore it: ${data.migrateUrl}`

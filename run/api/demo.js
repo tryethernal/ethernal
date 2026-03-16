@@ -11,7 +11,7 @@
 
 const express = require('express');
 const axios = require('axios');
-const { getDemoUserId, getDefaultPlanSlug, getAppDomain, getDemoTrialSlug, getStripeSecretKey, getDefaultExplorerTrialDays, whitelistedNetworkIdsForDemo, maxDemoExplorersForNetwork, getDiscordDemoExplorerChannelWebhook } = require('../lib/env');
+const { getDemoUserId, getDefaultPlanSlug, getAppDomain, getDemoTrialSlug, getStripeSecretKey, getDefaultExplorerTrialDays, whitelistedNetworkIdsForDemo, maxDemoExplorersForNetwork, getDiscordDemoExplorerChannelWebhook, getLinkupApiKey, getAnthropicApiKey } = require('../lib/env');
 const stripe = require('stripe')(getStripeSecretKey());
 const { generateSlug } = require('random-word-slugs');
 const router = express.Router();
@@ -248,15 +248,17 @@ router.post('/explorers', async (req, res, next) => {
             }
 
             // Enqueue profile enrichment (async, independent of drip emails)
-            try {
-                await enqueue('enrichDemoProfile', `enrichDemoProfile-${explorer.id}`, {
-                    explorerId: explorer.id,
-                    email: data.email,
-                    rpcServer: data.rpcServer,
-                    networkId: networkId ? String(networkId) : null
-                });
-            } catch (error) {
-                logger.error(error.message, { location: 'api.demo.enrichDemoProfile', explorerId: explorer.id, error });
+            if (getLinkupApiKey() && getAnthropicApiKey()) {
+                try {
+                    await enqueue('enrichDemoProfile', `enrichDemoProfile-${explorer.id}`, {
+                        explorerId: explorer.id,
+                        email: data.email,
+                        rpcServer: data.rpcServer,
+                        networkId: networkId ? String(networkId) : null
+                    });
+                } catch (error) {
+                    logger.error(error.message, { location: 'api.demo.enrichDemoProfile', explorerId: explorer.id, error });
+                }
             }
         } else {
             await enqueue('sendDemoExplorerLink', `sendDemoExplorerLink-${explorer.id}`, { email: data.email, explorerSlug: explorer.slug });
