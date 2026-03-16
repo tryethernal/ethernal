@@ -4250,6 +4250,20 @@ const createWorkspace = async (userId, data) => {
 };
 
 /**
+ * Gets a workspace by name for a user with minimal data for authentication.
+ * Only loads basic workspace info needed for authorization, not complex associations.
+ * @param {string} userId - The Firebase auth ID
+ * @param {string} workspaceName - The workspace name
+ * @returns {Promise<Object|null>} The workspace object or null
+ */
+const getWorkspaceByNameAuth = async (userId, workspaceName) => {
+    const user = await User.findByAuthIdWithWorkspaceAuth(userId, workspaceName);
+    if (!user)
+        return null;
+    return user.workspaces && user.workspaces.length ? user.workspaces[0].toJSON() : null;
+};
+
+/**
  * Gets a workspace by name for a user.
  * @param {string} userId - The Firebase auth ID
  * @param {string} workspaceName - The workspace name
@@ -5013,6 +5027,7 @@ module.exports = {
     storeContractData: storeContractData,
     getContractData: getContractData,
     getWorkspaceByName: getWorkspaceByName,
+    getWorkspaceByNameAuth: getWorkspaceByNameAuth,
     getUser: getUser,
     addIntegration: addIntegration,
     removeIntegration: removeIntegration,
