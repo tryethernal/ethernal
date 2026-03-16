@@ -21,10 +21,16 @@ const crypto = require('crypto');
  * @param {string} email - Email to encode
  * @returns {string} URL-safe base64 token (IV + ciphertext)
  */
+let _unsubscribeKey;
+function getUnsubscribeKey() {
+    if (!_unsubscribeKey)
+        _unsubscribeKey = crypto.scryptSync(getDripUnsubscribeSecret(), 'ethernal-drip', 32);
+    return _unsubscribeKey;
+}
+
 function generateUnsubscribeToken(email) {
-    const key = crypto.scryptSync(getDripUnsubscribeSecret(), 'ethernal-drip', 32);
     const iv = crypto.randomBytes(16);
-    const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);
+    const cipher = crypto.createCipheriv('aes-256-cbc', getUnsubscribeKey(), iv);
     let encrypted = cipher.update(email, 'utf8', 'base64url');
     encrypted += cipher.final('base64url');
     return iv.toString('base64url') + '.' + encrypted;
@@ -130,11 +136,12 @@ module.exports = async (job) => {
             throw error;
         });
 
-    // Mark as sent AFTER successful Mailjet send (not before)
+    // Mark as sent AFTER successful Mailjet send — don't rethrow on DB failure
+    // (email was already sent; rethrowing would cause BullMQ to retry and send a duplicate)
     try {
         if (scheduleId)
             await db.markDripEmailSent(scheduleId);
-    } finally {
+
         const analytics = new Analytics();
         analytics.track(
             `explorer:${explorerSlug}`,
@@ -142,5 +149,7 @@ module.exports = async (job) => {
             { step, explorerSlug }
         );
         analytics.shutdown();
+    } catch (err) {
+        logger.error(err.message, { location: 'jobs.sendDripEmail.markSent', scheduleId, step });
     }
 };

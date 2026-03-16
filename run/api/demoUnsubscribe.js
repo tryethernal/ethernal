@@ -11,6 +11,8 @@ const db = require('../lib/firebase');
 const { getDripUnsubscribeSecret } = require('../lib/env');
 const logger = require('../lib/logger');
 
+let _unsubscribeKey;
+
 router.get('/unsubscribe', async (req, res) => {
     try {
         const { token } = req.query;
@@ -22,8 +24,9 @@ router.get('/unsubscribe', async (req, res) => {
             const parts = token.split('.');
             if (parts.length !== 2) return res.status(400).send('Invalid token');
             const iv = Buffer.from(parts[0], 'base64url');
-            const key = crypto.scryptSync(getDripUnsubscribeSecret(), 'ethernal-drip', 32);
-            const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);
+            if (!_unsubscribeKey)
+                _unsubscribeKey = crypto.scryptSync(getDripUnsubscribeSecret(), 'ethernal-drip', 32);
+            const decipher = crypto.createDecipheriv('aes-256-cbc', _unsubscribeKey, iv);
             email = decipher.update(parts[1], 'base64url', 'utf8');
             email += decipher.final('utf8');
         } catch {
