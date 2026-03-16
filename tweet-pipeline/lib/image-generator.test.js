@@ -1,73 +1,58 @@
 /**
- * @fileoverview Tests for the Playwright-based image generator.
+ * @fileoverview Tests for the Gemini-based image generator.
  */
-import { describe, it, after } from 'node:test';
+import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { existsSync, unlinkSync, mkdirSync, statSync, rmdirSync } from 'node:fs';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { buildTemplateUrl, generateImage } from './image-generator.js';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
+import { buildPrompt } from './image-generator.js';
 
 describe('image-generator', () => {
-    const tmpDir = join(__dirname, '..', '.test-output');
-
-    describe('buildTemplateUrl', () => {
-        it('builds correct file:// URL with params for stat_card', () => {
-            const url = buildTemplateUrl('stat_card', { headline: '4,200+', subtitle: 'Contracts verified' });
-            assert.ok(url.startsWith('file://'), 'Should be a file:// URL');
-            assert.ok(url.includes('stat-card.html'), 'Should reference stat-card.html');
-            assert.ok(url.includes('headline=4%2C200%2B'), 'Should encode headline param');
-            assert.ok(url.includes('subtitle=Contracts+verified'), 'Should include subtitle param');
+    describe('buildPrompt', () => {
+        it('includes style prefix', () => {
+            const prompt = buildPrompt({ title: 'Test', subtitle: 'Sub' });
+            assert.ok(prompt.includes('#0F1729'), 'Should include dark navy color');
+            assert.ok(prompt.includes('#3D95CE'), 'Should include blue accent color');
+            assert.ok(prompt.includes('NOT futuristic'), 'Should include style constraint');
         });
 
-        it('builds correct URL for eip_card', () => {
-            const url = buildTemplateUrl('eip_card', { number: 'EIP-4844', title: 'Shard Blob Transactions', summary: 'Proto-danksharding' });
-            assert.ok(url.includes('eip-card.html'), 'Should reference eip-card.html');
-            assert.ok(url.includes('number=EIP-4844'), 'Should include number param');
-            assert.ok(url.includes('title=Shard+Blob+Transactions'), 'Should include title param');
-            assert.ok(url.includes('summary=Proto-danksharding'), 'Should include summary param');
+        it('places title in large white text', () => {
+            const prompt = buildPrompt({ title: 'ERC-8004: Trustless Agents' });
+            assert.ok(prompt.includes('Title at top in large white text: "ERC-8004: Trustless Agents"'));
         });
 
-        it('builds correct URL for code_snippet', () => {
-            const url = buildTemplateUrl('code_snippet', { code: 'console.log("hi")', lang: 'javascript' });
-            assert.ok(url.includes('code-snippet.html'), 'Should reference code-snippet.html');
+        it('includes metric prominently', () => {
+            const prompt = buildPrompt({ title: 'Test', metric: '21,000+' });
+            assert.ok(prompt.includes('"21,000+"'));
+            assert.ok(prompt.includes('prominently'));
         });
 
-        it('builds correct URL for quote_card', () => {
-            const url = buildTemplateUrl('quote_card', { quote: 'Test quote', author: 'Vitalik' });
-            assert.ok(url.includes('quote-card.html'), 'Should reference quote-card.html');
+        it('includes diagram description when provided', () => {
+            const prompt = buildPrompt({
+                title: 'Test',
+                diagram: 'two panels: hex on left, decoded on right'
+            });
+            assert.ok(prompt.includes('Diagram: two panels'));
         });
 
-        it('throws for unknown type', () => {
-            assert.throws(
-                () => buildTemplateUrl('unknown_type', { foo: 'bar' }),
-                { message: /unknown template type/i }
-            );
-        });
-    });
-
-    describe('generateImage', () => {
-        const outputFiles = [];
-
-        after(() => {
-            for (const f of outputFiles) {
-                try { unlinkSync(f); } catch { /* ignore */ }
-            }
-            try { rmdirSync(tmpDir); } catch { /* ignore */ }
+        it('auto-generates diagram description when no diagram/code/quote', () => {
+            const prompt = buildPrompt({ title: 'Test', subtitle: 'Sub' });
+            assert.ok(prompt.includes('simple flat diagram'));
         });
 
-        it('renders stat_card to actual PNG file', async () => {
-            mkdirSync(tmpDir, { recursive: true });
-            const outputPath = join(tmpDir, 'stat-card-test.png');
-            outputFiles.push(outputPath);
+        it('includes code block for code specs', () => {
+            const prompt = buildPrompt({ title: 'Test', code: 'function foo() {}' });
+            assert.ok(prompt.includes('code block'));
+            assert.ok(prompt.includes('function foo'));
+        });
 
-            await generateImage({ type: 'stat_card', headline: '12,345', subtitle: 'Blocks indexed' }, outputPath);
+        it('includes quote for quote specs', () => {
+            const prompt = buildPrompt({ title: 'Test', quote: 'Hello world', author: 'Vitalik' });
+            assert.ok(prompt.includes('"Hello world"'));
+            assert.ok(prompt.includes('Vitalik'));
+        });
 
-            assert.ok(existsSync(outputPath), 'PNG file should exist');
-            const stats = statSync(outputPath);
-            assert.ok(stats.size > 1000, `PNG should be non-trivial size, got ${stats.size} bytes`);
+        it('includes no-repeat rule', () => {
+            const prompt = buildPrompt({ title: 'Test' });
+            assert.ok(prompt.includes('Do NOT repeat any text'));
         });
     });
 });
