@@ -76,5 +76,7 @@ module.exports = {
     getDripUnsubscribeSecret: () => process.env.DRIP_UNSUBSCRIBE_SECRET,
     getGithubToken: () => process.env.GITHUB_TOKEN,
     getDiscordCriticalWebhook: () => process.env.DISCORD_CRITICAL_WEBHOOK,
-    getEnv: (env) => process.env[env]
+    getEnv: (env) => process.env[env],
+    getLinkupApiKey: () => process.env.LINKUP_API_KEY,
+    getClaudeApiKey: () => process.env.CLAUDE_API_KEY
 };
