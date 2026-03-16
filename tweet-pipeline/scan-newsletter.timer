@@ -1,0 +1,9 @@
+[Unit]
+Description=Scan crypto newsletters daily at 11:00 UTC
+
+[Timer]
+OnCalendar=*-*-* 11:00:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

@@ -11,7 +11,7 @@ Read both files:
 ## Viral Tweet Style Rules
 
 1. **HOOK**: First line MUST have a $ amount, specific metric, or shocking number. No exceptions.
-2. **FORMAT**: Lowercase casual. Short sentences. Line break after every thought.
+2. **FORMAT**: Casual tone. First letter of the tweet MUST be uppercase (like a regular sentence). Short sentences. Line break after every thought.
 3. **STRUCTURE**: Hook -> "here's how" / "the secret:" -> numbered steps OR arrows (->)
 4. **SPECIFICITY**: Use precise numbers. Not "lots of" but "273 per hour". Not "saves time" but "saves 14 hours/week".
 5. **VOICE**: First person "I" or third person story "This [person] did X". Never corporate "we are pleased to".

@@ -41,11 +41,13 @@ Read `blog/pipeline/.research-notes.md` for the research brief (sources, outline
 - Every claim backed by a real source
 - Link to EIPs, docs, papers inline
 - Quote recognized figures (Vitalik, core devs, auditors, protocol authors) with name and title
-- Add a References footer section with numbered links:
+- Add a References footer section with numbered links using this exact format:
   ```
   ## References
-  1. [Title](url) — Author, Date
+
+  <span id="fn-1">1.</span> Author. "Title." _Source_, Date. [https://example.com/path](https://example.com/path)
   ```
+  Use `<sup>[N](#fn-N)</sup>` for inline citations in the article body.
 
 **AI SEO structure:**
 - Lead every section with a direct answer

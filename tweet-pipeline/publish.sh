@@ -13,6 +13,38 @@ LOG_FILE="$LOG_DIR/publish-$(date +%Y%m%d-%H%M%S).log"
 
 log() { echo "[$(date -Iseconds)] $*" | tee -a "$LOG_FILE"; }
 
+# Report failure to GitHub Issues with last 50 lines of log
+FAILURE_REPORTED=false
+report_failure() {
+  [ "$FAILURE_REPORTED" = true ] && return
+  FAILURE_REPORTED=true
+  local phase="$1"
+  local log_tail
+  log_tail=$(tail -50 "$LOG_FILE" 2>/dev/null || echo "No log available")
+  local title="Tweet publish failed: $phase"
+
+  gh issue create \
+    --repo tryethernal/ethernal \
+    --title "$title" \
+    --label "tweet-pipeline" \
+    --body "$(cat <<EOF
+## Tweet Publish Failure
+
+**Phase:** $phase
+**Date:** $(date -Iseconds)
+**Log file:** \`$LOG_FILE\`
+
+### Last 50 lines of log
+
+\`\`\`
+$log_tail
+\`\`\`
+EOF
+)" 2>&1 | tee -a "$LOG_FILE" || log "WARNING: Failed to create GitHub issue"
+}
+
+trap 'report_failure "Unexpected error (line $LINENO)"' ERR
+
 # Load environment
 if [ -f "$ENV_FILE" ]; then
   set -a
@@ -124,5 +156,10 @@ for TWEET_FILE in "$QUEUE_DIR"/tweet-*.json; do
     continue
   fi
 done
+
+# ============================================================
+# Promote newly published blog articles
+# ============================================================
+PROMOTE_LOG_FILE="$LOG_FILE" "$SCRIPT_DIR/promote-blog.sh" 2>&1 || log "WARNING: promote-blog.sh failed"
 
 log "Done. Posted $POSTED_COUNT tweet(s)."

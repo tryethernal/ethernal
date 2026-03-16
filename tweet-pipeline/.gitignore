@@ -2,4 +2,8 @@ tweet-queue/
 .research.md
 .draft.json
 .source.json
+.newsletter-source.json
+.blog-candidate.json
+.processed-threads
+.promoted-articles
 node_modules/

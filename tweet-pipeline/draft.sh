@@ -17,6 +17,39 @@ LOG_FILE="$LOG_DIR/draft-$(date +%Y%m%d-%H%M%S).log"
 
 log() { echo "[$(date -Iseconds)] $*" | tee -a "$LOG_FILE"; }
 
+# Report failure to GitHub Issues with last 50 lines of log
+FAILURE_REPORTED=false
+report_failure() {
+  [ "$FAILURE_REPORTED" = true ] && return
+  FAILURE_REPORTED=true
+  local phase="$1"
+  local log_tail
+  log_tail=$(tail -50 "$LOG_FILE" 2>/dev/null || echo "No log available")
+  local title="Tweet pipeline failed: $phase"
+
+  gh issue create \
+    --repo tryethernal/ethernal \
+    --title "$title" \
+    --label "tweet-pipeline" \
+    --body "$(cat <<EOF
+## Tweet Pipeline Failure
+
+**Phase:** $phase
+**Slot:** ${SLOT:-N/A}
+**Date:** $(date -Iseconds)
+**Log file:** \`$LOG_FILE\`
+
+### Last 50 lines of log
+
+\`\`\`
+$log_tail
+\`\`\`
+EOF
+)" 2>&1 | tee -a "$LOG_FILE" || log "WARNING: Failed to create GitHub issue"
+}
+
+trap 'report_failure "Unexpected error (line $LINENO)"' ERR
+
 # Load environment
 if [ -f "$ENV_FILE" ]; then
   set -a
@@ -26,6 +59,7 @@ if [ -f "$ENV_FILE" ]; then
   QUEUE_DIR="${TWEET_QUEUE_DIR:-/home/blog/tweet-queue}"
 else
   log "ERROR: $ENV_FILE not found"
+  report_failure "Environment"
   exit 1
 fi
 
@@ -36,8 +70,8 @@ else
   HOUR=$(date -u +%-H)
   if   [ "$HOUR" -lt 9  ]; then SLOT=1
   elif [ "$HOUR" -lt 12 ]; then SLOT=2
-  elif [ "$HOUR" -lt 15 ]; then SLOT=3
-  elif [ "$HOUR" -lt 18 ]; then SLOT=4
+  elif [ "$HOUR" -lt 17 ]; then SLOT=3
+  elif [ "$HOUR" -lt 19 ]; then SLOT=4
   else                          SLOT=5
   fi
 fi
@@ -48,8 +82,8 @@ cd "$REPO_DIR"
 
 # Pull latest
 log "Pulling latest changes..."
-git checkout develop 2>&1 | tee -a "$LOG_FILE"
-git pull --ff-only origin develop 2>&1 | tee -a "$LOG_FILE"
+git fetch origin develop 2>&1 | tee -a "$LOG_FILE"
+git reset --hard origin/develop 2>&1 | tee -a "$LOG_FILE"
 
 # Install pipeline deps
 cd tweet-pipeline
@@ -68,6 +102,58 @@ fi
 # ============================================================
 log "Selecting source for slot $SLOT..."
 
+# Check for newsletter source (slot 3 override)
+NEWSLETTER_FILE="$SCRIPT_DIR/.newsletter-source.json"
+SKIP_NORMAL_SOURCE=false
+if [ "$SLOT" = "3" ] && [ -f "$NEWSLETTER_FILE" ]; then
+  # Verify not stale (< 24h old)
+  NL_CREATED=$(jq -r '.created_at // empty' "$NEWSLETTER_FILE" 2>/dev/null)
+  NL_STALE=false
+  if [ -n "$NL_CREATED" ]; then
+    NL_EPOCH=$(date -d "$NL_CREATED" +%s 2>/dev/null || echo "0")
+    NOW_EPOCH=$(date +%s)
+    [ $(( NOW_EPOCH - NL_EPOCH )) -gt 86400 ] && NL_STALE=true
+  fi
+
+  if [ "$NL_STALE" = "false" ]; then
+    log "Using newsletter source for slot 3"
+
+    # Build .source.json matching expected schema (pass via env to avoid shell injection)
+    NL_JSON=$(cat "$NEWSLETTER_FILE") NL_JSON="$NL_JSON" node --input-type=module -e "
+      import { getScheduledTime } from './config.js';
+      import { writeFileSync } from 'node:fs';
+
+      const nl = JSON.parse(process.env.NL_JSON);
+      const scheduledAt = getScheduledTime(new Date(), 15);
+      const result = {
+        sourceId: 'newsletter: ' + nl.title,
+        source: {
+          type: 'newsletter',
+          title: nl.title,
+          content: nl.content,
+          url: nl.source_url || '',
+        },
+        bucket: 'Newsletter story',
+        slot: 3,
+        scheduledAt: scheduledAt.toISOString(),
+      };
+      writeFileSync('.source.json', JSON.stringify(result, null, 2));
+      console.log('Selected: ' + result.source.title + ' (bucket: Newsletter story)');
+    " 2>&1 | tee -a "$LOG_FILE"
+
+    rm -f "$NEWSLETTER_FILE"
+    log "Newsletter source consumed and deleted."
+
+    if [ -f .source.json ]; then
+      SKIP_NORMAL_SOURCE=true
+    fi
+  else
+    log "Newsletter source is stale (> 24h) — falling back to product tips"
+    rm -f "$NEWSLETTER_FILE"
+  fi
+fi
+
+if [ "$SKIP_NORMAL_SOURCE" != "true" ]; then
 # Collect recent sourceIds from queue dir (last 7 days)
 RECENT_IDS=$(find "$QUEUE_DIR" -name 'tweet-*.json' -mtime -7 -exec cat {} + 2>/dev/null \
   | jq -r '.sourceId // empty' 2>/dev/null \
@@ -98,9 +184,11 @@ SLOT="$SLOT" RECENT_IDS="$RECENT_IDS" node --input-type=module -e "
   writeFileSync('.source.json', JSON.stringify(result, null, 2));
   console.log('Selected: ' + selected.title + ' (bucket: ' + bucket.label + ')');
 " 2>&1 | tee -a "$LOG_FILE"
+fi
 
 if [ ! -f .source.json ]; then
   log "ERROR: Source selection failed — no .source.json produced"
+  report_failure "Source selection"
   exit 1
 fi
 
@@ -122,6 +210,7 @@ echo "$PHASE1_OUTPUT" | tee -a "$LOG_FILE"
 if [ ! -f .research.md ]; then
   log "ERROR: Phase 1 failed — no .research.md produced"
   rm -f .source.json
+  report_failure "Research (Phase 1)"
   exit 1
 fi
 
@@ -142,6 +231,7 @@ echo "$PHASE2_OUTPUT" | tee -a "$LOG_FILE"
 if [ ! -f .draft.json ]; then
   log "ERROR: Phase 2 failed — no .draft.json produced"
   rm -f .source.json .research.md
+  report_failure "Draft (Phase 2)"
   exit 1
 fi
 
@@ -149,6 +239,7 @@ fi
 if ! jq -e '.hook' .draft.json > /dev/null 2>&1; then
   log "ERROR: Phase 2 failed — .draft.json missing .hook field"
   rm -f .source.json .research.md .draft.json
+  report_failure "Draft validation (Phase 2)"
   exit 1
 fi
 

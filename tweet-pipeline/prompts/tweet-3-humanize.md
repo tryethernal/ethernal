@@ -12,7 +12,7 @@ Go through each check. Fix every violation.
 
 1. **Hook has a number?** The hook MUST contain a specific number (dollar amount, metric, percentage, count). If missing, add one from the research or rewrite.
 
-2. **Lowercase?** Everything lowercase except proper nouns (Ethereum, Solidity, EIP numbers, protocol names, people's names). Fix any sentence-case.
+2. **Capitalization?** First letter of the hook MUST be uppercase (like a regular sentence). First-person pronoun is always uppercase "I" (not "i"). Everything else lowercase except proper nouns (Ethereum, Solidity, EIP numbers, protocol names, people's names).
 
 3. **Short sentences?** Max 15 words per sentence. Split anything longer.
 
