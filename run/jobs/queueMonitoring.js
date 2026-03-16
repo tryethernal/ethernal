@@ -16,6 +16,10 @@ const monitoredPerformances = ['blockSync', 'receiptSync'];
 
 const monitoredActivity = ['blockSync'];
 
+// Cache key and interval for legacy cleanup throttling
+const LEGACY_CLEANUP_CACHE_KEY = 'queue:legacy_cleanup_last_run';
+const LEGACY_CLEANUP_INTERVAL_MS = 15 * 60 * 1000; // Run cleanup every 15 minutes instead of every 2 minutes
+
 /**
  * Computes the p95 processing time (in seconds) from an array of completed jobs.
  * Returns 0 if no valid jobs are provided.
@@ -40,8 +44,18 @@ const computeP95ProcessingTime = (jobs) => {
  * BullMQ v5 uses 'prioritized' instead, but orphaned entries accumulate
  * in the old 'priority' key and can consume gigabytes of Redis memory.
  * This cleanup must run independently of monitoring configuration.
+ *
+ * Throttled to run every 15 minutes to reduce N+1 Redis queries on each monitoring cycle.
  */
 const cleanupLegacyRedisKeys = async () => {
+    // Check if we should skip cleanup based on throttling
+    const lastRunTime = await redis.get(LEGACY_CLEANUP_CACHE_KEY);
+    const now = Date.now();
+
+    if (lastRunTime && (now - parseInt(lastRunTime)) < LEGACY_CLEANUP_INTERVAL_MS) {
+        return; // Skip cleanup if run recently
+    }
+
     const allQueues = [...priorities['high'], ...priorities['medium'], ...priorities['low'], 'processHistoricalBlocks'];
     if (allQueues.length === 0) return;
 
@@ -78,6 +92,9 @@ const cleanupLegacyRedisKeys = async () => {
             logger.info('Cleaned legacy priority key', { queueName, entriesRemoved });
         });
     }
+
+    // Update cache to track when cleanup last ran
+    await redis.set(LEGACY_CLEANUP_CACHE_KEY, now.toString(), 'EX', Math.ceil(LEGACY_CLEANUP_INTERVAL_MS / 1000));
 };
 
 module.exports = async () => {
