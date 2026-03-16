@@ -157,4 +157,9 @@ for TWEET_FILE in "$QUEUE_DIR"/tweet-*.json; do
   fi
 done
 
+# ============================================================
+# Promote newly published blog articles
+# ============================================================
+PROMOTE_LOG_FILE="$LOG_FILE" "$SCRIPT_DIR/promote-blog.sh" 2>&1 || log "WARNING: promote-blog.sh failed"
+
 log "Done. Posted $POSTED_COUNT tweet(s)."
