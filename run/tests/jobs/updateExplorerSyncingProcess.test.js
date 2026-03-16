@@ -46,6 +46,24 @@ describe('updateExplorerSyncingProcess', () => {
             });
     });
 
+    it('Should exit gracefully if TLS connection error occurs', (done) => {
+        PM2.mockImplementationOnce(() => ({
+            find: jest.fn().mockRejectedValueOnce(new Error('Client network socket disconnected before secure TLS connection was established'))
+        }));
+        jest.spyOn(Explorer, 'findOne').mockResolvedValue({
+            id: 1,
+            slug: 'slug',
+            workspaceId: 1,
+            shouldSync: true
+        });
+
+        updateExplorerSyncingProcess({ data: { explorerSlug: 'explorer' }})
+            .then(res => {
+                expect(res).toEqual('Connection failed');
+                done();
+            });
+    });
+
     it('Should reset if flag is passed', (done) => {
         const reset = jest.fn();
         PM2.mockImplementationOnce(() => ({
