@@ -33,10 +33,12 @@ git pull origin develop            # Pull latest
 
 ## Step 3: Determine Version Bump
 
-Analyze the filtered commits:
+Analyze the filtered commits and pick the **highest applicable** bump:
 - **major**: "BREAKING" in message, backward-incompatible changes
-- **minor**: New features/capabilities ("add", new endpoints, new integrations)
-- **patch**: Bug fixes, improvements, refactors, performance, dependency updates
+- **minor**: ANY commit starting with `feat:` or `feat(`, OR any commit that adds a new user-facing feature/capability (new endpoints, new integrations, new pages, new pipelines). If even ONE commit qualifies as minor, the whole release is minor.
+- **patch**: Bug fixes (`fix:`), improvements, refactors, performance, dependency updates, blog content changes, CI/workflow tweaks
+
+**Common mistake to avoid:** Do NOT default to patch. Scan every commit for `feat:` or `feat(` prefixes — these MUST trigger a minor bump, not patch. Blog infrastructure features (e.g. "feat(blog): ...") and CI features (e.g. "feat(twitter): ...") still count as minor.
 
 Read current version from root `package.json`. Display the chosen bump type and new version.
 
