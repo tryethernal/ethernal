@@ -246,6 +246,18 @@ router.post('/explorers', async (req, res, next) => {
                 // Non-blocking: drip schedule failure should not break demo creation
                 logger.error(error.message, { location: 'api.demo.createDripSchedule', explorerId: explorer.id, error });
             }
+
+            // Enqueue profile enrichment (async, independent of drip emails)
+            try {
+                await enqueue('enrichDemoProfile', `enrichDemoProfile-${explorer.id}`, {
+                    explorerId: explorer.id,
+                    email: data.email,
+                    rpcServer: data.rpcServer,
+                    networkId: networkId ? String(networkId) : null
+                });
+            } catch (error) {
+                logger.error(error.message, { location: 'api.demo.enrichDemoProfile', explorerId: explorer.id, error });
+            }
         } else {
             await enqueue('sendDemoExplorerLink', `sendDemoExplorerLink-${explorer.id}`, { email: data.email, explorerSlug: explorer.slug });
         }
