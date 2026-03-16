@@ -19,11 +19,11 @@ describe('workspaceAuth', () => {
     };
 
     it('Should allow access when using valid api token', async () => {
-        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValue({ name: 'My Workspace', public: true });
+        jest.spyOn(db, 'getWorkspaceByNameAuth').mockResolvedValue({ name: 'My Workspace', public: true });
         jest.spyOn(db, 'getUser').mockResolvedValue({ apiKey: '123' });
         decode.mockReturnValue({ apiKey: '456', firebaseUserId: 'abc'});
         decrypt.mockReturnValue('456');
-        
+
         const next = jest.fn();
         const req = {
             headers: {
@@ -41,7 +41,7 @@ describe('workspaceAuth', () => {
     });
 
     it('Should reject access if api token does not contain user', async () => {
-        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValue({ name: 'My Workspace', public: true });
+        jest.spyOn(db, 'getWorkspaceByNameAuth').mockResolvedValue({ name: 'My Workspace', public: true });
         jest.spyOn(db, 'getUser').mockResolvedValue(null);
         decode.mockReturnValue({ apiKey: '456', firebaseUserId: 'abc'});
         
@@ -64,7 +64,7 @@ describe('workspaceAuth', () => {
     });
 
     it('Should reject access if api token does not contain the right api key', async () => {
-        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValue({ name: 'My Workspace', public: true });
+        jest.spyOn(db, 'getWorkspaceByNameAuth').mockResolvedValue({ name: 'My Workspace', public: true });
         jest.spyOn(db, 'getUser').mockResolvedValue({ apiKey: '123' });
         decode.mockReturnValue({ apiKey: '456', firebaseUserId: 'abc'});
         decrypt.mockReturnValue('yui');
@@ -144,7 +144,7 @@ describe('workspaceAuth', () => {
     });
 
     it('Should return 404 if workspace does not exist', async () => {
-        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValue(null);
+        jest.spyOn(db, 'getWorkspaceByNameAuth').mockResolvedValue(null);
         const next = jest.fn();
         const req = {
             headers: {},
@@ -162,7 +162,7 @@ describe('workspaceAuth', () => {
 
     it('Should return 404 if workspace is not public and external user wants to access', async () => {
         process.env.NODE_ENV = 'production';
-        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValue({ name: 'My Workspace', public: false });
+        jest.spyOn(db, 'getWorkspaceByNameAuth').mockResolvedValue({ name: 'My Workspace', public: false });
         getAuth.mockReturnValueOnce({
             verifyIdToken: jest.fn().mockResolvedValue({ user_id: '456' })
         });
@@ -185,7 +185,7 @@ describe('workspaceAuth', () => {
 
     it('Should allow access if workspace is public and external user wants to access', async () => {
         process.env.NODE_ENV = 'production';
-        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValue({ name: 'My Workspace', public: true });
+        jest.spyOn(db, 'getWorkspaceByNameAuth').mockResolvedValue({ name: 'My Workspace', public: true });
         getAuth.mockReturnValueOnce({
             verifyIdToken: jest.fn().mockResolvedValue({ user_id: '456' })
         });
