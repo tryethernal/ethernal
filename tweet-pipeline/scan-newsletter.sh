@@ -12,6 +12,7 @@ QUEUE_DIR="${TWEET_QUEUE_DIR:-/home/blog/tweet-queue}"
 INBOX="ethernal@agentmail.to"
 NEWSLETTER_FILE="$SCRIPT_DIR/.newsletter-source.json"
 BLOG_CANDIDATE_FILE="$SCRIPT_DIR/.blog-candidate.json"
+PROCESSED_FILE="$SCRIPT_DIR/.processed-threads"
 
 mkdir -p "$LOG_DIR"
 LOG_FILE="$LOG_DIR/scan-$(date +%Y%m%d-%H%M%S).log"
@@ -97,13 +98,30 @@ THREADS_JSON=$(curl -sf \
   exit 0
 }
 
-# Filter for unread threads from AlphaPacked
+# Load previously processed thread IDs
+touch "$PROCESSED_FILE"
+PROCESSED_IDS=$(cat "$PROCESSED_FILE")
+
+# Filter for AlphaPacked threads (direct or forwarded) not yet processed
 MATCHING_THREADS=$(echo "$THREADS_JSON" | jq -r '
   [.threads[] |
-   select(.labels | index("unread")) |
-   select(.senders[]? | ascii_downcase | contains("alphapacked")) |
+   select(
+     (.senders[]? | ascii_downcase | contains("alphapacked")) or
+     (.subject | ascii_downcase | contains("alphapacked")) or
+     (.preview | ascii_downcase | contains("alphapacked"))
+   ) |
    .thread_id
   ] | .[]' 2>/dev/null || true)
+
+# Remove already-processed threads
+UNPROCESSED=""
+for TID in $MATCHING_THREADS; do
+  if ! echo "$PROCESSED_IDS" | grep -qF "$TID"; then
+    UNPROCESSED="${UNPROCESSED:+$UNPROCESSED
+}$TID"
+  fi
+done
+MATCHING_THREADS="$UNPROCESSED"
 
 if [ -z "$MATCHING_THREADS" ]; then
   log "No unread AlphaPacked newsletters found."
@@ -215,13 +233,9 @@ for m in re.finditer(r'\{', text):
 
 if [ -z "$SCORE_JSON" ]; then
   log "WARNING: Could not extract JSON from Claude output — no qualifying story"
-  # Mark all threads as read anyway
+  # Record as processed to avoid reprocessing
   for TID in $MATCHING_THREADS; do
-    curl -sf -X PATCH \
-      -H "Authorization: Bearer $AGENTMAIL_API_KEY" \
-      -H "Content-Type: application/json" \
-      -d '{"remove_labels":["unread"]}' \
-      "https://api.agentmail.to/v0/inboxes/$INBOX/threads/$TID" > /dev/null 2>&1 || true
+    echo "$TID" >> "$PROCESSED_FILE"
   done
   exit 0
 fi
@@ -263,15 +277,14 @@ else
 fi
 
 # ============================================================
-# Mark all processed newsletters as read
+# Record processed threads to avoid reprocessing
 # ============================================================
-log "Marking newsletters as read..."
+log "Recording processed threads..."
 for TID in $MATCHING_THREADS; do
-  curl -sf -X PATCH \
-    -H "Authorization: Bearer $AGENTMAIL_API_KEY" \
-    -H "Content-Type: application/json" \
-    -d '{"remove_labels":["unread"]}' \
-    "https://api.agentmail.to/v0/inboxes/$INBOX/threads/$TID" > /dev/null 2>&1 || true
+  echo "$TID" >> "$PROCESSED_FILE"
 done
+
+# Keep only last 100 entries to prevent unbounded growth
+tail -100 "$PROCESSED_FILE" > "${PROCESSED_FILE}.tmp" && mv "${PROCESSED_FILE}.tmp" "$PROCESSED_FILE"
 
 log "Done."
