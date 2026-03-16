@@ -15,6 +15,7 @@ require('../mocks/lib/firebase');
 require('../mocks/lib/crypto');
 require('../mocks/middlewares/auth');
 require('../mocks/middlewares/workspaceAuth');
+require('../mocks/middlewares/secret');
 require('../mocks/lib/queue');
 const db = require('../../lib/firebase');
 const { ProviderConnector } = require('../../lib/rpc');

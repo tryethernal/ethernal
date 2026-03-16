@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1200, height=675">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    width: 1200px;
+    height: 675px;
+    background: #0f172a;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+    padding: 60px 100px;
+}
+.quote-mark {
+    font-size: 120px;
+    color: #3D95CE;
+    opacity: 0.6;
+    line-height: 0.8;
+    margin-bottom: 8px;
+}
+.quote-text {
+    font-size: 36px;
+    color: #e2e8f0;
+    font-style: italic;
+    text-align: center;
+    line-height: 1.4;
+}
+.author {
+    font-size: 24px;
+    color: #3D95CE;
+    margin-top: 32px;
+    text-align: center;
+}
+.watermark {
+    position: absolute;
+    bottom: 24px;
+    right: 32px;
+    font-size: 18px;
+    color: #475569;
+}
+</style>
+</head>
+<body>
+<div class="quote-mark">&ldquo;</div>
+<div class="quote-text" id="quote"></div>
+<div class="author" id="author"></div>
+<div class="watermark">tryethernal.com</div>
+<script>
+const params = new URLSearchParams(window.location.search);
+document.getElementById('quote').textContent = params.get('quote') || '';
+const author = params.get('author');
+if (author) document.getElementById('author').textContent = '— ' + author;
+</script>
+</body>
+</html>

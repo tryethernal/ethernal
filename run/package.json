@@ -20,6 +20,7 @@
   "author": "Antoine de Chevigné",
   "license": "Apache-2.0",
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.78.0",
     "@arbitrum/sdk": "^2.0.0",
     "@bull-board/express": "^6.12.0",
     "@google-cloud/logging": "^9.8.3",
@@ -40,6 +41,7 @@
     "express-slow-down": "^1.6.0",
     "firebase-admin": "^10.2.0",
     "firebase-scrypt": "^2.2.0",
+    "free-email-domains": "^1.2.24",
     "ioredis": "^5.4.1",
     "jsonwebtoken": "^8.5.1",
     "lru-cache": "^7.18.3",
