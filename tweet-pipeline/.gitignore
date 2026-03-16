@@ -5,4 +5,5 @@ tweet-queue/
 .newsletter-source.json
 .blog-candidate.json
 .processed-threads
+.promoted-articles
 node_modules/
