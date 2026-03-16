@@ -16,7 +16,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 export const BUCKETS = [
     { slot: 1, baseHourUTC: 7,  label: 'Ecosystem news',     source: 'trend_scanner' },
     { slot: 2, baseHourUTC: 10, label: 'EIP/ERC commentary',  source: 'trend_scanner' },
-    { slot: 3, baseHourUTC: 13, label: 'Product tip',         source: 'features' },
+    { slot: 3, baseHourUTC: 15, label: 'Product tip',         source: 'features' },
     { slot: 4, baseHourUTC: 16, label: 'Blog repurposing',    source: 'blog' },
     { slot: 5, baseHourUTC: 19, label: 'Hot take',            source: 'trend_scanner' },
 ];
