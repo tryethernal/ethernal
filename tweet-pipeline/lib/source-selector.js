@@ -117,7 +117,8 @@ function fetchTrendItems() {
             }
         }`;
 
-        const result = execSync(`gh api graphql -f query='${query.replace(/'/g, "'\\''")}'`, {
+        const result = execSync('gh api graphql --input -', {
+            input: JSON.stringify({ query }),
             encoding: 'utf-8',
             timeout: 10000,
         });
