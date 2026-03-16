@@ -106,13 +106,14 @@ Description: ${DESCRIPTION}" \
   # Fallback if Claude fails or returns empty
   if [ -z "$HOOK" ] || [ ${#HOOK} -gt 500 ]; then
     log "WARNING: Claude hook generation failed or too long — using description fallback"
-    HOOK="$DESCRIPTION"
+    HOOK="${DESCRIPTION}
+
+full article →"
   fi
 
-  # Build full tweet text
+  # Build full tweet text (hook already ends with transition phrase)
   BLOG_URL="https://tryethernal.com/blog/${SLUG}"
   TWEET_TEXT="${HOOK}
-
 ${BLOG_URL}"
 
   # Upload cover image if available (check .png, .webp, .jpg)
