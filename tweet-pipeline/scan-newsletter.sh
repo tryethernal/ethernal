@@ -254,9 +254,9 @@ fi
 if [ "$SCORE" -lt 60 ]; then
   log "No story scored >= 60. Nothing to stage."
 else
-  log "Staging story for slot 3..."
+  BLOG_WORTHY=$(echo "$SCORE_JSON" | jq -r '.blog_worthy // false')
 
-  # Write .newsletter-source.json atomically
+  # Build enriched JSON for either output file
   TMPFILE=$(mktemp)
   echo "$SCORE_JSON" | jq \
     --arg newsletter "AlphaPacked" \
@@ -264,15 +264,15 @@ else
     --arg created_at "$(date -Iseconds)" \
     '. + {type: "newsletter", newsletter: $newsletter, newsletter_date: $newsletter_date, created_at: $created_at}' \
     > "$TMPFILE"
-  mv "$TMPFILE" "$NEWSLETTER_FILE"
 
-  log "Wrote $NEWSLETTER_FILE"
-
-  # Blog escalation
-  BLOG_WORTHY=$(echo "$SCORE_JSON" | jq -r '.blog_worthy // false')
   if [ "$BLOG_WORTHY" = "true" ]; then
-    cp "$NEWSLETTER_FILE" "$BLOG_CANDIDATE_FILE"
-    log "Blog-worthy story — wrote $BLOG_CANDIDATE_FILE"
+    # Blog-worthy: schedule blog only, promo tweet will follow on publish
+    mv "$TMPFILE" "$BLOG_CANDIDATE_FILE"
+    log "Blog-worthy story (score: $SCORE) — scheduling blog only, promo tweet will follow on publish"
+  else
+    # Tweet-only: stage for slot 3 thread
+    mv "$TMPFILE" "$NEWSLETTER_FILE"
+    log "Staging story for slot 3 tweet thread (score: $SCORE)"
   fi
 fi
 
