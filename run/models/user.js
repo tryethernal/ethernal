@@ -142,6 +142,34 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     /**
+     * Finds a user by auth ID with minimal workspace data for authentication.
+     * Only loads basic workspace info needed for authorization, not complex associations.
+     * @param {string} firebaseUserId - Firebase authentication UID
+     * @param {string} workspaceName - Name of workspace to include
+     * @returns {Promise<User|null>} User with minimal workspace data
+     */
+    static findByAuthIdWithWorkspaceAuth(firebaseUserId, workspaceName) {
+        const Workspace = sequelize.models.Workspace;
+        return User.findOne({
+            where: {
+                firebaseUserId: firebaseUserId
+            },
+            attributes: ['id', 'firebaseUserId', 'isPremium'],
+            include: [
+                {
+                    model: Workspace,
+                    as: 'workspaces',
+                    attributes: ['id', 'name', 'public', 'userId', 'networkId', 'rpcServer', 'statusPageEnabled', 'rpcHealthCheckEnabled', 'integrityCheckStartBlockNumber'],
+                    where: {
+                        name: workspaceName,
+                        pendingDeletion: false
+                    }
+                }
+            ]
+        });
+    }
+
+    /**
      * Finds a user by auth ID with a specific workspace loaded.
      * @param {string} firebaseUserId - Firebase authentication UID
      * @param {string} workspaceName - Name of workspace to include

@@ -47,7 +47,7 @@ module.exports = async (req, res, next) => {
         if (!data.firebaseUserId && !firebaseUser.user_id)
             throw new Error('Missing parameter');
 
-        const workspace = await db.getWorkspaceByName(data.firebaseUserId || firebaseUser.user_id, data.workspace);
+        const workspace = await db.getWorkspaceByNameAuth(data.firebaseUserId || firebaseUser.user_id, data.workspace);
 
         if (!workspace)
             return res.sendStatus(404);
