@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.73] - 2026-03-16
+### Fixed
+- fix(tweets): add humanizer rules to blog promo prompt
+- fix(tweets): merge blog humanizer rules into tweet humanizer prompt
+- fix(tweets): detect Claude auth errors before posting, add git pull for fresh images
+
+
 ## [5.17.72] - 2026-03-16
 ### Fixed
 - fix(blog): regenerate cover image with proper text layout, improve prompt
