@@ -19,3 +19,18 @@ Description: {description}
 - End with a short transition to the link, like: "full breakdown →", "full investigation →", "full article →", "we wrote about it →", "deep dive →". Pick whichever fits the content's tone.
 - Do NOT include the actual URL — it will be appended after your transition line.
 - Output ONLY the hook text (including the transition line), nothing else. No quotes, no labels, no markdown.
+
+## Writing Style (CRITICAL)
+
+Zero em dashes (—). Use commas, periods, colons, or parentheses instead.
+
+**Banned words:** comprehensive, robust, leverage, harness, streamline, crucial, pivotal, seamless, notable, significant, innovative, cutting-edge, game-changing, groundbreaking, furthermore, moreover, additionally, consequently, delve, utilize, facilitate, optimize, encompass, nuanced, multifaceted, notably, fundamental
+
+**Banned patterns:**
+- No "It's not just X; it's Y" or "Not only... but..."
+- No "serves as / stands as / marks / represents" — just say "is"
+- No significance inflation ("marking a pivotal moment", "stands as a testament")
+- No press release voice ("proud to announce", "pleased to share")
+- No forced groups of three
+
+**Voice:** Have an opinion. React to the fact, don't just report it. Short punchy sentences. Vary rhythm. Sound like a person who found something interesting, not a content marketer.
