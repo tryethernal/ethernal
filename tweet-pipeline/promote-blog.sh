@@ -10,7 +10,9 @@ PROMPTS_DIR="$SCRIPT_DIR/prompts"
 BLOG_DIR="$REPO_DIR/blog/src/content/blog"
 IMAGE_DIR="$REPO_DIR/blog/public/images"
 PROMOTED_FILE="$SCRIPT_DIR/.promoted-articles"
-LOG_FILE="${PROMOTE_LOG_FILE:-/dev/stderr}"
+LOG_DIR="/var/log/tweet-pipeline"
+mkdir -p "$LOG_DIR"
+LOG_FILE="${PROMOTE_LOG_FILE:-$LOG_DIR/promote-$(date +%Y%m%d-%H%M%S).log}"
 
 log() { echo "[$(date -Iseconds)] [promote] $*" | tee -a "$LOG_FILE"; }
 
