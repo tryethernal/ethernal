@@ -10,6 +10,42 @@
             </div>
         </v-container>
         <LandingPricing :full="true" />
+
+        <v-container class="py-16">
+            <h2 class="text-h4 font-weight-bold text-center mb-8" style="font-family: 'Exo', sans-serif;">Frequently Asked Questions</h2>
+            <v-row justify="center">
+                <v-col cols="12" md="8">
+                    <v-expansion-panels variant="accordion" class="faq-panels">
+                        <v-expansion-panel title="Is Ethernal free to use?">
+                            <v-expansion-panel-text>
+                                Yes. Ethernal has a free tier that includes 1 explorer with full transaction decoding, contract verification, and real-time sync. No credit card required.
+                            </v-expansion-panel-text>
+                        </v-expansion-panel>
+                        <v-expansion-panel title="Can I use Ethernal with any EVM chain?">
+                            <v-expansion-panel-text>
+                                Yes. Ethernal works with any EVM-compatible chain including OP Stack rollups, Arbitrum Orbit chains, Polygon CDK, and any custom EVM network. Just provide an RPC URL.
+                            </v-expansion-panel-text>
+                        </v-expansion-panel>
+                        <v-expansion-panel title="How long does it take to set up?">
+                            <v-expansion-panel-text>
+                                Under 5 minutes. Create an account, enter your chain's RPC URL, and your explorer is live. No server setup, no Docker, no infrastructure to manage.
+                            </v-expansion-panel-text>
+                        </v-expansion-panel>
+                        <v-expansion-panel title="Do I need to run my own infrastructure?">
+                            <v-expansion-panel-text>
+                                No. Ethernal is a hosted service. We handle the indexing, storage, and serving. You just point us at your RPC endpoint.
+                            </v-expansion-panel-text>
+                        </v-expansion-panel>
+                        <v-expansion-panel title="Can I use my own branding?">
+                            <v-expansion-panel-text>
+                                Yes. Builder and Team plans include custom branding: your logo, colors, and custom domain. Your explorer looks like your product.
+                            </v-expansion-panel-text>
+                        </v-expansion-panel>
+                    </v-expansion-panels>
+                </v-col>
+            </v-row>
+        </v-container>
+
         <LandingCTA />
     </LandingLayout>
 </template>
@@ -32,6 +68,59 @@ useHead({
     ],
     link: [
         { rel: 'canonical', href: 'https://tryethernal.com/pricing' }
+    ],
+    script: [
+        {
+            type: 'application/ld+json',
+            children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "Product",
+                "name": "Ethernal Block Explorer",
+                "description": "Deploy your own block explorer for any EVM chain. Transaction decoding, contract verification, and real-time sync.",
+                "url": "https://tryethernal.com/pricing",
+                "brand": { "@type": "Organization", "name": "Ethernal" },
+                "offers": [
+                    { "@type": "Offer", "name": "Free", "price": "0", "priceCurrency": "USD", "description": "1 explorer, community support" },
+                    { "@type": "Offer", "name": "Builder", "price": "29", "priceCurrency": "USD", "billingIncrement": "P1M", "description": "3 explorers, priority support, custom branding" },
+                    { "@type": "Offer", "name": "Team", "price": "99", "priceCurrency": "USD", "billingIncrement": "P1M", "description": "10 explorers, team access, dedicated support" }
+                ]
+            })
+        },
+        {
+            type: 'application/ld+json',
+            children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "FAQPage",
+                "mainEntity": [
+                    {
+                        "@type": "Question",
+                        "name": "Is Ethernal free to use?",
+                        "acceptedAnswer": { "@type": "Answer", "text": "Yes. Ethernal has a free tier that includes 1 explorer with full transaction decoding, contract verification, and real-time sync. No credit card required." }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "Can I use Ethernal with any EVM chain?",
+                        "acceptedAnswer": { "@type": "Answer", "text": "Yes. Ethernal works with any EVM-compatible chain. Just provide an RPC URL and you get a fully functional block explorer with transaction decoding, contract verification, and event logs." }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "How long does it take to set up Ethernal?",
+                        "acceptedAnswer": { "@type": "Answer", "text": "Under 5 minutes. Create an account, enter your chain's RPC URL, and your explorer is live. No server setup, no Docker, no infrastructure to manage." }
+                    }
+                ]
+            })
+        },
+        {
+            type: 'application/ld+json',
+            children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tryethernal.com/" },
+                    { "@type": "ListItem", "position": 2, "name": "Pricing", "item": "https://tryethernal.com/pricing" }
+                ]
+            })
+        }
     ]
 });
 </script>

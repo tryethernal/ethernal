@@ -174,6 +174,33 @@ useHead({
     ],
     link: [
         { rel: 'canonical', href: 'https://tryethernal.com/hardhat-block-explorer' }
+    ],
+    script: [
+        {
+            type: 'application/ld+json',
+            children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "HowTo",
+                "name": "Set up a Hardhat block explorer with Ethernal",
+                "description": "See your Hardhat transactions decoded in real-time with Ethernal.",
+                "step": [
+                    { "@type": "HowToStep", "name": "Install the plugin", "text": "Run npm install hardhat-ethernal in your Hardhat project." },
+                    { "@type": "HowToStep", "name": "Configure hardhat.config.js", "text": "Add require('hardhat-ethernal') to your Hardhat config file." },
+                    { "@type": "HowToStep", "name": "Start exploring", "text": "Run your Hardhat node and see transactions decoded in Ethernal automatically." }
+                ]
+            })
+        },
+        {
+            type: 'application/ld+json',
+            children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tryethernal.com/" },
+                    { "@type": "ListItem", "position": 2, "name": "Hardhat Block Explorer", "item": "https://tryethernal.com/hardhat-block-explorer" }
+                ]
+            })
+        }
     ]
 });
 </script>

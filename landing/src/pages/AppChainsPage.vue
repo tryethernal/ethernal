@@ -262,6 +262,29 @@ useHead({
     ],
     link: [
         { rel: 'canonical', href: 'https://tryethernal.com/app-chains' }
+    ],
+    script: [
+        {
+            type: 'application/ld+json',
+            children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "WebPage",
+                "name": "App Chains — Ethernal Block Explorer",
+                "description": "Launch a branded block explorer for your appchain. OP Stack, Arbitrum Orbit, and Polygon CDK supported.",
+                "url": "https://tryethernal.com/app-chains"
+            })
+        },
+        {
+            type: 'application/ld+json',
+            children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tryethernal.com/" },
+                    { "@type": "ListItem", "position": 2, "name": "App Chains", "item": "https://tryethernal.com/app-chains" }
+                ]
+            })
+        }
     ]
 });
 </script>

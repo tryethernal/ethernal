@@ -103,6 +103,33 @@ useHead({
     ],
     link: [
         { rel: 'canonical', href: 'https://tryethernal.com/anvil-block-explorer' }
+    ],
+    script: [
+        {
+            type: 'application/ld+json',
+            children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "HowTo",
+                "name": "Set up an Anvil block explorer with Ethernal",
+                "description": "A visual block explorer for Foundry's Anvil with decoded transactions and call traces.",
+                "step": [
+                    { "@type": "HowToStep", "name": "Start Anvil", "text": "Run anvil to start your local Foundry node." },
+                    { "@type": "HowToStep", "name": "Connect to Ethernal", "text": "Paste your Anvil RPC URL (http://127.0.0.1:8545) into Ethernal." },
+                    { "@type": "HowToStep", "name": "Start exploring", "text": "Ethernal syncs blocks automatically. See transactions, traces, and contracts in a visual UI." }
+                ]
+            })
+        },
+        {
+            type: 'application/ld+json',
+            children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tryethernal.com/" },
+                    { "@type": "ListItem", "position": 2, "name": "Anvil Block Explorer", "item": "https://tryethernal.com/anvil-block-explorer" }
+                ]
+            })
+        }
     ]
 });
 </script>

@@ -99,6 +99,33 @@ useHead({
     ],
     link: [
         { rel: 'canonical', href: 'https://tryethernal.com/chainstack' }
+    ],
+    script: [
+        {
+            type: 'application/ld+json',
+            children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "HowTo",
+                "name": "Set up a Chainstack block explorer with Ethernal",
+                "description": "Connect your Chainstack-hosted node and get a full block explorer in minutes.",
+                "step": [
+                    { "@type": "HowToStep", "name": "Copy your Chainstack RPC URL", "text": "Get your endpoint URL from the Chainstack console (dedicated, elastic, or archive node)." },
+                    { "@type": "HowToStep", "name": "Paste into Ethernal", "text": "Enter your Chainstack RPC URL in Ethernal's workspace settings." },
+                    { "@type": "HowToStep", "name": "Customize your explorer", "text": "Add your branding, custom domain, and start exploring transactions in real-time." }
+                ]
+            })
+        },
+        {
+            type: 'application/ld+json',
+            children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tryethernal.com/" },
+                    { "@type": "ListItem", "position": 2, "name": "Chainstack Integration", "item": "https://tryethernal.com/chainstack" }
+                ]
+            })
+        }
     ]
 });
 </script>
