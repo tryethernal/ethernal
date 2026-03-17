@@ -166,9 +166,12 @@ class T(HTMLParser):
         self.skip=False
     def handle_starttag(self,tag,a):
         if tag in('style','script'): self.skip=True
+        if tag=='br': self.t.append('\n')
+    def handle_startendtag(self,tag,a):
+        if tag=='br': self.t.append('\n')
     def handle_endtag(self,tag):
         if tag in('style','script'): self.skip=False
-        if tag in('p','div','br','h1','h2','h3','h4','li','tr'): self.t.append('\n')
+        if tag in('p','div','h1','h2','h3','h4','li','tr'): self.t.append('\n')
     def handle_data(self,d):
         if not self.skip: self.t.append(d)
 p=T()
