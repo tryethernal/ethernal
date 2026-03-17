@@ -92,6 +92,22 @@
 </template>
 
 <script setup>
+import { useHead } from '@vueuse/head';
+
+useHead({
+    title: 'Kaleido Block Explorer — Ethernal',
+    meta: [
+        { name: 'description', content: 'Block explorer integration for Kaleido enterprise blockchain networks. Real-time sync and contract verification.' },
+        { property: 'og:title', content: 'Kaleido Block Explorer — Ethernal' },
+        { property: 'og:description', content: 'Block explorer integration for Kaleido enterprise blockchain networks. Real-time sync and contract verification.' },
+        { property: 'og:url', content: 'https://tryethernal.com/kaleido' },
+        { property: 'og:image', content: 'https://tryethernal.com/images/og-image.png' },
+        { name: 'twitter:card', content: 'summary_large_image' },
+    ],
+    link: [
+        { rel: 'canonical', href: 'https://tryethernal.com/kaleido' }
+    ]
+});
 import LandingLayout from '@/components/LandingLayout.vue';
 import FeatureSection from '@/components/FeatureSection.vue';
 import LandingCTA from '@/components/LandingCTA.vue';

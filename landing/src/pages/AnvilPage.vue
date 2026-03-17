@@ -86,6 +86,22 @@
 </template>
 
 <script setup>
+import { useHead } from '@vueuse/head';
+
+useHead({
+    title: 'Anvil Block Explorer — Ethernal',
+    meta: [
+        { name: 'description', content: 'Real-time block explorer for Foundry Anvil. Decoded transactions, contract verification, and call traces for local dev.' },
+        { property: 'og:title', content: 'Anvil Block Explorer — Ethernal' },
+        { property: 'og:description', content: 'Real-time block explorer for Foundry Anvil. Decoded transactions, contract verification, and call traces for local dev.' },
+        { property: 'og:url', content: 'https://tryethernal.com/anvil-block-explorer' },
+        { property: 'og:image', content: 'https://tryethernal.com/images/og-image.png' },
+        { name: 'twitter:card', content: 'summary_large_image' },
+    ],
+    link: [
+        { rel: 'canonical', href: 'https://tryethernal.com/anvil-block-explorer' }
+    ]
+});
 import LandingLayout from '@/components/LandingLayout.vue';
 import FeatureSection from '@/components/FeatureSection.vue';
 import LandingCTA from '@/components/LandingCTA.vue';

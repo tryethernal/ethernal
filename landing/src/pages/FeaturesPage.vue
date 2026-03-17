@@ -219,6 +219,22 @@
 </template>
 
 <script setup>
+import { useHead } from '@vueuse/head';
+
+useHead({
+    title: 'Features — Ethernal Block Explorer',
+    meta: [
+        { name: 'description', content: 'Transaction decoding, contract verification, real-time sync, and more. Everything you need to explore any EVM chain.' },
+        { property: 'og:title', content: 'Features — Ethernal Block Explorer' },
+        { property: 'og:description', content: 'Transaction decoding, contract verification, real-time sync, and more. Everything you need to explore any EVM chain.' },
+        { property: 'og:url', content: 'https://tryethernal.com/features' },
+        { property: 'og:image', content: 'https://tryethernal.com/images/og-image.png' },
+        { name: 'twitter:card', content: 'summary_large_image' },
+    ],
+    link: [
+        { rel: 'canonical', href: 'https://tryethernal.com/features' }
+    ]
+});
 import LandingLayout from '@/components/LandingLayout.vue';
 import FeatureSection from '@/components/FeatureSection.vue';
 import LandingCTA from '@/components/LandingCTA.vue';

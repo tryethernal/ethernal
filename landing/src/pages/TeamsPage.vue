@@ -176,6 +176,22 @@
 </template>
 
 <script setup>
+import { useHead } from '@vueuse/head';
+
+useHead({
+    title: 'For Teams — Ethernal Block Explorer',
+    meta: [
+        { name: 'description', content: 'Custom branding, team access controls, and dedicated support. Ethernal scales with your blockchain project.' },
+        { property: 'og:title', content: 'For Teams — Ethernal Block Explorer' },
+        { property: 'og:description', content: 'Custom branding, team access controls, and dedicated support. Ethernal scales with your blockchain project.' },
+        { property: 'og:url', content: 'https://tryethernal.com/teams' },
+        { property: 'og:image', content: 'https://tryethernal.com/images/og-image.png' },
+        { name: 'twitter:card', content: 'summary_large_image' },
+    ],
+    link: [
+        { rel: 'canonical', href: 'https://tryethernal.com/teams' }
+    ]
+});
 import LandingLayout from '@/components/LandingLayout.vue';
 import FeatureSection from '@/components/FeatureSection.vue';
 import LandingCTA from '@/components/LandingCTA.vue';

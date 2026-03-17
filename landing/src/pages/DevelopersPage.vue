@@ -158,6 +158,22 @@
 </template>
 
 <script setup>
+import { useHead } from '@vueuse/head';
+
+useHead({
+    title: 'For Developers — Ethernal Block Explorer',
+    meta: [
+        { name: 'description', content: 'Hardhat and Foundry integration, API access, WebSocket sync. Build faster with a block explorer that fits your dev workflow.' },
+        { property: 'og:title', content: 'For Developers — Ethernal Block Explorer' },
+        { property: 'og:description', content: 'Hardhat and Foundry integration, API access, WebSocket sync. Build faster with a block explorer that fits your dev workflow.' },
+        { property: 'og:url', content: 'https://tryethernal.com/developers' },
+        { property: 'og:image', content: 'https://tryethernal.com/images/og-image.png' },
+        { name: 'twitter:card', content: 'summary_large_image' },
+    ],
+    link: [
+        { rel: 'canonical', href: 'https://tryethernal.com/developers' }
+    ]
+});
 import LandingLayout from '@/components/LandingLayout.vue';
 import FeatureSection from '@/components/FeatureSection.vue';
 import LandingCTA from '@/components/LandingCTA.vue';

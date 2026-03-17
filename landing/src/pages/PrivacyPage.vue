@@ -93,6 +93,22 @@
 </template>
 
 <script setup>
+import { useHead } from '@vueuse/head';
+
+useHead({
+    title: 'Privacy Policy — Ethernal',
+    meta: [
+        { name: 'description', content: 'Privacy policy for Ethernal block explorer platform.' },
+        { property: 'og:title', content: 'Privacy Policy — Ethernal' },
+        { property: 'og:description', content: 'Privacy policy for Ethernal block explorer platform.' },
+        { property: 'og:url', content: 'https://tryethernal.com/privacy' },
+        { property: 'og:image', content: 'https://tryethernal.com/images/og-image.png' },
+        { name: 'twitter:card', content: 'summary_large_image' },
+    ],
+    link: [
+        { rel: 'canonical', href: 'https://tryethernal.com/privacy' }
+    ]
+});
 import LandingLayout from '@/components/LandingLayout.vue';
 </script>
 

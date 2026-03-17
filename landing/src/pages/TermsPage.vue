@@ -75,6 +75,22 @@
 </template>
 
 <script setup>
+import { useHead } from '@vueuse/head';
+
+useHead({
+    title: 'Terms of Service — Ethernal',
+    meta: [
+        { name: 'description', content: 'Terms of service for Ethernal block explorer platform.' },
+        { property: 'og:title', content: 'Terms of Service — Ethernal' },
+        { property: 'og:description', content: 'Terms of service for Ethernal block explorer platform.' },
+        { property: 'og:url', content: 'https://tryethernal.com/terms' },
+        { property: 'og:image', content: 'https://tryethernal.com/images/og-image.png' },
+        { name: 'twitter:card', content: 'summary_large_image' },
+    ],
+    link: [
+        { rel: 'canonical', href: 'https://tryethernal.com/terms' }
+    ]
+});
 import LandingLayout from '@/components/LandingLayout.vue';
 </script>
 

@@ -297,6 +297,22 @@
 </template>
 
 <script setup>
+import { useHead } from '@vueuse/head';
+
+useHead({
+    title: 'OP Stack Block Explorer — Ethernal',
+    meta: [
+        { name: 'description', content: 'Block explorer for OP Stack rollups. L2-to-L1 withdrawal tracking, transaction decoding, and contract verification.' },
+        { property: 'og:title', content: 'OP Stack Block Explorer — Ethernal' },
+        { property: 'og:description', content: 'Block explorer for OP Stack rollups. L2-to-L1 withdrawal tracking, transaction decoding, and contract verification.' },
+        { property: 'og:url', content: 'https://tryethernal.com/op-stack' },
+        { property: 'og:image', content: 'https://tryethernal.com/images/og-image.png' },
+        { name: 'twitter:card', content: 'summary_large_image' },
+    ],
+    link: [
+        { rel: 'canonical', href: 'https://tryethernal.com/op-stack' }
+    ]
+});
 import LandingLayout from '@/components/LandingLayout.vue';
 import FeatureSection from '@/components/FeatureSection.vue';
 import LandingCTA from '@/components/LandingCTA.vue';

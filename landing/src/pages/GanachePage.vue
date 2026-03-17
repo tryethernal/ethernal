@@ -89,6 +89,22 @@
 </template>
 
 <script setup>
+import { useHead } from '@vueuse/head';
+
+useHead({
+    title: 'Ganache Block Explorer — Ethernal',
+    meta: [
+        { name: 'description', content: 'Visual block explorer for Ganache. Decoded transactions, contract state, and event logs for Truffle development.' },
+        { property: 'og:title', content: 'Ganache Block Explorer — Ethernal' },
+        { property: 'og:description', content: 'Visual block explorer for Ganache. Decoded transactions, contract state, and event logs for Truffle development.' },
+        { property: 'og:url', content: 'https://tryethernal.com/ganache-block-explorer' },
+        { property: 'og:image', content: 'https://tryethernal.com/images/og-image.png' },
+        { name: 'twitter:card', content: 'summary_large_image' },
+    ],
+    link: [
+        { rel: 'canonical', href: 'https://tryethernal.com/ganache-block-explorer' }
+    ]
+});
 import LandingLayout from '@/components/LandingLayout.vue';
 import FeatureSection from '@/components/FeatureSection.vue';
 import LandingCTA from '@/components/LandingCTA.vue';

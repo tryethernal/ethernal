@@ -105,6 +105,22 @@
 </template>
 
 <script setup>
+import { useHead } from '@vueuse/head';
+
+useHead({
+    title: 'Contact Us — Ethernal',
+    meta: [
+        { name: 'description', content: 'Get in touch with the Ethernal team for enterprise inquiries, partnerships, or support.' },
+        { property: 'og:title', content: 'Contact Us — Ethernal' },
+        { property: 'og:description', content: 'Get in touch with the Ethernal team for enterprise inquiries, partnerships, or support.' },
+        { property: 'og:url', content: 'https://tryethernal.com/contact-us' },
+        { property: 'og:image', content: 'https://tryethernal.com/images/og-image.png' },
+        { name: 'twitter:card', content: 'summary_large_image' },
+    ],
+    link: [
+        { rel: 'canonical', href: 'https://tryethernal.com/contact-us' }
+    ]
+});
 import { ref, reactive } from 'vue';
 import LandingLayout from '@/components/LandingLayout.vue';
 import LandingCTA from '@/components/LandingCTA.vue';
