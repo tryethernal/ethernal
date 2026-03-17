@@ -94,10 +94,26 @@
 </template>
 
 <script setup>
+import { useHead } from '@vueuse/head';
 import { ref, reactive } from 'vue';
 import LandingLayout from '@/components/LandingLayout.vue';
 import FeatureSection from '@/components/FeatureSection.vue';
 import LandingCTA from '@/components/LandingCTA.vue';
+
+useHead({
+    title: 'GitHub Actions — Ethernal Block Explorer',
+    meta: [
+        { name: 'description', content: 'Automate block explorer deployment in CI/CD. Ethernal GitHub Action for testing smart contracts with full visibility.' },
+        { property: 'og:title', content: 'GitHub Actions — Ethernal Block Explorer' },
+        { property: 'og:description', content: 'Automate block explorer deployment in CI/CD. Ethernal GitHub Action for testing smart contracts with full visibility.' },
+        { property: 'og:url', content: 'https://tryethernal.com/github-actions' },
+        { property: 'og:image', content: 'https://tryethernal.com/images/og-image.png' },
+        { name: 'twitter:card', content: 'summary_large_image' },
+    ],
+    link: [
+        { rel: 'canonical', href: 'https://tryethernal.com/github-actions' }
+    ]
+});
 
 const valid = ref(false);
 const loading = ref(false);

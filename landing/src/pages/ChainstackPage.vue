@@ -82,9 +82,25 @@
 </template>
 
 <script setup>
+import { useHead } from '@vueuse/head';
 import LandingLayout from '@/components/LandingLayout.vue';
 import FeatureSection from '@/components/FeatureSection.vue';
 import LandingCTA from '@/components/LandingCTA.vue';
+
+useHead({
+    title: 'Chainstack Block Explorer — Ethernal',
+    meta: [
+        { name: 'description', content: 'Deploy a block explorer on Chainstack nodes. Connect your RPC endpoint for transaction decoding and contract verification.' },
+        { property: 'og:title', content: 'Chainstack Block Explorer — Ethernal' },
+        { property: 'og:description', content: 'Deploy a block explorer on Chainstack nodes. Connect your RPC endpoint for transaction decoding and contract verification.' },
+        { property: 'og:url', content: 'https://tryethernal.com/chainstack' },
+        { property: 'og:image', content: 'https://tryethernal.com/images/og-image.png' },
+        { name: 'twitter:card', content: 'summary_large_image' },
+    ],
+    link: [
+        { rel: 'canonical', href: 'https://tryethernal.com/chainstack' }
+    ]
+});
 </script>
 
 <style scoped>

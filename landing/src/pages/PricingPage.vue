@@ -15,9 +15,25 @@
 </template>
 
 <script setup>
+import { useHead } from '@vueuse/head';
 import LandingLayout from '@/components/LandingLayout.vue';
 import LandingPricing from '@/components/LandingPricing.vue';
 import LandingCTA from '@/components/LandingCTA.vue';
+
+useHead({
+    title: 'Pricing — Ethernal Block Explorer',
+    meta: [
+        { name: 'description', content: 'Free and paid plans for Ethernal block explorer. Deploy on any EVM chain with transaction decoding, contract verification, and real-time sync.' },
+        { property: 'og:title', content: 'Pricing — Ethernal Block Explorer' },
+        { property: 'og:description', content: 'Free and paid plans for Ethernal block explorer. Deploy on any EVM chain with transaction decoding, contract verification, and real-time sync.' },
+        { property: 'og:url', content: 'https://tryethernal.com/pricing' },
+        { property: 'og:image', content: 'https://tryethernal.com/images/og-image.png' },
+        { name: 'twitter:card', content: 'summary_large_image' },
+    ],
+    link: [
+        { rel: 'canonical', href: 'https://tryethernal.com/pricing' }
+    ]
+});
 </script>
 
 <style scoped>

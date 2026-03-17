@@ -157,9 +157,25 @@
 </template>
 
 <script setup>
+import { useHead } from '@vueuse/head';
 import LandingLayout from '@/components/LandingLayout.vue';
 import FeatureSection from '@/components/FeatureSection.vue';
 import LandingCTA from '@/components/LandingCTA.vue';
+
+useHead({
+    title: 'Hardhat Block Explorer — Ethernal',
+    meta: [
+        { name: 'description', content: 'See your Hardhat transactions decoded in real-time. Contract verification, call traces, and event logs for local development.' },
+        { property: 'og:title', content: 'Hardhat Block Explorer — Ethernal' },
+        { property: 'og:description', content: 'See your Hardhat transactions decoded in real-time. Contract verification, call traces, and event logs for local development.' },
+        { property: 'og:url', content: 'https://tryethernal.com/hardhat-block-explorer' },
+        { property: 'og:image', content: 'https://tryethernal.com/images/og-image.png' },
+        { name: 'twitter:card', content: 'summary_large_image' },
+    ],
+    link: [
+        { rel: 'canonical', href: 'https://tryethernal.com/hardhat-block-explorer' }
+    ]
+});
 </script>
 
 <style scoped>

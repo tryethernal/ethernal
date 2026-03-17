@@ -2,6 +2,8 @@ import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import vuetify from 'vite-plugin-vuetify';
 import { fileURLToPath, URL } from 'node:url';
+import { readFileSync } from 'node:fs';
+import { generateSitemap } from './src/sitemap.js';
 
 export default defineConfig({
     define: {
@@ -16,15 +18,19 @@ export default defineConfig({
             '@': fileURLToPath(new URL('./src', import.meta.url))
         }
     },
-    build: {
-        chunkSizeWarningLimit: 600,
-        rollupOptions: {
-            output: {
-                manualChunks: {
-                    vue: ['vue', 'vue-router'],
-                    vuetify: ['vuetify']
-                }
-            }
+    ssr: {
+        noExternal: ['vuetify']
+    },
+    ssgOptions: {
+        script: 'async',
+        formatting: 'minify',
+        onFinished() {
+            const routerSrc = readFileSync(new URL('./src/router.js', import.meta.url), 'utf-8');
+            const routePaths = [...routerSrc.matchAll(/path:\s*'([^']+)'/g)].map(m => m[1]);
+            generateSitemap(routePaths, './dist');
         }
+    },
+    build: {
+        chunkSizeWarningLimit: 600
     }
 });
