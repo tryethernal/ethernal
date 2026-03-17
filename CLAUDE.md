@@ -15,10 +15,10 @@
 | Database schema | `.claude/references/SCHEMA.md` | |
 | Sentry pipeline | `run/api/sentryPipeline.js`, `run/webhooks/githubActions.js` | [SENTRY.md](.claude/references/SENTRY.md) |
 | Landing/marketing | `landing/` | [LANDING.md](.claude/references/LANDING.md) |
-| Blog pipeline | `blog/pipeline/`, `.github/workflows/blog-*.yml` | |
-| Drip emails | `run/jobs/sendDripEmail.js`, `run/jobs/processDripEmails.js`, `run/models/demodripschedule.js`, `run/webhooks/mailjet.js` | |
-| Demo enrichment | `run/jobs/enrichDemoProfile.js`, `run/lib/enrichment.js`, `run/emails/drip-content.js` | |
-| Twitter pipeline | `tweet-pipeline/` (standalone package, runs on Hetzner server) | |
+| Blog pipeline | `blog/pipeline/`, `.github/workflows/blog-*.yml` | [MARKETING.md](.claude/references/MARKETING.md) |
+| Drip emails | `run/jobs/sendDripEmail.js`, `run/jobs/processDripEmails.js`, `run/emails/drip-content.js` | [MARKETING.md](.claude/references/MARKETING.md) |
+| Demo enrichment | `run/jobs/enrichDemoProfile.js`, `run/lib/enrichment.js` | [MARKETING.md](.claude/references/MARKETING.md) |
+| Twitter pipeline | `tweet-pipeline/` (standalone, Hetzner server) | [MARKETING.md](.claude/references/MARKETING.md) |
 | Analytics (PostHog) | `blog/src/layouts/BaseLayout.astro` (snippet), `landing/src/main.js` (init) | |
 | Docker commands | | [COMMANDS.md](.claude/references/COMMANDS.md) |
 | Infra monitoring | `run/jobs/infraHealthCheck.js`, `run/api/status.js`, `.github/workflows/infra-auto-remediation.yml` | |
@@ -156,38 +156,11 @@ Use RenderKit to render specs, reports, or any structured content as hosted HTML
 
 ## Marketing Pipeline
 
-### Demo Explorer Lifecycle
+See [MARKETING.md](.claude/references/MARKETING.md) for complete reference (blog pipeline, Twitter pipeline, drip emails, enrichment, PostHog tracking, server setup, all env vars).
 
-Creation → 7-day active period → 48h grace period (`deleteAfter` column on workspace) → deletion by `removeExpiredExplorers` job.
+**Quick summary:** Trend scan (weekly, GH Actions) → GitHub Projects board → Blog draft (every 2 days, Hetzner server, 3-phase Claude) → Tweet pipeline (5x/day, Hetzner server, 3-phase Claude) → Drip emails (6-step Mailjet sequence on demo creation) → PostHog tracking flywheel.
 
-### Drip Email System
-
-6-step email sequence sent to demo explorer creators via Mailjet. `processDripEmails` runs every 15 min, finds pending emails, enqueues `sendDripEmail` for each. Unsubscribe uses AES-256-CBC tokens (format: `IV.ciphertext`, URL-safe base64).
-
-Steps 1-2 link to the explorer. Steps 3-6 link to the migration flow (`?explorerToken=<jwt>`). Step 1 is plain text (transactional, no unsubscribe). Steps 2-6 use the branded HTML template (`drip-base.html`).
-
-Key env vars: `MAILJET_PUBLIC_KEY`, `MAILJET_PRIVATE_KEY`, `MAILJET_WEBHOOK_SECRET`, `DRIP_UNSUBSCRIBE_SECRET`, `DEMO_EXPLORER_SENDER`. Feature flag: `isDripEmailEnabled()` in `run/lib/flags.js`.
-
-PostHog events: `email:drip_sent`, `email:drip_opened`, `email:drip_clicked`, `explorer:demo_expired`.
-
-### Demo Profile Enrichment
-
-At demo creation, `enrichDemoProfile` job researches the company (via linkup.so) and generates personalized email copy (via `claude -p` CLI). Results stored in `explorer.enrichment` JSON column. Steps 3-6 use enrichment fields with generic fallbacks.
-
-Domain resolution: email domain first, RPC URL domain as fallback. Skips free email providers and public RPC providers. Caches results per domain for 7 days.
-
-Enrichment fields: `companyContext` (step 4), `tailoredBenefits` (step 3), `expirationWarning` (step 5), `recoveryHook` (step 6).
-
-Key env vars: `LINKUP_API_KEY`. Requires `claude` CLI installed on the worker server.
-
-### Twitter Pipeline (`tweet-pipeline/`)
-
-Standalone Node.js package on Hetzner server (`157.90.154.200`, user `blog`). Orchestrated by systemd timers:
-- **Draft** (daily 00:00 UTC): 3-phase Claude pipeline (research → draft → humanize) generates 5 tweets
-- **Publish** (every 10 min): Posts queued tweets with media cards
-- **Engagement** (daily 22:00 UTC): Fetches metrics → PostHog
-
-Config: `/opt/blog-pipeline.env`. Queue dir: `/home/blog/tweet-queue/`.
+**Server:** Hetzner `157.90.154.200`, user `blog`, repo at `/opt/ethernal-blog-stack`, env at `/opt/blog-pipeline.env`.
 
 ---
 
@@ -265,3 +238,7 @@ Use `/deploy` (Ethernal project command) after PRs merged to `develop`:
 Migrations run automatically in CI. Must be backwards-compatible (additive only).
 
 When user says "merge and deploy": `gh pr merge --squash --admin` first, then deploy.
+
+### Karma Project Updates
+
+Ethernal is registered on [Karma](https://gap.karmahq.xyz/project/ethernal) (Optimism, project UID `0x86803c70b193a5aee05ae4b45b2e1e99eb4f6b39056635f810bfc18ed391d0d5`). After every significant update (new feature, major fix, milestone reached), post a project update via the Karma API using the `project-manager` skill. This builds a public on-chain track record for grant applications. API key env var: `KARMA_API_KEY`.
