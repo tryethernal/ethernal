@@ -5,6 +5,8 @@ Wants=network-online.target
 
 [Service]
 Type=oneshot
+User=blog
+Group=blog
 ExecStart=/opt/ethernal-blog-stack/tweet-pipeline/engagement-bridge.sh
 WorkingDirectory=/opt/ethernal-blog-stack
 EnvironmentFile=/opt/blog-pipeline.env
