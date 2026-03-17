@@ -38,7 +38,7 @@
                         </v-expansion-panel>
                         <v-expansion-panel title="Can I use my own branding?">
                             <v-expansion-panel-text>
-                                Yes. Builder and Team plans include custom branding: your logo, colors, and custom domain. Your explorer looks like your product.
+                                Yes. The App Chain plan includes full whitelabel branding: your logo, colors, and custom domain. The Team plan includes a custom domain. Your explorer looks like your product.
                             </v-expansion-panel-text>
                         </v-expansion-panel>
                     </v-expansion-panels>
@@ -117,7 +117,7 @@ useHead({
                     {
                         "@type": "Question",
                         "name": "Can I use my own branding?",
-                        "acceptedAnswer": { "@type": "Answer", "text": "Yes. Builder and Team plans include custom branding: your logo, colors, and custom domain. Your explorer looks like your product." }
+                        "acceptedAnswer": { "@type": "Answer", "text": "Yes. The App Chain plan includes full whitelabel branding: your logo, colors, and custom domain. The Team plan includes a custom domain. Your explorer looks like your product." }
                     }
                 ]
             })
