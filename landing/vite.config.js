@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import vuetify from 'vite-plugin-vuetify';
 import { fileURLToPath, URL } from 'node:url';
+import { generateSitemap } from './src/sitemap.js';
 
 export default defineConfig({
     define: {
@@ -21,7 +22,17 @@ export default defineConfig({
     },
     ssgOptions: {
         script: 'async',
-        formatting: 'minify'
+        formatting: 'minify',
+        onFinished() {
+            const routes = [
+                '/', '/pricing', '/features', '/developers', '/teams',
+                '/transaction-tracing', '/app-chains',
+                '/hardhat-block-explorer', '/anvil-block-explorer', '/ganache-block-explorer',
+                '/op-stack', '/arbitrum-orbit', '/kaleido', '/chainstack', '/github-actions',
+                '/contact-us', '/terms', '/privacy',
+            ];
+            generateSitemap(routes, './dist');
+        }
     },
     build: {
         chunkSizeWarningLimit: 600
