@@ -22,6 +22,20 @@ Read both files:
 10. **LENGTH**: Hook tweet 200-280 chars. Thread content replies 140-280 chars each. Max 2 content replies. The references tweet (see below) is added as the 3rd and final reply.
 11. **INLINE LINKS**: When a thread tweet mentions a specific resource (proposal, EIP, benchmark, tool, spec, blog post), include a direct link to it in that tweet. Use URLs from `## Source URLs` or `## Further Reading` in `.research.md`. Max 1 link per tweet. Pure opinion or general statements do not get links.
 
+## Writing Quality Rules
+
+These separate good threads from generic ones:
+
+1. **Name names.** Don't say "several zkVMs are competing." Say "ZKsync Airbender proves a block in 50 seconds on a single GPU. ZisK does 30M gas in 7.4 seconds with 24 GPUs." Specific projects, specific benchmarks, specific hardware.
+
+2. **End with a punch, not a teaser.** The hook can tease the thread, but content replies should end with a short declarative sentence that lands. "The hardware ceiling is collapsing." "Still early research. Worth watching." "We cracked speed. We haven't cracked decentralization." NOT "Here's the real picture:" or "Let's dive in."
+
+3. **Concrete before/after in thread tweets.** Each content reply should have at least one concrete comparison: "50 seconds on a single GPU" not "real-time proving." "16 minutes to 16 seconds" not "massive speed improvements."
+
+4. **No vague summaries.** "Nine zkVMs are racing toward real-time L1 proving" is filler. "ZisK proves a 30M gas block in 7.4 seconds with 24 GPUs, down from 5 minutes" is a tweet.
+
+5. **Short declarative closers.** End content replies with 2-5 word sentences. "Worth watching." "History repeating." "The hardware ceiling is collapsing." These stick.
+
 ## Content Bucket Guidelines
 
 Apply the right approach based on the bucket in `.source.json`:
