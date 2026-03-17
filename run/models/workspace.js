@@ -2806,7 +2806,10 @@ module.exports = (sequelize, DataTypes) => {
     getFilteredTransactions(page = 1, itemsPerPage = 10, order = 'DESC', orderBy = 'blockNumber', address) {
         let where = {};
         if (address)
-            where = { [Op.or]: [{ to: address.toLowerCase() }, { from: address.toLowerCase() }] };
+            where = {
+                workspaceId: this.id,
+                [Op.or]: [{ to: address.toLowerCase() }, { from: address.toLowerCase() }]
+            };
 
         return this.getTransactions({
             where: where,
