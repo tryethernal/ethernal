@@ -164,6 +164,13 @@ See [MARKETING.md](.claude/references/MARKETING.md) for complete reference (blog
 
 **Server:** Hetzner `157.90.154.200`, user `blog`, repo at `/opt/ethernal-blog-stack`, env at `/opt/blog-pipeline.env`.
 
+### Feature-Gated Landing Pages
+
+When a new chain type or framework gains full support in Ethernal, generate corresponding SEO landing pages. Pending:
+
+- **ZK chains** (zkSync Era, Scroll, Linea, Polygon zkEVM, Mantle): Build `/chains/<slug>` landing pages once ZK chain support is fully implemented. These were scoped out of the initial programmatic SEO rollout because Ethernal doesn't yet fully support ZK-specific features (ZK proof verification, batch posting, etc.).
+- **Polygon CDK chains**: Build landing pages once Polygon CDK support is fully implemented.
+
 ---
 
 ## Pricing
