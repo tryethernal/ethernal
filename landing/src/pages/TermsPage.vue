@@ -76,6 +76,7 @@
 
 <script setup>
 import { useHead } from '@vueuse/head';
+import LandingLayout from '@/components/LandingLayout.vue';
 
 useHead({
     title: 'Terms of Service — Ethernal',
@@ -91,7 +92,6 @@ useHead({
         { rel: 'canonical', href: 'https://tryethernal.com/terms' }
     ]
 });
-import LandingLayout from '@/components/LandingLayout.vue';
 </script>
 
 <style scoped>

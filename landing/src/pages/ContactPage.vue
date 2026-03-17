@@ -106,6 +106,9 @@
 
 <script setup>
 import { useHead } from '@vueuse/head';
+import { ref, reactive } from 'vue';
+import LandingLayout from '@/components/LandingLayout.vue';
+import LandingCTA from '@/components/LandingCTA.vue';
 
 useHead({
     title: 'Contact Us — Ethernal',
@@ -121,9 +124,6 @@ useHead({
         { rel: 'canonical', href: 'https://tryethernal.com/contact-us' }
     ]
 });
-import { ref, reactive } from 'vue';
-import LandingLayout from '@/components/LandingLayout.vue';
-import LandingCTA from '@/components/LandingCTA.vue';
 
 const valid = ref(false);
 const loading = ref(false);

@@ -48,6 +48,9 @@
 
 <script setup>
 import { useHead } from '@vueuse/head';
+import LandingLayout from '@/components/LandingLayout.vue';
+import FeatureSection from '@/components/FeatureSection.vue';
+import LandingCTA from '@/components/LandingCTA.vue';
 
 useHead({
     title: 'Transaction Tracing — Ethernal Block Explorer',
@@ -63,7 +66,4 @@ useHead({
         { rel: 'canonical', href: 'https://tryethernal.com/transaction-tracing' }
     ]
 });
-import LandingLayout from '@/components/LandingLayout.vue';
-import FeatureSection from '@/components/FeatureSection.vue';
-import LandingCTA from '@/components/LandingCTA.vue';
 </script>

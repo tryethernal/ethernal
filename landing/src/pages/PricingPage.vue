@@ -16,6 +16,9 @@
 
 <script setup>
 import { useHead } from '@vueuse/head';
+import LandingLayout from '@/components/LandingLayout.vue';
+import LandingPricing from '@/components/LandingPricing.vue';
+import LandingCTA from '@/components/LandingCTA.vue';
 
 useHead({
     title: 'Pricing — Ethernal Block Explorer',
@@ -31,9 +34,6 @@ useHead({
         { rel: 'canonical', href: 'https://tryethernal.com/pricing' }
     ]
 });
-import LandingLayout from '@/components/LandingLayout.vue';
-import LandingPricing from '@/components/LandingPricing.vue';
-import LandingCTA from '@/components/LandingCTA.vue';
 </script>
 
 <style scoped>

@@ -94,6 +94,7 @@
 
 <script setup>
 import { useHead } from '@vueuse/head';
+import LandingLayout from '@/components/LandingLayout.vue';
 
 useHead({
     title: 'Privacy Policy — Ethernal',
@@ -109,7 +110,6 @@ useHead({
         { rel: 'canonical', href: 'https://tryethernal.com/privacy' }
     ]
 });
-import LandingLayout from '@/components/LandingLayout.vue';
 </script>
 
 <style scoped>

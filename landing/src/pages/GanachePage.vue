@@ -90,6 +90,9 @@
 
 <script setup>
 import { useHead } from '@vueuse/head';
+import LandingLayout from '@/components/LandingLayout.vue';
+import FeatureSection from '@/components/FeatureSection.vue';
+import LandingCTA from '@/components/LandingCTA.vue';
 
 useHead({
     title: 'Ganache Block Explorer — Ethernal',
@@ -105,9 +108,6 @@ useHead({
         { rel: 'canonical', href: 'https://tryethernal.com/ganache-block-explorer' }
     ]
 });
-import LandingLayout from '@/components/LandingLayout.vue';
-import FeatureSection from '@/components/FeatureSection.vue';
-import LandingCTA from '@/components/LandingCTA.vue';
 </script>
 
 <style scoped>

@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import vuetify from 'vite-plugin-vuetify';
 import { fileURLToPath, URL } from 'node:url';
+import { readFileSync } from 'node:fs';
 import { generateSitemap } from './src/sitemap.js';
 
 export default defineConfig({
@@ -24,14 +25,9 @@ export default defineConfig({
         script: 'async',
         formatting: 'minify',
         onFinished() {
-            const routes = [
-                '/', '/pricing', '/features', '/developers', '/teams',
-                '/transaction-tracing', '/app-chains',
-                '/hardhat-block-explorer', '/anvil-block-explorer', '/ganache-block-explorer',
-                '/op-stack', '/arbitrum-orbit', '/kaleido', '/chainstack', '/github-actions',
-                '/contact-us', '/terms', '/privacy',
-            ];
-            generateSitemap(routes, './dist');
+            const routerSrc = readFileSync(new URL('./src/router.js', import.meta.url), 'utf-8');
+            const routePaths = [...routerSrc.matchAll(/path:\s*'([^']+)'/g)].map(m => m[1]);
+            generateSitemap(routePaths, './dist');
         }
     },
     build: {

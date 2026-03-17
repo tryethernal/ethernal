@@ -95,6 +95,10 @@
 
 <script setup>
 import { useHead } from '@vueuse/head';
+import { ref, reactive } from 'vue';
+import LandingLayout from '@/components/LandingLayout.vue';
+import FeatureSection from '@/components/FeatureSection.vue';
+import LandingCTA from '@/components/LandingCTA.vue';
 
 useHead({
     title: 'GitHub Actions — Ethernal Block Explorer',
@@ -110,10 +114,6 @@ useHead({
         { rel: 'canonical', href: 'https://tryethernal.com/github-actions' }
     ]
 });
-import { ref, reactive } from 'vue';
-import LandingLayout from '@/components/LandingLayout.vue';
-import FeatureSection from '@/components/FeatureSection.vue';
-import LandingCTA from '@/components/LandingCTA.vue';
 
 const valid = ref(false);
 const loading = ref(false);
