@@ -101,6 +101,7 @@ useHead({
     title: 'Kaleido Block Explorer — Ethernal',
     meta: [
         { name: 'description', content: 'Block explorer integration for Kaleido enterprise blockchain networks. Real-time sync and contract verification.' },
+        { property: 'og:type', content: 'website' },
         { property: 'og:title', content: 'Kaleido Block Explorer — Ethernal' },
         { property: 'og:description', content: 'Block explorer integration for Kaleido enterprise blockchain networks. Real-time sync and contract verification.' },
         { property: 'og:url', content: 'https://tryethernal.com/kaleido' },
@@ -109,6 +110,33 @@ useHead({
     ],
     link: [
         { rel: 'canonical', href: 'https://tryethernal.com/kaleido' }
+    ],
+    script: [
+        {
+            type: 'application/ld+json',
+            children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "HowTo",
+                "name": "Set up a Kaleido block explorer with Ethernal",
+                "description": "Add a public-facing block explorer to your Kaleido-managed blockchain.",
+                "step": [
+                    { "@type": "HowToStep", "name": "Copy your Kaleido RPC URL", "text": "Get your RPC endpoint from the Kaleido console." },
+                    { "@type": "HowToStep", "name": "Paste into Ethernal", "text": "Enter your Kaleido RPC URL and chain ID in Ethernal." },
+                    { "@type": "HowToStep", "name": "Go live", "text": "Your explorer connects to your Kaleido node. Add branding and a custom domain for a public-facing explorer." }
+                ]
+            })
+        },
+        {
+            type: 'application/ld+json',
+            children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tryethernal.com/" },
+                    { "@type": "ListItem", "position": 2, "name": "Kaleido Integration", "item": "https://tryethernal.com/kaleido" }
+                ]
+            })
+        }
     ]
 });
 </script>

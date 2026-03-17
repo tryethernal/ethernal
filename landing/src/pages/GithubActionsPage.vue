@@ -104,6 +104,7 @@ useHead({
     title: 'GitHub Actions — Ethernal Block Explorer',
     meta: [
         { name: 'description', content: 'Automate block explorer deployment in CI/CD. Ethernal GitHub Action for testing smart contracts with full visibility.' },
+        { property: 'og:type', content: 'website' },
         { property: 'og:title', content: 'GitHub Actions — Ethernal Block Explorer' },
         { property: 'og:description', content: 'Automate block explorer deployment in CI/CD. Ethernal GitHub Action for testing smart contracts with full visibility.' },
         { property: 'og:url', content: 'https://tryethernal.com/github-actions' },
@@ -112,6 +113,33 @@ useHead({
     ],
     link: [
         { rel: 'canonical', href: 'https://tryethernal.com/github-actions' }
+    ],
+    script: [
+        {
+            type: 'application/ld+json',
+            children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "HowTo",
+                "name": "Integrate Ethernal with GitHub Actions",
+                "description": "Run a local node in GitHub Actions and sync it to Ethernal for automated testing visibility.",
+                "step": [
+                    { "@type": "HowToStep", "name": "Add Ethernal to your workflow", "text": "Run Hardhat or Anvil in your GitHub Actions workflow with the Ethernal plugin configured." },
+                    { "@type": "HowToStep", "name": "Run your tests", "text": "Execute your test suite. Every transaction syncs to a dedicated Ethernal workspace." },
+                    { "@type": "HowToStep", "name": "Debug failures", "text": "Check the Ethernal workspace for the CI run to see call traces and revert reasons." }
+                ]
+            })
+        },
+        {
+            type: 'application/ld+json',
+            children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tryethernal.com/" },
+                    { "@type": "ListItem", "position": 2, "name": "GitHub Actions", "item": "https://tryethernal.com/github-actions" }
+                ]
+            })
+        }
     ]
 });
 

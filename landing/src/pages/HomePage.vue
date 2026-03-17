@@ -25,6 +25,7 @@ useHead({
     title: 'Ethernal — Block Explorer for EVM Chains',
     meta: [
         { name: 'description', content: 'Deploy your own block explorer in 5 minutes. Open source, fully customizable, works with any EVM chain. Just needs an RPC URL.' },
+        { property: 'og:type', content: 'website' },
         { property: 'og:title', content: 'Ethernal — Block Explorer for EVM Chains' },
         { property: 'og:description', content: 'Deploy your own block explorer in 5 minutes. Open source, fully customizable, works with any EVM chain. Just needs an RPC URL.' },
         { property: 'og:url', content: 'https://tryethernal.com/' },
@@ -33,6 +34,60 @@ useHead({
     ],
     link: [
         { rel: 'canonical', href: 'https://tryethernal.com/' }
+    ],
+    script: [
+        {
+            type: 'application/ld+json',
+            children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "Organization",
+                "name": "Ethernal",
+                "url": "https://tryethernal.com",
+                "logo": "https://tryethernal.com/images/og-image.png",
+                "description": "Open source block explorer for EVM-based chains.",
+                "sameAs": [
+                    "https://github.com/tryethernal/ethernal",
+                    "https://twitter.com/tryabornedev"
+                ]
+            })
+        },
+        {
+            type: 'application/ld+json',
+            children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "WebSite",
+                "name": "Ethernal",
+                "url": "https://tryethernal.com",
+                "description": "Deploy your own block explorer in 5 minutes. Open source, fully customizable, works with any EVM chain.",
+                "publisher": {
+                    "@type": "Organization",
+                    "name": "Ethernal",
+                    "url": "https://tryethernal.com"
+                }
+            })
+        },
+        {
+            type: 'application/ld+json',
+            children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "SoftwareApplication",
+                "name": "Ethernal",
+                "url": "https://tryethernal.com",
+                "applicationCategory": "DeveloperApplication",
+                "operatingSystem": "Web",
+                "description": "Deploy your own block explorer in 5 minutes. Open source, fully customizable, works with any EVM chain. Just needs an RPC URL.",
+                "offers": {
+                    "@type": "Offer",
+                    "price": "0",
+                    "priceCurrency": "USD"
+                },
+                "author": {
+                    "@type": "Organization",
+                    "name": "Ethernal",
+                    "url": "https://tryethernal.com"
+                }
+            })
+        }
     ]
 });
 </script>

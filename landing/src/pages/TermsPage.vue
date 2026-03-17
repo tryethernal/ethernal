@@ -82,6 +82,7 @@ useHead({
     title: 'Terms of Service — Ethernal',
     meta: [
         { name: 'description', content: 'Terms of service for Ethernal block explorer platform.' },
+        { property: 'og:type', content: 'website' },
         { property: 'og:title', content: 'Terms of Service — Ethernal' },
         { property: 'og:description', content: 'Terms of service for Ethernal block explorer platform.' },
         { property: 'og:url', content: 'https://tryethernal.com/terms' },

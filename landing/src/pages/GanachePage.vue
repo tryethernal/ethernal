@@ -98,6 +98,7 @@ useHead({
     title: 'Ganache Block Explorer — Ethernal',
     meta: [
         { name: 'description', content: 'Visual block explorer for Ganache. Decoded transactions, contract state, and event logs for Truffle development.' },
+        { property: 'og:type', content: 'website' },
         { property: 'og:title', content: 'Ganache Block Explorer — Ethernal' },
         { property: 'og:description', content: 'Visual block explorer for Ganache. Decoded transactions, contract state, and event logs for Truffle development.' },
         { property: 'og:url', content: 'https://tryethernal.com/ganache-block-explorer' },
@@ -106,6 +107,33 @@ useHead({
     ],
     link: [
         { rel: 'canonical', href: 'https://tryethernal.com/ganache-block-explorer' }
+    ],
+    script: [
+        {
+            type: 'application/ld+json',
+            children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "HowTo",
+                "name": "Set up a Ganache block explorer with Ethernal",
+                "description": "A full-featured block explorer for Ganache with decoded transactions and contract verification.",
+                "step": [
+                    { "@type": "HowToStep", "name": "Start Ganache", "text": "Run ganache-cli or open the Ganache desktop app." },
+                    { "@type": "HowToStep", "name": "Paste your RPC URL", "text": "Copy your Ganache RPC URL and paste it into Ethernal." },
+                    { "@type": "HowToStep", "name": "Start exploring", "text": "Blocks sync automatically. Browse transactions, decode calls, and verify contracts." }
+                ]
+            })
+        },
+        {
+            type: 'application/ld+json',
+            children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tryethernal.com/" },
+                    { "@type": "ListItem", "position": 2, "name": "Ganache Block Explorer", "item": "https://tryethernal.com/ganache-block-explorer" }
+                ]
+            })
+        }
     ]
 });
 </script>

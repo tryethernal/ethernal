@@ -296,6 +296,7 @@ useHead({
     title: 'Arbitrum Orbit Block Explorer — Ethernal',
     meta: [
         { name: 'description', content: 'Block explorer for Arbitrum Orbit chains. Retryable tickets, cross-chain messages, and Nitro transaction decoding.' },
+        { property: 'og:type', content: 'website' },
         { property: 'og:title', content: 'Arbitrum Orbit Block Explorer — Ethernal' },
         { property: 'og:description', content: 'Block explorer for Arbitrum Orbit chains. Retryable tickets, cross-chain messages, and Nitro transaction decoding.' },
         { property: 'og:url', content: 'https://tryethernal.com/arbitrum-orbit' },
@@ -304,6 +305,33 @@ useHead({
     ],
     link: [
         { rel: 'canonical', href: 'https://tryethernal.com/arbitrum-orbit' }
+    ],
+    script: [
+        {
+            type: 'application/ld+json',
+            children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "HowTo",
+                "name": "Set up an Arbitrum Orbit block explorer with Ethernal",
+                "description": "Full bridge visibility for your Orbit chain with deposits, withdrawals, and batch tracking.",
+                "step": [
+                    { "@type": "HowToStep", "name": "Select your L1", "text": "Choose your parent chain from the dropdown." },
+                    { "@type": "HowToStep", "name": "Enter contract addresses", "text": "Paste your Rollup and Inbox contract addresses." },
+                    { "@type": "HowToStep", "name": "Start monitoring", "text": "Ethernal detects deposits, tracks withdrawals, and monitors batches automatically." }
+                ]
+            })
+        },
+        {
+            type: 'application/ld+json',
+            children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tryethernal.com/" },
+                    { "@type": "ListItem", "position": 2, "name": "Arbitrum Orbit Explorer", "item": "https://tryethernal.com/arbitrum-orbit" }
+                ]
+            })
+        }
     ]
 });
 </script>
