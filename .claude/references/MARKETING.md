@@ -48,7 +48,7 @@ Tracking Flywheel (PostHog)
 | `tweet-engagement.timer` | Daily 22:00 UTC | `tweet-engagement.service` | Fetch Twitter metrics → PostHog |
 | `scan-newsletter.timer` | Daily 11:00 UTC | `scan-newsletter.service` | Scan AgentMail inbox for newsletter content |
 
-**Status:** Only `blog-draft.timer` is currently enabled. Tweet timers exist in `/opt/ethernal-blog-stack/tweet-pipeline/` but are not yet installed to `/etc/systemd/system/`.
+**Status:** All 5 timers are enabled and active (deployed 2026-03-17).
 
 Commands: `systemctl list-timers | grep -E 'blog|tweet'`, `journalctl -u blog-draft.service -f`
 
@@ -373,7 +373,7 @@ Feature flag: `isDripEmailEnabled()` in `run/lib/flags.js`.
 ## Known Issues & Maintenance
 
 - **OAuth token expiration:** Claude CLI auth token at `/home/blog/.claude-key` expires periodically. Refresh from macOS Keychain: `security find-generic-password -s "Claude Code-credentials" -w`.
-- **Tweet pipeline not yet deployed:** Timer unit files exist in `tweet-pipeline/` but are not installed to `/etc/systemd/system/`. Need: add TWITTER_* env vars to `/opt/blog-pipeline.env`, install Playwright chromium, `systemctl enable --now tweet-*.timer`.
+- **Tweet pipeline deployed 2026-03-17.** All 4 timers enabled. Service files have `User=blog` for Claude CLI compatibility. First tweet-draft fires ~12:30 UTC.
 - **Twitter API:** Pay-per-use with $5 credits. Consumer key `9YVdDl54WiDza5racpgQTi6e4`. Full credentials in `.credentials.local`.
 - **Image generation:** `gemini-3.1-flash-image-preview` is the best model (cleanest results). `gemini-2.5-flash-image` gets rate-limited. Falls back gracefully if API fails.
 - **Trend scan still in GitHub Actions:** `blog-trend-scan.yml` runs weekly on Monday. Could be moved to server but low priority (lightweight, no Claude needed).

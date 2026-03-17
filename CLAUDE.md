@@ -13,6 +13,8 @@
 | Billing/Stripe | `run/webhooks/stripe.js`, `run/lib/stripe.js`, `run/api/stripe.js` | |
 | Testing | `run/tests/mocks/`, `run/tests/api/`, `tests/unit/` | [PATTERNS.md](.claude/references/PATTERNS.md) |
 | Database schema | `.claude/references/SCHEMA.md` | |
+| Infra monitoring | `run/jobs/infraHealthCheck.js`, `run/api/status.js`, `scripts/redis-health.sh` | |
+| Auto-remediation | `.github/workflows/infra-auto-remediation.yml`, `run/jobs/infraHealthCheck.js` | |
 | Sentry pipeline | `run/api/sentryPipeline.js`, `run/webhooks/githubActions.js` | [SENTRY.md](.claude/references/SENTRY.md) |
 | Landing/marketing | `landing/` | [LANDING.md](.claude/references/LANDING.md) |
 | Blog pipeline | `blog/pipeline/`, `.github/workflows/blog-*.yml` | [MARKETING.md](.claude/references/MARKETING.md) |
@@ -242,3 +244,28 @@ When user says "merge and deploy": `gh pr merge --squash --admin` first, then de
 ### Karma Project Updates
 
 Ethernal is registered on [Karma](https://gap.karmahq.xyz/project/ethernal) (Optimism, project UID `0x86803c70b193a5aee05ae4b45b2e1e99eb4f6b39056635f810bfc18ed391d0d5`). After every significant update (new feature, major fix, milestone reached), post a project update via the Karma API using the `project-manager` skill. This builds a public on-chain track record for grant applications. API key env var: `KARMA_API_KEY`.
+
+---
+
+## Infrastructure & Secrets
+
+### K8s Secrets (ExternalSecrets + Azure Key Vault)
+
+K8s secrets in `ethernal-prod` are managed by **ExternalSecrets** syncing from **Azure Key Vault** (`ethernalkeyvault.vault.azure.net`), reconciled by **ArgoCD**. Direct `kubectl patch secret` will be reverted on the next sync cycle. To rotate a secret:
+
+1. Update the source in Azure Key Vault (REST API or `az` CLI)
+2. Force ExternalSecret refresh: `kubectl annotate externalsecret <name> -n ethernal-prod force-sync=$(date +%s) --overwrite`
+3. Restart the consuming pod to pick up the new value
+
+### Fly.io Apps
+
+| App | Purpose | Redis env var |
+|-----|---------|---------------|
+| `ethernal` | Main backend (API, workers) | `REDIS_URL` |
+| `ethernal-pm2` | PM2 process manager (Orbit listeners) | `ETHERNAL_REDIS_URL` |
+| `ethernal-caddy` | Reverse proxy (Caddy) | — |
+| `ethernal-soketi` | WebSocket server | — |
+
+### Never Hardcode Credentials in Scripts
+
+Use env vars or CLI arguments. The repo is **public**. Scripts like `scripts/redis-health.sh` must require `REDIS_URL` as input, never embed defaults with credentials.
