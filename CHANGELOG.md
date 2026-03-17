@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.76] - 2026-03-17
+### Fixed
+- docs: add comprehensive MARKETING.md reference for blog + Twitter + drip pipeline
+- chore(blog): remove blog-draft.yml GitHub Actions workflow
+- fix(blog): add id-token permission and fix allowed_tools for claude-code-action
+- fix(blog): use GH_PAT instead of GITHUB_TOKEN for project API calls
+
+
 ## [5.17.75] - 2026-03-17
 ### Fixed
 - feat(tweets): add writing quality rules to draft prompt
