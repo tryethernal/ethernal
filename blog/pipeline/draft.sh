@@ -16,8 +16,9 @@ LOG_FILE="$LOG_DIR/draft-$(date +%Y%m%d-%H%M%S).log"
 
 log() { echo "[$(date -Iseconds)] $*" | tee -a "$LOG_FILE"; }
 
-# Report failure to GitHub Issues with last 50 lines of log
 FAILURE_REPORTED=false
+
+# Report failure to GitHub Issues with last 50 lines of log
 report_failure() {
   [ "$FAILURE_REPORTED" = true ] && return
   FAILURE_REPORTED=true
@@ -49,6 +50,7 @@ EOF
 )" 2>&1 | tee -a "$LOG_FILE" || log "WARNING: Failed to create GitHub issue"
 }
 
+# Catch unexpected failures (from set -e)
 trap 'report_failure "Unexpected error (line $LINENO)"' ERR
 
 # Load environment
@@ -73,32 +75,6 @@ git pull --ff-only origin develop 2>&1 | tee -a "$LOG_FILE"
 cd blog/pipeline
 npm ci --silent 2>&1 | tee -a "$LOG_FILE"
 
-# Check for newsletter blog candidate (priority override)
-BLOG_CANDIDATE="/opt/ethernal-blog-stack/tweet-pipeline/.blog-candidate.json"
-SKIP_CARD_PICK=false
-if [ -f "$BLOG_CANDIDATE" ]; then
-  log "Found blog candidate from newsletter scanner"
-  TOPIC=$(jq -r '.title' "$BLOG_CANDIDATE")
-  CONTENT_TYPE="Research Deep Dive"
-  CARD_ID=""
-  CARD_BODY=$(jq -r '.content' "$BLOG_CANDIDATE")
-  NL_ANGLE=$(jq -r '.angle // ""' "$BLOG_CANDIDATE")
-  NL_FACTS=$(jq -r '.key_facts | join("; ")' "$BLOG_CANDIDATE")
-  CARD_BODY="$CARD_BODY
-
-Suggested angle: $NL_ANGLE
-Key facts: $NL_FACTS"
-
-  rm -f "$BLOG_CANDIDATE"
-  log "Topic from newsletter: $TOPIC (type: $CONTENT_TYPE)"
-
-  cd "$REPO_DIR"
-  printf '**Topic:** %s\n**Content Type:** %s\n\n%s' "$TOPIC" "$CONTENT_TYPE" "$CARD_BODY" > blog/pipeline/.card-body.md
-  rm -f blog/pipeline/.research-notes.md
-  SKIP_CARD_PICK=true
-fi
-
-if [ "$SKIP_CARD_PICK" != "true" ]; then
 # Pick the next topic
 log "Picking next topic..."
 PICK_OUTPUT=$(node index.js --pick 2>&1)
@@ -119,22 +95,19 @@ CARD_BODY=$(echo "$PICKED" | jq -r '.body // ""')
 log "Topic: $TOPIC (card: $CARD_ID, type: $CONTENT_TYPE)"
 
 # Move card to Researched before Claude run to block duplicate picks
-if [ -n "${CARD_ID:-}" ]; then
 CARD_ID="$CARD_ID" node --input-type=module -e "
   import { updateCardStatus } from './project.js';
   updateCardStatus(process.env.CARD_ID, 'researched');
   console.log('Card moved to Researched');
 " 2>&1 | tee -a "$LOG_FILE"
-fi
 
 cd "$REPO_DIR"
-fi
 
-# Write card body to file for Claude to read (newsletter path already wrote it)
-if [ "$SKIP_CARD_PICK" != "true" ]; then
-  printf '**Topic:** %s\n**Content Type:** %s\n\n%s' "$TOPIC" "$CONTENT_TYPE" "$CARD_BODY" > blog/pipeline/.card-body.md
-  rm -f blog/pipeline/.research-notes.md
-fi
+# Write card body to file for Claude to read (avoids shell interpolation)
+printf '**Topic:** %s\n**Content Type:** %s\n\n%s' "$TOPIC" "$CONTENT_TYPE" "$CARD_BODY" > blog/pipeline/.card-body.md
+
+# Clean up any previous research notes
+rm -f blog/pipeline/.research-notes.md
 
 # ============================================================
 # PHASE 1: Research
@@ -151,14 +124,12 @@ echo "$PHASE1_OUTPUT" | tee -a "$LOG_FILE"
 
 if [ ! -f blog/pipeline/.research-notes.md ]; then
   log "ERROR: Phase 1 failed — no research notes produced"
-  if [ -n "${CARD_ID:-}" ]; then
-    cd blog/pipeline
-    CARD_ID="$CARD_ID" node --input-type=module -e "
-      import { updateCardStatus } from './project.js';
-      updateCardStatus(process.env.CARD_ID, 'detected');
-      console.log('Card reset to Detected');
-    " 2>&1 | tee -a "$LOG_FILE"
-  fi
+  cd blog/pipeline
+  CARD_ID="$CARD_ID" node --input-type=module -e "
+    import { updateCardStatus } from './project.js';
+    updateCardStatus(process.env.CARD_ID, 'detected');
+    console.log('Card reset to Detected');
+  " 2>&1 | tee -a "$LOG_FILE"
   report_failure "Research (Phase 1)"
   exit 1
 fi
@@ -182,14 +153,12 @@ ARTICLE_PATH=$(echo "$PHASE2_OUTPUT" | grep '::article-path::' | sed 's/::articl
 
 if [ -z "$ARTICLE_PATH" ] || [ ! -f "$ARTICLE_PATH" ]; then
   log "ERROR: Phase 2 failed — no article produced"
-  if [ -n "${CARD_ID:-}" ]; then
-    cd blog/pipeline
-    CARD_ID="$CARD_ID" node --input-type=module -e "
-      import { updateCardStatus } from './project.js';
-      updateCardStatus(process.env.CARD_ID, 'detected');
-      console.log('Card reset to Detected');
-    " 2>&1 | tee -a "$LOG_FILE"
-  fi
+  cd blog/pipeline
+  CARD_ID="$CARD_ID" node --input-type=module -e "
+    import { updateCardStatus } from './project.js';
+    updateCardStatus(process.env.CARD_ID, 'detected');
+    console.log('Card reset to Detected');
+  " 2>&1 | tee -a "$LOG_FILE"
   report_failure "Draft (Phase 2)"
   exit 1
 fi
@@ -223,14 +192,12 @@ log "Validating blog build..."
 cd "$REPO_DIR/blog"
 if ! npx astro build 2>&1 | tee -a "$LOG_FILE"; then
   log "ERROR: Astro build failed — article has schema or syntax errors"
-  if [ -n "${CARD_ID:-}" ]; then
-    cd "$REPO_DIR/blog/pipeline"
-    CARD_ID="$CARD_ID" node --input-type=module -e "
-      import { updateCardStatus } from './project.js';
-      updateCardStatus(process.env.CARD_ID, 'detected');
-      console.log('Card reset to Detected');
-    " 2>&1 | tee -a "$LOG_FILE"
-  fi
+  cd "$REPO_DIR/blog/pipeline"
+  CARD_ID="$CARD_ID" node --input-type=module -e "
+    import { updateCardStatus } from './project.js';
+    updateCardStatus(process.env.CARD_ID, 'detected');
+    console.log('Card reset to Detected');
+  " 2>&1 | tee -a "$LOG_FILE"
   report_failure "Build Validation"
   exit 1
 fi
@@ -246,13 +213,7 @@ ARTICLE_URL="https://tryethernal.com/blog/$SLUG"
 
 # Generate cover image
 log "Generating cover image..."
-IMG_PROMPT="Flat infographic on dark navy background (#0f172a) with subtle dot grid pattern overlay. Landscape format 1424x752. Topic: ${TOPIC}.
-
-Show a title at the very top in large bold white text on ONE single line (max 25 characters). Below it, a subtitle in smaller gray text (max 50 characters). Then a simple flat diagram or chart that visually represents the topic: use horizontal bars, labeled boxes, arrows, or timelines with steel blue (#4a8ecb) rounded rectangles and white text labels. 2-4 visual elements max. Short labels only (2-4 words each).
-
-Style: polished Figma mockup, clean flat design. NOT 3D, NOT glowy, NOT wireframes. Centered composition with whitespace on all sides.
-
-CRITICAL LAYOUT RULES: The title MUST fit entirely on ONE line, never wrap. Each text element (title, subtitle, labels) occupies its own distinct area. Do NOT render dates. Keep all text short and readable. If a label is too long, shorten it."
+IMG_PROMPT="Flat vector flow diagram on dark navy background (#0f172a) with subtle dot grid pattern overlay. Topic: ${TOPIC}. Use rounded pill-shaped boxes in steel blue (#4a8ecb) with soft shadows, connected by thin arrows. 2-4 labeled elements showing a simple relationship or flow. Large readable white text labels. Centered composition with lots of whitespace. Style: polished Figma mockup, NOT realistic 3D icons, NOT wireframes, NOT text-heavy. No gradients, no glow effects."
 "$SCRIPT_DIR/generate-cover.sh" "$SLUG" "$IMG_PROMPT" 2>&1 | tee -a "$LOG_FILE" || log "WARNING: Cover image generation failed"
 
 # Commit everything
@@ -264,8 +225,7 @@ git push origin develop 2>&1 | tee -a "$LOG_FILE"
 
 log "Pushed to develop."
 
-# Update the project card (skip for newsletter-sourced articles)
-if [ -n "${CARD_ID:-}" ]; then
+# Update the project card
 log "Updating project card..."
 cd blog/pipeline
 CARD_ID="$CARD_ID" ARTICLE_PATH="$ARTICLE_PATH" node --input-type=module -e "
@@ -274,7 +234,6 @@ CARD_ID="$CARD_ID" ARTICLE_PATH="$ARTICLE_PATH" node --input-type=module -e "
   setArticlePath(process.env.CARD_ID, process.env.ARTICLE_PATH);
   console.log('Card updated: Drafting + article path set');
 " 2>&1 | tee -a "$LOG_FILE"
-fi
 
 # Clean up temp files
 rm -f blog/pipeline/.research-notes.md blog/pipeline/.card-body.md
