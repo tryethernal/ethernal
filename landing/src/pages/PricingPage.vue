@@ -81,8 +81,8 @@ useHead({
                 "brand": { "@type": "Organization", "name": "Ethernal" },
                 "offers": [
                     { "@type": "Offer", "name": "Free", "price": "0", "priceCurrency": "USD", "description": "1 explorer, community support" },
-                    { "@type": "Offer", "name": "Builder", "price": "29", "priceCurrency": "USD", "billingIncrement": "P1M", "description": "3 explorers, priority support, custom branding" },
-                    { "@type": "Offer", "name": "Team", "price": "99", "priceCurrency": "USD", "billingIncrement": "P1M", "description": "10 explorers, team access, dedicated support" }
+                    { "@type": "Offer", "name": "Builder", "description": "3 explorers, priority support, custom branding", "priceSpecification": { "@type": "UnitPriceSpecification", "price": 29, "priceCurrency": "USD", "unitCode": "MON" } },
+                    { "@type": "Offer", "name": "Team", "description": "10 explorers, team access, dedicated support", "priceSpecification": { "@type": "UnitPriceSpecification", "price": 99, "priceCurrency": "USD", "unitCode": "MON" } }
                 ]
             })
         },
@@ -100,12 +100,22 @@ useHead({
                     {
                         "@type": "Question",
                         "name": "Can I use Ethernal with any EVM chain?",
-                        "acceptedAnswer": { "@type": "Answer", "text": "Yes. Ethernal works with any EVM-compatible chain. Just provide an RPC URL and you get a fully functional block explorer with transaction decoding, contract verification, and event logs." }
+                        "acceptedAnswer": { "@type": "Answer", "text": "Yes. Ethernal works with any EVM-compatible chain including OP Stack rollups, Arbitrum Orbit chains, Polygon CDK, and any custom EVM network. Just provide an RPC URL." }
                     },
                     {
                         "@type": "Question",
-                        "name": "How long does it take to set up Ethernal?",
+                        "name": "How long does it take to set up?",
                         "acceptedAnswer": { "@type": "Answer", "text": "Under 5 minutes. Create an account, enter your chain's RPC URL, and your explorer is live. No server setup, no Docker, no infrastructure to manage." }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "Do I need to run my own infrastructure?",
+                        "acceptedAnswer": { "@type": "Answer", "text": "No. Ethernal is a hosted service. We handle the indexing, storage, and serving. You just point us at your RPC endpoint." }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "Can I use my own branding?",
+                        "acceptedAnswer": { "@type": "Answer", "text": "Yes. Builder and Team plans include custom branding: your logo, colors, and custom domain. Your explorer looks like your product." }
                     }
                 ]
             })
