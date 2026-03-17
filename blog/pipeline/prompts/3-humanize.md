@@ -14,6 +14,7 @@ Replacements:
 - "X — Y" -> "X. Y" or "X, Y" or "X (Y)"
 - "which means — in practice —" -> "which means, in practice,"
 - "the expensive ones — SLOAD and SSTORE —" -> "the expensive ones: SLOAD and SSTORE"
+- Do NOT replace em dashes with " , " (space-comma-space). The comma must be adjacent to the preceding word: "word, next" not "word , next".
 
 ## Banned Words (remove or replace every instance)
 
@@ -48,6 +49,7 @@ Additionally, align with, crucial, delve, emphasizing, enduring, enhance, foster
 - **Plain markdown links only.** References must use standard markdown `[text](url)` syntax. No inline HTML, no SVG icons, no `<a>` tags with embedded markup. If the draft phase produced HTML links with SVG icons or class attributes, convert them to plain `[text](url)` markdown.
 - **No tilde for "approximately".** `~` pairs render as strikethrough in markdown. Replace every `~` used for approximation with "approximately", "roughly", or "around". Search the entire file.
 - **No quotation marks inside blockquotes.** `> "text"` renders with visible double-quotes. Remove the `"` wrapping from any `>` blockquote line.
+- **Quote attributions go outside the blockquote.** Do NOT put the author name inside the `>` block. Instead, place it as an italic paragraph right after the blockquote: `*Author Name, Title<sup>[N](#fn-N)</sup>*`
 
 ## Add Soul
 
