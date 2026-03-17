@@ -167,6 +167,7 @@ useHead({
     title: 'For Developers — Ethernal Block Explorer',
     meta: [
         { name: 'description', content: 'Hardhat and Foundry integration, API access, WebSocket sync. Build faster with a block explorer that fits your dev workflow.' },
+        { property: 'og:type', content: 'website' },
         { property: 'og:title', content: 'For Developers — Ethernal Block Explorer' },
         { property: 'og:description', content: 'Hardhat and Foundry integration, API access, WebSocket sync. Build faster with a block explorer that fits your dev workflow.' },
         { property: 'og:url', content: 'https://tryethernal.com/developers' },

@@ -306,6 +306,7 @@ useHead({
     title: 'OP Stack Block Explorer — Ethernal',
     meta: [
         { name: 'description', content: 'Block explorer for OP Stack rollups. L2-to-L1 withdrawal tracking, transaction decoding, and contract verification.' },
+        { property: 'og:type', content: 'website' },
         { property: 'og:title', content: 'OP Stack Block Explorer — Ethernal' },
         { property: 'og:description', content: 'Block explorer for OP Stack rollups. L2-to-L1 withdrawal tracking, transaction decoding, and contract verification.' },
         { property: 'og:url', content: 'https://tryethernal.com/op-stack' },

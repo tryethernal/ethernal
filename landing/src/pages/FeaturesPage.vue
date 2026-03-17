@@ -228,6 +228,7 @@ useHead({
     title: 'Features — Ethernal Block Explorer',
     meta: [
         { name: 'description', content: 'Transaction decoding, contract verification, real-time sync, and more. Everything you need to explore any EVM chain.' },
+        { property: 'og:type', content: 'website' },
         { property: 'og:title', content: 'Features — Ethernal Block Explorer' },
         { property: 'og:description', content: 'Transaction decoding, contract verification, real-time sync, and more. Everything you need to explore any EVM chain.' },
         { property: 'og:url', content: 'https://tryethernal.com/features' },

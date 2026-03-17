@@ -100,6 +100,7 @@ useHead({
     title: 'Privacy Policy — Ethernal',
     meta: [
         { name: 'description', content: 'Privacy policy for Ethernal block explorer platform.' },
+        { property: 'og:type', content: 'website' },
         { property: 'og:title', content: 'Privacy Policy — Ethernal' },
         { property: 'og:description', content: 'Privacy policy for Ethernal block explorer platform.' },
         { property: 'og:url', content: 'https://tryethernal.com/privacy' },

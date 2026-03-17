@@ -18,7 +18,7 @@
                     <v-expansion-panels variant="accordion" class="faq-panels">
                         <v-expansion-panel title="Is Ethernal free to use?">
                             <v-expansion-panel-text>
-                                Yes. Ethernal has a free tier that includes 1 explorer with full transaction decoding, contract verification, and real-time sync. No credit card required.
+                                Yes. Ethernal offers free plans for both public and private explorers. The public Starter plan gives you an ad-supported explorer with contract verification, token tracking, and a testnet faucet. The private Free plan includes 1 workspace with unlimited blocks, transaction decoding, tracing, contract interaction, and Hardhat/Anvil sync. No credit card required for either.
                             </v-expansion-panel-text>
                         </v-expansion-panel>
                         <v-expansion-panel title="Can I use Ethernal with any EVM chain?">
@@ -60,6 +60,7 @@ useHead({
     title: 'Pricing — Ethernal Block Explorer',
     meta: [
         { name: 'description', content: 'Free and paid plans for Ethernal block explorer. Deploy on any EVM chain with transaction decoding, contract verification, and real-time sync.' },
+        { property: 'og:type', content: 'website' },
         { property: 'og:title', content: 'Pricing — Ethernal Block Explorer' },
         { property: 'og:description', content: 'Free and paid plans for Ethernal block explorer. Deploy on any EVM chain with transaction decoding, contract verification, and real-time sync.' },
         { property: 'og:url', content: 'https://tryethernal.com/pricing' },
@@ -78,11 +79,12 @@ useHead({
                 "name": "Ethernal Block Explorer",
                 "description": "Deploy your own block explorer for any EVM chain. Transaction decoding, contract verification, and real-time sync.",
                 "url": "https://tryethernal.com/pricing",
+                "image": "https://tryethernal.com/images/og-image.png",
                 "brand": { "@type": "Organization", "name": "Ethernal" },
                 "offers": [
-                    { "@type": "Offer", "name": "Free", "price": "0", "priceCurrency": "USD", "description": "1 explorer, community support" },
-                    { "@type": "Offer", "name": "Builder", "description": "3 explorers, priority support, custom branding", "priceSpecification": { "@type": "UnitPriceSpecification", "price": 29, "priceCurrency": "USD", "unitCode": "MON" } },
-                    { "@type": "Offer", "name": "Team", "description": "10 explorers, team access, dedicated support", "priceSpecification": { "@type": "UnitPriceSpecification", "price": 99, "priceCurrency": "USD", "unitCode": "MON" } }
+                    { "@type": "Offer", "name": "Starter", "price": "0", "priceCurrency": "USD", "description": "Ad-supported explorer with contract verification, token tracking, and testnet faucet" },
+                    { "@type": "Offer", "name": "Team", "description": "Custom domain, native token, L1 explorer, no ads, 100k transactions included", "priceSpecification": { "@type": "UnitPriceSpecification", "price": 150, "priceCurrency": "USD", "unitCode": "MON" } },
+                    { "@type": "Offer", "name": "App Chain", "description": "Full whitelabel with custom branding, status page, total supply, 5M transactions included", "priceSpecification": { "@type": "UnitPriceSpecification", "price": 500, "priceCurrency": "USD", "unitCode": "MON" } }
                 ]
             })
         },
@@ -95,7 +97,7 @@ useHead({
                     {
                         "@type": "Question",
                         "name": "Is Ethernal free to use?",
-                        "acceptedAnswer": { "@type": "Answer", "text": "Yes. Ethernal has a free tier that includes 1 explorer with full transaction decoding, contract verification, and real-time sync. No credit card required." }
+                        "acceptedAnswer": { "@type": "Answer", "text": "Yes. Ethernal offers free plans for both public and private explorers. The public Starter plan gives you an ad-supported explorer with contract verification, token tracking, and a testnet faucet. The private Free plan includes 1 workspace with unlimited blocks, transaction decoding, tracing, contract interaction, and Hardhat/Anvil sync. No credit card required for either." }
                     },
                     {
                         "@type": "Question",

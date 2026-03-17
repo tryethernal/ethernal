@@ -98,6 +98,7 @@ useHead({
     title: 'Ganache Block Explorer — Ethernal',
     meta: [
         { name: 'description', content: 'Visual block explorer for Ganache. Decoded transactions, contract state, and event logs for Truffle development.' },
+        { property: 'og:type', content: 'website' },
         { property: 'og:title', content: 'Ganache Block Explorer — Ethernal' },
         { property: 'og:description', content: 'Visual block explorer for Ganache. Decoded transactions, contract state, and event logs for Truffle development.' },
         { property: 'og:url', content: 'https://tryethernal.com/ganache-block-explorer' },

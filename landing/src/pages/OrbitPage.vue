@@ -296,6 +296,7 @@ useHead({
     title: 'Arbitrum Orbit Block Explorer — Ethernal',
     meta: [
         { name: 'description', content: 'Block explorer for Arbitrum Orbit chains. Retryable tickets, cross-chain messages, and Nitro transaction decoding.' },
+        { property: 'og:type', content: 'website' },
         { property: 'og:title', content: 'Arbitrum Orbit Block Explorer — Ethernal' },
         { property: 'og:description', content: 'Block explorer for Arbitrum Orbit chains. Retryable tickets, cross-chain messages, and Nitro transaction decoding.' },
         { property: 'og:url', content: 'https://tryethernal.com/arbitrum-orbit' },

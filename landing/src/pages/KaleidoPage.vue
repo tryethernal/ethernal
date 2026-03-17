@@ -101,6 +101,7 @@ useHead({
     title: 'Kaleido Block Explorer — Ethernal',
     meta: [
         { name: 'description', content: 'Block explorer integration for Kaleido enterprise blockchain networks. Real-time sync and contract verification.' },
+        { property: 'og:type', content: 'website' },
         { property: 'og:title', content: 'Kaleido Block Explorer — Ethernal' },
         { property: 'og:description', content: 'Block explorer integration for Kaleido enterprise blockchain networks. Real-time sync and contract verification.' },
         { property: 'og:url', content: 'https://tryethernal.com/kaleido' },

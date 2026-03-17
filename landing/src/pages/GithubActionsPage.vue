@@ -104,6 +104,7 @@ useHead({
     title: 'GitHub Actions — Ethernal Block Explorer',
     meta: [
         { name: 'description', content: 'Automate block explorer deployment in CI/CD. Ethernal GitHub Action for testing smart contracts with full visibility.' },
+        { property: 'og:type', content: 'website' },
         { property: 'og:title', content: 'GitHub Actions — Ethernal Block Explorer' },
         { property: 'og:description', content: 'Automate block explorer deployment in CI/CD. Ethernal GitHub Action for testing smart contracts with full visibility.' },
         { property: 'og:url', content: 'https://tryethernal.com/github-actions' },

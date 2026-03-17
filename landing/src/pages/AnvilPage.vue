@@ -95,6 +95,7 @@ useHead({
     title: 'Anvil Block Explorer — Ethernal',
     meta: [
         { name: 'description', content: 'Real-time block explorer for Foundry Anvil. Decoded transactions, contract verification, and call traces for local dev.' },
+        { property: 'og:type', content: 'website' },
         { property: 'og:title', content: 'Anvil Block Explorer — Ethernal' },
         { property: 'og:description', content: 'Real-time block explorer for Foundry Anvil. Decoded transactions, contract verification, and call traces for local dev.' },
         { property: 'og:url', content: 'https://tryethernal.com/anvil-block-explorer' },

@@ -185,6 +185,7 @@ useHead({
     title: 'For Teams — Ethernal Block Explorer',
     meta: [
         { name: 'description', content: 'Custom branding, team access controls, and dedicated support. Ethernal scales with your blockchain project.' },
+        { property: 'og:type', content: 'website' },
         { property: 'og:title', content: 'For Teams — Ethernal Block Explorer' },
         { property: 'og:description', content: 'Custom branding, team access controls, and dedicated support. Ethernal scales with your blockchain project.' },
         { property: 'og:url', content: 'https://tryethernal.com/teams' },

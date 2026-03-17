@@ -25,6 +25,7 @@ useHead({
     title: 'Ethernal — Block Explorer for EVM Chains',
     meta: [
         { name: 'description', content: 'Deploy your own block explorer in 5 minutes. Open source, fully customizable, works with any EVM chain. Just needs an RPC URL.' },
+        { property: 'og:type', content: 'website' },
         { property: 'og:title', content: 'Ethernal — Block Explorer for EVM Chains' },
         { property: 'og:description', content: 'Deploy your own block explorer in 5 minutes. Open source, fully customizable, works with any EVM chain. Just needs an RPC URL.' },
         { property: 'og:url', content: 'https://tryethernal.com/' },
@@ -42,7 +43,7 @@ useHead({
                 "@type": "Organization",
                 "name": "Ethernal",
                 "url": "https://tryethernal.com",
-                "logo": "https://tryethernal.com/favicon.ico",
+                "logo": "https://tryethernal.com/images/og-image.png",
                 "description": "Open source block explorer for EVM-based chains.",
                 "sameAs": [
                     "https://github.com/tryethernal/ethernal",

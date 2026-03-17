@@ -91,6 +91,7 @@ useHead({
     title: 'Chainstack Block Explorer — Ethernal',
     meta: [
         { name: 'description', content: 'Deploy a block explorer on Chainstack nodes. Connect your RPC endpoint for transaction decoding and contract verification.' },
+        { property: 'og:type', content: 'website' },
         { property: 'og:title', content: 'Chainstack Block Explorer — Ethernal' },
         { property: 'og:description', content: 'Deploy a block explorer on Chainstack nodes. Connect your RPC endpoint for transaction decoding and contract verification.' },
         { property: 'og:url', content: 'https://tryethernal.com/chainstack' },

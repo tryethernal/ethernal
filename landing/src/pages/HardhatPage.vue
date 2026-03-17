@@ -166,6 +166,7 @@ useHead({
     title: 'Hardhat Block Explorer — Ethernal',
     meta: [
         { name: 'description', content: 'See your Hardhat transactions decoded in real-time. Contract verification, call traces, and event logs for local development.' },
+        { property: 'og:type', content: 'website' },
         { property: 'og:title', content: 'Hardhat Block Explorer — Ethernal' },
         { property: 'og:description', content: 'See your Hardhat transactions decoded in real-time. Contract verification, call traces, and event logs for local development.' },
         { property: 'og:url', content: 'https://tryethernal.com/hardhat-block-explorer' },
