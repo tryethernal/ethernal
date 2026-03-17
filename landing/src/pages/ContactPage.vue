@@ -114,6 +114,7 @@ useHead({
     title: 'Contact Us — Ethernal',
     meta: [
         { name: 'description', content: 'Get in touch with the Ethernal team for enterprise inquiries, partnerships, or support.' },
+        { property: 'og:type', content: 'website' },
         { property: 'og:title', content: 'Contact Us — Ethernal' },
         { property: 'og:description', content: 'Get in touch with the Ethernal team for enterprise inquiries, partnerships, or support.' },
         { property: 'og:url', content: 'https://tryethernal.com/contact-us' },

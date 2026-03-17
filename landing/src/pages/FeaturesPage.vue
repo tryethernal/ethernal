@@ -228,6 +228,7 @@ useHead({
     title: 'Features — Ethernal Block Explorer',
     meta: [
         { name: 'description', content: 'Transaction decoding, contract verification, real-time sync, and more. Everything you need to explore any EVM chain.' },
+        { property: 'og:type', content: 'website' },
         { property: 'og:title', content: 'Features — Ethernal Block Explorer' },
         { property: 'og:description', content: 'Transaction decoding, contract verification, real-time sync, and more. Everything you need to explore any EVM chain.' },
         { property: 'og:url', content: 'https://tryethernal.com/features' },
@@ -236,6 +237,29 @@ useHead({
     ],
     link: [
         { rel: 'canonical', href: 'https://tryethernal.com/features' }
+    ],
+    script: [
+        {
+            type: 'application/ld+json',
+            children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "WebPage",
+                "name": "Features — Ethernal Block Explorer",
+                "description": "Transaction decoding, contract verification, real-time sync, and more. Everything you need to explore any EVM chain.",
+                "url": "https://tryethernal.com/features"
+            })
+        },
+        {
+            type: 'application/ld+json',
+            children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tryethernal.com/" },
+                    { "@type": "ListItem", "position": 2, "name": "Features", "item": "https://tryethernal.com/features" }
+                ]
+            })
+        }
     ]
 });
 </script>

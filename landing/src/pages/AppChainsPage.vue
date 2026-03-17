@@ -254,6 +254,7 @@ useHead({
     title: 'App Chains — Ethernal Block Explorer',
     meta: [
         { name: 'description', content: 'Launch a branded block explorer for your appchain. OP Stack, Arbitrum Orbit, and Polygon CDK supported.' },
+        { property: 'og:type', content: 'website' },
         { property: 'og:title', content: 'App Chains — Ethernal Block Explorer' },
         { property: 'og:description', content: 'Launch a branded block explorer for your appchain. OP Stack, Arbitrum Orbit, and Polygon CDK supported.' },
         { property: 'og:url', content: 'https://tryethernal.com/app-chains' },
@@ -262,6 +263,29 @@ useHead({
     ],
     link: [
         { rel: 'canonical', href: 'https://tryethernal.com/app-chains' }
+    ],
+    script: [
+        {
+            type: 'application/ld+json',
+            children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "WebPage",
+                "name": "App Chains — Ethernal Block Explorer",
+                "description": "Launch a branded block explorer for your appchain. OP Stack, Arbitrum Orbit, and Polygon CDK supported.",
+                "url": "https://tryethernal.com/app-chains"
+            })
+        },
+        {
+            type: 'application/ld+json',
+            children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tryethernal.com/" },
+                    { "@type": "ListItem", "position": 2, "name": "App Chains", "item": "https://tryethernal.com/app-chains" }
+                ]
+            })
+        }
     ]
 });
 </script>

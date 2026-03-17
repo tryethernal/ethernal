@@ -306,6 +306,7 @@ useHead({
     title: 'OP Stack Block Explorer — Ethernal',
     meta: [
         { name: 'description', content: 'Block explorer for OP Stack rollups. L2-to-L1 withdrawal tracking, transaction decoding, and contract verification.' },
+        { property: 'og:type', content: 'website' },
         { property: 'og:title', content: 'OP Stack Block Explorer — Ethernal' },
         { property: 'og:description', content: 'Block explorer for OP Stack rollups. L2-to-L1 withdrawal tracking, transaction decoding, and contract verification.' },
         { property: 'og:url', content: 'https://tryethernal.com/op-stack' },
@@ -314,6 +315,33 @@ useHead({
     ],
     link: [
         { rel: 'canonical', href: 'https://tryethernal.com/op-stack' }
+    ],
+    script: [
+        {
+            type: 'application/ld+json',
+            children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "HowTo",
+                "name": "Set up an OP Stack block explorer with Ethernal",
+                "description": "Complete bridge monitoring for your OP Stack chain with deposits, withdrawals, batches, and fault proofs.",
+                "step": [
+                    { "@type": "HowToStep", "name": "Select your L1", "text": "Choose your parent chain (e.g. Ethereum Mainnet) from the dropdown." },
+                    { "@type": "HowToStep", "name": "Enter contract addresses", "text": "Paste your OptimismPortal and Batch Inbox addresses." },
+                    { "@type": "HowToStep", "name": "Start monitoring", "text": "Ethernal begins monitoring deposits, withdrawals, and batches automatically." }
+                ]
+            })
+        },
+        {
+            type: 'application/ld+json',
+            children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tryethernal.com/" },
+                    { "@type": "ListItem", "position": 2, "name": "OP Stack Explorer", "item": "https://tryethernal.com/op-stack" }
+                ]
+            })
+        }
     ]
 });
 </script>

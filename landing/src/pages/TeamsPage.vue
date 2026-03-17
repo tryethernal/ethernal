@@ -185,6 +185,7 @@ useHead({
     title: 'For Teams — Ethernal Block Explorer',
     meta: [
         { name: 'description', content: 'Custom branding, team access controls, and dedicated support. Ethernal scales with your blockchain project.' },
+        { property: 'og:type', content: 'website' },
         { property: 'og:title', content: 'For Teams — Ethernal Block Explorer' },
         { property: 'og:description', content: 'Custom branding, team access controls, and dedicated support. Ethernal scales with your blockchain project.' },
         { property: 'og:url', content: 'https://tryethernal.com/teams' },
@@ -193,6 +194,29 @@ useHead({
     ],
     link: [
         { rel: 'canonical', href: 'https://tryethernal.com/teams' }
+    ],
+    script: [
+        {
+            type: 'application/ld+json',
+            children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "WebPage",
+                "name": "For Teams — Ethernal Block Explorer",
+                "description": "Custom branding, team access controls, and dedicated support. Ethernal scales with your blockchain project.",
+                "url": "https://tryethernal.com/teams"
+            })
+        },
+        {
+            type: 'application/ld+json',
+            children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tryethernal.com/" },
+                    { "@type": "ListItem", "position": 2, "name": "Teams", "item": "https://tryethernal.com/teams" }
+                ]
+            })
+        }
     ]
 });
 </script>

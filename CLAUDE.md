@@ -164,6 +164,48 @@ See [MARKETING.md](.claude/references/MARKETING.md) for complete reference (blog
 
 **Server:** Hetzner `157.90.154.200`, user `blog`, repo at `/opt/ethernal-blog-stack`, env at `/opt/blog-pipeline.env`.
 
+### Feature-Gated Landing Pages
+
+When a new chain type or framework gains full support in Ethernal, generate corresponding SEO landing pages. Pending:
+
+- **ZK chains** (zkSync Era, Scroll, Linea, Polygon zkEVM, Mantle): Build `/chains/<slug>` landing pages once ZK chain support is fully implemented. These were scoped out of the initial programmatic SEO rollout because Ethernal doesn't yet fully support ZK-specific features (ZK proof verification, batch posting, etc.).
+- **Polygon CDK chains**: Build landing pages once Polygon CDK support is fully implemented.
+
+---
+
+## Pricing
+
+**CRITICAL: When writing pricing-related content (landing pages, FAQs, schema, emails), always verify against the actual plans in the database. Do NOT make up plan names, prices, or features.**
+
+### Checking Plans in the DB
+
+```bash
+# Connect to production DB (credentials in .credentials.local)
+psql -d ethernal -U postgres -p 5432 -h postgresqlprod.tryethernal.com
+# Query active public plans
+SELECT name, slug, price, capabilities FROM stripe_plans WHERE public = true ORDER BY price;
+```
+
+### Current Plans (as of 2026-03-17)
+
+**Public Explorers:**
+
+| Plan | Price | Slug | Key Features |
+|------|-------|------|-------------|
+| Starter | $0 | `free` | Ad-supported, contract verification, token/NFT tracking, testnet faucet, Ethernal branding, unlimited tx |
+| Team | $150/mo | `explorer-150` | Custom domain, native token, L1 explorer, no ads, 100k tx included |
+| App Chain | $500/mo | `explorer-500` | Full whitelabel: custom branding, status page, total supply, custom fields, L1 explorer, 5M tx |
+| Enterprise | Custom | `enterprise` | Custom requirements, high tx volume, custom parts |
+
+**Private Explorers (local dev):**
+
+| Plan | Price | Slug | Key Features |
+|------|-------|------|-------------|
+| Free | $0 | (default) | 1 workspace, unlimited blocks, tx decoding/tracing, contract interaction, Hardhat/Anvil sync, analytics |
+| Pro | $20/mo | (in-app) | Everything in Free + unlimited workspaces |
+
+**Partner/White-label plans** (not public): Quicknode, Buildbear, Magma, UZH — each with custom capabilities. Check DB for details.
+
 ---
 
 ## Workflow
@@ -211,6 +253,14 @@ gh api repos/tryethernal/ethernal/issues/{number}/comments --jq '.[] | {id, body
 2. Verify the issue exists in code before acting
 3. Challenge incorrect comments explicitly
 4. Never remove working code to satisfy a review bot
+
+**CRITICAL: Process the PR summary comment too** — the PR conversation comment (Step 4) often contains a summary with additional issues not raised as inline comments. Parse the full summary body for all mentioned issues (look for bullet points, "Key issues found", "Issues found", warnings). These are easy to miss because they're in prose, not standalone inline comments.
+
+**Verification pass after fixing:** After fixing all identified issues, do a final cross-check before pushing:
+1. Re-read the full PR summary comment body
+2. Make a checklist of every issue mentioned (inline comments AND summary)
+3. Verify each issue has been addressed in the code
+4. Only then push the fix commit
 
 **React to EVERY comment** with 👍 (`+1`) if valid/fixed, or 👎 (`-1`) if incorrect:
 - Inline comments: `gh api repos/tryethernal/ethernal/pulls/comments/{id}/reactions -f content='+1'`
