@@ -148,6 +148,40 @@ for THREAD_ID in $MATCHING_THREADS; do
   }
 
   TEXT=$(echo "$THREAD_JSON" | jq -r '.messages[0].text // empty')
+
+  # If plain text is missing or too short (just a footer/boilerplate), extract from HTML.
+  # Newsletter emails often have minimal plain text (footer + "read online" link) with
+  # all real content in HTML. Threshold of 2000 catches these reliably.
+  TEXT_LEN=${#TEXT}
+  if [ "$TEXT_LEN" -lt 2000 ]; then
+    HTML=$(echo "$THREAD_JSON" | jq -r '.messages[0].html // empty')
+    if [ -n "$HTML" ]; then
+      HTML_TEXT=$(echo "$HTML" | python3 -c "
+import sys
+from html.parser import HTMLParser
+class T(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.t=[]
+        self.skip=False
+    def handle_starttag(self,tag,a):
+        if tag in('style','script'): self.skip=True
+    def handle_endtag(self,tag):
+        if tag in('style','script'): self.skip=False
+        if tag in('p','div','br','h1','h2','h3','h4','li','tr'): self.t.append('\n')
+    def handle_data(self,d):
+        if not self.skip: self.t.append(d)
+p=T()
+p.feed(sys.stdin.read())
+print(''.join(p.t))
+" 2>/dev/null || true)
+      if [ ${#HTML_TEXT} -gt ${#TEXT} ]; then
+        log "Plain text too short (${TEXT_LEN} chars), using HTML extraction (${#HTML_TEXT} chars)"
+        TEXT="$HTML_TEXT"
+      fi
+    fi
+  fi
+
   if [ -z "$TEXT" ]; then
     log "WARNING: Thread $THREAD_ID has no text — skipping"
     continue
