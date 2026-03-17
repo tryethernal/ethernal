@@ -47,7 +47,23 @@
 </template>
 
 <script setup>
+import { useHead } from '@vueuse/head';
 import LandingLayout from '@/components/LandingLayout.vue';
 import FeatureSection from '@/components/FeatureSection.vue';
 import LandingCTA from '@/components/LandingCTA.vue';
+
+useHead({
+    title: 'Transaction Tracing — Ethernal Block Explorer',
+    meta: [
+        { name: 'description', content: 'Debug smart contract calls with full execution traces. See every internal call, state change, and gas cost.' },
+        { property: 'og:title', content: 'Transaction Tracing — Ethernal Block Explorer' },
+        { property: 'og:description', content: 'Debug smart contract calls with full execution traces. See every internal call, state change, and gas cost.' },
+        { property: 'og:url', content: 'https://tryethernal.com/transaction-tracing' },
+        { property: 'og:image', content: 'https://tryethernal.com/images/og-image.png' },
+        { name: 'twitter:card', content: 'summary_large_image' },
+    ],
+    link: [
+        { rel: 'canonical', href: 'https://tryethernal.com/transaction-tracing' }
+    ]
+});
 </script>

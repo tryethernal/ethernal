@@ -287,9 +287,25 @@
 </template>
 
 <script setup>
+import { useHead } from '@vueuse/head';
 import LandingLayout from '@/components/LandingLayout.vue';
 import FeatureSection from '@/components/FeatureSection.vue';
 import LandingCTA from '@/components/LandingCTA.vue';
+
+useHead({
+    title: 'Arbitrum Orbit Block Explorer — Ethernal',
+    meta: [
+        { name: 'description', content: 'Block explorer for Arbitrum Orbit chains. Retryable tickets, cross-chain messages, and Nitro transaction decoding.' },
+        { property: 'og:title', content: 'Arbitrum Orbit Block Explorer — Ethernal' },
+        { property: 'og:description', content: 'Block explorer for Arbitrum Orbit chains. Retryable tickets, cross-chain messages, and Nitro transaction decoding.' },
+        { property: 'og:url', content: 'https://tryethernal.com/arbitrum-orbit' },
+        { property: 'og:image', content: 'https://tryethernal.com/images/og-image.png' },
+        { name: 'twitter:card', content: 'summary_large_image' },
+    ],
+    link: [
+        { rel: 'canonical', href: 'https://tryethernal.com/arbitrum-orbit' }
+    ]
+});
 </script>
 
 <style scoped>
