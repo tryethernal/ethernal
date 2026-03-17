@@ -11,39 +11,40 @@
         </v-container>
         <LandingPricing :full="true" />
 
-        <v-container class="py-16">
-            <h2 class="text-h4 font-weight-bold text-center mb-8" style="font-family: 'Exo', sans-serif;">Frequently Asked Questions</h2>
-            <v-row justify="center">
-                <v-col cols="12" md="8">
-                    <v-expansion-panels variant="accordion" class="faq-panels">
-                        <v-expansion-panel title="Is Ethernal free to use?">
-                            <v-expansion-panel-text>
-                                Yes. Ethernal offers free plans for both public and private explorers. The public Starter plan gives you an ad-supported explorer with contract verification, token tracking, and a testnet faucet. The private Free plan includes 1 workspace with unlimited blocks, transaction decoding, tracing, contract interaction, and Hardhat/Anvil sync. No credit card required for either.
-                            </v-expansion-panel-text>
-                        </v-expansion-panel>
-                        <v-expansion-panel title="Can I use Ethernal with any EVM chain?">
-                            <v-expansion-panel-text>
-                                Yes. Ethernal works with any EVM-compatible chain including OP Stack rollups, Arbitrum Orbit chains, Polygon CDK, and any custom EVM network. Just provide an RPC URL.
-                            </v-expansion-panel-text>
-                        </v-expansion-panel>
-                        <v-expansion-panel title="How long does it take to set up?">
-                            <v-expansion-panel-text>
-                                Under 5 minutes. Create an account, enter your chain's RPC URL, and your explorer is live. No server setup, no Docker, no infrastructure to manage.
-                            </v-expansion-panel-text>
-                        </v-expansion-panel>
-                        <v-expansion-panel title="Do I need to run my own infrastructure?">
-                            <v-expansion-panel-text>
-                                No. Ethernal is a hosted service. We handle the indexing, storage, and serving. You just point us at your RPC endpoint.
-                            </v-expansion-panel-text>
-                        </v-expansion-panel>
-                        <v-expansion-panel title="Can I use my own branding?">
-                            <v-expansion-panel-text>
-                                Yes. The App Chain plan includes full whitelabel branding: your logo, colors, and custom domain. The Team plan includes a custom domain. Your explorer looks like your product.
-                            </v-expansion-panel-text>
-                        </v-expansion-panel>
-                    </v-expansion-panels>
-                </v-col>
-            </v-row>
+        <v-container class="faq-section" style="max-width: 720px;">
+            <div class="text-overline mb-1 text-center" style="letter-spacing: 0.1em; color: #5DAAE0; font-size: 11px;">FAQ</div>
+            <h2 class="text-h4 font-weight-bold text-center mb-12" style="font-family: 'Exo', sans-serif;">Frequently Asked Questions</h2>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <h3 class="faq-question">Is Ethernal free to use?</h3>
+                    <p class="faq-answer">
+                        Yes. Ethernal offers free plans for both public and private explorers.
+                        <br>The public Starter plan gives you an ad-supported explorer with contract verification, token tracking, and a testnet faucet.
+                        <br>The private Free plan includes 1 workspace with unlimited blocks, transaction decoding, tracing, contract interaction, and Hardhat/Anvil sync.
+                        <br>No credit card required for either.
+                    </p>
+                </div>
+                <div class="faq-item">
+                    <h3 class="faq-question">Can I use Ethernal with any EVM chain?</h3>
+                    <p class="faq-answer">Yes. Ethernal works with any EVM-compatible chain including OP Stack rollups, Arbitrum Orbit chains, Polygon CDK, and any custom EVM network. Just provide an RPC URL.</p>
+                </div>
+                <div class="faq-item">
+                    <h3 class="faq-question">How long does it take to set up?</h3>
+                    <p class="faq-answer">Under 5 minutes. Create an account, enter your chain's RPC URL, and your explorer is live. No server setup, no Docker, no infrastructure to manage.</p>
+                </div>
+                <div class="faq-item">
+                    <h3 class="faq-question">Do I need to run my own infrastructure?</h3>
+                    <p class="faq-answer">No. Ethernal is a hosted service. We handle the indexing, storage, and serving. You just point us at your RPC endpoint.</p>
+                </div>
+                <div class="faq-item">
+                    <h3 class="faq-question">Can I use my own branding?</h3>
+                    <p class="faq-answer">
+                        Yes. The App Chain plan includes full whitelabel branding: your logo, colors, and custom domain.
+                        <br>The Team plan includes a custom domain.
+                        <br>Your explorer looks like your product.
+                    </p>
+                </div>
+            </div>
         </v-container>
 
         <LandingCTA />
@@ -139,4 +140,39 @@ useHead({
 
 <style scoped>
 .page-title-bar { padding-bottom: 24px; margin-bottom: 8px; border-bottom: 1px solid var(--drawer-divider); }
+
+.faq-section {
+    padding-top: 80px;
+    padding-bottom: 80px;
+}
+
+.faq-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.faq-item {
+    padding: 28px 0;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.faq-item:first-child {
+    border-top: 1px solid var(--border-subtle);
+}
+
+.faq-question {
+    font-family: 'Exo', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+    line-height: 1.4;
+}
+
+.faq-answer {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin: 0;
+}
 </style>
