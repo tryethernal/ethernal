@@ -16,15 +16,14 @@ export default defineConfig({
             '@': fileURLToPath(new URL('./src', import.meta.url))
         }
     },
+    ssr: {
+        noExternal: ['vuetify']
+    },
+    ssgOptions: {
+        script: 'async',
+        formatting: 'minify'
+    },
     build: {
-        chunkSizeWarningLimit: 600,
-        rollupOptions: {
-            output: {
-                manualChunks: {
-                    vue: ['vue', 'vue-router'],
-                    vuetify: ['vuetify']
-                }
-            }
-        }
+        chunkSizeWarningLimit: 600
     }
 });
