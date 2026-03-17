@@ -36,7 +36,7 @@ jobs:
         id: pick
         working-directory: blog/pipeline
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_PAT }}
         run: |
           OUTPUT=$(node index.js --pick 2>&1)
           echo "$OUTPUT"
@@ -62,7 +62,7 @@ jobs:
         if: steps.pick.outputs.skip != 'true'
         working-directory: blog/pipeline
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_PAT }}
           CARD_ID: ${{ steps.pick.outputs.card_id }}
         run: |
           node --input-type=module -e "
@@ -107,7 +107,7 @@ jobs:
         if: steps.pick.outputs.skip != 'true'
         working-directory: blog/pipeline
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_PAT }}
         run: |
           # Search last 5 commits in case Claude pushed multiple
           ARTICLE_PATH=$(git log -5 --name-only --pretty=format: | grep 'blog/src/content/blog/' | head -1)
@@ -128,7 +128,7 @@ jobs:
         if: failure() && steps.draft.outcome == 'failure' && steps.pick.outputs.skip != 'true'
         working-directory: blog/pipeline
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_PAT }}
           CARD_ID: ${{ steps.pick.outputs.card_id }}
         run: |
           node --input-type=module -e "
