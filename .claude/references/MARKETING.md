@@ -1,0 +1,380 @@
+# Marketing Pipeline Reference
+
+Complete reference for the automated marketing pipeline: blog content, Twitter, drip emails, and tracking.
+
+## Architecture Overview
+
+```
+Trend Scan (weekly, GH Actions)
+  → GitHub Projects V2 board (scored topic cards)
+  → Blog Draft (every 2 days, Hetzner server)
+    → 3-phase Claude pipeline (research → draft → humanize)
+    → Cover image generation (Gemini API)
+    → Commits to develop
+
+Tweet Pipeline (5x/day, Hetzner server)
+  → Source selection (trend cards, blog articles, product tips, newsletters)
+  → 3-phase Claude pipeline (research → draft → humanize)
+  → Image generation (Gemini API)
+  → Queued → Published via Twitter API v2
+
+Drip Emails (on demo creation, app server)
+  → 6-step sequence over 7 days via Mailjet
+  → Profile enrichment (linkup.so + Claude CLI)
+  → PostHog tracking (sent/opened/clicked)
+
+Tracking Flywheel (PostHog)
+  → Email events, tweet metrics, demo lifecycle
+  → Dashboard: https://us.posthog.com/project/41419/dashboard/1363672
+```
+
+## Server Infrastructure
+
+**Server:** Hetzner `157.90.154.200` (same box as Sentry), SSH: `root@157.90.154.200`
+**User:** `blog` (non-root, Claude CLI blocks root for `--dangerously-skip-permissions`)
+**Repo clone:** `/opt/ethernal-blog-stack` (tracks `develop` branch)
+**Env file:** `/opt/blog-pipeline.env` (sourced by all pipelines)
+**Logs:** `/var/log/blog-pipeline/` and `/var/log/tweet-pipeline/`
+**Claude auth:** `/home/blog/.claude-key` (OAuth token, read via `apiKeyHelper` in `/home/blog/.claude/settings.json`)
+**GitHub auth:** `/home/blog/.config/gh/hosts.yml`
+
+### Systemd Timers
+
+| Timer | Schedule | Service | Description |
+|-------|----------|---------|-------------|
+| `blog-draft.timer` | Every 2 days at 08:00 UTC (±10 min jitter) | `blog-draft.service` | Pick topic, research, draft, generate images, commit |
+| `tweet-draft.timer` | 5x/day: 06:30, 09:30, 12:30, 15:30, 18:30 UTC (±5 min) | `tweet-draft.service` | Draft one tweet per slot |
+| `tweet-publish.timer` | Every 10 min | `tweet-publish.service` | Post queued tweets past their scheduledAt time |
+| `tweet-engagement.timer` | Daily 22:00 UTC | `tweet-engagement.service` | Fetch Twitter metrics → PostHog |
+| `scan-newsletter.timer` | Daily 11:00 UTC | `scan-newsletter.service` | Scan AgentMail inbox for newsletter content |
+
+**Status:** Only `blog-draft.timer` is currently enabled. Tweet timers exist in `/opt/ethernal-blog-stack/tweet-pipeline/` but are not yet installed to `/etc/systemd/system/`.
+
+Commands: `systemctl list-timers | grep -E 'blog|tweet'`, `journalctl -u blog-draft.service -f`
+
+### Environment Variables (in `/opt/blog-pipeline.env`)
+
+| Variable | Used By | Purpose |
+|----------|---------|---------|
+| `GH_TOKEN` | Blog pipeline, tweet source selector | GitHub API (Projects V2 access) |
+| `GEMINI_API_KEY` | Blog cover gen, tweet image gen | Gemini API for image generation |
+| `TWITTER_API_KEY` | Tweet publisher | Twitter API v2 consumer key |
+| `TWITTER_API_SECRET` | Tweet publisher | Twitter API v2 consumer secret |
+| `TWITTER_ACCESS_TOKEN` | Tweet publisher | Twitter API v2 access token |
+| `TWITTER_ACCESS_SECRET` | Tweet publisher | Twitter API v2 access secret |
+| `POSTHOG_API_KEY` | Tweet publisher, engagement bridge | PostHog event tracking |
+| `AGENTMAIL_API_KEY` | Newsletter scanner | AgentMail inbox API |
+
+---
+
+## Blog Pipeline
+
+### 1. Trend Scan (`blog/pipeline/`, GitHub Actions)
+
+**Workflow:** `.github/workflows/blog-trend-scan.yml` (Monday 6:00 UTC or manual)
+
+Collects from 5 sources, classifies into 12 topic clusters, scores, creates GitHub Projects V2 cards.
+
+**Files:**
+| File | Purpose |
+|------|---------|
+| `index.js` | Orchestrator. Modes: full run, `--dry-run`, `--pick` |
+| `collect.js` | Data collectors: EIPs, ERCs, ethresear.ch RSS, Ethereum Magicians RSS, arxiv API |
+| `classify.js` | Keyword-based classification into clusters + content type suggestion |
+| `project.js` | GitHub Projects V2 CRUD (cards, fields, status transitions) |
+| `config.js` | Clusters (12), weights, thresholds, project field IDs |
+
+**Scoring weights:** EIP=3, ERC=3, ethresearch=2, arxiv=2, magicians=1, Google Trends=0.5. Threshold: 5 pts.
+
+**12 Topic Clusters:** AI Agents Onchain, Account Abstraction, Encrypted Mempools & Privacy, Payments & Streams, Security & Auditing, L2 & Rollups, ZK & Cryptography, DeFi Primitives, NFT & Token Standards, EVM Internals, Protocol & Networking, Governance & Standards.
+
+**5 Content Types:** ERC Tutorial, EIP Explainer, Research Deep Dive, Upgrade Guide, Trend Survey.
+
+**GitHub Projects V2 Board:**
+- Project ID: `PVT_kwDOBLpTN84BRc80` (org: `tryethernal`, number: 1)
+- Card statuses: Detected → Researched → Drafting → Published
+- Custom fields: Trend Score, Topic Cluster, Content Type, Source Links, Article Path
+- All field/option IDs in `blog/pipeline/config.js`
+
+### 2. Blog Drafting (`blog/pipeline/draft.sh`, Hetzner server)
+
+Picks the highest-scoring "Detected" card (round-robin by cluster), runs 3-phase Claude pipeline, generates images, commits to develop.
+
+**Execution flow:**
+1. `git pull` latest develop
+2. `node index.js --pick` → selects topic (skips clusters with active Researched/Drafting cards)
+3. Writes topic card body to `.card-body.md`
+4. **Phase 1 — Research** (`claude -p` with `prompts/1-research.md`, 30 max-turns)
+   - WebSearches sources from card, finds 2-3 additional sources
+   - Extracts concepts, code examples, benchmarks, author info
+   - Output: `.research-notes.md`
+5. **Phase 2 — Draft** (`claude -p` with `prompts/2-draft.md`, 20 max-turns)
+   - Reads research notes, writes article to `blog/src/content/blog/<slug>.md`
+   - Format depends on content type (tutorial, explainer, deep dive, guide, survey)
+   - Output: article file, prints `::article-path::` marker
+6. **Phase 3 — Humanize** (`claude -p` with `prompts/3-humanize.md`, 10 max-turns)
+   - Removes AI patterns: em dashes (ZERO TOLERANCE), banned words (50+), vague language
+   - Adds soul, fixes citations
+7. **sed safety net:** strips any surviving em dashes
+8. **Astro build validation:** `npx astro check` (fails on schema/syntax errors)
+9. **Cover image generation:** `generate-cover.sh` via Gemini API
+   - Cover: 1424x752 px → `blog/public/images/<slug>.webp`
+   - OG: 1200x630 px → `blog/public/images/<slug>-og.webp`
+   - Style: dark navy (#0f172a), flat design, steel blue (#3D95CE) accents, NOT 3D/glowy
+10. Git commit + push to develop
+11. Updates card status: Detected → Drafting
+12. On failure: creates GitHub issue with phase name + log tail, resets card to Detected
+
+**MCP config:** `blog/pipeline/mcp.json` (context7 + nano-banana)
+
+**Claude flags:** `--dangerously-skip-permissions --max-turns N --mcp-config mcp.json -p "prompt"`
+
+### 3. Blog Publishing (`.github/workflows/blog-publish.yml`, manual dispatch)
+
+Manual GitHub Actions workflow that transitions articles from draft to published:
+1. Finds article by slug (or picks oldest draft)
+2. Updates frontmatter `status: draft` → `status: published`
+3. Commits to a `blog/publish-<slug>` branch
+4. Creates PR → auto-merges to develop (squash, admin bypass)
+5. Updates project card status to Published
+
+### Blog Content Structure
+
+**Directory:** `blog/src/content/blog/`
+
+**Frontmatter schema:**
+```yaml
+title: "Article Title"
+description: "110-160 chars" # max 160, enforced by Zod
+date: YYYY-MM-DD
+tags: [Tag1, Tag2]
+image: "/blog/images/<slug>.webp"     # 1424x752 cover
+ogImage: "/blog/images/<slug>-og.webp" # 1200x630 social card
+status: draft | published
+readingTime: N
+```
+
+**Writing rules:**
+- Zero em dashes (`—`), use commas/periods/colons/parentheses
+- Citation-heavy: `<sup>[N](#fn-N)</sup>` inline, `## References` footer with numbered links
+- Quote recognized Ethereum figures (Vitalik, core devs, auditors, protocol authors)
+- Voice: practical, tutorial-like, direct, slightly informal, uses "we" for Ethernal and occasional "I"
+- No `~text~` (renders as strikethrough), no `> "quoted"` (visible quotes in blockquotes)
+- Plain markdown links only (no HTML anchors or SVGs)
+- Blog name: "On-Chain Engineering"
+- Dev: `cd blog && nvm use 20 && npx astro dev --port 8176`
+
+### Blog CLI Skills (`.claude/commands/blog/`)
+
+| Command | Purpose |
+|---------|---------|
+| `/blog:research <topic>` | WebSearch sources, extract facts, propose angles, create outline |
+| `/blog:draft` | Full article writing with copywriting + humanizer + ai-seo + image gen |
+| `/blog:plan` | 2-week content calendar (40% educational, 30% practical, 20% adjacent, 10% opinion) |
+| `/blog:status` | Dashboard: pipeline health, publication pace, backlog, quality metrics |
+| `/blog:feedback <text>` | Log feedback, detect patterns, revise draft in place |
+
+---
+
+## Twitter Pipeline (`tweet-pipeline/`)
+
+Standalone Node.js package. Runs on Hetzner server under the `blog` user.
+
+### Files
+
+| File | Purpose |
+|------|---------|
+| `config.js` | 5 content buckets, schedule (base hours + jitter), Twitter char limits |
+| `draft.sh` | Main orchestrator: source select → 3-phase Claude → image → queue file |
+| `publish.sh` | Posts queued tweets past their scheduledAt time via Twitter API v2 |
+| `promote-blog.sh` | Posts promo tweets for newly published blog articles (called after publish) |
+| `engagement-bridge.sh` | Daily: fetches Twitter metrics → PostHog events |
+| `scan-newsletter.sh` | Daily: scans AgentMail inbox, scores stories, writes `.newsletter-source.json` |
+| `lib/source-selector.js` | Picks content: trend cards (GitHub Projects), blog articles, 12 product tips |
+| `lib/twitter.js` | Twitter API v2 wrapper (tweet, thread, media upload, metrics) |
+| `lib/image-generator.js` | Gemini-based image generation (dark navy style, 1200x675) |
+| `prompts/tweet-1-research.md` | Phase 1: WebSearch sources, find angles, verify @handles |
+| `prompts/tweet-2-draft.md` | Phase 2: Write hook + thread + imageSpec JSON |
+| `prompts/tweet-3-humanize.md` | Phase 3: Remove AI patterns, validate lengths/numbers |
+| `prompts/promote-blog.md` | Prompt for blog promo tweet hook generation |
+
+### 5 Daily Content Buckets
+
+| Slot | Time (UTC) | Content | Source |
+|------|-----------|---------|--------|
+| 1 | 07:00 | Ecosystem news | trend_scanner (GitHub Projects cards) |
+| 2 | 10:00 | EIP/ERC commentary | trend_scanner |
+| 3 | 15:00 | Product tip | features (12 static tips) or newsletter override |
+| 4 | 16:00 | Blog repurposing | blog (published articles, last 48h) |
+| 5 | 19:00 | Hot take | trend_scanner |
+
+Each slot has ±30 min jitter and ±10 min publish gap.
+
+### Draft Flow (`draft.sh`)
+
+1. Detects slot from UTC hour (or arg)
+2. Checks for newsletter override (`.newsletter-source.json`, max 24h old, slot 3 priority)
+3. `selectSource()` picks from candidates, deduplicates against last 7 days of queue
+4. Writes `.source.json`
+5. **Phase 1 — Research** (15 max-turns): WebSearches, finds angles, @handles, further reading
+6. **Phase 2 — Draft** (10 max-turns): Writes hook (200-280 chars, MUST have number) + thread (2 content + 1 references reply) + imageSpec
+7. **Phase 3 — Humanize** (5 max-turns): Removes AI patterns, validates structure
+8. **Image generation:** Gemini API if not blog_cover type, otherwise uses existing blog image
+9. Writes queue file to `/home/blog/tweet-queue/tweet-<timestamp>-slot<N>.json`
+10. On failure: creates GitHub issue
+
+### Queue File Format (`/home/blog/tweet-queue/`)
+
+```json
+{
+  "hook": "Main tweet (200-280 chars, must contain a number)",
+  "thread": ["Reply 1 (content)", "Reply 2 (content)", "Reply 3 (references)"],
+  "imageSpec": { "type": "stat_card|eip_card|code_snippet|quote_card|blog_cover", "title": "...", "metric": "...", "subtitle": "...", "diagram": "..." },
+  "imagePath": "/path/to/image.png",
+  "bucket": "Ecosystem news",
+  "sourceId": "eip-7702",
+  "scheduledAt": "2026-03-17T15:30:00+00:00",
+  "createdAt": "2026-03-17T10:00:00Z",
+  "posted": false,
+  "tweetIds": [],
+  "postedAt": null
+}
+```
+
+### Publish Flow (`publish.sh`, every 10 min)
+
+1. Iterates queue files, skips `posted: true` or future `scheduledAt`
+2. Uploads media if `imagePath` set (Twitter v1 API for media)
+3. Posts thread via Twitter v2 API (hook as root, replies chain)
+4. Updates queue file: `posted: true`, `tweetIds`, `postedAt`
+5. Sends PostHog event: `twitter:tweet_posted`
+6. Runs `promote-blog.sh` (posts promo for newly published articles)
+
+### Blog Promotion (`promote-blog.sh`)
+
+Called after `publish.sh`. Scans `blog/src/content/blog/` for published articles not yet promoted:
+1. Checks article is live at `tryethernal.com/blog/<slug>` (not just SPA 200)
+2. Generates curiosity-gap hook via `claude -p` (3 max-turns)
+3. Uploads cover image, posts tweet with link
+4. Tracks promoted slugs in `.promoted-articles` file
+5. PostHog event: `twitter:blog_promoted`
+
+### Newsletter Scanner (`scan-newsletter.sh`, daily 11:00 UTC)
+
+Reads unread threads from AgentMail inbox (`ethernal@agentmail.to`), scores stories via Claude, writes `.newsletter-source.json` (overrides slot 3) or `.blog-candidate.json` (for future blog drafting). Deduplicates via `.processed-threads` file. Cleans stale files (>24h).
+
+### Image Generation
+
+**Blog covers** (`blog/pipeline/generate-cover.sh`):
+- Model: `gemini-3.1-flash-image-preview`
+- Sizes: 1424x752 (cover) + 1200x630 (OG)
+- 3 retries, validates >10KB
+
+**Tweet cards** (`tweet-pipeline/lib/image-generator.js`):
+- Model: `gemini-3.1-flash-image-preview`
+- Size: 1200x675
+- Style: dark navy (#0F1729) bg, subtle dot grid, flat design, steel blue (#3D95CE) accents
+- Types: stat_card, eip_card, code_snippet, quote_card (blog_cover reuses existing image)
+- 3 retries with 4s delay
+
+---
+
+## Drip Email Campaign (App Server)
+
+6-step email sequence sent to demo explorer creators via Mailjet.
+
+### Lifecycle
+
+```
+Demo Created → 6-row schedule in demo_drip_schedules
+  → processDripEmails (every 15 min) finds pending → enqueues sendDripEmail
+  → Mailjet sends email → webhooks report opens/clicks → PostHog
+  → Day 7: explorer expires (48h grace via deleteAfter on workspace)
+  → removeExpiredExplorers deletes workspace → PostHog explorer:demo_expired
+```
+
+### Key Files
+
+| File | Purpose |
+|------|---------|
+| `run/jobs/processDripEmails.js` | Recurring job (15 min), finds pending emails, enqueues sendDripEmail |
+| `run/jobs/sendDripEmail.js` | Sends single email via Mailjet, tracks in PostHog |
+| `run/jobs/enrichDemoProfile.js` | At demo creation: linkup.so research + Claude CLI copy generation |
+| `run/lib/enrichment.js` | Domain resolution, linkup.so API, free email/public RPC provider filters |
+| `run/emails/drip-content.js` | 6-step email content generator (subjects, bodies, CTAs) |
+| `run/models/demodripschedule.js` | Sequelize model for `demo_drip_schedules` table |
+| `run/webhooks/mailjet.js` | `POST /webhooks/mailjet` for open/click → PostHog |
+| `run/api/demo.js` | `GET /api/demo/unsubscribe` endpoint |
+
+### Email Steps
+
+| Step | Timing | Format | Content | Links to |
+|------|--------|--------|---------|----------|
+| 1 | +1h | Plain text (transactional) | Welcome, quick-start tips | Explorer |
+| 2 | +1d | Branded HTML | Feature highlights | Explorer |
+| 3 | +2d | Branded HTML | Enriched: tailored benefits | Migration flow (`?explorerToken=<jwt>`) |
+| 4 | +3d | Branded HTML | Enriched: company context | Migration flow |
+| 5 | +5d | Branded HTML | Enriched: expiration warning | Migration flow |
+| 6 | +6d | Branded HTML | Enriched: recovery hook | Migration flow |
+
+Steps 2-6 use `drip-base.html` template. Unsubscribe uses AES-256-CBC tokens (format: `IV.ciphertext`, URL-safe base64).
+
+### Enrichment
+
+At demo creation, `enrichDemoProfile` researches the company:
+- Domain resolution: email domain first, RPC URL domain fallback
+- Skips free email providers (gmail, hotmail, etc.) and public RPC providers
+- Calls linkup.so API for company research
+- Calls `claude -p` CLI for personalized copy generation
+- Results stored in `explorer.enrichment` JSON column
+- Caches per domain for 7 days
+- Fields: `companyContext` (step 4), `tailoredBenefits` (step 3), `expirationWarning` (step 5), `recoveryHook` (step 6)
+
+### Env Vars
+
+| Variable | Purpose |
+|----------|---------|
+| `MAILJET_PUBLIC_KEY` | Mailjet API auth |
+| `MAILJET_PRIVATE_KEY` | Mailjet API auth |
+| `DEMO_EXPLORER_SENDER` | "Name \<email\>" format sender |
+| `DRIP_UNSUBSCRIBE_SECRET` | AES-256-CBC key for unsubscribe tokens |
+| `MAILJET_WEBHOOK_SECRET` | Webhook URL token verification |
+| `LINKUP_API_KEY` | linkup.so enrichment API |
+
+Feature flag: `isDripEmailEnabled()` in `run/lib/flags.js`.
+
+---
+
+## PostHog Tracking
+
+**Dashboard:** https://us.posthog.com/project/41419/dashboard/1363672
+
+### Events
+
+| Event | Source | Properties |
+|-------|--------|------------|
+| `email:drip_sent` | sendDripEmail job | step, workspaceId, explorerId |
+| `email:drip_opened` | Mailjet webhook | step, workspaceId |
+| `email:drip_clicked` | Mailjet webhook | step, workspaceId, url |
+| `explorer:demo_expired` | removeExpiredExplorers | workspaceId, explorerId |
+| `twitter:tweet_posted` | publish.sh | tweetId, bucket, sourceId, hasThread |
+| `twitter:blog_promoted` | promote-blog.sh | tweetId, slug |
+| `twitter:engagement` | engagement-bridge.sh | tweetId, likes, retweets, replies, impressions |
+
+### Dashboard Insights (4 panels)
+
+1. **Demo → Paid Conversion Funnel** (5-step)
+2. **Drip Emails by Step** (sent/opened/clicked trends)
+3. **Twitter Pipeline Activity** (tweets posted + engagement)
+4. **Demo Explorer Outcomes** (created vs migrated vs expired)
+
+---
+
+## Known Issues & Maintenance
+
+- **OAuth token expiration:** Claude CLI auth token at `/home/blog/.claude-key` expires periodically. Refresh from macOS Keychain: `security find-generic-password -s "Claude Code-credentials" -w`.
+- **Tweet pipeline not yet deployed:** Timer unit files exist in `tweet-pipeline/` but are not installed to `/etc/systemd/system/`. Need: add TWITTER_* env vars to `/opt/blog-pipeline.env`, install Playwright chromium, `systemctl enable --now tweet-*.timer`.
+- **Twitter API:** Pay-per-use with $5 credits. Consumer key `9YVdDl54WiDza5racpgQTi6e4`. Full credentials in `.credentials.local`.
+- **Image generation:** `gemini-3.1-flash-image-preview` is the best model (cleanest results). `gemini-2.5-flash-image` gets rate-limited. Falls back gracefully if API fails.
+- **Trend scan still in GitHub Actions:** `blog-trend-scan.yml` runs weekly on Monday. Could be moved to server but low priority (lightweight, no Claude needed).
+- **Blog publish still in GitHub Actions:** `blog-publish.yml` is manual dispatch only. Deliberately kept in Actions for reviewer control.
