@@ -147,12 +147,30 @@ router.get('/:address/nativeTokenBalance', workspaceAuthMiddleware, async (req, 
     const data = req.query;
 
     try {
-        const provider = new ProviderConnector(data.workspace.rpcServer);
+        let provider;
+        try {
+            provider = new ProviderConnector(data.workspace.rpcServer);
+        } catch(error) {
+            // Handle provider connection errors (e.g., invalid URLs, unreachable endpoints)
+            return res.status(200).json({ balance: null });
+        }
 
         let balance;
         try {
             balance = await provider.getBalance(req.params.address);
         } catch(error) {
+            // Handle RPC call errors (e.g., connection refused, network timeouts)
+            const isConnectionError = error.code === 'ECONNREFUSED' ||
+                                    error.code === 'ENOTFOUND' ||
+                                    error.code === 'ECONNRESET' ||
+                                    error.message?.includes('ECONNREFUSED') ||
+                                    error.message?.includes('connect ECONNREFUSED');
+
+            if (isConnectionError) {
+                return res.status(200).json({ balance: null });
+            }
+
+            // For non-connection errors, set balance to null but continue (existing behavior)
             balance = null;
         }
 
