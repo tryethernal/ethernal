@@ -26,6 +26,10 @@ Read `tweet-pipeline/.source.json` which contains:
 
 4. **Identify a contrarian or surprising angle.** What does everyone assume that is wrong? What is the non-obvious takeaway? What would make someone stop scrolling?
 
+5. **Look up Twitter/X handles** for every project, person, and protocol mentioned in your research. WebSearch for "[entity name] Twitter" or "[entity name] X account". Only include handles you can verify. Cap at 6 handles.
+
+6. **Find 1-3 "further reading" links** for someone who wants to go deeper. Prefer primary sources: ethresear.ch threads, EIPs, official blog posts, protocol specs. NOT news articles rehashing the same story. These are distinct from Source URLs (which track where your facts came from).
+
 ## Output
 
 Save your research notes to `tweet-pipeline/.research.md` with this structure:
@@ -48,6 +52,14 @@ Save your research notes to `tweet-pipeline/.research.md` with this structure:
 ## Source URLs
 - [url1]
 - [url2]
+
+## Twitter Handles
+- [Entity Name]: @handle (verified: yes/no)
+- [Entity Name]: @handle (verified: yes/no)
+
+## Further Reading
+- [Short label](https://url-to-primary-source)
+- [Short label](https://url-to-primary-source)
 ```
 
 Every fact must have a source. Every angle must have a number. If you cannot find a specific number, estimate from the data you have and note the estimation.

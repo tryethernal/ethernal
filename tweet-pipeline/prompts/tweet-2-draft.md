@@ -18,8 +18,23 @@ Read both files:
 6. **CONTRAST**: Old expensive/manual way vs. new cheap/automated way. Before/after.
 7. **THREAD**: End with a tease: down arrow, "here's the system:", "thread below", ellipsis.
 8. **NO**: Corporate voice, emoji overload, generic advice, hashtags.
-9. **MENTION**: Tag relevant tools/protocols when natural (@ethereum, @solaboratories, etc). Do not force it.
-10. **LENGTH**: Hook tweet 200-280 chars. Thread replies 140-200 chars each.
+9. **MENTION**: Use @handles from the `## Twitter Handles` section in `.research.md`. Weave them into hook and thread tweets where the account is the direct subject of the sentence (e.g. "@zksync's Airbender proves..."). Target 2-4 mentions across the full thread. Do not force it -- if a sentence reads better without a tag, leave it out. Never guess handles; only use verified ones from research.
+10. **LENGTH**: Hook tweet 200-280 chars. Thread content replies 140-280 chars each. Max 2 content replies. The references tweet (see below) is added as the 3rd and final reply.
+11. **INLINE LINKS**: When a thread tweet mentions a specific resource (proposal, EIP, benchmark, tool, spec, blog post), include a direct link to it in that tweet. Use URLs from `## Source URLs` or `## Further Reading` in `.research.md`. Max 1 link per tweet. Pure opinion or general statements do not get links.
+
+## Writing Quality Rules
+
+These separate good threads from generic ones:
+
+1. **Name names.** Don't say "several zkVMs are competing." Say "ZKsync Airbender proves a block in 50 seconds on a single GPU. ZisK does 30M gas in 7.4 seconds with 24 GPUs." Specific projects, specific benchmarks, specific hardware.
+
+2. **End with a punch, not a teaser.** The hook can tease the thread, but content replies should end with a short declarative sentence that lands. "The hardware ceiling is collapsing." "Still early research. Worth watching." "We cracked speed. We haven't cracked decentralization." NOT "Here's the real picture:" or "Let's dive in."
+
+3. **Concrete before/after in thread tweets.** Each content reply should have at least one concrete comparison: "50 seconds on a single GPU" not "real-time proving." "16 minutes to 16 seconds" not "massive speed improvements."
+
+4. **No vague summaries.** "Nine zkVMs are racing toward real-time L1 proving" is filler. "ZisK proves a 30M gas block in 7.4 seconds with 24 GPUs, down from 5 minutes" is a tweet.
+
+5. **Short declarative closers.** End content replies with 2-5 word sentences. "Worth watching." "History repeating." "The hardware ceiling is collapsing." These stick.
 
 ## Content Bucket Guidelines
 
@@ -31,6 +46,27 @@ Apply the right approach based on the bucket in `.source.json`:
 - **blog_repurposing**: Extract the single most tweetable insight from the article. One idea, not a summary.
 - **hot_take**: Take a strong position. Disagree with conventional wisdom. "unpopular opinion:" or "hot take:"
 
+## References Tweet
+
+After composing the hook and content replies, build a references tweet and append it as the LAST entry in the `thread` array. This tweet helps readers dig deeper.
+
+**Format (casual signpost):**
+
+```
+If you want to dig deeper:
+domain.com/path (short label)
+@handle (what they're building)
+domain.com/path (short label)
+```
+
+**Rules:**
+- Pull URLs from `## Source URLs` and `## Further Reading` in `.research.md`
+- Pull handles from `## Twitter Handles` in `.research.md`
+- Max 3 source links, max 4 account tags
+- Must fit within 280 characters. If over, reduce to 2 sources + 2 accounts.
+- Accounts already tagged inline in content tweets can still appear here
+- URLs already linked inline can still appear here (readers stop at different points)
+
 ## Output
 
 Save to `tweet-pipeline/.draft.json`:
@@ -39,9 +75,17 @@ Save to `tweet-pipeline/.draft.json`:
 {
   "hook": "main tweet text (200-280 chars)",
   "thread": [
-    "reply 1 (140-200 chars)",
-    "reply 2 (140-200 chars)"
+    "reply 1 -- content (140-280 chars)",
+    "reply 2 -- content (140-280 chars)",
+    "references tweet (280 chars max)"
   ],
+  "references": {
+    "accounts": ["@handle1", "@handle2"],
+    "sources": [
+      {"label": "short label", "url": "https://..."},
+      {"label": "short label", "url": "https://..."}
+    ]
+  },
   "imageSpec": {
     "type": "stat_card | eip_card | code_snippet | quote_card | blog_cover",
     "title": "SHORT title, max 30 chars. Must fit on ONE line at large font size.",
@@ -51,6 +95,8 @@ Save to `tweet-pipeline/.draft.json`:
   }
 }
 ```
+
+The `references` field is metadata for validation. The actual references tweet MUST be the last entry in `thread`. Max 2 content replies + 1 references tweet = 3 thread entries.
 
 Only include the imageSpec fields relevant to the chosen type. The `diagram` field is important — it tells the image generator what to draw. Be specific: describe panels, boxes, arrows, labels. Think whiteboard sketch, not abstract art.
 

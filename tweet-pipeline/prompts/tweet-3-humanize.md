@@ -42,11 +42,25 @@ Additionally, align with, crucial, delve, emphasizing, enduring, enhance, foster
 
 5. **No emoji overload?** Max 1 emoji per tweet in the thread. Zero in the hook is fine. Remove extras.
 
-6. **Thread length?** Each reply must be 140-200 chars. Trim or expand to fit.
+6. **Thread length?** Each content reply must be 140-280 chars. The references tweet (last reply) must be under 280 chars. Trim or expand to fit.
 
 7. **Hook length?** Must be 200-280 chars. Trim fluff or add a specific detail to fit.
 
 8. **Line breaks?** The hook must have at least one line break. If it reads as a wall of text, add a break after the first thought.
+
+## References & Mentions Checks
+
+1. **Inline @mentions natural?** Read each mention in context. If removing the @ and just using the name reads better, remove the @. Mentions should feel like natural attribution, not tagging for reach.
+
+2. **Inline links relevant?** Each inline link must correspond to a specific resource mentioned in that tweet (a proposal, EIP, benchmark, tool, etc). Remove links attached to general statements.
+
+3. **References tweet exists?** The last entry in `thread` should be the references tweet starting with "If you want to dig deeper:" or similar casual signpost. If missing, flag it but do not create one (that is the draft phase's job).
+
+4. **References tweet under 280 chars?** Count carefully. If over, remove the least important source or account until it fits. Prefer keeping primary sources over secondary ones.
+
+5. **Do not alter URLs or @handles.** Leave them exactly as written. Only fix the surrounding copy.
+
+6. **References tweet tone?** Should feel like a helpful pointer from a person, not a bibliography or footnotes section. Rewrite if it sounds formal.
 
 ## Add Soul
 
