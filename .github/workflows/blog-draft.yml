@@ -15,6 +15,7 @@ concurrency:
 permissions:
   repository-projects: write
   contents: write
+  id-token: write
 
 jobs:
   pick-and-draft:
@@ -101,7 +102,12 @@ jobs:
             6. After pushing, output the article file path relative to the repo root on a line starting with "::article-path::"
                Example: ::article-path::blog/src/content/blog/my-article.md
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          allowed_tools: "Read,Write,Edit,Bash,WebSearch,WebFetch,Glob,Grep,Skill"
+          settings: |
+            {
+              "permissions": {
+                "allow": ["Read", "Write", "Edit", "Bash", "WebSearch", "WebFetch", "Glob", "Grep", "Skill"]
+              }
+            }
 
       - name: Update project card
         if: steps.pick.outputs.skip != 'true'
