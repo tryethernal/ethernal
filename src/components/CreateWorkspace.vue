@@ -1,6 +1,6 @@
 <template>
     <v-card flat>
-        <v-card-text v-if="(!userStore.plan || userStore.plan == 'free') && userStore.onboarded">
+        <v-card-text v-if="(!userStore.plan || userStore.plan == 'free') && userStore.onboarded && !isOnboarding">
             <v-alert density="compact" text type="error">Free plan users are limited to one workspace. <a href="#" @click.stop="goToBilling()">Upgrade</a> to our Premium plan to create more.</v-alert>
         </v-card-text>
         <v-card-text v-else>
@@ -39,6 +39,9 @@
                 <v-select id="chain" item-title="name" item-value="slug" variant="outlined" required label="Chain" v-model="chain" :items="availableChains" hide-details="auto"></v-select>
 
                 <v-card-actions>
+                    <v-btn v-if="isOnboarding" variant="text" @click="$emit('back')">
+                        <v-icon start>mdi-arrow-left</v-icon> Back
+                    </v-btn>
                     <v-spacer></v-spacer>
                     <v-btn variant="flat" id="createWorkspace" :loading="loading" color="primary" :disabled="!valid" type="submit">Create</v-btn>
                 </v-card-actions>
@@ -52,7 +55,13 @@ import { useEnvStore } from '@/stores/env';
 import { useUserStore } from '@/stores/user';
 const ipaddr = require('ipaddr.js');
 
-const emit = defineEmits(['workspaceCreated', 'goToBilling', 'validatedWorkspaceSettings']);
+const props = defineProps({
+    isOnboarding: { type: Boolean, default: false }
+});
+
+const emit = defineEmits(['workspaceCreated', 'goToBilling', 'validatedWorkspaceSettings', 'back']);
+
+const { isOnboarding } = props;
 
 const envStore = useEnvStore();
 const userStore = useUserStore();
@@ -102,6 +111,15 @@ function detectNetwork() {
 }
 
 function initRpcServer(nameVal, rpcServerVal) {
+    if (isOnboarding) {
+        emit('workspaceCreated', {
+            name: name.value,
+            rpcServer: rpcServer.value,
+            chain: chain.value,
+            networkId: null
+        });
+        return;
+    }
     loading.value = true;
     $server.initRpcServer(rpcServerVal)
         .then(data => {
