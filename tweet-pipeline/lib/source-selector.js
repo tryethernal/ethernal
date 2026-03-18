@@ -92,6 +92,53 @@ export function parseArticleFrontmatter(content, filename) {
 }
 
 /**
+ * Common English stop words to exclude from keyword extraction.
+ * @type {Set<string>}
+ */
+const STOP_WORDS = new Set([
+    'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for',
+    'of', 'with', 'by', 'from', 'is', 'are', 'was', 'were', 'be', 'been',
+    'being', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would',
+    'could', 'should', 'may', 'might', 'can', 'shall', 'not', 'no', 'nor',
+    'so', 'if', 'then', 'than', 'that', 'this', 'these', 'those', 'it',
+    'its', 'how', 'what', 'when', 'where', 'who', 'which', 'why', 'all',
+    'each', 'every', 'both', 'few', 'more', 'most', 'other', 'some', 'such',
+    'into', 'over', 'after', 'before', 'between', 'out', 'up', 'down',
+    'about', 'just', 'also', 'now', 'here', 'there', 'one', 'two', 'three',
+    'new', 'your', 'you', 'they', 'them', 'their', 'our', 'we', 'my',
+    'his', 'her', 'get', 'got', 'per', 'via', 'yet', 'still',
+]);
+
+/**
+ * Extracts significant keywords from text for semantic comparison.
+ * Handles both natural text ("$50M DeFi routing failure") and slug format ("50m-defi-routing-failure").
+ * Preserves numbers with units (e.g., "$50.4M" -> "50.4m", "$36,000" -> "36,000").
+ * @param {string} text - The text to extract keywords from.
+ * @returns {Set<string>} Set of lowercase keywords (3+ chars, stop words removed).
+ */
+export function extractKeywords(text) {
+    if (!text) return new Set();
+
+    // Replace hyphens with spaces (handles slug format)
+    const normalized = text.replace(/-/g, ' ');
+
+    // Extract dollar amounts as special tokens (e.g., "$50.4M" -> "50.4m")
+    const amounts = [];
+    for (const m of normalized.matchAll(/\$([0-9][0-9,.]*[a-zA-Z]?)/g)) {
+        amounts.push(m[1].toLowerCase());
+    }
+
+    // Extract regular words (3+ chars, alphanumeric)
+    const words = normalized
+        .toLowerCase()
+        .replace(/[^a-z0-9\s,.]/g, ' ')
+        .split(/\s+/)
+        .filter(w => w.length >= 3 && !STOP_WORDS.has(w));
+
+    return new Set([...words, ...amounts]);
+}
+
+/**
  * Fetches trend items from the GitHub Projects board via the gh CLI.
  * Queries org "tryethernal", project number 1, filtering for actionable statuses.
  * @returns {Array<{title: string, description: string, id: string, status: string}>}

@@ -1,6 +1,6 @@
 import { describe, it, mock } from 'node:test';
 import assert from 'node:assert/strict';
-import { parseArticleFrontmatter, FEATURE_TIPS, selectSource } from './source-selector.js';
+import { parseArticleFrontmatter, FEATURE_TIPS, selectSource, extractKeywords } from './source-selector.js';
 
 describe('source-selector', () => {
     describe('parseArticleFrontmatter', () => {
@@ -127,6 +127,37 @@ Body.`;
             const result = selectSource('trend_scanner', []);
             assert.ok(result !== null);
             assert.ok(typeof result.title === 'string');
+        });
+    });
+
+    describe('extractKeywords', () => {
+        it('extracts lowercase words 3+ chars, removes stop words', () => {
+            const result = extractKeywords('How Three Infrastructure Failures Turned a $50M Swap');
+            assert.ok(result.has('infrastructure'));
+            assert.ok(result.has('failures'));
+            assert.ok(result.has('swap'));
+            assert.ok(!result.has('how'));
+            assert.ok(!result.has('a'));
+        });
+
+        it('extracts numbers with units as keywords', () => {
+            const result = extractKeywords('$50.4M swapped for $36,000 in one transaction');
+            assert.ok(result.has('swapped'));
+            assert.ok(result.has('transaction'));
+            assert.ok(result.has('50.4m'));
+            assert.ok(result.has('36,000'));
+        });
+
+        it('returns empty set for empty input', () => {
+            const result = extractKeywords('');
+            assert.equal(result.size, 0);
+        });
+
+        it('handles slug format (hyphen-separated)', () => {
+            const result = extractKeywords('50m-defi-routing-failure');
+            assert.ok(result.has('defi'));
+            assert.ok(result.has('routing'));
+            assert.ok(result.has('failure'));
         });
     });
 });
