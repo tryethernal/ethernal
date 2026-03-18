@@ -1241,6 +1241,27 @@ export default {
                 return axios.post(resource, { email, password, explorerToken });
             },
 
+            /**
+             * Validates an RPC server URL. Public endpoint, no auth required.
+             * @param {string} rpcServer - RPC URL to validate
+             * @returns {Promise<{ chainId: number, networkId: number }>}
+             */
+            validateRpc(rpcServer) {
+                const resource = `${envStore.apiRoot}/api/rpc/validate`;
+                return axios.post(resource, { rpcServer });
+            },
+
+            /**
+             * Atomic onboarding setup — creates user + workspace + explorer.
+             * Public endpoint, no auth required.
+             * @param {object} data - Setup data (email, password, path, explorerName, rpcServer, etc.)
+             * @returns {Promise<{ user: object, workspace: object, explorer?: object, authToken: string }>}
+             */
+            onboardingSetup(data) {
+                const resource = `${envStore.apiRoot}/api/onboarding/setup`;
+                return axios.post(resource, data);
+            },
+
             getAddressTokenTransfers(address, options) {
                 const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, ...options };
 
