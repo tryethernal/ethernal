@@ -57,7 +57,7 @@ fi
 
 # Pull latest to get updated articles and images
 cd "$REPO_DIR"
-git pull origin develop --ff-only 2>&1 | tee -a "$LOG_FILE" || log "WARNING: git pull failed — using existing checkout"
+git pull origin develop --ff-only --autostash 2>&1 | tee -a "$LOG_FILE" || log "WARNING: git pull failed — using existing checkout"
 
 # Ensure we're in the right directory for Node.js imports
 cd "$SCRIPT_DIR"
