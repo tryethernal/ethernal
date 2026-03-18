@@ -219,6 +219,32 @@ export function isSemanticallyDuplicate(candidateTitle, recentHooks, blogTitles,
 }
 
 /**
+ * Returns titles of published blog articles from the last N days.
+ * Used by the dedup check in draft.sh to cross-reference against blog content.
+ * @param {number} [days=60] - How many days back to look.
+ * @returns {string[]} Array of article titles.
+ */
+export function fetchPublishedBlogTitles(days = 60) {
+    try {
+        const files = readdirSync(BLOG_DIR).filter(f => f.endsWith('.md'));
+        const cutoff = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+        const titles = [];
+
+        for (const file of files) {
+            const content = readFileSync(join(BLOG_DIR, file), 'utf-8');
+            const parsed = parseArticleFrontmatter(content, file);
+            if (!parsed) continue;
+            if (parsed.date < cutoff) continue;
+            titles.push(parsed.title);
+        }
+
+        return titles;
+    } catch {
+        return [];
+    }
+}
+
+/**
  * Fetches trend items from the GitHub Projects board via the gh CLI.
  * Queries org "tryethernal", project number 1, filtering for actionable statuses.
  * @returns {Array<{title: string, description: string, id: string, status: string}>}
