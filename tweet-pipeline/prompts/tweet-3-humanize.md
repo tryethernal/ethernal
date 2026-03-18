@@ -12,22 +12,22 @@ Replace EVERY em dash (—) with a comma, period, colon, or parentheses. No exce
 
 ## Banned Words (remove or replace every instance)
 
-Additionally, align with, crucial, delve, emphasizing, enduring, enhance, fostering, garner, highlight (verb), interplay, intricate/intricacies, key (adjective), landscape (abstract), pivotal, showcase, tapestry, testament, underscore (verb), valuable, vibrant, comprehensive, robust, seamless, leverage, streamline, harness, fundamental/fundamentally, nuanced, multifaceted, notably, furthermore, moreover, encompasses, facilitates, utilizing, bolstered, surpassing, noteworthy, innovative, cutting-edge, game-changing, groundbreaking, consequently
+Additionally, align with, boasts (meaning "has"), consequently, crucial, cultivating, delve, diverse (as filler adjective), emphasizing, enduring, enhance, exemplifies, featuring (as filler verb), fostering, garner, highlight (verb), in the heart of, interplay, intricate/intricacies, key (adjective), landscape (abstract), meticulous/meticulously, pivotal, profound, renowned, resonates, rich (as filler adjective), showcase, tapestry, testament, underscore (verb), valuable, vibrant, comprehensive, robust, seamless, leverage, streamline, harness, fundamental/fundamentally, nuanced, multifaceted, notably, furthermore, moreover, encompasses, facilitates, utilizing, bolstered, surpassing, noteworthy, innovative, cutting-edge, game-changing, groundbreaking
 
 ## Banned Phrases
 
-"it's worth noting", "it's important to note", "in today's ever-evolving", "play a significant role in shaping", "In conclusion", "Let's delve into", "At its core", "In today's digital landscape", "We are excited to", "We're thrilled", "proud to announce", "pleased to share", "happy to report"
+"it's worth noting", "it's important to note", "in today's ever-evolving", "play a significant role in shaping", "In conclusion", "Let's delve into", "At its core", "In today's digital landscape", "We are excited to", "We're thrilled", "proud to announce", "pleased to share", "happy to report", "despite these challenges", "continues to thrive", "continues to evolve", "maintains an active", "demonstrates a commitment to", "setting the stage for", "a diverse array of", "key turning point", "indelible mark", "deeply rooted"
 
 ## Patterns to Fix
 
 1. Significance inflation: cut "marking a pivotal moment", "stands as a testament", "reflects broader trends"
 2. Superficial -ing phrases: cut "highlighting/underscoring/emphasizing/reflecting/symbolizing" tacked onto sentences
 3. Promotional language: remove "groundbreaking", "breathtaking", "nestled", "vibrant"
-4. Formulaic challenges: don't write "Despite challenges... continues to thrive"
+4. Formulaic challenges: don't write "Despite challenges... continues to thrive." Also catch the pivot: listing problems then "Despite these challenges" into a vague positive.
 5. Negative parallelisms: rewrite "It's not just X; it's Y" and "Not only... but..."
 6. Rule of three: break up forced groups of three
 7. Copula avoidance: use "is/are/has" instead of "serves as/stands as/marks/represents"
-8. Synonym cycling: stop substituting synonyms to avoid repetition, just repeat the word
+8. Synonym cycling: stop substituting synonyms to avoid repetition, just repeat the word. For technical terms (EIP names, protocol names), use the same term every time. Do NOT rotate between "the proposal", "the standard", "the specification".
 9. Corporate voice: any sentence that sounds like a press release must be rewritten as casual observation
 
 ## Tweet-Specific Checks

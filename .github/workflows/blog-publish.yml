@@ -76,10 +76,37 @@ jobs:
           SLUG=$(basename "$SLUG" .mdx)
           BRANCH="blog/publish-${SLUG}"
 
+          # Regenerate blog/public/llms.txt from all published articles
+          {
+            echo '# On-Chain Engineering Blog'
+            echo ''
+            echo '> Technical blog by Ethernal covering EVM internals, EIP/ERC explainers, L2 rollup architecture, smart contract security, and block explorer development.'
+            echo ''
+            echo '## Articles'
+            echo ''
+            for f in blog/src/content/blog/*.md blog/src/content/blog/*.mdx; do
+              [ -f "$f" ] || continue
+              # Only include published articles
+              if awk 'BEGIN{c=0} /^---$/{c++} c==1 && /status: published/{found=1} END{exit !found}' "$f"; then
+                ATITLE=$(awk 'BEGIN{c=0} /^---$/{c++} c==1 && /^title:/{gsub(/^title: *"?/,""); gsub(/"$/,""); print; exit}' "$f")
+                ADESC=$(awk 'BEGIN{c=0} /^---$/{c++} c==1 && /^description:/{gsub(/^description: *"?/,""); gsub(/"$/,""); print; exit}' "$f")
+                ASLUG=$(basename "$f" .md)
+                ASLUG=$(basename "$ASLUG" .mdx)
+                echo "- [${ATITLE}](https://tryethernal.com/blog/${ASLUG}): ${ADESC}"
+              fi
+            done
+            echo ''
+            echo '## About'
+            echo ''
+            echo '- [Ethernal](https://tryethernal.com): Open-source block explorer for EVM-based chains'
+            echo '- [GitHub](https://github.com/tryethernal/ethernal): Source code repository'
+            echo '- [Documentation](https://doc.tryethernal.com): Full product documentation'
+          } > blog/public/llms.txt
+
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -b "$BRANCH"
-          git add "$ARTICLE"
+          git add "$ARTICLE" blog/public/llms.txt
 
           TITLE=$(grep '^title:' "$ARTICLE" | head -1 | sed 's/title: *//; s/^"//; s/"$//')
           printf 'blog: publish — %s\n' "$TITLE" > /tmp/commit-msg.txt

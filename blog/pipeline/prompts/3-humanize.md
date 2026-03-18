@@ -18,11 +18,11 @@ Replacements:
 
 ## Banned Words (remove or replace every instance)
 
-Additionally, align with, crucial, delve, emphasizing, enduring, enhance, fostering, garner, highlight (verb), interplay, intricate/intricacies, key (adjective), landscape (abstract), pivotal, showcase, tapestry, testament, underscore (verb), valuable, vibrant, comprehensive, robust, seamless, leverage, streamline, harness, fundamental/fundamentally, nuanced, multifaceted, notably, furthermore, moreover, encompasses, facilitates, utilizing, bolstered, surpassing, noteworthy
+Additionally, align with, boasts (meaning "has"), consequently, crucial, cultivating, delve, diverse (as filler adjective), emphasizing, enduring, enhance, exemplifies, featuring (as filler verb), fostering, garner, highlight (verb), in the heart of, interplay, intricate/intricacies, key (adjective), landscape (abstract), meticulous/meticulously, pivotal, profound, renowned, resonates, rich (as filler adjective), showcase, tapestry, testament, underscore (verb), valuable, vibrant, comprehensive, robust, seamless, leverage, streamline, harness, fundamental/fundamentally, nuanced, multifaceted, notably, furthermore, moreover, encompasses, facilitates, utilizing, bolstered, surpassing, noteworthy
 
 ## Banned Phrases
 
-"it's worth noting", "it's important to note", "in today's ever-evolving", "play a significant role in shaping", "In conclusion", "Let's delve into", "At its core", "In today's digital landscape"
+"it's worth noting", "it's important to note", "in today's ever-evolving", "play a significant role in shaping", "In conclusion", "Let's delve into", "At its core", "In today's digital landscape", "despite these challenges", "continues to thrive", "continues to evolve", "maintains an active", "demonstrates a commitment to", "setting the stage for", "a diverse array of", "key turning point", "indelible mark", "deeply rooted", "focal point"
 
 ## Patterns to Fix
 
@@ -30,21 +30,23 @@ Additionally, align with, crucial, delve, emphasizing, enduring, enhance, foster
 2. Superficial -ing phrases: cut "highlighting/underscoring/emphasizing/reflecting/symbolizing" tacked onto sentences
 3. Promotional language: remove "groundbreaking", "breathtaking", "nestled", "vibrant"
 4. Vague attributions: replace "experts argue", "industry reports suggest" with specific named sources
-5. Formulaic challenges: don't write "Despite challenges... continues to thrive"
+5. Formulaic challenges: don't write "Despite challenges... continues to thrive." Also catch the full pattern: listing challenges then pivoting with "Despite these challenges" into a vague positive ending. Cut "Future Outlook" sections entirely.
 6. Negative parallelisms: rewrite "It's not just X; it's Y" and "Not only... but..."
 7. Rule of three: break up forced groups of three
 8. Copula avoidance: use "is/are/has" instead of "serves as/stands as/marks/represents"
-9. Synonym cycling: stop substituting synonyms to avoid repetition, just repeat the word
+9. Synonym cycling: stop substituting synonyms to avoid repetition, just repeat the word. For technical terms (EIP names, protocol names, concepts), use the same term every time. Do NOT rotate between "the proposal", "the standard", "the specification", "the improvement" when referring to the same thing.
 10. Generic conclusions: replace "the future looks bright" with something specific
 11. Uniform paragraphs: vary lengths wildly (some one sentence, some six)
 12. Too-clean transitions: drop some transition phrases, just move on
+13. Conjunctive adverb sentence openers: no more than 1 sentence per 500 words should start with a conjunctive adverb (Additionally, Consequently, Furthermore, Moreover, Notably, However). Rewrite the rest to integrate the transition naturally or drop it.
+14. Overattribution: don't attribute obvious or uncontroversial facts to sources in the body text. Just state the fact and cite it with a footnote. Reserve "according to X" and "as Y notes" for genuinely contested claims or expert opinions.
 
 ## Style Fixes
 
 - No curly quotation marks (use straight quotes only)
 - No emojis
-- No excessive boldface
-- No inline-header vertical lists (bolded term + colon on every bullet)
+- No excessive boldface. Specifically: don't bold every instance of a key term, don't bold terms in a "key takeaways" fashion, and don't bold more than 2-3 phrases per section.
+- No inline-header vertical lists (bolded term + colon on every bullet). Convert to prose or use plain bullets without bolded headers.
 - Sentence case for headings (not Title Case)
 - **Plain markdown links only.** References must use standard markdown `[text](url)` syntax. No inline HTML, no SVG icons, no `<a>` tags with embedded markup. If the draft phase produced HTML links with SVG icons or class attributes, convert them to plain `[text](url)` markdown.
 - **No tilde for "approximately".** `~` pairs render as strikethrough in markdown. Replace every `~` used for approximation with "approximately", "roughly", or "around". Search the entire file.
