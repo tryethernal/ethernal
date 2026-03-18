@@ -1,0 +1,25 @@
+# On-Chain Engineering Blog
+
+> Technical blog by Ethernal covering EVM internals, EIP/ERC explainers, L2 rollup architecture, smart contract security, and block explorer development.
+
+## Articles
+
+- [How Three Infrastructure Failures Turned a $50M Collateral Swap into $36K](https://tryethernal.com/blog/50m-defi-routing-failure): A $50M Aave collateral swap returned $36K. Three compounding CoW Protocol failures made the worst possible route the only one available.
+- [EIP-8130: Protocol-Level Account Abstraction](https://tryethernal.com/blog/eip-8130-protocol-level-account-abstraction): EIP-8130 proposes native AA with chainId=0 config sync. No bundlers, no per-chain key rotations.
+- [The Shape-Shifting Agent: ERC-8172 Mutable Configuration](https://tryethernal.com/blog/the-shape-shifting-agent-erc-8172): ERC-8172 proposes block-delayed metadata updates for AI agents. Why the problem is harder than it looks.
+- [The Commerce Layer: ERC-8183 AI Agent Payments](https://tryethernal.com/blog/the-commerce-layer-erc-8183): ERC-8183 adds verifiable payment to agent commerce with job lifecycle and evaluator patterns.
+- [EVM Opcodes 101: What Happens When You Send a Transaction](https://tryethernal.com/blog/evm-opcodes-101): How stack, memory, storage, and gas costs work at the opcode level.
+- [What Is a Layer 2, and Why Does Your Rollup Need a Block Explorer?](https://tryethernal.com/blog/what-is-l2-why-rollup-needs-block-explorer): L2 rollups process thousands of transactions off-chain, but without a block explorer, debugging becomes guesswork.
+- [Transaction Tracing with Ethernal](https://tryethernal.com/blog/transaction-tracing-with-ethernal): Deep dive into call trees, state diffs, and gas profiling with Ethernal's transaction tracing.
+- [Public EVM Block Explorers](https://tryethernal.com/blog/public-explorers): Custom domains, contract verification, token transfers, and Metamask integration for public chains.
+- [Interact with Mainnet Contracts on Your Local Fork](https://tryethernal.com/blog/interact-with-deployed-contracts-etherscan-integration): Import contracts from Etherscan into Ethernal to interact with them on local mainnet forks.
+- [Ethernal x Alchemy](https://tryethernal.com/blog/ethernal-x-alchemy): Webhook-based automatic transaction syncing with Alchemy.
+- [Ethernal x Tenderly](https://tryethernal.com/blog/ethernal-x-tenderly): Block explorer for Tenderly forks with direct debugging integration.
+- [Ethernal Is Going Open Source](https://tryethernal.com/blog/ethernal-is-going-open-source): Ethernal's code is publicly available on GitHub with free and paid tiers.
+- [Data Retention Changes](https://tryethernal.com/blog/data-retention-changes): Data retention policy update for free plan users.
+
+## About
+
+- [Ethernal](https://tryethernal.com): Open-source block explorer for EVM-based chains
+- [GitHub](https://github.com/tryethernal/ethernal): Source code repository
+- [Documentation](https://doc.tryethernal.com): Full product documentation

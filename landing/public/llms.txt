@@ -1,0 +1,65 @@
+# Ethernal
+
+> Ethernal is an open-source block explorer for EVM-based chains. It supports public and private explorers, transaction tracing, contract verification, token and NFT tracking, and L2 rollup features for OP Stack and Arbitrum Orbit chains.
+
+## Product
+
+- [Homepage](https://tryethernal.com): Overview of Ethernal's block explorer platform
+- [Pricing](https://tryethernal.com/pricing): Plans from free (Starter) to Enterprise, for public and private explorers
+- [Features](https://tryethernal.com/features): Full feature list including contract verification, transaction tracing, token tracking, and analytics
+- [Transaction Tracing](https://tryethernal.com/transaction-tracing): Deep transaction trace visualization with call trees, state diffs, and gas profiling
+- [App Chains](https://tryethernal.com/app-chains): Block explorer for application-specific chains
+
+## Developer Integrations
+
+- [Hardhat](https://tryethernal.com/hardhat-block-explorer): Hardhat plugin for automatic contract syncing and local development
+- [Anvil](https://tryethernal.com/anvil-block-explorer): Foundry Anvil integration for local chain exploration
+- [Ganache](https://tryethernal.com/ganache-block-explorer): Ganache integration for Truffle-based development
+- [GitHub Actions](https://tryethernal.com/github-actions): CI/CD integration for automated explorer setup
+- [Chainstack](https://tryethernal.com/chainstack): Chainstack managed node integration
+- [Kaleido](https://tryethernal.com/kaleido): Kaleido enterprise blockchain integration
+
+## L2 Frameworks
+
+- [OP Stack](https://tryethernal.com/op-stack): Block explorer for OP Stack rollups with L1/L2 bridging, batch tracking, and output verification
+- [Arbitrum Orbit](https://tryethernal.com/arbitrum-orbit): Block explorer for Arbitrum Orbit chains with batch and withdrawal tracking
+
+## Supported Chains
+
+- [Ethereum](https://tryethernal.com/chains/ethereum): Mainnet explorer
+- [Base](https://tryethernal.com/chains/base): Base L2 explorer
+- [Optimism](https://tryethernal.com/chains/optimism): Optimism L2 explorer
+- [Arbitrum One](https://tryethernal.com/chains/arbitrum-one): Arbitrum One explorer
+- [Blast](https://tryethernal.com/chains/blast): Blast L2 explorer
+- [Mode](https://tryethernal.com/chains/mode): Mode Network explorer
+- [Zora](https://tryethernal.com/chains/zora): Zora Network explorer
+- [Polygon PoS](https://tryethernal.com/chains/polygon-pos): Polygon PoS explorer
+- [BNB Chain](https://tryethernal.com/chains/bnb-chain): BNB Chain explorer
+- [Sepolia](https://tryethernal.com/chains/sepolia): Sepolia testnet explorer
+- [Holesky](https://tryethernal.com/chains/holesky): Holesky testnet explorer
+- [Base Sepolia](https://tryethernal.com/chains/base-sepolia): Base Sepolia testnet explorer
+- [Arbitrum Sepolia](https://tryethernal.com/chains/arbitrum-sepolia): Arbitrum Sepolia testnet explorer
+- [Arbitrum Nova](https://tryethernal.com/chains/arbitrum-nova): Arbitrum Nova explorer
+- [Degen Chain](https://tryethernal.com/chains/degen-chain): Degen Chain explorer
+- [Xai](https://tryethernal.com/chains/xai): Xai gaming chain explorer
+- [Proof of Play Apex](https://tryethernal.com/chains/proof-of-play-apex): Proof of Play Apex explorer
+- [Redstone](https://tryethernal.com/chains/redstone): Redstone explorer
+- [Lisk](https://tryethernal.com/chains/lisk): Lisk L2 explorer
+- [Cyber](https://tryethernal.com/chains/cyber): Cyber explorer
+- [Mint](https://tryethernal.com/chains/mint): Mint explorer
+
+## Blog
+
+- [On-Chain Engineering Blog](https://tryethernal.com/blog): Technical articles on EVM internals, EIPs, L2 architecture, and smart contract development
+
+## Documentation
+
+- [API Reference](https://documenter.getpostman.com/view/12141908/2s83zfQ5Tf): Postman collection for Ethernal's REST API
+- [Documentation](https://doc.tryethernal.com): Full product documentation
+- [GitHub](https://github.com/tryethernal/ethernal): Open-source repository
+
+## Optional
+
+- [Terms of Service](https://tryethernal.com/terms)
+- [Privacy Policy](https://tryethernal.com/privacy)
+- [Contact](https://tryethernal.com/contact-us)
