@@ -11,37 +11,38 @@
         </v-container>
         <LandingPricing :full="true" />
 
-        <v-container class="faq-section" style="max-width: 720px;">
-            <div class="text-overline mb-1 text-center" style="letter-spacing: 0.1em; color: #5DAAE0; font-size: 11px;">FAQ</div>
-            <h2 class="text-h4 font-weight-bold text-center mb-12" style="font-family: 'Exo', sans-serif;">Frequently Asked Questions</h2>
+        <v-container class="faq-section" style="max-width: 1200px;">
+            <h2 class="font-heading text-white mb-8" style="font-weight: 700; font-size: clamp(1.3rem, 2.5vw, 1.8rem); letter-spacing: -0.02em;">
+                Frequently Asked Questions
+            </h2>
             <div class="faq-list">
                 <div class="faq-item">
-                    <h3 class="faq-question">Is Ethernal free to use?</h3>
-                    <p class="faq-answer">
+                    <h3 class="faq-q">Is Ethernal free to use?</h3>
+                    <p class="faq-a">
                         Yes. Ethernal offers free plans for both public and private explorers.
-                        <br>The public Starter plan gives you an ad-supported explorer with contract verification, token tracking, and a testnet faucet.
-                        <br>The private Free plan includes 1 workspace with unlimited blocks, transaction decoding, tracing, contract interaction, and Hardhat/Anvil sync.
-                        <br>No credit card required for either.
+                        The public Starter plan gives you an ad-supported explorer with contract verification, token tracking, and a testnet faucet.
+                        The private Free plan includes 1 workspace with unlimited blocks, transaction decoding, tracing, contract interaction, and Hardhat/Anvil sync.
+                        No credit card required for either.
                     </p>
                 </div>
                 <div class="faq-item">
-                    <h3 class="faq-question">Can I use Ethernal with any EVM chain?</h3>
-                    <p class="faq-answer">Yes. Ethernal works with any EVM-compatible chain including OP Stack rollups, Arbitrum Orbit chains, Polygon CDK, and any custom EVM network. Just provide an RPC URL.</p>
+                    <h3 class="faq-q">Can I use Ethernal with any EVM chain?</h3>
+                    <p class="faq-a">Yes. Ethernal works with any EVM-compatible chain including OP Stack rollups, Arbitrum Orbit chains, Polygon CDK, and any custom EVM network. Just provide an RPC URL.</p>
                 </div>
                 <div class="faq-item">
-                    <h3 class="faq-question">How long does it take to set up?</h3>
-                    <p class="faq-answer">Under 5 minutes. Create an account, enter your chain's RPC URL, and your explorer is live. No server setup, no Docker, no infrastructure to manage.</p>
+                    <h3 class="faq-q">How long does it take to set up?</h3>
+                    <p class="faq-a">Under 5 minutes. Create an account, enter your chain's RPC URL, and your explorer is live. No server setup, no Docker, no infrastructure to manage.</p>
                 </div>
                 <div class="faq-item">
-                    <h3 class="faq-question">Do I need to run my own infrastructure?</h3>
-                    <p class="faq-answer">No. Ethernal is a hosted service. We handle the indexing, storage, and serving. You just point us at your RPC endpoint.</p>
+                    <h3 class="faq-q">Do I need to run my own infrastructure?</h3>
+                    <p class="faq-a">No. Ethernal is a hosted service. We handle the indexing, storage, and serving. You just point us at your RPC endpoint.</p>
                 </div>
                 <div class="faq-item">
-                    <h3 class="faq-question">Can I use my own branding?</h3>
-                    <p class="faq-answer">
+                    <h3 class="faq-q">Can I use my own branding?</h3>
+                    <p class="faq-a">
                         Yes. The App Chain plan includes full whitelabel branding: your logo, colors, and custom domain.
-                        <br>The Team plan includes a custom domain.
-                        <br>Your explorer looks like your product.
+                        The Team plan includes a custom domain.
+                        Your explorer looks like your product.
                     </p>
                 </div>
             </div>
@@ -149,29 +150,26 @@ useHead({
 .faq-list {
     display: flex;
     flex-direction: column;
+    gap: 16px;
 }
 
 .faq-item {
-    padding: 28px 0;
-    border-bottom: 1px solid var(--border-subtle);
+    padding: 20px;
+    background: var(--glass-bg);
+    border: 1px solid var(--drawer-divider);
+    border-radius: 12px;
 }
 
-.faq-item:first-child {
-    border-top: 1px solid var(--border-subtle);
-}
-
-.faq-question {
-    font-family: 'Exo', sans-serif;
-    font-size: 1rem;
-    font-weight: 600;
+.faq-q {
     color: var(--text-primary);
-    margin-bottom: 10px;
-    line-height: 1.4;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 8px;
 }
 
-.faq-answer {
-    font-size: 0.9rem;
+.faq-a {
     color: var(--text-secondary);
+    font-size: 0.9rem;
     line-height: 1.7;
     margin: 0;
 }
