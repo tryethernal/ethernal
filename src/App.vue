@@ -353,7 +353,7 @@ onMounted(() => {
             if (error.response && error.response.status === 404) {
                 document.location.href = `/`;
             } else {
-                document.location.assign(`//${envStore.mainDomain}`);
+                document.location.assign(`//${envStore.mainDomain}${window.location.pathname}${window.location.search}`);
             }
         });
 });
