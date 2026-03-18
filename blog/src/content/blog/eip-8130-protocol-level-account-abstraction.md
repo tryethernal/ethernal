@@ -10,7 +10,7 @@ tags:
   - Security
 image: "/blog/images/eip-8130-protocol-level-account-abstraction.png"
 ogImage: "/blog/images/eip-8130-protocol-level-account-abstraction-og.png"
-status: draft
+status: published
 readingTime: 7
 ---
 
