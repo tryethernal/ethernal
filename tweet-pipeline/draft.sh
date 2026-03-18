@@ -165,7 +165,7 @@ if [ "$SLOT" = "3" ] && [ -f "$NEWSLETTER_FILE" ]; then
 fi
 
 if [ "$SKIP_NORMAL_SOURCE" != "true" ]; then
-# Collect recent sourceIds from queue dir (last 7 days)
+# Collect recent sourceIds from queue dir (last 30 days)
 RECENT_IDS=$(find "$QUEUE_DIR" -name 'tweet-*.json' -mtime -30 -exec cat {} + 2>/dev/null \
   | jq -r '.sourceId // empty' 2>/dev/null \
   | jq -R -s 'split("\n") | map(select(. != ""))' 2>/dev/null \
@@ -204,7 +204,7 @@ if [ -f .source.json ]; then
   PROMOTED_FILE="$SCRIPT_DIR/.promoted-articles"
   PROMOTED_SLUGS="[]"
   if [ -f "$PROMOTED_FILE" ]; then
-    PROMOTED_SLUGS=$(cat "$PROMOTED_FILE" | jq -R -s 'split("\n") | map(select(. != ""))')
+    PROMOTED_SLUGS=$(cat "$PROMOTED_FILE" | jq -R -s 'split("\n") | map(select(. != ""))' 2>/dev/null || echo '[]')
   fi
 
   RECENT_HOOKS=$(find "$QUEUE_DIR" -name 'tweet-*.json' -mtime -30 -exec cat {} + 2>/dev/null \
@@ -224,7 +224,7 @@ if [ -f .source.json ]; then
 
     const isDup = isSemanticallyDuplicate(candidate, recentHooks, blogTitles, promotedSlugs);
     console.log(isDup ? 'true' : 'false');
-  " 2>&1)
+  " 2>>"$LOG_FILE")
 
   if [ "$IS_DUP" = "true" ]; then
     log "WARNING: Source '$SOURCE_TITLE' is semantically similar to recent content — falling back to feature tip"
