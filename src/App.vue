@@ -181,7 +181,7 @@ function updateTabInfo(logoUrl, name) {
 function authStateChanged(user) {
     const currentPath = window.location.pathname;
     userStore.updateUser(user);
-    if (currentPath != '/auth' && !user && envStore.isOnMainDomain) {
+    if (currentPath != '/auth' && currentPath != '/onboarding' && !user && envStore.isOnMainDomain) {
         console.log('redirecting to auth', envStore.mainDomain);
         return '/auth';
     }

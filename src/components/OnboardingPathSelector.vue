@@ -58,7 +58,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 
 /**
  * @type {Object} props
@@ -71,6 +71,11 @@ const props = defineProps({
 const emit = defineEmits(['path-selected']);
 
 const selected = ref(props.defaultPath);
+
+// Update selection when parent changes defaultPath (e.g., after reading sessionStorage in onMounted)
+watch(() => props.defaultPath, (newPath) => {
+    selected.value = newPath;
+});
 
 /**
  * Sets the selected path.
