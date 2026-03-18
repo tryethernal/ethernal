@@ -166,7 +166,7 @@ fi
 
 if [ "$SKIP_NORMAL_SOURCE" != "true" ]; then
 # Collect recent sourceIds from queue dir (last 7 days)
-RECENT_IDS=$(find "$QUEUE_DIR" -name 'tweet-*.json' -mtime -7 -exec cat {} + 2>/dev/null \
+RECENT_IDS=$(find "$QUEUE_DIR" -name 'tweet-*.json' -mtime -30 -exec cat {} + 2>/dev/null \
   | jq -r '.sourceId // empty' 2>/dev/null \
   | jq -R -s 'split("\n") | map(select(. != ""))' 2>/dev/null \
   || echo '[]')
@@ -195,6 +195,63 @@ SLOT="$SLOT" RECENT_IDS="$RECENT_IDS" node --input-type=module -e "
   writeFileSync('.source.json', JSON.stringify(result, null, 2));
   console.log('Selected: ' + selected.title + ' (bucket: ' + bucket.label + ')');
 " 2>&1 | tee -a "$LOG_FILE"
+fi
+
+# ============================================================
+# Semantic dedup — skip topics already covered by recent tweets or blog posts
+# ============================================================
+if [ -f .source.json ]; then
+  PROMOTED_FILE="$SCRIPT_DIR/.promoted-articles"
+  PROMOTED_SLUGS="[]"
+  if [ -f "$PROMOTED_FILE" ]; then
+    PROMOTED_SLUGS=$(cat "$PROMOTED_FILE" | jq -R -s 'split("\n") | map(select(. != ""))')
+  fi
+
+  RECENT_HOOKS=$(find "$QUEUE_DIR" -name 'tweet-*.json' -mtime -30 -exec cat {} + 2>/dev/null \
+    | jq -r '.hook // empty' 2>/dev/null \
+    | jq -R -s 'split("\n") | map(select(. != ""))' 2>/dev/null \
+    || echo '[]')
+
+  SOURCE_TITLE=$(jq -r '.source.title // .sourceId' .source.json)
+
+  IS_DUP=$(SOURCE_TITLE="$SOURCE_TITLE" RECENT_HOOKS="$RECENT_HOOKS" PROMOTED_SLUGS="$PROMOTED_SLUGS" node --input-type=module -e "
+    import { isSemanticallyDuplicate, fetchPublishedBlogTitles } from './lib/source-selector.js';
+
+    const candidate = process.env.SOURCE_TITLE;
+    const recentHooks = JSON.parse(process.env.RECENT_HOOKS);
+    const promotedSlugs = JSON.parse(process.env.PROMOTED_SLUGS);
+    const blogTitles = fetchPublishedBlogTitles(60);
+
+    const isDup = isSemanticallyDuplicate(candidate, recentHooks, blogTitles, promotedSlugs);
+    console.log(isDup ? 'true' : 'false');
+  " 2>&1)
+
+  if [ "$IS_DUP" = "true" ]; then
+    log "WARNING: Source '$SOURCE_TITLE' is semantically similar to recent content — falling back to feature tip"
+    rm -f .source.json
+
+    # Fall back to a feature tip
+    SLOT="$SLOT" RECENT_IDS="${RECENT_IDS:-[]}" node --input-type=module -e "
+      import { getScheduledTime } from './config.js';
+      import { selectSource } from './lib/source-selector.js';
+      import { writeFileSync } from 'node:fs';
+
+      const slot = parseInt(process.env.SLOT, 10);
+      const baseHours = { 1: 7, 2: 10, 3: 15, 4: 16, 5: 19 };
+      const recentIds = JSON.parse(process.env.RECENT_IDS || '[]');
+      const selected = selectSource('features', recentIds);
+      const scheduledAt = getScheduledTime(new Date(), baseHours[slot] || 15);
+
+      writeFileSync('.source.json', JSON.stringify({
+        sourceId: selected.title,
+        source: selected,
+        bucket: 'Product tip (dedup fallback)',
+        slot,
+        scheduledAt: scheduledAt.toISOString(),
+      }, null, 2));
+      console.log('Fallback: ' + selected.title);
+    " 2>&1 | tee -a "$LOG_FILE"
+  fi
 fi
 
 if [ ! -f .source.json ]; then
