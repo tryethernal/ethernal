@@ -78,11 +78,12 @@ fi
 if [ -n "${1:-}" ]; then
   SLOT="$1"
 else
+  # Ranges match timer schedule: 06:30, 09:30, 12:30, 15:30, 18:30 UTC
   HOUR=$(date -u +%-H)
-  if   [ "$HOUR" -lt 9  ]; then SLOT=1
-  elif [ "$HOUR" -lt 12 ]; then SLOT=2
-  elif [ "$HOUR" -lt 17 ]; then SLOT=3
-  elif [ "$HOUR" -lt 19 ]; then SLOT=4
+  if   [ "$HOUR" -lt 8  ]; then SLOT=1
+  elif [ "$HOUR" -lt 11 ]; then SLOT=2
+  elif [ "$HOUR" -lt 14 ]; then SLOT=3
+  elif [ "$HOUR" -lt 17 ]; then SLOT=4
   else                          SLOT=5
   fi
 fi
