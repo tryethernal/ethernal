@@ -110,6 +110,37 @@ const STOP_WORDS = new Set([
 ]);
 
 /**
+ * Basic suffix-stripping stemmer to normalize word forms.
+ * Maps plural/past-tense/gerund forms to a common root for better matching
+ * (e.g., "failures" -> "failur", "swapped" -> "swap", "routing" -> "rout").
+ * @param {string} word - Lowercase word to stem.
+ * @returns {string} Stemmed word.
+ */
+function stem(word) {
+    if (word.length < 4) return word;
+    return word
+        .replace(/ies$/, 'y')
+        .replace(/ied$/, 'y')
+        .replace(/ing$/, '')
+        .replace(/ment$/, '')
+        .replace(/ness$/, '')
+        .replace(/tion$/, '')
+        .replace(/sion$/, '')
+        .replace(/ures?$/, 'ur')
+        .replace(/ous$/, '')
+        .replace(/ive$/, '')
+        .replace(/ble$/, '')
+        .replace(/ally$/, '')
+        .replace(/ated$/, 'ate')
+        .replace(/pped$/, 'p')
+        .replace(/tted$/, 't')
+        .replace(/nned$/, 'n')
+        .replace(/ed$/, '')
+        .replace(/es$/, '')
+        .replace(/s$/, '');
+}
+
+/**
  * Extracts significant keywords from text for semantic comparison.
  * Handles both natural text ("$50M DeFi routing failure") and slug format ("50m-defi-routing-failure").
  * Preserves numbers with units (e.g., "$50.4M" -> "50.4m", "$36,000" -> "36,000").
@@ -122,20 +153,69 @@ export function extractKeywords(text) {
     // Replace hyphens with spaces (handles slug format)
     const normalized = text.replace(/-/g, ' ');
 
-    // Extract dollar amounts as special tokens (e.g., "$50.4M" -> "50.4m")
+    // Extract dollar amounts as special tokens (e.g., "$50.4M" -> "50.4m" and "50m")
     const amounts = [];
     for (const m of normalized.matchAll(/\$([0-9][0-9,.]*[a-zA-Z]?)/g)) {
-        amounts.push(m[1].toLowerCase());
+        const raw = m[1].toLowerCase();
+        amounts.push(raw);
+        // Also add rounded version without decimals (e.g., "50.4m" -> "50m")
+        const rounded = raw.replace(/[.,]\d+([a-z]?)$/, '$1');
+        if (rounded !== raw && rounded.length >= 3) amounts.push(rounded);
     }
 
-    // Extract regular words (3+ chars, alphanumeric)
+    // Extract regular words (3+ chars, alphanumeric), strip trailing punctuation
     const words = normalized
         .toLowerCase()
         .replace(/[^a-z0-9\s,.]/g, ' ')
         .split(/\s+/)
+        .map(w => w.replace(/[.,]+$/, ''))
         .filter(w => w.length >= 3 && !STOP_WORDS.has(w));
 
-    return new Set([...words, ...amounts]);
+    // Apply stemming for better cross-text matching
+    const stemmed = words.map(w => stem(w)).filter(w => w.length >= 3);
+
+    return new Set([...stemmed, ...amounts]);
+}
+
+/**
+ * Checks if a candidate topic is semantically similar to any existing content.
+ * Computes keyword overlap ratio bidirectionally: if >20% of either set's keywords
+ * overlap with the other, it's considered a duplicate.
+ * Requires at least 2 overlapping stemmed keywords to avoid false positives on short texts.
+ * @param {string} candidateTitle - The candidate source title to check.
+ * @param {string[]} recentHooks - Hook text from recent tweets (last 30 days).
+ * @param {string[]} blogTitles - Titles of published blog articles (last 60 days).
+ * @param {string[]} promotedSlugs - Slugs from .promoted-articles file.
+ * @returns {boolean} True if the candidate is a semantic duplicate.
+ */
+export function isSemanticallyDuplicate(candidateTitle, recentHooks, blogTitles, promotedSlugs) {
+    const candidateKeys = extractKeywords(candidateTitle);
+    if (candidateKeys.size < 3) return false;
+
+    const allReferences = [
+        ...recentHooks,
+        ...blogTitles,
+        ...promotedSlugs,
+    ];
+
+    for (const ref of allReferences) {
+        const refKeys = extractKeywords(ref);
+        if (refKeys.size === 0) continue;
+
+        let overlap = 0;
+        for (const key of candidateKeys) {
+            if (refKeys.has(key)) overlap++;
+        }
+
+        // Check overlap ratio against both sets — a match in either direction indicates similarity.
+        // Uses the higher ratio to catch cases where one text is much longer than the other.
+        const candidateRatio = overlap / candidateKeys.size;
+        const refRatio = overlap / refKeys.size;
+        const ratio = Math.max(candidateRatio, refRatio);
+        if (overlap >= 2 && ratio > 0.2) return true;
+    }
+
+    return false;
 }
 
 /**
