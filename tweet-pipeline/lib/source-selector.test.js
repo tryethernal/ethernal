@@ -1,6 +1,6 @@
 import { describe, it, mock } from 'node:test';
 import assert from 'node:assert/strict';
-import { parseArticleFrontmatter, FEATURE_TIPS, selectSource } from './source-selector.js';
+import { parseArticleFrontmatter, FEATURE_TIPS, selectSource, extractKeywords, isSemanticallyDuplicate } from './source-selector.js';
 
 describe('source-selector', () => {
     describe('parseArticleFrontmatter', () => {
@@ -127,6 +127,89 @@ Body.`;
             const result = selectSource('trend_scanner', []);
             assert.ok(result !== null);
             assert.ok(typeof result.title === 'string');
+        });
+    });
+
+    describe('extractKeywords', () => {
+        it('extracts lowercase stemmed words, removes stop words', () => {
+            const result = extractKeywords('How Three Infrastructure Failures Turned a $50M Swap');
+            // Stemmed forms: "infrastructure" -> "infrastructur", "failures" -> "failur"
+            assert.ok(result.has('infrastructur'));
+            assert.ok(result.has('failur'));
+            assert.ok(result.has('swap'));
+            assert.ok(!result.has('how'));
+            assert.ok(!result.has('a'));
+        });
+
+        it('extracts numbers with units as keywords', () => {
+            const result = extractKeywords('$50.4M swapped for $36,000 in one transaction');
+            assert.ok(result.has('swap'));       // "swapped" -> stem -> "swap"
+            assert.ok(result.has('transac'));    // "transaction" -> stem -> "transac"
+            assert.ok(result.has('50.4m'));
+            assert.ok(result.has('36,000'));
+        });
+
+        it('returns empty set for empty input', () => {
+            const result = extractKeywords('');
+            assert.equal(result.size, 0);
+        });
+
+        it('handles slug format (hyphen-separated)', () => {
+            const result = extractKeywords('50m-defi-routing-failure');
+            assert.ok(result.has('defi'));
+            assert.ok(result.has('rout'));       // "routing" -> stem -> "rout"
+            assert.ok(result.has('failur'));     // "failure" -> stem -> "failur"
+        });
+    });
+
+    describe('isSemanticallyDuplicate', () => {
+        it('detects duplicate when candidate matches a recent hook', () => {
+            const candidate = 'Aave and CoW Swap publish conflicting post-mortems after $50M loss';
+            const recentHooks = [
+                '$50.4M swapped for $36,000 in one transaction. MEV bots took $44M of it in the same block.',
+            ];
+            const result = isSemanticallyDuplicate(candidate, recentHooks, [], []);
+            assert.equal(result, true);
+        });
+
+        it('detects duplicate when candidate matches a blog title', () => {
+            const candidate = '$50M DeFi swap routing catastrophe explained';
+            const blogTitles = [
+                'How Three Infrastructure Failures Turned a $50M Collateral Swap into $36K',
+            ];
+            const result = isSemanticallyDuplicate(candidate, [], blogTitles, []);
+            assert.equal(result, true);
+        });
+
+        it('detects duplicate when candidate matches a promoted slug', () => {
+            const candidate = 'The $50M DeFi routing failure nobody talks about';
+            const promotedSlugs = ['50m-defi-routing-failure'];
+            const result = isSemanticallyDuplicate(candidate, [], [], promotedSlugs);
+            assert.equal(result, true);
+        });
+
+        it('returns false for unrelated topics', () => {
+            const candidate = 'ZK proof costs dropped 97% in 9 months';
+            const recentHooks = [
+                '$50.4M swapped for $36,000 in one transaction.',
+            ];
+            const blogTitles = [
+                'How Three Infrastructure Failures Turned a $50M Collateral Swap into $36K',
+            ];
+            const result = isSemanticallyDuplicate(candidate, recentHooks, blogTitles, []);
+            assert.equal(result, false);
+        });
+
+        it('returns false when all reference lists are empty', () => {
+            const result = isSemanticallyDuplicate('Any topic here', [], [], []);
+            assert.equal(result, false);
+        });
+
+        it('returns false for short generic candidate', () => {
+            const candidate = 'Ethereum update';
+            const recentHooks = ['Ethereum gas fees hit all-time lows'];
+            const result = isSemanticallyDuplicate(candidate, recentHooks, [], []);
+            assert.equal(result, false);
         });
     });
 });

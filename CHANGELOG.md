@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.88] - 2026-03-18
+### Fixed
+- fix(pipeline): align slot detection ranges with timer schedule (#770)
+- fix(pipeline): prevent scheduling tweets in the past (#769)
+- feat(pipeline): semantic dedup for tweet source selection (#768)
+
+
 ## [5.17.87] - 2026-03-18
 ### Fixed
 - fix(pipeline): use fetch+merge instead of pull in promote-blog (#767)
