@@ -401,8 +401,7 @@ useHead({
                 "@type": "BreadcrumbList",
                 "itemListElement": [
                     { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tryethernal.com/" },
-                    { "@type": "ListItem", "position": 2, "name": "Chains", "item": "https://tryethernal.com/chains" },
-                    { "@type": "ListItem", "position": 3, "name": "Polygon PoS", "item": "https://tryethernal.com/chains/polygon-pos" }
+                    { "@type": "ListItem", "position": 2, "name": "Polygon PoS", "item": "https://tryethernal.com/chains/polygon-pos" }
                 ]
             })
         },

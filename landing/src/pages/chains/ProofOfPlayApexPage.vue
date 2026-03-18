@@ -383,8 +383,7 @@ useHead({
                 "@type": "BreadcrumbList",
                 "itemListElement": [
                     { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tryethernal.com/" },
-                    { "@type": "ListItem", "position": 2, "name": "Chains", "item": "https://tryethernal.com/chains" },
-                    { "@type": "ListItem", "position": 3, "name": "Proof of Play Apex", "item": "https://tryethernal.com/chains/proof-of-play-apex" }
+                    { "@type": "ListItem", "position": 2, "name": "Proof of Play Apex", "item": "https://tryethernal.com/chains/proof-of-play-apex" }
                 ]
             })
         },

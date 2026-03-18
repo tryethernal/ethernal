@@ -166,8 +166,7 @@ useHead({
         ] }) },
         { type: 'application/ld+json', children: JSON.stringify({ "@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
             { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tryethernal.com/" },
-            { "@type": "ListItem", "position": 2, "name": "Chains", "item": "https://tryethernal.com/chains" },
-            { "@type": "ListItem", "position": 3, "name": "Lisk", "item": "https://tryethernal.com/chains/lisk" }
+                    { "@type": "ListItem", "position": 2, "name": "Lisk", "item": "https://tryethernal.com/chains/lisk" }
         ] }) },
         { type: 'application/ld+json', children: JSON.stringify({ "@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
             { "@type": "Question", "name": "What is Lisk?", "acceptedAnswer": { "@type": "Answer", "text": "An OP Stack L2 founded in 2016, now part of the Optimism Superchain with a focus on RWA tokenization." } },

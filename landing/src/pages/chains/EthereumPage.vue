@@ -393,8 +393,7 @@ useHead({
                 "@type": "BreadcrumbList",
                 "itemListElement": [
                     { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tryethernal.com/" },
-                    { "@type": "ListItem", "position": 2, "name": "Chains", "item": "https://tryethernal.com/chains" },
-                    { "@type": "ListItem", "position": 3, "name": "Ethereum", "item": "https://tryethernal.com/chains/ethereum" }
+                    { "@type": "ListItem", "position": 2, "name": "Ethereum", "item": "https://tryethernal.com/chains/ethereum" }
                 ]
             })
         },

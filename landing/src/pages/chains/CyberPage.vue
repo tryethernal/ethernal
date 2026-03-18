@@ -166,8 +166,7 @@ useHead({
         ] }) },
         { type: 'application/ld+json', children: JSON.stringify({ "@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
             { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tryethernal.com/" },
-            { "@type": "ListItem", "position": 2, "name": "Chains", "item": "https://tryethernal.com/chains" },
-            { "@type": "ListItem", "position": 3, "name": "Cyber", "item": "https://tryethernal.com/chains/cyber" }
+                    { "@type": "ListItem", "position": 2, "name": "Cyber", "item": "https://tryethernal.com/chains/cyber" }
         ] }) },
         { type: 'application/ld+json', children: JSON.stringify({ "@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
             { "@type": "Question", "name": "What is Cyber?", "acceptedAnswer": { "@type": "Answer", "text": "A social-focused OP Stack L2 by CyberConnect for decentralized social apps and on-chain identity." } },

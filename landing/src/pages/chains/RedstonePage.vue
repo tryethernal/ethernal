@@ -339,8 +339,7 @@ useHead({
         ] }) },
         { type: 'application/ld+json', children: JSON.stringify({ "@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
             { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tryethernal.com/" },
-            { "@type": "ListItem", "position": 2, "name": "Chains", "item": "https://tryethernal.com/chains" },
-            { "@type": "ListItem", "position": 3, "name": "Redstone", "item": "https://tryethernal.com/chains/redstone" }
+                    { "@type": "ListItem", "position": 2, "name": "Redstone", "item": "https://tryethernal.com/chains/redstone" }
         ] }) },
         { type: 'application/ld+json', children: JSON.stringify({ "@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
             { "@type": "Question", "name": "What is Redstone?", "acceptedAnswer": { "@type": "Answer", "text": "An OP Stack L2 by Lattice designed for on-chain games and autonomous worlds using the MUD framework." } },

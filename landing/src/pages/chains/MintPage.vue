@@ -166,8 +166,7 @@ useHead({
         ] }) },
         { type: 'application/ld+json', children: JSON.stringify({ "@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
             { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tryethernal.com/" },
-            { "@type": "ListItem", "position": 2, "name": "Chains", "item": "https://tryethernal.com/chains" },
-            { "@type": "ListItem", "position": 3, "name": "Mint", "item": "https://tryethernal.com/chains/mint" }
+                    { "@type": "ListItem", "position": 2, "name": "Mint", "item": "https://tryethernal.com/chains/mint" }
         ] }) },
         { type: 'application/ld+json', children: JSON.stringify({ "@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
             { "@type": "Question", "name": "What is Mint?", "acceptedAnswer": { "@type": "Answer", "text": "An NFT-focused OP Stack L2 for low-cost minting and green NFT infrastructure." } },
