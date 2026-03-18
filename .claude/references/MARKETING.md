@@ -374,7 +374,7 @@ Feature flag: `isDripEmailEnabled()` in `run/lib/flags.js`.
 ## Known Issues & Maintenance
 
 - **Claude auth:** Uses a long-lived token from `claude setup-token` (stored as `CLAUDE_CODE_OAUTH_TOKEN` in `/opt/blog-pipeline.env`). This token does not expire. If it ever needs rotating: run `claude setup-token` locally, copy the token to the env file, and update the `CLAUDE_CODE_OAUTH_TOKEN` GitHub Actions secret. Token also saved in `.credentials.local`.
-- **Git object permissions:** If `draft.sh` fails with `insufficient permission for adding an object to repository database`, run `chown -R blog:blog /opt/ethernal-blog-stack/.git/objects/` — caused by root running git commands in the repo.
+- **File ownership — ALWAYS `blog:blog`:** All files under `/opt/ethernal-blog-stack/` must be owned by `blog:blog`. The systemd services run as `User=blog`, so any root-owned file causes permission denied. After deploying scripts via `scp`, editing files as root, or running git commands as root, always run `chown -R blog:blog /opt/ethernal-blog-stack/` (or at minimum chown the affected files). Common symptoms: `touch: cannot touch ... Permission denied`, `insufficient permission for adding an object to repository database`.
 - **Tweet pipeline deployed 2026-03-17.** All 4 timers enabled. Service files have `User=blog` for Claude CLI compatibility. First tweet-draft fires ~12:30 UTC.
 - **Twitter API:** Pay-per-use with $5 credits. Consumer key `9YVdDl54WiDza5racpgQTi6e4`. Full credentials in `.credentials.local`.
 - **Image generation:** `gemini-3.1-flash-image-preview` is the best model (cleanest results). `gemini-2.5-flash-image` gets rate-limited. Falls back gracefully if API fails.
