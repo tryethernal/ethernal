@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.84] - 2026-03-18
+### Fixed
+- fix: optimize database connection pool configuration for workspace lookups (#755)
+- blog: add draft - One Signature, Every Chain: EIP-8130's Protocol-Level Account Abstraction
+
+
 ## [5.17.83] - 2026-03-18
 ### Fixed
 - fix: add missing workspaceId filter in address transaction queries (#751)
