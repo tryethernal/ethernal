@@ -110,7 +110,7 @@ module.exports = async job => {
 
         // Disable browser sync to prevent concurrent syncing from both browser and server
         if (workspace.browserSyncEnabled)
-            await db.updateBrowserSync(workspace.id, false);
+            await workspace.update({ browserSyncEnabled: false });
     } else if (data.workspaceId) {
         // Fast path: uses workspaceId for optimized database lookup
         if (data.blockNumber === undefined || data.blockNumber === null)
@@ -229,7 +229,7 @@ module.exports = async job => {
 
         // Disable browser sync to prevent concurrent syncing from both browser and server
         if (workspace.browserSyncEnabled)
-            await db.updateBrowserSync(workspace.id, false);
+            await workspace.update({ browserSyncEnabled: false });
     } else {
         // Normal path: real-time sync, full validation
         if (!data.userId || !data.workspace || data.blockNumber === undefined || data.blockNumber === null)
@@ -353,7 +353,7 @@ module.exports = async job => {
         }
 
         if (workspace.browserSyncEnabled)
-            await db.updateBrowserSync(workspace.id, false);
+            await workspace.update({ browserSyncEnabled: false });
     }
 
     if (data.source == 'recovery' && workspace.integrityCheck && workspace.integrityCheck.isHealthy)
