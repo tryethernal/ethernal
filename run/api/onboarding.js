@@ -111,22 +111,11 @@ router.post('/setup', setupRateLimit, async (req, res, next) => {
             passwordHash
         });
 
-        // Create workspace
-        const workspaceName = data.path === 'public' ? data.explorerName : `${data.email}'s workspace`;
-        const workspaceData = sanitize({
-            name: workspaceName,
-            public: data.path === 'public',
-            rpcServer: data.rpcServer || null,
-            networkId: networkId || null
-        });
-        const workspace = await db.createWorkspace(uid, workspaceData);
-
-        // Set as current workspace
-        await db.setCurrentWorkspace(uid, workspaceName);
-
-        // Create explorer for public path
-        let explorer;
+        // Create workspace and explorer
+        let workspace, explorer;
         if (data.path === 'public') {
+            // createExplorerFromOptions creates its own workspace internally,
+            // so we don't create one separately (would cause duplicate name error)
             const stripePlan = await db.getStripePlan(getDefaultPlanSlug());
 
             const options = sanitize({
@@ -144,6 +133,24 @@ router.post('/setup', setupRateLimit, async (req, res, next) => {
             });
 
             explorer = await db.createExplorerFromOptions(user.id, options);
+            // createExplorerFromOptions creates the workspace internally
+            // and sets currentWorkspaceId, but doesn't return the workspace on the explorer.
+            // Fetch the workspace via the explorer's workspaceId.
+            workspace = await db.getWorkspaceById(explorer.workspaceId);
+        } else {
+            // Private path: create workspace directly
+            const workspaceData = sanitize({
+                name: `${data.email}'s workspace`,
+                public: false,
+                rpcServer: data.rpcServer || null,
+                networkId: networkId || null
+            });
+            workspace = await db.createWorkspace(uid, workspaceData);
+        }
+
+        // Set as current workspace (for private path only — public path is handled by createExplorerFromOptions)
+        if (data.path === 'private') {
+            await db.setCurrentWorkspace(uid, workspace.name);
         }
 
         // Generate auth token

@@ -146,10 +146,9 @@ describe(`POST ${BASE_URL}/setup`, () => {
         jest.spyOn(flags, 'isFirebaseAuthEnabled').mockReturnValueOnce(false);
         jest.spyOn(db, 'getUserByEmail').mockResolvedValueOnce(null);
         jest.spyOn(db, 'createUser').mockResolvedValueOnce({ id: 1, firebaseUserId: 'uid-123' });
-        jest.spyOn(db, 'createWorkspace').mockResolvedValueOnce({ id: 10, name: 'My Workspace' });
-        jest.spyOn(db, 'setCurrentWorkspace').mockResolvedValueOnce(true);
         jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ id: 5, slug: 'free' });
-        jest.spyOn(db, 'createExplorerFromOptions').mockResolvedValueOnce({ id: 100, slug: 'my-explorer', name: 'My Explorer' });
+        jest.spyOn(db, 'createExplorerFromOptions').mockResolvedValueOnce({ id: 100, slug: 'my-explorer', name: 'My Explorer', workspaceId: 10 });
+        jest.spyOn(db, 'getWorkspaceById').mockResolvedValueOnce({ id: 10, name: 'My Explorer' });
         jest.spyOn(crypto, 'firebaseHash').mockResolvedValueOnce({ passwordHash: 'hash', passwordSalt: 'salt' });
         ProviderConnector.mockImplementationOnce(() => ({
             fetchNetworkId: jest.fn().mockResolvedValue(123)
@@ -167,7 +166,6 @@ describe(`POST ${BASE_URL}/setup`, () => {
             .expect(200)
             .then(({ body }) => {
                 expect(db.createUser).toHaveBeenCalled();
-                expect(db.createWorkspace).toHaveBeenCalled();
                 expect(db.createExplorerFromOptions).toHaveBeenCalledWith(
                     1,
                     expect.objectContaining({ name: 'My Explorer' })
