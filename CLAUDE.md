@@ -177,7 +177,8 @@ See [MARKETING.md](.claude/references/MARKETING.md) for complete reference (blog
 4. Add footer link in `LandingFooter.vue` (row 2, appropriate Chains column)
 5. Check if the chain is more prominent than current "Popular Chains" in the header mega menu (`LandingNavbar.vue`). If so, swap it in. Current popular: Base, Optimism, Arbitrum One, Blast, Sepolia.
 6. Add chain card link on the framework page (`OpStackPage.vue` or `OrbitPage.vue`) in the "Chains Built on..." section
-7. Sitemap is auto-generated from routes at build time
+7. Update `landing/public/llms.txt` with the new chain entry under "## Supported Chains"
+8. Sitemap is auto-generated from routes at build time
 
 **Feature-gated pages (pending):**
 - **ZK chains** (zkSync Era, Scroll, Linea, Polygon zkEVM, Mantle): Build once ZK-specific features are implemented (ZK proof verification, batch posting, etc.).
