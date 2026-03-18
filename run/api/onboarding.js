@@ -162,6 +162,17 @@ router.post('/setup', setupRateLimit, async (req, res, next) => {
 
         res.status(200).json(response);
     } catch(error) {
+        // Known user-facing errors — return clean JSON instead of HTML stack trace
+        const knownErrors = [
+            'You already have a workspace with this name',
+            'This explorer name is already taken',
+            'Failed to create user',
+            'Failed to create workspace',
+            'Could not find default plan'
+        ];
+        if (knownErrors.some(msg => error.message && error.message.includes(msg)))
+            return managedError(error, req, res);
+
         unmanagedError(error, req, next);
     }
 });
