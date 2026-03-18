@@ -21,7 +21,6 @@
                 </template>
                 <template v-else>
                     <v-card v-if="signInMode" border>
-                        <v-alert class="mb-0" density="compact" text type="info" v-show="explorerToken">Sign up or sign in in order to finish setting up your explorer</v-alert>
                         <v-alert class="mb-0" density="compact" text type="error" v-show="error">{{ error }}</v-alert>
                         <v-card-title>Sign In</v-card-title>
                         <v-card-text>
@@ -43,42 +42,16 @@
                                     v-model="password" name="password" label="Password" type="password"></v-text-field>
                                 <v-card-actions class="px-0">
                                     <div style="float: left;">
-                                        <small><a href="#" @click.prevent="switchMode('signup')">Sign Up</a></small><br>
                                         <small><a href="#" @click.prevent="switchMode('forgottenPwd')">Forgot My Password</a></small>
                                     </div>
                                     <v-spacer></v-spacer>
                                     <v-btn variant="flat" :disabled="!valid" :loading="loading" color="primary" type="submit">Sign In</v-btn>
                                 </v-card-actions>
                             </v-form>
-                        </v-card-text>
-                    </v-card>
-                    <v-card v-else-if="signUpMode" border>
-                        <v-alert class="mb-0" density="compact" text type="info" v-show="explorerToken">Sign up or sign in in order to finish setting up your explorer</v-alert>
-                        <v-alert class="mb-0" density="compact" text type="error" v-show="error">{{ error }}</v-alert>
-                        <v-card-title>Sign Up</v-card-title>
-                        <v-card-text>
-                            <v-form @submit.prevent="signUp" v-model="valid">
-                                <v-text-field
-                                    :rules="[
-                                        v => !!v || 'Email is required',
-                                        v => /.+@.+\..+/.test(v) || 'Email must be valid',
-                                    ]"
-                                    required v-model="email" name="email" label="Email" type="text"></v-text-field>
-                                <v-text-field
-                                    :rules="[
-                                        v => !!v || 'Password is required',
-                                    ]"
-                                    required v-model="password" name="password" label="Password" type="password"></v-text-field>
-
-                                <v-card-actions class="px-0">
-                                    <div style="float: left;">
-                                        <small><a href="#" @click.prevent="switchMode('signin')">Sign In</a></small><br>
-                                        <small><a href="#" @click.prevent="switchMode('forgottenPwd')">Forgot My Password</a></small>
-                                    </div>
-                                    <v-spacer></v-spacer>
-                                    <v-btn variant="flat" :disabled="!valid" :loading="loading" color="primary" type="submit">Sign Up</v-btn>
-                                </v-card-actions>
-                            </v-form>
+                            <p class="text-body-2 text-medium-emphasis text-center mt-4">
+                                Don't have an account?
+                                <router-link to="/onboarding" class="text-primary">Create one</router-link>
+                            </p>
                         </v-card-text>
                     </v-card>
                     <v-card v-else-if="forgottenPwdMode" border>
@@ -98,7 +71,7 @@
                                 <v-card-actions class="px-0">
                                     <div style="float: left;">
                                         <small><a href="#" @click.prevent="switchMode('signin')">Sign In</a></small><br>
-                                        <small><a href="#" @click.prevent="switchMode('signup')">Sign Up</a></small>
+                                        <small><router-link to="/onboarding">Sign Up</router-link></small>
                                     </div>
                                     <v-spacer></v-spacer>
                                     <v-btn variant="flat" :disabled="!valid" :loading="loading" color="primary" type="submit">Submit</v-btn>
@@ -136,8 +109,8 @@
 
 /**
  * @fileoverview Authentication page component.
- * Handles user sign-in, sign-up, password reset, and forgotten password flows.
- * Supports explorer token-based onboarding for new users.
+ * Handles user sign-in, password reset, and forgotten password flows.
+ * Redirects to /onboarding for sign-up and explorer token-based flows.
  * @component Auth
  */
 <script>
@@ -161,11 +134,29 @@ export default {
             this.userStore.updateUser({ apiToken: this.$route.query.apiToken });
             document.location.href = `//${this.envStore.mainDomain}${this.$route.query.path}${this.$route.query.explorerToken ? `?explorerToken=${this.$route.query.explorerToken}` : ''}`;
         }
-        else if (this.explorerToken)
-            this.mode = 'signup';
         else if (this.$route.query.token) {
             this.mode = 'resetPwd';
             this.resetPasswordToken = this.$route.query.token;
+        }
+        else {
+            // Store URL params in sessionStorage for onboarding context
+            const params = new URLSearchParams(window.location.search);
+            const context = {};
+            ['flow', 'chain', 'plan', 'explorerToken', 'rpc'].forEach(key => {
+                if (params.get(key)) context[key] = params.get(key);
+            });
+            if (context.explorerToken) {
+                context.flow = context.flow || 'public';
+            }
+            if (Object.keys(context).length) {
+                sessionStorage.setItem('onboardingContext', JSON.stringify(context));
+            }
+
+            // Auto-redirect to onboarding if user arrives with explorerToken or flow params
+            if (context.explorerToken || context.flow) {
+                this.$router.push('/onboarding');
+                return;
+            }
         }
     },
     methods: {
@@ -187,19 +178,6 @@ export default {
                 .catch(error => {
                     console.log(error);
                     this.error = error.response && error.response.data ? error.response.data : 'Error while signing in. Please retry.';
-                    this.loading = false
-                });
-        },
-        signUp() {
-            this.loading = true;
-            this.error = null;
-            this.$server.signUp(this.email, this.password, this.explorerToken)
-                .then(({ data: { user }}) => {
-                    this.userStore.updateUser(user)
-                    document.location.href = `/transactions${this.explorerToken ? '?explorerToken=' + this.explorerToken : ''}`;
-                })
-                .catch(error => {
-                    this.error = error.response.data;
                     this.loading = false
                 });
         },
@@ -225,7 +203,6 @@ export default {
     computed: {
         ...mapStores(useUserStore, useEnvStore),
         signInMode() { return this.mode == 'signin' },
-        signUpMode() { return this.mode == 'signup' },
         forgottenPwdMode() { return this.mode == 'forgottenPwd' },
         resetPwdMode() { return this.mode == 'resetPwd' },
         explorerToken() { return this.$route.query.explorerToken },

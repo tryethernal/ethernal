@@ -96,6 +96,11 @@ const ESRoutes = [
 
 const routes = [
     { path: '/auth', component: Auth, beforeEnter: redirectIfLoggedIn },
+    {
+        path: '/onboarding',
+        name: 'onboarding',
+        component: () => import(/* webpackChunkName: "onboarding" */ '../components/OnboardingWizard.vue')
+    },
     { path: '/accounts', component: AccountList, beforeEnter: redirectIfLoggedOut },
     { path: '/blocks', component: Blocks, beforeEnter: redirectIfLoggedOut },
     { path: '/overview', component: Overview, beforeEnter: redirectIfLoggedOut },

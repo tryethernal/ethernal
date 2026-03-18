@@ -28,7 +28,6 @@
 
             <Migrate-Explorer-Modal ref="migrateExplorerModal" v-if="explorerToken || justMigrated" />
             <Demo-Explorer-Migration-Modal ref="demoExplorerMigrationModal" />
-            <Onboarding-Modal ref="onboardingModal" />
             <Browser-Sync-Explainer-Modal ref="browserSyncExplainerModal" v-if="currentWorkspaceStore.browserSyncEnabled" />
 
             <v-main>
@@ -48,7 +47,6 @@ import { useCurrentWorkspaceStore } from './stores/currentWorkspace';
 import { useEnvStore } from './stores/env';
 import { useExplorerStore } from './stores/explorer';
 import { useUserStore } from './stores/user';
-import OnboardingModal from './components/OnboardingModal';
 import BrowserSyncExplainerModal from './components/BrowserSyncExplainerModal';
 import MigrateExplorerModal from './components/MigrateExplorerModal';
 import DemoExplorerMigrationModal from './components/DemoExplorerMigrationModal';
@@ -81,14 +79,13 @@ const drawer = ref(false);
 // Modal refs
 const migrateExplorerModal = ref();
 const demoExplorerMigrationModal = ref();
-const onboardingModal = ref();
 const browserSyncExplainerModal = ref();
 
 const $server = inject('$server');
 const $pusher = inject('$pusher');
 
 // Computed properties
-const isAuthPage = computed(() => window.location.pathname.indexOf('/auth') > -1);
+const isAuthPage = computed(() => window.location.pathname.indexOf('/auth') > -1 || window.location.pathname.indexOf('/onboarding') > -1);
 const canDisplaySides = computed(() => {
     return (
         userStore && typeof userStore.loggedIn !== 'undefined' &&
@@ -170,7 +167,7 @@ function toggleMenu() {
 
 function launchOnboarding() {
     isOverlayActive.value = false;
-    onboardingModal.value.open();
+    window.location.assign('/onboarding');
 }
 
 function updateTabInfo(logoUrl, name) {
