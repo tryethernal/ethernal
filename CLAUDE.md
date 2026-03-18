@@ -304,6 +304,8 @@ Migrations run automatically in CI. Must be backwards-compatible (additive only)
 
 When user says "merge and deploy": `gh pr merge --squash --admin` first, then deploy.
 
+**Blog/landing/frontend changes auto-deploy on push to `develop`** via GitHub Actions CI. Do NOT manually run `/deploy` for blog-only or landing-only changes (images, articles, static content). Just push to `develop` and CI handles the rest.
+
 ### Karma Project Updates
 
 Ethernal is registered on [Karma](https://gap.karmahq.xyz/project/ethernal) (Optimism, project UID `0x86803c70b193a5aee05ae4b45b2e1e99eb4f6b39056635f810bfc18ed391d0d5`). After every significant update (new feature, major fix, milestone reached), post a project update via the Karma API using the `project-manager` skill. This builds a public on-chain track record for grant applications. API key env var: `KARMA_API_KEY`.
