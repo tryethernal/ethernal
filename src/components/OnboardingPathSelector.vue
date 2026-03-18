@@ -1,55 +1,60 @@
 <!--
-    @fileoverview OnboardingPathSelector component — step 1 of the onboarding wizard.
+    @fileoverview Path selector for onboarding wizard.
+    Shows two cards: Public Block Explorer vs Private Dev Workspace.
+    Designed for the left panel of the split-screen wizard layout.
     @component OnboardingPathSelector
-    @prop {String} defaultPath - Pre-selected path ('public' or 'private'). Defaults to 'private'.
-    @emits path-selected - Emitted with the chosen path string when the user confirms.
+    @emits path-selected - Emitted with 'public' or 'private' when user confirms
 -->
 <template>
     <div class="path-selector">
-        <h2 class="text-h5 font-weight-bold mb-2">What would you like to set up?</h2>
-        <p class="text-body-2 text-medium-emphasis mb-8">You can always switch later.</p>
+        <div class="path-step-label">Step 1 of 4</div>
+        <h2 class="path-title">What would you like to set up?</h2>
+        <p class="path-subtitle">You can always switch later.</p>
 
-        <v-row justify="center" class="path-cards">
-            <v-col cols="12" sm="6" style="max-width: 340px;">
-                <v-card
-                    :class="['path-card', { 'path-card--selected': selected === 'public' }]"
-                    @click="select('public')"
-                    variant="outlined"
-                    rounded="xl"
-                >
-                    <v-card-text class="pa-6 text-center">
-                        <v-icon size="48" class="mb-4" :color="selected === 'public' ? 'primary' : 'grey'">
-                            mdi-earth
-                        </v-icon>
-                        <div class="text-h6 font-weight-bold mb-2">Public Block Explorer</div>
-                        <div class="text-body-2 text-medium-emphasis">
-                            Deploy a public-facing explorer for your chain with custom domain, branding, and analytics.
-                        </div>
-                    </v-card-text>
-                </v-card>
-            </v-col>
-            <v-col cols="12" sm="6" style="max-width: 340px;">
-                <v-card
-                    :class="['path-card', { 'path-card--selected': selected === 'private' }]"
-                    @click="select('private')"
-                    variant="outlined"
-                    rounded="xl"
-                >
-                    <v-card-text class="pa-6 text-center">
-                        <v-icon size="48" class="mb-4" :color="selected === 'private' ? 'primary' : 'grey'">
-                            mdi-laptop
-                        </v-icon>
-                        <div class="text-h6 font-weight-bold mb-2">Private Dev Workspace</div>
-                        <div class="text-body-2 text-medium-emphasis">
-                            Connect to your local Hardhat or Anvil node for development and debugging.
-                        </div>
-                    </v-card-text>
-                </v-card>
-            </v-col>
-        </v-row>
+        <div class="path-cards">
+            <div
+                :class="['path-card', { 'path-card--selected': selected === 'public' }]"
+                @click="select('public')"
+            >
+                <div class="path-card-icon">
+                    <v-icon size="24" :color="selected === 'public' ? '#3D95CE' : '#64748b'">mdi-earth</v-icon>
+                </div>
+                <div class="path-card-content">
+                    <div class="path-card-title">Public Block Explorer</div>
+                    <div class="path-card-desc">Deploy a public-facing explorer for your chain.</div>
+                </div>
+                <div class="path-card-radio">
+                    <div :class="['radio-dot', { 'radio-dot--active': selected === 'public' }]" />
+                </div>
+            </div>
 
-        <div class="text-center mt-8">
-            <v-btn color="primary" size="large" rounded="xl" @click="confirm" :disabled="!selected">
+            <div
+                :class="['path-card', { 'path-card--selected': selected === 'private' }]"
+                @click="select('private')"
+            >
+                <div class="path-card-icon">
+                    <v-icon size="24" :color="selected === 'private' ? '#3D95CE' : '#64748b'">mdi-laptop</v-icon>
+                </div>
+                <div class="path-card-content">
+                    <div class="path-card-title">Private Dev Workspace</div>
+                    <div class="path-card-desc">Connect to Hardhat or Anvil for local development.</div>
+                </div>
+                <div class="path-card-radio">
+                    <div :class="['radio-dot', { 'radio-dot--active': selected === 'private' }]" />
+                </div>
+            </div>
+        </div>
+
+        <div class="path-actions">
+            <v-btn
+                color="#3D95CE"
+                size="large"
+                rounded="lg"
+                @click="confirm"
+                :disabled="!selected"
+                block
+                class="path-continue-btn"
+            >
                 Continue
                 <v-icon end>mdi-arrow-right</v-icon>
             </v-btn>
@@ -60,10 +65,6 @@
 <script setup>
 import { ref, watch } from 'vue';
 
-/**
- * @type {Object} props
- * @property {String} defaultPath - Pre-selected path ('public' or 'private').
- */
 const props = defineProps({
     defaultPath: { type: String, default: 'private' }
 });
@@ -72,38 +73,124 @@ const emit = defineEmits(['path-selected']);
 
 const selected = ref(props.defaultPath);
 
-// Update selection when parent changes defaultPath (e.g., after reading sessionStorage in onMounted)
 watch(() => props.defaultPath, (newPath) => {
     selected.value = newPath;
 });
 
-/**
- * Sets the selected path.
- * @param {String} path - 'public' or 'private'
- */
 function select(path) {
     selected.value = path;
 }
 
-/**
- * Emits the confirmed path to the parent.
- */
 function confirm() {
     emit('path-selected', selected.value);
 }
 </script>
 
 <style scoped>
+.path-step-label {
+    font-size: 12px;
+    color: #3D95CE;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+}
+
+.path-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 6px;
+}
+
+.path-subtitle {
+    font-size: 14px;
+    color: #64748b;
+    margin-bottom: 28px;
+}
+
+.path-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 28px;
+}
+
 .path-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px;
+    border: 1px solid #1e293b;
+    border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s ease;
-    border: 2px solid transparent;
+    background: rgba(255, 255, 255, 0.02);
 }
+
 .path-card:hover {
-    border-color: rgba(var(--v-theme-primary), 0.3);
+    border-color: rgba(61, 149, 206, 0.3);
+    background: rgba(61, 149, 206, 0.04);
 }
+
 .path-card--selected {
-    border-color: rgb(var(--v-theme-primary));
-    background: rgba(var(--v-theme-primary), 0.04);
+    border-color: #3D95CE;
+    background: rgba(61, 149, 206, 0.06);
+}
+
+.path-card-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.04);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.path-card--selected .path-card-icon {
+    background: rgba(61, 149, 206, 0.1);
+}
+
+.path-card-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.path-card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 2px;
+}
+
+.path-card-desc {
+    font-size: 13px;
+    color: #64748b;
+}
+
+.path-card-radio {
+    flex-shrink: 0;
+}
+
+.radio-dot {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid #334155;
+    transition: all 0.2s ease;
+}
+
+.radio-dot--active {
+    border-color: #3D95CE;
+    background: #3D95CE;
+    box-shadow: inset 0 0 0 3px #0a0f1a;
+}
+
+.path-continue-btn {
+    text-transform: none;
+    font-weight: 600;
+    letter-spacing: 0;
 }
 </style>

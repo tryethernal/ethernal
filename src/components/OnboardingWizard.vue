@@ -1,99 +1,191 @@
 <!--
-    @fileoverview OnboardingWizard component — full-page wizard orchestrating the onboarding flow.
-    Replaces the old OnboardingModal with a route-based multi-step wizard at /onboarding.
-    Reads URL context from sessionStorage (set by Auth.vue) and guides users through:
-    Step 1: Path Selection (public explorer vs private workspace)
-    Step 2: Setup (explorer RPC config or workspace creation)
-    Step 3: Signup (email + password, calls atomic onboarding endpoint)
-    Step 4: Result (live explorer with plan selection, or dashboard redirect)
+    @fileoverview OnboardingWizard component — full-page split-screen wizard.
+    Left: form panel with step counter and navigation.
+    Right: contextual illustration panel that changes per step.
     @component OnboardingWizard
 -->
 <template>
     <div class="onboarding-wizard">
-        <!-- Header -->
-        <div class="wizard-header">
-            <div class="d-flex align-center justify-space-between px-4 px-sm-8" style="max-width: 1200px; margin: 0 auto; width: 100%;">
-                <div class="text-h6 font-weight-bold">Ethernal</div>
-                <div class="step-indicator d-flex align-center ga-2">
-                    <template v-for="(label, idx) in stepLabels" :key="idx">
-                        <div
-                            :class="[
-                                'step-dot',
-                                { 'step-dot--active': idx === currentStep },
-                                { 'step-dot--done': idx < currentStep }
-                            ]"
-                        >
-                            <v-icon v-if="idx < currentStep" size="14" color="white">mdi-check</v-icon>
-                            <span v-else class="step-number">{{ idx + 1 }}</span>
+        <!-- Left: Form Panel -->
+        <div class="wizard-form-panel">
+            <div class="wizard-form-inner">
+                <!-- Logo -->
+                <div class="wizard-logo">
+                    <div class="wizard-logo-icon">E</div>
+                    <span>Ethernal</span>
+                </div>
+
+                <!-- Progress bar -->
+                <div class="wizard-progress">
+                    <div
+                        v-for="(_, idx) in stepLabels"
+                        :key="idx"
+                        :class="[
+                            'wizard-progress-segment',
+                            { 'wizard-progress-segment--done': idx < currentStep },
+                            { 'wizard-progress-segment--active': idx === currentStep }
+                        ]"
+                    />
+                </div>
+
+                <!-- Step content -->
+                <div class="wizard-step-content">
+                    <v-slide-x-transition mode="out-in">
+                        <!-- Step 0: Path Selection -->
+                        <OnboardingPathSelector
+                            v-if="currentStep === 0"
+                            :default-path="selectedPath"
+                            @path-selected="onPathSelected"
+                        />
+
+                        <!-- Step 1: Setup -->
+                        <OnboardingExplorerSetup
+                            v-else-if="currentStep === 1 && selectedPath === 'public'"
+                            :initial-rpc="setupData.rpcServer || ''"
+                            :initial-name="setupData.name || ''"
+                            @explorer-info-ready="onExplorerInfoReady"
+                            @back="currentStep = 0"
+                        />
+                        <CreateWorkspace
+                            v-else-if="currentStep === 1 && selectedPath === 'private'"
+                            :is-onboarding="true"
+                            @workspace-created="onPrivateWorkspaceSetup"
+                            @back="currentStep = 0"
+                        />
+
+                        <!-- Step 2: Signup -->
+                        <OnboardingSignup
+                            v-else-if="currentStep === 2"
+                            :path="selectedPath"
+                            :setup-data="setupData"
+                            @signup-complete="onSignupComplete"
+                            @back="currentStep = 1"
+                        />
+
+                        <!-- Step 3: Result -->
+                        <OnboardingExplorerLive
+                            v-else-if="currentStep === 3 && selectedPath === 'public'"
+                            :explorer="createdExplorer"
+                            :default-plan="context.plan || 'free'"
+                            @plan-selected="onPlanSelected"
+                            @skipped="goToDashboard"
+                        />
+                        <div v-else-if="currentStep === 3 && selectedPath === 'private'" class="text-center">
+                            <v-icon size="64" color="success" class="mb-4">mdi-check-circle</v-icon>
+                            <h2 class="text-h5 font-weight-bold mb-2">You're all set!</h2>
+                            <p class="wizard-subtitle mb-8">Your workspace is ready. Redirecting to the dashboard...</p>
+                            <v-progress-circular indeterminate color="primary" />
                         </div>
-                        <span
-                            v-if="idx < stepLabels.length - 1"
-                            class="step-label d-none d-sm-inline text-body-2"
-                            :class="{ 'text-medium-emphasis': idx >= currentStep }"
-                        >
-                            {{ label }}
-                        </span>
-                        <div v-if="idx < stepLabels.length - 1" class="step-connector"></div>
-                    </template>
-                    <!-- Last label (no connector after it) -->
-                    <span
-                        class="step-label d-none d-sm-inline text-body-2"
-                        :class="{ 'text-medium-emphasis': stepLabels.length - 1 > currentStep }"
-                    >
-                        {{ stepLabels[stepLabels.length - 1] }}
-                    </span>
+                    </v-slide-x-transition>
+                </div>
+
+                <!-- Footer -->
+                <div class="wizard-footer">
+                    Already have an account? <router-link to="/auth" class="wizard-link">Sign in</router-link>
                 </div>
             </div>
         </div>
 
-        <!-- Content -->
-        <div class="wizard-content">
-            <v-slide-x-transition mode="out-in">
-                <!-- Step 0: Path Selection -->
-                <OnboardingPathSelector
-                    v-if="currentStep === 0"
-                    :default-path="selectedPath"
-                    @path-selected="onPathSelected"
-                />
+        <!-- Right: Context Panel (hidden on mobile) -->
+        <div class="wizard-context-panel">
+            <div class="wizard-context-inner">
+                <v-fade-transition mode="out-in">
+                    <!-- Step 0 context -->
+                    <div v-if="currentStep === 0" key="ctx-0" class="wizard-context-content">
+                        <div class="wizard-context-icon-row">
+                            <div class="wizard-context-icon wizard-context-icon--primary">
+                                <v-icon size="28" color="white">mdi-cube-scan</v-icon>
+                            </div>
+                        </div>
+                        <h3 class="wizard-context-title">Your block explorer, ready in minutes</h3>
+                        <p class="wizard-context-desc">Deploy a fully-featured explorer for any EVM chain. Contract verification, token tracking, and real-time sync out of the box.</p>
+                        <div class="wizard-context-features">
+                            <div class="wizard-context-feature">
+                                <v-icon size="16" color="#3D95CE">mdi-check-circle</v-icon>
+                                <span>Works with any EVM-compatible chain</span>
+                            </div>
+                            <div class="wizard-context-feature">
+                                <v-icon size="16" color="#3D95CE">mdi-check-circle</v-icon>
+                                <span>Custom domain and branding</span>
+                            </div>
+                            <div class="wizard-context-feature">
+                                <v-icon size="16" color="#3D95CE">mdi-check-circle</v-icon>
+                                <span>Free tier available, no credit card needed</span>
+                            </div>
+                        </div>
+                    </div>
 
-                <!-- Step 1: Setup -->
-                <OnboardingExplorerSetup
-                    v-else-if="currentStep === 1 && selectedPath === 'public'"
-                    :initial-rpc="setupData.rpcServer || ''"
-                    :initial-name="setupData.name || ''"
-                    @explorer-info-ready="onExplorerInfoReady"
-                    @back="currentStep = 0"
-                />
-                <CreateWorkspace
-                    v-else-if="currentStep === 1 && selectedPath === 'private'"
-                    @workspace-created="onPrivateWorkspaceSetup"
-                    @back="currentStep = 0"
-                />
+                    <!-- Step 1 context -->
+                    <div v-else-if="currentStep === 1" key="ctx-1" class="wizard-context-content">
+                        <div class="wizard-context-icon-row">
+                            <div class="wizard-context-icon wizard-context-icon--primary">
+                                <v-icon size="28" color="white">mdi-link-variant</v-icon>
+                            </div>
+                            <div class="wizard-context-arrows">
+                                <v-icon size="16" color="#334155">mdi-arrow-right</v-icon>
+                                <v-icon size="16" color="#334155">mdi-arrow-right</v-icon>
+                            </div>
+                            <div class="wizard-context-icon wizard-context-icon--success">
+                                <v-icon size="28" color="white">mdi-database-check</v-icon>
+                            </div>
+                        </div>
+                        <h3 class="wizard-context-title">{{ selectedPath === 'public' ? 'Connect any EVM chain' : 'Connect your local node' }}</h3>
+                        <p class="wizard-context-desc">{{ selectedPath === 'public'
+                            ? 'Your explorer will start syncing blocks, transactions, and contracts from your chain in real-time.'
+                            : 'Connect to Hardhat, Anvil, or any local node. Transaction decoding and tracing work out of the box.' }}</p>
+                        <div class="wizard-context-features">
+                            <div class="wizard-context-feature">
+                                <v-icon size="16" color="#3D95CE">mdi-check-circle</v-icon>
+                                <span>Automatic chain detection</span>
+                            </div>
+                            <div class="wizard-context-feature">
+                                <v-icon size="16" color="#3D95CE">mdi-check-circle</v-icon>
+                                <span>Contract verification</span>
+                            </div>
+                            <div class="wizard-context-feature">
+                                <v-icon size="16" color="#3D95CE">mdi-check-circle</v-icon>
+                                <span>Token and NFT tracking</span>
+                            </div>
+                        </div>
+                    </div>
 
-                <!-- Step 2: Signup -->
-                <OnboardingSignup
-                    v-else-if="currentStep === 2"
-                    :path="selectedPath"
-                    :setup-data="setupData"
-                    @signup-complete="onSignupComplete"
-                    @back="currentStep = 1"
-                />
+                    <!-- Step 2 context -->
+                    <div v-else-if="currentStep === 2" key="ctx-2" class="wizard-context-content">
+                        <div class="wizard-context-icon-row">
+                            <div class="wizard-context-icon wizard-context-icon--primary">
+                                <v-icon size="28" color="white">mdi-shield-check</v-icon>
+                            </div>
+                        </div>
+                        <h3 class="wizard-context-title">Almost there</h3>
+                        <p class="wizard-context-desc">Create your account to launch your {{ selectedPath === 'public' ? 'explorer' : 'workspace' }}. You'll be up and running in seconds.</p>
+                        <div class="wizard-context-features">
+                            <div class="wizard-context-feature">
+                                <v-icon size="16" color="#3D95CE">mdi-check-circle</v-icon>
+                                <span>No credit card required</span>
+                            </div>
+                            <div class="wizard-context-feature">
+                                <v-icon size="16" color="#3D95CE">mdi-check-circle</v-icon>
+                                <span>7-day free trial on paid plans</span>
+                            </div>
+                            <div class="wizard-context-feature">
+                                <v-icon size="16" color="#3D95CE">mdi-check-circle</v-icon>
+                                <span>Cancel anytime</span>
+                            </div>
+                        </div>
+                    </div>
 
-                <!-- Step 3: Result -->
-                <OnboardingExplorerLive
-                    v-else-if="currentStep === 3 && selectedPath === 'public'"
-                    :explorer="createdExplorer"
-                    :default-plan="context.plan || 'free'"
-                    @plan-selected="onPlanSelected"
-                    @skipped="goToDashboard"
-                />
-                <div v-else-if="currentStep === 3 && selectedPath === 'private'" class="text-center">
-                    <v-icon size="64" color="success" class="mb-4">mdi-check-circle</v-icon>
-                    <h2 class="text-h5 font-weight-bold mb-2">You're all set!</h2>
-                    <p class="text-body-2 text-medium-emphasis mb-8">Your workspace is ready. Redirecting to the dashboard...</p>
-                    <v-progress-circular indeterminate color="primary" />
-                </div>
-            </v-slide-x-transition>
+                    <!-- Step 3 context -->
+                    <div v-else-if="currentStep === 3" key="ctx-3" class="wizard-context-content">
+                        <div class="wizard-context-icon-row">
+                            <div class="wizard-context-icon wizard-context-icon--success" style="width: 64px; height: 64px; border-radius: 16px;">
+                                <v-icon size="32" color="white">mdi-rocket-launch</v-icon>
+                            </div>
+                        </div>
+                        <h3 class="wizard-context-title">You're live!</h3>
+                        <p class="wizard-context-desc">Your explorer is syncing data from your chain. Choose a plan to unlock more features, or start with the free tier.</p>
+                    </div>
+                </v-fade-transition>
+            </div>
         </div>
     </div>
 </template>
@@ -101,8 +193,7 @@
 <script setup>
 /**
  * @fileoverview OnboardingWizard orchestrates the full onboarding flow.
- * Reads context from sessionStorage, manages step transitions, handles
- * signup/auth token storage, and navigates to the dashboard on completion.
+ * Split-screen layout: form on left, contextual content on right.
  */
 import { ref, onMounted, inject } from 'vue';
 import { useRouter } from 'vue-router';
@@ -120,31 +211,18 @@ const currentWorkspaceStore = useCurrentWorkspaceStore();
 const $server = inject('$server');
 const $pusher = inject('$pusher');
 
-/** Current step index (0-3). */
 const currentStep = ref(0);
-
-/** Selected onboarding path: 'public' or 'private'. */
 const selectedPath = ref('private');
-
-/** Data collected during setup step. */
 const setupData = ref({});
-
-/** Explorer object returned after signup (public path). */
 const createdExplorer = ref(null);
-
-/** Onboarding context read from sessionStorage (set by Auth.vue from URL params). */
 const context = ref({});
-
-/** Step labels for the header indicator. */
 const stepLabels = ['Path', 'Setup', 'Account', 'Done'];
 
 onMounted(() => {
-    // Read onboarding context from sessionStorage (set by Auth.vue)
     try {
         const stored = sessionStorage.getItem('onboardingContext');
         if (stored) {
             context.value = JSON.parse(stored);
-            // Pre-select path based on context
             if (context.value.flow === 'public' || context.value.source === 'landing_cta') {
                 selectedPath.value = 'public';
             }
@@ -153,7 +231,6 @@ onMounted(() => {
         // Ignore parse errors
     }
 
-    // Fire PostHog flow started event
     if (window.posthog) {
         window.posthog.capture('onboarding:flow_started', {
             source: context.value.source || 'direct',
@@ -163,124 +240,73 @@ onMounted(() => {
     }
 });
 
-/**
- * Handles path selection from step 0.
- * @param {String} path - 'public' or 'private'
- */
 function onPathSelected(path) {
     selectedPath.value = path;
-
     if (window.posthog) {
         window.posthog.capture('onboarding:path_selected', {
             path,
             source: context.value.source || 'direct'
         });
     }
-
     currentStep.value = 1;
 }
 
-/**
- * Handles explorer info from the public setup step.
- * @param {Object} data - { name, rpcServer, chainId, networkId }
- */
 function onExplorerInfoReady(data) {
     setupData.value = { ...setupData.value, ...data };
     currentStep.value = 2;
 }
 
-/**
- * Handles workspace setup from the private path CreateWorkspace component.
- * Since CreateWorkspace doesn't have isOnboarding prop yet (Task 11),
- * it will call the API and emit the created workspace data.
- * We capture the workspace name/chain and move to signup, or if the user
- * is already logged in (workspace was created), go to dashboard.
- * @param {Object} data - Workspace data from CreateWorkspace
- */
 function onPrivateWorkspaceSetup(data) {
-    // CreateWorkspace currently calls the API itself and creates the workspace.
-    // If user is already logged in, workspace is created; go to dashboard.
     if (userStore.loggedIn && data) {
         currentWorkspaceStore.updateCurrentWorkspace(data);
         $pusher.init();
         goToDashboard();
         return;
     }
-
-    // For new users (not yet logged in), store workspace info for signup step.
-    // Note: with current CreateWorkspace, this path won't be hit until Task 11
-    // adds the isOnboarding prop. For now, the above path handles the common case.
     setupData.value = {
         ...setupData.value,
         workspaceName: data.name,
-        chain: data.chain
+        rpcServer: data.rpcServer,
+        chain: data.chain,
+        networkId: data.networkId
     };
     currentStep.value = 2;
 }
 
-/**
- * Handles successful signup from the OnboardingSignup component.
- * Updates stores, stores auth token, and advances to the result step.
- * @param {Object} data - { user, workspace, explorer?, authToken }
- */
 function onSignupComplete(data) {
-    // Store the auth token so subsequent API calls are authenticated
     if (data.authToken) {
         localStorage.setItem('apiToken', data.authToken);
     }
-
-    // Update user store (this also stores apiToken via updateUser if present)
     userStore.updateUser({
         ...data.user,
         apiToken: data.authToken || data.user.apiToken
     });
-
-    // Update workspace store
     if (data.workspace) {
         currentWorkspaceStore.updateCurrentWorkspace(data.workspace);
     }
-
-    // Initialize pusher for real-time updates
     $pusher.init();
-
-    // Store created explorer for the result step (public path)
     if (data.explorer) {
         createdExplorer.value = data.explorer;
     }
-
     currentStep.value = 3;
-
-    // For private path, auto-redirect to dashboard after a short delay
     if (selectedPath.value === 'private') {
         setTimeout(() => goToDashboard(), 1500);
     }
 }
 
-/**
- * Handles plan selection from the OnboardingExplorerLive component.
- * Starts a trial for paid plans, then navigates to the dashboard.
- * @param {Object} param0 - { planSlug, isTrial }
- */
 async function onPlanSelected({ planSlug, isTrial }) {
     if (isTrial && createdExplorer.value && planSlug !== 'free' && planSlug !== 'enterprise') {
         try {
             await $server.startTrial(createdExplorer.value.id, planSlug);
         } catch (error) {
             console.error('Failed to start trial:', error);
-            // Continue to dashboard even if trial activation fails
         }
     }
-
     goToDashboard();
 }
 
-/**
- * Navigates to the main dashboard.
- */
 function goToDashboard() {
-    // Clean up onboarding context
     sessionStorage.removeItem('onboardingContext');
-
     router.push('/overview');
 }
 </script>
@@ -288,66 +314,200 @@ function goToDashboard() {
 <style scoped>
 .onboarding-wizard {
     min-height: 100vh;
-    background: rgb(var(--v-theme-background));
     display: flex;
-    flex-direction: column;
+    background: #0a0f1a;
 }
 
-.wizard-header {
-    padding: 16px 0;
-    border-bottom: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
-}
-
-.wizard-content {
+/* Left panel: form */
+.wizard-form-panel {
     flex: 1;
     display: flex;
-    align-items: center;
+    flex-direction: column;
     justify-content: center;
-    padding: 32px 16px;
+    padding: 48px;
+    min-width: 0;
 }
 
-.step-indicator {
+.wizard-form-inner {
+    max-width: 440px;
+    margin: 0 auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    padding: 32px 0;
+}
+
+.wizard-logo {
     display: flex;
     align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 32px;
 }
 
-.step-dot {
+.wizard-logo-icon {
     width: 28px;
     height: 28px;
-    border-radius: 50%;
+    background: #3D95CE;
+    border-radius: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 12px;
-    font-weight: 600;
-    background: rgba(var(--v-border-color), 0.3);
-    color: rgba(var(--v-theme-on-background), 0.5);
-    transition: all 0.3s ease;
-    flex-shrink: 0;
+    font-size: 14px;
+    font-weight: 800;
+    color: #fff;
 }
 
-.step-dot--active {
-    background: rgb(var(--v-theme-primary));
-    color: white;
+/* Progress bar */
+.wizard-progress {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 32px;
 }
 
-.step-dot--done {
-    background: #4caf50;
-    color: white;
+.wizard-progress-segment {
+    flex: 1;
+    height: 4px;
+    border-radius: 2px;
+    background: #1e293b;
+    transition: background 0.3s ease;
 }
 
-.step-number {
-    line-height: 1;
+.wizard-progress-segment--done {
+    background: #22C55E;
 }
 
-.step-connector {
-    width: 24px;
-    height: 2px;
-    background: rgba(var(--v-border-color), 0.3);
-    flex-shrink: 0;
+.wizard-progress-segment--active {
+    background: #3D95CE;
 }
 
-.step-label {
-    white-space: nowrap;
+/* Step content */
+.wizard-step-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Footer */
+.wizard-footer {
+    font-size: 13px;
+    color: #475569;
+    margin-top: 32px;
+}
+
+.wizard-link {
+    color: #3D95CE;
+    text-decoration: none;
+}
+
+.wizard-link:hover {
+    text-decoration: underline;
+}
+
+.wizard-subtitle {
+    font-size: 14px;
+    color: #64748b;
+}
+
+/* Right panel: contextual illustration */
+.wizard-context-panel {
+    width: 45%;
+    background: linear-gradient(160deg, #1a2744 0%, #0d1829 50%, #162036 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px;
+    border-left: 1px solid #1e293b;
+}
+
+.wizard-context-inner {
+    max-width: 360px;
+    width: 100%;
+}
+
+.wizard-context-content {
+    text-align: center;
+}
+
+.wizard-context-icon-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.wizard-context-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.wizard-context-icon--primary {
+    background: rgba(61, 149, 206, 0.15);
+    border: 2px solid rgba(61, 149, 206, 0.4);
+}
+
+.wizard-context-icon--success {
+    background: rgba(34, 197, 94, 0.15);
+    border: 2px solid rgba(34, 197, 94, 0.4);
+}
+
+.wizard-context-arrows {
+    display: flex;
+    gap: 4px;
+}
+
+.wizard-context-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 12px;
+    line-height: 1.3;
+}
+
+.wizard-context-desc {
+    font-size: 14px;
+    color: #64748b;
+    line-height: 1.7;
+    margin-bottom: 28px;
+}
+
+.wizard-context-features {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    text-align: left;
+}
+
+.wizard-context-feature {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: #94a3b8;
+}
+
+/* Mobile: hide context panel, full-width form */
+@media (max-width: 960px) {
+    .wizard-context-panel {
+        display: none;
+    }
+
+    .wizard-form-panel {
+        padding: 24px;
+    }
+
+    .wizard-form-inner {
+        min-height: auto;
+        padding: 16px 0;
+    }
 }
 </style>
