@@ -2841,6 +2841,10 @@ module.exports = (sequelize, DataTypes) => {
                     model: sequelize.models.Contract,
                     attributes: ['name', 'tokenName', 'tokenSymbol', 'abi'],
                     as: 'contract',
+                    where: {
+                        workspaceId: this.id
+                    },
+                    required: false,
                     include: {
                         model: sequelize.models.ContractVerification,
                         attributes: ['createdAt'],
