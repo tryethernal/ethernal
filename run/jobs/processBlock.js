@@ -15,7 +15,7 @@ module.exports = async job => {
         return 'Missing parameter';
 
     // Use workspaceId in query for better performance on hypertables
-    // Fallback to findByPk for backward compatibility with existing job data
+    // TODO: Remove findByPk fallback after one deploy cycle (all legacy jobs without workspaceId will have drained)
     const block = data.workspaceId
         ? await Block.findOne({
             where: { id: data.blockId, workspaceId: data.workspaceId },
