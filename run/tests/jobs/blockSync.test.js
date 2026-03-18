@@ -436,6 +436,7 @@ describe('blockSync', () => {
     });
 
     it('Should disable browser sync', (done) => {
+        const mockUpdate = jest.fn().mockResolvedValue();
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
             id: 1,
             browserSyncEnabled: true,
@@ -448,13 +449,14 @@ describe('blockSync', () => {
                 stripeSubscription: {},
                 shouldSync: true
             },
-            safeCreatePartialBlock: mockSafeCreatePartialBlock
+            safeCreatePartialBlock: mockSafeCreatePartialBlock,
+            update: mockUpdate
         });
         jest.spyOn(db, 'syncPartialBlock').mockResolvedValue({ transactions: [] });
         blockSync({ opts: { priority: 1 }, data : { userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
             .then(res => {
                 expect(res).toEqual('Block synced');
-                expect(db.updateBrowserSync).toHaveBeenCalledWith(1, false);
+                expect(mockUpdate).toHaveBeenCalledWith({ browserSyncEnabled: false });
                 done();
             });
     });
