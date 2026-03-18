@@ -12,7 +12,7 @@
                 <v-btn
                     size="x-large"
                     class="btn-primary cta-btn"
-                    href="https://app.tryethernal.com/auth"
+                    :href="ctaUrl"
                     rounded="xl"
                     @click="trackCta('get_started')"
                 >
@@ -36,8 +36,24 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
+
+const props = defineProps({
+    chain: { type: String, default: '' }
+});
+
+const ctaUrl = computed(() => {
+    let url = 'https://app.tryethernal.com/auth?flow=public';
+    if (props.chain) url += `&chain=${props.chain}`;
+    return url;
+});
+
 function trackCta(ctaType) {
-    if (window.posthog) window.posthog.capture('landing:cta_click', { cta_type: ctaType, cta_position: 'footer_cta' });
+    if (window.posthog) window.posthog.capture('landing:cta_click', {
+        cta_type: ctaType,
+        cta_position: 'footer_cta',
+        chain: props.chain || null
+    });
 }
 </script>
 

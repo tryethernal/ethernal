@@ -74,7 +74,8 @@ const publicPlans = [
             'Testnet faucet',
             'Ethernal branding'
         ],
-        ctaText: 'Start Free'
+        ctaText: 'Start Free',
+        ctaUrl: 'https://app.tryethernal.com/auth?flow=public&plan=free'
     },
     {
         name: 'Team',
@@ -90,7 +91,8 @@ const publicPlans = [
             'L2 bridge support',
             '7-day free trial'
         ],
-        ctaText: 'Start Trial'
+        ctaText: 'Start Trial',
+        ctaUrl: 'https://app.tryethernal.com/auth?flow=public&plan=explorer-150'
     },
     {
         name: 'App Chain',
@@ -105,7 +107,8 @@ const publicPlans = [
             'Priority support',
             '7-day free trial'
         ],
-        ctaText: 'Start Trial'
+        ctaText: 'Start Trial',
+        ctaUrl: 'https://app.tryethernal.com/auth?flow=public&plan=explorer-500'
     },
     {
         name: 'Enterprise',
@@ -136,7 +139,8 @@ const privatePlans = [
             'Hardhat / Anvil sync',
             'Analytics'
         ],
-        ctaText: 'Start Free'
+        ctaText: 'Start Free',
+        ctaUrl: 'https://app.tryethernal.com/auth?flow=private'
     },
     {
         name: 'Pro',
@@ -146,7 +150,8 @@ const privatePlans = [
             'Everything in Free',
             'Unlimited workspaces'
         ],
-        ctaText: 'Get Pro'
+        ctaText: 'Get Pro',
+        ctaUrl: 'https://app.tryethernal.com/auth?flow=private&plan=pro'
     }
 ];
 </script>

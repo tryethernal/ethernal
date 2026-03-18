@@ -68,7 +68,7 @@ const props = defineProps({
     quota: { type: String, default: '' },
     highlighted: { type: Boolean, default: false },
     ctaText: { type: String, default: 'Get Started' },
-    ctaUrl: { type: String, default: 'https://app.tryethernal.com/auth' }
+    ctaUrl: { type: String, default: 'https://app.tryethernal.com/auth?flow=public' }
 });
 
 function trackPricing() {

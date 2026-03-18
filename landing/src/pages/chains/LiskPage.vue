@@ -129,7 +129,7 @@
                 </div>
             </section>
         </v-container>
-        <LandingCTA />
+        <LandingCTA chain="lisk" />
     </LandingLayout>
 </template>
 

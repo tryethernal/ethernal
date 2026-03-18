@@ -330,7 +330,7 @@
             </section>
         </v-container>
 
-        <LandingCTA />
+        <LandingCTA chain="mode" />
     </LandingLayout>
 </template>
 

@@ -329,7 +329,7 @@
             </section>
         </v-container>
 
-        <LandingCTA />
+        <LandingCTA chain="ethereum" />
     </LandingLayout>
 </template>
 

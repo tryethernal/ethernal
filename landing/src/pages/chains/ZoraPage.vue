@@ -312,7 +312,7 @@
             </section>
         </v-container>
 
-        <LandingCTA />
+        <LandingCTA chain="zora" />
     </LandingLayout>
 </template>
 

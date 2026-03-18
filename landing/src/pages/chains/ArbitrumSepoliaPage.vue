@@ -248,7 +248,7 @@
             </section>
         </v-container>
 
-        <LandingCTA />
+        <LandingCTA chain="arbitrum-sepolia" />
     </LandingLayout>
 </template>
 
