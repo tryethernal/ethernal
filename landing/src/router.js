@@ -16,7 +16,30 @@ export const routes = [
     { path: '/terms', name: 'terms', component: () => import('./pages/TermsPage.vue') },
     { path: '/privacy', name: 'privacy', component: () => import('./pages/PrivacyPage.vue') },
     { path: '/arbitrum-orbit', name: 'arbitrum-orbit', component: () => import('./pages/OrbitPage.vue') },
-    { path: '/op-stack', name: 'op-stack', component: () => import('./pages/OpStackPage.vue') }
+    { path: '/op-stack', name: 'op-stack', component: () => import('./pages/OpStackPage.vue') },
+
+    // Chain directory pages
+    { path: '/chains/base', name: 'chains-base', component: () => import('./pages/chains/BasePage.vue') },
+    { path: '/chains/arbitrum-one', name: 'chains-arbitrum-one', component: () => import('./pages/chains/ArbitrumOnePage.vue') },
+    { path: '/chains/sepolia', name: 'chains-sepolia', component: () => import('./pages/chains/SepoliaPage.vue') },
+    { path: '/chains/optimism', name: 'chains-optimism', component: () => import('./pages/chains/OptimismPage.vue') },
+    { path: '/chains/mode', name: 'chains-mode', component: () => import('./pages/chains/ModePage.vue') },
+    { path: '/chains/zora', name: 'chains-zora', component: () => import('./pages/chains/ZoraPage.vue') },
+    { path: '/chains/blast', name: 'chains-blast', component: () => import('./pages/chains/BlastPage.vue') },
+    { path: '/chains/holesky', name: 'chains-holesky', component: () => import('./pages/chains/HoleskyPage.vue') },
+    { path: '/chains/base-sepolia', name: 'chains-base-sepolia', component: () => import('./pages/chains/BaseSepoliaPage.vue') },
+    { path: '/chains/arbitrum-sepolia', name: 'chains-arbitrum-sepolia', component: () => import('./pages/chains/ArbitrumSepoliaPage.vue') },
+    { path: '/chains/arbitrum-nova', name: 'chains-arbitrum-nova', component: () => import('./pages/chains/ArbitrumNovaPage.vue') },
+    { path: '/chains/degen-chain', name: 'chains-degen-chain', component: () => import('./pages/chains/DegenChainPage.vue') },
+    { path: '/chains/xai', name: 'chains-xai', component: () => import('./pages/chains/XaiPage.vue') },
+    { path: '/chains/proof-of-play-apex', name: 'chains-proof-of-play-apex', component: () => import('./pages/chains/ProofOfPlayApexPage.vue') },
+    { path: '/chains/redstone', name: 'chains-redstone', component: () => import('./pages/chains/RedstonePage.vue') },
+    { path: '/chains/lisk', name: 'chains-lisk', component: () => import('./pages/chains/LiskPage.vue') },
+    { path: '/chains/cyber', name: 'chains-cyber', component: () => import('./pages/chains/CyberPage.vue') },
+    { path: '/chains/mint', name: 'chains-mint', component: () => import('./pages/chains/MintPage.vue') },
+    { path: '/chains/ethereum', name: 'chains-ethereum', component: () => import('./pages/chains/EthereumPage.vue') },
+    { path: '/chains/polygon-pos', name: 'chains-polygon-pos', component: () => import('./pages/chains/PolygonPosPage.vue') },
+    { path: '/chains/bnb-chain', name: 'chains-bnb-chain', component: () => import('./pages/chains/BnbChainPage.vue') }
 ];
 
 export const scrollBehavior = () => ({ top: 0 });

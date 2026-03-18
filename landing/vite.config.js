@@ -30,6 +30,12 @@ export default defineConfig({
             generateSitemap(routePaths, './dist');
         }
     },
+    server: {
+        watch: {
+            usePolling: true,
+            interval: 1000
+        }
+    },
     build: {
         chunkSizeWarningLimit: 600
     }
