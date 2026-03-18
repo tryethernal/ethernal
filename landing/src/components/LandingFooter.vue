@@ -71,32 +71,32 @@
                 <v-col cols="6" sm="3" md="2" lg="2">
                     <div class="footer-heading">Chains</div>
                     <div class="d-flex flex-column ga-2">
-                        <router-link to="/chains/base" class="footer-link">Base</router-link>
-                        <router-link to="/chains/arbitrum-one" class="footer-link">Arbitrum One</router-link>
-                        <router-link to="/chains/blast" class="footer-link">Blast</router-link>
-                        <router-link to="/chains/zora" class="footer-link">Zora</router-link>
-                        <router-link to="/chains/redstone" class="footer-link">Redstone</router-link>
-                        <router-link to="/chains/mint" class="footer-link">Mint</router-link>
-                        <router-link to="/chains/xai" class="footer-link">Xai</router-link>
-                        <router-link to="/chains/sepolia" class="footer-link">Sepolia</router-link>
-                        <router-link to="/chains/base-sepolia" class="footer-link">Base Sepolia</router-link>
                         <router-link to="/chains/ethereum" class="footer-link">Ethereum</router-link>
+                        <router-link to="/chains/bnb-chain" class="footer-link">BNB Chain</router-link>
+                        <router-link to="/chains/polygon-pos" class="footer-link">Polygon PoS</router-link>
+                        <router-link to="/chains/arbitrum-one" class="footer-link">Arbitrum One</router-link>
+                        <router-link to="/chains/base" class="footer-link">Base</router-link>
+                        <router-link to="/chains/optimism" class="footer-link">Optimism</router-link>
+                        <router-link to="/chains/blast" class="footer-link">Blast</router-link>
+                        <router-link to="/chains/mode" class="footer-link">Mode</router-link>
+                        <router-link to="/chains/zora" class="footer-link">Zora</router-link>
+                        <router-link to="/chains/arbitrum-nova" class="footer-link">Arbitrum Nova</router-link>
                     </div>
                 </v-col>
 
                 <v-col cols="6" sm="3" md="2" lg="2">
                     <div class="footer-heading">&nbsp;</div>
                     <div class="d-flex flex-column ga-2">
-                        <router-link to="/chains/polygon-pos" class="footer-link">Polygon PoS</router-link>
-                        <router-link to="/chains/bnb-chain" class="footer-link">BNB Chain</router-link>
-                        <router-link to="/chains/optimism" class="footer-link">Optimism</router-link>
-                        <router-link to="/chains/arbitrum-nova" class="footer-link">Arbitrum Nova</router-link>
-                        <router-link to="/chains/mode" class="footer-link">Mode</router-link>
                         <router-link to="/chains/lisk" class="footer-link">Lisk</router-link>
-                        <router-link to="/chains/cyber" class="footer-link">Cyber</router-link>
                         <router-link to="/chains/degen-chain" class="footer-link">Degen Chain</router-link>
+                        <router-link to="/chains/xai" class="footer-link">Xai</router-link>
+                        <router-link to="/chains/cyber" class="footer-link">Cyber</router-link>
+                        <router-link to="/chains/redstone" class="footer-link">Redstone</router-link>
+                        <router-link to="/chains/mint" class="footer-link">Mint</router-link>
                         <router-link to="/chains/proof-of-play-apex" class="footer-link">Proof of Play</router-link>
+                        <router-link to="/chains/sepolia" class="footer-link">Sepolia</router-link>
                         <router-link to="/chains/holesky" class="footer-link">Holesky</router-link>
+                        <router-link to="/chains/base-sepolia" class="footer-link">Base Sepolia</router-link>
                         <router-link to="/chains/arbitrum-sepolia" class="footer-link">Arbitrum Sepolia</router-link>
                     </div>
                 </v-col>

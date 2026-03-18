@@ -171,13 +171,17 @@
                     The OP Stack powers a growing ecosystem of L2 chains known as the Superchain. Ethernal works with all of them. Here are some of the most prominent:
                 </p>
                 <div class="chain-grid">
+                    <router-link to="/chains/base" class="chain-card">
+                        <h3 style="color: var(--text-primary); font-weight: 600; font-size: 0.9rem; margin-bottom: 4px;">Base</h3>
+                        <p style="color: var(--text-muted); font-size: 0.8rem;">Coinbase's L2. Largest OP Stack chain by TVL and transaction volume.</p>
+                    </router-link>
                     <router-link to="/chains/optimism" class="chain-card">
                         <h3 style="color: var(--text-primary); font-weight: 600; font-size: 0.9rem; margin-bottom: 4px;">Optimism</h3>
                         <p style="color: var(--text-muted); font-size: 0.8rem;">The original OP Stack chain. Governance hub of the Superchain.</p>
                     </router-link>
-                    <router-link to="/chains/base" class="chain-card">
-                        <h3 style="color: var(--text-primary); font-weight: 600; font-size: 0.9rem; margin-bottom: 4px;">Base</h3>
-                        <p style="color: var(--text-muted); font-size: 0.8rem;">Coinbase's L2. Largest OP Stack chain by TVL and transaction volume.</p>
+                    <router-link to="/chains/blast" class="chain-card">
+                        <h3 style="color: var(--text-primary); font-weight: 600; font-size: 0.9rem; margin-bottom: 4px;">Blast</h3>
+                        <p style="color: var(--text-muted); font-size: 0.8rem;">L2 with native yield on ETH and stablecoins. Unique tokenomics.</p>
                     </router-link>
                     <router-link to="/chains/mode" class="chain-card">
                         <h3 style="color: var(--text-primary); font-weight: 600; font-size: 0.9rem; margin-bottom: 4px;">Mode</h3>
@@ -187,14 +191,6 @@
                         <h3 style="color: var(--text-primary); font-weight: 600; font-size: 0.9rem; margin-bottom: 4px;">Zora</h3>
                         <p style="color: var(--text-muted); font-size: 0.8rem;">NFT and creator-focused L2. Optimized for minting and media.</p>
                     </router-link>
-                    <router-link to="/chains/blast" class="chain-card">
-                        <h3 style="color: var(--text-primary); font-weight: 600; font-size: 0.9rem; margin-bottom: 4px;">Blast</h3>
-                        <p style="color: var(--text-muted); font-size: 0.8rem;">L2 with native yield on ETH and stablecoins. Unique tokenomics.</p>
-                    </router-link>
-                    <router-link to="/chains/redstone" class="chain-card">
-                        <h3 style="color: var(--text-primary); font-weight: 600; font-size: 0.9rem; margin-bottom: 4px;">Redstone</h3>
-                        <p style="color: var(--text-muted); font-size: 0.8rem;">On-chain gaming L2 built on the OP Stack by Lattice.</p>
-                    </router-link>
                     <router-link to="/chains/lisk" class="chain-card">
                         <h3 style="color: var(--text-primary); font-weight: 600; font-size: 0.9rem; margin-bottom: 4px;">Lisk</h3>
                         <p style="color: var(--text-muted); font-size: 0.8rem;">Migrated from its own L1 to an OP Stack L2 for Ethereum alignment.</p>
@@ -202,6 +198,10 @@
                     <router-link to="/chains/cyber" class="chain-card">
                         <h3 style="color: var(--text-primary); font-weight: 600; font-size: 0.9rem; margin-bottom: 4px;">Cyber</h3>
                         <p style="color: var(--text-muted); font-size: 0.8rem;">Social-focused L2 for decentralized social networking protocols.</p>
+                    </router-link>
+                    <router-link to="/chains/redstone" class="chain-card">
+                        <h3 style="color: var(--text-primary); font-weight: 600; font-size: 0.9rem; margin-bottom: 4px;">Redstone</h3>
+                        <p style="color: var(--text-muted); font-size: 0.8rem;">On-chain gaming L2 built on the OP Stack by Lattice.</p>
                     </router-link>
                     <router-link to="/chains/mint" class="chain-card">
                         <h3 style="color: var(--text-primary); font-weight: 600; font-size: 0.9rem; margin-bottom: 4px;">Mint</h3>

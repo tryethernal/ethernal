@@ -68,32 +68,18 @@
                             </div>
                             <div class="mega-col">
                                 <div class="mega-col-title">Popular Chains</div>
-                                <router-link to="/chains/base" class="mega-item">
-                                    <v-icon size="20" class="mega-item-icon" style="color: #3B82F6;">mdi-alpha-b-circle</v-icon>
-                                    <div>
-                                        <div class="mega-item-name">Base</div>
-                                        <div class="mega-item-desc">Coinbase L2 (OP Stack)</div>
-                                    </div>
-                                </router-link>
-                                <router-link to="/chains/optimism" class="mega-item">
-                                    <v-icon size="20" class="mega-item-icon" style="color: #EF4444;">mdi-alpha-o-circle</v-icon>
-                                    <div>
-                                        <div class="mega-item-name">Optimism</div>
-                                        <div class="mega-item-desc">The original OP Stack chain</div>
-                                    </div>
-                                </router-link>
-                                <router-link to="/chains/arbitrum-one" class="mega-item">
-                                    <v-icon size="20" class="mega-item-icon" style="color: #5DAAE0;">mdi-alpha-a-circle</v-icon>
-                                    <div>
-                                        <div class="mega-item-name">Arbitrum One</div>
-                                        <div class="mega-item-desc">Nitro optimistic rollup</div>
-                                    </div>
-                                </router-link>
                                 <router-link to="/chains/ethereum" class="mega-item">
                                     <v-icon size="20" class="mega-item-icon" style="color: #627EEA;">mdi-ethereum</v-icon>
                                     <div>
                                         <div class="mega-item-name">Ethereum</div>
                                         <div class="mega-item-desc">Ethereum mainnet (L1)</div>
+                                    </div>
+                                </router-link>
+                                <router-link to="/chains/bnb-chain" class="mega-item">
+                                    <v-icon size="20" class="mega-item-icon" style="color: #F3BA2F;">mdi-alpha-b-circle</v-icon>
+                                    <div>
+                                        <div class="mega-item-name">BNB Chain</div>
+                                        <div class="mega-item-desc">BNB Smart Chain (L1)</div>
                                     </div>
                                 </router-link>
                                 <router-link to="/chains/polygon-pos" class="mega-item">
@@ -103,6 +89,20 @@
                                         <div class="mega-item-desc">High-throughput PoS sidechain</div>
                                     </div>
                                 </router-link>
+                                <router-link to="/chains/arbitrum-one" class="mega-item">
+                                    <v-icon size="20" class="mega-item-icon" style="color: #5DAAE0;">mdi-alpha-a-circle</v-icon>
+                                    <div>
+                                        <div class="mega-item-name">Arbitrum One</div>
+                                        <div class="mega-item-desc">Nitro optimistic rollup</div>
+                                    </div>
+                                </router-link>
+                                <router-link to="/chains/base" class="mega-item">
+                                    <v-icon size="20" class="mega-item-icon" style="color: #3B82F6;">mdi-alpha-b-circle</v-icon>
+                                    <div>
+                                        <div class="mega-item-name">Base</div>
+                                        <div class="mega-item-desc">Coinbase L2 (OP Stack)</div>
+                                    </div>
+                                </router-link>
                             </div>
                             <div class="mega-col">
                                 <div class="mega-col-title">Browse All</div>
@@ -110,14 +110,14 @@
                                     <v-icon size="20" class="mega-item-icon" style="color: #EF4444;">mdi-layers-triple</v-icon>
                                     <div>
                                         <div class="mega-item-name">OP Stack Chains</div>
-                                        <div class="mega-item-desc">Base, Mode, Zora, Lisk, +5 more</div>
+                                        <div class="mega-item-desc">Base, Optimism, Blast, Mode, +5 more</div>
                                     </div>
                                 </router-link>
                                 <router-link to="/arbitrum-orbit" class="mega-item">
                                     <v-icon size="20" class="mega-item-icon" style="color: #28A0F0;">mdi-transit-connection-variant</v-icon>
                                     <div>
                                         <div class="mega-item-name">Orbit Chains</div>
-                                        <div class="mega-item-desc">Arbitrum One, Nova, Xai, +3 more</div>
+                                        <div class="mega-item-desc">Arbitrum One, Nova, Xai, Degen, +1 more</div>
                                     </div>
                                 </router-link>
                             </div>
@@ -201,12 +201,11 @@
             <v-divider class="my-3" :style="{ borderColor: 'var(--drawer-divider)' }" />
 
             <v-list-subheader :style="{ color: 'var(--drawer-subheader)' }">Chains</v-list-subheader>
-            <v-list-item to="/chains/base" title="Base" @click="drawer = false" prepend-icon="mdi-alpha-b-circle" />
-            <v-list-item to="/chains/optimism" title="Optimism" @click="drawer = false" prepend-icon="mdi-alpha-o-circle" />
-            <v-list-item to="/chains/arbitrum-one" title="Arbitrum One" @click="drawer = false" prepend-icon="mdi-alpha-a-circle" />
             <v-list-item to="/chains/ethereum" title="Ethereum" @click="drawer = false" prepend-icon="mdi-ethereum" />
-            <v-list-item to="/chains/polygon-pos" title="Polygon PoS" @click="drawer = false" prepend-icon="mdi-hexagon-outline" />
             <v-list-item to="/chains/bnb-chain" title="BNB Chain" @click="drawer = false" prepend-icon="mdi-alpha-b-circle" />
+            <v-list-item to="/chains/polygon-pos" title="Polygon PoS" @click="drawer = false" prepend-icon="mdi-hexagon-outline" />
+            <v-list-item to="/chains/arbitrum-one" title="Arbitrum One" @click="drawer = false" prepend-icon="mdi-alpha-a-circle" />
+            <v-list-item to="/chains/base" title="Base" @click="drawer = false" prepend-icon="mdi-alpha-b-circle" />
             <v-list-item to="/op-stack" title="All OP Stack Chains" @click="drawer = false" prepend-icon="mdi-layers-triple" />
             <v-list-item to="/arbitrum-orbit" title="All Orbit Chains" @click="drawer = false" prepend-icon="mdi-transit-connection-variant" />
 
