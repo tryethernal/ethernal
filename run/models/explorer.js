@@ -818,7 +818,9 @@ module.exports = (sequelize, DataTypes) => {
             const afterCreateFn = () => {
                 if (!explorer.isDemo) {
                     analytics.track(explorer.userId, 'explorer:explorer_create', {
-                        is_demo: false
+                        is_demo: false,
+                        onboarding_source: options.onboarding_source || null,
+                        chain: options.chain || null
                     });
                     analytics.shutdown();
                 }

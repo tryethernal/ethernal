@@ -131,10 +131,12 @@ module.exports = (sequelize, DataTypes) => {
           const explorer = await stripeSubscription.getExplorer({ include: ['workspace'] });
           if (!explorer || explorer.workspace.qnEndpointId) return;
           const stripePlan = await stripeSubscription.getStripePlan();
+          const metadata = stripeSubscription.metadata;
           analytics.track(explorer.userId, 'explorer:subscription_create', {
             is_demo: explorer.isDemo,
             plan_slug: stripePlan.slug,
-            status: stripeSubscription.status
+            status: stripeSubscription.status,
+            is_onboarding: metadata?.is_onboarding || false
           });
           analytics.shutdown();
           await explorer.startSync();
