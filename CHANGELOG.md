@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.85] - 2026-03-18
+### Fixed
+- feat(landing): add 21 chain directory pages with SEO (#756)
+- blog: publish — One Signature, Every Chain: EIP-8130's Protocol-Level Account Abstraction (#758)
+- fix: revert pool config, fix hypertable query in processBlock, add workspace scope (#757)
+
+
 ## [5.17.84] - 2026-03-18
 ### Fixed
 - fix: optimize database connection pool configuration for workspace lookups (#755)

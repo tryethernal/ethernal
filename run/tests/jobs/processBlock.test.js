@@ -7,21 +7,44 @@ beforeEach(() => jest.clearAllMocks());
 
 describe('processBlock', () => {
     it('Should return an error if block is not found', (done) => {
-        jest.spyOn(Block, 'findByPk').mockResolvedValueOnce(null);
-        processBlock({ data: { blockId: 1 }})
+        jest.spyOn(Block, 'findOne').mockResolvedValueOnce(null);
+        processBlock({ data: { blockId: 1, workspaceId: 1 }})
             .then(res => {
                 expect(res).toEqual('Cannot find block');
                 done();
             });
     });
 
+    it('Should fall back to findByPk when workspaceId is not in job data', (done) => {
+        jest.spyOn(Block, 'findByPk').mockResolvedValueOnce(null);
+        processBlock({ data: { blockId: 1 }})
+            .then(res => {
+                expect(Block.findByPk).toHaveBeenCalledWith(1, expect.any(Object));
+                expect(res).toEqual('Cannot find block');
+                done();
+            });
+    });
+
+    it('Should use findOne with workspaceId when available', (done) => {
+        jest.spyOn(Block, 'findOne').mockResolvedValueOnce(null);
+        processBlock({ data: { blockId: 1, workspaceId: 5 }})
+            .then(res => {
+                expect(Block.findOne).toHaveBeenCalledWith({
+                    where: { id: 1, workspaceId: 5 },
+                    attributes: expect.any(Array)
+                });
+                expect(res).toEqual('Cannot find block');
+                done();
+            });
+    });
+
     it('Should return an error if workspace is not found', (done) => {
-        jest.spyOn(Block, 'findByPk').mockResolvedValueOnce({
+        jest.spyOn(Block, 'findOne').mockResolvedValueOnce({
             workspaceId: 1
         });
         jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce(null);
 
-        processBlock({ data: { blockId: 1 }})
+        processBlock({ data: { blockId: 1, workspaceId: 1 }})
             .then(res => {
                 expect(res).toEqual('Cannot find workspace');
                 done();
@@ -29,14 +52,14 @@ describe('processBlock', () => {
     });
 
     it('Should return an error if workspace is not public', (done) => {
-        jest.spyOn(Block, 'findByPk').mockResolvedValueOnce({
+        jest.spyOn(Block, 'findOne').mockResolvedValueOnce({
             workspaceId: 1
         });
         jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
             public: false
         });
 
-        processBlock({ data: { blockId: 1 }})
+        processBlock({ data: { blockId: 1, workspaceId: 1 }})
             .then(res => {
                 expect(res).toEqual('Not allowed on private workspaces');
                 done();
@@ -44,7 +67,7 @@ describe('processBlock', () => {
     });
 
     it('Should return an error if there is no explorer', (done) => {
-        jest.spyOn(Block, 'findByPk').mockResolvedValueOnce({
+        jest.spyOn(Block, 'findOne').mockResolvedValueOnce({
             workspaceId: 1
         });
         jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
@@ -52,7 +75,7 @@ describe('processBlock', () => {
         });
         jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce(null);
 
-        processBlock({ data: { blockId: 1 }})
+        processBlock({ data: { blockId: 1, workspaceId: 1 }})
             .then(res => {
                 expect(res).toEqual('Inactive explorer');
                 done();
@@ -60,7 +83,7 @@ describe('processBlock', () => {
     });
 
     it('Should return an error if sync is disabled', (done) => {
-        jest.spyOn(Block, 'findByPk').mockResolvedValueOnce({
+        jest.spyOn(Block, 'findOne').mockResolvedValueOnce({
             workspaceId: 1
         });
         jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
@@ -70,7 +93,7 @@ describe('processBlock', () => {
             shouldSync: false
         });
 
-        processBlock({ data: { blockId: 1 }})
+        processBlock({ data: { blockId: 1, workspaceId: 1 }})
             .then(res => {
                 expect(res).toEqual('Sync is disabled');
                 done();
@@ -101,11 +124,11 @@ describe('processBlock', () => {
             gasAnalyticsEnabled: true
         };
 
-        jest.spyOn(Block, 'findByPk').mockResolvedValueOnce(mockBlock);
+        jest.spyOn(Block, 'findOne').mockResolvedValueOnce(mockBlock);
         jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce(mockWorkspace);
         jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce(mockExplorer);
 
-        processBlock({ data: { blockId: 1 }})
+        processBlock({ data: { blockId: 1, workspaceId: 1 }})
             .then(res => {
                 expect(res).toEqual({ id: 1 });
                 done();
@@ -130,11 +153,11 @@ describe('processBlock', () => {
             gasAnalyticsEnabled: false
         };
 
-        jest.spyOn(Block, 'findByPk').mockResolvedValueOnce(mockBlock);
+        jest.spyOn(Block, 'findOne').mockResolvedValueOnce(mockBlock);
         jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce(mockWorkspace);
         jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce(mockExplorer);
 
-        processBlock({ data: { blockId: 1 }})
+        processBlock({ data: { blockId: 1, workspaceId: 1 }})
             .then(res => {
                 expect(res).toEqual({ id: 1 });
                 expect(mockWorkspace.getViemPublicClient).not.toHaveBeenCalled();

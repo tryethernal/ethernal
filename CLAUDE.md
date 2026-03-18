@@ -40,6 +40,8 @@ Ethernal is an open-source block explorer for EVM-based chains. Vue 3 frontend +
 
 **All local dev commands run through Docker Compose.** Never run `npm`/`yarn` directly. Always: `docker compose -f docker-compose.dev.yml exec <service> <command>`. See [COMMANDS.md](.claude/references/COMMANDS.md) for all commands.
 
+**CRITICAL: Always serve frontends (landing, blog, app) from Docker containers, never standalone `npx vite dev` or `npm run dev` outside Docker.** The Docker containers use named volumes for `node_modules`, have correct Node versions, and match the dev environment the user expects. To start a frontend: `docker compose -f docker-compose.dev.yml up landing -d`. Ports: landing=8174, blog=8176, caddy=8180.
+
 ---
 
 ## Architecture
@@ -164,12 +166,22 @@ See [MARKETING.md](.claude/references/MARKETING.md) for complete reference (blog
 
 **Server:** Hetzner `157.90.154.200`, user `blog`, repo at `/opt/ethernal-blog-stack`, env at `/opt/blog-pipeline.env`.
 
-### Feature-Gated Landing Pages
+### Chain Directory Pages
 
-When a new chain type or framework gains full support in Ethernal, generate corresponding SEO landing pages. Pending:
+**Existing pages:** 18 chain pages in `landing/src/pages/chains/` + 2 framework pages (`OpStackPage.vue`, `OrbitPage.vue`). Each is a standalone Vue SFC with hero (overline + title + description + stats strip with chain logo in first pill), 2 FeatureSections with mockups, ChainFeatureGrid, setup steps, comparison table, pricing, FAQ, related links, and full structured data (Product + HowTo + BreadcrumbList + FAQPage).
 
-- **ZK chains** (zkSync Era, Scroll, Linea, Polygon zkEVM, Mantle): Build `/chains/<slug>` landing pages once ZK chain support is fully implemented. These were scoped out of the initial programmatic SEO rollout because Ethernal doesn't yet fully support ZK-specific features (ZK proof verification, batch posting, etc.).
-- **Polygon CDK chains**: Build landing pages once Polygon CDK support is fully implemented.
+**When adding a new chain page:**
+1. Create `landing/src/pages/chains/<ChainName>Page.vue` following `BasePage.vue` as reference
+2. Add route in `landing/src/router.js`
+3. Add chain logo SVG to `landing/public/images/chains/<slug>.svg`
+4. Add footer link in `LandingFooter.vue` (row 2, appropriate Chains column)
+5. Check if the chain is more prominent than current "Popular Chains" in the header mega menu (`LandingNavbar.vue`). If so, swap it in. Current popular: Base, Optimism, Arbitrum One, Blast, Sepolia.
+6. Add chain card link on the framework page (`OpStackPage.vue` or `OrbitPage.vue`) in the "Chains Built on..." section
+7. Sitemap is auto-generated from routes at build time
+
+**Feature-gated pages (pending):**
+- **ZK chains** (zkSync Era, Scroll, Linea, Polygon zkEVM, Mantle): Build once ZK-specific features are implemented (ZK proof verification, batch posting, etc.).
+- **Polygon CDK chains**: Build once Polygon CDK support is fully implemented.
 
 ---
 
