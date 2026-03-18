@@ -37,6 +37,7 @@ const opOutputs = require('./opOutputs');
 const opDeposits = require('./opDeposits');
 const opWithdrawals = require('./opWithdrawals');
 const rpc = require('./rpc');
+const onboarding = require('./onboarding');
 
 router.use('/blocks', blocks);
 router.use('/contracts', contracts);
@@ -68,6 +69,7 @@ router.use('/opOutputs', opOutputs);
 router.use('/opDeposits', opDeposits);
 router.use('/opWithdrawals', opWithdrawals);
 router.use('/rpc', rpc);
+router.use('/onboarding', onboarding);
 
 if (isDemoEnabled()) {
     const demo = require('./demo');
