@@ -92,6 +92,159 @@ export function parseArticleFrontmatter(content, filename) {
 }
 
 /**
+ * Common English stop words to exclude from keyword extraction.
+ * @type {Set<string>}
+ */
+const STOP_WORDS = new Set([
+    'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for',
+    'of', 'with', 'by', 'from', 'is', 'are', 'was', 'were', 'be', 'been',
+    'being', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would',
+    'could', 'should', 'may', 'might', 'can', 'shall', 'not', 'no', 'nor',
+    'so', 'if', 'then', 'than', 'that', 'this', 'these', 'those', 'it',
+    'its', 'how', 'what', 'when', 'where', 'who', 'which', 'why', 'all',
+    'each', 'every', 'both', 'few', 'more', 'most', 'other', 'some', 'such',
+    'into', 'over', 'after', 'before', 'between', 'out', 'up', 'down',
+    'about', 'just', 'also', 'now', 'here', 'there', 'one', 'two', 'three',
+    'new', 'your', 'you', 'they', 'them', 'their', 'our', 'we', 'my',
+    'his', 'her', 'get', 'got', 'per', 'via', 'yet', 'still',
+]);
+
+/**
+ * Basic suffix-stripping stemmer to normalize word forms.
+ * Maps plural/past-tense/gerund forms to a common root for better matching
+ * (e.g., "failures" -> "failur", "swapped" -> "swap", "routing" -> "rout").
+ * @param {string} word - Lowercase word to stem.
+ * @returns {string} Stemmed word.
+ */
+function stem(word) {
+    if (word.length < 4) return word;
+    return word
+        .replace(/ies$/, 'y')
+        .replace(/ied$/, 'y')
+        .replace(/ing$/, '')
+        .replace(/ment$/, '')
+        .replace(/ness$/, '')
+        .replace(/tion$/, '')
+        .replace(/sion$/, '')
+        .replace(/ures?$/, 'ur')
+        .replace(/ous$/, '')
+        .replace(/ive$/, '')
+        .replace(/ble$/, '')
+        .replace(/ally$/, '')
+        .replace(/ated$/, 'ate')
+        .replace(/pped$/, 'p')
+        .replace(/tted$/, 't')
+        .replace(/nned$/, 'n')
+        .replace(/ed$/, '')
+        .replace(/es$/, '')
+        .replace(/s$/, '');
+}
+
+/**
+ * Extracts significant keywords from text for semantic comparison.
+ * Handles both natural text ("$50M DeFi routing failure") and slug format ("50m-defi-routing-failure").
+ * Preserves numbers with units (e.g., "$50.4M" -> "50.4m", "$36,000" -> "36,000").
+ * @param {string} text - The text to extract keywords from.
+ * @returns {Set<string>} Set of lowercase keywords (3+ chars, stop words removed).
+ */
+export function extractKeywords(text) {
+    if (!text) return new Set();
+
+    // Replace hyphens with spaces (handles slug format)
+    const normalized = text.replace(/-/g, ' ');
+
+    // Extract dollar amounts as special tokens (e.g., "$50.4M" -> "50.4m" and "50m")
+    const amounts = [];
+    for (const m of normalized.matchAll(/\$([0-9][0-9,.]*[a-zA-Z]?)/g)) {
+        const raw = m[1].toLowerCase();
+        amounts.push(raw);
+        // Also add rounded version without decimals (e.g., "50.4m" -> "50m")
+        const rounded = raw.replace(/[.,]\d+([a-z]?)$/, '$1');
+        if (rounded !== raw && rounded.length >= 3) amounts.push(rounded);
+    }
+
+    // Extract regular words (3+ chars, alphanumeric), strip trailing punctuation
+    const words = normalized
+        .toLowerCase()
+        .replace(/[^a-z0-9\s,.]/g, ' ')
+        .split(/\s+/)
+        .map(w => w.replace(/[.,]+$/, ''))
+        .filter(w => w.length >= 3 && !STOP_WORDS.has(w));
+
+    // Apply stemming for better cross-text matching
+    const stemmed = words.map(w => stem(w)).filter(w => w.length >= 3);
+
+    return new Set([...stemmed, ...amounts]);
+}
+
+/**
+ * Checks if a candidate topic is semantically similar to any existing content.
+ * Computes keyword overlap ratio bidirectionally: if >20% of either set's keywords
+ * overlap with the other, it's considered a duplicate.
+ * Requires at least 2 overlapping stemmed keywords to avoid false positives on short texts.
+ * @param {string} candidateTitle - The candidate source title to check.
+ * @param {string[]} recentHooks - Hook text from recent tweets (last 30 days).
+ * @param {string[]} blogTitles - Titles of published blog articles (last 60 days).
+ * @param {string[]} promotedSlugs - Slugs from .promoted-articles file.
+ * @returns {boolean} True if the candidate is a semantic duplicate.
+ */
+export function isSemanticallyDuplicate(candidateTitle, recentHooks, blogTitles, promotedSlugs) {
+    const candidateKeys = extractKeywords(candidateTitle);
+    if (candidateKeys.size < 3) return false;
+
+    const allReferences = [
+        ...recentHooks,
+        ...blogTitles,
+        ...promotedSlugs,
+    ];
+
+    for (const ref of allReferences) {
+        const refKeys = extractKeywords(ref);
+        if (refKeys.size === 0) continue;
+
+        let overlap = 0;
+        for (const key of candidateKeys) {
+            if (refKeys.has(key)) overlap++;
+        }
+
+        // Check overlap ratio against both sets — a match in either direction indicates similarity.
+        // Uses the higher ratio to catch cases where one text is much longer than the other.
+        const candidateRatio = overlap / candidateKeys.size;
+        const refRatio = overlap / refKeys.size;
+        const ratio = Math.max(candidateRatio, refRatio);
+        if (overlap >= 2 && ratio > 0.2) return true;
+    }
+
+    return false;
+}
+
+/**
+ * Returns titles of published blog articles from the last N days.
+ * Used by the dedup check in draft.sh to cross-reference against blog content.
+ * @param {number} [days=60] - How many days back to look.
+ * @returns {string[]} Array of article titles.
+ */
+export function fetchPublishedBlogTitles(days = 60) {
+    try {
+        const files = readdirSync(BLOG_DIR).filter(f => f.endsWith('.md'));
+        const cutoff = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+        const titles = [];
+
+        for (const file of files) {
+            const content = readFileSync(join(BLOG_DIR, file), 'utf-8');
+            const parsed = parseArticleFrontmatter(content, file);
+            if (!parsed) continue;
+            if (parsed.date < cutoff) continue;
+            titles.push(parsed.title);
+        }
+
+        return titles;
+    } catch {
+        return [];
+    }
+}
+
+/**
  * Fetches trend items from the GitHub Projects board via the gh CLI.
  * Queries org "tryethernal", project number 1, filtering for actionable statuses.
  * @returns {Array<{title: string, description: string, id: string, status: string}>}
