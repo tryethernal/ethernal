@@ -1,87 +1,62 @@
 <!--
-    @fileoverview OnboardingExplorerLive component — step 4 of the onboarding wizard (public path).
-    Displays the newly created explorer URL and prompts the user to select a billing plan.
-    Each paid plan carries a 7-day free trial. The free (Starter) plan is always available.
+    @fileoverview Explorer live step — shows explorer URL and plan selection.
+    Styled for the left panel of the split-screen wizard.
     @component OnboardingExplorerLive
-    @prop {Object} explorer - The created explorer object (must include slug or name).
-    @prop {String} defaultPlan - Plan slug pre-selected on mount. Defaults to 'free'.
-    @emits plan-selected - Emitted with { planSlug, isTrial } when the user confirms a plan.
-    @emits skipped - Emitted when the user clicks "Skip for now".
+    @emits plan-selected - Emitted with { planSlug, isTrial }
+    @emits skipped - Emitted when user clicks skip
 -->
 <template>
     <div class="explorer-live">
-        <div class="text-center mb-8">
-            <v-icon size="64" color="success" class="mb-4">mdi-check-circle</v-icon>
-            <h2 class="text-h5 font-weight-bold mb-2">Your explorer is live!</h2>
-            <p class="text-body-2 text-medium-emphasis">
-                Your explorer is now syncing data from your chain.
-            </p>
-        </div>
+        <div class="step-label">Step 4 of 4</div>
+        <h2 class="step-title">Your explorer is live!</h2>
+        <p class="step-subtitle">Your explorer is now syncing data from your chain.</p>
 
-        <v-card variant="tonal" rounded="lg" class="mb-8 mx-auto" style="max-width: 500px;">
-            <v-card-text class="d-flex align-center justify-space-between pa-4">
-                <div>
-                    <div class="text-body-2 text-medium-emphasis">Explorer URL</div>
-                    <div class="text-body-1 font-weight-medium">{{ explorerUrl }}</div>
-                </div>
-                <v-btn
-                    variant="outlined"
-                    size="small"
-                    rounded="lg"
-                    :href="explorerUrl"
-                    target="_blank"
-                >
-                    Preview
-                    <v-icon end size="16">mdi-open-in-new</v-icon>
-                </v-btn>
-            </v-card-text>
-        </v-card>
-
-        <div class="text-center mb-6">
-            <h3 class="text-h6 font-weight-bold mb-2">Choose a plan</h3>
-            <p class="text-body-2 text-medium-emphasis">
-                Each paid plan includes a 7-day free trial. No credit card needed.
-            </p>
-        </div>
-
-        <v-row justify="center" class="mb-6">
-            <v-col v-for="plan in plans" :key="plan.slug" cols="12" sm="6" md="3" style="max-width: 280px;">
-                <v-card
-                    :class="['plan-card', { 'plan-card--selected': selectedPlan === plan.slug }]"
-                    @click="selectedPlan = plan.slug"
-                    variant="outlined"
-                    rounded="xl"
-                >
-                    <v-chip
-                        v-if="plan.badge"
-                        class="plan-badge"
-                        color="primary"
-                        size="small"
-                    >
-                        {{ plan.badge }}
-                    </v-chip>
-                    <v-card-text class="pa-5 text-center">
-                        <div class="text-body-1 font-weight-bold mb-1">{{ plan.name }}</div>
-                        <div class="text-h5 font-weight-bold mb-3">
-                            <template v-if="plan.price === 'Custom'">Custom</template>
-                            <template v-else>${{ plan.price }}<span class="text-body-2 text-medium-emphasis">/mo</span></template>
-                        </div>
-                        <div class="text-body-2 text-medium-emphasis">{{ plan.description }}</div>
-                    </v-card-text>
-                </v-card>
-            </v-col>
-        </v-row>
-
-        <div class="text-center">
-            <v-btn color="primary" size="large" rounded="xl" @click="confirmPlan">
-                {{ selectedPlan === 'free' ? 'Continue with Free' : 'Start 7-Day Trial' }}
-                <v-icon end>mdi-arrow-right</v-icon>
-            </v-btn>
-            <div class="mt-3">
-                <v-btn variant="text" size="small" @click="skip" class="text-medium-emphasis">
-                    Skip for now
-                </v-btn>
+        <!-- Explorer URL preview -->
+        <div class="explorer-url-card">
+            <div>
+                <div class="explorer-url-label">Explorer URL</div>
+                <div class="explorer-url-value">{{ explorerUrl }}</div>
             </div>
+            <a :href="explorerUrl" target="_blank" class="preview-link">
+                Preview <v-icon size="14">mdi-open-in-new</v-icon>
+            </a>
+        </div>
+
+        <!-- Plan selection -->
+        <div class="plan-section-title">Choose a plan</div>
+        <div class="plan-section-desc">7-day free trial on paid plans. No credit card needed.</div>
+
+        <div class="plan-cards">
+            <div
+                v-for="plan in plans"
+                :key="plan.slug"
+                :class="['plan-card', { 'plan-card--selected': selectedPlan === plan.slug }]"
+                @click="selectedPlan = plan.slug"
+            >
+                <div v-if="plan.badge" class="plan-badge">{{ plan.badge }}</div>
+                <div class="plan-name">{{ plan.name }}</div>
+                <div class="plan-price">
+                    <template v-if="plan.price === 'Custom'">Custom</template>
+                    <template v-else>${{ plan.price }}<span class="plan-period">/mo</span></template>
+                </div>
+                <div class="plan-desc">{{ plan.description }}</div>
+            </div>
+        </div>
+
+        <v-btn
+            color="#3D95CE"
+            size="large"
+            rounded="lg"
+            block
+            @click="confirmPlan"
+            class="continue-btn"
+        >
+            {{ selectedPlan === 'free' ? 'Continue with Free' : 'Start 7-Day Trial' }}
+            <v-icon end>mdi-arrow-right</v-icon>
+        </v-btn>
+
+        <div class="skip-row">
+            <button class="skip-btn" @click="skip">Skip for now</button>
         </div>
     </div>
 </template>
@@ -90,28 +65,19 @@
 import { ref, computed } from 'vue';
 
 const props = defineProps({
-    /** The created explorer object returned by the onboarding API. Must include slug or name. */
     explorer: { type: Object, required: true },
-    /** Plan slug pre-selected when the component mounts. */
     defaultPlan: { type: String, default: 'free' }
 });
 
 const emit = defineEmits(['plan-selected', 'skipped']);
-
 const selectedPlan = ref(props.defaultPlan);
 
-/**
- * Derives the public explorer URL from the explorer object.
- * Uses slug if available; otherwise slugifies the name.
- * @type {import('vue').ComputedRef<string>}
- */
 const explorerUrl = computed(() => {
     if (!props.explorer) return '';
     const slug = props.explorer.slug || props.explorer.name?.toLowerCase().replace(/[^a-z0-9]/g, '-');
     return `https://${slug}.tryethernal.com`;
 });
 
-/** Available billing plans shown in the plan selector. Prices match production stripe_plans. */
 const plans = [
     { slug: 'free', name: 'Starter', price: 0, description: 'Basic explorer with ads' },
     { slug: 'explorer-150', name: 'Team', price: 150, description: 'Custom domain, no ads', badge: 'Best Value' },
@@ -119,13 +85,8 @@ const plans = [
     { slug: 'enterprise', name: 'Enterprise', price: 'Custom', description: 'High-volume chains' }
 ];
 
-/**
- * Fires the plan-selected event with the chosen plan slug and trial flag,
- * and tracks the selection in PostHog.
- */
 function confirmPlan() {
     const isTrial = selectedPlan.value !== 'free' && selectedPlan.value !== 'enterprise';
-
     if (window.posthog) {
         window.posthog.capture('onboarding:plan_selected', {
             plan_slug: selectedPlan.value,
@@ -133,14 +94,9 @@ function confirmPlan() {
             source: 'onboarding_wizard'
         });
     }
-
     emit('plan-selected', { planSlug: selectedPlan.value, isTrial });
 }
 
-/**
- * Handles the "Skip for now" action — tracks a free plan selection in PostHog
- * and emits the skipped event.
- */
 function skip() {
     if (window.posthog) {
         window.posthog.capture('onboarding:plan_selected', {
@@ -149,29 +105,182 @@ function skip() {
             source: 'onboarding_wizard_skip'
         });
     }
-
     emit('skipped');
 }
 </script>
 
 <style scoped>
+.step-label {
+    font-size: 12px;
+    color: #3D95CE;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+}
+
+.step-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 6px;
+}
+
+.step-subtitle {
+    font-size: 14px;
+    color: #64748b;
+    margin-bottom: 24px;
+}
+
+.explorer-url-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid #1e293b;
+    border-radius: 10px;
+    margin-bottom: 24px;
+}
+
+.explorer-url-label {
+    font-size: 11px;
+    color: #64748b;
+    margin-bottom: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.explorer-url-value {
+    font-size: 14px;
+    color: #fff;
+    font-weight: 500;
+    font-family: monospace;
+}
+
+.preview-link {
+    font-size: 12px;
+    color: #3D95CE;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.preview-link:hover {
+    text-decoration: underline;
+}
+
+.plan-section-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 4px;
+}
+
+.plan-section-desc {
+    font-size: 13px;
+    color: #64748b;
+    margin-bottom: 16px;
+}
+
+.plan-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
 .plan-card {
+    padding: 14px;
+    border: 1px solid #1e293b;
+    border-radius: 10px;
     cursor: pointer;
     transition: all 0.2s ease;
-    border: 2px solid transparent;
+    background: rgba(255, 255, 255, 0.02);
     position: relative;
+    text-align: center;
 }
+
 .plan-card:hover {
-    border-color: rgba(var(--v-theme-primary), 0.3);
+    border-color: rgba(61, 149, 206, 0.3);
 }
+
 .plan-card--selected {
-    border-color: rgb(var(--v-theme-primary));
-    background: rgba(var(--v-theme-primary), 0.04);
+    border-color: #3D95CE;
+    background: rgba(61, 149, 206, 0.06);
 }
+
 .plan-badge {
     position: absolute;
-    top: -10px;
+    top: -8px;
     left: 50%;
     transform: translateX(-50%);
+    background: #3D95CE;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+}
+
+.plan-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 4px;
+}
+
+.plan-price {
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 4px;
+}
+
+.plan-period {
+    font-size: 12px;
+    color: #64748b;
+    font-weight: 400;
+}
+
+.plan-desc {
+    font-size: 12px;
+    color: #64748b;
+}
+
+.continue-btn {
+    text-transform: none;
+    font-weight: 600;
+    letter-spacing: 0;
+}
+
+.skip-row {
+    text-align: center;
+    margin-top: 12px;
+}
+
+.skip-btn {
+    background: none;
+    border: none;
+    color: #475569;
+    font-size: 13px;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.skip-btn:hover {
+    color: #94a3b8;
+}
+
+@media (max-width: 480px) {
+    .plan-cards {
+        grid-template-columns: 1fr;
+    }
 }
 </style>

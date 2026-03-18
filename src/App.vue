@@ -55,12 +55,15 @@ import RpcConnector from './components/RpcConnector.vue';
 import PrivateExplorerFooter from './components/PrivateExplorerFooter.vue';
 import PublicExplorerFooter from './components/PublicExplorerFooter.vue';
 
+import { useRoute } from 'vue-router';
+
 // Pinia stores
 const currentWorkspaceStore = useCurrentWorkspaceStore();
 const envStore = useEnvStore();
 const explorerStore = useExplorerStore();
 const userStore = useUserStore();
 
+const route = useRoute();
 const theme = useTheme();
 
 // Data refs
@@ -85,7 +88,10 @@ const $server = inject('$server');
 const $pusher = inject('$pusher');
 
 // Computed properties
-const isAuthPage = computed(() => window.location.pathname.indexOf('/auth') > -1 || window.location.pathname.indexOf('/onboarding') > -1);
+const isAuthPage = computed(() => {
+    const path = route?.path || window.location.pathname;
+    return path.indexOf('/auth') > -1 || path.indexOf('/onboarding') > -1;
+});
 const canDisplaySides = computed(() => {
     return (
         userStore && typeof userStore.loggedIn !== 'undefined' &&
