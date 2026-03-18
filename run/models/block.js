@@ -174,7 +174,7 @@ module.exports = (sequelize, DataTypes) => {
                     await enqueue('integrityCheck', `integrityCheck-${this.workspaceId}`, { workspaceId: this.workspaceId });
                 }
 
-                return enqueue('processBlock', `processBlock-${this.id}`, { blockId: this.id });
+                return enqueue('processBlock', `processBlock-${this.id}`, { blockId: this.id, workspaceId: this.workspaceId });
             }
         };
 

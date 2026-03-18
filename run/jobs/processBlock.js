@@ -14,10 +14,16 @@ module.exports = async job => {
     if (!data.blockId)
         return 'Missing parameter';
 
-    // Fast primary key lookup for block
-    const block = await Block.findByPk(data.blockId, {
-        attributes: ['id', 'number', 'gasUsed', 'gasLimit', 'workspaceId', 'timestamp', 'transactionsCount']
-    });
+    // Use workspaceId in query for better performance on hypertables
+    // TODO: Remove findByPk fallback after one deploy cycle (all legacy jobs without workspaceId will have drained)
+    const block = data.workspaceId
+        ? await Block.findOne({
+            where: { id: data.blockId, workspaceId: data.workspaceId },
+            attributes: ['id', 'number', 'gasUsed', 'gasLimit', 'workspaceId', 'timestamp', 'transactionsCount']
+        })
+        : await Block.findByPk(data.blockId, {
+            attributes: ['id', 'number', 'gasUsed', 'gasLimit', 'workspaceId', 'timestamp', 'transactionsCount']
+        });
 
     if (!block)
         return 'Cannot find block';
