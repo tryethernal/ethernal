@@ -64,5 +64,11 @@ export function getScheduledTime(date, baseHourUTC) {
     const scheduled = new Date(date);
     scheduled.setUTCHours(baseHourUTC, 0, 0, 0);
     const jitterMs = (Math.random() * 2 - 1) * SCHEDULE.jitterMinutes * 60 * 1000;
-    return new Date(scheduled.getTime() + jitterMs);
+    const result = new Date(scheduled.getTime() + jitterMs);
+
+    // If the scheduled time is in the past (draft ran late), push to at least 20 min from now
+    const minDelay = new Date(Date.now() + 20 * 60 * 1000);
+    if (result < minDelay) return minDelay;
+
+    return result;
 }
