@@ -107,6 +107,10 @@ const STOP_WORDS = new Set([
     'about', 'just', 'also', 'now', 'here', 'there', 'one', 'two', 'three',
     'new', 'your', 'you', 'they', 'them', 'their', 'our', 'we', 'my',
     'his', 'her', 'get', 'got', 'per', 'via', 'yet', 'still',
+    // Domain stop words — too common in Ethernal tweets to be meaningful for dedup
+    'evm', 'chain', 'blockchain', 'ethereum', 'explorer', 'block',
+    'transaction', 'contract', 'smart', 'dev', 'developer', 'web3',
+    'onchain', 'mainnet', 'testnet', 'deploy', 'node', 'network',
 ]);
 
 /**

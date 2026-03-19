@@ -144,7 +144,7 @@ Body.`;
         it('extracts numbers with units as keywords', () => {
             const result = extractKeywords('$50.4M swapped for $36,000 in one transaction');
             assert.ok(result.has('swap'));       // "swapped" -> stem -> "swap"
-            assert.ok(result.has('transac'));    // "transaction" -> stem -> "transac"
+            // "transaction" is a domain stop word — not extracted
             assert.ok(result.has('50.4m'));
             assert.ok(result.has('36,000'));
         });
