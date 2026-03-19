@@ -124,6 +124,8 @@ router.post('/setup', setupRateLimit, async (req, res, next) => {
                 backendRpcServer: data.rpcServer,
                 dataRetentionLimit: 1,
                 token: data.nativeToken || null,
+                onboarding_source: 'onboarding',
+                chain: data.chainParam || null,
                 subscription: {
                     stripePlanId: stripePlan ? stripePlan.id : null,
                     stripeId: null,
@@ -160,7 +162,8 @@ router.post('/setup', setupRateLimit, async (req, res, next) => {
         await enqueue('processUser', `processUser-${user.id}`, {
             id: user.id,
             source: 'onboarding',
-            path: data.path
+            flow: data.path,
+            chain: data.chainParam || null
         });
 
         const response = { token, user, workspace };
