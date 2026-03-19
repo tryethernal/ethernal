@@ -326,12 +326,12 @@ function onWorkspaceInfoReady(data) {
 }
 
 function onSignupComplete(data) {
-    if (data.authToken) {
-        localStorage.setItem('apiToken', data.authToken);
+    if (data.token) {
+        localStorage.setItem('apiToken', data.token);
     }
     userStore.updateUser({
         ...data.user,
-        apiToken: data.authToken || data.user.apiToken
+        apiToken: data.token || data.user.apiToken
     });
     if (data.workspace) {
         currentWorkspaceStore.updateCurrentWorkspace(data.workspace);

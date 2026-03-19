@@ -140,7 +140,7 @@ router.post('/setup', setupRateLimit, async (req, res, next) => {
         } else {
             // Private path: create workspace directly
             const workspaceData = sanitize({
-                name: `${data.email}'s workspace`,
+                name: data.workspaceName || `${data.email}'s workspace`,
                 public: false,
                 rpcServer: data.rpcServer || null,
                 networkId: networkId || null
@@ -210,6 +210,9 @@ router.post('/contact', contactRateLimit, async (req, res, next) => {
     try {
         if (!contact || !message)
             return managedError(new Error('Missing required fields: contact and message.'), req, res);
+
+        if (contact.length > 1000 || message.length > 5000)
+            return managedError(new Error('Input too long.'), req, res);
 
         const { getMailjetPublicKey, getMailjetPrivateKey, getDemoExplorerSender } = require('../lib/env');
         const Mailjet = require('node-mailjet');
