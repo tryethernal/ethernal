@@ -1,15 +1,16 @@
 <!--
     @fileoverview Signup step for onboarding wizard.
-    Creates account via atomic onboarding endpoint.
+    Creates account via atomic onboarding endpoint, or signs in to existing account.
     @component OnboardingSignup
     @emits signup-complete - Emitted with { user, workspace, explorer?, authToken }
+    @emits signin-complete - Emitted with { user } when signing in to existing account
     @emits back - Emitted when user clicks back
 -->
 <template>
     <div class="onboarding-signup">
         <div class="step-label">Step 3 of 4</div>
-        <h2 class="step-title">Create your account</h2>
-        <p class="step-subtitle">One last step to get your {{ path === 'public' ? 'explorer' : 'workspace' }} running.</p>
+        <h2 class="step-title">{{ mode === 'signup' ? 'Create your account' : 'Sign in' }}</h2>
+        <p class="step-subtitle">{{ mode === 'signup' ? `One last step to get your ${path === 'public' ? 'explorer' : 'workspace'} running.` : 'Welcome back! Sign in to continue.' }}</p>
 
         <v-form @submit.prevent="submit" v-model="formValid">
             <div class="field-group">
@@ -66,11 +67,20 @@
                     :disabled="!formValid"
                     class="continue-btn"
                 >
-                    Create Account
+                    {{ mode === 'signup' ? 'Create Account' : 'Sign In' }}
                     <v-icon end>mdi-arrow-right</v-icon>
                 </v-btn>
             </div>
         </v-form>
+
+        <div class="signup-footer">
+            <template v-if="mode === 'signup'">
+                Already have an account? <a href="#" class="wizard-link" @click.prevent="mode = 'signin'">Sign in</a>
+            </template>
+            <template v-else>
+                Don't have an account? <a href="#" class="wizard-link" @click.prevent="mode = 'signup'">Sign up</a>
+            </template>
+        </div>
     </div>
 </template>
 
@@ -82,9 +92,10 @@ const props = defineProps({
     setupData: { type: Object, default: () => ({}) }
 });
 
-const emit = defineEmits(['signup-complete', 'back']);
+const emit = defineEmits(['signup-complete', 'signin-complete', 'back']);
 const { proxy } = getCurrentInstance();
 
+const mode = ref('signup');
 const email = ref('');
 const password = ref('');
 const formValid = ref(false);
@@ -97,6 +108,12 @@ async function submit() {
     errorMsg.value = '';
 
     try {
+        if (mode.value === 'signin') {
+            const { data: { user } } = await proxy.$server.signIn(email.value, password.value);
+            emit('signin-complete', { user });
+            return;
+        }
+
         const onboardingContext = JSON.parse(sessionStorage.getItem('onboardingContext') || '{}');
 
         const { data } = await proxy.$server.onboardingSetup({
@@ -206,5 +223,20 @@ async function submit() {
 
 :deep(.v-field__input) {
     color: #fff !important;
+}
+
+.signup-footer {
+    font-size: 13px;
+    color: #475569;
+    margin-top: 32px;
+}
+
+.wizard-link {
+    color: #3D95CE;
+    text-decoration: none;
+}
+
+.wizard-link:hover {
+    text-decoration: underline;
 }
 </style>

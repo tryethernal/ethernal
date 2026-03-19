@@ -79,10 +79,6 @@
                     </v-slide-x-transition>
                 </div>
 
-                <!-- Footer (only on account creation step) -->
-                <div v-if="currentStep === 2" class="wizard-footer">
-                    Already have an account? <router-link to="/auth" class="wizard-link">Sign in</router-link>
-                </div>
             </div>
         </div>
 
