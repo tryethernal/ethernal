@@ -2,7 +2,7 @@
 
 exports[`Billing.vue > Should display active explorers list 1`] = `
 "<div class="v-container v-container--fluid v-locale--is-ltr">
-  <create-explorer-modal-stub></create-explorer-modal-stub>
+  <create-explorer-modal-stub initialname="" initialrpc=""></create-explorer-modal-stub>
   <!--v-if-->
   <!--v-if-->
   <div class="v-alert v-theme--light bg-error v-alert--density-compact v-alert--variant-flat" role="alert" style="display: none;">
@@ -268,7 +268,7 @@ exports[`Billing.vue > Should display active explorers list 1`] = `
 
 exports[`Billing.vue > Should display the button to manage the subscription when the user has an active premium plan 1`] = `
 "<div class="v-container v-container--fluid v-locale--is-ltr">
-  <create-explorer-modal-stub></create-explorer-modal-stub>
+  <create-explorer-modal-stub initialname="" initialrpc=""></create-explorer-modal-stub>
   <!--v-if-->
   <!--v-if-->
   <div class="v-alert v-theme--light bg-error v-alert--density-compact v-alert--variant-flat" role="alert" style="display: none;">
@@ -502,7 +502,7 @@ exports[`Billing.vue > Should display the button to manage the subscription when
 
 exports[`Billing.vue > Should display the button to start the subscription when the user is on a free plan 1`] = `
 "<div class="v-container v-container--fluid v-locale--is-ltr">
-  <create-explorer-modal-stub></create-explorer-modal-stub>
+  <create-explorer-modal-stub initialname="" initialrpc=""></create-explorer-modal-stub>
   <!--v-if-->
   <!--v-if-->
   <div class="v-alert v-theme--light bg-error v-alert--density-compact v-alert--variant-flat" role="alert" style="display: none;">
