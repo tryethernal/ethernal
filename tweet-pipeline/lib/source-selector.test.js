@@ -144,7 +144,7 @@ Body.`;
         it('extracts numbers with units as keywords', () => {
             const result = extractKeywords('$50.4M swapped for $36,000 in one transaction');
             assert.ok(result.has('swap'));       // "swapped" -> stem -> "swap"
-            assert.ok(result.has('transac'));    // "transaction" -> stem -> "transac"
+            // "transaction" is a domain stop word — not extracted
             assert.ok(result.has('50.4m'));
             assert.ok(result.has('36,000'));
         });
@@ -159,6 +159,17 @@ Body.`;
             assert.ok(result.has('defi'));
             assert.ok(result.has('rout'));       // "routing" -> stem -> "rout"
             assert.ok(result.has('failur'));     // "failure" -> stem -> "failur"
+        });
+
+        it('filters domain stop words even in plural/inflected forms', () => {
+            const result = extractKeywords('Multiple transactions on different chains and blocks in the network');
+            // Plurals stem back to stop words — should all be excluded
+            assert.ok(!result.has('transaction'));  // "transactions" -> stem -> "transaction"
+            assert.ok(!result.has('chain'));        // "chains" -> stem -> "chain"
+            assert.ok(!result.has('block'));        // "blocks" -> stem -> "block"
+            assert.ok(!result.has('network'));      // singular, direct stop word
+            assert.ok(result.has('multiple'));      // not a stop word, kept
+            assert.ok(result.has('different'));     // not a stop word, kept
         });
     });
 
