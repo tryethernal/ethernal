@@ -373,6 +373,7 @@ function confirmPlan() {
     font-weight: 600;
     letter-spacing: 0;
     margin-top: auto;
+    max-height: 48px;
 }
 
 /* Mobile: stack columns */
