@@ -243,7 +243,7 @@ router.post('/contact', contactRateLimit, async (req, res, next) => {
         await mailjet.post('send', { version: 'v3.1' }).request({
             Messages: [{
                 From: { Email: senderEmail, Name: senderName },
-                To: [{ Email: 'antoine@tryethernal.com' }],
+                To: [{ Email: process.env.ENTERPRISE_CONTACT_EMAIL || 'antoine@tryethernal.com' }],
                 Subject: `Enterprise inquiry from ${contact}`,
                 HTMLPart: htmlBody,
                 CustomID: `enterprise-contact-${Date.now()}`
