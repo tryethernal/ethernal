@@ -175,8 +175,9 @@ export function extractKeywords(text) {
         .map(w => w.replace(/[.,]+$/, ''))
         .filter(w => w.length >= 3 && !STOP_WORDS.has(w));
 
-    // Apply stemming for better cross-text matching
-    const stemmed = words.map(w => stem(w)).filter(w => w.length >= 3);
+    // Apply stemming for better cross-text matching, then re-filter stop words
+    // (plurals like "transactions" pass the pre-stem filter but stem back to "transaction")
+    const stemmed = words.map(w => stem(w)).filter(w => w.length >= 3 && !STOP_WORDS.has(w));
 
     return new Set([...stemmed, ...amounts]);
 }
