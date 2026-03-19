@@ -60,6 +60,7 @@
                             :path="selectedPath"
                             :setup-data="setupData"
                             @signup-complete="onSignupComplete"
+                            @signin-complete="onSigninComplete"
                             @back="currentStep = 1"
                         />
 
@@ -274,6 +275,20 @@ onMounted(() => {
         // Ignore parse errors
     }
 
+    if (userStore.loggedIn) {
+        const route = router.currentRoute.value;
+        if (context.value.name) setupData.value.name = context.value.name;
+        if (context.value.rpc) setupData.value.rpcServer = context.value.rpc;
+        if (route.query.name) setupData.value.name = route.query.name;
+        if (route.query.rpc) setupData.value.rpcServer = route.query.rpc;
+
+        const flow = context.value.flow || route.query.flow || selectedPath.value;
+        selectedPath.value = flow === 'public' ? 'public' : 'private';
+
+        redirectSignedInUser();
+        return;
+    }
+
     if (window.posthog) {
         window.posthog.capture('onboarding:flow_started', {
             source: context.value.source || 'direct',
@@ -328,6 +343,45 @@ function onSignupComplete(data) {
     currentStep.value = 3;
     if (selectedPath.value === 'private') {
         setTimeout(() => goToDashboard(), 1500);
+    }
+}
+
+/**
+ * Handles sign-in completion for already-existing users on the signup step.
+ * Updates the store, sets the API token, and redirects to the appropriate in-app modal.
+ * @param {{ user: Object }} payload - The signed-in user object
+ */
+function onSigninComplete({ user }) {
+    userStore.updateUser(user);
+    localStorage.setItem('apiToken', user.apiToken);
+    $pusher.init();
+    redirectSignedInUser();
+}
+
+/**
+ * Redirects a signed-in user to the appropriate in-app creation modal,
+ * prefilling setup data via query params.
+ */
+function redirectSignedInUser() {
+    sessionStorage.removeItem('onboardingContext');
+    if (selectedPath.value === 'public') {
+        router.push({
+            path: '/explorers',
+            query: {
+                openCreate: 'true',
+                name: setupData.value.name || '',
+                rpc: setupData.value.rpcServer || ''
+            }
+        });
+    } else {
+        router.push({
+            path: '/settings',
+            query: {
+                openWorkspace: 'true',
+                name: setupData.value.workspaceName || '',
+                rpc: setupData.value.rpcServer || ''
+            }
+        });
     }
 }
 

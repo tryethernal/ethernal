@@ -56,7 +56,11 @@ import { useUserStore } from '@/stores/user';
 const ipaddr = require('ipaddr.js');
 
 const props = defineProps({
-    isOnboarding: { type: Boolean, default: false }
+    isOnboarding: { type: Boolean, default: false },
+    /** @prop {String} initialName - Pre-filled workspace name (e.g. from onboarding redirect) */
+    initialName: { type: String, default: '' },
+    /** @prop {String} initialRpc - Pre-filled RPC server URL */
+    initialRpc: { type: String, default: '' }
 });
 
 const emit = defineEmits(['workspaceCreated', 'goToBilling', 'validatedWorkspaceSettings', 'back']);
@@ -72,8 +76,8 @@ const availableChains = ref([]);
 const chain = ref('ethereum');
 const errorMessage = ref(null);
 const loading = ref(false);
-const name = ref(null);
-const rpcServer = ref(null);
+const name = ref(props.initialName || null);
+const rpcServer = ref(props.initialRpc || null);
 const localNetwork = ref(false);
 const detectedNetworks = ref([]);
 const noNetworks = ref(false);
