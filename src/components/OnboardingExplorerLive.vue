@@ -86,10 +86,17 @@
             </div>
         </div>
     </div>
+
+    <OnboardingEnterpriseModal
+        ref="enterpriseModalRef"
+        :explorer-name="explorer?.name || ''"
+        :rpc-server="explorer?.rpcServer || ''"
+    />
 </template>
 
 <script setup>
 import { ref, computed } from 'vue';
+import OnboardingEnterpriseModal from './OnboardingEnterpriseModal.vue';
 
 const props = defineProps({
     explorer: { type: Object, required: true },
@@ -98,6 +105,7 @@ const props = defineProps({
 
 const emit = defineEmits(['plan-selected']);
 const selectedPlan = ref(props.defaultPlan);
+const enterpriseModalRef = ref(null);
 
 const explorerUrl = computed(() => {
     if (!props.explorer) return '';
@@ -168,6 +176,11 @@ const plans = [
 const activePlan = computed(() => plans.find(p => p.slug === selectedPlan.value) || plans[0]);
 
 function confirmPlan() {
+    if (selectedPlan.value === 'enterprise') {
+        enterpriseModalRef.value.open();
+        return;
+    }
+
     const isTrial = selectedPlan.value !== 'free' && selectedPlan.value !== 'enterprise';
     if (window.posthog) {
         window.posthog.capture('onboarding:plan_selected', {

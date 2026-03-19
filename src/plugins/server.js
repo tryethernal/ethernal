@@ -1262,6 +1262,16 @@ export default {
                 return axios.post(resource, data);
             },
 
+            /**
+             * Send enterprise contact inquiry from onboarding.
+             * @param {object} data - { contact, message, explorerName, rpcServer, email }
+             * @returns {Promise}
+             */
+            onboardingContact(data) {
+                const resource = `${envStore.apiRoot}/api/onboarding/contact`;
+                return axios.post(resource, data);
+            },
+
             getAddressTokenTransfers(address, options) {
                 const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, ...options };
 

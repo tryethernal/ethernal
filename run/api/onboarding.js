@@ -184,4 +184,73 @@ router.post('/setup', setupRateLimit, async (req, res, next) => {
     }
 });
 
+/**
+ * POST /api/onboarding/contact
+ * Sends an enterprise contact inquiry email via Mailjet.
+ * Public endpoint — no auth required.
+ *
+ * @param {string} req.body.contact - Point of contact (email, Telegram, Discord)
+ * @param {string} req.body.message - Freeform message
+ * @param {string} [req.body.explorerName] - Explorer name from onboarding context
+ * @param {string} [req.body.rpcServer] - RPC URL from onboarding context
+ * @param {string} [req.body.email] - Signup email from onboarding context
+ * @returns {200} on success
+ */
+const contactRateLimit = rateLimit({
+    windowMs: 60 * 1000,
+    max: 10,
+    message: 'Too many requests. Please try again later.',
+    standardHeaders: true,
+    legacyHeaders: false
+});
+
+router.post('/contact', contactRateLimit, async (req, res, next) => {
+    const { contact, message, explorerName, rpcServer, email } = req.body;
+
+    try {
+        if (!contact || !message)
+            return managedError(new Error('Missing required fields: contact and message.'), req, res);
+
+        const { getMailjetPublicKey, getMailjetPrivateKey, getDemoExplorerSender } = require('../lib/env');
+        const Mailjet = require('node-mailjet');
+        const mailjet = Mailjet.apiConnect(getMailjetPublicKey(), getMailjetPrivateKey());
+
+        const senderRaw = getDemoExplorerSender();
+        const senderMatch = senderRaw ? senderRaw.match(/^(.+?)\s*<(.+)>$/) : null;
+        const senderEmail = senderMatch ? senderMatch[2] : (senderRaw || 'noreply@tryethernal.com');
+        const senderName = senderMatch ? senderMatch[1].trim() : 'Ethernal';
+
+        // Escape HTML to prevent XSS in email body
+        const esc = (str) => (str || 'N/A').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+        const htmlBody = `
+            <h2>Enterprise Inquiry</h2>
+            <p><strong>Point of contact:</strong> ${esc(contact)}</p>
+            <p><strong>Message:</strong></p>
+            <p>${esc(message).replace(/\n/g, '<br>')}</p>
+            <hr>
+            <h3>Onboarding Context</h3>
+            <ul>
+                <li><strong>Explorer Name:</strong> ${esc(explorerName)}</li>
+                <li><strong>RPC Server:</strong> ${esc(rpcServer)}</li>
+                <li><strong>Signup Email:</strong> ${esc(email)}</li>
+            </ul>
+        `;
+
+        await mailjet.post('send', { version: 'v3.1' }).request({
+            Messages: [{
+                From: { Email: senderEmail, Name: senderName },
+                To: [{ Email: 'antoine@tryethernal.com' }],
+                Subject: `Enterprise inquiry from ${contact}`,
+                HTMLPart: htmlBody,
+                CustomID: `enterprise-contact-${Date.now()}`
+            }]
+        });
+
+        res.sendStatus(200);
+    } catch (error) {
+        unmanagedError(error, req, next);
+    }
+});
+
 module.exports = router;
