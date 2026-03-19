@@ -100,6 +100,7 @@ Three sub-parts: inline sign-in form, redirect logic, and already-signed-in hand
 - On mount: check `route.query.openCreate`
 - If present: call `createExplorerModal.value.open()` (existing imperative pattern)
 - Pass `route.query.name` and `route.query.rpc` as initial values
+- After opening modal: `router.replace({ query: {} })` to strip params (prevents re-trigger on refresh)
 
 **Changes in `CreateExplorerModal.vue`**:
 - Accept optional `initialName` and `initialRpc` props
@@ -108,6 +109,7 @@ Three sub-parts: inline sign-in form, redirect logic, and already-signed-in hand
 **Changes in `Settings.vue`**:
 - On mount: check `route.query.openWorkspace`
 - If present: open `CreateWorkspaceModal` with prefilled values
+- After opening modal: `router.replace` to strip the openWorkspace/name/rpc params
 
 **Changes in `CreateWorkspaceModal.vue`**:
 - Accept optional `initialName` and `initialRpc` props
