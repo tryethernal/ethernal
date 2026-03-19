@@ -12,7 +12,7 @@ const router = express.Router();
 const rateLimit = require('express-rate-limit');
 const uuidAPIKey = require('uuid-apikey');
 const { randomUUID } = require('crypto');
-const { getStripeSecretKey, getDefaultPlanSlug } = require('../lib/env');
+const { getStripeSecretKey, getDefaultPlanSlug, getEnterpriseContactEmail } = require('../lib/env');
 const stripe = require('stripe')(getStripeSecretKey());
 const { isStripeEnabled, isFirebaseAuthEnabled } = require('../lib/flags');
 const { encrypt, firebaseHash, encode } = require('../lib/crypto');
@@ -243,7 +243,7 @@ router.post('/contact', contactRateLimit, async (req, res, next) => {
         await mailjet.post('send', { version: 'v3.1' }).request({
             Messages: [{
                 From: { Email: senderEmail, Name: senderName },
-                To: [{ Email: process.env.ENTERPRISE_CONTACT_EMAIL || 'antoine@tryethernal.com' }],
+                To: [{ Email: getEnterpriseContactEmail() }],
                 Subject: `Enterprise inquiry from ${contact}`,
                 HTMLPart: htmlBody,
                 CustomID: `enterprise-contact-${Date.now()}`
