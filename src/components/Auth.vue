@@ -145,15 +145,16 @@ export default {
             ['flow', 'chain', 'plan', 'explorerToken', 'rpc'].forEach(key => {
                 if (params.get(key)) context[key] = params.get(key);
             });
+            // Demo upgrade flow: explorerToken stays on Auth page (existing migration flow)
             if (context.explorerToken) {
-                context.flow = context.flow || 'public';
+                return;
             }
             if (Object.keys(context).length) {
                 sessionStorage.setItem('onboardingContext', JSON.stringify(context));
             }
 
-            // Auto-redirect to onboarding if user arrives with explorerToken or flow params
-            if (context.explorerToken || context.flow) {
+            // Auto-redirect to onboarding if user arrives with flow params
+            if (context.flow) {
                 this.$router.push('/onboarding');
                 return;
             }
