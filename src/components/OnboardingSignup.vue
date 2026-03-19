@@ -203,4 +203,8 @@ async function submit() {
     font-weight: 600;
     letter-spacing: 0;
 }
+
+:deep(.v-field__input) {
+    color: #fff !important;
+}
 </style>

@@ -8,7 +8,7 @@
     <div class="onboarding-wizard">
         <!-- Left: Form Panel -->
         <div class="wizard-form-panel">
-            <div class="wizard-form-inner">
+            <div class="wizard-form-inner" :style="isWideStep ? { maxWidth: '680px' } : {}">
                 <!-- Logo -->
                 <div class="wizard-logo">
                     <div class="wizard-logo-icon">E</div>
@@ -29,7 +29,7 @@
                 </div>
 
                 <!-- Step content -->
-                <div class="wizard-step-content">
+                <div :class="['wizard-step-content', { 'wizard-step-content--top': currentStep === 3 }]">
                     <v-slide-x-transition mode="out-in">
                         <!-- Step 0: Path Selection -->
                         <OnboardingPathSelector
@@ -66,9 +66,8 @@
                         <OnboardingExplorerLive
                             v-else-if="currentStep === 3 && selectedPath === 'public'"
                             :explorer="createdExplorer"
-                            :default-plan="context.plan || 'free'"
+                            :default-plan="context.plan || 'explorer-150'"
                             @plan-selected="onPlanSelected"
-                            @skipped="goToDashboard"
                         />
                         <div v-else-if="currentStep === 3 && selectedPath === 'private'" class="text-center">
                             <v-icon size="64" color="success" class="mb-4">mdi-check-circle</v-icon>
@@ -79,8 +78,8 @@
                     </v-slide-x-transition>
                 </div>
 
-                <!-- Footer -->
-                <div class="wizard-footer">
+                <!-- Footer (only on account creation step) -->
+                <div v-if="currentStep === 2" class="wizard-footer">
                     Already have an account? <router-link to="/auth" class="wizard-link">Sign in</router-link>
                 </div>
             </div>
@@ -183,10 +182,46 @@
                         </div>
                         <h3 class="wizard-context-title">You're live!</h3>
                         <p class="wizard-context-desc">Your explorer is syncing data from your chain. Choose a plan to unlock more features, or start with the free tier.</p>
+                        <div v-if="liveBlockNumber != null" class="wizard-context-block">
+                            <v-icon size="14" color="#22C55E" class="mr-1">mdi-cube-outline</v-icon>
+                            Block #{{ liveBlockNumber.toLocaleString() }}
+                        </div>
                     </div>
                 </v-fade-transition>
             </div>
         </div>
+        <!-- Success modal with confetti -->
+        <v-dialog v-model="showSuccessModal" persistent max-width="480" scrim="black" class="onboarding-success-overlay">
+            <div class="success-modal">
+                <!-- Confetti canvas -->
+                <canvas ref="confettiCanvas" class="confetti-canvas" />
+
+                <div class="success-modal-content">
+                    <div class="success-modal-icon">
+                        <v-icon size="48" color="#22C55E">mdi-check-circle</v-icon>
+                    </div>
+                    <h2 class="success-modal-title">You're all set!</h2>
+                    <p class="success-modal-desc">Your explorer is live and syncing data from your chain.</p>
+
+                    <a :href="explorerUrl" target="_blank" class="success-modal-explorer-link">
+                        <v-icon size="16" color="#3D95CE">mdi-open-in-new</v-icon>
+                        {{ explorerUrl }}
+                    </a>
+
+                    <v-btn
+                        color="#3D95CE"
+                        size="large"
+                        rounded="lg"
+                        block
+                        class="success-modal-cta"
+                        @click="goToDashboard"
+                    >
+                        Go to Dashboard
+                        <v-icon end>mdi-arrow-right</v-icon>
+                    </v-btn>
+                </div>
+            </div>
+        </v-dialog>
     </div>
 </template>
 
@@ -195,7 +230,7 @@
  * @fileoverview OnboardingWizard orchestrates the full onboarding flow.
  * Split-screen layout: form on left, contextual content on right.
  */
-import { ref, onMounted, inject } from 'vue';
+import { ref, computed, watch, nextTick, onMounted, onBeforeUnmount, inject } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/user';
 import { useCurrentWorkspaceStore } from '@/stores/currentWorkspace';
@@ -217,6 +252,17 @@ const setupData = ref({});
 const createdExplorer = ref(null);
 const context = ref({});
 const stepLabels = ['Path', 'Setup', 'Account', 'Done'];
+const isWideStep = computed(() => currentStep.value === 3 && selectedPath.value === 'public');
+const liveBlockNumber = ref(null);
+const showSuccessModal = ref(false);
+const confettiCanvas = ref(null);
+let blockPollInterval = null;
+
+const explorerUrl = computed(() => {
+    if (!createdExplorer.value) return '';
+    const slug = createdExplorer.value.slug || createdExplorer.value.name?.toLowerCase().replace(/[^a-z0-9]/g, '-');
+    return `https://${slug}.tryethernal.com`;
+});
 
 onMounted(() => {
     try {
@@ -302,12 +348,89 @@ async function onPlanSelected({ planSlug, isTrial }) {
             console.error('Failed to start trial:', error);
         }
     }
-    goToDashboard();
+    showSuccessModal.value = true;
+    await nextTick();
+    launchConfetti();
 }
+
+function launchConfetti() {
+    const canvas = confettiCanvas.value;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+
+    const colors = ['#3D95CE', '#22C55E', '#5DAAE0', '#F59E0B', '#EC4899', '#8B5CF6'];
+    const particles = Array.from({ length: 120 }, () => ({
+        x: canvas.width / 2,
+        y: canvas.height / 2,
+        vx: (Math.random() - 0.5) * 12,
+        vy: (Math.random() - 1) * 10 - 2,
+        w: Math.random() * 8 + 4,
+        h: Math.random() * 4 + 2,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        rotation: Math.random() * 360,
+        rotationSpeed: (Math.random() - 0.5) * 10,
+        gravity: 0.12,
+        opacity: 1
+    }));
+
+    let frame = 0;
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let alive = false;
+        for (const p of particles) {
+            p.x += p.vx;
+            p.vy += p.gravity;
+            p.y += p.vy;
+            p.rotation += p.rotationSpeed;
+            if (frame > 60) p.opacity -= 0.015;
+            if (p.opacity <= 0) continue;
+            alive = true;
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate((p.rotation * Math.PI) / 180);
+            ctx.globalAlpha = Math.max(0, p.opacity);
+            ctx.fillStyle = p.color;
+            ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+            ctx.restore();
+        }
+        frame++;
+        if (alive) requestAnimationFrame(animate);
+    }
+    animate();
+}
+
+async function pollBlockNumber() {
+    try {
+        const { data } = await $server.getBlocks({ page: 1, itemsPerPage: 1, order: 'DESC' });
+        const blocks = data.items || data;
+        if (blocks.length > 0 && blocks[0].number != null) {
+            liveBlockNumber.value = blocks[0].number;
+        }
+    } catch {
+        // Explorer may not be syncing yet
+    }
+}
+
+watch(currentStep, (step) => {
+    if (step === 3 && selectedPath.value === 'public') {
+        pollBlockNumber();
+        blockPollInterval = setInterval(pollBlockNumber, 5000);
+    }
+});
+
+onBeforeUnmount(() => {
+    if (blockPollInterval) clearInterval(blockPollInterval);
+});
 
 function goToDashboard() {
     sessionStorage.removeItem('onboardingContext');
-    router.push('/overview');
+    if (createdExplorer.value?.id) {
+        router.push(`/explorers/${createdExplorer.value.id}`);
+    } else {
+        router.push('/overview');
+    }
 }
 </script>
 
@@ -324,7 +447,7 @@ function goToDashboard() {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 48px;
+    padding: 32px 48px;
     min-width: 0;
 }
 
@@ -334,8 +457,8 @@ function goToDashboard() {
     width: 100%;
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
-    padding: 32px 0;
+    height: 100%;
+    padding: 24px 0;
 }
 
 .wizard-logo {
@@ -345,7 +468,7 @@ function goToDashboard() {
     font-size: 18px;
     font-weight: 700;
     color: #fff;
-    margin-bottom: 32px;
+    margin-bottom: 20px;
 }
 
 .wizard-logo-icon {
@@ -365,7 +488,7 @@ function goToDashboard() {
 .wizard-progress {
     display: flex;
     gap: 6px;
-    margin-bottom: 32px;
+    margin-bottom: 20px;
 }
 
 .wizard-progress-segment {
@@ -392,6 +515,10 @@ function goToDashboard() {
     justify-content: center;
 }
 
+.wizard-step-content--top {
+    justify-content: flex-start;
+}
+
 /* Footer */
 .wizard-footer {
     font-size: 13px;
@@ -415,12 +542,12 @@ function goToDashboard() {
 
 /* Right panel: contextual illustration */
 .wizard-context-panel {
-    width: 45%;
+    width: 40%;
     background: linear-gradient(160deg, #1a2744 0%, #0d1829 50%, #162036 100%);
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 48px;
+    padding: 32px 48px;
     border-left: 1px solid #1e293b;
 }
 
@@ -481,7 +608,7 @@ function goToDashboard() {
 }
 
 .wizard-context-features {
-    display: flex;
+    display: inline-flex;
     flex-direction: column;
     gap: 12px;
     text-align: left;
@@ -493,6 +620,90 @@ function goToDashboard() {
     gap: 10px;
     font-size: 13px;
     color: #94a3b8;
+}
+
+.wizard-context-block {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 20px;
+    padding: 6px 14px;
+    border-radius: 100px;
+    background: rgba(34, 197, 94, 0.08);
+    border: 1px solid rgba(34, 197, 94, 0.2);
+    color: #22C55E;
+    font-size: 13px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Success modal */
+.success-modal {
+    position: relative;
+    background: #0f172a;
+    border: 1px solid #1e293b;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.confetti-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.success-modal-content {
+    position: relative;
+    z-index: 2;
+    padding: 40px 32px;
+    text-align: center;
+}
+
+.success-modal-icon {
+    margin-bottom: 16px;
+}
+
+.success-modal-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 8px;
+}
+
+.success-modal-desc {
+    font-size: 14px;
+    color: #64748b;
+    margin-bottom: 24px;
+}
+
+.success-modal-explorer-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 24px;
+    background: rgba(61, 149, 206, 0.12);
+    border: 1px solid rgba(61, 149, 206, 0.35);
+    border-radius: 12px;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    margin-bottom: 24px;
+    transition: all 0.2s;
+}
+
+.success-modal-explorer-link:hover {
+    background: rgba(61, 149, 206, 0.2);
+    border-color: rgba(61, 149, 206, 0.5);
+}
+
+.success-modal-cta {
+    text-transform: none;
+    font-weight: 600;
+    letter-spacing: 0;
 }
 
 /* Mobile: hide context panel, full-width form */
@@ -509,5 +720,13 @@ function goToDashboard() {
         min-height: auto;
         padding: 16px 0;
     }
+}
+</style>
+
+<style>
+.onboarding-success-overlay .v-overlay__scrim {
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    opacity: 0.75 !important;
 }
 </style>

@@ -40,7 +40,6 @@
                     :error-messages="rpcError"
                     bg-color="rgba(255,255,255,0.03)"
                     hide-details="auto"
-                    style="font-family: monospace;"
                 />
             </div>
 
@@ -226,5 +225,9 @@ async function validate() {
     text-transform: none;
     font-weight: 600;
     letter-spacing: 0;
+}
+
+:deep(.v-field__input) {
+    color: #fff !important;
 }
 </style>

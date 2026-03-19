@@ -1,62 +1,89 @@
 <!--
-    @fileoverview Explorer live step — shows explorer URL and plan selection.
-    Styled for the left panel of the split-screen wizard.
+    @fileoverview Explorer live step — plan selection after explorer creation.
+    Two-column layout: compact plan cards on left, feature detail panel on right.
     @component OnboardingExplorerLive
     @emits plan-selected - Emitted with { planSlug, isTrial }
-    @emits skipped - Emitted when user clicks skip
 -->
 <template>
     <div class="explorer-live">
-        <div class="step-label">Step 4 of 4</div>
-        <h2 class="step-title">Your explorer is live!</h2>
-        <p class="step-subtitle">Your explorer is now syncing data from your chain.</p>
+        <div class="step-label">Last step</div>
 
-        <!-- Explorer URL preview -->
-        <div class="explorer-url-card">
-            <div>
-                <div class="explorer-url-label">Explorer URL</div>
-                <div class="explorer-url-value">{{ explorerUrl }}</div>
-            </div>
-            <a :href="explorerUrl" target="_blank" class="preview-link">
-                Preview <v-icon size="14">mdi-open-in-new</v-icon>
-            </a>
-        </div>
-
-        <!-- Plan selection -->
+        <!-- Plan selection: two-column layout -->
         <div class="plan-section-title">Choose a plan</div>
         <div class="plan-section-desc">7-day free trial on paid plans. No credit card needed.</div>
 
-        <div class="plan-cards">
-            <div
-                v-for="plan in plans"
-                :key="plan.slug"
-                :class="['plan-card', { 'plan-card--selected': selectedPlan === plan.slug }]"
-                @click="selectedPlan = plan.slug"
-            >
-                <div v-if="plan.badge" class="plan-badge">{{ plan.badge }}</div>
-                <div class="plan-name">{{ plan.name }}</div>
-                <div class="plan-price">
-                    <template v-if="plan.price === 'Custom'">Custom</template>
-                    <template v-else>${{ plan.price }}<span class="plan-period">/mo</span></template>
+        <div class="plan-layout">
+            <!-- Left column: stacked plan cards -->
+            <div class="plan-list">
+                <div
+                    v-for="plan in plans"
+                    :key="plan.slug"
+                    :class="['plan-list-card', { 'plan-list-card--selected': selectedPlan === plan.slug }]"
+                    @click="selectedPlan = plan.slug"
+                >
+                    <div v-if="plan.badge" class="plan-list-badge">{{ plan.badge }}</div>
+                    <div class="plan-list-row">
+                        <div>
+                            <div class="plan-list-name">{{ plan.name }}</div>
+                            <div class="plan-list-desc">{{ plan.description }}</div>
+                        </div>
+                        <div class="plan-list-price">
+                            <template v-if="plan.price === 'Custom'">Custom</template>
+                            <template v-else-if="plan.price === 0">Free</template>
+                            <template v-else>${{ plan.price }}<span class="plan-list-period">/mo</span></template>
+                        </div>
+                    </div>
                 </div>
-                <div class="plan-desc">{{ plan.description }}</div>
             </div>
-        </div>
 
-        <v-btn
-            color="#3D95CE"
-            size="large"
-            rounded="lg"
-            block
-            @click="confirmPlan"
-            class="continue-btn"
-        >
-            {{ selectedPlan === 'free' ? 'Continue with Free' : 'Start 7-Day Trial' }}
-            <v-icon end>mdi-arrow-right</v-icon>
-        </v-btn>
+            <!-- Right column: feature detail panel -->
+            <div class="plan-detail">
+                <div class="plan-detail-inner">
+                    <div class="plan-detail-name">{{ activePlan.name }}</div>
+                    <div class="plan-detail-price-row">
+                        <template v-if="activePlan.price === 'Custom'">
+                            <span class="plan-detail-price">Custom</span>
+                        </template>
+                        <template v-else-if="activePlan.price === 0">
+                            <span class="plan-detail-price">$0</span>
+                            <span class="plan-detail-period">/month</span>
+                        </template>
+                        <template v-else>
+                            <span class="plan-detail-price">${{ activePlan.price }}</span>
+                            <span class="plan-detail-period">/month</span>
+                        </template>
+                    </div>
+                    <div class="plan-detail-subtitle">{{ activePlan.description }}</div>
 
-        <div class="skip-row">
-            <button class="skip-btn" @click="skip">Skip for now</button>
+                    <div v-if="activePlan.quota" class="plan-detail-quota">
+                        <v-icon size="14" color="#5DAAE0" class="mr-1">mdi-database-outline</v-icon>
+                        {{ activePlan.quota }}
+                    </div>
+
+                    <div class="plan-detail-features">
+                        <div
+                            v-for="feature in activePlan.features"
+                            :key="feature"
+                            class="plan-detail-feature"
+                        >
+                            <v-icon size="16" color="#22C55E" class="flex-shrink-0">mdi-check-circle</v-icon>
+                            <span>{{ feature }}</span>
+                        </div>
+                    </div>
+
+                    <v-btn
+                        color="#3D95CE"
+                        size="large"
+                        rounded="lg"
+                        block
+                        @click="confirmPlan"
+                        class="plan-detail-cta"
+                    >
+                        {{ selectedPlan === 'free' ? 'Continue with Free' : selectedPlan === 'enterprise' ? 'Contact Us' : 'Start 7-Day Trial' }}
+                        <v-icon end>mdi-arrow-right</v-icon>
+                    </v-btn>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -66,10 +93,10 @@ import { ref, computed } from 'vue';
 
 const props = defineProps({
     explorer: { type: Object, required: true },
-    defaultPlan: { type: String, default: 'free' }
+    defaultPlan: { type: String, default: 'explorer-150' }
 });
 
-const emit = defineEmits(['plan-selected', 'skipped']);
+const emit = defineEmits(['plan-selected']);
 const selectedPlan = ref(props.defaultPlan);
 
 const explorerUrl = computed(() => {
@@ -79,11 +106,66 @@ const explorerUrl = computed(() => {
 });
 
 const plans = [
-    { slug: 'free', name: 'Starter', price: 0, description: 'Basic explorer with ads' },
-    { slug: 'explorer-150', name: 'Team', price: 150, description: 'Custom domain, no ads', badge: 'Best Value' },
-    { slug: 'explorer-500', name: 'App Chain', price: 500, description: 'Full white-label' },
-    { slug: 'enterprise', name: 'Enterprise', price: 'Custom', description: 'High-volume chains' }
+    {
+        slug: 'free',
+        name: 'Starter',
+        price: 0,
+        description: 'Basic explorer with ads',
+        quota: 'Unlimited transactions',
+        features: [
+            'Contract verification',
+            'Token & NFT tracking',
+            'Testnet faucet',
+            'Ethernal branding'
+        ]
+    },
+    {
+        slug: 'explorer-150',
+        name: 'Team',
+        price: 150,
+        description: 'For teams sharing a testnet',
+        badge: 'Best Value',
+        quota: '100k transactions included',
+        features: [
+            'Everything in Starter',
+            'Custom domain',
+            'Custom native token',
+            'No ads',
+            'L2 bridge support',
+            '7-day free trial'
+        ]
+    },
+    {
+        slug: 'explorer-500',
+        name: 'App Chain',
+        price: 500,
+        description: 'White-label for L1s and L2s',
+        quota: '5M transactions included',
+        features: [
+            'Everything in Team',
+            'Custom branding & themes',
+            'Total supply display',
+            'Status page',
+            'Priority support',
+            '7-day free trial'
+        ]
+    },
+    {
+        slug: 'enterprise',
+        name: 'Enterprise',
+        price: 'Custom',
+        description: 'For high-volume chains',
+        quota: 'Unlimited transactions',
+        features: [
+            'Everything in App Chain',
+            'Multiple explorers',
+            'Custom integrations',
+            'Dedicated support'
+        ]
+    }
 ];
+
+const activePlan = computed(() => plans.find(p => p.slug === selectedPlan.value) || plans[0]);
 
 function confirmPlan() {
     const isTrial = selectedPlan.value !== 'free' && selectedPlan.value !== 'enterprise';
@@ -96,17 +178,6 @@ function confirmPlan() {
     }
     emit('plan-selected', { planSlug: selectedPlan.value, isTrial });
 }
-
-function skip() {
-    if (window.posthog) {
-        window.posthog.capture('onboarding:plan_selected', {
-            plan_slug: 'free',
-            is_trial: false,
-            source: 'onboarding_wizard_skip'
-        });
-    }
-    emit('skipped');
-}
 </script>
 
 <style scoped>
@@ -116,61 +187,7 @@ function skip() {
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    margin-bottom: 8px;
-}
-
-.step-title {
-    font-size: 24px;
-    font-weight: 700;
-    color: #fff;
-    margin-bottom: 6px;
-}
-
-.step-subtitle {
-    font-size: 14px;
-    color: #64748b;
-    margin-bottom: 24px;
-}
-
-.explorer-url-card {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 16px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid #1e293b;
-    border-radius: 10px;
-    margin-bottom: 24px;
-}
-
-.explorer-url-label {
-    font-size: 11px;
-    color: #64748b;
-    margin-bottom: 2px;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-}
-
-.explorer-url-value {
-    font-size: 14px;
-    color: #fff;
-    font-weight: 500;
-    font-family: monospace;
-}
-
-.preview-link {
-    font-size: 12px;
-    color: #3D95CE;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    white-space: nowrap;
-    flex-shrink: 0;
-}
-
-.preview-link:hover {
-    text-decoration: underline;
+    margin-bottom: 10px;
 }
 
 .plan-section-title {
@@ -186,101 +203,186 @@ function skip() {
     margin-bottom: 16px;
 }
 
-.plan-cards {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    margin-bottom: 20px;
+/* Two-column plan layout */
+.plan-layout {
+    display: flex;
+    gap: 16px;
 }
 
-.plan-card {
-    padding: 14px;
+/* Left column: stacked plan cards */
+.plan-list {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    flex-shrink: 0;
+}
+
+.plan-list-card {
+    padding: 14px 16px;
     border: 1px solid #1e293b;
     border-radius: 10px;
     cursor: pointer;
     transition: all 0.2s ease;
     background: rgba(255, 255, 255, 0.02);
     position: relative;
-    text-align: center;
 }
 
-.plan-card:hover {
+.plan-list-card:hover {
     border-color: rgba(61, 149, 206, 0.3);
 }
 
-.plan-card--selected {
+.plan-list-card--selected {
     border-color: #3D95CE;
     background: rgba(61, 149, 206, 0.06);
 }
 
-.plan-badge {
+.plan-list-badge {
     position: absolute;
     top: -8px;
-    left: 50%;
-    transform: translateX(-50%);
+    right: 10px;
     background: #3D95CE;
     color: #fff;
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 700;
     padding: 2px 8px;
-    border-radius: 4px;
+    border-radius: 100px;
     text-transform: uppercase;
     letter-spacing: 0.04em;
     white-space: nowrap;
 }
 
-.plan-name {
-    font-size: 13px;
+.plan-list-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.plan-list-name {
+    font-size: 14px;
     font-weight: 600;
     color: #fff;
-    margin-bottom: 4px;
+    margin-bottom: 3px;
 }
 
-.plan-price {
-    font-size: 20px;
+.plan-list-desc {
+    font-size: 12px;
+    color: #64748b;
+}
+
+.plan-list-price {
+    font-size: 15px;
     font-weight: 700;
     color: #fff;
-    margin-bottom: 4px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-left: 12px;
 }
 
-.plan-period {
-    font-size: 12px;
+.plan-list-period {
+    font-size: 11px;
     color: #64748b;
     font-weight: 400;
 }
 
-.plan-desc {
-    font-size: 12px;
+/* Right column: feature detail panel */
+.plan-detail {
+    flex: 1;
+    min-width: 0;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid #1e293b;
+    border-radius: 12px;
+    padding: 20px;
+    min-height: 380px;
+}
+
+.plan-detail-inner {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.plan-detail-name {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
     color: #64748b;
+    margin-bottom: 8px;
 }
 
-.continue-btn {
-    text-transform: none;
-    font-weight: 600;
-    letter-spacing: 0;
+.plan-detail-price-row {
+    display: flex;
+    align-items: baseline;
+    margin-bottom: 4px;
 }
 
-.skip-row {
-    text-align: center;
-    margin-top: 12px;
+.plan-detail-price {
+    font-size: 28px;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: -0.02em;
+    line-height: 1;
 }
 
-.skip-btn {
-    background: none;
-    border: none;
-    color: #475569;
+.plan-detail-period {
+    font-size: 14px;
+    color: #64748b;
+    font-weight: 500;
+    margin-left: 4px;
+}
+
+.plan-detail-subtitle {
     font-size: 13px;
-    cursor: pointer;
-    transition: color 0.2s;
+    color: #64748b;
+    margin-bottom: 14px;
 }
 
-.skip-btn:hover {
+.plan-detail-quota {
+    display: flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 8px;
+    background: rgba(30, 41, 59, 0.6);
+    border: 1px solid #1e293b;
+    color: #94a3b8;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 14px;
+    width: fit-content;
+}
+
+.plan-detail-features {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+    margin-bottom: 16px;
+}
+
+.plan-detail-feature {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
     color: #94a3b8;
 }
 
-@media (max-width: 480px) {
-    .plan-cards {
-        grid-template-columns: 1fr;
+.plan-detail-cta {
+    text-transform: none;
+    font-weight: 600;
+    letter-spacing: 0;
+    margin-top: auto;
+}
+
+/* Mobile: stack columns */
+@media (max-width: 600px) {
+    .plan-layout {
+        flex-direction: column;
+    }
+
+    .plan-list {
+        width: 100%;
     }
 }
 </style>
