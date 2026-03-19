@@ -46,10 +46,11 @@
                             @explorer-info-ready="onExplorerInfoReady"
                             @back="currentStep = 0"
                         />
-                        <CreateWorkspace
+                        <OnboardingWorkspaceSetup
                             v-else-if="currentStep === 1 && selectedPath === 'private'"
-                            :is-onboarding="true"
-                            @workspace-created="onPrivateWorkspaceSetup"
+                            :initial-name="setupData.workspaceName || ''"
+                            :initial-rpc="setupData.rpcServer || ''"
+                            @workspace-info-ready="onWorkspaceInfoReady"
                             @back="currentStep = 0"
                         />
 
@@ -238,7 +239,7 @@ import OnboardingPathSelector from './OnboardingPathSelector.vue';
 import OnboardingExplorerSetup from './OnboardingExplorerSetup.vue';
 import OnboardingSignup from './OnboardingSignup.vue';
 import OnboardingExplorerLive from './OnboardingExplorerLive.vue';
-import CreateWorkspace from './CreateWorkspace.vue';
+import OnboardingWorkspaceSetup from './OnboardingWorkspaceSetup.vue';
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -302,13 +303,7 @@ function onExplorerInfoReady(data) {
     currentStep.value = 2;
 }
 
-function onPrivateWorkspaceSetup(data) {
-    if (userStore.loggedIn && data) {
-        currentWorkspaceStore.updateCurrentWorkspace(data);
-        $pusher.init();
-        goToDashboard();
-        return;
-    }
+function onWorkspaceInfoReady(data) {
     setupData.value = {
         ...setupData.value,
         workspaceName: data.name,
