@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.90] - 2026-03-19
+### Fixed
+- fix(pipeline): filter stop words after stemming to catch plurals (#779)
+- fix(pipeline): add domain stop words to prevent false positive dedup (#777)
+
+
 ## [5.17.89] - 2026-03-19
 ### Fixed
 - feat(pipeline): post-draft semantic dedup + enriched feature tip titles (#775)
