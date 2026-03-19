@@ -18,18 +18,18 @@ const BLOG_DIR = join(REPO_ROOT, 'blog', 'src', 'content', 'blog');
  * @type {Array<{title: string, description: string}>}
  */
 export const FEATURE_TIPS = [
-    { title: 'Custom branding on your explorer', description: 'Add your logo, colors, and domain to make the explorer match your chain\'s identity.' },
-    { title: 'One-click contract verification', description: 'Verify contracts instantly by uploading source code or using Hardhat/Foundry plugins.' },
-    { title: 'Transaction decoding', description: 'Ethernal automatically decodes transaction inputs and logs using uploaded or verified ABIs.' },
-    { title: 'DEX pair tracking', description: 'Track liquidity pools, swaps, and price charts for DEX pairs deployed on your chain.' },
-    { title: 'Token balance history', description: 'View historical token balances for any address, with charts showing changes over time.' },
-    { title: 'Real-time sync with WebSocket', description: 'Get instant updates on new blocks, transactions, and events via WebSocket subscriptions.' },
-    { title: 'Multi-chain workspace', description: 'Manage multiple chains from a single dashboard. Switch between networks in one click.' },
-    { title: 'API access for your explorer', description: 'Full REST API with Etherscan-compatible endpoints for programmatic access to chain data.' },
-    { title: 'Hardhat/Foundry integration', description: 'Auto-sync contracts and transactions during local development with our Hardhat and Foundry plugins.' },
-    { title: 'Historical data sync', description: 'Import historical blocks, transactions, and logs from any point in chain history.' },
-    { title: 'Gas usage analytics', description: 'Visualize gas consumption trends, top gas consumers, and optimize contract deployments.' },
-    { title: 'Hosted or self-hosted', description: 'Use our managed cloud service or deploy the open-source explorer on your own infrastructure.' },
+    { title: 'Custom branding whitelabel explorer', description: 'Add your logo, colors, and domain to make the explorer match your chain\'s identity.' },
+    { title: 'One-click contract verification Solidity Vyper', description: 'Verify contracts instantly by uploading source code or using Hardhat/Foundry plugins.' },
+    { title: 'Transaction decoding ABI calldata events', description: 'Ethernal automatically decodes transaction inputs and logs using uploaded or verified ABIs.' },
+    { title: 'DEX pair tracking liquidity pools swaps', description: 'Track liquidity pools, swaps, and price charts for DEX pairs deployed on your chain.' },
+    { title: 'Token balance history ERC-20 NFT portfolio', description: 'View historical token balances for any address, with charts showing changes over time.' },
+    { title: 'Real-time sync WebSocket eth_subscribe blocks', description: 'Get instant updates on new blocks, transactions, and events via WebSocket subscriptions.' },
+    { title: 'Multi-chain workspace L2 rollup dashboard', description: 'Manage multiple chains from a single dashboard. Switch between networks in one click.' },
+    { title: 'Etherscan-compatible REST API rate-limit-free', description: 'Full REST API with Etherscan-compatible endpoints for programmatic access to chain data.' },
+    { title: 'Hardhat Foundry Anvil integration local dev', description: 'Auto-sync contracts and transactions during local development with our Hardhat and Foundry plugins.' },
+    { title: 'Historical data sync import backfill blocks', description: 'Import historical blocks, transactions, and logs from any point in chain history.' },
+    { title: 'Gas usage analytics cost optimization EVM', description: 'Visualize gas consumption trends, top gas consumers, and optimize contract deployments.' },
+    { title: 'Hosted self-hosted open-source explorer deploy', description: 'Use our managed cloud service or deploy the open-source explorer on your own infrastructure.' },
 ];
 
 /**
