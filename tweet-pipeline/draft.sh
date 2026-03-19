@@ -332,6 +332,35 @@ check_claude_output "$PHASE3_OUTPUT" "Humanize (Phase 3)"
 log "Phase 3 complete."
 
 # ============================================================
+# Post-draft semantic dedup — catch overlaps Claude introduced
+# ============================================================
+DRAFT_HOOK=$(jq -r '.hook // empty' .draft.json 2>/dev/null)
+if [ -n "$DRAFT_HOOK" ]; then
+  RECENT_HOOKS_POST=$(find "$QUEUE_DIR" -name 'tweet-*.json' -mtime -30 -exec cat {} + 2>/dev/null \
+    | jq -r '.hook // empty' 2>/dev/null \
+    | jq -R -s 'split("\n") | map(select(. != ""))' 2>/dev/null \
+    || echo '[]')
+
+  POST_DUP=$(DRAFT_HOOK="$DRAFT_HOOK" RECENT_HOOKS_POST="$RECENT_HOOKS_POST" node --input-type=module -e "
+    import { isSemanticallyDuplicate, fetchPublishedBlogTitles } from './lib/source-selector.js';
+    const isDup = isSemanticallyDuplicate(
+      process.env.DRAFT_HOOK,
+      JSON.parse(process.env.RECENT_HOOKS_POST),
+      fetchPublishedBlogTitles(60),
+      []
+    );
+    console.log(isDup ? 'true' : 'false');
+  " 2>>"$LOG_FILE")
+
+  if [ "$POST_DUP" = "true" ]; then
+    log "WARNING: Drafted hook is semantically similar to recent content — aborting"
+    log "Hook was: $DRAFT_HOOK"
+    rm -f .source.json .research.md .draft.json
+    exit 0
+  fi
+fi
+
+# ============================================================
 # Image generation
 # ============================================================
 log "Generating image..."
