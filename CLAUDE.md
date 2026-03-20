@@ -22,9 +22,8 @@
 | Drip emails | `run/jobs/sendDripEmail.js`, `run/jobs/processDripEmails.js`, `run/emails/drip-content.js` | [MARKETING.md](.claude/references/MARKETING.md) |
 | Demo enrichment | `run/jobs/enrichDemoProfile.js`, `run/lib/enrichment.js` | [MARKETING.md](.claude/references/MARKETING.md) |
 | Twitter pipeline | `tweet-pipeline/` (standalone, Hetzner server) | [MARKETING.md](.claude/references/MARKETING.md) |
-| Analytics (PostHog) | `blog/src/layouts/BaseLayout.astro` (snippet), `landing/src/main.js` (init) | |
+| Analytics (PostHog) | `blog/src/layouts/BaseLayout.astro` (snippet), `landing/src/main.js` (init), `run/lib/analytics.js` (backend) | PostHog personal API key in `.credentials.local` |
 | Docker commands | | [COMMANDS.md](.claude/references/COMMANDS.md) |
-| Infra monitoring | `run/jobs/infraHealthCheck.js`, `run/api/status.js`, `.github/workflows/infra-auto-remediation.yml` | |
 | Worker watchdog | `scripts/watchdog.sh`, `scripts/watchdog-diagnose.md`, `run/lib/heartbeat.js` | |
 | Env vars/flags | `run/lib/flags.js` | [ENV.md](.claude/references/ENV.md) |
 
@@ -154,8 +153,9 @@ Always use `IF NOT EXISTS`/`IF EXISTS` for re-runnability. For tables < 1M rows,
 - Use `withTimeout(promise, ms)` from `run/lib/utils` instead of inline `Promise.race` timeout patterns
 - Pin GitHub Actions to commit SHAs (not mutable tags) when secrets are in scope
 - **CRITICAL: Never hardcode API keys, tokens, passwords, or credentials in ANY file that could be committed** — this includes plan files (`docs/`), scripts, YAML, CLAUDE.md, shell commands, and code. Even files in `.gitignore` can be force-added accidentally. Always reference credentials by variable name only (e.g. "see `.credentials.local`" or "see memory file `infra-monitoring.md`"). Store actual values ONLY in `.credentials.local` (gitignored) or memory files (outside the repo). **This repo is PUBLIC — any committed credential requires immediate rotation.**
-- **Use relative URLs within the same app** (e.g. `/pricing`, `/blog/article`). For links between apps on different subdomains (landing → app), use `__APP_URL__` global in the landing app (defined in `landing/vite.config.js`, defaults to `https://app.tryethernal.com`). API calls (`/api/*`) can be relative since Caddy proxies them on every subdomain. Absolute URLs are only for external services (docs, GitHub, Discord).
+- **Cross-app URLs:** Landing and app live on different subdomains (`tryethernal.com` vs `app.tryethernal.com`). Use `__APP_URL__` global in the landing app (defined in `landing/vite.config.js`, defaults to `https://app.tryethernal.com`). In the blog (Astro), use `import.meta.env.PUBLIC_APP_URL` (defaults to `https://app.tryethernal.com`, set via `PUBLIC_APP_URL` env var in Docker). API calls (`/api/*`) can be relative since Caddy proxies them on every subdomain. Absolute URLs are only for external services (docs, GitHub, Discord).
 - **Blog footer must match landing footer** (`landing/src/components/LandingFooter.vue`). When adding links, columns, or changing structure in the landing footer, mirror the changes in the blog footer (`blog/src/components/Footer.astro`).
+- **Enterprise contact modal** exists in both the app (`src/components/OnboardingEnterpriseModal.vue`) and landing (`landing/src/components/EnterpriseContactModal.vue`). Both use the same design and hit `POST /api/onboarding/contact`. Keep them in sync when updating.
 
 ## Documentation Requirements
 
@@ -239,6 +239,8 @@ SELECT name, slug, price, capabilities FROM stripe_plans WHERE public = true ORD
 | Pro | $20/mo | (in-app) | Everything in Free + unlimited workspaces |
 
 **Partner/White-label plans** (not public): Quicknode, Buildbear, Magma, UZH — each with custom capabilities. Check DB for details.
+
+**Subscription statuses:** `trial` (no card, auto-cancels at end), `trial_with_card` (will convert to paid), `active` (paying or free-tier). Partner plans (Buildbear, Demo, Quicknode, etc.) are `active` with no `stripeId`. Only subscriptions with a `stripeId` represent real Stripe billing. **Self-serve plans** are only: `free` (Starter), `explorer-150` (Team), `explorer-500` (App Chain). All other plans are partner/custom — filter by these slugs when analyzing organic signups and trials.
 
 ---
 
