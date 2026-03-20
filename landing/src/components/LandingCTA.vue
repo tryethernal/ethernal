@@ -43,7 +43,7 @@ const props = defineProps({
 });
 
 const ctaUrl = computed(() => {
-    let url = 'https://app.tryethernal.com/auth?flow=public';
+    let url = `${import.meta.env.VITE_APP_FRONTEND_URL}/auth?flow=public`;
     if (props.chain) url += `&chain=${props.chain}`;
     return url;
 });
