@@ -39,11 +39,12 @@
 import { computed } from 'vue';
 
 const props = defineProps({
-    chain: { type: String, default: '' }
+    chain: { type: String, default: '' },
+    flow: { type: String, default: 'public' }
 });
 
 const ctaUrl = computed(() => {
-    let url = `${import.meta.env.VITE_APP_FRONTEND_URL}/auth?flow=public`;
+    let url = `${import.meta.env.VITE_APP_FRONTEND_URL}/auth?flow=${props.flow}`;
     if (props.chain) url += `&chain=${props.chain}`;
     return url;
 });

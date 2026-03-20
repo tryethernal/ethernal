@@ -89,7 +89,7 @@
             </v-container>
         </section>
 
-        <LandingCTA />
+        <LandingCTA flow="private" />
     </LandingLayout>
 </template>
 
