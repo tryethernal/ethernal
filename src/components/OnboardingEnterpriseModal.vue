@@ -7,7 +7,7 @@
     @prop {string} email - Signup email from onboarding context
 -->
 <template>
-    <v-dialog v-model="dialog" max-width="540" scrim="black" class="enterprise-modal-overlay">
+    <v-dialog v-model="dialog" max-width="720" scrim="black" class="enterprise-modal-overlay">
         <div class="enterprise-modal">
             <!-- Form state -->
             <div v-if="!sent" class="enterprise-modal-layout">
@@ -24,7 +24,7 @@
                             </div>
                             <div>
                                 <div class="contact-type">Email</div>
-                                <div class="contact-value">antoine@tryethernal.com</div>
+                                <a href="mailto:antoine@tryethernal.com" class="contact-value contact-link">antoine@tryethernal.com</a>
                             </div>
                         </div>
                         <div class="contact-item">
@@ -33,7 +33,7 @@
                             </div>
                             <div>
                                 <div class="contact-type">Telegram</div>
-                                <div class="contact-value">@antoinedc</div>
+                                <a href="https://t.me/antoinedc" target="_blank" rel="noopener" class="contact-value contact-link">@antoinedc</a>
                             </div>
                         </div>
                         <div class="contact-item">
@@ -42,7 +42,7 @@
                             </div>
                             <div>
                                 <div class="contact-type">Discord</div>
-                                <div class="contact-value">@adechevigne</div>
+                                <a href="https://discord.com/users/adechevigne" target="_blank" rel="noopener" class="contact-value contact-link">@adechevigne</a>
                             </div>
                         </div>
                     </div>
@@ -78,7 +78,7 @@
                                 density="comfortable"
                                 :rules="[v => !!v || 'Required']"
                                 :disabled="loading"
-                                rows="3"
+                                rows="6"
                                 bg-color="rgba(255,255,255,0.03)"
                                 hide-details="auto"
                             />
@@ -110,12 +110,13 @@
 
             <!-- Confirmation state -->
             <div v-else class="enterprise-confirmation">
-                <v-icon size="48" color="#22C55E">mdi-check-circle</v-icon>
+                <div class="confirmation-icon">
+                    <v-icon size="28" color="#3D95CE">mdi-check</v-icon>
+                </div>
                 <h3 class="confirmation-title">Message sent!</h3>
                 <p class="confirmation-desc">Someone will get back to you within 24 hours.</p>
                 <v-btn
-                    variant="outlined"
-                    color="#64748b"
+                    color="#3D95CE"
                     rounded="lg"
                     block
                     class="close-btn"
@@ -193,12 +194,12 @@ defineExpose({ open });
 
 .enterprise-modal-layout {
     display: flex;
-    min-height: 380px;
+    min-height: 480px;
 }
 
 /* Left column */
 .enterprise-left {
-    width: 40%;
+    width: 35%;
     padding: 32px 24px;
     background: linear-gradient(160deg, #1a2744 0%, #0d1829 100%);
     border-right: 1px solid #1e293b;
@@ -263,6 +264,15 @@ defineExpose({ open });
     color: #94a3b8;
 }
 
+.contact-link {
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.contact-link:hover {
+    color: #3D95CE;
+}
+
 /* Right column */
 .enterprise-right {
     flex: 1;
@@ -315,6 +325,17 @@ defineExpose({ open });
 .enterprise-confirmation {
     padding: 48px 32px;
     text-align: center;
+}
+
+.confirmation-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    background: rgba(61, 149, 206, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
 }
 
 .confirmation-title {

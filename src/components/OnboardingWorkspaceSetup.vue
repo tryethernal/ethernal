@@ -75,8 +75,10 @@
                     variant="outlined"
                     rounded="lg"
                     density="comfortable"
+                    :disabled="loading"
                     bg-color="rgba(255,255,255,0.03)"
                     hide-details="auto"
+                    class="onboarding-select"
                 />
             </div>
 
@@ -90,7 +92,7 @@
             <v-slide-y-transition>
                 <div v-if="corsWarning" class="cors-warning">
                     <v-icon size="16" color="#F59E0B">mdi-alert</v-icon>
-                    <span>We couldn't validate this RPC — this may be due to CORS restrictions. You can continue anyway.</span>
+                    <span>We couldn't validate this RPC. You can continue anyway but you might need to allow CORS requests if you want to sync blocks from your browser.</span>
                 </div>
             </v-slide-y-transition>
 
@@ -98,32 +100,19 @@
                 <button type="button" class="back-btn" @click="$emit('back')" :disabled="loading">
                     <v-icon size="16">mdi-arrow-left</v-icon> Back
                 </button>
-                <div class="action-btns">
-                    <v-btn
-                        v-if="corsWarning"
-                        variant="outlined"
-                        color="#64748b"
-                        size="large"
-                        rounded="lg"
-                        class="continue-btn"
-                        @click="continueAnyway"
-                    >
-                        Continue Anyway
-                        <v-icon end>mdi-arrow-right</v-icon>
-                    </v-btn>
-                    <v-btn
-                        color="#3D95CE"
-                        size="large"
-                        rounded="lg"
-                        type="submit"
-                        :loading="loading"
-                        :disabled="!formValid"
-                        class="continue-btn"
-                    >
-                        Continue
-                        <v-icon end>mdi-arrow-right</v-icon>
-                    </v-btn>
-                </div>
+                <v-btn
+                    color="#3D95CE"
+                    size="large"
+                    rounded="lg"
+                    :type="corsWarning ? 'button' : 'submit'"
+                    :loading="loading"
+                    :disabled="!formValid"
+                    class="continue-btn"
+                    @click="corsWarning ? continueAnyway() : null"
+                >
+                    {{ corsWarning ? 'Continue Anyway' : 'Continue' }}
+                    <v-icon end>mdi-arrow-right</v-icon>
+                </v-btn>
             </div>
         </v-form>
         <div class="setup-footer">
@@ -383,6 +372,19 @@ watch(rpcServer, (newVal) => {
     color: #fff !important;
 }
 
+:deep(.v-field__input::placeholder) {
+    color: #64748b !important;
+    opacity: 1 !important;
+}
+
+:deep(.v-field__append-inner .v-icon) {
+    color: #64748b !important;
+}
+
+:deep(.onboarding-select .v-select__selection-text) {
+    color: #fff !important;
+}
+
 .setup-footer {
     font-size: 13px;
     color: #475569;
@@ -397,5 +399,30 @@ watch(rpcServer, (newVal) => {
 
 .wizard-link:hover {
     text-decoration: underline;
+}
+</style>
+
+<style>
+.onboarding-select .v-field__append-inner .v-icon {
+    color: #64748b !important;
+}
+
+.v-select__content .v-list {
+    background: #1e293b !important;
+    border: 1px solid #334155 !important;
+    border-radius: 12px !important;
+}
+
+.v-select__content .v-list-item {
+    color: #cbd5e1 !important;
+}
+
+.v-select__content .v-list-item:hover {
+    background: rgba(61, 149, 206, 0.12) !important;
+}
+
+.v-select__content .v-list-item--active {
+    background: rgba(61, 149, 206, 0.15) !important;
+    color: #3D95CE !important;
 }
 </style>

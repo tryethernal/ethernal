@@ -124,6 +124,7 @@ async function submit() {
             rpcServer: props.setupData.rpcServer,
             workspaceName: props.setupData.workspaceName,
             chain: props.setupData.chain,
+            networkId: props.setupData.networkId || null,
             source: onboardingContext.source || 'direct',
             flow: onboardingContext.flow || props.path,
             chainParam: onboardingContext.chain || null
