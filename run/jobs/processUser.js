@@ -31,7 +31,10 @@ module.exports = async job => {
             },
             $set_once: {
                 created_at: user.createdAt
-            }
+            },
+            source: data.source || 'direct',
+            flow: data.flow || 'private',
+            chain: data.chain || null
         });
 
         analytics.shutdown();

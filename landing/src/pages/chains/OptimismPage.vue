@@ -320,7 +320,7 @@
             </section>
         </v-container>
 
-        <LandingCTA />
+        <LandingCTA chain="optimism" />
     </LandingLayout>
 </template>
 

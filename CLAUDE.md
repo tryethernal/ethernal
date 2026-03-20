@@ -8,6 +8,7 @@
 | New model | `run/models/`, `run/migrations/`, `run/lib/firebase.js` | [PATTERNS.md](.claude/references/PATTERNS.md) |
 | Background job | `run/jobs/[name].js`, `run/jobs/index.js`, `run/lib/queue.js` | [QUEUES.md](.claude/references/QUEUES.md) |
 | Frontend component | `src/components/`, `src/stores/`, `src/plugins/router.js` | [PATTERNS.md](.claude/references/PATTERNS.md) |
+| Auth/onboarding | `src/components/OnboardingWizard.vue` (unified auth+onboarding), `run/api/onboarding.js`, `run/api/users.js` (signin) | |
 | Auth/permissions | `run/middlewares/auth.js`, `run/middlewares/workspaceAuth.js` | |
 | L2 integrations | `run/lib/orbit*.js`, `run/lib/op*.js`, `pm2-server/logListener.js` | [L2.md](.claude/references/L2.md) |
 | Billing/Stripe | `run/webhooks/stripe.js`, `run/lib/stripe.js`, `run/api/stripe.js` | |
@@ -40,7 +41,16 @@ Ethernal is an open-source block explorer for EVM-based chains. Vue 3 frontend +
 
 **All local dev commands run through Docker Compose.** Never run `npm`/`yarn` directly. Always: `docker compose -f docker-compose.dev.yml exec <service> <command>`. See [COMMANDS.md](.claude/references/COMMANDS.md) for all commands.
 
-**CRITICAL: Always serve frontends (landing, blog, app) from Docker containers, never standalone `npx vite dev` or `npm run dev` outside Docker.** The Docker containers use named volumes for `node_modules`, have correct Node versions, and match the dev environment the user expects. To start a frontend: `docker compose -f docker-compose.dev.yml up landing -d`. Ports: landing=8174, blog=8176, caddy=8180.
+**CRITICAL: Always serve frontends (landing, blog, app) from Docker containers, never standalone `npx vite dev` or `npm run dev` outside Docker.** The Docker containers use named volumes for `node_modules`, have correct Node versions, and match the dev environment the user expects. To start a frontend: `docker compose -f docker-compose.dev.yml up landing -d`.
+
+**Local dev via Caddy (port 8180):** All apps are accessible through a single Caddy reverse proxy:
+- `ethernal.local:8180` → landing
+- `app.ethernal.local:8180` → app frontend (auth, onboarding, dashboard)
+- `ethernal.local:8180/blog` → blog
+- `ethernal.local:8180/api/*` → backend API
+- Raw container ports: landing=8174, blog=8176, app=8080, backend=8888
+
+Start everything: `docker compose -f docker-compose.dev.yml up postgres redis backend frontend soketi high_priority_worker pgbouncer landing blog caddy -d`
 
 ---
 
@@ -79,9 +89,18 @@ User → Workspace (many) → Explorer (1), Block/Transaction/Contract/TokenTran
                            OrbitChainConfig (1), OpChainConfig (1)
 ```
 
+### Auth & Onboarding Flow
+
+**`/auth` is the single entry point** for both sign-in and onboarding. `OnboardingWizard.vue` handles everything:
+- Default view: sign-in form (+ forgot password, reset password)
+- "Get Started" transitions inline to the wizard steps (no route change)
+- Landing CTAs with `?flow=public` or `?flow=private` skip sign-in and enter wizard directly
+- Sign-in returns a JWT token via `POST /api/users/signin`
+- Onboarding creates user+workspace+explorer atomically via `POST /api/onboarding/setup`
+
 ### Authorization Flow
 
-1. **authMiddleware** — Validates Firebase token or API key, sets `req.body.data.user` and `req.body.data.uid`
+1. **authMiddleware** — Validates JWT Bearer token or Firebase auth token, sets `req.body.data.user` and `req.body.data.uid`
 2. **workspaceAuthMiddleware** — Extends authMiddleware, validates user owns workspace, sets `req.query.workspace`
 
 ### Error Handling
@@ -135,6 +154,8 @@ Always use `IF NOT EXISTS`/`IF EXISTS` for re-runnability. For tables < 1M rows,
 - Use `withTimeout(promise, ms)` from `run/lib/utils` instead of inline `Promise.race` timeout patterns
 - Pin GitHub Actions to commit SHAs (not mutable tags) when secrets are in scope
 - **CRITICAL: Never hardcode API keys, tokens, passwords, or credentials in ANY file that could be committed** — this includes plan files (`docs/`), scripts, YAML, CLAUDE.md, shell commands, and code. Even files in `.gitignore` can be force-added accidentally. Always reference credentials by variable name only (e.g. "see `.credentials.local`" or "see memory file `infra-monitoring.md`"). Store actual values ONLY in `.credentials.local` (gitignored) or memory files (outside the repo). **This repo is PUBLIC — any committed credential requires immediate rotation.**
+- **Use relative URLs within the same app** (e.g. `/pricing`, `/blog/article`). For links between apps on different subdomains (landing → app), use `__APP_URL__` global in the landing app (defined in `landing/vite.config.js`, defaults to `https://app.tryethernal.com`). API calls (`/api/*`) can be relative since Caddy proxies them on every subdomain. Absolute URLs are only for external services (docs, GitHub, Discord).
+- **Blog footer must match landing footer** (`landing/src/components/LandingFooter.vue`). When adding links, columns, or changing structure in the landing footer, mirror the changes in the blog footer (`blog/src/components/Footer.astro`).
 
 ## Documentation Requirements
 

@@ -28,7 +28,6 @@
 
             <Migrate-Explorer-Modal ref="migrateExplorerModal" v-if="explorerToken || justMigrated" />
             <Demo-Explorer-Migration-Modal ref="demoExplorerMigrationModal" />
-            <Onboarding-Modal ref="onboardingModal" />
             <Browser-Sync-Explainer-Modal ref="browserSyncExplainerModal" v-if="currentWorkspaceStore.browserSyncEnabled" />
 
             <v-main>
@@ -48,7 +47,6 @@ import { useCurrentWorkspaceStore } from './stores/currentWorkspace';
 import { useEnvStore } from './stores/env';
 import { useExplorerStore } from './stores/explorer';
 import { useUserStore } from './stores/user';
-import OnboardingModal from './components/OnboardingModal';
 import BrowserSyncExplainerModal from './components/BrowserSyncExplainerModal';
 import MigrateExplorerModal from './components/MigrateExplorerModal';
 import DemoExplorerMigrationModal from './components/DemoExplorerMigrationModal';
@@ -57,12 +55,15 @@ import RpcConnector from './components/RpcConnector.vue';
 import PrivateExplorerFooter from './components/PrivateExplorerFooter.vue';
 import PublicExplorerFooter from './components/PublicExplorerFooter.vue';
 
+import { useRoute } from 'vue-router';
+
 // Pinia stores
 const currentWorkspaceStore = useCurrentWorkspaceStore();
 const envStore = useEnvStore();
 const explorerStore = useExplorerStore();
 const userStore = useUserStore();
 
+const route = useRoute();
 const theme = useTheme();
 
 // Data refs
@@ -81,14 +82,16 @@ const drawer = ref(false);
 // Modal refs
 const migrateExplorerModal = ref();
 const demoExplorerMigrationModal = ref();
-const onboardingModal = ref();
 const browserSyncExplainerModal = ref();
 
 const $server = inject('$server');
 const $pusher = inject('$pusher');
 
 // Computed properties
-const isAuthPage = computed(() => window.location.pathname.indexOf('/auth') > -1);
+const isAuthPage = computed(() => {
+    const path = route?.path || window.location.pathname;
+    return path.indexOf('/auth') > -1;
+});
 const canDisplaySides = computed(() => {
     return (
         userStore && typeof userStore.loggedIn !== 'undefined' &&
@@ -134,10 +137,19 @@ function setupPrivateExplorer() {
             }
             else if (explorerToken.value)
                 migrateExplorer();
-            else
-                data.currentWorkspace ?
-                    initWorkspace({ ...data.currentWorkspace, firebaseUserId: data.firebaseUserId }) :
-                    launchOnboarding();
+            else if (data.currentWorkspace)
+                initWorkspace({ ...data.currentWorkspace, firebaseUserId: data.firebaseUserId });
+            else {
+                // Logged in but no workspace — let them create one
+                userStore.updateUser({ onboarded: false, firebaseUserId: data.firebaseUserId });
+                isOverlayActive.value = false;
+                routerComponent.value = 'router-view';
+                if (window.location.pathname === '/auth') {
+                    // Already on auth page, let OnboardingWizard handle it
+                } else {
+                    window.location.assign('/auth');
+                }
+            }
         })
         .catch((error) => {
             const redirectPath = authStateChanged(null);
@@ -170,7 +182,7 @@ function toggleMenu() {
 
 function launchOnboarding() {
     isOverlayActive.value = false;
-    onboardingModal.value.open();
+    window.location.assign('/auth');
 }
 
 function updateTabInfo(logoUrl, name) {
@@ -356,7 +368,7 @@ onMounted(() => {
             if (error.response && error.response.status === 404) {
                 document.location.href = `/`;
             } else {
-                document.location.assign(`//${envStore.mainDomain}`);
+                document.location.assign(`//${envStore.mainDomain}${window.location.pathname}${window.location.search}`);
             }
         });
 });

@@ -184,6 +184,7 @@ exports[`CreateWorkspace.vue > Should display a warning if browser is Safari 1`]
         <!---->
       </div>
       <div class="v-card-actions">
+        <!--v-if-->
         <div class="v-spacer"></div><button type="submit" class="v-btn v-btn--disabled v-btn--slim v-theme--light bg-primary v-btn--density-default v-btn--size-default v-btn--variant-flat" disabled="" id="createWorkspace"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
           <!----><span class="v-btn__content" data-no-activator="">Create</span>
           <!---->
@@ -403,6 +404,7 @@ exports[`CreateWorkspace.vue > Should display an error if it cannot connect to t
         <!---->
       </div>
       <div class="v-card-actions">
+        <!--v-if-->
         <div class="v-spacer"></div><button type="submit" class="v-btn v-btn--slim v-theme--light bg-primary v-btn--density-default v-btn--size-default v-btn--variant-flat" id="createWorkspace"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
           <!----><span class="v-btn__content" data-no-activator="">Create</span>
           <!---->
@@ -592,6 +594,7 @@ exports[`CreateWorkspace.vue > Should display locally running networks 1`] = `
         <!---->
       </div>
       <div class="v-card-actions">
+        <!--v-if-->
         <div class="v-spacer"></div><button type="submit" class="v-btn v-btn--disabled v-btn--slim v-theme--light bg-primary v-btn--density-default v-btn--size-default v-btn--variant-flat" disabled="" id="createWorkspace"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
           <!----><span class="v-btn__content" data-no-activator="">Create</span>
           <!---->
@@ -779,6 +782,7 @@ exports[`CreateWorkspace.vue > Should not display a warning message if user has 
         <!---->
       </div>
       <div class="v-card-actions">
+        <!--v-if-->
         <div class="v-spacer"></div><button type="submit" class="v-btn v-btn--disabled v-btn--slim v-theme--light bg-primary v-btn--density-default v-btn--size-default v-btn--variant-flat" disabled="" id="createWorkspace"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
           <!----><span class="v-btn__content" data-no-activator="">Create</span>
           <!---->

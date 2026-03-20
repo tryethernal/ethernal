@@ -319,7 +319,7 @@
             </section>
         </v-container>
 
-        <LandingCTA />
+        <LandingCTA chain="proof-of-play-apex" />
     </LandingLayout>
 </template>
 

@@ -290,7 +290,7 @@
             </section>
         </v-container>
 
-        <LandingCTA />
+        <LandingCTA chain="redstone" />
     </LandingLayout>
 </template>
 

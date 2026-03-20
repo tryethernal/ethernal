@@ -127,7 +127,7 @@ async function submit() {
     loading.value = true;
     errorMsg.value = '';
     try {
-        const res = await fetch(`${import.meta.env.VITE_APP_URL}/api/demo/explorers`, {
+        const res = await fetch('/api/demo/explorers', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ rpcServer: rpcServer.value, email: email.value })

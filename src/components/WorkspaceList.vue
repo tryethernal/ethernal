@@ -55,6 +55,15 @@ export default {
     }),
     mounted() {
         this.getWorkspaces();
+
+        // Handle onboarding redirect: open create modal with prefilled data
+        if (this.$route.query.openWorkspace) {
+            this.$refs.createWorkspaceModal.open({
+                name: this.$route.query.name || '',
+                rpc: this.$route.query.rpc || ''
+            });
+            this.$router.replace({ query: {} });
+        }
     },
     methods: {
         shortRpcUrl,

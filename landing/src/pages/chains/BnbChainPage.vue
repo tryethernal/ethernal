@@ -328,7 +328,7 @@
             </section>
         </v-container>
 
-        <LandingCTA />
+        <LandingCTA chain="bnb-chain" />
     </LandingLayout>
 </template>
 

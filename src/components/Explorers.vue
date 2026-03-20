@@ -103,7 +103,7 @@
  */
 <script setup>
 import { ref, reactive, computed, onMounted, inject } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 import { useEnvStore } from '@/stores/env';
 
@@ -121,6 +121,7 @@ const createExplorerModalRef = ref(null);
 
 // Router
 const route = useRoute();
+const router = useRouter();
 const $server = inject('$server');
 const envStore = useEnvStore();
 
@@ -197,5 +198,14 @@ onMounted(() => {
         itemsPerPage: currentOptions.itemsPerPage,
         sortBy: [{ key: currentOptions.orderBy, order: currentOptions.order }]
     });
+
+    // Handle onboarding redirect: open create modal with prefilled data
+    if (route.query.openCreate) {
+        createExplorerModalRef.value.open({
+            name: route.query.name || '',
+            rpc: route.query.rpc || ''
+        }).then(getExplorers);
+        router.replace({ query: {} });
+    }
 });
 </script>

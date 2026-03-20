@@ -7,7 +7,7 @@ import { generateSitemap } from './src/sitemap.js';
 
 export default defineConfig({
     define: {
-        'import.meta.env.VITE_APP_URL': JSON.stringify(process.env.VITE_APP_URL || 'https://app.tryethernal.com')
+        '__APP_URL__': JSON.stringify(process.env.APP_URL || 'https://app.tryethernal.com')
     },
     plugins: [
         vue(),
@@ -31,6 +31,7 @@ export default defineConfig({
         }
     },
     server: {
+        allowedHosts: true,
         watch: {
             usePolling: true,
             interval: 1000

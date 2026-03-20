@@ -313,7 +313,7 @@
             </section>
         </v-container>
 
-        <LandingCTA />
+        <LandingCTA chain="degen" />
     </LandingLayout>
 </template>
 
