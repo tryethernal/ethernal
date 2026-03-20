@@ -22,9 +22,24 @@ const year = new Date().getFullYear();
       <div class="footer-col">
         <div class="footer-heading">Product</div>
         <div class="footer-link-list">
-          <a href="/transaction-tracing" class="footer-link">Transaction Tracing</a>
+          <a href="/features" class="footer-link">Features</a>
           <a href="/pricing" class="footer-link">Pricing</a>
+          <a href="/transaction-tracing" class="footer-link">Transaction Tracing</a>
           <a href="https://doc.tryethernal.com" target="_blank" rel="noopener noreferrer" class="footer-link">Docs</a>
+          <a href="/auth" class="footer-link">Sign in</a>
+        </div>
+      </div>
+
+      <!-- Integrations -->
+      <div class="footer-col">
+        <div class="footer-heading">Integrations</div>
+        <div class="footer-link-list">
+          <a href="/hardhat-block-explorer" class="footer-link">Hardhat</a>
+          <a href="/anvil-block-explorer" class="footer-link">Anvil</a>
+          <a href="/ganache-block-explorer" class="footer-link">Ganache</a>
+          <a href="/kaleido" class="footer-link">Kaleido</a>
+          <a href="/chainstack" class="footer-link">Chainstack</a>
+          <a href="/github-actions" class="footer-link">GitHub Actions</a>
         </div>
       </div>
 
@@ -38,35 +53,14 @@ const year = new Date().getFullYear();
         </div>
       </div>
 
-      <!-- Integrations -->
-      <div class="footer-col">
-        <div class="footer-heading">Integrations</div>
-        <div class="footer-link-list">
-          <a href="/hardhat-block-explorer" class="footer-link">Hardhat</a>
-          <a href="/anvil-block-explorer" class="footer-link">Anvil</a>
-          <a href="/ganache-block-explorer" class="footer-link">Ganache</a>
-          <a href="/kaleido" class="footer-link">Kaleido</a>
-          <a href="/chainstack" class="footer-link">Chainstack</a>
-          <a href="/arbitrum-orbit" class="footer-link">Arbitrum Orbit</a>
-          <a href="/op-stack" class="footer-link">OP Stack</a>
-        </div>
-      </div>
-
-      <!-- Resources + Legal -->
+      <!-- Resources -->
       <div class="footer-col">
         <div class="footer-heading">Resources</div>
         <div class="footer-link-list">
           <a href="https://github.com/tryethernal/ethernal" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub</a>
           <a href="https://discord.gg/jYCER6Mh" target="_blank" rel="noopener noreferrer" class="footer-link">Discord</a>
-          <a href="https://doc.tryethernal.com" target="_blank" rel="noopener noreferrer" class="footer-link">Documentation</a>
           <a href="/blog" class="footer-link">Blog</a>
           <a href="/contact-us" class="footer-link">Contact</a>
-        </div>
-
-        <div class="footer-heading footer-heading-legal">Legal</div>
-        <div class="footer-link-list">
-          <a href="/terms" class="footer-link">Terms of Service</a>
-          <a href="/privacy" class="footer-link">Privacy Policy</a>
         </div>
       </div>
     </div>
@@ -75,7 +69,11 @@ const year = new Date().getFullYear();
     <div class="footer-divider"></div>
     <div class="footer-bottom">
       <span class="footer-copyright">&copy; {year} Ethernal. All rights reserved.</span>
-      <span class="footer-made">Made with care in France <span style="font-size: 14px;">🍷</span></span>
+      <div class="footer-bottom-right">
+        <a href="/terms" class="footer-legal-link">Terms</a>
+        <a href="/privacy" class="footer-legal-link">Privacy</a>
+        <span class="footer-made">Made with care in France <span style="font-size: 14px;">🍷</span></span>
+      </div>
     </div>
   </div>
 </footer>
@@ -129,10 +127,6 @@ const year = new Date().getFullYear();
     margin-bottom: 14px;
   }
 
-  .footer-heading-legal {
-    margin-top: 24px;
-  }
-
   .footer-link-list {
     display: flex;
     flex-direction: column;
@@ -164,6 +158,12 @@ const year = new Date().getFullYear();
     gap: 8px;
   }
 
+  .footer-bottom-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
   .footer-copyright,
   .footer-made {
     color: var(--text-muted);
@@ -173,7 +173,17 @@ const year = new Date().getFullYear();
     gap: 4px;
   }
 
-  /* Responsive */
+  .footer-legal-link {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 13px;
+    transition: color 0.2s;
+  }
+
+  .footer-legal-link:hover {
+    color: var(--text-secondary);
+  }
+
   @media (max-width: 1024px) {
     .footer-grid {
       grid-template-columns: 1fr 1fr 1fr;
@@ -202,6 +212,11 @@ const year = new Date().getFullYear();
       flex-direction: column;
       align-items: center;
       text-align: center;
+    }
+
+    .footer-bottom-right {
+      flex-wrap: wrap;
+      justify-content: center;
     }
   }
 </style>
