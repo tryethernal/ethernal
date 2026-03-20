@@ -14,30 +14,13 @@ module.exports = async job => {
     if (!data.transactionId)
         return 'Missing parameter';
 
+    // Fetch transaction with minimal workspace data to avoid expensive multi-table joins
     const transaction = await Transaction.findByPk(data.transactionId, {
         include: [
             {
                 model: Workspace,
                 as: 'workspace',
-                attributes: ['id', 'public', 'rpcHealthCheckEnabled', 'rpcServer', 'tracing', 'name'],
-                include: [
-                    {
-                        model: Explorer,
-                        as: 'explorer',
-                        attributes: ['shouldSync'],
-                        include: {
-                            model: StripeSubscription,
-                            as: 'stripeSubscription',
-                            attributes: ['id'],
-                            required: false
-                        }
-                    },
-                    {
-                        model: RpcHealthCheck,
-                        as: 'rpcHealthCheck',
-                        attributes: ['isReachable'],
-                    }
-                ]
+                attributes: ['id', 'public', 'rpcHealthCheckEnabled', 'rpcServer', 'tracing', 'name']
             }
         ]
     });
@@ -48,16 +31,36 @@ module.exports = async job => {
     if (!transaction.workspace.public)
         return 'Not allowed on private workspaces';
 
-    if (!transaction.workspace.explorer)
+    // Load explorer data with targeted query (much faster than complex nested joins)
+    const explorer = await Explorer.findOne({
+        where: { workspaceId: transaction.workspace.id },
+        attributes: ['id', 'shouldSync'],
+        include: {
+            model: StripeSubscription,
+            as: 'stripeSubscription',
+            attributes: ['id'],
+            required: false
+        }
+    });
+
+    if (!explorer)
         return 'Inactive explorer';
 
-    if (!transaction.workspace.explorer.shouldSync)
+    if (!explorer.shouldSync)
         return 'Sync is disabled';
 
-    if (transaction.workspace.rpcHealthCheckEnabled && transaction.workspace.rpcHealthCheck && !transaction.workspace.rpcHealthCheck.isReachable)
-        return 'RPC is not reachable';
+    // Load RPC health check separately if enabled (only when needed)
+    if (transaction.workspace.rpcHealthCheckEnabled) {
+        const healthCheck = await RpcHealthCheck.findOne({
+            where: { workspaceId: transaction.workspace.id },
+            attributes: ['isReachable']
+        });
 
-    if (!transaction.workspace.explorer.stripeSubscription)
+        if (healthCheck && !healthCheck.isReachable)
+            return 'RPC is not reachable';
+    }
+
+    if (!explorer.stripeSubscription)
         return 'No active subscription';
 
     if (!transaction.workspace.tracing)
