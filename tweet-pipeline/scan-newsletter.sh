@@ -7,11 +7,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ENV_FILE="/opt/blog-pipeline.env"
 PROMPTS_DIR="$SCRIPT_DIR/prompts"
 LOG_DIR="/var/log/tweet-pipeline"
-QUEUE_DIR="${TWEET_QUEUE_DIR:-/home/blog/tweet-queue}"
 INBOX="ethernal@agentmail.to"
-NEWSLETTER_FILE="$SCRIPT_DIR/.newsletter-source.json"
-BLOG_CANDIDATE_FILE="$SCRIPT_DIR/.blog-candidate.json"
-PROCESSED_FILE="$SCRIPT_DIR/.processed-threads"
 
 mkdir -p "$LOG_DIR"
 LOG_FILE="$LOG_DIR/scan-$(date +%Y%m%d-%H%M%S).log"
@@ -55,7 +51,6 @@ if [ -f "$ENV_FILE" ]; then
   set -a
   source "$ENV_FILE"
   set +a
-  QUEUE_DIR="${TWEET_QUEUE_DIR:-/home/blog/tweet-queue}"
 else
   log "ERROR: $ENV_FILE not found"
   report_failure "Environment"
@@ -67,20 +62,6 @@ if [ -z "${AGENTMAIL_API_KEY:-}" ]; then
   log "ERROR: AGENTMAIL_API_KEY not set"
   report_failure "Environment (missing AGENTMAIL_API_KEY)"
   exit 1
-fi
-
-# Clean up stale newsletter source (older than 24h)
-if [ -f "$NEWSLETTER_FILE" ]; then
-  CREATED=$(jq -r '.created_at // empty' "$NEWSLETTER_FILE" 2>/dev/null)
-  if [ -n "$CREATED" ]; then
-    CREATED_EPOCH=$(date -d "$CREATED" +%s 2>/dev/null || echo "0")
-    NOW_EPOCH=$(date +%s)
-    AGE=$(( NOW_EPOCH - CREATED_EPOCH ))
-    if [ "$AGE" -gt 86400 ]; then
-      log "Removing stale .newsletter-source.json (age: ${AGE}s)"
-      rm -f "$NEWSLETTER_FILE"
-    fi
-  fi
 fi
 
 log "Starting newsletter scan..."
@@ -97,11 +78,7 @@ THREADS_JSON=$(curl -sf \
   exit 0
 }
 
-# Load previously processed thread IDs
-touch "$PROCESSED_FILE"
-PROCESSED_IDS=$(cat "$PROCESSED_FILE")
-
-# Filter for AlphaPacked threads (direct or forwarded) not yet processed
+# Filter for AlphaPacked threads (direct or forwarded)
 MATCHING_THREADS=$(echo "$THREADS_JSON" | jq -r '
   [.threads[] |
    select(
@@ -115,7 +92,7 @@ MATCHING_THREADS=$(echo "$THREADS_JSON" | jq -r '
 # Remove already-processed threads
 UNPROCESSED=""
 for TID in $MATCHING_THREADS; do
-  if ! echo "$PROCESSED_IDS" | grep -qF "$TID"; then
+  if ! node lib/cli/is-thread-processed.js "$TID" 2>/dev/null; then
     UNPROCESSED="${UNPROCESSED:+$UNPROCESSED
 }$TID"
   fi
@@ -211,9 +188,7 @@ log "Concatenated $THREAD_COUNT newsletter(s) for scoring."
 # ============================================================
 # Deduplicate against recent tweets
 # ============================================================
-RECENT_IDS=$(find "$QUEUE_DIR" -name 'tweet-*.json' -mtime -7 -exec cat {} + 2>/dev/null \
-  | jq -r '.sourceId // empty' 2>/dev/null \
-  | sort -u || true)
+RECENT_IDS=$(node lib/cli/recent-source-ids.js 7 | jq -r '.[]' | sort -u)
 
 # ============================================================
 # Score ALL stories across all newsletters via Claude
@@ -270,9 +245,7 @@ for m in re.finditer(r'\{', text):
 if [ -z "$SCORE_JSON" ]; then
   log "WARNING: Could not extract JSON from Claude output — no qualifying story"
   # Record as processed to avoid reprocessing
-  for TID in $MATCHING_THREADS; do
-    echo "$TID" >> "$PROCESSED_FILE"
-  done
+  node lib/cli/mark-thread-processed.js $MATCHING_THREADS
   exit 0
 fi
 
@@ -303,11 +276,11 @@ else
 
   if [ "$BLOG_WORTHY" = "true" ]; then
     # Blog-worthy: schedule blog only, promo tweet will follow on publish
-    mv "$TMPFILE" "$BLOG_CANDIDATE_FILE"
+    cat "$TMPFILE" | node lib/cli/save-blog-candidate.js && rm -f "$TMPFILE"
     log "Blog-worthy story (score: $SCORE) — scheduling blog only, promo tweet will follow on publish"
   else
     # Tweet-only: stage for slot 3 thread
-    mv "$TMPFILE" "$NEWSLETTER_FILE"
+    cat "$TMPFILE" | node lib/cli/save-newsletter-source.js && rm -f "$TMPFILE"
     log "Staging story for slot 3 tweet thread (score: $SCORE)"
   fi
 fi
@@ -316,11 +289,6 @@ fi
 # Record processed threads to avoid reprocessing
 # ============================================================
 log "Recording processed threads..."
-for TID in $MATCHING_THREADS; do
-  echo "$TID" >> "$PROCESSED_FILE"
-done
-
-# Keep only last 100 entries to prevent unbounded growth
-tail -100 "$PROCESSED_FILE" > "${PROCESSED_FILE}.tmp" && mv "${PROCESSED_FILE}.tmp" "$PROCESSED_FILE"
+node lib/cli/mark-thread-processed.js $MATCHING_THREADS
 
 log "Done."

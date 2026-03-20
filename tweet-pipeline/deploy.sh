@@ -15,6 +15,9 @@ rsync -avz --delete \
   --exclude='.research.md' \
   --exclude='.draft.json' \
   --exclude='node_modules' \
+  --exclude='state.db' \
+  --exclude='state.db-wal' \
+  --exclude='state.db-shm' \
   "$SCRIPT_DIR/" blog@157.90.154.200:/opt/tweet-pipeline/
 
 echo "Installing dependencies..."
