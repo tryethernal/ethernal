@@ -364,7 +364,7 @@ if [ -n "$IMAGE_SPEC" ]; then
   if [ "$IMAGE_TYPE" = "blog_cover" ]; then
     # Download blog cover image from live site
     SLUG=$(echo "$IMAGE_SPEC" | jq -r '.slug // empty')
-    TMPIMG=$(mktemp /tmp/tweet-cover-XXXXXX)
+    TMPIMG="$QUEUE_DIR/${SLUG}-cover"
     FOUND_COVER=false
     for EXT in webp png jpg; do
       if curl -sf "https://tryethernal.com/blog/images/${SLUG}.${EXT}" -o "$TMPIMG"; then

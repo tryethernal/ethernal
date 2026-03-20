@@ -68,7 +68,8 @@ BLOG_FILES=$(gh api repos/tryethernal/ethernal/contents/blog/src/content/blog \
   BLOG_FILES=""
 }
 
-for FILENAME in $BLOG_FILES; do
+while IFS= read -r FILENAME; do
+  [ -z "$FILENAME" ] && continue
   # Fetch file content from GitHub API
   ARTICLE_CONTENT=$(gh api "repos/tryethernal/ethernal/contents/blog/src/content/blog/${FILENAME}" \
     --jq '.content' 2>/dev/null | tr -d '\n' | base64 -d 2>/dev/null) || continue
@@ -206,7 +207,7 @@ ${BLOG_URL}"
   [ -n "$COVER_IMAGE" ] && rm -f "$COVER_IMAGE"
 
   PROMOTED=$((PROMOTED + 1))
-done
+done <<< "$BLOG_FILES"
 
 if [ "$PROMOTED" -gt 0 ]; then
   log "Promoted $PROMOTED article(s)."

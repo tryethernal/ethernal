@@ -42,6 +42,8 @@ function fetchBlogFilesFromGitHub() {
         const articles = [];
 
         for (const filename of filenames) {
+            // Validate filename to prevent shell injection (should only be alphanumeric + hyphens + .md)
+            if (!/^[\w.-]+\.md$/.test(filename)) continue;
             const content = execSync(
                 `gh api repos/tryethernal/ethernal/contents/blog/src/content/blog/${filename}` +
                 ` --jq '.content' | tr -d '\\n' | base64 -d`,
