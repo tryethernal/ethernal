@@ -46,6 +46,7 @@ pm2-server/.env
 # Editor directories and files
 .idea
 .vscode
+.cursor/
 get-pip.py
 *.suo
 *.ntvs*
