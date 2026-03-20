@@ -152,7 +152,7 @@ async function onSubmit() {
     if (!valid.value) return;
     loading.value = true;
     try {
-        const res = await fetch(`${import.meta.env.VITE_APP_URL}/api/contact`, {
+        const res = await fetch('/api/contact', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ data: { ...form, subject: 'GitHub Actions CI Integration' } })

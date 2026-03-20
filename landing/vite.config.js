@@ -6,9 +6,6 @@ import { readFileSync } from 'node:fs';
 import { generateSitemap } from './src/sitemap.js';
 
 export default defineConfig({
-    define: {
-        'import.meta.env.VITE_APP_URL': JSON.stringify(process.env.VITE_APP_URL || 'https://app.tryethernal.com')
-    },
     plugins: [
         vue(),
         vuetify({ autoImport: true })
