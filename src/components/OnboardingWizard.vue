@@ -15,8 +15,8 @@
                     <span>Ethernal</span>
                 </div>
 
-                <!-- Progress bar -->
-                <div class="wizard-progress">
+                <!-- Progress bar (only in wizard mode) -->
+                <div v-if="view === 'wizard'" class="wizard-progress">
                     <div
                         v-for="(_, idx) in stepLabels"
                         :key="idx"
@@ -28,23 +28,205 @@
                     />
                 </div>
 
-                <!-- Step content -->
-                <div :class="['wizard-step-content', { 'wizard-step-content--top': currentStep === 3 }]">
+                <!-- Auth views -->
+                <div v-if="view === 'signin'" class="wizard-step-content">
+                    <!-- Sign In -->
+                    <div v-if="authMode === 'signin'" class="auth-view">
+                        <h2 class="step-title">Welcome back</h2>
+                        <p class="step-subtitle">Sign in to your account to continue.</p>
+
+                        <v-slide-y-transition>
+                            <div v-if="authError" class="error-msg">
+                                <v-icon size="16" color="#EF4444">mdi-alert-circle</v-icon>
+                                <span>{{ authError }}</span>
+                            </div>
+                        </v-slide-y-transition>
+
+                        <v-form @submit.prevent="authSignIn" v-model="authValid">
+                            <div class="field-group">
+                                <label class="field-label">Email</label>
+                                <v-text-field
+                                    v-model="authEmail"
+                                    type="email"
+                                    placeholder="you@company.com"
+                                    variant="outlined"
+                                    rounded="lg"
+                                    density="comfortable"
+                                    :rules="[v => !!v || 'Email is required', v => /.+@.+\..+/.test(v) || 'Invalid email']"
+                                    :disabled="authLoading"
+                                    autocomplete="email"
+                                    bg-color="rgba(255,255,255,0.03)"
+                                    hide-details="auto"
+                                />
+                            </div>
+
+                            <div class="field-group">
+                                <label class="field-label">Password</label>
+                                <v-text-field
+                                    v-model="authPassword"
+                                    type="password"
+                                    placeholder="Your password"
+                                    variant="outlined"
+                                    rounded="lg"
+                                    density="comfortable"
+                                    :rules="[v => !!v || 'Password is required']"
+                                    :disabled="authLoading"
+                                    autocomplete="current-password"
+                                    bg-color="rgba(255,255,255,0.03)"
+                                    hide-details="auto"
+                                />
+                            </div>
+
+                            <div class="auth-actions">
+                                <a href="#" class="forgot-link" @click.prevent="switchAuthMode('forgottenPwd')">Forgot password?</a>
+                                <v-btn
+                                    color="#3D95CE"
+                                    size="large"
+                                    rounded="lg"
+                                    type="submit"
+                                    :loading="authLoading"
+                                    :disabled="!authValid"
+                                    class="continue-btn"
+                                >
+                                    Sign In
+                                    <v-icon end>mdi-arrow-right</v-icon>
+                                </v-btn>
+                            </div>
+                        </v-form>
+
+                        <div class="auth-footer">
+                            Don't have an account? <a href="#" class="wizard-link" @click.prevent="switchToWizard">Get Started</a>
+                        </div>
+                    </div>
+
+                    <!-- Forgotten Password -->
+                    <div v-else-if="authMode === 'forgottenPwd'" class="auth-view">
+                        <h2 class="step-title">Forgot your password?</h2>
+                        <p class="step-subtitle">Enter your email and we'll send you a reset link.</p>
+
+                        <v-slide-y-transition>
+                            <div v-if="authError" class="error-msg">
+                                <v-icon size="16" color="#EF4444">mdi-alert-circle</v-icon>
+                                <span>{{ authError }}</span>
+                            </div>
+                        </v-slide-y-transition>
+                        <v-slide-y-transition>
+                            <div v-if="authSuccess" class="success-msg">
+                                <v-icon size="16" color="#22C55E">mdi-check-circle</v-icon>
+                                <span>{{ authSuccess }}</span>
+                            </div>
+                        </v-slide-y-transition>
+
+                        <v-form @submit.prevent="authSendResetEmail" v-model="authValid">
+                            <div class="field-group">
+                                <label class="field-label">Email</label>
+                                <v-text-field
+                                    v-model="authEmail"
+                                    type="email"
+                                    placeholder="you@company.com"
+                                    variant="outlined"
+                                    rounded="lg"
+                                    density="comfortable"
+                                    :rules="[v => !!v || 'Email is required', v => /.+@.+\..+/.test(v) || 'Invalid email']"
+                                    :disabled="authLoading"
+                                    autocomplete="email"
+                                    bg-color="rgba(255,255,255,0.03)"
+                                    hide-details="auto"
+                                />
+                            </div>
+
+                            <div class="auth-actions">
+                                <a href="#" class="forgot-link" @click.prevent="switchAuthMode('signin')">Back to sign in</a>
+                                <v-btn
+                                    color="#3D95CE"
+                                    size="large"
+                                    rounded="lg"
+                                    type="submit"
+                                    :loading="authLoading"
+                                    :disabled="!authValid"
+                                    class="continue-btn"
+                                >
+                                    Send Reset Link
+                                    <v-icon end>mdi-arrow-right</v-icon>
+                                </v-btn>
+                            </div>
+                        </v-form>
+
+                        <div class="auth-footer">
+                            Don't have an account? <a href="#" class="wizard-link" @click.prevent="switchToWizard">Get Started</a>
+                        </div>
+                    </div>
+
+                    <!-- Reset Password -->
+                    <div v-else-if="authMode === 'resetPwd'" class="auth-view">
+                        <h2 class="step-title">Reset your password</h2>
+                        <p class="step-subtitle">Choose a new password for your account.</p>
+
+                        <v-slide-y-transition>
+                            <div v-if="authError" class="error-msg">
+                                <v-icon size="16" color="#EF4444">mdi-alert-circle</v-icon>
+                                <span>{{ authError }}</span>
+                            </div>
+                        </v-slide-y-transition>
+                        <v-slide-y-transition>
+                            <div v-if="authSuccess" class="success-msg">
+                                <v-icon size="16" color="#22C55E">mdi-check-circle</v-icon>
+                                <span>{{ authSuccess }}</span>
+                            </div>
+                        </v-slide-y-transition>
+
+                        <v-form @submit.prevent="authResetPassword" v-model="authValid">
+                            <div class="field-group">
+                                <label class="field-label">New Password</label>
+                                <v-text-field
+                                    v-model="authPassword"
+                                    type="password"
+                                    placeholder="At least 6 characters"
+                                    variant="outlined"
+                                    rounded="lg"
+                                    density="comfortable"
+                                    :rules="[v => !!v || 'Password is required', v => v.length >= 6 || 'At least 6 characters']"
+                                    :disabled="authLoading"
+                                    bg-color="rgba(255,255,255,0.03)"
+                                    hide-details="auto"
+                                />
+                            </div>
+
+                            <div class="auth-actions">
+                                <a href="#" class="forgot-link" @click.prevent="switchAuthMode('signin')">Back to sign in</a>
+                                <v-btn
+                                    color="#3D95CE"
+                                    size="large"
+                                    rounded="lg"
+                                    type="submit"
+                                    :loading="authLoading"
+                                    :disabled="!authValid"
+                                    class="continue-btn"
+                                >
+                                    Reset Password
+                                    <v-icon end>mdi-arrow-right</v-icon>
+                                </v-btn>
+                            </div>
+                        </v-form>
+                    </div>
+                </div>
+
+                <!-- Wizard steps -->
+                <div v-else :class="['wizard-step-content', { 'wizard-step-content--top': currentStep === 3 }]">
                     <v-slide-x-transition mode="out-in">
-                        <!-- Step 0: Path Selection -->
                         <OnboardingPathSelector
                             v-if="currentStep === 0"
                             :default-path="selectedPath"
                             @path-selected="onPathSelected"
+                            @signin="switchToSignin"
                         />
-
-                        <!-- Step 1: Setup -->
                         <OnboardingExplorerSetup
                             v-else-if="currentStep === 1 && selectedPath === 'public'"
                             :initial-rpc="setupData.rpcServer || ''"
                             :initial-name="setupData.name || ''"
                             @explorer-info-ready="onExplorerInfoReady"
                             @back="currentStep = 0"
+                            @signin="switchToSignin"
                         />
                         <OnboardingWorkspaceSetup
                             v-else-if="currentStep === 1 && selectedPath === 'private'"
@@ -52,9 +234,8 @@
                             :initial-rpc="setupData.rpcServer || ''"
                             @workspace-info-ready="onWorkspaceInfoReady"
                             @back="currentStep = 0"
+                            @signin="switchToSignin"
                         />
-
-                        <!-- Step 2: Signup -->
                         <OnboardingSignup
                             v-else-if="currentStep === 2"
                             :path="selectedPath"
@@ -63,8 +244,6 @@
                             @signin-complete="onSigninComplete"
                             @back="currentStep = 1"
                         />
-
-                        <!-- Step 3: Result -->
                         <OnboardingExplorerLive
                             v-else-if="currentStep === 3 && selectedPath === 'public'"
                             :explorer="createdExplorer"
@@ -87,8 +266,33 @@
         <div class="wizard-context-panel">
             <div class="wizard-context-inner">
                 <v-fade-transition mode="out-in">
+                    <!-- Auth context -->
+                    <div v-if="view === 'signin'" key="ctx-auth" class="wizard-context-content">
+                        <div class="wizard-context-icon-row">
+                            <div class="wizard-context-icon wizard-context-icon--primary">
+                                <v-icon size="28" color="white">mdi-cube-scan</v-icon>
+                            </div>
+                        </div>
+                        <h3 class="wizard-context-title">Your block explorer, ready in minutes</h3>
+                        <p class="wizard-context-desc">Deploy a fully-featured explorer for any EVM chain. Contract verification, token tracking, and real-time sync out of the box.</p>
+                        <div class="wizard-context-features">
+                            <div class="wizard-context-feature">
+                                <v-icon size="16" color="#3D95CE">mdi-check-circle</v-icon>
+                                <span>Works with any EVM-compatible chain</span>
+                            </div>
+                            <div class="wizard-context-feature">
+                                <v-icon size="16" color="#3D95CE">mdi-check-circle</v-icon>
+                                <span>Custom domain and branding</span>
+                            </div>
+                            <div class="wizard-context-feature">
+                                <v-icon size="16" color="#3D95CE">mdi-check-circle</v-icon>
+                                <span>Free tier available, no credit card needed</span>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Step 0 context -->
-                    <div v-if="currentStep === 0" key="ctx-0" class="wizard-context-content">
+                    <div v-else-if="currentStep === 0 && view === 'wizard'" key="ctx-0" class="wizard-context-content">
                         <div class="wizard-context-icon-row">
                             <div class="wizard-context-icon wizard-context-icon--primary">
                                 <v-icon size="28" color="white">mdi-cube-scan</v-icon>
@@ -229,7 +433,7 @@
  * Split-screen layout: form on left, contextual content on right.
  */
 import { ref, computed, watch, nextTick, onMounted, onBeforeUnmount, inject } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import { useUserStore } from '@/stores/user';
 import { useCurrentWorkspaceStore } from '@/stores/currentWorkspace';
 import OnboardingPathSelector from './OnboardingPathSelector.vue';
@@ -239,6 +443,7 @@ import OnboardingExplorerLive from './OnboardingExplorerLive.vue';
 import OnboardingWorkspaceSetup from './OnboardingWorkspaceSetup.vue';
 
 const router = useRouter();
+const route = useRoute();
 const userStore = useUserStore();
 const currentWorkspaceStore = useCurrentWorkspaceStore();
 const $server = inject('$server');
@@ -256,6 +461,16 @@ const showSuccessModal = ref(false);
 const confettiCanvas = ref(null);
 let blockPollInterval = null;
 
+const view = ref('signin');
+const authMode = ref('signin');
+const authEmail = ref('');
+const authPassword = ref('');
+const authValid = ref(false);
+const authLoading = ref(false);
+const authError = ref('');
+const authSuccess = ref('');
+const resetPasswordToken = ref(null);
+
 const explorerUrl = computed(() => {
     if (!createdExplorer.value) return '';
     const slug = createdExplorer.value.slug || createdExplorer.value.name?.toLowerCase().replace(/[^a-z0-9]/g, '-');
@@ -263,6 +478,34 @@ const explorerUrl = computed(() => {
 });
 
 onMounted(() => {
+    if (route.query.apiToken && route.query.path) {
+        userStore.updateUser({ apiToken: route.query.apiToken });
+        window.location.assign(`//${window.location.host}${route.query.path}${route.query.explorerToken ? '?explorerToken=' + route.query.explorerToken : ''}`);
+        return;
+    }
+
+    if (route.query.token) {
+        authMode.value = 'resetPwd';
+        resetPasswordToken.value = route.query.token;
+        view.value = 'signin';
+        return;
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const ctx = {};
+    ['flow', 'chain', 'plan', 'explorerToken', 'rpc', 'source', 'name'].forEach(key => {
+        if (params.get(key)) ctx[key] = params.get(key);
+    });
+
+    if (ctx.explorerToken) {
+        view.value = 'signin';
+        return;
+    }
+
+    if (Object.keys(ctx).length) {
+        sessionStorage.setItem('onboardingContext', JSON.stringify(ctx));
+    }
+
     try {
         const stored = sessionStorage.getItem('onboardingContext');
         if (stored) {
@@ -276,7 +519,6 @@ onMounted(() => {
     }
 
     if (userStore.loggedIn) {
-        const route = router.currentRoute.value;
         if (context.value.name) setupData.value.name = context.value.name;
         if (context.value.rpc) setupData.value.rpcServer = context.value.rpc;
         if (route.query.name) setupData.value.name = route.query.name;
@@ -289,14 +531,81 @@ onMounted(() => {
         return;
     }
 
-    if (window.posthog) {
-        window.posthog.capture('onboarding:flow_started', {
-            source: context.value.source || 'direct',
-            default_path: selectedPath.value,
-            has_context: !!context.value.source
-        });
+    if (ctx.flow) {
+        view.value = 'wizard';
+        if (window.posthog) {
+            window.posthog.capture('onboarding:flow_started', {
+                source: context.value.source || 'direct',
+                default_path: selectedPath.value,
+                has_context: !!context.value.source
+            });
+        }
+        return;
     }
+
+    view.value = 'signin';
 });
+
+function switchAuthMode(mode) {
+    authError.value = '';
+    authSuccess.value = '';
+    authEmail.value = '';
+    authPassword.value = '';
+    authMode.value = mode;
+}
+
+function switchToWizard() {
+    view.value = 'wizard';
+}
+
+function switchToSignin() {
+    view.value = 'signin';
+    authMode.value = 'signin';
+    authError.value = '';
+    authSuccess.value = '';
+}
+
+async function authSignIn() {
+    authLoading.value = true;
+    authError.value = '';
+    try {
+        const { data: { user } } = await $server.signIn(authEmail.value, authPassword.value);
+        userStore.updateUser(user);
+        localStorage.setItem('apiToken', user.apiToken);
+        window.location.assign(`/overview${route.query.explorerToken ? '?explorerToken=' + route.query.explorerToken : ''}`);
+    } catch (error) {
+        authError.value = error.response?.data || 'Error while signing in. Please retry.';
+        authLoading.value = false;
+    }
+}
+
+async function authSendResetEmail() {
+    authLoading.value = true;
+    authError.value = '';
+    authSuccess.value = '';
+    try {
+        await $server.sendResetPasswordEmail(authEmail.value);
+        authSuccess.value = 'An email has been sent with a link to reset your password.';
+    } catch (error) {
+        authError.value = error.response?.data || 'Could not send reset email.';
+    } finally {
+        authLoading.value = false;
+    }
+}
+
+async function authResetPassword() {
+    authLoading.value = true;
+    authError.value = '';
+    authSuccess.value = '';
+    try {
+        await $server.resetPassword(resetPasswordToken.value, authPassword.value);
+        authSuccess.value = 'Your password has been reset successfully. You can now sign in.';
+    } catch (error) {
+        authError.value = error.response?.data || 'Could not reset password.';
+    } finally {
+        authLoading.value = false;
+    }
+}
 
 function onPathSelected(path) {
     selectedPath.value = path;
@@ -472,9 +781,9 @@ onBeforeUnmount(() => {
 function goToDashboard() {
     sessionStorage.removeItem('onboardingContext');
     if (createdExplorer.value?.id) {
-        router.push(`/explorers/${createdExplorer.value.id}`);
+        window.location.assign(`/explorers/${createdExplorer.value.id}`);
     } else {
-        router.push('/overview');
+        window.location.assign('/overview');
     }
 }
 </script>
@@ -746,6 +1055,89 @@ function goToDashboard() {
 }
 
 .success-modal-cta {
+    text-transform: none;
+    font-weight: 600;
+    letter-spacing: 0;
+}
+
+/* Auth views */
+.auth-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 28px;
+}
+
+.forgot-link {
+    color: #64748b;
+    font-size: 13px;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.forgot-link:hover {
+    color: #94a3b8;
+}
+
+.auth-footer {
+    font-size: 13px;
+    color: #475569;
+    margin-top: 24px;
+    text-align: center;
+}
+
+.error-msg {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: rgba(239, 68, 68, 0.08);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: 8px;
+    margin-bottom: 20px;
+    color: #EF4444;
+    font-size: 13px;
+}
+
+.success-msg {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: rgba(34, 197, 94, 0.08);
+    border: 1px solid rgba(34, 197, 94, 0.2);
+    border-radius: 8px;
+    margin-bottom: 20px;
+    color: #22C55E;
+    font-size: 13px;
+}
+
+.field-group {
+    margin-bottom: 20px;
+}
+
+.field-label {
+    font-size: 13px;
+    color: #94a3b8;
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+
+.step-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 6px;
+}
+
+.step-subtitle {
+    font-size: 14px;
+    color: #64748b;
+    margin-bottom: 28px;
+}
+
+.continue-btn {
     text-transform: none;
     font-weight: 600;
     letter-spacing: 0;
