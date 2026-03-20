@@ -90,7 +90,7 @@ const $pusher = inject('$pusher');
 // Computed properties
 const isAuthPage = computed(() => {
     const path = route?.path || window.location.pathname;
-    return path.indexOf('/auth') > -1 || path.indexOf('/onboarding') > -1;
+    return path.indexOf('/auth') > -1;
 });
 const canDisplaySides = computed(() => {
     return (
@@ -173,7 +173,7 @@ function toggleMenu() {
 
 function launchOnboarding() {
     isOverlayActive.value = false;
-    window.location.assign('/onboarding');
+    window.location.assign('/auth');
 }
 
 function updateTabInfo(logoUrl, name) {
@@ -187,7 +187,7 @@ function updateTabInfo(logoUrl, name) {
 function authStateChanged(user) {
     const currentPath = window.location.pathname;
     userStore.updateUser(user);
-    if (currentPath != '/auth' && currentPath != '/onboarding' && !user && envStore.isOnMainDomain) {
+    if (currentPath != '/auth' && !user && envStore.isOnMainDomain) {
         console.log('redirecting to auth', envStore.mainDomain);
         return '/auth';
     }
