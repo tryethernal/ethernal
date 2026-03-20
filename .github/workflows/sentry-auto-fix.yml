@@ -1015,7 +1015,7 @@ jobs:
             REVIEW_STATE=$(gh pr checks "$PR_NUM" --repo ${{ github.repository }} --json name,state \
               --jq '[.[] | select(.name == "process-review")] | .[0].state // "NONE"')
 
-            if [ "$GREPTILE_COMMENTED" != "0" ] && ([ "$REVIEW_STATE" = "FAILURE" ] || [ "$REVIEW_STATE" = "NONE" ]); then
+            if [ "$GREPTILE_COMMENTED" != "0" ] && [ "$REVIEW_STATE" != "SUCCESS" ]; then
               # Check if we already retried (look for our retry comment)
               RETRY_COUNT=$(gh api repos/${{ github.repository }}/issues/$PR_NUM/comments \
                 --jq '[.[] | select(.body | contains("@claude Please process the Greptile review"))] | length')
