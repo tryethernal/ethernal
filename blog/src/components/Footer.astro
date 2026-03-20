@@ -26,7 +26,7 @@ const year = new Date().getFullYear();
           <a href="/pricing" class="footer-link">Pricing</a>
           <a href="/transaction-tracing" class="footer-link">Transaction Tracing</a>
           <a href="https://doc.tryethernal.com" target="_blank" rel="noopener noreferrer" class="footer-link">Docs</a>
-          <a href="/auth" class="footer-link">Sign in</a>
+          <a href={`${import.meta.env.PUBLIC_APP_URL || 'https://app.tryethernal.com'}/auth`} class="footer-link">Sign in</a>
         </div>
       </div>
 

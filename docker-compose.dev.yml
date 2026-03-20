@@ -21,6 +21,8 @@ services:
     volumes:
       - ./blog:/app
       - blog_node_modules:/app/node_modules
+    environment:
+      - PUBLIC_APP_URL=http://app.ethernal.local:8180
     command: sh -c "npm install && npm run dev -- --host 0.0.0.0 --port 8176"
     networks:
       - ethernal-network
