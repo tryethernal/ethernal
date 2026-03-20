@@ -126,11 +126,13 @@ if [ "$SLOT" = "3" ]; then
       writeFileSync('.source.json', JSON.stringify(result, null, 2));
       console.log('Selected: ' + result.source.title + ' (bucket: Newsletter story)');
     " 2>&1 | tee -a "$LOG_FILE"
-    # Consume so repeat runs don't reuse
-    node --input-type=module -e "import { getDb } from './lib/db.js'; getDb().consumeNewsletterSource();"
-    log "Newsletter source consumed."
-    if [ ! -f .source.json ]; then
+    if [ -f .source.json ]; then
+      # Consume only after confirming .source.json was written
+      node --input-type=module -e "import { getDb } from './lib/db.js'; getDb().consumeNewsletterSource();"
+      log "Newsletter source consumed."
+    else
       SKIP_NORMAL_SOURCE=false
+      log "WARNING: .source.json not created — retaining newsletter source for next run"
     fi
   fi
 fi
