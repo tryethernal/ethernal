@@ -80,6 +80,13 @@ router.get('/:number', workspaceAuthMiddleware, async (req, res, next) => {
         if (!req.params.number)
             return managedError(new Error('Missing parameter.'), req, res);
 
+        // Reject obviously invalid values like "undefined", "null", or empty strings
+        // Allow valid integers and special strings like "latest"
+        const param = req.params.number.trim();
+        if (param === 'undefined' || param === 'null' || param === '') {
+            return managedError(new Error('Invalid block number parameter.'), req, res);
+        }
+
         const block = await db.getWorkspaceBlock(data.workspace.id, req.params.number);
 
         res.status(200).json(block);

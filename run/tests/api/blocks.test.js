@@ -148,6 +148,24 @@ describe(`GET ${BASE_URL}/:number`, () => {
                 done();
             });
     });
+
+    it('Should reject undefined block number', (done) => {
+        request.get(`${BASE_URL}/undefined`)
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual('Invalid block number parameter.');
+                done();
+            });
+    });
+
+    it('Should reject null block number', (done) => {
+        request.get(`${BASE_URL}/null`)
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual('Invalid block number parameter.');
+                done();
+            });
+    });
 });
 
 describe(`GET ${BASE_URL}`, () => {
