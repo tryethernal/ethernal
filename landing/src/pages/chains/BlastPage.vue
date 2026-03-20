@@ -305,7 +305,7 @@
             </section>
         </v-container>
 
-        <LandingCTA />
+        <LandingCTA chain="blast" />
     </LandingLayout>
 </template>
 

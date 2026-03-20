@@ -337,7 +337,7 @@
             </section>
         </v-container>
 
-        <LandingCTA />
+        <LandingCTA chain="polygon-pos" />
     </LandingLayout>
 </template>
 

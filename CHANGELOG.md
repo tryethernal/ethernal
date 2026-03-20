@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.97] - 2026-03-20
+### Fixed
+- fix: optimize revertIfPartial queries for TimescaleDB hypertables (#795)
+- fix: optimize processTransactionTrace job database queries (#796)
+- docs: update CLAUDE.md with PostHog, subscription statuses, cross-app URLs
+
+
 ## [5.17.96] - 2026-03-20
 ### Fixed
 - feat(tweet-pipeline): add dedup debug logging to stderr

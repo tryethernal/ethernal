@@ -1,5 +1,5 @@
 require('../mocks/lib/firebase');
-const { Transaction } = require('../mocks/models');
+const { Transaction, Explorer, RpcHealthCheck } = require('../mocks/models');
 require('../mocks/lib/utils');
 require('../mocks/lib/trace');
 require('../mocks/lib/queue');
@@ -50,7 +50,8 @@ const workspace = {
 
 describe('processTransactionTrace', () => {
     it('Should return if no explorer', async () => {
-        jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({ ...transactionMock, workspace: { ...workspace, public: true, explorer: null }});
+        jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({ ...transactionMock, workspace: { ...workspace, public: true }});
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce(null);
 
         const res = await processTransactionTrace({ data: { transactionId: 1 }});
         expect(res).toEqual('Inactive explorer');
@@ -64,14 +65,17 @@ describe('processTransactionTrace', () => {
     // });
 
     it('Should return if RPC is not reachable', async () => {
-        jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({ ...transactionMock, workspace: { ...workspace, rpcHealthCheckEnabled: true, public: true, rpcHealthCheck: { isReachable: false }, explorer: { shouldSync: true }}});
+        jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({ ...transactionMock, workspace: { ...workspace, rpcHealthCheckEnabled: true, public: true }});
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({ shouldSync: true, stripeSubscription: {} });
+        jest.spyOn(RpcHealthCheck, 'findOne').mockResolvedValueOnce({ isReachable: false });
 
         const res = await processTransactionTrace({ data: { transactionId: 1 }});
         expect(res).toEqual('RPC is not reachable');
     });
 
     it('Should return if no subscription', async () => {
-        jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({ ...transactionMock, workspace: { ...workspace, public: true, rpcHealthCheck: { isReachable: true }, explorer: { shouldSync: true }}});
+        jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({ ...transactionMock, workspace: { ...workspace, public: true }});
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({ shouldSync: true, stripeSubscription: null });
 
         const res = await processTransactionTrace({ data: { transactionId: 1 }});
         expect(res).toEqual('No active subscription');
@@ -82,17 +86,18 @@ describe('processTransactionTrace', () => {
             ...transactionMock,
             workspace: { ...workspace, public: true, tracing: 'other' },
         });
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({ shouldSync: true, stripeSubscription: {} });
 
         transactionMock.safeCreateTransactionTrace.mockResolvedValueOnce({});
-        
+
         await processTransactionTrace({ data: { transactionId: 1 }});
-    
+
         expect(transactionMock.safeCreateTransactionTrace).toHaveBeenCalledWith([{"op": "CALL"}, {"op": "CALLSTATIC"}]);
     });
 
     it('Should not process the trace for private workspaces', async () => {
         const processTraceMock = jest.spyOn(Tracer.prototype, 'process');
-        jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({ ...transactionMock, workspace: { ...workspace, public: false, explorer: null }});
+        jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({ ...transactionMock, workspace: { ...workspace, public: false }});
 
         const res = await processTransactionTrace({ data: { transactionId: 1 }});
 

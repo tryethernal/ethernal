@@ -323,7 +323,7 @@
             </section>
         </v-container>
 
-        <LandingCTA />
+        <LandingCTA chain="arbitrum-one" />
     </LandingLayout>
 </template>
 

@@ -5,7 +5,12 @@
             <h4>Create Workspace</h4>
             <v-btn color="grey" variant="text" icon="mdi-close" @click="close(false)"></v-btn>
         </v-card-title>
-        <CreateWorkspace @workspaceCreated="onWorkspaceCreated" @goToBilling="goToBilling" />
+        <CreateWorkspace
+            :initial-name="initialOptions.name"
+            :initial-rpc="initialOptions.rpc"
+            @workspaceCreated="onWorkspaceCreated"
+            @goToBilling="goToBilling"
+        />
     </v-card>
 </v-dialog>
 </template>
@@ -22,10 +27,17 @@ import CreateWorkspace from './CreateWorkspace.vue';
 const dialog = ref(false);
 const resolveRef = ref(null);
 const rejectRef = ref(null);
+const initialOptions = ref({});
 const router = useRouter();
 const $server = inject('$server');
 
-function open() {
+/**
+ * Opens the create workspace dialog, optionally prefilling name and rpc.
+ * @param {{ name?: string, rpc?: string }} [options={}] - Prefill options from onboarding redirect
+ * @returns {Promise<boolean>} Resolves with true if workspace was created
+ */
+function open(options = {}) {
+    initialOptions.value = options;
     dialog.value = true;
     return new Promise((resolve, reject) => {
         resolveRef.value = resolve;
@@ -53,6 +65,7 @@ function reset() {
     dialog.value = false;
     resolveRef.value = null;
     rejectRef.value = null;
+    initialOptions.value = {};
 }
 
 defineExpose({ open, close });

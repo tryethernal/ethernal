@@ -30,7 +30,7 @@
                 d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
         </svg>
       </button>
-      <a href="https://app.tryethernal.com/auth" class="navbar-cta">Get Started</a>
+      <a href={`${import.meta.env.PUBLIC_APP_URL || 'https://app.tryethernal.com'}/auth?flow=public`} class="navbar-cta">Get Started</a>
     </div>
   </div>
 </header>

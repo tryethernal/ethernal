@@ -152,7 +152,7 @@
             </FeatureSection>
         </v-container>
 
-        <LandingCTA />
+        <LandingCTA flow="private" />
     </LandingLayout>
 </template>
 

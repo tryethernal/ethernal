@@ -26,6 +26,7 @@ jest.mock('../../../models/index.js', () => ({
     OpDeposit: require('./OpDeposit').OpDeposit,
     OpWithdrawal: require('./OpWithdrawal').OpWithdrawal,
     SentryPipelineRun: require('./SentryPipelineRun').SentryPipelineRun,
+    RpcHealthCheck: require('./RpcHealthCheck').RpcHealthCheck,
     sequelize: {
         transaction: jest.fn(cb => cb()),
         literal: jest.fn(sql => sql)
@@ -59,6 +60,7 @@ const { OpOutput } = require('./OpOutput');
 const { OpDeposit } = require('./OpDeposit');
 const { OpWithdrawal } = require('./OpWithdrawal');
 const { SentryPipelineRun } = require('./SentryPipelineRun');
+const { RpcHealthCheck } = require('./RpcHealthCheck');
 
 module.exports = {
     Transaction,
@@ -90,5 +92,6 @@ module.exports = {
     OpOutput,
     OpDeposit,
     OpWithdrawal,
-    SentryPipelineRun
+    SentryPipelineRun,
+    RpcHealthCheck
 };

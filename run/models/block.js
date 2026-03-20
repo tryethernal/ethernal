@@ -101,9 +101,11 @@ module.exports = (sequelize, DataTypes) => {
      */
     async revertIfPartial() {
         // Check for syncing transactions first
+        // Include workspaceId for efficient TimescaleDB hypertable querying
         const syncingTransactionCount = await sequelize.models.Transaction.count({
             where: {
                 blockId: this.id,
+                workspaceId: this.workspaceId,
                 state: 'syncing'
             }
         });
@@ -121,7 +123,8 @@ module.exports = (sequelize, DataTypes) => {
         if (this.transactionsCount !== null && this.transactionsCount !== undefined) {
             const currentTransactionCount = await sequelize.models.Transaction.count({
                 where: {
-                    blockId: this.id
+                    blockId: this.id,
+                    workspaceId: this.workspaceId
                 }
             });
 

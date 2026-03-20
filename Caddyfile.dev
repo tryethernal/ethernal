@@ -6,12 +6,23 @@
         Permissions-Policy "camera=(), microphone=(), geolocation=()"
     }
 
-    # Blog: proxy /blog requests to blog dev server (keep /blog prefix — Astro base: '/blog')
+    # API: proxy to backend
+    handle /api* {
+        reverse_proxy backend:8888
+    }
+
+    # Blog: proxy /blog requests to blog dev server
     handle /blog* {
         reverse_proxy blog:8176
     }
 
-    # Landing: proxy everything else to landing dev server
+    # App: proxy to frontend when host is app.ethernal.local
+    @app host app.ethernal.local
+    handle @app {
+        reverse_proxy frontend:8080
+    }
+
+    # Landing: everything else
     handle {
         reverse_proxy landing:8174
     }

@@ -273,7 +273,7 @@
             </section>
         </v-container>
 
-        <LandingCTA />
+        <LandingCTA chain="holesky" />
     </LandingLayout>
 </template>
 

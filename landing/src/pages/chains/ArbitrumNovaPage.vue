@@ -309,7 +309,7 @@
             </section>
         </v-container>
 
-        <LandingCTA />
+        <LandingCTA chain="arbitrum-nova" />
     </LandingLayout>
 </template>
 

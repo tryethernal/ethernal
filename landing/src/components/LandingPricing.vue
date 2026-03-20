@@ -23,9 +23,11 @@
                     sm="6"
                     lg="3"
                 >
-                    <PricingCard v-bind="plan" />
+                    <PricingCard v-bind="plan" @enterprise-contact="enterpriseModal.open()" />
                 </v-col>
             </v-row>
+
+            <EnterpriseContactModal ref="enterpriseModal" />
 
             <!-- Private Explorers (full page only) -->
             <template v-if="full">
@@ -56,7 +58,13 @@
 </template>
 
 <script setup>
+import { ref } from 'vue';
 import PricingCard from './PricingCard.vue';
+import EnterpriseContactModal from './EnterpriseContactModal.vue';
+
+const enterpriseModal = ref(null);
+
+const appUrl = __APP_URL__;
 
 defineProps({
     full: { type: Boolean, default: false }
@@ -74,7 +82,8 @@ const publicPlans = [
             'Testnet faucet',
             'Ethernal branding'
         ],
-        ctaText: 'Start Free'
+        ctaText: 'Start Free',
+        ctaUrl: `${appUrl}/auth?flow=public&plan=free`
     },
     {
         name: 'Team',
@@ -90,7 +99,8 @@ const publicPlans = [
             'L2 bridge support',
             '7-day free trial'
         ],
-        ctaText: 'Start Trial'
+        ctaText: 'Start Trial',
+        ctaUrl: `${appUrl}/auth?flow=public&plan=explorer-150`
     },
     {
         name: 'App Chain',
@@ -105,7 +115,8 @@ const publicPlans = [
             'Priority support',
             '7-day free trial'
         ],
-        ctaText: 'Start Trial'
+        ctaText: 'Start Trial',
+        ctaUrl: `${appUrl}/auth?flow=public&plan=explorer-500`
     },
     {
         name: 'Enterprise',
@@ -114,12 +125,11 @@ const publicPlans = [
         quota: 'Unlimited transactions',
         features: [
             'Everything in App Chain',
-            'Multiple explorers',
+            'On-premise hosting',
             'Custom integrations',
             'Dedicated support'
         ],
-        ctaText: 'Contact Us',
-        ctaUrl: '/contact-us'
+        ctaText: 'Contact Us'
     }
 ];
 
@@ -136,7 +146,8 @@ const privatePlans = [
             'Hardhat / Anvil sync',
             'Analytics'
         ],
-        ctaText: 'Start Free'
+        ctaText: 'Start Free',
+        ctaUrl: `${appUrl}/auth?flow=private`
     },
     {
         name: 'Pro',
@@ -146,7 +157,8 @@ const privatePlans = [
             'Everything in Free',
             'Unlimited workspaces'
         ],
-        ctaText: 'Get Pro'
+        ctaText: 'Get Pro',
+        ctaUrl: `${appUrl}/auth?flow=private&plan=pro`
     }
 ];
 </script>

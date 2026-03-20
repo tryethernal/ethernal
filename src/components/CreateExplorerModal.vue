@@ -73,6 +73,13 @@ import { useEnvStore } from '../stores/env';
 import { isUrlValid } from '../lib/utils';
 import ExplorerPlanSelector from './ExplorerPlanSelector.vue';
 
+const props = defineProps({
+    /** @prop {String} initialName - Pre-filled explorer name (e.g. passed from onboarding redirect) */
+    initialName: { type: String, default: '' },
+    /** @prop {String} initialRpc - Pre-filled RPC server URL */
+    initialRpc: { type: String, default: '' }
+});
+
 const emit = defineEmits(['explorerCreated']);
 
 const stepperIndex = ref(1);
@@ -93,7 +100,16 @@ const envStore = useEnvStore();
 const $server = inject('$server');
 const $router = inject('$router');
 
-function open() {
+/**
+ * Opens the create explorer dialog, optionally prefilling name and rpc.
+ * @param {{ name?: string, rpc?: string }} [options={}] - Prefill options from onboarding redirect
+ * @returns {Promise}
+ */
+function open(options = {}) {
+    const prefillName = options.name || props.initialName;
+    const prefillRpc = options.rpc || props.initialRpc;
+    if (prefillName) name.value = prefillName;
+    if (prefillRpc) rpcServer.value = prefillRpc;
     dialog.value = true;
     return new Promise((res, rej) => {
         resolve = res;

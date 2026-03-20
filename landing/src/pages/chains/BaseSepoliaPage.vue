@@ -249,7 +249,7 @@
             </section>
         </v-container>
 
-        <LandingCTA />
+        <LandingCTA chain="base-sepolia" />
     </LandingLayout>
 </template>
 
