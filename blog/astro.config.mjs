@@ -8,6 +8,14 @@ export default defineConfig({
   base: '/blog',
   output: 'static',
   integrations: [vue(), tailwind(), sitemap()],
+  server: {
+    allowedHosts: true,
+  },
+  vite: {
+    server: {
+      allowedHosts: true,
+    },
+  },
   trailingSlash: 'never',
   markdown: {
     shikiConfig: {
