@@ -522,7 +522,9 @@ onMounted(() => {
         const stored = sessionStorage.getItem('onboardingContext');
         if (stored) {
             context.value = JSON.parse(stored);
-            if (context.value.flow === 'public' || context.value.source === 'landing_cta') {
+            if (context.value.flow === 'private') {
+                selectedPath.value = 'private';
+            } else if (context.value.flow === 'public' || context.value.source === 'landing_cta') {
                 selectedPath.value = 'public';
             }
         }
