@@ -361,6 +361,28 @@ defineExpose({ open });
 :deep(.v-field__input) {
     color: #fff !important;
 }
+
+@media (max-width: 600px) {
+    .enterprise-modal-layout {
+        flex-direction: column;
+        min-height: auto;
+    }
+
+    .enterprise-left {
+        width: 100%;
+        padding: 24px 20px;
+        border-right: none;
+        border-bottom: 1px solid #1e293b;
+    }
+
+    .enterprise-right {
+        padding: 24px 20px;
+    }
+
+    .enterprise-confirmation {
+        padding: 32px 20px;
+    }
+}
 </style>
 
 <style>
