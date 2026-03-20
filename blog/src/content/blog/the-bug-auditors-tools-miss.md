@@ -9,7 +9,7 @@ tags:
   - Solidity
 image: "/blog/images/the-bug-auditors-tools-miss.png"
 ogImage: "/blog/images/the-bug-auditors-tools-miss-og.png"
-status: draft
+status: published
 readingTime: 8
 ---
 
