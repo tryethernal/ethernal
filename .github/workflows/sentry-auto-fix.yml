@@ -1006,6 +1006,30 @@ jobs:
               continue
             fi
 
+            # Check if Greptile reviewed but process-review failed or never ran
+            GREPTILE_ISSUE_COMMENTS=$(gh api repos/${{ github.repository }}/issues/$PR_NUM/comments \
+              --jq '[.[] | select(.user.login == "greptile-apps[bot]")] | length')
+            GREPTILE_REVIEWS=$(gh api repos/${{ github.repository }}/pulls/$PR_NUM/reviews \
+              --jq '[.[] | select(.user.login == "greptile-apps[bot]")] | length')
+            GREPTILE_COMMENTED=$(( GREPTILE_ISSUE_COMMENTS + GREPTILE_REVIEWS ))
+            REVIEW_STATE=$(gh pr checks "$PR_NUM" --repo ${{ github.repository }} --json name,state \
+              --jq '[.[] | select(.name == "process-review")] | .[0].state // "NONE"')
+
+            if [ "$GREPTILE_COMMENTED" != "0" ] && [ "$REVIEW_STATE" != "SUCCESS" ]; then
+              # Check if we already retried (look for our retry comment)
+              RETRY_COUNT=$(gh api repos/${{ github.repository }}/issues/$PR_NUM/comments \
+                --jq '[.[] | select(.body | contains("@claude Please process the Greptile review"))] | length')
+              if [ "$RETRY_COUNT" -ge 2 ]; then
+                echo "PR #$PR_NUM: review processing failed after $RETRY_COUNT retries. Flagging for human review."
+                gh pr edit "$PR_NUM" --add-label "needs-human" --repo ${{ github.repository }}
+                gh pr comment "$PR_NUM" --body "Automated review processing failed after multiple retries. Flagging for human review. @${{ vars.ONCALL_HANDLE }}" --repo ${{ github.repository }}
+                continue
+              fi
+              echo "PR #$PR_NUM has unprocessed Greptile review (process-review: $REVIEW_STATE). Re-triggering review."
+              gh pr comment "$PR_NUM" --body "@claude Please process the Greptile review comments on this PR." --repo ${{ github.repository }}
+              continue
+            fi
+
             echo "Merging stuck PR #$PR_NUM"
             gh pr merge "$PR_NUM" --squash --admin --delete-branch --repo ${{ github.repository }} || echo "Failed to merge #$PR_NUM"
           done

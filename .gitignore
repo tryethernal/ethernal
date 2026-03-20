@@ -46,6 +46,7 @@ pm2-server/.env
 # Editor directories and files
 .idea
 .vscode
+.cursor/
 get-pip.py
 *.suo
 *.ntvs*
@@ -79,4 +80,5 @@ skills-lock.json
 
 # Session artifacts
 .claude/handoff-*.md
+.claude/plans/
 generated_imgs/

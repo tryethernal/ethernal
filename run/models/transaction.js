@@ -762,17 +762,35 @@ module.exports = (sequelize, DataTypes) => {
                 for (let i = 0; i < storedTokenTransfers.length; i++)
                     trigger(`private-contractLog;workspace=${this.workspaceId};contract=${tokenTransfers[i].address}`, 'new', null);
 
+                // Collect all unique token addresses for batch contract lookup to avoid N+1 queries
+                const tokenAddresses = [...new Set(
+                    storedTokenTransfers
+                        .filter(tt => tt.id && tt.token !== '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
+                        .map(tt => tt.token)
+                )];
+
+                // Batch query all contracts at once to prevent N+1 query pattern
+                const contractsMap = new Map();
+                if (tokenAddresses.length > 0) {
+                    const contracts = await sequelize.models.Contract.findAll({
+                        where: {
+                            workspaceId: this.workspaceId,
+                            address: tokenAddresses
+                        },
+                        attributes: ['address', 'patterns']
+                    });
+                    for (const contract of contracts) {
+                        contractsMap.set(contract.address, contract);
+                    }
+                }
+
                 for (let i = 0; i < storedTokenTransfers.length; i++) {
                     const tokenTransfer = storedTokenTransfers[i];
                     if (!tokenTransfer.id)
                         continue;
 
-                    const contract = await sequelize.models.Contract.findOne({
-                        where: {
-                            workspaceId: this.workspaceId,
-                            address: tokenTransfer.token
-                        }
-                    });
+                    // Use batched contract lookup instead of individual query
+                    const contract = contractsMap.get(tokenTransfer.token);
                     if (!contract && tokenTransfer.token !== '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') {
                         const workspace = await this.getWorkspace();
                         await workspace.safeCreateOrUpdateContract({

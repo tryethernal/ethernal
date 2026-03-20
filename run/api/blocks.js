@@ -28,7 +28,11 @@ router.get('/:number/transactions', workspaceAuthMiddleware, async (req, res, ne
         if (!data.number)
             return managedError(new Error('Missing parameter.'), req, res);
 
-        const { rows: items, count: total } = await db.getBlockTransactions(data.workspace.id, req.params.number, data.page, data.itemsPerPage, data.order, data.orderBy, data.withCount);
+        const param = String(data.number).trim();
+        if (param === 'undefined' || param === 'null' || param === '')
+            return managedError(new Error('Invalid block number parameter.'), req, res);
+
+        const { rows: items, count: total } = await db.getBlockTransactions(data.workspace.id, param, data.page, data.itemsPerPage, data.order, data.orderBy, data.withCount);
 
         res.status(200).json({ items, total });
     } catch(error) {
@@ -80,14 +84,11 @@ router.get('/:number', workspaceAuthMiddleware, async (req, res, next) => {
         if (!req.params.number)
             return managedError(new Error('Missing parameter.'), req, res);
 
-        // Reject obviously invalid values like "undefined", "null", or empty strings
-        // Allow valid integers and special strings like "latest"
-        const param = req.params.number.trim();
-        if (param === 'undefined' || param === 'null' || param === '') {
+        const param = String(req.params.number).trim();
+        if (param === 'undefined' || param === 'null' || param === '')
             return managedError(new Error('Invalid block number parameter.'), req, res);
-        }
 
-        const block = await db.getWorkspaceBlock(data.workspace.id, req.params.number);
+        const block = await db.getWorkspaceBlock(data.workspace.id, param);
 
         res.status(200).json(block);
     } catch(error) {

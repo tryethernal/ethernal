@@ -5,7 +5,6 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-REPO_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 ENV_FILE="/opt/blog-pipeline.env"
 MCP_CONFIG="$SCRIPT_DIR/mcp.json"
 PROMPTS_DIR="$SCRIPT_DIR/prompts"
@@ -90,16 +89,7 @@ fi
 
 log "Starting tweet draft pipeline — slot $SLOT"
 
-cd "$REPO_DIR"
-
-# Pull latest
-log "Pulling latest changes..."
-git fetch origin develop 2>&1 | tee -a "$LOG_FILE"
-git reset --hard origin/develop 2>&1 | tee -a "$LOG_FILE"
-
-# Install pipeline deps
-cd tweet-pipeline
-npm ci --silent 2>&1 | tee -a "$LOG_FILE"
+cd "$SCRIPT_DIR"
 
 # Prevent overlapping runs via lockfile
 LOCKFILE="/tmp/tweet-draft.lock"
@@ -372,14 +362,21 @@ if [ -n "$IMAGE_SPEC" ]; then
   IMAGE_TYPE=$(echo "$IMAGE_SPEC" | jq -r '.type // empty')
 
   if [ "$IMAGE_TYPE" = "blog_cover" ]; then
-    # Use existing blog cover image
+    # Download blog cover image from live site
     SLUG=$(echo "$IMAGE_SPEC" | jq -r '.slug // empty')
-    COVER_PATH="$REPO_DIR/blog/public/images/${SLUG}.png"
-    if [ -f "$COVER_PATH" ]; then
-      IMAGE_PATH="$COVER_PATH"
-      log "Using blog cover image: $IMAGE_PATH"
-    else
-      log "WARNING: Blog cover not found at $COVER_PATH — continuing without image"
+    TMPIMG="$QUEUE_DIR/${SLUG}-cover"
+    FOUND_COVER=false
+    for EXT in webp png jpg; do
+      if curl -sf "https://tryethernal.com/blog/images/${SLUG}.${EXT}" -o "$TMPIMG"; then
+        IMAGE_PATH="$TMPIMG"
+        FOUND_COVER=true
+        log "Downloaded blog cover image: ${SLUG}.${EXT}"
+        break
+      fi
+    done
+    if [ "$FOUND_COVER" = "false" ]; then
+      rm -f "$TMPIMG"
+      log "WARNING: Blog cover not found on live site for $SLUG — continuing without image"
     fi
   else
     # Render via image-generator.js
