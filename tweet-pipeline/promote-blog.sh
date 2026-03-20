@@ -4,11 +4,8 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-REPO_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 ENV_FILE="/opt/blog-pipeline.env"
 PROMPTS_DIR="$SCRIPT_DIR/prompts"
-BLOG_DIR="$REPO_DIR/blog/src/content/blog"
-IMAGE_DIR="$REPO_DIR/blog/public/images"
 PROMOTED_FILE="$SCRIPT_DIR/.promoted-articles"
 LOG_DIR="/var/log/tweet-pipeline"
 mkdir -p "$LOG_DIR"
@@ -55,37 +52,42 @@ if [ -f "$ENV_FILE" ]; then
   set +a
 fi
 
-# Pull latest to get updated articles and images
-cd "$REPO_DIR"
-git fetch origin develop 2>&1 | tee -a "$LOG_FILE" || true
-git merge --ff-only FETCH_HEAD 2>&1 | tee -a "$LOG_FILE" || log "WARNING: git merge failed — using existing checkout"
-
 # Ensure we're in the right directory for Node.js imports
 cd "$SCRIPT_DIR"
 
 # Ensure promoted file exists
 touch "$PROMOTED_FILE"
 
-# Scan for published articles
+# Scan for published articles via GitHub API
 PROMOTED=0
-for ARTICLE in "$BLOG_DIR"/*.md; do
-  [ -f "$ARTICLE" ] || continue
+
+# List blog markdown files from GitHub
+BLOG_FILES=$(gh api repos/tryethernal/ethernal/contents/blog/src/content/blog \
+  --jq '[.[] | select(.name | endswith(".md")) | .name] | .[]' 2>/dev/null) || {
+  log "WARNING: Failed to list blog files from GitHub API"
+  BLOG_FILES=""
+}
+
+for FILENAME in $BLOG_FILES; do
+  # Fetch file content from GitHub API
+  ARTICLE_CONTENT=$(gh api "repos/tryethernal/ethernal/contents/blog/src/content/blog/${FILENAME}" \
+    --jq '.content' 2>/dev/null | tr -d '\n' | base64 -d 2>/dev/null) || continue
 
   # Check status: published
-  STATUS=$(grep '^status:' "$ARTICLE" | head -1 | sed 's/^status: *//')
+  STATUS=$(echo "$ARTICLE_CONTENT" | grep '^status:' | head -1 | sed 's/^status: *//')
   if [ "$STATUS" != "published" ]; then
     continue
   fi
 
   # Extract slug
-  SLUG=$(basename "$ARTICLE" .md)
+  SLUG="${FILENAME%.md}"
 
   # Skip if already promoted
   if grep -qF "$SLUG" "$PROMOTED_FILE" 2>/dev/null; then
     continue
   fi
 
-  # Skip if article is not live yet (SPA returns 200 for all paths, so check page title)
+  # Skip if article is not live yet
   PAGE_TITLE=$(curl -sf "https://tryethernal.com/blog/${SLUG}" 2>/dev/null | grep -o '<title>[^<]*</title>' || true)
   if [ -z "$PAGE_TITLE" ] || echo "$PAGE_TITLE" | grep -q '^<title>On-Chain Engineering | On-Chain Engineering</title>$'; then
     log "Skipping $SLUG — not live at tryethernal.com yet"
@@ -93,8 +95,8 @@ for ARTICLE in "$BLOG_DIR"/*.md; do
   fi
 
   # Extract frontmatter fields
-  TITLE=$(grep '^title:' "$ARTICLE" | head -1 | sed 's/^title: *"//;s/"$//')
-  DESCRIPTION=$(grep '^description:' "$ARTICLE" | head -1 | sed 's/^description: *"//;s/"$//')
+  TITLE=$(echo "$ARTICLE_CONTENT" | grep '^title:' | head -1 | sed 's/^title: *"//;s/"$//')
+  DESCRIPTION=$(echo "$ARTICLE_CONTENT" | grep '^description:' | head -1 | sed 's/^description: *"//;s/"$//')
 
   log "Promoting: $TITLE ($SLUG)"
 
@@ -129,14 +131,18 @@ full article →"
   TWEET_TEXT="${HOOK}
 ${BLOG_URL}"
 
-  # Upload cover image if available (check .png, .webp, .jpg)
+  # Download cover image from live site
   COVER_IMAGE=""
-  for EXT in png webp jpg; do
-    if [ -f "$IMAGE_DIR/${SLUG}.${EXT}" ]; then
-      COVER_IMAGE="$IMAGE_DIR/${SLUG}.${EXT}"
+  TMPIMG=$(mktemp /tmp/promo-cover-XXXXXX)
+  for EXT in webp png jpg; do
+    if curl -sf "https://tryethernal.com/blog/images/${SLUG}.${EXT}" -o "$TMPIMG"; then
+      COVER_IMAGE="$TMPIMG"
       break
     fi
   done
+  if [ -z "$COVER_IMAGE" ]; then
+    rm -f "$TMPIMG"
+  fi
 
   MEDIA_ID=""
   if [ -n "$COVER_IMAGE" ]; then
@@ -195,6 +201,9 @@ ${BLOG_URL}"
           properties: { tweetId: $tweetId, slug: $slug }
         }')" > /dev/null 2>&1 || true
   fi
+
+  # Clean up temp cover image
+  [ -n "$COVER_IMAGE" ] && rm -f "$COVER_IMAGE"
 
   PROMOTED=$((PROMOTED + 1))
 done
