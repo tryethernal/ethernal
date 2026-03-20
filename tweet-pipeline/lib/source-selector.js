@@ -5,13 +5,59 @@
  */
 
 import { execSync } from 'node:child_process';
-import { readFileSync, readdirSync } from 'node:fs';
-import { join, resolve, dirname } from 'node:path';
+import { readFileSync, statSync, writeFileSync } from 'node:fs';
+import { join, dirname } from 'node:path';
+import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const REPO_ROOT = resolve(__dirname, '..', '..');
-const BLOG_DIR = join(REPO_ROOT, 'blog', 'src', 'content', 'blog');
+const BLOG_CACHE_FILE = join(tmpdir(), 'tweet-pipeline-blog-cache.json');
+const BLOG_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+
+/**
+ * Fetches published blog articles from GitHub API with temp file caching.
+ * Lists .md files in the blog content directory, fetches each file's content,
+ * and parses frontmatter. Results are cached for 5 minutes to avoid repeated
+ * API calls across multiple node invocations within a single draft.sh run.
+ * @returns {Array<{title: string, description: string, slug: string, date: Date, tags: string[]}>}
+ */
+function fetchBlogFilesFromGitHub() {
+    // Check cache first
+    try {
+        const stat = statSync(BLOG_CACHE_FILE);
+        if (Date.now() - stat.mtimeMs < BLOG_CACHE_TTL_MS) {
+            const cached = JSON.parse(readFileSync(BLOG_CACHE_FILE, 'utf-8'));
+            // Restore Date objects from JSON serialization
+            return cached.map(a => ({ ...a, date: new Date(a.date) }));
+        }
+    } catch { /* no cache or expired */ }
+
+    try {
+        const listing = execSync(
+            'gh api repos/tryethernal/ethernal/contents/blog/src/content/blog' +
+            " --jq '[.[] | select(.name | endswith(\".md\")) | .name]'",
+            { encoding: 'utf-8', timeout: 15000 }
+        );
+        const filenames = JSON.parse(listing);
+        const articles = [];
+
+        for (const filename of filenames) {
+            const content = execSync(
+                `gh api repos/tryethernal/ethernal/contents/blog/src/content/blog/${filename}` +
+                ` --jq '.content' | tr -d '\\n' | base64 -d`,
+                { encoding: 'utf-8', timeout: 10000 }
+            );
+            const parsed = parseArticleFrontmatter(content, filename);
+            if (parsed) articles.push(parsed);
+        }
+
+        // Write cache
+        writeFileSync(BLOG_CACHE_FILE, JSON.stringify(articles));
+        return articles;
+    } catch {
+        return [];
+    }
+}
 
 /**
  * Static list of Ethernal product feature tips for the "Product tip" bucket.
@@ -230,19 +276,10 @@ export function isSemanticallyDuplicate(candidateTitle, recentHooks, blogTitles,
  */
 export function fetchPublishedBlogTitles(days = 60) {
     try {
-        const files = readdirSync(BLOG_DIR).filter(f => f.endsWith('.md'));
         const cutoff = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
-        const titles = [];
-
-        for (const file of files) {
-            const content = readFileSync(join(BLOG_DIR, file), 'utf-8');
-            const parsed = parseArticleFrontmatter(content, file);
-            if (!parsed) continue;
-            if (parsed.date < cutoff) continue;
-            titles.push(parsed.title);
-        }
-
-        return titles;
+        return fetchBlogFilesFromGitHub()
+            .filter(a => a.date >= cutoff)
+            .map(a => a.title);
     } catch {
         return [];
     }
@@ -302,25 +339,14 @@ function fetchTrendItems() {
 }
 
 /**
- * Reads published blog articles from the content directory.
+ * Reads published blog articles, excluding those published in the last 48h
+ * (promo tweet covers them). Uses GitHub API instead of local filesystem.
  * @returns {Array<{title: string, description: string, slug: string, date: Date, tags: string[]}>}
  */
 function fetchBlogArticles() {
     try {
-        const files = readdirSync(BLOG_DIR).filter(f => f.endsWith('.md'));
-        const articles = [];
         const cutoff = new Date(Date.now() - 48 * 60 * 60 * 1000);
-
-        for (const file of files) {
-            const content = readFileSync(join(BLOG_DIR, file), 'utf-8');
-            const parsed = parseArticleFrontmatter(content, file);
-            if (!parsed) continue;
-            // Skip articles published in last 48h (promo tweet covers them)
-            if (parsed.date > cutoff) continue;
-            articles.push(parsed);
-        }
-
-        return articles;
+        return fetchBlogFilesFromGitHub().filter(a => a.date <= cutoff);
     } catch {
         return [];
     }

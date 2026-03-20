@@ -114,9 +114,9 @@ Body.`;
         });
 
         it('returns a blog source when sourceType is blog', () => {
-            // This reads actual files from disk; just verify it returns something
+            // Uses GitHub API (falls back to feature tips without gh auth)
             const result = selectSource('blog', []);
-            // May return a blog article or fall back to features
+            // Returns a blog article or falls back to features
             assert.ok(result !== null);
             assert.ok(typeof result.title === 'string');
         });
