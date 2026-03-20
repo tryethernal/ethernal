@@ -144,6 +144,7 @@ function open() {
     contact.value = '';
     message.value = '';
     errorMsg.value = '';
+    if (window.posthog) window.posthog.capture('landing:enterprise_contact_open');
 }
 
 function close() {
@@ -169,6 +170,7 @@ async function submit() {
             throw new Error(text || 'Failed to send message.');
         }
         sent.value = true;
+        if (window.posthog) window.posthog.capture('landing:enterprise_contact_submit');
     } catch (error) {
         errorMsg.value = error.message || 'Failed to send message. Please try again.';
     } finally {

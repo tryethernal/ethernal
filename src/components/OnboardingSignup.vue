@@ -133,6 +133,7 @@ async function submit() {
         emit('signup-complete', data);
     } catch (error) {
         errorMsg.value = error.response?.data || error.message || 'Something went wrong. Please try again.';
+        if (window.posthog) window.posthog.capture('onboarding:signup_error', { error: errorMsg.value, path: props.path });
     } finally {
         loading.value = false;
     }

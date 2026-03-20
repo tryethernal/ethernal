@@ -483,6 +483,10 @@ const authError = ref('');
 const authSuccess = ref('');
 const resetPasswordToken = ref(null);
 
+function track(event, props = {}) {
+    if (window.posthog) window.posthog.capture(event, props);
+}
+
 const explorerUrl = computed(() => {
     if (!createdExplorer.value) return '';
     const slug = createdExplorer.value.slug || createdExplorer.value.name?.toLowerCase().replace(/[^a-z0-9]/g, '-');
@@ -564,6 +568,7 @@ onMounted(() => {
     }
 
     view.value = 'signin';
+    track('auth:page_view', { view: 'signin' });
 });
 
 function switchAuthMode(mode) {
@@ -576,6 +581,7 @@ function switchAuthMode(mode) {
 
 function switchToWizard() {
     view.value = 'wizard';
+    track('onboarding:flow_started', { source: 'signin_page', default_path: selectedPath.value });
 }
 
 function switchToSignin() {
@@ -583,6 +589,7 @@ function switchToSignin() {
     authMode.value = 'signin';
     authError.value = '';
     authSuccess.value = '';
+    track('onboarding:signin_link_click', { from_step: currentStep.value });
 }
 
 async function authSignIn() {
@@ -590,11 +597,13 @@ async function authSignIn() {
     authError.value = '';
     try {
         const { data: { user, token } } = await $server.signIn(authEmail.value, authPassword.value);
+        track('auth:signin_success');
         localStorage.setItem('apiToken', token);
         userStore.updateUser({ ...user, apiToken: token });
         window.location.assign(`/overview${route.query.explorerToken ? '?explorerToken=' + route.query.explorerToken : ''}`);
     } catch (error) {
         authError.value = error.response?.data || 'Error while signing in. Please retry.';
+        track('auth:signin_error', { error: authError.value });
         authLoading.value = false;
     }
 }
@@ -655,6 +664,7 @@ function onWorkspaceInfoReady(data) {
 }
 
 function onSignupComplete(data) {
+    track('onboarding:signup_success', { path: selectedPath.value, has_explorer: !!data.explorer });
     if (data.token) {
         localStorage.setItem('apiToken', data.token);
     }
@@ -785,6 +795,7 @@ async function pollBlockNumber() {
 }
 
 watch(currentStep, (step) => {
+    track('onboarding:step_viewed', { step, path: selectedPath.value });
     if (step === 3 && selectedPath.value === 'public') {
         pollBlockNumber();
         blockPollInterval = setInterval(pollBlockNumber, 5000);
@@ -796,6 +807,7 @@ onBeforeUnmount(() => {
 });
 
 function goToDashboard() {
+    track('onboarding:complete', { path: selectedPath.value, has_explorer: !!createdExplorer.value });
     sessionStorage.removeItem('onboardingContext');
     window.location.assign(createdExplorer.value?.id ? `/explorers/${createdExplorer.value.id}` : '/overview');
 }

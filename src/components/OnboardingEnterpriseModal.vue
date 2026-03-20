@@ -154,6 +154,7 @@ function open() {
     contact.value = '';
     message.value = '';
     errorMsg.value = '';
+    if (window.posthog) window.posthog.capture('onboarding:enterprise_contact_open');
 }
 
 function close() {
@@ -174,6 +175,7 @@ async function submit() {
             email: props.email
         });
         sent.value = true;
+        if (window.posthog) window.posthog.capture('onboarding:enterprise_contact_submit');
     } catch (error) {
         errorMsg.value = error.response?.data || 'Failed to send message. Please try again.';
     } finally {
