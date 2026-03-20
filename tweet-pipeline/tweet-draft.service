@@ -5,8 +5,6 @@ Wants=network-online.target
 
 [Service]
 Type=oneshot
-User=blog
-Group=blog
 ExecStart=/opt/tweet-pipeline/draft.sh
 WorkingDirectory=/opt/tweet-pipeline
 EnvironmentFile=/opt/blog-pipeline.env
