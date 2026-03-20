@@ -265,7 +265,7 @@ export function isSemanticallyDuplicate(candidateTitle, recentHooks, blogTitles,
         const candidateRatio = overlap / candidateKeys.size;
         const refRatio = overlap / refKeys.size;
         const ratio = Math.max(candidateRatio, refRatio);
-        if (overlap >= 2 && ratio > 0.2) return true;
+        if (overlap >= 2 && ratio > 0.3) return true;
     }
 
     return false;
