@@ -19,7 +19,7 @@
                         <router-link to="/pricing" class="footer-link">Pricing</router-link>
                         <router-link to="/transaction-tracing" class="footer-link">Transaction Tracing</router-link>
                         <a href="https://doc.tryethernal.com" target="_blank" rel="noopener noreferrer" class="footer-link">Docs</a>
-                        <a :href="`${appUrl}/auth`" class="footer-link">Sign in</a>
+                        <a href="/auth" class="footer-link">Sign in</a>
                     </div>
                 </v-col>
 
@@ -124,7 +124,6 @@
 </template>
 
 <script setup>
-const appUrl = import.meta.env.VITE_APP_FRONTEND_URL;
 </script>
 
 <style scoped>

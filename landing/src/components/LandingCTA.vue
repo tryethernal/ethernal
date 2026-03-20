@@ -44,7 +44,7 @@ const props = defineProps({
 });
 
 const ctaUrl = computed(() => {
-    let url = `${import.meta.env.VITE_APP_FRONTEND_URL}/auth?flow=${props.flow}`;
+    let url = `/auth?flow=${props.flow}`;
     if (props.chain) url += `&chain=${props.chain}`;
     return url;
 });

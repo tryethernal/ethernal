@@ -58,8 +58,6 @@
 <script setup>
 import PricingCard from './PricingCard.vue';
 
-const appUrl = import.meta.env.VITE_APP_FRONTEND_URL;
-
 defineProps({
     full: { type: Boolean, default: false }
 });
@@ -77,7 +75,7 @@ const publicPlans = [
             'Ethernal branding'
         ],
         ctaText: 'Start Free',
-        ctaUrl: `${appUrl}/auth?flow=public&plan=free`
+        ctaUrl: `/auth?flow=public&plan=free`
     },
     {
         name: 'Team',
@@ -94,7 +92,7 @@ const publicPlans = [
             '7-day free trial'
         ],
         ctaText: 'Start Trial',
-        ctaUrl: `${appUrl}/auth?flow=public&plan=explorer-150`
+        ctaUrl: `/auth?flow=public&plan=explorer-150`
     },
     {
         name: 'App Chain',
@@ -110,7 +108,7 @@ const publicPlans = [
             '7-day free trial'
         ],
         ctaText: 'Start Trial',
-        ctaUrl: `${appUrl}/auth?flow=public&plan=explorer-500`
+        ctaUrl: `/auth?flow=public&plan=explorer-500`
     },
     {
         name: 'Enterprise',
@@ -142,7 +140,7 @@ const privatePlans = [
             'Analytics'
         ],
         ctaText: 'Start Free',
-        ctaUrl: `${appUrl}/auth?flow=private`
+        ctaUrl: `/auth?flow=private`
     },
     {
         name: 'Pro',
@@ -153,7 +151,7 @@ const privatePlans = [
             'Unlimited workspaces'
         ],
         ctaText: 'Get Pro',
-        ctaUrl: `${appUrl}/auth?flow=private&plan=pro`
+        ctaUrl: `/auth?flow=private&plan=pro`
     }
 ];
 </script>
