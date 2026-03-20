@@ -209,7 +209,7 @@ const contactRateLimit = rateLimit({
 });
 
 router.post('/contact', contactRateLimit, async (req, res, next) => {
-    const { contact, message, explorerName, rpcServer, email } = req.body;
+    const { contact, message, explorerName, rpcServer, email, source } = req.body;
 
     try {
         if (!contact || !message)
@@ -230,8 +230,11 @@ router.post('/contact', contactRateLimit, async (req, res, next) => {
         // Escape HTML to prevent XSS in email body
         const esc = (str) => (str || 'N/A').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
+        const isContact = source === 'contact';
+        const subjectLabel = isContact ? 'Contact Form Message' : 'Enterprise Inquiry';
+
         const htmlBody = `
-            <h2>Enterprise Inquiry</h2>
+            <h2>${subjectLabel}</h2>
             <p><strong>Point of contact:</strong> ${esc(contact)}</p>
             <p><strong>Message:</strong></p>
             <p>${esc(message).replace(/\n/g, '<br>')}</p>
@@ -248,9 +251,9 @@ router.post('/contact', contactRateLimit, async (req, res, next) => {
             Messages: [{
                 From: { Email: senderEmail, Name: senderName },
                 To: [{ Email: getEnterpriseContactEmail() }],
-                Subject: `Enterprise inquiry from ${contact}`,
+                Subject: `${subjectLabel} from ${contact}`,
                 HTMLPart: htmlBody,
-                CustomID: `enterprise-contact-${Date.now()}`
+                CustomID: `${isContact ? 'contact' : 'enterprise-contact'}-${Date.now()}`
             }]
         });
 
