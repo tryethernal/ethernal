@@ -6,7 +6,6 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ENV_FILE="/opt/blog-pipeline.env"
 PROMPTS_DIR="$SCRIPT_DIR/prompts"
-PROMOTED_FILE="$SCRIPT_DIR/.promoted-articles"
 LOG_DIR="/var/log/tweet-pipeline"
 mkdir -p "$LOG_DIR"
 LOG_FILE="${PROMOTE_LOG_FILE:-$LOG_DIR/promote-$(date +%Y%m%d-%H%M%S).log}"
@@ -55,9 +54,6 @@ fi
 # Ensure we're in the right directory for Node.js imports
 cd "$SCRIPT_DIR"
 
-# Ensure promoted file exists
-touch "$PROMOTED_FILE"
-
 # Scan for published articles via GitHub API
 PROMOTED=0
 
@@ -84,7 +80,7 @@ while IFS= read -r FILENAME; do
   SLUG="${FILENAME%.md}"
 
   # Skip if already promoted
-  if grep -qF "$SLUG" "$PROMOTED_FILE" 2>/dev/null; then
+  if node lib/cli/is-promoted.js "$SLUG" 2>/dev/null; then
     continue
   fi
 
@@ -182,10 +178,7 @@ ${BLOG_URL}"
   log "Posted promo tweet: $TWEET_ID"
 
   # Record as promoted
-  echo "$SLUG" >> "$PROMOTED_FILE"
-
-  # Keep promoted file bounded
-  tail -200 "$PROMOTED_FILE" > "${PROMOTED_FILE}.tmp" && mv "${PROMOTED_FILE}.tmp" "$PROMOTED_FILE"
+  node lib/cli/mark-promoted.js "$SLUG"
 
   # Send PostHog event
   if [ -n "${POSTHOG_API_KEY:-}" ] && [ -n "$TWEET_ID" ]; then

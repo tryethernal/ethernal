@@ -105,36 +105,20 @@ fi
 log "Selecting source for slot $SLOT..."
 
 # Check for newsletter source (slot 3 override)
-NEWSLETTER_FILE="$SCRIPT_DIR/.newsletter-source.json"
 SKIP_NORMAL_SOURCE=false
-if [ "$SLOT" = "3" ] && [ -f "$NEWSLETTER_FILE" ]; then
-  # Verify not stale (< 24h old)
-  NL_CREATED=$(jq -r '.created_at // empty' "$NEWSLETTER_FILE" 2>/dev/null)
-  NL_STALE=false
-  if [ -n "$NL_CREATED" ]; then
-    NL_EPOCH=$(date -d "$NL_CREATED" +%s 2>/dev/null || echo "0")
-    NOW_EPOCH=$(date +%s)
-    [ $(( NOW_EPOCH - NL_EPOCH )) -gt 86400 ] && NL_STALE=true
-  fi
-
-  if [ "$NL_STALE" = "false" ]; then
+if [ "$SLOT" = "3" ]; then
+  NL_JSON=$(node lib/cli/get-newsletter-source.js 2>/dev/null) && SKIP_NORMAL_SOURCE=true || true
+  if [ "$SKIP_NORMAL_SOURCE" = "true" ]; then
     log "Using newsletter source for slot 3"
-
-    # Build .source.json matching expected schema (pass via env to avoid shell injection)
-    NL_JSON=$(cat "$NEWSLETTER_FILE") NL_JSON="$NL_JSON" node --input-type=module -e "
+    # Build .source.json from newsletter data
+    NL_JSON="$NL_JSON" node --input-type=module -e "
       import { getScheduledTime } from './config.js';
       import { writeFileSync } from 'node:fs';
-
       const nl = JSON.parse(process.env.NL_JSON);
       const scheduledAt = getScheduledTime(new Date(), 15);
       const result = {
         sourceId: 'newsletter: ' + nl.title,
-        source: {
-          type: 'newsletter',
-          title: nl.title,
-          content: nl.content,
-          url: nl.source_url || '',
-        },
+        source: { type: 'newsletter', title: nl.title, content: nl.content, url: nl.source_url || '' },
         bucket: 'Newsletter story',
         slot: 3,
         scheduledAt: scheduledAt.toISOString(),
@@ -142,25 +126,20 @@ if [ "$SLOT" = "3" ] && [ -f "$NEWSLETTER_FILE" ]; then
       writeFileSync('.source.json', JSON.stringify(result, null, 2));
       console.log('Selected: ' + result.source.title + ' (bucket: Newsletter story)');
     " 2>&1 | tee -a "$LOG_FILE"
-
-    rm -f "$NEWSLETTER_FILE"
-    log "Newsletter source consumed and deleted."
-
     if [ -f .source.json ]; then
-      SKIP_NORMAL_SOURCE=true
+      # Consume only after confirming .source.json was written
+      node --input-type=module -e "import { getDb } from './lib/db.js'; getDb().consumeNewsletterSource();"
+      log "Newsletter source consumed."
+    else
+      SKIP_NORMAL_SOURCE=false
+      log "WARNING: .source.json not created — retaining newsletter source for next run"
     fi
-  else
-    log "Newsletter source is stale (> 24h) — falling back to product tips"
-    rm -f "$NEWSLETTER_FILE"
   fi
 fi
 
 if [ "$SKIP_NORMAL_SOURCE" != "true" ]; then
 # Collect recent sourceIds from queue dir (last 30 days)
-RECENT_IDS=$(find "$QUEUE_DIR" -name 'tweet-*.json' -mtime -30 -exec cat {} + 2>/dev/null \
-  | jq -r '.sourceId // empty' 2>/dev/null \
-  | jq -R -s 'split("\n") | map(select(. != ""))' 2>/dev/null \
-  || echo '[]')
+RECENT_IDS=$(node lib/cli/recent-source-ids.js 30)
 
 SLOT="$SLOT" RECENT_IDS="$RECENT_IDS" node --input-type=module -e "
   import { BUCKETS, getScheduledTime } from './config.js';
@@ -192,16 +171,9 @@ fi
 # Semantic dedup — skip topics already covered by recent tweets or blog posts
 # ============================================================
 if [ -f .source.json ]; then
-  PROMOTED_FILE="$SCRIPT_DIR/.promoted-articles"
-  PROMOTED_SLUGS="[]"
-  if [ -f "$PROMOTED_FILE" ]; then
-    PROMOTED_SLUGS=$(cat "$PROMOTED_FILE" | jq -R -s 'split("\n") | map(select(. != ""))' 2>/dev/null || echo '[]')
-  fi
+  PROMOTED_SLUGS=$(node lib/cli/promoted-slugs.js)
 
-  RECENT_HOOKS=$(find "$QUEUE_DIR" -name 'tweet-*.json' -mtime -30 -exec cat {} + 2>/dev/null \
-    | jq -r '.hook // empty' 2>/dev/null \
-    | jq -R -s 'split("\n") | map(select(. != ""))' 2>/dev/null \
-    || echo '[]')
+  RECENT_HOOKS=$(node lib/cli/recent-hooks.js 30)
 
   SOURCE_TITLE=$(jq -r '.source.title // .sourceId' .source.json)
 
@@ -326,10 +298,7 @@ log "Phase 3 complete."
 # ============================================================
 DRAFT_HOOK=$(jq -r '.hook // empty' .draft.json 2>/dev/null)
 if [ -n "$DRAFT_HOOK" ]; then
-  RECENT_HOOKS_POST=$(find "$QUEUE_DIR" -name 'tweet-*.json' -mtime -30 -exec cat {} + 2>/dev/null \
-    | jq -r '.hook // empty' 2>/dev/null \
-    | jq -R -s 'split("\n") | map(select(. != ""))' 2>/dev/null \
-    || echo '[]')
+  RECENT_HOOKS_POST=$(node lib/cli/recent-hooks.js 30)
 
   POST_DUP=$(DRAFT_HOOK="$DRAFT_HOOK" RECENT_HOOKS_POST="$RECENT_HOOKS_POST" node --input-type=module -e "
     import { isSemanticallyDuplicate, fetchPublishedBlogTitles } from './lib/source-selector.js';
@@ -412,9 +381,7 @@ BUCKET=$(echo "$SOURCE_JSON" | jq -r '.bucket')
 SOURCE_ID=$(echo "$SOURCE_JSON" | jq -r '.sourceId')
 SCHEDULED_AT=$(echo "$SOURCE_JSON" | jq -r '.scheduledAt')
 
-QUEUE_FILE="$QUEUE_DIR/tweet-$(date +%Y%m%d-%H%M%S)-slot${SLOT}.json"
-
-jq -n \
+TWEET_ID=$(jq -n \
   --arg hook "$HOOK" \
   --argjson thread "$THREAD" \
   --argjson imageSpec "$IMAGE_SPEC_FIELD" \
@@ -422,21 +389,13 @@ jq -n \
   --arg bucket "$BUCKET" \
   --arg sourceId "$SOURCE_ID" \
   --arg scheduledAt "$SCHEDULED_AT" \
-  --arg createdAt "$(date -Iseconds)" \
+  --argjson slot "$SLOT" \
   '{
-    hook: $hook,
-    thread: $thread,
-    imageSpec: $imageSpec,
-    imagePath: $imagePath,
-    bucket: $bucket,
-    sourceId: $sourceId,
-    scheduledAt: $scheduledAt,
-    createdAt: $createdAt,
-    posted: false,
-    tweetIds: []
-  }' > "$QUEUE_FILE"
+    hook: $hook, thread: $thread, imageSpec: $imageSpec, imagePath: $imagePath,
+    bucket: $bucket, sourceId: $sourceId, scheduledAt: $scheduledAt, slot: $slot
+  }' | node lib/cli/queue-tweet.js)
 
-log "Tweet queued: $QUEUE_FILE"
+log "Tweet queued: id=$(echo "$TWEET_ID" | jq -r '.id')"
 
 # ============================================================
 # Clean up temp files

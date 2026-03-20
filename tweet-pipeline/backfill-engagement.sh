@@ -5,26 +5,15 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ENV_FILE="/opt/blog-pipeline.env"
-QUEUE_DIR="${TWEET_QUEUE_DIR:-/home/blog/tweet-queue}"
 
 if [ -f "$ENV_FILE" ]; then
   set -a; source "$ENV_FILE"; set +a
-  QUEUE_DIR="${TWEET_QUEUE_DIR:-/home/blog/tweet-queue}"
 fi
 
 cd "$SCRIPT_DIR"
 
-# Collect ALL posted tweet IDs (no date filter)
-TWEET_IDS=""
-for f in "$QUEUE_DIR"/tweet-*.json; do
-  [ -f "$f" ] || continue
-  POSTED=$(jq -r '.posted' "$f")
-  [ "$POSTED" = "true" ] || continue
-  IDS=$(jq -r '.tweetIds[]' "$f" 2>/dev/null)
-  for id in $IDS; do
-    TWEET_IDS="${TWEET_IDS:+$TWEET_IDS,}$id"
-  done
-done
+# Collect ALL posted tweet IDs (no date filter — 10 years covers everything)
+TWEET_IDS=$(node lib/cli/get-tweet-ids.js 3650)
 
 if [ -z "$TWEET_IDS" ]; then
   echo "No posted tweets found."

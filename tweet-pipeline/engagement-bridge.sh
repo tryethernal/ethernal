@@ -5,7 +5,6 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ENV_FILE="/opt/blog-pipeline.env"
-QUEUE_DIR="${TWEET_QUEUE_DIR:-/home/blog/tweet-queue}"
 LOG_DIR="/var/log/tweet-pipeline"
 
 mkdir -p "$LOG_DIR"
@@ -16,28 +15,12 @@ log() { echo "[$(date -Iseconds)] $*" | tee -a "$LOG_FILE"; }
 # Load environment
 if [ -f "$ENV_FILE" ]; then
   set -a; source "$ENV_FILE"; set +a
-  QUEUE_DIR="${TWEET_QUEUE_DIR:-/home/blog/tweet-queue}"
 fi
 
 cd "$SCRIPT_DIR"
 
 # Collect tweet IDs from last 7 days (engagement settles after ~7 days)
-CUTOFF=$(date -u -d "7 days ago" +%Y-%m-%dT%H:%M:%S 2>/dev/null || date -u -v-7d +%Y-%m-%dT%H:%M:%S)
-
-TWEET_IDS=""
-for f in "$QUEUE_DIR"/tweet-*.json; do
-  [ -f "$f" ] || continue
-  POSTED=$(jq -r '.posted' "$f")
-  [ "$POSTED" = "true" ] || continue
-  POSTED_AT=$(jq -r '.postedAt // ""' "$f")
-  [ -n "$POSTED_AT" ] || continue
-  if [[ "$POSTED_AT" > "$CUTOFF" ]]; then
-    IDS=$(jq -r '.tweetIds[]' "$f" 2>/dev/null)
-    for id in $IDS; do
-      TWEET_IDS="${TWEET_IDS:+$TWEET_IDS,}$id"
-    done
-  fi
-done
+TWEET_IDS=$(node lib/cli/get-tweet-ids.js 7)
 
 if [ -z "$TWEET_IDS" ]; then
   log "No tweets to check engagement for."
