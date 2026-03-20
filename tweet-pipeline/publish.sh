@@ -96,8 +96,9 @@ else
       const tweetIds = await client.postThread(thread, mediaId);
       console.log(JSON.stringify({ tweetIds }));
     " 2>&1); then
-      TWEET_IDS=$(echo "$RESULT" | grep -o '{"tweetIds":\[.*\]}' || true)
-      if [ -z "$TWEET_IDS" ]; then
+      TWEET_IDS_RAW=$(echo "$RESULT" | grep -o '{"tweetIds":\[.*\]}' || true)
+      TWEET_IDS=$(echo "$TWEET_IDS_RAW" | jq -c '.tweetIds' 2>/dev/null || true)
+      if [ -z "$TWEET_IDS" ] || [ "$TWEET_IDS" = "null" ]; then
         log "ERROR: Could not extract tweetIds. Marking error."
         node --input-type=module -e "
           import { getDb } from './lib/db.js';
@@ -111,7 +112,7 @@ else
 
       # PostHog event
       if [ -n "${POSTHOG_API_KEY:-}" ]; then
-        FIRST_TWEET_ID=$(echo "$TWEET_IDS" | jq -r '.tweetIds[0]')
+        FIRST_TWEET_ID=$(echo "$TWEET_IDS" | jq -r '.[0]')
         BUCKET=$(echo "$TWEET" | jq -r '.bucket')
         SOURCE_ID=$(echo "$TWEET" | jq -r '.source_id')
         THREAD_JSON=$(echo "$TWEET" | jq -r '.thread')
