@@ -135,6 +135,8 @@ Always use `IF NOT EXISTS`/`IF EXISTS` for re-runnability. For tables < 1M rows,
 - Use `withTimeout(promise, ms)` from `run/lib/utils` instead of inline `Promise.race` timeout patterns
 - Pin GitHub Actions to commit SHAs (not mutable tags) when secrets are in scope
 - **CRITICAL: Never hardcode API keys, tokens, passwords, or credentials in ANY file that could be committed** — this includes plan files (`docs/`), scripts, YAML, CLAUDE.md, shell commands, and code. Even files in `.gitignore` can be force-added accidentally. Always reference credentials by variable name only (e.g. "see `.credentials.local`" or "see memory file `infra-monitoring.md`"). Store actual values ONLY in `.credentials.local` (gitignored) or memory files (outside the repo). **This repo is PUBLIC — any committed credential requires immediate rotation.**
+- **Never use absolute URLs for internal links** in landing, blog, or app code. Use relative paths (`/auth?flow=public`, `/blog`, `/pricing`) so links work across environments (local dev, staging, production). The only exception is when linking between different apps that run on separate domains/ports in dev (use `VITE_APP_FRONTEND_URL` env var in the landing app for links to the app frontend).
+- **Blog footer must match landing footer** (`landing/src/components/LandingFooter.vue`). When adding links, columns, or changing structure in the landing footer, mirror the changes in the blog footer (`blog/src/components/Footer.astro`).
 
 ## Documentation Requirements
 
