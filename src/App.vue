@@ -137,10 +137,19 @@ function setupPrivateExplorer() {
             }
             else if (explorerToken.value)
                 migrateExplorer();
-            else
-                data.currentWorkspace ?
-                    initWorkspace({ ...data.currentWorkspace, firebaseUserId: data.firebaseUserId }) :
-                    launchOnboarding();
+            else if (data.currentWorkspace)
+                initWorkspace({ ...data.currentWorkspace, firebaseUserId: data.firebaseUserId });
+            else {
+                // Logged in but no workspace — let them create one
+                userStore.updateUser({ onboarded: false, firebaseUserId: data.firebaseUserId });
+                isOverlayActive.value = false;
+                routerComponent.value = 'router-view';
+                if (window.location.pathname === '/auth') {
+                    // Already on auth page, let OnboardingWizard handle it
+                } else {
+                    window.location.assign('/auth');
+                }
+            }
         })
         .catch((error) => {
             const redirectPath = authStateChanged(null);

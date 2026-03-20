@@ -250,11 +250,23 @@
                             :default-plan="context.plan || 'explorer-150'"
                             @plan-selected="onPlanSelected"
                         />
-                        <div v-else-if="currentStep === 3 && selectedPath === 'private'" class="text-center">
-                            <v-icon size="64" color="success" class="mb-4">mdi-check-circle</v-icon>
-                            <h2 class="text-h5 font-weight-bold mb-2">You're all set!</h2>
-                            <p class="wizard-subtitle mb-8">Your workspace is ready. Redirecting to the dashboard...</p>
-                            <v-progress-circular indeterminate color="primary" />
+                        <div v-else-if="currentStep === 3 && selectedPath === 'private'" class="private-success">
+                            <div class="private-success-icon">
+                                <v-icon size="28" color="#3D95CE">mdi-check</v-icon>
+                            </div>
+                            <h2 class="step-title" style="text-align: center;">You're all set!</h2>
+                            <p class="step-subtitle" style="text-align: center;">Your workspace is ready. Head to the dashboard to start exploring.</p>
+                            <v-btn
+                                color="#3D95CE"
+                                size="large"
+                                rounded="lg"
+                                block
+                                class="continue-btn"
+                                @click="goToDashboard"
+                            >
+                                Go to Dashboard
+                                <v-icon end>mdi-arrow-right</v-icon>
+                            </v-btn>
                         </div>
                     </v-slide-x-transition>
                 </div>
@@ -270,23 +282,23 @@
                     <div v-if="view === 'signin'" key="ctx-auth" class="wizard-context-content">
                         <div class="wizard-context-icon-row">
                             <div class="wizard-context-icon wizard-context-icon--primary">
-                                <v-icon size="28" color="white">mdi-cube-scan</v-icon>
+                                <v-icon size="28" color="white">mdi-view-dashboard-outline</v-icon>
                             </div>
                         </div>
-                        <h3 class="wizard-context-title">Your block explorer, ready in minutes</h3>
-                        <p class="wizard-context-desc">Deploy a fully-featured explorer for any EVM chain. Contract verification, token tracking, and real-time sync out of the box.</p>
+                        <h3 class="wizard-context-title">Welcome back to Ethernal</h3>
+                        <p class="wizard-context-desc">Pick up where you left off. Your explorers, workspaces, and settings are waiting for you.</p>
                         <div class="wizard-context-features">
                             <div class="wizard-context-feature">
                                 <v-icon size="16" color="#3D95CE">mdi-check-circle</v-icon>
-                                <span>Works with any EVM-compatible chain</span>
+                                <span>Manage your explorers and workspaces</span>
                             </div>
                             <div class="wizard-context-feature">
                                 <v-icon size="16" color="#3D95CE">mdi-check-circle</v-icon>
-                                <span>Custom domain and branding</span>
+                                <span>Monitor chain sync and analytics</span>
                             </div>
                             <div class="wizard-context-feature">
                                 <v-icon size="16" color="#3D95CE">mdi-check-circle</v-icon>
-                                <span>Free tier available, no credit card needed</span>
+                                <span>Update branding, domains, and billing</span>
                             </div>
                         </div>
                     </div>
@@ -450,7 +462,7 @@ const $server = inject('$server');
 const $pusher = inject('$pusher');
 
 const currentStep = ref(0);
-const selectedPath = ref('private');
+const selectedPath = ref('public');
 const setupData = ref({});
 const createdExplorer = ref(null);
 const context = ref({});
@@ -527,6 +539,12 @@ onMounted(() => {
         const flow = context.value.flow || route.query.flow || selectedPath.value;
         selectedPath.value = flow === 'public' ? 'public' : 'private';
 
+        // Logged in but no workspace — enter wizard so they can set one up
+        if (!currentWorkspaceStore.id) {
+            view.value = 'wizard';
+            return;
+        }
+
         redirectSignedInUser();
         return;
     }
@@ -569,9 +587,9 @@ async function authSignIn() {
     authLoading.value = true;
     authError.value = '';
     try {
-        const { data: { user } } = await $server.signIn(authEmail.value, authPassword.value);
-        userStore.updateUser(user);
-        localStorage.setItem('apiToken', user.apiToken);
+        const { data: { user, token } } = await $server.signIn(authEmail.value, authPassword.value);
+        localStorage.setItem('apiToken', token);
+        userStore.updateUser({ ...user, apiToken: token });
         window.location.assign(`/overview${route.query.explorerToken ? '?explorerToken=' + route.query.explorerToken : ''}`);
     } catch (error) {
         authError.value = error.response?.data || 'Error while signing in. Please retry.';
@@ -650,9 +668,6 @@ function onSignupComplete(data) {
         createdExplorer.value = data.explorer;
     }
     currentStep.value = 3;
-    if (selectedPath.value === 'private') {
-        setTimeout(() => goToDashboard(), 1500);
-    }
 }
 
 /**
@@ -780,11 +795,7 @@ onBeforeUnmount(() => {
 
 function goToDashboard() {
     sessionStorage.removeItem('onboardingContext');
-    if (createdExplorer.value?.id) {
-        window.location.assign(`/explorers/${createdExplorer.value.id}`);
-    } else {
-        window.location.assign('/overview');
-    }
+    window.location.assign(createdExplorer.value?.id ? `/explorers/${createdExplorer.value.id}` : '/overview');
 }
 </script>
 
@@ -1086,6 +1097,24 @@ function goToDashboard() {
     text-align: center;
 }
 
+.private-success {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 0;
+}
+
+.private-success-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    background: rgba(61, 149, 206, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
 .error-msg {
     display: flex;
     align-items: center;
@@ -1141,6 +1170,19 @@ function goToDashboard() {
     text-transform: none;
     font-weight: 600;
     letter-spacing: 0;
+}
+
+:deep(.v-field__input) {
+    color: #fff !important;
+}
+
+:deep(.v-field__input::placeholder) {
+    color: #64748b !important;
+    opacity: 1 !important;
+}
+
+:deep(.v-label) {
+    color: #64748b !important;
 }
 
 /* Mobile: hide context panel, full-width form */
