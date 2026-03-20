@@ -49,9 +49,9 @@
                 :class="highlighted ? 'btn-primary' : 'btn-outline'"
                 block
                 class="mt-6 pricing-cta"
-                :href="ctaUrl"
+                :href="isEnterprise ? undefined : ctaUrl"
                 rounded="xl"
-                @click="trackPricing"
+                @click="isEnterprise ? onEnterprise() : trackPricing()"
             >
                 {{ ctaText }}
             </v-btn>
@@ -60,6 +60,8 @@
 </template>
 
 <script setup>
+const emit = defineEmits(['enterprise-contact']);
+
 const props = defineProps({
     name: { type: String, required: true },
     price: { type: [Number, String], required: true },
@@ -71,8 +73,15 @@ const props = defineProps({
     ctaUrl: { type: String, default: `${__APP_URL__}/auth?flow=public` }
 });
 
+const isEnterprise = props.price === 'Custom';
+
 function trackPricing() {
     if (window.posthog) window.posthog.capture('landing:pricing_click', { plan_name: props.name, plan_price: String(props.price) });
+}
+
+function onEnterprise() {
+    trackPricing();
+    emit('enterprise-contact');
 }
 </script>
 

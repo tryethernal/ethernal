@@ -168,7 +168,7 @@ const plans = [
         quota: 'Unlimited transactions',
         features: [
             'Everything in App Chain',
-            'Multiple explorers',
+            'On-premise hosting',
             'Custom integrations',
             'Dedicated support'
         ]

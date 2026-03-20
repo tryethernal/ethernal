@@ -23,9 +23,11 @@
                     sm="6"
                     lg="3"
                 >
-                    <PricingCard v-bind="plan" />
+                    <PricingCard v-bind="plan" @enterprise-contact="enterpriseModal.open()" />
                 </v-col>
             </v-row>
+
+            <EnterpriseContactModal ref="enterpriseModal" />
 
             <!-- Private Explorers (full page only) -->
             <template v-if="full">
@@ -56,7 +58,11 @@
 </template>
 
 <script setup>
+import { ref } from 'vue';
 import PricingCard from './PricingCard.vue';
+import EnterpriseContactModal from './EnterpriseContactModal.vue';
+
+const enterpriseModal = ref(null);
 
 const appUrl = __APP_URL__;
 
@@ -119,12 +125,11 @@ const publicPlans = [
         quota: 'Unlimited transactions',
         features: [
             'Everything in App Chain',
-            'Multiple explorers',
+            'On-premise hosting',
             'Custom integrations',
             'Dedicated support'
         ],
-        ctaText: 'Contact Us',
-        ctaUrl: '/contact-us'
+        ctaText: 'Contact Us'
     }
 ];
 
