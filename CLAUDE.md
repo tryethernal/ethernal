@@ -240,7 +240,7 @@ SELECT name, slug, price, capabilities FROM stripe_plans WHERE public = true ORD
 
 **Partner/White-label plans** (not public): Quicknode, Buildbear, Magma, UZH — each with custom capabilities. Check DB for details.
 
-**Subscription statuses:** `trial` (no card, auto-cancels at end), `trial_with_card` (will convert to paid), `active` (paying or free-tier). Partner plans (Buildbear, Demo) are `active` with no `stripeId`. Only subscriptions with a `stripeId` represent real Stripe billing.
+**Subscription statuses:** `trial` (no card, auto-cancels at end), `trial_with_card` (will convert to paid), `active` (paying or free-tier). Partner plans (Buildbear, Demo) are `active` with no `stripeId`. Only subscriptions with a `stripeId` represent real Stripe billing. When querying plans, filter on `public = true` — non-public plans are custom partner plans set manually.
 
 ---
 
