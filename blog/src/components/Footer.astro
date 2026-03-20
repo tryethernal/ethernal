@@ -1,14 +1,16 @@
 ---
 /**
- * @fileoverview Blog footer matching the landing page multi-column layout.
+ * @fileoverview Blog footer — must match landing footer (LandingFooter.vue).
+ * When updating the landing footer, mirror changes here.
  * @component Footer
  */
 const year = new Date().getFullYear();
+const appUrl = import.meta.env.PUBLIC_APP_URL || 'https://app.tryethernal.com';
 ---
 <footer class="blog-footer">
   <div class="footer-container">
-    <div class="footer-grid">
-      <!-- Brand column -->
+    <!-- Row 1: Brand + Product/Integrations/Use Cases/Resources -->
+    <div class="footer-row-1">
       <div class="footer-brand">
         <a href="/" class="footer-logo">
           <span class="font-heading">Ethernal</span>
@@ -18,7 +20,6 @@ const year = new Date().getFullYear();
         </p>
       </div>
 
-      <!-- Product -->
       <div class="footer-col">
         <div class="footer-heading">Product</div>
         <div class="footer-link-list">
@@ -26,11 +27,10 @@ const year = new Date().getFullYear();
           <a href="/pricing" class="footer-link">Pricing</a>
           <a href="/transaction-tracing" class="footer-link">Transaction Tracing</a>
           <a href="https://doc.tryethernal.com" target="_blank" rel="noopener noreferrer" class="footer-link">Docs</a>
-          <a href={`${import.meta.env.PUBLIC_APP_URL || 'https://app.tryethernal.com'}/auth`} class="footer-link">Sign in</a>
+          <a href={`${appUrl}/auth`} class="footer-link">Sign In</a>
         </div>
       </div>
 
-      <!-- Integrations -->
       <div class="footer-col">
         <div class="footer-heading">Integrations</div>
         <div class="footer-link-list">
@@ -43,7 +43,6 @@ const year = new Date().getFullYear();
         </div>
       </div>
 
-      <!-- Use Cases -->
       <div class="footer-col">
         <div class="footer-heading">Use Cases</div>
         <div class="footer-link-list">
@@ -53,7 +52,6 @@ const year = new Date().getFullYear();
         </div>
       </div>
 
-      <!-- Resources -->
       <div class="footer-col">
         <div class="footer-heading">Resources</div>
         <div class="footer-link-list">
@@ -65,7 +63,53 @@ const year = new Date().getFullYear();
       </div>
     </div>
 
-    <!-- Bottom bar -->
+    <!-- Row 2: Frameworks + Chains -->
+    <div class="footer-row-2">
+      <div class="footer-row-2-spacer"></div>
+
+      <div class="footer-col">
+        <div class="footer-heading">Frameworks</div>
+        <div class="footer-link-list">
+          <a href="/op-stack" class="footer-link">OP Stack Chains</a>
+          <a href="/arbitrum-orbit" class="footer-link">Arbitrum Orbit Chains</a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <div class="footer-heading">Chains</div>
+        <div class="footer-link-list">
+          <a href="/chains/ethereum" class="footer-link">Ethereum</a>
+          <a href="/chains/bnb-chain" class="footer-link">BNB Chain</a>
+          <a href="/chains/polygon-pos" class="footer-link">Polygon PoS</a>
+          <a href="/chains/arbitrum-one" class="footer-link">Arbitrum One</a>
+          <a href="/chains/base" class="footer-link">Base</a>
+          <a href="/chains/optimism" class="footer-link">Optimism</a>
+          <a href="/chains/blast" class="footer-link">Blast</a>
+          <a href="/chains/mode" class="footer-link">Mode</a>
+          <a href="/chains/zora" class="footer-link">Zora</a>
+          <a href="/chains/arbitrum-nova" class="footer-link">Arbitrum Nova</a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <div class="footer-heading">&nbsp;</div>
+        <div class="footer-link-list">
+          <a href="/chains/lisk" class="footer-link">Lisk</a>
+          <a href="/chains/degen-chain" class="footer-link">Degen Chain</a>
+          <a href="/chains/xai" class="footer-link">Xai</a>
+          <a href="/chains/cyber" class="footer-link">Cyber</a>
+          <a href="/chains/redstone" class="footer-link">Redstone</a>
+          <a href="/chains/mint" class="footer-link">Mint</a>
+          <a href="/chains/proof-of-play-apex" class="footer-link">Proof of Play</a>
+          <a href="/chains/sepolia" class="footer-link">Sepolia</a>
+          <a href="/chains/holesky" class="footer-link">Holesky</a>
+          <a href="/chains/base-sepolia" class="footer-link">Base Sepolia</a>
+          <a href="/chains/arbitrum-sepolia" class="footer-link">Arbitrum Sepolia</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Copyright bar -->
     <div class="footer-divider"></div>
     <div class="footer-bottom">
       <span class="footer-copyright">&copy; {year} Ethernal. All rights reserved.</span>
@@ -91,10 +135,21 @@ const year = new Date().getFullYear();
     padding: 64px 32px 32px;
   }
 
-  .footer-grid {
+  .footer-row-1 {
     display: grid;
     grid-template-columns: 1.5fr 1fr 1fr 1fr 1.2fr;
     gap: 32px;
+  }
+
+  .footer-row-2 {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    gap: 32px;
+    margin-top: 40px;
+  }
+
+  .footer-row-2-spacer {
+    display: none;
   }
 
   .footer-brand {
@@ -184,13 +239,32 @@ const year = new Date().getFullYear();
     color: var(--text-secondary);
   }
 
+  /* Responsive */
+  @media (min-width: 769px) {
+    .footer-row-2 {
+      grid-template-columns: 1.5fr 1fr 1fr 1fr 1.2fr;
+    }
+
+    .footer-row-2-spacer {
+      display: block;
+    }
+  }
+
   @media (max-width: 1024px) {
-    .footer-grid {
+    .footer-row-1 {
       grid-template-columns: 1fr 1fr 1fr;
     }
 
     .footer-brand {
       grid-column: 1 / -1;
+    }
+
+    .footer-row-2 {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    .footer-row-2-spacer {
+      display: none;
     }
   }
 
@@ -199,7 +273,8 @@ const year = new Date().getFullYear();
       padding: 40px 20px 24px;
     }
 
-    .footer-grid {
+    .footer-row-1,
+    .footer-row-2 {
       grid-template-columns: 1fr 1fr;
       gap: 24px;
     }
