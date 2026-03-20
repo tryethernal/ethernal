@@ -58,6 +58,8 @@
 <script setup>
 import PricingCard from './PricingCard.vue';
 
+const appUrl = __APP_URL__;
+
 defineProps({
     full: { type: Boolean, default: false }
 });
@@ -75,7 +77,7 @@ const publicPlans = [
             'Ethernal branding'
         ],
         ctaText: 'Start Free',
-        ctaUrl: `/auth?flow=public&plan=free`
+        ctaUrl: `${appUrl}/auth?flow=public&plan=free`
     },
     {
         name: 'Team',
@@ -92,7 +94,7 @@ const publicPlans = [
             '7-day free trial'
         ],
         ctaText: 'Start Trial',
-        ctaUrl: `/auth?flow=public&plan=explorer-150`
+        ctaUrl: `${appUrl}/auth?flow=public&plan=explorer-150`
     },
     {
         name: 'App Chain',
@@ -108,7 +110,7 @@ const publicPlans = [
             '7-day free trial'
         ],
         ctaText: 'Start Trial',
-        ctaUrl: `/auth?flow=public&plan=explorer-500`
+        ctaUrl: `${appUrl}/auth?flow=public&plan=explorer-500`
     },
     {
         name: 'Enterprise',
@@ -140,7 +142,7 @@ const privatePlans = [
             'Analytics'
         ],
         ctaText: 'Start Free',
-        ctaUrl: `/auth?flow=private`
+        ctaUrl: `${appUrl}/auth?flow=private`
     },
     {
         name: 'Pro',
@@ -151,7 +153,7 @@ const privatePlans = [
             'Unlimited workspaces'
         ],
         ctaText: 'Get Pro',
-        ctaUrl: `/auth?flow=private&plan=pro`
+        ctaUrl: `${appUrl}/auth?flow=private&plan=pro`
     }
 ];
 </script>

@@ -7,6 +7,8 @@ services:
     volumes:
       - ./landing:/app
       - landing_node_modules:/app/node_modules
+    environment:
+      - APP_URL=http://app.ethernal.local:8180
     command: sh -c "npm install && npm run dev -- --host 0.0.0.0 --port 8174"
     networks:
       - ethernal-network

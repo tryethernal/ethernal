@@ -44,7 +44,7 @@ const props = defineProps({
 });
 
 const ctaUrl = computed(() => {
-    let url = `/auth?flow=${props.flow}`;
+    let url = `${__APP_URL__}/auth?flow=${props.flow}`;
     if (props.chain) url += `&chain=${props.chain}`;
     return url;
 });

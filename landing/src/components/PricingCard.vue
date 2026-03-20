@@ -68,7 +68,7 @@ const props = defineProps({
     quota: { type: String, default: '' },
     highlighted: { type: Boolean, default: false },
     ctaText: { type: String, default: 'Get Started' },
-    ctaUrl: { type: String, default: '/auth?flow=public' }
+    ctaUrl: { type: String, default: `${__APP_URL__}/auth?flow=public` }
 });
 
 function trackPricing() {
