@@ -76,6 +76,7 @@
                         size="large"
                         rounded="lg"
                         block
+                        :loading="planLoading"
                         @click="confirmPlan"
                         class="plan-detail-cta"
                     >
@@ -106,6 +107,7 @@ const props = defineProps({
 const emit = defineEmits(['plan-selected']);
 const selectedPlan = ref(props.defaultPlan);
 const enterpriseModalRef = ref(null);
+const planLoading = ref(false);
 
 const explorerUrl = computed(() => {
     if (!props.explorer) return '';
@@ -181,6 +183,7 @@ function confirmPlan() {
         return;
     }
 
+    planLoading.value = true;
     const isTrial = selectedPlan.value !== 'free' && selectedPlan.value !== 'enterprise';
     if (window.posthog) {
         window.posthog.capture('onboarding:plan_selected', {
