@@ -22,6 +22,7 @@ COPY run/webhooks ./webhooks
 COPY run/workers ./workers
 COPY run/migrations ./migrations
 COPY run/seeders ./seeders
+COPY scripts ./scripts
 COPY run/.sequelizerc ./
 COPY run/app.js .
 COPY run/index.js .

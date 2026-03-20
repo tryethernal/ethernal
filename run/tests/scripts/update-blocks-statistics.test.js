@@ -55,6 +55,6 @@ describe('update-blocks-statistics', () => {
 
         await expect(updateBlocksStatistics()).rejects.toThrow('Database connection failed');
 
-        expect(mockSequelize.close).toHaveBeenCalled();
+        expect(mockSequelize.close).not.toHaveBeenCalled();
     });
 });

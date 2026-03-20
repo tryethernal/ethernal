@@ -24,7 +24,7 @@ const updateBlocksStatistics = async () => {
                 relname,
                 n_live_tup,
                 last_autoanalyze,
-                EXTRACT(EPOCH FROM (NOW() - last_autoanalyze))/3600 AS hours_since_analyze
+                EXTRACT(EPOCH FROM (NOW() - COALESCE(last_autoanalyze, last_analyze)))/3600 AS hours_since_analyze
             FROM pg_stat_user_tables
             WHERE relname = 'blocks'
         `);
@@ -70,8 +70,6 @@ const updateBlocksStatistics = async () => {
     } catch (error) {
         logger.error('❌ Failed to update blocks table statistics:', error);
         throw error;
-    } finally {
-        await sequelize.close();
     }
 };
 
@@ -85,7 +83,8 @@ if (require.main === module) {
         .catch((error) => {
             console.error('Statistics update failed:', error);
             process.exit(1);
-        });
+        })
+        .finally(() => sequelize.close());
 }
 
 module.exports = updateBlocksStatistics;
