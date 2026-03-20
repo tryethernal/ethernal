@@ -79,4 +79,5 @@ skills-lock.json
 
 # Session artifacts
 .claude/handoff-*.md
+.claude/plans/
 generated_imgs/
