@@ -175,9 +175,9 @@ Body.`;
 
     describe('isSemanticallyDuplicate', () => {
         it('detects duplicate when candidate matches a recent hook', () => {
-            const candidate = 'Aave and CoW Swap publish conflicting post-mortems after $50M loss';
+            const candidate = '$50M DeFi swap routing failure post-mortem';
             const recentHooks = [
-                '$50.4M swapped for $36,000 in one transaction. MEV bots took $44M of it in the same block.',
+                '$50.4M swapped for $36,000. DeFi routing failure in one swap.',
             ];
             const result = isSemanticallyDuplicate(candidate, recentHooks, [], []);
             assert.equal(result, true);
