@@ -172,7 +172,8 @@ async function onSubmit() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 contact: contact.value,
-                message: message.value
+                message: message.value,
+                source: 'contact'
             })
         });
         if (!res.ok) {
