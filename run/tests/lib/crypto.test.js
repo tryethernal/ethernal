@@ -20,7 +20,7 @@ describe('encrypt', () => {
 
 describe('decrypt', () => {
     it('Should return the decrypted string', async () => {
-        expect(decrypt(ENCRYPTED_KEY).slice(0, 31)).toEqual('GT8P7FD-R2M4SCG-GPCYE58-8FC1969');
+        expect(decrypt(ENCRYPTED_KEY)).toEqual('GT8P7FD-R2M4SCG-GPCYE58-8FC1969');
     });
 });
 

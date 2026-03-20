@@ -141,12 +141,13 @@ router.post('/setup', setupRateLimit, async (req, res, next) => {
             workspace = await db.getWorkspaceById(explorer.workspaceId);
         } else {
             // Private path: create workspace directly
-            const workspaceData = sanitize({
+            const workspaceData = {
                 name: data.workspaceName || `${data.email}'s workspace`,
+                chain: data.chain || 'ethereum',
                 public: false,
-                rpcServer: data.rpcServer || null,
-                networkId: networkId || null
-            });
+                rpcServer: data.rpcServer || 'http://localhost:8545',
+                networkId: networkId || data.networkId || '1'
+            };
             workspace = await db.createWorkspace(uid, workspaceData);
         }
 

@@ -23,7 +23,7 @@ const db = require('../lib/firebase');
 const { enqueue } = require('../lib/queue');
 const { randomUUID } = require('crypto');
 const authMiddleware = require('../middlewares/auth');
-const { encrypt, decode, firebaseHash } = require('../lib/crypto');
+const { encrypt, decrypt, decode, encode, firebaseHash } = require('../lib/crypto');
 const localAuth = require('../middlewares/passportLocalStrategy');
 const { managedError, unmanagedError } = require('../lib/errors');
 
@@ -135,7 +135,9 @@ router.post('/signin', localAuth, async (req, res, next) => {
         analytics.track(req.user.id, 'auth:user_signin');
         analytics.shutdown();
 
-        res.status(200).json({ user: req.user });
+        const token = encode({ firebaseUserId: req.user.firebaseUserId, apiKey: decrypt(req.user.apiKey) });
+
+        res.status(200).json({ user: req.user, token });
     } catch(error) {
         unmanagedError(error, req, next);
     }
