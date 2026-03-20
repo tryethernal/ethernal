@@ -7,3 +7,6 @@ tweet-queue/
 .processed-threads
 .promoted-articles
 node_modules/
+state.db
+state.db-wal
+state.db-shm
