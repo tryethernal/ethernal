@@ -59,6 +59,9 @@
                 <v-icon end>mdi-arrow-right</v-icon>
             </v-btn>
         </div>
+        <div class="path-footer">
+            Already have an account? <a href="#" class="wizard-link" @click.prevent="$emit('signin')">Sign in</a>
+        </div>
     </div>
 </template>
 
@@ -69,7 +72,7 @@ const props = defineProps({
     defaultPath: { type: String, default: 'private' }
 });
 
-const emit = defineEmits(['path-selected']);
+const emit = defineEmits(['path-selected', 'signin']);
 
 const selected = ref(props.defaultPath);
 
@@ -192,5 +195,21 @@ function confirm() {
     text-transform: none;
     font-weight: 600;
     letter-spacing: 0;
+}
+
+.path-footer {
+    font-size: 13px;
+    color: #475569;
+    margin-top: 24px;
+    text-align: center;
+}
+
+.wizard-link {
+    color: #3D95CE;
+    text-decoration: none;
+}
+
+.wizard-link:hover {
+    text-decoration: underline;
 }
 </style>

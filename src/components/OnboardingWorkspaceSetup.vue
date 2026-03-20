@@ -126,6 +126,9 @@
                 </div>
             </div>
         </v-form>
+        <div class="setup-footer">
+            Already have an account? <a href="#" class="wizard-link" @click.prevent="$emit('signin')">Sign in</a>
+        </div>
     </div>
 </template>
 
@@ -139,7 +142,7 @@ const props = defineProps({
     initialRpc: { type: String, default: '' }
 });
 
-const emit = defineEmits(['workspace-info-ready', 'back']);
+const emit = defineEmits(['workspace-info-ready', 'back', 'signin']);
 
 const envStore = useEnvStore();
 const $server = inject('$server');
@@ -378,5 +381,21 @@ watch(rpcServer, (newVal) => {
 
 :deep(.v-field__input) {
     color: #fff !important;
+}
+
+.setup-footer {
+    font-size: 13px;
+    color: #475569;
+    margin-top: 24px;
+    text-align: center;
+}
+
+.wizard-link {
+    color: #3D95CE;
+    text-decoration: none;
+}
+
+.wizard-link:hover {
+    text-decoration: underline;
 }
 </style>
