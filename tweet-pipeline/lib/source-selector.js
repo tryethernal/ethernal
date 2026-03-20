@@ -246,18 +246,21 @@ export function isSemanticallyDuplicate(candidateTitle, recentHooks, blogTitles,
     if (candidateKeys.size < 3) return false;
 
     const allReferences = [
-        ...recentHooks,
-        ...blogTitles,
-        ...promotedSlugs,
+        ...recentHooks.map(h => ({ text: h, source: 'hook' })),
+        ...blogTitles.map(t => ({ text: t, source: 'blog' })),
+        ...promotedSlugs.map(s => ({ text: s, source: 'slug' })),
     ];
 
+    console.error(`[dedup] Candidate (${candidateKeys.size} keys): ${[...candidateKeys].join(', ')}`);
+
     for (const ref of allReferences) {
-        const refKeys = extractKeywords(ref);
+        const refKeys = extractKeywords(ref.text);
         if (refKeys.size === 0) continue;
 
         let overlap = 0;
+        const matched = [];
         for (const key of candidateKeys) {
-            if (refKeys.has(key)) overlap++;
+            if (refKeys.has(key)) { overlap++; matched.push(key); }
         }
 
         // Check overlap ratio against both sets — a match in either direction indicates similarity.
@@ -265,6 +268,12 @@ export function isSemanticallyDuplicate(candidateTitle, recentHooks, blogTitles,
         const candidateRatio = overlap / candidateKeys.size;
         const refRatio = overlap / refKeys.size;
         const ratio = Math.max(candidateRatio, refRatio);
+
+        if (overlap >= 2 && ratio > 0.2) {
+            console.error(`[dedup] ${ratio > 0.3 ? 'MATCH' : 'near-miss'} (overlap=${overlap}, ratio=${ratio.toFixed(2)}) vs ${ref.source}: "${ref.text.slice(0, 80)}"`);
+            console.error(`[dedup]   matched: ${matched.join(', ')}`);
+        }
+
         if (overlap >= 2 && ratio > 0.3) return true;
     }
 
