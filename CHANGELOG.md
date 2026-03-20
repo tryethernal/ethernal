@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.93] - 2026-03-20
+### Fixed
+- chore: gitignore .cursor/
+- chore: remove .cursor/ from git tracking
+- chore: remove docs/superpowers/ from git tracking
+- chore: gitignore .claude/plans/ to keep planning artifacts out of public repo
+- feat: isolate tweet pipeline from shared git checkout (#786)
+- fix: eliminate N+1 queries in token transfer contract lookups (#784)
+- fix: address unhandled Greptile review from PR #782 + prevent recover-stuck bypass (#785)
+
+
 ## [5.17.92] - 2026-03-20
 ### Fixed
 - blog: add draft - The Bug Your Auditor's Tools Will Never Catch
