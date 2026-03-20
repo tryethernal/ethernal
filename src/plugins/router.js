@@ -100,10 +100,6 @@ const routes = [
         component: () => import(/* webpackChunkName: "onboarding" */ '../components/OnboardingWizard.vue'),
         beforeEnter: redirectIfLoggedIn
     },
-    {
-        path: '/onboarding',
-        redirect: to => ({ path: '/auth', query: to.query })
-    },
     { path: '/accounts', component: AccountList, beforeEnter: redirectIfLoggedOut },
     { path: '/blocks', component: Blocks, beforeEnter: redirectIfLoggedOut },
     { path: '/overview', component: Overview, beforeEnter: redirectIfLoggedOut },
