@@ -61,8 +61,28 @@ fi
 
 cd "$SCRIPT_DIR"
 
-NOW=$(date +%s)
 POSTED_COUNT=0
+MIN_GAP_MINUTES=90
+
+# Check time since last posted tweet to avoid back-to-back posting
+LAST_POSTED=$(node --input-type=module -e "
+  import { getDb } from './lib/db.js';
+  const ts = getDb().getLastPostedAt();
+  console.log(ts || '');
+")
+
+if [ -n "$LAST_POSTED" ]; then
+  LAST_EPOCH=$(date -d "$LAST_POSTED" +%s 2>/dev/null || echo "0")
+  NOW_EPOCH=$(date +%s)
+  ELAPSED_MIN=$(( (NOW_EPOCH - LAST_EPOCH) / 60 ))
+  if [ "$ELAPSED_MIN" -lt "$MIN_GAP_MINUTES" ]; then
+    log "Last tweet posted ${ELAPSED_MIN}min ago (< ${MIN_GAP_MINUTES}min minimum gap) — skipping this cycle"
+    # Still run promote-blog even when skipping tweet posting
+    PROMOTE_LOG_FILE="$LOG_FILE" "$SCRIPT_DIR/promote-blog.sh" 2>&1 || log "WARNING: promote-blog.sh failed"
+    log "Done. Posted 0 tweet(s) (gap throttle)."
+    exit 0
+  fi
+fi
 
 # Get pending tweets from DB
 PENDING=$(node lib/cli/get-pending-tweets.js)
@@ -72,6 +92,13 @@ if [ "$TWEET_COUNT" = "0" ]; then
   log "No pending tweets to publish."
 else
   for i in $(seq 0 $((TWEET_COUNT - 1))); do
+    # Only post one tweet per publish cycle to maintain spacing
+    if [ "$POSTED_COUNT" -gt 0 ]; then
+      REMAINING=$((TWEET_COUNT - i))
+      log "Already posted 1 tweet this cycle — deferring $REMAINING remaining to next cycle"
+      break
+    fi
+
     TWEET=$(echo "$PENDING" | jq ".[$i]")
     TWEET_DB_ID=$(echo "$TWEET" | jq -r '.id')
     IMAGE_PATH=$(echo "$TWEET" | jq -r '.image_path // ""')
