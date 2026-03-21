@@ -287,7 +287,7 @@ TITLE=$(echo "$SCORE_JSON" | jq -r '.title // empty')
 log "Best opportunity: \"$TITLE\" (score: $SCORE)"
 
 # Check dedup against recent tweet source IDs
-if echo "$RECENT_IDS" | grep -qF "competitor: $TITLE"; then
+if [ -n "$TITLE" ] && echo "$RECENT_IDS" | grep -qF "competitor: $TITLE"; then
   log "Opportunity already tweeted recently — skipping"
   SCORE=0
 fi

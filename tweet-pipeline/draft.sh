@@ -127,8 +127,9 @@ if [ "$SLOT" = "3" ]; then
       console.log('Selected: ' + result.source.title + ' (bucket: Competitor response)');
     " 2>&1 | tee -a "$LOG_FILE"
     if [ -f .source.json ]; then
-      node --input-type=module -e "import { getDb } from './lib/db.js'; getDb().consumeCompetitorSource();"
-      log "Competitor source consumed."
+      # Defer consume until after semantic dedup check passes
+      PENDING_CONSUME="competitor"
+      log "Competitor source staged (consume deferred until after dedup)."
     else
       SKIP_NORMAL_SOURCE=false
       log "WARNING: .source.json not created — retaining competitor source for next run"
@@ -156,8 +157,9 @@ if [ "$SLOT" = "3" ]; then
         console.log('Selected: ' + result.source.title + ' (bucket: Newsletter story)');
       " 2>&1 | tee -a "$LOG_FILE"
       if [ -f .source.json ]; then
-        node --input-type=module -e "import { getDb } from './lib/db.js'; getDb().consumeNewsletterSource();"
-        log "Newsletter source consumed."
+        # Defer consume until after semantic dedup check passes
+        PENDING_CONSUME="newsletter"
+        log "Newsletter source staged (consume deferred until after dedup)."
       else
         SKIP_NORMAL_SOURCE=false
         log "WARNING: .source.json not created — retaining newsletter source for next run"
@@ -220,6 +222,11 @@ if [ -f .source.json ]; then
 
   if [ "$IS_DUP" = "true" ]; then
     log "WARNING: Source '$SOURCE_TITLE' is semantically similar to recent content — falling back to feature tip"
+    # Clear pending consume — the override source was not used but stays in DB for next attempt
+    if [ -n "${PENDING_CONSUME:-}" ]; then
+      log "WARNING: Discarding ${PENDING_CONSUME} source due to dedup — retaining in DB for next run"
+      PENDING_CONSUME=""
+    fi
     rm -f .source.json
 
     # Fall back to a feature tip
@@ -250,6 +257,15 @@ if [ ! -f .source.json ]; then
   log "ERROR: Source selection failed — no .source.json produced"
   report_failure "Source selection"
   exit 1
+fi
+
+# Consume deferred override source now that dedup has passed
+if [ "${PENDING_CONSUME:-}" = "competitor" ]; then
+  node --input-type=module -e "import { getDb } from './lib/db.js'; getDb().consumeCompetitorSource();"
+  log "Competitor source consumed (post-dedup)."
+elif [ "${PENDING_CONSUME:-}" = "newsletter" ]; then
+  node --input-type=module -e "import { getDb } from './lib/db.js'; getDb().consumeNewsletterSource();"
+  log "Newsletter source consumed (post-dedup)."
 fi
 
 log "Source selected. Starting Claude phases..."
