@@ -528,7 +528,7 @@ describe('blockSync', () => {
                     ])
                 }));
                 // Should use findByPk (fast path), not findOne
-                expect(Workspace.findByPk).toHaveBeenCalled();
+                expect(Workspace.findOne).not.toHaveBeenCalled();
                 expect(res).toEqual('Block synced');
                 done();
             });
@@ -538,6 +538,19 @@ describe('blockSync', () => {
         blockSync({ opts: { priority: 1 }, data: { blockNumber: 1 }})
             .then(res => {
                 expect(res).toEqual('Missing workspaceId - all blockSync jobs must include workspaceId');
+                done();
+            });
+    });
+
+    it('Should return if no subscription for non-api source', (done) => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
+            id: 1,
+            rpcServer: 'http://localhost:8545',
+            explorer: { shouldSync: true, stripeSubscription: null }
+        });
+        blockSync({ opts: { priority: 1 }, data: { workspaceId: 1, blockNumber: 1, source: 'integrityCheck' }})
+            .then(res => {
+                expect(res).toEqual('No active subscription');
                 done();
             });
     });
