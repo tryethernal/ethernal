@@ -94,31 +94,31 @@ for SUB in $SUBREDDITS; do
     # URL-encode query (pass via argv to avoid shell quoting issues)
     ENCODED_QUERY=$(python3 -c "import sys,urllib.parse; print(urllib.parse.quote(sys.argv[1]))" "$QUERY")
 
+    # Use PullPush API (free Reddit archive, no auth needed, works from datacenter IPs)
     RESPONSE=$(curl -sf \
       -H "User-Agent: $UA" \
-      "https://www.reddit.com/r/${SUB}/search.json?q=${ENCODED_QUERY}&sort=new&t=week&restrict_sr=on&limit=10" \
+      "https://api.pullpush.io/reddit/search/submission/?q=${ENCODED_QUERY}&subreddit=${SUB}&after=3d&size=10&sort=desc&sort_type=score" \
       2>/dev/null) || {
-      # Handle 429 rate limit: wait and retry once
-      log "WARNING: Reddit returned error for r/$SUB q='$QUERY' — retrying in 10s"
+      log "WARNING: PullPush returned error for r/$SUB q='$QUERY' — retrying in 10s"
       sleep 10
       RESPONSE=$(curl -sf \
         -H "User-Agent: $UA" \
-        "https://www.reddit.com/r/${SUB}/search.json?q=${ENCODED_QUERY}&sort=new&t=week&restrict_sr=on&limit=10" \
+        "https://api.pullpush.io/reddit/search/submission/?q=${ENCODED_QUERY}&subreddit=${SUB}&after=3d&size=10&sort=desc&sort_type=score" \
         2>/dev/null) || {
-        log "WARNING: Reddit retry failed for r/$SUB q='$QUERY' — skipping"
+        log "WARNING: PullPush retry failed for r/$SUB q='$QUERY' — skipping"
         sleep 3
         continue
       }
     }
 
     # Extract posts: filter by age, score, and dedup
+    # PullPush returns data directly in .data[] (not .data.children[].data like Reddit API)
     POSTS=$(echo "$RESPONSE" | SEEN_IDS_ENV="$SEEN_IDS" CUTOFF_ENV="$CUTOFF_EPOCH" python3 -c "
 import sys, json, os
 cutoff = int(os.environ.get('CUTOFF_ENV', '0'))
 seen = set(os.environ.get('SEEN_IDS_ENV', '').split())
 data = json.load(sys.stdin)
-for post in data.get('data', {}).get('children', []):
-    d = post.get('data', {})
+for d in data.get('data', []):
     pid = d.get('id', '')
     if pid in seen:
         continue
@@ -172,7 +172,7 @@ fi
 log "Found $POST_COUNT new Reddit posts. Fetching top comments..."
 
 # ============================================================
-# Fetch top comments for each post
+# Fetch top comments for each post (via PullPush comment API)
 # ============================================================
 ENRICHED_TEXT=""
 
@@ -185,22 +185,21 @@ while IFS= read -r POST_LINE; do
   POST_URL=$(echo "$POST_LINE" | python3 -c "import sys,json; print(json.load(sys.stdin)['url'])")
   POST_SCORE=$(echo "$POST_LINE" | python3 -c "import sys,json; print(json.load(sys.stdin)['score'])")
 
-  # Fetch top comments
+  # Fetch top comments via PullPush
   COMMENTS=""
   COMMENTS_JSON=$(curl -sf \
     -H "User-Agent: $UA" \
-    "https://www.reddit.com/r/${POST_SUB}/comments/${POST_ID}.json?limit=10&sort=best" \
+    "https://api.pullpush.io/reddit/search/comment/?link_id=t3_${POST_ID}&size=5&sort=desc&sort_type=score" \
     2>/dev/null) || true
 
   if [ -n "$COMMENTS_JSON" ]; then
     COMMENTS=$(echo "$COMMENTS_JSON" | python3 -c "
 import sys, json
 data = json.load(sys.stdin)
-if len(data) > 1:
-    for c in data[1].get('data', {}).get('children', [])[:5]:
-        body = c.get('data', {}).get('body', '')
-        if body and len(body) > 20:
-            print('  > ' + body[:500])
+for c in data.get('data', [])[:5]:
+    body = c.get('body', '')
+    if body and len(body) > 20:
+        print('  > ' + body[:500])
 " 2>/dev/null || true)
   fi
 

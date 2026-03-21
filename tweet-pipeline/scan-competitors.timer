@@ -2,8 +2,8 @@
 Description=Scan Reddit for competitor mentions every 3 days at 10:00 UTC
 
 [Timer]
-# First run anchored to a calendar day, then true 3-day interval from last activation
-OnCalendar=*-*-01 10:00:00 UTC
+# Run every 3 days: first run 5 min after enable, then every 3 days from last activation
+OnActiveSec=5min
 OnUnitActiveSec=3d
 Persistent=true
 
