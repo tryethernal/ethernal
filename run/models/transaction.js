@@ -188,10 +188,10 @@ module.exports = (sequelize, DataTypes) => {
         await sequelize.models.TokenBalanceChangeEvent.destroy({
             where: {
                 tokenBalanceChangeId: {
-                    [sequelize.Op.in]: sequelize.literal(`(
+                    [Op.in]: sequelize.literal(`(
                         SELECT tbc.id FROM token_balance_changes tbc
-                        INNER JOIN token_transfers tt ON tbc.token_transfer_id = tt.id
-                        WHERE tt.transaction_id = ${this.id}
+                        INNER JOIN token_transfers tt ON tbc."tokenTransferId" = tt.id
+                        WHERE tt."transactionId" = ${this.id}
                     )`)
                 }
             },
@@ -202,8 +202,8 @@ module.exports = (sequelize, DataTypes) => {
         await sequelize.models.TokenBalanceChange.destroy({
             where: {
                 tokenTransferId: {
-                    [sequelize.Op.in]: sequelize.literal(`(
-                        SELECT id FROM token_transfers WHERE transaction_id = ${this.id}
+                    [Op.in]: sequelize.literal(`(
+                        SELECT id FROM token_transfers WHERE "transactionId" = ${this.id}
                     )`)
                 }
             },
@@ -214,8 +214,8 @@ module.exports = (sequelize, DataTypes) => {
         await sequelize.models.TokenTransferEvent.destroy({
             where: {
                 tokenTransferId: {
-                    [sequelize.Op.in]: sequelize.literal(`(
-                        SELECT id FROM token_transfers WHERE transaction_id = ${this.id}
+                    [Op.in]: sequelize.literal(`(
+                        SELECT id FROM token_transfers WHERE "transactionId" = ${this.id}
                     )`)
                 }
             },
