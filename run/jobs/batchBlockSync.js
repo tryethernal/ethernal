@@ -21,6 +21,9 @@ module.exports = async job => {
         return 'Missing parameter.';
     }
 
+    if (!data.workspaceId)
+        return 'Missing workspaceId.';
+
     const from = parseInt(data.from);
     const to = parseInt(data.to);
 
@@ -29,234 +32,213 @@ module.exports = async job => {
 
     const end = Math.min(from + CHUNK_SIZE - 1, to);
 
-    // If workspaceId is provided, validate workspace and pre-filter existing blocks
-    let workspaceId = data.workspaceId || null;
-    if (workspaceId) {
-        const workspace = await Workspace.findByPk(workspaceId, {
+    const workspaceId = data.workspaceId;
+    const workspace = await Workspace.findByPk(workspaceId, {
+        include: [
+            {
+                model: Explorer,
+                as: 'explorer',
+                attributes: ['id', 'shouldSync'],
+                include: {
+                    model: StripeSubscription,
+                    as: 'stripeSubscription',
+                    attributes: ['id']
+                }
+            },
+            {
+                model: RpcHealthCheck,
+                as: 'rpcHealthCheck',
+                attributes: ['id', 'isReachable']
+            },
+            {
+                model: require('../models').IntegrityCheck,
+                as: 'integrityCheck',
+                attributes: ['id', 'isHealthy', 'isRecovering']
+            }
+        ]
+    });
+
+    if (!workspace)
+        return 'Invalid workspace.';
+
+    const isCustomL1Parent = workspace.isCustomL1Parent === true;
+
+    if (!isCustomL1Parent) {
+        if (!workspace.explorer)
+            return 'No active explorer for this workspace';
+
+        if (!workspace.explorer.shouldSync)
+            return 'Sync is disabled';
+
+        if (workspace.rpcHealthCheckEnabled && workspace.rpcHealthCheck && !workspace.rpcHealthCheck.isReachable)
+            return 'RPC is not reachable';
+
+        if (!workspace.explorer.stripeSubscription)
+            return 'No active subscription';
+    }
+
+    // Pre-filter: find blocks that already exist in this range
+    const existingBlocks = await Block.findAll({
+        where: {
+            workspaceId,
+            number: { [Op.between]: [from, end] }
+        },
+        attributes: ['number'],
+        raw: true
+    });
+
+    const existingSet = new Set(existingBlocks.map(b => Number(b.number)));
+
+    // Check if workspace needs L2 configurations loaded
+    // Use model-based approach for compatibility with test mocks
+    const [hasOrbitConfigs, hasOpConfigs] = await Promise.all([
+        OrbitChainConfig.findOne({
+            where: {
+                [Op.or]: [
+                    { workspaceId },
+                    { parentWorkspaceId: workspaceId }
+                ]
+            },
+            attributes: ['id'],
+            limit: 1
+        }),
+        OpChainConfig.findOne({
+            where: {
+                [Op.or]: [
+                    { workspaceId },
+                    { parentWorkspaceId: workspaceId }
+                ]
+            },
+            attributes: ['id'],
+            limit: 1
+        })
+    ]);
+    const hasL2Configs = !!(hasOrbitConfigs || hasOpConfigs);
+
+    // Load L2 configurations if needed to avoid N+1 queries in blockSync jobs
+    let l2Configs = null;
+    if (hasL2Configs) {
+        l2Configs = await Workspace.findByPk(workspaceId, {
+            attributes: ['id'],
             include: [
                 {
-                    model: Explorer,
-                    as: 'explorer',
-                    attributes: ['id', 'shouldSync'],
+                    model: OrbitChainConfig,
+                    as: 'orbitConfig',
+                    attributes: [
+                        'rollupContract',
+                        'sequencerInboxContract',
+                        'bridgeContract',
+                        'inboxContract',
+                        'outboxContract',
+                        'stakeToken',
+                        'l1GatewayRouter',
+                        'l1Erc20Gateway',
+                        'l1WethGateway',
+                        'l1CustomGateway',
+                        'l2GatewayRouter',
+                        'l2Erc20Gateway',
+                        'l2WethGateway',
+                        'l2CustomGateway'
+                    ],
+                    required: false,
                     include: {
-                        model: StripeSubscription,
-                        as: 'stripeSubscription',
-                        attributes: ['id']
+                        model: Workspace,
+                        as: 'parentWorkspace',
+                        attributes: ['id', 'rpcServer'],
+                        required: false
                     }
                 },
                 {
-                    model: RpcHealthCheck,
-                    as: 'rpcHealthCheck',
-                    attributes: ['id', 'isReachable']
+                    model: OrbitChainConfig,
+                    as: 'orbitChildConfigs',
+                    attributes: [
+                        'workspaceId',
+                        'rollupContract',
+                        'sequencerInboxContract',
+                        'bridgeContract',
+                        'inboxContract',
+                        'outboxContract',
+                        'stakeToken',
+                        'l1GatewayRouter',
+                        'l1Erc20Gateway',
+                        'l1WethGateway',
+                        'l1CustomGateway',
+                        'l2GatewayRouter',
+                        'l2Erc20Gateway',
+                        'l2WethGateway',
+                        'l2CustomGateway'
+                    ],
+                    required: false
                 },
                 {
-                    model: require('../models').IntegrityCheck,
-                    as: 'integrityCheck',
-                    attributes: ['id', 'isHealthy', 'isRecovering']
+                    model: OpChainConfig,
+                    as: 'opChildConfigs',
+                    attributes: [
+                        'workspaceId',
+                        'batchInboxAddress',
+                        'beaconUrl',
+                        'l2BlockTime',
+                        'l2GenesisTimestamp'
+                    ],
+                    required: false
                 }
             ]
         });
-
-        if (!workspace)
-            return 'Invalid workspace.';
-
-        const isCustomL1Parent = workspace.isCustomL1Parent === true;
-
-        if (!isCustomL1Parent) {
-            if (!workspace.explorer)
-                return 'No active explorer for this workspace';
-
-            if (!workspace.explorer.shouldSync)
-                return 'Sync is disabled';
-
-            if (workspace.rpcHealthCheckEnabled && workspace.rpcHealthCheck && !workspace.rpcHealthCheck.isReachable)
-                return 'RPC is not reachable';
-
-            if (!workspace.explorer.stripeSubscription)
-                return 'No active subscription';
-        }
-
-        // Pre-filter: find blocks that already exist in this range
-        const existingBlocks = await Block.findAll({
-            where: {
-                workspaceId,
-                number: { [Op.between]: [from, end] }
-            },
-            attributes: ['number'],
-            raw: true
-        });
-
-        const existingSet = new Set(existingBlocks.map(b => Number(b.number)));
-
-        // Check if workspace needs L2 configurations loaded
-        // Use model-based approach for compatibility with test mocks
-        const [hasOrbitConfigs, hasOpConfigs] = await Promise.all([
-            OrbitChainConfig.findOne({
-                where: {
-                    [Op.or]: [
-                        { workspaceId },
-                        { parentWorkspaceId: workspaceId }
-                    ]
-                },
-                attributes: ['id'],
-                limit: 1
-            }),
-            OpChainConfig.findOne({
-                where: {
-                    [Op.or]: [
-                        { workspaceId },
-                        { parentWorkspaceId: workspaceId }
-                    ]
-                },
-                attributes: ['id'],
-                limit: 1
-            })
-        ]);
-        const hasL2Configs = !!(hasOrbitConfigs || hasOpConfigs);
-
-        // Load L2 configurations if needed to avoid N+1 queries in blockSync jobs
-        let l2Configs = null;
-        if (hasL2Configs) {
-            l2Configs = await Workspace.findByPk(workspaceId, {
-                attributes: ['id'],
-                include: [
-                    {
-                        model: OrbitChainConfig,
-                        as: 'orbitConfig',
-                        attributes: [
-                            'rollupContract',
-                            'sequencerInboxContract',
-                            'bridgeContract',
-                            'inboxContract',
-                            'outboxContract',
-                            'stakeToken',
-                            'l1GatewayRouter',
-                            'l1Erc20Gateway',
-                            'l1WethGateway',
-                            'l1CustomGateway',
-                            'l2GatewayRouter',
-                            'l2Erc20Gateway',
-                            'l2WethGateway',
-                            'l2CustomGateway'
-                        ],
-                        required: false,
-                        include: {
-                            model: Workspace,
-                            as: 'parentWorkspace',
-                            attributes: ['id', 'rpcServer'],
-                            required: false
-                        }
-                    },
-                    {
-                        model: OrbitChainConfig,
-                        as: 'orbitChildConfigs',
-                        attributes: [
-                            'workspaceId',
-                            'rollupContract',
-                            'sequencerInboxContract',
-                            'bridgeContract',
-                            'inboxContract',
-                            'outboxContract',
-                            'stakeToken',
-                            'l1GatewayRouter',
-                            'l1Erc20Gateway',
-                            'l1WethGateway',
-                            'l1CustomGateway',
-                            'l2GatewayRouter',
-                            'l2Erc20Gateway',
-                            'l2WethGateway',
-                            'l2CustomGateway'
-                        ],
-                        required: false
-                    },
-                    {
-                        model: OpChainConfig,
-                        as: 'opChildConfigs',
-                        attributes: [
-                            'workspaceId',
-                            'batchInboxAddress',
-                            'beaconUrl',
-                            'l2BlockTime',
-                            'l2GenesisTimestamp'
-                        ],
-                        required: false
-                    }
-                ]
-            });
-        }
-
-        // Cache workspace data to avoid N+1 queries in blockSync jobs
-        const cachedWorkspace = {
-            rpcServer: workspace.rpcServer,
-            browserSyncEnabled: workspace.browserSyncEnabled,
-            isCustomL1Parent: workspace.isCustomL1Parent,
-            rpcHealthCheckEnabled: workspace.rpcHealthCheckEnabled,
-            public: workspace.public,
-            rateLimitInterval: workspace.rateLimitInterval,
-            rateLimitMaxInInterval: workspace.rateLimitMaxInInterval,
-            hasL2Configs,
-            explorer: workspace.explorer ? {
-                id: workspace.explorer.id,
-                shouldSync: workspace.explorer.shouldSync,
-                stripeSubscription: workspace.explorer.stripeSubscription ? {
-                    id: workspace.explorer.stripeSubscription.id
-                } : null
-            } : null,
-            rpcHealthCheck: workspace.rpcHealthCheck ? {
-                id: workspace.rpcHealthCheck.id,
-                isReachable: workspace.rpcHealthCheck.isReachable
-            } : null,
-            integrityCheck: workspace.integrityCheck ? {
-                id: workspace.integrityCheck.id,
-                isHealthy: workspace.integrityCheck.isHealthy,
-                isRecovering: workspace.integrityCheck.isRecovering
-            } : null,
-            // Cache L2 configs to avoid N+1 queries in blockSync jobs
-            orbitConfig: l2Configs?.orbitConfig || null,
-            orbitChildConfigs: l2Configs?.orbitChildConfigs || null,
-            opChildConfigs: l2Configs?.opChildConfigs || null
-        };
-
-        const jobs = [];
-        for (let i = from; i <= end; i++) {
-            if (existingSet.has(i)) continue;
-            jobs.push({
-                name: `blockSync-batch-${data.userId}-${data.workspace}-${i}`,
-                data: {
-                    userId: data.userId,
-                    workspace: data.workspace,
-                    workspaceId,
-                    blockNumber: i,
-                    source: data.source || 'batchSync',
-                    rateLimited: true,
-                    cachedWorkspace
-                }
-            });
-        }
-
-        if (jobs.length > 0)
-            await bulkEnqueue('blockSync', jobs);
-
-        logger.info(`batchBlockSync: enqueued ${jobs.length}/${end - from + 1} blocks (${existingBlocks.length} skipped) for workspace ${workspaceId}, range ${from}-${end}`);
-    } else {
-        // Backward compat: old jobs without workspaceId, enqueue all blocks
-        const jobs = [];
-        for (let i = from; i <= end; i++) {
-            jobs.push({
-                name: `blockSync-batch-${data.userId}-${data.workspace}-${i}`,
-                data: {
-                    userId: data.userId,
-                    workspace: data.workspace,
-                    blockNumber: i,
-                    source: data.source || 'batchSync',
-                    rateLimited: true
-                }
-            });
-        }
-
-        if (jobs.length > 0)
-            await bulkEnqueue('blockSync', jobs);
     }
+
+    // Cache workspace data to avoid N+1 queries in blockSync jobs
+    const cachedWorkspace = {
+        rpcServer: workspace.rpcServer,
+        browserSyncEnabled: workspace.browserSyncEnabled,
+        isCustomL1Parent: workspace.isCustomL1Parent,
+        rpcHealthCheckEnabled: workspace.rpcHealthCheckEnabled,
+        public: workspace.public,
+        rateLimitInterval: workspace.rateLimitInterval,
+        rateLimitMaxInInterval: workspace.rateLimitMaxInInterval,
+        hasL2Configs,
+        explorer: workspace.explorer ? {
+            id: workspace.explorer.id,
+            shouldSync: workspace.explorer.shouldSync,
+            stripeSubscription: workspace.explorer.stripeSubscription ? {
+                id: workspace.explorer.stripeSubscription.id
+            } : null
+        } : null,
+        rpcHealthCheck: workspace.rpcHealthCheck ? {
+            id: workspace.rpcHealthCheck.id,
+            isReachable: workspace.rpcHealthCheck.isReachable
+        } : null,
+        integrityCheck: workspace.integrityCheck ? {
+            id: workspace.integrityCheck.id,
+            isHealthy: workspace.integrityCheck.isHealthy,
+            isRecovering: workspace.integrityCheck.isRecovering
+        } : null,
+        // Cache L2 configs to avoid N+1 queries in blockSync jobs
+        orbitConfig: l2Configs?.orbitConfig || null,
+        orbitChildConfigs: l2Configs?.orbitChildConfigs || null,
+        opChildConfigs: l2Configs?.opChildConfigs || null
+    };
+
+    const jobs = [];
+    for (let i = from; i <= end; i++) {
+        if (existingSet.has(i)) continue;
+        jobs.push({
+            name: `blockSync-batch-${data.userId}-${data.workspace}-${i}`,
+            data: {
+                userId: data.userId,
+                workspace: data.workspace,
+                workspaceId,
+                blockNumber: i,
+                source: data.source || 'batchSync',
+                rateLimited: true,
+                cachedWorkspace
+            }
+        });
+    }
+
+    if (jobs.length > 0)
+        await bulkEnqueue('blockSync', jobs);
+
+    logger.info(`batchBlockSync: enqueued ${jobs.length}/${end - from + 1} blocks (${existingBlocks.length} skipped) for workspace ${workspaceId}, range ${from}-${end}`);
 
     // Self-re-enqueue for remaining blocks with delay for backpressure
     const nextStart = end + 1;
