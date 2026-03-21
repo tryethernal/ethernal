@@ -112,7 +112,7 @@ for SUB in $SUBREDDITS; do
     }
 
     # Extract posts: filter by age, score, and dedup
-    POSTS=$(SEEN_IDS_ENV="$SEEN_IDS" CUTOFF_ENV="$CUTOFF_EPOCH" python3 -c "
+    POSTS=$(echo "$RESPONSE" | SEEN_IDS_ENV="$SEEN_IDS" CUTOFF_ENV="$CUTOFF_EPOCH" python3 -c "
 import sys, json, os
 cutoff = int(os.environ.get('CUTOFF_ENV', '0'))
 seen = set(os.environ.get('SEEN_IDS_ENV', '').split())
@@ -281,7 +281,7 @@ if [ -z "$SCORE_JSON" ]; then
   exit 0
 fi
 
-SCORE=$(echo "$SCORE_JSON" | jq -r '.score // 0')
+SCORE=$(echo "$SCORE_JSON" | jq -r '(.score // 0) | floor')
 TITLE=$(echo "$SCORE_JSON" | jq -r '.title // empty')
 
 log "Best opportunity: \"$TITLE\" (score: $SCORE)"
