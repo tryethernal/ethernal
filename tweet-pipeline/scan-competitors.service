@@ -1,0 +1,13 @@
+[Unit]
+Description=Competitor monitor — scan Reddit for block explorer mentions
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/opt/tweet-pipeline/scan-competitors.sh
+WorkingDirectory=/opt/tweet-pipeline
+EnvironmentFile=/opt/blog-pipeline.env
+TimeoutStartSec=600
+StandardOutput=journal
+StandardError=journal
