@@ -239,14 +239,22 @@ module.exports = async job => {
 
         logger.info(`batchBlockSync: enqueued ${jobs.length}/${end - from + 1} blocks (${existingBlocks.length} skipped) for workspace ${workspaceId}, range ${from}-${end}`);
     } else {
-        // Backward compat: old jobs without workspaceId, enqueue all blocks
+        // Backward compat: old jobs without workspaceId
+        // Look up workspace to get workspaceId for optimized blockSync jobs
+        const db = require('../lib/firebase');
+        const workspace = await db.getWorkspaceByName(data.userId, data.workspace);
+        if (!workspace) {
+            return 'Invalid workspace.';
+        }
+
+        workspaceId = workspace.id;
+
         const jobs = [];
         for (let i = from; i <= end; i++) {
             jobs.push({
                 name: `blockSync-batch-${data.userId}-${data.workspace}-${i}`,
                 data: {
-                    userId: data.userId,
-                    workspace: data.workspace,
+                    workspaceId,
                     blockNumber: i,
                     source: data.source || 'batchSync',
                     rateLimited: true

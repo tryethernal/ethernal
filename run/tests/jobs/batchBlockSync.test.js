@@ -24,6 +24,9 @@ describe('batchBlockSync', () => {
     });
 
     it('Should enqueue all blocks without pre-filtering when no workspaceId (backward compat)', async () => {
+        const db = require('../../lib/firebase');
+        db.getWorkspaceByName.mockResolvedValueOnce({ id: 1 });
+
         await batchBlockSync({
             data: { userId: '123', workspace: 'My Workspace', from: 1, to: 5 }
         });
