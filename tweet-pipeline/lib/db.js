@@ -85,6 +85,11 @@ export function createDb(dbPath = DEFAULT_DB_PATH) {
             SELECT tweet_ids FROM tweets
             WHERE posted = 1 AND posted_at >= datetime('now', '-' || @days || ' days')
         `),
+        lastPostedAt: db.prepare(`
+            SELECT posted_at FROM tweets
+            WHERE posted = 1 AND posted_at IS NOT NULL
+            ORDER BY posted_at DESC LIMIT 1
+        `),
         isPromoted: db.prepare('SELECT 1 FROM promotions WHERE slug = ?'),
         insertPromotion: db.prepare('INSERT OR IGNORE INTO promotions (slug) VALUES (?)'),
         allPromotedSlugs: db.prepare('SELECT slug FROM promotions'),
@@ -151,6 +156,11 @@ export function createDb(dbPath = DEFAULT_DB_PATH) {
         getTweetIdsForEngagement(days) {
             const rows = stmts.tweetIdsForEngagement.all({ days });
             return rows.flatMap(r => JSON.parse(r.tweet_ids));
+        },
+
+        getLastPostedAt() {
+            const row = stmts.lastPostedAt.get();
+            return row ? row.posted_at : null;
         },
 
         isPromoted(slug) {
