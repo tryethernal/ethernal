@@ -33,7 +33,7 @@ What you'll get: a structured comparison of six block explorers with real pricin
 
 ## What to look for in a block explorer
 
-A block explorer is a search and analytics interface that lets users inspect transactions, blocks, addresses, and smart contracts on a blockchain. Choosing the right one depends on a handful of practical criteria that matter once real users start interacting with your chain. MilkRoad published an evaluation covering several of these points<sup>[1](#fn-1)</sup>. We've expanded the list based on what we hear from teams deploying EVM chains in production.
+A block explorer is a search and analytics interface that lets users inspect transactions, blocks, addresses, and smart contracts on a blockchain. Choosing the right one depends on a handful of practical criteria that matter once real users start interacting with your chain. MilkRoad published an evaluation covering several of these points<sup>[1](#fn-1)</sup>, and QuickNode's builders guide ranks explorers by similar criteria<sup>[10](#fn-10)</sup>. We've expanded the list based on what we hear from teams deploying EVM chains in production.
 
 **Open-source status** determines whether you can audit, fork, and extend the explorer. For teams building on custom EVM chains, proprietary explorers create vendor lock-in. If the provider changes pricing or discontinues your chain, you have no fallback. This isn't hypothetical: it happened to Avalanche when Etherscan pulled Snowtrace<sup>[2](#fn-2)</sup>.
 
@@ -187,7 +187,7 @@ Same criteria, all six explorers, one table.
 | Criteria | Etherscan | Blockscout | Ethernal | Tenderly | Blockchair | Routescan |
 |---|---|---|---|---|---|---|
 | **Open source** | No | Yes (Elixir) | Yes (MIT) | No | No | No |
-| **Setup time** | Weeks (EaaS) | Minutes (Autoscout) / Days (self-hosted) | Under 5 minutes | Minutes (dev explorer) | N/A (public tool) | ~48 hours |
+| **Setup time** | Weeks (EaaS) | Minutes (Autoscout) / Days (self-hosted) | Under 5 minutes | Minutes (dev explorer) | N/A (public tool) | Around 48 hours |
 | **Self-hostable** | No | Yes | Yes (Docker) | No | No | No |
 | **White-label** | Limited | Full | Full (from $500/mo) | N/A | N/A | Moderate |
 | **EVM chain support** | L1, select L2s | L1, L2, L3, ZK rollups | L1, L2, local dev, custom EVM | 109+ EVM networks | 40+ chains (EVM + non-EVM) | 160+ chains |
@@ -196,7 +196,7 @@ Same criteria, all six explorers, one table.
 | **API access** | Free + paid tiers | Free + Pro API | Included in all plans | Included in platform | Pay-as-you-go | Free tier + paid |
 | **Starting price** | Free (browse) / EaaS: custom | Free (self-hosted) / EaaS: paid tiers | $0 (self-hosted) / $150/mo (Team) / $500/mo (white-label) | Free tier / paid plans | Free (browse) / API: paid | Free API tier / EaaS: paid |
 
-This table reflects publicly available information as of March 2026. Pricing and features change; verify with each provider before making a decision.
+This table reflects publicly available information as of March 2026<sup>[11](#fn-11)</sup>. Pricing and features change; verify with each provider before making a decision.
 
 ## How to choose the right explorer for your chain
 
