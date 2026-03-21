@@ -17,6 +17,8 @@ Your L2 is live. Contracts are deployed. Your community needs a block explorer b
 
 We built [Ethernal](https://tryethernal.com) to solve this problem for our own projects. This comparison includes Ethernal alongside the major alternatives. We're biased, obviously. But we'll be upfront about it, and we will be transparent about where each tool fits best and where it falls short.
 
+One thing most comparison guides get wrong: they mix up "explorers for reading public chains" with "explorers you can deploy for your own chain." Those are different decisions with different criteria. Etherscan is great for looking up transactions on Ethereum mainnet. It tells you nothing about how to run an explorer for the L2 you just launched. This guide covers both categories but focuses on the second one, because that's the decision most teams are actually stuck on.
+
 What you'll get: a structured comparison of six block explorers with real pricing, honest assessments of limitations, and a decision framework for teams at different stages.
 
 > **Key takeaways**
@@ -212,8 +214,8 @@ Ethernal App Chain ($500/mo), Blockscout EaaS, or Etherscan EaaS. Ethernal has t
 **Multi-chain analytics and investigation:**
 Different category entirely. Blockchair for cross-chain research across EVM and non-EVM chains. Routescan for unified EVM chain browsing. Neither hosts an explorer for your own chain.
 
-**Enterprise with large budget and brand requirements:**
-Etherscan Enterprise for maximum user trust on major chains. Custom Blockscout deployment for full open-source control at scale. Both require significant investment in either licensing fees or DevOps resources.
+**Enterprise or private/permissioned chain:**
+Data sovereignty and permissioned access matter here. Ethernal self-hosted (MIT license) or Blockscout self-hosted give you full control. For enterprise-specific analytics and compliance features, [Chainlens](https://chainlens.com) (formerly Epirus) is purpose-built for private EVM networks. Etherscan Enterprise works if brand trust is the priority and budget isn't a constraint.
 
 | Use Case | Recommended Explorer | Why |
 |---|---|---|
@@ -221,7 +223,8 @@ Etherscan Enterprise for maximum user trust on major chains. Custom Blockscout d
 | Testnet explorer | Ethernal Team ($150/mo) or Blockscout Autoscout | Custom domain, quick deployment |
 | Production white-label (L2/app chain) | Ethernal App Chain ($500/mo), Blockscout EaaS, Etherscan EaaS | Full branding, production-grade |
 | Cross-chain research | Blockchair | 40+ chains, SQL-like queries |
-| Enterprise L1 | Etherscan Enterprise or custom Blockscout | Brand trust or full control |
+| Enterprise / private chain | Ethernal or Blockscout (self-hosted), Chainlens | Data sovereignty, permissioned access |
+| Enterprise L1 (public) | Etherscan Enterprise or custom Blockscout | Brand trust or full control |
 
 One more thing: these categories aren't mutually exclusive. Plenty of teams use Ethernal or Blockscout as their chain's public explorer while also using Tenderly for internal debugging.
 
