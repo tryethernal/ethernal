@@ -41,7 +41,6 @@ describe('blockSync', () => {
     };
 
     jest.spyOn(Workspace, 'findByPk').mockResolvedValue(mockWorkspace);
-    jest.spyOn(Workspace, 'findOne').mockResolvedValue(mockWorkspace);
 
     it('Should fetch receipts inline for small blocks (<=10 transactions)', (done) => {
         const safeCreateReceipt = jest.fn().mockResolvedValue();
@@ -69,7 +68,7 @@ describe('blockSync', () => {
         }
         mockSafeCreatePartialBlock.mockResolvedValue({ transactions });
 
-        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
             id: 1,
             rpcServer: 'http://localhost:8545',
             rateLimitInterval: 1000,
@@ -116,7 +115,7 @@ describe('blockSync', () => {
         }
         mockSafeCreatePartialBlock.mockResolvedValue({ transactions });
 
-        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
             id: 1,
             rpcServer: 'http://localhost:8545',
             public: true,
@@ -147,7 +146,7 @@ describe('blockSync', () => {
 
     it('Should re-enqueue if timed out', (done) => {
         jest.spyOn(Date, 'now').mockImplementation(() => 1609459200000);
-        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
             id: 1,
             name: 'ws',
             user: { firebaseUserId: 'abc' },
@@ -179,7 +178,7 @@ describe('blockSync', () => {
 
     it('Should re-enqueue if rate limited', (done) => {
         jest.spyOn(Date, 'now').mockImplementation(() => 1609459200000);
-        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
             id: 1,
             name: 'ws',
             user: { firebaseUserId: 'abc' },
@@ -212,7 +211,7 @@ describe('blockSync', () => {
     });
 
     it.skip('Should return if transaction quota reached', (done) => {
-        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
             id: 1,
             rpcServer: 'http://localhost:8545',
             rpcHealthCheck: {
@@ -232,7 +231,7 @@ describe('blockSync', () => {
     });
 
     it('Should return if no active explorer', (done) => {
-        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
             id: 1,
             rpcServer: 'http://localhost:8545',
             rpcHealthCheck: {
@@ -248,7 +247,7 @@ describe('blockSync', () => {
     });
 
     it('Should return if sync is disabled', (done) => {
-        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
             id: 1,
             rpcServer: 'http://localhost:8545',
             rpcHealthCheck: {
@@ -266,7 +265,7 @@ describe('blockSync', () => {
     });
 
     it('Should return if too many failed rpc requests', (done) => {
-        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
             id: 1,
             rpcServer: 'http://localhost:8545',
             rpcHealthCheckEnabled: true,
@@ -286,7 +285,7 @@ describe('blockSync', () => {
     });
 
     it('Should return if no subscription', (done) => {
-        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
             id: 1,
             rpcServer: 'http://localhost:8545',
             rpcHealthCheckEnabled: true,
@@ -339,7 +338,7 @@ describe('blockSync', () => {
 
     it('Should filter transactions when orbit config exists', (done) => {
         mockSafeCreatePartialBlock.mockResolvedValue({ transactions: []});
-        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
             id: 1,
             rpcServer: 'http://localhost:8545',
             rpcHealthCheck: {
@@ -390,7 +389,7 @@ describe('blockSync', () => {
 
     it('Should filter transactions when orbit child configs exist', (done) => {
         mockSafeCreatePartialBlock.mockResolvedValue({ transactions: []});
-        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
             id: 1,
             rpcServer: 'http://localhost:8545',
             rpcHealthCheck: {
@@ -442,7 +441,7 @@ describe('blockSync', () => {
 
     it('Should disable browser sync', (done) => {
         const mockUpdate = jest.fn().mockResolvedValue();
-        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
             id: 1,
             browserSyncEnabled: true,
             rpcServer: 'http://localhost:8545',
@@ -467,7 +466,7 @@ describe('blockSync', () => {
     });
 
     it('Should set recovery status for integrity check', (done) => {
-        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
             id: 1,
             rpcServer: 'http://localhost:8545',
             integrityCheck: { isHealthy: true },
@@ -486,7 +485,7 @@ describe('blockSync', () => {
     });
 
     it('Should set healthy status for integrity check', (done) => {
-        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
             id: 1,
             rpcServer: 'http://localhost:8545',
             integrityCheck: { isRecovering: true },
@@ -511,7 +510,7 @@ describe('blockSync', () => {
         jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
             id: 1,
             rpcServer: 'http://localhost:8545',
-            explorer: { shouldSync: true },
+            explorer: { shouldSync: true, stripeSubscription: {} },
             safeCreatePartialBlock: mockSafeCreatePartialBlock
         });
 
@@ -528,9 +527,17 @@ describe('blockSync', () => {
                         expect.objectContaining({ as: 'integrityCheck' })
                     ])
                 }));
-                // Should NOT call findOne (normal path)
-                expect(Workspace.findOne).not.toHaveBeenCalled();
+                // Should use findByPk (fast path), not findOne
+                expect(Workspace.findByPk).toHaveBeenCalled();
                 expect(res).toEqual('Block synced');
+                done();
+            });
+    });
+
+    it('Should return if workspaceId is missing', (done) => {
+        blockSync({ opts: { priority: 1 }, data: { blockNumber: 1 }})
+            .then(res => {
+                expect(res).toEqual('Missing workspaceId - all blockSync jobs must include workspaceId');
                 done();
             });
     });

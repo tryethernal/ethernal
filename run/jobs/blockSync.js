@@ -55,24 +55,21 @@ module.exports = async job => {
             rpcHealthCheck: data.cachedWorkspace.rpcHealthCheck
         };
 
-        // API source requires the same validations as the slow path
-        if (data.source === 'api') {
-            // Custom L1 parents don't require explorer/subscription - they sync for their L2 children
-            const isCustomL1Parent = workspace.isCustomL1Parent === true;
+        // Custom L1 parents don't require explorer/subscription - they sync for their L2 children
+        const isCustomL1Parent = workspace.isCustomL1Parent === true;
 
-            if (!isCustomL1Parent) {
-                if (!workspace.explorer)
-                    return 'No active explorer for this workspace';
+        if (!isCustomL1Parent) {
+            if (!workspace.explorer)
+                return 'No active explorer for this workspace';
 
-                if (!workspace.explorer.shouldSync)
-                    return 'Sync is disabled';
+            if (!workspace.explorer.shouldSync)
+                return 'Sync is disabled';
 
-                if (workspace.rpcHealthCheckEnabled && workspace.rpcHealthCheck && !workspace.rpcHealthCheck.isReachable)
-                    return 'RPC is not reachable';
+            if (workspace.rpcHealthCheckEnabled && workspace.rpcHealthCheck && !workspace.rpcHealthCheck.isReachable)
+                return 'RPC is not reachable';
 
-                if (!workspace.explorer.stripeSubscription)
-                    return 'No active subscription';
-            }
+            if (!workspace.explorer.stripeSubscription)
+                return 'No active subscription';
         }
 
         // Create Sequelize instance from cached data to avoid N+1 query
@@ -211,24 +208,21 @@ module.exports = async job => {
         if (!workspace)
             return 'Invalid workspace.';
 
-        // API source requires the same validations as the slow path
-        if (data.source === 'api') {
-            // Custom L1 parents don't require explorer/subscription - they sync for their L2 children
-            const isCustomL1Parent = workspace.isCustomL1Parent === true;
+        // Custom L1 parents don't require explorer/subscription - they sync for their L2 children
+        const isCustomL1Parent = workspace.isCustomL1Parent === true;
 
-            if (!isCustomL1Parent) {
-                if (!workspace.explorer)
-                    return 'No active explorer for this workspace';
+        if (!isCustomL1Parent) {
+            if (!workspace.explorer)
+                return 'No active explorer for this workspace';
 
-                if (!workspace.explorer.shouldSync)
-                    return 'Sync is disabled';
+            if (!workspace.explorer.shouldSync)
+                return 'Sync is disabled';
 
-                if (workspace.rpcHealthCheckEnabled && workspace.rpcHealthCheck && !workspace.rpcHealthCheck.isReachable)
-                    return 'RPC is not reachable';
+            if (workspace.rpcHealthCheckEnabled && workspace.rpcHealthCheck && !workspace.rpcHealthCheck.isReachable)
+                return 'RPC is not reachable';
 
-                if (!workspace.explorer.stripeSubscription)
-                    return 'No active subscription';
-            }
+            if (!workspace.explorer.stripeSubscription)
+                return 'No active subscription';
         }
 
 
