@@ -104,35 +104,66 @@ fi
 # ============================================================
 log "Selecting source for slot $SLOT..."
 
-# Check for newsletter source (slot 3 override)
+# Check for override sources (slot 3): competitor > newsletter > normal
 SKIP_NORMAL_SOURCE=false
 if [ "$SLOT" = "3" ]; then
-  NL_JSON=$(node lib/cli/get-newsletter-source.js 2>/dev/null) && SKIP_NORMAL_SOURCE=true || true
+  # 1. Check competitor source first (highest priority)
+  COMP_JSON=$(node lib/cli/get-competitor-source.js 2>/dev/null) && SKIP_NORMAL_SOURCE=true || true
   if [ "$SKIP_NORMAL_SOURCE" = "true" ]; then
-    log "Using newsletter source for slot 3"
-    # Build .source.json from newsletter data
-    NL_JSON="$NL_JSON" node --input-type=module -e "
+    log "Using competitor source for slot 3"
+    COMP_JSON="$COMP_JSON" node --input-type=module -e "
       import { getScheduledTime } from './config.js';
       import { writeFileSync } from 'node:fs';
-      const nl = JSON.parse(process.env.NL_JSON);
+      const comp = JSON.parse(process.env.COMP_JSON);
       const scheduledAt = getScheduledTime(new Date(), 15);
       const result = {
-        sourceId: 'newsletter: ' + nl.title,
-        source: { type: 'newsletter', title: nl.title, content: nl.content, url: nl.source_url || '' },
-        bucket: 'Newsletter story',
+        sourceId: 'competitor: ' + comp.title,
+        source: { type: 'competitor', title: comp.title, content: comp.content, url: comp.url || '', angle: comp.angle || '' },
+        bucket: 'Competitor response',
         slot: 3,
         scheduledAt: scheduledAt.toISOString(),
       };
       writeFileSync('.source.json', JSON.stringify(result, null, 2));
-      console.log('Selected: ' + result.source.title + ' (bucket: Newsletter story)');
+      console.log('Selected: ' + result.source.title + ' (bucket: Competitor response)');
     " 2>&1 | tee -a "$LOG_FILE"
     if [ -f .source.json ]; then
-      # Consume only after confirming .source.json was written
-      node --input-type=module -e "import { getDb } from './lib/db.js'; getDb().consumeNewsletterSource();"
-      log "Newsletter source consumed."
+      # Defer consume until after semantic dedup check passes
+      PENDING_CONSUME="competitor"
+      log "Competitor source staged (consume deferred until after dedup)."
     else
       SKIP_NORMAL_SOURCE=false
-      log "WARNING: .source.json not created — retaining newsletter source for next run"
+      log "WARNING: .source.json not created — retaining competitor source for next run"
+    fi
+  fi
+
+  # 2. Fall back to newsletter source
+  if [ "$SKIP_NORMAL_SOURCE" != "true" ]; then
+    NL_JSON=$(node lib/cli/get-newsletter-source.js 2>/dev/null) && SKIP_NORMAL_SOURCE=true || true
+    if [ "$SKIP_NORMAL_SOURCE" = "true" ]; then
+      log "Using newsletter source for slot 3"
+      NL_JSON="$NL_JSON" node --input-type=module -e "
+        import { getScheduledTime } from './config.js';
+        import { writeFileSync } from 'node:fs';
+        const nl = JSON.parse(process.env.NL_JSON);
+        const scheduledAt = getScheduledTime(new Date(), 15);
+        const result = {
+          sourceId: 'newsletter: ' + nl.title,
+          source: { type: 'newsletter', title: nl.title, content: nl.content, url: nl.source_url || '' },
+          bucket: 'Newsletter story',
+          slot: 3,
+          scheduledAt: scheduledAt.toISOString(),
+        };
+        writeFileSync('.source.json', JSON.stringify(result, null, 2));
+        console.log('Selected: ' + result.source.title + ' (bucket: Newsletter story)');
+      " 2>&1 | tee -a "$LOG_FILE"
+      if [ -f .source.json ]; then
+        # Defer consume until after semantic dedup check passes
+        PENDING_CONSUME="newsletter"
+        log "Newsletter source staged (consume deferred until after dedup)."
+      else
+        SKIP_NORMAL_SOURCE=false
+        log "WARNING: .source.json not created — retaining newsletter source for next run"
+      fi
     fi
   fi
 fi
@@ -191,6 +222,11 @@ if [ -f .source.json ]; then
 
   if [ "$IS_DUP" = "true" ]; then
     log "WARNING: Source '$SOURCE_TITLE' is semantically similar to recent content — falling back to feature tip"
+    # Clear pending consume — the override source was not used but stays in DB for next attempt
+    if [ -n "${PENDING_CONSUME:-}" ]; then
+      log "WARNING: Discarding ${PENDING_CONSUME} source due to dedup — retaining in DB for next run"
+      PENDING_CONSUME=""
+    fi
     rm -f .source.json
 
     # Fall back to a feature tip
@@ -221,6 +257,15 @@ if [ ! -f .source.json ]; then
   log "ERROR: Source selection failed — no .source.json produced"
   report_failure "Source selection"
   exit 1
+fi
+
+# Consume deferred override source now that dedup has passed
+if [ "${PENDING_CONSUME:-}" = "competitor" ]; then
+  node --input-type=module -e "import { getDb } from './lib/db.js'; getDb().consumeCompetitorSource();"
+  log "Competitor source consumed (post-dedup)."
+elif [ "${PENDING_CONSUME:-}" = "newsletter" ]; then
+  node --input-type=module -e "import { getDb } from './lib/db.js'; getDb().consumeNewsletterSource();"
+  log "Newsletter source consumed (post-dedup)."
 fi
 
 log "Source selected. Starting Claude phases..."
