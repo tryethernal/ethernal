@@ -104,35 +104,64 @@ fi
 # ============================================================
 log "Selecting source for slot $SLOT..."
 
-# Check for newsletter source (slot 3 override)
+# Check for override sources (slot 3): competitor > newsletter > normal
 SKIP_NORMAL_SOURCE=false
 if [ "$SLOT" = "3" ]; then
-  NL_JSON=$(node lib/cli/get-newsletter-source.js 2>/dev/null) && SKIP_NORMAL_SOURCE=true || true
+  # 1. Check competitor source first (highest priority)
+  COMP_JSON=$(node lib/cli/get-competitor-source.js 2>/dev/null) && SKIP_NORMAL_SOURCE=true || true
   if [ "$SKIP_NORMAL_SOURCE" = "true" ]; then
-    log "Using newsletter source for slot 3"
-    # Build .source.json from newsletter data
-    NL_JSON="$NL_JSON" node --input-type=module -e "
+    log "Using competitor source for slot 3"
+    COMP_JSON="$COMP_JSON" node --input-type=module -e "
       import { getScheduledTime } from './config.js';
       import { writeFileSync } from 'node:fs';
-      const nl = JSON.parse(process.env.NL_JSON);
+      const comp = JSON.parse(process.env.COMP_JSON);
       const scheduledAt = getScheduledTime(new Date(), 15);
       const result = {
-        sourceId: 'newsletter: ' + nl.title,
-        source: { type: 'newsletter', title: nl.title, content: nl.content, url: nl.source_url || '' },
-        bucket: 'Newsletter story',
+        sourceId: 'competitor: ' + comp.title,
+        source: { type: 'competitor', title: comp.title, content: comp.content, url: comp.url || '', angle: comp.angle || '' },
+        bucket: 'Competitor response',
         slot: 3,
         scheduledAt: scheduledAt.toISOString(),
       };
       writeFileSync('.source.json', JSON.stringify(result, null, 2));
-      console.log('Selected: ' + result.source.title + ' (bucket: Newsletter story)');
+      console.log('Selected: ' + result.source.title + ' (bucket: Competitor response)');
     " 2>&1 | tee -a "$LOG_FILE"
     if [ -f .source.json ]; then
-      # Consume only after confirming .source.json was written
-      node --input-type=module -e "import { getDb } from './lib/db.js'; getDb().consumeNewsletterSource();"
-      log "Newsletter source consumed."
+      node --input-type=module -e "import { getDb } from './lib/db.js'; getDb().consumeCompetitorSource();"
+      log "Competitor source consumed."
     else
       SKIP_NORMAL_SOURCE=false
-      log "WARNING: .source.json not created — retaining newsletter source for next run"
+      log "WARNING: .source.json not created — retaining competitor source for next run"
+    fi
+  fi
+
+  # 2. Fall back to newsletter source
+  if [ "$SKIP_NORMAL_SOURCE" != "true" ]; then
+    NL_JSON=$(node lib/cli/get-newsletter-source.js 2>/dev/null) && SKIP_NORMAL_SOURCE=true || true
+    if [ "$SKIP_NORMAL_SOURCE" = "true" ]; then
+      log "Using newsletter source for slot 3"
+      NL_JSON="$NL_JSON" node --input-type=module -e "
+        import { getScheduledTime } from './config.js';
+        import { writeFileSync } from 'node:fs';
+        const nl = JSON.parse(process.env.NL_JSON);
+        const scheduledAt = getScheduledTime(new Date(), 15);
+        const result = {
+          sourceId: 'newsletter: ' + nl.title,
+          source: { type: 'newsletter', title: nl.title, content: nl.content, url: nl.source_url || '' },
+          bucket: 'Newsletter story',
+          slot: 3,
+          scheduledAt: scheduledAt.toISOString(),
+        };
+        writeFileSync('.source.json', JSON.stringify(result, null, 2));
+        console.log('Selected: ' + result.source.title + ' (bucket: Newsletter story)');
+      " 2>&1 | tee -a "$LOG_FILE"
+      if [ -f .source.json ]; then
+        node --input-type=module -e "import { getDb } from './lib/db.js'; getDb().consumeNewsletterSource();"
+        log "Newsletter source consumed."
+      else
+        SKIP_NORMAL_SOURCE=false
+        log "WARNING: .source.json not created — retaining newsletter source for next run"
+      fi
     fi
   fi
 fi

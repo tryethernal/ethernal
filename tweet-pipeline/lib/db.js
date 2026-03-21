@@ -54,6 +54,11 @@ export function createDb(dbPath = DEFAULT_DB_PATH) {
             data TEXT NOT NULL,
             created_at TEXT NOT NULL DEFAULT (datetime('now'))
         );
+
+        CREATE TABLE IF NOT EXISTS processed_reddit_posts (
+            post_id TEXT PRIMARY KEY,
+            processed_at TEXT NOT NULL DEFAULT (datetime('now'))
+        );
     `);
 
     const stmts = {
@@ -104,6 +109,8 @@ export function createDb(dbPath = DEFAULT_DB_PATH) {
             WHERE id = @id AND created_at >= datetime('now', '-24 hours')
         `),
         deleteNewsletter: db.prepare('DELETE FROM newsletter_sources WHERE id = ?'),
+        isRedditProcessed: db.prepare('SELECT 1 FROM processed_reddit_posts WHERE post_id = ?'),
+        insertRedditPost: db.prepare('INSERT OR IGNORE INTO processed_reddit_posts (post_id) VALUES (?)'),
     };
 
     const markThreadsProcessedTx = db.transaction((threadIds) => {
@@ -203,6 +210,30 @@ export function createDb(dbPath = DEFAULT_DB_PATH) {
         getBlogCandidate() {
             const row = stmts.getFreshNewsletter.get({ id: 2 });
             return row ? JSON.parse(row.data) : null;
+        },
+
+        saveCompetitorSource(data) {
+            stmts.upsertNewsletter.run({ id: 3, data: JSON.stringify(data) });
+        },
+
+        getCompetitorSource() {
+            const row = stmts.getFreshNewsletter.get({ id: 3 });
+            return row ? JSON.parse(row.data) : null;
+        },
+
+        consumeCompetitorSource() {
+            stmts.deleteNewsletter.run(3);
+        },
+
+        isRedditPostProcessed(postId) {
+            return !!stmts.isRedditProcessed.get(postId);
+        },
+
+        markRedditPostsProcessed(postIds) {
+            const tx = db.transaction((ids) => {
+                for (const id of ids) stmts.insertRedditPost.run(id);
+            });
+            tx(postIds);
         },
 
         close() {

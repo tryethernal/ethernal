@@ -1,0 +1,9 @@
+[Unit]
+Description=Scan Reddit for competitor mentions every 3 days at 10:00 UTC
+
+[Timer]
+OnCalendar=*-*-01/3 10:00:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target
