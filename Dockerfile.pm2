@@ -4,7 +4,8 @@ WORKDIR /app
 
 COPY pm2-server/package.json pm2-server/yarn.lock pm2-server/app.js pm2-server/index.js pm2-server/ecosystem.config.js pm2-server/logListener.js pm2-server/opLogListener.js ./
 COPY pm2-server/lib/ ./lib
-RUN yarn global add ethernal-light pm2
+RUN yarn global add pm2
+RUN yarn global add https://github.com/tryethernal/ethernal-cli-light.git#v0.1.15
 RUN pm2 install pm2-logrotate
 
 FROM base AS dev
