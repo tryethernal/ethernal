@@ -17,12 +17,11 @@ const RECHUNK_DELAY = 3000;
 module.exports = async job => {
     const data = job.data;
 
-    if (!data.userId || !data.workspace || data.from === null || data.from === undefined || data.to === null || data.to === undefined) {
-        return 'Missing parameter.';
-    }
+    if (!data.userId || !data.workspace || data.from === null || data.from === undefined || data.to === null || data.to === undefined)
+        throw new Error('Missing parameter.');
 
     if (!data.workspaceId)
-        return 'Missing workspaceId.';
+        throw new Error('Missing workspaceId.');
 
     const from = parseInt(data.from);
     const to = parseInt(data.to);
