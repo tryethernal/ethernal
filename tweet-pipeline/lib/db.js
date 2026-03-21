@@ -109,6 +109,10 @@ export function createDb(dbPath = DEFAULT_DB_PATH) {
             WHERE id = @id AND created_at >= datetime('now', '-24 hours')
         `),
         deleteNewsletter: db.prepare('DELETE FROM newsletter_sources WHERE id = ?'),
+        getFreshCompetitor: db.prepare(`
+            SELECT data FROM newsletter_sources
+            WHERE id = @id AND created_at >= datetime('now', '-72 hours')
+        `),
         isRedditProcessed: db.prepare('SELECT 1 FROM processed_reddit_posts WHERE post_id = ?'),
         insertRedditPost: db.prepare('INSERT OR IGNORE INTO processed_reddit_posts (post_id) VALUES (?)'),
     };
@@ -217,7 +221,7 @@ export function createDb(dbPath = DEFAULT_DB_PATH) {
         },
 
         getCompetitorSource() {
-            const row = stmts.getFreshNewsletter.get({ id: 3 });
+            const row = stmts.getFreshCompetitor.get({ id: 3 });
             return row ? JSON.parse(row.data) : null;
         },
 

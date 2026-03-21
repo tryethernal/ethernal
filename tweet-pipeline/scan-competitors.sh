@@ -91,8 +91,8 @@ POST_COUNT=0
 
 for SUB in $SUBREDDITS; do
   for QUERY in "${QUERIES[@]}"; do
-    # URL-encode query
-    ENCODED_QUERY=$(python3 -c "import urllib.parse; print(urllib.parse.quote('$QUERY'))")
+    # URL-encode query (pass via argv to avoid shell quoting issues)
+    ENCODED_QUERY=$(python3 -c "import sys,urllib.parse; print(urllib.parse.quote(sys.argv[1]))" "$QUERY")
 
     RESPONSE=$(curl -sf \
       -H "User-Agent: $UA" \
@@ -112,10 +112,10 @@ for SUB in $SUBREDDITS; do
     }
 
     # Extract posts: filter by age, score, and dedup
-    POSTS=$(echo "$RESPONSE" | python3 -c "
-import sys, json
-cutoff = $CUTOFF_EPOCH
-seen = set('$SEEN_IDS'.split())
+    POSTS=$(SEEN_IDS_ENV="$SEEN_IDS" CUTOFF_ENV="$CUTOFF_EPOCH" python3 -c "
+import sys, json, os
+cutoff = int(os.environ.get('CUTOFF_ENV', '0'))
+seen = set(os.environ.get('SEEN_IDS_ENV', '').split())
 data = json.load(sys.stdin)
 for post in data.get('data', {}).get('children', []):
     d = post.get('data', {})
@@ -302,7 +302,8 @@ else
     '. + {type: "competitor", created_at: $created_at}' \
     > "$TMPFILE"
 
-  cat "$TMPFILE" | node lib/cli/save-competitor-source.js && rm -f "$TMPFILE"
+  cat "$TMPFILE" | node lib/cli/save-competitor-source.js
+  rm -f "$TMPFILE"
   log "Staging competitor opportunity for slot 3 tweet (score: $SCORE)"
 fi
 

@@ -2,7 +2,9 @@
 Description=Scan Reddit for competitor mentions every 3 days at 10:00 UTC
 
 [Timer]
-OnCalendar=*-*-01/3 10:00:00 UTC
+# First run anchored to a calendar day, then true 3-day interval from last activation
+OnCalendar=*-*-01 10:00:00 UTC
+OnUnitActiveSec=3d
 Persistent=true
 
 [Install]
