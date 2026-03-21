@@ -24,15 +24,22 @@ const RECEIPT_STORAGE_CONCURRENCY = 5;
 module.exports = async job => {
     const data = job.data;
 
+    // Require workspaceId to prevent N+1 query regressions
+    if (!data.workspaceId) {
+        return 'Missing workspaceId - all blockSync jobs must include workspaceId';
+    }
+
+    if (data.blockNumber === undefined || data.blockNumber === null) {
+        return 'Missing parameter';
+    }
+
     let workspace;
 
     // Use cached workspace data if available (passed from batchBlockSync for faster processing)
-    const hasCachedWorkspace = data.cachedWorkspace && data.cachedWorkspace.rpcServer && data.workspaceId;
+    const hasCachedWorkspace = data.cachedWorkspace && data.cachedWorkspace.rpcServer;
 
     if (hasCachedWorkspace) {
         // Fast path with cached data: skip database lookup for workspace validation
-        if (data.blockNumber === undefined || data.blockNumber === null)
-            return 'Missing parameter';
 
         // Reconstruct workspace object from cached data
         workspace = {
@@ -111,10 +118,8 @@ module.exports = async job => {
         // Disable browser sync to prevent concurrent syncing from both browser and server
         if (workspace.browserSyncEnabled)
             await workspace.update({ browserSyncEnabled: false });
-    } else if (data.workspaceId) {
+    } else {
         // Fast path: uses workspaceId for optimized database lookup
-        if (data.blockNumber === undefined || data.blockNumber === null)
-            return 'Missing parameter';
 
         workspace = await Workspace.findByPk(data.workspaceId, {
             attributes: ['id', 'name', 'rpcServer', 'browserSyncEnabled', 'isCustomL1Parent', 'rpcHealthCheckEnabled', 'public', 'rateLimitInterval', 'rateLimitMaxInInterval'],
@@ -228,130 +233,6 @@ module.exports = async job => {
 
 
         // Disable browser sync to prevent concurrent syncing from both browser and server
-        if (workspace.browserSyncEnabled)
-            await workspace.update({ browserSyncEnabled: false });
-    } else {
-        // Normal path: real-time sync, full validation
-        if (!data.userId || !data.workspace || data.blockNumber === undefined || data.blockNumber === null)
-            return 'Missing parameter';
-
-        workspace = await Workspace.findOne({
-            subQuery: false,
-            attributes: ['id', 'name', 'rpcServer', 'browserSyncEnabled', 'isCustomL1Parent', 'rpcHealthCheckEnabled', 'public', 'rateLimitInterval', 'rateLimitMaxInInterval'],
-            where: {
-                name: data.workspace,
-                '$user.firebaseUserId$': data.userId
-            },
-            include: [
-                {
-                    model: require('../models').User,
-                    as: 'user',
-                    attributes: ['id', 'firebaseUserId']
-                },
-                {
-                    model: Explorer,
-                    as: 'explorer',
-                    attributes: ['id', 'shouldSync'],
-                    include: {
-                        model: StripeSubscription,
-                        as: 'stripeSubscription',
-                        attributes: ['id']
-                    }
-                },
-                {
-                    model: RpcHealthCheck,
-                    as: 'rpcHealthCheck',
-                    attributes: ['id', 'isReachable']
-                },
-                {
-                    model: IntegrityCheck,
-                    as: 'integrityCheck',
-                    attributes: ['id', 'isHealthy', 'isRecovering']
-                },
-                {
-                    model: require('../models').OrbitChainConfig,
-                    as: 'orbitConfig',
-                    attributes: [
-                        'rollupContract',
-                        'sequencerInboxContract',
-                        'bridgeContract',
-                        'inboxContract',
-                        'outboxContract',
-                        'stakeToken',
-                        'l1GatewayRouter',
-                        'l1Erc20Gateway',
-                        'l1WethGateway',
-                        'l1CustomGateway',
-                        'l2GatewayRouter',
-                        'l2Erc20Gateway',
-                        'l2WethGateway',
-                        'l2CustomGateway'
-                    ],
-                    include: {
-                        model: require('../models').Workspace,
-                        as: 'parentWorkspace',
-                        attributes: ['id', 'rpcServer'],
-                        required: false
-                    },
-                    required: false
-                },
-                {
-                    model: require('../models').OrbitChainConfig,
-                    as: 'orbitChildConfigs',
-                    attributes: [
-                        'workspaceId',
-                        'rollupContract',
-                        'sequencerInboxContract',
-                        'bridgeContract',
-                        'inboxContract',
-                        'outboxContract',
-                        'stakeToken',
-                        'l1GatewayRouter',
-                        'l1Erc20Gateway',
-                        'l1WethGateway',
-                        'l1CustomGateway',
-                        'l2GatewayRouter',
-                        'l2Erc20Gateway',
-                        'l2WethGateway',
-                        'l2CustomGateway'
-                    ],
-                    required: false
-                },
-                {
-                    model: require('../models').OpChainConfig,
-                    as: 'opChildConfigs',
-                    attributes: [
-                        'workspaceId',
-                        'batchInboxAddress',
-                        'beaconUrl',
-                        'l2BlockTime',
-                        'l2GenesisTimestamp'
-                    ],
-                    required: false
-                }
-            ]
-        });
-
-        if (!workspace)
-            return 'Invalid workspace.';
-
-        // Custom L1 parents don't require explorer/subscription - they sync for their L2 children
-        const isCustomL1Parent = workspace.isCustomL1Parent === true;
-
-        if (!isCustomL1Parent) {
-            if (!workspace.explorer)
-                return 'No active explorer for this workspace';
-
-            if (!workspace.explorer.shouldSync)
-                return 'Sync is disabled';
-
-            if (workspace.rpcHealthCheckEnabled && workspace.rpcHealthCheck && !workspace.rpcHealthCheck.isReachable)
-                return 'RPC is not reachable';
-
-            if (!workspace.explorer.stripeSubscription)
-                return 'No active subscription';
-        }
-
         if (workspace.browserSyncEnabled)
             await workspace.update({ browserSyncEnabled: false });
     }
