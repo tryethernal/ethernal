@@ -23,10 +23,12 @@ beforeEach(() => {
 
 describe('blockSync', () => {
     const mockSafeCreatePartialBlock = jest.fn();
-    jest.spyOn(Workspace, 'findOne').mockResolvedValue({
+    const mockWorkspace = {
         id: 1,
         rpcServer: 'http://localhost:8545',
         public: true,
+        rateLimitInterval: 1000,
+        rateLimitMaxInInterval: 10,
         rpcHealthCheck: {
             isReachable: true
         },
@@ -36,7 +38,9 @@ describe('blockSync', () => {
             shouldSync: true
         },
         safeCreatePartialBlock: mockSafeCreatePartialBlock
-    });
+    };
+
+    jest.spyOn(Workspace, 'findByPk').mockResolvedValue(mockWorkspace);
 
     it('Should fetch receipts inline for small blocks (<=10 transactions)', (done) => {
         const safeCreateReceipt = jest.fn().mockResolvedValue();
@@ -45,7 +49,7 @@ describe('blockSync', () => {
             { id: 2, hash: '0x456', safeCreateReceipt }
         ]});
 
-        blockSync({ opts: { priority: 1 }, data : { userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
+        blockSync({ opts: { priority: 1 }, data : { workspaceId: 1, userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
             .then(res => {
                 // Should NOT queue jobs for small blocks
                 expect(bulkEnqueue).not.toHaveBeenCalled();
@@ -64,7 +68,7 @@ describe('blockSync', () => {
         }
         mockSafeCreatePartialBlock.mockResolvedValue({ transactions });
 
-        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
             id: 1,
             rpcServer: 'http://localhost:8545',
             rateLimitInterval: 1000,
@@ -80,7 +84,7 @@ describe('blockSync', () => {
             safeCreatePartialBlock: mockSafeCreatePartialBlock
         });
 
-        blockSync({ opts: { priority: 1 }, data : { userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
+        blockSync({ opts: { priority: 1 }, data : { workspaceId: 1, userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
             .then(res => {
                 expect(bulkEnqueue).toHaveBeenCalledWith('receiptSync', expect.arrayContaining([
                     expect.objectContaining({
@@ -111,7 +115,7 @@ describe('blockSync', () => {
         }
         mockSafeCreatePartialBlock.mockResolvedValue({ transactions });
 
-        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
             id: 1,
             rpcServer: 'http://localhost:8545',
             public: true,
@@ -126,7 +130,7 @@ describe('blockSync', () => {
             safeCreatePartialBlock: mockSafeCreatePartialBlock
         });
 
-        blockSync({ opts: { priority: 1 }, data : { userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
+        blockSync({ opts: { priority: 1 }, data : { workspaceId: 1, userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
             .then(res => {
                 expect(bulkEnqueue).toHaveBeenCalledWith('receiptSync', expect.arrayContaining([
                     expect.objectContaining({
@@ -142,7 +146,7 @@ describe('blockSync', () => {
 
     it('Should re-enqueue if timed out', (done) => {
         jest.spyOn(Date, 'now').mockImplementation(() => 1609459200000);
-        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
             id: 1,
             name: 'ws',
             user: { firebaseUserId: 'abc' },
@@ -160,7 +164,7 @@ describe('blockSync', () => {
             fetchRawBlockWithTransactions: jest.fn().mockRejectedValueOnce({ message: 'Timed out after 10000ms' })
         }));
 
-        blockSync({ opts: { priority: 1 }, data : { source: 'cli-light', userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
+        blockSync({ opts: { priority: 1 }, data : { source: 'cli-light', workspaceId: 1, userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
             .then(() => {
                 expect(enqueue).toHaveBeenCalledWith('blockSync', 'blockSync-1-1-1609459200000', {
                     workspaceId: 1,
@@ -174,7 +178,7 @@ describe('blockSync', () => {
 
     it('Should re-enqueue if rate limited', (done) => {
         jest.spyOn(Date, 'now').mockImplementation(() => 1609459200000);
-        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
             id: 1,
             name: 'ws',
             user: { firebaseUserId: 'abc' },
@@ -194,7 +198,7 @@ describe('blockSync', () => {
             fetchRawBlockWithTransactions: jest.fn().mockRejectedValueOnce({ message: 'Rate limited' })
         }));
 
-        blockSync({ opts: { priority: 1 }, data : { source: 'cli-light', rateLimited: true, userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
+        blockSync({ opts: { priority: 1 }, data : { source: 'cli-light', rateLimited: true, workspaceId: 1, userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
             .then(() => {
                 expect(enqueue).toHaveBeenCalledWith('blockSync', 'blockSync-1-1-1609459200000', {
                     workspaceId: 1,
@@ -207,7 +211,7 @@ describe('blockSync', () => {
     });
 
     it.skip('Should return if transaction quota reached', (done) => {
-        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
             id: 1,
             rpcServer: 'http://localhost:8545',
             rpcHealthCheck: {
@@ -219,7 +223,7 @@ describe('blockSync', () => {
                 shouldSync: true
             }
         });
-        blockSync({ opts: { priority: 1 }, data : { userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
+        blockSync({ opts: { priority: 1 }, data : { workspaceId: 1, userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
             .then(res => {
                 expect(res).toEqual('Transaction quota reached');
                 done();
@@ -227,7 +231,7 @@ describe('blockSync', () => {
     });
 
     it('Should return if no active explorer', (done) => {
-        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
             id: 1,
             rpcServer: 'http://localhost:8545',
             rpcHealthCheck: {
@@ -235,7 +239,7 @@ describe('blockSync', () => {
             },
             explorer: null
         });
-        blockSync({ opts: { priority: 1 }, data : { userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
+        blockSync({ opts: { priority: 1 }, data : { workspaceId: 1, userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
             .then(res => {
                 expect(res).toEqual('No active explorer for this workspace');
                 done();
@@ -243,7 +247,7 @@ describe('blockSync', () => {
     });
 
     it('Should return if sync is disabled', (done) => {
-        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
             id: 1,
             rpcServer: 'http://localhost:8545',
             rpcHealthCheck: {
@@ -253,7 +257,7 @@ describe('blockSync', () => {
                 shouldSync: false
             }
         });
-        blockSync({ opts: { priority: 1 }, data : { userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
+        blockSync({ opts: { priority: 1 }, data : { workspaceId: 1, userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
             .then(res => {
                 expect(res).toEqual('Sync is disabled');
                 done();
@@ -261,7 +265,7 @@ describe('blockSync', () => {
     });
 
     it('Should return if too many failed rpc requests', (done) => {
-        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
             id: 1,
             rpcServer: 'http://localhost:8545',
             rpcHealthCheckEnabled: true,
@@ -273,7 +277,7 @@ describe('blockSync', () => {
                 shouldSync: true
             }
         });
-        blockSync({ opts: { priority: 1 }, data : { userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
+        blockSync({ opts: { priority: 1 }, data : { workspaceId: 1, userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
             .then(res => {
                 expect(res).toEqual('RPC is not reachable');
                 done();
@@ -281,7 +285,7 @@ describe('blockSync', () => {
     });
 
     it('Should return if no subscription', (done) => {
-        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
             id: 1,
             rpcServer: 'http://localhost:8545',
             rpcHealthCheckEnabled: true,
@@ -293,7 +297,7 @@ describe('blockSync', () => {
                 shouldSync: true
             }
         });
-        blockSync({ opts: { priority: 1 }, data : { userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
+        blockSync({ opts: { priority: 1 }, data : { workspaceId: 1, userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
             .then(res => {
                 expect(res).toEqual('No active subscription');
                 done();
@@ -314,7 +318,7 @@ describe('blockSync', () => {
             })),
         }));
 
-        blockSync({ opts: { priority: 1 }, data : { userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
+        blockSync({ opts: { priority: 1 }, data : { workspaceId: 1, userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
             .then(res => {
                 expect(res).toEqual('Block synced');
                 expect(mockSafeCreatePartialBlock).toHaveBeenCalledWith({
@@ -334,7 +338,7 @@ describe('blockSync', () => {
 
     it('Should filter transactions when orbit config exists', (done) => {
         mockSafeCreatePartialBlock.mockResolvedValue({ transactions: []});
-        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
             id: 1,
             rpcServer: 'http://localhost:8545',
             rpcHealthCheck: {
@@ -365,7 +369,7 @@ describe('blockSync', () => {
             })),
         }));
 
-        blockSync({ opts: { priority: 1 }, data : { userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
+        blockSync({ opts: { priority: 1 }, data : { workspaceId: 1, userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
             .then(res => {
                 expect(res).toEqual('Block synced');
                 expect(mockSafeCreatePartialBlock).toHaveBeenCalledWith({
@@ -385,7 +389,7 @@ describe('blockSync', () => {
 
     it('Should filter transactions when orbit child configs exist', (done) => {
         mockSafeCreatePartialBlock.mockResolvedValue({ transactions: []});
-        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
             id: 1,
             rpcServer: 'http://localhost:8545',
             rpcHealthCheck: {
@@ -417,7 +421,7 @@ describe('blockSync', () => {
             })),
         }));
 
-        blockSync({ opts: { priority: 1 }, data : { userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
+        blockSync({ opts: { priority: 1 }, data : { workspaceId: 1, userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
             .then(res => {
                 expect(res).toEqual('Block synced');
                 expect(mockSafeCreatePartialBlock).toHaveBeenCalledWith({
@@ -437,7 +441,7 @@ describe('blockSync', () => {
 
     it('Should disable browser sync', (done) => {
         const mockUpdate = jest.fn().mockResolvedValue();
-        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
             id: 1,
             browserSyncEnabled: true,
             rpcServer: 'http://localhost:8545',
@@ -453,7 +457,7 @@ describe('blockSync', () => {
             update: mockUpdate
         });
         jest.spyOn(db, 'syncPartialBlock').mockResolvedValue({ transactions: [] });
-        blockSync({ opts: { priority: 1 }, data : { userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
+        blockSync({ opts: { priority: 1 }, data : { workspaceId: 1, userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
             .then(res => {
                 expect(res).toEqual('Block synced');
                 expect(mockUpdate).toHaveBeenCalledWith({ browserSyncEnabled: false });
@@ -462,7 +466,7 @@ describe('blockSync', () => {
     });
 
     it('Should set recovery status for integrity check', (done) => {
-        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
             id: 1,
             rpcServer: 'http://localhost:8545',
             integrityCheck: { isHealthy: true },
@@ -473,7 +477,7 @@ describe('blockSync', () => {
             },
             safeCreatePartialBlock: mockSafeCreatePartialBlock
         });
-        blockSync({ opts: { priority: 1 }, data : { userId: '123', workspace: 'My Workspace', blockNumber: 1, source: 'recovery' }})
+        blockSync({ opts: { priority: 1 }, data : { workspaceId: 1, userId: '123', workspace: 'My Workspace', blockNumber: 1, source: 'recovery' }})
             .then(() => {
                 expect(db.updateWorkspaceIntegrityCheck).toHaveBeenCalledWith(1, { status: 'recovering' });
                 done();
@@ -481,7 +485,7 @@ describe('blockSync', () => {
     });
 
     it('Should set healthy status for integrity check', (done) => {
-        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
             id: 1,
             rpcServer: 'http://localhost:8545',
             integrityCheck: { isRecovering: true },
@@ -492,7 +496,7 @@ describe('blockSync', () => {
             },
             safeCreatePartialBlock: mockSafeCreatePartialBlock
         });
-        blockSync({ opts: { priority: 1 }, data : { userId: '123', workspace: 'My Workspace', blockNumber: 1, source: 'api' }})
+        blockSync({ opts: { priority: 1 }, data : { workspaceId: 1, userId: '123', workspace: 'My Workspace', blockNumber: 1, source: 'api' }})
             .then(() => {
                 expect(db.updateWorkspaceIntegrityCheck).toHaveBeenCalledWith(1, { status: 'healthy' });
                 done();
@@ -506,7 +510,7 @@ describe('blockSync', () => {
         jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
             id: 1,
             rpcServer: 'http://localhost:8545',
-            explorer: { shouldSync: true },
+            explorer: { shouldSync: true, stripeSubscription: {} },
             safeCreatePartialBlock: mockSafeCreatePartialBlock
         });
 
@@ -523,9 +527,30 @@ describe('blockSync', () => {
                         expect.objectContaining({ as: 'integrityCheck' })
                     ])
                 }));
-                // Should NOT call findOne (normal path)
+                // Should use findByPk (fast path), not findOne
                 expect(Workspace.findOne).not.toHaveBeenCalled();
                 expect(res).toEqual('Block synced');
+                done();
+            });
+    });
+
+    it('Should return if workspaceId is missing', (done) => {
+        blockSync({ opts: { priority: 1 }, data: { blockNumber: 1 }})
+            .then(res => {
+                expect(res).toEqual('Missing workspaceId - all blockSync jobs must include workspaceId');
+                done();
+            });
+    });
+
+    it('Should return if no subscription for non-api source', (done) => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
+            id: 1,
+            rpcServer: 'http://localhost:8545',
+            explorer: { shouldSync: true, stripeSubscription: null }
+        });
+        blockSync({ opts: { priority: 1 }, data: { workspaceId: 1, blockNumber: 1, source: 'integrityCheck' }})
+            .then(res => {
+                expect(res).toEqual('No active subscription');
                 done();
             });
     });
@@ -545,6 +570,7 @@ describe('blockSync', () => {
 
         blockSync({
             data : {
+                workspaceId: 1,
                 userId: '123',
                 workspace: 'My Workspace',
                 blockNumber: 1
