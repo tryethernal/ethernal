@@ -17,28 +17,18 @@ describe('batchBlockSync', () => {
 
     it('Should return if invalid range', async () => {
         const result = await batchBlockSync({
-            data: { userId: '123', workspace: 'My Workspace', from: 100, to: 50 }
+            data: { userId: '123', workspace: 'My Workspace', workspaceId: 1, from: 100, to: 50 }
         });
         expect(result).toEqual('Invalid range.');
         expect(bulkEnqueue).not.toHaveBeenCalled();
     });
 
-    it('Should enqueue all blocks without pre-filtering when no workspaceId (backward compat)', async () => {
-        const db = require('../../lib/firebase');
-        db.getWorkspaceByName.mockResolvedValueOnce({ id: 1 });
-
-        await batchBlockSync({
+    it('Should return if missing workspaceId', async () => {
+        const result = await batchBlockSync({
             data: { userId: '123', workspace: 'My Workspace', from: 1, to: 5 }
         });
-
-        expect(bulkEnqueue).toHaveBeenCalledWith('blockSync', [
-            expect.objectContaining({ data: expect.objectContaining({ blockNumber: 1 }) }),
-            expect.objectContaining({ data: expect.objectContaining({ blockNumber: 2 }) }),
-            expect.objectContaining({ data: expect.objectContaining({ blockNumber: 3 }) }),
-            expect.objectContaining({ data: expect.objectContaining({ blockNumber: 4 }) }),
-            expect.objectContaining({ data: expect.objectContaining({ blockNumber: 5 }) }),
-        ]);
-        expect(enqueue).not.toHaveBeenCalled();
+        expect(result).toEqual('Missing workspaceId.');
+        expect(bulkEnqueue).not.toHaveBeenCalled();
     });
 
     it('Should pre-filter existing blocks when workspaceId is provided', async () => {
