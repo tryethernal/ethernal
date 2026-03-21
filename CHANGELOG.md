@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.107] - 2026-03-21
+### Fixed
+- feat(tweet-pipeline): add competitor monitoring via Reddit scanning (#809)
+
+
 ## [5.17.106] - 2026-03-21
 ### Fixed
 - docs: add job error handling and cross-repo caller rules
