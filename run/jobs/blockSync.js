@@ -25,14 +25,11 @@ module.exports = async job => {
     const data = job.data;
 
     // Require workspaceId to prevent N+1 query regressions
-    if (!data.workspaceId) {
-        logger.error('blockSync job missing workspaceId — block dropped', { location: 'jobs.blockSync', data });
-        return 'Missing workspaceId - all blockSync jobs must include workspaceId';
-    }
+    if (!data.workspaceId)
+        throw new Error('Missing workspaceId');
 
-    if (data.blockNumber === undefined || data.blockNumber === null) {
-        return 'Missing parameter';
-    }
+    if (data.blockNumber === undefined || data.blockNumber === null)
+        throw new Error('Missing blockNumber');
 
     let workspace;
 

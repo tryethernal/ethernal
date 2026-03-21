@@ -156,6 +156,8 @@ Always use `IF NOT EXISTS`/`IF EXISTS` for re-runnability. For tables < 1M rows,
 - **Cross-app URLs:** Landing and app live on different subdomains (`tryethernal.com` vs `app.tryethernal.com`). Use `__APP_URL__` global in the landing app (defined in `landing/vite.config.js`, defaults to `https://app.tryethernal.com`). In the blog (Astro), use `import.meta.env.PUBLIC_APP_URL` (defaults to `https://app.tryethernal.com`, set via `PUBLIC_APP_URL` env var in Docker). API calls (`/api/*`) can be relative since Caddy proxies them on every subdomain. Absolute URLs are only for external services (docs, GitHub, Discord).
 - **Blog footer must match landing footer** (`landing/src/components/LandingFooter.vue`). When adding links, columns, or changing structure in the landing footer, mirror the changes in the blog footer (`blog/src/components/Footer.astro`).
 - **Enterprise contact modal** exists in both the app (`src/components/OnboardingEnterpriseModal.vue`) and landing (`landing/src/components/EnterpriseContactModal.vue`). Both use the same design and hit `POST /api/onboarding/contact`. Keep them in sync when updating.
+- **Background jobs: throw on invalid params**, never `return 'error string'`. BullMQ marks returned strings as completed jobs, hiding errors. Use `throw new Error(...)` instead. See [QUEUES.md](.claude/references/QUEUES.md).
+- **Background jobs: check ALL callers across repos** when changing job parameters. Jobs are enqueued from the main backend, the `ethernal-cli-light` repo (direct Redis), and the PM2 server. See [QUEUES.md](.claude/references/QUEUES.md) for the full caller table.
 
 ## Documentation Requirements
 

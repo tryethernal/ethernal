@@ -9,9 +9,8 @@ const batchBlockSync = require('../../jobs/batchBlockSync');
 beforeEach(() => jest.clearAllMocks());
 
 describe('batchBlockSync', () => {
-    it('Should return if missing parameters', async () => {
-        const result = await batchBlockSync({ data: {} });
-        expect(result).toEqual('Missing parameter.');
+    it('Should throw if missing parameters', async () => {
+        await expect(batchBlockSync({ data: {} })).rejects.toThrow('Missing parameter.');
         expect(bulkEnqueue).not.toHaveBeenCalled();
     });
 
@@ -23,11 +22,10 @@ describe('batchBlockSync', () => {
         expect(bulkEnqueue).not.toHaveBeenCalled();
     });
 
-    it('Should return if missing workspaceId', async () => {
-        const result = await batchBlockSync({
+    it('Should throw if missing workspaceId', async () => {
+        await expect(batchBlockSync({
             data: { userId: '123', workspace: 'My Workspace', from: 1, to: 5 }
-        });
-        expect(result).toEqual('Missing workspaceId.');
+        })).rejects.toThrow('Missing workspaceId.');
         expect(bulkEnqueue).not.toHaveBeenCalled();
     });
 
