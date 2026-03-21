@@ -48,6 +48,34 @@ PM2 logListener → storeOrbitDeposit / checkOrbitMessageDeliveredLogs
 PM2 opLogListener → storeOpDeposit / checkOpDepositLogs
 ```
 
+## Job Callers — Check ALL of Them
+
+Jobs are enqueued from multiple places — the main backend, the cli-light repo, and the PM2 server. **When changing a job's expected parameters, you MUST check all callers across all repos:**
+
+| Repo | Location | Jobs enqueued |
+|------|----------|---------------|
+| `ethernal` (main) | `run/api/`, `run/jobs/`, `run/models/` | blockSync, batchBlockSync, receiptSync, etc. |
+| `ethernal-cli-light` | `src/index.ts` | blockSync (via direct Redis/BullMQ) |
+| `ethernal` PM2 server | `pm2-server/*.js` | storeOrbitDeposit, storeOpDeposit |
+
+**cli-light enqueues directly to Redis** (not via the backend API), so changes to job parameter requirements will silently break it if not updated in lockstep. The cli-light npm package is installed in `Dockerfile.pm2` and deployed to the `ethernal-pm2` Fly app.
+
+## Job Error Handling
+
+**Throw on invalid params, never return a string.** BullMQ marks jobs that return a string as *completed* (not failed), hiding errors from Sentry and queue monitoring. Invalid parameters should always `throw new Error(...)` so the job appears as failed.
+
+```javascript
+// WRONG — job silently completes, error is invisible
+if (!data.workspaceId)
+    return 'Missing workspaceId';
+
+// RIGHT — job fails, shows up in Sentry and BullMQ failed queue
+if (!data.workspaceId)
+    throw new Error('Missing workspaceId');
+```
+
+**Note:** BullMQ has 0 retries configured by default in this project, so thrown errors won't cause retry loops.
+
 ## Job Naming Convention
 
 ```
