@@ -185,12 +185,11 @@ module.exports = (sequelize, DataTypes) => {
         // Use bulk operations to avoid N+1 query regression
 
         // 1. Bulk destroy events associated with token balance changes for this transaction
-        await sequelize.models.Event.destroy({
+        await sequelize.models.TokenBalanceChangeEvent.destroy({
             where: {
-                id: {
+                tokenBalanceChangeId: {
                     [sequelize.Op.in]: sequelize.literal(`(
-                        SELECT e.id FROM events e
-                        INNER JOIN token_balance_changes tbc ON e.token_balance_change_id = tbc.id
+                        SELECT tbc.id FROM token_balance_changes tbc
                         INNER JOIN token_transfers tt ON tbc.token_transfer_id = tt.id
                         WHERE tt.transaction_id = ${this.id}
                     )`)
@@ -212,7 +211,7 @@ module.exports = (sequelize, DataTypes) => {
         });
 
         // 3. Bulk destroy events associated with token transfers for this transaction
-        await sequelize.models.Event.destroy({
+        await sequelize.models.TokenTransferEvent.destroy({
             where: {
                 tokenTransferId: {
                     [sequelize.Op.in]: sequelize.literal(`(
