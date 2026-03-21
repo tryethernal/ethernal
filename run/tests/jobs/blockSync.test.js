@@ -534,12 +534,9 @@ describe('blockSync', () => {
             });
     });
 
-    it('Should return if workspaceId is missing', (done) => {
-        blockSync({ opts: { priority: 1 }, data: { blockNumber: 1 }})
-            .then(res => {
-                expect(res).toEqual('Missing workspaceId - all blockSync jobs must include workspaceId');
-                done();
-            });
+    it('Should throw if workspaceId is missing', async () => {
+        await expect(blockSync({ opts: { priority: 1 }, data: { blockNumber: 1 }}))
+            .rejects.toThrow('Missing workspaceId');
     });
 
     it('Should return if no subscription for non-api source', (done) => {
@@ -555,12 +552,9 @@ describe('blockSync', () => {
             });
     });
 
-    it('Should return Missing parameter on fast path when blockNumber is missing', (done) => {
-        blockSync({ opts: { priority: 1 }, data: { workspaceId: 1 }})
-            .then(res => {
-                expect(res).toEqual('Missing parameter');
-                done();
-            });
+    it('Should throw when blockNumber is missing', async () => {
+        await expect(blockSync({ opts: { priority: 1 }, data: { workspaceId: 1 }}))
+            .rejects.toThrow('Missing blockNumber');
     });
 
     it('Should fail if block cannot be found', (done) => {
