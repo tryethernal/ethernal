@@ -182,9 +182,51 @@ module.exports = (sequelize, DataTypes) => {
 
         // Delete token transfers that aren't handled by the receipt chain
         // (like reward transfers created directly on the transaction)
-        const tokenTransfers = await this.getTokenTransfers();
-        for (let i = 0; i < tokenTransfers.length; i++)
-            await tokenTransfers[i].safeDestroy(transaction);
+        // Use bulk operations to avoid N+1 query regression
+
+        // 1. Bulk destroy events associated with token balance changes for this transaction
+        await sequelize.models.TokenBalanceChangeEvent.destroy({
+            where: {
+                tokenBalanceChangeId: {
+                    [Op.in]: sequelize.literal(`(
+                        SELECT tbc.id FROM token_balance_changes tbc
+                        INNER JOIN token_transfers tt ON tbc."tokenTransferId" = tt.id
+                        WHERE tt."transactionId" = ${this.id}
+                    )`)
+                }
+            },
+            transaction
+        });
+
+        // 2. Bulk destroy token balance changes for this transaction
+        await sequelize.models.TokenBalanceChange.destroy({
+            where: {
+                tokenTransferId: {
+                    [Op.in]: sequelize.literal(`(
+                        SELECT id FROM token_transfers WHERE "transactionId" = ${this.id}
+                    )`)
+                }
+            },
+            transaction
+        });
+
+        // 3. Bulk destroy events associated with token transfers for this transaction
+        await sequelize.models.TokenTransferEvent.destroy({
+            where: {
+                tokenTransferId: {
+                    [Op.in]: sequelize.literal(`(
+                        SELECT id FROM token_transfers WHERE "transactionId" = ${this.id}
+                    )`)
+                }
+            },
+            transaction
+        });
+
+        // 4. Bulk destroy token transfers for this transaction
+        await sequelize.models.TokenTransfer.destroy({
+            where: { transactionId: this.id },
+            transaction
+        });
 
         const contract = await sequelize.models.Contract.findOne({ where: { transactionId: this.id }});
         if (contract)
