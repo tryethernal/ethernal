@@ -811,18 +811,39 @@ module.exports = (sequelize, DataTypes) => {
                         .map(tt => tt.token)
                 )];
 
-                // Batch query all contracts at once to prevent N+1 query pattern
+                // Smart contract lookup strategy to avoid both N+1 queries and large IN clause performance issues
                 const contractsMap = new Map();
                 if (tokenAddresses.length > 0) {
-                    const contracts = await sequelize.models.Contract.findAll({
-                        where: {
-                            workspaceId: this.workspaceId,
-                            address: tokenAddresses
-                        },
-                        attributes: ['address', 'patterns']
-                    });
-                    for (const contract of contracts) {
-                        contractsMap.set(contract.address, contract);
+                    if (tokenAddresses.length <= 3) {
+                        // For small numbers, use individual queries to avoid IN clause overhead in large workspaces
+                        for (const address of tokenAddresses) {
+                            const contract = await sequelize.models.Contract.findOne({
+                                where: {
+                                    workspaceId: this.workspaceId,
+                                    address: address
+                                },
+                                attributes: ['address', 'patterns']
+                            });
+                            if (contract) {
+                                contractsMap.set(contract.address, contract);
+                            }
+                        }
+                    } else {
+                        // For larger numbers, batch in chunks of 50 to balance performance
+                        const chunkSize = 50;
+                        for (let i = 0; i < tokenAddresses.length; i += chunkSize) {
+                            const chunk = tokenAddresses.slice(i, i + chunkSize);
+                            const contracts = await sequelize.models.Contract.findAll({
+                                where: {
+                                    workspaceId: this.workspaceId,
+                                    address: chunk
+                                },
+                                attributes: ['address', 'patterns']
+                            });
+                            for (const contract of contracts) {
+                                contractsMap.set(contract.address, contract);
+                            }
+                        }
                     }
                 }
 
