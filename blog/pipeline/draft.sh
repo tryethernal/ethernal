@@ -169,6 +169,17 @@ fi
 
 log "Phase 2 complete. Article: $ARTICLE_PATH"
 
+# Quick frontmatter sanity check — enforce description length before Phase 3
+DESC=$(sed -n 's/^description: *"\(.*\)"/\1/p' "$ARTICLE_PATH")
+DESC_LEN=${#DESC}
+if [ "$DESC_LEN" -gt 160 ]; then
+  log "WARNING: Description is $DESC_LEN chars (max 160) — truncating"
+  # Cut at last space before 157 chars, append "..."
+  SHORT_DESC=$(echo "$DESC" | cut -c1-157 | sed 's/ [^ ]*$/.../')
+  sed -i "s|^description: \".*\"|description: \"$SHORT_DESC\"|" "$ARTICLE_PATH"
+  log "Description shortened to ${#SHORT_DESC} chars"
+fi
+
 # ============================================================
 # PHASE 3: Humanize + Polish
 # ============================================================
@@ -191,20 +202,61 @@ log "Phase 3 complete."
 
 # ============================================================
 # Validate: Astro build must pass before committing
+# Auto-fix loop: if validation fails, Claude fixes errors and retries (max 2 attempts)
 # ============================================================
 log "Validating blog build..."
 cd "$REPO_DIR/blog"
-if ! npx astro build 2>&1 | tee -a "$LOG_FILE"; then
-  log "ERROR: Astro build failed — article has schema or syntax errors"
+
+VALIDATION_PASSED=false
+for ATTEMPT in 1 2 3; do
+  VALIDATE_OUTPUT=$(npx astro sync 2>&1) || true
+  echo "$VALIDATE_OUTPUT" | tee -a "$LOG_FILE"
+
+  if ! echo "$VALIDATE_OUTPUT" | grep -qi "error"; then
+    VALIDATION_PASSED=true
+    break
+  fi
+
+  if [ "$ATTEMPT" -eq 3 ]; then
+    log "ERROR: Astro validation still failing after 2 auto-fix attempts"
+    break
+  fi
+
+  log "Validation failed (attempt $ATTEMPT/3) — running Claude auto-fix..."
+
+  # Extract the error message for Claude
+  VALIDATION_ERRORS=$(echo "$VALIDATE_OUTPUT" | grep -A2 -i "error" | head -10)
+
+  cd "$REPO_DIR"
+  claude -p "The blog article at $ARTICLE_PATH failed Astro validation with these errors:
+
+$VALIDATION_ERRORS
+
+Fix the article file to resolve these errors. Common fixes:
+- description must be <= 160 characters (shorten it, keep meaning, aim for 130-150 chars)
+- date must be YYYY-MM-DD format
+- required frontmatter fields: title, description, date, tags, image, ogImage, status, readingTime
+
+Only edit the file to fix the errors. Do not rewrite content." \
+    --dangerously-skip-permissions \
+    --max-turns 3 \
+    2>&1 | tee -a "$LOG_FILE"
+
+  cd "$REPO_DIR/blog"
+  log "Auto-fix attempt $ATTEMPT complete. Re-validating..."
+done
+
+if [ "$VALIDATION_PASSED" != "true" ]; then
   cd "$REPO_DIR/blog/pipeline"
   CARD_ID="$CARD_ID" node --input-type=module -e "
     import { updateCardStatus } from './project.js';
     updateCardStatus(process.env.CARD_ID, 'detected');
     console.log('Card reset to Detected');
   " 2>&1 | tee -a "$LOG_FILE"
-  report_failure "Build Validation"
+  report_failure "Build Validation (failed after auto-fix)"
   exit 1
 fi
+
 cd "$REPO_DIR"
 log "Build validation passed."
 
