@@ -4288,9 +4288,12 @@ const storeBlock = async (userId, workspace, block) => {
     if (!userId || !workspace || !block) throw new Error('Missing parameter.');
 
     const user = await User.findByAuthIdWithWorkspace(userId, workspace);
-    const existingBlock = await user.workspaces[0].findBlockByNumber(block.number);
 
-    if (existingBlock) {
+    // Check for existing block by both number and hash to prevent race conditions
+    const existingBlockByNumber = await user.workspaces[0].findBlockByNumber(block.number);
+    const existingBlockByHash = block.hash ? await user.workspaces[0].findBlockByHash(block.hash) : null;
+
+    if (existingBlockByNumber || existingBlockByHash) {
         return null;
     }
     else {
