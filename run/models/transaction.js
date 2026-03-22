@@ -363,12 +363,13 @@ module.exports = (sequelize, DataTypes) => {
 
             // Orbit deposit finalization
             if (this.requestId) {
-                const orbitDeposit = await sequelize.models.OrbitDeposit.findOne({
-                    where: {
-                        workspaceId: this.workspaceId,
-                        messageIndex: this.requestId
-                    }
-                });
+                const orbitDeposit = options.cachedData?.orbitDeposit ||
+                    await sequelize.models.OrbitDeposit.findOne({
+                        where: {
+                            workspaceId: this.workspaceId,
+                            messageIndex: this.requestId
+                        }
+                    });
 
                 if (orbitDeposit) {
                     await orbitDeposit.finalize({
@@ -521,6 +522,52 @@ module.exports = (sequelize, DataTypes) => {
                 }
 
                 // OP Stack L1 event processing (when this L1 workspace has OP L2 children)
+                // Collect withdrawal hashes first for batching to avoid N+1 queries
+                const withdrawalHashes = [];
+                const withdrawalLogMap = new Map(); // Map withdrawal hash to log data
+
+                for (const opChildConfig of receipt.workspace.opChildConfigs || []) {
+                    for (const log of storedLogs) {
+                        if (isWithdrawalProvenLog(log)) {
+                            const provenData = getWithdrawalProvenData(log);
+                            withdrawalHashes.push(provenData.withdrawalHash);
+                            withdrawalLogMap.set(provenData.withdrawalHash, {
+                                type: 'proven',
+                                data: provenData,
+                                opChildConfig,
+                                log
+                            });
+                        }
+
+                        if (isWithdrawalFinalizedLog(log)) {
+                            const finalizedData = getWithdrawalFinalizedData(log);
+                            withdrawalHashes.push(finalizedData.withdrawalHash);
+                            withdrawalLogMap.set(finalizedData.withdrawalHash, {
+                                type: 'finalized',
+                                data: finalizedData,
+                                opChildConfig,
+                                log
+                            });
+                        }
+                    }
+                }
+
+                // Batch fetch all needed withdrawals
+                const withdrawalsMap = new Map();
+                if (withdrawalHashes.length > 0) {
+                    const withdrawals = await sequelize.models.OpWithdrawal.findAll({
+                        where: {
+                            withdrawalHash: withdrawalHashes,
+                            workspaceId: receipt.workspace.opChildConfigs.map(config => config.workspaceId)
+                        },
+                        attributes: ['id', 'workspaceId', 'withdrawalHash', 'status']
+                    });
+
+                    for (const withdrawal of withdrawals) {
+                        withdrawalsMap.set(withdrawal.withdrawalHash, withdrawal);
+                    }
+                }
+
                 for (const opChildConfig of receipt.workspace.opChildConfigs || []) {
                     // Detect deposits (TransactionDeposited events on OptimismPortal)
                     if (opChildConfig.optimismPortalAddress && this.to?.toLowerCase() === opChildConfig.optimismPortalAddress.toLowerCase()) {
@@ -563,14 +610,9 @@ module.exports = (sequelize, DataTypes) => {
                             if (isWithdrawalProvenLog(log)) {
                                 try {
                                     const provenData = getWithdrawalProvenData(log);
-                                    const withdrawal = await sequelize.models.OpWithdrawal.findOne({
-                                        where: {
-                                            workspaceId: opChildConfig.workspaceId,
-                                            withdrawalHash: provenData.withdrawalHash
-                                        }
-                                    });
+                                    const withdrawal = withdrawalsMap.get(provenData.withdrawalHash);
 
-                                    if (withdrawal) {
+                                    if (withdrawal && withdrawal.workspaceId === opChildConfig.workspaceId) {
                                         await withdrawal.update({
                                             status: 'proven',
                                             l1ProofTransactionHash: this.hash,
@@ -587,14 +629,9 @@ module.exports = (sequelize, DataTypes) => {
                             if (isWithdrawalFinalizedLog(log)) {
                                 try {
                                     const finalizedData = getWithdrawalFinalizedData(log);
-                                    const withdrawal = await sequelize.models.OpWithdrawal.findOne({
-                                        where: {
-                                            workspaceId: opChildConfig.workspaceId,
-                                            withdrawalHash: finalizedData.withdrawalHash
-                                        }
-                                    });
+                                    const withdrawal = withdrawalsMap.get(finalizedData.withdrawalHash);
 
-                                    if (withdrawal) {
+                                    if (withdrawal && withdrawal.workspaceId === opChildConfig.workspaceId) {
                                         await withdrawal.update({
                                             status: 'finalized',
                                             l1FinalizeTransactionHash: this.hash,
@@ -652,10 +689,11 @@ module.exports = (sequelize, DataTypes) => {
                             if (isDisputeGameCreatedLog(log)) {
                                 try {
                                     const gameData = getDisputeGameCreatedData(log);
-                                    const lastOutput = await sequelize.models.OpOutput.findOne({
-                                        where: { workspaceId: opChildConfig.workspaceId },
-                                        order: [['outputIndex', 'DESC']]
-                                    });
+                                    const lastOutput = options.cachedData?.opOutputs?.get(opChildConfig.workspaceId) ||
+                                        await sequelize.models.OpOutput.findOne({
+                                            where: { workspaceId: opChildConfig.workspaceId },
+                                            order: [['outputIndex', 'DESC']]
+                                        });
                                     const nextOutputIndex = lastOutput ? lastOutput.outputIndex + 1 : 0;
 
                                     const challengePeriodEnds = calculateChallengePeriodEnd(
@@ -743,7 +781,7 @@ module.exports = (sequelize, DataTypes) => {
                     }));
             }
 
-            const block = await this.getBlock();
+            const block = options.cachedData?.block || await this.getBlock();
             let toValidator;
             if (this.type && this.type == 2) {
                 // Use BigNumber for (effectiveGasPrice - baseFeePerGas) * gasUsed

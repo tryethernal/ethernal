@@ -511,6 +511,49 @@ module.exports = async job => {
                 // Ensure orbit associations are set for safeCreateReceipt
                 workspace.orbitChildConfigs = orbitChildConfigs;
 
+                // Batch fetch related data to avoid N+1 queries in safeCreateReceipt
+                let cachedData = {};
+                try {
+                    const { Block, OrbitDeposit, OpWithdrawal, OpOutput } = require('../models');
+                    const requestIds = transactions.map(tx => tx.requestId).filter(Boolean);
+
+                    // Batch fetch block data (shared across all transactions)
+                    cachedData.block = await syncedBlock.getBlock();
+
+                    // Batch fetch orbit deposits if any transactions have requestIds
+                    const orbitDepositsMap = new Map();
+                    if (requestIds.length > 0) {
+                        const orbitDeposits = await OrbitDeposit.findAll({
+                            where: {
+                                workspaceId: workspace.id,
+                                messageIndex: requestIds
+                            }
+                        });
+                        for (const deposit of orbitDeposits) {
+                            orbitDepositsMap.set(deposit.messageIndex, deposit);
+                        }
+                    }
+                    cachedData.orbitDepositsMap = orbitDepositsMap;
+
+                    // Batch fetch OP outputs for dispute game processing
+                    const opOutputsMap = new Map();
+                    if (workspace.opChildConfigs && workspace.opChildConfigs.length > 0) {
+                        for (const opConfig of workspace.opChildConfigs) {
+                            const lastOutput = await OpOutput.findOne({
+                                where: { workspaceId: opConfig.workspaceId },
+                                order: [['outputIndex', 'DESC']]
+                            });
+                            if (lastOutput) {
+                                opOutputsMap.set(opConfig.workspaceId, lastOutput);
+                            }
+                        }
+                    }
+                    cachedData.opOutputs = opOutputsMap;
+                } catch (error) {
+                    // In test environment or if models unavailable, skip caching
+                    logger.debug('Skipping batch fetch for test environment', { error: error.message });
+                }
+
                 // Store receipts in parallel with concurrency limit
                 const failedTxHashes = [];
                 for (let i = 0; i < transactions.length; i += RECEIPT_STORAGE_CONCURRENCY) {
@@ -527,8 +570,19 @@ module.exports = async job => {
                             Object.keys(TransactionReceipt.rawAttributes).concat(['logs'])
                         );
                         processedReceipt.workspace = workspace;
+
+                        // Pass cached data to avoid N+1 queries
+                        const transactionCachedData = {
+                            block: cachedData.block,
+                            orbitDeposit: cachedData.orbitDepositsMap?.get(tx.requestId),
+                            opOutputs: cachedData.opOutputs
+                        };
+
                         try {
-                            await tx.safeCreateReceipt(processedReceipt, { skipExistenceCheck: true });
+                            await tx.safeCreateReceipt(processedReceipt, {
+                                skipExistenceCheck: true,
+                                cachedData: transactionCachedData
+                            });
                         } catch (err) {
                             logger.error(`Failed to store receipt for ${tx.hash}`, { location: 'jobs.blockSync.inlineReceipt', error: err.message, hash: tx.hash });
                             failedTxHashes.push(tx);
