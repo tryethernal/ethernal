@@ -10,7 +10,7 @@ tags:
   - L2
 image: "/blog/images/decentralized-zk-proving-coordination.png"
 ogImage: "/blog/images/decentralized-zk-proving-coordination-og.png"
-status: draft
+status: published
 readingTime: 7
 ---
 
