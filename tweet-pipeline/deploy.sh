@@ -18,12 +18,15 @@ rsync -avz --delete \
   --exclude='state.db' \
   --exclude='state.db-wal' \
   --exclude='state.db-shm' \
-  "$SCRIPT_DIR/" blog@157.90.154.200:/opt/tweet-pipeline/
+  "$SCRIPT_DIR/" root@157.90.154.200:/opt/tweet-pipeline/
+
+# CRITICAL: fix ownership after rsync (rsync as root creates root-owned files,
+# which breaks git pull in /opt/ethernal-blog-stack when blog user runs the blog pipeline)
+echo "Fixing file ownership..."
+ssh root@157.90.154.200 "chown -R blog:blog /opt/tweet-pipeline/"
 
 echo "Installing dependencies..."
-ssh blog@157.90.154.200 "cd /opt/tweet-pipeline && npm ci --silent && npx playwright install chromium --with-deps"
+ssh root@157.90.154.200 "sudo -u blog bash -c 'cd /opt/tweet-pipeline && npm ci --silent && npx playwright install chromium --with-deps'"
 
 echo "Done. Run the following on the server to update systemd units:"
-echo "  cp /opt/tweet-pipeline/*.service /opt/tweet-pipeline/*.timer ~/.config/systemd/user/"
-echo "  systemctl --user daemon-reload"
-echo "  systemctl --user restart tweet-draft.timer tweet-publish.timer tweet-engagement.timer scan-newsletter.timer"
+echo "  ssh root@157.90.154.200 'cp /opt/tweet-pipeline/*.service /opt/tweet-pipeline/*.timer /etc/systemd/system/ && systemctl daemon-reload'"

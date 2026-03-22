@@ -66,8 +66,12 @@ fi
 
 cd "$REPO_DIR"
 
-# Pull latest
+# Pull latest (fix ownership first — rsync deploys as root can leave root-owned files)
 log "Pulling latest changes..."
+if find "$REPO_DIR" -maxdepth 2 -not -user "$(whoami)" -type f 2>/dev/null | head -1 | grep -q .; then
+  log "WARNING: Found files not owned by $(whoami) — attempting ownership fix"
+  sudo chown -R "$(whoami):$(id -gn)" "$REPO_DIR" 2>/dev/null || log "WARNING: chown failed (no sudo?), git pull may fail"
+fi
 git checkout develop 2>&1 | tee -a "$LOG_FILE"
 git pull --ff-only origin develop 2>&1 | tee -a "$LOG_FILE"
 
