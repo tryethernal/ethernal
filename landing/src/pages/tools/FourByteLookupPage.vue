@@ -383,6 +383,14 @@ useHead({
 .result-signature { color: var(--text-primary); font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace; font-size: 13px; flex: 1; }
 .result-selector { color: var(--text-muted); font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace; font-size: 12px; }
 
+/* Action button base */
+.btn-primary {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 10px 24px; border-radius: 8px; font-size: 14px; font-weight: 600;
+    cursor: pointer; text-decoration: none; white-space: nowrap;
+}
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+
 /* Copy button */
 .copy-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 4px; border-radius: 4px; }
 .copy-btn:hover { color: var(--text-primary); background: rgba(61,149,206,0.1); }
