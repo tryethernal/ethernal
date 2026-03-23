@@ -24,7 +24,7 @@ Read `tweet-pipeline/.source.json` which contains:
 
 3. **Find a specific, quantifiable fact** related to the topic: a dollar amount, a metric, a percentage, a date, a count. The more precise and surprising, the better.
 
-4. **Identify a contrarian or surprising angle.** What does everyone assume that is wrong? What is the non-obvious takeaway? What would make someone stop scrolling?
+4. **Identify a contrarian or surprising angle.** What does everyone assume that is wrong? What is the non-obvious takeaway? What would make someone stop scrolling? Think about what would make a developer retweet this, not just read it.
 
 5. **Look up Twitter/X handles** for every project, person, and protocol mentioned in your research. WebSearch for "[entity name] Twitter" or "[entity name] X account". Only include handles you can verify. Cap at 6 handles.
 
