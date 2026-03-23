@@ -11,9 +11,9 @@
                     <span class="current">Blockscout Alternative</span>
                 </nav>
                 <div class="text-overline mb-1" style="letter-spacing: 0.1em; color: #5DAAE0; font-size: 11px;">OPEN-SOURCE BLOCK EXPLORER</div>
-                <h1 class="font-heading text-white mb-2" style="font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -0.02em;">Looking for a Blockscout Alternative?</h1>
+                <h1 class="font-heading text-white mb-2" style="font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -0.02em;">Ethernal vs Blockscout</h1>
                 <p style="color: var(--text-secondary); max-width: 560px; line-height: 1.6; font-size: 0.95rem;">
-                    Ethernal is an open-source, MIT-licensed block explorer that deploys in under 5 minutes from a single RPC URL. No Elixir runtime, no complex infrastructure. Full white-label branding from $500/month.
+                    Two open-source block explorers, different trade-offs. Ethernal optimizes for setup speed and simplicity. Blockscout optimizes for ecosystem breadth and customization depth. Here is how they compare for teams shipping EVM chains.
                 </p>
                 <div class="chain-stats-strip" style="--chain-color: 61, 149, 206;">
                     <div class="chain-stat"><span class="chain-stat-label">Setup</span> <span class="chain-stat-value">&lt; 5 min</span></div>
@@ -22,6 +22,14 @@
                     <div class="chain-stat"><span class="chain-stat-label">Pricing</span> <span class="chain-stat-value">From $0</span></div>
                 </div>
             </div>
+
+            <!-- TL;DR -->
+            <section class="tldr-box my-12">
+                <h2 class="tldr-label">TL;DR</h2>
+                <p class="tldr-text">
+                    Ethernal deploys in under 5 minutes from an RPC URL, runs on Node.js and Docker, and includes native OP Stack and Arbitrum Orbit bridge support. Blockscout has the largest open-source explorer ecosystem (1000+ chains), is built on Elixir/Erlang, and offers deep customization through its plugin architecture. Both are open source and self-hostable.
+                </p>
+            </section>
 
             <!-- Why teams look for alternatives -->
             <section class="my-16">
@@ -33,14 +41,80 @@
                 </p>
             </section>
 
+            <!-- Detailed Comparisons -->
+            <section class="comparison-detail my-16">
+                <h2 class="font-heading text-white mb-4" style="font-weight: 700; font-size: clamp(1.3rem, 2.5vw, 1.8rem); letter-spacing: -0.02em;">
+                    Setup and Deployment
+                </h2>
+                <div class="comparison-prose">
+                    <p>
+                        <strong style="color: var(--text-primary);">Ethernal</strong> is designed to get you from zero to a working explorer as fast as possible. Clone the repo, run <code class="code-inline">make start</code>, paste your RPC URL. The entire stack is Node.js and Docker. No exotic runtimes, no multi-service orchestration. Under 5 minutes for a self-hosted instance, or instant for the hosted version.
+                    </p>
+                    <p>
+                        <strong style="color: var(--text-primary);">Blockscout</strong> self-hosted requires an Elixir/Erlang runtime, PostgreSQL, and multiple coordinated services. Budget hours to days depending on your team's familiarity with the Elixir ecosystem. Blockscout's Autoscout product offers a faster hosted deployment path that reduces this overhead significantly.
+                    </p>
+                    <p class="bottom-line">
+                        <strong>Bottom line:</strong> Ethernal is faster for teams without Elixir expertise. Blockscout's Autoscout closes the gap for hosted deployments.
+                    </p>
+                </div>
+            </section>
+
+            <section class="comparison-detail my-16">
+                <h2 class="font-heading text-white mb-4" style="font-weight: 700; font-size: clamp(1.3rem, 2.5vw, 1.8rem); letter-spacing: -0.02em;">
+                    L2 and Rollup Support
+                </h2>
+                <div class="comparison-prose">
+                    <p>
+                        <strong style="color: var(--text-primary);">Ethernal</strong> has native OP Stack support built in: withdrawal lifecycle tracking (initiation through finalization), deposit monitoring, and batch/blob tracking. Arbitrum Orbit support is also built in with bridge monitoring and cross-chain message tracking. No plugins or extra configuration needed.
+                    </p>
+                    <p>
+                        <strong style="color: var(--text-primary);">Blockscout</strong> supports L1, L2, L3, and ZK rollups. It covers a wider range of chain types overall. Some L2-specific features (like detailed bridge lifecycle tracking) require plugins or additional configuration depending on the rollup framework.
+                    </p>
+                    <p class="bottom-line">
+                        <strong>Bottom line:</strong> Ethernal has deeper built-in L2 bridge support. Blockscout has broader chain type coverage.
+                    </p>
+                </div>
+            </section>
+
+            <section class="comparison-detail my-16">
+                <h2 class="font-heading text-white mb-4" style="font-weight: 700; font-size: clamp(1.3rem, 2.5vw, 1.8rem); letter-spacing: -0.02em;">
+                    Branding and Customization
+                </h2>
+                <div class="comparison-prose">
+                    <p>
+                        <strong style="color: var(--text-primary);">Ethernal</strong> offers full white-label from $500/mo on the App Chain plan: custom domain, logo, colors, and theme. Self-hosted gives you unlimited customization since the codebase is Node.js/Vue, a stack most web developers already know.
+                    </p>
+                    <p>
+                        <strong style="color: var(--text-primary);">Blockscout</strong> provides full customization in its self-hosted version. Its Explorer-as-a-Service (EaaS) offering includes managed white-label options. Because Blockscout is built on Elixir, customizing the source code requires familiarity with that ecosystem.
+                    </p>
+                    <p class="bottom-line">
+                        <strong>Bottom line:</strong> Similar capabilities, different skill requirements for customization.
+                    </p>
+                </div>
+            </section>
+
+            <section class="comparison-detail my-16">
+                <h2 class="font-heading text-white mb-4" style="font-weight: 700; font-size: clamp(1.3rem, 2.5vw, 1.8rem); letter-spacing: -0.02em;">
+                    Ecosystem
+                </h2>
+                <div class="comparison-prose">
+                    <p>
+                        <strong style="color: var(--text-primary);">Blockscout</strong> powers over 1000 chains and has the largest open-source block explorer community. It is used by Ethereum, Optimism, Base, and Gnosis, among others. If ecosystem size and community support are your top priority, Blockscout is the established leader.
+                    </p>
+                    <p>
+                        <strong style="color: var(--text-primary);">Ethernal</strong> supports 370+ chains and serves over 13,000 users. The ecosystem is growing fast, especially among teams launching OP Stack and Arbitrum Orbit chains that want a turnkey solution.
+                    </p>
+                    <p class="bottom-line">
+                        <strong>Bottom line:</strong> Blockscout has the larger ecosystem. Ethernal is growing fast.
+                    </p>
+                </div>
+            </section>
+
             <!-- Comparison table -->
             <section class="comparison-section my-16">
                 <h2 class="font-heading text-white mb-4" style="font-weight: 700; font-size: clamp(1.3rem, 2.5vw, 1.8rem); letter-spacing: -0.02em;">
-                    Ethernal vs Blockscout
+                    At-a-Glance Comparison
                 </h2>
-                <p class="mb-8" style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; max-width: 600px;">
-                    A side-by-side comparison to help you decide which explorer fits your team.
-                </p>
                 <div class="comparison-table">
                     <div class="comp-row comp-header">
                         <span>Feature</span>
@@ -73,6 +147,11 @@
                         <span class="comp-partial">Requires plugins</span>
                     </div>
                     <div class="comp-row">
+                        <span>ZK rollup support</span>
+                        <span class="comp-no">Planned</span>
+                        <span class="comp-yes">Yes</span>
+                    </div>
+                    <div class="comp-row">
                         <span>Transaction tracing</span>
                         <span class="comp-yes">Full call traces</span>
                         <span class="comp-yes">Full traces</span>
@@ -93,83 +172,41 @@
                         <span class="comp-yes">Yes (complex)</span>
                     </div>
                     <div class="comp-row">
-                        <span>Hosted option</span>
-                        <span class="comp-yes">Yes</span>
-                        <span class="comp-yes">Yes (Autoscout, EaaS)</span>
-                    </div>
-                    <div class="comp-row">
                         <span>Chain ecosystem</span>
                         <span class="comp-partial">370+ chains</span>
                         <span class="comp-yes">1000+ chains</span>
+                    </div>
+                    <div class="comp-row">
+                        <span>Transparent pricing</span>
+                        <span class="comp-yes">Published</span>
+                        <span class="comp-partial">Custom / contact</span>
                     </div>
                 </div>
             </section>
 
             <!-- When Blockscout is better -->
-            <section class="my-16">
-                <h2 class="font-heading text-white mb-4" style="font-weight: 700; font-size: clamp(1.3rem, 2.5vw, 1.8rem); letter-spacing: -0.02em;">
-                    When Blockscout Is the Better Choice
+            <section class="who-section my-16">
+                <h2 class="font-heading text-white mb-6" style="font-weight: 700; font-size: clamp(1.3rem, 2.5vw, 1.8rem); letter-spacing: -0.02em;">
+                    Who Should Use Blockscout
                 </h2>
-                <div class="choice-list">
-                    <div class="choice-item">
-                        <v-icon size="18" style="color: #5DAAE0; flex-shrink: 0; margin-top: 2px;">mdi-check-circle-outline</v-icon>
-                        <div>
-                            <h3 style="color: var(--text-primary); font-weight: 600; margin-bottom: 4px;">Largest open-source ecosystem</h3>
-                            <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; margin: 0;">If you need the broadest community of contributors, plugins, and integrations, Blockscout has the largest open-source block explorer ecosystem available.</p>
-                        </div>
-                    </div>
-                    <div class="choice-item">
-                        <v-icon size="18" style="color: #5DAAE0; flex-shrink: 0; margin-top: 2px;">mdi-check-circle-outline</v-icon>
-                        <div>
-                            <h3 style="color: var(--text-primary); font-weight: 600; margin-bottom: 4px;">Elixir/Erlang expertise on your team</h3>
-                            <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; margin: 0;">If your team already runs Elixir in production, Blockscout fits naturally into your stack without introducing a new runtime.</p>
-                        </div>
-                    </div>
-                    <div class="choice-item">
-                        <v-icon size="18" style="color: #5DAAE0; flex-shrink: 0; margin-top: 2px;">mdi-check-circle-outline</v-icon>
-                        <div>
-                            <h3 style="color: var(--text-primary); font-weight: 600; margin-bottom: 4px;">Autoscout for quick hosted testing</h3>
-                            <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; margin: 0;">Blockscout's Autoscout offers one-click hosted deployment for testing and evaluation, which can be convenient for quick prototyping.</p>
-                        </div>
-                    </div>
-                </div>
+                <ul class="who-list">
+                    <li>Teams that need the largest open-source explorer ecosystem</li>
+                    <li>Teams with Elixir/Erlang expertise who want deep source customization</li>
+                    <li>Major L1 ecosystems that want battle-tested infrastructure</li>
+                </ul>
             </section>
 
             <!-- When Ethernal is better -->
-            <section class="my-16">
-                <h2 class="font-heading text-white mb-4" style="font-weight: 700; font-size: clamp(1.3rem, 2.5vw, 1.8rem); letter-spacing: -0.02em;">
-                    When Ethernal Is the Better Choice
+            <section class="who-section my-16">
+                <h2 class="font-heading text-white mb-6" style="font-weight: 700; font-size: clamp(1.3rem, 2.5vw, 1.8rem); letter-spacing: -0.02em;">
+                    Who Should Use Ethernal
                 </h2>
-                <div class="choice-list">
-                    <div class="choice-item">
-                        <v-icon size="18" style="color: #22C55E; flex-shrink: 0; margin-top: 2px;">mdi-check-circle</v-icon>
-                        <div>
-                            <h3 style="color: var(--text-primary); font-weight: 600; margin-bottom: 4px;">Production explorer in minutes, not days</h3>
-                            <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; margin: 0;">Paste your RPC URL, configure your branding, and you have a live explorer. No multi-service deployment, no Erlang VM tuning, no DevOps sprint.</p>
-                        </div>
-                    </div>
-                    <div class="choice-item">
-                        <v-icon size="18" style="color: #22C55E; flex-shrink: 0; margin-top: 2px;">mdi-check-circle</v-icon>
-                        <div>
-                            <h3 style="color: var(--text-primary); font-weight: 600; margin-bottom: 4px;">Node.js/Docker stack (no Elixir required)</h3>
-                            <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; margin: 0;">Ethernal runs on Node.js and Docker. If your team already works with JavaScript/TypeScript, you can self-host, extend, and debug without learning a new language.</p>
-                        </div>
-                    </div>
-                    <div class="choice-item">
-                        <v-icon size="18" style="color: #22C55E; flex-shrink: 0; margin-top: 2px;">mdi-check-circle</v-icon>
-                        <div>
-                            <h3 style="color: var(--text-primary); font-weight: 600; margin-bottom: 4px;">Native L2 bridge support without plugins</h3>
-                            <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; margin: 0;">OP Stack withdrawal tracking, Arbitrum Orbit bridge monitoring, and deposit/finalization lifecycle views are built into the core product. No plugins to install or maintain.</p>
-                        </div>
-                    </div>
-                    <div class="choice-item">
-                        <v-icon size="18" style="color: #22C55E; flex-shrink: 0; margin-top: 2px;">mdi-check-circle</v-icon>
-                        <div>
-                            <h3 style="color: var(--text-primary); font-weight: 600; margin-bottom: 4px;">Transparent, published pricing</h3>
-                            <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; margin: 0;">$0 self-hosted (MIT license), $0 Starter (hosted), $150/mo Team, $500/mo App Chain. No "contact sales" guesswork for standard plans.</p>
-                        </div>
-                    </div>
-                </div>
+                <ul class="who-list">
+                    <li>Teams shipping L2s or app chains who need a working explorer fast</li>
+                    <li>Teams running Node.js/Docker without Elixir expertise</li>
+                    <li>Startups that need transparent pricing without enterprise sales calls</li>
+                    <li>Solo developers on Hardhat/Anvil who need a local chain explorer</li>
+                </ul>
             </section>
 
             <!-- Pricing -->
@@ -201,6 +238,10 @@
                 </h2>
                 <div class="faq-list">
                     <div class="faq-item">
+                        <h3 class="faq-q">Which is easier to set up?</h3>
+                        <p class="faq-a">Ethernal. Clone the repo, run <code class="code-inline">make start</code>, paste your RPC URL. The whole process takes under 5 minutes. Blockscout self-hosted requires an Elixir runtime and more infrastructure. Autoscout simplifies Blockscout's hosted option.</p>
+                    </div>
+                    <div class="faq-item">
                         <h3 class="faq-q">Is Ethernal open source like Blockscout?</h3>
                         <p class="faq-a">Yes. Ethernal is MIT licensed. You can fork it, extend it, and self-host it without restrictions. The full source code is available on GitHub.</p>
                     </div>
@@ -211,6 +252,10 @@
                     <div class="faq-item">
                         <h3 class="faq-q">Does Ethernal support as many chains as Blockscout?</h3>
                         <p class="faq-a">Blockscout supports 1,000+ chains. Ethernal supports 370+ unique EVM chains. Both work with any EVM-compatible chain, so if your chain speaks JSON-RPC, both explorers can index it.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h3 class="faq-q">Which has better L2 support?</h3>
+                        <p class="faq-a">Ethernal has deeper built-in OP Stack and Arbitrum Orbit bridge support (withdrawal lifecycle, deposit monitoring, batch tracking). Blockscout supports more L2 types overall, including ZK rollups.</p>
                     </div>
                     <div class="faq-item">
                         <h3 class="faq-q">Is Blockscout free?</h3>
@@ -225,6 +270,13 @@
                     Related
                 </h2>
                 <div class="related-links">
+                    <router-link to="/routescan-alternative" class="related-link">
+                        <v-icon size="18" style="color: #5DAAE0;">mdi-swap-horizontal</v-icon>
+                        <div>
+                            <span class="related-title">Routescan Alternative</span>
+                            <span class="related-desc">Open-source, self-hostable alternative to Routescan's managed explorer</span>
+                        </div>
+                    </router-link>
                     <router-link to="/features" class="related-link">
                         <v-icon size="18" style="color: #5DAAE0;">mdi-view-grid-outline</v-icon>
                         <div>
@@ -243,7 +295,7 @@
                         <v-icon size="18" style="color: #5DAAE0;">mdi-post-outline</v-icon>
                         <div>
                             <span class="related-title">Best Block Explorers for EVM Chains (2026)</span>
-                            <span class="related-desc">In-depth comparison of Etherscan, Blockscout, Ethernal, and other EVM explorers</span>
+                            <span class="related-desc">In-depth comparison of Etherscan, Blockscout, Ethernal, and more</span>
                         </div>
                     </a>
                 </div>
@@ -260,12 +312,12 @@ import LandingLayout from '@/components/LandingLayout.vue';
 import LandingCTA from '@/components/LandingCTA.vue';
 
 useHead({
-    title: 'Blockscout Alternative  - Ethernal',
+    title: 'Ethernal vs Blockscout - Open-Source Block Explorer Comparison',
     meta: [
-        { name: 'description', content: 'Looking for a Blockscout alternative? Ethernal is an open-source block explorer that deploys in under 5 minutes. MIT licensed, self-hostable, full white-label.' },
+        { name: 'description', content: 'Compare Ethernal and Blockscout: setup speed, L2 support, pricing, and customization. Two open-source EVM block explorers, different trade-offs.' },
         { property: 'og:type', content: 'website' },
-        { property: 'og:title', content: 'Blockscout Alternative  - Ethernal' },
-        { property: 'og:description', content: 'Looking for a Blockscout alternative? Ethernal is an open-source block explorer that deploys in under 5 minutes. MIT licensed, self-hostable, full white-label.' },
+        { property: 'og:title', content: 'Ethernal vs Blockscout - Open-Source Block Explorer Comparison' },
+        { property: 'og:description', content: 'Compare Ethernal and Blockscout: setup speed, L2 support, pricing, and customization. Two open-source EVM block explorers, different trade-offs.' },
         { property: 'og:url', content: 'https://tryethernal.com/blockscout-alternative' },
         { name: 'twitter:card', content: 'summary_large_image' },
     ],
@@ -278,7 +330,7 @@ useHead({
             children: JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "Product",
-                "name": "Ethernal  - Blockscout Alternative",
+                "name": "Ethernal - Blockscout Alternative",
                 "description": "Open-source, MIT-licensed block explorer that deploys in under 5 minutes. Node.js + Docker runtime, built-in L2 bridge support, full white-label branding.",
                 "brand": { "@type": "Organization", "name": "Ethernal" },
                 "url": "https://tryethernal.com/blockscout-alternative",
@@ -297,8 +349,7 @@ useHead({
                 "@type": "BreadcrumbList",
                 "itemListElement": [
                     { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tryethernal.com/" },
-                    { "@type": "ListItem", "position": 2, "name": "Compare", "item": "https://tryethernal.com/blockscout-alternative" },
-                    { "@type": "ListItem", "position": 3, "name": "Blockscout Alternative", "item": "https://tryethernal.com/blockscout-alternative" }
+                    { "@type": "ListItem", "position": 2, "name": "Blockscout Alternative", "item": "https://tryethernal.com/blockscout-alternative" }
                 ]
             })
         },
@@ -308,9 +359,11 @@ useHead({
                 "@context": "https://schema.org",
                 "@type": "FAQPage",
                 "mainEntity": [
-                    { "@type": "Question", "name": "Is Ethernal open source like Blockscout?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Ethernal is MIT licensed. You can fork it, extend it, and self-host it without restrictions. The full source code is available on GitHub." } },
-                    { "@type": "Question", "name": "Can I migrate from Blockscout to Ethernal?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Point Ethernal at the same RPC endpoint your Blockscout instance uses. Historical data re-indexes automatically. There is no manual data migration required." } },
+                    { "@type": "Question", "name": "Which is easier to set up, Ethernal or Blockscout?", "acceptedAnswer": { "@type": "Answer", "text": "Ethernal. Clone the repo, run make start, paste your RPC URL. Under 5 minutes. Blockscout self-hosted requires an Elixir runtime and more infrastructure." } },
+                    { "@type": "Question", "name": "Is Ethernal open source like Blockscout?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Ethernal is MIT licensed. You can fork it, extend it, and self-host it without restrictions." } },
+                    { "@type": "Question", "name": "Can I migrate from Blockscout to Ethernal?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Point Ethernal at the same RPC endpoint your Blockscout instance uses. Historical data re-indexes automatically." } },
                     { "@type": "Question", "name": "Does Ethernal support as many chains as Blockscout?", "acceptedAnswer": { "@type": "Answer", "text": "Blockscout supports 1,000+ chains. Ethernal supports 370+ unique EVM chains. Both work with any EVM-compatible chain." } },
+                    { "@type": "Question", "name": "Which has better L2 support?", "acceptedAnswer": { "@type": "Answer", "text": "Ethernal has deeper built-in OP Stack and Arbitrum Orbit bridge support. Blockscout supports more L2 types overall, including ZK rollups." } },
                     { "@type": "Question", "name": "Is Blockscout free?", "acceptedAnswer": { "@type": "Answer", "text": "Self-hosted Blockscout is free and open source. Autoscout and EaaS have paid tiers. Ethernal is also free to self-host (MIT license) and has a free hosted Starter tier." } }
                 ]
             })
@@ -334,6 +387,17 @@ useHead({
 .breadcrumb .sep { color: var(--text-muted); }
 .breadcrumb .current { color: var(--text-secondary); }
 
+/* TL;DR box */
+.tldr-box { padding: 24px 28px; background: var(--glass-bg); backdrop-filter: blur(16px); border: 1px solid var(--border-subtle); border-radius: 16px; box-shadow: var(--shadow-card); }
+.tldr-label { color: #5DAAE0; font-weight: 700; font-size: 0.85rem; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 10px; }
+.tldr-text { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.7; margin: 0; }
+
+/* Comparison prose sections */
+.comparison-prose p { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.7; margin-bottom: 16px; max-width: 720px; }
+.comparison-prose .bottom-line { padding: 12px 16px; background: rgba(61, 149, 206, 0.06); border-left: 3px solid rgba(61, 149, 206, 0.4); border-radius: 0 8px 8px 0; margin-top: 8px; }
+.comparison-prose .bottom-line strong { color: var(--text-primary); }
+.code-inline { background: var(--glass-bg-strong); padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; color: #A5D6FF; }
+
 /* Comparison table */
 .comparison-table { border: 1px solid var(--drawer-divider); border-radius: 12px; overflow: hidden; }
 .comp-row { display: grid; grid-template-columns: 1.5fr 1fr 1fr; padding: 12px 16px; font-size: 13px; border-bottom: 1px solid var(--drawer-divider); }
@@ -344,9 +408,10 @@ useHead({
 .comp-no { color: var(--text-muted); }
 .comp-partial { color: #F59E0B; }
 
-/* Choice lists */
-.choice-list { display: flex; flex-direction: column; gap: 16px; }
-.choice-item { display: flex; gap: 12px; padding: 16px; background: var(--glass-bg); border: 1px solid var(--drawer-divider); border-radius: 12px; }
+/* Who should use */
+.who-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
+.who-list li { padding: 14px 20px; background: var(--glass-bg); border: 1px solid var(--drawer-divider); border-radius: 10px; color: var(--text-secondary); font-size: 0.93rem; line-height: 1.6; position: relative; padding-left: 36px; }
+.who-list li::before { content: '\2713'; position: absolute; left: 14px; color: #22C55E; font-weight: 700; }
 
 /* FAQ */
 .faq-list { display: flex; flex-direction: column; gap: 16px; }
@@ -367,5 +432,6 @@ useHead({
 
 @media (max-width: 600px) {
     .comp-row { grid-template-columns: 1.2fr 0.8fr 0.8fr; font-size: 11px; padding: 10px 12px; }
+    .tldr-box { padding: 18px 20px; }
 }
 </style>

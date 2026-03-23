@@ -20,7 +20,6 @@ export const routes = [
 
     // Competitor comparison pages
     { path: '/blockscout-alternative', name: 'blockscout-alternative', component: () => import('./pages/compare/BlockscoutAlternativePage.vue') },
-    { path: '/compare/ethernal-vs-blockscout', name: 'compare-ethernal-vs-blockscout', component: () => import('./pages/compare/EthernalVsBlockscoutPage.vue') },
     { path: '/routescan-alternative', name: 'routescan-alternative', component: () => import('./pages/compare/RoutescanAlternativePage.vue') },
 
     // Chain directory pages

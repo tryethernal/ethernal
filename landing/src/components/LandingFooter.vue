@@ -44,7 +44,15 @@
                     </div>
                 </v-col>
 
-                <v-col cols="6" sm="3" md="2" lg="3">
+                <v-col cols="6" sm="3" md="2" lg="1">
+                    <div class="footer-heading">Compare</div>
+                    <div class="d-flex flex-column ga-2">
+                        <router-link to="/blockscout-alternative" class="footer-link">vs Blockscout</router-link>
+                        <router-link to="/routescan-alternative" class="footer-link">vs Routescan</router-link>
+                    </div>
+                </v-col>
+
+                <v-col cols="6" sm="3" md="2" lg="2">
                     <div class="footer-heading">Resources</div>
                     <div class="d-flex flex-column ga-2">
                         <a href="https://github.com/tryethernal/ethernal" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub</a>
@@ -66,11 +74,6 @@
                     <div class="d-flex flex-column ga-2">
                         <router-link to="/op-stack" class="footer-link">OP Stack Chains</router-link>
                         <router-link to="/arbitrum-orbit" class="footer-link">Arbitrum Orbit Chains</router-link>
-                    </div>
-                    <div class="footer-heading mt-6">Compare</div>
-                    <div class="d-flex flex-column ga-2">
-                        <router-link to="/blockscout-alternative" class="footer-link">vs Blockscout</router-link>
-                        <router-link to="/routescan-alternative" class="footer-link">vs Routescan</router-link>
                     </div>
                 </v-col>
 
