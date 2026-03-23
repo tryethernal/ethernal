@@ -207,6 +207,24 @@ See [MARKETING.md](.claude/references/MARKETING.md) for complete reference (blog
 - **ZK chains** (zkSync Era, Scroll, Linea, Polygon zkEVM, Mantle): Build once ZK-specific features are implemented (ZK proof verification, batch posting, etc.).
 - **Polygon CDK chains**: Build once Polygon CDK support is fully implemented.
 
+### Competitor Comparison Pages
+
+**Existing pages:** 4 comparison pages in `landing/src/pages/compare/`:
+- `/blockscout-alternative` (BlockscoutAlternativePage.vue) — targets "blockscout alternative", "ethernal vs blockscout"
+- `/etherscan-alternative` (EtherscanAlternativePage.vue) — targets "etherscan alternative"
+- `/routescan-alternative` (RoutescanAlternativePage.vue) — targets "routescan alternative"
+- `/build-vs-buy-block-explorer` (InHouseAlternativePage.vue) — targets "build block explorer", "build vs buy"
+
+Each page has: hero (breadcrumb + overline + H1 + description + stats strip), TL;DR box, prose comparison sections with "Bottom line:" callouts, at-a-glance comparison table, who-should-use sections, pricing cards (4 glass cards), FAQ, related links, LandingCTA, and structured data (Product/BreadcrumbList/FAQPage). Blockscout and Build vs Buy pages also have terminal mockups. Etherscan page has a pricing scale bar visual.
+
+**When adding a new comparison page:**
+1. Create `landing/src/pages/compare/<Name>AlternativePage.vue` following `BlockscoutAlternativePage.vue` as reference
+2. Add route in `landing/src/router.js` in the competitor comparison section
+3. Add footer link in `LandingFooter.vue` (row 2, Compare column) — order: Etherscan, Blockscout, Routescan, In-House
+4. Mirror footer link in `blog/src/components/Footer.astro` Compare section
+5. Update `landing/public/llms.txt` under "## Comparisons"
+6. Be honest about competitor strengths. No em dashes. Run through humanizer.
+
 ---
 
 ## Pricing
