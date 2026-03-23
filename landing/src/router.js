@@ -18,6 +18,10 @@ export const routes = [
     { path: '/arbitrum-orbit', name: 'arbitrum-orbit', component: () => import('./pages/OrbitPage.vue') },
     { path: '/op-stack', name: 'op-stack', component: () => import('./pages/OpStackPage.vue') },
 
+    // Competitor comparison pages
+    { path: '/blockscout-alternative', name: 'blockscout-alternative', component: () => import('./pages/compare/BlockscoutAlternativePage.vue') },
+    { path: '/compare/ethernal-vs-blockscout', name: 'compare-ethernal-vs-blockscout', component: () => import('./pages/compare/EthernalVsBlockscoutPage.vue') },
+
     // Chain directory pages
     { path: '/chains/base', name: 'chains-base', component: () => import('./pages/chains/BasePage.vue') },
     { path: '/chains/arbitrum-one', name: 'chains-arbitrum-one', component: () => import('./pages/chains/ArbitrumOnePage.vue') },

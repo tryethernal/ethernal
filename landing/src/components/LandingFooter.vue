@@ -67,6 +67,10 @@
                         <router-link to="/op-stack" class="footer-link">OP Stack Chains</router-link>
                         <router-link to="/arbitrum-orbit" class="footer-link">Arbitrum Orbit Chains</router-link>
                     </div>
+                    <div class="footer-heading mt-6">Compare</div>
+                    <div class="d-flex flex-column ga-2">
+                        <router-link to="/blockscout-alternative" class="footer-link">vs Blockscout</router-link>
+                    </div>
                 </v-col>
 
                 <v-col cols="6" sm="3" md="2" lg="2">

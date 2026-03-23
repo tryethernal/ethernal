@@ -48,6 +48,10 @@
 - [Cyber](https://tryethernal.com/chains/cyber): Cyber explorer
 - [Mint](https://tryethernal.com/chains/mint): Mint explorer
 
+## Comparisons
+
+- [Blockscout Alternative](https://tryethernal.com/blockscout-alternative): Side-by-side comparison of Ethernal vs Blockscout — setup, runtime, L2 support, pricing
+
 ## Blog
 
 - [On-Chain Engineering Blog](https://tryethernal.com/blog): Technical articles on EVM internals, EIPs, L2 architecture, and smart contract development
