@@ -2873,6 +2873,11 @@ module.exports = (sequelize, DataTypes) => {
     async safeCreatePartialBlock(block) {
         return sequelize.transaction(async sequelizeTransaction => {
             try {
+                // Pre-load workspace to prevent N+1 queries in block afterCreate hook
+                const workspace = await this.reload({
+                    attributes: ['id', 'public', 'tracing', 'integrityCheckStartBlockNumber'],
+                    transaction: sequelizeTransaction
+                });
                 const transactions = block.transactions.map(transaction => {
                     const processed = processRawRpcObject(
                         transaction,
@@ -2961,7 +2966,9 @@ module.exports = (sequelize, DataTypes) => {
                     {
                         ignoreDuplicates: true,
                         returning: true,
-                        transaction: sequelizeTransaction
+                        transaction: sequelizeTransaction,
+                        // Pass cached workspace to prevent N+1 queries in afterCreate hook
+                        cachedWorkspace: workspace
                     }
                 );
 
