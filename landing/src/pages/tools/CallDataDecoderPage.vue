@@ -298,7 +298,15 @@ watch(calldataInput, (val) => {
         signatureLookupLoading.value = true;
         try {
             const results = await lookup4byte(selector);
-            matchingSignatures.value = results.sort((a, b) => a.text_signature.length - b.text_signature.length);
+            const valid = [];
+            for (const sig of results) {
+                try {
+                    const fragment = parseSignature(sig.text_signature);
+                    await decodeCalldata(normalized, fragment);
+                    valid.push(sig);
+                } catch {}
+            }
+            matchingSignatures.value = valid.sort((a, b) => a.text_signature.length - b.text_signature.length);
         } catch (e) {
             signatureLookupError.value = 'Could not reach signature database.';
         } finally {
@@ -482,12 +490,12 @@ useHead({
 
 /* Signature chips */
 .signature-chip {
-    padding: 8px 16px; border-radius: 8px; border: 1px solid rgba(30, 41, 59, 0.8);
-    background: rgba(17, 24, 39, 0.6); color: var(--text-primary); cursor: pointer; font-size: 13px;
+    padding: 8px 16px; border-radius: 8px; border: 1px solid rgba(61, 149, 206, 0.3);
+    background: rgba(61, 149, 206, 0.08); color: #e2e8f0; cursor: pointer; font-size: 13px;
     font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace; transition: all 0.2s;
 }
-.signature-chip:hover { border-color: rgba(61,149,206,0.5); background: rgba(61,149,206,0.1); }
-.signature-chip.active { background: rgba(61,149,206,0.2); border-color: rgba(61,149,206,0.5); color: #fff; }
+.signature-chip:hover { border-color: rgba(61,149,206,0.5); background: rgba(61,149,206,0.15); color: #fff; }
+.signature-chip.active { background: rgba(61,149,206,0.25); border-color: rgba(61,149,206,0.6); color: #fff; }
 
 /* Collapse toggle */
 .tool-collapse-toggle {
