@@ -135,10 +135,7 @@ module.exports = async job => {
     const lastCheckedBlock = workspace.integrityCheck && workspace.integrityCheck.block && workspace.integrityCheck.block.number != null
         ? workspace.integrityCheck.block.number
         : lowerBlock.number;
-    const lastFullScanAt = workspace.integrityCheck && workspace.integrityCheck.updatedAt
-        ? new Date(workspace.integrityCheck.updatedAt)
-        : null;
-    const isFullScan = !lastFullScanAt || (Date.now() - lastFullScanAt.getTime()) > 60 * 60 * 1000;
+    const isFullScan = new Date().getMinutes() < 5;
     const scanLowerBound = isFullScan
         ? lowerBlock.number
         : Math.max(lowerBlock.number, lastCheckedBlock);
@@ -165,16 +162,14 @@ module.exports = async job => {
         }
 
         await bulkEnqueue('batchBlockSync', batches);
+    } else {
+        const [cursorBlock] = await workspace.getBlocks({
+            where: { number: latestReadyBlock.number },
+            attributes: ['id']
+        });
+        if (cursorBlock)
+            await workspace.safeCreateOrUpdateIntegrityCheck({ blockId: cursorBlock.id });
     }
-
-    const [cursorBlock] = await workspace.getBlocks({
-        where: { number: latestReadyBlock.number },
-        attributes: ['id']
-    });
-    if (cursorBlock)
-        await workspace.safeCreateOrUpdateIntegrityCheck({ blockId: cursorBlock.id });
-    else
-        console.warn(`[integrityCheck] Could not find cursor block #${latestReadyBlock.number} for workspace ${workspace.id}`);
 
     return true;
 };

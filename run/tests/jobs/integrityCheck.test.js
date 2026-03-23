@@ -150,8 +150,7 @@ describe('integrityCheck', () => {
             getExpiredBlocks: jest.fn(() => ([])),
             getBlocks: jest.fn()
                 .mockResolvedValueOnce([{ id: 1, number: 1 }])
-                .mockResolvedValueOnce([{ id: 2, number: 5 }])
-                .mockResolvedValueOnce([{ id: 3 }]),
+                .mockResolvedValueOnce([{ id: 2, number: 5 }]),
             integrityCheckStartBlockNumber: 5,
             id: 1,
             name: 'hardhat',
@@ -159,8 +158,7 @@ describe('integrityCheck', () => {
             user: { firebaseUserId: '123', name: 'hardhat' },
             getProvider: () => ({ fetchLatestBlock: jest.fn().mockResolvedValueOnce({ timestamp: 123, number: 4 }) }),
             getLatestReadyBlock: jest.fn().mockResolvedValueOnce({ number: 4, timestamp: 123 }),
-            findBlockGapsV2: jest.fn().mockResolvedValueOnce([{ blockStart: 1, blockEnd: 5 }, { blockStart: 8, blockEnd: 8 }]),
-            safeCreateOrUpdateIntegrityCheck: jest.fn().mockResolvedValueOnce(true)
+            findBlockGapsV2: jest.fn().mockResolvedValueOnce([{ blockStart: 1, blockEnd: 5 }, { blockStart: 8, blockEnd: 8 }])
         });
 
         await integrityCheck(job);
