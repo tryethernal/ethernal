@@ -139,14 +139,14 @@ module.exports = async () => {
 
             // Batch the 4 basic stats calls together, but process queues sequentially
             const [completedJobs, waitingJobCount, delayedJobCount, failedJobCount] = await Promise.all([
-                queue.getCompleted(0, 99), // Limit to 100 jobs for P95 calculation
+                queue.getCompleted(0, 19), // Limit to 20 jobs for P95 calculation (reduces Redis N+1 from ~200 to ~40 calls)
                 queue.getWaitingCount(),
                 queue.getDelayedCount(),
                 queue.getFailedCount()
             ]);
 
             // Only fetch failed jobs if there are failures - eliminates N+1 pattern
-            const failedJobs = failedJobCount > 0 ? await queue.getFailed(0, 99) : [];
+            const failedJobs = failedJobCount > 0 ? await queue.getFailed(0, 19) : [];
 
             const p95ProcessingTime = computeP95ProcessingTime(completedJobs);
 

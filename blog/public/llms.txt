@@ -5,7 +5,9 @@
 ## Articles
 
 - [How Three Infrastructure Failures Turned a $50M Collateral Swap into $36K](https://tryethernal.com/blog/50m-defi-routing-failure): A $50M Aave collateral swap returned $36K. Three compounding CoW Protocol failures made the worst possible route the only one available.
+- [Best Block Explorers for EVM Chains in 2026](https://tryethernal.com/blog/best-block-explorers-evm-chains-2026): Compare EVM block explorers in 2026: Etherscan, Blockscout, Ethernal, Tenderly, Blockchair, Routescan. Setup speed, pricing, and a decision framework.
 - [Data Retention Changes](https://tryethernal.com/blog/data-retention-changes): Data will now be cleared after 7 days for free plan users.
+- [When Provers Race: The Coordination Problem in Decentralized ZK](https://tryethernal.com/blog/decentralized-zk-proving-coordination): Concurrent ZK provers collide at 33K gas per failure. Why the coordination problem is hard and what three proposed mechanisms look like.
 - [One Signature, Every Chain: EIP-8130's Protocol-Level Account Abstraction](https://tryethernal.com/blog/eip-8130-protocol-level-account-abstraction): EIP-8130 proposes native AA with chainId=0 config sync. No bundlers, no per-chain key rotations. Here's how the mechanism actually works.
 - [Ethernal Is Going Open Source!](https://tryethernal.com/blog/ethernal-is-going-open-source): Ethernal's code is now publicly available on GitHub. The hosted version now has free and paid tiers.
 - [Ethernal x Alchemy](https://tryethernal.com/blog/ethernal-x-alchemy): Add a webhook in your Alchemy dashboard and get a block explorer for your dapp. Automatic transaction syncing and decoded function calls.

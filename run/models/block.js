@@ -151,7 +151,8 @@ module.exports = (sequelize, DataTypes) => {
             if (Date.now() / 1000 - this.timestamp < 60 * 10)
                 trigger(`private-blocks;workspace=${this.workspaceId}`, 'new', { number: this.number, withTransactions: this.transactionsCount > 0 });
 
-            const workspace = await this.getWorkspace();
+            // Use cached workspace if provided to prevent N+1 queries during bulk operations
+            const workspace = options.cachedWorkspace || await this.getWorkspace();
             if (workspace.public) {
                 await enqueue('removeStalledBlock', `removeStalledBlock-${this.id}`, { blockId: this.id, workspaceId: this.workspaceId }, null, null, STALLED_BLOCK_REMOVAL_DELAY);
 

@@ -11,7 +11,7 @@ on:
   pull_request_review:
     types: [submitted]
   issue_comment:
-    types: [created]
+    types: [created, edited]
   schedule:
     - cron: '0 */2 * * *'
 
@@ -265,6 +265,18 @@ jobs:
             - It's a simple logic bug with clear root cause
             - The fix is contained (1-3 files) and low risk
 
+            **ESCALATE** (not auto-fix) if the issue is an **infrastructure/config problem** (WebSocket failures, Fly.io service instability, DNS, routing, health checks). These require human review — do NOT create code PRs for infra issues.
+
+            For **performance issues specifically**, apply this triage checklist BEFORE writing any code:
+            1. **Check event volume thresholds FIRST — this is mandatory**:
+               - **User-facing endpoints** (API routes, HTTP handlers): need **50+ events/24h**. Below that → CLOSE.
+               - **Background jobs** (BullMQ workers, cron jobs): need **100+ events/24h**. Below that → CLOSE.
+               If the event count is below the threshold, CLOSE the issue immediately with a comment explaining the threshold. Do NOT proceed to investigation or fix.
+            2. **Check for missing indexes**: Run `\di` on the affected table(s) via the read-only DB. If the slow query would be fixed by an index, the fix is just a migration — don't restructure code.
+            3. **Prefer simple fixes**: An index > a query tweak > code restructuring. Never split a working single query into multiple queries to "optimize" it unless you've confirmed the original query plan is actually bad.
+            4. **Complexity budget**: If your fix requires > 20 lines of logic changes (not counting tests), ESCALATE instead of auto-fixing. Complex performance optimizations need human review.
+            5. **Group related issues**: Before fixing, check if there are other open sentry issues touching the same code path. If so, note it in the issue comment — one coherent fix is better than 5 micro-PRs.
+
             ### 3. Fix (only if AUTO-FIX)
             - Before creating a branch, verify no PR already exists:
               ```bash
@@ -312,6 +324,10 @@ jobs:
             - NEVER silently catch and swallow database errors with fallback values — this masks real issues. Let errors propagate so BullMQ retries the job.
             - NEVER split working database queries into multiple queries to "prevent timeouts" — timeouts are solved by indexes, not query splitting.
             - NEVER wrap entire job functions in try-catch just to log and re-throw — this adds no value.
+            - For performance fixes: ALWAYS check existing indexes first (`\di tablename` on read-only DB). If the right index exists, the query is likely fine — close the issue or look for the real problem elsewhere.
+            - For performance fixes: prefer adding an index (migration) over restructuring code. An index is 1 file, zero risk, and fixes the root cause. Code restructuring (caching, batching, multi-path strategies) adds complexity and bugs.
+            - NEVER create a fix PR with > 20 lines of logic changes for a performance issue. Escalate instead — complex optimizations need human review.
+            - NEVER claim a fix was made without verifying it appears in `git diff`. Run `git diff` before writing the review processing summary and confirm each claimed change is present.
         env:
           SENTRY_API_TOKEN: ${{ secrets.SENTRY_API_TOKEN }}
           PROD_DATABASE_URL_READONLY: ${{ secrets.PROD_DATABASE_URL_READONLY }}
@@ -576,6 +592,7 @@ jobs:
           allowed_bots: "ethernal-sentry[bot],greptile-apps[bot]"
           claude_args: "--model claude-sonnet-4-20250514 --max-turns 50 --allowedTools Bash,Read,Write,Edit,Glob,Grep"
           show_full_output: true
+          base_branch: develop
           prompt: |
             You are processing code review feedback on PR #${{ steps.pr_info.outputs.pr_number }} (branch: ${{ steps.pr_info.outputs.branch }}).
 

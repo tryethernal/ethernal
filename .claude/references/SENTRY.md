@@ -15,6 +15,18 @@ Self-hosted Sentry (v26.2.1) at `sentry.tryethernal.com`. Server details and cre
 
 **Safeguards**: Dedup check prevents duplicate PRs for the same issue; Greptile confidence threshold (3/5) gates auto-merge (low scores get `needs-human` label); stuck PR recovery job runs every 2h to merge PRs that passed CI but got stuck.
 
+### Performance Issue Triage
+
+Not every slow query deserves a PR. The pipeline enforces these rules:
+
+1. **Threshold (mandatory first check)**: User-facing endpoints need 50+ events/24h. Background jobs need 100+ events/24h. Below that, close immediately — do not investigate or fix.
+2. **Infra issues get `needs-human`**: WebSocket failures, Fly.io instability, DNS/routing, health check issues are infrastructure problems, not code bugs. Tag `needs-human` and escalate — never create code PRs for infra issues.
+3. **Index first**: Before restructuring code, check if the right index exists. Most slow queries are a missing index, not a code problem.
+4. **Fix hierarchy**: Add index (migration) > tweak query > restructure code. Simple fixes that address root causes beat complex workarounds.
+5. **Complexity cap**: Auto-fix PRs for performance issues are limited to 20 lines of logic changes. Anything larger gets `needs-human`.
+6. **Group related issues**: Multiple Sentry issues on the same code path get ONE fix, not one PR per symptom.
+7. **Verify claims**: The bot must run `git diff` before claiming any fix was made. No fabricated "fixed" statuses.
+
 ## Batch Deploy
 
 `.github/workflows/sentry-batch-deploy.yml` — hourly cron batches all pending commits since last tag into a single release (changelog, version bump, master sync). Resolves linked Sentry issues and notifies dashboard for each. Also supports `workflow_dispatch` for manual triggers.

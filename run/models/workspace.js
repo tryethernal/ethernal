@@ -207,7 +207,10 @@ module.exports = (sequelize, DataTypes) => {
             { http: [], webSocket: [this.rpcServer] };
 
         const transport = this.rpcServer.startsWith('http') ?
-            http(new URL(this.rpcServer).origin + new URL(this.rpcServer).pathname, { fetchOptions: fetchOptions() }) :
+            http(new URL(this.rpcServer).origin + new URL(this.rpcServer).pathname, {
+                fetchOptions: fetchOptions(),
+                timeout: 30000 // 30 seconds timeout for slower RPC nodes
+            }) :
             webSocket(new URL(this.rpcServer).origin + new URL(this.rpcServer).pathname);
 
         const chain = defineChain({
@@ -2245,30 +2248,30 @@ module.exports = (sequelize, DataTypes) => {
         return result;
     }
     async getTransactionCount(since) {
-        let query = `
-            SELECT COUNT(1) AS count
-            FROM transaction_events
-            WHERE "workspaceId" = :workspaceId
-            AND timestamp >= timestamp :since
-        `;
+        let query;
+        let replacements;
 
         if (!since) {
-            const [earliestBlock] = await this.getBlocks({
-                attributes: ['timestamp'],
-                where: {
-                    timestamp: { [Op.gt]: new Date(0) }
-                },
-                order: [['number', 'ASC']],
-                limit: 1
-            });
-            since = earliestBlock ? new Date(earliestBlock.timestamp) : new Date(0);
+            // For total count, skip expensive earliest block lookup and count all transactions
+            query = `
+                SELECT COUNT(1) AS count
+                FROM transaction_events
+                WHERE "workspaceId" = :workspaceId
+            `;
+            replacements = { workspaceId: this.id };
+        } else {
+            // For time-filtered count, use timestamp filter
+            query = `
+                SELECT COUNT(1) AS count
+                FROM transaction_events
+                WHERE "workspaceId" = :workspaceId
+                AND timestamp >= timestamp :since
+            `;
+            replacements = { workspaceId: this.id, since };
         }
 
         const [{ count },] = await sequelize.query(query, {
-            replacements: {
-                workspaceId: this.id,
-                since
-            },
+            replacements,
             type: QueryTypes.SELECT
         });
 
@@ -2870,6 +2873,11 @@ module.exports = (sequelize, DataTypes) => {
     async safeCreatePartialBlock(block) {
         return sequelize.transaction(async sequelizeTransaction => {
             try {
+                // Pre-load workspace to prevent N+1 queries in block afterCreate hook
+                const workspace = await this.reload({
+                    attributes: ['id', 'public', 'tracing', 'integrityCheckStartBlockNumber'],
+                    transaction: sequelizeTransaction
+                });
                 const transactions = block.transactions.map(transaction => {
                     const processed = processRawRpcObject(
                         transaction,
@@ -2958,7 +2966,9 @@ module.exports = (sequelize, DataTypes) => {
                     {
                         ignoreDuplicates: true,
                         returning: true,
-                        transaction: sequelizeTransaction
+                        transaction: sequelizeTransaction,
+                        // Pass cached workspace to prevent N+1 queries in afterCreate hook
+                        cachedWorkspace: workspace
                     }
                 );
 

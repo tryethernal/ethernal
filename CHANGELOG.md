@@ -4,6 +4,62 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.116] - 2026-03-23
+### Fixed
+- fix: reduce Redis N+1 queries in queueMonitoring job (#838)
+- fix: handle Greptile editing reviews instead of posting new ones
+- fix: add base_branch and tighten Sentry triage rules
+
+
+## [5.17.115] - 2026-03-23
+### Fixed
+- fix: add performance issue triage rules to Sentry pipeline
+- fix: add missing index on orbit_chain_configs.parentWorkspaceId (#820)
+- fix: eliminate N+1 queries in Block afterCreate hooks during bulk sync (#827)
+- fix: add 30-second timeout to viem HTTP transport to prevent RPC timeout errors (#831)
+- fix: enforce git diff verification for review processing + remove redundant limit:1
+
+
+## [5.17.114] - 2026-03-23
+### Fixed
+- fix: optimize getFilteredTokenTransfers to prevent N+1 query in blockSync (#829)
+
+
+## [5.17.113] - 2026-03-23
+### Fixed
+- fix: optimize getTransactionCount to avoid expensive block query for total counts (#826)
+
+
+## [5.17.112] - 2026-03-23
+### Fixed
+- fix: optimize blockSync workspace query to avoid expensive JOINs (#823)
+
+
+## [5.17.111] - 2026-03-22
+### Fixed
+- blog: publish — When Provers Race: The Coordination Problem in Decentralized ZK (#813)
+
+
+## [5.17.110] - 2026-03-22
+### Fixed
+- blog: add cover images for ZK prover coordination article
+
+
+## [5.17.109] - 2026-03-22
+### Fixed
+- blog: add ZK prover coordination article (draft)
+
+
+## [5.17.108] - 2026-03-21
+### Fixed
+- fix: eliminate N+1 query regression in Transaction.safeDestroy (#806)
+
+
+## [5.17.107] - 2026-03-21
+### Fixed
+- feat(tweet-pipeline): add competitor monitoring via Reddit scanning (#809)
+
+
 ## [5.17.106] - 2026-03-21
 ### Fixed
 - docs: add job error handling and cross-repo caller rules
