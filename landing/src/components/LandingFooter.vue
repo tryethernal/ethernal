@@ -108,6 +108,7 @@
                         <router-link to="/etherscan-alternative" class="footer-link">vs Etherscan</router-link>
                         <router-link to="/blockscout-alternative" class="footer-link">vs Blockscout</router-link>
                         <router-link to="/routescan-alternative" class="footer-link">vs Routescan</router-link>
+                        <router-link to="/build-vs-buy-block-explorer" class="footer-link">vs In-House</router-link>
                     </div>
                 </v-col>
             </v-row>

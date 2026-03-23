@@ -22,6 +22,7 @@ export const routes = [
     { path: '/blockscout-alternative', name: 'blockscout-alternative', component: () => import('./pages/compare/BlockscoutAlternativePage.vue') },
     { path: '/routescan-alternative', name: 'routescan-alternative', component: () => import('./pages/compare/RoutescanAlternativePage.vue') },
     { path: '/etherscan-alternative', name: 'etherscan-alternative', component: () => import('./pages/compare/EtherscanAlternativePage.vue') },
+    { path: '/build-vs-buy-block-explorer', name: 'build-vs-buy', component: () => import('./pages/compare/InHouseAlternativePage.vue') },
 
     // Chain directory pages
     { path: '/chains/base', name: 'chains-base', component: () => import('./pages/chains/BasePage.vue') },
