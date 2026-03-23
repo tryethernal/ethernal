@@ -297,13 +297,16 @@ gh api repos/tryethernal/ethernal/issues/{number}/comments --jq '.[] | {id, body
 **Verification pass after fixing:** After fixing all identified issues, do a final cross-check before pushing:
 1. Re-read the full PR summary comment body
 2. Make a checklist of every issue mentioned (inline comments AND summary)
-3. Verify each issue has been addressed in the code
+3. For EACH claimed fix, run `git diff` and confirm the change appears in the actual diff. Do NOT claim a fix was made based on memory or intent — only based on evidence in `git diff` output. If the diff doesn't show the change, the fix was not made.
 4. Only then push the fix commit
 
-**React to EVERY comment** with 👍 (`+1`) if valid/fixed, or 👎 (`-1`) if incorrect:
+**NEVER claim a change was made without verifying it in `git diff`.** If you intended to make a change but it's not in the diff, either make the change for real or explicitly state it was not done. Fabricating a "fixed" status for work not performed is worse than leaving the issue open.
+
+**React to EVERY comment** with 👍 (`+1`) if valid/fixed, or 👎 (`-1`) if incorrect, or no reaction if intentionally deferred:
 - Inline comments: `gh api repos/tryethernal/ethernal/pulls/comments/{id}/reactions -f content='+1'`
 - PR conversation comments: `gh api repos/tryethernal/ethernal/issues/comments/{id}/reactions -f content='+1'`
-- Do this immediately after reading, and retroactively for older unreacted comments
+- Only react 👍 AFTER confirming via `git diff` that the fix is in the code. A 👍 means "this is fixed in the diff" — never react 👍 to a comment you haven't actually addressed.
+- If you acknowledge a comment but intentionally defer the fix (e.g., future PR), leave no reaction and state that explicitly in the summary.
 
 **Review loop — keep iterating until the check-runs API shows `completed`:**
 - After each push, poll the check-runs API every 60s until the Greptile check is `completed`
