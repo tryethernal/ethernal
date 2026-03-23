@@ -100,6 +100,8 @@ export function createDb(dbPath = DEFAULT_DB_PATH) {
         allPromotedSlugs: db.prepare('SELECT slug FROM promotions'),
         isThreadProcessed: db.prepare('SELECT 1 FROM processed_threads WHERE thread_id = ?'),
         insertThread: db.prepare('INSERT OR IGNORE INTO processed_threads (thread_id) VALUES (?)'),
+        // newsletter_sources IDs: 1=newsletter, 2=blog candidate, 3=competitor
+        // All source types share this table. Do not reuse IDs.
         upsertNewsletter: db.prepare(`
             INSERT OR REPLACE INTO newsletter_sources (id, data, created_at)
             VALUES (@id, @data, datetime('now'))

@@ -400,6 +400,19 @@ export function selectSource(sourceType, recentIds) {
         case 'features':
             candidates = FEATURE_TIPS;
             break;
+        case 'mixed': {
+            // Alternates between blog repurposing, feature tips, and trend items
+            // weighted toward product content (blog + features = 2/3, trends = 1/3)
+            const blog = fetchBlogArticles();
+            const trends = fetchTrendItems();
+            const all = [
+                ...blog.map(b => ({ ...b, _mixSource: 'blog' })),
+                ...FEATURE_TIPS.map(f => ({ ...f, _mixSource: 'features' })),
+                ...trends.slice(0, 3).map(t => ({ ...t, _mixSource: 'trend' })),
+            ];
+            candidates = all;
+            break;
+        }
         default:
             candidates = FEATURE_TIPS;
     }

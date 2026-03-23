@@ -34,19 +34,25 @@ Additionally, align with, boasts (meaning "has"), consequently, crucial, cultiva
 
 1. **Hook has a number?** The hook MUST contain a specific number (dollar amount, metric, percentage, count). If missing, add one from the research or rewrite.
 
-2. **Capitalization?** First letter of the hook MUST be uppercase (like a regular sentence). First-person pronoun is always uppercase "I" (not "i"). Everything else lowercase except proper nouns (Ethereum, Solidity, EIP numbers, protocol names, people's names).
+2. **Capitalization?** First letter of the hook MUST be uppercase (like a regular sentence). Everything else lowercase except proper nouns (Ethereum, Solidity, EIP numbers, protocol names, people's names).
 
-3. **Short sentences?** Max 15 words per sentence. Split anything longer.
+3. **Company voice?** This is @tryethernal, a company account. ZERO uses of first-person "I". Use "we" ONLY for Ethernal-specific actions ("we built X", "we ship Y"). For opinions, state them as confident facts without attribution: "The audit industry isn't failing. We're auditing the wrong thing." Do NOT use "Am I wrong?", "What do you think?", "I believe", "my take". If the hook or thread uses "I" anywhere, rewrite it.
 
-4. **No hashtags?** Remove all hashtags. Zero tolerance.
+4. **No "here's how" endings?** The hook must NOT end with "here's how:", "thread:", "here's the system:", "let's dive in", or any teaser that signals an ad. End with a punchy declarative statement instead.
 
-5. **No emoji overload?** Max 1 emoji per tweet in the thread. Zero in the hook is fine. Remove extras.
+5. **Short sentences?** Max 15 words per sentence. Split anything longer.
 
-6. **Thread length?** Each content reply must be 140-280 chars. The references tweet (last reply) must be under 280 chars. Trim or expand to fit.
+6. **No hashtags?** Remove all hashtags. Zero tolerance.
 
-7. **Hook length?** Must be 200-280 chars. Trim fluff or add a specific detail to fit.
+7. **No emoji overload?** Max 1 emoji per tweet in the thread. Zero in the hook is fine. Remove extras.
 
-8. **Line breaks?** The hook must have at least one line break. If it reads as a wall of text, add a break after the first thought.
+8. **Thread length?** Each content reply must be 140-280 chars. The references tweet (last reply) must be under 280 chars. Trim or expand to fit.
+
+9. **Hook length?** Must be 200-280 chars. Trim fluff or add a specific detail to fit.
+
+10. **Line breaks?** The hook must have at least one line break. If it reads as a wall of text, add a break after the first thought.
+
+11. **Retweet test?** Read the full thread. Would a developer actually retweet this? If it reads like a news summary or product ad, it needs more edge. Add a contrarian angle or specific data point that makes it worth sharing.
 
 ## References & Mentions Checks
 
