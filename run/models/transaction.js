@@ -894,23 +894,32 @@ module.exports = (sequelize, DataTypes) => {
         });
 
         const tokenTransfers = result.rows.map(t => t.toJSON());
-        const processedTokenTransfers = [];
 
-        const explorer = await sequelize.models.Explorer.findOne({ where: { workspaceId: this.workspaceId } });
-        for (const transfer of tokenTransfers) {
-            const transferCopy = { ...transfer };
+        // Fetch explorer data once outside the loop to prevent N+1 query
+        const explorer = await sequelize.models.Explorer.findOne({
+            where: { workspaceId: this.workspaceId },
+            attributes: ['token'] // Only fetch needed attributes
+        });
+
+        // Process token transfers with the cached explorer data
+        const processedTokenTransfers = tokenTransfers.map(transfer => {
             if (transfer.token === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') {
                 // Only inject custom contract object for native token
-                if (explorer) {
-                    transferCopy.contract = {
+                return {
+                    ...transfer,
+                    contract: explorer ? {
                         tokenSymbol: explorer.token || 'ETH',
                         tokenDecimals: 18,
                         tokenName: explorer.token || 'Ether'
-                    };
-                }
+                    } : {
+                        tokenSymbol: 'ETH',
+                        tokenDecimals: 18,
+                        tokenName: 'Ether'
+                    }
+                };
             }
-            processedTokenTransfers.push(transferCopy);
-        }
+            return transfer;
+        });
 
         return {
             items: processedTokenTransfers,
