@@ -101,6 +101,16 @@
                         <router-link to="/chains/arbitrum-sepolia" class="footer-link">Arbitrum Sepolia</router-link>
                     </div>
                 </v-col>
+
+                <v-col cols="6" sm="3" md="2" lg="2">
+                    <div class="footer-heading">Compare</div>
+                    <div class="d-flex flex-column ga-2">
+                        <router-link to="/etherscan-alternative" class="footer-link">vs Etherscan</router-link>
+                        <router-link to="/blockscout-alternative" class="footer-link">vs Blockscout</router-link>
+                        <router-link to="/routescan-alternative" class="footer-link">vs Routescan</router-link>
+                        <router-link to="/build-vs-buy-block-explorer" class="footer-link">vs In-House</router-link>
+                    </div>
+                </v-col>
             </v-row>
 
             <!-- Copyright bar -->

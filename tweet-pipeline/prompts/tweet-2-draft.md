@@ -12,15 +12,24 @@ Read both files:
 
 1. **HOOK**: First line MUST have a $ amount, specific metric, or shocking number. No exceptions.
 2. **FORMAT**: Casual tone. First letter of the tweet MUST be uppercase (like a regular sentence). Short sentences. Line break after every thought.
-3. **STRUCTURE**: Hook -> "here's how" / "the secret:" -> numbered steps OR arrows (->)
+3. **STRUCTURE**: Hook -> surprising contrast or data point -> short declarative closer. Do NOT end hooks with "here's how:", "thread:", "here's the system:", or similar teasers. End with a punchy statement that stands alone.
 4. **SPECIFICITY**: Use precise numbers. Not "lots of" but "273 per hour". Not "saves time" but "saves 14 hours/week".
-5. **VOICE**: First person "I" or third person story "This [person] did X". Never corporate "we are pleased to".
+5. **VOICE**: This is a COMPANY account (@tryethernal). Use third-person confident voice. State positions directly without "I" or "we think". Use "we" ONLY for Ethernal-specific actions ("we built", "we ship"). For opinions, state them as facts: "The audit industry isn't failing. We're auditing the wrong thing." NOT "We think auditing is broken." Never use first-person singular "I". Never use corporate press-release voice ("we are pleased to", "proud to announce").
 6. **CONTRAST**: Old expensive/manual way vs. new cheap/automated way. Before/after.
-7. **THREAD**: End with a tease: down arrow, "here's the system:", "thread below", ellipsis.
-8. **NO**: Corporate voice, emoji overload, generic advice, hashtags.
+7. **ENGAGEMENT**: Invite disagreement through confident positioning, not explicit questions. "Prove us wrong." or "Disagree?" as a closer is fine. Never use "Am I wrong?" or "What do you think?". The take itself should be provocative enough to drive replies.
+8. **NO**: Corporate voice, emoji overload, generic advice, hashtags, "here's how" endings, explicit thread teasers ("thread:", "let's dive in").
 9. **MENTION**: Use @handles from the `## Twitter Handles` section in `.research.md`. Weave them into hook and thread tweets where the account is the direct subject of the sentence (e.g. "@zksync's Airbender proves..."). Target 2-4 mentions across the full thread. Do not force it -- if a sentence reads better without a tag, leave it out. Never guess handles; only use verified ones from research.
 10. **LENGTH**: Hook tweet 200-280 chars. Thread content replies 140-280 chars each. Max 2 content replies. The references tweet (see below) is added as the 3rd and final reply.
 11. **INLINE LINKS**: When a thread tweet mentions a specific resource (proposal, EIP, benchmark, tool, spec, blog post), include a direct link to it in that tweet. Use URLs from `## Source URLs` or `## Further Reading` in `.research.md`. Max 1 link per tweet. Pure opinion or general statements do not get links.
+
+## Quality Gate (CRITICAL)
+
+Before saving the draft, ask yourself: "Would a real person retweet this?" If the answer is no, the tweet is not good enough. Rewrite until it passes. Signs a tweet will NOT get retweeted:
+- It reads like a news summary anyone could write
+- The hook ends with "here's how:" (signals an ad)
+- It tags competitors without saying anything they'd disagree with
+- The take is so safe nobody would bother sharing it
+- It could be about any blockchain product, not specifically about a real insight
 
 ## Writing Quality Rules
 
@@ -28,7 +37,7 @@ These separate good threads from generic ones:
 
 1. **Name names.** Don't say "several zkVMs are competing." Say "ZKsync Airbender proves a block in 50 seconds on a single GPU. ZisK does 30M gas in 7.4 seconds with 24 GPUs." Specific projects, specific benchmarks, specific hardware.
 
-2. **End with a punch, not a teaser.** The hook can tease the thread, but content replies should end with a short declarative sentence that lands. "The hardware ceiling is collapsing." "Still early research. Worth watching." "We cracked speed. We haven't cracked decentralization." NOT "Here's the real picture:" or "Let's dive in."
+2. **End with a punch, not a teaser.** Both the hook AND content replies should end with a short declarative sentence that lands. "The hardware ceiling is collapsing." "Still early research. Worth watching." "Speed is solved. Decentralization isn't." NOT "Here's the real picture:", "Here's how:", "Thread:", or "Let's dive in." The hook should stand alone as a tweet even if nobody reads the thread.
 
 3. **Concrete before/after in thread tweets.** Each content reply should have at least one concrete comparison: "50 seconds on a single GPU" not "real-time proving." "16 minutes to 16 seconds" not "massive speed improvements."
 
@@ -40,11 +49,10 @@ These separate good threads from generic ones:
 
 Apply the right approach based on the bucket in `.source.json`:
 
-- **ecosystem_news**: Lead with the most surprising fact. "X just did Y. here's why it matters:"
-- **eip_commentary**: Lead with what changes for developers. Show a before/after code snippet if applicable.
-- **product_tip**: Demo a specific Ethernal feature. "most people debug transactions by reading logs. there's a faster way:"
-- **blog_repurposing**: Extract the single most tweetable insight from the article. One idea, not a summary.
-- **hot_take**: Take a strong position. Disagree with conventional wisdom. "unpopular opinion:" or "hot take:"
+- **Ecosystem insight** (slot 1): Lead with a contrarian take or surprising data point. This is the high-reach slot. The tweet should make people stop scrolling. Take a strong position. Disagree with conventional wisdom. State it as confident fact, not hedged opinion. If the topic is an EIP/ERC, lead with what changes for developers.
+- **Product / blog** (slot 2): Either demo a specific Ethernal feature with concrete before/after, OR extract the single most tweetable insight from a blog article. For product tweets, show the problem first (with a specific number), then the fix. Do NOT end with "here's how:". For blog repurposing, pull one idea, not a summary.
+- **Competitor response**: Address a real gap or pricing change from a competitor. Lead with what changed (with numbers), contrast with what Ethernal offers. Be factual, not snarky.
+- **Newsletter story**: Lead with the most shocking number from the story. Frame it as analysis, not news rehash.
 
 ## References Tweet
 
