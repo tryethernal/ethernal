@@ -268,7 +268,19 @@ watch(searchInput, (val) => {
         const trackProps = { tool: '4byte-lookup', action: 'search', success: false };
         try {
             const results = await search4byte(trimmed);
-            searchResults.value = results;
+            const sorted = results.sort((a, b) => {
+                const aName = a.text_signature.split('(')[0].toLowerCase();
+                const bName = b.text_signature.split('(')[0].toLowerCase();
+                const q = trimmed.toLowerCase();
+                const aExact = aName === q;
+                const bExact = bName === q;
+                if (aExact !== bExact) return aExact ? -1 : 1;
+                const aStarts = aName.startsWith(q);
+                const bStarts = bName.startsWith(q);
+                if (aStarts !== bStarts) return aStarts ? -1 : 1;
+                return a.text_signature.length - b.text_signature.length;
+            });
+            searchResults.value = sorted.slice(0, 50);
             searchEmpty.value = results.length === 0;
             trackProps.success = results.length > 0;
         } catch (e) {
@@ -373,15 +385,15 @@ useHead({
 .tool-output-hex { color: var(--text-primary); font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace; font-size: 14px; display: block; margin-top: 4px; }
 
 /* Results list */
-.results-list { display: flex; flex-direction: column; gap: 4px; }
+.results-list { display: flex; flex-direction: column; gap: 4px; max-height: 480px; overflow-y: auto; }
 .result-item {
     display: flex; align-items: center; gap: 12px; padding: 10px 14px;
     background: rgba(17,24,39,0.4); border: 1px solid rgba(30,41,59,0.5);
-    border-radius: 8px; transition: border-color 0.2s;
+    border-radius: 8px; transition: border-color 0.2s; min-width: 0;
 }
 .result-item:hover { border-color: rgba(61,149,206,0.3); }
-.result-signature { color: var(--text-primary); font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace; font-size: 13px; flex: 1; }
-.result-selector { color: var(--text-muted); font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace; font-size: 12px; }
+.result-signature { color: #e2e8f0; font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace; font-size: 13px; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.result-selector { color: #8ecdff; font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace; font-size: 12px; flex-shrink: 0; }
 
 /* Action button base */
 .btn-primary {
