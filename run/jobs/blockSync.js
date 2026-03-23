@@ -115,6 +115,7 @@ module.exports = async job => {
             await workspace.update({ browserSyncEnabled: false });
     } else {
         // Fast path: uses workspaceId for optimized database lookup
+        // L2 configs are loaded on-demand later to avoid expensive JOINs
 
         workspace = await Workspace.findByPk(data.workspaceId, {
             attributes: ['id', 'name', 'rpcServer', 'browserSyncEnabled', 'isCustomL1Parent', 'rpcHealthCheckEnabled', 'public', 'rateLimitInterval', 'rateLimitMaxInInterval'],
@@ -138,67 +139,6 @@ module.exports = async job => {
                     model: IntegrityCheck,
                     as: 'integrityCheck',
                     attributes: ['id', 'isHealthy', 'isRecovering']
-                },
-                {
-                    model: require('../models').OrbitChainConfig,
-                    as: 'orbitConfig',
-                    attributes: [
-                        'rollupContract',
-                        'sequencerInboxContract',
-                        'bridgeContract',
-                        'inboxContract',
-                        'outboxContract',
-                        'stakeToken',
-                        'l1GatewayRouter',
-                        'l1Erc20Gateway',
-                        'l1WethGateway',
-                        'l1CustomGateway',
-                        'l2GatewayRouter',
-                        'l2Erc20Gateway',
-                        'l2WethGateway',
-                        'l2CustomGateway'
-                    ],
-                    include: {
-                        model: require('../models').Workspace,
-                        as: 'parentWorkspace',
-                        attributes: ['id', 'rpcServer'],
-                        required: false
-                    },
-                    required: false
-                },
-                {
-                    model: require('../models').OrbitChainConfig,
-                    as: 'orbitChildConfigs',
-                    attributes: [
-                        'workspaceId',
-                        'rollupContract',
-                        'sequencerInboxContract',
-                        'bridgeContract',
-                        'inboxContract',
-                        'outboxContract',
-                        'stakeToken',
-                        'l1GatewayRouter',
-                        'l1Erc20Gateway',
-                        'l1WethGateway',
-                        'l1CustomGateway',
-                        'l2GatewayRouter',
-                        'l2Erc20Gateway',
-                        'l2WethGateway',
-                        'l2CustomGateway'
-                    ],
-                    required: false
-                },
-                {
-                    model: require('../models').OpChainConfig,
-                    as: 'opChildConfigs',
-                    attributes: [
-                        'workspaceId',
-                        'batchInboxAddress',
-                        'beaconUrl',
-                        'l2BlockTime',
-                        'l2GenesisTimestamp'
-                    ],
-                    required: false
                 }
             ]
         });
@@ -227,6 +167,108 @@ module.exports = async job => {
         // Disable browser sync to prevent concurrent syncing from both browser and server
         if (workspace.browserSyncEnabled)
             await workspace.update({ browserSyncEnabled: false });
+    }
+
+    // Load L2 configurations on-demand for non-cached path to avoid expensive JOINs in initial query
+    if (!hasCachedWorkspace) {
+        // Check if workspace needs L2 configurations loaded (similar to batchBlockSync logic)
+        const [hasOrbitConfigs, hasOpConfigs] = await Promise.all([
+            require('../models').OrbitChainConfig.findOne({
+                where: {
+                    [require('sequelize').Op.or]: [
+                        { workspaceId: data.workspaceId },
+                        { parentWorkspaceId: data.workspaceId }
+                    ]
+                },
+                attributes: ['id'],
+                limit: 1
+            }),
+            require('../models').OpChainConfig.findOne({
+                where: {
+                    [require('sequelize').Op.or]: [
+                        { workspaceId: data.workspaceId },
+                        { parentWorkspaceId: data.workspaceId }
+                    ]
+                },
+                attributes: ['id'],
+                limit: 1
+            })
+        ]);
+
+        if (hasOrbitConfigs || hasOpConfigs) {
+            const l2Configs = await Workspace.findByPk(data.workspaceId, {
+                attributes: ['id'],
+                include: [
+                    {
+                        model: require('../models').OrbitChainConfig,
+                        as: 'orbitConfig',
+                        attributes: [
+                            'rollupContract',
+                            'sequencerInboxContract',
+                            'bridgeContract',
+                            'inboxContract',
+                            'outboxContract',
+                            'stakeToken',
+                            'l1GatewayRouter',
+                            'l1Erc20Gateway',
+                            'l1WethGateway',
+                            'l1CustomGateway',
+                            'l2GatewayRouter',
+                            'l2Erc20Gateway',
+                            'l2WethGateway',
+                            'l2CustomGateway'
+                        ],
+                        required: false,
+                        include: {
+                            model: require('../models').Workspace,
+                            as: 'parentWorkspace',
+                            attributes: ['id', 'rpcServer'],
+                            required: false
+                        }
+                    },
+                    {
+                        model: require('../models').OrbitChainConfig,
+                        as: 'orbitChildConfigs',
+                        attributes: [
+                            'workspaceId',
+                            'rollupContract',
+                            'sequencerInboxContract',
+                            'bridgeContract',
+                            'inboxContract',
+                            'outboxContract',
+                            'stakeToken',
+                            'l1GatewayRouter',
+                            'l1Erc20Gateway',
+                            'l1WethGateway',
+                            'l1CustomGateway',
+                            'l2GatewayRouter',
+                            'l2Erc20Gateway',
+                            'l2WethGateway',
+                            'l2CustomGateway'
+                        ],
+                        required: false
+                    },
+                    {
+                        model: require('../models').OpChainConfig,
+                        as: 'opChildConfigs',
+                        attributes: [
+                            'workspaceId',
+                            'batchInboxAddress',
+                            'beaconUrl',
+                            'l2BlockTime',
+                            'l2GenesisTimestamp'
+                        ],
+                        required: false
+                    }
+                ]
+            });
+
+            if (l2Configs) {
+                workspace.orbitConfig = l2Configs.orbitConfig;
+                workspace.orbitChildConfigs = l2Configs.orbitChildConfigs;
+                workspace.opChildConfigs = l2Configs.opChildConfigs;
+            }
+        }
     }
 
     if (data.source == 'recovery' && workspace.integrityCheck && workspace.integrityCheck.isHealthy)

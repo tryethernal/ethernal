@@ -503,10 +503,12 @@ describe('blockSync', () => {
             });
     });
 
-    it('Should use fast path with findByPk when workspaceId is provided', (done) => {
+    it('Should use optimized query without L2 configs when workspaceId is provided', (done) => {
         mockSafeCreatePartialBlock.mockResolvedValue({ transactions: [
             { id: 1, hash: '0x123' }
         ]});
+
+        // Mock the initial workspace query (without L2 configs)
         jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
             id: 1,
             rpcServer: 'http://localhost:8545',
@@ -514,21 +516,35 @@ describe('blockSync', () => {
             safeCreatePartialBlock: mockSafeCreatePartialBlock
         });
 
+        // Mock the L2 config check queries to return null (no L2 configs needed)
+        const { OrbitChainConfig, OpChainConfig } = require('../../models');
+        jest.spyOn(OrbitChainConfig, 'findOne').mockResolvedValue(null);
+        jest.spyOn(OpChainConfig, 'findOne').mockResolvedValue(null);
+
         blockSync({ opts: { priority: 1 }, data: { workspaceId: 1, blockNumber: 1, source: 'batchSync', rateLimited: true }})
             .then(res => {
+                // Verify the initial query does NOT include L2 configs
                 expect(Workspace.findByPk).toHaveBeenCalledWith(1, expect.objectContaining({
                     attributes: expect.arrayContaining(['id', 'name', 'rpcServer', 'browserSyncEnabled', 'isCustomL1Parent', 'rpcHealthCheckEnabled']),
                     include: expect.arrayContaining([
-                        expect.objectContaining({ as: 'orbitConfig' }),
-                        expect.objectContaining({ as: 'orbitChildConfigs' }),
-                        expect.objectContaining({ as: 'opChildConfigs' }),
                         expect.objectContaining({ as: 'explorer' }),
                         expect.objectContaining({ as: 'rpcHealthCheck' }),
                         expect.objectContaining({ as: 'integrityCheck' })
                     ])
                 }));
-                // Should use findByPk (fast path), not findOne
-                expect(Workspace.findOne).not.toHaveBeenCalled();
+
+                // Verify L2 configs are NOT included in the initial query
+                const firstCall = Workspace.findByPk.mock.calls[0][1];
+                expect(firstCall.include).not.toEqual(expect.arrayContaining([
+                    expect.objectContaining({ as: 'orbitConfig' }),
+                    expect.objectContaining({ as: 'orbitChildConfigs' }),
+                    expect.objectContaining({ as: 'opChildConfigs' })
+                ]));
+
+                // Verify L2 config check was performed
+                expect(OrbitChainConfig.findOne).toHaveBeenCalled();
+                expect(OpChainConfig.findOne).toHaveBeenCalled();
+
                 expect(res).toEqual('Block synced');
                 done();
             });
