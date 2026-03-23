@@ -207,7 +207,10 @@ module.exports = (sequelize, DataTypes) => {
             { http: [], webSocket: [this.rpcServer] };
 
         const transport = this.rpcServer.startsWith('http') ?
-            http(new URL(this.rpcServer).origin + new URL(this.rpcServer).pathname, { fetchOptions: fetchOptions() }) :
+            http(new URL(this.rpcServer).origin + new URL(this.rpcServer).pathname, {
+                fetchOptions: fetchOptions(),
+                timeout: 30000 // 30 seconds timeout for slower RPC nodes
+            }) :
             webSocket(new URL(this.rpcServer).origin + new URL(this.rpcServer).pathname);
 
         const chain = defineChain({
