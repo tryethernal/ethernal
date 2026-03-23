@@ -1,6 +1,6 @@
 <template>
     <LandingLayout>
-        <v-container style="max-width: 1200px;" class="py-12">
+        <v-container style="max-width: 1200px; padding-top: 100px; padding-bottom: 60px;">
             <!-- Breadcrumb -->
             <div class="breadcrumb mb-2">
                 <router-link to="/" class="breadcrumb-link">Home</router-link>
@@ -11,11 +11,9 @@
             </div>
 
             <!-- Hero -->
-            <div class="d-flex align-center ga-3 mb-2">
-                <span class="pill-badge" style="font-size: 11px;">FREE TOOL</span>
-            </div>
-            <h1 class="font-heading tool-title mb-3">Calldata Decoder & ABI Encoder</h1>
-            <p class="tool-description mb-10">
+            <div class="text-overline mb-1" style="letter-spacing: 0.1em; color: #5DAAE0; font-size: 11px;">FREE TOOL</div>
+            <h1 class="font-heading text-white mb-2" style="font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -0.02em;">Calldata Decoder & ABI Encoder</h1>
+            <p style="color: var(--text-secondary); max-width: 560px; line-height: 1.6; font-size: 0.95rem; margin-bottom: 40px;">
                 Decode raw Ethereum transaction calldata into human-readable function calls, or encode function signatures into calldata. Everything runs in your browser.
             </p>
 
@@ -451,85 +449,99 @@ useHead({
 </script>
 
 <style scoped>
-.breadcrumb { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+/* Hero */
+.breadcrumb { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 6px; margin-bottom: 12px; }
 .breadcrumb-link { color: var(--text-muted); text-decoration: none; }
 .breadcrumb-link:hover { color: var(--text-secondary); }
 .breadcrumb-sep { opacity: 0.4; }
-.tool-title { font-size: 2.4rem; color: var(--text-primary); line-height: 1.2; }
-.tool-description { color: var(--text-secondary); font-size: 1.05rem; max-width: 640px; line-height: 1.7; }
+.tool-title { font-size: clamp(1.5rem, 3vw, 2.2rem); color: var(--text-primary); line-height: 1.2; font-weight: 700; letter-spacing: -0.02em; }
+.tool-description { color: var(--text-secondary); font-size: 0.95rem; max-width: 560px; line-height: 1.6; }
 
-.tool-tabs { display: flex; gap: 4px; }
+/* Tabs */
+.tool-tabs { display: flex; gap: 2px; background: rgba(17, 24, 39, 0.5); border-radius: 10px; padding: 3px; border: 1px solid rgba(30, 41, 59, 0.5); width: fit-content; }
 .tool-tab {
-    padding: 8px 20px; border-radius: 8px; border: 1px solid var(--border-subtle);
-    background: transparent; color: var(--text-secondary); cursor: pointer; font-size: 14px;
+    padding: 8px 22px; border-radius: 8px; border: none;
+    background: transparent; color: var(--text-muted); cursor: pointer; font-size: 14px; font-weight: 500;
     transition: all 0.2s;
 }
-.tool-tab:hover { color: var(--text-primary); }
-.tool-tab.active { background: rgba(61,149,206,0.15); color: #fff; border-color: rgba(61,149,206,0.3); }
+.tool-tab:hover { color: var(--text-secondary); }
+.tool-tab.active { background: rgba(61,149,206,0.18); color: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.2); }
 
-.tool-label { color: var(--text-secondary); font-size: 13px; font-weight: 500; margin-bottom: 6px; display: block; }
+/* Labels & inputs */
+.tool-label { color: var(--text-muted); font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 8px; display: block; }
 .tool-input {
-    width: 100%; padding: 12px 14px; border-radius: 8px; border: 1px solid #1e293b;
-    background: #111827; color: var(--text-primary); font-family: 'SF Mono', 'Fira Code', monospace;
-    font-size: 13px; resize: vertical; outline: none; transition: border-color 0.2s;
+    width: 100%; padding: 12px 14px; border-radius: 8px; border: 1px solid rgba(30, 41, 59, 0.8);
+    background: rgba(17, 24, 39, 0.6); color: var(--text-primary); font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace;
+    font-size: 13px; resize: vertical; outline: none; transition: border-color 0.2s; box-sizing: border-box;
 }
 .tool-input:focus { border-color: rgba(61,149,206,0.5); }
-.tool-error { color: #ffb4ab; font-size: 13px; margin-top: 4px; }
+.tool-input::placeholder { color: var(--text-muted); opacity: 0.6; }
+.tool-error { color: #ffb4ab; font-size: 13px; margin-top: 6px; }
 .tool-warning { color: #ffba50; font-size: 13px; display: flex; align-items: center; gap: 8px; }
 .tool-loading { color: var(--text-muted); font-size: 13px; display: flex; align-items: center; gap: 8px; }
 
+/* Signature chips */
 .signature-chip {
     padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border-subtle);
     background: transparent; color: var(--text-secondary); cursor: pointer; font-size: 13px;
-    font-family: 'SF Mono', 'Fira Code', monospace; transition: all 0.2s;
+    font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace; transition: all 0.2s;
 }
 .signature-chip:hover { border-color: rgba(61,149,206,0.4); color: var(--text-primary); }
 .signature-chip.active { background: rgba(61,149,206,0.2); border-color: rgba(61,149,206,0.4); color: #fff; }
 
+/* Collapse toggle */
 .tool-collapse-toggle {
     background: none; border: none; color: var(--text-muted); cursor: pointer;
-    font-size: 13px; display: flex; align-items: center; gap: 4px;
+    font-size: 13px; display: flex; align-items: center; gap: 4px; padding: 0;
 }
 .tool-collapse-toggle:hover { color: var(--text-secondary); }
 
+/* Output */
 .tool-output {
-    background: var(--glass-bg); backdrop-filter: blur(16px);
-    border: 1px solid var(--border-subtle); border-radius: 12px; padding: 20px;
+    background: rgba(17, 24, 39, 0.5); backdrop-filter: blur(16px);
+    border: 1px solid rgba(30, 41, 59, 0.6); border-radius: 12px; padding: 20px 24px;
 }
-.tool-output-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-.tool-output-label { color: var(--text-muted); font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
-.tool-output-function { color: var(--text-primary); font-family: 'SF Mono', 'Fira Code', monospace; font-size: 14px; }
-.tool-output-hex { color: var(--text-primary); font-family: 'SF Mono', 'Fira Code', monospace; font-size: 13px; word-break: break-all; display: block; margin-top: 8px; }
+.tool-output-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.tool-output-label { color: var(--text-muted); font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+.tool-output-function { color: var(--text-primary); font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace; font-size: 14px; }
+.tool-output-hex { color: var(--text-primary); font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace; font-size: 13px; word-break: break-all; display: block; margin-top: 8px; line-height: 1.6; }
 
+/* Param table */
 .param-table { width: 100%; border-collapse: collapse; }
-.param-table th { color: var(--text-muted); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; text-align: left; padding: 8px 12px; border-bottom: 1px solid #1e293b; }
-.param-table td { color: var(--text-secondary); font-size: 13px; padding: 10px 12px; border-bottom: 1px solid rgba(30,41,59,0.5); }
+.param-table th { color: var(--text-muted); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; text-align: left; padding: 8px 12px; border-bottom: 1px solid rgba(30,41,59,0.6); }
+.param-table td { color: var(--text-secondary); font-size: 13px; padding: 10px 12px; border-bottom: 1px solid rgba(30,41,59,0.3); vertical-align: top; }
 .param-table code { color: #8ecdff; font-size: 12px; }
-.param-value { font-family: 'SF Mono', 'Fira Code', monospace; word-break: break-all; max-width: 300px; }
+.param-value { font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace; word-break: break-all; max-width: 340px; }
 
+/* Copy button */
 .copy-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 4px; border-radius: 4px; }
 .copy-btn:hover { color: var(--text-primary); background: rgba(61,149,206,0.1); }
 
+/* Encode params */
 .encode-param-row { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
-.encode-param-type { color: #8ecdff; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 13px; min-width: 100px; }
+.encode-param-type { color: #8ecdff; font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace; font-size: 13px; min-width: 100px; flex-shrink: 0; }
 .encode-param-input { flex: 1; }
 
+/* Inline CTA */
 .inline-cta {
-    background: var(--glass-bg); backdrop-filter: blur(12px);
+    background: rgba(17, 24, 39, 0.5); backdrop-filter: blur(12px);
     border: 1px solid var(--border-subtle); border-radius: 12px;
-    padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px;
 }
 .inline-cta p { color: var(--text-secondary); font-size: 14px; margin: 0; }
-.btn-sm { padding: 8px 18px !important; font-size: 13px !important; }
+.btn-sm { padding: 8px 18px !important; font-size: 13px !important; white-space: nowrap; }
 
+/* FAQ */
 .faq-list { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
-.faq-item { background: var(--glass-bg); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 16px 20px; cursor: pointer; transition: border-color 0.2s; }
+.faq-item { background: rgba(17, 24, 39, 0.4); border: 1px solid rgba(30, 41, 59, 0.5); border-radius: 10px; padding: 16px 20px; cursor: pointer; transition: border-color 0.2s; }
 .faq-item:hover { border-color: rgba(61,149,206,0.3); }
 .faq-question { display: flex; justify-content: space-between; align-items: center; color: var(--text-primary); font-size: 15px; font-weight: 500; }
 .faq-answer { color: var(--text-secondary); font-size: 14px; line-height: 1.7; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(30,41,59,0.5); }
 
 @media (max-width: 600px) {
-    .tool-title { font-size: 1.6rem; }
+    .tool-title { font-size: 1.5rem; }
     .inline-cta { flex-direction: column; text-align: center; }
+    .encode-param-row { flex-direction: column; align-items: stretch; gap: 4px; }
+    .encode-param-type { min-width: 0; }
 }
 </style>

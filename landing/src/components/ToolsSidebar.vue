@@ -37,6 +37,10 @@ const tools = [
 .tools-sidebar {
     position: sticky;
     top: 100px;
+    background: rgba(17, 24, 39, 0.4);
+    border: 1px solid rgba(30, 41, 59, 0.5);
+    border-radius: 12px;
+    padding: 16px;
 }
 
 .tools-sidebar-label {
