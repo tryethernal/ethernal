@@ -8,8 +8,15 @@ primary_region = "cdg"
 kill_signal = "SIGINT"
 kill_timeout = "5s"
 
+[vm]
+  memory = "256mb"
+  cpus = 1
+
 [experimental]
   auto_rollback = true
+
+[env]
+  NODE_ENV = "production"
 
 [build]
     image = "quay.io/soketi/soketi:1.6.1-16-debian"
@@ -31,5 +38,6 @@ kill_timeout = "5s"
     port = "443"
 
   [[services.tcp_checks]]
-    interval = 10000
-    timeout = 2000
+    interval = 15000
+    timeout = 5000
+    grace_period = "10s"
