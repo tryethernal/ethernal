@@ -145,5 +145,10 @@ export async function search4byte(query) {
     const res = await fetch(`https://www.4byte.directory/api/v1/signatures/?text_signature__icontains=${encodeURIComponent(query)}&format=json`);
     if (!res.ok) throw new Error('Could not reach signature database');
     const data = await res.json();
-    return data.results || [];
+    const results = data.results || [];
+    const q = query.toLowerCase();
+    return results.filter(r => {
+        const name = r.text_signature.split('(')[0].toLowerCase();
+        return name.includes(q);
+    });
 }
