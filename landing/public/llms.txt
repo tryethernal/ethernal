@@ -51,6 +51,7 @@
 ## Comparisons
 
 - [Blockscout Alternative](https://tryethernal.com/blockscout-alternative): Side-by-side comparison of Ethernal vs Blockscout — setup, runtime, L2 support, pricing
+- [Routescan Alternative](https://tryethernal.com/routescan-alternative): Side-by-side comparison of Ethernal vs Routescan — open source vs closed source, self-hosting, vendor lock-in, pricing
 
 ## Blog
 

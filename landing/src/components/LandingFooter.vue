@@ -70,6 +70,7 @@
                     <div class="footer-heading mt-6">Compare</div>
                     <div class="d-flex flex-column ga-2">
                         <router-link to="/blockscout-alternative" class="footer-link">vs Blockscout</router-link>
+                        <router-link to="/routescan-alternative" class="footer-link">vs Routescan</router-link>
                     </div>
                 </v-col>
 
