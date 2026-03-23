@@ -29,7 +29,7 @@
                     Why Teams Look for Routescan Alternatives
                 </h2>
                 <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.7; max-width: 640px;">
-                    Routescan has a clean interface, covers 160+ chains, and offers Etherscan-compatible APIs. It powers official explorers for Avalanche (replacing Snowtrace), Flare, Chiliz, and Taiko. That said, some teams run into friction: Routescan is closed-source, so you cannot audit, fork, or self-host the code. Customization options are more limited compared to open-source alternatives. And there is a real vendor dependency risk - if Routescan changes pricing or drops support for your chain, you have no fallback. This is the same kind of risk Avalanche experienced when Etherscan shut down Snowtrace. These are legitimate tradeoffs that matter more to some teams than others.
+                    Routescan has a clean interface, covers 160+ chains, and powers official explorers for Avalanche, Flare, Chiliz, and Taiko. Good product. The friction is structural: it is closed-source, so you cannot audit, fork, or self-host the code. If Routescan changes pricing or drops your chain, you start over. Avalanche learned this lesson when Etherscan shut down Snowtrace. Whether that risk matters depends on your team.
                 </p>
             </section>
 
@@ -115,21 +115,21 @@
                         <v-icon size="18" style="color: #5DAAE0; flex-shrink: 0; margin-top: 2px;">mdi-check-circle-outline</v-icon>
                         <div>
                             <h3 style="color: var(--text-primary); font-weight: 600; margin-bottom: 4px;">Avalanche ecosystem</h3>
-                            <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; margin: 0;">Routescan powers the official Avalanche explorer (replacing Snowtrace). If you are building on Avalanche, Routescan is the native default with deep ecosystem integration.</p>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; margin: 0;">Routescan powers the official Avalanche explorer (it replaced Snowtrace). If you are building on Avalanche, Routescan is the native default.</p>
                         </div>
                     </div>
                     <div class="choice-item">
                         <v-icon size="18" style="color: #5DAAE0; flex-shrink: 0; margin-top: 2px;">mdi-check-circle-outline</v-icon>
                         <div>
                             <h3 style="color: var(--text-primary); font-weight: 600; margin-bottom: 4px;">Fully managed, zero infrastructure</h3>
-                            <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; margin: 0;">If you want a fully managed solution with zero infrastructure responsibility, Routescan handles all hosting and maintenance for you.</p>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; margin: 0;">You don't want to touch infrastructure at all. Routescan runs everything.</p>
                         </div>
                     </div>
                     <div class="choice-item">
                         <v-icon size="18" style="color: #5DAAE0; flex-shrink: 0; margin-top: 2px;">mdi-check-circle-outline</v-icon>
                         <div>
                             <h3 style="color: var(--text-primary); font-weight: 600; margin-bottom: 4px;">Multichain browsing across indexed chains</h3>
-                            <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; margin: 0;">If multichain browsing across existing Routescan-indexed chains is your primary need, their unified interface covers 160+ chains out of the box.</p>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; margin: 0;">You mostly need to browse chains Routescan already indexes. Their unified interface covers 160+ chains.</p>
                         </div>
                     </div>
                 </div>
@@ -145,21 +145,21 @@
                         <v-icon size="18" style="color: #22C55E; flex-shrink: 0; margin-top: 2px;">mdi-check-circle</v-icon>
                         <div>
                             <h3 style="color: var(--text-primary); font-weight: 600; margin-bottom: 4px;">Full control over your explorer's code and data</h3>
-                            <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; margin: 0;">Ethernal is MIT licensed. You can fork it, audit it, extend it, and run it on your own infrastructure. Your data stays under your control.</p>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; margin: 0;">MIT licensed. Fork it, audit it, run it on your own servers. Your data, your infrastructure.</p>
                         </div>
                     </div>
                     <div class="choice-item">
                         <v-icon size="18" style="color: #22C55E; flex-shrink: 0; margin-top: 2px;">mdi-check-circle</v-icon>
                         <div>
                             <h3 style="color: var(--text-primary); font-weight: 600; margin-bottom: 4px;">Vendor lock-in is a risk you cannot accept</h3>
-                            <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; margin: 0;">With closed-source managed services, you depend on the provider's continued support. If they change pricing, drop your chain, or shut down, you start from scratch. Open source eliminates that risk.</p>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; margin: 0;">Closed-source managed services can change pricing, drop your chain, or shut down. When that happens, you start from scratch. Open source means you always have the code.</p>
                         </div>
                     </div>
                     <div class="choice-item">
                         <v-icon size="18" style="color: #22C55E; flex-shrink: 0; margin-top: 2px;">mdi-check-circle</v-icon>
                         <div>
                             <h3 style="color: var(--text-primary); font-weight: 600; margin-bottom: 4px;">Deep transaction tracing and debugging</h3>
-                            <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; margin: 0;">Ethernal provides full call traces with state diffs, gas profiling, and step-by-step execution visualization. Essential for debugging complex smart contract interactions.</p>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; margin: 0;">Full call traces with state diffs, gas profiling, and step-by-step execution. When a contract reverts and the error message is useless, this is what you need.</p>
                         </div>
                     </div>
                     <div class="choice-item">
@@ -173,7 +173,7 @@
                         <v-icon size="18" style="color: #22C55E; flex-shrink: 0; margin-top: 2px;">mdi-check-circle</v-icon>
                         <div>
                             <h3 style="color: var(--text-primary); font-weight: 600; margin-bottom: 4px;">Self-host on your own infrastructure</h3>
-                            <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; margin: 0;">Run Ethernal on your own servers with Docker. Full data sovereignty, no third-party data sharing, and compliance with any data residency requirements.</p>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; margin: 0;">Run it on your own servers with Docker. No data leaves your infrastructure.</p>
                         </div>
                     </div>
                 </div>

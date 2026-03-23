@@ -37,7 +37,7 @@
                     Why Teams Look for Blockscout Alternatives
                 </h2>
                 <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.7; max-width: 640px;">
-                    Blockscout is battle-tested and has the largest open-source block explorer ecosystem, powering over 1,000 chains. It is the default choice for many rollup teams. That said, some teams run into friction: the Elixir/Erlang runtime is unfamiliar to most Node.js shops, self-hosted deployments can take hours or days to configure, L2-specific features like bridge monitoring require separate plugins, and ongoing DevOps overhead adds up. These are legitimate tradeoffs, not shortcomings. Different teams have different constraints.
+                    Blockscout powers over 1,000 chains and is the default open-source explorer for most rollup teams. It earned that position. But some teams hit friction they didn't expect: the Elixir/Erlang runtime is unfamiliar to most Node.js shops, self-hosted deployments can take hours or days to configure, and L2-specific features like bridge monitoring require separate plugins. None of these are bugs. They're architectural choices that work well for some teams and not others.
                 </p>
             </section>
 
@@ -48,10 +48,10 @@
                 </h2>
                 <div class="comparison-prose">
                     <p>
-                        <strong style="color: var(--text-primary);">Ethernal</strong> is designed to get you from zero to a working explorer as fast as possible. Clone the repo, run <code class="code-inline">make start</code>, paste your RPC URL. The entire stack is Node.js and Docker. No exotic runtimes, no multi-service orchestration. Under 5 minutes for a self-hosted instance, or instant for the hosted version.
+                        <strong style="color: var(--text-primary);">Ethernal:</strong> Clone the repo, run <code class="code-inline">make start</code>, paste your RPC URL. Done. The stack is Node.js and Docker. Under 5 minutes for self-hosted, instant for the hosted version.
                     </p>
                     <p>
-                        <strong style="color: var(--text-primary);">Blockscout</strong> self-hosted requires an Elixir/Erlang runtime, PostgreSQL, and multiple coordinated services. Budget hours to days depending on your team's familiarity with the Elixir ecosystem. Blockscout's Autoscout product offers a faster hosted deployment path that reduces this overhead significantly.
+                        <strong style="color: var(--text-primary);">Blockscout:</strong> Self-hosted means setting up an Elixir/Erlang runtime, PostgreSQL, and multiple coordinated services. Budget hours to days unless your team already runs Elixir. Autoscout, their hosted option, is faster.
                     </p>
                     <p class="bottom-line">
                         <strong>Bottom line:</strong> Ethernal is faster for teams without Elixir expertise. Blockscout's Autoscout closes the gap for hosted deployments.
@@ -82,10 +82,10 @@
                 </h2>
                 <div class="comparison-prose">
                     <p>
-                        <strong style="color: var(--text-primary);">Ethernal</strong> offers full white-label from $500/mo on the App Chain plan: custom domain, logo, colors, and theme. Self-hosted gives you unlimited customization since the codebase is Node.js/Vue, a stack most web developers already know.
+                        <strong style="color: var(--text-primary);">Ethernal:</strong> Full white-label from $500/mo (custom domain, logo, colors, theme). Self-hosted means you can change anything. The codebase is Node.js/Vue, so most web developers can jump in without learning a new stack.
                     </p>
                     <p>
-                        <strong style="color: var(--text-primary);">Blockscout</strong> provides full customization in its self-hosted version. Its Explorer-as-a-Service (EaaS) offering includes managed white-label options. Because Blockscout is built on Elixir, customizing the source code requires familiarity with that ecosystem.
+                        <strong style="color: var(--text-primary);">Blockscout:</strong> Full customization if you self-host. Their EaaS has managed white-label too. Customizing the source means writing Elixir, which is a different skill set.
                     </p>
                     <p class="bottom-line">
                         <strong>Bottom line:</strong> Similar capabilities, different skill requirements for customization.
@@ -99,10 +99,10 @@
                 </h2>
                 <div class="comparison-prose">
                     <p>
-                        <strong style="color: var(--text-primary);">Blockscout</strong> powers over 1000 chains and has the largest open-source block explorer community. It is used by Ethereum, Optimism, Base, and Gnosis, among others. If ecosystem size and community support are your top priority, Blockscout is the established leader.
+                        <strong style="color: var(--text-primary);">Blockscout:</strong> 1000+ chains. Used by Ethereum, Optimism, Base, Gnosis. The largest open-source explorer community by a wide margin.
                     </p>
                     <p>
-                        <strong style="color: var(--text-primary);">Ethernal</strong> supports 370+ chains and serves over 13,000 users. The ecosystem is growing fast, especially among teams launching OP Stack and Arbitrum Orbit chains that want a turnkey solution.
+                        <strong style="color: var(--text-primary);">Ethernal:</strong> 370+ chains, 13,000+ users. Smaller, but growing quickly with OP Stack and Arbitrum Orbit teams.
                     </p>
                     <p class="bottom-line">
                         <strong>Bottom line:</strong> Blockscout has the larger ecosystem. Ethernal is growing fast.
@@ -190,9 +190,9 @@
                     Who Should Use Blockscout
                 </h2>
                 <ul class="who-list">
-                    <li>Teams that need the largest open-source explorer ecosystem</li>
-                    <li>Teams with Elixir/Erlang expertise who want deep source customization</li>
-                    <li>Major L1 ecosystems that want battle-tested infrastructure</li>
+                    <li>You need the largest open-source explorer ecosystem and community</li>
+                    <li>Your team already writes Elixir and wants deep source customization</li>
+                    <li>You are a major L1 ecosystem and want the most battle-tested option</li>
                 </ul>
             </section>
 
@@ -202,10 +202,10 @@
                     Who Should Use Ethernal
                 </h2>
                 <ul class="who-list">
-                    <li>Teams shipping L2s or app chains who need a working explorer fast</li>
-                    <li>Teams running Node.js/Docker without Elixir expertise</li>
-                    <li>Startups that need transparent pricing without enterprise sales calls</li>
-                    <li>Solo developers on Hardhat/Anvil who need a local chain explorer</li>
+                    <li>You are shipping an L2 or app chain and need a working explorer before launch day</li>
+                    <li>Your stack is Node.js/Docker and nobody on the team writes Elixir</li>
+                    <li>You want to see pricing on a webpage, not negotiate it over email</li>
+                    <li>You are a solo developer debugging on Hardhat or Anvil</li>
                 </ul>
             </section>
 

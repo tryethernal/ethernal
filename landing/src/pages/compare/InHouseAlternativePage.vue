@@ -107,7 +107,7 @@
                 </h2>
                 <div class="comparison-prose">
                     <p>
-                        <strong style="color: var(--text-primary);">Build in-house:</strong> Full control over every pixel and feature. You own the entire stack. Every design decision, every API endpoint, every database schema choice is yours.
+                        <strong style="color: var(--text-primary);">Build in-house:</strong> Full control over every pixel. Every design decision, every API endpoint, every schema choice is yours. Nobody can tell you "that feature isn't on the roadmap."
                     </p>
                     <p>
                         <strong style="color: var(--text-primary);">Use Ethernal:</strong> MIT licensed, so you also have full control. Fork the repo and modify anything: the Vue frontend, the Node.js backend, the indexer logic, the data models. The difference is you start from a working product, not a blank file.
@@ -125,7 +125,7 @@
                 </h2>
                 <div class="comparison-prose">
                     <p>
-                        <strong style="color: var(--text-primary);">Build in-house:</strong> Every Ethereum upgrade, new EIP, or chain fork requires engineering work. You handle monitoring, scaling, security patches, and on-call. When your explorer goes down at 3 AM, your team is the one waking up.
+                        <strong style="color: var(--text-primary);">Build in-house:</strong> Every Ethereum upgrade, new EIP, or chain fork requires engineering work. You handle monitoring, scaling, security patches. When the explorer goes down at 3 AM, your team is the one waking up.
                     </p>
                     <p>
                         <strong style="color: var(--text-primary);">Use Ethernal:</strong> Hosted plans include maintenance, upgrades, and monitoring. Self-hosted follows the release cycle: <code class="code-inline">git pull</code>, restart, done.

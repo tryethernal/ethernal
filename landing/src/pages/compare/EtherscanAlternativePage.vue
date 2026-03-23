@@ -47,7 +47,7 @@
                     <li><strong style="color: var(--text-primary);">API paywalls.</strong> In November 2025, Base, Optimism, and Avalanche APIs on Etherscan moved behind $49+/month plans, breaking integrations that relied on free tiers.</li>
                 </ul>
                 <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.7; max-width: 640px; margin-top: 14px;">
-                    None of this diminishes Etherscan's strengths. It has unmatched brand recognition and is the trusted standard for Ethereum mainnet. The question is whether that justifies the cost and constraints for your own chain.
+                    None of this changes the fact that Etherscan is the most trusted explorer in crypto. The question is whether that brand justifies six-figure annual costs for your own chain.
                 </p>
             </section>
 
@@ -58,10 +58,10 @@
                 </h2>
                 <div class="comparison-prose">
                     <p>
-                        <strong style="color: var(--text-primary);">Ethernal</strong> is designed for speed. Clone the repo, run <code class="code-inline">make start</code>, paste your RPC URL. Under 5 minutes for a self-hosted instance. The entire stack is Node.js and Docker. Or skip self-hosting entirely and use the hosted version, which is instant.
+                        <strong style="color: var(--text-primary);">Ethernal:</strong> Clone the repo, run <code class="code-inline">make start</code>, paste your RPC URL. Under 5 minutes. Or use the hosted version and skip self-hosting entirely.
                     </p>
                     <p>
-                        <strong style="color: var(--text-primary);">Etherscan EaaS</strong> is a managed service with no self-hosted option. Deployment requires contacting the sales team, negotiating an enterprise contract, and waiting for Etherscan to provision your instance. Teams report the process taking weeks.
+                        <strong style="color: var(--text-primary);">Etherscan EaaS:</strong> Contact sales, negotiate an enterprise contract, wait for provisioning. No self-hosted option. Teams report the process taking weeks.
                     </p>
                     <p class="bottom-line">
                         <strong>Bottom line:</strong> Ethernal is orders of magnitude faster to deploy. Etherscan EaaS is for teams with enterprise budgets and timelines.
@@ -75,7 +75,7 @@
                 </h2>
                 <div class="comparison-prose">
                     <p>
-                        <strong style="color: var(--text-primary);">Ethernal</strong> publishes its pricing. Self-hosted is free (MIT license). Hosted plans start at $0 (Starter, ad-supported), $150/month (Team, custom domain), and $500/month (App Chain, full white-label with custom branding, status page, and 5M transactions). Enterprise plans are available on request.
+                        <strong style="color: var(--text-primary);">Ethernal:</strong> Pricing is on the website. $0 self-hosted. $0 Starter (hosted, ad-supported). $150/mo Team. $500/mo App Chain (full white-label, 5M transactions). Enterprise on request.
                     </p>
                     <p>
                         <strong style="color: var(--text-primary);">Etherscan</strong> is free to browse public chains. API plans range from free to $399/month. EaaS (running your own Etherscan-branded explorer) is custom-priced with no public tiers. Published reports and industry sources cite $1-2M/year for EaaS contracts.
@@ -92,10 +92,10 @@
                 </h2>
                 <div class="comparison-prose">
                     <p>
-                        <strong style="color: var(--text-primary);">Ethernal</strong> is MIT licensed. The full source code is on GitHub. You can self-host on your own infrastructure, fork it, and customize it without restrictions. Your data stays on your servers.
+                        <strong style="color: var(--text-primary);">Ethernal:</strong> MIT licensed, full source on GitHub. Self-host on your servers, fork it, change whatever you want. Your data stays where you put it.
                     </p>
                     <p>
-                        <strong style="color: var(--text-primary);">Etherscan</strong> is proprietary. There is no source code access, no self-hosting option, and no way to audit the codebase. All data lives on Etherscan's infrastructure.
+                        <strong style="color: var(--text-primary);">Etherscan:</strong> Proprietary. No source access, no self-hosting, no way to audit what runs. All data lives on their infrastructure.
                     </p>
                     <p class="bottom-line">
                         <strong>Bottom line:</strong> If vendor lock-in or data sovereignty matters, Etherscan is not an option. Ethernal and Blockscout are.
@@ -109,10 +109,10 @@
                 </h2>
                 <div class="comparison-prose">
                     <p>
-                        <strong style="color: var(--text-primary);">Etherscan</strong> is the most recognized explorer brand in crypto. "Check Etherscan" is practically a verb in the ecosystem. An EaaS instance inherits that trust and familiarity, which has real value for user confidence.
+                        <strong style="color: var(--text-primary);">Etherscan:</strong> "Check Etherscan" is a verb at this point. An EaaS instance inherits that trust. For user confidence, that matters.
                     </p>
                     <p>
-                        <strong style="color: var(--text-primary);">Ethernal</strong> is a growing brand (370+ chains, 13,000+ users). But with full white-label, your users see your brand, not Ethernal's. The explorer looks and feels like a native part of your chain's ecosystem.
+                        <strong style="color: var(--text-primary);">Ethernal:</strong> 370+ chains, 13,000+ users. With full white-label, your users see your brand, not ours. That is the point of white-label.
                     </p>
                     <p class="bottom-line">
                         <strong>Bottom line:</strong> If Etherscan brand recognition justifies the cost, use their EaaS. If your users should see your brand, white-label is the point.
