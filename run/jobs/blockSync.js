@@ -185,10 +185,7 @@ module.exports = async job => {
             }),
             require('../models').OpChainConfig.findOne({
                 where: {
-                    [require('sequelize').Op.or]: [
-                        { workspaceId: data.workspaceId },
-                        { parentWorkspaceId: data.workspaceId }
-                    ]
+                    parentWorkspaceId: data.workspaceId
                 },
                 attributes: ['id'],
                 limit: 1
