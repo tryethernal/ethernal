@@ -121,7 +121,7 @@ describe('integrityCheck', () => {
                 .mockResolvedValueOnce([{ id: 1, number: 1 }])
                 .mockResolvedValueOnce([{ id: 1 }]),
             integrityCheckStartBlockNumber: 5,
-            integrityCheck: { block: { number: 1 }},
+            integrityCheck: { block: { number: 1 }, updatedAt: new Date() },
             id: 1,
             public: true,
             name: 'hardhat',

@@ -132,11 +132,13 @@ module.exports = async job => {
         }
     }
 
-    const lastCheckedBlock = workspace.integrityCheck && workspace.integrityCheck.block
+    const lastCheckedBlock = workspace.integrityCheck && workspace.integrityCheck.block && workspace.integrityCheck.block.number != null
         ? workspace.integrityCheck.block.number
         : lowerBlock.number;
-    const minuteOfHour = new Date().getMinutes();
-    const isFullScan = minuteOfHour < 5;
+    const lastFullScanAt = workspace.integrityCheck && workspace.integrityCheck.updatedAt
+        ? new Date(workspace.integrityCheck.updatedAt)
+        : null;
+    const isFullScan = !lastFullScanAt || (Date.now() - lastFullScanAt.getTime()) > 60 * 60 * 1000;
     const scanLowerBound = isFullScan
         ? lowerBlock.number
         : Math.max(lowerBlock.number, lastCheckedBlock);
@@ -171,6 +173,8 @@ module.exports = async job => {
     });
     if (cursorBlock)
         await workspace.safeCreateOrUpdateIntegrityCheck({ blockId: cursorBlock.id });
+    else
+        console.warn(`[integrityCheck] Could not find cursor block #${latestReadyBlock.number} for workspace ${workspace.id}`);
 
     return true;
 };
