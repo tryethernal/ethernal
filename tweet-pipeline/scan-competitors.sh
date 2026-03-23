@@ -96,7 +96,7 @@ If nothing scores >= 60: {\"score\": 0, \"title\": \"No qualifying opportunities
 
 SCORE_OUTPUT=$(claude -p "$PROMPT" \
   --dangerously-skip-permissions \
-  --max-turns 5 \
+  --max-turns 2 \
   2>&1) || true
 
 echo "$SCORE_OUTPUT" | tee -a "$LOG_FILE"

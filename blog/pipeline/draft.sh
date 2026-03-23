@@ -209,10 +209,10 @@ cd "$REPO_DIR/blog"
 
 VALIDATION_PASSED=false
 for ATTEMPT in 1 2 3; do
-  VALIDATE_OUTPUT=$(npx astro sync 2>&1) || true
+  VALIDATE_OUTPUT=$(npx astro sync 2>&1) && ASTRO_OK=true || ASTRO_OK=false
   echo "$VALIDATE_OUTPUT" | tee -a "$LOG_FILE"
 
-  if ! echo "$VALIDATE_OUTPUT" | grep -qi "error"; then
+  if [ "$ASTRO_OK" = "true" ]; then
     VALIDATION_PASSED=true
     break
   fi

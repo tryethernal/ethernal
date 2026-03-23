@@ -101,13 +101,13 @@ fi
 # ============================================================
 log "Selecting source for slot $SLOT..."
 
-# Check for override sources (slot 3): competitor > newsletter > normal
+# Check for override sources (slot 2): competitor > newsletter > normal
 SKIP_NORMAL_SOURCE=false
-if [ "$SLOT" = "3" ]; then
+if [ "$SLOT" = "2" ]; then
   # 1. Check competitor source first (highest priority)
   COMP_JSON=$(node lib/cli/get-competitor-source.js 2>/dev/null) && SKIP_NORMAL_SOURCE=true || true
   if [ "$SKIP_NORMAL_SOURCE" = "true" ]; then
-    log "Using competitor source for slot 3"
+    log "Using competitor source for slot 2"
     COMP_JSON="$COMP_JSON" node --input-type=module -e "
       import { getScheduledTime } from './config.js';
       import { writeFileSync } from 'node:fs';
