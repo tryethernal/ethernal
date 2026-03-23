@@ -69,6 +69,45 @@
                 <h2 class="font-heading text-white mb-4" style="font-weight: 700; font-size: clamp(1.3rem, 2.5vw, 1.8rem); letter-spacing: -0.02em;">
                     Time to Launch
                 </h2>
+                <div class="setup-comparison">
+                    <div class="browser-preview" style="flex: 1; min-width: 0;">
+                        <div class="preview-header">
+                            <div class="d-flex align-center ga-2">
+                                <span class="dot red"></span>
+                                <span class="dot yellow"></span>
+                                <span class="dot green"></span>
+                            </div>
+                            <div class="preview-url-bar">terminal - ethernal</div>
+                            <div style="width: 42px;"></div>
+                        </div>
+                        <div class="preview-body">
+                            <div class="terminal-line"><span class="terminal-cmd">$ git clone https://github.com/tryethernal/ethernal.git</span></div>
+                            <div class="terminal-line"><span class="terminal-cmd">$ cd ethernal && make start</span></div>
+                            <div class="terminal-line"><span class="terminal-cmd">$ # paste RPC URL → explorer live</span></div>
+                            <div class="terminal-line"><span class="terminal-output">✓ Done. 4 minutes.</span></div>
+                        </div>
+                    </div>
+                    <div class="browser-preview" style="flex: 1; min-width: 0;">
+                        <div class="preview-header">
+                            <div class="d-flex align-center ga-2">
+                                <span class="dot red"></span>
+                                <span class="dot yellow"></span>
+                                <span class="dot green"></span>
+                            </div>
+                            <div class="preview-url-bar">terminal - custom build</div>
+                            <div style="width: 42px;"></div>
+                        </div>
+                        <div class="preview-body">
+                            <div class="terminal-line"><span class="terminal-status">Month 1: Block indexer + reorg handling</span></div>
+                            <div class="terminal-line"><span class="terminal-status">Month 2: Transaction decoder + ABI parser</span></div>
+                            <div class="terminal-line"><span class="terminal-status">Month 3: Contract verification engine</span></div>
+                            <div class="terminal-line"><span class="terminal-status">Month 4: API + search + pagination</span></div>
+                            <div class="terminal-line"><span class="terminal-status">Month 5: Frontend + real-time updates</span></div>
+                            <div class="terminal-line"><span class="terminal-status">Month 6: Testing, deployment, bug fixes</span></div>
+                            <div class="terminal-line"><span class="terminal-status">⏳ Still no L2 bridge support...</span></div>
+                        </div>
+                    </div>
+                </div>
                 <div class="comparison-prose">
                     <p>
                         <strong style="color: var(--text-primary);">Build in-house:</strong> 3-6 months for an MVP. 12+ months to reach feature parity with existing explorers. Every EVM upgrade (Cancun, Pectra, Glamsterdam) requires engineering work to support new transaction types, opcodes, and protocol changes.
@@ -240,12 +279,28 @@
                 <h2 class="font-heading text-white mb-4" style="font-weight: 700; font-size: clamp(1.3rem, 2.5vw, 1.8rem); letter-spacing: -0.02em;">
                     Pricing
                 </h2>
-                <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.7; max-width: 640px;">
-                    Ethernal is free to self-host under the MIT license. The hosted Starter plan is also free (ad-supported, with contract verification, token tracking, and unlimited transactions).
-                    For custom domains and L1 explorer integration, the Team plan starts at $150/month.
-                    Full whitelabel with custom branding, status page, and 5M transactions included is available on the App Chain plan at $500/month.
-                    Enterprise plans with custom requirements are available on request.
-                </p>
+                <div class="pricing-grid">
+                    <div class="pricing-card">
+                        <div class="pricing-card-name">Self-hosted</div>
+                        <div class="pricing-card-price">$0 <span class="pricing-card-label">MIT License</span></div>
+                        <div class="pricing-card-detail">Fork, extend, self-host. No restrictions.</div>
+                    </div>
+                    <div class="pricing-card">
+                        <div class="pricing-card-name">Starter</div>
+                        <div class="pricing-card-price">$0 <span class="pricing-card-label">/month</span></div>
+                        <div class="pricing-card-detail">Hosted, ad-supported. Contract verification, token tracking, unlimited tx.</div>
+                    </div>
+                    <div class="pricing-card">
+                        <div class="pricing-card-name">Team</div>
+                        <div class="pricing-card-price">$150 <span class="pricing-card-label">/month</span></div>
+                        <div class="pricing-card-detail">Custom domain, no ads, L1 explorer, 100k tx included.</div>
+                    </div>
+                    <div class="pricing-card">
+                        <div class="pricing-card-name">App Chain</div>
+                        <div class="pricing-card-price">$500 <span class="pricing-card-label">/month</span></div>
+                        <div class="pricing-card-detail">Full white-label. Custom branding, status page, 5M tx.</div>
+                    </div>
+                </div>
                 <v-btn
                     class="btn-outline mt-6"
                     href="/pricing"
@@ -435,6 +490,36 @@ useHead({
 
 /* Pricing context */
 .pricing-context .btn-outline { border: 1px solid var(--btn-outline-border); color: var(--text-secondary); text-transform: none; letter-spacing: 0; font-weight: 500; }
+
+/* Terminal mockup */
+.setup-comparison { display: flex; gap: 20px; margin-bottom: 24px; }
+.browser-preview { background: var(--glass-bg); backdrop-filter: blur(16px); border: 1px solid var(--border-subtle); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-card); }
+.preview-header { background: var(--bg-surface); padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); }
+.preview-url-bar { display: flex; align-items: center; gap: 6px; background: var(--glass-bg-strong); border-radius: 6px; padding: 4px 12px; color: var(--text-muted); font-size: 11px; font-family: 'JetBrains Mono', monospace; }
+.dot { width: 10px; height: 10px; border-radius: 50%; }
+.dot.red { background: #ff5f56; }
+.dot.yellow { background: #febc2e; }
+.dot.green { background: #28c840; }
+.preview-body { padding: 20px; font-family: 'JetBrains Mono', 'Roboto', sans-serif; font-size: 12px; }
+.terminal-line { margin-bottom: 6px; line-height: 1.6; }
+.terminal-cmd { color: #22C55E; }
+.terminal-output { color: #A5D6FF; }
+.terminal-status { color: #F59E0B; }
+
+/* Pricing cards */
+.pricing-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+.pricing-card { padding: 24px; background: var(--glass-bg); border: 1px solid var(--drawer-divider); border-radius: 12px; }
+.pricing-card-name { font-size: 0.9rem; font-weight: 600; color: #5DAAE0; margin-bottom: 8px; }
+.pricing-card-price { font-size: 2rem; font-weight: 700; color: var(--text-primary); line-height: 1; }
+.pricing-card-label { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px; }
+.pricing-card-detail { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; }
+
+@media (max-width: 900px) { .pricing-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 500px) { .pricing-grid { grid-template-columns: 1fr; } }
+
+@media (max-width: 768px) {
+    .setup-comparison { flex-direction: column; }
+}
 
 @media (max-width: 600px) {
     .comp-row { grid-template-columns: 1.2fr 0.8fr 0.8fr; font-size: 11px; padding: 10px 12px; }

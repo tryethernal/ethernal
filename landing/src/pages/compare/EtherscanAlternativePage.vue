@@ -73,6 +73,23 @@
                 <h2 class="font-heading text-white mb-4" style="font-weight: 700; font-size: clamp(1.3rem, 2.5vw, 1.8rem); letter-spacing: -0.02em;">
                     Pricing
                 </h2>
+                <div class="pricing-scale">
+                    <div class="pricing-scale-row">
+                        <span class="pricing-scale-label">Ethernal App Chain</span>
+                        <div class="pricing-scale-track">
+                            <div class="pricing-scale-bar pricing-scale-bar--ethernal"></div>
+                            <span class="pricing-scale-price pricing-scale-price--ethernal">$6K/yr</span>
+                        </div>
+                    </div>
+                    <div class="pricing-scale-row">
+                        <span class="pricing-scale-label">Etherscan EaaS</span>
+                        <div class="pricing-scale-track">
+                            <div class="pricing-scale-bar pricing-scale-bar--etherscan"></div>
+                            <span class="pricing-scale-price pricing-scale-price--etherscan">$1-2M/yr</span>
+                        </div>
+                    </div>
+                    <p class="pricing-scale-note">Based on published reports (CoinTelegraph, Snowtrace incident)</p>
+                </div>
                 <div class="comparison-prose">
                     <p>
                         <strong style="color: var(--text-primary);">Ethernal:</strong> Pricing is on the website. $0 self-hosted. $0 Starter (hosted, ad-supported). $150/mo Team. $500/mo App Chain (full white-label, 5M transactions). Enterprise on request.
@@ -224,12 +241,32 @@
                 <h2 class="font-heading text-white mb-4" style="font-weight: 700; font-size: clamp(1.3rem, 2.5vw, 1.8rem); letter-spacing: -0.02em;">
                     Pricing
                 </h2>
-                <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.7; max-width: 640px;">
-                    Ethernal is free to self-host under the MIT license. The hosted Starter plan is also free (ad-supported, with contract verification, token tracking, and unlimited transactions).
-                    For custom domains and L1 explorer integration, the Team plan starts at $150/month.
-                    Full whitelabel with custom branding, status page, and 5M transactions included is available on the App Chain plan at $500/month.
-                    Enterprise plans with custom requirements are available on request.
-                </p>
+                <div class="pricing-grid">
+                    <div class="pricing-card">
+                        <div class="pricing-card-name">Self-hosted</div>
+                        <div class="pricing-card-price">$0</div>
+                        <div class="pricing-card-label">MIT License</div>
+                        <div class="pricing-card-detail">Fork, extend, self-host. No restrictions.</div>
+                    </div>
+                    <div class="pricing-card">
+                        <div class="pricing-card-name">Starter</div>
+                        <div class="pricing-card-price">$0</div>
+                        <div class="pricing-card-label">/month</div>
+                        <div class="pricing-card-detail">Hosted, ad-supported. Contract verification, token tracking, unlimited tx.</div>
+                    </div>
+                    <div class="pricing-card">
+                        <div class="pricing-card-name">Team</div>
+                        <div class="pricing-card-price">$150</div>
+                        <div class="pricing-card-label">/month</div>
+                        <div class="pricing-card-detail">Custom domain, no ads, L1 explorer, 100k tx included.</div>
+                    </div>
+                    <div class="pricing-card">
+                        <div class="pricing-card-name">App Chain</div>
+                        <div class="pricing-card-price">$500</div>
+                        <div class="pricing-card-label">/month</div>
+                        <div class="pricing-card-detail">Full white-label. Custom branding, status page, 5M tx.</div>
+                    </div>
+                </div>
                 <v-btn
                     class="btn-outline mt-6"
                     href="/pricing"
@@ -444,11 +481,39 @@ useHead({
 .related-title { color: var(--text-primary); font-weight: 600; font-size: 0.9rem; }
 .related-desc { color: var(--text-muted); font-size: 0.8rem; }
 
+/* Pricing scale visual */
+.pricing-scale { padding: 24px; background: var(--glass-bg); border: 1px solid var(--drawer-divider); border-radius: 12px; margin-bottom: 24px; }
+.pricing-scale-row { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; }
+.pricing-scale-row:last-of-type { margin-bottom: 0; }
+.pricing-scale-label { width: 140px; flex-shrink: 0; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); }
+.pricing-scale-track { flex: 1; position: relative; height: 32px; display: flex; align-items: center; }
+.pricing-scale-bar { height: 100%; border-radius: 6px; }
+.pricing-scale-bar--ethernal { width: 15%; background: #3D95CE; }
+.pricing-scale-bar--etherscan { width: 100%; background: rgba(249, 115, 22, 0.6); }
+.pricing-scale-price { margin-left: 10px; font-size: 0.85rem; font-weight: 700; white-space: nowrap; }
+.pricing-scale-price--ethernal { color: #5DAAE0; }
+.pricing-scale-price--etherscan { color: #F97316; }
+.pricing-scale-note { font-size: 0.75rem; color: var(--text-muted); margin-top: 12px; margin-bottom: 0; }
+
+/* Pricing cards */
+.pricing-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+.pricing-card { padding: 24px; background: var(--glass-bg); border: 1px solid var(--drawer-divider); border-radius: 12px; }
+.pricing-card-name { font-size: 0.9rem; font-weight: 600; color: #5DAAE0; margin-bottom: 8px; }
+.pricing-card-price { font-size: 2rem; font-weight: 700; color: var(--text-primary); line-height: 1; }
+.pricing-card-label { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px; }
+.pricing-card-detail { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; }
+
 /* Pricing context */
 .pricing-context .btn-outline { border: 1px solid var(--btn-outline-border); color: var(--text-secondary); text-transform: none; letter-spacing: 0; font-weight: 500; }
+
+@media (max-width: 900px) { .pricing-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 500px) { .pricing-grid { grid-template-columns: 1fr; } }
 
 @media (max-width: 600px) {
     .comp-row { grid-template-columns: 1.2fr 0.8fr 0.8fr; font-size: 11px; padding: 10px 12px; }
     .tldr-box { padding: 18px 20px; }
+    .pricing-scale-label { width: 100px; font-size: 0.75rem; }
+    .pricing-scale-row { gap: 10px; }
+    .pricing-scale { padding: 16px; }
 }
 </style>
