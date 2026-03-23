@@ -117,7 +117,7 @@ if [ "$SLOT" = "2" ]; then
         sourceId: 'competitor: ' + comp.title,
         source: { type: 'competitor', title: comp.title, content: comp.content, url: comp.url || '', angle: comp.angle || '' },
         bucket: 'Competitor response',
-        slot: 3,
+        slot: 2,
         scheduledAt: scheduledAt.toISOString(),
       };
       writeFileSync('.source.json', JSON.stringify(result, null, 2));
@@ -147,7 +147,7 @@ if [ "$SLOT" = "2" ]; then
           sourceId: 'newsletter: ' + nl.title,
           source: { type: 'newsletter', title: nl.title, content: nl.content, url: nl.source_url || '' },
           bucket: 'Newsletter story',
-          slot: 3,
+          slot: 2,
           scheduledAt: scheduledAt.toISOString(),
         };
         writeFileSync('.source.json', JSON.stringify(result, null, 2));
