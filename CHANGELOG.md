@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.115] - 2026-03-23
+### Fixed
+- fix: add performance issue triage rules to Sentry pipeline
+- fix: add missing index on orbit_chain_configs.parentWorkspaceId (#820)
+- fix: eliminate N+1 queries in Block afterCreate hooks during bulk sync (#827)
+- fix: add 30-second timeout to viem HTTP transport to prevent RPC timeout errors (#831)
+- fix: enforce git diff verification for review processing + remove redundant limit:1
+
+
 ## [5.17.114] - 2026-03-23
 ### Fixed
 - fix: optimize getFilteredTokenTransfers to prevent N+1 query in blockSync (#829)

@@ -116,20 +116,22 @@ jobs:
             - Null/type errors, unhandled promise rejections with 2+ events
             - Systematic issues with 5+ events in 24h
 
-            **Priority 3 — High-impact performance**:
-            - N+1 queries with 20+ events
-            - Slow DB queries with 20+ events
-            - Endpoint/function regressions
+            **Priority 3 — High-impact performance** (user-facing hot paths only):
+            - N+1 queries with 50+ events AND on a user-facing endpoint or blockSync hot path
+            - Slow DB queries with 50+ events AND p95 > 2s
 
             **Priority 4 — Medium performance**:
-            - N+1 queries with 5-19 events
-            - Consecutive DB queries where parallelization would help
+            - N+1 queries with 20-49 events on user-facing endpoints
+            - Background job performance issues with 100+ events (higher bar since they don't affect UX)
 
             ### SKIP (leave unresolved in Sentry)
             - Non-regressed issues with fewer than 2 events (might be one-off)
             - Performance issues on admin/debug endpoints (e.g., /bull/*)
+            - Performance issues on background jobs with < 100 events
+            - Performance issues where the slow span is < 2s on a background job
             - Issues where the slow span is an external API call we can't control
             - Issues that need more data to evaluate
+            - Performance issues where multiple related Sentry issues point to the same code path — group them mentally and only create ONE issue for the root cause, not one per symptom
 
             ## Step 4: Create GitHub issues
 

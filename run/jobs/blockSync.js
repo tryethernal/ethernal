@@ -180,15 +180,13 @@ module.exports = async job => {
                         { parentWorkspaceId: data.workspaceId }
                     ]
                 },
-                attributes: ['id'],
-                limit: 1
+                attributes: ['id']
             }),
             require('../models').OpChainConfig.findOne({
                 where: {
                     parentWorkspaceId: data.workspaceId
                 },
-                attributes: ['id'],
-                limit: 1
+                attributes: ['id']
             })
         ]);
 
