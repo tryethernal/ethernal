@@ -24,6 +24,10 @@ export const routes = [
     { path: '/etherscan-alternative', name: 'etherscan-alternative', component: () => import('./pages/compare/EtherscanAlternativePage.vue') },
     { path: '/build-vs-buy-block-explorer', name: 'build-vs-buy', component: () => import('./pages/compare/InHouseAlternativePage.vue') },
 
+    // Free developer tools
+    { path: '/tools/calldata-decoder', name: 'tools-calldata-decoder', component: () => import('./pages/tools/CallDataDecoderPage.vue') },
+    { path: '/tools/4byte-lookup', name: 'tools-4byte-lookup', component: () => import('./pages/tools/FourByteLookupPage.vue') },
+
     // Chain directory pages
     { path: '/chains/base', name: 'chains-base', component: () => import('./pages/chains/BasePage.vue') },
     { path: '/chains/arbitrum-one', name: 'chains-arbitrum-one', component: () => import('./pages/chains/ArbitrumOnePage.vue') },

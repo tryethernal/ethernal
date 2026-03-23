@@ -109,6 +109,9 @@
                         <router-link to="/blockscout-alternative" class="footer-link">vs Blockscout</router-link>
                         <router-link to="/routescan-alternative" class="footer-link">vs Routescan</router-link>
                         <router-link to="/build-vs-buy-block-explorer" class="footer-link">vs In-House</router-link>
+                        <div class="footer-heading mt-6">Tools</div>
+                        <router-link to="/tools/calldata-decoder" class="footer-link">Calldata Decoder</router-link>
+                        <router-link to="/tools/4byte-lookup" class="footer-link">4byte Lookup</router-link>
                     </div>
                 </v-col>
             </v-row>
