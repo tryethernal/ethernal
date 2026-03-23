@@ -52,6 +52,7 @@
 
 - [Blockscout Alternative](https://tryethernal.com/blockscout-alternative): Side-by-side comparison of Ethernal vs Blockscout — setup, runtime, L2 support, pricing
 - [Routescan Alternative](https://tryethernal.com/routescan-alternative): Side-by-side comparison of Ethernal vs Routescan — open source vs closed source, self-hosting, vendor lock-in, pricing
+- [Etherscan Alternative](https://tryethernal.com/etherscan-alternative): Ethernal as an open-source Etherscan alternative for custom EVM chains — self-hostable, MIT licensed, published pricing vs Etherscan's closed-source EaaS
 
 ## Blog
 
