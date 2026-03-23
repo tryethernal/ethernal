@@ -151,6 +151,12 @@ module.exports = (sequelize, DataTypes) => {
             if (Date.now() / 1000 - this.timestamp < 60 * 10)
                 trigger(`private-blocks;workspace=${this.workspaceId}`, 'new', { number: this.number, withTransactions: this.transactionsCount > 0 });
 
+            // Skip expensive workspace operations during bulk sync to prevent N+1 queries
+            // These operations are primarily for real-time processing and can be deferred for bulk operations
+            if (options.skipWorkspaceOperations) {
+                return;
+            }
+
             const workspace = await this.getWorkspace();
             if (workspace.public) {
                 await enqueue('removeStalledBlock', `removeStalledBlock-${this.id}`, { blockId: this.id, workspaceId: this.workspaceId }, null, null, STALLED_BLOCK_REMOVAL_DELAY);

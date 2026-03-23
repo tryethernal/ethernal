@@ -2958,7 +2958,10 @@ module.exports = (sequelize, DataTypes) => {
                     {
                         ignoreDuplicates: true,
                         returning: true,
-                        transaction: sequelizeTransaction
+                        transaction: sequelizeTransaction,
+                        // Skip workspace operations in block hooks to prevent N+1 queries during bulk sync
+                        // These operations (tracing, integrity checks, etc.) are deferred to background jobs
+                        skipWorkspaceOperations: true
                     }
                 );
 
