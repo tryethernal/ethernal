@@ -2245,30 +2245,30 @@ module.exports = (sequelize, DataTypes) => {
         return result;
     }
     async getTransactionCount(since) {
-        let query = `
-            SELECT COUNT(1) AS count
-            FROM transaction_events
-            WHERE "workspaceId" = :workspaceId
-            AND timestamp >= timestamp :since
-        `;
+        let query;
+        let replacements;
 
         if (!since) {
-            const [earliestBlock] = await this.getBlocks({
-                attributes: ['timestamp'],
-                where: {
-                    timestamp: { [Op.gt]: new Date(0) }
-                },
-                order: [['number', 'ASC']],
-                limit: 1
-            });
-            since = earliestBlock ? new Date(earliestBlock.timestamp) : new Date(0);
+            // For total count, skip expensive earliest block lookup and count all transactions
+            query = `
+                SELECT COUNT(1) AS count
+                FROM transaction_events
+                WHERE "workspaceId" = :workspaceId
+            `;
+            replacements = { workspaceId: this.id };
+        } else {
+            // For time-filtered count, use timestamp filter
+            query = `
+                SELECT COUNT(1) AS count
+                FROM transaction_events
+                WHERE "workspaceId" = :workspaceId
+                AND timestamp >= timestamp :since
+            `;
+            replacements = { workspaceId: this.id, since };
         }
 
         const [{ count },] = await sequelize.query(query, {
-            replacements: {
-                workspaceId: this.id,
-                since
-            },
+            replacements,
             type: QueryTypes.SELECT
         });
 
