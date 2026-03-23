@@ -130,7 +130,7 @@ export async function encodeCalldata(signature, values) {
  */
 export async function lookup4byte(selector) {
     const hex = selector.startsWith('0x') ? selector : `0x${selector}`;
-    const res = await fetch(`https://www.4byte.directory/api/v1/function-signatures/?hex_signature=${hex}&format=json`);
+    const res = await fetch(`https://www.4byte.directory/api/v1/signatures/?hex_signature=${hex}&format=json`);
     if (!res.ok) throw new Error('Could not reach signature database');
     const data = await res.json();
     return data.results || [];
@@ -142,7 +142,7 @@ export async function lookup4byte(selector) {
  * @returns {Promise<Array<{ id: number, text_signature: string, hex_signature: string }>>}
  */
 export async function search4byte(query) {
-    const res = await fetch(`https://www.4byte.directory/api/v1/function-signatures/?text_signature=${encodeURIComponent(query)}&format=json`);
+    const res = await fetch(`https://www.4byte.directory/api/v1/signatures/?text_signature__icontains=${encodeURIComponent(query)}&format=json`);
     if (!res.ok) throw new Error('Could not reach signature database');
     const data = await res.json();
     return data.results || [];
