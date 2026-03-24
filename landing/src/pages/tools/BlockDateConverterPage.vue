@@ -359,7 +359,18 @@ async function handleDateToBlock() {
             else high = mid;
         }
 
-        const { timestamp } = await getBlockTimestamp(low);
+        const { timestamp: hiTs } = await getBlockTimestamp(low);
+        let number = low;
+        let timestamp = hiTs;
+
+        if (low > 0) {
+            const { timestamp: loTs } = await getBlockTimestamp(low - 1);
+            if (Math.abs(loTs - targetTs) < Math.abs(hiTs - targetTs)) {
+                number = low - 1;
+                timestamp = loTs;
+            }
+        }
+
         const diff = timestamp - targetTs;
         let offset;
         if (Math.abs(diff) < 60) offset = `${Math.abs(diff)} seconds ${diff >= 0 ? 'after' : 'before'} target`;
@@ -367,7 +378,7 @@ async function handleDateToBlock() {
         else offset = `${Math.floor(Math.abs(diff) / 3600)} hours ${diff >= 0 ? 'after' : 'before'} target`;
 
         dateToBlockResult.value = {
-            number: low,
+            number,
             utc: new Date(timestamp * 1000).toUTCString(),
             offset
         };
