@@ -132,7 +132,15 @@ module.exports = async job => {
         }
     }
 
-    const gaps = await workspace.findBlockGapsV2(lowerBlock.number, latestBlock.number);
+    const lastCheckedBlock = workspace.integrityCheck && workspace.integrityCheck.block && workspace.integrityCheck.block.number != null
+        ? workspace.integrityCheck.block.number
+        : lowerBlock.number;
+    const isFullScan = new Date().getMinutes() < 5;
+    const scanLowerBound = isFullScan
+        ? lowerBlock.number
+        : Math.max(lowerBlock.number, lastCheckedBlock);
+
+    const gaps = await workspace.findBlockGapsV2(scanLowerBound, latestBlock.number);
 
     if (gaps.length) {
         const batches = [];
@@ -154,6 +162,13 @@ module.exports = async job => {
         }
 
         await bulkEnqueue('batchBlockSync', batches);
+    } else {
+        const [cursorBlock] = await workspace.getBlocks({
+            where: { number: latestReadyBlock.number },
+            attributes: ['id']
+        });
+        if (cursorBlock)
+            await workspace.safeCreateOrUpdateIntegrityCheck({ blockId: cursorBlock.id });
     }
 
     return true;

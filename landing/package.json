@@ -11,6 +11,7 @@
   "dependencies": {
     "@mdi/font": "^7.4.47",
     "@vueuse/head": "^2.0.0",
+    "ethers": "^6.16.0",
     "posthog-js": "^1.194.0",
     "vite-ssg": "^27.1.0",
     "vue": "^3.5.13",
