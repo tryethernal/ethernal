@@ -34,6 +34,7 @@
                             v-for="chain in chains"
                             :key="chain.slug"
                             :class="['chain-badge', { active: activeChain === chain.slug }]"
+                            :disabled="blockToDateLoading || dateToBlockLoading"
                             @click="selectChain(chain)"
                         >
                             <img
@@ -52,6 +53,7 @@
                         class="tool-input mb-6"
                         placeholder="https://ethereum-rpc.publicnode.com"
                         spellcheck="false"
+                        :disabled="blockToDateLoading || dateToBlockLoading"
                         @input="onRpcManualEdit"
                     />
 
