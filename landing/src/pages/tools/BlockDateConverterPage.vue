@@ -335,7 +335,8 @@ async function handleDateToBlock() {
     dateToBlockError.value = '';
     dateToBlockResult.value = null;
 
-    const targetTs = Math.floor(new Date(dateInput.value).getTime() / 1000);
+    const raw = dateInput.value;
+    const targetTs = Math.floor(new Date(raw.includes('Z') ? raw : raw + 'Z').getTime() / 1000);
     if (isNaN(targetTs)) {
         dateToBlockError.value = 'Select a valid date.';
         return;

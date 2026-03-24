@@ -68,6 +68,13 @@ export async function computeSelector(signature) {
     return hash.slice(0, 10);
 }
 
+function serializeDecodedValue(val) {
+    if (typeof val === 'bigint') return val.toString();
+    if (Array.isArray(val)) return `[${val.map(serializeDecodedValue).join(', ')}]`;
+    if (val && typeof val === 'object') return `(${Object.values(val).map(serializeDecodedValue).join(', ')})`;
+    return String(val);
+}
+
 /**
  * Decode calldata hex string using an ABI fragment.
  * @param {string} hexData - calldata hex (with or without 0x prefix)
@@ -85,7 +92,7 @@ export async function decodeCalldata(hexData, fragment) {
         params: fragment.types.map((type, i) => ({
             index: i,
             type,
-            value: String(decoded[i])
+            value: serializeDecodedValue(decoded[i])
         }))
     };
 }
@@ -122,7 +129,7 @@ export async function decodeCalldataWithAbi(hexData, abi) {
             index: i,
             name: input.name || `param${i}`,
             type: input.type,
-            value: String(decoded[i])
+            value: serializeDecodedValue(decoded[i])
         }))
     };
 }
