@@ -137,6 +137,35 @@ export async function lookup4byte(selector) {
 }
 
 /**
+ * Ethereum unit denominations with their decimal places.
+ * @type {Array<{ name: string, decimals: number }>}
+ */
+export const ETH_UNITS = [
+    { name: 'Wei', decimals: 0 },
+    { name: 'Kwei', decimals: 3 },
+    { name: 'Mwei', decimals: 6 },
+    { name: 'Gwei', decimals: 9 },
+    { name: 'Szabo', decimals: 12 },
+    { name: 'Finney', decimals: 15 },
+    { name: 'Ether', decimals: 18 }
+];
+
+/**
+ * Convert a value from one Ethereum unit to all other units.
+ * @param {string} value - the numeric string to convert
+ * @param {number} fromDecimals - the decimal places of the source unit
+ * @returns {Promise<Array<{ name: string, decimals: number, value: string }>>}
+ */
+export async function convertEthUnits(value, fromDecimals) {
+    const { parseUnits, formatUnits } = await import('ethers');
+    const weiValue = parseUnits(value, fromDecimals);
+    return ETH_UNITS.map(unit => ({
+        ...unit,
+        value: formatUnits(weiValue, unit.decimals)
+    }));
+}
+
+/**
  * Search function signatures by name from 4byte.directory.
  * @param {string} query - text query (e.g. "transfer")
  * @returns {Promise<Array<{ id: number, text_signature: string, hex_signature: string }>>}

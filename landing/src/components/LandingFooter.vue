@@ -112,6 +112,8 @@
                         <div class="footer-heading mt-6">Tools</div>
                         <router-link to="/tools/calldata-decoder" class="footer-link">Calldata Decoder</router-link>
                         <router-link to="/tools/4byte-lookup" class="footer-link">4byte Lookup</router-link>
+                        <router-link to="/tools/unit-converter" class="footer-link">Unit Converter</router-link>
+                        <router-link to="/tools/block-date-converter" class="footer-link">Block Date Converter</router-link>
                     </div>
                 </v-col>
             </v-row>

@@ -29,7 +29,9 @@ defineProps({
 
 const tools = [
     { slug: 'calldata-decoder', name: 'Calldata Decoder', path: '/tools/calldata-decoder', icon: 'mdi-code-braces' },
-    { slug: '4byte-lookup', name: '4byte Lookup', path: '/tools/4byte-lookup', icon: 'mdi-magnify' }
+    { slug: '4byte-lookup', name: '4byte Lookup', path: '/tools/4byte-lookup', icon: 'mdi-magnify' },
+    { slug: 'unit-converter', name: 'Unit Converter', path: '/tools/unit-converter', icon: 'mdi-swap-horizontal' },
+    { slug: 'block-date-converter', name: 'Block Date Converter', path: '/tools/block-date-converter', icon: 'mdi-calendar-clock' }
 ];
 </script>
 

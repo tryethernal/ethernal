@@ -27,6 +27,8 @@ export const routes = [
     // Free developer tools
     { path: '/tools/calldata-decoder', name: 'tools-calldata-decoder', component: () => import('./pages/tools/CallDataDecoderPage.vue') },
     { path: '/tools/4byte-lookup', name: 'tools-4byte-lookup', component: () => import('./pages/tools/FourByteLookupPage.vue') },
+    { path: '/tools/unit-converter', name: 'tools-unit-converter', component: () => import('./pages/tools/UnitConverterPage.vue') },
+    { path: '/tools/block-date-converter', name: 'tools-block-date-converter', component: () => import('./pages/tools/BlockDateConverterPage.vue') },
 
     // Chain directory pages
     { path: '/chains/base', name: 'chains-base', component: () => import('./pages/chains/BasePage.vue') },
