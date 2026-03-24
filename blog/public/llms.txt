@@ -9,6 +9,7 @@
 - [Data Retention Changes](https://tryethernal.com/blog/data-retention-changes): Data will now be cleared after 7 days for free plan users.
 - [When Provers Race: The Coordination Problem in Decentralized ZK](https://tryethernal.com/blog/decentralized-zk-proving-coordination): Concurrent ZK provers collide at 33K gas per failure. Why the coordination problem is hard and what three proposed mechanisms look like.
 - [One Signature, Every Chain: EIP-8130's Protocol-Level Account Abstraction](https://tryethernal.com/blog/eip-8130-protocol-level-account-abstraction): EIP-8130 proposes native AA with chainId=0 config sync. No bundlers, no per-chain key rotations. Here's how the mechanism actually works.
+- [The Frame Wallet: What EIP-8141 Means for Every EOA](https://tryethernal.com/blog/eip-8141-frame-transactions-eoa-abstraction): EIP-8141 gives unmodified EOAs gas abstraction via default code and a new frame execution model. No bundlers, no migration, no new wallet.
 - [Ethernal Is Going Open Source!](https://tryethernal.com/blog/ethernal-is-going-open-source): Ethernal's code is now publicly available on GitHub. The hosted version now has free and paid tiers.
 - [Ethernal x Alchemy](https://tryethernal.com/blog/ethernal-x-alchemy): Add a webhook in your Alchemy dashboard and get a block explorer for your dapp. Automatic transaction syncing and decoded function calls.
 - [Ethernal x Tenderly](https://tryethernal.com/blog/ethernal-x-tenderly): Set up a block explorer for your Tenderly forks. Debug transactions sent through Ethernal's UI directly in Tenderly.
