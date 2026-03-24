@@ -55,6 +55,13 @@
 - [Etherscan Alternative](https://tryethernal.com/etherscan-alternative): Ethernal as an open-source Etherscan alternative for custom EVM chains — self-hostable, MIT licensed, published pricing vs Etherscan's closed-source EaaS
 - [Build vs Buy Block Explorer](https://tryethernal.com/build-vs-buy-block-explorer): Should you build a custom block explorer or use Ethernal? Compare cost ($150K+ vs $0), timeline (3-6 months vs 5 minutes), and capabilities. MIT licensed, fully customizable.
 
+## Free Tools
+
+- [Calldata Decoder](https://tryethernal.com/tools/calldata-decoder): Free online tool to decode Ethereum transaction calldata into human-readable function calls, or encode function signatures into calldata. Supports auto signature lookup via 4byte.directory and custom ABI input. Runs entirely in your browser.
+- [4byte Function Signature Lookup](https://tryethernal.com/tools/4byte-lookup): Free tool to look up Ethereum function signatures by their 4-byte selector, or search signatures by name. Uses 4byte.directory and client-side keccak256 hashing.
+- [Unit Converter](https://tryethernal.com/tools/unit-converter): Free Ethereum unit converter between Wei, Gwei, Ether, Finney, Szabo, and all EVM denominations. Arbitrary-precision, runs in your browser.
+- [Block Date Converter](https://tryethernal.com/tools/block-date-converter): Free tool to convert between block numbers and dates on any EVM chain. Look up block timestamps or find the nearest block to a date via RPC.
+
 ## Blog
 
 - [On-Chain Engineering Blog](https://tryethernal.com/blog): Technical articles on EVM internals, EIPs, L2 architecture, and smart contract development
