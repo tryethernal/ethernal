@@ -29,10 +29,29 @@ async function getKeccak256() {
  * @throws {Error} if signature format is invalid
  */
 export function parseSignature(signature) {
-    const match = signature.trim().match(/^([a-zA-Z_][a-zA-Z0-9_]*)\(([^)]*)\)$/);
-    if (!match) throw new Error('Could not parse signature. Use format: functionName(type1,type2)');
-    const name = match[1];
-    const types = match[2] ? match[2].split(',').map(t => t.trim()) : [];
+    const trimmed = signature.trim();
+    const parenIdx = trimmed.indexOf('(');
+    if (parenIdx < 1 || !trimmed.endsWith(')'))
+        throw new Error('Could not parse signature. Use format: functionName(type1,type2)');
+    const name = trimmed.slice(0, parenIdx);
+    if (!/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(name))
+        throw new Error('Could not parse signature. Use format: functionName(type1,type2)');
+    const inner = trimmed.slice(parenIdx + 1, trimmed.length - 1);
+    if (!inner) return { name, types: [] };
+    const types = [];
+    let depth = 0;
+    let current = '';
+    for (const ch of inner) {
+        if (ch === '(') depth++;
+        else if (ch === ')') depth--;
+        if (ch === ',' && depth === 0) {
+            types.push(current.trim());
+            current = '';
+        } else {
+            current += ch;
+        }
+    }
+    if (current.trim()) types.push(current.trim());
     return { name, types };
 }
 

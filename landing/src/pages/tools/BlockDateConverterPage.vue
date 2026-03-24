@@ -293,10 +293,10 @@ function formatBlockResult(number, timestamp) {
     const now = Date.now() / 1000;
     const diff = now - timestamp;
     let relative;
-    if (diff < 60) relative = 'just now';
+    if (diff < 0) relative = 'in the future';
+    else if (diff < 60) relative = 'just now';
     else if (diff < 3600) relative = `${Math.floor(diff / 60)} minutes ago`;
     else if (diff < 86400) relative = `${Math.floor(diff / 3600)} hours ago`;
-    else if (diff < 0) relative = 'in the future';
     else relative = `${Math.floor(diff / 86400)} days ago`;
 
     return {

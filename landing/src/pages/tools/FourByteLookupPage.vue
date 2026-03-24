@@ -220,6 +220,7 @@ watch(selectorInput, (val) => {
         const trackProps = { tool: '4byte-lookup', action: 'lookup', success: false };
 
         if (isSignature(trimmed)) {
+            lookupLoading.value = true;
             try {
                 const sel = await computeSelector(trimmed);
                 computedSelector.value = sel;
@@ -230,6 +231,8 @@ watch(selectorInput, (val) => {
             } catch (e) {
                 if (e.message.includes('parse')) selectorError.value = e.message;
                 else lookupError.value = 'Could not reach signature database.';
+            } finally {
+                lookupLoading.value = false;
             }
             window.posthog?.capture('landing:tool_use', trackProps);
         } else if (isSelector(trimmed)) {
