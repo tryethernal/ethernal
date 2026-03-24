@@ -206,6 +206,7 @@ function isSignature(val) {
 
 let lookupTimeout = null;
 watch(selectorInput, (val) => {
+    clearTimeout(lookupTimeout);
     selectorError.value = '';
     lookupResults.value = [];
     lookupEmpty.value = false;
@@ -214,8 +215,6 @@ watch(selectorInput, (val) => {
 
     const trimmed = val.trim();
     if (!trimmed) return;
-
-    clearTimeout(lookupTimeout);
     lookupTimeout = setTimeout(async () => {
         const trackProps = { tool: '4byte-lookup', action: 'lookup', success: false };
 

@@ -68,6 +68,15 @@ export async function computeSelector(signature) {
     return hash.slice(0, 10);
 }
 
+function abiTypeToString(input) {
+    if (input.type === 'tuple' || input.type.startsWith('tuple[')) {
+        const inner = input.components.map(abiTypeToString).join(',');
+        const suffix = input.type.slice('tuple'.length);
+        return `(${inner})${suffix}`;
+    }
+    return input.type;
+}
+
 function serializeDecodedValue(val) {
     if (typeof val === 'bigint') return val.toString();
     if (Array.isArray(val)) return `[${val.map(serializeDecodedValue).join(', ')}]`;
@@ -112,14 +121,14 @@ export async function decodeCalldataWithAbi(hexData, abi) {
 
     const func = abi.find(item => {
         if (item.type !== 'function') return false;
-        const sig = `${item.name}(${item.inputs.map(i => i.type).join(',')})`;
+        const sig = `${item.name}(${item.inputs.map(abiTypeToString).join(',')})`;
         const hash = keccak(sig);
         return hash.slice(0, 10) === selector;
     });
 
     if (!func) throw new Error('No matching function found in ABI for this selector');
 
-    const types = func.inputs.map(i => i.type);
+    const types = func.inputs.map(abiTypeToString);
     const paramData = `0x${data.slice(10)}`;
     const decoded = coder.decode(types, paramData);
 

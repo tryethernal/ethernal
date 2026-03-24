@@ -270,11 +270,13 @@ function onRpcManualEdit() {
     activeChain.value = match ? match.slug : '';
 }
 
+let _rpcId = 0;
 async function rpcCall(method, params) {
+    const id = ++_rpcId;
     const res = await fetch(rpcUrl.value, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params })
+        body: JSON.stringify({ jsonrpc: '2.0', id, method, params })
     });
     const data = await res.json();
     if (data.error) throw new Error(data.error.message || 'RPC error');

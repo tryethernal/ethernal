@@ -275,6 +275,7 @@ function toggleFaq(i) {
 // --- Decode logic ---
 let lookupTimeout = null;
 watch(calldataInput, (val) => {
+    clearTimeout(lookupTimeout);
     calldataError.value = '';
     matchingSignatures.value = [];
     selectedSignature.value = '';
@@ -291,8 +292,6 @@ watch(calldataInput, (val) => {
     }
     const normalized = hex.startsWith('0x') ? hex : `0x${hex}`;
     if (normalized.length < 10) return;
-
-    clearTimeout(lookupTimeout);
     lookupTimeout = setTimeout(async () => {
         const selector = normalized.slice(0, 10);
         signatureLookupLoading.value = true;
@@ -323,6 +322,7 @@ async function selectSignature(sig) {
 async function handleDecode() {
     decodeError.value = '';
     decodeResult.value = null;
+    abiError.value = '';
 
     const hex = calldataInput.value.trim();
     if (!hex) return;
