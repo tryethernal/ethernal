@@ -10,7 +10,7 @@ tags:
   - Security
 image: "/blog/images/eip-8141-frame-transactions-eoa-abstraction.png"
 ogImage: "/blog/images/eip-8141-frame-transactions-eoa-abstraction-og.png"
-status: draft
+status: published
 readingTime: 8
 ---
 
