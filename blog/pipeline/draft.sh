@@ -72,7 +72,9 @@ if find "$REPO_DIR" -maxdepth 2 -not -user "$(whoami)" -type f 2>/dev/null | hea
   log "WARNING: Found files not owned by $(whoami) — attempting ownership fix"
   sudo chown -R "$(whoami):$(id -gn)" "$REPO_DIR" 2>/dev/null || log "WARNING: chown failed (no sudo?), git pull may fail"
 fi
+# Reset any local changes — server is a deployment target, never has intentional edits
 git checkout develop 2>&1 | tee -a "$LOG_FILE"
+git reset --hard origin/develop 2>&1 | tee -a "$LOG_FILE"
 git pull --ff-only origin develop 2>&1 | tee -a "$LOG_FILE"
 
 # Install pipeline deps if needed
