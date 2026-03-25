@@ -85,7 +85,8 @@ module.exports = async (job) => {
             { prospectId: prospect.id },
             10,
             null,
-            FIVE_DAYS_MS
+            FIVE_DAYS_MS,
+            true
         );
     }
 

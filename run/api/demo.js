@@ -25,7 +25,7 @@ const db = require('../lib/firebase');
 const { managedError, unmanagedError } = require('../lib/errors');
 const { isChainAllowed } = require('../lib/chains');
 const logger = require('../lib/logger');
-const { isDripEmailEnabled } = require('../lib/flags');
+const { isDripEmailEnabled, isProspectingEnabled } = require('../lib/flags');
 
 /*
     Creates a uniswap v2 dex for a demo explorer
@@ -262,7 +262,7 @@ router.post('/explorers', async (req, res, next) => {
             }
 
             // Capture demo profile for prospecting pipeline
-            try {
+            if (isProspectingEnabled()) try {
                 await enqueue('createDemoProfile', `createDemoProfile-${explorer.id}`, {
                     email: data.email,
                     rpcServer: data.rpcServer,
