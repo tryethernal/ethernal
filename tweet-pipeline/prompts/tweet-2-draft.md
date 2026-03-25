@@ -50,7 +50,6 @@ These separate good threads from generic ones:
 Apply the right approach based on the bucket in `.source.json`:
 
 - **Ecosystem insight** (slot 1): Lead with a contrarian take or surprising data point. This is the high-reach slot. The tweet should make people stop scrolling. Take a strong position. Disagree with conventional wisdom. State it as confident fact, not hedged opinion. If the topic is an EIP/ERC, lead with what changes for developers.
-- **Product / blog** (slot 2): Either demo a specific Ethernal feature with concrete before/after, OR extract the single most tweetable insight from a blog article. For product tweets, show the problem first (with a specific number), then the fix. Do NOT end with "here's how:". For blog repurposing, pull one idea, not a summary.
 - **Competitor response**: Address a real gap or pricing change from a competitor. Lead with what changed (with numbers), contrast with what Ethernal offers. Be factual, not snarky.
 - **Newsletter story**: Lead with the most shocking number from the story. Frame it as analysis, not news rehash.
 

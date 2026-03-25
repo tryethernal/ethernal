@@ -73,23 +73,19 @@ else
   exit 1
 fi
 
-# Determine slot (1-5) from arg or auto-detect from UTC hour
+# Determine slot from arg or default to 1 (only one bucket remains after frequency reduction)
 if [ -n "${1:-}" ]; then
   SLOT="$1"
 else
-  # Ranges match timer schedule: 06:30, 12:30 UTC
-  HOUR=$(date -u +%-H)
-  if [ "$HOUR" -lt 10 ]; then SLOT=1
-  else                        SLOT=2
-  fi
+  SLOT=1
 fi
 
 log "Starting tweet draft pipeline — slot $SLOT"
 
 cd "$SCRIPT_DIR"
 
-# Prevent overlapping runs via lockfile
-LOCKFILE="/tmp/tweet-draft.lock"
+# Prevent overlapping runs via lockfile (avoid /tmp — sticky bit + fs.protected_regular=2 blocks cross-user access)
+LOCKFILE="$SCRIPT_DIR/.tweet-draft.lock"
 exec 200>"$LOCKFILE"
 if ! flock -n 200; then
   log "Another draft run is in progress — exiting"
@@ -101,23 +97,25 @@ fi
 # ============================================================
 log "Selecting source for slot $SLOT..."
 
-# Check for override sources (slot 2): competitor > newsletter > normal
+# Check for override sources: competitor > newsletter > normal
 SKIP_NORMAL_SOURCE=false
-if [ "$SLOT" = "2" ]; then
+if [ "$SLOT" = "1" ]; then
   # 1. Check competitor source first (highest priority)
   COMP_JSON=$(node lib/cli/get-competitor-source.js 2>/dev/null) && SKIP_NORMAL_SOURCE=true || true
   if [ "$SKIP_NORMAL_SOURCE" = "true" ]; then
-    log "Using competitor source for slot 2"
-    COMP_JSON="$COMP_JSON" node --input-type=module -e "
-      import { getScheduledTime } from './config.js';
+    log "Using competitor source for slot $SLOT"
+    COMP_JSON="$COMP_JSON" SLOT="$SLOT" node --input-type=module -e "
+      import { BUCKETS, getScheduledTime } from './config.js';
       import { writeFileSync } from 'node:fs';
       const comp = JSON.parse(process.env.COMP_JSON);
-      const scheduledAt = getScheduledTime(new Date(), 15);
+      const slot = parseInt(process.env.SLOT, 10);
+      const bucket = BUCKETS.find(b => b.slot === slot);
+      const scheduledAt = getScheduledTime(new Date(), bucket ? bucket.baseHourUTC : 8);
       const result = {
         sourceId: 'competitor: ' + comp.title,
         source: { type: 'competitor', title: comp.title, content: comp.content, url: comp.url || '', angle: comp.angle || '' },
         bucket: 'Competitor response',
-        slot: 2,
+        slot,
         scheduledAt: scheduledAt.toISOString(),
       };
       writeFileSync('.source.json', JSON.stringify(result, null, 2));
@@ -137,17 +135,19 @@ if [ "$SLOT" = "2" ]; then
   if [ "$SKIP_NORMAL_SOURCE" != "true" ]; then
     NL_JSON=$(node lib/cli/get-newsletter-source.js 2>/dev/null) && SKIP_NORMAL_SOURCE=true || true
     if [ "$SKIP_NORMAL_SOURCE" = "true" ]; then
-      log "Using newsletter source for slot 3"
-      NL_JSON="$NL_JSON" node --input-type=module -e "
-        import { getScheduledTime } from './config.js';
+      log "Using newsletter source for slot $SLOT"
+      NL_JSON="$NL_JSON" SLOT="$SLOT" node --input-type=module -e "
+        import { BUCKETS, getScheduledTime } from './config.js';
         import { writeFileSync } from 'node:fs';
         const nl = JSON.parse(process.env.NL_JSON);
-        const scheduledAt = getScheduledTime(new Date(), 15);
+        const slot = parseInt(process.env.SLOT, 10);
+        const bucket = BUCKETS.find(b => b.slot === slot);
+        const scheduledAt = getScheduledTime(new Date(), bucket ? bucket.baseHourUTC : 8);
         const result = {
           sourceId: 'newsletter: ' + nl.title,
           source: { type: 'newsletter', title: nl.title, content: nl.content, url: nl.source_url || '' },
           bucket: 'Newsletter story',
-          slot: 2,
+          slot,
           scheduledAt: scheduledAt.toISOString(),
         };
         writeFileSync('.source.json', JSON.stringify(result, null, 2));
