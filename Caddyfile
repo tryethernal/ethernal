@@ -89,6 +89,12 @@ blog.tryethernal.com {
         file_server
     }
 
+    handle_path /admin/* {
+        root * /srv/admin
+        try_files {path} /index.html
+        file_server
+    }
+
     @landing host tryethernal.com www.tryethernal.com
     handle @landing {
         handle_path /blog/* {
