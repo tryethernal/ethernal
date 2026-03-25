@@ -1566,7 +1566,7 @@ module.exports = (sequelize, DataTypes) => {
             if (user.currentWorkspaceId == this.id)
                 await user.update({ currentWorkspaceId: duplicatedWorkspace.id }, { transaction });
 
-            const orbitConfig = await this.getOrbitConfig();
+            const orbitConfig = await this.getOrbitConfig({ transaction });
             if (orbitConfig)
                 await orbitConfig.update({ workspaceId: duplicatedWorkspace.id }, { transaction });
 
@@ -1918,15 +1918,15 @@ module.exports = (sequelize, DataTypes) => {
 
         const transaction = await sequelize.transaction();
         try {
-            const user = await this.getUser();
+            const user = await this.getUser({ transaction });
             if (user.currentWorkspaceId == this.id) {
-                const workspaces = (await user.getWorkspaces()).filter(w => w.id != this.id);
+                const workspaces = (await user.getWorkspaces({ transaction })).filter(w => w.id != this.id);
                 const currentWorkspaceId = workspaces.length ? workspaces[0].id : null;
-                await user.update({ currentWorkspaceId });
+                await user.update({ currentWorkspaceId }, { transaction });
             }
             await this.reset(null, transaction);
-            await sequelize.models.CustomField.destroy({ where: { workspaceId: this.id }}, { transaction });
-            await sequelize.models.TransactionTraceStep.destroy({ where: { workspaceId: this.id }}, { transaction });
+            await sequelize.models.CustomField.destroy({ where: { workspaceId: this.id }, transaction });
+            await sequelize.models.TransactionTraceStep.destroy({ where: { workspaceId: this.id }, transaction });
             await this.destroy({ transaction });
 
             await transaction.commit();
@@ -3113,9 +3113,9 @@ module.exports = (sequelize, DataTypes) => {
                         }
                     }
 
-                    const explorer = await this.getExplorer();
+                    const explorer = await this.getExplorer({ transaction: sequelizeTransaction });
                     if (explorer) {
-                        const stripeSubscription = await explorer.getStripeSubscription();
+                        const stripeSubscription = await explorer.getStripeSubscription({ transaction: sequelizeTransaction });
                         if (stripeSubscription)
                             await stripeSubscription.increment('transactionQuota', { transaction: sequelizeTransaction });
                     }
@@ -3596,7 +3596,7 @@ module.exports = (sequelize, DataTypes) => {
 
         return sequelize.transaction(async (transaction) => {
             if (data.rpcServer && data.networkId) {
-                const explorer = await this.getExplorer();
+                const explorer = await this.getExplorer({ transaction });
                 if (explorer)
                     await explorer.update({ rpcServer: data.rpcServer, chainId: data.networkId }, { transaction });
             }
@@ -3801,7 +3801,7 @@ module.exports = (sequelize, DataTypes) => {
         return sequelize.transaction(
             { deferrable: Sequelize.Deferrable.SET_DEFERRED },
             async transaction => {
-                const contracts = await this.getContracts({ where: { id: ids }});
+                const contracts = await this.getContracts({ where: { id: ids }, transaction });
                 for (let i = 0; i < contracts.length; i++)
                     await contracts[i].safeDestroy(transaction);
                 return;
@@ -3810,15 +3810,15 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async safeDestroyIntegrityCheck(transaction) {
-        const integrityCheck = await this.getIntegrityCheck();
+        const integrityCheck = await this.getIntegrityCheck({ transaction });
         if (integrityCheck)
-            await integrityCheck.destroy(transaction);
+            await integrityCheck.destroy({ transaction });
 
         return this.update({ integrityCheckStartBlockNumber: null }, { transaction });
     }
 
     async safeDestroyRpcHealthCheck(transaction) {
-        const rpcHealthCheck = await this.getRpcHealthCheck();
+        const rpcHealthCheck = await this.getRpcHealthCheck({ transaction });
         if (rpcHealthCheck)
             return rpcHealthCheck.destroy({ transaction });
     }
