@@ -37,7 +37,7 @@ module.exports = (sequelize, DataTypes) => {
 
     async safeDestroy(transaction) {
       const fn = async transaction => {
-        const pairs = await this.getPairs();
+        const pairs = await this.getPairs({ transaction });
         for (const pair of pairs) {
           await pair.safeDestroy(transaction);
         }

@@ -69,7 +69,7 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async safeDestroy(transaction) {
-      const tokenTransfer = await this.getTokenTransfer();
+      const tokenTransfer = await this.getTokenTransfer({ transaction });
       if (tokenTransfer)
         await tokenTransfer.safeDestroy(transaction);
       return this.destroy({ transaction });
