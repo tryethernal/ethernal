@@ -228,7 +228,7 @@ module.exports = (sequelize, DataTypes) => {
             transaction
         });
 
-        const contract = await sequelize.models.Contract.findOne({ where: { transactionId: this.id }});
+        const contract = await sequelize.models.Contract.findOne({ where: { transactionId: this.id }, transaction });
         if (contract)
             await contract.update({ transactionId: null }, { transaction });
 
