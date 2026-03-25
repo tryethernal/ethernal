@@ -29,9 +29,9 @@ import { ref, computed, watch } from 'vue';
 
 const props = defineProps({
     modelSubject: String,
-    modelBody: String
+    modelBody: String,
+    onSave: Function
 });
-const emit = defineEmits(['save']);
 
 const subject = ref(props.modelSubject || '');
 const body = ref(props.modelBody || '');
@@ -45,9 +45,10 @@ const hasChanges = computed(() =>
 );
 
 async function save() {
+    if (!props.onSave) return;
     saving.value = true;
     try {
-        await emit('save', { emailSubject: subject.value, emailBody: body.value });
+        await props.onSave({ emailSubject: subject.value, emailBody: body.value });
     } finally {
         saving.value = false;
     }

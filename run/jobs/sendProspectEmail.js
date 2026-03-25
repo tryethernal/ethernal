@@ -6,7 +6,7 @@
 const Mailjet = require('node-mailjet');
 const { Prospect } = require('../models');
 const { isProspectingEnabled } = require('../lib/flags');
-const { getMailjetPublicKey, getMailjetPrivateKey, getProspectSenderEmail, getProspectReplyTo, getDripUnsubscribeSecret } = require('../lib/env');
+const { getMailjetPublicKey, getMailjetPrivateKey, getProspectSenderEmail, getProspectReplyTo, getDripUnsubscribeSecret, getAppUrl } = require('../lib/env');
 const { enqueue } = require('../lib/queue');
 const Analytics = require('../lib/analytics');
 const logger = require('../lib/logger');
@@ -46,7 +46,8 @@ module.exports = async (job) => {
     const mailjet = Mailjet.apiConnect(getMailjetPublicKey(), getMailjetPrivateKey());
 
     const unsubscribeToken = generateUnsubscribeToken(prospect.contactEmail);
-    const unsubscribeUrl = `https://app.tryethernal.com/api/prospects/unsubscribe?token=${unsubscribeToken}`;
+    const appUrl = getAppUrl() || 'https://app.tryethernal.com';
+    const unsubscribeUrl = `${appUrl}/api/prospects/unsubscribe?token=${unsubscribeToken}`;
 
     const body = prospect.emailBody.replace('{{unsubscribeUrl}}', unsubscribeUrl);
     const isFollowUp = prospect.followUpCount > 0;

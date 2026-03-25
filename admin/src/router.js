@@ -9,7 +9,7 @@ const routes = [
     { path: '/', redirect: '/prospecting' }
 ];
 
-const router = createRouter({ history: createWebHistory(), routes });
+const router = createRouter({ history: createWebHistory('/admin/'), routes });
 
 router.beforeEach((to) => {
     const auth = useAuthStore();

@@ -42,7 +42,7 @@
                         <EmailEditor
                             :model-subject="prospect.emailSubject"
                             :model-body="prospect.emailBody"
-                            @save="saveDraft"
+                            :on-save="saveDraft"
                         />
                     </v-card-text>
                 </v-card>

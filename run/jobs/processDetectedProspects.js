@@ -26,7 +26,7 @@ module.exports = async () => {
         for (const prospect of prospects) {
             await enqueue('enrichProspect', `enrichProspect-${prospect.id}`, {
                 prospectId: prospect.id
-            });
+            }, 10, null, null, true);
 
             analytics.track(null, 'prospect:detected', {
                 domain: prospect.domain,

@@ -34,7 +34,11 @@ module.exports = async (job) => {
         TokenTransfer.count({ where: { workspaceId } }),
         Contract.count({ where: { workspaceId } }),
         sequelize.query(
-            'SELECT COUNT(DISTINCT "from") + COUNT(DISTINCT "to") as count FROM transactions WHERE "workspaceId" = :workspaceId',
+            `SELECT COUNT(*) AS count FROM (
+                SELECT "from" AS addr FROM transactions WHERE "workspaceId" = :workspaceId AND "from" IS NOT NULL
+                UNION
+                SELECT "to" AS addr FROM transactions WHERE "workspaceId" = :workspaceId AND "to" IS NOT NULL
+            ) t`,
             { replacements: { workspaceId }, type: sequelize.QueryTypes.SELECT }
         )
     ]);

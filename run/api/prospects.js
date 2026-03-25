@@ -50,17 +50,17 @@ router.get('/stats', async (req, res, next) => {
     try {
         const [byStatus, bySource, byLeadType] = await Promise.all([
             Prospect.findAll({
-                attributes: ['status', [Prospect.sequelize.fn('COUNT', '*'), 'count']],
+                attributes: ['status', [Prospect.sequelize.fn('COUNT', Prospect.sequelize.literal('*')), 'count']],
                 group: ['status'],
                 raw: true
             }),
             Prospect.findAll({
-                attributes: ['signalSource', [Prospect.sequelize.fn('COUNT', '*'), 'count']],
+                attributes: ['signalSource', [Prospect.sequelize.fn('COUNT', Prospect.sequelize.literal('*')), 'count']],
                 group: ['signalSource'],
                 raw: true
             }),
             Prospect.findAll({
-                attributes: ['leadType', [Prospect.sequelize.fn('COUNT', '*'), 'count']],
+                attributes: ['leadType', [Prospect.sequelize.fn('COUNT', Prospect.sequelize.literal('*')), 'count']],
                 group: ['leadType'],
                 raw: true
             })
