@@ -167,16 +167,16 @@ module.exports = (sequelize, DataTypes) => {
      * @returns {Promise<void>}
      */
     async safeDestroy(transaction) {
-        const receipt = await this.getReceipt();
+        const receipt = await this.getReceipt({ transaction });
         if (receipt)
             await receipt.safeDestroy(transaction);
 
-        sequelize.models.TransactionTraceStep.destroy({
+        await sequelize.models.TransactionTraceStep.destroy({
             where: { transactionId: this.id },
             transaction
         });
 
-        const event = await this.getEvent();
+        const event = await this.getEvent({ transaction });
         if (event)
             await event.destroy({ transaction });
 
