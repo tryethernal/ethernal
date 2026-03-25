@@ -260,6 +260,19 @@ router.post('/explorers', async (req, res, next) => {
                     logger.error(error.message, { location: 'api.demo.enrichDemoProfile', explorerId: explorer.id, error });
                 }
             }
+
+            // Capture demo profile for prospecting pipeline
+            try {
+                await enqueue('createDemoProfile', `createDemoProfile-${explorer.id}`, {
+                    email: data.email,
+                    rpcServer: data.rpcServer,
+                    chainName: explorer.name,
+                    networkId: networkId ? String(networkId) : null,
+                    explorerCreatedAt: explorer.createdAt
+                });
+            } catch (error) {
+                logger.error(error.message, { location: 'api.demo.createDemoProfile', explorerId: explorer.id, error });
+            }
         } else {
             await enqueue('sendDemoExplorerLink', `sendDemoExplorerLink-${explorer.id}`, { email: data.email, explorerSlug: explorer.slug });
         }

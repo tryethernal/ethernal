@@ -42,5 +42,8 @@ module.exports = {
     isDripEmailEnabled: () => !!process.env.MAILJET_PUBLIC_KEY && !!process.env.MAILJET_PRIVATE_KEY && !!process.env.DRIP_UNSUBSCRIBE_SECRET && !!process.env.DEMO_EXPLORER_SENDER && !!process.env.MAILJET_WEBHOOK_SECRET,
 
     /** @returns {boolean} True if Sentry pipeline dashboard is enabled */
-    isSentryPipelineEnabled: () => !!process.env.ENABLE_SENTRY_PIPELINE
+    isSentryPipelineEnabled: () => !!process.env.ENABLE_SENTRY_PIPELINE,
+
+    /** @returns {boolean} True if outbound prospecting pipeline is enabled */
+    isProspectingEnabled: () => !!process.env.ENABLE_PROSPECTING
 };
