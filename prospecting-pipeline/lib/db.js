@@ -70,7 +70,7 @@ export async function insertProspect(prospect) {
         if (existing.rows.length > 0) {
             // Update confidence score if new signal adds to it
             await pool.query(
-                'UPDATE prospects SET "confidenceScore" = "confidenceScore" + $1, "signalData" = "signalData" || $2, "updatedAt" = NOW() WHERE id = $3',
+                'UPDATE prospects SET "confidenceScore" = "confidenceScore" + $1, "signalData" = COALESCE("signalData", \'{}\'::jsonb) || $2, "updatedAt" = NOW() WHERE id = $3',
                 [prospect.additionalScore || 0, JSON.stringify(prospect.newSignal || {}), existing.rows[0].id]
             );
             return { inserted: false, id: existing.rows[0].id };

@@ -80,7 +80,7 @@ router.get('/:id', async (req, res, next) => {
         const prospect = await Prospect.findByPk(req.params.id, {
             include: [
                 { association: 'demoProfile' },
-                { association: 'events', order: [['createdAt', 'DESC']] }
+                { association: 'events', separate: true, order: [['createdAt', 'DESC']] }
             ]
         });
 

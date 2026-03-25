@@ -3,14 +3,22 @@
  * Separate from drip email webhook. Uses CustomID prefix 'prospect-' for routing.
  * @module webhooks/mailjetProspects
  */
+const crypto = require('crypto');
 const express = require('express');
 const router = express.Router();
 const { Prospect } = require('../models');
+const { getMailjetWebhookSecret } = require('../lib/env');
 const Analytics = require('../lib/analytics');
 const logger = require('../lib/logger');
 
 router.post('/', async (req, res) => {
     try {
+        const { token } = req.query;
+        const secret = getMailjetWebhookSecret();
+        if (!token || !secret || token.length !== secret.length ||
+            !crypto.timingSafeEqual(Buffer.from(token), Buffer.from(secret)))
+            return res.status(401).json({ message: 'Unauthorized' });
+
         const events = Array.isArray(req.body) ? req.body : [req.body];
         let processed = 0;
 
