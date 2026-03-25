@@ -9,5 +9,6 @@ jest.mock('../../../lib/flags', () => ({
     isQuicknodeEnabled: jest.fn(() => true),
     isMailjetEnabled: jest.fn(() => true),
     isDripEmailEnabled: jest.fn(() => true),
-    isSentryPipelineEnabled: jest.fn(() => false)
+    isSentryPipelineEnabled: jest.fn(() => false),
+    isProspectingEnabled: jest.fn(() => false)
 }));
