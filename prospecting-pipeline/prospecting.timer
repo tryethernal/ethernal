@@ -1,0 +1,10 @@
+[Unit]
+Description=Run prospecting pipeline daily at 07:00 UTC
+
+[Timer]
+OnCalendar=*-*-* 07:00:00
+RandomizedDelaySec=600
+Persistent=true
+
+[Install]
+WantedBy=timers.target

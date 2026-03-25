@@ -1,0 +1,12 @@
+[Unit]
+Description=Ethernal Prospecting Pipeline
+After=network.target
+
+[Service]
+Type=oneshot
+User=blog
+WorkingDirectory=/opt/prospecting-pipeline
+EnvironmentFile=/opt/prospecting-pipeline.env
+ExecStart=/opt/prospecting-pipeline/run.sh
+StandardOutput=journal
+StandardError=journal
