@@ -41,7 +41,7 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async safeDestroy(transaction) {
-      const reserves = await this.getPoolReserves();
+      const reserves = await this.getPoolReserves({ transaction });
       for (const reserve of reserves) {
         await reserve.destroy({ transaction });
       }

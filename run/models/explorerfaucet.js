@@ -138,7 +138,7 @@ module.exports = (sequelize, DataTypes) => {
 
     safeDestroy(transaction) {
       const fn = async transaction => {
-        const drips = await this.getDrips();
+        const drips = await this.getDrips({ transaction });
         for (let i = 0; i < drips.length; i++)
           drips[i].destroy({ transaction });
         return this.destroy({ transaction });

@@ -533,7 +533,7 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async safeDestroy(transaction) {
-        const sources = await this.getSources();
+        const sources = await this.getSources({ transaction });
         for (let i = 0; i < sources.length; i++)
             await sources[i].destroy({ transaction });
 
