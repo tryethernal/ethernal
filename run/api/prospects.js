@@ -126,16 +126,19 @@ router.post('/:id/send', async (req, res, next) => {
         const prospect = await Prospect.findByPk(req.params.id);
         if (!prospect) return managedError(new Error('Prospect not found'), req, res);
 
-        if (prospect.status !== 'draft_ready' && prospect.status !== 'approved')
-            return managedError(new Error('Prospect must be in draft_ready status to send'), req, res);
-
         if (!prospect.contactEmail)
             return managedError(new Error('Prospect has no contact email'), req, res);
 
         if (!prospect.emailSubject || !prospect.emailBody)
             return managedError(new Error('Prospect has no email draft'), req, res);
 
-        await prospect.update({ status: 'approved' });
+        // Atomic status transition to prevent race conditions from concurrent clicks
+        const [affectedCount] = await Prospect.update(
+            { status: 'approved' },
+            { where: { id: prospect.id, status: ['draft_ready'] } }
+        );
+        if (affectedCount === 0)
+            return managedError(new Error('Prospect is no longer in draft_ready status'), req, res);
         await prospect.logEvent('approved', { approvedBy: req.body.data.user.id });
 
         await enqueue('sendProspectEmail', `sendProspectEmail-${prospect.id}`, {

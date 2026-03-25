@@ -42,8 +42,13 @@ router.get('/unsubscribe', async (req, res) => {
     if (!email) return res.status(400).send('Invalid token');
 
     try {
-        const prospect = await Prospect.findOne({ where: { contactEmail: email } });
-        if (prospect && !['rejected', 'no_reply'].includes(prospect.status)) {
+        const prospects = await Prospect.findAll({
+            where: {
+                contactEmail: email,
+                status: { [require('sequelize').Op.notIn]: ['rejected', 'no_reply'] }
+            }
+        });
+        for (const prospect of prospects) {
             await prospect.update({ status: 'rejected' });
             await ProspectEvent.create({ prospectId: prospect.id, event: 'unsubscribed', metadata: { email } });
         }
