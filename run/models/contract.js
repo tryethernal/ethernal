@@ -537,27 +537,27 @@ module.exports = (sequelize, DataTypes) => {
         for (let i = 0; i < sources.length; i++)
             await sources[i].destroy({ transaction });
 
-        const verifications = await sequelize.models.ContractVerification.findAll({ where: { contractId: this.id }});
+        const verifications = await sequelize.models.ContractVerification.findAll({ where: { contractId: this.id }, transaction });
         for (let i = 0; i < verifications.length; i++)
             await verifications[i].destroy({ transaction });
 
-        const tokens = await sequelize.models.Erc721Token.findAll({ where: { contractId: this.id }});
+        const tokens = await sequelize.models.Erc721Token.findAll({ where: { contractId: this.id }, transaction });
         for (let i = 0; i < tokens.length; i++)
             await tokens[i].destroy({ transaction });
 
-        const pairs = await sequelize.models.V2DexPair.findAll({ where: { pairContractId: this.id }});
+        const pairs = await sequelize.models.V2DexPair.findAll({ where: { pairContractId: this.id }, transaction });
         for (let i = 0; i < pairs.length; i++)
             await pairs[i].safeDestroy(transaction);
 
-        const token0Pairs = await sequelize.models.V2DexPair.findAll({ where: { token0ContractId: this.id }});
+        const token0Pairs = await sequelize.models.V2DexPair.findAll({ where: { token0ContractId: this.id }, transaction });
         for (let i = 0; i < token0Pairs.length; i++)
             await token0Pairs[i].safeDestroy(transaction);
 
-        const token1Pairs = await sequelize.models.V2DexPair.findAll({ where: { token1ContractId: this.id }});
+        const token1Pairs = await sequelize.models.V2DexPair.findAll({ where: { token1ContractId: this.id }, transaction });
         for (let i = 0; i < token1Pairs.length; i++)
             await token1Pairs[i].safeDestroy(transaction);
 
-        const wrappedNativeTokenContract = await sequelize.models.ExplorerV2Dex.findAll({ where: { wrappedNativeTokenContractId: this.id }});
+        const wrappedNativeTokenContract = await sequelize.models.ExplorerV2Dex.findAll({ where: { wrappedNativeTokenContractId: this.id }, transaction });
         for (let i = 0; i < wrappedNativeTokenContract.length; i++)
             await wrappedNativeTokenContract[i].safeDestroy(transaction);
 
