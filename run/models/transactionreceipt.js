@@ -60,7 +60,7 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async safeDestroy(transaction) {
-        const logs = await this.getLogs();
+        const logs = await this.getLogs({ transaction });
         for (let i = 0; i < logs.length; i++) {
             await logs[i].safeDestroy(transaction);
         }

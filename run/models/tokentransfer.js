@@ -54,11 +54,11 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async safeDestroy(transaction) {
-        const tokenBalanceChanges = await this.getTokenBalanceChanges();
+        const tokenBalanceChanges = await this.getTokenBalanceChanges({ transaction });
         for (let i = 0; i < tokenBalanceChanges.length; i++)
             await tokenBalanceChanges[i].safeDestroy(transaction);
 
-        const event = await this.getEvent();
+        const event = await this.getEvent({ transaction });
         if (event)
             await event.destroy({ transaction });
 

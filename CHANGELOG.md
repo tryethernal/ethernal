@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.120] - 2026-03-25
+### Fixed
+- fix: prevent connection leaks in Block.safeDestroy (#864)
+- fix: reduce database connection acquire timeout to prevent pool exhaustion (#865)
+
+
 ## [5.17.119] - 2026-03-24
 ### Fixed
 - blog: publish — The Frame Wallet: What EIP-8141 Means for Every EOA (#856)
