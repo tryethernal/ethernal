@@ -70,5 +70,9 @@ module.exports = {
 
     // Prospecting pipeline
     createDemoProfile: require('./createDemoProfile'),
-    snapshotDemoProfile: require('./snapshotDemoProfile')
+    snapshotDemoProfile: require('./snapshotDemoProfile'),
+    enrichProspect: require('./enrichProspect'),
+    processDetectedProspects: require('./processDetectedProspects'),
+    sendProspectEmail: require('./sendProspectEmail'),
+    prospectFollowUpCheck: require('./prospectFollowUpCheck')
 };
