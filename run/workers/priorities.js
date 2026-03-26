@@ -64,7 +64,7 @@ const priorities = {
 
 if (!isSelfHosted()) {
     priorities.high.push('updateApproximatedRecord', 'increaseStripeBillingQuota');
-    priorities.low.push('sendDemoExplorerLink', 'sendDripEmail', 'processDripEmails', 'enrichDemoProfile');
+    priorities.low.push('sendDemoExplorerLink', 'sendDripEmail', 'processDripEmails', 'enrichDemoProfile', 'processDetectedProspects', 'enrichProspect');
 }
 
 module.exports = priorities;
