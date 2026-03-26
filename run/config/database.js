@@ -29,11 +29,11 @@ module.exports = {
             logger.debug(sql, { instance: sequelizeObject.instance });
         },
         "pool": {
-            max: 400,
+            max: 100,
             min: 5,
             acquire: 10000,
-            idle: 10000,
-            evict: 1000
+            idle: 30000,
+            evict: 5000
         }
     }
 }
