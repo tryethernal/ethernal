@@ -10,7 +10,7 @@ tags:
   - Solidity
 image: "/blog/images/erc-8192-mandated-vault-execution.png"
 ogImage: "/blog/images/erc-8192-mandated-vault-execution-og.png"
-status: draft
+status: published
 readingTime: 7
 ---
 
