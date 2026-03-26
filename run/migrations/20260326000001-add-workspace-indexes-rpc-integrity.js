@@ -1,7 +1,8 @@
 /**
- * @fileoverview Add missing indexes on workspaceId for rpc_health_checks and integrity_checks tables
+ * @fileoverview Refresh table statistics for rpc_health_checks and integrity_checks tables
  * This fixes a performance regression in blockSync where LEFT OUTER JOINs were causing sequential scans
- * due to missing foreign key indexes, resulting in slow database queries (54ms+).
+ * due to stale table statistics. Both tables already have UNIQUE constraints on workspaceId that create
+ * implicit B-tree indexes, so the issue is likely outdated statistics causing poor query planning.
  * @module migrations
  */
 
@@ -9,26 +10,19 @@
 
 module.exports = {
     async up(queryInterface) {
-        // Add index on rpc_health_checks.workspaceId
-        await queryInterface.sequelize.query(
-            'CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_rpc_health_checks_workspace_id ON rpc_health_checks ("workspaceId")'
-        );
+        // Refresh table statistics for rpc_health_checks
+        // Both tables already have UNIQUE constraints on workspaceId which create implicit B-tree indexes
+        // The performance issue is likely due to stale statistics, not missing indexes
+        await queryInterface.sequelize.query('ANALYZE rpc_health_checks');
 
-        // Add index on integrity_checks.workspaceId
-        await queryInterface.sequelize.query(
-            'CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_integrity_checks_workspace_id ON integrity_checks ("workspaceId")'
-        );
+        // Refresh table statistics for integrity_checks
+        await queryInterface.sequelize.query('ANALYZE integrity_checks');
     },
 
     async down(queryInterface) {
-        await queryInterface.sequelize.query(
-            'DROP INDEX CONCURRENTLY IF EXISTS idx_rpc_health_checks_workspace_id'
-        );
-
-        await queryInterface.sequelize.query(
-            'DROP INDEX CONCURRENTLY IF EXISTS idx_integrity_checks_workspace_id'
-        );
+        // ANALYZE cannot be rolled back, but it's safe and only improves performance
+        // No action needed
     }
 };
 
-module.exports.config = { transaction: false }; // CONCURRENTLY fails inside transactions
+module.exports.config = { transaction: true }; // ANALYZE can run in transactions
