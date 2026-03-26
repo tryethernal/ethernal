@@ -657,7 +657,7 @@ module.exports = (sequelize, DataTypes) => {
                 const domains = await this.getDomains({ transaction });
                 for (let i = 0; i < domains.length; i++)
                     await domains[i].destroy({ transaction });
-                if (stripeSubscription)
+                if (stripeSubscription && !opts.deleteSubscription)
                     await stripeSubscription.destroy({ transaction });
 
                 const workspace = await this.getWorkspace({ transaction });

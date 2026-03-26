@@ -3051,6 +3051,11 @@ module.exports = (sequelize, DataTypes) => {
                     }
                 );
 
+                const explorer = await this.getExplorer({ transaction: sequelizeTransaction });
+                const stripeSubscription = explorer
+                    ? await explorer.getStripeSubscription({ transaction: sequelizeTransaction })
+                    : null;
+
                 for (let i = 0; i < transactions.length; i++) {
                     const transaction = transactions[i];
                     const [, [storedTx]] = await sequelize.models.Transaction.update(
@@ -3113,12 +3118,8 @@ module.exports = (sequelize, DataTypes) => {
                         }
                     }
 
-                    const explorer = await this.getExplorer({ transaction: sequelizeTransaction });
-                    if (explorer) {
-                        const stripeSubscription = await explorer.getStripeSubscription({ transaction: sequelizeTransaction });
-                        if (stripeSubscription)
-                            await stripeSubscription.increment('transactionQuota', { transaction: sequelizeTransaction });
-                    }
+                    if (stripeSubscription)
+                        await stripeSubscription.increment('transactionQuota', { transaction: sequelizeTransaction });
                 }
 
                 return storedBlock;
