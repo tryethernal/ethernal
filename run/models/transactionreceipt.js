@@ -42,7 +42,7 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async insertAnalyticEvent(sequelizeTransaction) {
-        const transaction = await this.getTransaction();
+        const transaction = await this.getTransaction({ transaction: sequelizeTransaction });
         const gasPrice = this.effectiveGasPrice || this.raw.gasPrice || transaction.gasPrice;
         const transactionFee = BigNumber.from(this.gasUsed.toString()).mul(BigNumber.from(gasPrice.toString()));
 
