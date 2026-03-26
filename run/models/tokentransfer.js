@@ -65,18 +65,19 @@ module.exports = (sequelize, DataTypes) => {
         return this.destroy({ transaction });
     }
 
-    getContract() {
+    getContract(options = {}) {
         return sequelize.models.Contract.findOne({
             where: {
                 workspaceId: this.workspaceId,
                 address: this.token
-            }
+            },
+            ...options
         });
     }
 
     async insertAnalyticEvent(sequelizeTransaction) {
-        const transaction = await this.getTransaction();
-        const contract = await this.getContract();
+        const transaction = await this.getTransaction({ transaction: sequelizeTransaction });
+        const contract = await this.getContract({ transaction: sequelizeTransaction });
 
         return sequelize.models.TokenTransferEvent.create({
             workspaceId: this.workspaceId,

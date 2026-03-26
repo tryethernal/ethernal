@@ -1,0 +1,12 @@
+{
+    "name": "ethernal-prospecting-pipeline",
+    "version": "1.0.0",
+    "type": "module",
+    "scripts": {
+        "start": "node run.js",
+        "test": "node --test lib/*.test.js"
+    },
+    "dependencies": {
+        "pg": "^8.13.0"
+    }
+}

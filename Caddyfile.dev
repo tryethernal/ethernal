@@ -16,6 +16,11 @@
         reverse_proxy blog:8176
     }
 
+    # Admin: proxy to admin dev server
+    handle /admin* {
+        reverse_proxy admin:8177
+    }
+
     # App: proxy to frontend when host is app.ethernal.local
     @app host app.ethernal.local
     handle @app {

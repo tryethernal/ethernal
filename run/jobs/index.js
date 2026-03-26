@@ -66,5 +66,13 @@ module.exports = {
     backfillOpDeposits: require('./backfillOpDeposits'),
     backfillOpOutputs: require('./backfillOpOutputs'),
     infraHealthCheck: require('./infraHealthCheck'),
-    enrichDemoProfile: require('./enrichDemoProfile')
+    enrichDemoProfile: require('./enrichDemoProfile'),
+
+    // Prospecting pipeline
+    createDemoProfile: require('./createDemoProfile'),
+    snapshotDemoProfile: require('./snapshotDemoProfile'),
+    enrichProspect: require('./enrichProspect'),
+    processDetectedProspects: require('./processDetectedProspects'),
+    sendProspectEmail: require('./sendProspectEmail'),
+    prospectFollowUpCheck: require('./prospectFollowUpCheck')
 };

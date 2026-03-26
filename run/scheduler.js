@@ -1,6 +1,7 @@
 const { enqueue } = require('./lib/queue');
-const { isDripEmailEnabled } = require('./lib/flags');
+const { isDripEmailEnabled, isProspectingEnabled } = require('./lib/flags');
 
+const PROSPECT_CHECK_INTERVAL = 15 * 60 * 1000;
 const DRIP_EMAIL_CHECK_INTERVAL = 15 * 60 * 1000;
 const INTEGRITY_CHECK_INTERVAL = 5 * 60 * 1000;
 const RPC_HEALTH_CHECK_INTERVAL = 5 * 60 * 1000;
@@ -148,6 +149,16 @@ const INFRA_HEALTH_CHECK_INTERVAL = 60 * 1000;
             {},
             10,
             { every: DRIP_EMAIL_CHECK_INTERVAL }
+        );
+    }
+
+    if (isProspectingEnabled()) {
+        await enqueue(
+            'processDetectedProspects',
+            'processDetectedProspects',
+            {},
+            10,
+            { every: PROSPECT_CHECK_INTERVAL }
         );
     }
 })();

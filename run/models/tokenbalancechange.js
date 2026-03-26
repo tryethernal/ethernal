@@ -47,12 +47,13 @@ module.exports = (sequelize, DataTypes) => {
           });
     }
 
-    getContract() {
+    getContract(options = {}) {
       return sequelize.models.Contract.findOne({
           where: {
               workspaceId: this.workspaceId,
               address: this.token
-          }
+          },
+          ...options
       });
     }
 
@@ -65,8 +66,8 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async insertAnalyticEvent(sequelizeTransaction) {
-      const transaction = await this.getTransaction();
-      const contract = await this.getContract();
+      const transaction = await this.getTransaction({ transaction: sequelizeTransaction });
+      const contract = await this.getContract({ transaction: sequelizeTransaction });
 
       return sequelize.models.TokenBalanceChangeEvent.create({
           workspaceId: this.workspaceId,

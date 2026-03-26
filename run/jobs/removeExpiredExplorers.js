@@ -6,7 +6,7 @@
  */
 
 const { Op } = require('sequelize');
-const { Explorer, StripeSubscription, StripePlan, Workspace } = require('../models');
+const { Explorer, StripeSubscription, StripePlan, Workspace, User } = require('../models');
 const { enqueue } = require('../lib/queue');
 const Analytics = require('../lib/analytics');
 const db = require('../lib/firebase');
@@ -33,7 +33,8 @@ module.exports = async () => {
             },
             {
                 model: Workspace,
-                as: 'workspace'
+                as: 'workspace',
+                include: [{ model: User, as: 'user', attributes: ['id', 'email'] }]
             }
         ]
     })).filter(e => !!e.stripeSubscription);
@@ -54,6 +55,18 @@ module.exports = async () => {
                 if (explorer.workspace.deleteAfter) {
                     // Grace period set — check if it has elapsed
                     if (new Date() >= explorer.workspace.deleteAfter) {
+                        // Snapshot demo profile before deletion
+                        if (explorer.workspace.user?.email) {
+                            try {
+                                await enqueue('snapshotDemoProfile', `snapshotDemoProfile-${explorer.id}`, {
+                                    email: explorer.workspace.user.email,
+                                    workspaceId: explorer.workspaceId,
+                                    enrichment: explorer.enrichment || null
+                                });
+                            } catch (error) {
+                                // Non-blocking: snapshot failure should not break cleanup
+                            }
+                        }
                         await db.skipDripEmailsForExplorer(explorer.id);
                         await explorer.safeDelete({ deleteSubscription: true });
                         await enqueue('workspaceReset', `workspaceReset-${explorer.workspaceId}`, {

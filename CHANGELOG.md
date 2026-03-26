@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.126] - 2026-03-26
+### Fixed
+- fix: comprehensive connection pool leak sweep across all models (#872)
+- feat: outbound prospecting engine — automated L2 lead detection and outreach (#873)
+
+
 ## [5.17.125] - 2026-03-26
 ### Fixed
 - blog: add draft - The Mandate Pattern: Bounded Execution Authority for ERC-4626 Vaults

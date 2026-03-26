@@ -654,20 +654,20 @@ module.exports = (sequelize, DataTypes) => {
                 if (stripeSubscription && opts.deleteSubscription)
                     await stripeSubscription.destroy({ transaction });
 
-                const domains = await this.getDomains();
+                const domains = await this.getDomains({ transaction });
                 for (let i = 0; i < domains.length; i++)
                     await domains[i].destroy({ transaction });
-                if (stripeSubscription)
+                if (stripeSubscription && !opts.deleteSubscription)
                     await stripeSubscription.destroy({ transaction });
 
-                const workspace = await this.getWorkspace();
+                const workspace = await this.getWorkspace({ transaction });
                 await workspace.update({ public: false, rpcHealthCheckEnabled: false, integrityCheckStartBlockNumber: null }, { transaction });
 
-                const faucet = await this.getFaucet();
+                const faucet = await this.getFaucet({ transaction });
                 if (faucet)
                     await faucet.safeDestroy(transaction);
 
-                const dex = await this.getV2Dex();
+                const dex = await this.getV2Dex({ transaction });
                 if (dex)
                     await dex.safeDestroy(transaction);
 
