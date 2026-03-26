@@ -25,4 +25,4 @@ module.exports = {
     }
 };
 
-module.exports.config = { transaction: true }; // ANALYZE can run in transactions
+module.exports.config = { transaction: false }; // ANALYZE updates stats in-place; no rollback possible
