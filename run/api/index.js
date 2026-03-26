@@ -5,7 +5,7 @@
  */
 
 const express = require('express');
-const { isStripeEnabled, isDemoEnabled, isDripEmailEnabled, isSelfHosted, isSentryPipelineEnabled } = require('../lib/flags');
+const { isStripeEnabled, isDemoEnabled, isDripEmailEnabled, isSelfHosted, isSentryPipelineEnabled, isProspectingEnabled } = require('../lib/flags');
 const router = express.Router();
 
 const blocks = require('./blocks');
@@ -70,6 +70,16 @@ router.use('/opDeposits', opDeposits);
 router.use('/opWithdrawals', opWithdrawals);
 router.use('/rpc', rpc);
 router.use('/onboarding', onboarding);
+
+if (isProspectingEnabled()) {
+    // Public unsubscribe route (no auth) must be registered first
+    const prospectUnsubscribe = require('./prospectUnsubscribe');
+    router.use('/prospects', prospectUnsubscribe);
+
+    // Auth-protected prospect routes
+    const prospects = require('./prospects');
+    router.use('/prospects', prospects);
+}
 
 if (isDemoEnabled()) {
     const demo = require('./demo');

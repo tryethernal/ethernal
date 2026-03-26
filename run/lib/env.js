@@ -79,5 +79,9 @@ module.exports = {
     getEnv: (env) => process.env[env],
     getLinkupApiKey: () => process.env.LINKUP_API_KEY,
     getAnthropicApiKey: () => process.env.ANTHROPIC_API_KEY,
-    getEnterpriseContactEmail: () => process.env.ENTERPRISE_CONTACT_EMAIL || 'antoine@tryethernal.com'
+    getEnterpriseContactEmail: () => process.env.ENTERPRISE_CONTACT_EMAIL || 'antoine@tryethernal.com',
+    getApolloApiKey: () => process.env.APOLLO_API_KEY,
+    getProspectSenderEmail: () => process.env.PROSPECT_SENDER_EMAIL,
+    getProspectReplyTo: () => process.env.PROSPECT_REPLY_TO,
+    getProspectAdminUserIds: () => process.env.PROSPECT_ADMIN_USER_IDS
 };

@@ -24,6 +24,14 @@ RUN npm ci
 COPY blog/ ./
 RUN npm run build
 
+# Build admin dashboard
+FROM node:20-alpine AS admin-build
+WORKDIR /app
+COPY admin/package.json admin/package-lock.json ./
+RUN npm ci
+COPY admin/ ./
+RUN npm run build
+
 # Build app frontend
 FROM node:18-alpine AS app-build
 RUN apk add --no-cache python3 make g++ gcc
@@ -71,6 +79,7 @@ COPY Caddyfile /etc/caddy/Caddyfile
 COPY --from=landing-build /app/dist /srv/landing
 COPY --from=blog-build /app/dist /srv/blog
 COPY --from=sentry-dashboard-build /app/dist /srv/sentry-dashboard
+COPY --from=admin-build /app/dist /srv/admin
 COPY --from=app-build /app/dist /srv/app
 COPY --from=app-build /app/ads.txt /srv/app/ads.txt
 CMD ["caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile"]

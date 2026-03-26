@@ -25,7 +25,7 @@ const db = require('../lib/firebase');
 const { managedError, unmanagedError } = require('../lib/errors');
 const { isChainAllowed } = require('../lib/chains');
 const logger = require('../lib/logger');
-const { isDripEmailEnabled } = require('../lib/flags');
+const { isDripEmailEnabled, isProspectingEnabled } = require('../lib/flags');
 
 /*
     Creates a uniswap v2 dex for a demo explorer
@@ -259,6 +259,19 @@ router.post('/explorers', async (req, res, next) => {
                 } catch (error) {
                     logger.error(error.message, { location: 'api.demo.enrichDemoProfile', explorerId: explorer.id, error });
                 }
+            }
+
+            // Capture demo profile for prospecting pipeline
+            if (isProspectingEnabled()) try {
+                await enqueue('createDemoProfile', `createDemoProfile-${explorer.id}`, {
+                    email: data.email,
+                    rpcServer: data.rpcServer,
+                    chainName: explorer.name,
+                    networkId: networkId ? String(networkId) : null,
+                    explorerCreatedAt: explorer.createdAt
+                });
+            } catch (error) {
+                logger.error(error.message, { location: 'api.demo.createDemoProfile', explorerId: explorer.id, error });
             }
         } else {
             await enqueue('sendDemoExplorerLink', `sendDemoExplorerLink-${explorer.id}`, { email: data.email, explorerSlug: explorer.slug });
