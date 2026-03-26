@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.130] - 2026-03-26
+### Fixed
+- fix: add missing workspaceId indexes to resolve blockSync performance regression (#891)
+- fix: add missing compound index for removeStalledBlock query optimization (#892)
+
+
 ## [5.17.129] - 2026-03-26
 ### Fixed
 - fix: prevent processDetectedProspects queue enqueue on self-hosted instances (#887)
