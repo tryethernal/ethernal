@@ -1,5 +1,5 @@
 const { enqueue } = require('./lib/queue');
-const { isDripEmailEnabled, isProspectingEnabled } = require('./lib/flags');
+const { isDripEmailEnabled, isProspectingEnabled, isSelfHosted } = require('./lib/flags');
 
 const PROSPECT_CHECK_INTERVAL = 15 * 60 * 1000;
 const DRIP_EMAIL_CHECK_INTERVAL = 15 * 60 * 1000;
@@ -152,7 +152,7 @@ const INFRA_HEALTH_CHECK_INTERVAL = 60 * 1000;
         );
     }
 
-    if (isProspectingEnabled()) {
+    if (isProspectingEnabled() && !isSelfHosted()) {
         await enqueue(
             'processDetectedProspects',
             'processDetectedProspects',
