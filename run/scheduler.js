@@ -142,7 +142,7 @@ const INFRA_HEALTH_CHECK_INTERVAL = 60 * 1000;
         { every: INFRA_HEALTH_CHECK_INTERVAL }
     );
 
-    if (isDripEmailEnabled()) {
+    if (isDripEmailEnabled() && !isSelfHosted()) {
         await enqueue(
             'processDripEmails',
             'processDripEmails',
