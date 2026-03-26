@@ -33,16 +33,24 @@
                     </div>
                 </template>
             </v-img>
-            <v-img v-else-if="!imageData.startsWith('<img')"
-                :src="getImageTag(imageData)"
+            <v-img v-else-if="imageSrc"
+                :src="imageSrc"
                 rounded="lg"
                 height="150"
                 cover
                 :style="`background-color: ${backgroundColor ? '#' + backgroundColor : ''};`">
             </v-img>
-            <div v-else class="image-container">
-                <span v-html="getImageTag(imageData)"></span>
-            </div>
+            <v-img v-else
+                height="150"
+                rounded="lg"
+                class="bg-grey-lighten-4"
+                cover>
+                <template v-slot:default>
+                    <div class="d-flex align-center justify-center fill-height">
+                        <v-icon size="150" color="grey-lighten-1">mdi-image-outline</v-icon>
+                    </div>
+                </template>
+            </v-img>
 
             <!-- Content Section -->
             <v-card-text class="pa-0 pt-2 d-flex flex-column card-content">
@@ -109,7 +117,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, inject } from 'vue';
+import { computed, ref, onMounted, inject } from 'vue';
 import { useRouter } from 'vue-router';
 import HashLink from './HashLink.vue';
 
@@ -136,21 +144,36 @@ const backgroundColor = ref(null);
 const loading = ref(false);
 
 // Methods
+const getSafeImageSrc = (image) => {
+    if (!image || typeof image !== 'string') return null;
+
+    if (image.startsWith('ipfs://')) {
+        return `https://gateway.pinata.cloud/ipfs/${image.slice(7, image.length)}`;
+    }
+
+    if (image.startsWith('<img')) {
+        const srcMatch = image.match(/\bsrc\s*=\s*["']([^"']+)["']/i);
+        if (!srcMatch || !srcMatch[1]) return null;
+        return getSafeImageSrc(srcMatch[1]);
+    }
+
+    if (
+        image.startsWith('http://') ||
+        image.startsWith('https://') ||
+        image.startsWith('data:image/')
+    ) {
+        return image;
+    }
+
+    return null;
+};
+
+const imageSrc = computed(() => getSafeImageSrc(imageData.value));
+
 const navigateToToken = () => {
     if (tokenId.value) {
         router.push(`/token/${props.contractAddress}/${tokenId.value}`);
     }
-};
-
-const getImageTag = (image) => {
-    if (!image) return null;
-    if (image.startsWith('ipfs://')) {
-        return `https://gateway.pinata.cloud/ipfs/${image.slice(7, image.length)}`;
-    }
-    if (image.startsWith('<img')) {
-        return '<img class="rounded-lg"' + image.slice(4, image.length);
-    }
-    return `<img rounded="lg" src="${image}" />`;
 };
 
 // Computed value for slot data

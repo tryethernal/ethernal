@@ -137,16 +137,25 @@
                                 </div>
                             </template>
                         </v-img>
-                        <v-img v-else-if="!imageData(item).startsWith('<img')"
-                            :src="getImageTag(imageData(item))"
+                        <v-img v-else-if="getSafeImageSrc(imageData(item))"
+                            :src="getSafeImageSrc(imageData(item))"
                             rounded="lg"
                             max-height="50"
                             max-width="50"
                             cover>
                         </v-img>
-                        <div v-else class="image-container">
-                            <span v-html="getImageTag(imageData(item))"></span>
-                        </div>
+                        <v-img v-else
+                            max-height="50"
+                            max-width="50"
+                            rounded="lg"
+                            class="bg-grey-lighten-4"
+                            cover>
+                            <template v-slot:default>
+                                <div class="d-flex align-center justify-center fill-height">
+                                    <v-icon size="50" color="grey-lighten-1">mdi-image-outline</v-icon>
+                                </div>
+                            </template>
+                        </v-img>
                     </router-link>
                     <div class="ml-2 d-flex flex-column text-truncate">
                         <span v-tooltip="`${item.contract.tokenName || '- '} #${item.tokenId}`" class="text-truncate">
@@ -308,19 +317,29 @@ const imageData = (item) => {
     return tokenMetadata.value[item.token] && tokenMetadata.value[item.token][item.tokenId] ? tokenMetadata.value[item.token][item.tokenId].metadata.image : null;
 };
 
-const getImageTag = (image) => {
+const getSafeImageSrc = (image) => {
     if (!image)
         return null;
-    else if (image.startsWith('ipfs://')) {
+
+    if (image.startsWith('ipfs://')) {
         return `https://gateway.pinata.cloud/ipfs/${image.slice(7, image.length)}`;
     }
-    else if (image.startsWith('<img')) {
+
+    if (image.startsWith('<img')) {
+        const srcMatch = image.match(/\bsrc\s*=\s*["']([^"']+)["']/i);
+        if (!srcMatch || !srcMatch[1]) return null;
+        return getSafeImageSrc(srcMatch[1]);
+    }
+
+    if (
+        image.startsWith('http://') ||
+        image.startsWith('https://') ||
+        image.startsWith('data:image/')
+    ) {
         return image;
     }
-    else if (image.startsWith('http')) {
-        return image;
-    }
-    return `<img width="50" height="50" src="${image}" />`;
+
+    return null;
 };
 
 // Methods
