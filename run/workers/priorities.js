@@ -38,8 +38,10 @@ const priorities = {
     'low': [
         'processUser',
         'enforceDataRetentionForWorkspace',
+        'enrichProspect',
         'integrityCheckStarter',
         'integrityCheck',
+        'processDetectedProspects',
         'rpcHealthCheck',
         'rpcHealthCheckStarter',
         'explorerSyncCheck',
