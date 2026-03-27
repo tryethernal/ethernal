@@ -318,25 +318,33 @@ const imageData = (item) => {
 };
 
 const getSafeImageSrc = (image) => {
-    if (!image)
+    if (typeof image !== 'string')
         return null;
 
-    if (image.startsWith('ipfs://')) {
-        return `https://gateway.pinata.cloud/ipfs/${image.slice(7, image.length)}`;
+    const normalized = image.trim();
+    if (!normalized)
+        return null;
+
+    if (normalized.startsWith('ipfs://')) {
+        return `https://gateway.pinata.cloud/ipfs/${normalized.slice(7, normalized.length)}`;
     }
 
-    if (image.startsWith('<img')) {
-        const srcMatch = image.match(/\bsrc\s*=\s*["']([^"']+)["']/i);
+    if (normalized.startsWith('<img')) {
+        const srcMatch = normalized.match(/\bsrc\s*=\s*["']([^"']+)["']/i);
         if (!srcMatch || !srcMatch[1]) return null;
         return getSafeImageSrc(srcMatch[1]);
     }
 
-    if (
-        image.startsWith('http://') ||
-        image.startsWith('https://') ||
-        image.startsWith('data:image/')
-    ) {
-        return image;
+    if (normalized.startsWith('http://') || normalized.startsWith('https://')) {
+        return normalized;
+    }
+
+    if (normalized.startsWith('data:image/')) {
+        const allowedDataImagePattern = /^data:image\/(png|jpe?g|gif|webp);/i;
+        if (allowedDataImagePattern.test(normalized)) {
+            return normalized;
+        }
+        return null;
     }
 
     return null;
