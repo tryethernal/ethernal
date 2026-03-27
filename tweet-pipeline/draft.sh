@@ -16,36 +16,9 @@ LOG_FILE="$LOG_DIR/draft-$(date +%Y%m%d-%H%M%S).log"
 
 log() { echo "[$(date -Iseconds)] $*" | tee -a "$LOG_FILE"; }
 
-# Report failure to GitHub Issues with last 50 lines of log
-FAILURE_REPORTED=false
-report_failure() {
-  [ "$FAILURE_REPORTED" = true ] && return
-  FAILURE_REPORTED=true
-  local phase="$1"
-  local log_tail
-  log_tail=$(tail -50 "$LOG_FILE" 2>/dev/null || echo "No log available")
-  local title="Tweet pipeline failed: $phase"
-
-  gh issue create \
-    --repo tryethernal/ethernal \
-    --title "$title" \
-    --label "tweet-pipeline" \
-    --body "$(cat <<EOF
-## Tweet Pipeline Failure
-
-**Phase:** $phase
-**Slot:** ${SLOT:-N/A}
-**Date:** $(date -Iseconds)
-**Log file:** \`$LOG_FILE\`
-
-### Last 50 lines of log
-
-\`\`\`
-$log_tail
-\`\`\`
-EOF
-)" 2>&1 | tee -a "$LOG_FILE" || log "WARNING: Failed to create GitHub issue"
-}
+# Failure reporting (deduplicates into existing open issues)
+FAILURE_TITLE_PREFIX="Tweet pipeline failed"
+source "$SCRIPT_DIR/lib/report-failure.sh"
 
 trap 'report_failure "Unexpected error (line $LINENO)"' ERR
 
