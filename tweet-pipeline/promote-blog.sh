@@ -12,35 +12,9 @@ LOG_FILE="${PROMOTE_LOG_FILE:-$LOG_DIR/promote-$(date +%Y%m%d-%H%M%S).log}"
 
 log() { echo "[$(date -Iseconds)] [promote] $*" | tee -a "$LOG_FILE"; }
 
-# Report failure to GitHub Issues
-FAILURE_REPORTED=false
-report_failure() {
-  [ "$FAILURE_REPORTED" = true ] && return
-  FAILURE_REPORTED=true
-  local phase="$1"
-  local log_tail
-  log_tail=$(tail -50 "$LOG_FILE" 2>/dev/null || echo "No log available")
-  local title="Blog promo tweet failed: $phase"
-
-  gh issue create \
-    --repo tryethernal/ethernal \
-    --title "$title" \
-    --label "tweet-pipeline" \
-    --body "$(cat <<EOF
-## Blog Promo Tweet Failure
-
-**Phase:** $phase
-**Date:** $(date -Iseconds)
-**Log file:** \`$LOG_FILE\`
-
-### Last 50 lines of log
-
-\`\`\`
-$log_tail
-\`\`\`
-EOF
-)" 2>&1 | tee -a "$LOG_FILE" || log "WARNING: Failed to create GitHub issue"
-}
+# Failure reporting (deduplicates into existing open issues)
+FAILURE_TITLE_PREFIX="Blog promo tweet failed"
+source "$SCRIPT_DIR/lib/report-failure.sh"
 
 trap 'report_failure "Unexpected error (line $LINENO)"' ERR
 
