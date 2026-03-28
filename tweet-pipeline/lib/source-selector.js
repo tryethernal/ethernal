@@ -331,7 +331,7 @@ function fetchTrendItems() {
 
         const data = JSON.parse(result);
         const items = data?.data?.organization?.projectV2?.items?.nodes || [];
-        const validStatuses = ['detected', 'drafting', 'published'];
+        const validStatuses = ['detected', 'published'];
 
         return items
             .filter(item => {
