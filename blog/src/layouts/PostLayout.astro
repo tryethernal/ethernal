@@ -34,7 +34,7 @@ const formattedDate = date.toLocaleDateString('en-US', {
 const tag = tags[0] || 'Article';
 
 // Get related posts (same tag, excluding current)
-const allPosts = await getCollection('blog', ({ data }) => data.status === 'published');
+const allPosts = await getCollection('blog');
 const relatedPosts = allPosts
   .filter(p => p.id !== post.id && p.data.tags.some(t => tags.includes(t)))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())

@@ -18,7 +18,7 @@
 | Auto-remediation | `.github/workflows/infra-auto-remediation.yml`, `run/jobs/infraHealthCheck.js` | |
 | Sentry pipeline | `run/api/sentryPipeline.js`, `run/webhooks/githubActions.js` | [SENTRY.md](.claude/references/SENTRY.md) |
 | Landing/marketing | `landing/` | [LANDING.md](.claude/references/LANDING.md) |
-| Blog pipeline | `blog/pipeline/`, `.github/workflows/blog-*.yml` | [MARKETING.md](.claude/references/MARKETING.md) |
+| Blog pipeline | `blog/pipeline/`, `.github/workflows/blog-trend-scan.yml` | [MARKETING.md](.claude/references/MARKETING.md) |
 | Drip emails | `run/jobs/sendDripEmail.js`, `run/jobs/processDripEmails.js`, `run/emails/drip-content.js` | [MARKETING.md](.claude/references/MARKETING.md) |
 | Demo enrichment | `run/jobs/enrichDemoProfile.js`, `run/lib/enrichment.js` | [MARKETING.md](.claude/references/MARKETING.md) |
 | Twitter pipeline | `tweet-pipeline/` (standalone, Hetzner server) | [MARKETING.md](.claude/references/MARKETING.md) |
@@ -185,7 +185,7 @@ Use RenderKit to render specs, reports, or any structured content as hosted HTML
 
 See [MARKETING.md](.claude/references/MARKETING.md) for complete reference (blog pipeline, Twitter pipeline, drip emails, enrichment, PostHog tracking, server setup, all env vars).
 
-**Quick summary:** Trend scan (weekly, GH Actions) → GitHub Projects board → Blog draft (every 2 days, Hetzner server, 3-phase Claude) → Tweet pipeline (5x/day, Hetzner server, 3-phase Claude) → Drip emails (6-step Mailjet sequence on demo creation) → PostHog tracking flywheel.
+**Quick summary:** Trend scan (weekly, GH Actions) → GitHub Projects board → Blog auto-publish (every 2 days, Hetzner server, 3-phase Claude, no manual review) → Tweet pipeline (5x/day, Hetzner server, 3-phase Claude) → Drip emails (6-step Mailjet sequence on demo creation) → PostHog tracking flywheel.
 
 **Server:** Hetzner `157.90.154.200`, user `blog`, repo at `/opt/ethernal-blog-stack`, env at `/opt/blog-pipeline.env`.
 

@@ -114,7 +114,7 @@ export function getProjectItems() {
 /**
  * Pick the next topic for the every-2-day cadence using round-robin.
  * Selects the highest-scoring "Detected" card whose cluster doesn't
- * already have an active card (in Researched or Drafting).
+ * already have an active card (in Researched status, meaning currently being processed).
  * @param {boolean} dryRun
  * @returns {object | null} picked item with body content
  */
@@ -123,7 +123,7 @@ export function pickNextTopic(dryRun = false) {
 
   const activeClusters = new Set(
     items
-      .filter(i => ['Researched', 'Drafting'].includes(i.status))
+      .filter(i => i.status === 'Researched')
       .map(i => i.cluster)
       .filter(Boolean)
   );
