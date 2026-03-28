@@ -7,10 +7,10 @@ Complete reference for the automated marketing pipeline: blog content, Twitter, 
 ```
 Trend Scan (weekly, GH Actions)
   → GitHub Projects V2 board (scored topic cards)
-  → Blog Draft (every 2 days, Hetzner server)
+  → Blog Publish (every 2 days, Hetzner server)
     → 3-phase Claude pipeline (research → draft → humanize)
     → Cover image generation (Gemini API)
-    → Commits to develop
+    → Publishes directly to develop (auto-deploys via CI)
 
 Tweet Pipeline (5x/day, Hetzner server)
   → Source selection (trend cards, blog articles, product tips, newsletters)
@@ -93,17 +93,17 @@ Collects from 5 sources, classifies into 12 topic clusters, scores, creates GitH
 
 **GitHub Projects V2 Board:**
 - Project ID: `PVT_kwDOBLpTN84BRc80` (org: `tryethernal`, number: 1)
-- Card statuses: Detected → Researched → Drafting → Published
+- Card statuses: Detected → Researched → Published
 - Custom fields: Trend Score, Topic Cluster, Content Type, Source Links, Article Path
 - All field/option IDs in `blog/pipeline/config.js`
 
-### 2. Blog Drafting (`blog/pipeline/draft.sh`, Hetzner server)
+### 2. Blog Drafting & Publishing (`blog/pipeline/draft.sh`, Hetzner server)
 
-Picks the highest-scoring "Detected" card (round-robin by cluster), runs 3-phase Claude pipeline, generates images, commits to develop.
+Picks the highest-scoring "Detected" card (round-robin by cluster), runs 3-phase Claude pipeline, generates images, publishes directly to develop. No manual review step.
 
 **Execution flow:**
 1. `git pull` latest develop
-2. `node index.js --pick` → selects topic (skips clusters with active Researched/Drafting cards)
+2. `node index.js --pick` → selects topic (skips clusters with active Researched cards)
 3. Writes topic card body to `.card-body.md`
 4. **Phase 1 — Research** (`claude -p` with `prompts/1-research.md`, 30 max-turns)
    - WebSearches sources from card, finds 2-3 additional sources
@@ -111,6 +111,7 @@ Picks the highest-scoring "Detected" card (round-robin by cluster), runs 3-phase
    - Output: `.research-notes.md`
 5. **Phase 2 — Draft** (`claude -p` with `prompts/2-draft.md`, 20 max-turns)
    - Reads research notes, writes article to `blog/src/content/blog/<slug>.md`
+   - Article is written with `status: published` (no draft step)
    - Format depends on content type (tutorial, explainer, deep dive, guide, survey)
    - Output: article file, prints `::article-path::` marker
 6. **Phase 3 — Humanize** (`claude -p` with `prompts/3-humanize.md`, 10 max-turns)
@@ -122,22 +123,14 @@ Picks the highest-scoring "Detected" card (round-robin by cluster), runs 3-phase
    - Cover: 1424x752 px → `blog/public/images/<slug>.webp`
    - OG: 1200x630 px → `blog/public/images/<slug>-og.webp`
    - Style: dark navy (#0f172a), flat design, steel blue (#3D95CE) accents, NOT 3D/glowy
-10. Git commit + push to develop
-11. Updates card status: Detected → Drafting
-12. On failure: creates GitHub issue with phase name + log tail, resets card to Detected
+10. Regenerates `blog/public/llms.txt` with all published articles
+11. Git commit + push to develop (auto-deploys via CI)
+12. Updates card status: Detected → Published
+13. On failure: creates GitHub issue with phase name + log tail, resets card to Detected
 
 **MCP config:** `blog/pipeline/mcp.json` (context7 + nano-banana)
 
 **Claude flags:** `--dangerously-skip-permissions --max-turns N --mcp-config mcp.json -p "prompt"`
-
-### 3. Blog Publishing (`.github/workflows/blog-publish.yml`, manual dispatch)
-
-Manual GitHub Actions workflow that transitions articles from draft to published:
-1. Finds article by slug (or picks oldest draft)
-2. Updates frontmatter `status: draft` → `status: published`
-3. Commits to a `blog/publish-<slug>` branch
-4. Creates PR → auto-merges to develop (squash, admin bypass)
-5. Updates project card status to Published
 
 ### Blog Content Structure
 
@@ -151,7 +144,7 @@ date: YYYY-MM-DD
 tags: [Tag1, Tag2]
 image: "/blog/images/<slug>.webp"     # 1424x752 cover
 ogImage: "/blog/images/<slug>-og.webp" # 1200x630 social card
-status: draft | published
+status: published
 readingTime: N
 ```
 
@@ -379,4 +372,4 @@ Feature flag: `isDripEmailEnabled()` in `run/lib/flags.js`.
 - **Twitter API:** Pay-per-use with $5 credits. Consumer key `9YVdDl54WiDza5racpgQTi6e4`. Full credentials in `.credentials.local`.
 - **Image generation:** `gemini-3.1-flash-image-preview` is the best model (cleanest results). `gemini-2.5-flash-image` gets rate-limited. Falls back gracefully if API fails.
 - **Trend scan still in GitHub Actions:** `blog-trend-scan.yml` runs weekly on Monday. Could be moved to server but low priority (lightweight, no Claude needed).
-- **Blog publish still in GitHub Actions:** `blog-publish.yml` is manual dispatch only. Deliberately kept in Actions for reviewer control.
+- **Blog publishes automatically:** Articles are published directly by `draft.sh` (no manual review step). The `blog-publish.yml` workflow has been removed.

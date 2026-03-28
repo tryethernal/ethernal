@@ -274,11 +274,38 @@ log "Generating cover image..."
 IMG_PROMPT="Flat vector flow diagram on dark navy background (#0f172a) with subtle dot grid pattern overlay. Topic: ${TOPIC}. Use rounded pill-shaped boxes in steel blue (#4a8ecb) with soft shadows, connected by thin arrows. 2-4 labeled elements showing a simple relationship or flow. Large readable white text labels. Centered composition with lots of whitespace. Style: polished Figma mockup, NOT realistic 3D icons, NOT wireframes, NOT text-heavy. No gradients, no glow effects."
 "$SCRIPT_DIR/generate-cover.sh" "$SLUG" "$IMG_PROMPT" 2>&1 | tee -a "$LOG_FILE" || log "WARNING: Cover image generation failed"
 
+# Regenerate llms.txt with all published articles
+log "Regenerating llms.txt..."
+{
+  echo '# On-Chain Engineering Blog'
+  echo ''
+  echo '> Technical blog by Ethernal covering EVM internals, EIP/ERC explainers, L2 rollup architecture, smart contract security, and block explorer development.'
+  echo ''
+  echo '## Articles'
+  echo ''
+  for f in blog/src/content/blog/*.md blog/src/content/blog/*.mdx; do
+    [ -f "$f" ] || continue
+    if awk 'BEGIN{c=0} /^---$/{c++} c==1 && /status: published/{found=1} END{exit !found}' "$f"; then
+      ATITLE=$(awk 'BEGIN{c=0} /^---$/{c++} c==1 && /^title:/{gsub(/^title: *"?/,""); gsub(/"$/,""); print; exit}' "$f")
+      ADESC=$(awk 'BEGIN{c=0} /^---$/{c++} c==1 && /^description:/{gsub(/^description: *"?/,""); gsub(/"$/,""); print; exit}' "$f")
+      ASLUG=$(basename "$f" .md)
+      ASLUG=$(basename "$ASLUG" .mdx)
+      echo "- [${ATITLE}](https://tryethernal.com/blog/${ASLUG}): ${ADESC}"
+    fi
+  done
+  echo ''
+  echo '## About'
+  echo ''
+  echo '- [Ethernal](https://tryethernal.com): Open-source block explorer for EVM-based chains'
+  echo '- [GitHub](https://github.com/tryethernal/ethernal): Source code repository'
+  echo '- [Documentation](https://doc.tryethernal.com): Full product documentation'
+} > blog/public/llms.txt
+
 # Commit everything
-git add "$ARTICLE_PATH"
+git add "$ARTICLE_PATH" blog/public/llms.txt
 [ -f "blog/public/images/${SLUG}.png" ] && git add "blog/public/images/${SLUG}.png" "blog/public/images/${SLUG}-og.png"
 TITLE=$(head -5 "$ARTICLE_PATH" | grep '^title:' | sed 's/^title: *"//;s/"$//')
-git commit -m "blog: add draft - ${TITLE}" 2>&1 | tee -a "$LOG_FILE"
+git commit -m "blog: publish - ${TITLE}" 2>&1 | tee -a "$LOG_FILE"
 git push origin develop 2>&1 | tee -a "$LOG_FILE"
 
 log "Pushed to develop."
@@ -288,9 +315,9 @@ log "Updating project card..."
 cd blog/pipeline
 CARD_ID="$CARD_ID" ARTICLE_PATH="$ARTICLE_PATH" node --input-type=module -e "
   import { updateCardStatus, setArticlePath } from './project.js';
-  updateCardStatus(process.env.CARD_ID, 'drafting');
+  updateCardStatus(process.env.CARD_ID, 'published');
   setArticlePath(process.env.CARD_ID, process.env.ARTICLE_PATH);
-  console.log('Card updated: Drafting + article path set');
+  console.log('Card updated: Published + article path set');
 " 2>&1 | tee -a "$LOG_FILE"
 
 # Clean up temp files

@@ -94,7 +94,7 @@ tags:
   - Tag2
 image: "/blog/images/<slug>.png"
 ogImage: "/blog/images/<slug>-og.png"
-status: draft
+status: published
 readingTime: N
 ---
 ```
