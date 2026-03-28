@@ -10,7 +10,7 @@ tags:
   - Open Source
 image: "/blog/images/erc-8185-8186-counterfactual-identity.png"
 ogImage: "/blog/images/erc-8185-8186-counterfactual-identity-og.png"
-status: draft
+status: published
 readingTime: 8
 ---
 
