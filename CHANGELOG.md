@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.134] - 2026-03-28
+### Fixed
+- Update erc-8185-8186-counterfactual-identity.md (#963)
+- feat(blog-pipeline): auto-publish articles, remove manual review step (#961)
+
+
 ## [5.17.133] - 2026-03-28
 ### Fixed
 - blog: add draft - The Address That Existed Before the Contract: ERC-8185 and ERC-8186
