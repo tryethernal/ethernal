@@ -25,5 +25,4 @@ module.exports = {
     }
 };
 
-// NOTE: CREATE/DROP INDEX CONCURRENTLY cannot run inside a transaction block.
-// sequelize-cli does not auto-wrap migrations, so no extra config is needed.
+module.exports.config = { transaction: false }; // CONCURRENTLY cannot run in transactions
