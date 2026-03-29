@@ -1,0 +1,13 @@
+[Unit]
+Description=Weekly tweet audit summary — analyze fact-check results
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/opt/tweet-pipeline/audit-summary.sh
+WorkingDirectory=/opt/tweet-pipeline
+EnvironmentFile=/opt/blog-pipeline.env
+TimeoutStartSec=120
+StandardOutput=journal
+StandardError=journal
