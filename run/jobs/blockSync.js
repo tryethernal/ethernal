@@ -294,7 +294,9 @@ module.exports = async job => {
                     workspaceId: workspace.id,
                     blockNumber: data.blockNumber,
                     source: data.source,
-                    rateLimited: !!data.rateLimited
+                    rateLimited: !!data.rateLimited,
+                    // Preserve cached workspace data to avoid N+1 query on retry
+                    cachedWorkspace: data.cachedWorkspace
                 }, priority, null, workspace.rateLimitInterval, !!data.rateLimited);
             }
             else if (error.message.startsWith('Timed out after')) {
@@ -302,7 +304,9 @@ module.exports = async job => {
                     workspaceId: workspace.id,
                     blockNumber: data.blockNumber,
                     source: data.source,
-                    rateLimited: !!data.rateLimited
+                    rateLimited: !!data.rateLimited,
+                    // Preserve cached workspace data to avoid N+1 query on retry
+                    cachedWorkspace: data.cachedWorkspace
                 }, priority, null, workspace.rateLimitInterval || 5000, !!data.rateLimited);
             }
             else
