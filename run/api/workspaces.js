@@ -170,7 +170,7 @@ router.post('/settings', authMiddleware, async (req, res, next) => {
             return managedError(new Error('Missing parameter.'), req, res);
 
         const workspace = await db.getWorkspaceByName(data.uid, data.workspace);
-        if (workspace.public && data.settings.rpcServer != workspace.rpcServer) {
+        if (workspace.public && data.settings.rpcServer && data.settings.rpcServer !== workspace.rpcServer) {
             const provider = new ProviderConnector(data.settings.rpcServer);
             try {
                 const networkId = await withTimeout(provider.fetchNetworkId());
