@@ -158,7 +158,11 @@ module.exports = (sequelize, DataTypes) => {
 
                 if (workspace.tracing && workspace.tracing != 'hardhat') {
                     const jobs = [];
-                    const transactions = await this.getTransactions();
+                    // Use a more efficient query that only fetches required fields (id, hash)
+                    // instead of loading full transaction objects to prevent query timeouts on large blocks
+                    const transactions = await this.getTransactions({
+                        attributes: ['id', 'hash']
+                    });
                     for (let i = 0; i < transactions.length; i++) {
                         const transaction = transactions[i];
                         jobs.push({
