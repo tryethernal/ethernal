@@ -10,13 +10,55 @@
 
 const jwt = require('jsonwebtoken');
 const axios = require('axios');
+const Mailjet = require('node-mailjet');
 const express = require('express');
 const router = express.Router();
 const db = require('../lib/firebase');
 const { enqueue } = require('../lib/queue');
-const { getDiscordFeedbackChannelWebhook, getProductRoadToken } = require('../lib/env');
+const { getDiscordFeedbackChannelWebhook, getProductRoadToken, getMailjetPublicKey, getMailjetPrivateKey, getMailjetNewsletterListId } = require('../lib/env');
+const { isMailjetEnabled } = require('../lib/flags');
 const authMiddleware = require('../middlewares/auth');
 const { managedError, unmanagedError } = require('../lib/errors');
+
+/**
+ * @route POST /newsletter - Subscribe an email to the blog newsletter
+ * @param {string} req.body.email - Email address to subscribe
+ * @returns {200} Success (idempotent, returns 200 even if already subscribed)
+ * @returns {400} Missing or invalid email
+ * @returns {503} Mailjet not configured
+ */
+router.post('/newsletter', async (req, res, next) => {
+    try {
+        const { email } = req.body;
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+            return managedError(new Error('Valid email required.'), req, res);
+
+        if (!isMailjetEnabled() || !getMailjetNewsletterListId())
+            return res.status(503).json({ error: 'Newsletter not configured' });
+
+        const mailjet = Mailjet.apiConnect(getMailjetPublicKey(), getMailjetPrivateKey());
+
+        // Create or update contact
+        await mailjet.post('contact', { version: 'v3' })
+            .request({ IsExcludedFromCampaigns: false, Email: email })
+            .catch(err => {
+                // 304 = already exists, that's fine
+                if (err.statusCode !== 304) throw err;
+            });
+
+        // Add contact to newsletter list
+        await mailjet.post('listrecipient', { version: 'v3' })
+            .request({ ContactAlt: email, ListID: getMailjetNewsletterListId(), IsUnsubscribed: false })
+            .catch(err => {
+                // 304 = already on list, that's fine
+                if (err.statusCode !== 304) throw err;
+            });
+
+        res.status(200).json({ success: true });
+    } catch(error) {
+        unmanagedError(error, req, next);
+    }
+});
 
 router.post('/feedback', async (req, res, next) => {
     const data = req.body;
