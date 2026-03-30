@@ -33,7 +33,7 @@ describe(`GET ${BASE_URL}/productRoadToken`, () => {
 
 describe(`GET ${BASE_URL}`, () => {
     it('Should return the marketing flags', (done) => {
-        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValueOnce({ slug: 'ethernal', isRemote: true });
+        jest.spyOn(db, 'getWorkspaceByNameAuth').mockResolvedValueOnce({ slug: 'ethernal', isRemote: true });
         request.get(`${BASE_URL}/?workspace=ethernal`)
             .expect(200)
             .then(({ body }) => {
