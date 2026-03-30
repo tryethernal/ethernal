@@ -53,7 +53,7 @@ describe(`GET ${BASE_URL}/:number/transactions`, () => {
 
 describe(`POST ${BASE_URL}/syncRange`, () => {
     it('Should fail if it is server side and not public', (done) => {
-        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValue({ name: 'My Workspace', public: false });
+        jest.spyOn(db, 'getWorkspaceByNameAuth').mockResolvedValue({ name: 'My Workspace', public: false });
         request.post(`${BASE_URL}/syncRange`)
             .send({ data: { workspace: 'My Workspace', from: 1, to: 10 }})
             .expect(400)
@@ -64,7 +64,7 @@ describe(`POST ${BASE_URL}/syncRange`, () => {
     });
 
     it('Should enqueue a batchBlockSync task', (done) => {
-        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValue({ id: 1, name: 'My Workspace', public: true });
+        jest.spyOn(db, 'getWorkspaceByNameAuth').mockResolvedValue({ id: 1, name: 'My Workspace', public: true });
         request.post(`${BASE_URL}/syncRange`)
             .send({ data: { workspace: 'My Workspace', from: 1, to: 10 }})
             .expect(200)
@@ -95,7 +95,7 @@ describe(`POST ${BASE_URL}`, () => {
     });
 
     it('Should throw an error if block number is missing with server sync', (done) => {
-        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValue({ name: 'My Workspace', public: true });
+        jest.spyOn(db, 'getWorkspaceByNameLight').mockResolvedValue({ name: 'My Workspace', public: true });
         request.post(`${BASE_URL}/?serverSync=true`)
             .send({ data: { workspace: 'My Workspace', block: {}}})
             .expect(400)
@@ -106,7 +106,7 @@ describe(`POST ${BASE_URL}`, () => {
     });
 
     it('Should refuse server side block sync if workspace is not public', (done) => {
-        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValue({ name: 'My Workspace', public: false });
+        jest.spyOn(db, 'getWorkspaceByNameLight').mockResolvedValue({ name: 'My Workspace', public: false });
         request.post(`${BASE_URL}/?serverSync=true`)
             .send({ data: { workspace: 'My Workspace', block: { number: 123 }}})
             .expect(400)
@@ -117,7 +117,7 @@ describe(`POST ${BASE_URL}`, () => {
     });
 
     it('Should enqueue server side block sync', (done) => {
-        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValue({ id: 1, name: 'My Workspace', public: true });
+        jest.spyOn(db, 'getWorkspaceByNameLight').mockResolvedValue({ id: 1, name: 'My Workspace', public: true });
         request.post(`${BASE_URL}/?serverSync=true`)
             .send({ data: { workspace: 'My Workspace', block: { number: 123 }}})
             .expect(200)

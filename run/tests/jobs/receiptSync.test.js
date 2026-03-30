@@ -16,7 +16,7 @@ beforeEach(() => jest.resetAllMocks());
 
 describe('receiptSync', () => {
     it('Should return if receipt is not available', (done) => {
-        jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({
+        jest.spyOn(Transaction, 'findOne').mockResolvedValueOnce({
             workspace: {
                 id: 1,
                 public: true,
@@ -39,7 +39,7 @@ describe('receiptSync', () => {
     });
 
     it('Should return if already a receipt', (done) => {
-        jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({
+        jest.spyOn(Transaction, 'findOne').mockResolvedValueOnce({
             workspace: {
                 rpcServer: 'rpc',
                 public: true,
@@ -59,7 +59,7 @@ describe('receiptSync', () => {
 
     it('Should re-enqueue if timed out', (done) => {
         jest.spyOn(Date, 'now').mockImplementation(() => 1609459200000);
-        jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({
+        jest.spyOn(Transaction, 'findOne').mockResolvedValueOnce({
             id: 1,
             hash: '0x123',
             workspace: {
@@ -91,7 +91,7 @@ describe('receiptSync', () => {
 
     it('Should re-enqueue if rate limited', (done) => {
         jest.spyOn(Date, 'now').mockImplementation(() => 1609459200000);
-        jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({
+        jest.spyOn(Transaction, 'findOne').mockResolvedValueOnce({
             id: 1,
             hash: '0x123',
             workspace: {
@@ -123,7 +123,7 @@ describe('receiptSync', () => {
     });
 
     it('Should return if RPC is unreachable', (done) => {
-        jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({
+        jest.spyOn(Transaction, 'findOne').mockResolvedValueOnce({
             workspace: {
                 rpcServer: 'rpc',
                 public: true,
@@ -146,7 +146,7 @@ describe('receiptSync', () => {
     });
 
     it('Should return if no transaction', (done) => {
-        jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce(null);
+        jest.spyOn(Transaction, 'findOne').mockResolvedValueOnce(null);
 
         receiptSync({ data : { transactionId: 1, transactionHash: '0x123', workspaceId: 1 }})
             .then(res => {
@@ -156,7 +156,7 @@ describe('receiptSync', () => {
     });
 
     it('Should return if no subscription', (done) => {
-        jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({
+        jest.spyOn(Transaction, 'findOne').mockResolvedValueOnce({
             workspace: {
                 rpcServer: 'rpc',
                 public: true,
@@ -174,7 +174,7 @@ describe('receiptSync', () => {
     });
 
     it('Should return if private workspace', (done) => {
-        jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({
+        jest.spyOn(Transaction, 'findOne').mockResolvedValueOnce({
             workspace: {
                 public: false,
                 rpcServer: 'rpc',
@@ -192,7 +192,7 @@ describe('receiptSync', () => {
     });
 
     it('Should return if disabled sync', (done) => {
-        jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({
+        jest.spyOn(Transaction, 'findOne').mockResolvedValueOnce({
             workspace: {
                 public: true,
                 rpcServer: 'rpc',
@@ -211,7 +211,7 @@ describe('receiptSync', () => {
 
     it('Should store the receipt', (done) => {
         const safeCreateReceipt = jest.fn().mockResolvedValueOnce();
-        jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({
+        jest.spyOn(Transaction, 'findOne').mockResolvedValueOnce({
             id: 1,
             workspace: {
                 rpcServer: 'rpc',
@@ -252,7 +252,7 @@ describe('receiptSync', () => {
     it('Should use cached workspace data when available', (done) => {
         const safeCreateReceipt = jest.fn().mockResolvedValueOnce();
         // With cachedWorkspace, the query should NOT include workspace
-        jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({
+        jest.spyOn(Transaction, 'findOne').mockResolvedValueOnce({
             id: 1,
             // No workspace included in response - simulating lighter query
             safeCreateReceipt
@@ -283,7 +283,7 @@ describe('receiptSync', () => {
     });
 
     it('Should return error for private workspace with cached data', (done) => {
-        jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({
+        jest.spyOn(Transaction, 'findOne').mockResolvedValueOnce({
             id: 1
             // No receipt - so it won't return early
         });
@@ -305,7 +305,7 @@ describe('receiptSync', () => {
 
     it('Should preserve cached workspace in re-enqueue on timeout', (done) => {
         jest.spyOn(Date, 'now').mockImplementation(() => 1609459200000);
-        jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({
+        jest.spyOn(Transaction, 'findOne').mockResolvedValueOnce({
             id: 1,
             hash: '0x123'
         });

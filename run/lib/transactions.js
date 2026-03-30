@@ -99,7 +99,7 @@ const processTransactions = async (transactionIds) => {
         if (contract && contract.proxy)
             contract = await db.getContractData(userId, workspaceName, contract.proxy);
 
-        const workspace = await db.getWorkspaceByName(userId, workspaceName);
+        const workspace = await db.getWorkspaceByNameAuth(userId, workspaceName);
 
         if (!workspace.public)
             continue;

@@ -121,7 +121,7 @@ router.get('/', authMiddleware, async (req, res, next) => {
         if (!data.workspace)
             return managedError(new Error('Missing parameters.'), req, res);
 
-        const workspace = await db.getWorkspaceByName(data.uid, data.workspace);
+        const workspace = await db.getWorkspaceByNameAuth(data.uid, data.workspace);
 
         res.status(200).json({ isRemote: workspace.isRemote });
     } catch(error) {

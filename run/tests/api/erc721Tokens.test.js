@@ -48,7 +48,7 @@ describe(`POST ${BASE_URL}/:address/:index/reload`, () => {
     beforeEach(() => jest.clearAllMocks());
 
     it('Should enqueue reload task', (done) => {
-        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValueOnce({
+        jest.spyOn(db, 'getWorkspaceByNameAuth').mockResolvedValueOnce({
             id: 1
         });
         request.post(`${BASE_URL}/0x123/0/reload`)

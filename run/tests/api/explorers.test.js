@@ -1663,6 +1663,12 @@ describe(`GET ${BASE_URL}/search`, () => {
                 done();
             });
     });
+
+    it('Should return 400 with missing parameters if domain is an array', (done) => {
+        request.get(`${BASE_URL}/search?domain=a&domain=b`)
+            .expect(400)
+            .then(() => done());
+    });
 });
 
 describe(`GET ${BASE_URL}/:id`, () => {

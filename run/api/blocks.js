@@ -47,7 +47,7 @@ router.post('/syncRange', authMiddleware, async (req, res, next) => {
         if (!data.workspace || data.from === undefined || data.from === null || data.to === undefined || data.to === null)
             return managedError(new Error('Missing parameter'), req, res);
 
-        const workspace = await db.getWorkspaceByName(data.uid, data.workspace);
+        const workspace = await db.getWorkspaceByNameAuth(data.uid, data.workspace);
         if (!workspace.public)
             return managedError(new Error(`You are not allowed to use server side sync. If you'd like to, please reach out at contact@tryethernal.com`), req, res);
 
@@ -108,7 +108,7 @@ router.post('/', [authMiddleware, browserSyncMiddleware], async (req, res, next)
         const serverSync = req.query.serverSync && String(req.query.serverSync) === 'true';
 
         if (serverSync) {
-            const workspace = await db.getWorkspaceByName(data.uid, data.workspace);
+            const workspace = await db.getWorkspaceByNameLight(data.uid, data.workspace);
             /*
                 All current explorers need to be migrated before using this. 
             */

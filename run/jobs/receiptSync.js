@@ -90,7 +90,13 @@ module.exports = async job => {
     ];
 
     const transaction = data.transactionId ?
-        await Transaction.findByPk(data.transactionId, { include }) :
+        await Transaction.findOne({
+            where: {
+                id: data.transactionId,
+                workspaceId: data.workspaceId
+            },
+            include
+        }) :
         await Transaction.findOne({
             where: {
                 hash: data.transactionHash,

@@ -353,7 +353,7 @@ router.post('/:address/tokenProperties', authMiddleware, async (req, res, next) 
         if (!data.uid || !data.workspace)
             return managedError(new Error(`Missing parameters`), req, res);
 
-        const workspace = await db.getWorkspaceByName(data.user.firebaseUserId, data.workspace);
+        const workspace = await db.getWorkspaceByNameAuth(data.user.firebaseUserId, data.workspace);
         if (!workspace)
             return managedError(new Error('Could not find workspace.'), req, res);
 
