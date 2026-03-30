@@ -120,6 +120,10 @@ jobs:
           if [ "$HAS_INCIDENT" -gt 0 ]; then
             echo "tripped=true" >> $GITHUB_OUTPUT
             echo "Circuit breaker: active incident issue exists. Skipping auto-fix."
+            gh issue edit ${{ steps.issue_info.outputs.number }} --add-label "needs-human" --repo ${{ github.repository }}
+            gh issue comment ${{ steps.issue_info.outputs.number }} \
+              --body "⚡ **Circuit breaker tripped**: An active incident issue exists. Auto-fix paused to avoid treating individual symptoms. See the open \`incident\` issue for context. @antoinedc please investigate the root cause." \
+              --repo ${{ github.repository }}
           elif [ "$RECENT_COUNT" -ge 3 ]; then
             echo "tripped=true" >> $GITHUB_OUTPUT
             echo "Circuit breaker: $RECENT_COUNT sentry issues in last 30 min (threshold: 3). Escalating."
@@ -316,8 +320,11 @@ jobs:
               ```
             - **Check for overlapping in-flight PRs**: Before writing code, identify which files you plan to change. Then check if any other open `fix/sentry-*` PRs touch those same files:
               ```bash
-              # List files changed by other open sentry fix PRs
-              for PR_NUM in $(gh pr list --repo tryethernal/ethernal --search "head:fix/sentry- is:open" --json number -q '.[].number'); do
+              # List files changed by other open sentry fix PRs (use jq filtering, not head: search which requires exact match)
+              gh pr list --repo tryethernal/ethernal --state open --json number,headRefName \
+                --jq '[.[] | select(.headRefName | startswith("fix/sentry-"))] | .[].number' \
+                > /tmp/sentry-pr-nums.txt
+              for PR_NUM in $(cat /tmp/sentry-pr-nums.txt); do
                 gh pr diff "$PR_NUM" --repo tryethernal/ethernal --name-only 2>/dev/null
               done | sort -u > /tmp/other-pr-files.txt
               ```
