@@ -159,11 +159,45 @@ module.exports = (sequelize, DataTypes) => {
                 {
                     model: Workspace,
                     as: 'workspaces',
-                    attributes: ['id', 'name', 'public', 'userId', 'networkId', 'rpcServer', 'statusPageEnabled', 'rpcHealthCheckEnabled', 'integrityCheckStartBlockNumber'],
+                    attributes: ['id', 'name', 'public', 'userId', 'networkId', 'rpcServer', 'statusPageEnabled', 'rpcHealthCheckEnabled', 'integrityCheckStartBlockNumber', 'tracing', 'isRemote'],
                     where: {
                         name: workspaceName,
                         pendingDeletion: false
                     }
+                }
+            ]
+        });
+    }
+
+    /**
+     * Finds a user by auth ID with a lightweight workspace load.
+     * Only includes explorer (for slug/shouldSync), no deep associations.
+     * @param {string} firebaseUserId - Firebase authentication UID
+     * @param {string} workspaceName - Name of workspace to include
+     * @returns {Promise<User|null>} User with specified workspace
+     */
+    static findByAuthIdWithWorkspaceLight(firebaseUserId, workspaceName) {
+        const Workspace = sequelize.models.Workspace;
+        return User.findOne({
+            where: {
+                firebaseUserId: firebaseUserId
+            },
+            attributes: ['id', 'firebaseUserId', 'isPremium'],
+            include: [
+                {
+                    model: Workspace,
+                    as: 'workspaces',
+                    where: {
+                        name: workspaceName,
+                        pendingDeletion: false
+                    },
+                    include: [
+                        {
+                            model: sequelize.models.Explorer,
+                            as: 'explorer',
+                            attributes: ['id', 'slug', 'shouldSync']
+                        }
+                    ]
                 }
             ]
         });

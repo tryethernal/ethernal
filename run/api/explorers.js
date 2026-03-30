@@ -1339,7 +1339,7 @@ router.get('/search', async (req, res, next) => {
     const data = req.query;
 
     try {
-        if (!data.domain)
+        if (!data.domain || typeof data.domain !== 'string')
             return managedError(new Error('Missing parameters.'), req, res);
 
         let explorer;
@@ -1351,7 +1351,7 @@ router.get('/search', async (req, res, next) => {
         if (data.domain == getAppDomain())
             return res.sendStatus(200);
 
-        if (data.domain && typeof data.domain === 'string' && data.domain.endsWith(getAppDomain())) {
+        if (data.domain.endsWith(getAppDomain())) {
             const slug = data.domain.split(`.${getAppDomain()}`)[0];
             explorer = await db.getPublicExplorerParamsBySlug(slug);
         }

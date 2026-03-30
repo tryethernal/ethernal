@@ -27,7 +27,7 @@ const workspace = {
 
 describe('processTransactions ', () => {
     getTokenTransfer.mockReturnValue({ token: '0x123', src: '0x456', dst: '0x789' });
-    jest.spyOn(db, 'getWorkspaceByName').mockResolvedValue({ rpcServer: 'http://localhost:8545', public: true, name: 'hardhat' });
+    jest.spyOn(db, 'getWorkspaceByNameAuth').mockResolvedValue({ rpcServer: 'http://localhost:8545', public: true, name: 'hardhat' });
 
     it('Should store a parsed failed transaction error return by the rpc call', async () => {
         getProvider.mockImplementation(() => ({
@@ -96,7 +96,7 @@ describe('processTransactions ', () => {
     it('Should process & store the trace if the workspace is public', async () => {
         const processTraceMock = jest.spyOn(Tracer.prototype, 'process');
         const saveTraceMock = jest.spyOn(Tracer.prototype, 'saveTrace');
-        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValueOnce({ rpcServer: 'http://localhost.com', tracing: 'other', public: true });
+        jest.spyOn(db, 'getWorkspaceByNameAuth').mockResolvedValueOnce({ rpcServer: 'http://localhost.com', tracing: 'other', public: true });
 
         jest.spyOn(db, 'getTransactionForProcessing').mockResolvedValueOnce({ ...Transaction, workspace });
 
@@ -108,7 +108,7 @@ describe('processTransactions ', () => {
 
     it('Should not process the trace for private workspaces', async () => {
         const processTraceMock = jest.spyOn(Tracer.prototype, 'process');
-        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValueOnce({ rpcServer: 'http://localhost:8545', public: false });
+        jest.spyOn(db, 'getWorkspaceByNameAuth').mockResolvedValueOnce({ rpcServer: 'http://localhost:8545', public: false });
 
         jest.spyOn(db, 'getTransactionForProcessing').mockResolvedValueOnce({ ...Transaction, workspace });
 
@@ -131,7 +131,7 @@ describe('processTransactions ', () => {
     });
 
     it('Should not store token as new contracts if wokrspace is private', async () => {
-        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValueOnce({ public: false });
+        jest.spyOn(db, 'getWorkspaceByNameAuth').mockResolvedValueOnce({ public: false });
 
         getTokenTransfer.mockReturnValue({ token: '0x123', src: '0x456', dst: '0x789' });
         jest.spyOn(db, 'getTransactionForProcessing').mockResolvedValueOnce({ ...Transaction, workspace });

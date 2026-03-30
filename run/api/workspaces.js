@@ -169,7 +169,7 @@ router.post('/settings', authMiddleware, async (req, res, next) => {
         if (!data.uid || !data.workspace || !data.settings)
             return managedError(new Error('Missing parameter.'), req, res);
 
-        const workspace = await db.getWorkspaceByName(data.uid, data.workspace);
+        const workspace = await db.getWorkspaceByNameLight(data.uid, data.workspace);
         if (workspace.public && data.settings.rpcServer && data.settings.rpcServer !== workspace.rpcServer) {
             const provider = new ProviderConnector(data.settings.rpcServer);
             try {
@@ -228,7 +228,7 @@ router.post('/reset', authMiddleware, async (req, res, next) => {
         if (!data.uid || !data.workspace)
             return managedError(new Error('Missing parameter.'), req, res);
 
-        const workspace = await db.getWorkspaceByName(data.uid, data.workspace);
+        const workspace = await db.getWorkspaceByNameAuth(data.uid, data.workspace);
 
         if (!workspace)
             return managedError(new Error('Could not find workspace.'), req, res);
