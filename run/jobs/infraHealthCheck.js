@@ -18,7 +18,7 @@ const REDIS_MEMORY_CRITICAL_THRESHOLD = 0.95;
 const CHECK_TIMEOUT_MS = 10000;
 const REMEDIATION_COOLDOWN_SECONDS = 300;
 const REMEDIATION_HOURLY_LIMIT = 10;
-const REMEDIATION_REPEAT_WINDOW_SECONDS = 1800;
+const REMEDIATION_REPEAT_WINDOW_SECONDS = 7200;
 
 /** In-memory fallback cooldown per alert type when Redis is unavailable */
 const inMemoryLastDispatch = {};
@@ -100,7 +100,7 @@ async function checkRemediationRateLimit(alertType) {
         return { allowed: false, reason: `hourly limit reached (${hourlyCount}/${REMEDIATION_HOURLY_LIMIT})`, escalate: false };
     }
 
-    // Layer 2: Per-alert dedup — same alert type within 30 min (fail-fast escalation)
+    // Layer 2: Per-alert dedup — same alert type within 2 hours (fail-fast escalation)
     const lastKey = `infra:remediation:last:${alertType}`;
     const lastTrigger = await withTimeout(redis.get(lastKey), CHECK_TIMEOUT_MS);
     if (lastTrigger) {
@@ -118,7 +118,8 @@ async function checkRemediationRateLimit(alertType) {
 }
 
 /**
- * Creates a GitHub issue for fail-fast escalation when auto-remediation is skipped.
+ * Creates or comments on a GitHub issue for fail-fast escalation when auto-remediation is skipped.
+ * Searches for an existing open issue with the same alert type first to avoid duplicates.
  * @param {string} alertType - The alert type
  * @param {string} details - Alert details
  */
@@ -126,24 +127,46 @@ async function createEscalationIssue(alertType, details) {
     const token = getGithubToken();
     if (!token) return;
 
+    const headers = {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/vnd.github.v3+json'
+    };
+
     try {
-        await axios.post(
-            'https://api.github.com/repos/tryethernal/ethernal/issues',
-            {
-                title: `[Infra Alert] Repeated ${alertType} — needs human intervention`,
-                body: `## Auto-Remediation Skipped (Fail-Fast Escalation)\n\nThe same alert type \`${alertType}\` triggered twice within 30 minutes. Auto-remediation was skipped to avoid loops.\n\n**Details:**\n${details}\n\n**Timestamp:** ${new Date().toISOString()}\n\ncc @antoinedc`,
-                labels: ['infra-alert', 'needs-human']
-            },
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    Accept: 'application/vnd.github.v3+json'
-                }
-            }
+        // Search for an existing open issue with the same alert type
+        const searchTitle = `[Infra Alert] Repeated ${alertType}`;
+        const searchResponse = await axios.get(
+            `https://api.github.com/search/issues?q=${encodeURIComponent(`repo:tryethernal/ethernal is:issue is:open in:title "${searchTitle}"`)}`,
+            { headers }
         );
-        logger.info('Created escalation issue', { alertType });
+
+        const existingIssue = searchResponse.data.items && searchResponse.data.items[0];
+
+        if (existingIssue) {
+            // Comment on the existing issue instead of creating a duplicate
+            await axios.post(
+                `https://api.github.com/repos/tryethernal/ethernal/issues/${existingIssue.number}/comments`,
+                {
+                    body: `Alert still firing at ${new Date().toISOString()}.\n\n**Details:**\n${details}`
+                },
+                { headers }
+            );
+            logger.info('Commented on existing escalation issue', { alertType, issueNumber: existingIssue.number });
+        } else {
+            // Create a new issue
+            await axios.post(
+                'https://api.github.com/repos/tryethernal/ethernal/issues',
+                {
+                    title: `[Infra Alert] Repeated ${alertType} — needs human intervention`,
+                    body: `## Auto-Remediation Skipped (Fail-Fast Escalation)\n\nThe same alert type \`${alertType}\` triggered repeatedly. Auto-remediation was skipped to avoid loops.\n\n**Details:**\n${details}\n\n**Timestamp:** ${new Date().toISOString()}\n\ncc @antoinedc`,
+                    labels: ['infra-alert', 'needs-human']
+                },
+                { headers }
+            );
+            logger.info('Created escalation issue', { alertType });
+        }
     } catch (error) {
-        logger.error('Failed to create escalation issue', { error: error.message });
+        logger.error('Failed to create/update escalation issue', { error: error.message });
     }
 }
 

@@ -103,8 +103,37 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
+      - name: Circuit breaker - check for active incident
+        id: circuit_breaker
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Count sentry-labeled issues created in the last 30 minutes
+          CUTOFF=$(date -u -d '30 minutes ago' +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || date -u -v-30M +%Y-%m-%dT%H:%M:%SZ)
+          RECENT_COUNT=$(gh issue list --repo ${{ github.repository }} --label sentry --state open --json number,createdAt \
+            --jq "[.[] | select(.createdAt > \"$CUTOFF\")] | length")
+
+          # Also check for incident-labeled issues (created by scanner correlation)
+          HAS_INCIDENT=$(gh issue list --repo ${{ github.repository }} --label incident --state open --limit 1 --json number \
+            --jq 'length')
+
+          if [ "$HAS_INCIDENT" -gt 0 ]; then
+            echo "tripped=true" >> $GITHUB_OUTPUT
+            echo "Circuit breaker: active incident issue exists. Skipping auto-fix."
+          elif [ "$RECENT_COUNT" -ge 3 ]; then
+            echo "tripped=true" >> $GITHUB_OUTPUT
+            echo "Circuit breaker: $RECENT_COUNT sentry issues in last 30 min (threshold: 3). Escalating."
+            gh issue edit ${{ steps.issue_info.outputs.number }} --add-label "needs-human" --repo ${{ github.repository }}
+            gh issue comment ${{ steps.issue_info.outputs.number }} \
+              --body "⚡ **Circuit breaker tripped**: $RECENT_COUNT sentry issues opened in the last 30 minutes, indicating a systemic incident. Auto-fix paused to avoid fixing symptoms individually. @antoinedc please investigate the root cause." \
+              --repo ${{ github.repository }}
+          else
+            echo "tripped=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Check for existing fix PR
         id: existing_pr
+        if: steps.circuit_breaker.outputs.tripped != 'true'
         run: |
           EXISTING_PR=$(gh pr list --repo ${{ github.repository }} --head "fix/sentry-${{ steps.issue_info.outputs.number }}" --state open --json number -q '.[0].number' 2>/dev/null || true)
           if [ -n "$EXISTING_PR" ]; then
@@ -183,7 +212,7 @@ jobs:
           fi
 
       - name: Start conversation streamer
-        if: steps.existing_pr.outputs.exists != 'true'
+        if: steps.circuit_breaker.outputs.tripped != 'true' && steps.existing_pr.outputs.exists != 'true'
         continue-on-error: true
         run: |
           chmod +x .github/scripts/stream-conversation.sh
@@ -196,7 +225,7 @@ jobs:
           GITHUB_ISSUE_NUMBER: ${{ steps.issue_info.outputs.number }}
 
       - name: Claude Code - Triage and Fix
-        if: steps.existing_pr.outputs.exists != 'true'
+        if: steps.circuit_breaker.outputs.tripped != 'true' && steps.existing_pr.outputs.exists != 'true'
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
@@ -285,6 +314,14 @@ jobs:
                 exit 0
               fi
               ```
+            - **Check for overlapping in-flight PRs**: Before writing code, identify which files you plan to change. Then check if any other open `fix/sentry-*` PRs touch those same files:
+              ```bash
+              # List files changed by other open sentry fix PRs
+              for PR_NUM in $(gh pr list --repo tryethernal/ethernal --search "head:fix/sentry- is:open" --json number -q '.[].number'); do
+                gh pr diff "$PR_NUM" --repo tryethernal/ethernal --name-only 2>/dev/null
+              done | sort -u > /tmp/other-pr-files.txt
+              ```
+              If any of your planned files appear in `/tmp/other-pr-files.txt`, **ESCALATE instead of fixing** — another fix is already in flight for the same code. Note which PR has the overlap in the escalation comment.
             - Create a branch: `git checkout -b fix/sentry-${{ steps.issue_info.outputs.number }}`
             - Implement the minimal fix needed
             - Run relevant tests:
@@ -314,7 +351,8 @@ jobs:
               ```
 
             ### Rules
-            - NEVER modify files in: `run/api/stripe.js`, `run/webhooks/stripe.js`, `run/lib/stripe.js`, `run/middlewares/auth.js`, `run/lib/crypto.js`
+            - NEVER modify files in: `run/api/stripe.js`, `run/webhooks/stripe.js`, `run/lib/stripe.js`, `run/middlewares/auth.js`, `run/lib/crypto.js`, `run/config/database.js`
+            - ESCALATE (do not auto-fix) any change that modifies database connection pool settings, connection timeouts, or Sequelize pool configuration — these affect every query system-wide and require human review
             - NEVER write to the production database
             - NEVER skip running tests
             - NEVER close the issue manually — GitHub auto-closes it when the PR with "Fixes #N" is merged
@@ -328,6 +366,7 @@ jobs:
             - For performance fixes: prefer adding an index (migration) over restructuring code. An index is 1 file, zero risk, and fixes the root cause. Code restructuring (caching, batching, multi-path strategies) adds complexity and bugs.
             - NEVER create a fix PR with > 20 lines of logic changes for a performance issue. Escalate instead — complex optimizations need human review.
             - NEVER claim a fix was made without verifying it appears in `git diff`. Run `git diff` before writing the review processing summary and confirm each claimed change is present.
+            - If your fix introduces a new catch block, timeout handler, or fallback path, you MUST add a test that exercises that path. Untested error-handling code is where bugs hide — the overnight incident on 2026-03-30 had 3 bugs in auto-merged PRs, all in untested timeout/fallback paths. If you can't write a test for the new path, ESCALATE instead of shipping untested error handling.
         env:
           SENTRY_API_TOKEN: ${{ secrets.SENTRY_API_TOKEN }}
           PROD_DATABASE_URL_READONLY: ${{ secrets.PROD_DATABASE_URL_READONLY }}
