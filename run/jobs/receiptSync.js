@@ -29,7 +29,29 @@ module.exports = async job => {
     // Use cached workspace data if available (passed from blockSync for faster processing)
     const hasCachedWorkspace = data.cachedWorkspace && data.cachedWorkspace.rpcServer;
 
-    // When we have cached workspace data, use a lighter query that skips workspace includes
+    // Quick receipt existence check first to avoid expensive queries for already-synced transactions
+    if (!data.transactionId) {
+        // For hash-based lookups, check if receipt already exists with a lightweight query
+        const existingTransaction = await Transaction.findOne({
+            where: {
+                hash: data.transactionHash,
+                workspaceId: data.workspaceId
+            },
+            attributes: ['id'],
+            include: [{
+                model: TransactionReceipt,
+                as: 'receipt',
+                attributes: ['id'],
+                required: false
+            }]
+        });
+
+        if (existingTransaction?.receipt) {
+            return 'Receipt has already been synced';
+        }
+    }
+
+    // When we have cached workspace data, use a much lighter query since we don't need workspace relationships
     const include = hasCachedWorkspace ? [
         {
             model: TransactionReceipt,
