@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.141] - 2026-03-30
+### Fixed
+- feat(blog): analytics improvements + newsletter capture (#1033)
+- fix: harden Sentry auto-fix pipeline against systemic incidents (#1031)
+
+
 ## [5.17.140] - 2026-03-30
 ### Fixed
 - fix: correct issues in auto-merged Sentry pipeline PRs (#1030)

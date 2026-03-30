@@ -97,6 +97,22 @@ blog.tryethernal.com {
 
     @landing host tryethernal.com www.tryethernal.com
     handle @landing {
+        # 301 redirects for Ghost-era blog URLs
+        @blogTagPages path /blog/tag/*
+        handle @blogTagPages {
+            redir * /blog permanent
+        }
+
+        @blogAlchemy3 path /blog/ethernal-x-alchemy-3
+        handle @blogAlchemy3 {
+            redir * /blog/ethernal-x-alchemy permanent
+        }
+
+        @blogCdnCgi path /blog/cdn-cgi/*
+        handle @blogCdnCgi {
+            respond 410
+        }
+
         handle_path /blog/* {
             root * /srv/blog
             try_files {path} {path}.html {path}/index.html /index.html
