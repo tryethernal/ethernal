@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.138] - 2026-03-30
+### Fixed
+- fix: add timeout wrapper for getRpcHealthCheck query to prevent database query timeouts (#1020)
+- fix: add timeouts to database queries in rpcHealthCheck job to prevent connection pool saturation (#1019)
+- fix: wrap processTransactionTrace DB queries in transaction to reduce connection pool pressure (#1018)
+- fix: increase database connection acquire timeout for better resilience (#1014)
+- fix: prevent connection timeout in Block afterCreate hook (#1010)
+- fix: optimize receiptSync query to prevent connection pool exhaustion (#1008)
+- fix: prevent connection pool exhaustion in OP batch finalization job (#1012)
+- fix: add database connection pool limits to development config (#1007)
+
+
 ## [5.17.137] - 2026-03-29
 ### Fixed
 - fix: add DESC index for blocks ORDER BY number DESC queries (#975)
