@@ -124,7 +124,7 @@ const relatedPosts = allPosts
     </header>
 
     <!-- Article body -->
-    <div class="prose prose-lg max-w-none mb-16">
+    <div class="prose prose-lg max-w-none mb-16" id="article-body">
       <slot />
     </div>
   </article>
@@ -173,28 +173,39 @@ const relatedPosts = allPosts
     </section>
   )}
 
-  <!-- CTA -->
-  <section class="max-w-4xl mx-auto px-4 sm:px-6">
-    <div class="border-t border-border-subtle pt-10 pb-10 text-center">
-      <h2 class="font-heading text-2xl sm:text-3xl font-bold text-text-primary mb-3">Ready to explore your chain?</h2>
-      <p class="text-text-secondary mb-6 max-w-lg mx-auto">Connect your RPC and get a fully working block explorer in under 5 minutes. Free to start.</p>
-      <a href={`${import.meta.env.PUBLIC_APP_URL || 'https://app.tryethernal.com'}/auth?flow=public`} class="inline-flex items-center gap-2 px-8 py-3 rounded-full text-white font-semibold text-sm tracking-wide transition-all duration-200 hover:opacity-90 hover:shadow-lg hover:shadow-primary/30" style="background: linear-gradient(90deg, #3D95CE, #5DAAE0);">
-        Get Started
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+  <!-- Mid-article CTA (injected via JS after ~40% of content) -->
+  <template id="mid-article-cta">
+    <div class="not-prose my-10 rounded-xl border border-primary/20 bg-primary/5 p-6 sm:p-8 text-center">
+      <p class="font-heading text-lg sm:text-xl font-semibold text-text-primary mb-2">Need a block explorer for your chain?</p>
+      <p class="text-text-secondary text-sm mb-4">Connect your RPC and get a fully working explorer in under 5 minutes.</p>
+      <a href={`${import.meta.env.PUBLIC_APP_URL || 'https://app.tryethernal.com'}/auth?flow=public`} class="mid-cta-link inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-white font-semibold text-sm tracking-wide transition-all duration-200 hover:opacity-90 hover:shadow-lg hover:shadow-primary/30" style="background: linear-gradient(90deg, #3D95CE, #5DAAE0);">
+        Get Started Free
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
       </a>
     </div>
-  </section>
+  </template>
   <script is:inline>
     document.addEventListener('DOMContentLoaded', function() {
       var articlePath = window.location.pathname;
       var articleTitle = document.querySelector('h1')?.textContent || '';
 
-      // Bottom CTA
-      var bottomCta = document.querySelector('.cta-section a[href*="app.tryethernal.com"], section a[href*="app.tryethernal.com"]');
-      if (bottomCta && !bottomCta.classList.contains('navbar-cta')) {
-        bottomCta.addEventListener('click', function() {
+      // Inject mid-article CTA after ~40% of content
+      var articleBody = document.getElementById('article-body');
+      var ctaTemplate = document.getElementById('mid-article-cta');
+      if (articleBody && ctaTemplate) {
+        var headings = articleBody.querySelectorAll('h2, h3');
+        if (headings.length >= 3) {
+          var targetIndex = Math.floor(headings.length * 0.4);
+          headings[targetIndex].parentNode.insertBefore(ctaTemplate.content.cloneNode(true), headings[targetIndex]);
+        }
+      }
+
+      // Mid-article CTA tracking
+      var midCta = document.querySelector('.mid-cta-link');
+      if (midCta) {
+        midCta.addEventListener('click', function() {
           if (window.posthog) window.posthog.capture('blog:cta_click', {
-            cta_type: 'get_started', cta_position: 'bottom', article_path: articlePath, article_title: articleTitle
+            cta_type: 'get_started', cta_position: 'mid_article', article_path: articlePath, article_title: articleTitle
           });
         });
       }
