@@ -16,7 +16,7 @@ module.exports = async job => {
     if (!data.workspaceId)
         throw new Error('Missing parameter.');
 
-    const workspace = await Workspace.findOne({
+    const workspace = await withTimeout(Workspace.findOne({
         where: { id: data.workspaceId },
         include: [
             {
@@ -25,7 +25,7 @@ module.exports = async job => {
                 require: false
             }
         ]
-    });
+    }), 30000); // 30 second timeout for database query
 
     if (!workspace)
         return 'Could not find workspace';
@@ -33,12 +33,12 @@ module.exports = async job => {
    const provider = workspace.getProvider();
 
    try {
-        const latestBlock = await withTimeout(provider.fetchLatestBlock());
+        const latestBlock = await withTimeout(provider.fetchLatestBlock(), 30000);
         const isReachable = latestBlock !== undefined && latestBlock !== null;
-        await db.updateWorkspaceRpcHealthCheck(workspace.id, isReachable);
+        await withTimeout(db.updateWorkspaceRpcHealthCheck(workspace.id, isReachable), 10000);
         return isReachable;
     } catch(error) {
-        await db.updateWorkspaceRpcHealthCheck(workspace.id, false);
+        await withTimeout(db.updateWorkspaceRpcHealthCheck(workspace.id, false), 10000);
         return false;
     }
 };
