@@ -86,9 +86,23 @@ jobs:
             For each Sentry issue, check: `grep -c "issues/SENTRY_ID/" /tmp/gh_issues.txt`
             Skip any issue that already has a GitHub issue (open or closed).
 
-            ## Step 3: Evaluate each new issue
+            ## Step 3: Correlate related issues into incidents
 
-            For each new issue that passes the filter, fetch event context. Use temp files:
+            Before evaluating issues individually, **group them by error class**. Issues that share the same exception type (e.g., `SequelizeConnectionAcquireTimeoutError`, `SequelizeDatabaseError: query_wait_timeout`) AND have `lastSeen` within 30 minutes of each other are symptoms of a single incident, not independent bugs.
+
+            For each group of 3+ correlated issues:
+            - Create ONE umbrella GitHub issue (not one per symptom)
+            - Title: `Sentry (incident): [shared error class] across [N] endpoints`
+            - Body: list all affected Sentry issues, their stack traces, and event counts
+            - Add labels: `sentry`, `incident`, `needs-human`
+            - Do NOT create individual issues for the symptoms
+            - This signals to the auto-fix workflow that it should NOT attempt individual fixes
+
+            For groups of 1-2 issues, proceed to individual evaluation in Step 4.
+
+            ## Step 4: Evaluate each new issue
+
+            For each new issue that passes the filter AND was not grouped into an incident above, fetch event context. Use temp files:
             ```bash
             curl -s -o /tmp/event.json "https://sentry.tryethernal.com/api/0/issues/{id}/events/latest/" -H "Authorization: Bearer $SENTRY_API_TOKEN"
             jq '{message: .message, tags: [.tags[]? | select(.key == "transaction" or .key == "url") | {key, value}], exception: .entries[0]?.data.values[0]?.stacktrace.frames[-3:]?}' /tmp/event.json
@@ -133,7 +147,7 @@ jobs:
             - Issues that need more data to evaluate
             - Performance issues where multiple related Sentry issues point to the same code path — group them mentally and only create ONE issue for the root cause, not one per symptom
 
-            ## Step 4: Create GitHub issues
+            ## Step 5: Create GitHub issues
 
             For **error** issues:
             ```bash
@@ -202,7 +216,7 @@ jobs:
 
             **Limit to 3 issues per scan.** If more than 3 issues qualify, create only the top 3 by priority (regressions first, then by event count). The rest will be picked up in the next hourly scan.
 
-            ## Step 5: Notify dashboard
+            ## Step 6: Notify dashboard
 
             For each issue created, notify the dashboard webhook:
             ```bash
@@ -222,7 +236,7 @@ jobs:
               }"
             ```
 
-            ## Step 6: Print summary
+            ## Step 7: Print summary
 
             At the end, print a summary:
             ```
