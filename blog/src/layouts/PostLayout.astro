@@ -173,6 +173,24 @@ const relatedPosts = allPosts
     </section>
   )}
 
+  <!-- Newsletter signup -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 pb-8">
+    <div class="border-t border-border-subtle pt-10 text-center">
+      <h2 class="font-heading text-xl sm:text-2xl font-semibold text-text-primary mb-2">Get new articles in your inbox</h2>
+      <p class="text-text-secondary text-sm mb-5">Deep dives on EVM internals, smart contract security, and chain infrastructure. No spam.</p>
+      <form id="newsletter-form" class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+        <input type="email" name="email" required placeholder="you@example.com"
+          class="flex-1 px-4 py-2.5 rounded-lg bg-bg-secondary border border-border-subtle text-text-primary text-sm placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" />
+        <button type="submit"
+          class="px-5 py-2.5 rounded-lg text-white font-semibold text-sm transition-all duration-200 hover:opacity-90 whitespace-nowrap"
+          style="background: linear-gradient(90deg, #3D95CE, #5DAAE0);">
+          Subscribe
+        </button>
+      </form>
+      <p id="newsletter-msg" class="text-sm mt-3 hidden"></p>
+    </div>
+  </section>
+
   <!-- Mid-article CTA (injected via JS after ~40% of content) -->
   <template id="mid-article-cta">
     <div class="not-prose my-10 rounded-xl border border-primary/20 bg-primary/5 p-6 sm:p-8 text-center">
@@ -229,6 +247,38 @@ const relatedPosts = allPosts
           });
         }
       });
+
+      // Newsletter form
+      var form = document.getElementById('newsletter-form');
+      var msg = document.getElementById('newsletter-msg');
+      if (form) {
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+          var email = form.querySelector('input[name="email"]').value;
+          var btn = form.querySelector('button');
+          btn.disabled = true;
+          btn.textContent = 'Subscribing...';
+          fetch('/api/marketing/newsletter', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email })
+          }).then(function(r) {
+            if (!r.ok) throw new Error('Failed');
+            msg.textContent = 'You\'re subscribed! We\'ll send you new articles.';
+            msg.className = 'text-sm mt-3 text-green-400';
+            form.reset();
+            if (window.posthog) window.posthog.capture('blog:newsletter_subscribe', {
+              article_path: articlePath
+            });
+          }).catch(function() {
+            msg.textContent = 'Something went wrong. Try again?';
+            msg.className = 'text-sm mt-3 text-red-400';
+          }).finally(function() {
+            btn.disabled = false;
+            btn.textContent = 'Subscribe';
+          });
+        });
+      }
     });
   </script>
 </BaseLayout>
