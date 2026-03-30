@@ -22,11 +22,12 @@ const {
 } = require('sequelize');
 const { defineChain, createPublicClient, http, webSocket } = require('viem');
 const moment = require('moment');
-const { sanitize, slugify, processRawRpcObject } = require('../lib/utils');
+const { sanitize, slugify, processRawRpcObject, withTimeout } = require('../lib/utils');
 const { getTransactionMethodDetails } = require('../lib/abi');
 const { ProviderConnector } = require('../lib/rpc');
 const logger = require('../lib/logger');
 const { getMaxBlockForSyncReset } = require('../lib/env');
+const { bulkEnqueue } = require('../lib/queue');
 const Analytics = require('../lib/analytics');
 
 const Op = Sequelize.Op;
@@ -2021,18 +2022,27 @@ module.exports = (sequelize, DataTypes) => {
         if (isReachable === null || isReachable === undefined)
             throw new Error('Missing parameter');
 
-        const rpcHealthCheck = await this.getRpcHealthCheck();
+        try {
+            const rpcHealthCheck = await withTimeout(this.getRpcHealthCheck(), 5000);
 
-        if (rpcHealthCheck) {
-            // This is necessary otherwise Sequelize won't update the value with no other changes
-            rpcHealthCheck.changed('updatedAt', true);
+            if (rpcHealthCheck) {
+                // This is necessary otherwise Sequelize won't update the value with no other changes
+                rpcHealthCheck.changed('updatedAt', true);
 
-            // If rpc is reachable we reset failed attempts as well
-            const fields = isReachable ? { isReachable, failedAttempts: 0, updatedAt: new Date() } : { isReachable, updatedAt: new Date() }
-            return rpcHealthCheck.update(fields);
+                // If rpc is reachable we reset failed attempts as well
+                const fields = isReachable ? { isReachable, failedAttempts: 0, updatedAt: new Date() } : { isReachable, updatedAt: new Date() }
+                return rpcHealthCheck.update(fields);
+            }
+            else
+                return this.createRpcHealthCheck({ isReachable });
+        } catch (error) {
+            if (error.message?.includes('Timed out')) {
+                logger.error(`RPC health check query timed out for workspace ${this.id}`, { error });
+                // If query times out, create a new record instead of failing the entire job
+                return this.createRpcHealthCheck({ isReachable });
+            }
+            throw error;
         }
-        else
-            return this.createRpcHealthCheck({ isReachable });
     }
 
     async safeCreateOrUpdateIntegrityCheck({ blockId, status }) {
@@ -2968,7 +2978,9 @@ module.exports = (sequelize, DataTypes) => {
                         returning: true,
                         transaction: sequelizeTransaction,
                         // Pass cached workspace to prevent N+1 queries in afterCreate hook
-                        cachedWorkspace: workspace
+                        cachedWorkspace: workspace,
+                        // Skip transaction trace jobs in afterCreate hook to prevent connection timeouts
+                        skipTransactionTraceJobs: true
                     }
                 );
 
@@ -2989,6 +3001,19 @@ module.exports = (sequelize, DataTypes) => {
                     returning: true,
                     transaction: sequelizeTransaction
                 });
+
+                // Enqueue transaction trace jobs now that transactions are properly inserted
+                if (workspace.public && workspace.tracing && workspace.tracing !== 'hardhat' && storedTransactions.length > 0) {
+                    const traceJobs = [];
+                    for (let i = 0; i < storedTransactions.length; i++) {
+                        const transaction = storedTransactions[i];
+                        traceJobs.push({
+                            name: `processTransactionTrace-${this.id}-${transaction.hash}`,
+                            data: { transactionId: transaction.id }
+                        });
+                    }
+                    await bulkEnqueue('processTransactionTrace', traceJobs);
+                }
 
                 // Use already-loaded orbitConfig from workspace query to avoid redundant DB lookup
                 const orbitConfig = this.orbitConfig;
