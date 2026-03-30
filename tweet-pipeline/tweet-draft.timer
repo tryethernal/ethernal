@@ -1,8 +1,7 @@
 [Unit]
-Description=Run tweet draft pipeline 2x/day
+Description=Run tweet draft pipeline 1x/day
 
 [Timer]
-OnCalendar=*-*-* 06:30:00
 OnCalendar=*-*-* 12:30:00
 Persistent=true
 RandomizedDelaySec=300

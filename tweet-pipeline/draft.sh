@@ -46,15 +46,11 @@ else
   exit 1
 fi
 
-# Determine slot (1-5) from arg or auto-detect from UTC hour
+# Determine slot from arg or default to 1 (single daily slot)
 if [ -n "${1:-}" ]; then
   SLOT="$1"
 else
-  # Ranges match timer schedule: 06:30, 12:30 UTC
-  HOUR=$(date -u +%-H)
-  if [ "$HOUR" -lt 10 ]; then SLOT=1
-  else                        SLOT=2
-  fi
+  SLOT=1
 fi
 
 log "Starting tweet draft pipeline — slot $SLOT"
@@ -191,35 +187,14 @@ if [ -f .source.json ]; then
   " 2>>"$LOG_FILE")
 
   if [ "$IS_DUP" = "true" ]; then
-    log "WARNING: Source '$SOURCE_TITLE' is semantically similar to recent content — falling back to feature tip"
+    log "WARNING: Source '$SOURCE_TITLE' is semantically similar to recent content — skipping today (no filler tweets)"
     # Clear pending consume — the override source was not used but stays in DB for next attempt
     if [ -n "${PENDING_CONSUME:-}" ]; then
       log "WARNING: Discarding ${PENDING_CONSUME} source due to dedup — retaining in DB for next run"
       PENDING_CONSUME=""
     fi
     rm -f .source.json
-
-    # Fall back to a feature tip
-    SLOT="$SLOT" RECENT_IDS="${RECENT_IDS:-[]}" node --input-type=module -e "
-      import { getScheduledTime } from './config.js';
-      import { selectSource } from './lib/source-selector.js';
-      import { writeFileSync } from 'node:fs';
-
-      const slot = parseInt(process.env.SLOT, 10);
-      const baseHours = { 1: 7, 2: 10, 3: 15, 4: 16, 5: 19 };
-      const recentIds = JSON.parse(process.env.RECENT_IDS || '[]');
-      const selected = selectSource('features', recentIds);
-      const scheduledAt = getScheduledTime(new Date(), baseHours[slot] || 15);
-
-      writeFileSync('.source.json', JSON.stringify({
-        sourceId: selected.title,
-        source: selected,
-        bucket: 'Product tip (dedup fallback)',
-        slot,
-        scheduledAt: scheduledAt.toISOString(),
-      }, null, 2));
-      console.log('Fallback: ' + selected.title);
-    " 2>&1 | tee -a "$LOG_FILE"
+    exit 0
   fi
 fi
 

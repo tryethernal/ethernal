@@ -9,14 +9,13 @@ import { dirname, join } from 'node:path';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /**
- * Content buckets defining the 2 daily tweet slots.
- * Reduced from 5 to avoid diluting reach on a 225-follower account.
- * Slot 1: morning ecosystem/take (high reach). Slot 2: afternoon product/blog (engagement).
+ * Content buckets defining the daily tweet slot.
+ * Reduced from 2 to 1 to prioritize quality over volume.
+ * Single daily slot alternates source: odd days = trend_scanner, even days = mixed.
  * @type {Array<{slot: number, baseHourUTC: number, label: string, source: string}>}
  */
 export const BUCKETS = [
-    { slot: 1, baseHourUTC: 8,  label: 'Ecosystem insight',   source: 'trend_scanner' },
-    { slot: 2, baseHourUTC: 15, label: 'Product / blog',      source: 'mixed' },
+    { slot: 1, baseHourUTC: 15, label: 'Daily insight', source: 'mixed' },
 ];
 
 /**

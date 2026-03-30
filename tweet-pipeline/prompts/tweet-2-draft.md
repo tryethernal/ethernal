@@ -10,7 +10,7 @@ Read both files:
 
 ## Viral Tweet Style Rules
 
-1. **HOOK**: First line MUST have a $ amount, specific metric, or shocking number. No exceptions.
+1. **HOOK**: First line MUST have a $ amount, specific metric, or shocking number. No exceptions. Dollar amounts ($1.8B, $50M, $399/month) consistently outperform percentages and counts — prefer $ amounts when the topic supports it.
 2. **FORMAT**: Casual tone. First letter of the tweet MUST be uppercase (like a regular sentence). Short sentences. Line break after every thought.
 3. **STRUCTURE**: Hook -> surprising contrast or data point -> short declarative closer. Do NOT end hooks with "here's how:", "thread:", "here's the system:", or similar teasers. End with a punchy statement that stands alone.
 4. **SPECIFICITY**: Use precise numbers. Not "lots of" but "273 per hour". Not "saves time" but "saves 14 hours/week".
@@ -18,7 +18,7 @@ Read both files:
 6. **CONTRAST**: Old expensive/manual way vs. new cheap/automated way. Before/after.
 7. **ENGAGEMENT**: Invite disagreement through confident positioning, not explicit questions. "Prove us wrong." or "Disagree?" as a closer is fine. Never use "Am I wrong?" or "What do you think?". The take itself should be provocative enough to drive replies.
 8. **NO**: Corporate voice, emoji overload, generic advice, hashtags, "here's how" endings, explicit thread teasers ("thread:", "let's dive in").
-9. **MENTION**: Use @handles from the `## Twitter Handles` section in `.research.md`. Weave them into hook and thread tweets where the account is the direct subject of the sentence (e.g. "@zksync's Airbender proves..."). Target 2-4 mentions across the full thread. Do not force it -- if a sentence reads better without a tag, leave it out. Never guess handles; only use verified ones from research.
+9. **MENTION**: Use @handles from the `## Twitter Handles` section in `.research.md`. The HOOK MUST contain at least 1 @mention — this is the primary distribution mechanism on a small account. Weave handles naturally where the account is the direct subject (e.g. "@nero_eth's EIP-7928 logs every..."). Target 2-4 mentions across the full thread. Never guess handles; only use verified ones from research.
 10. **LENGTH**: Hook tweet 200-280 chars. Thread content replies 140-280 chars each. Max 2 content replies. The references tweet (see below) is added as the 3rd and final reply.
 11. **INLINE LINKS**: When a thread tweet mentions a specific resource (proposal, EIP, benchmark, tool, spec, blog post), include a direct link to it in that tweet. Use URLs from `## Source URLs` or `## Further Reading` in `.research.md`. Max 1 link per tweet. Pure opinion or general statements do not get links.
 
@@ -47,10 +47,11 @@ These separate good threads from generic ones:
 
 ## Content Bucket Guidelines
 
-Apply the right approach based on the bucket in `.source.json`:
+Apply the right approach based on the source type in `.source.json`:
 
-- **Ecosystem insight** (slot 1): Lead with a contrarian take or surprising data point. This is the high-reach slot. The tweet should make people stop scrolling. Take a strong position. Disagree with conventional wisdom. State it as confident fact, not hedged opinion. If the topic is an EIP/ERC, lead with what changes for developers.
-- **Product / blog** (slot 2): Either demo a specific Ethernal feature with concrete before/after, OR extract the single most tweetable insight from a blog article. For product tweets, show the problem first (with a specific number), then the fix. Do NOT end with "here's how:". For blog repurposing, pull one idea, not a summary.
+- **Trend / EIP / ecosystem topic**: Lead with a contrarian take or surprising data point. The tweet should make people stop scrolling. Take a strong position. Disagree with conventional wisdom. State it as confident fact, not hedged opinion. If the topic is an EIP/ERC, lead with what changes for developers. Do NOT write news summaries — those get zero engagement on small accounts. Take a side.
+- **Blog repurposing**: Extract the single most tweetable insight from the article. Pull one idea, not a summary. Lead with a $ amount or shocking metric from the article.
+- **Product feature**: Show the problem first (with a specific number), then the fix. Do NOT end with "here's how:". Concrete before/after.
 - **Competitor response**: Address a real gap or pricing change from a competitor. Lead with what changed (with numbers), contrast with what Ethernal offers. Be factual, not snarky.
 - **Newsletter story**: Lead with the most shocking number from the story. Frame it as analysis, not news rehash.
 
