@@ -3351,6 +3351,25 @@ describe('getWorkspaceByName', () => {
     });
 });
 
+describe('getWorkspaceByNameLight', () => {
+    it('Should return the workspace if it exists', (done) => {
+        db.getWorkspaceByNameLight('123', 'My Workspace')
+            .then(workspace => {
+                expect(workspace).toEqual(expect.objectContaining({ id: 1, name: 'My Workspace' }));
+                done();
+            });
+    });
+
+    it('Should return null if the workspace does not exist', (done) => {
+        jest.spyOn(User, 'findByAuthIdWithWorkspaceLight').mockResolvedValueOnce({ workspaces: [] });
+        db.getWorkspaceByNameLight('123', 'My Workspace')
+            .then(workspace => {
+                expect(workspace).toEqual(null);
+                done();
+            });
+    });
+});
+
 describe('storeBlock', () => {
     it('Should return the stored block if it does not exists', (done) => {
         db.storeBlock('123', 'My Workspace', { number: 1 })

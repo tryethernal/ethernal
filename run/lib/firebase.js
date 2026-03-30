@@ -4265,6 +4265,20 @@ const getWorkspaceByNameAuth = async (userId, workspaceName) => {
 };
 
 /**
+ * Gets a workspace by name with lightweight associations (explorer only, no deep joins).
+ * Use this instead of getWorkspaceByName when you only need workspace fields + basic explorer info.
+ * @param {string} userId - The Firebase auth ID
+ * @param {string} workspaceName - The workspace name
+ * @returns {Promise<Object|null>} The workspace object or null
+ */
+const getWorkspaceByNameLight = async (userId, workspaceName) => {
+    const user = await User.findByAuthIdWithWorkspaceLight(userId, workspaceName);
+    if (!user)
+        return null;
+    return user.workspaces && user.workspaces.length ? user.workspaces[0].toJSON() : null;
+};
+
+/**
  * Gets a workspace by name for a user.
  * @param {string} userId - The Firebase auth ID
  * @param {string} workspaceName - The workspace name
@@ -5122,6 +5136,7 @@ module.exports = {
     getContractData: getContractData,
     getWorkspaceByName: getWorkspaceByName,
     getWorkspaceByNameAuth: getWorkspaceByNameAuth,
+    getWorkspaceByNameLight: getWorkspaceByNameLight,
     getUser: getUser,
     addIntegration: addIntegration,
     removeIntegration: removeIntegration,
