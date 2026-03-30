@@ -22,7 +22,7 @@ const {
 } = require('sequelize');
 const { defineChain, createPublicClient, http, webSocket } = require('viem');
 const moment = require('moment');
-const { sanitize, slugify, processRawRpcObject } = require('../lib/utils');
+const { sanitize, slugify, processRawRpcObject, withTimeout } = require('../lib/utils');
 const { getTransactionMethodDetails } = require('../lib/abi');
 const { ProviderConnector } = require('../lib/rpc');
 const logger = require('../lib/logger');
@@ -2021,18 +2021,27 @@ module.exports = (sequelize, DataTypes) => {
         if (isReachable === null || isReachable === undefined)
             throw new Error('Missing parameter');
 
-        const rpcHealthCheck = await this.getRpcHealthCheck();
+        try {
+            const rpcHealthCheck = await withTimeout(this.getRpcHealthCheck(), 5000);
 
-        if (rpcHealthCheck) {
-            // This is necessary otherwise Sequelize won't update the value with no other changes
-            rpcHealthCheck.changed('updatedAt', true);
+            if (rpcHealthCheck) {
+                // This is necessary otherwise Sequelize won't update the value with no other changes
+                rpcHealthCheck.changed('updatedAt', true);
 
-            // If rpc is reachable we reset failed attempts as well
-            const fields = isReachable ? { isReachable, failedAttempts: 0, updatedAt: new Date() } : { isReachable, updatedAt: new Date() }
-            return rpcHealthCheck.update(fields);
+                // If rpc is reachable we reset failed attempts as well
+                const fields = isReachable ? { isReachable, failedAttempts: 0, updatedAt: new Date() } : { isReachable, updatedAt: new Date() }
+                return rpcHealthCheck.update(fields);
+            }
+            else
+                return this.createRpcHealthCheck({ isReachable });
+        } catch (error) {
+            if (error.message?.includes('Timed out')) {
+                logger.error(`RPC health check query timed out for workspace ${this.id}`, { error });
+                // If query times out, create a new record instead of failing the entire job
+                return this.createRpcHealthCheck({ isReachable });
+            }
+            throw error;
         }
-        else
-            return this.createRpcHealthCheck({ isReachable });
     }
 
     async safeCreateOrUpdateIntegrityCheck({ blockId, status }) {
