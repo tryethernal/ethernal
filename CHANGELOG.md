@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.139] - 2026-03-30
+### Fixed
+- blog: publish - FOCIL Explained: How Ethereum Is Hardcoding Censorship Resistance Into the Protocol
+
+
 ## [5.17.138] - 2026-03-30
 ### Fixed
 - fix: add timeout wrapper for getRpcHealthCheck query to prevent database query timeouts (#1020)
