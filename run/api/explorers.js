@@ -1351,7 +1351,7 @@ router.get('/search', async (req, res, next) => {
         if (data.domain == getAppDomain())
             return res.sendStatus(200);
 
-        if (data.domain.endsWith(getAppDomain())) {
+        if (data.domain && typeof data.domain === 'string' && data.domain.endsWith(getAppDomain())) {
             const slug = data.domain.split(`.${getAppDomain()}`)[0];
             explorer = await db.getPublicExplorerParamsBySlug(slug);
         }
