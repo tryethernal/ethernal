@@ -10,16 +10,25 @@ const { Op } = require('sequelize');
 const { withTimeout } = require('../lib/utils');
 
 module.exports = async () => {
-    const opConfigs = await withTimeout(
-        OpChainConfig.findAll({
-            include: [{
-                model: Workspace,
-                as: 'parentWorkspace',
-                required: true
-            }]
-        }),
-        20000
-    );
+    let opConfigs;
+    try {
+        opConfigs = await withTimeout(
+            OpChainConfig.findAll({
+                include: [{
+                    model: Workspace,
+                    as: 'parentWorkspace',
+                    required: true
+                }]
+            }),
+            20000
+        );
+    } catch (error) {
+        logger.error(`Critical error in OP batch finalization job: ${error.message}`, {
+            location: 'jobs.finalizePendingOpBatches',
+            error
+        });
+        throw error;
+    }
 
     let totalConfirmed = 0;
 
