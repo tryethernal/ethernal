@@ -13,7 +13,14 @@ module.exports = {
         "logging": function(sql, sequelizeObject) {
             logger.debug(sql, { instance: sequelizeObject.instance });
         },
-        benchmark: true
+        benchmark: true,
+        "pool": {
+            max: 20,
+            min: 2,
+            acquire: 10000,
+            idle: 30000,
+            evict: 5000
+        }
     },
     production: {
         "username": process.env.DB_USER,
