@@ -5,7 +5,7 @@
  */
 
 const db = require('../lib/firebase');
-const { Transaction, Workspace, Explorer, RpcHealthCheck, StripeSubscription, sequelize } = require('../models');
+const { Transaction, Workspace, Explorer, RpcHealthCheck, StripeSubscription } = require('../models');
 const { Tracer } = require('../lib/rpc');
 
 module.exports = async job => {
@@ -14,66 +14,51 @@ module.exports = async job => {
     if (!data.transactionId)
         return 'Missing parameter';
 
-    // Use a transaction to ensure database queries reuse the same connection
-    // This reduces connection pool pressure under high load
-    const result = await sequelize.transaction(async (t) => {
-        // Fetch transaction with minimal workspace data to avoid expensive multi-table joins
-        const transaction = await Transaction.findByPk(data.transactionId, {
-            include: [
-                {
-                    model: Workspace,
-                    as: 'workspace',
-                    attributes: ['id', 'public', 'rpcHealthCheckEnabled', 'rpcServer', 'tracing', 'name']
-                }
-            ],
-            transaction: t
-        });
-
-        if (!transaction)
-            return { error: 'Cannot find transaction' };
-
-        if (!transaction.workspace.public)
-            return { error: 'Not allowed on private workspaces' };
-
-        // Load explorer data with targeted query (much faster than complex nested joins)
-        const explorer = await Explorer.findOne({
-            where: { workspaceId: transaction.workspace.id },
-            attributes: ['id', 'shouldSync'],
-            include: {
-                model: StripeSubscription,
-                as: 'stripeSubscription',
-                attributes: ['id'],
-                required: false
-            },
-            transaction: t
-        });
-
-        if (!explorer)
-            return { error: 'Inactive explorer' };
-
-        if (!explorer.shouldSync)
-            return { error: 'Sync is disabled' };
-
-        // Load RPC health check separately if enabled (only when needed)
-        if (transaction.workspace.rpcHealthCheckEnabled) {
-            const healthCheck = await RpcHealthCheck.findOne({
-                where: { workspaceId: transaction.workspace.id },
-                attributes: ['isReachable'],
-                transaction: t
-            });
-
-            if (healthCheck && !healthCheck.isReachable)
-                return { error: 'RPC is not reachable' };
-        }
-
-        return { transaction, explorer };
+    // Fetch transaction with minimal workspace data to avoid expensive multi-table joins
+    const transaction = await Transaction.findByPk(data.transactionId, {
+        include: [
+            {
+                model: Workspace,
+                as: 'workspace',
+                attributes: ['id', 'public', 'rpcHealthCheckEnabled', 'rpcServer', 'tracing', 'name']
+            }
+        ]
     });
 
-    // Handle early returns from transaction block
-    if (result.error)
-        return result.error;
+    if (!transaction)
+        return 'Cannot find transaction';
 
-    const { transaction, explorer } = result;
+    if (!transaction.workspace.public)
+        return 'Not allowed on private workspaces';
+
+    // Load explorer data with targeted query (much faster than complex nested joins)
+    const explorer = await Explorer.findOne({
+        where: { workspaceId: transaction.workspace.id },
+        attributes: ['id', 'shouldSync'],
+        include: {
+            model: StripeSubscription,
+            as: 'stripeSubscription',
+            attributes: ['id'],
+            required: false
+        }
+    });
+
+    if (!explorer)
+        return 'Inactive explorer';
+
+    if (!explorer.shouldSync)
+        return 'Sync is disabled';
+
+    // Load RPC health check separately if enabled (only when needed)
+    if (transaction.workspace.rpcHealthCheckEnabled) {
+        const healthCheck = await RpcHealthCheck.findOne({
+            where: { workspaceId: transaction.workspace.id },
+            attributes: ['isReachable']
+        });
+
+        if (healthCheck && !healthCheck.isReachable)
+            return 'RPC is not reachable';
+    }
 
     if (!explorer.stripeSubscription)
         return 'No active subscription';
@@ -108,4 +93,3 @@ module.exports = async job => {
         return error;
     }
 };
-
