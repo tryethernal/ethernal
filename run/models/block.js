@@ -157,16 +157,20 @@ module.exports = (sequelize, DataTypes) => {
                 await enqueue('removeStalledBlock', `removeStalledBlock-${this.id}`, { blockId: this.id, workspaceId: this.workspaceId }, null, null, STALLED_BLOCK_REMOVAL_DELAY);
 
                 if (workspace.tracing && workspace.tracing != 'hardhat') {
-                    const jobs = [];
-                    const transactions = await this.getTransactions();
-                    for (let i = 0; i < transactions.length; i++) {
-                        const transaction = transactions[i];
-                        jobs.push({
-                            name: `processTransactionTrace-${this.workspaceId}-${transaction.hash}`,
-                            data: { transactionId: transaction.id }
-                        });
+                    // Skip transaction trace job creation in afterCreate hook when running within safeCreatePartialBlock
+                    // This prevents connection timeouts when trying to fetch transactions before they're inserted
+                    if (!options.skipTransactionTraceJobs) {
+                        const jobs = [];
+                        const transactions = await this.getTransactions();
+                        for (let i = 0; i < transactions.length; i++) {
+                            const transaction = transactions[i];
+                            jobs.push({
+                                name: `processTransactionTrace-${this.workspaceId}-${transaction.hash}`,
+                                data: { transactionId: transaction.id }
+                            });
+                        }
+                        await bulkEnqueue('processTransactionTrace', jobs);
                     }
-                    await bulkEnqueue('processTransactionTrace', jobs);
                 }
 
                 if (workspace.integrityCheckStartBlockNumber === undefined || workspace.integrityCheckStartBlockNumber === null) {

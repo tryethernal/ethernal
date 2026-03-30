@@ -27,6 +27,7 @@ const { getTransactionMethodDetails } = require('../lib/abi');
 const { ProviderConnector } = require('../lib/rpc');
 const logger = require('../lib/logger');
 const { getMaxBlockForSyncReset } = require('../lib/env');
+const { bulkEnqueue } = require('../lib/queue');
 const Analytics = require('../lib/analytics');
 
 const Op = Sequelize.Op;
@@ -2968,7 +2969,9 @@ module.exports = (sequelize, DataTypes) => {
                         returning: true,
                         transaction: sequelizeTransaction,
                         // Pass cached workspace to prevent N+1 queries in afterCreate hook
-                        cachedWorkspace: workspace
+                        cachedWorkspace: workspace,
+                        // Skip transaction trace jobs in afterCreate hook to prevent connection timeouts
+                        skipTransactionTraceJobs: true
                     }
                 );
 
@@ -2989,6 +2992,19 @@ module.exports = (sequelize, DataTypes) => {
                     returning: true,
                     transaction: sequelizeTransaction
                 });
+
+                // Enqueue transaction trace jobs now that transactions are properly inserted
+                if (workspace.public && workspace.tracing && workspace.tracing !== 'hardhat' && storedTransactions.length > 0) {
+                    const traceJobs = [];
+                    for (let i = 0; i < storedTransactions.length; i++) {
+                        const transaction = storedTransactions[i];
+                        traceJobs.push({
+                            name: `processTransactionTrace-${this.id}-${transaction.hash}`,
+                            data: { transactionId: transaction.id }
+                        });
+                    }
+                    await bulkEnqueue('processTransactionTrace', traceJobs);
+                }
 
                 // Use already-loaded orbitConfig from workspace query to avoid redundant DB lookup
                 const orbitConfig = this.orbitConfig;
