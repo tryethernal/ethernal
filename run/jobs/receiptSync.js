@@ -89,14 +89,20 @@ module.exports = async job => {
         }
     ];
 
+    // Optimize query attributes when using cached workspace data to reduce DB load
+    const queryOptions = hasCachedWorkspace ? {
+        attributes: ['id', 'hash', 'blockNumber', 'timestamp', 'from'], // Only essential fields for receipt processing
+        include
+    } : { include };
+
     const transaction = data.transactionId ?
-        await Transaction.findByPk(data.transactionId, { include }) :
+        await Transaction.findByPk(data.transactionId, queryOptions) :
         await Transaction.findOne({
             where: {
                 hash: data.transactionHash,
                 workspaceId: data.workspaceId
             },
-            include
+            ...queryOptions
         });
 
     if (!transaction)
