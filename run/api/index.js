@@ -101,12 +101,12 @@ if (isSentryPipelineEnabled()) {
     router.use('/sentryPipeline', sentryPipeline);
 }
 
-if (isSelfHosted()) {
-    const marketing = require('./marketing');
-    const setup = require('./setup');
+const marketing = require('./marketing');
+router.use('/marketing', marketing);
 
+if (isSelfHosted()) {
+    const setup = require('./setup');
     router.use('/setup', setup);
-    router.use('/marketing', marketing);
 }
 
 module.exports = router;
