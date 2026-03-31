@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.145] - 2026-03-31
+### Fixed
+- fix: eliminate N+1 queries in blockSync L2 config loading (#1043)
+
+
 ## [5.17.144] - 2026-03-30
 ### Fixed
 - fix(blog): improve CTA button contrast for light mode
