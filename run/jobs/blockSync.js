@@ -107,8 +107,9 @@ module.exports = async job => {
             );
         }
 
-        // L2 configs are not cached in batchBlockSync since they're rarely used
-        // They will be loaded on-demand if needed for orbit/OP processing
+        // L2 configs are now cached by batchBlockSync (orbitConfig / orbitChildConfigs / opChildConfigs
+        // keys are always present in cachedWorkspace). They are applied to the workspace object below
+        // after the block fetch, avoiding N+1 DB queries.
 
         // Disable browser sync to prevent concurrent syncing from both browser and server
         if (workspace.browserSyncEnabled)
