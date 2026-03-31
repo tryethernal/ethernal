@@ -107,8 +107,9 @@ module.exports = async job => {
             );
         }
 
-        // L2 configs are not cached in batchBlockSync since they're rarely used
-        // They will be loaded on-demand if needed for orbit/OP processing
+        // L2 configs are now cached by batchBlockSync (orbitConfig / orbitChildConfigs / opChildConfigs
+        // keys are always present in cachedWorkspace). They are applied to the workspace object below
+        // after the block fetch, avoiding N+1 DB queries.
 
         // Disable browser sync to prevent concurrent syncing from both browser and server
         if (workspace.browserSyncEnabled)
@@ -322,9 +323,8 @@ module.exports = async job => {
         );
 
         // Load L2 configs if needed for orbit/OP processing
-        if (hasCachedWorkspace && (data.cachedWorkspace.hasL2Configs === undefined || data.cachedWorkspace.hasL2Configs)) {
-            // Detect jobs from the intermediate batchBlockSync version that set
-            // hasL2Configs but didn't include the actual config objects yet
+        if (hasCachedWorkspace) {
+            // Check if cached workspace has L2 data from batchBlockSync
             const hasCachedL2Data = (
                 'orbitConfig' in data.cachedWorkspace ||
                 'orbitChildConfigs' in data.cachedWorkspace ||
@@ -359,8 +359,8 @@ module.exports = async job => {
                         OpChainConfig.build(config, { isNewRecord: false })
                     );
                 }
-            } else {
-                // Old in-flight job without cached L2 data — fall back to DB
+            } else if (data.cachedWorkspace.hasL2Configs === undefined) {
+                // Only fall back to DB for old jobs that predate L2 config caching
                 const l2Configs = await Workspace.findByPk(data.workspaceId, {
                     attributes: ['id'],
                     include: [
@@ -428,6 +428,7 @@ module.exports = async job => {
                     workspace.opChildConfigs = l2Configs.opChildConfigs;
                 }
             }
+            // If hasL2Configs is false, skip L2 config loading entirely
         }
 
         // Set orbit child configs after potential L2 config loading
