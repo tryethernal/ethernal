@@ -3297,7 +3297,9 @@ module.exports = (sequelize, DataTypes) => {
             asm: contract.asm
         });
 
-        // Use findOrCreate for atomic upsert to handle race conditions
+        // Use findOrCreate with Sequelize's internal savepoint retry to handle the race condition:
+        // two concurrent workers both SELECT (find nothing) → one INSERT succeeds, the other catches
+        // UniqueConstraintError, rolls back to a SAVEPOINT, and re-SELECTs the committed row.
         const [contractInstance, created] = await sequelize.models.Contract.findOrCreate({
             where: {
                 address: contract.address.toLowerCase(),
