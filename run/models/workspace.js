@@ -3275,12 +3275,6 @@ module.exports = (sequelize, DataTypes) => {
         if (contract.address.toLowerCase() === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
             return null;
 
-        const contracts = await this.getContracts({
-            where: { address: contract.address.toLowerCase() },
-            transaction
-        });
-        const existingContract = contracts[0];
-
         const newContract = sanitize({
             hashedBytecode: contract.hashedBytecode,
             abi: contract.abi,
@@ -3303,26 +3297,26 @@ module.exports = (sequelize, DataTypes) => {
             asm: contract.asm
         });
 
-        if (existingContract)
-            return existingContract.update(newContract, { transaction })
-        else {
-            const [_contract] = await sequelize.models.Contract.bulkCreate(
-                [
-                    {
-                        ...newContract,
-                        workspaceId: this.id,
-                        transactionId: contract.transactionId
-                    },
-                ],
-                {
-                    ignoreDuplicates: true,
-                    individualHooks: true,
-                    returning: true,
-                    transaction
-                }
-            );
-            return _contract;
+        // Use findOrCreate for atomic upsert to handle race conditions
+        const [contractInstance, created] = await sequelize.models.Contract.findOrCreate({
+            where: {
+                address: contract.address.toLowerCase(),
+                workspaceId: this.id
+            },
+            defaults: {
+                ...newContract,
+                workspaceId: this.id,
+                transactionId: contract.transactionId
+            },
+            transaction
+        });
+
+        // If the contract existed, update it with new data
+        if (!created) {
+            return contractInstance.update(newContract, { transaction });
         }
+
+        return contractInstance;
     }
 
     async safeCreateOrUpdateAccount(account) {
