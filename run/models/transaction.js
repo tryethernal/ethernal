@@ -878,16 +878,16 @@ module.exports = (sequelize, DataTypes) => {
                     const isDeadlock = error.original?.code === '40P01';
                     if (isDeadlock && attempt < 3) {
                         await new Promise(r => setTimeout(r, 50 * Math.pow(2, attempt)));
-                        continue;
+                    } else {
+                        // Log but don't fail — this is analytical data
+                        logger.error(`Error creating token transfer events: ${error.message}`, {
+                            location: 'models.transaction.safeCreateReceipt.tokenEvents',
+                            error,
+                            eventsCount: tokenTransferEvents.length,
+                            transactionId: this.id
+                        });
+                        break;
                     }
-                    // Log but don't fail — this is analytical data
-                    logger.error(`Error creating token transfer events: ${error.message}`, {
-                        location: 'models.transaction.safeCreateReceipt.tokenEvents',
-                        error,
-                        eventsCount: tokenTransferEvents.length,
-                        transactionId: this.id
-                    });
-                    break;
                 }
             }
         }

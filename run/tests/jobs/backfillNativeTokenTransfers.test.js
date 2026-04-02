@@ -99,7 +99,7 @@ describe('backfillNativeTokenTransfers', () => {
                 dst: '0xabcd',
                 isReward: false
             }
-        ], { ignoreDuplicates: true, transaction: undefined });
+        ], { ignoreDuplicates: true, returning: false, transaction: undefined });
     });
 
     it('Should not create token transfers & events for validator if it already exists', async () => {
@@ -421,7 +421,7 @@ describe('backfillNativeTokenTransfers', () => {
                 dst: '0x123abc',
                 isReward: false
             }
-        ], { ignoreDuplicates: true, transaction: undefined });
+        ], { ignoreDuplicates: true, returning: false, transaction: undefined });
     });
 
     it('Should handle missing transactionId parameter', async () => {
