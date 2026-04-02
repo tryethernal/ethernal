@@ -249,7 +249,10 @@ module.exports = (sequelize, DataTypes) => {
     async safeCreateReceipt(receipt, options = {}) {
         if (!receipt) throw new Error('Missing parameter');
 
-        return sequelize.transaction(async transaction => {
+        // Store token transfer events to be processed outside main transaction to prevent deadlocks
+        let tokenTransferEvents = [];
+
+        const receiptResult = await sequelize.transaction(async transaction => {
             // Conditionally check if this transaction still exists before proceeding
             // Prevents race condition with workspace reset operations that delete transactions
             // Skip this check for performance when called from trusted contexts like inline blockSync
@@ -793,7 +796,6 @@ module.exports = (sequelize, DataTypes) => {
                 }
             }
 
-            const events = [];
             if (tokenTransfers.length > 0) {
                 const storedTokenTransfers = await sequelize.models.TokenTransfer.bulkCreate(tokenTransfers, {
                     ignoreDuplicates: true,
@@ -841,7 +843,7 @@ module.exports = (sequelize, DataTypes) => {
                         }, transaction);
                     }
 
-                    events.push(sanitize({
+                    tokenTransferEvents.push(sanitize({
                         workspaceId: this.workspaceId,
                         tokenTransferId: tokenTransfer.id,
                         blockNumber: receipt.blockNumber,
@@ -856,15 +858,41 @@ module.exports = (sequelize, DataTypes) => {
                 }
             }
 
-            await sequelize.models.TokenTransferEvent.bulkCreate(events, {
-                ignoreDuplicates: true,
-                transaction
-            });
-
             await storedReceipt.insertAnalyticEvent(transaction);
 
             return storedReceipt;
         });
+
+        // Create TokenTransferEvent records in a separate transaction to prevent deadlocks.
+        // Retry with backoff on deadlock (40P01) since TimescaleDB chunk creation can
+        // cause transient ShareRowExclusiveLock conflicts on the parent table.
+        if (tokenTransferEvents.length > 0) {
+            for (let attempt = 1; attempt <= 3; attempt++) {
+                try {
+                    await sequelize.models.TokenTransferEvent.bulkCreate(tokenTransferEvents, {
+                        ignoreDuplicates: true,
+                        returning: false
+                    });
+                    break;
+                } catch (error) {
+                    const isDeadlock = error.original?.code === '40P01';
+                    if (isDeadlock && attempt < 3) {
+                        await new Promise(r => setTimeout(r, 50 * Math.pow(2, attempt)));
+                    } else {
+                        // Log but don't fail — this is analytical data
+                        logger.error(`Error creating token transfer events: ${error.message}`, {
+                            location: 'models.transaction.safeCreateReceipt.tokenEvents',
+                            error,
+                            eventsCount: tokenTransferEvents.length,
+                            transactionId: this.id
+                        });
+                        break;
+                    }
+                }
+            }
+        }
+
+        return receiptResult;
     }
 
     /**
@@ -1097,6 +1125,7 @@ module.exports = (sequelize, DataTypes) => {
 
             await sequelize.models.TokenTransferEvent.bulkCreate(tokenTransferEvents, {
                 ignoreDuplicates: true,
+                returning: false,
                 transaction
             });
 
