@@ -95,7 +95,7 @@ module.exports = async job => {
                 id: data.transactionId,
                 workspaceId: data.workspaceId
             },
-            attributes: ['id', 'hash', 'blockNumber', 'timestamp', 'from', 'to', 'workspaceId', 'requestId', 'data'],
+            attributes: ['id', 'hash', 'blockNumber', 'timestamp', 'from', 'to', 'workspaceId', 'requestId', 'data', 'gasPrice', 'type', 'value'],
             include
         }) :
         await Transaction.findOne({
@@ -103,7 +103,7 @@ module.exports = async job => {
                 hash: data.transactionHash,
                 workspaceId: data.workspaceId
             },
-            attributes: ['id', 'hash', 'blockNumber', 'timestamp', 'from', 'to', 'workspaceId', 'requestId', 'data'],
+            attributes: ['id', 'hash', 'blockNumber', 'timestamp', 'from', 'to', 'workspaceId', 'requestId', 'data', 'gasPrice', 'type', 'value'],
             include
         });
 
