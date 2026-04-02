@@ -796,7 +796,6 @@ module.exports = (sequelize, DataTypes) => {
                 }
             }
 
-            const events = [];
             if (tokenTransfers.length > 0) {
                 const storedTokenTransfers = await sequelize.models.TokenTransfer.bulkCreate(tokenTransfers, {
                     ignoreDuplicates: true,
