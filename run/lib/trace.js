@@ -129,7 +129,8 @@ exports.parseTrace = async (from, trace, provider) => {
                 stackCopy.pop();
                 const p = parseInt(stackCopy.pop().valueOf(), 16) * 2;
                 const n = parseInt(stackCopy.pop().valueOf(), 16) * 2;
-                const s = `0x${stackCopy.pop()}`;
+                const saltValue = stackCopy.pop();
+                const s = saltValue.startsWith('0x') ? saltValue : `0x${saltValue}`;
 
                 if (!log.memory)
                     break;
