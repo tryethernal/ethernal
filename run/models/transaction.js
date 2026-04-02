@@ -747,31 +747,35 @@ module.exports = (sequelize, DataTypes) => {
             }
 
             const block = await this.getBlock();
-            let toValidator;
-            if (this.type && this.type == 2) {
-                // Use BigNumber for (effectiveGasPrice - baseFeePerGas) * gasUsed
-                const effectiveGasPrice = ethers.BigNumber.from(String(receipt.effectiveGasPrice));
-                const baseFeePerGas = ethers.BigNumber.from(String(block.baseFeePerGas || 0));
-                const gasUsed = ethers.BigNumber.from(String(receipt.gasUsed));
-                toValidator = effectiveGasPrice.sub(baseFeePerGas).mul(gasUsed);
-            } else {
-                // Use BigNumber for gasPrice * gasUsed
-                const gasPrice = ethers.BigNumber.from(String(this.gasPrice));
-                const gasUsed = ethers.BigNumber.from(String(receipt.gasUsed));
-                toValidator = gasPrice.mul(gasUsed);
-            }
 
-            tokenTransfers.push(sanitize({
-                transactionId: this.id,
-                transactionLogId: null,
-                workspaceId: this.workspaceId,
-                src: this.from,
-                dst: block.miner,
-                amount: toValidator.toString(),
-                token: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
-                tokenId: null,
-                isReward: true
-            }));
+            // Only create validator reward transfer if block data is available
+            if (block) {
+                let toValidator;
+                if (this.type && this.type == 2) {
+                    // Use BigNumber for (effectiveGasPrice - baseFeePerGas) * gasUsed
+                    const effectiveGasPrice = ethers.BigNumber.from(String(receipt.effectiveGasPrice));
+                    const baseFeePerGas = ethers.BigNumber.from(String(block.baseFeePerGas || 0));
+                    const gasUsed = ethers.BigNumber.from(String(receipt.gasUsed));
+                    toValidator = effectiveGasPrice.sub(baseFeePerGas).mul(gasUsed);
+                } else {
+                    // Use BigNumber for gasPrice * gasUsed
+                    const gasPrice = ethers.BigNumber.from(String(this.gasPrice));
+                    const gasUsed = ethers.BigNumber.from(String(receipt.gasUsed));
+                    toValidator = gasPrice.mul(gasUsed);
+                }
+
+                tokenTransfers.push(sanitize({
+                    transactionId: this.id,
+                    transactionLogId: null,
+                    workspaceId: this.workspaceId,
+                    src: this.from,
+                    dst: block.miner,
+                    amount: toValidator.toString(),
+                    token: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+                    tokenId: null,
+                    isReward: true
+                }));
+            }
 
             if (this.value) {
                 // Use BigNumber for value comparison
