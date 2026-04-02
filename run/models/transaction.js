@@ -863,21 +863,32 @@ module.exports = (sequelize, DataTypes) => {
             return storedReceipt;
         });
 
-        // Create TokenTransferEvent records in a separate transaction to prevent deadlocks
-        // This is analytical data and doesn't need to be atomic with receipt creation
+        // Create TokenTransferEvent records in a separate transaction to prevent deadlocks.
+        // Retry with backoff on deadlock (40P01) since TimescaleDB chunk creation can
+        // cause transient ShareRowExclusiveLock conflicts on the parent table.
         if (tokenTransferEvents.length > 0) {
-            try {
-                await sequelize.models.TokenTransferEvent.bulkCreate(tokenTransferEvents, {
-                    ignoreDuplicates: true
-                });
-            } catch (error) {
-                // Log error but don't fail the receipt creation since this is analytical data
-                logger.error(`Error creating token transfer events: ${error.message}`, {
-                    location: 'models.transaction.safeCreateReceipt.tokenEvents',
-                    error,
-                    eventsCount: tokenTransferEvents.length,
-                    transactionId: this.id
-                });
+            for (let attempt = 1; attempt <= 3; attempt++) {
+                try {
+                    await sequelize.models.TokenTransferEvent.bulkCreate(tokenTransferEvents, {
+                        ignoreDuplicates: true,
+                        returning: false
+                    });
+                    break;
+                } catch (error) {
+                    const isDeadlock = error.original?.code === '40P01';
+                    if (isDeadlock && attempt < 3) {
+                        await new Promise(r => setTimeout(r, 50 * Math.pow(2, attempt)));
+                    } else {
+                        // Log but don't fail — this is analytical data
+                        logger.error(`Error creating token transfer events: ${error.message}`, {
+                            location: 'models.transaction.safeCreateReceipt.tokenEvents',
+                            error,
+                            eventsCount: tokenTransferEvents.length,
+                            transactionId: this.id
+                        });
+                        break;
+                    }
+                }
             }
         }
 
@@ -1114,6 +1125,7 @@ module.exports = (sequelize, DataTypes) => {
 
             await sequelize.models.TokenTransferEvent.bulkCreate(tokenTransferEvents, {
                 ignoreDuplicates: true,
+                returning: false,
                 transaction
             });
 
