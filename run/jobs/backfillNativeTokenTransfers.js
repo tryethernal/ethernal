@@ -167,6 +167,7 @@ module.exports = async job => {
 
         await TokenTransferEvent.bulkCreate(tokenTransferEvents, {
             ignoreDuplicates: true,
+            returning: false,
             transaction: sequelizeTransaction
         });
 
