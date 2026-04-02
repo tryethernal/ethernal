@@ -249,7 +249,10 @@ module.exports = (sequelize, DataTypes) => {
     async safeCreateReceipt(receipt, options = {}) {
         if (!receipt) throw new Error('Missing parameter');
 
-        return sequelize.transaction(async transaction => {
+        // Store token transfer events to be processed outside main transaction to prevent deadlocks
+        let tokenTransferEvents = [];
+
+        const receiptResult = await sequelize.transaction(async transaction => {
             // Conditionally check if this transaction still exists before proceeding
             // Prevents race condition with workspace reset operations that delete transactions
             // Skip this check for performance when called from trusted contexts like inline blockSync
@@ -841,7 +844,7 @@ module.exports = (sequelize, DataTypes) => {
                         }, transaction);
                     }
 
-                    events.push(sanitize({
+                    tokenTransferEvents.push(sanitize({
                         workspaceId: this.workspaceId,
                         tokenTransferId: tokenTransfer.id,
                         blockNumber: receipt.blockNumber,
@@ -856,15 +859,30 @@ module.exports = (sequelize, DataTypes) => {
                 }
             }
 
-            await sequelize.models.TokenTransferEvent.bulkCreate(events, {
-                ignoreDuplicates: true,
-                transaction
-            });
-
             await storedReceipt.insertAnalyticEvent(transaction);
 
             return storedReceipt;
         });
+
+        // Create TokenTransferEvent records in a separate transaction to prevent deadlocks
+        // This is analytical data and doesn't need to be atomic with receipt creation
+        if (tokenTransferEvents.length > 0) {
+            try {
+                await sequelize.models.TokenTransferEvent.bulkCreate(tokenTransferEvents, {
+                    ignoreDuplicates: true
+                });
+            } catch (error) {
+                // Log error but don't fail the receipt creation since this is analytical data
+                logger.error(`Error creating token transfer events: ${error.message}`, {
+                    location: 'models.transaction.safeCreateReceipt.tokenEvents',
+                    error,
+                    eventsCount: tokenTransferEvents.length,
+                    transactionId: this.id
+                });
+            }
+        }
+
+        return receiptResult;
     }
 
     /**
