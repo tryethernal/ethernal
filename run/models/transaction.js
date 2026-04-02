@@ -775,6 +775,12 @@ module.exports = (sequelize, DataTypes) => {
                     tokenId: null,
                     isReward: true
                 }));
+            } else {
+                logger.warn('Block is null, skipping validator reward transfer', {
+                    location: 'models.transaction.safeCreateReceipt',
+                    transactionHash: this.hash,
+                    blockNumber: this.blockNumber
+                });
             }
 
             if (this.value) {
