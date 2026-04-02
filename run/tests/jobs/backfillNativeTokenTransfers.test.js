@@ -257,7 +257,7 @@ describe('backfillNativeTokenTransfers', () => {
             src: '0x123',
             dst: '0x456',
             isReward: true
-        }], { ignoreDuplicates: true, transaction: undefined });
+        }], { ignoreDuplicates: true, returning: false, transaction: undefined });
     });
 
     it('Should trigger afterCreate for existing value token transfer without balance changes', async () => {
