@@ -316,10 +316,10 @@ else
   if [ "$DISCARDED" = "true" ]; then
     log "Audit: tweet DISCARDED — hook claims unverifiable"
 
-    # Check for consecutive discards (alert if >= 3)
-    CONSEC_DISCARDS=$(tail -10 "$AUDIT_LOG" 2>/dev/null | jq -s '[.[] | select(.discarded == true)] | length' 2>/dev/null || echo 0)
-    if [ "$CONSEC_DISCARDS" -ge 3 ]; then
-      report_failure "Audit: $CONSEC_DISCARDS consecutive tweets discarded — check audit log"
+    # Check for too many recent discards (alert if >= 3 of last 10)
+    RECENT_DISCARDS=$(tail -10 "$AUDIT_LOG" 2>/dev/null | jq -s '[.[] | select(.discarded == true)] | length' 2>/dev/null || echo 0)
+    if [ "$RECENT_DISCARDS" -ge 3 ]; then
+      report_failure "Audit: $RECENT_DISCARDS of the last 10 tweets discarded — check audit log"
     fi
 
     rm -f .source.json .research.md .draft.json "$AUDIT_FILE"
