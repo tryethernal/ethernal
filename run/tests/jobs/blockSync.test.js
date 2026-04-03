@@ -115,20 +115,29 @@ describe('blockSync', () => {
         }
         mockSafeCreatePartialBlock.mockResolvedValue({ transactions });
 
-        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
+        // Mock L2 configs query that includes orbit config
+        const mockL2Configs = {
             id: 1,
-            rpcServer: 'http://localhost:8545',
-            public: true,
-            rpcHealthCheck: {
-                isReachable: true
-            },
-            explorer: {
-                stripeSubscription: {},
-                shouldSync: true
-            },
             orbitConfig: { rollupContract: '0x123' }, // Has orbit config
-            safeCreatePartialBlock: mockSafeCreatePartialBlock
-        });
+            orbitChildConfigs: [],
+            opChildConfigs: []
+        };
+
+        jest.spyOn(Workspace, 'findByPk')
+            .mockResolvedValueOnce({
+                id: 1,
+                rpcServer: 'http://localhost:8545',
+                public: true,
+                rpcHealthCheck: {
+                    isReachable: true
+                },
+                explorer: {
+                    stripeSubscription: {},
+                    shouldSync: true
+                },
+                safeCreatePartialBlock: mockSafeCreatePartialBlock
+            })
+            .mockResolvedValueOnce(mockL2Configs);
 
         blockSync({ opts: { priority: 1 }, data : { workspaceId: 1, userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
             .then(res => {
@@ -338,25 +347,36 @@ describe('blockSync', () => {
 
     it('Should filter transactions when orbit config exists', (done) => {
         mockSafeCreatePartialBlock.mockResolvedValue({ transactions: []});
-        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
+
+        // Mock L2 configs query that includes orbit config
+        const mockL2Configs = {
             id: 1,
-            rpcServer: 'http://localhost:8545',
-            rpcHealthCheck: {
-                isReachable: true
-            },
-            explorer: {
-                hasReachedTransactionQuota,
-                stripeSubscription: {},
-                shouldSync: true
-            },
             orbitConfig: {
                 rollupContract: '0x1234567890123456789012345678901234567890',
                 sequencerInboxContract: '0x0987654321098765432109876543210987654321'
             },
-            safeCreatePartialBlock: mockSafeCreatePartialBlock
-        });
+            orbitChildConfigs: [],
+            opChildConfigs: []
+        };
+
+        jest.spyOn(Workspace, 'findByPk')
+            .mockResolvedValueOnce({
+                id: 1,
+                rpcServer: 'http://localhost:8545',
+                rpcHealthCheck: {
+                    isReachable: true
+                },
+                explorer: {
+                    hasReachedTransactionQuota,
+                    stripeSubscription: {},
+                    shouldSync: true
+                },
+                safeCreatePartialBlock: mockSafeCreatePartialBlock
+            })
+            .mockResolvedValueOnce(mockL2Configs);
+
         jest.spyOn(OrbitChainConfig, 'findAll').mockResolvedValue([]);
-        
+
         ProviderConnector.mockImplementationOnce(() => ({
             fetchRawBlockWithTransactions: jest.fn(() => ({
                 number: '0x1',
@@ -389,26 +409,36 @@ describe('blockSync', () => {
 
     it('Should filter transactions when orbit child configs exist', (done) => {
         mockSafeCreatePartialBlock.mockResolvedValue({ transactions: []});
-        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
+
+        // Mock L2 configs query that includes orbit child configs
+        const mockL2Configs = {
             id: 1,
-            rpcServer: 'http://localhost:8545',
-            rpcHealthCheck: {
-                isReachable: true
-            },
-            explorer: {
-                hasReachedTransactionQuota,
-                stripeSubscription: {},
-                shouldSync: true
-            },
+            orbitConfig: null,
             orbitChildConfigs: [
                 {
                     rollupContract: '0x1234567890123456789012345678901234567890',
                     bridgeContract: '0x0987654321098765432109876543210987654321'
                 }
             ],
-            safeCreatePartialBlock: mockSafeCreatePartialBlock
-        });
-        
+            opChildConfigs: []
+        };
+
+        jest.spyOn(Workspace, 'findByPk')
+            .mockResolvedValueOnce({
+                id: 1,
+                rpcServer: 'http://localhost:8545',
+                rpcHealthCheck: {
+                    isReachable: true
+                },
+                explorer: {
+                    hasReachedTransactionQuota,
+                    stripeSubscription: {},
+                    shouldSync: true
+                },
+                safeCreatePartialBlock: mockSafeCreatePartialBlock
+            })
+            .mockResolvedValueOnce(mockL2Configs);
+
         ProviderConnector.mockImplementationOnce(() => ({
             fetchRawBlockWithTransactions: jest.fn(() => ({
                 number: '0x1',
@@ -503,23 +533,27 @@ describe('blockSync', () => {
             });
     });
 
-    it('Should use optimized query without L2 configs when workspaceId is provided', (done) => {
+    it('Should use optimized query pattern for L2 configs when workspaceId is provided', (done) => {
         mockSafeCreatePartialBlock.mockResolvedValue({ transactions: [
             { id: 1, hash: '0x123' }
         ]});
 
-        // Mock the initial workspace query (without L2 configs)
-        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
+        // Mock L2 configs query that returns null configs (workspace has no L2 configs)
+        const mockL2Configs = {
             id: 1,
-            rpcServer: 'http://localhost:8545',
-            explorer: { shouldSync: true, stripeSubscription: {} },
-            safeCreatePartialBlock: mockSafeCreatePartialBlock
-        });
+            orbitConfig: null,
+            orbitChildConfigs: [],
+            opChildConfigs: []
+        };
 
-        // Mock the L2 config check queries to return null (no L2 configs needed)
-        const { OrbitChainConfig, OpChainConfig } = require('../../models');
-        jest.spyOn(OrbitChainConfig, 'findOne').mockResolvedValue(null);
-        jest.spyOn(OpChainConfig, 'findOne').mockResolvedValue(null);
+        jest.spyOn(Workspace, 'findByPk')
+            .mockResolvedValueOnce({
+                id: 1,
+                rpcServer: 'http://localhost:8545',
+                explorer: { shouldSync: true, stripeSubscription: {} },
+                safeCreatePartialBlock: mockSafeCreatePartialBlock
+            })
+            .mockResolvedValueOnce(mockL2Configs);
 
         blockSync({ opts: { priority: 1 }, data: { workspaceId: 1, blockNumber: 1, source: 'batchSync', rateLimited: true }})
             .then(res => {
@@ -541,16 +575,21 @@ describe('blockSync', () => {
                     expect.objectContaining({ as: 'opChildConfigs' })
                 ]));
 
-                // Verify L2 config check was performed
-                expect(OrbitChainConfig.findOne).toHaveBeenCalled();
-                expect(OpChainConfig.findOne).toHaveBeenCalled();
+                // Verify second query includes L2 configs (no more separate existence checks)
+                expect(Workspace.findByPk).toHaveBeenCalledTimes(2);
+                const secondCall = Workspace.findByPk.mock.calls[1][1];
+                expect(secondCall.include).toEqual(expect.arrayContaining([
+                    expect.objectContaining({ as: 'orbitConfig' }),
+                    expect.objectContaining({ as: 'orbitChildConfigs' }),
+                    expect.objectContaining({ as: 'opChildConfigs' })
+                ]));
 
                 expect(res).toEqual('Block synced');
                 done();
             });
     });
 
-    it('Should load L2 configurations when needed via second Workspace query', (done) => {
+    it('Should load L2 configurations via optimized single query', (done) => {
         mockSafeCreatePartialBlock.mockResolvedValue({ transactions: [
             { id: 1, hash: '0x123' }
         ]});
@@ -575,11 +614,6 @@ describe('blockSync', () => {
             .mockResolvedValueOnce(mockWorkspace)  // First call: lightweight query
             .mockResolvedValueOnce(mockL2Configs); // Second call: L2 configs
 
-        // Mock OrbitChainConfig check to return a truthy result (triggers L2 loading)
-        const { OrbitChainConfig, OpChainConfig } = require('../../models');
-        jest.spyOn(OrbitChainConfig, 'findOne').mockResolvedValue({ id: 1 });
-        jest.spyOn(OpChainConfig, 'findOne').mockResolvedValue(null);
-
         blockSync({ opts: { priority: 1 }, data: { workspaceId: 1, blockNumber: 1, source: 'batchSync', rateLimited: true }})
             .then(res => {
                 // Verify two Workspace.findByPk calls were made
@@ -593,17 +627,13 @@ describe('blockSync', () => {
                     expect.objectContaining({ as: 'opChildConfigs' })
                 ]));
 
-                // Verify second call included L2 configs
+                // Verify second call included L2 configs (no more separate existence checks)
                 const secondCall = Workspace.findByPk.mock.calls[1][1];
                 expect(secondCall.include).toEqual(expect.arrayContaining([
                     expect.objectContaining({ as: 'orbitConfig' }),
                     expect.objectContaining({ as: 'orbitChildConfigs' }),
                     expect.objectContaining({ as: 'opChildConfigs' })
                 ]));
-
-                // Verify L2 config check queries were called
-                expect(OrbitChainConfig.findOne).toHaveBeenCalled();
-                expect(OpChainConfig.findOne).toHaveBeenCalled();
 
                 expect(res).toEqual('Block synced');
                 done();
