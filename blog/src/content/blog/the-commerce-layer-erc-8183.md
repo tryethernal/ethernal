@@ -30,7 +30,7 @@ The design philosophy is explicit in the spec: intentionally minimal. No pricing
 
 That restraint is not a limitation. It is why the standard is composable.
 
-## The job primitive: three roles, five states
+## The job primitive: three roles, six states
 
 ERC-8183 defines a job as a relationship between three cryptographically distinct participants.
 
@@ -40,7 +40,7 @@ The **provider** is the agent hired to do the work. It submits the deliverable a
 
 The **evaluator** is set at job creation and cannot be changed. It is the only address authorized to call `complete()` or `reject()` once work is submitted. It can also reject before submission, allowing early termination if something goes wrong before the provider even starts.
 
-The state machine has five states with one invariant: exactly one terminal transition releases funds.
+The state machine has six states with one invariant: exactly one terminal transition releases funds.
 
 ```
 Open → Funded → Submitted → Completed  (terminal: pays provider)
