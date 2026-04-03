@@ -90,4 +90,39 @@ describe('blockSyncMonitoring', () => {
             { alias: 'block-sync-behind-1' }
         );
     });
+
+    it('Should create a recovery mode incident when explorer is recovering', async () => {
+        jest.spyOn(Explorer, 'findAll').mockResolvedValueOnce([{
+            id: 1,
+            name: 'Explorer',
+            hasReachedTransactionQuota: jest.fn().mockResolvedValue(false),
+            workspace: {
+                getBlocks: jest.fn().mockResolvedValue([{ number: 1 }]),
+                getProvider: () => ({ fetchLatestBlock: jest.fn().mockResolvedValue({ number: 2 }) }),
+                integrityCheck: { status: 'recovering' }
+            }
+        }]);
+        await blockSyncMonitoring();
+        expect(createIncident).toHaveBeenCalledWith(
+            'Explorer in recovery mode',
+            'Explorer: Explorer (#1) - Real-time sync (cli-light) has stopped, integrity check is backfilling',
+            'P2',
+            { alias: 'recovery-mode-1' }
+        );
+    });
+
+    it('Should not create recovery incident when integrityCheck is null', async () => {
+        jest.spyOn(Explorer, 'findAll').mockResolvedValueOnce([{
+            id: 1,
+            name: 'Explorer',
+            hasReachedTransactionQuota: jest.fn().mockResolvedValue(false),
+            workspace: {
+                getBlocks: jest.fn().mockResolvedValue([{ number: 1 }]),
+                getProvider: () => ({ fetchLatestBlock: jest.fn().mockResolvedValue({ number: 2 }) }),
+                integrityCheck: null
+            }
+        }]);
+        await blockSyncMonitoring();
+        expect(createIncident).not.toHaveBeenCalled();
+    });
 }); 
