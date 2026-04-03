@@ -13,7 +13,7 @@ const incrementSyncFailures = jest.fn();
 const update = jest.fn();
 
 describe('updateExplorerSyncingProcess', () => {
-    it('Should exit gracefully if timeout when sync is disabled', (done) => {
+    it('Should throw on timeout so BullMQ retries', (done) => {
         const reset = jest.fn();
         PM2.mockImplementationOnce(() => ({
             reset,
@@ -22,13 +22,13 @@ describe('updateExplorerSyncingProcess', () => {
         jest.spyOn(Explorer, 'findOne').mockResolvedValue({ slug: 'slug', workspaceId: 1, shouldSync: false });
 
         updateExplorerSyncingProcess({ data: { explorerSlug: 'explorer' }})
-            .then(res => {
-                expect(res).toEqual('Timed out');
+            .catch(error => {
+                expect(error.message).toEqual('Timed out after 10000ms.');
                 done();
             });
     });
 
-    it('Should not auto-disable on timeout when sync is enabled', (done) => {
+    it('Should throw on timeout when sync is enabled so BullMQ retries', (done) => {
         PM2.mockImplementationOnce(() => ({
             find: jest.fn().mockRejectedValueOnce(new Error('Timed out after 10000ms.'))
         }));
@@ -40,13 +40,13 @@ describe('updateExplorerSyncingProcess', () => {
         });
 
         updateExplorerSyncingProcess({ data: { explorerSlug: 'explorer' }})
-            .then(res => {
-                expect(res).toEqual('Timed out');
+            .catch(error => {
+                expect(error.message).toEqual('Timed out after 10000ms.');
                 done();
             });
     });
 
-    it('Should exit gracefully if TLS connection error occurs', (done) => {
+    it('Should throw on TLS connection error so BullMQ retries', (done) => {
         PM2.mockImplementationOnce(() => ({
             find: jest.fn().mockRejectedValueOnce(new Error('Client network socket disconnected before secure TLS connection was established'))
         }));
@@ -58,8 +58,8 @@ describe('updateExplorerSyncingProcess', () => {
         });
 
         updateExplorerSyncingProcess({ data: { explorerSlug: 'explorer' }})
-            .then(res => {
-                expect(res).toEqual('Connection failed');
+            .catch(error => {
+                expect(error.message).toEqual('Client network socket disconnected before secure TLS connection was established');
                 done();
             });
     });
