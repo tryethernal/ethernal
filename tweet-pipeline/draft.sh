@@ -46,15 +46,11 @@ else
   exit 1
 fi
 
-# Determine slot (1-5) from arg or auto-detect from UTC hour
+# Determine slot from arg or default to 1 (single daily slot)
 if [ -n "${1:-}" ]; then
   SLOT="$1"
 else
-  # Ranges match timer schedule: 06:30, 12:30 UTC
-  HOUR=$(date -u +%-H)
-  if [ "$HOUR" -lt 10 ]; then SLOT=1
-  else                        SLOT=2
-  fi
+  SLOT=1
 fi
 
 log "Starting tweet draft pipeline — slot $SLOT"
@@ -191,35 +187,14 @@ if [ -f .source.json ]; then
   " 2>>"$LOG_FILE")
 
   if [ "$IS_DUP" = "true" ]; then
-    log "WARNING: Source '$SOURCE_TITLE' is semantically similar to recent content — falling back to feature tip"
+    log "WARNING: Source '$SOURCE_TITLE' is semantically similar to recent content — skipping today (no filler tweets)"
     # Clear pending consume — the override source was not used but stays in DB for next attempt
     if [ -n "${PENDING_CONSUME:-}" ]; then
       log "WARNING: Discarding ${PENDING_CONSUME} source due to dedup — retaining in DB for next run"
       PENDING_CONSUME=""
     fi
     rm -f .source.json
-
-    # Fall back to a feature tip
-    SLOT="$SLOT" RECENT_IDS="${RECENT_IDS:-[]}" node --input-type=module -e "
-      import { getScheduledTime } from './config.js';
-      import { selectSource } from './lib/source-selector.js';
-      import { writeFileSync } from 'node:fs';
-
-      const slot = parseInt(process.env.SLOT, 10);
-      const baseHours = { 1: 7, 2: 10, 3: 15, 4: 16, 5: 19 };
-      const recentIds = JSON.parse(process.env.RECENT_IDS || '[]');
-      const selected = selectSource('features', recentIds);
-      const scheduledAt = getScheduledTime(new Date(), baseHours[slot] || 15);
-
-      writeFileSync('.source.json', JSON.stringify({
-        sourceId: selected.title,
-        source: selected,
-        bucket: 'Product tip (dedup fallback)',
-        slot,
-        scheduledAt: scheduledAt.toISOString(),
-      }, null, 2));
-      console.log('Fallback: ' + selected.title);
-    " 2>&1 | tee -a "$LOG_FILE"
+    exit 0
   fi
 fi
 
@@ -309,6 +284,72 @@ check_claude_output "$PHASE3_OUTPUT" "Humanize (Phase 3)"
 log "Phase 3 complete."
 
 # ============================================================
+# PHASE 4: Fact-check audit
+# ============================================================
+log "Phase 4: Fact-check audit..."
+
+AUDIT_FILE=".audit.json"
+
+PHASE4_OUTPUT=$(claude -p "$(cat "$PROMPTS_DIR/tweet-4-audit.md")" \
+  --dangerously-skip-permissions \
+  --mcp-config "$MCP_CONFIG" \
+  --max-turns 10 \
+  2>&1)
+
+echo "$PHASE4_OUTPUT" | tee -a "$LOG_FILE"
+check_claude_output "$PHASE4_OUTPUT" "Audit (Phase 4)"
+
+if [ ! -f "$AUDIT_FILE" ]; then
+  log "WARNING: Phase 4 did not produce .audit.json — proceeding with unaudited draft"
+else
+  # Log audit result to JSONL
+  AUDIT_LOG="/var/log/tweet-pipeline/audit.jsonl"
+  SOURCE_ID_LOG=$(jq -r '.sourceId // "unknown"' .source.json 2>/dev/null)
+  BUCKET_LOG=$(jq -r '.bucket // "unknown"' .source.json 2>/dev/null)
+  # Ensure audit log is writable (may have been created by a different user)
+  touch "$AUDIT_LOG" 2>/dev/null || true
+  jq -c --arg ts "$(date -Iseconds)" --arg sid "$SOURCE_ID_LOG" --arg bkt "$BUCKET_LOG" \
+    '. + {timestamp: $ts, source_id: $sid, bucket: $bkt}' "$AUDIT_FILE" >> "$AUDIT_LOG" 2>/dev/null || \
+    log "WARNING: Could not write to $AUDIT_LOG — check permissions"
+
+  DISCARDED=$(jq -r '.discarded // false' "$AUDIT_FILE")
+  if [ "$DISCARDED" = "true" ]; then
+    log "Audit: tweet DISCARDED — hook claims unverifiable"
+
+    # Check for consecutive discards (alert if >= 3)
+    CONSEC_DISCARDS=$(tail -10 "$AUDIT_LOG" 2>/dev/null | jq -s '[.[] | select(.discarded == true)] | length' 2>/dev/null || echo 0)
+    if [ "$CONSEC_DISCARDS" -ge 3 ]; then
+      report_failure "Audit: $CONSEC_DISCARDS consecutive tweets discarded — check audit log"
+    fi
+
+    rm -f .source.json .research.md .draft.json "$AUDIT_FILE"
+    exit 0
+  fi
+
+  EDITED=$(jq -r '.edited // false' "$AUDIT_FILE")
+  if [ "$EDITED" = "true" ]; then
+    CLAIMS_FIXED=$(jq '[.claims[] | select(.action != "kept" and .action != null)] | length' "$AUDIT_FILE")
+    log "Audit: draft edited, $CLAIMS_FIXED claims fixed"
+
+    # Overwrite .draft.json with verified content
+    FINAL_HOOK=$(jq -r '.final_hook' "$AUDIT_FILE")
+    FINAL_THREAD=$(jq '.final_thread' "$AUDIT_FILE")
+
+    if [ "$FINAL_HOOK" != "null" ] && [ -n "$FINAL_HOOK" ]; then
+      # Merge final_hook and final_thread back into .draft.json, preserving imageSpec and references
+      jq --arg hook "$FINAL_HOOK" --argjson thread "$FINAL_THREAD" \
+        '.hook = $hook | .thread = $thread' .draft.json > .draft.json.tmp \
+        && mv .draft.json.tmp .draft.json
+      log "Audit: .draft.json updated with verified content"
+    fi
+  else
+    log "Audit: all claims verified, no edits needed"
+  fi
+fi
+
+log "Phase 4 complete."
+
+# ============================================================
 # Post-draft semantic dedup — catch overlaps Claude introduced
 # ============================================================
 DRAFT_HOOK=$(jq -r '.hook // empty' .draft.json 2>/dev/null)
@@ -329,7 +370,7 @@ if [ -n "$DRAFT_HOOK" ]; then
   if [ "$POST_DUP" = "true" ]; then
     log "WARNING: Drafted hook is semantically similar to recent content — aborting"
     log "Hook was: $DRAFT_HOOK"
-    rm -f .source.json .research.md .draft.json
+    rm -f .source.json .research.md .draft.json .audit.json
     exit 0
   fi
 fi
@@ -415,6 +456,6 @@ log "Tweet queued: id=$(echo "$TWEET_ID" | jq -r '.id')"
 # ============================================================
 # Clean up temp files
 # ============================================================
-rm -f .source.json .research.md .draft.json
+rm -f .source.json .research.md .draft.json .audit.json
 
 log "Done. Tweet scheduled for $SCHEDULED_AT (slot $SLOT, bucket: $BUCKET)"
