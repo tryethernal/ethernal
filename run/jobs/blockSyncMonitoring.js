@@ -5,7 +5,7 @@
  */
 
 const { Sequelize } = require('sequelize');
-const { Explorer, StripeSubscription, StripePlan, Workspace } = require('../models');
+const { Explorer, StripeSubscription, StripePlan, Workspace, IntegrityCheck } = require('../models');
 const logger = require('../lib/logger');
 const { withTimeout } = require('../lib/utils');
 const { createIncident } = require('../lib/opsgenie');
@@ -30,7 +30,15 @@ module.exports = async () => {
             {
                 model: Workspace,
                 as: 'workspace',
-                include: 'rpcHealthCheck'
+                include: [
+                    'rpcHealthCheck',
+                    {
+                        model: IntegrityCheck,
+                        as: 'integrityCheck',
+                        attributes: ['status'],
+                        required: false
+                    }
+                ]
             }
         ]
     });
@@ -71,6 +79,16 @@ module.exports = async () => {
             );
         else
             logger.info(`Block sync is OK`, { id: explorer.id, name: explorer.name, diff: parseInt(latestRemoteBlock.number) - parseInt(latestLocalBlock.number) });
+
+        // Alert when explorer is in recovery mode — cli-light sync has stopped
+        // and the integrity check is backfilling blocks
+        if (explorer.workspace.integrityCheck && explorer.workspace.integrityCheck.status === 'recovering')
+            await createIncident(
+                `Explorer in recovery mode`,
+                `Explorer: ${explorer.name} (#${explorer.id}) - Real-time sync (cli-light) has stopped, integrity check is backfilling`,
+                'P2',
+                { alias: `recovery-mode-${explorer.id}` }
+            );
     }
 };
 
