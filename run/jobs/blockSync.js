@@ -290,6 +290,18 @@ module.exports = async job => {
                     cachedWorkspace: data.cachedWorkspace
                 }, priority, null, workspace.rateLimitInterval || 5000, !!data.rateLimited);
             }
+            else if (error.message && error.message.includes('bad response (status=520)')) {
+                // HTTP 520 errors are infrastructure/provider issues that should be retried
+                // Cloudflare 520 = "Web Server Returned an Unknown Error" (upstream RPC provider issue)
+                return enqueue('blockSync', `blockSync-${workspace.id}-${data.blockNumber}-${Date.now()}`, {
+                    workspaceId: workspace.id,
+                    blockNumber: data.blockNumber,
+                    source: data.source,
+                    rateLimited: !!data.rateLimited,
+                    // Preserve cached workspace data to avoid N+1 query on retry
+                    cachedWorkspace: data.cachedWorkspace
+                }, priority, null, workspace.rateLimitInterval || 5000, !!data.rateLimited);
+            }
             else
                 throw error;
         }
