@@ -72,7 +72,7 @@ Etherscan is the original EVM block explorer and remains the industry standard f
 
 **Best for:** Teams that need the most recognized explorer brand for Ethereum mainnet or major L1s, and have the budget for enterprise pricing.
 
-**Pricing:** Free to browse public explorers. API plans from $0 (free tier) to $399/mo for pro access. EaaS is custom-priced (contact sales).
+**Pricing:** Free to browse public explorers. API plans from $0 (free tier) to $399/mo for premium access. EaaS is custom-priced (contact sales).
 
 ### 2. Blockscout
 

@@ -15,6 +15,7 @@ rsync -avz --delete \
   --exclude='.source.json' \
   --exclude='.research.md' \
   --exclude='.draft.json' \
+  --exclude='.audit.json' \
   --exclude='node_modules' \
   --exclude='state.db' \
   --exclude='state.db-wal' \
