@@ -125,25 +125,22 @@ module.exports = async job => {
         else
             return 'No process change.';
     } catch(error) {
-        if (error.message.startsWith('Timed out after') ||
-            error.message.includes('socket disconnected before secure TLS connection was established') ||
-            error.message.includes('ECONNRESET') ||
-            error.message.includes('ENOTFOUND') ||
-            error.message.includes('ETIMEDOUT')) {
-            // PM2 connection failures are transient — throw so BullMQ retries with backoff.
-            // This ensures cli-light processes get started after PM2 deploys instead of
-            // silently marking the job as completed and leaving explorers without sync.
-            if (explorer) {
-                logger.warn({
-                    message: 'PM2 unreachable, will retry',
-                    explorerId: explorer.id,
-                    explorerSlug: explorer.slug,
-                    error: error.message
-                });
-            }
-            throw error;
+        // Log PM2 transient errors for visibility, then always rethrow so BullMQ retries.
+        // This ensures cli-light processes get started after PM2 deploys instead of
+        // silently marking the job as completed and leaving explorers without sync.
+        if (explorer &&
+            (error.message.startsWith('Timed out after') ||
+             error.message.includes('socket disconnected before secure TLS connection was established') ||
+             error.message.includes('ECONNRESET') ||
+             error.message.includes('ENOTFOUND') ||
+             error.message.includes('ETIMEDOUT'))) {
+            logger.warn({
+                message: 'PM2 unreachable, will retry',
+                explorerId: explorer.id,
+                explorerSlug: explorer.slug,
+                error: error.message
+            });
         }
-        else
-            throw error;
+        throw error;
     }
 };
