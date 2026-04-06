@@ -20,6 +20,7 @@ const {
 } = require('sequelize');
 const Op = Sequelize.Op;
 const ethers = require('ethers');
+const logger = require('../lib/logger');
 
 module.exports = (sequelize, DataTypes) => {
   class TokenBalanceChange extends Model {
@@ -82,7 +83,7 @@ module.exports = (sequelize, DataTypes) => {
           }, { transaction: sequelizeTransaction, returning: false });
       } catch (error) {
           // Log but don't fail — this is analytical data
-          console.error(`Error creating token balance change event: ${error.message}`);
+          logger.error(`Error creating token balance change event: ${error.message}`);
           return null;
       }
     }

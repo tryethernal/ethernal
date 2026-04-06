@@ -21,6 +21,7 @@ const ethers = require('ethers');
 const BigNumber = ethers.BigNumber;
 const { trigger } = require('../lib/pusher');
 const { enqueue } = require('../lib/queue');
+const logger = require('../lib/logger');
 
 module.exports = (sequelize, DataTypes) => {
   class TransactionReceipt extends Model {
@@ -60,7 +61,7 @@ module.exports = (sequelize, DataTypes) => {
             }, { transaction: sequelizeTransaction, returning: false });
         } catch (error) {
             // Log but don't fail — this is analytical data
-            console.error(`Error creating transaction event: ${error.message}`);
+            logger.error(`Error creating transaction event: ${error.message}`);
             return null;
         }
     }
