@@ -21,6 +21,7 @@ const ethers = require('ethers');
 const BigNumber = ethers.BigNumber;
 const { trigger } = require('../lib/pusher');
 const { enqueue } = require('../lib/queue');
+const logger = require('../lib/logger');
 
 module.exports = (sequelize, DataTypes) => {
   class TransactionReceipt extends Model {
@@ -46,17 +47,26 @@ module.exports = (sequelize, DataTypes) => {
         const gasPrice = this.effectiveGasPrice || this.raw.gasPrice || transaction.gasPrice;
         const transactionFee = BigNumber.from(this.gasUsed.toString()).mul(BigNumber.from(gasPrice.toString()));
 
-        return sequelize.models.TransactionEvent.create({
-            workspaceId: this.workspaceId,
-            transactionId: transaction.id,
-            blockNumber: this.blockNumber,
-            timestamp: transaction.timestamp,
-            transactionFee: transactionFee.toString(),
-            gasPrice: BigNumber.from(gasPrice).toString(),
-            gasUsed: BigNumber.from(this.gasUsed).toString(),
-            from: this.from,
-            to: this.to
-        }, { transaction: sequelizeTransaction });
+        try {
+            return await sequelize.models.TransactionEvent.create({
+                workspaceId: this.workspaceId,
+                transactionId: transaction.id,
+                blockNumber: this.blockNumber,
+                timestamp: transaction.timestamp,
+                transactionFee: transactionFee.toString(),
+                gasPrice: BigNumber.from(gasPrice).toString(),
+                gasUsed: BigNumber.from(this.gasUsed).toString(),
+                from: this.from,
+                to: this.to
+            }, { transaction: sequelizeTransaction, returning: false });
+        } catch (error) {
+            // Log but don't fail — this is analytical data.
+            // Note: a deadlock (40P01) would abort the PG transaction state, causing
+            // the outer COMMIT to fail. The FK drops in migration 20260406000001
+            // prevent that; this catch handles non-deadlock errors (unique constraint, etc.)
+            logger.error(`Error creating transaction event: ${error.message}`);
+            return null;
+        }
     }
 
     async safeDestroy(transaction) {

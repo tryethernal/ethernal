@@ -481,6 +481,18 @@ class Tracer {
             throw retryError;
         }
 
+        // Handle transient network errors (connection resets, timeouts, DNS failures).
+        // These are infrastructure-level failures, not RPC logic errors — always retry.
+        const networkErrorCodes = ['ECONNRESET', 'ETIMEDOUT', 'ENOTFOUND', 'ECONNREFUSED', 'EPIPE', 'EAI_AGAIN'];
+        if ((error.code && networkErrorCodes.includes(error.code)) ||
+            (error.message && (error.message.includes('ECONNRESET') || error.message.includes('missing response')))) {
+            const retryError = new Error(`Transient network error: ${error.code || error.message}`);
+            retryError.code = 'TRANSIENT_RPC_ERROR';
+            retryError.originalError = error;
+            retryError.sentryIgnore = true;
+            throw retryError;
+        }
+
         if (error.status >= 400)
             return this.error = {
                 message: `Http status code ${error.status}`,

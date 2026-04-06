@@ -20,6 +20,7 @@ const {
 } = require('sequelize');
 const Op = Sequelize.Op;
 const ethers = require('ethers');
+const logger = require('../lib/logger');
 
 module.exports = (sequelize, DataTypes) => {
   class TokenBalanceChange extends Model {
@@ -69,16 +70,25 @@ module.exports = (sequelize, DataTypes) => {
       const transaction = await this.getTransaction({ transaction: sequelizeTransaction });
       const contract = await this.getContract({ transaction: sequelizeTransaction });
 
-      return sequelize.models.TokenBalanceChangeEvent.create({
-          workspaceId: this.workspaceId,
-          tokenBalanceChangeId: this.id,
-          blockNumber: transaction.blockNumber,
-          timestamp: transaction.timestamp,
-          token: this.token,
-          address: this.address,
-          currentBalance: ethers.BigNumber.from(this.currentBalance).toString(),
-          tokenType: contract ? contract.patterns[0] : null
-      }, { transaction: sequelizeTransaction });
+      try {
+          return await sequelize.models.TokenBalanceChangeEvent.create({
+              workspaceId: this.workspaceId,
+              tokenBalanceChangeId: this.id,
+              blockNumber: transaction.blockNumber,
+              timestamp: transaction.timestamp,
+              token: this.token,
+              address: this.address,
+              currentBalance: ethers.BigNumber.from(this.currentBalance).toString(),
+              tokenType: contract ? contract.patterns[0] : null
+          }, { transaction: sequelizeTransaction, returning: false });
+      } catch (error) {
+          // Log but don't fail — this is analytical data.
+          // Note: a deadlock (40P01) would abort the PG transaction state, causing
+          // the outer COMMIT to fail. The FK drop in migration 20260406000002
+          // prevents that; this catch handles non-deadlock errors (unique constraint, etc.)
+          logger.error(`Error creating token balance change event: ${error.message}`);
+          return null;
+      }
     }
   }
   TokenBalanceChange.init({
