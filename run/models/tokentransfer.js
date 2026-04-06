@@ -89,7 +89,7 @@ module.exports = (sequelize, DataTypes) => {
             tokenType: contract ? contract.patterns[0] : null,
             src: this.src,
             dst: this.dst
-        }, { transaction: sequelizeTransaction });
+        }, { transaction: sequelizeTransaction, returning: false });
     }
 
     async safeCreateBalanceChange(balanceChange) {

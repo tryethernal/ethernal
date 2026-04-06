@@ -69,16 +69,22 @@ module.exports = (sequelize, DataTypes) => {
       const transaction = await this.getTransaction({ transaction: sequelizeTransaction });
       const contract = await this.getContract({ transaction: sequelizeTransaction });
 
-      return sequelize.models.TokenBalanceChangeEvent.create({
-          workspaceId: this.workspaceId,
-          tokenBalanceChangeId: this.id,
-          blockNumber: transaction.blockNumber,
-          timestamp: transaction.timestamp,
-          token: this.token,
-          address: this.address,
-          currentBalance: ethers.BigNumber.from(this.currentBalance).toString(),
-          tokenType: contract ? contract.patterns[0] : null
-      }, { transaction: sequelizeTransaction });
+      try {
+          return await sequelize.models.TokenBalanceChangeEvent.create({
+              workspaceId: this.workspaceId,
+              tokenBalanceChangeId: this.id,
+              blockNumber: transaction.blockNumber,
+              timestamp: transaction.timestamp,
+              token: this.token,
+              address: this.address,
+              currentBalance: ethers.BigNumber.from(this.currentBalance).toString(),
+              tokenType: contract ? contract.patterns[0] : null
+          }, { transaction: sequelizeTransaction, returning: false });
+      } catch (error) {
+          // Log but don't fail — this is analytical data
+          console.error(`Error creating token balance change event: ${error.message}`);
+          return null;
+      }
     }
   }
   TokenBalanceChange.init({

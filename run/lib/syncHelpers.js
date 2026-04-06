@@ -20,8 +20,8 @@ const SYNC_FAILURE_THRESHOLD = 3;
  * @returns {Promise<{shouldStop: boolean, message: string|null}>} - Whether the job should stop and optional message
  */
 async function reportRpcFailure(error, explorer, jobName, workspaceId) {
-    // Don't count rate limiting or timeouts as failures - they are expected/transient
-    if (error.message === 'Rate limited' || error.message.startsWith('Timed out after')) {
+    // Don't count rate limiting, timeouts, or transient network errors as failures
+    if (error.message === 'Rate limited' || error.message.startsWith('Timed out after') || error.code === 'TRANSIENT_RPC_ERROR') {
         return { shouldStop: false, message: null };
     }
 

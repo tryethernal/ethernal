@@ -46,17 +46,23 @@ module.exports = (sequelize, DataTypes) => {
         const gasPrice = this.effectiveGasPrice || this.raw.gasPrice || transaction.gasPrice;
         const transactionFee = BigNumber.from(this.gasUsed.toString()).mul(BigNumber.from(gasPrice.toString()));
 
-        return sequelize.models.TransactionEvent.create({
-            workspaceId: this.workspaceId,
-            transactionId: transaction.id,
-            blockNumber: this.blockNumber,
-            timestamp: transaction.timestamp,
-            transactionFee: transactionFee.toString(),
-            gasPrice: BigNumber.from(gasPrice).toString(),
-            gasUsed: BigNumber.from(this.gasUsed).toString(),
-            from: this.from,
-            to: this.to
-        }, { transaction: sequelizeTransaction });
+        try {
+            return await sequelize.models.TransactionEvent.create({
+                workspaceId: this.workspaceId,
+                transactionId: transaction.id,
+                blockNumber: this.blockNumber,
+                timestamp: transaction.timestamp,
+                transactionFee: transactionFee.toString(),
+                gasPrice: BigNumber.from(gasPrice).toString(),
+                gasUsed: BigNumber.from(this.gasUsed).toString(),
+                from: this.from,
+                to: this.to
+            }, { transaction: sequelizeTransaction, returning: false });
+        } catch (error) {
+            // Log but don't fail — this is analytical data
+            console.error(`Error creating transaction event: ${error.message}`);
+            return null;
+        }
     }
 
     async safeDestroy(transaction) {
