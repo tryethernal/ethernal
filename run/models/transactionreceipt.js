@@ -60,7 +60,10 @@ module.exports = (sequelize, DataTypes) => {
                 to: this.to
             }, { transaction: sequelizeTransaction, returning: false });
         } catch (error) {
-            // Log but don't fail — this is analytical data
+            // Log but don't fail — this is analytical data.
+            // Note: a deadlock (40P01) would abort the PG transaction state, causing
+            // the outer COMMIT to fail. The FK drops in migration 20260406000001
+            // prevent that; this catch handles non-deadlock errors (unique constraint, etc.)
             logger.error(`Error creating transaction event: ${error.message}`);
             return null;
         }
