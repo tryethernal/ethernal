@@ -82,10 +82,13 @@ THREAD_COUNT=$(echo "$MATCHING_THREADS" | wc -l | tr -d ' ')
 log "Found $THREAD_COUNT unread newsletter(s)."
 
 # ============================================================
-# Fetch and concatenate ALL unread newsletters
+# Fetch and concatenate the latest 2 unread newsletters
+# (limits Claude prompt size; older ones are still marked processed)
 # ============================================================
 ALL_NEWSLETTER_TEXT=""
 LATEST_DATE=""
+MAX_CONCAT=2
+CONCAT_COUNT=0
 
 for THREAD_ID in $MATCHING_THREADS; do
   log "Fetching thread $THREAD_ID..."
@@ -143,12 +146,17 @@ print(''.join(p.t))
   TDATE=$(echo "$THREAD_JSON" | jq -r '.messages[0].date // .timestamp // empty' | cut -c1-10)
   log "Newsletter date: $TDATE (thread $THREAD_ID)"
 
-  ALL_NEWSLETTER_TEXT="${ALL_NEWSLETTER_TEXT}
+  if [ "$CONCAT_COUNT" -lt "$MAX_CONCAT" ]; then
+    ALL_NEWSLETTER_TEXT="${ALL_NEWSLETTER_TEXT}
 
 --- NEWSLETTER (${TDATE}) ---
 
 ${TEXT}"
-  LATEST_DATE="$TDATE"
+    LATEST_DATE="$TDATE"
+    CONCAT_COUNT=$((CONCAT_COUNT + 1))
+  else
+    log "Skipping thread $THREAD_ID (max $MAX_CONCAT newsletters for scoring)"
+  fi
 done
 
 if [ -z "$ALL_NEWSLETTER_TEXT" ]; then
@@ -157,7 +165,7 @@ if [ -z "$ALL_NEWSLETTER_TEXT" ]; then
 fi
 
 NEWSLETTER_DATE="${LATEST_DATE}"
-log "Concatenated $THREAD_COUNT newsletter(s) for scoring."
+log "Concatenated $CONCAT_COUNT newsletter(s) for scoring (of $THREAD_COUNT unread)."
 
 # ============================================================
 # Deduplicate against recent tweets
