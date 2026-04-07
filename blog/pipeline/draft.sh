@@ -68,9 +68,12 @@ cd "$REPO_DIR"
 
 # Pull latest (fix ownership first — rsync deploys as root can leave root-owned files)
 log "Pulling latest changes..."
-if find "$REPO_DIR" -maxdepth 2 -not -user "$(whoami)" -type f 2>/dev/null | head -1 | grep -q .; then
+if find "$REPO_DIR/.git" "$REPO_DIR/blog" -not -user "$(whoami)" -type f 2>/dev/null | head -1 | grep -q .; then
   log "WARNING: Found files not owned by $(whoami) — attempting ownership fix"
-  sudo chown -R "$(whoami):$(id -gn)" "$REPO_DIR" 2>/dev/null || log "WARNING: chown failed (no sudo?), git pull may fail"
+  sudo chown -R "$(whoami):$(id -gn)" "$REPO_DIR" || {
+    log "ERROR: chown failed — git operations will likely fail. Add sudoers rule: blog ALL=(root) NOPASSWD: /usr/bin/chown -R blog\\:blog /opt/ethernal-blog-stack"
+    exit 1
+  }
 fi
 # Reset any local changes — server is a deployment target, never has intentional edits
 git checkout develop 2>&1 | tee -a "$LOG_FILE"

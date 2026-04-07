@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.158] - 2026-04-07
+### Fixed
+- fix: fail early in blog pipeline when chown fails
+- blog: publish - The Missing Subscription Primitive: How ERC-8191 Standardizes On-Chain Recurring Payments
+
+
 ## [5.17.157] - 2026-04-06
 ### Fixed
 - fix: handle transient RPC errors, prevent hypertable deadlocks, tune PGBouncer (#1087)
