@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.159] - 2026-04-10
+### Fixed
+- blog: publish - From Ciphertext to Commitment: How LUCID and EIP-8182 Carve Up Ethereum's Privacy Problem
+
+
 ## [5.17.158] - 2026-04-07
 ### Fixed
 - fix: fail early in blog pipeline when chown fails
