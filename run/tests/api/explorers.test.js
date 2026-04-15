@@ -227,13 +227,13 @@ describe(`GET ${BASE_URL}/billing`, () => {
     it('Should only return active explorers', (done) => {
         jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1 });
         mockInvoiceListUpcomingLines.mockResolvedValueOnce({ data: [{ amount: 10000 }, { amount: 0 }, { amount: -10000 }]});
-        jest.spyOn(db, 'getStripeSubscription')
-            .mockResolvedValueOnce({
+        jest.spyOn(db, 'getStripeSubscriptionsByExplorerIds')
+            .mockResolvedValueOnce([{
+                explorerId: 1,
                 stripePlan: { name: 'Team' },
                 formattedStatus: 'Active',
                 stripeId: 'test'
-            })
-            .mockResolvedValueOnce(null);
+            }]);
         jest.spyOn(db, 'getUserExplorers').mockResolvedValueOnce({
             items: [
                 { id: 1, name: 'Test' },
@@ -256,11 +256,12 @@ describe(`GET ${BASE_URL}/billing`, () => {
 
     it('Should handle subscription without stripeId', (done) => {
         jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1 });
-        jest.spyOn(db, 'getStripeSubscription')
-            .mockResolvedValueOnce({
+        jest.spyOn(db, 'getStripeSubscriptionsByExplorerIds')
+            .mockResolvedValueOnce([{
+                explorerId: 1,
                 stripePlan: { name: 'Team' },
                 formattedStatus: 'Active'
-            });
+            }]);
         jest.spyOn(db, 'getUserExplorers').mockResolvedValueOnce({
             items: [
                 { id: 1, name: 'Test' },
@@ -283,12 +284,13 @@ describe(`GET ${BASE_URL}/billing`, () => {
     it('Should handle canceled trials', (done) => {
         jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1 });
         mockInvoiceListUpcomingLines.mockRejectedValueOnce({ code: 'invoice_upcoming_none' });
-        jest.spyOn(db, 'getStripeSubscription')
-            .mockResolvedValueOnce({
+        jest.spyOn(db, 'getStripeSubscriptionsByExplorerIds')
+            .mockResolvedValueOnce([{
+                explorerId: 1,
                 stripePlan: { name: 'Team' },
                 formattedStatus: 'Trial',
                 stripeId: 'test'
-            });
+            }]);
         jest.spyOn(db, 'getUserExplorers').mockResolvedValueOnce({
             items: [
                 { id: 1, name: 'Test' },

@@ -1974,6 +1974,21 @@ const getStripeSubscription = async (explorerId) => {
 };
 
 /**
+ * Gets Stripe subscriptions for multiple explorers in a single query.
+ * @param {number[]} explorerIds - Array of explorer IDs
+ * @returns {Promise<StripeSubscription[]>} Subscriptions with plans
+ */
+const getStripeSubscriptionsByExplorerIds = async (explorerIds) => {
+    if (!explorerIds || !explorerIds.length)
+        return [];
+
+    return StripeSubscription.findAll({
+        where: { explorerId: { [Sequelize.Op.in]: explorerIds } },
+        include: 'stripePlan'
+    });
+};
+
+/**
  * Gets the quota extension Stripe plan.
  * @returns {Promise<StripePlan>} The quota extension plan
  */
@@ -3944,6 +3959,7 @@ const getWorkspaceBlock = async (workspaceId, number) => {
         'difficulty',
         'raw',
         'parentHash',
+        'orbitStatus',
         [
             Sequelize.literal(`(
                 SELECT COUNT(*)::INTEGER
@@ -3954,13 +3970,9 @@ const getWorkspaceBlock = async (workspaceId, number) => {
         ]
     ];
 
-    const orbitConfig = await OrbitChainConfig.findOne({ where: { workspaceId } });
-    if (orbitConfig)
-        attributes.push('orbitStatus');
-
     const block = await Block.findOne({
         where: { number, workspaceId },
-        attributes, 
+        attributes,
         include: {
             model: OrbitBatch,
             as: 'orbitBatch',
@@ -4358,8 +4370,17 @@ const storeTransactionTokenTransfers = async (userId, workspace, transactionHash
         if (!transaction)
             throw new Error(`Couldn't find transaction`);
 
-        for (let i = 0; i < tokenTransfers.length; i++)
-            await transaction.safeCreateTokenTransfer(tokenTransfers[i]);
+        const records = tokenTransfers.map(tt => ({
+            workspaceId: transaction.workspaceId,
+            transactionId: transaction.id,
+            dst: tt.dst,
+            src: tt.src,
+            amount: tt.amount,
+            token: tt.token,
+            tokenId: tt.tokenId
+        }));
+
+        await TokenTransfer.bulkCreate(records);
     }
 };
 
@@ -4664,6 +4685,45 @@ const isUserPremium = async (userId) => {
 
     const user = await User.findByAuthId(userId);;
     return user.isPremium;
+};
+
+/**
+ * Filters a list of addresses to those the user can sync.
+ * Single user/workspace lookup, single batch contract check.
+ * @param {string} userId - The Firebase auth ID
+ * @param {string} workspaceName - The workspace name
+ * @param {string[]} addresses - Addresses to check
+ * @returns {Promise<Set<string>>} Set of syncable addresses (lowercased)
+ */
+const filterSyncableAddresses = async (userId, workspaceName, addresses) => {
+    if (!userId) throw new Error('Missing parameter.');
+
+    const user = await User.findByAuthIdWithWorkspace(userId, workspaceName);
+    if (!user)
+        return new Set();
+
+    const uniqueAddresses = [...new Set(addresses.map(a => a.toLowerCase()))];
+
+    if (user.isPremium || user.workspaces[0].public)
+        return new Set(uniqueAddresses);
+
+    const workspace = user.workspaces[0];
+    const existingContracts = await workspace.getContracts({
+        where: { address: { [Sequelize.Op.in]: uniqueAddresses } },
+        attributes: ['address']
+    });
+    const existingSet = new Set(existingContracts.map(c => c.address.toLowerCase()));
+
+    const totalContracts = await workspace.countContracts();
+    const remaining = Math.max(0, 10 - totalContracts);
+
+    const result = new Set(existingSet);
+    for (const addr of uniqueAddresses) {
+        if (!result.has(addr) && result.size - existingSet.size < remaining)
+            result.add(addr);
+    }
+
+    return result;
 };
 
 /**
@@ -5152,6 +5212,7 @@ module.exports = {
     createUser: createUser,
     getUnprocessedContracts: getUnprocessedContracts,
     canUserSyncContract: canUserSyncContract,
+    filterSyncableAddresses: filterSyncableAddresses,
     isUserPremium: isUserPremium,
     getContractTransactions: getContractTransactions,
     storeTokenBalanceChanges: storeTokenBalanceChanges,
@@ -5269,6 +5330,7 @@ module.exports = {
     destroyStripeQuotaExtension: destroyStripeQuotaExtension,
     getQuotaExtensionPlan: getQuotaExtensionPlan,
     getStripeSubscription: getStripeSubscription,
+    getStripeSubscriptionsByExplorerIds: getStripeSubscriptionsByExplorerIds,
     createFaucet: createFaucet,
     updateFaucet: updateFaucet,
     getFaucet: getFaucet,

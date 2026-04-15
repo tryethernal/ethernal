@@ -5,7 +5,7 @@
  */
 
 const { Sequelize } = require('sequelize');
-const { Explorer, StripeSubscription, StripePlan, Workspace, IntegrityCheck } = require('../models');
+const { Explorer, StripeSubscription, StripePlan, StripeQuotaExtension, Workspace, IntegrityCheck } = require('../models');
 const logger = require('../lib/logger');
 const { withTimeout } = require('../lib/utils');
 const { createIncident } = require('../lib/opsgenie');
@@ -22,10 +22,10 @@ module.exports = async () => {
             {
                 model: StripeSubscription,
                 as: 'stripeSubscription',
-                include: {
-                    model: StripePlan,
-                    as: 'stripePlan'
-                }
+                include: [
+                    { model: StripePlan, as: 'stripePlan' },
+                    { model: StripeQuotaExtension, as: 'stripeQuotaExtension', required: false }
+                ]
             },
             {
                 model: Workspace,
