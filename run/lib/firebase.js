@@ -13,6 +13,7 @@ const { getDemoUserId, getMaxBlockForSyncReset } = require('./env');
 const models = require('../models');
 const { firebaseHash }  = require('./crypto');
 const { ORBIT_L2_TO_L1_LOG_TOPIC } = require('../constants/orbit');
+const { sanitize } = require('./utils');
 
 const Op = Sequelize.Op;
 const User = models.User;
@@ -1984,7 +1985,8 @@ const getStripeSubscriptionsByExplorerIds = async (explorerIds) => {
 
     return StripeSubscription.findAll({
         where: { explorerId: { [Sequelize.Op.in]: explorerIds } },
-        include: 'stripePlan'
+        include: 'stripePlan',
+        order: [['id', 'ASC']]
     });
 };
 
@@ -4370,7 +4372,7 @@ const storeTransactionTokenTransfers = async (userId, workspace, transactionHash
         if (!transaction)
             throw new Error(`Couldn't find transaction`);
 
-        const records = tokenTransfers.map(tt => ({
+        const records = tokenTransfers.map(tt => sanitize({
             workspaceId: transaction.workspaceId,
             transactionId: transaction.id,
             dst: tt.dst,
