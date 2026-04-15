@@ -87,6 +87,7 @@ export const PROJECT = {
   statusOptions: {
     detected: 'f75ad846',
     researched: '61e4505c',
+    drafting: '47fc9ee4',
     published: '98236657',
   },
   clusterOptions: {

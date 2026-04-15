@@ -19,6 +19,9 @@ const { managedWorkerError } = require('../lib/errors');
 const { startHeartbeat } = require('../lib/heartbeat');
 startHeartbeat('mediumPriority');
 
+const db = require('../models');
+const workers = [];
+
 priorities['medium'].forEach(jobName => {
     const worker = new Worker(
         jobName,
@@ -41,6 +44,18 @@ priorities['medium'].forEach(jobName => {
         }
     );
     worker.on('failed', (job, error) => managedWorkerError(error, jobName, job.data, 'mediumPriority'));
+    workers.push(worker);
 
     logger.info(`Started worker "${jobName}" - Priority: medium`);
 });
+
+function shutdown(signal) {
+    logger.info(`${signal} received in mediumPriority, closing workers...`);
+    Promise.all(workers.map(w => w.close()))
+        .then(() => db.sequelize.close())
+        .then(() => { logger.info('mediumPriority shutdown complete'); process.exit(0); })
+        .catch(() => process.exit(1));
+    setTimeout(() => process.exit(1), 4000);
+}
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT', () => shutdown('SIGINT'));
