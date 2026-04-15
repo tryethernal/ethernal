@@ -597,33 +597,39 @@ router.get('/billing', [authMiddleware, stripeMiddleware], async (req, res, next
 
         const result = await db.getUserExplorers(user.id, 1, 100);
 
+        const explorerIds = result.items.map(e => e.id);
+        const subscriptions = await db.getStripeSubscriptionsByExplorerIds(explorerIds);
+        const subsByExplorerId = new Map(subscriptions.map(s => [s.explorerId, s]));
+
         const activeExplorers = [];
+        const costPromises = [];
 
         for (let i = 0; i < result.items.length; i++) {
             const explorer = result.items[i];
-
-            const stripeSubscription = await db.getStripeSubscription(explorer.id);
+            const stripeSubscription = subsByExplorerId.get(explorer.id);
             if (!stripeSubscription)
                 continue;
 
-            const planName = stripeSubscription.stripePlan.name;;
-            let planCost = 0;
+            const planName = stripeSubscription.stripePlan.name;
+            const idx = activeExplorers.length;
+            activeExplorers.push({ id: explorer.id, name: explorer.name, planName, planCost: 0, subscriptionStatus: stripeSubscription.formattedStatus });
 
             if (stripeSubscription.stripeId) {
-                try {
-                    const upcomingLines = await stripe.invoices.listUpcomingLines({ subscription: stripeSubscription.stripeId });
-                    const amounts = upcomingLines.data.map(line => line.amount && line.amount > 0 ? line.amount : 0);
-                    planCost = parseFloat(amounts.reduce((acc, curr) => acc + curr, 0)) / 100;
-                } catch(error) {
-                    if (error.code == 'invoice_upcoming_none')
-                        planCost = 0;
-                    else
-                        throw error;
-                }
+                costPromises.push(
+                    stripe.invoices.listUpcomingLines({ subscription: stripeSubscription.stripeId })
+                        .then(upcomingLines => {
+                            const amounts = upcomingLines.data.map(line => line.amount && line.amount > 0 ? line.amount : 0);
+                            activeExplorers[idx].planCost = parseFloat(amounts.reduce((acc, curr) => acc + curr, 0)) / 100;
+                        })
+                        .catch(error => {
+                            if (error.code !== 'invoice_upcoming_none')
+                                throw error;
+                        })
+                );
             }
+        }
 
-            activeExplorers.push({ id: explorer.id, name: explorer.name, planName, planCost, subscriptionStatus: stripeSubscription.formattedStatus });
-        };
+        await Promise.all(costPromises);
 
         const totalCost = activeExplorers.reduce((acc, curr) => acc + curr.planCost, 0);
         res.status(200).json({ activeExplorers, totalCost });
