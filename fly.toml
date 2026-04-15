@@ -12,8 +12,7 @@ kill_timeout = "5s"
   auto_rollback = true
 
 [build]
-  dockerfile = "Dockerfile"
-  build-target = "prod_back"
+  dockerfile = "Dockerfile.backend.fly"
 
 [processes]
   api = "node index.js"
