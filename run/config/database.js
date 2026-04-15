@@ -30,17 +30,31 @@ module.exports = {
         "port": process.env.DB_PORT,
         "dialect": "postgres",
         "dialectOptions": {
-            "family": 4
+            "family": 4,
+            "keepAlive": true,
+            "keepAliveInitialDelayMillis": 10000,
+            "statement_timeout": 60000,
+            "idle_in_transaction_session_timeout": 30000
         },
         "logging": function(sql, sequelizeObject) {
             logger.debug(sql, { instance: sequelizeObject.instance });
         },
         "pool": {
-            max: 100,
-            min: 5,
+            max: 15,
+            min: 2,
             acquire: 30000,
-            idle: 30000,
+            idle: 10000,
             evict: 5000
+        },
+        "retry": {
+            "match": [
+                /ConnectionError/,
+                /connection terminated/i,
+                /ECONNRESET/,
+                /ETIMEDOUT/,
+                /ECONNREFUSED/
+            ],
+            "max": 3
         }
     }
 }
