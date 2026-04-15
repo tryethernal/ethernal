@@ -225,37 +225,31 @@ module.exports = async job => {
             let opChildConfigs = [];
 
             if (processedReceipt.logs && processedReceipt.logs.length > 0) {
-                // Query all L2 configs in a single call when we have logs to process
-                const workspaceWithL2Configs = await Workspace.findByPk(data.workspaceId, {
-                    attributes: ['id'],
-                    include: [
-                        {
-                            model: OrbitChainConfig,
-                            as: 'orbitConfig',
-                            include: {
-                                model: require('../models').Workspace,
-                                as: 'parentWorkspace',
-                                attributes: ['id', 'rpcServer']
-                            }
-                        },
-                        {
-                            model: OrbitChainConfig,
-                            as: 'orbitChildConfigs'
-                        },
-                        {
-                            model: OpChainConfig,
-                            as: 'opConfig'
-                        },
-                        {
-                            model: OpChainConfig,
-                            as: 'opChildConfigs'
+                // Load L2 configs with separate optimized queries to avoid deep join timeouts
+                const [orbitConfigResult, orbitChildConfigsResult, opConfigResult, opChildConfigsResult] = await Promise.all([
+                    OrbitChainConfig.findOne({
+                        where: { workspaceId: data.workspaceId },
+                        include: {
+                            model: require('../models').Workspace,
+                            as: 'parentWorkspace',
+                            attributes: ['id', 'rpcServer']
                         }
-                    ]
-                });
-                orbitConfig = workspaceWithL2Configs?.orbitConfig || null;
-                orbitChildConfigs = workspaceWithL2Configs?.orbitChildConfigs || [];
-                opConfig = workspaceWithL2Configs?.opConfig || null;
-                opChildConfigs = workspaceWithL2Configs?.opChildConfigs || [];
+                    }),
+                    OrbitChainConfig.findAll({
+                        where: { parentChainId: data.workspaceId }
+                    }),
+                    OpChainConfig.findOne({
+                        where: { workspaceId: data.workspaceId }
+                    }),
+                    OpChainConfig.findAll({
+                        where: { parentChainId: data.workspaceId }
+                    })
+                ]);
+
+                orbitConfig = orbitConfigResult;
+                orbitChildConfigs = orbitChildConfigsResult;
+                opConfig = opConfigResult;
+                opChildConfigs = opChildConfigsResult;
             }
 
             // Build workspace object with lazily loaded L2 configs for safeCreateReceipt
