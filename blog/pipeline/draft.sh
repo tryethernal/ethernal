@@ -18,11 +18,29 @@ log() { echo "[$(date -Iseconds)] $*" | tee -a "$LOG_FILE"; }
 
 FAILURE_REPORTED=false
 
+# Reset card to Detected so it can be retried
+reset_card() {
+  if [ -n "${CARD_ID:-}" ]; then
+    log "Resetting card $CARD_ID to Detected..."
+    cd "$REPO_DIR/blog/pipeline"
+    CARD_ID="$CARD_ID" node --input-type=module -e "
+      import { updateCardStatus } from './project.js';
+      await updateCardStatus(process.env.CARD_ID, 'detected');
+      console.log('Card reset to Detected');
+    " 2>&1 | tee -a "$LOG_FILE" || log "WARNING: Failed to reset card status"
+    cd "$REPO_DIR"
+  fi
+}
+
 # Report failure to GitHub Issues with last 50 lines of log
 report_failure() {
   [ "$FAILURE_REPORTED" = true ] && return
   FAILURE_REPORTED=true
   local phase="$1"
+
+  # Reset card before reporting so it can be retried
+  reset_card
+
   local log_tail
   log_tail=$(tail -50 "$LOG_FILE" 2>/dev/null || echo "No log available")
   local title="Blog pipeline failed: $phase"
@@ -89,7 +107,7 @@ log "Picking next topic..."
 PICK_OUTPUT=$(node index.js --pick 2>&1)
 echo "$PICK_OUTPUT" | tee -a "$LOG_FILE"
 
-PICKED=$(echo "$PICK_OUTPUT" | grep '::picked::' | sed 's/::picked:://')
+PICKED=$(echo "$PICK_OUTPUT" | grep '::picked::' | sed 's/::picked:://' || true)
 if [ -z "$PICKED" ]; then
   log "No topic to pick. Exiting."
   exit 0
@@ -133,12 +151,6 @@ echo "$PHASE1_OUTPUT" | tee -a "$LOG_FILE"
 
 if [ ! -f blog/pipeline/.research-notes.md ]; then
   log "ERROR: Phase 1 failed — no research notes produced"
-  cd blog/pipeline
-  CARD_ID="$CARD_ID" node --input-type=module -e "
-    import { updateCardStatus } from './project.js';
-    updateCardStatus(process.env.CARD_ID, 'detected');
-    console.log('Card reset to Detected');
-  " 2>&1 | tee -a "$LOG_FILE"
   report_failure "Research (Phase 1)"
   exit 1
 fi
@@ -162,12 +174,6 @@ ARTICLE_PATH=$(echo "$PHASE2_OUTPUT" | grep '::article-path::' | sed 's/::articl
 
 if [ -z "$ARTICLE_PATH" ] || [ ! -f "$ARTICLE_PATH" ]; then
   log "ERROR: Phase 2 failed — no article produced"
-  cd blog/pipeline
-  CARD_ID="$CARD_ID" node --input-type=module -e "
-    import { updateCardStatus } from './project.js';
-    updateCardStatus(process.env.CARD_ID, 'detected');
-    console.log('Card reset to Detected');
-  " 2>&1 | tee -a "$LOG_FILE"
   report_failure "Draft (Phase 2)"
   exit 1
 fi
@@ -252,12 +258,6 @@ Only edit the file to fix the errors. Do not rewrite content." \
 done
 
 if [ "$VALIDATION_PASSED" != "true" ]; then
-  cd "$REPO_DIR/blog/pipeline"
-  CARD_ID="$CARD_ID" node --input-type=module -e "
-    import { updateCardStatus } from './project.js';
-    updateCardStatus(process.env.CARD_ID, 'detected');
-    console.log('Card reset to Detected');
-  " 2>&1 | tee -a "$LOG_FILE"
   report_failure "Build Validation (failed after auto-fix)"
   exit 1
 fi
