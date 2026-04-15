@@ -32,9 +32,12 @@ module.exports = {
         "dialectOptions": {
             "family": 4,
             "keepAlive": true,
-            "keepAliveInitialDelayMillis": 10000,
-            "statement_timeout": 60000,
-            "idle_in_transaction_session_timeout": 30000
+            "keepAliveInitialDelayMillis": 10000
+        },
+        "hooks": {
+            "afterConnect": function(connection) {
+                return connection.query("SET statement_timeout = 60000; SET idle_in_transaction_session_timeout = 30000;");
+            }
         },
         "logging": function(sql, sequelizeObject) {
             logger.debug(sql, { instance: sequelizeObject.instance });
