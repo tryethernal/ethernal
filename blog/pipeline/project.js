@@ -114,25 +114,51 @@ export function getProjectItems() {
 /**
  * Pick the next topic for the every-2-day cadence using round-robin.
  * Selects the highest-scoring "Detected" card whose cluster doesn't
- * already have an active card (in Researched status, meaning currently being processed).
+ * already have an active card (in Researched or Drafting status).
+ *
+ * When no Detected/Backlog candidates remain, recycles the highest-scoring
+ * Published card so the pipeline keeps producing fresh angles on hot topics.
+ *
  * @param {boolean} dryRun
  * @returns {object | null} picked item with body content
  */
 export function pickNextTopic(dryRun = false) {
   const items = getProjectItems();
 
+  // Both Researched and Drafting mean a cluster is actively being worked on
   const activeClusters = new Set(
     items
-      .filter(i => i.status === 'Researched')
+      .filter(i => i.status === 'Researched' || i.status === 'Drafting')
       .map(i => i.cluster)
       .filter(Boolean)
   );
 
-  const candidates = items
+  let candidates = items
     .filter(i => i.status === 'Detected' || i.status === 'Backlog')
     .filter(i => i.cluster !== 'Emerging' && i.cluster !== '')
     .filter(i => !activeClusters.has(i.cluster))
     .sort((a, b) => b.score - a.score);
+
+  // Fallback: recycle Published cards when no fresh topics are available.
+  // Randomly pick from the top 3 highest-scoring published topics so consecutive
+  // runs don't always recycle the same card before the weekly trend scan repopulates.
+  if (candidates.length === 0) {
+    console.log('  No Detected/Backlog topics available — recycling from top Published topics');
+    const published = items
+      .filter(i => i.status === 'Published')
+      .filter(i => i.cluster !== 'Emerging' && i.cluster !== '')
+      .filter(i => !activeClusters.has(i.cluster))
+      .sort((a, b) => b.score - a.score);
+    const pool = published.slice(0, 3);
+    if (pool.length > 0) {
+      // Shuffle the top pool so each run has a chance to pick a different topic
+      for (let i = pool.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [pool[i], pool[j]] = [pool[j], pool[i]];
+      }
+      candidates = pool;
+    }
+  }
 
   if (candidates.length === 0) {
     console.log('  No eligible topics to pick (all clusters have active work)');
