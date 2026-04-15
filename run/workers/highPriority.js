@@ -32,7 +32,7 @@ priorities['high'].forEach(jobName => {
             }
         }, () => jobs[jobName](job)),
         {
-            concurrency: 50,
+            concurrency: 20,
             maxStalledCount: 5,
             lockDuration: 60000,
             connection,
