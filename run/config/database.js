@@ -48,7 +48,7 @@ module.exports = {
         },
         "retry": {
             "match": [
-                /ConnectionError/,
+                (err) => err.name && /ConnectionError/i.test(err.name),
                 /connection terminated/i,
                 /ECONNRESET/,
                 /ETIMEDOUT/,

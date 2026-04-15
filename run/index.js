@@ -14,6 +14,9 @@ function shutdown(signal) {
         db.sequelize.close().then(() => {
             logger.info('Database connections closed');
             process.exit(0);
+        }).catch((err) => {
+            logger.error('Error closing database connections', err);
+            process.exit(1);
         });
     });
     setTimeout(() => process.exit(1), 4000);
