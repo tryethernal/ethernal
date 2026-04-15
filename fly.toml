@@ -43,8 +43,11 @@ kill_timeout = "5s"
     hard_limit = 500
     soft_limit = 200
 
-  [[services.tcp_checks]]
+  [[services.http_checks]]
     interval = "15s"
-    timeout = "2s"
-    grace_period = "1s"
-    restart_limit = 0
+    timeout = "5s"
+    grace_period = "30s"
+    restart_limit = 3
+    method = "GET"
+    path = "/api/status/health"
+    protocol = "http"
