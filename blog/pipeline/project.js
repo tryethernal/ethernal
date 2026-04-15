@@ -140,14 +140,24 @@ export function pickNextTopic(dryRun = false) {
     .sort((a, b) => b.score - a.score);
 
   // Fallback: recycle Published cards when no fresh topics are available.
-  // Pick the highest-scoring published topic (new sources will produce a fresh angle).
+  // Randomly pick from the top 3 highest-scoring published topics so consecutive
+  // runs don't always recycle the same card before the weekly trend scan repopulates.
   if (candidates.length === 0) {
-    console.log('  No Detected/Backlog topics available — recycling highest-scoring Published topic');
-    candidates = items
+    console.log('  No Detected/Backlog topics available — recycling from top Published topics');
+    const published = items
       .filter(i => i.status === 'Published')
       .filter(i => i.cluster !== 'Emerging' && i.cluster !== '')
       .filter(i => !activeClusters.has(i.cluster))
       .sort((a, b) => b.score - a.score);
+    const pool = published.slice(0, 3);
+    if (pool.length > 0) {
+      // Shuffle the top pool so each run has a chance to pick a different topic
+      for (let i = pool.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [pool[i], pool[j]] = [pool[j], pool[i]];
+      }
+      candidates = pool;
+    }
   }
 
   if (candidates.length === 0) {
