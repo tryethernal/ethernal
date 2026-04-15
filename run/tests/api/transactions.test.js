@@ -154,7 +154,7 @@ describe(`GET ${BASE_URL}/:hash`, () => {
 
 describe(`POST ${BASE_URL}/:hash/trace`, () => {
     it('Should store contract data, store trace & return 200 status', (done) => {
-        jest.spyOn(db, 'canUserSyncContract').mockResolvedValue(true);
+        jest.spyOn(db, 'filterSyncableAddresses').mockResolvedValue(new Set(['0x1']));
         request.post(`${BASE_URL}/1234/trace`)
             .send({ data: { workspace: 'My Workspace', steps: [{ op: 'CALL', address: '0x1' }]}})
             .expect(200)
@@ -166,7 +166,7 @@ describe(`POST ${BASE_URL}/:hash/trace`, () => {
     });
 
     it('Should not store contract data, store trace & return 200 status', (done) => {
-        jest.spyOn(db, 'canUserSyncContract').mockResolvedValue(false);
+        jest.spyOn(db, 'filterSyncableAddresses').mockResolvedValue(new Set());
         request.post(`${BASE_URL}/1234/trace`)
             .send({ data: { workspace: 'My Workspace', steps: [{ op: 'CALL', address: '0x1' }]}})
             .expect(200)

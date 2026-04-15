@@ -178,25 +178,22 @@ router.post('/:hash/trace', authMiddleware, async (req, res, next) => {
             return managedError(new Error('Missing parameter.'), req, res);
         
         const trace = [];
-        for (const step of data.steps) {
-            if (['CALL', 'CALLCODE', 'DELEGATECALL', 'STATICCALL', 'CREATE', 'CREATE2'].indexOf(step.op.toUpperCase()) > -1) {
-                let contractRef;                
-                const canSync = await db.canUserSyncContract(data.uid, data.workspace, step.address);
+        const callSteps = data.steps.filter(step =>
+            ['CALL', 'CALLCODE', 'DELEGATECALL', 'STATICCALL', 'CREATE', 'CREATE2'].indexOf(step.op.toUpperCase()) > -1
+        );
 
-                if (canSync) {
-                    const contractData = sanitize({
-                        address: step.address.toLowerCase(),
-                        hashedBytecode: step.contractHashedBytecode
-                    });
+        if (callSteps.length) {
+            const syncableAddresses = await db.filterSyncableAddresses(data.uid, data.workspace, callSteps.map(s => s.address));
 
+            for (const step of callSteps) {
+                if (syncableAddresses.has(step.address.toLowerCase())) {
                     await db.storeContractData(
                         data.uid,
                         data.workspace,
                         step.address,
-                        contractData
+                        sanitize({ address: step.address.toLowerCase(), hashedBytecode: step.contractHashedBytecode })
                     );
                 }
-
                 trace.push(step);
             }
         }

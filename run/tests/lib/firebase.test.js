@@ -8,7 +8,7 @@ jest.mock('sequelize', () => ({
 require('../mocks/lib/env');
 require('../mocks/lib/queue');
 const { ORBIT_L2_TO_L1_LOG_TOPIC } = require('../../constants/orbit');
-const { ExplorerV2Dex, ExplorerFaucet, Workspace, Block, User, workspace, Explorer, ExplorerDomain, StripePlan, Transaction, StripeSubscription, Contract, OrbitBatch, OrbitWithdrawal, OrbitChainConfig } = require('../mocks/models');
+const { ExplorerV2Dex, ExplorerFaucet, Workspace, Block, User, workspace, Explorer, ExplorerDomain, StripePlan, Transaction, StripeSubscription, Contract, OrbitBatch, OrbitWithdrawal, OrbitChainConfig, TokenTransfer } = require('../mocks/models');
 const db = require('../../lib/firebase');
 const env = require('../../lib/env');
 
@@ -3425,19 +3425,23 @@ describe('storeTransaction', () => {
 });
 
 describe('storeTransactionTokenTransfers', () => {
-    it('Should call the creation method for each transfer', async () => {
-        const safeCreateTokenTransfer = jest.fn().mockResolvedValueOnce({});
+    it('Should bulk create token transfers', async () => {
         jest.spyOn(User, 'findByAuthIdWithWorkspace').mockResolvedValueOnce({
             workspaces: [
                 {
                     findTransaction: jest.fn().mockResolvedValueOnce({
-                        safeCreateTokenTransfer: safeCreateTokenTransfer
+                        id: 10,
+                        workspaceId: 1
                     })
                 }
             ]
         });
+        TokenTransfer.bulkCreate.mockResolvedValueOnce([]);
         await db.storeTransactionTokenTransfers('123', 'My Workspace', '0x123', [{ token: '0xabc' }, { token: '0xdef' }]);
-        expect(safeCreateTokenTransfer).toHaveBeenCalledTimes(2);
+        expect(TokenTransfer.bulkCreate).toHaveBeenCalledWith([
+            expect.objectContaining({ token: '0xabc', transactionId: 10, workspaceId: 1 }),
+            expect.objectContaining({ token: '0xdef', transactionId: 10, workspaceId: 1 })
+        ]);
     });
 
     it('Should throw an error if the transaction does not exist', async () => {
