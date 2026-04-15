@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.163] - 2026-04-15
+### Fixed
+- fix: reduce mworker concurrency to 20 and lockDuration to 60s
+- fix: increase DB pool to 40 and reduce hworker concurrency to 20
+- perf: tune block sync queue settings for throughput
+- fix: correct Dockerfile reference in fly.toml
+- fix: add HTTP health check and prevent worker crash on DB failure
+
+
 ## [5.17.162] - 2026-04-15
 ### Fixed
 - hotfix: move statement_timeout to afterConnect hook for PgBouncer compatibility

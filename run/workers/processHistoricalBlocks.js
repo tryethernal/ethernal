@@ -26,12 +26,11 @@ const worker = new Worker(
 );
 worker.on('failed', (job, error) => managedWorkerError(error, 'processHistoricalBlocks', job.data, 'highPriority'));
 
-const db = require('../models');
 const logger = require('../lib/logger');
 function shutdown(signal) {
     logger.info(`${signal} received in processHistoricalBlocks, closing worker...`);
     worker.close()
-        .then(() => db.sequelize.close())
+        .then(() => require('../models').sequelize.close())
         .then(() => { logger.info('processHistoricalBlocks shutdown complete'); process.exit(0); })
         .catch(() => process.exit(1));
     setTimeout(() => process.exit(1), 4000);

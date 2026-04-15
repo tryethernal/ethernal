@@ -6,7 +6,7 @@ const queues = {};
 priorities['high'].forEach(jobName => {
     queues[jobName] = new Queue(jobName, {
         defaultJobOptions: {
-            attempts: 50,
+            attempts: 15,
             stackTraceLimit: 3,
             removeOnComplete: {
                 count: 100,
