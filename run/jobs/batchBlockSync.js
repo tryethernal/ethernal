@@ -12,7 +12,7 @@ const { Op } = require('sequelize');
 const logger = require('../lib/logger');
 
 const CHUNK_SIZE = 5000;
-const RECHUNK_DELAY = 3000;
+const RECHUNK_DELAY = 15000;
 
 module.exports = async job => {
     const data = job.data;

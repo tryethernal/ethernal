@@ -17,7 +17,7 @@ const { isBatchTransaction } = require('../lib/opBatches');
 const { reportRpcFailure } = require('../lib/syncHelpers');
 
 // Threshold for inline receipt fetching vs job queueing
-const INLINE_RECEIPT_THRESHOLD = 10;
+const INLINE_RECEIPT_THRESHOLD = 25;
 // Concurrency limit for parallel receipt storage
 const RECEIPT_STORAGE_CONCURRENCY = 5;
 

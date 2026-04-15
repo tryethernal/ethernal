@@ -34,7 +34,7 @@ priorities['high'].forEach(jobName => {
         {
             concurrency: 50,
             maxStalledCount: 5,
-            lockDuration: 300000,
+            lockDuration: 60000,
             connection,
             metrics: {
                 maxDataPoints: MetricsTime.ONE_WEEK * 2,
