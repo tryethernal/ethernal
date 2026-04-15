@@ -18,6 +18,9 @@ const { managedWorkerError } = require('../lib/errors');
 const { startHeartbeat } = require('../lib/heartbeat');
 startHeartbeat('highPriority');
 
+const db = require('../models');
+const workers = [];
+
 priorities['high'].forEach(jobName => {
     const worker = new Worker(
         jobName,
@@ -40,6 +43,18 @@ priorities['high'].forEach(jobName => {
         }
     );
     worker.on('failed', (job, error) => managedWorkerError(error, jobName, job.data, 'highPriority'));
+    workers.push(worker);
 
     logger.info(`Started worker "${jobName}" - Priority: high`);
 });
+
+function shutdown(signal) {
+    logger.info(`${signal} received in highPriority, closing workers...`);
+    Promise.all(workers.map(w => w.close()))
+        .then(() => db.sequelize.close())
+        .then(() => { logger.info('highPriority shutdown complete'); process.exit(0); })
+        .catch(() => process.exit(1));
+    setTimeout(() => process.exit(1), 4000);
+}
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT', () => shutdown('SIGINT'));
