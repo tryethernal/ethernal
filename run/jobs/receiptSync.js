@@ -71,13 +71,16 @@ module.exports = async job => {
                     include: {
                         model: StripeSubscription,
                         as: 'stripeSubscription',
-                        attributes: ['id']
-                    }
+                        attributes: ['id'],
+                        required: false // LEFT JOIN to avoid filtering out explorers without subscriptions
+                    },
+                    required: false // LEFT JOIN to avoid filtering out workspaces without explorers
                 },
                 {
                     model: RpcHealthCheck,
                     as: 'rpcHealthCheck',
-                    attributes: ['isReachable']
+                    attributes: ['isReachable'],
+                    required: false // LEFT JOIN to avoid filtering out workspaces without health checks
                 }
                 // Removed orbit/OP config includes - they will be loaded lazily if needed
             ]
@@ -85,7 +88,8 @@ module.exports = async job => {
         {
             model: TransactionReceipt,
             as: 'receipt',
-            attributes: ['id']
+            attributes: ['id'],
+            required: false // LEFT JOIN to avoid filtering out transactions without receipts
         }
     ];
 
