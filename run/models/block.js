@@ -110,17 +110,10 @@ module.exports = (sequelize, DataTypes) => {
             }
         });
 
-        // Short-circuit if we already know we need to revert
-        if (syncingTransactionCount > 0) {
-            await sequelize.transaction(
-                { deferrable: Sequelize.Deferrable.SET_DEFERRED },
-                async transaction => this.safeDestroy(transaction)
-            );
-            return true;
-        }
+        // Check if we need to revert due to transaction count mismatch
+        let shouldRevert = syncingTransactionCount > 0;
 
-        // Only check transaction count if transactionsCount is available and no transactions are syncing
-        if (this.transactionsCount !== null && this.transactionsCount !== undefined) {
+        if (!shouldRevert && this.transactionsCount !== null && this.transactionsCount !== undefined) {
             const currentTransactionCount = await sequelize.models.Transaction.count({
                 where: {
                     blockId: this.id,
@@ -128,13 +121,19 @@ module.exports = (sequelize, DataTypes) => {
                 }
             });
 
-            if (currentTransactionCount !== this.transactionsCount) {
-                await sequelize.transaction(
-                    { deferrable: Sequelize.Deferrable.SET_DEFERRED },
-                    async transaction => this.safeDestroy(transaction)
-                );
-                return true;
-            }
+            shouldRevert = currentTransactionCount !== this.transactionsCount;
+        }
+
+        if (shouldRevert) {
+            // Use optimized transaction configuration to reduce connection timeouts
+            await sequelize.transaction(
+                {
+                    deferrable: Sequelize.Deferrable.SET_DEFERRED,
+                    isolationLevel: Sequelize.Transaction.ISOLATION_LEVELS.READ_COMMITTED
+                },
+                async transaction => this.safeDestroy(transaction)
+            );
+            return true;
         }
 
         return false;
