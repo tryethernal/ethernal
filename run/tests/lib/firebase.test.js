@@ -1830,7 +1830,7 @@ describe('storeTransactionReceipt', () => {
     it('Should call the receipt creation function', (done) => {
         db.storeTransactionReceipt(1, { transactionHash: '0x123' })
             .then(() => {
-                expect(safeCreateReceipt).toHaveBeenCalledWith({ transactionHash: '0x123' });
+                expect(safeCreateReceipt).toHaveBeenCalledWith({ transactionHash: '0x123' }, { skipExistenceCheck: true });
                 done();
             });
     });
