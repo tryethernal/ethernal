@@ -36,7 +36,7 @@ module.exports = {
         },
         "hooks": {
             "afterConnect": function(connection) {
-                return connection.query("SET idle_in_transaction_session_timeout = 30000;");
+                return connection.query("SET idle_in_transaction_session_timeout = 30000; SET synchronous_commit = off;");
             }
         },
         "logging": function(sql, sequelizeObject) {
