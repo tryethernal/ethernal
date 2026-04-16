@@ -212,4 +212,38 @@ describe('increaseStripeBillingQuota', () => {
                 done();
             });
     });
+
+    it('Should use optimized Block.findOne query when workspaceId is provided', (done) => {
+        const increment = jest.fn().mockResolvedValue();
+        const stripeSubscription = {
+            id: 1,
+            stripeId: 'sub_123',
+            transactionQuota: 100,
+            stripePlanId: 1,
+            increment
+        };
+
+        jest.spyOn(Block, 'findOne').mockResolvedValueOnce({
+            id: 1,
+            isReady: true,
+            transactionsCount: 1,
+            workspaceId: 1
+        });
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({ id: 1 });
+        jest.spyOn(StripeSubscription, 'findOne').mockResolvedValueOnce(stripeSubscription);
+        jest.spyOn(StripePlan, 'findByPk').mockResolvedValueOnce({
+            capabilities: { billing: 'flat' }
+        });
+
+        increaseStripeBillingQuota({ data: { blockId: 1, workspaceId: 1 }})
+            .then(res => {
+                expect(Block.findOne).toHaveBeenCalledWith({
+                    where: { id: 1, workspaceId: 1 },
+                    attributes: ['id', 'isReady', 'transactionsCount', 'workspaceId']
+                });
+                expect(increment).toHaveBeenCalledWith('transactionQuota', { by: 1 });
+                expect(res).toEqual(true);
+                done();
+            });
+    });
 });

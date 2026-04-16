@@ -17,7 +17,7 @@ describe('removeStalledBlock', () => {
         removeStalledBlock({ data: { blockId: 1 }})
             .then(res => {
                 expect(revertIfPartial).toHaveBeenCalled();
-                expect(enqueue).toHaveBeenCalledWith('increaseStripeBillingQuota', 'increaseStripeBillingQuota-1-1', { blockId: 1 });
+                expect(enqueue).toHaveBeenCalledWith('increaseStripeBillingQuota', 'increaseStripeBillingQuota-1-1', { blockId: 1, workspaceId: 1 });
                 expect(res).toEqual(true);
                 done();
             });
@@ -62,7 +62,7 @@ describe('removeStalledBlock', () => {
             .then(res => {
                 expect(Block.findOne).toHaveBeenCalledWith({ where: { id: 1, workspaceId: 1 }, attributes: ['id', 'workspaceId', 'number', 'transactionsCount'] });
                 expect(revertIfPartial).toHaveBeenCalled();
-                expect(enqueue).toHaveBeenCalledWith('increaseStripeBillingQuota', 'increaseStripeBillingQuota-1-1', { blockId: 1 });
+                expect(enqueue).toHaveBeenCalledWith('increaseStripeBillingQuota', 'increaseStripeBillingQuota-1-1', { blockId: 1, workspaceId: 1 });
                 expect(res).toEqual(true);
                 done();
             });

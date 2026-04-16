@@ -15,9 +15,16 @@ module.exports = async job => {
         return 'Missing parameter';
 
     // Step 1: Get block with minimal data
-    const block = await Block.findByPk(data.blockId, {
-        attributes: ['id', 'isReady', 'transactionsCount', 'workspaceId']
-    });
+    // Use workspaceId in query for better performance on hypertables (partition pruning)
+    // Fallback to findByPk for backward compatibility with existing job data
+    const block = data.workspaceId
+        ? await Block.findOne({
+            where: { id: data.blockId, workspaceId: data.workspaceId },
+            attributes: ['id', 'isReady', 'transactionsCount', 'workspaceId']
+        })
+        : await Block.findByPk(data.blockId, {
+            attributes: ['id', 'isReady', 'transactionsCount', 'workspaceId']
+        });
 
     if (!block)
         return 'Cannot find block';
