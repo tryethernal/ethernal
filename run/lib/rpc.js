@@ -18,6 +18,9 @@ const abiChecker = require('../lib/contract');
 /** Module-level bytecode cache shared across Tracer instances (immutable data) */
 const bytecodeCache = new LRUCache({ max: 5000, ttl: 3600000 });
 
+/** Module-level balance cache to prevent consecutive HTTP calls for duplicate balance queries */
+const balanceCache = new LRUCache({ max: 1000, ttl: 30000 }); // 30 second TTL, 1000 entries max
+
 const ERC721_ABI = require('./abis/erc721.json');
 const ERC20_ABI = require('./abis/erc20.json');
 const IUniswapV2Router02 = require('./abis/IUniswapV2Router02.json');
@@ -282,9 +285,29 @@ class ProviderConnector {
     }
 
     getBalance(address, block = 'latest') {
+        // Create cache key combining server, address, and block for deduplication
+        const cacheKey = `${this.server}:${address}:${block}`;
+
+        // Check cache first to prevent consecutive HTTP calls for the same balance query
+        const cachedBalance = balanceCache.get(cacheKey);
+        if (cachedBalance) {
+            return Promise.resolve(cachedBalance);
+        }
+
         // Use blockProvider for better timeout handling on slow RPC endpoints
         // This prevents timeout-induced retries that cause consecutive HTTP calls
-        return withTimeout(this.blockProvider.getBalance(address, block), 30000);
+        const balancePromise = withTimeout(this.blockProvider.getBalance(address, block), 30000);
+
+        // Cache the result to prevent duplicate requests
+        balancePromise.then(balance => {
+            if (balance) {
+                balanceCache.set(cacheKey, balance);
+            }
+        }).catch(() => {
+            // Don't cache errors, allow retries for failed requests
+        });
+
+        return balancePromise;
     }
 
     async checkRateLimit() {
