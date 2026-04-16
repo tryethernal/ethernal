@@ -244,7 +244,7 @@ describe('receiptSync', () => {
                         opConfig: null,
                         opChildConfigs: []
                     }
-                }, { skipExistenceCheck: true });
+                });
                 done();
             });
     });
@@ -277,7 +277,7 @@ describe('receiptSync', () => {
                     blockNumber: 1,
                     raw: { transactionHash: '0x123' },
                     workspace: { id: 1, orbitConfig: null, orbitChildConfigs: [], opConfig: null, opChildConfigs: [] }
-                }, { skipExistenceCheck: true });
+                });
                 done();
             });
     });
