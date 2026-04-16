@@ -2457,7 +2457,7 @@ const storeTransactionReceipt = async (transactionId, receipt) => {
     if (!transaction)
         throw new Error('Cannot find transaction');
 
-    return transaction.safeCreateReceipt(receipt);
+    return transaction.safeCreateReceipt(receipt, { skipExistenceCheck: true });
 };
 
 /**
