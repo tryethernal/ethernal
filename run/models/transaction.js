@@ -876,11 +876,9 @@ module.exports = (sequelize, DataTypes) => {
         });
         } catch (error) {
             // When skipExistenceCheck is true, the transaction row may have been deleted
-            // by a concurrent workspace reset. Handle FK violations and connection timeouts gracefully.
-            if (options.skipExistenceCheck && (
-                error.name === 'SequelizeForeignKeyConstraintError' ||
-                error.name === 'SequelizeConnectionAcquireTimeoutError'
-            )) {
+            // by a concurrent workspace reset. Handle FK violations gracefully.
+            // Note: Connection timeout errors are transient and should propagate for retry.
+            if (options.skipExistenceCheck && error.name === 'SequelizeForeignKeyConstraintError') {
                 return 'Transaction no longer exists';
             }
             throw error;
