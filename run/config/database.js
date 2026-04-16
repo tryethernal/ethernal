@@ -43,8 +43,8 @@ module.exports = {
             logger.debug(sql, { instance: sequelizeObject.instance });
         },
         "pool": {
-            max: 20,
-            min: 2,
+            max: 25,
+            min: 3,
             acquire: 30000,
             idle: 10000,
             evict: 5000
