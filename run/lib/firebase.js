@@ -15,9 +15,13 @@ const redis = require('./redis');
 const logger = require('./logger');
 const { firebaseHash }  = require('./crypto');
 const { ORBIT_L2_TO_L1_LOG_TOPIC } = require('../constants/orbit');
-const { sanitize } = require('./utils');
+const { sanitize, withTimeout } = require('./utils');
 
 const ACTIVE_WALLET_COUNT_CACHE_TTL_SECONDS = 300;
+// Shared Redis client uses maxRetriesPerRequest: null, so commands queue indefinitely
+// during a connection outage instead of rejecting. Cap each cache op so the DB fallback
+// stays reachable.
+const ACTIVE_WALLET_COUNT_CACHE_TIMEOUT_MS = 500;
 
 const Op = Sequelize.Op;
 const User = models.User;
@@ -3789,7 +3793,7 @@ const getActiveWalletCount = async (workspaceId) => {
 
     const cacheKey = `active-wallet-count:${workspaceId}`;
     try {
-        const cached = await redis.get(cacheKey);
+        const cached = await withTimeout(redis.get(cacheKey), ACTIVE_WALLET_COUNT_CACHE_TIMEOUT_MS);
         if (cached != null) return JSON.parse(cached);
     } catch (error) {
         logger.warn({ message: 'active-wallet-count cache read failed', workspaceId, error: error.message });
@@ -3802,7 +3806,10 @@ const getActiveWalletCount = async (workspaceId) => {
     const count = await workspace.countActiveWallets();
 
     try {
-        await redis.set(cacheKey, JSON.stringify(count), 'EX', ACTIVE_WALLET_COUNT_CACHE_TTL_SECONDS);
+        await withTimeout(
+            redis.set(cacheKey, JSON.stringify(count), 'EX', ACTIVE_WALLET_COUNT_CACHE_TTL_SECONDS),
+            ACTIVE_WALLET_COUNT_CACHE_TIMEOUT_MS
+        );
     } catch (error) {
         logger.warn({ message: 'active-wallet-count cache write failed', workspaceId, error: error.message });
     }

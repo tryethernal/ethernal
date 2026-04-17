@@ -3023,6 +3023,18 @@ describe('getActiveWalletCount', () => {
             });
     });
 
+    it('Should return count even when cache write fails', done => {
+        redis.set.mockRejectedValueOnce(new Error('redis write error'));
+        const countActiveWallets = jest.fn().mockResolvedValueOnce(10);
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({ countActiveWallets });
+
+        db.getActiveWalletCount(1)
+            .then(res => {
+                expect(res).toEqual(10);
+                done();
+            });
+    });
+
     it('Should return an error if no workspace', (done) => {
         jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce(null);
 
