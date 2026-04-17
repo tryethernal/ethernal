@@ -262,7 +262,7 @@ module.exports = async job => {
             };
         }
 
-        const savedReceipt = await transaction.safeCreateReceipt(processedReceipt);
+        const savedReceipt = await transaction.safeCreateReceipt(processedReceipt, { skipExistenceCheck: true });
 
         // Handle graceful failure when transaction was deleted during processing
         if (savedReceipt === 'Transaction no longer exists') {

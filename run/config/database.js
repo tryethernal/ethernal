@@ -36,15 +36,15 @@ module.exports = {
         },
         "hooks": {
             "afterConnect": function(connection) {
-                return connection.query("SET statement_timeout = 60000; SET idle_in_transaction_session_timeout = 30000;");
+                return connection.query("SET idle_in_transaction_session_timeout = 30000; SET synchronous_commit = off;");
             }
         },
         "logging": function(sql, sequelizeObject) {
             logger.debug(sql, { instance: sequelizeObject.instance });
         },
         "pool": {
-            max: 40,
-            min: 5,
+            max: 20,
+            min: 2,
             acquire: 30000,
             idle: 10000,
             evict: 5000
