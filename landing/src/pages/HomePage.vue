@@ -22,12 +22,12 @@ import LandingPricing from '@/components/LandingPricing.vue';
 import LandingCTA from '@/components/LandingCTA.vue';
 
 useHead({
-    title: 'Ethernal — Block Explorer for EVM Chains',
+    title: 'Open-Source Block Explorer for EVM Chains | Ethernal',
     meta: [
-        { name: 'description', content: 'Deploy your own block explorer in 5 minutes. Open source, fully customizable, works with any EVM chain. Just needs an RPC URL.' },
+        { name: 'description', content: 'Deploy a block explorer for any EVM chain in 5 minutes. Open source, self-hostable, works with any RPC. Free tier, transparent pricing, MIT-licensed.' },
         { property: 'og:type', content: 'website' },
-        { property: 'og:title', content: 'Ethernal — Block Explorer for EVM Chains' },
-        { property: 'og:description', content: 'Deploy your own block explorer in 5 minutes. Open source, fully customizable, works with any EVM chain. Just needs an RPC URL.' },
+        { property: 'og:title', content: 'Open-Source Block Explorer for EVM Chains | Ethernal' },
+        { property: 'og:description', content: 'Deploy a block explorer for any EVM chain in 5 minutes. Open source, self-hostable, works with any RPC. Free tier, transparent pricing, MIT-licensed.' },
         { property: 'og:url', content: 'https://tryethernal.com/' },
         { property: 'og:image', content: 'https://tryethernal.com/images/og-image.png' },
         { name: 'twitter:card', content: 'summary_large_image' },
