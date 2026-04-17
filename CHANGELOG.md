@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.169] - 2026-04-17
+### Fixed
+- test: catch up tests with constants tuned in b9ba20cd (#1195)
+- fix(blog): retry push with rebase when develop moves mid-pipeline (#1194)
+- perf: cache activeWalletCount result in Redis (#1193)
+
+
 ## [5.17.168] - 2026-04-16
 ### Fixed
 - fix: move transaction state update outside receipt transaction
