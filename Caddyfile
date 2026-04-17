@@ -139,11 +139,36 @@ blog.tryethernal.com {
     encode gzip
 }
 
+# app.tryethernal.com: 301 landing/blog paths to apex, pass through app routes to SPA.
+# NOTE: the path list below is an explicit allowlist. When adding a new top-level
+# landing route (e.g. a new /chains/<slug>, /compare page, or root-level marketing
+# page), update @landingPaths or @landingPathPrefixes below. Source of truth for
+# landing routes: landing/src/router.js.
+app.tryethernal.com {
+    tls contact@tryethernal.com {
+        ca https://dv.acme-v02.api.pki.goog/directory
+        eab {env.GTS_EAB_KEY_ID} {env.GTS_EAB_HMAC_KEY}
+        dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+    }
+
+    @landingPaths path /blockscout-alternative /etherscan-alternative /routescan-alternative /build-vs-buy-block-explorer /op-stack /arbitrum-orbit /pricing /features /developers /teams /app-chains /transaction-tracing /contact-us /hardhat-block-explorer /anvil-block-explorer /ganache-block-explorer /kaleido /chainstack /github-actions /terms /privacy
+    handle @landingPaths {
+        redir https://tryethernal.com{uri} permanent
+    }
+
+    @landingPathPrefixes path /blog* /chains/* /tools/*
+    handle @landingPathPrefixes {
+        redir https://tryethernal.com{uri} permanent
+    }
+
+    import common
+}
+
 # Wildcard cert for *.tryethernal.com subdomains (DNS challenge via Google Trust Services)
 *.tryethernal.com {
     tls contact@tryethernal.com {
         ca https://dv.acme-v02.api.pki.goog/directory
-        eab adaf0f2ddae7ae0f7466c40329d48f11 BhCCPZ7_J4pRIyf8JBxVkxeY2_Y3P8oJ5J6OS6vYs_ubGsbru7wc5OaGAFdAxMlTyCx_cXUk4nLuQpGh0VJN0lQ
+        eab {env.GTS_EAB_KEY_ID} {env.GTS_EAB_HMAC_KEY}
         dns cloudflare {env.CLOUDFLARE_API_TOKEN}
     }
 
