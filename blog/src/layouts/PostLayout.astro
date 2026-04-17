@@ -54,8 +54,12 @@ const relatedPosts = allPosts
     "image": (ogImage || image) ? ((ogImage || image).startsWith('http') ? (ogImage || image) : `https://tryethernal.com${ogImage || image}`) : undefined,
     "author": {
       "@type": "Person",
-      "name": "Antoine Gravieet",
-      "url": "https://tryethernal.com"
+      "name": "Antoine",
+      "url": "https://tryethernal.com",
+      "sameAs": [
+        "https://twitter.com/adechevigne",
+        "https://github.com/antoinedc"
+      ]
     },
     "publisher": {
       "@type": "Organization",
