@@ -252,7 +252,9 @@ module.exports = (sequelize, DataTypes) => {
         // Store token transfer events to be processed outside main transaction to prevent deadlocks
         let tokenTransferEvents = [];
 
-        const receiptResult = await sequelize.transaction(async transaction => {
+        let receiptResult;
+        try {
+        receiptResult = await sequelize.transaction(async transaction => {
             // Conditionally check if this transaction still exists before proceeding
             // Prevents race condition with workspace reset operations that delete transactions
             // Skip this check for performance when called from trusted contexts like inline blockSync
@@ -267,8 +269,6 @@ module.exports = (sequelize, DataTypes) => {
                     return 'Transaction no longer exists';
                 }
             }
-
-            await this.update({ state: 'ready' }, { transaction });
 
             const [storedReceipt] = await sequelize.models.TransactionReceipt.bulkCreate(
                 [
@@ -872,6 +872,20 @@ module.exports = (sequelize, DataTypes) => {
 
             return storedReceipt;
         });
+        } catch (error) {
+            // When skipExistenceCheck is true, the transaction row may have been deleted
+            // by a concurrent workspace reset. Handle FK violations gracefully.
+            if (options.skipExistenceCheck && error.name === 'SequelizeForeignKeyConstraintError') {
+                return 'Transaction no longer exists';
+            }
+            throw error;
+        }
+
+        // Update transaction state outside the main transaction to avoid row lock contention
+        // with blockSync's uncommitted INSERT. Safe because the receipt is already committed.
+        if (receiptResult && receiptResult !== 'Transaction no longer exists' && receiptResult !== 'Receipt already exists') {
+            await this.update({ state: 'ready' });
+        }
 
         // Create TokenTransferEvent records in a separate transaction to prevent deadlocks.
         // Retry with backoff on deadlock (40P01) since TimescaleDB chunk creation can

@@ -11,9 +11,17 @@
 const Sequelize = require('sequelize');
 const { getDemoUserId, getMaxBlockForSyncReset } = require('./env');
 const models = require('../models');
+const redis = require('./redis');
+const logger = require('./logger');
 const { firebaseHash }  = require('./crypto');
 const { ORBIT_L2_TO_L1_LOG_TOPIC } = require('../constants/orbit');
-const { sanitize } = require('./utils');
+const { sanitize, withTimeout } = require('./utils');
+
+const ACTIVE_WALLET_COUNT_CACHE_TTL_SECONDS = 300;
+// Shared Redis client uses maxRetriesPerRequest: null, so commands queue indefinitely
+// during a connection outage instead of rejecting. Cap each cache op so the DB fallback
+// stays reachable.
+const ACTIVE_WALLET_COUNT_CACHE_TIMEOUT_MS = 500;
 
 const Op = Sequelize.Op;
 const User = models.User;
@@ -3776,17 +3784,37 @@ const getTransactionVolume = async (workspaceId, from, to) => {
 
 /**
  * Gets count of active wallets in workspace.
+ * Result is cached in Redis for 5 minutes to avoid repeated full scans of transaction_events.
  * @param {number} workspaceId - The workspace ID
  * @returns {Promise<number>} Active wallet count
  */
 const getActiveWalletCount = async (workspaceId) => {
     if (!workspaceId) throw new Error('Missing parameter.');
 
+    const cacheKey = `active-wallet-count:${workspaceId}`;
+    try {
+        const cached = await withTimeout(redis.get(cacheKey), ACTIVE_WALLET_COUNT_CACHE_TIMEOUT_MS);
+        if (cached != null) return JSON.parse(cached);
+    } catch (error) {
+        logger.warn({ message: 'active-wallet-count cache read failed', workspaceId, error: error.message });
+    }
+
     const workspace = await Workspace.findByPk(workspaceId);
     if (!workspace)
         throw new Error('Could not find workspace');
 
-    return workspace.countActiveWallets();
+    const count = await workspace.countActiveWallets();
+
+    try {
+        await withTimeout(
+            redis.set(cacheKey, JSON.stringify(count), 'EX', ACTIVE_WALLET_COUNT_CACHE_TTL_SECONDS),
+            ACTIVE_WALLET_COUNT_CACHE_TIMEOUT_MS
+        );
+    } catch (error) {
+        logger.warn({ message: 'active-wallet-count cache write failed', workspaceId, error: error.message });
+    }
+
+    return count;
 };
 
 /**

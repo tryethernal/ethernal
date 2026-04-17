@@ -145,7 +145,7 @@ describe('batchBlockSync', () => {
         expect(enqueued[0].data.blockNumber).toBe(1);
         expect(enqueued[4999].data.blockNumber).toBe(5000);
 
-        // Should self-re-enqueue for remaining range with 3s delay
+        // Should self-re-enqueue for remaining range with the rechunk backpressure delay
         expect(enqueue).toHaveBeenCalledWith(
             'batchBlockSync',
             'batchBlockSync-123-My Workspace-5001-10000',
@@ -157,7 +157,7 @@ describe('batchBlockSync', () => {
                 to: 10000,
                 source: 'batchSync'
             },
-            null, null, 3000
+            null, null, 15000
         );
     });
 
