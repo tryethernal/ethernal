@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.170] - 2026-04-17
+### Fixed
+- fix: handle TokenTransfer deletion race condition in safeCreateBalanceChanges (#1126)
+- fix: optimize rpcHealthCheckStarter query to prevent connection timeouts (#1154)
+- fix: add missing index on stripe_quota_extensions.stripeSubscriptionId (#1189)
+- fix: parallelize workspace and explorer lookups in processBlock job (#1182)
+- fix: optimize Block lookup query in increaseStripeBillingQuota for TimescaleDB hypertables (#1179)
+
+
 ## [5.17.169] - 2026-04-17
 ### Fixed
 - test: catch up tests with constants tuned in b9ba20cd (#1195)
