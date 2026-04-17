@@ -362,12 +362,12 @@ import LandingLayout from '@/components/LandingLayout.vue';
 import LandingCTA from '@/components/LandingCTA.vue';
 
 useHead({
-    title: 'Etherscan Alternative - Ethernal',
+    title: 'Etherscan Alternative for Custom EVM Chains | Ethernal',
     meta: [
-        { name: 'description', content: 'Open-source Etherscan alternative for custom EVM chains. Self-hostable, MIT licensed, deploys in 5 minutes. Full white-label from $500/mo vs Etherscan\'s $1M+ EaaS.' },
+        { name: 'description', content: 'Need an Etherscan-style block explorer for your L2 or app-chain? Ethernal is open-source, deploys in 5 minutes, and starts at $0. Compare features.' },
         { property: 'og:type', content: 'website' },
-        { property: 'og:title', content: 'Etherscan Alternative - Ethernal' },
-        { property: 'og:description', content: 'Open-source Etherscan alternative for custom EVM chains. Self-hostable, MIT licensed, deploys in 5 minutes. Full white-label from $500/mo vs Etherscan\'s $1M+ EaaS.' },
+        { property: 'og:title', content: 'Etherscan Alternative for Custom EVM Chains | Ethernal' },
+        { property: 'og:description', content: 'Need an Etherscan-style block explorer for your L2 or app-chain? Ethernal is open-source, deploys in 5 minutes, and starts at $0. Compare features.' },
         { property: 'og:url', content: 'https://tryethernal.com/etherscan-alternative' },
         { name: 'twitter:card', content: 'summary_large_image' },
     ],

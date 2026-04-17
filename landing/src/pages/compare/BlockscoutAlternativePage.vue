@@ -367,12 +367,12 @@ import LandingLayout from '@/components/LandingLayout.vue';
 import LandingCTA from '@/components/LandingCTA.vue';
 
 useHead({
-    title: 'Ethernal vs Blockscout - Open-Source Block Explorer Comparison',
+    title: 'Blockscout Alternative: Ethernal vs Blockscout Compared',
     meta: [
-        { name: 'description', content: 'Compare Ethernal and Blockscout: setup speed, L2 support, pricing, and customization. Two open-source EVM block explorers, different trade-offs.' },
+        { name: 'description', content: 'Compare Ethernal and Blockscout: two open-source block explorers for EVM chains. Setup, architecture, L2 support, and pricing side by side.' },
         { property: 'og:type', content: 'website' },
-        { property: 'og:title', content: 'Ethernal vs Blockscout - Open-Source Block Explorer Comparison' },
-        { property: 'og:description', content: 'Compare Ethernal and Blockscout: setup speed, L2 support, pricing, and customization. Two open-source EVM block explorers, different trade-offs.' },
+        { property: 'og:title', content: 'Blockscout Alternative: Ethernal vs Blockscout Compared' },
+        { property: 'og:description', content: 'Compare Ethernal and Blockscout: two open-source block explorers for EVM chains. Setup, architecture, L2 support, and pricing side by side.' },
         { property: 'og:url', content: 'https://tryethernal.com/blockscout-alternative' },
         { name: 'twitter:card', content: 'summary_large_image' },
     ],

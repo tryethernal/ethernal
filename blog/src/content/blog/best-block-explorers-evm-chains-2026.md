@@ -74,6 +74,8 @@ Etherscan is the original EVM block explorer and remains the industry standard f
 
 **Pricing:** Free to browse public explorers. API plans from $0 (free tier) to $399/mo for premium access. EaaS is custom-priced (contact sales).
 
+If you're evaluating Ethernal as an Etherscan alternative for your custom chain, read the full [Etherscan alternative comparison](/etherscan-alternative).
+
 ### 2. Blockscout
 
 Blockscout is the largest open-source block explorer for EVM chains. It supports over 1,000 networks and is used by major ecosystems including Ethereum, Optimism, Arbitrum, Base, and Gnosis<sup>[4](#fn-4)</sup>.
@@ -93,6 +95,8 @@ Blockscout is the largest open-source block explorer for EVM chains. It supports
 **Best for:** Teams that want a battle-tested open-source explorer with the largest ecosystem and have the DevOps capacity for self-hosting, or prefer their managed Autoscout service.
 
 **Pricing:** Free for self-hosted deployments. Autoscout and EaaS have paid tiers with usage-based pricing. Pro API plans available.
+
+For a full side-by-side comparison including setup, architecture, and pricing, see [Ethernal vs Blockscout](/blockscout-alternative).
 
 ### 3. Ethernal
 
@@ -180,6 +184,8 @@ A unified multichain explorer that provides EaaS for EVM chains. It powers explo
 
 **Pricing:** Paid EaaS with flexible pricing. Free API tier available. Contact sales for custom explorer deployments.
 
+For teams weighing Routescan for Avalanche L1s or Subnets, the [Routescan alternative page](/routescan-alternative) walks through the trade-offs in detail.
+
 ## Block explorer comparison
 
 Same criteria, all six explorers, one table.
@@ -216,6 +222,8 @@ Different category entirely. Blockchair for cross-chain research across EVM and 
 
 **Enterprise or private/permissioned chain:**
 Data sovereignty and permissioned access matter here. Ethernal self-hosted (MIT license) or Blockscout self-hosted give you full control. For enterprise-specific analytics and compliance features, [Chainlens](https://chainlens.com) (formerly Epirus) is purpose-built for private EVM networks. Etherscan Enterprise works if brand trust is the priority and budget isn't a constraint.
+
+Still weighing self-hosted open source against a fully managed EaaS, or wondering whether to staff an in-house team? For the full infrastructure cost breakdown, read the [Build vs Buy comparison](/build-vs-buy-block-explorer).
 
 | Use Case | Recommended Explorer | Why |
 |---|---|---|
@@ -301,6 +309,15 @@ Yes. Ethernal (MIT license) and Blockscout (open source) both support self-hosti
 ---
 
 If you need a working explorer for your EVM chain today, [try Ethernal free at tryethernal.com](https://tryethernal.com). Paste your RPC URL and have a working explorer in under 5 minutes.
+
+## Deep dives into specific alternatives
+
+Each of the explorers above has its own detailed comparison page walking through setup, architecture, pricing, and the specific trade-offs:
+
+- [Ethernal vs Blockscout](/blockscout-alternative), open-source alternatives compared
+- [Etherscan alternative for custom EVM chains](/etherscan-alternative), when Etherscan isn't an option
+- [Routescan alternative](/routescan-alternative), open-source explorer for Avalanche L1s and beyond
+- [Build vs Buy: block explorer cost breakdown](/build-vs-buy-block-explorer), real numbers on in-house vs Explorer-as-a-Service
 
 ## References
 

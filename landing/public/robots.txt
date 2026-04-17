@@ -2,4 +2,5 @@ User-agent: *
 Allow: /
 
 Sitemap: https://tryethernal.com/sitemap.xml
+Sitemap: https://tryethernal.com/blog/sitemap-index.xml
 Llms-txt: https://tryethernal.com/llms.txt

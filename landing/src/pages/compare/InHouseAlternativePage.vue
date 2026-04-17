@@ -392,12 +392,12 @@ import LandingLayout from '@/components/LandingLayout.vue';
 import LandingCTA from '@/components/LandingCTA.vue';
 
 useHead({
-    title: 'Build vs Buy Block Explorer - Ethernal',
+    title: 'Build vs Buy a Block Explorer: Real Cost Breakdown',
     meta: [
-        { name: 'description', content: 'Should you build a custom block explorer or use Ethernal? Compare cost, timeline, and capabilities. MIT licensed, self-hostable, deploys in 5 minutes.' },
+        { name: 'description', content: 'Should you build a block explorer in-house or use Explorer-as-a-Service? Real infra costs, engineering time, and maintenance trade-offs compared.' },
         { property: 'og:type', content: 'website' },
-        { property: 'og:title', content: 'Build vs Buy Block Explorer - Ethernal' },
-        { property: 'og:description', content: 'Should you build a custom block explorer or use Ethernal? Compare cost, timeline, and capabilities. MIT licensed, self-hostable, deploys in 5 minutes.' },
+        { property: 'og:title', content: 'Build vs Buy a Block Explorer: Real Cost Breakdown' },
+        { property: 'og:description', content: 'Should you build a block explorer in-house or use Explorer-as-a-Service? Real infra costs, engineering time, and maintenance trade-offs compared.' },
         { property: 'og:url', content: 'https://tryethernal.com/build-vs-buy-block-explorer' },
         { name: 'twitter:card', content: 'summary_large_image' },
     ],
