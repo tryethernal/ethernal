@@ -19,6 +19,7 @@ module.exports = async () => {
             model: Explorer,
             as: 'explorer',
             required: true,
+            attributes: ['id'], // Only fetch explorer ID to minimize data transfer
             include: {
                 model: StripeSubscription,
                 as: 'stripeSubscription',
