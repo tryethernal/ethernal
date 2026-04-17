@@ -7,9 +7,14 @@ jest.mock('sequelize', () => ({
 }));
 require('../mocks/lib/env');
 require('../mocks/lib/queue');
+jest.mock('../../lib/redis', () => ({
+    get: jest.fn().mockResolvedValue(null),
+    set: jest.fn().mockResolvedValue('OK')
+}));
 const { ORBIT_L2_TO_L1_LOG_TOPIC } = require('../../constants/orbit');
 const { ExplorerV2Dex, ExplorerFaucet, Workspace, Block, User, workspace, Explorer, ExplorerDomain, StripePlan, Transaction, StripeSubscription, Contract, OrbitBatch, OrbitWithdrawal, OrbitChainConfig, TokenTransfer } = require('../mocks/models');
 const db = require('../../lib/firebase');
+const redis = require('../../lib/redis');
 const env = require('../../lib/env');
 
 beforeEach(() => jest.clearAllMocks());
@@ -1830,7 +1835,7 @@ describe('storeTransactionReceipt', () => {
     it('Should call the receipt creation function', (done) => {
         db.storeTransactionReceipt(1, { transactionHash: '0x123' })
             .then(() => {
-                expect(safeCreateReceipt).toHaveBeenCalledWith({ transactionHash: '0x123' });
+                expect(safeCreateReceipt).toHaveBeenCalledWith({ transactionHash: '0x123' }, { skipExistenceCheck: true });
                 done();
             });
     });
@@ -2974,14 +2979,58 @@ describe('getTransactionVolume', () => {
 });
 
 describe('getActiveWalletCount', () => {
-    it('Should return active wallet count', done => {
-        const countActiveWallets = jest.fn().mockResolvedValueOnce([{ timestamp: '2024-01-01', count: 1 }]);
-        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
-            countActiveWallets
-        })
+    beforeEach(() => {
+        redis.get.mockResolvedValue(null);
+        redis.set.mockResolvedValue('OK');
+    });
+
+    it('Should return active wallet count on cache miss and populate cache', done => {
+        const countActiveWallets = jest.fn().mockResolvedValueOnce(42);
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({ countActiveWallets });
+
         db.getActiveWalletCount(1)
             .then(res => {
-                expect(res).toEqual([{ timestamp: '2024-01-01', count: 1 }]);
+                expect(res).toEqual(42);
+                expect(redis.get).toHaveBeenCalledWith('active-wallet-count:1');
+                expect(redis.set).toHaveBeenCalledWith('active-wallet-count:1', '42', 'EX', 300);
+                expect(countActiveWallets).toHaveBeenCalled();
+                done();
+            });
+    });
+
+    it('Should return cached count without hitting the database', done => {
+        redis.get.mockResolvedValueOnce('7');
+        const findByPkSpy = jest.spyOn(Workspace, 'findByPk');
+
+        db.getActiveWalletCount(1)
+            .then(res => {
+                expect(res).toEqual(7);
+                expect(findByPkSpy).not.toHaveBeenCalled();
+                expect(redis.set).not.toHaveBeenCalled();
+                done();
+            });
+    });
+
+    it('Should fall through to DB when cache read fails', done => {
+        redis.get.mockRejectedValueOnce(new Error('redis down'));
+        const countActiveWallets = jest.fn().mockResolvedValueOnce(5);
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({ countActiveWallets });
+
+        db.getActiveWalletCount(1)
+            .then(res => {
+                expect(res).toEqual(5);
+                done();
+            });
+    });
+
+    it('Should return count even when cache write fails', done => {
+        redis.set.mockRejectedValueOnce(new Error('redis write error'));
+        const countActiveWallets = jest.fn().mockResolvedValueOnce(10);
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({ countActiveWallets });
+
+        db.getActiveWalletCount(1)
+            .then(res => {
+                expect(res).toEqual(10);
                 done();
             });
     });
