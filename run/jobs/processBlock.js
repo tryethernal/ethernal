@@ -28,21 +28,22 @@ module.exports = async job => {
     if (!block)
         return 'Cannot find block';
 
-    // Separate fast lookups instead of expensive JOINs
-    const workspace = await Workspace.findByPk(block.workspaceId, {
-        attributes: ['id', 'public', 'rpcServer', 'networkId', 'name']
-    });
+    // Parallel lookups for better performance - workspace and explorer don't depend on each other
+    const [workspace, explorer] = await Promise.all([
+        Workspace.findByPk(block.workspaceId, {
+            attributes: ['id', 'public', 'rpcServer', 'networkId', 'name']
+        }),
+        Explorer.findOne({
+            where: { workspaceId: block.workspaceId },
+            attributes: ['id', 'shouldSync', 'gasAnalyticsEnabled']
+        })
+    ]);
 
     if (!workspace)
         return 'Cannot find workspace';
 
     if (!workspace.public)
         return 'Not allowed on private workspaces';
-
-    const explorer = await Explorer.findOne({
-        where: { workspaceId: workspace.id },
-        attributes: ['id', 'shouldSync', 'gasAnalyticsEnabled']
-    });
 
     if (!explorer)
         return 'Inactive explorer';

@@ -148,8 +148,14 @@ module.exports = (sequelize, DataTypes) => {
             return []; // Return empty array for invalid input
         }
 
+        // Check if TokenTransfer still exists (guard against race conditions)
+        if (!this.id) {
+            console.warn('TokenTransfer has no ID, cannot create balance changes');
+            return [];
+        }
+
         // Filter out invalid or zero balance changes
-        const validBalanceChanges = balanceChanges.filter(change => 
+        const validBalanceChanges = balanceChanges.filter(change =>
             change && change.address && change.diff !== '0'
         );
 
@@ -174,14 +180,25 @@ module.exports = (sequelize, DataTypes) => {
                 );
 
                 // Bulk create all balance changes at once
-                const createdBalanceChanges = await sequelize.models.TokenBalanceChange.bulkCreate(
-                    balanceChangeRecords,
-                    {
-                        ignoreDuplicates: true,
-                        returning: true,
-                        transaction
+                let createdBalanceChanges;
+                try {
+                    createdBalanceChanges = await sequelize.models.TokenBalanceChange.bulkCreate(
+                        balanceChangeRecords,
+                        {
+                            ignoreDuplicates: true,
+                            returning: true,
+                            transaction
+                        }
+                    );
+                } catch (error) {
+                    // Handle foreign key constraint violation (TokenTransfer deleted during processing)
+                    if (error.name === 'SequelizeForeignKeyConstraintError' &&
+                        error.fields && error.fields.includes('tokenTransferId')) {
+                        console.warn(`TokenTransfer ${this.id} was deleted during balance change processing, skipping balance changes`);
+                        return [];
                     }
-                );
+                    throw error; // Re-throw other errors
+                }
 
                 // Create analytic events for all created balance changes
                 const analyticEventPromises = createdBalanceChanges
