@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.171] - 2026-04-17
+### Fixed
+- fix: optimize TokenTransfer afterBulkCreate to prevent N+1 queries (#1198)
+
+
 ## [5.17.170] - 2026-04-17
 ### Fixed
 - fix: handle TokenTransfer deletion race condition in safeCreateBalanceChanges (#1126)
