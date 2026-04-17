@@ -125,7 +125,7 @@ module.exports = (sequelize, DataTypes) => {
         }
 
         if (shouldRevert) {
-            // Use optimized transaction configuration to reduce connection timeouts
+            // Consolidated revert path: deferred constraints allow FK checks at commit time
             await sequelize.transaction(
                 {
                     deferrable: Sequelize.Deferrable.SET_DEFERRED,
