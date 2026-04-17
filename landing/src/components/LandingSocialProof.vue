@@ -22,11 +22,18 @@
                             "{{ testimonial.quote }}"
                         </p>
                         <div class="d-flex align-center ga-4 mt-auto">
-                            <img
-                                :src="testimonial.avatar"
-                                :alt="testimonial.name"
-                                class="testimonial-avatar"
-                            />
+                            <picture>
+                                <source :srcset="testimonial.avatarWebp" type="image/webp" />
+                                <img
+                                    :src="testimonial.avatar"
+                                    :alt="testimonial.name"
+                                    class="testimonial-avatar"
+                                    width="48"
+                                    height="48"
+                                    loading="lazy"
+                                    decoding="async"
+                                />
+                            </picture>
                             <div>
                                 <div :style="{ color: 'var(--text-primary)', fontSize: '15px', fontWeight: 600 }">{{ testimonial.name }}</div>
                                 <div :style="{ color: 'var(--text-muted)', fontSize: '13px' }">{{ testimonial.role }}</div>
@@ -45,19 +52,22 @@ const testimonials = [
         quote: 'Ethernal is exactly what we needed for our L2. Set up took 10 minutes and our community had a fully branded explorer the same day.',
         name: 'Alex C.',
         role: 'CTO, DeFi Protocol',
-        avatar: '/avatars/alex.png'
+        avatar: '/avatars/alex.png',
+        avatarWebp: '/avatars/alex.webp'
     },
     {
         quote: 'We replaced our custom-built explorer with Ethernal. The transaction tracing alone saved our team hours of debugging every week.',
         name: 'Sarah K.',
         role: 'Lead Engineer, Web3 Startup',
-        avatar: '/avatars/sarah.png'
+        avatar: '/avatars/sarah.png',
+        avatarWebp: '/avatars/sarah.webp'
     },
     {
         quote: 'The self-hosted option was the deciding factor. We run it on our own infra with Docker and have full control over our data.',
         name: 'James P.',
         role: 'DevOps, Enterprise Chain',
-        avatar: '/avatars/james.png'
+        avatar: '/avatars/james.png',
+        avatarWebp: '/avatars/james.webp'
     }
 ];
 </script>
