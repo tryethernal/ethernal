@@ -316,12 +316,13 @@ PUSH_ATTEMPTS=0
 PUSH_MAX_ATTEMPTS=3
 until git push origin develop 2>&1 | tee -a "$LOG_FILE"; do
   PUSH_ATTEMPTS=$((PUSH_ATTEMPTS + 1))
-  log "Push rejected (attempt $PUSH_ATTEMPTS/$PUSH_MAX_ATTEMPTS) — rebasing onto latest develop..."
+  log "Push rejected (attempt $PUSH_ATTEMPTS/$PUSH_MAX_ATTEMPTS)."
   if [ "$PUSH_ATTEMPTS" -ge "$PUSH_MAX_ATTEMPTS" ]; then
     log "ERROR: push failed after $PUSH_MAX_ATTEMPTS attempts"
     report_failure "Git push (exhausted retries)"
     exit 1
   fi
+  log "Rebasing onto latest develop and retrying..."
   git fetch origin develop 2>&1 | tee -a "$LOG_FILE"
   git rebase origin/develop 2>&1 | tee -a "$LOG_FILE" || {
     log "ERROR: rebase failed — aborting to avoid a broken state"
