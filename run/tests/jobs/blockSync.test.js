@@ -60,10 +60,10 @@ describe('blockSync', () => {
             });
     });
 
-    it('Should queue receipt processing with cached workspace for large blocks (>10 transactions)', (done) => {
-        // Create 11 transactions to exceed threshold
+    it('Should queue receipt processing with cached workspace for large blocks (>INLINE_RECEIPT_THRESHOLD transactions)', (done) => {
+        // Generate 30 transactions to exceed INLINE_RECEIPT_THRESHOLD (25) and force the queueing path
         const transactions = [];
-        for (let i = 0; i < 11; i++) {
+        for (let i = 0; i < 30; i++) {
             transactions.push({ id: i + 1, hash: `0x${i.toString(16).padStart(3, '0')}` });
         }
         mockSafeCreatePartialBlock.mockResolvedValue({ transactions });
@@ -108,9 +108,9 @@ describe('blockSync', () => {
     });
 
     it('Should not cache workspace for orbit workspaces', (done) => {
-        // Create 11 transactions to exceed threshold
+        // Generate 30 transactions to exceed INLINE_RECEIPT_THRESHOLD (25) and force the queueing path
         const transactions = [];
-        for (let i = 0; i < 11; i++) {
+        for (let i = 0; i < 30; i++) {
             transactions.push({ id: i + 1, hash: `0x${i.toString(16).padStart(3, '0')}` });
         }
         mockSafeCreatePartialBlock.mockResolvedValue({ transactions });
