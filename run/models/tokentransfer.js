@@ -244,6 +244,10 @@ module.exports = (sequelize, DataTypes) => {
             ]
         });
 
+        return this.afterCreateWithTransaction(transaction, options);
+    }
+
+    async afterCreateWithTransaction(transaction, options) {
         if (transaction.workspace.public) {
             options.transaction.afterCommit(() => {
                 // Process ERC-20/721/1155 tokens always, native tokens only if flag is enabled
@@ -306,7 +310,57 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     hooks: {
         afterBulkCreate(tokenTransfers, options) {
-            return Promise.all(tokenTransfers.map(t => t.afterCreate(options)));
+            // Optimize N+1 query: group by transactionId and fetch each transaction once
+            const transactionGroups = new Map();
+
+            // Group token transfers by transaction ID
+            for (const tokenTransfer of tokenTransfers) {
+                const transactionId = tokenTransfer.transactionId;
+                if (!transactionGroups.has(transactionId)) {
+                    transactionGroups.set(transactionId, []);
+                }
+                transactionGroups.get(transactionId).push(tokenTransfer);
+            }
+
+            // Fetch each unique transaction with includes
+            const transactionIds = Array.from(transactionGroups.keys());
+            const transactionsPromise = sequelize.models.Transaction.findAll({
+                where: { id: transactionIds },
+                attributes: ['id', 'blockNumber', 'hash'],
+                include: [
+                    {
+                        model: sequelize.models.TokenTransfer,
+                        attributes: ['id', 'src', 'dst', 'token'],
+                        as: 'tokenTransfers'
+                    },
+                    {
+                        model: sequelize.models.Workspace,
+                        attributes: ['id', 'public', 'rpcServer', 'name', 'processNativeTokenTransfers'],
+                        as: 'workspace',
+                        include: {
+                            model: sequelize.models.User,
+                            attributes: ['firebaseUserId'],
+                            as: 'user'
+                        }
+                    }
+                ]
+            });
+
+            return transactionsPromise.then(transactions => {
+                const transactionMap = new Map(transactions.map(t => [t.id, t]));
+
+                // Process each token transfer with its cached transaction
+                const promises = [];
+                for (const [transactionId, groupTokenTransfers] of transactionGroups) {
+                    const transaction = transactionMap.get(transactionId);
+                    if (transaction) {
+                        for (const tokenTransfer of groupTokenTransfers) {
+                            promises.push(tokenTransfer.afterCreateWithTransaction(transaction, options));
+                        }
+                    }
+                }
+                return Promise.all(promises);
+            });
         },
         afterCreate(tokenTransfer, options) {
             return tokenTransfer.afterCreate(options);
