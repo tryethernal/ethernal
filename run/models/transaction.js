@@ -270,8 +270,6 @@ module.exports = (sequelize, DataTypes) => {
                 }
             }
 
-            await this.update({ state: 'ready' }, { transaction });
-
             const [storedReceipt] = await sequelize.models.TransactionReceipt.bulkCreate(
                 [
                     stringifyBns(sanitize({
@@ -882,6 +880,12 @@ module.exports = (sequelize, DataTypes) => {
                 return 'Transaction no longer exists';
             }
             throw error;
+        }
+
+        // Update transaction state outside the main transaction to avoid row lock contention
+        // with blockSync's uncommitted INSERT. Safe because the receipt is already committed.
+        if (receiptResult && receiptResult !== 'Transaction no longer exists' && receiptResult !== 'Receipt already exists') {
+            await this.update({ state: 'ready' });
         }
 
         // Create TokenTransferEvent records in a separate transaction to prevent deadlocks.
