@@ -47,7 +47,8 @@ useHead({
                 "description": "Open source block explorer for EVM-based chains.",
                 "sameAs": [
                     "https://github.com/tryethernal/ethernal",
-                    "https://twitter.com/tryabornedev"
+                    "https://twitter.com/tryethernal",
+                    "https://discord.gg/jEAprf45jj"
                 ]
             })
         },
