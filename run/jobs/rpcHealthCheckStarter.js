@@ -6,9 +6,10 @@
 
 const { Workspace, Explorer, StripeSubscription } = require('../models');
 const { enqueue } = require('../lib/queue');
+const { withTimeout } = require('../lib/utils');
 
 module.exports = async () => {
-    const workspaces = await Workspace.findAll({
+    const workspaces = await withTimeout(Workspace.findAll({
         where: {
             rpcHealthCheckEnabled: true,
             public: true,
@@ -18,13 +19,16 @@ module.exports = async () => {
             model: Explorer,
             as: 'explorer',
             required: true,
+            attributes: ['id'], // Only fetch explorer ID to minimize data transfer
             include: {
                 model: StripeSubscription,
                 as: 'stripeSubscription',
-                required: true
+                required: true,
+                attributes: ['id'] // Only fetch subscription ID to minimize data transfer
             }
-        }
-    });
+        },
+        attributes: ['id'] // Only fetch workspace ID since that's all we need
+    }), 30000); // 30 second timeout for database query
 
     for (let i = 0; i < workspaces.length; i++) {
         const workspace = workspaces[i];
