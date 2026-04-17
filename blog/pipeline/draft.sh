@@ -309,7 +309,27 @@ git add "$ARTICLE_PATH" blog/public/llms.txt
 [ -f "blog/public/images/${SLUG}.png" ] && git add "blog/public/images/${SLUG}.png" "blog/public/images/${SLUG}-og.png"
 TITLE=$(head -5 "$ARTICLE_PATH" | grep '^title:' | sed 's/^title: *"//;s/"$//')
 git commit -m "blog: publish - ${TITLE}" 2>&1 | tee -a "$LOG_FILE"
-git push origin develop 2>&1 | tee -a "$LOG_FILE"
+
+# Push with retry: if develop moved while we were drafting, rebase and retry.
+# Pipeline runs can take 5-10 min; develop often advances via deploys/dependabot/etc.
+PUSH_ATTEMPTS=0
+PUSH_MAX_ATTEMPTS=3
+until git push origin develop 2>&1 | tee -a "$LOG_FILE"; do
+  PUSH_ATTEMPTS=$((PUSH_ATTEMPTS + 1))
+  if [ "$PUSH_ATTEMPTS" -ge "$PUSH_MAX_ATTEMPTS" ]; then
+    log "ERROR: push failed after $PUSH_MAX_ATTEMPTS attempts"
+    report_failure "Git push (exhausted retries)"
+    exit 1
+  fi
+  log "Push rejected (attempt $PUSH_ATTEMPTS/$PUSH_MAX_ATTEMPTS) — rebasing onto latest develop..."
+  git fetch origin develop 2>&1 | tee -a "$LOG_FILE"
+  git rebase origin/develop 2>&1 | tee -a "$LOG_FILE" || {
+    log "ERROR: rebase failed — aborting to avoid a broken state"
+    git rebase --abort 2>&1 | tee -a "$LOG_FILE" || true
+    report_failure "Git rebase"
+    exit 1
+  }
+done
 
 log "Pushed to develop."
 
