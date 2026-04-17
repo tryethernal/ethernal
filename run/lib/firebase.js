@@ -11,9 +11,13 @@
 const Sequelize = require('sequelize');
 const { getDemoUserId, getMaxBlockForSyncReset } = require('./env');
 const models = require('../models');
+const redis = require('./redis');
+const logger = require('./logger');
 const { firebaseHash }  = require('./crypto');
 const { ORBIT_L2_TO_L1_LOG_TOPIC } = require('../constants/orbit');
 const { sanitize } = require('./utils');
+
+const ACTIVE_WALLET_COUNT_CACHE_TTL_SECONDS = 300;
 
 const Op = Sequelize.Op;
 const User = models.User;
@@ -3776,17 +3780,34 @@ const getTransactionVolume = async (workspaceId, from, to) => {
 
 /**
  * Gets count of active wallets in workspace.
+ * Result is cached in Redis for 5 minutes to avoid repeated full scans of transaction_events.
  * @param {number} workspaceId - The workspace ID
  * @returns {Promise<number>} Active wallet count
  */
 const getActiveWalletCount = async (workspaceId) => {
     if (!workspaceId) throw new Error('Missing parameter.');
 
+    const cacheKey = `active-wallet-count:${workspaceId}`;
+    try {
+        const cached = await redis.get(cacheKey);
+        if (cached != null) return JSON.parse(cached);
+    } catch (error) {
+        logger.warn({ message: 'active-wallet-count cache read failed', workspaceId, error: error.message });
+    }
+
     const workspace = await Workspace.findByPk(workspaceId);
     if (!workspace)
         throw new Error('Could not find workspace');
 
-    return workspace.countActiveWallets();
+    const count = await workspace.countActiveWallets();
+
+    try {
+        await redis.set(cacheKey, JSON.stringify(count), 'EX', ACTIVE_WALLET_COUNT_CACHE_TTL_SECONDS);
+    } catch (error) {
+        logger.warn({ message: 'active-wallet-count cache write failed', workspaceId, error: error.message });
+    }
+
+    return count;
 };
 
 /**
