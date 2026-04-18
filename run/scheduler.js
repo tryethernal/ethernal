@@ -115,7 +115,7 @@ const INFRA_HEALTH_CHECK_INTERVAL = 60 * 1000;
         'finalizePendingOpBatches',
         {},
         10,
-        { every: 30 * 1000 } // Check every 30 seconds
+        { every: 120 * 1000 } // Check every 2 minutes (reduced from 30s to prevent job overlap)
     );
 
     await enqueue(
