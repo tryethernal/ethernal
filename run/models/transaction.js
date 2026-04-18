@@ -236,6 +236,29 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     /**
+     * Checks if an error is a foreign key constraint violation for a specific constraint.
+     * @param {Error} error - The error to check
+     * @param {string} constraintName - The specific constraint name to match (optional)
+     * @returns {boolean} True if it's a foreign key constraint error
+     */
+    isForeignKeyConstraintError(error, constraintName = null) {
+        // Check error name and constructor name for FK constraint errors
+        const isFKError = error.name === 'SequelizeForeignKeyConstraintError' ||
+                         error.constructor?.name === 'SequelizeForeignKeyConstraintError' ||
+                         (error.original && error.original.constraint) ||
+                         (error.message && error.message.includes('violates foreign key constraint'));
+
+        if (!isFKError) return false;
+
+        // If specific constraint name provided, check for it in the error message
+        if (constraintName) {
+            return error.message && error.message.includes(constraintName);
+        }
+
+        return true;
+    }
+
+    /**
      * Creates a transaction receipt and processes its logs.
      * Updates transaction state to ready and triggers real-time updates.
      * @param {Object} receipt - Receipt data with logs
@@ -875,7 +898,7 @@ module.exports = (sequelize, DataTypes) => {
         } catch (error) {
             // When skipExistenceCheck is true, the transaction row may have been deleted
             // by a concurrent workspace reset. Handle FK violations gracefully.
-            if (options.skipExistenceCheck && error.name === 'SequelizeForeignKeyConstraintError') {
+            if (options.skipExistenceCheck && this.isForeignKeyConstraintError(error, 'transaction_receipts_transactionId_fkey')) {
                 return 'Transaction no longer exists';
             }
             throw error;
