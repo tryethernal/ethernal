@@ -10,9 +10,6 @@ const { Op } = require('sequelize');
 const { withTimeout } = require('../lib/utils');
 
 module.exports = async () => {
-    const startTime = Date.now();
-    logger.info(`Starting finalizePendingOpBatches job`, { location: 'jobs.finalizePendingOpBatches' });
-
     const opConfigs = await withTimeout(
         OpChainConfig.findAll({
             include: [{
@@ -21,15 +18,8 @@ module.exports = async () => {
                 required: true
             }]
         }),
-        15000
+        20000
     );
-
-    const queryTime = Date.now() - startTime;
-    logger.info(`Loaded ${opConfigs.length} OP configs in ${queryTime}ms`, {
-        location: 'jobs.finalizePendingOpBatches',
-        configCount: opConfigs.length,
-        queryTimeMs: queryTime
-    });
 
     let totalConfirmed = 0;
 
@@ -75,12 +65,5 @@ module.exports = async () => {
         }
     }
 
-    const totalTime = Date.now() - startTime;
-    logger.info(`Completed finalizePendingOpBatches job`, {
-        location: 'jobs.finalizePendingOpBatches',
-        totalConfirmed,
-        totalTimeMs: totalTime
-    });
-
-    return `Confirmed ${totalConfirmed} OP batches in ${totalTime}ms`;
+    return `Confirmed ${totalConfirmed} OP batches`;
 };
