@@ -6,7 +6,7 @@ describe('drip-content', () => {
         explorerLink: 'https://my-chain.app.tryethernal.com',
         migrateUrl: 'https://app.tryethernal.com/?explorerToken=xyz',
         email: 'dev@example.com',
-        unsubscribeUrl: 'https://app.tryethernal.com/api/demo/unsubscribe?token=abc',
+        unsubscribeUrl: 'https://app.tryethernal.com/api/demo/unsubscribe?token=abc&src=drip',
         appDomain: 'tryethernal.com'
     };
 
@@ -85,9 +85,11 @@ describe('drip-content', () => {
     });
 
     it('Should fully substitute template placeholders', () => {
+        // unsubscribeUrl contains `&` which gets encoded to `&amp;` in the rendered HTML,
+        // so assert on a unique substring that survives escaping.
         for (let step = 1; step <= 6; step++) {
             const content = getEmailContent(step, baseData);
-            expect(content.htmlPart).toContain(baseData.unsubscribeUrl);
+            expect(content.htmlPart).toContain('api/demo/unsubscribe?token=abc&amp;src=drip');
             expect(content.htmlPart).toContain(baseData.appDomain);
             expect(content.htmlPart).not.toContain('{{');
         }

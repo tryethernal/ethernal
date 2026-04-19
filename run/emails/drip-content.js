@@ -44,7 +44,7 @@ function wrapInTemplate(content, subject, unsubscribeUrl, appDomain) {
         content,
         subject: escapeHtml(subject),
         unsubscribeUrl: escapeHtml(unsubscribeUrl),
-        appDomain
+        appDomain: escapeHtml(appDomain)
     };
     return getBaseTemplate().replace(/\{\{(\w+)\}\}/g, (_, key) =>
         Object.prototype.hasOwnProperty.call(replacements, key) ? replacements[key] : ''
