@@ -43,7 +43,7 @@ function wrapInTemplate(content, subject, unsubscribeUrl, appDomain) {
     return getBaseTemplate()
         .replace('{{content}}', () => content)
         .replace('{{subject}}', () => escapeHtml(subject))
-        .replace('{{unsubscribeUrl}}', () => unsubscribeUrl)
+        .replace('{{unsubscribeUrl}}', () => escapeHtml(unsubscribeUrl))
         .replace(/\{\{appDomain\}\}/g, () => appDomain);
 }
 
@@ -53,7 +53,7 @@ const steps = {
         const content = `
             <h1>Your Ethernal demo is live</h1>
             <p>Your demo explorer is up and syncing. Deploy a contract or send a transaction and it'll show up in a few seconds.</p>
-            <div class="cta-wrap"><a href="${data.explorerLink}" class="cta">Open explorer &rarr;</a></div>
+            <div class="cta-wrap"><a href="${escapeHtml(data.explorerLink)}" class="cta">Open explorer &rarr;</a></div>
             <hr class="divider" />
             <p class="sig">Reply if something looks off.</p>
             <p class="sig"><span class="sig-name">Antoine</span><br>Ethernal</p>
@@ -71,7 +71,7 @@ const steps = {
         const content = `
             <h1>${escapeHtml(summary)} synced on your demo</h1>
             <p>Your demo <code>${escapeHtml(data.explorerSlug)}</code> has indexed ${escapeHtml(summary)}. You can already poke at decoded transaction inputs, verified contract source, and token transfers per address.</p>
-            <div class="cta-wrap"><a href="${data.explorerLink}" class="cta">Open explorer &rarr;</a></div>
+            <div class="cta-wrap"><a href="${escapeHtml(data.explorerLink)}" class="cta">Open explorer &rarr;</a></div>
         `;
         return {
             subject,
@@ -98,7 +98,7 @@ const steps = {
                 <tr><td>API access</td><td class="dim">Limited</td><td class="mark"><span class="check">&#10003;</span></td><td class="strong">Full</td></tr>
                 <tr><td>Explorer lifetime</td><td class="dim">7 days</td><td class="mark"><span class="check">&#10003;</span></td><td class="strong">Permanent</td></tr>
             </table>
-            <div class="cta-wrap"><a href="${data.migrateUrl}" class="cta">Start free trial &rarr;</a></div>
+            <div class="cta-wrap"><a href="${escapeHtml(data.migrateUrl)}" class="cta">Start free trial &rarr;</a></div>
         `;
         return {
             subject,
@@ -116,7 +116,7 @@ const steps = {
             <h1>Who else is running Ethernal</h1>
             ${teamIntro}
             <p>Ethernal runs as the block explorer for production L2s, appchains, and private networks. Same product, any EVM chain.</p>
-            <div class="cta-wrap"><a href="${data.migrateUrl}" class="cta">Start free trial &rarr;</a></div>
+            <div class="cta-wrap"><a href="${escapeHtml(data.migrateUrl)}" class="cta">Start free trial &rarr;</a></div>
         `;
         return {
             subject,
@@ -134,7 +134,7 @@ const steps = {
             <h1>Your demo expires in 2 days</h1>
             <p><code>${escapeHtml(data.explorerSlug)}</code> shuts down in 2 days.</p>
             <div class="alert">${alertBody}</div>
-            <div class="cta-wrap"><a href="${data.migrateUrl}" class="cta">Start free trial &rarr;</a></div>
+            <div class="cta-wrap"><a href="${escapeHtml(data.migrateUrl)}" class="cta">Start free trial &rarr;</a></div>
             <p class="fineprint">After that, the explorer and its data are deleted.</p>
         `;
         return {
@@ -153,7 +153,7 @@ const steps = {
             <h1>Your demo expired, 48h to recover</h1>
             <p><code>${escapeHtml(data.explorerSlug)}</code> expired.</p>
             <div class="urgent">${urgentBody}</div>
-            <div class="cta-wrap"><a href="${data.migrateUrl}" class="cta">Restore explorer &rarr;</a></div>
+            <div class="cta-wrap"><a href="${escapeHtml(data.migrateUrl)}" class="cta">Restore explorer &rarr;</a></div>
             <p class="fineprint">After 48 hours, it's deleted for good.</p>
         `;
         return {
