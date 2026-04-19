@@ -1,6 +1,6 @@
 /**
  * @fileoverview Per-step content generators for the demo drip email sequence.
- * Step 1 is plain text (personal feel). Steps 2-6 use branded HTML template.
+ * All steps emit a plain-text fallback and branded HTML via the shared template.
  * Steps 1-2 link to the explorer. Steps 3-6 link to the migration flow.
  * @module emails/drip-content
  */
@@ -41,7 +41,7 @@ function getBaseTemplate() {
 function wrapInTemplate(content, subject, unsubscribeUrl, appDomain) {
     return getBaseTemplate()
         .replace('{{content}}', content)
-        .replace('{{subject}}', subject)
+        .replace('{{subject}}', escapeHtml(subject))
         .replace('{{unsubscribeUrl}}', unsubscribeUrl)
         .replace(/\{\{appDomain\}\}/g, appDomain);
 }
