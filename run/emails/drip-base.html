@@ -5,34 +5,53 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{subject}}</title>
 <style>
-  body { margin: 0; padding: 0; background-color: #0f0f1a; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-  .container { max-width: 600px; margin: 0 auto; background-color: #1a1a2e; }
-  .header { padding: 24px 32px; border-bottom: 1px solid #2a2a3e; }
-  .header .logo { color: #ffffff; font-size: 22px; font-weight: 700; letter-spacing: -0.5px; text-decoration: none; }
-  .body { padding: 32px; color: #e0e0e0; font-size: 15px; line-height: 1.6; }
-  .body h2 { color: #ffffff; font-size: 20px; margin: 0 0 16px 0; }
+  body { margin: 0; padding: 0; background-color: #eef1f5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #0f172a; }
+  .wrapper { width: 100%; background-color: #eef1f5; padding: 32px 16px; }
+  .container { max-width: 560px; margin: 0 auto; background-color: #ffffff; border-radius: 10px; box-shadow: 0 2px 8px rgba(15,23,42,0.06); overflow: hidden; }
+  .header { padding: 22px 32px; border-bottom: 1px solid #eef1f5; }
+  .header .brand-row { display: inline-block; }
+  .header .logo-mark { display: inline-block; width: 22px; height: 22px; border-radius: 6px; background-color: #3D95CE; color: #ffffff; font-weight: 800; font-size: 12px; line-height: 22px; text-align: center; vertical-align: middle; }
+  .header .brand { display: inline-block; font-weight: 700; font-size: 15px; color: #0f172a; letter-spacing: -0.2px; margin-left: 10px; vertical-align: middle; text-decoration: none; }
+  .body { padding: 36px 32px 32px; color: #334155; font-size: 15px; line-height: 1.65; }
+  .body h1 { font-size: 22px; line-height: 1.3; margin: 0 0 14px 0; color: #0f172a; font-weight: 700; letter-spacing: -0.4px; }
   .body p { margin: 0 0 16px 0; }
   .body a { color: #3D95CE; text-decoration: none; }
-  .cta-wrap { text-align: center; margin: 16px 0; }
-  .cta { display: inline-block; background-color: #3D95CE; color: #ffffff !important; padding: 12px 28px; border-radius: 6px; font-weight: 600; text-decoration: none !important; }
-  .feature-table { width: 100%; border-collapse: collapse; margin: 16px 0; }
-  .feature-table th { text-align: left; padding: 8px 12px; background-color: #2a2a3e; color: #ffffff; font-size: 13px; }
-  .feature-table td { padding: 8px 12px; border-bottom: 1px solid #2a2a3e; color: #c0c0c0; font-size: 13px; }
-  .footer { padding: 24px 32px; border-top: 1px solid #2a2a3e; color: #666; font-size: 12px; text-align: center; }
-  .footer a { color: #888; text-decoration: none; }
+  .body code { background-color: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 13px; font-family: 'SF Mono', Monaco, Consolas, monospace; color: #0f172a; }
+  .cta-wrap { margin: 24px 0 8px 0; }
+  .cta { display: inline-block; background-color: #3D95CE; color: #ffffff !important; padding: 12px 22px; border-radius: 8px; font-weight: 600; font-size: 14px; text-decoration: none !important; }
+  .panel { background-color: #f8fafc; border: 1px solid #eef1f5; border-radius: 8px; padding: 18px 20px; margin: 18px 0; }
+  .alert { background-color: #fef9e7; border-left: 3px solid #eab308; padding: 14px 16px; border-radius: 6px; margin: 16px 0; font-size: 14px; color: #713f12; }
+  .urgent { background-color: #fef2f2; border-left: 3px solid #ef4444; padding: 14px 16px; border-radius: 6px; margin: 16px 0; font-size: 14px; color: #7f1d1d; }
+  .divider { height: 1px; background-color: #eef1f5; margin: 24px 0; border: none; }
+  .sig { font-size: 14px; color: #334155; margin: 4px 0 0 0; }
+  .sig-name { font-weight: 600; color: #0f172a; }
+  .fineprint { font-size: 12px; color: #94a3b8; margin-top: 10px; }
+  .compare { width: 100%; border-collapse: collapse; margin: 18px 0; font-size: 13px; }
+  .compare th { text-align: left; padding: 10px 12px; background-color: #f8fafc; color: #64748b; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.6px; border-bottom: 1px solid #eef1f5; }
+  .compare th.mark, .compare td.mark { width: 24px; text-align: center; padding-left: 0; padding-right: 0; }
+  .compare td { padding: 11px 12px; border-bottom: 1px solid #f1f5f9; color: #0f172a; vertical-align: middle; }
+  .compare td.dim { color: #94a3b8; }
+  .compare td.strong { color: #0f172a; font-weight: 600; }
+  .compare .check { color: #3D95CE; font-weight: 700; }
+  .compare .dash { color: #cbd5e1; }
+  .footer { padding: 20px 32px 24px; border-top: 1px solid #eef1f5; color: #94a3b8; font-size: 12px; text-align: center; }
+  .footer a { color: #64748b; text-decoration: none; }
 </style>
 </head>
 <body>
-<div class="container">
-  <div class="header">
-    <a href="https://{{appDomain}}" class="logo">Ethernal</a>
-  </div>
-  <div class="body">
-    {{content}}
-  </div>
-  <div class="footer">
-    <p><a href="{{unsubscribeUrl}}">Unsubscribe</a> from demo emails</p>
-    <p>&copy; Ethernal &middot; <a href="https://{{appDomain}}">{{appDomain}}</a></p>
+<div class="wrapper">
+  <div class="container">
+    <div class="header">
+      <a href="https://{{appDomain}}" class="brand-row" style="text-decoration:none;">
+        <span class="logo-mark">E</span><span class="brand">Ethernal</span>
+      </a>
+    </div>
+    <div class="body">
+      {{content}}
+    </div>
+    <div class="footer">
+      <a href="{{unsubscribeUrl}}">Unsubscribe</a> &middot; <a href="https://{{appDomain}}">Ethernal</a>
+    </div>
   </div>
 </div>
 </body>
