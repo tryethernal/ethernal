@@ -22,7 +22,7 @@ let baseTemplate;
 
 /**
  * Loads and caches the base HTML template.
- * @returns {string} HTML template string with {{content}} and {{unsubscribeUrl}} placeholders
+ * @returns {string} HTML template string with {{subject}}, {{content}}, {{unsubscribeUrl}}, and {{appDomain}} placeholders
  */
 function getBaseTemplate() {
     if (!baseTemplate) {
@@ -34,8 +34,9 @@ function getBaseTemplate() {
 /**
  * Wraps content in the branded HTML template.
  * @param {string} content - Inner HTML content
- * @param {string} subject - Email subject for title tag
+ * @param {string} subject - Email subject for title tag (will be HTML-escaped)
  * @param {string} unsubscribeUrl - Unsubscribe link
+ * @param {string} appDomain - App domain for header/footer brand links
  * @returns {string} Complete HTML email
  */
 function wrapInTemplate(content, subject, unsubscribeUrl, appDomain) {
@@ -172,12 +173,13 @@ const steps = {
  * @param {string} data.migrateUrl - Migration URL with JWT token (steps 3-6)
  * @param {string} data.email - Recipient email
  * @param {string} data.unsubscribeUrl - Unsubscribe URL
+ * @param {string} data.appDomain - App domain for header/footer brand links
  * @param {string} [data.activitySummary] - Activity summary for step 2
  * @param {string} [data.teamContext] - Team/company context for step 4 (enrichment: companyContext)
  * @param {string} [data.tailoredBenefits] - Personalized benefits for step 3
  * @param {string} [data.expirationWarning] - Personalized "about to lose" message for step 5
  * @param {string} [data.recoveryHook] - Personalized "still recoverable" message for step 6
- * @returns {{ subject: string, textPart: string, htmlPart: string|null }}
+ * @returns {{ subject: string, textPart: string, htmlPart: string }}
  * @throws {Error} If step is not 1-6
  */
 function getEmailContent(step, data) {
