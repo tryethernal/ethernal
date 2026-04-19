@@ -85,10 +85,12 @@ describe('drip-content', () => {
     });
 
     it('Should fully substitute template placeholders', () => {
-        const content = getEmailContent(1, baseData);
-        expect(content.htmlPart).toContain(baseData.unsubscribeUrl);
-        expect(content.htmlPart).toContain(baseData.appDomain);
-        expect(content.htmlPart).not.toContain('{{');
+        for (let step = 1; step <= 6; step++) {
+            const content = getEmailContent(step, baseData);
+            expect(content.htmlPart).toContain(baseData.unsubscribeUrl);
+            expect(content.htmlPart).toContain(baseData.appDomain);
+            expect(content.htmlPart).not.toContain('{{');
+        }
     });
 
     it('Should not contain AI-tell phrases in any step', () => {

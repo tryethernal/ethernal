@@ -41,10 +41,10 @@ function getBaseTemplate() {
  */
 function wrapInTemplate(content, subject, unsubscribeUrl, appDomain) {
     return getBaseTemplate()
-        .replace('{{content}}', content)
-        .replace('{{subject}}', escapeHtml(subject))
-        .replace('{{unsubscribeUrl}}', unsubscribeUrl)
-        .replace(/\{\{appDomain\}\}/g, appDomain);
+        .replace('{{content}}', () => content)
+        .replace('{{subject}}', () => escapeHtml(subject))
+        .replace('{{unsubscribeUrl}}', () => unsubscribeUrl)
+        .replace(/\{\{appDomain\}\}/g, () => appDomain);
 }
 
 const steps = {
