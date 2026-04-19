@@ -33,6 +33,7 @@ describe('drip-content', () => {
         expect(content.htmlPart).toContain('Paid');
         expect(content.htmlPart).toContain('Data retention');
         expect(content.htmlPart).toContain('Start free trial');
+        expect(content.htmlPart).toContain(baseData.migrateUrl);
     });
 
     it('Should render tailoredBenefits when provided on step 3', () => {
@@ -44,6 +45,7 @@ describe('drip-content', () => {
         const content = getEmailContent(4, { ...baseData, teamContext: 'Acme builds on Base L2' });
         expect(content.subject).toEqual('Who else is running Ethernal');
         expect(content.htmlPart).toContain('Acme builds on Base L2');
+        expect(content.htmlPart).toContain(baseData.migrateUrl);
     });
 
     it('Should return content for step 4 without custom team context', () => {
@@ -57,6 +59,7 @@ describe('drip-content', () => {
         expect(content.htmlPart).toContain('2 days');
         expect(content.htmlPart).toContain('config carries over');
         expect(content.htmlPart).toContain('my-chain');
+        expect(content.htmlPart).toContain(baseData.migrateUrl);
     });
 
     it('Should render expirationWarning override on step 5', () => {
@@ -69,6 +72,7 @@ describe('drip-content', () => {
         expect(content.subject).toEqual('Your demo expired, 48h to recover');
         expect(content.htmlPart).toContain('48 hours');
         expect(content.htmlPart).toContain('Restore explorer');
+        expect(content.htmlPart).toContain(baseData.migrateUrl);
     });
 
     it('Should render recoveryHook override on step 6', () => {
@@ -78,6 +82,13 @@ describe('drip-content', () => {
 
     it('Should throw for invalid step', () => {
         expect(() => getEmailContent(7, baseData)).toThrow('Invalid drip step');
+    });
+
+    it('Should fully substitute template placeholders', () => {
+        const content = getEmailContent(1, baseData);
+        expect(content.htmlPart).toContain(baseData.unsubscribeUrl);
+        expect(content.htmlPart).toContain(baseData.appDomain);
+        expect(content.htmlPart).not.toContain('{{');
     });
 
     it('Should not contain AI-tell phrases in any step', () => {
