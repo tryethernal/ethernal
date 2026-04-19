@@ -1,0 +1,4 @@
+# Global code owner — only @antoinedc reviews count toward required approval.
+# Combined with branch protection "require review from Code Owners", this ensures
+# no PR can be merged based on approvals from random GitHub users.
+* @antoinedc
