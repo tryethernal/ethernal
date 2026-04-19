@@ -19,7 +19,7 @@
 | Sentry pipeline | `run/api/sentryPipeline.js`, `run/webhooks/githubActions.js` | [SENTRY.md](.claude/references/SENTRY.md) |
 | Landing/marketing | `landing/` | [LANDING.md](.claude/references/LANDING.md) |
 | Blog pipeline | `blog/pipeline/`, `.github/workflows/blog-trend-scan.yml` | [MARKETING.md](.claude/references/MARKETING.md) |
-| Drip emails | `run/jobs/sendDripEmail.js`, `run/jobs/processDripEmails.js`, `run/emails/drip-content.js` | [MARKETING.md](.claude/references/MARKETING.md) |
+| Drip emails | `run/jobs/sendDripEmail.js`, `run/jobs/processDripEmails.js`, `run/emails/drip-content.js`, `run/emails/drip-base.html` | [MARKETING.md](.claude/references/MARKETING.md) |
 | Demo enrichment | `run/jobs/enrichDemoProfile.js`, `run/lib/enrichment.js` | [MARKETING.md](.claude/references/MARKETING.md) |
 | Twitter pipeline | `tweet-pipeline/` (standalone, Hetzner server) | [MARKETING.md](.claude/references/MARKETING.md) |
 | Analytics (PostHog) | `blog/src/layouts/BaseLayout.astro` (snippet), `landing/src/main.js` (init), `run/lib/analytics.js` (backend) | PostHog personal API key in `.credentials.local` |
