@@ -40,11 +40,15 @@ function getBaseTemplate() {
  * @returns {string} Complete HTML email
  */
 function wrapInTemplate(content, subject, unsubscribeUrl, appDomain) {
-    return getBaseTemplate()
-        .replace('{{content}}', () => content)
-        .replace('{{subject}}', () => escapeHtml(subject))
-        .replace('{{unsubscribeUrl}}', () => escapeHtml(unsubscribeUrl))
-        .replace(/\{\{appDomain\}\}/g, () => appDomain);
+    const replacements = {
+        content,
+        subject: escapeHtml(subject),
+        unsubscribeUrl: escapeHtml(unsubscribeUrl),
+        appDomain
+    };
+    return getBaseTemplate().replace(/\{\{(\w+)\}\}/g, (_, key) =>
+        Object.prototype.hasOwnProperty.call(replacements, key) ? replacements[key] : ''
+    );
 }
 
 const steps = {

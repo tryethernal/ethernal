@@ -93,6 +93,17 @@ describe('drip-content', () => {
         }
     });
 
+    it('Should HTML-escape the subject in the title tag', () => {
+        const content = getEmailContent(2, { ...baseData, activitySummary: '<b>alert</b>' });
+        expect(content.htmlPart).toContain('<title>&lt;b&gt;alert&lt;/b&gt; synced on your demo</title>');
+        expect(content.htmlPart).not.toContain('<title><b>alert</b>');
+    });
+
+    it('Should not re-substitute placeholders injected via enriched content', () => {
+        const content = getEmailContent(3, { ...baseData, tailoredBenefits: 'Visit {{appDomain}} for more.' });
+        expect(content.htmlPart).toContain('Visit {{appDomain}} for more.');
+    });
+
     it('Should not contain AI-tell phrases in any step', () => {
         const forbidden = [
             'gives you a taste',
