@@ -584,7 +584,7 @@ class Tracer {
     async processOther(transaction) {
         try {
             this.transaction = transaction;
-            const rawTrace = await withTimeout(this.traceProvider.send('debug_traceTransaction', [transaction.hash]), 30000);
+            const rawTrace = await withTimeout(this.traceProvider.send('debug_traceTransaction', [transaction.hash, {}]), 30000);
             if (!rawTrace)
                 return null;
             this.parsedTrace = await parseTrace(transaction.from, rawTrace, this.provider);

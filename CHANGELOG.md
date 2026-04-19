@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.176] - 2026-04-19
+### Fixed
+- fix: add required config parameter to debug_traceTransaction for other tracer types (#1211)
+
+
 ## [5.17.175] - 2026-04-18
 ### Fixed
 - fix: prevent finalizePendingOpBatches job overlap causing timeouts (#1206)
