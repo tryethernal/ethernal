@@ -127,9 +127,17 @@ exports.parseTrace = async (from, trace, provider) => {
             case 'CREATE2': {
                 const stackCopy = [...log.stack];
                 stackCopy.pop();
-                const p = parseInt(stackCopy.pop().valueOf(), 16) * 2;
-                const n = parseInt(stackCopy.pop().valueOf(), 16) * 2;
+
+                const pValue = stackCopy.pop();
+                if (!pValue) break;
+                const p = parseInt(pValue.valueOf(), 16) * 2;
+
+                const nValue = stackCopy.pop();
+                if (!nValue) break;
+                const n = parseInt(nValue.valueOf(), 16) * 2;
+
                 const saltValue = stackCopy.pop();
+                if (!saltValue) break;
                 const s = saltValue.startsWith('0x') ? saltValue : `0x${saltValue}`;
 
                 if (!log.memory)
