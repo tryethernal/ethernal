@@ -95,6 +95,51 @@ blog.tryethernal.com {
         file_server
     }
 
+    # Stop Google from indexing tenant subdomains (cypherium.tryethernal.com,
+    # adventure-layer.tryethernal.com, app.tryethernal.com, etc.). Without this,
+    # Google crawls and indexes block/tx/address pages across every tenant
+    # subdomain, wasting crawl budget that should go to the apex landing site.
+    #
+    # The fix is X-Robots-Tag: noindex on every response. NOT a robots.txt
+    # Disallow: if we disallow crawling, Google can never see the noindex header
+    # and already-indexed URLs stay indexed forever. We want Google to keep
+    # crawling (for now) so it sees "noindex" and removes the URLs from its
+    # index. Once the tenant URLs are fully deindexed (typically a few weeks),
+    # we can add a Disallow in robots.txt in a follow-up to conserve crawl
+    # budget on ongoing crawling.
+    #
+    # Matches any *.tryethernal.com subdomain EXCEPT www (which serves the
+    # landing site and must stay indexable). Custom domains (user-owned
+    # explorer domains like explorer.teamX.com) don't match this pattern and
+    # stay indexable, which is intentional: paying customers want SEO for their
+    # public explorer.
+    #
+    # The apex tryethernal.com (no subdomain label) is served by its own
+    # site block and isn't routed through this matcher. www.tryethernal.com
+    # IS routed through the *.tryethernal.com wildcard block, so we explicitly
+    # exclude it via `not host` — Caddy's regex engine is RE2 and does not
+    # support negative lookahead, so we cannot express the exclusion in the
+    # regex itself.
+    @tenantHosts {
+        not host www.tryethernal.com
+        header_regexp Host ^[^.]+\.tryethernal\.com$
+    }
+    header @tenantHosts X-Robots-Tag "noindex, nofollow"
+
+    # Also serve an explicit robots.txt on tenant subdomains so crawlers that
+    # only consult robots.txt (not headers) get the right signal. Allow crawling
+    # so Google can re-visit existing URLs and see the noindex header; block new
+    # discovery via paths we know are index bloat (block/tx/address SPA routes).
+    @tenantRobots {
+        not host www.tryethernal.com
+        path /robots.txt
+        header_regexp Host ^[^.]+\.tryethernal\.com$
+    }
+    handle @tenantRobots {
+        header Content-Type "text/plain; charset=utf-8"
+        respond "User-agent: *\nAllow: /\n\n# Noindex enforced via X-Robots-Tag header on every response.\n# Crawling is allowed so existing indexed URLs can be re-visited and dropped.\n" 200
+    }
+
     @landing host tryethernal.com www.tryethernal.com
     handle @landing {
         # 301 redirects for Ghost-era blog URLs
