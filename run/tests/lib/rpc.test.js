@@ -1,9 +1,19 @@
 require('../mocks/lib/trace');
 require('../mocks/lib/ethers');
 require('../mocks/lib/queue');
+
+jest.mock('../../lib/rpcCapabilityCache', () => ({
+    isTraceDisabled: jest.fn().mockResolvedValue(false),
+    markTraceUnsupported: jest.fn().mockResolvedValue(undefined),
+    markTraceSlow: jest.fn().mockResolvedValue(undefined),
+    recordTraceTimeout: jest.fn().mockResolvedValue(undefined),
+    recordTraceSuccess: jest.fn().mockResolvedValue(undefined),
+}));
+
 const ethers = require('ethers');
 const { processTrace, parseTrace } = require('../../lib/trace');
 const { bulkEnqueue } = require('../../lib/queue');
+const rpcCapabilityCache = require('../../lib/rpcCapabilityCache');
 const { ContractConnector, Tracer, ERC721Connector } = require('../../lib/rpc');
 
 afterEach(() => jest.clearAllMocks());
@@ -148,6 +158,73 @@ describe('Tracer', () => {
         await expect(tracer.process({ hash: '0x123' })).rejects.toMatchObject({
             code: 'TRANSIENT_RPC_ERROR',
             message: 'Transient RPC error (failed response)'
+        });
+    });
+
+    describe('rpcCapabilityCache integration', () => {
+        it('Should short-circuit and not call the RPC when the host is cached as disabled (other tracer)', async () => {
+            rpcCapabilityCache.isTraceDisabled.mockResolvedValueOnce(true);
+            const tracer = new Tracer('http://localhost:8545', {});
+            const sendSpy = jest.spyOn(tracer.traceProvider, 'send');
+
+            await tracer.process({ hash: '0x123' });
+
+            expect(sendSpy).not.toHaveBeenCalled();
+            expect(tracer.error).toEqual({
+                message: 'RPC endpoint does not support debug_traceTransaction or is unreachable',
+            });
+        });
+
+        it('Should short-circuit and not call the RPC when the host is cached as disabled (geth tracer)', async () => {
+            rpcCapabilityCache.isTraceDisabled.mockResolvedValueOnce(true);
+            const tracer = new Tracer('http://localhost:8545', {}, 'geth');
+            const sendSpy = jest.spyOn(tracer.traceProvider, 'send');
+
+            await tracer.process({ hash: '0x123' });
+
+            expect(sendSpy).not.toHaveBeenCalled();
+            expect(tracer.error).toEqual({
+                message: 'RPC endpoint does not support debug_traceTransaction or is unreachable',
+            });
+        });
+
+        it('Should mark the host unsupported when the RPC returns "Method not enabled"', async () => {
+            const tracer = new Tracer('https://pre-rpc.bt.io/', {});
+            const error = new Error('debug_traceTransaction is not enabled');
+            jest.spyOn(tracer.traceProvider, 'send').mockRejectedValueOnce(error);
+
+            await tracer.process({ hash: '0x123' });
+
+            expect(rpcCapabilityCache.markTraceUnsupported).toHaveBeenCalledWith('https://pre-rpc.bt.io/');
+        });
+
+        it('Should mark the host unsupported when the inner error message says "does not exist"', async () => {
+            const tracer = new Tracer('https://pre-rpc.bt.io/', {});
+            const error = { error: { message: 'debug_traceTransaction does not exist' } };
+            jest.spyOn(tracer.traceProvider, 'send').mockRejectedValueOnce(error);
+
+            await tracer.process({ hash: '0x123' });
+
+            expect(rpcCapabilityCache.markTraceUnsupported).toHaveBeenCalledWith('https://pre-rpc.bt.io/');
+        });
+
+        it('Should record a timeout against the host when withTimeout fires', async () => {
+            const tracer = new Tracer('https://pre-rpc.bt.io/', {});
+            const error = new Error('Timed out after 30000 ms.');
+            jest.spyOn(tracer.traceProvider, 'send').mockRejectedValueOnce(error);
+
+            await expect(tracer.process({ hash: '0x123' })).rejects.toBeDefined();
+
+            expect(rpcCapabilityCache.recordTraceTimeout).toHaveBeenCalledWith('https://pre-rpc.bt.io/');
+            expect(rpcCapabilityCache.markTraceUnsupported).not.toHaveBeenCalled();
+        });
+
+        it('Should record a successful trace so the timeout counter resets', async () => {
+            const tracer = new Tracer('http://localhost:8545', {});
+
+            await tracer.process({ hash: '0x123' });
+
+            expect(rpcCapabilityCache.recordTraceSuccess).toHaveBeenCalledWith('http://localhost:8545');
         });
     });
 });
