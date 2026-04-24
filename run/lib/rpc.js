@@ -14,6 +14,7 @@ const { bulkEnqueue } = require('./queue');
 const logger = require('./logger');
 const { withTimeout, sanitize } = require('../lib/utils');
 const abiChecker = require('../lib/contract');
+const rpcCapabilityCache = require('./rpcCapabilityCache');
 
 /** Module-level bytecode cache shared across Tracer instances (immutable data) */
 const bytecodeCache = new LRUCache({ max: 5000, ttl: 3600000 });
@@ -452,6 +453,7 @@ class Tracer {
 
     constructor(server, db, type = 'other') {
         if (!server) throw '[Tracer] Missing parameter';
+        this.server = server;
         this.provider = getProvider(server);
         this.traceProvider = getProvider(server, 30000); // Separate provider with 30s timeout for trace operations
         this.db = db;
@@ -530,10 +532,20 @@ class Tracer {
             innerMessage.includes('debug_traceTransaction is not enabled') ||
             innerMessage.includes('debug_traceTransaction not supported') ||
             (errorMessage.includes('failed response') && errorMessage.includes('debug_traceTransaction'))) {
+            // Cache the unsupported verdict at the host level so other workspaces
+            // sharing this RPC stop hammering it for 24h. Self-heals via TTL.
+            rpcCapabilityCache.markTraceUnsupported(this.server).catch(() => {});
             return this.error = {
                 message: 'RPC endpoint does not support debug_traceTransaction or is unreachable',
                 error: error
             };
+        }
+
+        // Withtimeout/AbortError surfaces as a timeout — count it toward the
+        // host's slowness budget. After N consecutive timeouts the host gets
+        // marked slow for 1h and we short-circuit subsequent calls.
+        if (errorMessage.includes('timeout') || errorMessage.includes('Timed out') || error.code === 'TIMEOUT') {
+            rpcCapabilityCache.recordTraceTimeout(this.server).catch(() => {});
         }
 
         throw error;
@@ -571,7 +583,12 @@ class Tracer {
     async processGeth(transaction) {
         try {
             this.transaction = transaction;
+            if (await rpcCapabilityCache.isTraceDisabled(this.server)) {
+                this.error = { message: 'RPC endpoint does not support debug_traceTransaction or is unreachable' };
+                return;
+            }
             const rawTrace = await withTimeout(this.traceProvider.send('debug_traceTransaction', [transaction.hash, { "tracer": "callTracer", "tracerConfig": { "withLog": true }}]), 30000);
+            await rpcCapabilityCache.recordTraceSuccess(this.server);
             if (!rawTrace.calls)
                 return;
             for (let call of rawTrace.calls)
@@ -584,7 +601,12 @@ class Tracer {
     async processOther(transaction) {
         try {
             this.transaction = transaction;
+            if (await rpcCapabilityCache.isTraceDisabled(this.server)) {
+                this.error = { message: 'RPC endpoint does not support debug_traceTransaction or is unreachable' };
+                return;
+            }
             const rawTrace = await withTimeout(this.traceProvider.send('debug_traceTransaction', [transaction.hash, {}]), 30000);
+            await rpcCapabilityCache.recordTraceSuccess(this.server);
             if (!rawTrace)
                 return null;
             this.parsedTrace = await parseTrace(transaction.from, rawTrace, this.provider);
