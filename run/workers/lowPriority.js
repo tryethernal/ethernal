@@ -16,6 +16,18 @@ const { managedWorkerError } = require('../lib/errors');
 const { startHeartbeat } = require('../lib/heartbeat');
 startHeartbeat('lowPriority');
 
+const DEFAULT_CONCURRENCY = 10;
+
+// Cascade-delete jobs that fan out from workspaceReset run at concurrency 1.
+// Each batch holds a single transaction with deferred FK constraints across
+// many shared rows (transaction_logs, token_transfers, ...). Running them in
+// parallel deadlocks on row locks and drains the per-machine Sequelize pool.
+// See incident 2026-04-24 (issues #1236-#1239, #1243).
+const PER_JOB_CONCURRENCY = {
+    batchContractDelete: 1,
+    batchBlockDelete: 1,
+};
+
 const workers = [];
 
 priorities['low'].forEach(jobName => {
@@ -30,7 +42,7 @@ priorities['low'].forEach(jobName => {
             }
         }, () => jobs[jobName](job)),
         {
-            concurrency: 10,
+            concurrency: PER_JOB_CONCURRENCY[jobName] ?? DEFAULT_CONCURRENCY,
             maxStalledCount: 5,
             lockDuration: 300000,
             connection,
@@ -42,7 +54,7 @@ priorities['low'].forEach(jobName => {
     worker.on('failed', (job, error) => managedWorkerError(error, jobName, job.data, 'lowPriority'));
     workers.push(worker);
 
-    logger.info(`Started worker "${jobName}" - Priority: low`);
+    logger.info(`Started worker "${jobName}" - Priority: low - Concurrency: ${PER_JOB_CONCURRENCY[jobName] ?? DEFAULT_CONCURRENCY}`);
 });
 
 function shutdown(signal) {
