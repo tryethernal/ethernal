@@ -14,7 +14,11 @@ const KEY_PREFIX = 'rpc:cap:';
 
 const UNSUPPORTED_TTL_SEC = 24 * 60 * 60;
 const SLOW_TTL_SEC = 60 * 60;
-const TIMEOUT_WINDOW_SEC = 5 * 60;
+// Widened from 5 min to 1 hour: bt.io-type hosts time out at ~2-3/hour spread
+// across workspaces, so the old window reset before 5 could accumulate and
+// the slow-mark never fired. 5 timeouts in an hour is still clearly "too
+// slow to keep calling" regardless of clustering.
+const TIMEOUT_WINDOW_SEC = 60 * 60;
 const TIMEOUT_THRESHOLD = 5;
 
 /**
