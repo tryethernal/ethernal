@@ -1928,6 +1928,7 @@ module.exports = (sequelize, DataTypes) => {
             await this.reset(null, transaction);
             await sequelize.models.CustomField.destroy({ where: { workspaceId: this.id }, transaction });
             await sequelize.models.TransactionTraceStep.destroy({ where: { workspaceId: this.id }, transaction });
+            await sequelize.models.TokenTransferEvent.destroy({ where: { workspaceId: this.id }, transaction });
             await this.destroy({ transaction });
 
             await transaction.commit();
