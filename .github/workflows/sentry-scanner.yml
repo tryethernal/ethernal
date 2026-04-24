@@ -63,10 +63,10 @@ jobs:
 
             curl -s -o /tmp/be_err.json "$BASE/ethernal-backend/issues/?query=is:unresolved+issue.category:error&statsPeriod=24h&limit=100" -H "$AUTH"
             curl -s -o /tmp/be_perf.json "$BASE/ethernal-backend/issues/?query=is:unresolved+issue.category:performance&statsPeriod=24h&limit=100" -H "$AUTH"
-            curl -s -o /tmp/be_reg.json "$BASE/ethernal-backend/issues/?query=is:regressed&limit=50" -H "$AUTH"
+            curl -s -o /tmp/be_reg.json "$BASE/ethernal-backend/issues/?query=is:regressed&statsPeriod=24h&limit=50" -H "$AUTH"
             curl -s -o /tmp/fe_err.json "$BASE/ethernal-frontend/issues/?query=is:unresolved+issue.category:error&statsPeriod=24h&limit=100" -H "$AUTH"
             curl -s -o /tmp/fe_perf.json "$BASE/ethernal-frontend/issues/?query=is:unresolved+issue.category:performance&statsPeriod=24h&limit=100" -H "$AUTH"
-            curl -s -o /tmp/fe_reg.json "$BASE/ethernal-frontend/issues/?query=is:regressed&limit=50" -H "$AUTH"
+            curl -s -o /tmp/fe_reg.json "$BASE/ethernal-frontend/issues/?query=is:regressed&statsPeriod=24h&limit=50" -H "$AUTH"
 
             # ALWAYS project events_24h (rolling) — never use raw `count` (lifetime) for decisions or reports.
             PROJ='[.[] | {id, title, lifetime_count: (.count | tonumber), events_24h: ([.stats."24h"[]?[1]] | add // 0), lastSeen, shortId, isRegression: (.isRegression // false)}]'

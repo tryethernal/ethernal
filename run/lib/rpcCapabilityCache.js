@@ -102,8 +102,11 @@ async function recordTraceTimeout(rpcServer) {
     if (!host) return;
     try {
         const count = await redis.incr(timeoutsKey(host));
-        if (count === 1)
-            await redis.expire(timeoutsKey(host), TIMEOUT_WINDOW_SEC);
+        // Refresh the window TTL on every timeout. Doing it only when count===1
+        // races with a concurrent recordTraceSuccess: if it DELs the key between
+        // our INCR and EXPIRE, the new key created by INCR would have no TTL
+        // and accumulate forever. Refreshing unconditionally is cheap and safe.
+        await redis.expire(timeoutsKey(host), TIMEOUT_WINDOW_SEC);
         if (count >= TIMEOUT_THRESHOLD)
             await markTraceSlow(rpcServer);
     } catch (error) {

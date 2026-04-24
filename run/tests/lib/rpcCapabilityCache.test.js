@@ -112,10 +112,13 @@ describe('recordTraceTimeout', () => {
         expect(redis.set).not.toHaveBeenCalled();
     });
 
-    it('does not re-set the TTL on subsequent timeouts', async () => {
+    it('refreshes the window TTL on every timeout (avoids race with concurrent recordTraceSuccess)', async () => {
         redis.incr.mockResolvedValueOnce(2);
         await cache.recordTraceTimeout('https://rpc.example.com');
-        expect(redis.expire).not.toHaveBeenCalled();
+        expect(redis.expire).toHaveBeenCalledWith(
+            'rpc:cap:rpc.example.com:debug_trace:timeouts',
+            _internals.TIMEOUT_WINDOW_SEC,
+        );
     });
 
     it('marks the host slow when threshold is reached', async () => {
