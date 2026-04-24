@@ -137,7 +137,13 @@ blog.tryethernal.com {
     }
     handle @tenantRobots {
         header Content-Type "text/plain; charset=utf-8"
-        respond "User-agent: *\nAllow: /\n\n# Noindex enforced via X-Robots-Tag header on every response.\n# Crawling is allowed so existing indexed URLs can be re-visited and dropped.\n" 200
+        respond <<ROBOTS
+			User-agent: *
+			Allow: /
+
+			# Noindex enforced via X-Robots-Tag header on every response.
+			# Crawling is allowed so existing indexed URLs can be re-visited and dropped.
+			ROBOTS 200
     }
 
     @landing host tryethernal.com www.tryethernal.com
