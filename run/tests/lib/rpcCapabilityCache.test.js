@@ -49,6 +49,11 @@ describe('isTraceDisabled', () => {
         expect(redis.get).toHaveBeenCalledWith('rpc:cap:rpc.example.com:debug_trace:disabled');
     });
 
+    it('returns false when redis.get resolves to undefined (auto-mock behavior)', async () => {
+        redis.get.mockResolvedValueOnce(undefined);
+        await expect(cache.isTraceDisabled('https://rpc.example.com')).resolves.toBe(false);
+    });
+
     it('returns true when key exists', async () => {
         redis.get.mockResolvedValueOnce('unsupported');
         await expect(cache.isTraceDisabled('https://rpc.example.com')).resolves.toBe(true);

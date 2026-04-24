@@ -49,7 +49,10 @@ async function isTraceDisabled(rpcServer) {
     if (!host) return false;
     try {
         const value = await redis.get(disabledKey(host));
-        return value !== null;
+        // ioredis returns null for missing keys, but auto-mocks/stubs may
+        // return undefined — treat both as "not disabled" so the predicate
+        // is robust to mock implementations and never accidentally trips.
+        return value != null;
     } catch (error) {
         logger.error('rpcCapabilityCache.isTraceDisabled', { error: error.message, host });
         return false;
