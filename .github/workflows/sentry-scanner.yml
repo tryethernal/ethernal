@@ -51,6 +51,7 @@ jobs:
             - Only `statsPeriod` values of `24h` and `14d` work. Do NOT use `1h`.
             - Always save curl output to a temp file first, then process with jq. Do NOT pipe curl directly to jq — it fails intermittently.
             - Pattern: `curl -s -o /tmp/resp.json "URL" -H "Authorization: Bearer $SENTRY_API_TOKEN" && jq '...' /tmp/resp.json`
+            - **CRITICAL — `count` is LIFETIME, not 24h.** The `count` field on each issue in the list response is the lifetime `times_seen` total, NOT the 24h rolling volume. Do NOT use it for thresholds or report it as "Events (24h)" — that caused a false-incident storm (issues #1218–#1232 were all closed as self-resolved because the scanner reported 6,000+ "24h events" when actual 24h volume was 2–16). The TRUE 24h volume is `([.stats."24h"[]?[1]] | add)` — sum of the hourly buckets in the `stats."24h"` array. Always compute and use this value.
 
             ## Step 1: Query Sentry for all unresolved issues
 
@@ -62,18 +63,22 @@ jobs:
 
             curl -s -o /tmp/be_err.json "$BASE/ethernal-backend/issues/?query=is:unresolved+issue.category:error&statsPeriod=24h&limit=100" -H "$AUTH"
             curl -s -o /tmp/be_perf.json "$BASE/ethernal-backend/issues/?query=is:unresolved+issue.category:performance&statsPeriod=24h&limit=100" -H "$AUTH"
-            curl -s -o /tmp/be_reg.json "$BASE/ethernal-backend/issues/?query=is:regressed&limit=50" -H "$AUTH"
+            curl -s -o /tmp/be_reg.json "$BASE/ethernal-backend/issues/?query=is:regressed&statsPeriod=24h&limit=50" -H "$AUTH"
             curl -s -o /tmp/fe_err.json "$BASE/ethernal-frontend/issues/?query=is:unresolved+issue.category:error&statsPeriod=24h&limit=100" -H "$AUTH"
             curl -s -o /tmp/fe_perf.json "$BASE/ethernal-frontend/issues/?query=is:unresolved+issue.category:performance&statsPeriod=24h&limit=100" -H "$AUTH"
-            curl -s -o /tmp/fe_reg.json "$BASE/ethernal-frontend/issues/?query=is:regressed&limit=50" -H "$AUTH"
+            curl -s -o /tmp/fe_reg.json "$BASE/ethernal-frontend/issues/?query=is:regressed&statsPeriod=24h&limit=50" -H "$AUTH"
 
-            echo "=== Backend Errors ===" && jq '[.[] | {id, title, count, lastSeen, shortId}]' /tmp/be_err.json
-            echo "=== Backend Performance ===" && jq '[.[] | {id, title, count, lastSeen, shortId}]' /tmp/be_perf.json
-            echo "=== Backend Regressed ===" && jq '[.[] | {id, title, count, lastSeen, shortId}]' /tmp/be_reg.json
-            echo "=== Frontend Errors ===" && jq '[.[] | {id, title, count, lastSeen, shortId}]' /tmp/fe_err.json
-            echo "=== Frontend Performance ===" && jq '[.[] | {id, title, count, lastSeen, shortId}]' /tmp/fe_perf.json
-            echo "=== Frontend Regressed ===" && jq '[.[] | {id, title, count, lastSeen, shortId}]' /tmp/fe_reg.json
+            # ALWAYS project events_24h (rolling) — never use raw `count` (lifetime) for decisions or reports.
+            PROJ='[.[] | {id, title, lifetime_count: (.count | tonumber), events_24h: ([.stats."24h"[]?[1]] | add // 0), lastSeen, shortId, isRegression: (.isRegression // false)}]'
+            echo "=== Backend Errors ===" && jq "$PROJ" /tmp/be_err.json
+            echo "=== Backend Performance ===" && jq "$PROJ" /tmp/be_perf.json
+            echo "=== Backend Regressed ===" && jq "$PROJ" /tmp/be_reg.json
+            echo "=== Frontend Errors ===" && jq "$PROJ" /tmp/fe_err.json
+            echo "=== Frontend Performance ===" && jq "$PROJ" /tmp/fe_perf.json
+            echo "=== Frontend Regressed ===" && jq "$PROJ" /tmp/fe_reg.json
             ```
+
+            From this point on, **always use `events_24h` (computed above) for thresholds and reporting**. The `lifetime_count` is informational only — useful as context ("issue has fired 6,953 times total but only 2 in last 24h") but never a decision input.
 
             Deduplicate by `(project, id)` — regressed issues may appear in both the error/performance and regressed queries.
 
@@ -111,41 +116,53 @@ jobs:
             Then categorize into ONE of:
 
             ### AUTO-SKIP + RESOLVE in Sentry
-            - Connection/transient errors (SequelizeConnectionError, ECONNRESET, "Connection terminated unexpectedly") — UNLESS 30+ events in 24h
+            - **Any issue with `events_24h == 0`** (regardless of lifetime count) — it has self-resolved, mark resolved in Sentry
+            - Connection/transient errors (SequelizeConnectionError, ECONNRESET, "Connection terminated unexpectedly") — UNLESS `events_24h >= 30`
             - Rate limiting errors
             - Expected validation errors (user input)
             - Third-party service errors we can't control
             - Low-impact edge cases (deprecated browser, obscure user input)
             - Performance issues on endpoints that no longer exist
-            - Performance issues with 0 events in the last 24h that are stale
+            - Performance issues with `events_24h == 0` that are stale
 
             To resolve: `curl -s -X PUT "https://sentry.tryethernal.com/api/0/issues/{id}/" -H "Authorization: Bearer $SENTRY_API_TOKEN" -H "Content-Type: application/json" -d '{"status": "resolved"}'`
 
-            ### CREATE GITHUB ISSUE (prioritized)
+            ### CREATE GITHUB ISSUE (prioritized) — all event counts below are `events_24h`, NOT lifetime
             **Priority 1 — Regressions** (always create, regardless of event count):
-            - Any issue where `isRegression: true` — a previous fix didn't hold
+            - Any issue where `isRegression: true` AND `events_24h >= 1` — a previous fix didn't hold AND it's still firing
+            - Regressions with `events_24h == 0` go to AUTO-SKIP+RESOLVE — the regression flag is stale
             - Title prefix: "Sentry (regression):" for errors, "Perf (regression):" for performance
 
             **Priority 2 — High-impact errors**:
-            - Null/type errors, unhandled promise rejections with 2+ events
-            - Systematic issues with 5+ events in 24h
+            - Null/type errors, unhandled promise rejections with `events_24h >= 2`
+            - Systematic issues with `events_24h >= 5`
 
             **Priority 3 — High-impact performance** (user-facing hot paths only):
-            - N+1 queries with 50+ events AND on a user-facing endpoint or blockSync hot path
-            - Slow DB queries with 50+ events AND p95 > 2s
+            - N+1 queries with `events_24h >= 50` AND on a user-facing endpoint or blockSync hot path
+            - Slow DB queries with `events_24h >= 50` AND p95 > 2s
 
             **Priority 4 — Medium performance**:
-            - N+1 queries with 20-49 events on user-facing endpoints
-            - Background job performance issues with 100+ events (higher bar since they don't affect UX)
+            - N+1 queries with `events_24h` 20–49 on user-facing endpoints
+            - Background job performance issues with `events_24h >= 100` (higher bar since they don't affect UX)
 
             ### SKIP (leave unresolved in Sentry)
-            - Non-regressed issues with fewer than 2 events (might be one-off)
+            - Non-regressed issues with `events_24h < 2` (might be one-off)
             - Performance issues on admin/debug endpoints (e.g., /bull/*)
-            - Performance issues on background jobs with < 100 events
+            - Performance issues on background jobs with `events_24h < 100`
             - Performance issues where the slow span is < 2s on a background job
             - Issues where the slow span is an external API call we can't control
             - Issues that need more data to evaluate
             - Performance issues where multiple related Sentry issues point to the same code path — group them mentally and only create ONE issue for the root cause, not one per symptom
+
+            ### AUTO-SKIP — BullMQ Redis ops misclassified as N+1
+            Sentry's N+1 detector occasionally flags BullMQ's normal Lua-script Redis operations as N+1 query patterns. These are NOT real N+1 bugs and should be auto-resolved.
+
+            **Detection — auto-resolve in Sentry without creating a GH issue if ALL of:**
+            1. Issue type is `N+1 Query` (or `issue.category:performance` with N+1 fingerprint)
+            2. The repeated span is a Redis op — `db.redis`, `cache.get`, or the span description contains `evalsha` / `evalSha`
+            3. The span description references a BullMQ key — matches `bull:`, `bullmq:`, or one of the BullMQ Lua script SHAs (`840cf612b9e4155aeb79853f3502814792769274` and similar 40-char hex SHAs paired with `bull:` keys)
+
+            Resolve these in Sentry with a short comment ("BullMQ Redis ops are not N+1 — scanner filter") and skip creating a GitHub issue. Issue #1221 was a recent example.
 
             ## Step 5: Create GitHub issues
 
@@ -159,7 +176,8 @@ jobs:
 
             **Project:** [ethernal-backend|ethernal-frontend]
             **Level:** [error|warning]
-            **Events (24h):** [count]
+            **Events (24h):** [events_24h]   ← rolling, used for thresholds
+            **Lifetime events:** [lifetime_count]
             **Regression:** [Yes/No]
             **Link:** https://sentry.tryethernal.com/organizations/sentry/issues/[ID]/
 
@@ -186,7 +204,8 @@ jobs:
 
             **Project:** [ethernal-backend|ethernal-frontend]
             **Type:** [N+1 Query | Slow DB | Slow Transaction | Regression | ...]
-            **Impact:** [events in 24h] events
+            **Impact (24h):** [events_24h] events   ← rolling, used for thresholds
+            **Lifetime events:** [lifetime_count]
             **Regression:** [Yes/No]
             **Transaction:** \`[transaction name]\`
             **Link:** https://sentry.tryethernal.com/organizations/sentry/issues/[ID]/
@@ -229,7 +248,7 @@ jobs:
                 \"sentryProject\": \"PROJECT\",
                 \"sentryTitle\": \"TITLE\",
                 \"sentryLevel\": \"LEVEL\",
-                \"sentryEventCount\": COUNT,
+                \"sentryEventCount\": EVENTS_24H,
                 \"sentryLink\": \"https://sentry.tryethernal.com/organizations/sentry/issues/SENTRY_ID/\",
                 \"status\": \"discovered\",
                 \"currentStep\": \"Discovered by scanner\"
