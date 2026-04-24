@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.181] - 2026-04-24
+### Fixed
+- blog: publish - The Token Approval Attack Surface That Grows With Every Fix
+
+
 ## [5.17.180] - 2026-04-23
 ### Fixed
 - fix: add null checks in trace parsing for CREATE/CREATE2 operations (#1228)
