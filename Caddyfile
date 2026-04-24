@@ -108,14 +108,22 @@ blog.tryethernal.com {
     # we can add a Disallow in robots.txt in a follow-up to conserve crawl
     # budget on ongoing crawling.
     #
-    # Matches any *.tryethernal.com subdomain. Custom domains (user-owned
+    # Matches any *.tryethernal.com subdomain EXCEPT www (which serves the
+    # landing site and must stay indexable). Custom domains (user-owned
     # explorer domains like explorer.teamX.com) don't match this pattern and
     # stay indexable, which is intentional: paying customers want SEO for their
     # public explorer.
     #
-    # The apex tryethernal.com / www.tryethernal.com is caught by @landing
-    # below and is not affected.
-    @tenantHosts header_regexp Host ^[^.]+\.tryethernal\.com$
+    # The apex tryethernal.com (no subdomain label) is served by its own
+    # site block and isn't routed through this matcher. www.tryethernal.com
+    # IS routed through the *.tryethernal.com wildcard block, so we explicitly
+    # exclude it via `not host` — Caddy's regex engine is RE2 and does not
+    # support negative lookahead, so we cannot express the exclusion in the
+    # regex itself.
+    @tenantHosts {
+        not host www.tryethernal.com
+        header_regexp Host ^[^.]+\.tryethernal\.com$
+    }
     header @tenantHosts X-Robots-Tag "noindex, nofollow"
 
     # Also serve an explicit robots.txt on tenant subdomains so crawlers that
@@ -123,6 +131,7 @@ blog.tryethernal.com {
     # so Google can re-visit existing URLs and see the noindex header; block new
     # discovery via paths we know are index bloat (block/tx/address SPA routes).
     @tenantRobots {
+        not host www.tryethernal.com
         path /robots.txt
         header_regexp Host ^[^.]+\.tryethernal\.com$
     }
