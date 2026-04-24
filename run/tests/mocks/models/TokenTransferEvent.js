@@ -1,5 +1,6 @@
 const TokenTransferEvent = {
-    bulkCreate: jest.fn()
+    bulkCreate: jest.fn(),
+    destroy: jest.fn()
 };
 
 module.exports = { TokenTransferEvent };
