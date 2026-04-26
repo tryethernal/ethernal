@@ -358,8 +358,34 @@ class ProviderConnector {
     async fetchTransactionReceipt(transactionHash) {
         await this.checkRateLimit();
 
-        const rawTransaction = await withTimeout(this.provider.send('eth_getTransactionReceipt', [transactionHash]));
-        return sanitize(rawTransaction);
+        try {
+            const rawTransaction = await withTimeout(this.provider.send('eth_getTransactionReceipt', [transactionHash]));
+            return sanitize(rawTransaction);
+        } catch (error) {
+            // Reclassify ethers transient network failures so receiptSync requeues
+            // instead of bubbling to Sentry. Issue #1250 saw 18k+ events in 24h
+            // because every retry rethrew an unwrapped "failed response" error.
+            //
+            // We gate on the message ("failed response" / "missing response") rather
+            // than the bare ethers code: SERVER_ERROR fires for any non-2xx HTTP
+            // response, including persistent failures like HTTP 401 (bad API key)
+            // or HTTP 404 (wrong endpoint URL). Those should keep flowing through
+            // reportRpcFailure and accrue toward the explorer auto-disable threshold
+            // — wrapping them as TRANSIENT_RPC_ERROR (which syncHelpers explicitly
+            // skips) would let a permanently broken RPC retry forever in silence.
+            const message = error && error.message ? error.message : '';
+            const isFailedResponse = message.includes('failed response');
+            const isMissingResponse = message.includes('missing response');
+            const isNetworkError = error && error.code === 'NETWORK_ERROR';
+            if (isFailedResponse || isMissingResponse || isNetworkError) {
+                const retryError = new Error(`Transient RPC error fetching receipt: ${error.code || message.slice(0, 80)}`);
+                retryError.code = 'TRANSIENT_RPC_ERROR';
+                retryError.originalError = error;
+                retryError.sentryIgnore = true;
+                throw retryError;
+            }
+            throw error;
+        }
     }
 
     /**
