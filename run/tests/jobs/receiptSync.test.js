@@ -89,6 +89,42 @@ describe('receiptSync', () => {
             });
     });
 
+    it('Should re-enqueue on TRANSIENT_RPC_ERROR (Infura failed response, etc) instead of throwing to Sentry', (done) => {
+        jest.spyOn(Date, 'now').mockImplementation(() => 1609459200000);
+        jest.spyOn(Transaction, 'findOne').mockResolvedValueOnce({
+            id: 1,
+            hash: '0x123',
+            workspace: {
+                id: 1,
+                public: true,
+                rpcServer: 'rpc',
+                explorer: {
+                    stripeSubscription: { status: 'active' },
+                    shouldSync: true
+                }
+            },
+        });
+        const transientError = Object.assign(new Error('Transient RPC error fetching receipt: SERVER_ERROR'), {
+            code: 'TRANSIENT_RPC_ERROR',
+            sentryIgnore: true
+        });
+        ProviderConnector.mockImplementationOnce(() => ({
+            fetchTransactionReceipt: jest.fn().mockRejectedValueOnce(transientError)
+        }));
+
+        receiptSync({ opts: { priority: 1 }, data : { transactionId: 1, transactionHash: '0x123', workspaceId: 1, source: 'cli-light' }})
+            .then(() => {
+                expect(enqueue).toHaveBeenCalledWith('receiptSync', 'receiptSync-1-0x123-1609459200000', {
+                    transactionHash: '0x123',
+                    transactionId: 1,
+                    workspaceId: 1,
+                    source: 'cli-light',
+                    rateLimited: false
+                }, 1, null, 5000, false);
+                done();
+            });
+    });
+
     it('Should re-enqueue if rate limited', (done) => {
         jest.spyOn(Date, 'now').mockImplementation(() => 1609459200000);
         jest.spyOn(Transaction, 'findOne').mockResolvedValueOnce({

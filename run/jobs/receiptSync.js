@@ -189,7 +189,7 @@ module.exports = async job => {
                 return enqueue('receiptSync', `receiptSync-${data.workspaceId}-${transaction.hash}-${Date.now()}`,
                     requeueData, priority, null, rateLimitInterval, !!data.rateLimited);
             }
-            else if (error.message.startsWith('Timed out after')) {
+            else if (error.message.startsWith('Timed out after') || error.code === 'TRANSIENT_RPC_ERROR') {
                 return enqueue('receiptSync', `receiptSync-${data.workspaceId}-${transaction.hash}-${Date.now()}`,
                     requeueData, priority, null, rateLimitInterval || 5000, !!data.rateLimited);
             }
