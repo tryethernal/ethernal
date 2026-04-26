@@ -53,8 +53,10 @@ while IFS= read -r FILENAME; do
   # Extract slug
   SLUG="${FILENAME%.md}"
 
-  # Skip if already promoted
-  if node lib/cli/is-promoted.js "$SLUG" 2>/dev/null; then
+  # Skip if already promoted. is-promoted.js fails-closed: any DB error returns
+  # exit 0 (skip) rather than re-promoting an old article. Forward stderr to our
+  # log so transient failures are visible instead of silenced into a re-tweet.
+  if node lib/cli/is-promoted.js "$SLUG" 2>>"$LOG_FILE"; then
     continue
   fi
 
@@ -102,11 +104,15 @@ full article →"
   TWEET_TEXT="${HOOK}
 ${BLOG_URL}"
 
-  # Download cover image from live site
+  # Download cover image from live site. Astro's SPA fallback returns 200 +
+  # text/html for missing assets, so curl -sf alone isn't enough — we must check
+  # the response Content-Type is actually an image, otherwise X rejects the
+  # upload as "media type unrecognized" (see issue #1254).
   COVER_IMAGE=""
   TMPIMG=$(mktemp /tmp/promo-cover-XXXXXX)
   for EXT in webp png jpg; do
-    if curl -sf "https://tryethernal.com/blog/images/${SLUG}.${EXT}" -o "$TMPIMG"; then
+    CTYPE=$(curl -sf -w '%{content_type}' "https://tryethernal.com/blog/images/${SLUG}.${EXT}" -o "$TMPIMG" 2>/dev/null) || continue
+    if [[ "$CTYPE" == image/* ]]; then
       COVER_IMAGE="$TMPIMG"
       break
     fi

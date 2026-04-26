@@ -245,7 +245,7 @@ log "Phase 2: Draft..."
 
 PHASE2_OUTPUT=$(claude -p "$(cat "$PROMPTS_DIR/tweet-2-draft.md")" \
   --dangerously-skip-permissions \
-  --max-turns 10 \
+  --max-turns 20 \
   2>&1)
 
 echo "$PHASE2_OUTPUT" | tee -a "$LOG_FILE"
