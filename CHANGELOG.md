@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.187] - 2026-04-26
+### Fixed
+- fix(rpc): reclassify Infura 'failed response' errors as transient on receipt fetch (#1256)
+- fix(tweet-pipeline): stop re-promoting old blog posts and uploading HTML as cover image (#1255)
+
+
 ## [5.17.186] - 2026-04-26
 ### Fixed
 - blog: publish - One Block Field, Three Hard Problems: Inside EIP-7928's Block-Level Access Lists
