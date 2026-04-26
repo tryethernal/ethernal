@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.186] - 2026-04-26
+### Fixed
+- blog: publish - One Block Field, Three Hard Problems: Inside EIP-7928's Block-Level Access Lists
+
+
 ## [5.17.185] - 2026-04-24
 ### Fixed
 - fix: clean up token_transfer_events during workspace deletion (#1249)
