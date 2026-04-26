@@ -358,8 +358,26 @@ class ProviderConnector {
     async fetchTransactionReceipt(transactionHash) {
         await this.checkRateLimit();
 
-        const rawTransaction = await withTimeout(this.provider.send('eth_getTransactionReceipt', [transactionHash]));
-        return sanitize(rawTransaction);
+        try {
+            const rawTransaction = await withTimeout(this.provider.send('eth_getTransactionReceipt', [transactionHash]));
+            return sanitize(rawTransaction);
+        } catch (error) {
+            // Reclassify ethers SERVER_ERROR / network failures as transient so
+            // receiptSync requeues instead of bubbling up to Sentry. Issue #1250
+            // had two transactions producing 18k+ Sentry events in 24h because
+            // every retry rethrew an unwrapped "failed response" error.
+            const isServerError = error && (error.code === 'SERVER_ERROR' || error.code === 'NETWORK_ERROR');
+            const isFailedResponse = error && error.message && error.message.includes('failed response');
+            const isMissingResponse = error && error.message && error.message.includes('missing response');
+            if (isServerError || isFailedResponse || isMissingResponse) {
+                const retryError = new Error(`Transient RPC error fetching receipt: ${error.code || error.message.slice(0, 80)}`);
+                retryError.code = 'TRANSIENT_RPC_ERROR';
+                retryError.originalError = error;
+                retryError.sentryIgnore = true;
+                throw retryError;
+            }
+            throw error;
+        }
     }
 
     /**
