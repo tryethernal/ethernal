@@ -2,6 +2,13 @@ require('../mocks/lib/queue');
 require('../mocks/lib/logger');
 require('../mocks/lib/opsgenie');
 
+jest.mock('../../lib/queueCaps', () => ({
+    getCap: jest.fn(),
+    isLowTierWorkspace: jest.fn(),
+    scanQueueByWorkspace: jest.fn(),
+    trimOldest: jest.fn(),
+}));
+
 const { createIncident } = require('../../lib/opsgenie');
 const logger = require('../../lib/logger');
 const redis = require('../../lib/redis');
@@ -38,6 +45,7 @@ jest.mock('../../lib/redis', () => ({
     })
 }));
 
+const queueCaps = require('../../lib/queueCaps');
 const queueMonitoring = require('../../jobs/queueMonitoring');
 
 beforeEach(() => {
@@ -279,5 +287,63 @@ describe('queueMonitoring', () => {
             'EX',
             expect.any(Number)
         );
+    });
+});
+
+describe('queueMonitoring trim sweep', () => {
+    beforeEach(() => {
+        queueCaps.getCap.mockReset().mockImplementation(name => {
+            if (name === 'blockSync') return 200;
+            if (name === 'receiptSync') return 5000;
+            return Infinity;
+        });
+        queueCaps.isLowTierWorkspace.mockReset().mockResolvedValue(false);
+        queueCaps.scanQueueByWorkspace.mockReset().mockResolvedValue(new Map());
+        queueCaps.trimOldest.mockReset().mockResolvedValue(0);
+    });
+
+    it('does nothing when scan returns empty', async () => {
+        await queueMonitoring();
+        expect(queueCaps.trimOldest).not.toHaveBeenCalled();
+    });
+
+    it('skips workspaces under cap', async () => {
+        queueCaps.scanQueueByWorkspace.mockResolvedValue(new Map([[17061, 100]]));
+        await queueMonitoring();
+        expect(queueCaps.isLowTierWorkspace).not.toHaveBeenCalled();
+        expect(queueCaps.trimOldest).not.toHaveBeenCalled();
+    });
+
+    it('skips non-low-tier workspaces over cap', async () => {
+        queueCaps.scanQueueByWorkspace.mockResolvedValue(new Map([[17061, 5000]]));
+        queueCaps.isLowTierWorkspace.mockResolvedValue(false);
+        await queueMonitoring();
+        expect(queueCaps.trimOldest).not.toHaveBeenCalled();
+    });
+
+    it('trims excess for low-tier workspace over cap', async () => {
+        queueCaps.scanQueueByWorkspace.mockImplementation(async (q) => {
+            if (q === 'blockSync') return new Map([[17061, 350]]);
+            return new Map();
+        });
+        queueCaps.isLowTierWorkspace.mockResolvedValue(true);
+        queueCaps.trimOldest.mockResolvedValue(150);
+        await queueMonitoring();
+        expect(queueCaps.trimOldest).toHaveBeenCalledWith('blockSync', 17061, 150);
+        expect(logger.info).toHaveBeenCalledWith(
+            'Sweep trimmed jobs',
+            expect.objectContaining({ queueName: 'blockSync', workspaceId: 17061, removed: 150 })
+        );
+    });
+
+    it('continues sweeping receiptSync if blockSync scan throws', async () => {
+        queueCaps.scanQueueByWorkspace.mockImplementation(async (q) => {
+            if (q === 'blockSync') throw new Error('boom');
+            return new Map([[17066, 6000]]);
+        });
+        queueCaps.isLowTierWorkspace.mockResolvedValue(true);
+        queueCaps.trimOldest.mockResolvedValue(1000);
+        await queueMonitoring();
+        expect(queueCaps.trimOldest).toHaveBeenCalledWith('receiptSync', 17066, 1000);
     });
 });
