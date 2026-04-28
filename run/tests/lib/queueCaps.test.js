@@ -89,6 +89,34 @@ describe('evaluateTier', () => {
         expect(await evaluateTier(1)).toBe('low');
     });
 
+    it('returns "low" for canceled subscription', async () => {
+        Workspace.findByPk.mockResolvedValue(stub({
+            explorer: { isDemo: false, stripeSubscription: { status: 'canceled', stripePlan: { slug: 'explorer-150' } } }
+        }));
+        expect(await evaluateTier(1)).toBe('low');
+    });
+
+    it('returns "low" for past_due subscription', async () => {
+        Workspace.findByPk.mockResolvedValue(stub({
+            explorer: { isDemo: false, stripeSubscription: { status: 'past_due', stripePlan: { slug: 'explorer-150' } } }
+        }));
+        expect(await evaluateTier(1)).toBe('low');
+    });
+
+    it('returns "low" for unpaid subscription', async () => {
+        Workspace.findByPk.mockResolvedValue(stub({
+            explorer: { isDemo: false, stripeSubscription: { status: 'unpaid', stripePlan: { slug: 'explorer-150' } } }
+        }));
+        expect(await evaluateTier(1)).toBe('low');
+    });
+
+    it('returns "low" for incomplete_expired subscription', async () => {
+        Workspace.findByPk.mockResolvedValue(stub({
+            explorer: { isDemo: false, stripeSubscription: { status: 'incomplete_expired', stripePlan: { slug: 'explorer-150' } } }
+        }));
+        expect(await evaluateTier(1)).toBe('low');
+    });
+
     it('returns "low" when plan slug is free', async () => {
         Workspace.findByPk.mockResolvedValue(stub({
             explorer: { stripeSubscription: { status: 'active', stripePlan: { slug: 'free' } } }
