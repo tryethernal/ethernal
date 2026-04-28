@@ -113,4 +113,50 @@ const isLowTierWorkspace = async (workspaceId) => {
     return tier === 'low';
 };
 
-module.exports = { getCap, parseWorkspaceFromJobName, evaluateTier, isLowTierWorkspace };
+/**
+ * Lua script: count waiting jobs in a queue's :wait list and :prioritized zset
+ * whose names start with the given prefix. Returns the sum.
+ *
+ * KEYS[1] = bull:<queue>:wait
+ * KEYS[2] = bull:<queue>:prioritized
+ * ARGV[1] = name prefix to match (e.g. 'blockSync-17061-')
+ */
+const COUNT_WAITING_LUA = `
+local prefix = ARGV[1]
+local count = 0
+local wait = redis.call('LRANGE', KEYS[1], 0, -1)
+for i = 1, #wait do
+    if string.sub(wait[i], 1, #prefix) == prefix then count = count + 1 end
+end
+local prio = redis.call('ZRANGE', KEYS[2], 0, -1)
+for i = 1, #prio do
+    if string.sub(prio[i], 1, #prefix) == prefix then count = count + 1 end
+end
+return count
+`;
+
+/**
+ * Counts waiting jobs in :wait + :prioritized for a single workspace.
+ * Returns 0 on any Redis error (fail open).
+ *
+ * @param {string} queueName
+ * @param {number} workspaceId
+ * @returns {Promise<number>}
+ */
+const countWaitingForWorkspace = async (queueName, workspaceId) => {
+    try {
+        const result = await redis.eval(
+            COUNT_WAITING_LUA,
+            2,
+            `bull:${queueName}:wait`,
+            `bull:${queueName}:prioritized`,
+            `${queueName}-${workspaceId}-`
+        );
+        return Number(result) || 0;
+    } catch (error) {
+        logger.warn('countWaitingForWorkspace failed', { queueName, workspaceId, error: error.message });
+        return 0;
+    }
+};
+
+module.exports = { getCap, parseWorkspaceFromJobName, evaluateTier, isLowTierWorkspace, countWaitingForWorkspace };

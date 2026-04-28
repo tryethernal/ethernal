@@ -185,3 +185,29 @@ describe('isLowTierWorkspace', () => {
         expect(await isLowTierWorkspace(undefined)).toBe(false);
     });
 });
+
+const { countWaitingForWorkspace } = require('../../lib/queueCaps');
+
+describe('countWaitingForWorkspace', () => {
+    beforeEach(() => {
+        redis.eval.mockReset();
+    });
+
+    it('calls EVAL with the queue prefix, workspaceId, and returns numeric sum', async () => {
+        redis.eval.mockResolvedValue(7);
+        const count = await countWaitingForWorkspace('blockSync', 17061);
+        expect(count).toBe(7);
+        expect(redis.eval).toHaveBeenCalledTimes(1);
+        const callArgs = redis.eval.mock.calls[0];
+        expect(callArgs[1]).toBe(2);                     // numkeys
+        expect(callArgs[2]).toBe('bull:blockSync:wait');
+        expect(callArgs[3]).toBe('bull:blockSync:prioritized');
+        expect(callArgs[4]).toBe('blockSync-17061-');
+    });
+
+    it('returns 0 when EVAL throws (fail open)', async () => {
+        redis.eval.mockRejectedValue(new Error('boom'));
+        const count = await countWaitingForWorkspace('blockSync', 17061);
+        expect(count).toBe(0);
+    });
+});
