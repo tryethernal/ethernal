@@ -284,9 +284,15 @@ end
 -- Only rewrite if we actually removed something
 if #removedJobs > 0 then
     redis.call('DEL', KEYS[1])
-    if #keep > 0 then
-        -- RPUSH preserves original order
-        redis.call('RPUSH', KEYS[1], unpack(keep))
+    -- RPUSH preserves order. Chunk to keep unpack() under Lua 5.1's stack
+    -- limit (~8000 args), so we never crash even on large kept lists.
+    local CHUNK = 1000
+    for i = 1, #keep, CHUNK do
+        local chunk = {}
+        for j = i, math.min(i + CHUNK - 1, #keep) do
+            table.insert(chunk, keep[j])
+        end
+        redis.call('RPUSH', KEYS[1], unpack(chunk))
     end
 end
 
