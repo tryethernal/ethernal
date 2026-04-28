@@ -40,7 +40,6 @@ const parseWorkspaceFromJobName = (queueName, jobName) => {
 };
 
 const logger = require('./logger');
-const { Workspace } = require('../models');
 
 /**
  * Evaluates the tier of a workspace by reading from the database.
@@ -50,6 +49,10 @@ const { Workspace } = require('../models');
  * @returns {Promise<'low'|'normal'>}
  */
 const evaluateTier = async (workspaceId) => {
+    // Lazy-require models to avoid a load-time cycle: queueCaps is reached via
+    // models/block.js → lib/queue → lib/queueCaps, and a top-level require here
+    // would resolve to the partially-initialized models object.
+    const { Workspace } = require('../models');
     try {
         const ws = await Workspace.findByPk(workspaceId, {
             attributes: ['id'],
