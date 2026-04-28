@@ -80,4 +80,37 @@ const evaluateTier = async (workspaceId) => {
     }
 };
 
-module.exports = { getCap, parseWorkspaceFromJobName, evaluateTier };
+const redis = require('./redis');
+
+const TIER_CACHE_PREFIX = 'queueCap:tier:';
+
+/**
+ * Returns whether a workspace is low-tier, cached for 60s in Redis.
+ * Fail-open: returns false (not low-tier) on any Redis or DB error.
+ *
+ * @param {number|null|undefined} workspaceId
+ * @returns {Promise<boolean>}
+ */
+const isLowTierWorkspace = async (workspaceId) => {
+    if (workspaceId === null || workspaceId === undefined) return false;
+    const cacheKey = `${TIER_CACHE_PREFIX}${workspaceId}`;
+    let cached;
+    try {
+        cached = await redis.get(cacheKey);
+    } catch (error) {
+        logger.warn('queueCap tier cache get failed', { workspaceId, error: error.message });
+        return false;
+    }
+    if (cached === 'low') return true;
+    if (cached === 'normal') return false;
+
+    const tier = await evaluateTier(workspaceId);
+    try {
+        await redis.set(cacheKey, tier, 'EX', env.queueCapTierCacheTtlSeconds());
+    } catch (error) {
+        logger.warn('queueCap tier cache set failed', { workspaceId, error: error.message });
+    }
+    return tier === 'low';
+};
+
+module.exports = { getCap, parseWorkspaceFromJobName, evaluateTier, isLowTierWorkspace };

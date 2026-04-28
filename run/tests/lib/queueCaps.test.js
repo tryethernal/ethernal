@@ -135,3 +135,53 @@ describe('evaluateTier', () => {
         expect(await evaluateTier(1)).toBe('normal');
     });
 });
+
+jest.mock('../../lib/redis', () => ({
+    get: jest.fn(),
+    set: jest.fn(),
+    eval: jest.fn(),
+}));
+
+const redis = require('../../lib/redis');
+const { isLowTierWorkspace } = require('../../lib/queueCaps');
+
+describe('isLowTierWorkspace', () => {
+    beforeEach(() => {
+        Workspace.findByPk.mockReset();
+        redis.get.mockReset();
+        redis.set.mockReset();
+    });
+
+    it('returns true on cache hit "low"', async () => {
+        redis.get.mockResolvedValue('low');
+        expect(await isLowTierWorkspace(1)).toBe(true);
+        expect(Workspace.findByPk).not.toHaveBeenCalled();
+    });
+
+    it('returns false on cache hit "normal"', async () => {
+        redis.get.mockResolvedValue('normal');
+        expect(await isLowTierWorkspace(1)).toBe(false);
+        expect(Workspace.findByPk).not.toHaveBeenCalled();
+    });
+
+    it('on cache miss evaluates, caches, returns', async () => {
+        redis.get.mockResolvedValue(null);
+        Workspace.findByPk.mockResolvedValue({
+            id: 1,
+            explorer: { isDemo: true, stripeSubscription: null }
+        });
+        const result = await isLowTierWorkspace(1);
+        expect(result).toBe(true);
+        expect(redis.set).toHaveBeenCalledWith('queueCap:tier:1', 'low', 'EX', 60);
+    });
+
+    it('returns false on Redis get failure', async () => {
+        redis.get.mockRejectedValue(new Error('boom'));
+        expect(await isLowTierWorkspace(1)).toBe(false);
+    });
+
+    it('returns false on undefined/null workspaceId', async () => {
+        expect(await isLowTierWorkspace(null)).toBe(false);
+        expect(await isLowTierWorkspace(undefined)).toBe(false);
+    });
+});
