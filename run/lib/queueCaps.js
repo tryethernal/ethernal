@@ -71,7 +71,8 @@ const evaluateTier = async (workspaceId) => {
         if (!ws.explorer) return 'low';
         if (ws.explorer.isDemo) return 'low';
         if (!ws.explorer.stripeSubscription) return 'low';
-        if (ws.explorer.stripeSubscription.status === 'trial') return 'low';
+        const NON_PAYING_STATUSES = ['trial', 'canceled', 'past_due', 'unpaid', 'incomplete_expired'];
+        if (NON_PAYING_STATUSES.includes(ws.explorer.stripeSubscription.status)) return 'low';
         if (ws.explorer.stripeSubscription.stripePlan?.slug === 'free') return 'low';
         return 'normal';
     } catch (error) {
@@ -249,6 +250,8 @@ const scanQueueByWorkspace = async (queueName) => {
 
 /**
  * Lua script: remove the oldest N jobs for a workspace from :wait then :prioritized.
+ * Rebuilds the wait list in one O(N) pass to avoid O(N×K) from per-job LREM.
+ * For the prioritized zset, uses ZREM (O(log N) per call).
  * Deletes the job hash for each removed job. Returns count actually removed.
  *
  * KEYS[1] = bull:<queue>:wait
@@ -266,16 +269,28 @@ local removedJobs = {}
 
 if excess <= 0 then return 0 end
 
+-- Wait list: rebuild in one pass instead of LREM per job (O(N) vs O(N*K))
 local wait = redis.call('LRANGE', KEYS[1], 0, -1)
+local keep = {}
 for i = 1, #wait do
-    if removed >= excess then break end
-    if string.sub(wait[i], 1, #prefix) == prefix then
-        redis.call('LREM', KEYS[1], 1, wait[i])
+    if removed < excess and string.sub(wait[i], 1, #prefix) == prefix then
         table.insert(removedJobs, wait[i])
         removed = removed + 1
+    else
+        table.insert(keep, wait[i])
     end
 end
 
+-- Only rewrite if we actually removed something
+if #removedJobs > 0 then
+    redis.call('DEL', KEYS[1])
+    if #keep > 0 then
+        -- RPUSH preserves original order
+        redis.call('RPUSH', KEYS[1], unpack(keep))
+    end
+end
+
+-- Prioritized zset: ZREM is O(log N), safe to call per-job
 if removed < excess then
     local prio = redis.call('ZRANGE', KEYS[2], 0, -1)
     for i = 1, #prio do
@@ -288,6 +303,7 @@ if removed < excess then
     end
 end
 
+-- Delete job hashes
 for i = 1, #removedJobs do
     redis.call('DEL', hashPrefix .. removedJobs[i])
 end
