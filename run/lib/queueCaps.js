@@ -23,4 +23,20 @@ const getCap = (queueName) => {
     return Infinity;
 };
 
-module.exports = { getCap };
+/**
+ * Extracts numeric workspaceId from a BullMQ job name like 'blockSync-15537-...'.
+ * Returns null for batch jobs (whose names embed userId/workspace-name not workspaceId)
+ * or for any unsupported queue/format.
+ *
+ * @param {string} queueName
+ * @param {string|null} jobName
+ * @returns {number|null}
+ */
+const parseWorkspaceFromJobName = (queueName, jobName) => {
+    if (!jobName || (queueName !== 'blockSync' && queueName !== 'receiptSync')) return null;
+    const match = jobName.match(/^(?:blockSync|receiptSync)-(\d+)-/);
+    if (!match) return null;
+    return parseInt(match[1], 10);
+};
+
+module.exports = { getCap, parseWorkspaceFromJobName };
