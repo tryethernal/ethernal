@@ -39,4 +39,45 @@ const parseWorkspaceFromJobName = (queueName, jobName) => {
     return parseInt(match[1], 10);
 };
 
-module.exports = { getCap, parseWorkspaceFromJobName };
+const logger = require('./logger');
+const { Workspace } = require('../models');
+
+/**
+ * Evaluates the tier of a workspace by reading from the database.
+ * Always returns 'normal' on lookup failure (fail open).
+ *
+ * @param {number} workspaceId
+ * @returns {Promise<'low'|'normal'>}
+ */
+const evaluateTier = async (workspaceId) => {
+    try {
+        const ws = await Workspace.findByPk(workspaceId, {
+            attributes: ['id', 'isDemo'],
+            include: [{
+                association: 'explorer',
+                attributes: ['id'],
+                include: [{
+                    association: 'stripeSubscription',
+                    attributes: ['id', 'status'],
+                    include: [{
+                        association: 'stripePlan',
+                        attributes: ['id', 'slug']
+                    }]
+                }]
+            }]
+        });
+
+        if (!ws) return 'normal';
+        if (ws.isDemo) return 'low';
+        if (!ws.explorer) return 'low';
+        if (!ws.explorer.stripeSubscription) return 'low';
+        if (ws.explorer.stripeSubscription.status === 'trial') return 'low';
+        if (ws.explorer.stripeSubscription.stripePlan?.slug === 'free') return 'low';
+        return 'normal';
+    } catch (error) {
+        logger.warn('evaluateTier failed, treating as normal-tier', { workspaceId, error: error.message });
+        return 'normal';
+    }
+};
+
+module.exports = { getCap, parseWorkspaceFromJobName, evaluateTier };

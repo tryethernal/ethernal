@@ -4,6 +4,8 @@ jest.mock('../../lib/env', () => ({
     queueCapTierCacheTtlSeconds: () => 60,
 }));
 
+jest.mock('../../lib/logger', () => ({ warn: jest.fn(), info: jest.fn(), error: jest.fn() }));
+
 const { getCap } = require('../../lib/queueCaps');
 
 describe('getCap', () => {
@@ -45,5 +47,79 @@ describe('parseWorkspaceFromJobName', () => {
 
     it('returns null for unsupported queue', () => {
         expect(parseWorkspaceFromJobName('processContract', 'processContract-1-0xabc')).toBeNull();
+    });
+});
+
+jest.mock('../../models', () => ({
+    Workspace: { findByPk: jest.fn() },
+}));
+
+const { Workspace } = require('../../models');
+const { evaluateTier } = require('../../lib/queueCaps');
+
+describe('evaluateTier', () => {
+    beforeEach(() => Workspace.findByPk.mockReset());
+
+    const stub = (overrides) => ({
+        id: 1,
+        isDemo: false,
+        explorer: {
+            stripeSubscription: {
+                status: 'active',
+                stripePlan: { slug: 'explorer-150' }
+            }
+        },
+        ...overrides
+    });
+
+    it('returns "low" when workspace has no explorer', async () => {
+        Workspace.findByPk.mockResolvedValue(stub({ explorer: null }));
+        expect(await evaluateTier(1)).toBe('low');
+    });
+
+    it('returns "low" when explorer has no subscription', async () => {
+        Workspace.findByPk.mockResolvedValue(stub({ explorer: { stripeSubscription: null } }));
+        expect(await evaluateTier(1)).toBe('low');
+    });
+
+    it('returns "low" when subscription status is trial', async () => {
+        Workspace.findByPk.mockResolvedValue(stub({
+            explorer: { stripeSubscription: { status: 'trial', stripePlan: { slug: 'explorer-150' } } }
+        }));
+        expect(await evaluateTier(1)).toBe('low');
+    });
+
+    it('returns "low" when plan slug is free', async () => {
+        Workspace.findByPk.mockResolvedValue(stub({
+            explorer: { stripeSubscription: { status: 'active', stripePlan: { slug: 'free' } } }
+        }));
+        expect(await evaluateTier(1)).toBe('low');
+    });
+
+    it('returns "low" when workspace.isDemo is true', async () => {
+        Workspace.findByPk.mockResolvedValue(stub({ isDemo: true }));
+        expect(await evaluateTier(1)).toBe('low');
+    });
+
+    it('returns "normal" for paid explorer-150', async () => {
+        Workspace.findByPk.mockResolvedValue(stub());
+        expect(await evaluateTier(1)).toBe('normal');
+    });
+
+    it('returns "normal" for trial_with_card', async () => {
+        Workspace.findByPk.mockResolvedValue(stub({
+            explorer: { stripeSubscription: { status: 'trial_with_card', stripePlan: { slug: 'explorer-150' } } }
+        }));
+        expect(await evaluateTier(1)).toBe('normal');
+    });
+
+    it('returns "normal" when workspace not found', async () => {
+        Workspace.findByPk.mockResolvedValue(null);
+        expect(await evaluateTier(1)).toBe('normal');
+    });
+
+    it('returns "normal" on DB error (fail open)', async () => {
+        Workspace.findByPk.mockRejectedValue(new Error('boom'));
+        expect(await evaluateTier(1)).toBe('normal');
     });
 });
