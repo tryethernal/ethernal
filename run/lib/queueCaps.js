@@ -182,4 +182,155 @@ const shouldLogDrop = async (queueName, workspaceId) => {
     }
 };
 
-module.exports = { getCap, parseWorkspaceFromJobName, evaluateTier, isLowTierWorkspace, countWaitingForWorkspace, shouldLogDrop };
+/**
+ * Lua script: group jobs in :wait + :prioritized by workspaceId (parsed from job name)
+ * and return a flat array [wsId, count, wsId, count, ...] for the caller to reduce.
+ *
+ * KEYS[1] = bull:<queue>:wait
+ * KEYS[2] = bull:<queue>:prioritized
+ * ARGV[1] = queue prefix (e.g. 'blockSync-' or 'receiptSync-')
+ */
+const SCAN_BY_WORKSPACE_LUA = `
+local prefix = ARGV[1]
+local prefixLen = #prefix
+local counts = {}
+
+local function record(name)
+    if string.sub(name, 1, prefixLen) ~= prefix then return end
+    local rest = string.sub(name, prefixLen + 1)
+    local wsEnd = string.find(rest, '-', 1, true)
+    if not wsEnd then return end
+    local ws = string.sub(rest, 1, wsEnd - 1)
+    if not string.match(ws, '^%d+$') then return end
+    counts[ws] = (counts[ws] or 0) + 1
+end
+
+local wait = redis.call('LRANGE', KEYS[1], 0, -1)
+for i = 1, #wait do record(wait[i]) end
+local prio = redis.call('ZRANGE', KEYS[2], 0, -1)
+for i = 1, #prio do record(prio[i]) end
+
+local out = {}
+for ws, c in pairs(counts) do
+    table.insert(out, ws)
+    table.insert(out, tostring(c))
+end
+return out
+`;
+
+/**
+ * Scans :wait + :prioritized for the given queue and returns a Map<workspaceId, count>.
+ * Returns an empty Map on Redis error.
+ *
+ * @param {string} queueName
+ * @returns {Promise<Map<number, number>>}
+ */
+const scanQueueByWorkspace = async (queueName) => {
+    try {
+        const flat = await redis.eval(
+            SCAN_BY_WORKSPACE_LUA,
+            2,
+            `bull:${queueName}:wait`,
+            `bull:${queueName}:prioritized`,
+            `${queueName}-`
+        );
+        const map = new Map();
+        if (Array.isArray(flat)) {
+            for (let i = 0; i < flat.length; i += 2) {
+                map.set(parseInt(flat[i], 10), parseInt(flat[i + 1], 10));
+            }
+        }
+        return map;
+    } catch (error) {
+        logger.warn('scanQueueByWorkspace failed', { queueName, error: error.message });
+        return new Map();
+    }
+};
+
+/**
+ * Lua script: remove the oldest N jobs for a workspace from :wait then :prioritized.
+ * Deletes the job hash for each removed job. Returns count actually removed.
+ *
+ * KEYS[1] = bull:<queue>:wait
+ * KEYS[2] = bull:<queue>:prioritized
+ * ARGV[1] = job-name prefix (e.g. 'blockSync-17061-')
+ * ARGV[2] = excess count to remove (string)
+ * ARGV[3] = job-hash prefix (e.g. 'bull:blockSync:')
+ */
+const TRIM_OLDEST_LUA = `
+local prefix = ARGV[1]
+local excess = tonumber(ARGV[2])
+local hashPrefix = ARGV[3]
+local removed = 0
+local removedJobs = {}
+
+if excess <= 0 then return 0 end
+
+local wait = redis.call('LRANGE', KEYS[1], 0, -1)
+for i = 1, #wait do
+    if removed >= excess then break end
+    if string.sub(wait[i], 1, #prefix) == prefix then
+        redis.call('LREM', KEYS[1], 1, wait[i])
+        table.insert(removedJobs, wait[i])
+        removed = removed + 1
+    end
+end
+
+if removed < excess then
+    local prio = redis.call('ZRANGE', KEYS[2], 0, -1)
+    for i = 1, #prio do
+        if removed >= excess then break end
+        if string.sub(prio[i], 1, #prefix) == prefix then
+            redis.call('ZREM', KEYS[2], prio[i])
+            table.insert(removedJobs, prio[i])
+            removed = removed + 1
+        end
+    end
+end
+
+for i = 1, #removedJobs do
+    redis.call('DEL', hashPrefix .. removedJobs[i])
+end
+
+return removed
+`;
+
+/**
+ * Atomically removes the oldest `excess` jobs for a workspace from :wait + :prioritized,
+ * then deletes their hashes. Returns the count actually removed.
+ * Returns 0 on Redis error.
+ *
+ * @param {string} queueName
+ * @param {number} workspaceId
+ * @param {number} excess
+ * @returns {Promise<number>}
+ */
+const trimOldest = async (queueName, workspaceId, excess) => {
+    if (excess <= 0) return 0;
+    try {
+        const result = await redis.eval(
+            TRIM_OLDEST_LUA,
+            2,
+            `bull:${queueName}:wait`,
+            `bull:${queueName}:prioritized`,
+            `${queueName}-${workspaceId}-`,
+            String(excess),
+            `bull:${queueName}:`
+        );
+        return Number(result) || 0;
+    } catch (error) {
+        logger.warn('trimOldest failed', { queueName, workspaceId, excess, error: error.message });
+        return 0;
+    }
+};
+
+module.exports = {
+    getCap,
+    parseWorkspaceFromJobName,
+    evaluateTier,
+    isLowTierWorkspace,
+    countWaitingForWorkspace,
+    shouldLogDrop,
+    scanQueueByWorkspace,
+    trimOldest,
+};

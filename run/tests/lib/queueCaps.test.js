@@ -238,3 +238,47 @@ describe('shouldLogDrop', () => {
         expect(result).toBe(true);
     });
 });
+
+const { scanQueueByWorkspace, trimOldest } = require('../../lib/queueCaps');
+
+describe('scanQueueByWorkspace', () => {
+    beforeEach(() => redis.eval.mockReset());
+
+    it('parses flat result into [workspaceId, count] map', async () => {
+        redis.eval.mockResolvedValue(['17061', '6944', '15537', '7072']);
+        const result = await scanQueueByWorkspace('blockSync');
+        expect(result).toEqual(new Map([[17061, 6944], [15537, 7072]]));
+    });
+
+    it('returns empty map on EVAL error', async () => {
+        redis.eval.mockRejectedValue(new Error('boom'));
+        expect(await scanQueueByWorkspace('blockSync')).toEqual(new Map());
+    });
+});
+
+describe('trimOldest', () => {
+    beforeEach(() => redis.eval.mockReset());
+
+    it('calls EVAL with the right keys, queue, workspaceId, excess', async () => {
+        redis.eval.mockResolvedValue(15);
+        const removed = await trimOldest('blockSync', 17061, 15);
+        expect(removed).toBe(15);
+        const args = redis.eval.mock.calls[0];
+        expect(args[1]).toBe(2);
+        expect(args[2]).toBe('bull:blockSync:wait');
+        expect(args[3]).toBe('bull:blockSync:prioritized');
+        expect(args[4]).toBe('blockSync-17061-');
+        expect(args[5]).toBe('15');
+        expect(args[6]).toBe('bull:blockSync:');
+    });
+
+    it('returns 0 on EVAL error', async () => {
+        redis.eval.mockRejectedValue(new Error('boom'));
+        expect(await trimOldest('blockSync', 17061, 15)).toBe(0);
+    });
+
+    it('returns 0 when excess <= 0', async () => {
+        expect(await trimOldest('blockSync', 17061, 0)).toBe(0);
+        expect(redis.eval).not.toHaveBeenCalled();
+    });
+});
