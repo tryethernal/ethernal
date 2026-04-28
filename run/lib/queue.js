@@ -7,6 +7,8 @@
 const Sentry = require('@sentry/node');
 const queues = require("../queues");
 const { sanitize } = require("./utils");
+const queueCaps = require("./queueCaps");
+const logger = require("./logger");
 
 /** @constant {number} Maximum number of jobs to add in a single bulk operation */
 const MAX_BATCH_SIZE = 2000;
@@ -21,11 +23,36 @@ const MAX_BATCH_SIZE = 2000;
  * @param {Object} [repeat] - BullMQ repeat options for recurring jobs
  * @param {number} [delay] - Delay in milliseconds before processing
  * @param {boolean} [unique] - If true, uses jobName as jobId for deduplication
- * @returns {Promise<Job>} BullMQ Job instance
+ * @returns {Promise<Job|null>} BullMQ Job instance, or null if dropped due to cap
  * @example
  * await enqueue('blockSync', 'sync-block-123', { blockNumber: 123 }, 1);
  */
-const enqueue = (queueName, jobName, data, priority = 1, repeat, delay, unique) => {
+const enqueue = async (queueName, jobName, data, priority = 1, repeat, delay, unique) => {
+    const cap = queueCaps.getCap(queueName);
+    const workspaceId = data && data.workspaceId;
+
+    if (cap !== Infinity && workspaceId !== undefined && workspaceId !== null) {
+        const isLow = await queueCaps.isLowTierWorkspace(workspaceId);
+        if (isLow) {
+            const count = await queueCaps.countWaitingForWorkspace(queueName, workspaceId);
+            if (count >= cap) {
+                if (await queueCaps.shouldLogDrop(queueName, workspaceId)) {
+                    logger.warn('Queue cap reached, dropping enqueue', {
+                        queueName, workspaceId, cap, count,
+                        location: 'lib.queue.enqueue',
+                    });
+                    Sentry.addBreadcrumb({
+                        category: 'queue.cap',
+                        level: 'warning',
+                        message: `${queueName} cap reached for workspace ${workspaceId}`,
+                        data: { queueName, workspaceId, cap, count },
+                    });
+                }
+                return null;
+            }
+        }
+    }
+
     const jobId = unique ? jobName : null;
     return Sentry.startSpan({
         op: 'queue.publish',
