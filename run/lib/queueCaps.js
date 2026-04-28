@@ -159,4 +159,27 @@ const countWaitingForWorkspace = async (queueName, workspaceId) => {
     }
 };
 
-module.exports = { getCap, parseWorkspaceFromJobName, evaluateTier, isLowTierWorkspace, countWaitingForWorkspace };
+const DROP_LOG_PREFIX = 'queueCap:dropLog:';
+
+/**
+ * Rate-limit drop logs to once per workspace per queue per hour.
+ * Returns true if the caller should log this drop.
+ *
+ * On Redis failure, returns true (log) — favours visibility.
+ *
+ * @param {string} queueName
+ * @param {number} workspaceId
+ * @returns {Promise<boolean>}
+ */
+const shouldLogDrop = async (queueName, workspaceId) => {
+    const key = `${DROP_LOG_PREFIX}${queueName}:${workspaceId}`;
+    try {
+        const set = await redis.set(key, '1', 'NX', 'EX', 3600);
+        return set === 'OK';
+    } catch (error) {
+        logger.warn('shouldLogDrop redis set failed', { queueName, workspaceId, error: error.message });
+        return true;
+    }
+};
+
+module.exports = { getCap, parseWorkspaceFromJobName, evaluateTier, isLowTierWorkspace, countWaitingForWorkspace, shouldLogDrop };

@@ -211,3 +211,30 @@ describe('countWaitingForWorkspace', () => {
         expect(count).toBe(0);
     });
 });
+
+const { shouldLogDrop } = require('../../lib/queueCaps');
+
+describe('shouldLogDrop', () => {
+    beforeEach(() => redis.set.mockReset());
+
+    it('returns true on first call (key set)', async () => {
+        redis.set.mockResolvedValue('OK');
+        const result = await shouldLogDrop('blockSync', 17061);
+        expect(result).toBe(true);
+        expect(redis.set).toHaveBeenCalledWith(
+            'queueCap:dropLog:blockSync:17061', '1', 'NX', 'EX', 3600
+        );
+    });
+
+    it('returns false on subsequent call (key already set)', async () => {
+        redis.set.mockResolvedValue(null);
+        const result = await shouldLogDrop('blockSync', 17061);
+        expect(result).toBe(false);
+    });
+
+    it('returns true (log it) on Redis failure', async () => {
+        redis.set.mockRejectedValue(new Error('boom'));
+        const result = await shouldLogDrop('blockSync', 17061);
+        expect(result).toBe(true);
+    });
+});
