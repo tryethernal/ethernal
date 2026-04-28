@@ -81,21 +81,65 @@ const enqueue = async (queueName, jobName, data, priority = 1, repeat, delay, un
  *   { name: 'contract-0x456', data: { address: '0x456' } }
  * ]);
  */
-const bulkEnqueue = (queueName, jobData, priority = 10, maxBatchSize = MAX_BATCH_SIZE) => {
+const bulkEnqueue = async (queueName, jobData, priority = 10, maxBatchSize = MAX_BATCH_SIZE) => {
     if (!queueName || !jobData || !jobData.length) return;
+
+    let acceptedJobs = jobData;
+    const cap = queueCaps.getCap(queueName);
+
+    if (cap !== Infinity) {
+        const groups = new Map();      // workspaceId → jobs[]
+        const ungrouped = [];          // no workspaceId — pass through
+
+        for (const job of jobData) {
+            const wid = job && job.data && job.data.workspaceId;
+            if (wid === undefined || wid === null) ungrouped.push(job);
+            else {
+                if (!groups.has(wid)) groups.set(wid, []);
+                groups.get(wid).push(job);
+            }
+        }
+
+        acceptedJobs = [...ungrouped];
+
+        for (const [workspaceId, jobs] of groups) {
+            const isLow = await queueCaps.isLowTierWorkspace(workspaceId);
+            if (!isLow) { acceptedJobs.push(...jobs); continue; }
+
+            const count = await queueCaps.countWaitingForWorkspace(queueName, workspaceId);
+            const remaining = Math.max(0, cap - count);
+            const accepted = jobs.slice(0, remaining);
+            const dropped = jobs.length - accepted.length;
+            acceptedJobs.push(...accepted);
+
+            if (dropped > 0 && await queueCaps.shouldLogDrop(queueName, workspaceId)) {
+                logger.warn('Queue cap reached, dropping bulk enqueues', {
+                    queueName, workspaceId, cap, count, dropped,
+                    location: 'lib.queue.bulkEnqueue',
+                });
+                Sentry.addBreadcrumb({
+                    category: 'queue.cap',
+                    level: 'warning',
+                    message: `${queueName} cap reached for workspace ${workspaceId} (bulk: ${dropped} dropped)`,
+                    data: { queueName, workspaceId, cap, count, dropped },
+                });
+            }
+        }
+    }
+
+    if (acceptedJobs.length === 0) return;
+
     const promises = [];
     const batchedJobs = [];
-    for (let i = 0; i < jobData.length; i += maxBatchSize)
-        batchedJobs.push(jobData.slice(i, i + maxBatchSize));
+    for (let i = 0; i < acceptedJobs.length; i += maxBatchSize)
+        batchedJobs.push(acceptedJobs.slice(i, i + maxBatchSize));
 
     for (let i = 0; i < batchedJobs.length; i++) {
-        const jobs = batchedJobs[i].map(job => {
-            return sanitize({
-                name: job.name,
-                data: job.data,
-                opts: sanitize({ priority, jobId: job.name })
-            })
-        });
+        const jobs = batchedJobs[i].map(job => sanitize({
+            name: job.name,
+            data: job.data,
+            opts: sanitize({ priority, jobId: job.name })
+        }));
         promises.push(queues[queueName].addBulk(jobs));
     }
 

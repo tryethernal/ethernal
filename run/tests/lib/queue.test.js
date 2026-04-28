@@ -109,3 +109,75 @@ describe('enqueue cap enforcement', () => {
         expect(logger.warn).not.toHaveBeenCalled();
     });
 });
+
+describe('bulkEnqueue cap enforcement', () => {
+    it('passes through when queue is uncapped', async () => {
+        queueCaps.getCap.mockReturnValue(Infinity);
+        const jobs = [
+            { name: 'a', data: { workspaceId: 1 } },
+            { name: 'b', data: { workspaceId: 2 } },
+        ];
+        await bulkEnqueue('blockSync', jobs);
+        expect(queues['blockSync'].addBulk).toHaveBeenCalledTimes(1);
+        expect(queues['blockSync'].addBulk.mock.calls[0][0]).toHaveLength(2);
+    });
+
+    it('passes through jobs without workspaceId', async () => {
+        queueCaps.getCap.mockReturnValue(200);
+        const jobs = [{ name: 'a', data: {} }, { name: 'b', data: {} }];
+        await bulkEnqueue('blockSync', jobs);
+        expect(queues['blockSync'].addBulk.mock.calls[0][0]).toHaveLength(2);
+    });
+
+    it('passes through jobs for non-low-tier workspaces', async () => {
+        queueCaps.getCap.mockReturnValue(200);
+        queueCaps.isLowTierWorkspace.mockResolvedValue(false);
+        const jobs = [
+            { name: 'a', data: { workspaceId: 1 } },
+            { name: 'b', data: { workspaceId: 1 } },
+        ];
+        await bulkEnqueue('blockSync', jobs);
+        expect(queues['blockSync'].addBulk.mock.calls[0][0]).toHaveLength(2);
+    });
+
+    it('drops jobs over the remaining capacity for a low-tier workspace', async () => {
+        queueCaps.getCap.mockReturnValue(200);
+        queueCaps.isLowTierWorkspace.mockResolvedValue(true);
+        queueCaps.countWaitingForWorkspace.mockResolvedValue(195);
+        const jobs = [];
+        for (let i = 0; i < 20; i++) jobs.push({ name: `j${i}`, data: { workspaceId: 1 } });
+        await bulkEnqueue('blockSync', jobs);
+        expect(queues['blockSync'].addBulk.mock.calls[0][0]).toHaveLength(5);
+        expect(logger.warn).toHaveBeenCalledWith(
+            expect.stringMatching(/cap reached/i),
+            expect.objectContaining({ queueName: 'blockSync', workspaceId: 1, cap: 200, dropped: 15 })
+        );
+    });
+
+    it('drops all jobs when already at cap', async () => {
+        queueCaps.getCap.mockReturnValue(200);
+        queueCaps.isLowTierWorkspace.mockResolvedValue(true);
+        queueCaps.countWaitingForWorkspace.mockResolvedValue(200);
+        const jobs = [{ name: 'a', data: { workspaceId: 1 } }];
+        await bulkEnqueue('blockSync', jobs);
+        expect(queues['blockSync'].addBulk).not.toHaveBeenCalled();
+    });
+
+    it('handles mixed workspaces independently', async () => {
+        queueCaps.getCap.mockReturnValue(200);
+        queueCaps.isLowTierWorkspace.mockImplementation(async (id) => id === 1);
+        queueCaps.countWaitingForWorkspace.mockResolvedValue(199);
+        const jobs = [
+            { name: 'a1', data: { workspaceId: 1 } },
+            { name: 'a2', data: { workspaceId: 1 } },
+            { name: 'b1', data: { workspaceId: 2 } },
+            { name: 'b2', data: { workspaceId: 2 } },
+        ];
+        await bulkEnqueue('blockSync', jobs);
+        // ws 1 (low-tier, 199 waiting, cap 200) → 1 of 2 jobs allowed
+        // ws 2 (normal-tier) → both jobs allowed
+        // total enqueued = 3
+        const sent = queues['blockSync'].addBulk.mock.calls[0][0];
+        expect(sent).toHaveLength(3);
+    });
+});
