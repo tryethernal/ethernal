@@ -92,7 +92,7 @@ const TIER_CACHE_PREFIX = 'queueCap:tier:';
  * @returns {Promise<boolean>}
  */
 const isLowTierWorkspace = async (workspaceId) => {
-    if (workspaceId === null || workspaceId === undefined) return false;
+    if (!workspaceId) return false;
     const cacheKey = `${TIER_CACHE_PREFIX}${workspaceId}`;
     let cached;
     try {

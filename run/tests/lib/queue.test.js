@@ -127,6 +127,7 @@ describe('bulkEnqueue cap enforcement', () => {
         const jobs = [{ name: 'a', data: {} }, { name: 'b', data: {} }];
         await bulkEnqueue('blockSync', jobs);
         expect(queues['blockSync'].addBulk.mock.calls[0][0]).toHaveLength(2);
+        expect(queueCaps.isLowTierWorkspace).not.toHaveBeenCalled();
     });
 
     it('passes through jobs for non-low-tier workspaces', async () => {
