@@ -62,8 +62,8 @@ describe('evaluateTier', () => {
 
     const stub = (overrides) => ({
         id: 1,
-        isDemo: false,
         explorer: {
+            isDemo: false,
             stripeSubscription: {
                 status: 'active',
                 stripePlan: { slug: 'explorer-150' }
@@ -96,9 +96,21 @@ describe('evaluateTier', () => {
         expect(await evaluateTier(1)).toBe('low');
     });
 
-    it('returns "low" when workspace.isDemo is true', async () => {
-        Workspace.findByPk.mockResolvedValue(stub({ isDemo: true }));
+    it('returns "low" when explorer.isDemo is true', async () => {
+        Workspace.findByPk.mockResolvedValue(stub({
+            explorer: {
+                isDemo: true,
+                stripeSubscription: { status: 'active', stripePlan: { slug: 'explorer-150' } }
+            }
+        }));
         expect(await evaluateTier(1)).toBe('low');
+    });
+
+    it('returns "normal" when subscription exists but stripePlan is null (fail open)', async () => {
+        Workspace.findByPk.mockResolvedValue(stub({
+            explorer: { isDemo: false, stripeSubscription: { status: 'active', stripePlan: null } }
+        }));
+        expect(await evaluateTier(1)).toBe('normal');
     });
 
     it('returns "normal" for paid explorer-150', async () => {

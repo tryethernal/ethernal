@@ -52,10 +52,10 @@ const { Workspace } = require('../models');
 const evaluateTier = async (workspaceId) => {
     try {
         const ws = await Workspace.findByPk(workspaceId, {
-            attributes: ['id', 'isDemo'],
+            attributes: ['id'],
             include: [{
                 association: 'explorer',
-                attributes: ['id'],
+                attributes: ['id', 'isDemo'],
                 include: [{
                     association: 'stripeSubscription',
                     attributes: ['id', 'status'],
@@ -68,8 +68,8 @@ const evaluateTier = async (workspaceId) => {
         });
 
         if (!ws) return 'normal';
-        if (ws.isDemo) return 'low';
         if (!ws.explorer) return 'low';
+        if (ws.explorer.isDemo) return 'low';
         if (!ws.explorer.stripeSubscription) return 'low';
         if (ws.explorer.stripeSubscription.status === 'trial') return 'low';
         if (ws.explorer.stripeSubscription.stripePlan?.slug === 'free') return 'low';
