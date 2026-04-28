@@ -13,7 +13,11 @@ jest.mock('../../lib/queueCaps', () => ({
     isLowTierWorkspace: jest.fn(),
     countWaitingForWorkspace: jest.fn(),
     shouldLogDrop: jest.fn(),
-    parseWorkspaceFromJobName: jest.requireActual('../../lib/queueCaps').parseWorkspaceFromJobName,
+    // parseWorkspaceFromJobName is exported by queueCaps but not used by queue.js,
+    // so we don't need it here. Avoid jest.requireActual on queueCaps because that
+    // triggers a real models/index.js init which fails under NODE_ENV=test in CI
+    // (no 'test' key in run/config/database.js).
+    parseWorkspaceFromJobName: jest.fn(),
 }));
 
 jest.mock('../../lib/logger', () => ({
