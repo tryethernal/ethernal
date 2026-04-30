@@ -128,7 +128,7 @@ module.exports = async () => {
                 { alias: `queue-activity-${queueName}` }
             );
             incidentCreated = true;
-        } else {
+        } else if (latestJob) {
             await closeIncident(`queue-activity-${queueName}`, { note: 'Activity recovered: a recent job was enqueued.' });
         }
     }

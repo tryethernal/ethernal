@@ -113,6 +113,17 @@ describe('queueMonitoring', () => {
         );
     });
 
+    it('Should not close the activity alert when no completed jobs are retained (queue could still be stalled)', async () => {
+        mockGetCompleted.mockResolvedValue([]);
+
+        await queueMonitoring();
+
+        expect(closeIncident).not.toHaveBeenCalledWith(
+            'queue-activity-blockSync',
+            expect.anything()
+        );
+    });
+
     it('Should create a performance incident with dedup alias when p95 exceeds max', async () => {
         const now = Date.now();
         mockGetCompleted.mockResolvedValue([

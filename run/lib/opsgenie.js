@@ -60,9 +60,11 @@ const createIncident = async (message, description, priority = 'P1', options = {
 };
 
 /**
- * Closes an OpsGenie alert by alias. Idempotent: closing an already-closed
- * or non-existent alert is a no-op (OpsGenie returns 202 either way).
- * Logs in dev mode instead of calling the API.
+ * Closes an OpsGenie alert by alias. Idempotent: OpsGenie's close-by-alias
+ * endpoint returns 202 ("Request will be processed") for open alerts,
+ * already-closed alerts, and non-existent aliases alike — verified empirically
+ * with curl. Safe to call every monitoring tick on healthy queues without
+ * generating error log noise. Logs in dev mode instead of calling the API.
  * @param {string} alias - Dedup alias of the alert to close
  * @param {Object} [options]
  * @param {string} [options.note] - Optional note to attach on close
