@@ -124,6 +124,13 @@ describe('evaluateTier', () => {
         expect(await evaluateTier(1)).toBe('low');
     });
 
+    it('returns "low" when plan slug is demo', async () => {
+        Workspace.findByPk.mockResolvedValue(stub({
+            explorer: { isDemo: false, stripeSubscription: { status: 'active', stripePlan: { slug: 'demo' } } }
+        }));
+        expect(await evaluateTier(1)).toBe('low');
+    });
+
     it('returns "low" when explorer.isDemo is true', async () => {
         Workspace.findByPk.mockResolvedValue(stub({
             explorer: {

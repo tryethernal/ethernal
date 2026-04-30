@@ -76,7 +76,8 @@ const evaluateTier = async (workspaceId) => {
         if (!ws.explorer.stripeSubscription) return 'low';
         const NON_PAYING_STATUSES = ['trial', 'canceled', 'past_due', 'unpaid', 'incomplete_expired'];
         if (NON_PAYING_STATUSES.includes(ws.explorer.stripeSubscription.status)) return 'low';
-        if (ws.explorer.stripeSubscription.stripePlan?.slug === 'free') return 'low';
+        const LOW_TIER_PLAN_SLUGS = ['free', 'demo'];
+        if (LOW_TIER_PLAN_SLUGS.includes(ws.explorer.stripeSubscription.stripePlan?.slug)) return 'low';
         return 'normal';
     } catch (error) {
         logger.warn('evaluateTier failed, treating as normal-tier', { workspaceId, error: error.message });

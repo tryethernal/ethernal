@@ -8,7 +8,7 @@
 const { Queue } = require('bullmq');
 const redis = require('../lib/redis');
 const logger = require('../lib/logger');
-const { createIncident } = require('../lib/opsgenie');
+const { createIncident, closeIncident } = require('../lib/opsgenie');
 const queueCaps = require('../lib/queueCaps');
 const { maxTimeWithoutEnqueuedJob, queueMonitoringMaxProcessingTime, queueMonitoringHighProcessingTimeThreshold, queueMonitoringHighWaitingJobCountThreshold, queueMonitoringMaxWaitingJobCount } = require('../lib/env');
 const priorities = require('../workers/priorities');
@@ -128,6 +128,8 @@ module.exports = async () => {
                 { alias: `queue-activity-${queueName}` }
             );
             incidentCreated = true;
+        } else {
+            await closeIncident(`queue-activity-${queueName}`, { note: 'Activity recovered: a recent job was enqueued.' });
         }
     }
 
@@ -165,20 +167,26 @@ module.exports = async () => {
                     { alias: `queue-performance-${queueName}` }
                 );
                 incidentCreated = true;
+            } else {
+                await closeIncident(`queue-performance-${queueName}`, {
+                    note: `Performance recovered. Waiting: ${waitingJobCount} - P95: ${p95ProcessingTime.toFixed(2)}s`
+                });
             }
 
-            if (failedJobCount > 0) {
-                const recentFailures = failedJobs.filter(j => j && j.finishedOn && j.finishedOn > Date.now() - 5 * 60 * 1000);
+            const recentFailures = failedJobs.filter(j => j && j.finishedOn && j.finishedOn > Date.now() - 5 * 60 * 1000);
 
-                if (recentFailures.length >= 10) {
-                    await createIncident(
-                        `${queueName} queue issue (failures)`,
-                        `${recentFailures.length} failed jobs in the last 5 minutes`,
-                        'P2',
-                        { alias: `queue-failures-${queueName}` }
-                    );
-                    incidentCreated = true;
-                }
+            if (recentFailures.length >= 10) {
+                await createIncident(
+                    `${queueName} queue issue (failures)`,
+                    `${recentFailures.length} failed jobs in the last 5 minutes`,
+                    'P2',
+                    { alias: `queue-failures-${queueName}` }
+                );
+                incidentCreated = true;
+            } else {
+                await closeIncident(`queue-failures-${queueName}`, {
+                    note: `Failures recovered. ${recentFailures.length} failed jobs in the last 5 minutes`
+                });
             }
         }
     }

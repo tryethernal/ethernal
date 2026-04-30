@@ -59,6 +59,42 @@ const createIncident = async (message, description, priority = 'P1', options = {
     }
 };
 
+/**
+ * Closes an OpsGenie alert by alias. Idempotent: closing an already-closed
+ * or non-existent alert is a no-op (OpsGenie returns 202 either way).
+ * Logs in dev mode instead of calling the API.
+ * @param {string} alias - Dedup alias of the alert to close
+ * @param {Object} [options]
+ * @param {string} [options.note] - Optional note to attach on close
+ * @returns {Promise<Object>|undefined} Axios response or undefined in dev/error mode
+ */
+const closeIncident = async (alias, options = {}) => {
+    if (getNodeEnv() === 'development' || !getOpsgenieApiKey()) {
+        logger.info('Development environment (no OpsGenie API key) - skipping OpsGenie close', { alias });
+        return;
+    }
+
+    try {
+        return await axios({
+            method: 'POST',
+            url: `https://api.opsgenie.com/v2/alerts/${encodeURIComponent(alias)}/close?identifierType=alias`,
+            headers: {
+                'Authorization': `GenieKey ${getOpsgenieApiKey()}`,
+            },
+            data: options.note ? { note: options.note, source: 'queueMonitoring' } : { source: 'queueMonitoring' }
+        });
+    } catch (error) {
+        logger.error('Failed to close OpsGenie incident', {
+            error: error.message,
+            status: error.response?.status,
+            statusText: error.response?.statusText,
+            alias
+        });
+        return undefined;
+    }
+};
+
 module.exports = {
-    createIncident
+    createIncident,
+    closeIncident
 };
