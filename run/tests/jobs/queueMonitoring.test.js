@@ -9,7 +9,7 @@ jest.mock('../../lib/queueCaps', () => ({
     trimOldest: jest.fn(),
 }));
 
-const { createIncident } = require('../../lib/opsgenie');
+const { createIncident, closeIncident } = require('../../lib/opsgenie');
 const logger = require('../../lib/logger');
 const redis = require('../../lib/redis');
 
@@ -50,6 +50,7 @@ const queueMonitoring = require('../../jobs/queueMonitoring');
 
 beforeEach(() => {
     createIncident.mockClear();
+    closeIncident.mockClear();
     logger.info.mockClear();
     logger.error.mockClear();
     redis.get.mockClear().mockResolvedValue(null);
@@ -97,6 +98,30 @@ describe('queueMonitoring', () => {
         await queueMonitoring();
 
         expect(createIncident).not.toHaveBeenCalled();
+    });
+
+    it('Should close the activity alert when a recent job is enqueued', async () => {
+        mockGetCompleted.mockResolvedValue([{
+            timestamp: Date.now() - 10 * 1000
+        }]);
+
+        await queueMonitoring();
+
+        expect(closeIncident).toHaveBeenCalledWith(
+            'queue-activity-blockSync',
+            expect.objectContaining({ note: expect.any(String) })
+        );
+    });
+
+    it('Should not close the activity alert when no completed jobs are retained (queue could still be stalled)', async () => {
+        mockGetCompleted.mockResolvedValue([]);
+
+        await queueMonitoring();
+
+        expect(closeIncident).not.toHaveBeenCalledWith(
+            'queue-activity-blockSync',
+            expect.anything()
+        );
     });
 
     it('Should create a performance incident with dedup alias when p95 exceeds max', async () => {
@@ -172,6 +197,49 @@ describe('queueMonitoring', () => {
         await queueMonitoring();
 
         expect(createIncident).not.toHaveBeenCalled();
+    });
+
+    it('Should close performance and failure alerts when metrics are healthy', async () => {
+        const now = Date.now();
+        mockGetCompleted.mockResolvedValue([
+            { processedOn: now - 2000, finishedOn: now },
+        ]);
+        mockGetWaitingCount.mockResolvedValue(5);
+        mockGetDelayedCount.mockResolvedValue(0);
+        mockGetFailedCount.mockResolvedValue(0);
+
+        await queueMonitoring();
+
+        expect(closeIncident).toHaveBeenCalledWith(
+            'queue-performance-blockSync',
+            expect.objectContaining({ note: expect.stringContaining('Performance recovered') })
+        );
+        expect(closeIncident).toHaveBeenCalledWith(
+            'queue-performance-receiptSync',
+            expect.objectContaining({ note: expect.stringContaining('Performance recovered') })
+        );
+        expect(closeIncident).toHaveBeenCalledWith(
+            'queue-failures-blockSync',
+            expect.objectContaining({ note: expect.stringContaining('Failures recovered') })
+        );
+        expect(closeIncident).toHaveBeenCalledWith(
+            'queue-failures-receiptSync',
+            expect.objectContaining({ note: expect.stringContaining('Failures recovered') })
+        );
+    });
+
+    it('Should not close performance alert while threshold is still breached', async () => {
+        mockGetCompleted.mockResolvedValue([]);
+        mockGetWaitingCount.mockResolvedValue(150);
+        mockGetDelayedCount.mockResolvedValue(0);
+        mockGetFailedCount.mockResolvedValue(0);
+
+        await queueMonitoring();
+
+        expect(closeIncident).not.toHaveBeenCalledWith(
+            'queue-performance-blockSync',
+            expect.anything()
+        );
     });
 
     it('Should create a failure incident with P2 when 10+ jobs fail in 5 minutes', async () => {
