@@ -59,6 +59,44 @@ const createIncident = async (message, description, priority = 'P1', options = {
     }
 };
 
+/**
+ * Closes an OpsGenie alert by alias. Idempotent: OpsGenie's close-by-alias
+ * endpoint returns 202 ("Request will be processed") for open alerts,
+ * already-closed alerts, and non-existent aliases alike — verified empirically
+ * with curl. Safe to call every monitoring tick on healthy queues without
+ * generating error log noise. Logs in dev mode instead of calling the API.
+ * @param {string} alias - Dedup alias of the alert to close
+ * @param {Object} [options]
+ * @param {string} [options.note] - Optional note to attach on close
+ * @returns {Promise<Object>|undefined} Axios response or undefined in dev/error mode
+ */
+const closeIncident = async (alias, options = {}) => {
+    if (getNodeEnv() === 'development' || !getOpsgenieApiKey()) {
+        logger.info('Development environment (no OpsGenie API key) - skipping OpsGenie close', { alias });
+        return;
+    }
+
+    try {
+        return await axios({
+            method: 'POST',
+            url: `https://api.opsgenie.com/v2/alerts/${encodeURIComponent(alias)}/close?identifierType=alias`,
+            headers: {
+                'Authorization': `GenieKey ${getOpsgenieApiKey()}`,
+            },
+            data: options.note ? { note: options.note, source: 'queueMonitoring' } : { source: 'queueMonitoring' }
+        });
+    } catch (error) {
+        logger.error('Failed to close OpsGenie incident', {
+            error: error.message,
+            status: error.response?.status,
+            statusText: error.response?.statusText,
+            alias
+        });
+        return undefined;
+    }
+};
+
 module.exports = {
-    createIncident
+    createIncident,
+    closeIncident
 };
