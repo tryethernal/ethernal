@@ -54,7 +54,7 @@
                             <div><span class="prompt">$ </span><span class="command">cd ethernal</span></div>
                             <div><span class="prompt">$ </span><span class="command">make start</span></div>
                             <div class="mt-3"><span class="comment"># That's it. Your explorer is running.</span></div>
-                            <div class="cursor-line mt-2">
+                            <div class="cursor-line">
                                 <span class="prompt">█</span>
                             </div>
                         </div>
