@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.193] - 2026-05-02
+### Fixed
+- fix: add missing workspaceId indexes for rpc_health_checks and integrity_checks (#1225)
+
+
 ## [5.17.192] - 2026-05-02
 ### Fixed
 - Remove typing indicator cursor from terminal display (#1281)
