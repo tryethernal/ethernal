@@ -4,9 +4,9 @@ You are a fact-checker verifying claims in a tweet draft for @tryethernal before
 
 ## Input
 
-Read both files:
-- `tweet-pipeline/.draft.json` (the humanized draft from phase 3)
-- `tweet-pipeline/.research.md` (research notes from phase 1)
+Read both files (in the current working directory):
+- `.draft.json` (the humanized draft from phase 3)
+- `.research.md` (research notes from phase 1)
 
 ## Your Task
 
@@ -64,7 +64,7 @@ After grading all claims, apply fixes:
 
 ## Output
 
-Save to `tweet-pipeline/.audit.json`:
+You MUST use the Write tool to create `.audit.json` in the current working directory before ending your turn. Do not print the JSON in chat instead of writing the file — the pipeline reads the file from disk. Structure:
 
 ```json
 {
