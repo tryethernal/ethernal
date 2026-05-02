@@ -54,9 +54,6 @@
                             <div><span class="prompt">$ </span><span class="command">cd ethernal</span></div>
                             <div><span class="prompt">$ </span><span class="command">make start</span></div>
                             <div class="mt-3"><span class="comment"># That's it. Your explorer is running.</span></div>
-                            <div class="cursor-line mt-2">
-                                <span class="prompt">█</span>
-                            </div>
                         </div>
                     </div>
                 </v-col>
@@ -87,24 +84,5 @@
     font-size: 12px;
     font-weight: 500;
     font-family: 'JetBrains Mono', 'Fira Code', monospace;
-}
-
-.blinking-cursor {
-    animation: blink 1.2s step-end infinite;
-}
-
-@keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-}
-
-.cursor-line {
-    line-height: 1;
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .blinking-cursor {
-        animation: none;
-    }
 }
 </style>
