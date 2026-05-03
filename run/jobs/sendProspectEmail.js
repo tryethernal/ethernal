@@ -56,6 +56,7 @@ module.exports = async (job) => {
         .replace('{{unsubscribeUrl}}', unsubscribeUrl)
         .replace(/https?:\/\/(?:[a-z0-9-]+\.)*tryethernal\.com[^\s)\]>"']*/gi, (url) => {
             if (url.includes('/api/prospects/unsubscribe')) return url;
+            if (url.includes('utm_source=')) return url;
             return url + (url.includes('?') ? '&' : '?') + utm;
         });
 
