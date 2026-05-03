@@ -179,7 +179,7 @@
                     <!-- Inline CTA -->
                     <div v-if="decodeResult || encodeResult" class="inline-cta mt-8">
                         <p>Decode transactions automatically in your block explorer. Try Ethernal free.</p>
-                        <a :href="`${appUrl}/auth?flow=public`" class="btn-primary btn-sm">Get Started</a>
+                        <a :href="`${appUrl}/auth?flow=public&utm_source=tool&utm_medium=inline_cta&utm_campaign=calldata_decoder`" class="btn-primary btn-sm" @click="trackCta">Get Started</a>
                     </div>
                 </v-col>
             </v-row>
@@ -217,6 +217,10 @@ import {
 } from '@/composables/useEvmTools.js';
 
 const appUrl = __APP_URL__;
+
+function trackCta() {
+    window.posthog?.capture('landing:tool_cta_click', { tool: 'calldata_decoder' });
+}
 
 // --- Decode state ---
 const activeTab = ref('decode');

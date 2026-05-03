@@ -160,7 +160,7 @@
                     <!-- Inline CTA -->
                     <div v-if="blockToDateResult || dateToBlockResult" class="inline-cta mt-8">
                         <p>Browse blocks, transactions, and logs in your block explorer. Try Ethernal free.</p>
-                        <a :href="`${appUrl}/auth?flow=public`" class="btn-primary btn-sm">Get Started</a>
+                        <a :href="`${appUrl}/auth?flow=public&utm_source=tool&utm_medium=inline_cta&utm_campaign=block_date_converter`" class="btn-primary btn-sm" @click="trackCta">Get Started</a>
                     </div>
                 </v-col>
             </v-row>
@@ -194,6 +194,10 @@ import LandingCTA from '@/components/LandingCTA.vue';
 import ToolsSidebar from '@/components/ToolsSidebar.vue';
 
 const appUrl = __APP_URL__;
+
+function trackCta() {
+    window.posthog?.capture('landing:tool_cta_click', { tool: 'block_date_converter' });
+}
 
 const chains = [
     { slug: 'ethereum', name: 'Ethereum', logo: 'ethereum.svg', rpc: 'https://ethereum-rpc.publicnode.com', explorer: 'https://etherscan.io/block/' },

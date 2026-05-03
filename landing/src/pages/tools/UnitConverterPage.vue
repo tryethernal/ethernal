@@ -53,7 +53,7 @@
                     <!-- Inline CTA -->
                     <div v-if="hasValue" class="inline-cta mt-8">
                         <p>View gas costs and token values in your block explorer. Try Ethernal free.</p>
-                        <a :href="`${appUrl}/auth?flow=public`" class="btn-primary btn-sm">Get Started</a>
+                        <a :href="`${appUrl}/auth?flow=public&utm_source=tool&utm_medium=inline_cta&utm_campaign=unit_converter`" class="btn-primary btn-sm" @click="trackCta">Get Started</a>
                     </div>
                 </v-col>
             </v-row>
@@ -88,6 +88,10 @@ import ToolsSidebar from '@/components/ToolsSidebar.vue';
 import { ETH_UNITS, convertEthUnits } from '@/composables/useEvmTools.js';
 
 const appUrl = __APP_URL__;
+
+function trackCta() {
+    window.posthog?.capture('landing:tool_cta_click', { tool: 'unit_converter' });
+}
 
 const units = reactive(ETH_UNITS.map(u => ({ ...u, displayValue: '' })));
 const conversionError = ref('');

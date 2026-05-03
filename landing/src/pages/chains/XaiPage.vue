@@ -308,6 +308,13 @@
                             <span class="related-desc">Xai's parent L2, the main Arbitrum optimistic rollup</span>
                         </div>
                     </router-link>
+                    <router-link to="/blockscout-alternative" class="related-link">
+                        <v-icon size="18" style="color: #5DAAE0;">mdi-compare-horizontal</v-icon>
+                        <div>
+                            <span class="related-title">Blockscout Alternative</span>
+                            <span class="related-desc">How Ethernal compares to Blockscout for L3/gaming chains</span>
+                        </div>
+                    </router-link>
                     <router-link to="/pricing" class="related-link">
                         <v-icon size="18" style="color: #5DAAE0;">mdi-tag-outline</v-icon>
                         <div>
