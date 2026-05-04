@@ -87,9 +87,11 @@ Collects from 5 sources, classifies into 12 topic clusters, scores, creates GitH
 
 **Scoring weights:** EIP=3, ERC=3, ethresearch=2, arxiv=2, magicians=1, Google Trends=0.5. Threshold: 5 pts.
 
+**Per-cluster performance multipliers** (`CLUSTER_PERFORMANCE_MULTIPLIER` in `config.js`, applied in `classifyAndScore`): boost top performers (account-abstraction, security-auditing, evm-internals at 1.3-1.5x) and dampen underperformers (ai-agents-onchain 0.7x, zk-cryptography 0.6x). Derived from PostHog 30d sustained-traffic data. **Refresh quarterly** by re-running the analysis and updating the constants.
+
 **12 Topic Clusters:** AI Agents Onchain, Account Abstraction, Encrypted Mempools & Privacy, Payments & Streams, Security & Auditing, L2 & Rollups, ZK & Cryptography, DeFi Primitives, NFT & Token Standards, EVM Internals, Protocol & Networking, Governance & Standards.
 
-**5 Content Types:** ERC Tutorial, EIP Explainer, Research Deep Dive, Upgrade Guide, Trend Survey.
+**6 Content Types:** ERC Tutorial, EIP Explainer, Research Deep Dive, Upgrade Guide, Trend Survey, **Comparison Listicle** (the highest-converting format — best-X-for-Y-in-2026 style).
 
 **GitHub Projects V2 Board:**
 - Project ID: `PVT_kwDOBLpTN84BRc80` (org: `tryethernal`, number: 1)
@@ -100,6 +102,12 @@ Collects from 5 sources, classifies into 12 topic clusters, scores, creates GitH
 ### 2. Blog Drafting & Publishing (`blog/pipeline/draft.sh`, Hetzner server)
 
 Picks the highest-scoring "Detected" card (round-robin by cluster), runs 3-phase Claude pipeline, generates images, publishes directly to develop. No manual review step.
+
+**Listicle cadence override** (`pickNextTopic` in `project.js`): every 4 articles, force-pick the highest-scoring `comparison-listicle` from Detected/Backlog if any exist. Listicles outperform other formats ~3x but the trend scan doesn't generate them — they come from `LISTICLE_TOPICS` in `config.js`, seeded onto the project board via `node blog/pipeline/seed-listicles.js`.
+
+**Adding a new listicle topic:** append to `LISTICLE_TOPICS` (title, cluster, score, body brief), run `node blog/pipeline/seed-listicles.js` (idempotent — skips existing titles). The picker will surface it on its next listicle-cadence trigger.
+
+**Recency ordering:** `pickNextTopic` reads `date:` from each Published article's frontmatter to count `articlesSinceListicle` correctly. Don't try to use `articlePath` for ordering — it's a slug, not date-prefixed.
 
 **Execution flow:**
 1. `git pull` latest develop
