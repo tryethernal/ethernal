@@ -4,7 +4,31 @@
  */
 
 import { execSync } from 'child_process';
+import { readFileSync, existsSync } from 'fs';
+import { join } from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 import { PROJECT } from './config.js';
+
+const REPO_ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
+
+/**
+ * Reads `date:` from a published article's frontmatter. Returns ISO date or '' if
+ * the file is missing or unparseable. Used to order Published cards chronologically
+ * — articlePath is just a slug (no date prefix), so lexicographic sort would lie.
+ */
+function getArticleDate(articlePath) {
+  if (!articlePath) return '';
+  const abs = join(REPO_ROOT, articlePath);
+  if (!existsSync(abs)) return '';
+  try {
+    const content = readFileSync(abs, 'utf-8');
+    const match = content.match(/^date:\s*(\S+)/m);
+    return match ? match[1] : '';
+  } catch {
+    return '';
+  }
+}
 
 /**
  * Set custom fields on a project item.
@@ -147,9 +171,12 @@ export function pickNextTopic(dryRun = false) {
 
   // Listicle cadence override: count published articles since the last listicle.
   // If we've gone LISTICLE_CADENCE-1 articles without one, pick a listicle next.
+  // Order chronologically by frontmatter `date:` (articlePath is a slug, not
+  // date-prefixed, so lexicographic sort would mis-order).
   const publishedReverseChrono = items
     .filter(i => i.status === 'Published')
-    .sort((a, b) => (b.articlePath || '').localeCompare(a.articlePath || ''));
+    .map(i => ({ ...i, _date: getArticleDate(i.articlePath) }))
+    .sort((a, b) => (b._date || '').localeCompare(a._date || ''));
   let articlesSinceListicle = 0;
   for (const p of publishedReverseChrono) {
     if (p.contentType === 'comparison-listicle' || p.contentType === 'Comparison Listicle') break;
