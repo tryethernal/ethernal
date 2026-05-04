@@ -39,6 +39,57 @@ const relatedPosts = allPosts
   .filter(p => p.id !== post.id && p.data.tags.some(t => tags.includes(t)))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 3);
+
+// Topic-aware CTA: pick destination + headline based on article tags.
+// Order matters — first match wins so more specific tags should come first.
+const appUrl = import.meta.env.PUBLIC_APP_URL || 'https://app.tryethernal.com';
+const tagSet = new Set(tags.map(t => t.toLowerCase()));
+function has(...keys) { return keys.some(k => tagSet.has(k.toLowerCase())); }
+
+let ctaVariant;
+if (has('Comparison') || /alternative|vs |best/i.test(title)) {
+  ctaVariant = {
+    headline: 'See how Ethernal compares',
+    body: 'Side-by-side with Etherscan, Blockscout, and Routescan — what they miss, what we add.',
+    primary: { label: 'Compare plans', href: 'https://tryethernal.com/pricing?utm_source=blog&utm_medium=cta&utm_campaign=' + post.id },
+    secondary: { label: 'Etherscan alternative', href: 'https://tryethernal.com/etherscan-alternative?utm_source=blog&utm_medium=cta&utm_campaign=' + post.id }
+  };
+} else if (has('Security', 'Auditing', 'MEV', 'DeFi')) {
+  ctaVariant = {
+    headline: 'Trace any transaction in your explorer',
+    body: 'Decoded calls, state diffs, internal transfers. Free for any EVM chain — connect your RPC and go.',
+    primary: { label: 'Get a free explorer', href: `${appUrl}/auth?flow=public&utm_source=blog&utm_medium=cta&utm_campaign=${post.id}` },
+    secondary: { label: 'See tracing in action', href: 'https://tryethernal.com/blog/transaction-tracing-with-ethernal?utm_source=blog&utm_medium=cta&utm_campaign=' + post.id }
+  };
+} else if (has('L2', 'Infrastructure', 'Blobs')) {
+  ctaVariant = {
+    headline: 'Run a block explorer for your L2',
+    body: 'Custom branding, custom domain, full historical sync. Used by appchains and rollups in production.',
+    primary: { label: 'Get started free', href: `${appUrl}/auth?flow=public&utm_source=blog&utm_medium=cta&utm_campaign=${post.id}` },
+    secondary: { label: 'View pricing', href: 'https://tryethernal.com/pricing?utm_source=blog&utm_medium=cta&utm_campaign=' + post.id }
+  };
+} else if (has('Ethernal', 'Developer Tools')) {
+  ctaVariant = {
+    headline: 'Try Ethernal on your chain',
+    body: 'Connect any EVM RPC and get a fully working explorer in under 5 minutes. Free tier, no credit card.',
+    primary: { label: 'Get started free', href: `${appUrl}/auth?flow=public&utm_source=blog&utm_medium=cta&utm_campaign=${post.id}` },
+    secondary: { label: 'See features', href: 'https://tryethernal.com/features?utm_source=blog&utm_medium=cta&utm_campaign=' + post.id }
+  };
+} else if (has('EVM', 'Smart Contracts', 'Ethereum', 'Account Abstraction', 'ZK', 'NFT', 'Payments', 'AI Agents', 'State', 'Privacy')) {
+  ctaVariant = {
+    headline: 'Need an explorer that understands modern EVM?',
+    body: 'Decoded transactions, verified contracts, token transfers, traces — for any EVM chain you point it at.',
+    primary: { label: 'Try it free', href: `${appUrl}/auth?flow=public&utm_source=blog&utm_medium=cta&utm_campaign=${post.id}` },
+    secondary: { label: 'Browse a live explorer', href: 'https://tryethernal.com/blog/public-explorers?utm_source=blog&utm_medium=cta&utm_campaign=' + post.id }
+  };
+} else {
+  ctaVariant = {
+    headline: 'Need a block explorer for your chain?',
+    body: 'Connect your RPC and get a fully working explorer in under 5 minutes.',
+    primary: { label: 'Get started free', href: `${appUrl}/auth?flow=public&utm_source=blog&utm_medium=cta&utm_campaign=${post.id}` },
+    secondary: null
+  };
+}
 ---
 
 <BaseLayout title={title} description={description} image={image} ogImage={ogImage} plainBg ogType="article">
@@ -128,9 +179,31 @@ const relatedPosts = allPosts
     </header>
 
     <!-- Article body -->
-    <div class="prose prose-lg max-w-none mb-16" id="article-body">
+    <div class="prose prose-lg max-w-none mb-12" id="article-body">
       <slot />
     </div>
+
+    <!-- End-of-article CTA (always rendered, topic-aware) -->
+    <section class="not-prose mb-16">
+      <div class="rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent p-8 sm:p-10">
+        <h2 class="font-heading text-2xl sm:text-3xl font-semibold text-text-primary mb-3">{ctaVariant.headline}</h2>
+        <p class="text-text-secondary text-base mb-6 max-w-2xl">{ctaVariant.body}</p>
+        <div class="flex flex-col sm:flex-row gap-3">
+          <a href={ctaVariant.primary.href.replace('utm_medium=cta', 'utm_medium=end_article_cta')}
+             class="end-cta-primary inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm tracking-wide transition-all duration-200 hover:opacity-90 hover:shadow-lg hover:shadow-primary/30"
+             style="background: linear-gradient(90deg, #2670A5, #3D95CE); color: #ffffff;">
+            {ctaVariant.primary.label}
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+          {ctaVariant.secondary && (
+            <a href={ctaVariant.secondary.href.replace('utm_medium=cta', 'utm_medium=end_article_cta')}
+               class="end-cta-secondary inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm tracking-wide transition-all duration-200 border border-border-subtle text-text-primary hover:border-primary/40 hover:bg-primary/5">
+              {ctaVariant.secondary.label}
+            </a>
+          )}
+        </div>
+      </div>
+    </section>
   </article>
 
   <!-- Related posts -->
@@ -195,13 +268,13 @@ const relatedPosts = allPosts
     </div>
   </section>
 
-  <!-- Mid-article CTA (injected via JS after ~40% of content) -->
+  <!-- Mid-article CTA (injected via JS after ~40% of content) — topic-aware -->
   <template id="mid-article-cta">
     <div class="not-prose my-10 rounded-xl border border-primary/20 bg-primary/5 p-6 sm:p-8 text-center">
-      <p class="font-heading text-lg sm:text-xl font-semibold text-text-primary mb-2">Need a block explorer for your chain?</p>
-      <p class="text-text-secondary text-sm mb-4">Connect your RPC and get a fully working explorer in under 5 minutes.</p>
-      <a href={`${import.meta.env.PUBLIC_APP_URL || 'https://app.tryethernal.com'}/auth?flow=public`} class="mid-cta-link inline-flex items-center gap-2 px-6 py-2.5 rounded-full font-semibold text-sm tracking-wide transition-all duration-200 hover:opacity-90 hover:shadow-lg hover:shadow-primary/30" style="background: linear-gradient(90deg, #2670A5, #3D95CE); color: #ffffff;">
-        Get Started Free
+      <p class="font-heading text-lg sm:text-xl font-semibold text-text-primary mb-2">{ctaVariant.headline}</p>
+      <p class="text-text-secondary text-sm mb-4">{ctaVariant.body}</p>
+      <a href={ctaVariant.primary.href.replace('utm_medium=cta', 'utm_medium=mid_article_cta')} class="mid-cta-link inline-flex items-center gap-2 px-6 py-2.5 rounded-full font-semibold text-sm tracking-wide transition-all duration-200 hover:opacity-90 hover:shadow-lg hover:shadow-primary/30" style="background: linear-gradient(90deg, #2670A5, #3D95CE); color: #ffffff;">
+        {ctaVariant.primary.label}
         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
       </a>
     </div>
@@ -211,13 +284,13 @@ const relatedPosts = allPosts
       var articlePath = window.location.pathname;
       var articleTitle = document.querySelector('h1')?.textContent || '';
 
-      // Inject mid-article CTA after ~40% of content
+      // Inject mid-article CTA after ~40% of content (lowered threshold so short posts get one too)
       var articleBody = document.getElementById('article-body');
       var ctaTemplate = document.getElementById('mid-article-cta');
       if (articleBody && ctaTemplate) {
         var headings = articleBody.querySelectorAll('h2, h3');
-        if (headings.length >= 3) {
-          var targetIndex = Math.floor(headings.length * 0.4);
+        if (headings.length >= 2) {
+          var targetIndex = Math.max(1, Math.floor(headings.length * 0.4));
           headings[targetIndex].parentNode.insertBefore(ctaTemplate.content.cloneNode(true), headings[targetIndex]);
         }
       }
@@ -228,6 +301,24 @@ const relatedPosts = allPosts
         midCta.addEventListener('click', function() {
           if (window.posthog) window.posthog.capture('blog:cta_click', {
             cta_type: 'get_started', cta_position: 'mid_article', article_path: articlePath, article_title: articleTitle
+          });
+        });
+      }
+
+      // End-of-article CTA tracking
+      var endPrimary = document.querySelector('.end-cta-primary');
+      if (endPrimary) {
+        endPrimary.addEventListener('click', function() {
+          if (window.posthog) window.posthog.capture('blog:cta_click', {
+            cta_type: 'primary', cta_position: 'end_article', article_path: articlePath, article_title: articleTitle
+          });
+        });
+      }
+      var endSecondary = document.querySelector('.end-cta-secondary');
+      if (endSecondary) {
+        endSecondary.addEventListener('click', function() {
+          if (window.posthog) window.posthog.capture('blog:cta_click', {
+            cta_type: 'secondary', cta_position: 'end_article', article_path: articlePath, article_title: articleTitle
           });
         });
       }

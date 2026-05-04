@@ -319,6 +319,13 @@
                             <span class="related-desc">Block explorer for Ethereum mainnet with call traces and contract verification</span>
                         </div>
                     </router-link>
+                    <router-link to="/blockscout-alternative" class="related-link">
+                        <v-icon size="18" style="color: #5DAAE0;">mdi-compare-horizontal</v-icon>
+                        <div>
+                            <span class="related-title">Blockscout Alternative</span>
+                            <span class="related-desc">How Ethernal compares to Blockscout for Polygon and CDK chains</span>
+                        </div>
+                    </router-link>
                     <router-link to="/pricing" class="related-link">
                         <v-icon size="18" style="color: #5DAAE0;">mdi-tag-outline</v-icon>
                         <div>

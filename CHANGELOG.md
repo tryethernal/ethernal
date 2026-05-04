@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.194] - 2026-05-04
+### Fixed
+- Bias blog picker toward proven-performing clusters; schedule comparison-listicles every 4 articles (#1287)
+- docs: document PostHog identity bridge, UTM convention, and full event catalog (#1286)
+- Wire signup attribution, UTM tag every outbound link, and improve blog/chain CTAs (#1285)
+- fix(tweet-pipeline): require Write tool and fix temp file paths in prompts (#1283)
+
+
 ## [5.17.193] - 2026-05-02
 ### Fixed
 - fix: add missing workspaceId indexes for rpc_health_checks and integrity_checks (#1225)

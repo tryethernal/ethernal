@@ -125,6 +125,13 @@
                 <div class="related-links">
                     <router-link to="/op-stack" class="related-link"><v-icon size="18" style="color: #5DAAE0;">mdi-layers-outline</v-icon><div><span class="related-title">OP Stack Explorer</span><span class="related-desc">Bridge monitoring, withdrawals, and fault proofs for all OP Stack chains</span></div></router-link>
                     <router-link to="/chains/base" class="related-link"><v-icon size="18" style="color: #5DAAE0;">mdi-link-variant</v-icon><div><span class="related-title">Base Explorer</span><span class="related-desc">Another OP Stack L2 in the Superchain, built by Coinbase</span></div></router-link>
+                    <router-link to="/blockscout-alternative" class="related-link">
+                        <v-icon size="18" style="color: #5DAAE0;">mdi-compare-horizontal</v-icon>
+                        <div>
+                            <span class="related-title">Blockscout Alternative</span>
+                            <span class="related-desc">How Ethernal compares to Blockscout for L2 explorers</span>
+                        </div>
+                    </router-link>
                     <router-link to="/pricing" class="related-link"><v-icon size="18" style="color: #5DAAE0;">mdi-tag-outline</v-icon><div><span class="related-title">Pricing</span><span class="related-desc">Starter (free), Team ($150/mo), App Chain ($500/mo), Enterprise</span></div></router-link>
                 </div>
             </section>

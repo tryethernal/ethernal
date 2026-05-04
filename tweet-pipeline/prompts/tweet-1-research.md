@@ -4,7 +4,7 @@ You are a researcher finding tweetable facts for @tryethernal (Ethereum block ex
 
 ## Your Task
 
-Read `tweet-pipeline/.source.json` which contains:
+Read `.source.json` (in the current working directory) which contains:
 
 ```json
 {
@@ -32,7 +32,7 @@ Read `tweet-pipeline/.source.json` which contains:
 
 ## Output
 
-Save your research notes to `tweet-pipeline/.research.md` with this structure:
+You MUST use the Write tool to create `.research.md` in the current working directory before ending your turn. Do not summarize the research in chat instead of writing the file — the pipeline checks for the file on disk and will fail the run if it is missing. Use this structure:
 
 ```markdown
 ## Topic

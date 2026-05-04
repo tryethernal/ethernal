@@ -4,7 +4,31 @@
  */
 
 import { execSync } from 'child_process';
+import { readFileSync, existsSync } from 'fs';
+import { join } from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 import { PROJECT } from './config.js';
+
+const REPO_ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
+
+/**
+ * Reads `date:` from a published article's frontmatter. Returns ISO date or '' if
+ * the file is missing or unparseable. Used to order Published cards chronologically
+ * — articlePath is just a slug (no date prefix), so lexicographic sort would lie.
+ */
+function getArticleDate(articlePath) {
+  if (!articlePath) return '';
+  const abs = join(REPO_ROOT, articlePath);
+  if (!existsSync(abs)) return '';
+  try {
+    const content = readFileSync(abs, 'utf-8');
+    const match = content.match(/^date:\s*(\S+)/m);
+    return match ? match[1] : '';
+  } catch {
+    return '';
+  }
+}
 
 /**
  * Set custom fields on a project item.
@@ -112,9 +136,21 @@ export function getProjectItems() {
 }
 
 /**
+ * Comparison-listicle cadence: schedule one every N picks. "Best block
+ * explorers in 2026" is our highest sustained-traffic format (~2.0 vis/day)
+ * but the trend pipeline doesn't generate them, so the picker forces one
+ * whenever the recent published streak hasn't included one.
+ */
+const LISTICLE_CADENCE = 4;
+
+/**
  * Pick the next topic for the every-2-day cadence using round-robin.
  * Selects the highest-scoring "Detected" card whose cluster doesn't
  * already have an active card (in Researched or Drafting status).
+ *
+ * Comparison-listicle override: if no comparison-listicle has been published
+ * in the last LISTICLE_CADENCE-1 articles, force-pick one from the Detected
+ * pool (highest-scoring listicle, ignoring cluster contention).
  *
  * When no Detected/Backlog candidates remain, recycles the highest-scoring
  * Published card so the pipeline keeps producing fresh angles on hot topics.
@@ -132,6 +168,47 @@ export function pickNextTopic(dryRun = false) {
       .map(i => i.cluster)
       .filter(Boolean)
   );
+
+  // Listicle cadence override: count published articles since the last listicle.
+  // If we've gone LISTICLE_CADENCE-1 articles without one, pick a listicle next.
+  // Order chronologically by frontmatter `date:` (articlePath is a slug, not
+  // date-prefixed, so lexicographic sort would mis-order).
+  const publishedReverseChrono = items
+    .filter(i => i.status === 'Published')
+    .map(i => ({ ...i, _date: getArticleDate(i.articlePath) }))
+    .sort((a, b) => (b._date || '').localeCompare(a._date || ''));
+  let articlesSinceListicle = 0;
+  for (const p of publishedReverseChrono) {
+    if (p.contentType === 'comparison-listicle' || p.contentType === 'Comparison Listicle') break;
+    articlesSinceListicle += 1;
+    if (articlesSinceListicle >= LISTICLE_CADENCE) break;
+  }
+  const forceListicle = articlesSinceListicle >= LISTICLE_CADENCE - 1;
+
+  if (forceListicle) {
+    const listicleCandidates = items
+      .filter(i => i.status === 'Detected' || i.status === 'Backlog')
+      .filter(i => i.contentType === 'comparison-listicle' || i.contentType === 'Comparison Listicle')
+      .sort((a, b) => b.score - a.score);
+    if (listicleCandidates.length > 0) {
+      const picked = listicleCandidates[0];
+      console.log(`  Listicle cadence triggered (${articlesSinceListicle} articles since last) — picking: "${picked.title}"`);
+      if (!picked.body) {
+        try {
+          const result = execSync(
+            `gh api graphql -f query='{ node(id: "${picked.id}") { ... on ProjectV2Item { content { ... on DraftIssue { body } ... on Issue { body } } } } }' --jq -r '.data.node.content.body // ""'`,
+            { encoding: 'utf-8', timeout: 15000 }
+          );
+          picked.body = result.trim();
+        } catch {}
+      }
+      if (dryRun) {
+        console.log(`  [DRY RUN] Would pick: "${picked.title}" (listicle override)`);
+      }
+      return picked;
+    }
+    console.log(`  Listicle cadence triggered but no listicle candidates available — falling back to normal pick`);
+  }
 
   let candidates = items
     .filter(i => i.status === 'Detected' || i.status === 'Backlog')

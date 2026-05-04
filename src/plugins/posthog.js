@@ -13,9 +13,20 @@ export default {
         const envStore = useEnvStore();
         const $posthog = envStore.hasAnalyticsEnabled ?
             posthog.init(
-                envStore.postHogApiKey, { api_host: envStore.postHogApiHost }
+                envStore.postHogApiKey,
+                {
+                    api_host: envStore.postHogApiHost,
+                    person_profiles: 'identified_only',
+                    autocapture: true,
+                    capture_pageview: true,
+                    capture_pageleave: true,
+                    ip: true
+                }
             ) :
             { capture: () => {}, reset: () => {}, identify: () => {} }
+
+        if (envStore.hasAnalyticsEnabled && typeof window !== 'undefined')
+            window.posthog = $posthog;
 
         app.config.globalProperties.$posthog = $posthog;
         app.provide('$posthog', $posthog);

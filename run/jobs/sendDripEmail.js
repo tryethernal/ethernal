@@ -70,15 +70,16 @@ module.exports = async (job) => {
 
     const mailjet = Mailjet.apiConnect(getMailjetPublicKey(), getMailjetPrivateKey());
     const appDomain = getAppDomain();
-    const explorerLink = `https://${explorerSlug}.${appDomain}`;
+    const utm = `utm_source=drip&utm_medium=email&utm_campaign=demo_drip_step_${step}`;
+    const explorerLink = `https://${explorerSlug}.${appDomain}?${utm}`;
     const unsubscribeToken = generateUnsubscribeToken(email);
     const unsubscribeUrl = `https://${appDomain}/api/demo/unsubscribe?token=${unsubscribeToken}`;
 
     // Steps 3-6 link to migration flow; steps 1-2 link to the explorer
-    let migrateUrl = `https://app.${appDomain}`;
+    let migrateUrl = `https://app.${appDomain}?${utm}`;
     if (step >= 3 && schedule && schedule.explorerId) {
         const explorerToken = encode({ explorerId: schedule.explorerId });
-        migrateUrl = `https://app.${appDomain}/?explorerToken=${explorerToken}`;
+        migrateUrl = `https://app.${appDomain}/?explorerToken=${explorerToken}&${utm}`;
     }
 
     // Load enrichment for steps 3+ (personalized copy)

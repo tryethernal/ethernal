@@ -49,8 +49,16 @@ module.exports = async (job) => {
     const appUrl = getAppUrl() || 'https://app.tryethernal.com';
     const unsubscribeUrl = `${appUrl}/api/prospects/unsubscribe?token=${unsubscribeToken}`;
 
-    const body = prospect.emailBody.replace('{{unsubscribeUrl}}', unsubscribeUrl);
     const isFollowUp = prospect.followUpCount > 0;
+    const utm = `utm_source=prospect&utm_medium=email&utm_campaign=${isFollowUp ? `followup_${prospect.followUpCount}` : 'cold'}`;
+
+    const body = prospect.emailBody
+        .replace('{{unsubscribeUrl}}', unsubscribeUrl)
+        .replace(/https?:\/\/(?:[a-z0-9-]+\.)*tryethernal\.com[^\s)\]>"']*/gi, (url) => {
+            if (url.includes('/api/prospects/unsubscribe')) return url;
+            if (url.includes('utm_source=')) return url;
+            return url + (url.includes('?') ? '&' : '?') + utm;
+        });
 
     await mailjet.post('send', { version: 'v3.1' }).request({
         Messages: [{
