@@ -22,7 +22,7 @@
 | Drip emails | `run/jobs/sendDripEmail.js`, `run/jobs/processDripEmails.js`, `run/emails/drip-content.js`, `run/emails/drip-base.html` | [MARKETING.md](.claude/references/MARKETING.md) |
 | Demo enrichment | `run/jobs/enrichDemoProfile.js`, `run/lib/enrichment.js` | [MARKETING.md](.claude/references/MARKETING.md) |
 | Twitter pipeline | `tweet-pipeline/` (standalone, Hetzner server) | [MARKETING.md](.claude/references/MARKETING.md) |
-| Analytics (PostHog) | `blog/src/layouts/BaseLayout.astro` (snippet), `landing/src/main.js` (init), `run/lib/analytics.js` (backend) | PostHog personal API key in `.credentials.local` |
+| Analytics (PostHog) | `blog/src/layouts/BaseLayout.astro` (snippet), `landing/src/main.js` (init), `src/plugins/posthog.js` (app init), `src/stores/user.js` (identify bridge), `run/lib/analytics.js` (backend) | [MARKETING.md § PostHog](.claude/references/MARKETING.md#posthog-tracking) — covers identity bridging, UTM convention, events, project filters. PostHog personal API key in `.credentials.local` |
 | Docker commands | | [COMMANDS.md](.claude/references/COMMANDS.md) |
 | Worker watchdog | `scripts/watchdog.sh`, `scripts/watchdog-diagnose.md`, `run/lib/heartbeat.js` | |
 | Env vars/flags | `run/lib/flags.js` | [ENV.md](.claude/references/ENV.md) |

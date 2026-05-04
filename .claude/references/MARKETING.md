@@ -342,18 +342,59 @@ Feature flag: `isDripEmailEnabled()` in `run/lib/flags.js`.
 ## PostHog Tracking
 
 **Dashboard:** https://us.posthog.com/project/41419/dashboard/1363672
+**Project ID:** 41419  |  **API base:** `https://us.posthog.com`  |  Personal API key in `.credentials.local`
+
+### Identity & attribution
+
+- **Frontend distinct_id is anonymous on first load.** It only gets bridged to the backend user id once `posthog.identify(String(user.id), {email, plan})` runs.
+- **Bridge lives in `src/stores/user.js` `updateUser()`** — fires on signin, signup, and any user refresh. `posthog.reset()` runs on logout. `window.posthog` is set in `src/plugins/posthog.js` so all the `window.posthog.capture(...)` calls in onboarding components find a real client.
+- **Without `identify()`, no funnel from a marketing surface to `auth:user_signup` / `workspace:workspace_create` / `explorer:subscription_create` will work** — those backend events use the numeric user id as `distinctId` and live in a different namespace from the anonymous landing cookie.
+- **Project-level filters** (`test_account_filters`): localhost, your own email, and any `$referring_domain` matching `tryethernal\.com$` (kills bot traffic from explorer subdomains polluting referrer data). `test_account_filters_default_checked: true`.
+- **GeoIP**: enabled (`anonymize_ips: false`). The SDK must send `ip: true` for geo to populate — set in both `src/plugins/posthog.js` and `landing/src/main.js`.
+- **Autocapture**: enabled, both code-side (`autocapture: true`) and project-side (`autocapture_opt_out: null`).
+
+### UTM convention
+
+Every outbound link we control carries `utm_source` + `utm_medium` + `utm_campaign`. Sources currently in use:
+
+| `utm_source` | `utm_medium` | `utm_campaign` | Where |
+|--------------|--------------|----------------|-------|
+| `landing` | `navbar` / `mobile_nav` / `footer` | `signin` / `get_started` | `landing/src/components/LandingNavbar.vue`, `LandingFooter.vue` |
+| `blog` | `footer` / `mid_article_cta` / `end_article_cta` | `signin` / `<post.id>` | `blog/src/components/Footer.astro`, `blog/src/layouts/PostLayout.astro` |
+| `twitter` | `social` | `blog_promo` | `tweet-pipeline/promote-blog.sh` |
+| `drip` | `email` | `demo_drip_step_<N>` / `brand_header` / `brand_footer` | `run/jobs/sendDripEmail.js`, `run/emails/drip-base.html` |
+| `transactional` | `email` | `demo_ready` | `run/jobs/sendDemoExplorerLink.js` |
+| `prospect` | `email` | `cold` / `followup_<N>` | `run/jobs/sendProspectEmail.js` (regex post-processor on AI body) |
+| `tool` | `inline_cta` | `<tool_name>` | `landing/src/pages/tools/*.vue` |
+
+When adding a new outbound link to a tryethernal.com surface from anywhere we control (email, tweet, blog, landing), tag it. Prospect-email regex skips URLs that already carry `utm_source=` so AI-generated bodies don't get double-tagged.
 
 ### Events
 
 | Event | Source | Properties |
 |-------|--------|------------|
-| `email:drip_sent` | sendDripEmail job | step, workspaceId, explorerId |
-| `email:drip_opened` | Mailjet webhook | step, workspaceId |
-| `email:drip_clicked` | Mailjet webhook | step, workspaceId, url |
-| `explorer:demo_expired` | removeExpiredExplorers | workspaceId, explorerId |
-| `twitter:tweet_posted` | publish.sh | tweetId, bucket, sourceId, hasThread |
-| `twitter:blog_promoted` | promote-blog.sh | tweetId, slug |
-| `twitter:engagement` | engagement-bridge.sh | tweetId, likes, retweets, replies, impressions |
+| `auth:user_signup` | `run/jobs/processUser.js` | $set: email, plan, can_trial |
+| `auth:user_signin` | `run/api/users.js` | (none) |
+| `workspace:workspace_create` | `run/models/workspace.js` afterCreate hook | (none) |
+| `explorer:explorer_create` | `run/models/explorer.js` afterCreate hook | is_demo, onboarding_source, chain |
+| `explorer:subscription_create` | `run/models/stripesubscription.js` | is_demo, plan_slug, status, is_onboarding |
+| `explorer:subscription_update` | `run/models/stripesubscription.js` | is_demo, plan_slug, status |
+| `explorer:subscription_delete` | `run/models/stripesubscription.js` | is_demo, plan_slug |
+| `explorer:demo_migrate` | `run/lib/stripe.js` | is_trial, plan_slug |
+| `explorer:demo_expired` | `removeExpiredExplorers` | slug, workspaceId |
+| `email:drip_sent` | `sendDripEmail` job | step, explorerSlug |
+| `email:drip_opened` | Mailjet webhook | step, explorerSlug |
+| `email:drip_clicked` | Mailjet webhook | step, explorerSlug, url |
+| `twitter:tweet_posted` | `publish.sh` | tweetId, bucket, sourceId, hasThread |
+| `twitter:blog_promoted` | `promote-blog.sh` | tweetId, slug |
+| `twitter:tweet_engagement` | `engagement-bridge.sh` | tweetId, likes, retweets, replies, impressions |
+| `blog:cta_click` | PostLayout.astro inline JS | cta_type, cta_position, article_path, article_title |
+| `blog:related_article_click` | PostLayout.astro inline JS | source_article, target_article |
+| `blog:external_link_click` | PostLayout.astro inline JS | article_path, link_url |
+| `blog:newsletter_subscribe` | PostLayout.astro inline JS | article_path |
+| `landing:tool_use` | tools/*.vue | tool-specific |
+| `landing:tool_cta_click` | tools/*.vue inline CTA | tool |
+| `prospect:detected` / `prospect:enriched` / `prospect:email_sent` / `prospect:email_opened` | prospect jobs | domain, ... |
 
 ### Dashboard Insights (4 panels)
 
