@@ -2,7 +2,7 @@
  * @fileoverview Classifies collected items into topic clusters and scores them.
  */
 
-import { CLUSTERS, WEIGHTS, SCORE_THRESHOLD } from './config.js';
+import { CLUSTERS, WEIGHTS, SCORE_THRESHOLD, CLUSTER_PERFORMANCE_MULTIPLIER } from './config.js';
 
 /**
  * Classify a single item into the best-matching cluster.
@@ -68,14 +68,16 @@ export function classifyAndScore(items, trendScores = {}) {
     const { counts } = group;
     const trendValue = trendScores[group.label] || 0;
 
-    const score = Math.round(
+    const rawScore =
       (counts.erc || 0) * WEIGHTS.erc_count +
       (counts.eip || 0) * WEIGHTS.eip_count +
       (counts.ethresearch || 0) * WEIGHTS.ethresearch_posts +
       (counts.arxiv || 0) * WEIGHTS.arxiv_papers +
       (counts.magicians || 0) * WEIGHTS.magicians_topics +
-      trendValue * WEIGHTS.google_trends
-    );
+      trendValue * WEIGHTS.google_trends;
+
+    const performanceMultiplier = CLUSTER_PERFORMANCE_MULTIPLIER[group.cluster] ?? 1.0;
+    const score = Math.round(rawScore * performanceMultiplier);
 
     // Pick the most common content type
     const typeCounts = {};
