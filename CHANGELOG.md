@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.195] - 2026-05-04
+### Fixed
+- blog: publish - Six Ways to Read a Transaction: EVM Tracing Tools Compared
+
+
 ## [5.17.194] - 2026-05-04
 ### Fixed
 - Bias blog picker toward proven-performing clusters; schedule comparison-listicles every 4 articles (#1287)
