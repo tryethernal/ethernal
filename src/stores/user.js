@@ -42,6 +42,13 @@ export const useUserStore = defineStore('user', {
                     window.smartsupp('name', user.email);
                     window.smartsupp('email', user.email);
                 }
+
+                if (envStore.hasAnalyticsEnabled && user.id && window.posthog && typeof window.posthog.identify === 'function') {
+                    const props = {};
+                    if (user.email) props.email = user.email;
+                    if (user.plan) props.plan = user.plan;
+                    window.posthog.identify(String(user.id), props);
+                }
             }
             else {
                 this.$reset();
@@ -56,8 +63,8 @@ export const useUserStore = defineStore('user', {
                     window.smartsupp('email', null);
                 }
 
-                if (envStore.hasAnalyticsEnabled)
-                    this.globalProperties.$posthog.reset();
+                if (envStore.hasAnalyticsEnabled && window.posthog && typeof window.posthog.reset === 'function')
+                    window.posthog.reset();
             }
         }
     },

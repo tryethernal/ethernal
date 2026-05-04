@@ -114,7 +114,7 @@
                     <!-- Inline CTA -->
                     <div v-if="lookupResults.length || searchResults.length || computedSelector" class="inline-cta mt-8">
                         <p>See decoded function calls in real-time. Try Ethernal's block explorer.</p>
-                        <a :href="`${appUrl}/auth?flow=public`" class="btn-primary btn-sm">Get Started</a>
+                        <a :href="`${appUrl}/auth?flow=public&utm_source=tool&utm_medium=inline_cta&utm_campaign=4byte_lookup`" class="btn-primary btn-sm" @click="trackCta">Get Started</a>
                     </div>
                 </v-col>
             </v-row>
@@ -149,6 +149,10 @@ import ToolsSidebar from '@/components/ToolsSidebar.vue';
 import { computeSelector, parseSignature, lookup4byte, search4byte } from '@/composables/useEvmTools.js';
 
 const appUrl = __APP_URL__;
+
+function trackCta() {
+    window.posthog?.capture('landing:tool_cta_click', { tool: '4byte_lookup' });
+}
 
 // --- Lookup tab state ---
 const activeTab = ref('lookup');

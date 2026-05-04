@@ -100,7 +100,7 @@ full article →"
   fi
 
   # Build full tweet text (hook already ends with transition phrase)
-  BLOG_URL="https://tryethernal.com/blog/${SLUG}"
+  BLOG_URL="https://tryethernal.com/blog/${SLUG}?utm_source=twitter&utm_medium=social&utm_campaign=blog_promo"
   TWEET_TEXT="${HOOK}
 ${BLOG_URL}"
 

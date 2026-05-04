@@ -310,6 +310,13 @@
                             <span class="related-desc">Block explorer for Ethereum mainnet with call traces and contract verification</span>
                         </div>
                     </router-link>
+                    <router-link to="/etherscan-alternative" class="related-link">
+                        <v-icon size="18" style="color: #5DAAE0;">mdi-compare-horizontal</v-icon>
+                        <div>
+                            <span class="related-title">BscScan Alternative</span>
+                            <span class="related-desc">How Ethernal compares to BscScan for custom BNB Chain forks</span>
+                        </div>
+                    </router-link>
                     <router-link to="/pricing" class="related-link">
                         <v-icon size="18" style="color: #5DAAE0;">mdi-tag-outline</v-icon>
                         <div>

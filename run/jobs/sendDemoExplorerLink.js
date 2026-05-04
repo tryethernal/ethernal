@@ -17,7 +17,7 @@ module.exports = async (job) => {
 
     const mailjet = Mailjet.apiConnect(getMailjetPublicKey(), getMailjetPrivateKey());
 
-    const explorerLink = `https://${explorerSlug}.${getAppDomain()}`;
+    const explorerLink = `https://${explorerSlug}.${getAppDomain()}?utm_source=transactional&utm_medium=email&utm_campaign=demo_ready`;
 
     await mailjet.post('send', { version: 'v3.1' })
         .request({

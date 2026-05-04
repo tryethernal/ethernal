@@ -54,9 +54,12 @@ export const createApp = ViteSSG(
                     ui_host: 'https://us.posthog.com',
                     person_profiles: 'identified_only',
                     capture_pageview: false,
-                    capture_pageleave: true
+                    capture_pageleave: true,
+                    autocapture: true,
+                    ip: true
                 });
 
+                window.posthog = posthog;
                 app.config.globalProperties.$posthog = posthog;
 
                 router.afterEach((to) => {
