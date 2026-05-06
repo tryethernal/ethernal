@@ -6,6 +6,7 @@
 
 - [How Three Infrastructure Failures Turned a $50M Collateral Swap into $36K](https://tryethernal.com/blog/50m-defi-routing-failure): A $50M Aave collateral swap returned $36K. Three compounding CoW Protocol failures made the worst possible route the only one available.
 - [Best Block Explorers for EVM Chains in 2026](https://tryethernal.com/blog/best-block-explorers-evm-chains-2026): Compare EVM block explorers in 2026: Etherscan, Blockscout, Ethernal, Tenderly, Blockchair, Routescan. Setup speed, pricing, and a decision framework.
+- [Block Explorer for Your Arbitrum Orbit Chain: Arbiscan, Blockscout, Ethernal, and Routescan Compared](https://tryethernal.com/blog/block-explorer-arbitrum-orbit-chains): Arbiscan, Blockscout, Ethernal, and Routescan compared for Arbitrum Orbit chains. Bridge UI, AnyTrust support, setup time, pricing, and a decision framework.
 - [Data Retention Changes](https://tryethernal.com/blog/data-retention-changes): Data will now be cleared after 7 days for free plan users.
 - [When Provers Race: The Coordination Problem in Decentralized ZK](https://tryethernal.com/blog/decentralized-zk-proving-coordination): Concurrent ZK provers collide at 33K gas per failure. Why the coordination problem is hard and what three proposed mechanisms look like.
 - [The Attack Taxonomy DeFi Security Has Been Ignoring](https://tryethernal.com/blog/defi-attack-taxonomy-cwe-mapping): A March 2026 survey of 235 papers found that DeFi attack patterns map to CWE entries documented since the 1970s. Here's what auditors are missing.
