@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.198] - 2026-05-10
+### Fixed
+- blog: publish - When the Oracle Is the Attack: Governance Capture in Prediction Markets
+
+
 ## [5.17.197] - 2026-05-08
 ### Fixed
 - blog: publish - Hardhat, Foundry, Brownie, Truffle, or Ape: Which EVM Framework Does Your Team Actually Need in 2026?
