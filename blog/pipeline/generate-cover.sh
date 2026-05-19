@@ -22,7 +22,7 @@ echo "Prompt: $PROMPT"
 for attempt in 1 2 3; do
   echo "Attempt $attempt..."
 
-  RESPONSE=$(curl -s "https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${GEMINI_API_KEY}" \
+  RESPONSE=$(curl -s --max-time 120 "https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${GEMINI_API_KEY}" \
     -H 'Content-Type: application/json' \
     -d "$(jq -n --arg prompt "$PROMPT" '{
       contents: [{

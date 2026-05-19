@@ -274,7 +274,11 @@ ARTICLE_URL="https://tryethernal.com/blog/$SLUG"
 
 # Generate cover image
 log "Generating cover image..."
-IMG_PROMPT="Flat vector flow diagram on dark navy background (#0f172a) with subtle dot grid pattern overlay. Topic: ${TOPIC}. Use rounded pill-shaped boxes in steel blue (#4a8ecb) with soft shadows, connected by thin arrows. 2-4 labeled elements showing a simple relationship or flow. Large readable white text labels. Centered composition with lots of whitespace. Style: polished Figma mockup, NOT realistic 3D icons, NOT wireframes, NOT text-heavy. No gradients, no glow effects."
+# Generate a bespoke prompt per article (replaces the old generic pills-and-arrows template).
+IMG_PROMPT=$("$SCRIPT_DIR/gen-cover-prompt.sh" "$ARTICLE_PATH" 2>&1) || {
+  log "WARNING: bespoke prompt generation failed, falling back to generic"
+  IMG_PROMPT="Flat vector editorial illustration on dark navy background #0a0f1a with subtle dot grid pattern. Topic: ${TOPIC}. Single visual metaphor, Ethernal blue #3D95CE accent used sparingly, polished Figma quality, no gradients, no glow, no 3D, 1424x752 landscape."
+}
 "$SCRIPT_DIR/generate-cover.sh" "$SLUG" "$IMG_PROMPT" 2>&1 | tee -a "$LOG_FILE" || log "WARNING: Cover image generation failed"
 
 # Regenerate llms.txt with all published articles
