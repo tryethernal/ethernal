@@ -98,4 +98,32 @@ describe('check-breaker CLI exit codes', () => {
         assert.notEqual(result.status, 2, 'exit 2 must be reserved for errors only');
         assert.ok([0, 1].includes(result.status), `unexpected exit ${result.status}`);
     });
+
+    it('the documented shell wrapper pattern does not trip `set -euo pipefail`', () => {
+        // Second regression guarantee from Greptile review on #1309: the
+        // shell callers (publish.sh, promote-blog.sh) run under
+        // `set -euo pipefail` with an ERR trap that calls report_failure.
+        // The naive `VAR=$(cmd); RC=$?` pattern aborts on cmd's non-zero
+        // exit and never reaches the `RC=$?` line — meaning the ERR trap
+        // fires on EVERY normal run (exit 1 = breaker closed). The
+        // documented pattern uses `|| RC=$?` to absorb the non-zero exit.
+        // Test by invoking the exact pattern in a fresh bash subshell and
+        // asserting that the trap does NOT fire.
+        const script = `
+            set -euo pipefail
+            trap 'echo TRAP_FIRED >&2; exit 99' ERR
+
+            BREAKER_RC=0
+            BREAKER_REASON=$(node ${JSON.stringify(CLI)}) || BREAKER_RC=$?
+
+            echo "rc=$BREAKER_RC"
+        `;
+        const result = spawnSync('bash', ['-c', script], {
+            env: { ...process.env, TWEET_PIPELINE_BREAKER_PATH: breakerPath },
+            encoding: 'utf8',
+        });
+        assert.equal(result.status, 0, `shell wrapper exited ${result.status}; stderr: ${result.stderr}`);
+        assert.doesNotMatch(result.stderr, /TRAP_FIRED/, 'ERR trap should not fire on breaker-closed path');
+        assert.match(result.stdout, /rc=1/);
+    });
 });

@@ -43,9 +43,15 @@ cd "$SCRIPT_DIR"
 #
 # Exit semantics: 0 = OPEN (skip), 1 = CLOSED (proceed), 2 = error (fail-open
 # with stderr surfaced — don't silence the error or we lose all visibility).
+#
+# IMPORTANT: under `set -euo pipefail` (line 4), a plain VAR=$(cmd) assignment
+# aborts the whole script on cmd's non-zero exit — which on the breaker-closed
+# path (exit 1) would trip the ERR trap and call report_failure, defeating
+# the breaker entirely. Pre-init BREAKER_RC and use `|| BREAKER_RC=$?` so the
+# non-zero exit is absorbed and `set -e` is not triggered.
 BREAKER_STDERR=$(mktemp)
-BREAKER_REASON=$(node lib/cli/check-breaker.js 2>"$BREAKER_STDERR")
-BREAKER_RC=$?
+BREAKER_RC=0
+BREAKER_REASON=$(node lib/cli/check-breaker.js 2>"$BREAKER_STDERR") || BREAKER_RC=$?
 if [ "$BREAKER_RC" -eq 0 ]; then
   log "Circuit breaker OPEN — skipping publish cycle. $BREAKER_REASON"
   rm -f "$BREAKER_STDERR"
