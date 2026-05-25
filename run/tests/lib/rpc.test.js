@@ -226,5 +226,21 @@ describe('Tracer', () => {
 
             expect(rpcCapabilityCache.recordTraceSuccess).toHaveBeenCalledWith('http://localhost:8545');
         });
+
+        it('Should swallow Substrate DispatchError (-32603) as a benign per-tx error and not throw (regression: gh#1298)', async () => {
+            const tracer = new Tracer('http://localhost:8545', {});
+            const error = { error: { code: -32603, message: 'DispatchError: Other("")' } };
+            jest.spyOn(tracer.traceProvider, 'send').mockRejectedValueOnce(error);
+
+            await tracer.process({ hash: '0x123' });
+
+            expect(tracer.error).toEqual({
+                code: 'Error code "-32603".',
+                message: 'DispatchError: Other("")',
+                error: error
+            });
+            expect(rpcCapabilityCache.markTraceUnsupported).not.toHaveBeenCalled();
+            expect(rpcCapabilityCache.recordTraceSuccess).not.toHaveBeenCalled();
+        });
     });
 });

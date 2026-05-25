@@ -535,11 +535,13 @@ class Tracer {
             };
 
         // Handle -32603 (Internal error) selectively - only ignore block size/complexity limits
+        // and Substrate-EVM DispatchError (chain-side runtime error for a specific tx, not our bug)
         if (error.error && error.error.code === -32603) {
             const message = error.error.message || '';
             if (message.includes('too many transactions') ||
                 message.includes('block too large') ||
-                message.includes('block size limit')) {
+                message.includes('block size limit') ||
+                message.includes('DispatchError')) {
                 return this.error = {
                     code: `Error code "${error.error.code}".`,
                     message: error.error.message,
