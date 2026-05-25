@@ -5,6 +5,10 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ENV_FILE="/opt/blog-pipeline.env"
+
+# Pipeline kill switch — runs before any filesystem work
+source "$SCRIPT_DIR/lib/pipeline-status.sh"
+
 PROMPTS_DIR="$SCRIPT_DIR/prompts"
 LOG_DIR="/var/log/tweet-pipeline"
 INBOX="ethernal@agentmail.to"

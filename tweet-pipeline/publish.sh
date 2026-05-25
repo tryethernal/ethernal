@@ -5,6 +5,12 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ENV_FILE="/opt/blog-pipeline.env"
+
+# Pipeline kill switch — runs before we even touch the filesystem so a
+# disabled pipeline exits cleanly even if directories are missing.
+# The sourced file defines `log()` (echo-only fallback) when not yet defined.
+source "$SCRIPT_DIR/lib/pipeline-status.sh"
+
 LOG_DIR="/var/log/tweet-pipeline"
 mkdir -p "$LOG_DIR"
 LOG_FILE="$LOG_DIR/publish-$(date +%Y%m%d-%H%M%S).log"
