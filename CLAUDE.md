@@ -360,6 +360,15 @@ Ethernal is registered on [Karma](https://gap.karmahq.xyz/project/ethernal) (Opt
 
 ## Infrastructure & Secrets
 
+### K8s Cluster Deployment (ArgoCD GitOps)
+
+The k3s cluster lives on Hetzner (managed by Terraform in the [k8s-iac repo](https://github.com/tryethernal/k8s-iac), backend: azurerm). **All cluster changes flow through ArgoCD GitOps** — there is no `kubectl apply` workflow.
+
+- **App workloads, Helm charts, ConfigMaps, ExternalSecrets**: push to `master` in `k8s-iac` → ArgoCD auto-syncs within 20s. ArgoCD itself runs on the cluster's single worker node alongside everything else.
+- **Cluster provisioning (nodes, LB, firewall)**: `cd k3s && terraform apply` from a workstation with Azure auth — manual, no CI. Touches `k3s/*.tf`.
+- **Direct `kubectl patch/edit` will be reverted** by ArgoCD on the next sync. To make a change stick, edit the manifest in `k8s-iac` and merge.
+- **ArgoCD UI**: `https://argo.tryethernal.com`. Use it to inspect sync status, force-sync, or roll back to a previous git revision.
+
 ### K8s Secrets (ExternalSecrets + Azure Key Vault)
 
 K8s secrets in `ethernal-prod` are managed by **ExternalSecrets** syncing from **Azure Key Vault** (`ethernalkeyvault.vault.azure.net`), reconciled by **ArgoCD**. Direct `kubectl patch secret` will be reverted on the next sync cycle. To rotate a secret:
