@@ -81,4 +81,18 @@ skills-lock.json
 # Session artifacts
 .claude/handoff-*.md
 .claude/plans/
+.claude/scheduled_tasks.lock
+.claude/settings.local.json
 generated_imgs/
+
+# Local env (secrets — repo is PUBLIC). The existing `.env.*` rule above
+# does NOT match a bare `.env`; add it explicitly to prevent leaking
+# tokens like VITE_SENTRY_AUTH_TOKEN.
+.env
+
+# Coding-agent workspace caches
+.factory/
+
+# Vite build caches (regenerated on each build)
+landing/.vite/
+sentry-dashboard/.vite/
