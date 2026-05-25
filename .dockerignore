@@ -13,7 +13,11 @@ seeders/private
 
 **/functions/report*
 
-# local env files
+# local env files. The **/.env.* glob misses a bare `.env`, which
+# Dockerfile.caddyfile and Dockerfile.frontend would otherwise embed via
+# their `COPY .env* ./` step — leaking VITE_SENTRY_AUTH_TOKEN and other
+# secrets into the image layer. Mirror the .gitignore fix.
+**/.env
 **/.env.*
 **/functions/.runtimeconfig.json
 ganache-db
