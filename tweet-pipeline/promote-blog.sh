@@ -28,6 +28,15 @@ fi
 # Ensure we're in the right directory for Node.js imports
 cd "$SCRIPT_DIR"
 
+# Circuit breaker — bail fast if a non-recoverable account-level failure
+# (e.g. Twitter HTTP 402 CreditsDepleted) tripped the breaker. Avoids
+# spamming GitHub issues every 10 minutes while credits are depleted
+# (see #1289, #1290, #1307).
+if BREAKER_REASON=$(node lib/cli/check-breaker.js 2>/dev/null); then
+  log "Circuit breaker OPEN — skipping promo cycle. $BREAKER_REASON"
+  exit 0
+fi
+
 # Scan for published articles via GitHub API
 PROMOTED=0
 

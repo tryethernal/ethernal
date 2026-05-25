@@ -35,6 +35,16 @@ fi
 
 cd "$SCRIPT_DIR"
 
+# Circuit breaker — bail fast if a non-recoverable account-level failure
+# (e.g. Twitter HTTP 402 CreditsDepleted) tripped the breaker on a previous
+# run. Without this, every 10-minute timer fire generates a fresh GitHub
+# issue while credits are depleted (see #1289, #1290, #1307). The breaker
+# self-clears on TTL or on the next successful post.
+if BREAKER_REASON=$(node lib/cli/check-breaker.js 2>/dev/null); then
+  log "Circuit breaker OPEN — skipping publish cycle. $BREAKER_REASON"
+  exit 0
+fi
+
 POSTED_COUNT=0
 MIN_GAP_MINUTES=90
 
