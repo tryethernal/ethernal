@@ -2,9 +2,33 @@
  * @fileoverview Twitter API v2 client for the tweet pipeline.
  * Wraps the twitter-api-v2 package with helpers for posting threads,
  * uploading media, and fetching engagement metrics.
+ *
+ * All write paths (postTweet, uploadMedia) consult the circuit breaker
+ * and trip it on non-recoverable account-level failures (HTTP 402
+ * CreditsDepleted) so the systemd timers don't generate a fresh GitHub
+ * issue every 10 minutes while credits are exhausted.
  */
 
 import { TwitterApi } from 'twitter-api-v2';
+import {
+    classifyTwitterError,
+    isBreakerOpen,
+    resetBreaker,
+    tripBreaker,
+} from './circuit-breaker.js';
+
+/**
+ * Thrown when a write call short-circuits because the breaker is open.
+ * Carries the breaker payload so callers can decide how to handle it
+ * (publish.sh / promote-blog.sh exit silently; tests inspect .breaker).
+ */
+export class CircuitBreakerOpenError extends Error {
+    constructor(payload) {
+        super(`Tweet pipeline circuit breaker is open: ${payload.reason} (expires ${payload.expiresAt})`);
+        this.name = 'CircuitBreakerOpenError';
+        this.breaker = payload;
+    }
+}
 
 /**
  * Formats a hook tweet and optional replies into a thread array.
@@ -50,21 +74,39 @@ export function createTwitterClient(creds) {
 
     /**
      * Uploads an image file to Twitter.
+     * Trips the circuit breaker on HTTP 402 CreditsDepleted.
      * @param {string} filePath - Absolute path to the image file.
      * @returns {Promise<string>} The media ID string.
+     * @throws {CircuitBreakerOpenError} if the breaker is already open.
      */
     async function uploadMedia(filePath) {
-        const mediaId = await v1.uploadMedia(filePath, { mimeType: 'image/png' });
-        return mediaId;
+        const open = isBreakerOpen();
+        if (open) throw new CircuitBreakerOpenError(open);
+
+        try {
+            const mediaId = await v1.uploadMedia(filePath, { mimeType: 'image/png' });
+            return mediaId;
+        } catch (err) {
+            const verdict = classifyTwitterError(err);
+            if (verdict) tripBreaker(verdict.reason);
+            throw err;
+        }
     }
 
     /**
      * Posts a single tweet.
+     * Trips the circuit breaker on HTTP 402 CreditsDepleted.
+     * Resets the breaker on a successful post (a brief outage shouldn't
+     * silence the pipeline for the full TTL once it self-resolves).
      * @param {string} text - The tweet text.
      * @param {{mediaId?: string, replyToId?: string}} [options={}] - Optional media and reply settings.
      * @returns {Promise<{id: string}>} The posted tweet's ID.
+     * @throws {CircuitBreakerOpenError} if the breaker is already open.
      */
     async function postTweet(text, options = {}) {
+        const open = isBreakerOpen();
+        if (open) throw new CircuitBreakerOpenError(open);
+
         const payload = { text };
 
         if (options.mediaId) {
@@ -75,8 +117,16 @@ export function createTwitterClient(creds) {
             payload.reply = { in_reply_to_tweet_id: options.replyToId };
         }
 
-        const result = await v2.tweet(payload);
-        return { id: result.data.id };
+        try {
+            const result = await v2.tweet(payload);
+            // Successful write — clear any stale breaker.
+            resetBreaker();
+            return { id: result.data.id };
+        } catch (err) {
+            const verdict = classifyTwitterError(err);
+            if (verdict) tripBreaker(verdict.reason);
+            throw err;
+        }
     }
 
     /**
