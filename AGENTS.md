@@ -69,7 +69,7 @@ If Docker is unavailable, CI runs tests locally:
 - **run/ (backend):** npm, CommonJS
 - **landing/:** npm, ESM
 - **blog/:** npm, ESM
-- **pm2-server/:** npm, CommonJS
+- **pm2-server/:** **yarn in production Docker** (see `Dockerfile.pm2`), npm locally. Both `yarn.lock` AND `package-lock.json` are committed and must stay in sync — `Dockerfile.pm2` `COPY`s `yarn.lock` explicitly. Do not delete either.
 - **Node version:** 18+ (CI), 20 (Docker)
 
 ## Conventions
