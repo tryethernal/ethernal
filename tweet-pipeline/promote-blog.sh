@@ -28,6 +28,29 @@ fi
 # Ensure we're in the right directory for Node.js imports
 cd "$SCRIPT_DIR"
 
+# Circuit breaker — bail fast if a non-recoverable account-level failure
+# (e.g. Twitter HTTP 402 CreditsDepleted) tripped the breaker. Avoids
+# spamming GitHub issues every 10 minutes while credits are depleted
+# (see #1289, #1290, #1307).
+#
+# Exit semantics: 0 = OPEN (skip), 1 = CLOSED (proceed), 2 = error (fail-open
+# with stderr surfaced).
+#
+# IMPORTANT: under `set -euo pipefail` (line 4), `VAR=$(cmd)` aborts on cmd's
+# non-zero exit — including the breaker-closed path (exit 1). Pre-init
+# BREAKER_RC and use `|| BREAKER_RC=$?` so `set -e` is not triggered.
+BREAKER_STDERR=$(mktemp)
+BREAKER_RC=0
+BREAKER_REASON=$(node lib/cli/check-breaker.js 2>"$BREAKER_STDERR") || BREAKER_RC=$?
+if [ "$BREAKER_RC" -eq 0 ]; then
+  log "Circuit breaker OPEN — skipping promo cycle. $BREAKER_REASON"
+  rm -f "$BREAKER_STDERR"
+  exit 0
+elif [ "$BREAKER_RC" -eq 2 ]; then
+  log "WARNING: circuit breaker check errored, proceeding anyway: $(cat "$BREAKER_STDERR")"
+fi
+rm -f "$BREAKER_STDERR"
+
 # Scan for published articles via GitHub API
 PROMOTED=0
 
@@ -138,17 +161,38 @@ ${BLOG_URL}"
     log "WARNING: No cover image for $SLUG — posting without image"
   fi
 
-  # Post the promo tweet
-  if ! RESULT=$(TWEET_TEXT="$TWEET_TEXT" MEDIA_ID="$MEDIA_ID" node --input-type=module -e "
-    import { createTwitterClientFromEnv } from './lib/twitter.js';
-    const client = createTwitterClientFromEnv();
-    const options = {};
-    if (process.env.MEDIA_ID && process.env.MEDIA_ID !== '') {
-      options.mediaId = process.env.MEDIA_ID;
+  # Post the promo tweet.
+  #
+  # Distinguish a breaker-open failure (mid-loop, e.g. uploadMedia tripped the
+  # breaker for the current article — every subsequent postTweet in this run
+  # will also fail with CircuitBreakerOpenError) from a genuine post failure.
+  # Without this branch, every remaining article in the loop would file its
+  # own GitHub issue via report_failure. Exit code 7 means breaker-open;
+  # any other non-zero is a real failure.
+  RESULT=""
+  POST_RC=0
+  RESULT=$(TWEET_TEXT="$TWEET_TEXT" MEDIA_ID="$MEDIA_ID" node --input-type=module -e "
+    import { createTwitterClientFromEnv, CircuitBreakerOpenError } from './lib/twitter.js';
+    try {
+      const client = createTwitterClientFromEnv();
+      const options = {};
+      if (process.env.MEDIA_ID && process.env.MEDIA_ID !== '') {
+        options.mediaId = process.env.MEDIA_ID;
+      }
+      const result = await client.postTweet(process.env.TWEET_TEXT, options);
+      console.log(JSON.stringify({ tweetId: result.id }));
+    } catch (err) {
+      if (err instanceof CircuitBreakerOpenError) {
+        console.error(err.message);
+        process.exit(7);
+      }
+      throw err;
     }
-    const result = await client.postTweet(process.env.TWEET_TEXT, options);
-    console.log(JSON.stringify({ tweetId: result.id }));
-  " 2>&1); then
+  " 2>&1) || POST_RC=$?
+  if [ "$POST_RC" -eq 7 ]; then
+    log "Circuit breaker tripped during promo loop — aborting remaining articles. $RESULT"
+    break
+  elif [ "$POST_RC" -ne 0 ]; then
     log "ERROR: Failed to post promo tweet for $SLUG: $RESULT"
     report_failure "Post tweet for $SLUG"
     continue

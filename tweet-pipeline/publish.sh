@@ -35,6 +35,32 @@ fi
 
 cd "$SCRIPT_DIR"
 
+# Circuit breaker — bail fast if a non-recoverable account-level failure
+# (e.g. Twitter HTTP 402 CreditsDepleted) tripped the breaker on a previous
+# run. Without this, every 10-minute timer fire generates a fresh GitHub
+# issue while credits are depleted (see #1289, #1290, #1307). The breaker
+# self-clears on TTL or on the next successful post.
+#
+# Exit semantics: 0 = OPEN (skip), 1 = CLOSED (proceed), 2 = error (fail-open
+# with stderr surfaced — don't silence the error or we lose all visibility).
+#
+# IMPORTANT: under `set -euo pipefail` (line 4), a plain VAR=$(cmd) assignment
+# aborts the whole script on cmd's non-zero exit — which on the breaker-closed
+# path (exit 1) would trip the ERR trap and call report_failure, defeating
+# the breaker entirely. Pre-init BREAKER_RC and use `|| BREAKER_RC=$?` so the
+# non-zero exit is absorbed and `set -e` is not triggered.
+BREAKER_STDERR=$(mktemp)
+BREAKER_RC=0
+BREAKER_REASON=$(node lib/cli/check-breaker.js 2>"$BREAKER_STDERR") || BREAKER_RC=$?
+if [ "$BREAKER_RC" -eq 0 ]; then
+  log "Circuit breaker OPEN — skipping publish cycle. $BREAKER_REASON"
+  rm -f "$BREAKER_STDERR"
+  exit 0
+elif [ "$BREAKER_RC" -eq 2 ]; then
+  log "WARNING: circuit breaker check errored, proceeding anyway: $(cat "$BREAKER_STDERR")"
+fi
+rm -f "$BREAKER_STDERR"
+
 POSTED_COUNT=0
 MIN_GAP_MINUTES=90
 

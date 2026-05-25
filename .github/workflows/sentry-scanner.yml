@@ -53,6 +53,70 @@ jobs:
             - Pattern: `curl -s -o /tmp/resp.json "URL" -H "Authorization: Bearer $SENTRY_API_TOKEN" && jq '...' /tmp/resp.json`
             - **CRITICAL — `count` is LIFETIME, not 24h.** The `count` field on each issue in the list response is the lifetime `times_seen` total, NOT the 24h rolling volume. Do NOT use it for thresholds or report it as "Events (24h)" — that caused a false-incident storm (issues #1218–#1232 were all closed as self-resolved because the scanner reported 6,000+ "24h events" when actual 24h volume was 2–16). The TRUE 24h volume is `([.stats."24h"[]?[1]] | add)` — sum of the hourly buckets in the `stats."24h"` array. Always compute and use this value.
 
+            ## Step 0: Pre-flight health & auth probe (MANDATORY)
+
+            Before doing anything else, distinguish three top-level states:
+            - **Service down** (Sentry API itself returns 5xx)
+            - **Auth broken** (Sentry API up, but token is rejected with 401/403)
+            - **Healthy** (proceed to Step 1)
+
+            Past incidents created **separate issues per scanner run for the same outage** (#1301/#1302/#1303 + #1305 were all the same Sentry outage, and #1304 was the actual token-regen item that got buried). This step deduplicates against open infra issues and **must run before any Sentry query**.
+
+            ```bash
+            BASE_UNAUTH=$(curl -s -o /tmp/preflight_base.json -w "%{http_code}" "https://sentry.tryethernal.com/api/0/" --max-time 15 || echo "000")
+            AUTH_PROBE=$(curl -s -o /tmp/preflight_auth.json -w "%{http_code}" "https://sentry.tryethernal.com/api/0/projects/" -H "Authorization: Bearer $SENTRY_API_TOKEN" --max-time 15 || echo "000")
+            echo "preflight base=$BASE_UNAUTH auth=$AUTH_PROBE"
+            ```
+
+            Decision matrix:
+
+            | base | auth | Verdict | Action |
+            |------|------|---------|--------|
+            | 2xx  | 2xx  | Healthy | Continue to Step 1 |
+            | 2xx  | 401/403 | Token bad | Run "AUTH_BROKEN handler" below, then exit 0 |
+            | 5xx / 000 | any | Service down | Run "SERVICE_DOWN handler" below, then exit 0 |
+            | other | other | Unknown | Run "SERVICE_DOWN handler" with verdict="unknown", exit 0 |
+
+            ### SERVICE_DOWN handler
+
+            Dedup against an open service-down issue from the last 24h, then either comment on it or create one. **Never create a second open service-down issue.**
+
+            1. Search for an existing open issue:
+               ```bash
+               gh issue list --state open --label sentry --search 'in:title "Sentry monitoring service down"' \
+                 --json number,createdAt \
+                 --jq '[.[] | select((now - (.createdAt | fromdateiso8601)) < 86400)] | .[0].number'
+               ```
+            2. If a number comes back: comment on it with `gh issue comment <num>` noting the current timestamp, the HTTP codes from the preflight, and "outage still in progress". Then `exit 0`.
+            3. If no existing issue: `gh issue create` with:
+               - title: `Sentry monitoring service down - API returning <BASE_UNAUTH> errors`
+               - labels: `sentry`, `needs-human`, `infra-alert`
+               - body: the timestamp, both HTTP codes, the first 500 chars of `/tmp/preflight_base.json` if it has content, and "Scanner skipped this cycle — will retry on next hourly run."
+               Then `exit 0`.
+
+            ### AUTH_BROKEN handler
+
+            Dedup against an open auth-issue from the last 24h. Title pattern: `Sentry API scanner failing - authentication`.
+
+            1. Search for an existing open issue:
+               ```bash
+               gh issue list --state open --label sentry --search 'in:title "Sentry API scanner failing"' \
+                 --json number,createdAt \
+                 --jq '[.[] | select((now - (.createdAt | fromdateiso8601)) < 86400)] | .[0].number'
+               ```
+            2. If a number comes back: comment on it noting the current timestamp and that the authenticated API still returns HTTP `<AUTH_PROBE>`. Then `exit 0`.
+            3. If no existing issue: `gh issue create` with:
+               - title: `Sentry API scanner failing - authentication/server errors`
+               - labels: `sentry`, `needs-human`
+               - body: timestamps, both HTTP codes, and these manual action items:
+                 1. Log into https://sentry.tryethernal.com → Settings → Account → API → Auth Tokens
+                 2. Regenerate the token with scopes: `org:read`, `project:read`, `event:read`, `event:admin`
+                 3. Update the `SENTRY_API_TOKEN` GitHub Actions secret
+                 4. Re-run this workflow manually
+               Then `exit 0`.
+
+            Only proceed past Step 0 if the preflight verdict is "Healthy".
+
             ## Step 1: Query Sentry for all unresolved issues
 
             Run ALL 6 queries in a single bash command to save turns. Save each to a temp file:
@@ -271,6 +335,7 @@ jobs:
 
             ## Rules
             - NEVER create duplicate GitHub issues — always check first
+            - **NEVER create your own "Sentry service down" or "Sentry API failing" issue from Steps 1-7.** Those are infra issues, not Sentry-issue findings, and they're owned by Step 0 (preflight). If you find yourself wanting to file one mid-scan, abort and re-run Step 0 instead. Past scanner runs created #1301/#1302/#1303 + #1305 for the same outage because this rule wasn't enforced.
             - Be conservative: only create issues for clear code bugs or significant performance problems
             - When resolving in Sentry, always include a reason
             - Keep issue descriptions concise but include enough for the auto-fix agent
