@@ -32,10 +32,20 @@ cd "$SCRIPT_DIR"
 # (e.g. Twitter HTTP 402 CreditsDepleted) tripped the breaker. Avoids
 # spamming GitHub issues every 10 minutes while credits are depleted
 # (see #1289, #1290, #1307).
-if BREAKER_REASON=$(node lib/cli/check-breaker.js 2>/dev/null); then
+#
+# Exit semantics: 0 = OPEN (skip), 1 = CLOSED (proceed), 2 = error (fail-open
+# with stderr surfaced).
+BREAKER_STDERR=$(mktemp)
+BREAKER_REASON=$(node lib/cli/check-breaker.js 2>"$BREAKER_STDERR")
+BREAKER_RC=$?
+if [ "$BREAKER_RC" -eq 0 ]; then
   log "Circuit breaker OPEN — skipping promo cycle. $BREAKER_REASON"
+  rm -f "$BREAKER_STDERR"
   exit 0
+elif [ "$BREAKER_RC" -eq 2 ]; then
+  log "WARNING: circuit breaker check errored, proceeding anyway: $(cat "$BREAKER_STDERR")"
 fi
+rm -f "$BREAKER_STDERR"
 
 # Scan for published articles via GitHub API
 PROMOTED=0

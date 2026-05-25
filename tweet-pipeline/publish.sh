@@ -40,10 +40,20 @@ cd "$SCRIPT_DIR"
 # run. Without this, every 10-minute timer fire generates a fresh GitHub
 # issue while credits are depleted (see #1289, #1290, #1307). The breaker
 # self-clears on TTL or on the next successful post.
-if BREAKER_REASON=$(node lib/cli/check-breaker.js 2>/dev/null); then
+#
+# Exit semantics: 0 = OPEN (skip), 1 = CLOSED (proceed), 2 = error (fail-open
+# with stderr surfaced — don't silence the error or we lose all visibility).
+BREAKER_STDERR=$(mktemp)
+BREAKER_REASON=$(node lib/cli/check-breaker.js 2>"$BREAKER_STDERR")
+BREAKER_RC=$?
+if [ "$BREAKER_RC" -eq 0 ]; then
   log "Circuit breaker OPEN — skipping publish cycle. $BREAKER_REASON"
+  rm -f "$BREAKER_STDERR"
   exit 0
+elif [ "$BREAKER_RC" -eq 2 ]; then
+  log "WARNING: circuit breaker check errored, proceeding anyway: $(cat "$BREAKER_STDERR")"
 fi
+rm -f "$BREAKER_STDERR"
 
 POSTED_COUNT=0
 MIN_GAP_MINUTES=90
