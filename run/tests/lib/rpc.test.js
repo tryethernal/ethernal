@@ -240,6 +240,7 @@ describe('Tracer', () => {
                 error: error
             });
             expect(rpcCapabilityCache.markTraceUnsupported).not.toHaveBeenCalled();
+            expect(rpcCapabilityCache.recordTraceSuccess).not.toHaveBeenCalled();
         });
     });
 });
