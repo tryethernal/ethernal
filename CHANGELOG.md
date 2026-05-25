@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.209] - 2026-05-25
+### Fixed
+- chore(deps): npm audit fix across all npm manifests + remove stale pm2-server/yarn.lock (#1312)
+- chore: ignore local-only files; track AGENTS.md (#1311)
+
+
 ## [5.17.208] - 2026-05-25
 ### Fixed
 - docs: document ArgoCD deploy mechanism + Sentry server config (#1310)
