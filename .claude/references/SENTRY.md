@@ -42,3 +42,31 @@ Standalone Vue 3 app at `sentry-dashboard/` served at `/sentry-dashboard` path. 
 ## CLI Access
 
 SSH into the Sentry server (see `.credentials.local` for host/IP), then `cd /opt/sentry && docker compose --env-file .env --env-file .env.custom exec -T web sentry shell` for Django shell access. API token with full scopes stored as `SENTRY_API_TOKEN` GitHub secret.
+
+## Server Configuration
+
+Self-hosted Sentry runs on a single Hetzner box (see `.credentials.local` for host). Config lives in `/opt/sentry/` (forked from `getsentry/self-hosted` v26.2.1). Two files matter for ops:
+
+- `/opt/sentry/.env` — environment overrides
+- `/opt/sentry/sentry/config.yml` — Sentry runtime config
+
+### Retention & Storage Policy
+
+This installation is **issues-only** (errors + stacktraces). Performance traces, replays, profiling, feedback, and attachments are all disabled or rejected at ingest.
+
+| Knob | Value | File | Why |
+|---|---|---|---|
+| `SENTRY_EVENT_RETENTION_DAYS` | `30` | `.env` | Reduced from default 90 to cap Postgres/Clickhouse/Kafka growth |
+| `system.options.max-attachment-size` | `0` | `sentry/config.yml` | Drops attachments at ingest. Stops seaweedfs blob store growing (it has no built-in retention) |
+
+**Disabled service containers** (`profiles: [disabled]` in `docker-compose.yml`): replays (`ingest-replay-recordings`, `snuba-replays-consumer`), profiling (`ingest-profiles`, `vroom`, `vroom-cleanup`, `snuba-profiling-*`), cron monitors (`ingest-monitors`, `monitors-clock-tasks`, `monitors-clock-tick`), feedback (`ingest-feedback-events`). Uptime monitoring kept enabled (watches `app.tryethernal.com/api/status/health`).
+
+**Re-apply after Sentry version upgrades**: the upstream `docker-compose.yml` does not preserve our disabled profiles, the `--auto-offset-reset=latest --no-strict-offset-reset` flags on `run consumer` commands (required to survive Kafka retention purges), or the `SENTRY_SYSTEM_SECRET_KEY` line in `.env`. Without these the stack will crash-loop on the next major upgrade.
+
+### Operational Notes
+
+- **Backup PG before retention reductions**: dropping `SENTRY_EVENT_RETENTION_DAYS` triggers the cleanup cron to purge old events on next run.
+- **Kafka volume cannot be partially deleted**: removing individual topic dirs while leaving `__cluster_metadata` causes KRaft to fail with NPE on restart. Either wipe `/var/lib/docker/volumes/sentry-kafka/_data/*` entirely or use `kafka-topics --delete`.
+- **Compose status lags reality**: after a stack restart, check for containers in `Created` state (not just `Up`) — they failed dependency checks and need `docker rm -f` + `docker compose up -d` to recreate properly.
+
+See incident history in memory file `incident-2026-05-01-hetzner-disk-full.md` for the two disk-full outages that led to this config.
