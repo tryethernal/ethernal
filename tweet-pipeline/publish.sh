@@ -8,7 +8,8 @@ ENV_FILE="/opt/blog-pipeline.env"
 
 # Pipeline kill switch — runs before we even touch the filesystem so a
 # disabled pipeline exits cleanly even if directories are missing.
-# The sourced file defines `log()` (echo-only fallback) when not yet defined.
+# The sourced lib falls back to an inline echo when log() is not yet
+# defined, so it's safe to source this early.
 source "$SCRIPT_DIR/lib/pipeline-status.sh"
 
 LOG_DIR="/var/log/tweet-pipeline"
