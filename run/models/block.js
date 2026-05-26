@@ -25,7 +25,11 @@ const {
 const moment = require('moment');
 
 const { trigger } = require('../lib/pusher');
-const { enqueue, bulkEnqueue } = require('../lib/queue');
+// NOTE: `enqueue`/`bulkEnqueue` are intentionally NOT destructured at module load.
+// `lib/queue` is part of a circular load chain (models/block → lib/queue → lib/queueCaps
+// → models/*), and a top-level destructure here can capture `undefined` if this file
+// loads while lib/queue is still mid-init. Resolve at hook-call time instead — by then
+// require cache is populated. See issue #1318 for the failure mode + stack trace.
 const { getNodeEnv } = require('../lib/env');
 
 const STALLED_BLOCK_REMOVAL_DELAY = getNodeEnv() == 'production' ? 5 * 60 * 1000 : 15 * 60 * 1000;
@@ -148,6 +152,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     async afterCreate(options) {
         const afterCreateFn = async () => {
+            const { enqueue, bulkEnqueue } = require('../lib/queue');
+
             if (Date.now() / 1000 - this.timestamp < 60 * 10)
                 trigger(`private-blocks;workspace=${this.workspaceId}`, 'new', { number: this.number, withTransactions: this.transactionsCount > 0 });
 
