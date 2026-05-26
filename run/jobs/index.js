@@ -56,6 +56,7 @@ module.exports = {
     removeExpiredExplorers: require('./removeExpiredExplorers'),
     deleteWorkspace: require('./deleteWorkspace'),
     queueMonitoring: require('./queueMonitoring'),
+    queueCapSweep: require('./queueCapSweep'),
     blockSyncMonitoring: require('./blockSyncMonitoring'),
     sendDiscordMessage: require('./sendDiscordMessage'),
     sendDemoExplorerLink: require('./sendDemoExplorerLink'),

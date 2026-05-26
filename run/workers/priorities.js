@@ -51,6 +51,7 @@ const priorities = {
         'removeExpiredExplorers',
         'deleteWorkspace',
         'queueMonitoring',
+        'queueCapSweep',
         'blockSyncMonitoring',
         'monitorOrbitBatches',
         'discoverOrbitBatches',

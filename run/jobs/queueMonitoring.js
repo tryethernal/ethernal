@@ -9,7 +9,6 @@ const { Queue } = require('bullmq');
 const redis = require('../lib/redis');
 const logger = require('../lib/logger');
 const { createIncident, closeIncident } = require('../lib/opsgenie');
-const queueCaps = require('../lib/queueCaps');
 const { maxTimeWithoutEnqueuedJob, queueMonitoringMaxProcessingTime, queueMonitoringHighProcessingTimeThreshold, queueMonitoringHighWaitingJobCountThreshold, queueMonitoringMaxWaitingJobCount } = require('../lib/env');
 const priorities = require('../workers/priorities');
 
@@ -192,29 +191,7 @@ module.exports = async () => {
     }
 
 
-    // Trim sweep: catches direct-Redis enqueues from cli-light that bypass the in-process cap.
-    // Runs every 60s alongside performance monitoring. Per-queue try/catch so one queue's
-    // failure can't block the other.
-    for (const queueName of ['blockSync', 'receiptSync']) {
-        try {
-            const cap = queueCaps.getCap(queueName);
-            if (cap === Infinity) continue;
-            const byWorkspace = await queueCaps.scanQueueByWorkspace(queueName);
-            for (const [workspaceId, count] of byWorkspace) {
-                if (count <= cap) continue;
-                const isLow = await queueCaps.isLowTierWorkspace(workspaceId);
-                if (!isLow) continue;
-                const excess = count - cap;
-                const removed = await queueCaps.trimOldest(queueName, workspaceId, excess);
-                logger.info('Sweep trimmed jobs', {
-                    queueName, workspaceId, removed,
-                    location: 'jobs.queueMonitoring.sweep',
-                });
-            }
-        } catch (error) {
-            logger.error('Sweep failed', { queueName, error: error.message });
-        }
-    }
+    // Cap-sweep moved to dedicated queueCapSweep job (runs every 10s; see scheduler.js).
 
     return incidentCreated;
 };
