@@ -2,13 +2,6 @@ require('../mocks/lib/queue');
 require('../mocks/lib/logger');
 require('../mocks/lib/opsgenie');
 
-jest.mock('../../lib/queueCaps', () => ({
-    getCap: jest.fn(),
-    isLowTierWorkspace: jest.fn(),
-    scanQueueByWorkspace: jest.fn(),
-    trimOldest: jest.fn(),
-}));
-
 const { createIncident, closeIncident } = require('../../lib/opsgenie');
 const logger = require('../../lib/logger');
 const redis = require('../../lib/redis');
@@ -45,7 +38,6 @@ jest.mock('../../lib/redis', () => ({
     })
 }));
 
-const queueCaps = require('../../lib/queueCaps');
 const queueMonitoring = require('../../jobs/queueMonitoring');
 
 beforeEach(() => {
