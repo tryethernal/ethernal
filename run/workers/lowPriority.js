@@ -26,6 +26,13 @@ const DEFAULT_CONCURRENCY = 10;
 const PER_JOB_CONCURRENCY = {
     batchContractDelete: 1,
     batchBlockDelete: 1,
+    // Sweep is scheduled every 10s. If one run exceeds 10s (cold tier-cache →
+    // DB lookup per workspace), a second instance would scan the same
+    // unmodified Redis state, compute the same excess, and trimOldest twice —
+    // stripping workspaces to 0 instead of capping them at the cap. Hold to 1
+    // to serialize within a worker pod. Cross-pod overlap is still possible if
+    // a single run exceeds 10s across replicas; revisit if logs show drift.
+    queueCapSweep: 1,
 };
 
 const workers = [];

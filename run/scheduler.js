@@ -8,6 +8,7 @@ const RPC_HEALTH_CHECK_INTERVAL = 5 * 60 * 1000;
 const SUBSCRIPTION_CHECK_INTERVAL = 5 * 60 * 1000;
 const SYNC_RECOVERY_CHECK_INTERVAL = 5 * 60 * 1000;
 const QUEUE_MONITORING_INTERVAL = 120 * 1000; // Reduced from 60s to 120s to reduce Redis N+1 call frequency
+const QUEUE_CAP_SWEEP_INTERVAL = 10 * 1000; // Tight cap sweep; lightweight Lua-only path
 const CANCEL_DEMO_INTERVAL = 60 * 60 * 1000;
 const BLOCK_SYNC_MONITORING_INTERVAL = 60 * 1000;
 const INFRA_HEALTH_CHECK_INTERVAL = 60 * 1000;
@@ -67,6 +68,14 @@ const INFRA_HEALTH_CHECK_INTERVAL = 60 * 1000;
         {},
         10,
         { every: QUEUE_MONITORING_INTERVAL }
+    );
+
+    await enqueue(
+        'queueCapSweep',
+        'queueCapSweep',
+        {},
+        10,
+        { every: QUEUE_CAP_SWEEP_INTERVAL }
     );
 
     await enqueue(

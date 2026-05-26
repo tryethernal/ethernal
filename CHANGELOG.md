@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.212] - 2026-05-26
+### Fixed
+- fix(queue): decouple cap sweep into 10s job (#1319) (#1321)
+- fix(block): lazy-require enqueue/bulkEnqueue inside afterCreate (#1318) (#1322)
+
+
 ## [5.17.211] - 2026-05-26
 ### Fixed
 - blog: publish - The Security Bug in Your Font: How ERC-8117 Turns Address Display Into a Defense Layer
