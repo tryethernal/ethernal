@@ -9,6 +9,10 @@ const blog = defineCollection({
     date: z.coerce.date(),
     description: z.string().max(160, 'Description must be 160 characters or fewer for optimal OG/SEO display'),
     tags: z.array(z.string()).default([]),
+    // SEO keyword grounding (separate from reader-facing `tags`). Populated by
+    // the keyword-enrichment pipeline; rendered into JSON-LD BlogPosting.keywords,
+    // not as UI chips. Defaults to [] so existing posts keep building.
+    keywords: z.array(z.string()).default([]),
     image: z.string().optional(),
     ogImage: z.string().optional(),
     readingTime: z.number().optional(),
