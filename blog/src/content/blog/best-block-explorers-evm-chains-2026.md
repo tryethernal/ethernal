@@ -294,6 +294,18 @@ Etherscan EaaS offers limited white-label customization within fixed templates. 
 
 Yes. Ethernal (MIT license) and Blockscout (open source) both support self-hosting. Ethernal can be deployed via Docker with `git clone` and `make start`. Blockscout requires more infrastructure setup (Elixir runtime, multiple services) but offers deeper customization once running. Self-hosting gives you full control over your data but means you handle maintenance, scaling, and updates yourself.
 
+### What is the best Ethereum explorer?
+
+For browsing Ethereum mainnet, Etherscan is the most established Ethereum explorer and the one most users mean by "the ether explorer." For running your own explorer on an Ethereum L2 or app-chain, Ethernal and Blockscout are the strongest options because both are open-source and let you point an explorer at any EVM RPC URL. The right Ethereum explorer depends on whether you are reading a public chain or operating one of your own.
+
+### What is a multi-chain explorer?
+
+A multi-chain explorer is a single block explorer that indexes and serves data for many blockchains at once, so you can search transactions and addresses across several chains from one interface. Blockscan (the Etherscan group's multi-chain view) and Routescan are common hosted examples. If you run several EVM chains yourself, Ethernal lets you spin up a chain explorer per network and manage them from one account, which is the self-hosted equivalent of a multi-chain explorer.
+
+### What is a chain explorer?
+
+A chain explorer, also called a block explorer, is the search and analytics interface for a single blockchain. It lets users look up blocks, transactions, addresses, tokens, and verified smart contracts for that chain. Every production EVM chain needs one so that users, developers, and auditors can verify on-chain activity. For a custom or unified chain explorer across your own networks, Ethernal deploys one from an RPC URL in under five minutes.
+
 ---
 
 ## Key takeaways
