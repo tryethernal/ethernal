@@ -143,7 +143,7 @@
 
             <!-- Feature Grid -->
             <ChainFeatureGrid :features="[
-                { icon: 'mdi-code-json', title: 'Ethereum Explorer | Ethernal Block Explorer', description: 'Function names, parameters, and events decoded against verified ABIs' },
+                { icon: 'mdi-code-json', title: 'Transaction Decoding', description: 'Function names, parameters, and events decoded against verified ABIs' },
                 { icon: 'mdi-check-decagram', title: 'Contract Verification', description: 'Verify Solidity source, read and write contract state from the UI' },
                 { icon: 'mdi-bug', title: 'Call Traces', description: 'Full execution traces with nested internal calls and revert reasons' },
                 { icon: 'mdi-swap-horizontal', title: 'Token Tracking', description: 'ERC-20, ERC-721, and ERC-1155 transfers and balance changes' },
