@@ -367,12 +367,12 @@ import LandingLayout from '@/components/LandingLayout.vue';
 import LandingCTA from '@/components/LandingCTA.vue';
 
 useHead({
-    title: 'Blockscout Alternative: Ethernal vs Blockscout Compared',
+    title: 'Blockscout Alternative: Deploy in 5 Min, No DevOps',
     meta: [
-        { name: 'description', content: 'Compare Ethernal and Blockscout: two open-source block explorers for EVM chains. Setup, architecture, L2 support, and pricing side by side.' },
+        { name: 'description', content: 'Blockscout needs a Postgres, indexer, and frontend to self-host. Ethernal is one Docker command and live in 5 minutes. See the full Ethernal vs Blockscout comparison.' },
         { property: 'og:type', content: 'website' },
-        { property: 'og:title', content: 'Blockscout Alternative: Ethernal vs Blockscout Compared' },
-        { property: 'og:description', content: 'Compare Ethernal and Blockscout: two open-source block explorers for EVM chains. Setup, architecture, L2 support, and pricing side by side.' },
+        { property: 'og:title', content: 'Blockscout Alternative: Deploy in 5 Min, No DevOps' },
+        { property: 'og:description', content: 'Blockscout needs a Postgres, indexer, and frontend to self-host. Ethernal is one Docker command and live in 5 minutes. See the full Ethernal vs Blockscout comparison.' },
         { property: 'og:url', content: 'https://tryethernal.com/blockscout-alternative' },
         { name: 'twitter:card', content: 'summary_large_image' },
     ],
